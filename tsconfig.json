@@ -2,14 +2,12 @@
   "compilerOptions": {
     "rootDir": "src",
     "experimentalDecorators": true,
-    "noEmit": true, /* Do not emit outputs. */
+    "noEmit": true /* Do not emit outputs. */,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "es2018"
-    ],
+    "lib": ["es2018"],
     "module": "commonjs",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
@@ -18,9 +16,6 @@
     "strict": true,
     "target": "es2018"
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ],
+  "include": ["src/**/*.ts", "test/**/*.ts"],
   "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
 }

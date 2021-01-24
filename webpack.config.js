@@ -1,18 +1,19 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
   entry: {
-    garbo: './src/index.js'
+    garbo: "./src/index.js",
+    "garbo-combat": "./src/combat.js",
   },
-  mode: 'development',
+  mode: "development",
   devtool: false,
   output: {
-    path: path.resolve(__dirname, 'KoLmafia', 'scripts', 'garbage-collector'),
-    filename: '[name].js',
-    libraryTarget: 'commonjs',
+    path: path.resolve(__dirname, "KoLmafia", "scripts", "garbage-collector"),
+    filename: "[name].js",
+    libraryTarget: "commonjs",
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json'],
+    extensions: [".ts", ".tsx", ".js", ".json"],
   },
   module: {
     rules: [
@@ -20,12 +21,12 @@ module.exports = {
         // Include ts, tsx, js, and jsx files.
         test: /\.(ts|js)x?$/,
         // exclude: /node_modules/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
       },
     ],
   },
   plugins: [],
   externals: {
-    kolmafia: 'commonjs kolmafia',
+    kolmafia: "commonjs kolmafia",
   },
 };

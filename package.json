@@ -15,7 +15,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "kolmafia": "^1.0.3"
+    "kolmafia": "^1.0.3",
+    "libram": "^0.0.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.8",
