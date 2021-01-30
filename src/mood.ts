@@ -1,8 +1,7 @@
-import { myClass, sweetSynthesisResult } from "kolmafia";
-import { $class, $effect, $effects, $item, $skill, have, Mood } from "libram";
+import { cliExecute, myClass } from "kolmafia";
+import { $class, $effect, $effects, $item, $skill, get, have, Mood } from "libram";
 
-Mood.setOptions({
-  useSausages: true,
+Mood.setDefaultOptions({
   songSlots: [
     $effects`Polka of Plenty`,
     $effects`Fat Leon's Phat Loot Lyric`,
@@ -29,6 +28,16 @@ export function meatMood() {
 
   mood.effect($effect`Synthesis: Greed`);
   mood.effect($effect`Driving Observantly`);
+
+  if (have($item`Kremlin's Greatest Briefcase`)) {
+    mood.effect($effect`A View To Some Meat`, () => {
+      if (get("_kgbClicksUsed") < 24) {
+        cliExecute(
+          `briefcase buff ${new Array(24 - get("_kgbClicksUsed")).map(() => "meat").join(" ")}`
+        );
+      }
+    });
+  }
 
   return mood;
 }

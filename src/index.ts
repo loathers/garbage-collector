@@ -1,24 +1,29 @@
 import {
   buy,
-  equip,
+  cliExecute,
   faxbot,
   haveFamiliar,
   maximize,
   myAdventures,
+  retrieveItem,
+  toInt,
   use,
   useFamiliar,
+  visitUrl,
 } from "kolmafia";
 import {
+  $familiar,
   $familiars,
   $item,
+  $items,
   $location,
   $monster,
   adventureMacroAuto,
   get,
   have,
-  Macro,
   SourceTerminal,
 } from "libram";
+import { Macro } from "./combat";
 import { baseMeat, meatMood } from "./mood";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -34,7 +39,7 @@ function ensureBarfAccess() {
 }
 
 function chooseFamiliar() {
-  for (const familiar of $familiars`Robortender, Hobo Monkey, Leprechaun`) {
+  for (const familiar of $familiars`Robortender, Hobo Monkey, Cat Burglar, Leprechaun`) {
     if (haveFamiliar(familiar)) return familiar;
   }
   throw new Error("No good Barf familiars!");
@@ -50,7 +55,18 @@ export function main(args = "") {
   ensureBarfAccess();
 
   // 2. make an outfit (amulet coin, pantogram, etc)
+
   // 3. misc other stuff (VYKEA, songboom, robortender drinks, cape setup if necessary)
+  cliExecute("retrocape robot kill"); // set up Precision Shot
+  if (get("boomBoxSong") != "Total Eclipse of Your Meat") {
+    cliExecute("boombox meat");
+  }
+  if (have($familiar`Robortender`)) {
+    for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre`) {
+      retrieveItem(drink);
+      visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
+    }
+  }
 
   // 4. do some embezzler stuff
   const embezzler = $monster`Knob Goblin embezzler`;
@@ -63,7 +79,7 @@ export function main(args = "") {
       faxbot(embezzler, "CheeseFax");
     }
     // TODO: Prof copies, spooky putty copies, ice sculpture if worth, etc.
-    Macro.skill("Sing Along", "Digitize", "Saucegeyser").repeat();
+    Macro.skill("Digitize").meatKill();
   }
 
   // 5. burn turns at barf
