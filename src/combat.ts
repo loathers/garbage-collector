@@ -1,7 +1,39 @@
-import { equippedAmount, equippedItem, itemType, myClass } from "kolmafia";
-import { $class, $item, $skill, $slot, get, have, Macro as LibramMacro } from "libram";
+import { equippedAmount, equippedItem, haveSkill, itemType, myAdventures, myClass } from "kolmafia";
+import {
+  $class,
+  $effect,
+  $item,
+  $monster,
+  $skill,
+  $slot,
+  get,
+  have,
+  Macro as LibramMacro,
+} from "libram";
+
+function clamp(n: number, min: number, max: number) {
+  return Math.min(Math.max(n, min), max);
+}
+
+function shouldRedigitize() {
+  const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
+  const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
+  // triangular number * 10 - 3
+  const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
+  // Redigitize if fewer adventures than this digitize usage.
+  return myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
+}
 
 export class Macro extends LibramMacro {
+  tryHaveSkill(skillOrName: Skill | string): Macro {
+    const skill = typeof skillOrName === "string" ? Skill.get(skillOrName) : skillOrName;
+    return this.externalIf(haveSkill(skill), Macro.skill(skill));
+  }
+
+  static tryHaveSkill(skillOrName: Skill | string): Macro {
+    return new Macro().tryHaveSkill(skillOrName);
+  }
+
   meatKill() {
     const sealClubberSetup =
       equippedAmount($item`mafia pointer finger ring`) > 0 &&
@@ -20,15 +52,38 @@ export class Macro extends LibramMacro {
       itemType(equippedItem($slot`weapon`)) === "pistol";
 
     // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
-    return Macro.skill("Sing Along")
+    return Macro.tryHaveSkill("Sing Along")
+      .externalIf(
+        shouldRedigitize(),
+        Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.skill("Digitize"))
+      )
+      .externalIf(
+        have($effect`On The Trail`),
+        Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))
+      )
+      .externalIf(
+        get("_gallapagosMonster") !== $monster`garbage tourist`,
+        Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))
+      )
       .externalIf(sealClubberSetup, Macro.skill("Furious Wallop"))
       .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
       .externalIf(katanaSetup, Macro.skill("Summer Siesta"))
-      .externalIf(capeSetup, Macro.skill("Precision Shot"));
+      .externalIf(capeSetup, Macro.skill("Precision Shot"))
+      .attack()
+      .repeat();
   }
 
   static meatKill() {
     return new Macro().meatKill();
+  }
+}
+
+export function withMacro<T>(macro: Macro, action: () => T) {
+  macro.save();
+  try {
+    return action();
+  } finally {
+    Macro.clearSaved();
   }
 }
 

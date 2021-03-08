@@ -2,8 +2,8 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    garbo: "./src/index.js",
-    "garbo-combat": "./src/combat.js",
+    garbo: "./src/index.ts",
+    "garbo-combat": "./src/combat.ts",
   },
   mode: "development",
   devtool: false,

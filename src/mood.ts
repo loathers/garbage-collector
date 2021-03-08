@@ -1,5 +1,5 @@
-import { cliExecute, myClass } from "kolmafia";
-import { $class, $effect, $effects, $item, $skill, get, have, Mood } from "libram";
+import { cliExecute, getFuel, myClass, mySpleenUse, spleenLimit } from "kolmafia";
+import { $class, $effect, $effects, $item, $skill, get, have, Mood, SongBoom } from "libram";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -10,7 +10,7 @@ Mood.setDefaultOptions({
   ],
 });
 
-export const baseMeat = have($item`SongBoom Boom Box`) ? 275 : 250;
+export const baseMeat = SongBoom.have() ? 275 : 250;
 
 export function meatMood() {
   const mood = new Mood();
@@ -19,6 +19,10 @@ export function meatMood() {
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
 
+  mood.skill($skill`Blood Bond`);
+  mood.skill($skill`Leash of Linguini`);
+  mood.skill($skill`Empathy of the Newt`);
+
   mood.skill($skill`The Polka of Plenty`);
   mood.skill($skill`Disco Leer`);
   mood.skill($skill`Fat Leon's Phat Loot Lyric`);
@@ -26,15 +30,17 @@ export function meatMood() {
   mood.skill($skill`The Spirit of Taking`);
   if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
-  mood.effect($effect`Synthesis: Greed`);
+  mood.effect($effect`Synthesis: Greed`, () => {
+    if (mySpleenUse() < spleenLimit()) cliExecute("synthesize greed");
+  });
+
+  if (getFuel() < 37) cliExecute("asdonmartin fuel 1 pie man was not meant to eat");
   mood.effect($effect`Driving Observantly`);
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View To Some Meat`, () => {
-      if (get("_kgbClicksUsed") < 24) {
-        cliExecute(
-          `briefcase buff ${new Array(24 - get("_kgbClicksUsed")).map(() => "meat").join(" ")}`
-        );
+      if (get("_kgbClicksUsed") < 22) {
+        cliExecute("briefcase buff meat");
       }
     });
   }
