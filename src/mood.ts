@@ -1,4 +1,4 @@
-import { cliExecute, getFuel, myClass, mySpleenUse, spleenLimit } from "kolmafia";
+import { cliExecute, getFuel, myClass, mySpleenUse, print, spleenLimit } from "kolmafia";
 import { $class, $effect, $effects, $item, $skill, get, have, Mood, SongBoom } from "libram";
 
 Mood.setDefaultOptions({
@@ -18,6 +18,7 @@ export function meatMood() {
   // TODO: Check all potions and grab those that are worth.
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
+  mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
   mood.skill($skill`Blood Bond`);
   mood.skill($skill`Leash of Linguini`);
@@ -39,8 +40,10 @@ export function meatMood() {
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View To Some Meat`, () => {
-      if (get("_kgbClicksUsed") < 22) {
-        cliExecute("briefcase buff meat");
+      if (get("_kgbClicksUsed") <= 19) {
+        const buffTries = Math.floor((22 - get("_kgbClicksUsed")) / 3);
+        cliExecute(`briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
+        print(`briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
       }
     });
   }

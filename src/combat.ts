@@ -1,4 +1,12 @@
-import { equippedAmount, equippedItem, haveSkill, itemType, myAdventures, myClass } from "kolmafia";
+import {
+  equippedAmount,
+  equippedItem,
+  haveSkill,
+  itemType,
+  myAdventures,
+  myClass,
+  print,
+} from "kolmafia";
 import {
   $class,
   $effect,
@@ -25,6 +33,11 @@ function shouldRedigitize() {
 }
 
 export class Macro extends LibramMacro {
+  submit() {
+    print(this.components.join("\n"));
+    return super.submit();
+  }
+
   tryHaveSkill(skillOrName: Skill | string): Macro {
     const skill = typeof skillOrName === "string" ? Skill.get(skillOrName) : skillOrName;
     return this.externalIf(haveSkill(skill), Macro.skill(skill));
@@ -52,13 +65,13 @@ export class Macro extends LibramMacro {
       itemType(equippedItem($slot`weapon`)) === "pistol";
 
     // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
-    return Macro.tryHaveSkill("Sing Along")
+    return this.tryHaveSkill("Sing Along")
       .externalIf(
         shouldRedigitize(),
         Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.skill("Digitize"))
       )
       .externalIf(
-        have($effect`On The Trail`),
+        !have($effect`On The Trail`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))
       )
       .externalIf(
@@ -67,7 +80,7 @@ export class Macro extends LibramMacro {
       )
       .externalIf(sealClubberSetup, Macro.skill("Furious Wallop"))
       .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
-      .externalIf(katanaSetup, Macro.skill("Summer Siesta"))
+      .externalIf(katanaSetup, Macro.skill("Summer Siesta").attack())
       .externalIf(capeSetup, Macro.skill("Precision Shot"))
       .attack()
       .repeat();

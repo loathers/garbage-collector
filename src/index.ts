@@ -1,20 +1,22 @@
 import {
   buy,
   cliExecute,
-  equip,
-  faxbot,
+  dump,
+  eat,
+  equippedAmount,
   getCounters,
-  haveFamiliar,
   inebrietyLimit,
   itemAmount,
   myAdventures,
   myClass,
   myInebriety,
+  myMp,
   myThrall,
   myTurncount,
   print,
   putCloset,
   retrieveItem,
+  reverseNumberology,
   runChoice,
   setAutoAttack,
   toInt,
@@ -27,14 +29,11 @@ import {
 import {
   $class,
   $familiar,
-  $familiars,
   $item,
   $items,
   $location,
-  $monster,
   $skill,
   $thrall,
-  adventureMacro,
   adventureMacroAuto,
   get,
   have,
@@ -43,9 +42,10 @@ import {
   SongBoom,
   SourceTerminal,
 } from "libram";
-import { Macro, withMacro } from "./combat";
+import { Macro } from "./combat";
+import { chooseFamiliar } from "./familiar";
+import { dailyFights } from "./fights";
 import { baseMeat, meatMood } from "./mood";
-import { freeFightOutfit } from "./outfit";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -59,21 +59,6 @@ function ensureBarfAccess() {
   }
 }
 
-function chooseFamiliar() {
-  if (
-    myInebriety() > inebrietyLimit() &&
-    have($familiar`Trick-or-Treating Tot`) &&
-    have($item`li'l pirate costume`)
-  ) {
-    return $familiar`Trick-or-Treating Tot`;
-  } else {
-    for (const familiar of $familiars`Robortender, Hobo Monkey, Cat Burglar, Leprechaun`) {
-      if (haveFamiliar(familiar)) return familiar;
-    }
-  }
-  throw new Error("No good Barf familiars!");
-}
-
 function dailySetup() {
   if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
     useFamiliar($familiar`Cornbeefadon`);
@@ -81,9 +66,10 @@ function dailySetup() {
   }
 
   if (have($item`portable pantogram`) && !have($item`pantogram pants`)) {
-    retrieveItem(1, $item`ten-leaf clover`);
-    retrieveItem(1, $item`porquoise`);
-    cliExecute("pantogram high meat|clover");
+    retrieveItem($item`ten-leaf clover`);
+    retrieveItem($item`porquoise`);
+    retrieveItem($item`bubblin' crude`);
+    cliExecute("pantogram medium mp regen|high meat|clover|silent");
   }
 
   if (have($item`Fourth of May Cosplay Saber`) && get("_saberMod") === 0) {
@@ -92,13 +78,20 @@ function dailySetup() {
     runChoice(4);
   }
 
+  if (get("_bastilleGames") === 0) {
+    cliExecute("bastille myst brutalist gesture");
+  }
+
   SongBoom.setSong("Total Eclipse of Your Meat");
+  print(`${SourceTerminal.getSkills()[1] === $skill`Digitize`}`);
   SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
   if (have($familiar`Robortender`)) {
     for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre`) {
       if (get("_roboDrinks").includes(drink.name)) continue;
+      useFamiliar($familiar`robortender`);
       if (itemAmount(drink) === 0) buy(1, drink, 150000);
+      print(`Feeding robortender ${drink}.`, "blue");
       visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
     }
   }
@@ -107,59 +100,12 @@ function dailySetup() {
     useSkill($skill`Bind Lasagmbie`);
   }
 
+  if (!get("_clanFortuneBuffUsed")) cliExecute("fortune buff meat");
+  while (SourceTerminal.getEnhanceUses() < 3) cliExecute("terminal enhance meat.enh");
+  if (!get("_madTeaParty")) cliExecute("hatter 22");
+
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
-}
-
-function dailyFights() {
-  const embezzler = $monster`Knob Goblin embezzler`;
-  if (
-    SourceTerminal.have() &&
-    SourceTerminal.getDigitizeMonster() !== embezzler &&
-    !get("_photocopyUsed")
-  ) {
-    if (!have($item`photocopied monster`) || get("photocopyMonster") !== embezzler) {
-      faxbot(embezzler, "CheeseFax");
-    }
-    // TODO: Prof copies, spooky putty copies, ice sculpture if worth, etc.
-    if (SourceTerminal.getDigitizeMonster() === null) {
-      if (!get("_iceSculptureUsed")) retrieveItem($item`unfinished ice sculpture`);
-      if (!get("_cameraUsed")) retrieveItem($item`4-d camera`);
-      if (!get("_envyfishEggUsed")) retrieveItem($item`pulled green taffy`);
-      withMacro(
-        Macro.tryHaveSkill("Digitize")
-          .externalIf(!get("_iceSculptureUsed"), Macro.item("unfinished ice sculpture"))
-          .externalIf(!get("_cameraUsed"), Macro.item("4-d camera"))
-          .meatKill(),
-        () => use($item`photocopied monster`)
-      );
-    }
-
-    if (getCounters("Digitize Monster", 0, 100).trim() === "") {
-      if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
-      // adventure in mushroom garden to start digitize timer.
-      freeFightOutfit();
-      useFamiliar(chooseFamiliar());
-      adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
-    }
-
-    if (have($familiar`Pocket Professor`) && get("_pocketProfessorLectures") < 10) {
-      // now we can do prof copies.
-      useFamiliar($familiar`Pocket Professor`);
-      equip($item`amulet coin`);
-      withMacro(Macro.trySkill("Lecture on Relativity").meatKill(), () =>
-        use($item`ice sculpture`)
-      );
-    }
-
-    /* if (!get("_envyfishEggUsed")) {
-      // now fight one underwater
-      use($item`fishy pipe`);
-      if (getCounters("Digitize Monster", 0, 0).trim() !== "Digitize Monster") {
-        throw new Error("Something went wrong with digitize.");
-      }
-    } */
-  }
 }
 
 function getKramcoWandererChance() {
@@ -178,27 +124,36 @@ function barfTurn() {
   const familiar = chooseFamiliar();
   useFamiliar(familiar);
 
+  const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
+
   // b. set up outfit? just keep on constant one for now
   maximizeCached(
     [
-      `${(baseMeat / 100).toFixed(2)} Meat Drop`,
-      "0.72 Item Drop",
-      "400 Bonus lucky gold ring",
-      "300 Bonus mafia thumb ring",
+      `${((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2)} Meat Drop`,
+      `${embezzlerUp ? 0 : 0.72} Item Drop`,
     ],
     {
       forceEquip: [
         ...(myInebriety() > inebrietyLimit()
           ? $items`Drunkula's wineglass`
-          : getKramcoWandererChance() > 0.05
-          ? $items`Kramco™ Sausage-o-Matic, ice nine, mafia pointer finger ring`
-          : $items`ice nine, mafia pointer finger ring`),
+          : getKramcoWandererChance() > 0.05 && !embezzlerUp
+          ? $items`Kramco Sausage-o-Matic™, haiku katana, mafia pointer finger ring`
+          : $items`haiku katana, mafia pointer finger ring`),
       ],
-      preventEquip: $items`broken champagne bottle, unwrapped retro superhero cape`,
+      preventEquip: [
+        ...$items`broken champagne bottle, unwrapped retro superhero cape`,
+        ...(embezzlerUp ? $items`cheap sunglasses` : []),
+      ],
+      bonusEquip: new Map([
+        [$item`lucky gold ring`, 400],
+        [$item`mafia thumb ring`, 300],
+        [$item`Mr. Cheeng's spectacles`, 250],
+        [$item`pantogram pants`, 200],
+      ]),
     }
   );
 
-  if (myInebriety() <= inebrietyLimit()) equip($item`unwrapped retro superhero cape`);
+  /* if (myInebriety() <= inebrietyLimit()) equip($item`unwrapped retro superhero cape`);
   if (
     have($item`unwrapped retro superhero cape`) &&
     !(get("retroCapeSuperhero") === "robot" && get("retroCapeWashingInstructions") === "kill")
@@ -207,20 +162,58 @@ function barfTurn() {
     print(get("retroCapeWashingInstructions"));
     // Set up for critical.
     cliExecute("retrocape robot kill");
-  }
+  } */
 
   // c. set up mood stuff
   meatMood().execute(myAdventures() * 1.04 + 50);
 
+  if (equippedAmount($item`haiku katana`) > 0 && myMp() < 50) eat($item`magical sausage`);
+
   // d. run adventure
   adventureMacroAuto($location`Barf Mountain`, Macro.meatKill());
+
+  if (
+    Object.keys(reverseNumberology()).includes("69") &&
+    get("_universeCalculated") < get("skilllevel144")
+  ) {
+    cliExecute("numberology 69");
+  }
 }
 
-export function main(args = "") {
+export const globalOptions: { stopTurncount: number | null } = {
+  stopTurncount: null,
+};
+
+export function canContinue() {
+  return (
+    myAdventures() > 0 &&
+    (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
+  );
+}
+
+export function main(argString = "") {
   // TODO: How do we handle Synth? Needs to be integrated with diet stuff.
   // Similar for jumping horseradish etc.
 
+  const args = argString.split(" ");
+  for (const arg of args) {
+    if (arg.match(/\d+/)) {
+      globalOptions.stopTurncount = myTurncount() + parseInt(arg, 10);
+    }
+  }
+
+  print("Collecting garbage!", "blue");
+  if (globalOptions.stopTurncount !== null) {
+    print(`Stopping in ${globalOptions.stopTurncount - myTurncount()}`, "blue");
+  }
+  print();
+
+  setAutoAttack(0);
+  cliExecute("mood apathetic");
+  cliExecute("ccs garbo");
+
   // 0. diet stuff.
+  // TODO: add.
 
   // 1. get a ticket
   ensureBarfAccess();
@@ -237,7 +230,7 @@ export function main(args = "") {
 
   // 5. burn turns at barf
   try {
-    while (myAdventures() > 0) {
+    while (canContinue()) {
       barfTurn();
     }
   } finally {
