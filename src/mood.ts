@@ -1,4 +1,4 @@
-import { cliExecute, getFuel, myClass, mySpleenUse, print, spleenLimit } from "kolmafia";
+import { cliExecute, getFuel, haveEffect, myClass, mySpleenUse, spleenLimit, use } from "kolmafia";
 import { $class, $effect, $effects, $item, $skill, get, have, Mood, SongBoom } from "libram";
 
 Mood.setDefaultOptions({
@@ -43,10 +43,21 @@ export function meatMood() {
       if (get("_kgbClicksUsed") <= 19) {
         const buffTries = Math.floor((22 - get("_kgbClicksUsed")) / 3);
         cliExecute(`briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
-        print(`briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
       }
     });
   }
+
+  return mood;
+}
+
+export function freeFightMood() {
+  const mood = new Mood();
+
+  if (!get("_defectiveTokenUsed")) mood.effect($effect`Video... Games?`);
+  if (haveEffect($effect`Blue Swayed`) < 50) {
+    use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
+  }
+  mood.potion($item`white candy heart`, 30);
 
   return mood;
 }

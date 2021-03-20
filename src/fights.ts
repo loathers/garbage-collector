@@ -1,32 +1,25 @@
 import {
+  adv1,
   availableAmount,
   buy,
   cliExecute,
-  eat,
-  equip,
   faxbot,
-  fullnessLimit,
-  getCampground,
-  getClanName,
   getCounters,
   handlingChoice,
-  haveEffect,
   itemAmount,
+  mallPrice,
   myAdventures,
   myAscensions,
   myClass,
-  myFullness,
+  myEffects,
+  myFamiliar,
   mySpleenUse,
-  outfit,
-  print,
   putCloset,
-  putStash,
-  restoreMp,
   retrieveItem,
   runChoice,
+  runCombat,
   spleenLimit,
-  sweetSynthesis,
-  takeStash,
+  toSkill,
   use,
   useFamiliar,
   useSkill,
@@ -36,16 +29,14 @@ import {
   $class,
   $effect,
   $familiar,
-  $familiars,
   $item,
   $items,
   $location,
   $monster,
   $skill,
-  $slot,
+  $skills,
   adventureMacro,
   ChateauMantegna,
-  Clan,
   get,
   have,
   maximizeCached,
@@ -54,53 +45,12 @@ import {
   TunnelOfLove,
   Witchess,
 } from "libram";
-import { fillAsdonMartinTo } from "./asdon";
 import { Macro, withMacro } from "./combat";
-import { chooseFamiliar } from "./familiar";
-import { ensureEffect, setChoice } from "./lib";
-import { meatMood } from "./mood";
-import { freeFightOutfit } from "./outfit";
-
-export function withStash<T>(itemsToTake: Item[], action: () => T) {
-  if (itemsToTake.every((item) => availableAmount(item) > 0)) return action();
-
-  const stashClanName = get<string>("stashClan");
-  if (stashClanName === "") return null;
-
-  const startingClanName = getClanName();
-  Clan.join(stashClanName);
-  if (getClanName() !== stashClanName) throw "Wrong clan! Don't take stuff out of the stash here!";
-  const quantitiesTaken = new Map<Item, number>();
-  try {
-    for (const item of itemsToTake) {
-      if (getClanName() !== stashClanName)
-        throw "Wrong clan! Don't take stuff out of the stash here!";
-      const succeeded = takeStash(1, item);
-      if (succeeded) {
-        print(`Took ${item.plural} from stash.`, "blue");
-        quantitiesTaken.set(item, (quantitiesTaken.get(item) ?? 0) + (succeeded ? 1 : 0));
-      }
-    }
-    return action();
-  } finally {
-    for (const [item, quantityTaken] of quantitiesTaken.entries()) {
-      // eslint-disable-next-line no-unsafe-finally
-      if (getClanName() !== stashClanName)
-        throw "Wrong clan! Don't put stuff back in the stash here!";
-      retrieveItem(quantityTaken, item);
-      putStash(quantityTaken, item);
-      print(`Returned ${quantityTaken} ${item.plural} to stash.`, "blue");
-    }
-    Clan.join(startingClanName);
-  }
-}
-
-function tryFeast(familiar: Familiar) {
-  if (have(familiar)) {
-    useFamiliar(familiar);
-    use($item`moveable feast`);
-  }
-}
+import { freeFightFamiliar, meatFamiliar } from "./familiar";
+import { clamp, ensureEffect, setChoice } from "./lib";
+import { freeFightMood, meatMood } from "./mood";
+import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
+import { withStash } from "./stash";
 
 export function dailyFights() {
   meatMood().execute(myAdventures() * 1.04 + 50);
@@ -117,14 +67,6 @@ export function dailyFights() {
       if (have($item`body spradium`)) ensureEffect($effect`Boxing Day Glow`);
     }
 
-    while (haveEffect($effect`Synthesis: Greed`) < 690 && mySpleenUse() < spleenLimit()) {
-      sweetSynthesis($effect`Synthesis: Greed`);
-      if (mySpleenUse() === spleenLimit() && myFullness() + 5 <= fullnessLimit()) {
-        eat($item`Ol' Scratch's salad fork`);
-        eat($item`extra-greasy slider`);
-      }
-    }
-
     if (!have($item`photocopied monster`) || get("photocopyMonster") !== embezzler) {
       faxbot(embezzler, "CheeseFax");
     }
@@ -133,11 +75,11 @@ export function dailyFights() {
       if (!get("_iceSculptureUsed")) retrieveItem($item`unfinished ice sculpture`);
       if (!get("_cameraUsed")) retrieveItem($item`4-d camera`);
       if (!get("_envyfishEggUsed")) retrieveItem($item`pulled green taffy`);
-      useFamiliar(chooseFamiliar());
+      useFamiliar(meatFamiliar());
       withMacro(
         Macro.skill("Digitize")
-          .externalIf(!get("_iceSculptureUsed"), Macro.item("unfinished ice sculpture"))
-          .externalIf(!get("_cameraUsed"), Macro.item("4-d camera"))
+          .externalIf(!get("_iceSculptureUsed"), Macro.tryItem("unfinished ice sculpture"))
+          .externalIf(!get("_cameraUsed"), Macro.tryItem("4-d camera"))
           .meatKill(),
         () => use($item`photocopied monster`)
       );
@@ -148,27 +90,29 @@ export function dailyFights() {
     if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
     // adventure in mushroom garden to start digitize timer.
     freeFightOutfit();
-    useFamiliar(chooseFamiliar());
+    useFamiliar(meatFamiliar());
     adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
   }
 
   while (get("_poolGames") < 3) cliExecute("pool aggressive");
 
-  if (
-    get("_feastUsed") === 0 ||
-    !get<boolean>("_garbo_professorLecturesUsed", false) ||
-    get("spookyPuttyCopiesMade") < 5
-  ) {
-    withStash($items`Spooky Putty sheet, Platinum Yendorian Express Card, moveable feast`, () => {
-      if (have($item`moveable feast`) && get("_feastUsed") === 0) {
-        $familiars`Pocket Professor, Frumious Bandersnatch, Robortender`.forEach(tryFeast);
-      }
-
+  if (!get<boolean>("_garbo_professorLecturesUsed", false) || get("spookyPuttyCopiesMade") < 5) {
+    withStash($items`Spooky Putty sheet, Platinum Yendorian Express Card`, () => {
       if (
         have($familiar`Pocket Professor`) &&
         !get<boolean>("_garbo_professorLecturesUsed", false)
       ) {
-        if (!have($effect`Frosty`)) {
+        const goodSongs = $skills`Chorale of Companionship, The Ballad of Richie Thingfinder, Fat Leon's Phat Loot Lyric, The Polka of Plenty`;
+        for (const effectName of Object.keys(myEffects())) {
+          const effect = Effect.get(effectName);
+          const skill = toSkill(effect);
+          if (skill.class === $class`Accordion Thief` && skill.buff && !goodSongs.includes(skill)) {
+            cliExecute(`shrug ${effectName}`);
+          }
+        }
+
+        // FIXME: Figure out what's actually good!
+        if (!have($effect`Frosty`) && mallPrice($item`frost flower`) < 60000) {
           if (!have($item`frost flower`)) buy($item`frost flower`);
           use($item`frost flower`);
         }
@@ -206,16 +150,20 @@ export function dailyFights() {
         });
       }
 
-      while (availableAmount($item`Spooky Putty monster`) > 0) {
+      let puttyCount = 1;
+      while (availableAmount($item`Spooky Putty monster`) > 0 && puttyCount <= 5) {
+        useFamiliar(meatFamiliar());
+        meatOutfit(true);
         withMacro(
           Macro.externalIf(
-            get("spookyPuttyCopiesMade") < 5,
+            get("spookyPuttyCopiesMade") < 5 && puttyCount < 5,
             Macro.item($item`Spooky Putty sheet`)
           ).meatKill(),
           () => use($item`Spooky Putty monster`)
         );
-        cliExecute("refresh inventory");
+        puttyCount++;
       }
+      set("spookyPuttyCopiesMade", 5);
     });
   }
   /* if (!get("_envyfishEggUsed")) {
@@ -227,221 +175,278 @@ export function dailyFights() {
     } */
 }
 
-export function freeFights() {
-  if (!have($effect`Steely-Eyed Squint`)) throw "Get Squint first!";
-  // if (!have($effect`Eldritch Attunement`)) throw 'Get Eldritch Attunement first!';
+type FreeFightOptions = {
+  cost?: () => number;
+  familiar?: () => Familiar | null;
+  requirements?: () => Requirement[];
+};
 
-  // 25	3	0	0	L.O.V. Enemies	must have the Tunnel of L.O.V.E. or use a LOV Entrance Pass
-  if (!TunnelOfLove.isUsed()) {
-    const effect = have($effect`Wandering Eye Surgery`)
-      ? "Open Heart Surgery"
-      : "Wandering Eye Surgery";
-    withMacro(Macro.meatKill(), () =>
-      TunnelOfLove.fightAll("LOV Epaulettes", effect, "LOV Extraterrestrial Chocolate")
-    );
+class FreeFight {
+  available: () => number | boolean;
+  run: () => void;
+  options: FreeFightOptions;
 
-    if (handlingChoice()) throw "Did not get all the way through LOV.";
-    visitUrl("choice.php");
-    if (handlingChoice()) throw "Did not get all the way through LOV.";
+  constructor(available: () => number | boolean, run: () => void, options: FreeFightOptions = {}) {
+    this.available = available;
+    this.run = run;
+    this.options = options;
   }
 
-  // 0	1	0	0	Chateau painting
-  if (
-    ChateauMantegna.have() &&
-    !ChateauMantegna.paintingFought() &&
-    ChateauMantegna.paintingMonster()?.attributes?.includes("FREE")
-  ) {
-    withMacro(Macro.meatKill(), () => ChateauMantegna.fightPainting());
-  }
+  runAll() {
+    if (!this.available()) return;
+    // FIXME: make a better decision here.
+    if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
 
-  // 1	1	0	0	Fax machine
-  if (!get("_photocopyUsed")) {
-    faxbot($monster`Witchess Bishop`);
-    if (!get("_iceSculptureUsed")) retrieveItem(1, $item`unfinished ice sculpture`);
-    if (!get("_cameraUsed")) retrieveItem(1, $item`4-d camera`);
-    // TODO: Add Spooky Putty (broken right now)
-    withMacro(
-      Macro.externalIf(!get("_iceSculptureUsed"), Macro.item("unfinished ice sculpture"))
-        .externalIf(!get("_cameraUsed"), Macro.item("4-d camera"))
-        .meatKill(),
-      () => use($item`photocopied monster`)
-    );
-  }
-
-  // 2	1	0	0	ice sculpture	15k
-  if (!get("_iceSculptureUsed") && have($item`ice sculpture`)) {
-    withMacro(Macro.meatKill(), () => use($item`ice sculpture`));
-  }
-
-  // 1	1	0	0	4-d camera	8k
-  if (!get("_cameraUsed") && have($item`shaking 4-d camera`)) {
-    withMacro(Macro.meatKill(), () => use($item`shaking 4-d camera`));
-  }
-
-  // 1	2	0	0	Tentacle fights
-  if (get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought")) {
-    visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
-    if (!handlingChoice()) throw "No choice?";
-    withMacro(Macro.meatKill(), () => runChoice(1));
-  }
-  if (have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked")) {
-    withMacro(Macro.meatKill(), () => useSkill($skill`Evoke Eldritch Horror`));
-  }
-
-  // 4	3	0	0	Lynyrd	using a lynyrd snare
-  while (get("_lynyrdSnareUses") < 3) {
-    withMacro(Macro.meatKill(), () => use($item`lynyrd snare`));
-  }
-
-  // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
-  const maxSeals = have($item`Claw of the Infernal Seal`) ? 10 : 5;
-  if (
-    myClass() === $class`Seal Clubber` &&
-    get("_sealsSummoned") < maxSeals &&
-    get("lastGuildStoreOpen") === myAscensions()
-  ) {
-    equip($item`porcelain police baton`);
-    while (get("_sealsSummoned") < 10) {
-      retrieveItem(1, $item`figurine of a wretched-looking seal`);
-      retrieveItem(1, $item`seal-blubber candle`);
-      withMacro(Macro.attack().repeat(), () => {
-        if (!use(1, $item`figurine of a wretched-looking seal`)) {
-          set("_sealsSummoned", 10);
-        }
-      });
+    while (this.available()) {
+      freeFightMood().execute();
+      freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
+      useFamiliar(
+        this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
+      );
+      freeFightMood().execute();
+      freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
+      withMacro(Macro.meatKill(), this.run);
     }
   }
+}
 
-  // 9	10	0	0	BRICKO monsters	BRICKO bricks; can copy additional oozes or bats
-  while (get("_brickoFights") < 10) {
-    withMacro(Macro.meatKill(), () => use($item`BRICKO ooze`));
-  }
+const freeFightSources = [
+  new FreeFight(
+    () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
+    () => {
+      const effect = have($effect`Wandering Eye Surgery`)
+        ? "Open Heart Surgery"
+        : "Wandering Eye Surgery";
+      TunnelOfLove.fightAll("LOV Epaulettes", effect, "LOV Extraterrestrial Chocolate");
 
-  // 11	11	0	0	drunk pygmy	with Bowl of Scorpions in inventory, fight ends instantly
-  // 14	10	0	0	Saber copy drunk pygmy	10 drunk pygmies
-  // 14	1	0	0	miniature crystal ball	another drunk pygmy
-  if (get("questL11Worship") !== "unstarted") {
-    while (get("_drunkPygmyBanishes") < 10) {
+      visitUrl("choice.php");
+      if (handlingChoice()) throw "Did not get all the way through LOV.";
+    }
+  ),
+
+  new FreeFight(
+    () =>
+      ChateauMantegna.have() &&
+      !ChateauMantegna.paintingFought() &&
+      (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ?? false),
+    () => ChateauMantegna.fightPainting()
+  ),
+
+  new FreeFight(
+    () => get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought"),
+    () => {
+      visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
+      if (!handlingChoice()) throw "No choice?";
+      runChoice(1);
+    }
+  ),
+
+  new FreeFight(
+    () => have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked"),
+    () => useSkill($skill`Evoke Eldritch Horror`)
+  ),
+
+  new FreeFight(
+    () => clamp(3 - get("_lynyrdSnareUses"), 0, 3),
+    () => use($item`lynyrd snare`),
+    {
+      cost: () => mallPrice($item`lynyrd snare`),
+    }
+  ),
+
+  // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
+  new FreeFight(
+    () => {
+      const maxSeals = have($item`Claw of the Infernal Seal`) ? 10 : 5;
+      const maxSealsAvailable =
+        get("lastGuildStoreOpen") === myAscensions()
+          ? maxSeals
+          : Math.min(maxSeals, availableAmount($item`seal-blubber candle`));
+      return myClass() === $class`Seal Clubber`
+        ? Math.max(maxSealsAvailable - get("_sealsSummoned"), 0)
+        : 0;
+    },
+    () => {
+      const figurine =
+        get("lastGuildStoreOpen") === myAscensions()
+          ? $item`figurine of a wretched-looking seal`
+          : $item`figurine of an ancient seal`;
+      retrieveItem(1, figurine);
+      retrieveItem(1, $item`seal-blubber candle`);
+      // FIXME: Some problem with mafia tracking here.
+    },
+    {
+      requirements: () => [new Requirement(["Club"], {})],
+    }
+  ),
+
+  new FreeFight(
+    () => clamp(10 - get("_brickoFights"), 0, 10),
+    () => use($item`BRICKO ooze`),
+    {
+      cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
+    }
+  ),
+
+  new FreeFight(
+    () =>
+      get("questL11Worship") !== "unstarted" ? clamp(10 - get("_drunkPygmyBanishes"), 0, 10) : 0,
+    () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(10 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
       adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
     }
-    if (get("_drunkPygmyBanishes") === 10 && get("_saberForceUses") < 5) {
-      setChoice(1387, 2);
-      putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-      putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
-      while (get("_saberForceUses") < 5) {
-        retrieveItem(2, $item`Bowl of Scorpions`);
-        adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
-        adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+  ),
+
+  new FreeFight(
+    () =>
+      have($item`Fourth of May Cosplay Saber`) && get("_drunkPygmyBanishes") === 10
+        ? 2 * clamp(5 - get("_saberForceUses"), 0, 5)
+        : 0,
+    () => {
+      if (get("_saberForceMonster") === null) {
+        setChoice(1387, 2);
+        putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
         putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
         adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
       }
-      retrieveItem(3, $item`Bowl of Scorpions`);
+      retrieveItem(2, $item`Bowl of Scorpions`);
       adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
       adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+      putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
+      adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          forceEquip: $items`Fourth of May Cosplay Saber`,
+        }),
+      ],
+    }
+  ),
+
+  new FreeFight(
+    () => get("questL11Worship") !== "unstarted" && get("_drunkPygmyBanishes") === 10,
+    () => {
+      putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
+      retrieveItem(10 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
       adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+        }),
+      ],
     }
-  }
+  ),
 
-  // 16	6	0	0	Sausage goblin	Must have a Kramco Sausage-o-Matic™ equipped.
-  if (get("_sausageFights") === 0) {
-    cliExecute("checkpoint");
-    try {
-      equip($item`Kramco Sausage-o-Matic™`);
-      adventureMacro($location`Noob Cave`, Macro.meatKill());
-    } finally {
-      outfit("checkpoint");
+  new FreeFight(
+    () =>
+      get("questL11Worship") !== "unstarted" &&
+      get("crystalBallMonster") === $monster`drunk pygmy` &&
+      get("_drunkPygmyBanishes") === 11,
+    () => {
+      putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
+      retrieveItem(1, $item`Bowl of Scorpions`);
+      adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+        }),
+      ],
     }
-  }
+  ),
 
-  // 18	5	0	0	Glark cable	combat item	against any non-instakillable mobs in mobs in The Red Zeppelin
-  // FIXME: import canadv
-
-  // 16	3	0	0	Shattering Punch	combat skill	Snojo skill, tradable
-  // 23	1	0	0	Gingerbread Mob Hit	combat skill	Gingerbread City leaderboard reward skill, tradable skillbook
-  while (!get("_gingerbreadMobHitUsed") || get("_shatteringPunchUsed") < 3) {
-    restoreMp(50);
-    withMacro(
-      Macro.skill("Sing Along")
-        .trySkill($skill`Gingerbread Mob Hit`)
-        .skill($skill`Shattering Punch`)
-        .abort(),
-      () => use($item`drum machine`)
-    );
-  }
-
-  // 22	1	0	0	Fire the Jokester's Gun	combat skill	must have The Jokester's gun equipped (Batfellow content, tradable)
-  // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
-  if (!get("_firedJokestersGun") || get("_chestXRayUsed") < 3) {
-    cliExecute("checkpoint");
-    try {
-      equip($item`The Jokester's gun`);
-      equip($slot`acc3`, $item`Lil' Doctor™ bag`);
-      while (!get("_firedJokestersGun") || get("_chestXRayUsed") < 3) {
-        withMacro(
-          Macro.skill("Sing Along")
-            .trySkill($skill`Fire the Jokester's Gun`)
-            .skill($skill`Chest X-Ray`)
-            .abort(),
-          () => use($item`drum machine`)
-        );
-      }
-    } finally {
-      outfit("checkpoint");
+  new FreeFight(
+    () => get("_sausageFights") === 0,
+    () => adv1($location`Noob Cave`, -1, ""),
+    {
+      requirements: () => [
+        new Requirement([], {
+          forceEquip: $items`Kramco Sausage-o-Matic™`,
+        }),
+      ],
     }
-  }
+  ),
 
-  // 25	1	0	0	Asdon Martin: Missile Launcher	combat skill	must have Asdon Martin installed in your workshed; instantly forces all items to drop; costs 100 "fuel"
-  if (getCampground()["Asdon Martin keyfob"] !== undefined && !get("_missileLauncherUsed")) {
-    fillAsdonMartinTo(100);
-    withMacro(Macro.skill($skill`Missile Launcher`), () => use($item`drum machine`));
-  }
+  // FIXME: Glark cable
 
   // 21	10	0	0	Partygoers from The Neverending Party	must have used a Neverending Party invitation envelope.
-  while (get("_neverendingPartyFreeTurns") < 10) {
-    setChoice(1322, 2); // reject quest.
-    setChoice(1324, 5); // pick fight.
-    adventureMacro($location`The Neverending Party`, Macro.meatKill());
-  }
+  new FreeFight(
+    () =>
+      get("neverendingPartyAlways") ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10) : 0,
+    () => {
+      // FIXME: Check quest if Gerald(ine).
+      setChoice(1322, 2); // reject quest.
+      setChoice(1324, 5); // pick fight.
+      if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
 
-  // 24	1	0	0	piranha plant	Must have Your Mushroom Garden as your garden. 5/day only in Path of the Plumber.
-  // 24	3	0	0	Portscan/Macro
-  // FIXME: Portscan three times instead of twice
-  if (
-    getCampground()["packet of mushroom spores"] !== undefined &&
-    (get("_mushroomGardenFights") === 0 || getCounters("portscan.edu", 0, 0) === "portscan.edu")
-  ) {
-    SourceTerminal.educate([$skill`Portscan`, $skill`Digitize`]);
-    while (
-      get("_mushroomGardenFights") === 0 ||
-      getCounters("portscan.edu", 0, 0) === "portscan.edu"
-    ) {
-      adventureMacro(
-        $location`Your Mushroom Garden`,
-        Macro.if_("monstername government agent", Macro.skill("Macrometeorite"))
-          .if_("!monstername piranha plant", Macro.abort())
-          .trySkill("Portscan")
-          .meatKill()
-      );
+      if (
+        myFamiliar() === $familiar`Pocket Professor` &&
+        $familiar`Pocket Professor`.experience >= 400 &&
+        !get("_thesisDelivered")
+      ) {
+        cliExecute("gain 1800 muscle");
+        adventureMacro($location`The Neverending Party`, Macro.skill("Deliver your Thesis"));
+      } else {
+        adv1($location`The Neverending Party`, -1, "");
+      }
+    },
+    {
+      familiar: () =>
+        $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
+          ? $familiar`Pocket Professor`
+          : null,
+      requirements: () => [
+        new Requirement(
+          $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
+            ? ["100 Muscle"]
+            : [],
+          {
+            forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
+          }
+        ),
+      ],
     }
-  }
+  ),
+
+  // Mushroom garden
+  // Portscan and mushroom garden
+
+  new FreeFight(
+    () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
+    () => {
+      setChoice(1310, 3);
+      visitUrl("main.php?fightgodlobster=1");
+      runCombat();
+      visitUrl("choice.php");
+      if (handlingChoice()) runChoice(3);
+    },
+    {
+      familiar: () => $familiar`God Lobster`,
+    }
+  ),
+
+  new FreeFight(
+    () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
+    () => adv1($location`The Deep Machine Tunnels`, -1, ""),
+    {
+      familiar: () => $familiar`Machine Elf`,
+    }
+  ),
 
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
-  while (Witchess.fightsDone() < 5) {
-    withMacro(Macro.meatKill(), () => Witchess.fightPiece($monster`Witchess Bishop`));
-  }
+  new FreeFight(
+    () => clamp(5 - Witchess.fightsDone(), 0, 5),
+    () => Witchess.fightPiece($monster`Witchess Bishop`)
+  ),
+];
 
-  // 40	20	0	0	PYEC
-  if (!get("expressCardUsed")) {
-    const pyec = $item`Platinum Yendorian Express Card`;
-    withStash([pyec], () => use(pyec));
+export function freeFights() {
+  for (const freeFightSource of freeFightSources) {
+    freeFightSource.runAll();
   }
 }
-// 35	4	0	0	Law of Averages
-
-// 3	3	0	0	Digitize
-// 2	1	0	0	pulled green taffy	1k
-// 3	1	0	0	LOV Enamorang
-// 23	3	0	0	Vote Monsters	Must have an "I Voted!" sticker equipped on the scheduled encounters. The scheduled encounters take place each adventure after your total lifetime turncount modulo 11 equals 1 (similar to the Lights Out encounters). After the first 3 encounters, the monsters become un-free.

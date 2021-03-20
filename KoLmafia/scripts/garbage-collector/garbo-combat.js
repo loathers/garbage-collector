@@ -375,7 +375,7 @@ function () {
 
     var result = kolmafia_1.visitUrl("showclan.php?recruiter=1&whichclan=" + clanId + "&pwd&whichclan=" + clanId + "&action=joinclan&apply=Apply+to+this+Clan&confirm=on");
 
-    if (!result.includes("clanhalltop.gif")) {
+    if (!result.includes("clanhalltop.gif") || kolmafia_1.getClanId() !== clanId) {
       throw new Error("Could not join clan");
     }
 
@@ -3763,7 +3763,6 @@ function have() {
 }
 
 exports.have = have;
-exports.songBoomSongs = new Set(["Eye of the Giger", "Food Vibrations", "Remainin' Alive", "These Fists Were Made for Punchin'", "Total Eclipse of Your Meat"]);
 var keywords = {
   "Eye of the Giger": "spooky",
   "Food Vibrations": "food",
@@ -3771,6 +3770,7 @@ var keywords = {
   "These Fists Were Made for Punchin'": "damage",
   "Total Eclipse of Your Meat": "meat"
 };
+exports.songBoomSongs = new Set(Object.keys(keywords));
 /**
  * Current song.
  */
