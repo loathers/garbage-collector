@@ -1,10 +1,34 @@
-import { cliExecute, getFuel, haveEffect, myClass, mySpleenUse, spleenLimit, use } from "kolmafia";
-import { $class, $effect, $effects, $item, $skill, get, have, Mood, SongBoom } from "libram";
+import {
+  buy,
+  cliExecute,
+  getCampground,
+  getFuel,
+  haveEffect,
+  mallPrice,
+  myClass,
+  myEffects,
+  mySpleenUse,
+  spleenLimit,
+  toSkill,
+  use,
+} from "kolmafia";
+import {
+  $class,
+  $effect,
+  $effects,
+  $item,
+  $skill,
+  $skills,
+  get,
+  have,
+  Mood,
+  SongBoom,
+} from "libram";
 
 Mood.setDefaultOptions({
   songSlots: [
     $effects`Polka of Plenty`,
-    $effects`Fat Leon's Phat Loot Lyric`,
+    $effects`Fat Leon's Phat Loot Lyric, Ur-Kel's Aria of Annoyance`,
     $effects`Chorale of Companionship`,
     $effects`The Ballad of Richie Thingfinder`,
   ],
@@ -12,13 +36,14 @@ Mood.setDefaultOptions({
 
 export const baseMeat = SongBoom.have() ? 275 : 250;
 
-export function meatMood() {
+export function meatMood(urKels = false) {
   const mood = new Mood();
 
   // TODO: Check all potions and grab those that are worth.
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
+  mood.potion($item`Flaskfull of Hollow`, 5);
 
   mood.skill($skill`Blood Bond`);
   mood.skill($skill`Leash of Linguini`);
@@ -26,9 +51,11 @@ export function meatMood() {
 
   mood.skill($skill`The Polka of Plenty`);
   mood.skill($skill`Disco Leer`);
-  mood.skill($skill`Fat Leon's Phat Loot Lyric`);
+  mood.skill(urKels ? $skill`Ur-Kel's Aria of Annoyance` : $skill`Fat Leon's Phat Loot Lyric`);
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
+  mood.skill($skill`Drescher's Annoying Noise`);
+  mood.skill($skill`Pride of the Puffin`);
   if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
   mood.effect($effect`Synthesis: Greed`, () => {
@@ -40,8 +67,8 @@ export function meatMood() {
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View To Some Meat`, () => {
-      if (get("_kgbClicksUsed") <= 19) {
-        const buffTries = Math.floor((22 - get("_kgbClicksUsed")) / 3);
+      if (get("_kgbClicksUsed") < 22) {
+        const buffTries = Math.ceil((22 - get("_kgbClicksUsed")) / 3);
         cliExecute(`briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
       }
     });
@@ -58,6 +85,48 @@ export function freeFightMood() {
     use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
   }
   mood.potion($item`white candy heart`, 30);
+
+  // FIXME: Figure out what's actually good!
+  if (!have($effect`Frosty`) && mallPrice($item`frost flower`) < 70000) {
+    if (!get("_freePillKeeperUsed")) cliExecute("pillkeeper extend");
+    if (!have($item`frost flower`)) buy($item`frost flower`);
+    use($item`frost flower`);
+  }
+
+  const goodSongs = $skills`Chorale of Companionship, The Ballad of Richie Thingfinder, Ur-Kel's Aria of Annoyance, The Polka of Plenty`;
+  for (const effectName of Object.keys(myEffects())) {
+    const effect = Effect.get(effectName);
+    const skill = toSkill(effect);
+    if (skill.class === $class`Accordion Thief` && skill.buff && !goodSongs.includes(skill)) {
+      cliExecute(`shrug ${effectName}`);
+    }
+  }
+
+  mood.potion($item`recording of Chorale of Companionship`, 500);
+  mood.potion($item`recording of The Ballad of Richie Thingfinder`, 500);
+
+  mood.potion($item`pink candy heart`, 300);
+  mood.potion($item`resolution: be luckier`, 120);
+  mood.potion($item`Meat-inflating powder`, 500);
+  mood.potion($item`Polka Pop`, 500);
+  mood.potion($item`resolution: be happier`, 500);
+  mood.potion($item`blue snowcone`, 500);
+  mood.potion($item`eagle feather`, 500);
+  mood.potion($item`cyclops eyedrops`, 500);
+
+  if ((get("daycareOpen") || get("_daycareToday")) && !get("_daycareSpa")) {
+    cliExecute("daycare mysticality");
+  }
+  if (have($item`redwood rain stick`) && !get("_redwoodRainStickUsed")) {
+    use($item`redwood rain stick`);
+  }
+  const beachHeadsUsed: number | string = get("_beachHeadsUsed");
+  if (have($item`Beach Comb`) && !beachHeadsUsed.toString().split(",").includes("10")) {
+    mood.effect($effect`Do I Know You From Somewhere?`);
+  }
+  if (getCampground()["Witchess Set"] !== undefined && !get("_witchessBuff")) {
+    mood.effect($effect`Puzzle Champ`);
+  }
 
   return mood;
 }

@@ -1,15 +1,13 @@
 import {
   buy,
+  changeMcd,
   cliExecute,
-  dump,
   eat,
   equippedAmount,
   getCounters,
-  inebrietyLimit,
   itemAmount,
   myAdventures,
   myClass,
-  myInebriety,
   myMp,
   myThrall,
   myTurncount,
@@ -20,7 +18,6 @@ import {
   runChoice,
   setAutoAttack,
   toInt,
-  totalTurnsPlayed,
   use,
   useFamiliar,
   useSkill,
@@ -34,24 +31,26 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   $skill,
   $thrall,
+  adventureMacro,
   adventureMacroAuto,
+  Clan,
   get,
   have,
-  maximizeCached,
   setDefaultMaximizeOptions,
   SongBoom,
   SourceTerminal,
 } from "libram";
-import { Macro } from "./combat";
+import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { meatFamiliar } from "./familiar";
 import { dailyFights, freeFights } from "./fights";
 import { ensureEffect } from "./lib";
-import { baseMeat, meatMood } from "./mood";
-import { meatOutfit } from "./outfit";
-import { StashManager, withStash } from "./stash";
+import { meatMood } from "./mood";
+import { meatOutfit, Requirement } from "./outfit";
+import { withStash } from "./stash";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -105,6 +104,10 @@ function dailySetup() {
   SongBoom.setSong("Total Eclipse of Your Meat");
   SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
+  if (get("_VYKEACompanionLevel") === 0) {
+    cliExecute("create level 3 couch");
+  }
+
   if (have($familiar`Robortender`)) {
     for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre`) {
       if (get("_roboDrinks").includes(drink.name)) continue;
@@ -134,17 +137,59 @@ function dailySetup() {
     cliExecute("hatter 22");
   }
 
+  changeMcd(10);
+
+  retrieveItem($item`Half a Purse`);
+
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
 }
 
 function barfTurn() {
+  if (SourceTerminal.have()) {
+    SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+  }
+
+  while (
+    get<Monster>("feelNostalgicMonster") === $monster`Knob Goblin Embezzler` &&
+    have($item`backup camera`) &&
+    get<number>("_backUpUses") < 11
+  ) {
+    useFamiliar(meatFamiliar());
+    meatOutfit(true, [new Requirement([], { forceEquip: $items`backup camera` })]);
+    adventureMacro(
+      $location`Noob Cave`,
+      Macro.if_(
+        "!monstername Knob Goblin Embezzler",
+        Macro.skill("Back-Up to Your Last Enemy")
+      ).meatKill()
+    );
+  }
+
   // a. set up familiar
-  const familiar = meatFamiliar();
-  useFamiliar(familiar);
+  useFamiliar(meatFamiliar());
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
-  meatOutfit(embezzlerUp);
+  let location = embezzlerUp ? $location`Noob Cave` : $location`Barf Mountain`;
+  if (
+    !get("_envyfishEggUsed") &&
+    have($item`aerated diving helmet`) &&
+    have($item`das boot`) &&
+    (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
+    !have($item`envyfish egg`) &&
+    embezzlerUp
+  ) {
+    // now fight one underwater
+    retrieveItem($item`pulled green taffy`);
+    if (!have($effect`Fishy`)) use($item`fishy pipe`);
+    location = $location`The Briny Deeps`;
+  }
+
+  const underwater = location === $location`The Briny Deeps`;
+  meatOutfit(
+    embezzlerUp,
+    underwater ? [new Requirement([], { forceEquip: $items`aerated diving helmet, das boot` })] : []
+  );
 
   // c. set up mood stuff
   meatMood().execute(myAdventures() * 1.04 + 50);
@@ -152,7 +197,14 @@ function barfTurn() {
   if (equippedAmount($item`haiku katana`) > 0 && myMp() < 50) eat($item`magical sausage`);
 
   // d. run adventure
-  adventureMacroAuto($location`Barf Mountain`, Macro.meatKill());
+  adventureMacroAuto(
+    location,
+    Macro.externalIf(underwater, Macro.item("pulled green taffy")).meatKill()
+  );
+
+  if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
+    withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
+  }
 
   if (
     Object.keys(reverseNumberology()).includes("69") &&
@@ -195,7 +247,7 @@ export function main(argString = "") {
   cliExecute("ccs garbo");
 
   // FIXME: Dynamically figure out pointer ring approach.
-  withStash($items`haiku katana`, () => {
+  withStash($items`haiku katana, repaid diaper`, () => {
     // 0. diet stuff.
     runDiet();
 

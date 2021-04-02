@@ -1,5 +1,12 @@
-import { myInebriety, inebrietyLimit, useFamiliar } from "kolmafia";
-import { $item, $items, getKramcoWandererChance, maximizeCached, MaximizeOptions } from "libram";
+import { myInebriety, inebrietyLimit, useFamiliar, myFamiliar } from "kolmafia";
+import {
+  $familiar,
+  $item,
+  $items,
+  getKramcoWandererChance,
+  maximizeCached,
+  MaximizeOptions,
+} from "libram";
 import { baseMeat } from "./mood";
 
 export class Requirement {
@@ -42,14 +49,21 @@ export class Requirement {
 export function freeFightOutfit(requirements: Requirement[] = []) {
   const compiledRequirements = Requirement.merge([
     ...requirements,
-    new Requirement(["Familiar Weight"], {
-      forceEquip: $items`pantogram pants, lucky gold ring, Mr. Cheeng's spectacles`,
-    }),
+    new Requirement(
+      myFamiliar() === $familiar`Pocket Professor` ? ["Familiar Experience"] : ["Familiar Weight"],
+      {
+        bonusEquip: new Map([
+          [$item`lucky gold ring`, 400],
+          [$item`Mr. Cheeng's spectacles`, 250],
+          [$item`pantogram pants`, 100],
+        ]),
+      }
+    ),
   ]);
   maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
 }
 
-export function meatOutfit(embezzlerUp: boolean) {
+export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = []) {
   const forceEquip = [];
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
@@ -58,23 +72,27 @@ export function meatOutfit(embezzlerUp: boolean) {
     // TODO: Fix pointer finger ring construction.
     forceEquip.push(...$items`haiku katana, mafia pointer finger ring`);
   }
-  maximizeCached(
-    [
-      `${((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2)} Meat Drop`,
-      `${embezzlerUp ? 0 : 0.72} Item Drop`,
-    ],
-    {
-      forceEquip,
-      preventEquip: [
-        ...$items`broken champagne bottle, unwrapped retro superhero cape`,
-        ...(embezzlerUp ? $items`cheap sunglasses` : []),
+  const compiledRequirements = Requirement.merge([
+    ...requirements,
+    new Requirement(
+      [
+        `${((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2)} Meat Drop`,
+        `${embezzlerUp ? 0 : 0.72} Item Drop`,
       ],
-      bonusEquip: new Map([
-        [$item`lucky gold ring`, 400],
-        [$item`mafia thumb ring`, 300],
-        [$item`Mr. Cheeng's spectacles`, 250],
-        [$item`pantogram pants`, 200],
-      ]),
-    }
-  );
+      {
+        forceEquip,
+        preventEquip: [
+          ...$items`broken champagne bottle, unwrapped retro superhero cape`,
+          ...(embezzlerUp ? $items`cheap sunglasses` : []),
+        ],
+        bonusEquip: new Map([
+          [$item`lucky gold ring`, 400],
+          [$item`mafia thumb ring`, 300],
+          [$item`Mr. Cheeng's spectacles`, 250],
+          [$item`pantogram pants`, 100],
+        ]),
+      }
+    ),
+  ]);
+  maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
 }

@@ -181,18 +181,18 @@ function fillAllSpleen(): void {
 
 function fillSpleenWith(spleenItem: Item) {
   if (mySpleenUse() + spleenItem.spleen <= spleenLimit()) {
-    // (adventureGain * spleenA + adventures) * 1.04 = 30 * spleenB + synthTurns
+    // (adventureGain * spleenA + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
     // spleenA + spleenB = spleenTotal
-    // (adventureGain * (spleenTotal - spleenB) + adventures) * 1.04 = 30 * spleenB + synthTurns
-    // 1.04 * adventureGain * (spleenTotal - spleenB) + 1.04 * adventures = 30 * spleenB + synthTurns
-    // 1.04 * adventureGain * spleenTotal - 1.04 * adventureGain * spleenB + 1.04 * adventures = 30 * spleenB + synthTurns
-    // 1.04 * adventureGain * spleenTotal + 1.04 * adventures = 30 * spleenB + synthTurns + 1.04 * adventureGain * spleenB
-    // (1.04 * adventureGain * spleenTotal + 1.04 * adventures - synthTurns) / (30 + 1.04 * adventureGain) = spleenB
+    // (adventureGain * (spleenTotal - spleenB) + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
+    // 1.04 * adventureGain * (spleenTotal - spleenB) + 1.04 * adventures + 40 = 30 * spleenB + synthTurns
+    // 1.04 * adventureGain * spleenTotal - 1.04 * adventureGain * spleenB + 1.04 * adventures + 40 = 30 * spleenB + synthTurns
+    // 1.04 * adventureGain * spleenTotal + 1.04 * adventures + 40 = 30 * spleenB + synthTurns + 1.04 * adventureGain * spleenB
+    // (1.04 * adventureGain * spleenTotal + 1.04 * adventures + 40 - synthTurns) / (30 + 1.04 * adventureGain) = spleenB
     const synthTurns = haveEffect($effect`Synthesis: Greed`);
     const spleenTotal = spleenLimit() - mySpleenUse();
     const adventuresPerItem = adventureGain(spleenItem);
     const spleenSynth = Math.ceil(
-      (1.04 * adventuresPerItem * spleenTotal + 1.04 * myAdventures() - synthTurns) /
+      (1.04 * adventuresPerItem * spleenTotal + 1.04 * myAdventures() + 40 - synthTurns) /
         (30 + 1.04 * adventuresPerItem)
     );
     for (let i = 0; i < clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()); i++) {
@@ -244,6 +244,7 @@ function fillLiver() {
 export function runDiet(): void {
   if (mySpleenUse() === 0) {
     ensureEffect($effect`Eau d' Clochard`);
+    if (have($skill`Sweet Synthesis`)) ensureEffect($effect`Synthesis: Collection`);
     if (have($item`body spradium`)) ensureEffect($effect`Boxing Day Glow`);
   }
 

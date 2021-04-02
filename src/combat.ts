@@ -5,11 +5,13 @@ import {
   itemType,
   myAdventures,
   myClass,
+  myFamiliar,
   print,
 } from "kolmafia";
 import {
   $class,
   $effect,
+  $familiar,
   $item,
   $monster,
   $skill,
@@ -78,10 +80,15 @@ export class Macro extends LibramMacro {
         get("_gallapagosMonster") !== $monster`garbage tourist`,
         Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))
       )
+      .externalIf(
+        myFamiliar() === $familiar`Stocking Mimic`,
+        Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))
+      )
       .externalIf(sealClubberSetup, Macro.skill("Furious Wallop"))
       .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
       .externalIf(katanaSetup, Macro.skill("Summer Siesta").attack())
       .externalIf(capeSetup, Macro.skill("Precision Shot"))
+      .trySkill("Curse of Weaksauce")
       .attack()
       .repeat();
   }

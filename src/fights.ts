@@ -1,9 +1,12 @@
 import {
   adv1,
+  adventure,
   availableAmount,
   buy,
   cliExecute,
+  equip,
   faxbot,
+  getCampground,
   getCounters,
   handlingChoice,
   itemAmount,
@@ -14,10 +17,14 @@ import {
   myEffects,
   myFamiliar,
   mySpleenUse,
+  numericModifier,
+  outfit,
+  print,
   putCloset,
   retrieveItem,
   runChoice,
   runCombat,
+  setAutoAttack,
   spleenLimit,
   toSkill,
   use,
@@ -35,9 +42,11 @@ import {
   $monster,
   $skill,
   $skills,
+  $slot,
   adventureMacro,
   ChateauMantegna,
   get,
+  getAverageAdventures,
   have,
   maximizeCached,
   set,
@@ -47,51 +56,20 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { clamp, ensureEffect, setChoice } from "./lib";
+import { clamp, ensureEffect, mapMonster, setChoice } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
 
 export function dailyFights() {
-  meatMood().execute(myAdventures() * 1.04 + 50);
+  meatMood(true).execute(myAdventures() * 1.04 + 50);
 
   const embezzler = $monster`Knob Goblin embezzler`;
   if (
-    SourceTerminal.have() &&
-    SourceTerminal.getDigitizeMonster() !== embezzler &&
+    (!have($item`photocopied monster`) || get("photocopyMonster") !== embezzler) &&
     !get("_photocopyUsed")
   ) {
-    ensureEffect($effect`Peppermint Twisted`);
-    if (mySpleenUse() < spleenLimit()) {
-      ensureEffect($effect`Eau d' Clochard`);
-      if (have($item`body spradium`)) ensureEffect($effect`Boxing Day Glow`);
-    }
-
-    if (!have($item`photocopied monster`) || get("photocopyMonster") !== embezzler) {
-      faxbot(embezzler, "CheeseFax");
-    }
-    // TODO: Prof copies, spooky putty copies, ice sculpture if worth, etc.
-    if (SourceTerminal.getDigitizeMonster() === null) {
-      if (!get("_iceSculptureUsed")) retrieveItem($item`unfinished ice sculpture`);
-      if (!get("_cameraUsed")) retrieveItem($item`4-d camera`);
-      if (!get("_envyfishEggUsed")) retrieveItem($item`pulled green taffy`);
-      useFamiliar(meatFamiliar());
-      withMacro(
-        Macro.skill("Digitize")
-          .externalIf(!get("_iceSculptureUsed"), Macro.tryItem("unfinished ice sculpture"))
-          .externalIf(!get("_cameraUsed"), Macro.tryItem("4-d camera"))
-          .meatKill(),
-        () => use($item`photocopied monster`)
-      );
-    }
-  }
-
-  if (getCounters("Digitize Monster", 0, 100).trim() === "" && get("_mushroomGardenFights") === 0) {
-    if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
-    // adventure in mushroom garden to start digitize timer.
-    freeFightOutfit();
-    useFamiliar(meatFamiliar());
-    adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
+    faxbot(embezzler, "CheeseFax");
   }
 
   while (get("_poolGames") < 3) cliExecute("pool aggressive");
@@ -102,39 +80,45 @@ export function dailyFights() {
         have($familiar`Pocket Professor`) &&
         !get<boolean>("_garbo_professorLecturesUsed", false)
       ) {
-        const goodSongs = $skills`Chorale of Companionship, The Ballad of Richie Thingfinder, Fat Leon's Phat Loot Lyric, The Polka of Plenty`;
-        for (const effectName of Object.keys(myEffects())) {
-          const effect = Effect.get(effectName);
-          const skill = toSkill(effect);
-          if (skill.class === $class`Accordion Thief` && skill.buff && !goodSongs.includes(skill)) {
-            cliExecute(`shrug ${effectName}`);
-          }
+        ensureEffect($effect`Peppermint Twisted`);
+        if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
+        if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
+          ensureEffect($effect`Boxing Day Glow`);
         }
 
-        // FIXME: Figure out what's actually good!
-        if (!have($effect`Frosty`) && mallPrice($item`frost flower`) < 60000) {
-          if (!have($item`frost flower`)) buy($item`frost flower`);
-          use($item`frost flower`);
-        }
-        ensureEffect($effect`Chorale of Companionship`);
-        ensureEffect($effect`The Ballad of Richie Thingfinder`);
-        ensureEffect($effect`Heart of Pink`);
-        ensureEffect($effect`Fortunate Resolve`);
-        ensureEffect($effect`Big Meat Big Prizes`);
-        ensureEffect($effect`Do I Know You From Somewhere?`);
-        ensureEffect($effect`Puzzle Champ`);
-        if (have($item`Platinum Yendorian Express Card`)) {
-          use($item`Platinum Yendorian Express Card`);
-        }
-        // now we can do prof copies.
-        useFamiliar($familiar`Pocket Professor`);
-        if (have($item`ice sculpture`)) {
-          maximizeCached(["Meat Drop"], { forceEquip: $items`amulet coin` });
-          Macro.trySkill("Lecture on Relativity").meatKill().save();
-          withMacro(Macro.trySkill("Lecture on Relativity").meatKill(), () =>
-            use($item`ice sculpture`)
+        // First round of prof copies with meat drop gear on.
+        if (!get("_photocopyUsed")) {
+          freeFightMood().execute(30);
+          if (have($item`Platinum Yendorian Express Card`)) {
+            use($item`Platinum Yendorian Express Card`);
+          }
+
+          SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+          if (!get("_cameraUsed")) retrieveItem($item`4-d camera`);
+          useFamiliar($familiar`Pocket Professor`);
+          meatOutfit(true);
+          withMacro(
+            Macro.if_("!hasskill Lecture on Relativity", Macro.skill("Digitize"))
+              .trySkill("Lecture on Relativity")
+              .externalIf(!get("_cameraUsed"), Macro.tryItem("4-d camera"))
+              .meatKill(),
+            () => use($item`photocopied monster`)
           );
         }
+
+        if (
+          getCounters("Digitize Monster", 0, 100).trim() === "" &&
+          get("_mushroomGardenFights") === 0
+        ) {
+          if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
+          // adventure in mushroom garden to start digitize timer.
+          freeFightOutfit();
+          useFamiliar(meatFamiliar());
+          adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
+        }
+
+        // Second round of prof copies with familiar weight on.
+        freeFightMood().execute(20);
         maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
         withMacro(
           Macro.trySkill("Lecture on Relativity")
@@ -143,11 +127,11 @@ export function dailyFights() {
           () => use($item`shaking 4-d camera`)
         );
         set("_garbo_professorLecturesUsed", true);
-      } else if (have($item`ice sculpture`) || have($item`shaking 4-d camera`)) {
+      } else if (!get("_photocopyUsed")) {
         withMacro(Macro.tryItem($item`Spooky Putty sheet`).meatKill(), () => {
-          if (have($item`ice sculpture`)) use($item`ice sculpture`);
-          if (have($item`shaking 4-d camera`)) use($item`shaking 4-d camera`);
+          use($item`photocopied monster`);
         });
+        set("_garbo_professorLecturesUsed", true);
       }
 
       let puttyCount = 1;
@@ -166,13 +150,6 @@ export function dailyFights() {
       set("spookyPuttyCopiesMade", 5);
     });
   }
-  /* if (!get("_envyfishEggUsed")) {
-      // now fight one underwater
-      use($item`fishy pipe`);
-      if (getCounters("Digitize Monster", 0, 0).trim() !== "Digitize Monster") {
-        throw new Error("Something went wrong with digitize.");
-      }
-    } */
 }
 
 type FreeFightOptions = {
@@ -210,14 +187,19 @@ class FreeFight {
   }
 }
 
+const pygmyMacro = Macro.if_("monstername pygmy bowler", Macro.skill("Snokebomb"))
+  .if_("monstername pygmy orderlies", Macro.skill("Feel Hatred"))
+  .abort();
+
 const freeFightSources = [
   new FreeFight(
     () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
     () => {
-      const effect = have($effect`Wandering Eye Surgery`)
-        ? "Open Heart Surgery"
-        : "Wandering Eye Surgery";
-      TunnelOfLove.fightAll("LOV Epaulettes", effect, "LOV Extraterrestrial Chocolate");
+      TunnelOfLove.fightAll(
+        "LOV Epaulettes",
+        "Open Heart Surgery",
+        "LOV Extraterrestrial Chocolate"
+      );
 
       visitUrl("choice.php");
       if (handlingChoice()) throw "Did not get all the way through LOV.";
@@ -294,7 +276,7 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(10 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     }
   ),
 
@@ -311,8 +293,8 @@ const freeFightSources = [
         adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
       }
       retrieveItem(2, $item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
-      adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
       putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
       adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
     },
@@ -330,7 +312,7 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(10 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     {
       requirements: () => [
@@ -374,47 +356,43 @@ const freeFightSources = [
 
   // FIXME: Glark cable
 
-  // 21	10	0	0	Partygoers from The Neverending Party	must have used a Neverending Party invitation envelope.
+  // Mushroom garden
   new FreeFight(
     () =>
-      get("neverendingPartyAlways") ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10) : 0,
+      (have($item`packet of mushroom spores`) ||
+        getCampground()["packet of mushroom spores"] !== undefined) &&
+      get("_mushroomGardenFights") === 0,
     () => {
-      // FIXME: Check quest if Gerald(ine).
-      setChoice(1322, 2); // reject quest.
-      setChoice(1324, 5); // pick fight.
-      if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
-
-      if (
-        myFamiliar() === $familiar`Pocket Professor` &&
-        $familiar`Pocket Professor`.experience >= 400 &&
-        !get("_thesisDelivered")
-      ) {
-        cliExecute("gain 1800 muscle");
-        adventureMacro($location`The Neverending Party`, Macro.skill("Deliver your Thesis"));
-      } else {
-        adv1($location`The Neverending Party`, -1, "");
+      if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
-    },
-    {
-      familiar: () =>
-        $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
-          ? $familiar`Pocket Professor`
-          : null,
-      requirements: () => [
-        new Requirement(
-          $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
-            ? ["100 Muscle"]
-            : [],
-          {
-            forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
-          }
-        ),
-      ],
+      adventureMacro($location`Your Mushroom Garden`, Macro.trySkill("Portscan").meatKill());
     }
   ),
 
-  // Mushroom garden
   // Portscan and mushroom garden
+  new FreeFight(
+    () =>
+      (have($item`packet of mushroom spores`) ||
+        getCampground()["packet of mushroom spores"] !== undefined) &&
+      getCounters("portscan.edu", 0, 0) === "portscan.edu" &&
+      have($skill`Macrometeorite`) &&
+      get("_macrometeoriteUses") < 10,
+    () => {
+      if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+      adventureMacro(
+        $location`Your Mushroom Garden`,
+        Macro.if_("monstername government agent", Macro.skill("Macrometeorite")).if_(
+          "monstername piranha plant",
+          Macro.trySkill("Portscan").meatKill()
+        )
+      );
+    }
+  ),
 
   new FreeFight(
     () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
@@ -443,10 +421,131 @@ const freeFightSources = [
     () => clamp(5 - Witchess.fightsDone(), 0, 5),
     () => Witchess.fightPiece($monster`Witchess Bishop`)
   ),
+
+  new FreeFight(
+    () =>
+      get("neverendingPartyAlways") ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10) : 0,
+    () => {
+      // FIXME: Check quest if Gerald(ine).
+      setChoice(1322, 2); // reject quest.
+      setChoice(1324, 5); // pick fight.
+      if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
+
+      if (
+        myFamiliar() === $familiar`Pocket Professor` &&
+        $familiar`Pocket Professor`.experience >= 400 &&
+        !get("_thesisDelivered")
+      ) {
+        if (
+          have($item`Powerful Glove`) &&
+          !have($effect`Triple-Sized`) &&
+          get("_powerfulGloveBatteryPowerUsed") <= 95
+        ) {
+          cliExecute("checkpoint");
+          equip($slot`acc1`, $item`Powerful Glove`);
+          ensureEffect($effect`Triple-Sized`);
+          outfit("checkpoint");
+        }
+        cliExecute("gain 1800 muscle");
+        adventureMacro($location`The Neverending Party`, Macro.skill("Deliver your Thesis"));
+      } else {
+        adv1($location`The Neverending Party`, -1, "");
+      }
+    },
+    {
+      familiar: () =>
+        $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
+          ? $familiar`Pocket Professor`
+          : null,
+      requirements: () => [
+        new Requirement(
+          $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
+            ? ["100 Muscle"]
+            : [],
+          {
+            forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
+          }
+        ),
+      ],
+    }
+  ),
+];
+
+const freeKillSources = [
+  new FreeFight(
+    () => !get("_gingerbreadMobHitUsed"),
+    () =>
+      withMacro(Macro.skill("Sing Along").trySkill("Gingerbread Mob Hit"), () =>
+        use($item`drum machine`)
+      ),
+    {
+      familiar: () => $familiar`Trick-or-Treating Tot`,
+      requirements: () => [new Requirement(["100 Item Drop"], {})],
+    }
+  ),
+
+  new FreeFight(
+    () => clamp(3 - get("_shatteringPunchUsed"), 0, 3),
+    () =>
+      withMacro(Macro.skill("Sing Along").trySkill("Shattering Punch"), () =>
+        use($item`drum machine`)
+      ),
+    {
+      familiar: () => $familiar`Trick-or-Treating Tot`,
+      requirements: () => [new Requirement(["100 Item Drop"], {})],
+    }
+  ),
+
+  // 22	1	0	0	Fire the Jokester's Gun	combat skill	must have The Jokester's gun equipped (Batfellow content, tradable)
+  // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
+  new FreeFight(
+    () => clamp(3 - get("_chestXRayUsed"), 0, 3),
+    () =>
+      withMacro(Macro.skill("Sing Along").trySkill("Chest X-Ray"), () => use($item`drum machine`)),
+    {
+      familiar: () => $familiar`Trick-or-Treating Tot`,
+      requirements: () => [
+        new Requirement(["100 Item Drop"], { forceEquip: $items`Lil' Doctor™ bag` }),
+      ],
+    }
+  ),
 ];
 
 export function freeFights() {
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
+  }
+
+  if (
+    !have($item`li'l ninja costume`) &&
+    have($familiar`Trick-or-Treating Tot`) &&
+    !get("_firedJokestersGun")
+  ) {
+    freeFightMood().execute();
+    freeFightOutfit([new Requirement([], { forceEquip: $items`The Jokester's gun` })]);
+    useFamiliar(freeFightFamiliar());
+    freeFightMood().execute();
+    freeFightOutfit([new Requirement([], { forceEquip: $items`The Jokester's gun` })]);
+    try {
+      Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
+      mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
+    } finally {
+      setAutoAttack(0);
+    }
+  }
+
+  try {
+    for (const freeKillSource of freeKillSources) {
+      if (freeKillSource.available()) {
+        ensureEffect($effect`Feeling Lost`);
+        if (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed")) {
+          useSkill($skill`Steely-Eyed Squint`);
+        }
+      }
+
+      freeKillSource.runAll();
+    }
+  } finally {
+    cliExecute("uneffect Feeling Lost");
   }
 }

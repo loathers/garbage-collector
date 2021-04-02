@@ -21,6 +21,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(libram__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _templateObject12() {
+  var data = _taggedTemplateLiteral(["Stocking Mimic"]);
+
+  _templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject11() {
   var data = _taggedTemplateLiteral(["garbage tourist"]);
 
@@ -204,7 +214,7 @@ var Macro = /*#__PURE__*/function (_LibramMacro) {
       var katanaSetup = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedAmount)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$item)(_templateObject6())) > 0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedAmount)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$item)(_templateObject7())) > 0;
       var capeSetup = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedAmount)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$item)(_templateObject8())) > 0 && (0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("retroCapeSuperhero") === "robot" && (0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("retroCapeWashingInstructions") === "kill" && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemType)((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedItem)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$slot)(_templateObject9()))) === "pistol"; // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
 
-      return this.tryHaveSkill("Sing Along").externalIf(shouldRedigitize(), Macro.if_("monstername ".concat((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_sourceTerminalDigitizeMonster")), Macro.skill("Digitize"))).externalIf(!(0,libram__WEBPACK_IMPORTED_MODULE_1__.have)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$effect)(_templateObject10())), Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))).externalIf((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_gallapagosMonster") !== (0,libram__WEBPACK_IMPORTED_MODULE_1__.$monster)(_templateObject11()), Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))).externalIf(sealClubberSetup, Macro.skill("Furious Wallop")).externalIf(opsSetup, Macro.skill("Throw Shield").attack()).externalIf(katanaSetup, Macro.skill("Summer Siesta").attack()).externalIf(capeSetup, Macro.skill("Precision Shot")).attack().repeat();
+      return this.tryHaveSkill("Sing Along").externalIf(shouldRedigitize(), Macro.if_("monstername ".concat((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_sourceTerminalDigitizeMonster")), Macro.skill("Digitize"))).externalIf(!(0,libram__WEBPACK_IMPORTED_MODULE_1__.have)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$effect)(_templateObject10())), Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))).externalIf((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_gallapagosMonster") !== (0,libram__WEBPACK_IMPORTED_MODULE_1__.$monster)(_templateObject11()), Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))).externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)() === (0,libram__WEBPACK_IMPORTED_MODULE_1__.$familiar)(_templateObject12()), Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))).externalIf(sealClubberSetup, Macro.skill("Furious Wallop")).externalIf(opsSetup, Macro.skill("Throw Shield").attack()).externalIf(katanaSetup, Macro.skill("Summer Siesta").attack()).externalIf(capeSetup, Macro.skill("Precision Shot")).trySkill("Curse of Weaksauce").attack().repeat();
     }
   }], [{
     key: "tryHaveSkill",
@@ -2190,7 +2200,24 @@ function (_super) {
     var effect = kolmafia_1.toEffect(this.skill);
     var initialTurns = kolmafia_1.haveEffect(effect);
     if (!kolmafia_1.haveSkill(this.skill)) return false;
-    if (initialTurns >= ensureTurns) return true;
+    if (initialTurns >= ensureTurns) return true; // Deal with song slots.
+
+    if (mood.options.songSlots.length > 0) {
+      for (var _i = 0, _a = Object.keys(kolmafia_1.myEffects()); _i < _a.length; _i++) {
+        var effectName = _a[_i];
+        var otherEffect = Effect.get(effectName);
+        if (otherEffect === effect) continue;
+        var otherSkill = kolmafia_1.toSkill(otherEffect);
+
+        if (otherSkill !== template_string_1.$skill(templateObject_9 || (templateObject_9 = __makeTemplateObject(["none"], ["none"]))) && otherSkill["class"] === template_string_1.$class(templateObject_10 || (templateObject_10 = __makeTemplateObject(["Accordion Thief"], ["Accordion Thief"]))) && otherSkill.buff) {
+          var slot = mood.options.songSlots.find(function (slot) {
+            return slot.includes(effect);
+          });
+          if (!slot || slot.includes(otherEffect)) kolmafia_1.cliExecute("shrug " + otherEffect);
+        }
+      }
+    }
+
     var oldRemainingCasts = -1;
     var remainingCasts = Math.ceil((ensureTurns - kolmafia_1.haveEffect(effect)) / kolmafia_1.turnsPerCast(this.skill));
 
@@ -2275,9 +2302,9 @@ function (_super) {
   GenieMoodElement.prototype.execute = function (mood, ensureTurns) {
     if (kolmafia_1.haveEffect(this.effect) >= ensureTurns) return true;
     var neededWishes = Math.ceil((kolmafia_1.haveEffect(this.effect) - ensureTurns) / 20);
-    var wishesToBuy = utils_1.clamp(neededWishes - kolmafia_1.availableAmount(template_string_1.$item(templateObject_9 || (templateObject_9 = __makeTemplateObject(["pocket wish"], ["pocket wish"])))), 0, 20);
-    kolmafia_1.buy(wishesToBuy, template_string_1.$item(templateObject_10 || (templateObject_10 = __makeTemplateObject(["pocket wish"], ["pocket wish"]))), 50000);
-    var wishesToUse = utils_1.clamp(neededWishes, 0, kolmafia_1.availableAmount(template_string_1.$item(templateObject_11 || (templateObject_11 = __makeTemplateObject(["pocket wish"], ["pocket wish"])))));
+    var wishesToBuy = utils_1.clamp(neededWishes - kolmafia_1.availableAmount(template_string_1.$item(templateObject_11 || (templateObject_11 = __makeTemplateObject(["pocket wish"], ["pocket wish"])))), 0, 20);
+    kolmafia_1.buy(wishesToBuy, template_string_1.$item(templateObject_12 || (templateObject_12 = __makeTemplateObject(["pocket wish"], ["pocket wish"]))), 50000);
+    var wishesToUse = utils_1.clamp(neededWishes, 0, kolmafia_1.availableAmount(template_string_1.$item(templateObject_13 || (templateObject_13 = __makeTemplateObject(["pocket wish"], ["pocket wish"])))));
 
     for (; wishesToUse > 0; wishesToUse--) {
       kolmafia_1.cliExecute("genie effect " + this.effect.name);
@@ -2392,7 +2419,7 @@ function () {
   Mood.prototype.effect = function (effect, gainEffect) {
     var skill = kolmafia_1.toSkill(effect);
 
-    if (!gainEffect && skill !== template_string_1.$skill(templateObject_12 || (templateObject_12 = __makeTemplateObject(["none"], ["none"])))) {
+    if (!gainEffect && skill !== template_string_1.$skill(templateObject_14 || (templateObject_14 = __makeTemplateObject(["none"], ["none"])))) {
       this.skill(skill);
     } else {
       this.elements.push(new CustomMoodElement(effect, gainEffect));
@@ -2465,7 +2492,7 @@ function () {
 }();
 
 exports.Mood = Mood;
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12;
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14;
 
 /***/ }),
 
