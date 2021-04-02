@@ -3806,6 +3806,10 @@ function barfTurn() {
 
   if (!(0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("_envyfishEggUsed") && (0,libram__WEBPACK_IMPORTED_MODULE_9__.have)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject38())) && (0,libram__WEBPACK_IMPORTED_MODULE_9__.have)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject39())) && ((0,libram__WEBPACK_IMPORTED_MODULE_9__.have)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$effect)(_templateObject40())) || (0,libram__WEBPACK_IMPORTED_MODULE_9__.have)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject41())) && !(0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("_fishyPipeUsed")) && !(0,libram__WEBPACK_IMPORTED_MODULE_9__.have)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject42())) && embezzlerUp) {
     // now fight one underwater
+    if ((0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("questS01OldGuy") === "unstarted") {
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("place.php?whichplace=sea_oldman&action=oldman_oldman");
+    }
+
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject43()));
     if (!(0,libram__WEBPACK_IMPORTED_MODULE_9__.have)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$effect)(_templateObject44()))) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject45()));
     location = (0,libram__WEBPACK_IMPORTED_MODULE_9__.$location)(_templateObject46());

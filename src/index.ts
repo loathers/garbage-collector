@@ -180,6 +180,9 @@ function barfTurn() {
     embezzlerUp
   ) {
     // now fight one underwater
+    if (get("questS01OldGuy") === "unstarted") {
+      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+    }
     retrieveItem($item`pulled green taffy`);
     if (!have($effect`Fishy`)) use($item`fishy pipe`);
     location = $location`The Briny Deeps`;
