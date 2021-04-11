@@ -368,6 +368,9 @@ const freeFightSources = [
         SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
       adventureMacro($location`Your Mushroom Garden`, Macro.trySkill("Portscan").meatKill());
+    },
+    {
+      familiar: () => $familiar`Robortender`,
     }
   ),
 
@@ -449,7 +452,7 @@ const freeFightSources = [
         cliExecute("gain 1800 muscle");
         adventureMacro($location`The Neverending Party`, Macro.skill("Deliver your Thesis"));
       } else {
-        adv1($location`The Neverending Party`, -1, "");
+        adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
       }
     },
     {

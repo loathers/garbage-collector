@@ -103,6 +103,7 @@ function dailySetup() {
 
   SongBoom.setSong("Total Eclipse of Your Meat");
   SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+  SourceTerminal.enquiry($effect`familiar.enq`);
 
   if (get("_VYKEACompanionLevel") === 0) {
     cliExecute("create level 3 couch");
@@ -116,6 +117,20 @@ function dailySetup() {
       print(`Feeding robortender ${drink}.`, "blue");
       visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
     }
+  }
+
+  if (have($item`mumming trunk`) && !get("_mummeryMods").includes("Meat Drop")) {
+    useFamiliar(meatFamiliar());
+    cliExecute("mummery meat");
+  }
+
+  if (
+    have($item`mumming trunk`) &&
+    !get("_mummeryMods").includes("Item Drop") &&
+    have($familiar`Trick-or-Treating Tot`)
+  ) {
+    useFamiliar($familiar`Trick-or-Treating Tot`);
+    cliExecute("mummery item");
   }
 
   if (get("_feastUsed") === 0) {
@@ -200,13 +215,14 @@ function barfTurn() {
   if (equippedAmount($item`haiku katana`) > 0 && myMp() < 50) eat($item`magical sausage`);
 
   // d. run adventure
-  adventureMacroAuto(
-    location,
-    Macro.externalIf(underwater, Macro.item("pulled green taffy")).meatKill()
-  );
-
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
+    meatOutfit(true);
     withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
+  } else {
+    adventureMacroAuto(
+      location,
+      Macro.externalIf(underwater, Macro.item("pulled green taffy")).meatKill()
+    );
   }
 
   if (
