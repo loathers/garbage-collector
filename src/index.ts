@@ -137,11 +137,6 @@ function dailySetup() {
     cliExecute("hatter 22");
   }
 
-  if (!get("_mummeryMods").includes("Meat Drop") && have($item`mumming trunk`)) {
-    useFamiliar(meatFamiliar());
-    cliExecute("mummery meat");
-  }
-
   changeMcd(10);
 
   retrieveItem($item`Half a Purse`);

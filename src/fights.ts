@@ -9,7 +9,6 @@ import {
   getCampground,
   getCounters,
   handlingChoice,
-  haveSkill,
   itemAmount,
   mallPrice,
   myAdventures,
@@ -120,7 +119,7 @@ export function dailyFights() {
 
         // Second round of prof copies with familiar weight on.
         freeFightMood().execute(20);
-      useFamiliar($familiar`Pocket Professor`);
+        useFamiliar($familiar`Pocket Professor`);
         maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
         withMacro(
           Macro.trySkill("Lecture on Relativity")
@@ -475,7 +474,7 @@ const freeFightSources = [
 
 const freeKillSources = [
   new FreeFight(
-    () => !get("_gingerbreadMobHitUsed") && haveSkill($skill`Gingerbread Mob Hit`),
+    () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
     () =>
       withMacro(Macro.skill("Sing Along").trySkill("Gingerbread Mob Hit"), () =>
         use($item`drum machine`)
@@ -487,7 +486,7 @@ const freeKillSources = [
   ),
 
   new FreeFight(
-    () => (haveSkill($skill`Shattering Punch`) ? clamp(3 - get("_shatteringPunchUsed"), 0, 3) : 0),
+    () => (have($skill`Shattering Punch`) ? clamp(3 - get("_shatteringPunchUsed"), 0, 3) : 0),
     () =>
       withMacro(Macro.skill("Sing Along").trySkill("Shattering Punch"), () =>
         use($item`drum machine`)
