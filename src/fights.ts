@@ -9,6 +9,7 @@ import {
   getCampground,
   getCounters,
   handlingChoice,
+  haveSkill,
   itemAmount,
   mallPrice,
   myAdventures,
@@ -119,6 +120,7 @@ export function dailyFights() {
 
         // Second round of prof copies with familiar weight on.
         freeFightMood().execute(20);
+      useFamiliar($familiar`Pocket Professor`);
         maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
         withMacro(
           Macro.trySkill("Lecture on Relativity")
@@ -311,7 +313,7 @@ const freeFightSources = [
     () => get("questL11Worship") !== "unstarted" && get("_drunkPygmyBanishes") === 10,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-      retrieveItem(10 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
+      retrieveItem(11 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     {
@@ -343,7 +345,7 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => get("_sausageFights") === 0,
+    () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
     () => adv1($location`Noob Cave`, -1, ""),
     {
       requirements: () => [
@@ -473,7 +475,7 @@ const freeFightSources = [
 
 const freeKillSources = [
   new FreeFight(
-    () => !get("_gingerbreadMobHitUsed"),
+    () => !get("_gingerbreadMobHitUsed") && haveSkill($skill`Gingerbread Mob Hit`),
     () =>
       withMacro(Macro.skill("Sing Along").trySkill("Gingerbread Mob Hit"), () =>
         use($item`drum machine`)
@@ -485,7 +487,7 @@ const freeKillSources = [
   ),
 
   new FreeFight(
-    () => clamp(3 - get("_shatteringPunchUsed"), 0, 3),
+    () => (haveSkill($skill`Shattering Punch`) ? clamp(3 - get("_shatteringPunchUsed"), 0, 3) : 0),
     () =>
       withMacro(Macro.skill("Sing Along").trySkill("Shattering Punch"), () =>
         use($item`drum machine`)
@@ -499,7 +501,7 @@ const freeKillSources = [
   // 22	1	0	0	Fire the Jokester's Gun	combat skill	must have The Jokester's gun equipped (Batfellow content, tradable)
   // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
   new FreeFight(
-    () => clamp(3 - get("_chestXRayUsed"), 0, 3),
+    () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
     () =>
       withMacro(Macro.skill("Sing Along").trySkill("Chest X-Ray"), () => use($item`drum machine`)),
     {
@@ -519,7 +521,8 @@ export function freeFights() {
   if (
     !have($item`li'l ninja costume`) &&
     have($familiar`Trick-or-Treating Tot`) &&
-    !get("_firedJokestersGun")
+    !get("_firedJokestersGun") &&
+    have($item`The Jokester's gun`)
   ) {
     freeFightMood().execute();
     freeFightOutfit([new Requirement([], { forceEquip: $items`The Jokester's gun` })]);

@@ -68,9 +68,14 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
-    if (getKramcoWandererChance() > 0.05) forceEquip.push($item`Kramco Sausage-o-Matic™`);
+    if (getKramcoWandererChance() > 0.05 && have($item`Kramco Sausage-o-Matic™`)) {
+      forceEquip.push($item`Kramco Sausage-o-Matic™`);
+    }
     // TODO: Fix pointer finger ring construction.
-    forceEquip.push(...$items`haiku katana, mafia pointer finger ring`);
+    if (have($item`haiku katana`) && myClass() != $class`Seal Clubber`) {
+      forceEquip.push($item`haiku katana`);
+    }
+    forceEquip.push($item`mafia pointer finger ring`);
   }
   const compiledRequirements = Requirement.merge([
     ...requirements,
