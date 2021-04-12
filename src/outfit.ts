@@ -1,9 +1,11 @@
-import { myInebriety, inebrietyLimit, useFamiliar, myFamiliar } from "kolmafia";
+import { myInebriety, inebrietyLimit, useFamiliar, myFamiliar, myClass } from "kolmafia";
 import {
+  $class,
   $familiar,
   $item,
   $items,
   getKramcoWandererChance,
+  have,
   maximizeCached,
   MaximizeOptions,
 } from "libram";
