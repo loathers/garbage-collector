@@ -89,5 +89,11 @@ export function freeFightFamiliar(): Familiar {
     familiarValue.push([$familiar`Stocking Mimic`, mimicValue]);
   }
 
+  for (const familiar of $familiars`Robortender, Hobo Monkey, Cat Burglar, Leprechaun`) {
+    if (haveFamiliar(familiar)) familiarValue.push([familiar, 1]);
+  }
+  
+  familiarValue.push([$familiar`None`, 0]);
+
   return argmax(familiarValue);
 }

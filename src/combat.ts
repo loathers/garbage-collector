@@ -19,6 +19,7 @@ import {
   get,
   have,
   Macro as LibramMacro,
+  SourceTerminal,
 } from "libram";
 
 function clamp(n: number, min: number, max: number) {
@@ -31,7 +32,7 @@ function shouldRedigitize() {
   // triangular number * 10 - 3
   const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
   // Redigitize if fewer adventures than this digitize usage.
-  return myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
+  return SourceTerminal.have() && myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
 }
 
 export class Macro extends LibramMacro {
@@ -65,7 +66,7 @@ export class Macro extends LibramMacro {
       get("retroCapeSuperhero") === "robot" &&
       get("retroCapeWashingInstructions") === "kill" &&
       itemType(equippedItem($slot`weapon`)) === "pistol";
-
+	  
     // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
     return this.tryHaveSkill("Sing Along")
       .externalIf(
@@ -84,7 +85,7 @@ export class Macro extends LibramMacro {
         myFamiliar() === $familiar`Stocking Mimic`,
         Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))
       )
-      .externalIf(sealClubberSetup, Macro.skill("Furious Wallop"))
+      .externalIf(sealClubberSetup, Macro.tryHaveSkill("Furious Wallop").attack())
       .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
       .externalIf(katanaSetup, Macro.skill("Summer Siesta").attack())
       .externalIf(capeSetup, Macro.skill("Precision Shot"))

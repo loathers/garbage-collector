@@ -93,12 +93,14 @@ export function dailyFights() {
             use($item`Platinum Yendorian Express Card`);
           }
 
-          SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+          
+          if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+
           if (!get("_cameraUsed")) retrieveItem($item`4-d camera`);
           useFamiliar($familiar`Pocket Professor`);
           meatOutfit(true);
           withMacro(
-            Macro.if_("!hasskill Lecture on Relativity", Macro.skill("Digitize"))
+            Macro.if_("!hasskill Lecture on Relativity", Macro.tryHaveSkill("Digitize"))
               .trySkill("Lecture on Relativity")
               .externalIf(!get("_cameraUsed"), Macro.tryItem("4-d camera"))
               .meatKill(),
@@ -107,6 +109,7 @@ export function dailyFights() {
         }
 
         if (
+          SourceTerminal.have() &&
           getCounters("Digitize Monster", 0, 100).trim() === "" &&
           get("_mushroomGardenFights") === 0
         ) {
@@ -174,10 +177,7 @@ class FreeFight {
     if (!this.available()) return;
     // FIXME: make a better decision here.
     if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
-
     while (this.available()) {
-      freeFightMood().execute();
-      freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       useFamiliar(
         this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
       );
@@ -256,7 +256,7 @@ const freeFightSources = [
           : $item`figurine of an ancient seal`;
       retrieveItem(1, figurine);
       retrieveItem(1, $item`seal-blubber candle`);
-      // FIXME: Some problem with mafia tracking here.
+	    use(figurine);
     },
     {
       requirements: () => [new Requirement(["Club"], {})],
@@ -371,7 +371,7 @@ const freeFightSources = [
       adventureMacro($location`Your Mushroom Garden`, Macro.trySkill("Portscan").meatKill());
     },
     {
-      familiar: () => $familiar`Robortender`,
+      familiar: () => have($familiar`Robortender`) ? $familiar`Robortender` : null,
     }
   ),
 
@@ -422,7 +422,7 @@ const freeFightSources = [
 
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
   new FreeFight(
-    () => clamp(5 - Witchess.fightsDone(), 0, 5),
+    () => Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0,
     () => Witchess.fightPiece($monster`Witchess Bishop`)
   ),
 
@@ -483,7 +483,7 @@ const freeKillSources = [
         use($item`drum machine`)
       ),
     {
-      familiar: () => $familiar`Trick-or-Treating Tot`,
+      familiar: () => have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
       requirements: () => [new Requirement(["100 Item Drop"], {})],
     }
   ),
@@ -495,7 +495,7 @@ const freeKillSources = [
         use($item`drum machine`)
       ),
     {
-      familiar: () => $familiar`Trick-or-Treating Tot`,
+      familiar: () => have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
       requirements: () => [new Requirement(["100 Item Drop"], {})],
     }
   ),
@@ -507,7 +507,7 @@ const freeKillSources = [
     () =>
       withMacro(Macro.skill("Sing Along").trySkill("Chest X-Ray"), () => use($item`drum machine`)),
     {
-      familiar: () => $familiar`Trick-or-Treating Tot`,
+      familiar: () => have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
       requirements: () => [
         new Requirement(["100 Item Drop"], { forceEquip: $items`Lil' Doctor™ bag` }),
       ],
