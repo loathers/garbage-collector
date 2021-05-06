@@ -135,7 +135,7 @@ function dailySetup() {
     cliExecute("mummery item");
   }
   
-  if (have($item`moveable feast`)) {
+  if (have($item`moveable feast`) && get("_feastUsed") === 0) {
       [...$familiars`Pocket Professor, Frumious Bandersnatch`, meatFamiliar()].forEach(tryFeast)
   }
 
