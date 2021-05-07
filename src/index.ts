@@ -102,8 +102,10 @@ function dailySetup() {
   }
 
   SongBoom.setSong("Total Eclipse of Your Meat");
-  SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
-  SourceTerminal.enquiry($effect`familiar.enq`);
+  if (SourceTerminal.have()) {
+    SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+    SourceTerminal.enquiry($effect`familiar.enq`);
+  }
 
   if (get("_VYKEACompanionLevel") === 0) {
     cliExecute("create level 3 couch");
@@ -134,9 +136,10 @@ function dailySetup() {
   }
 
   if (get("_feastUsed") === 0) {
-    withStash($items`moveable feast`, () =>
-      [...$familiars`Pocket Professor, Frumious Bandersnatch`, meatFamiliar()].forEach(tryFeast)
-    );
+    withStash($items`moveable feast`, () => {
+      if (have($item`moveable feast`))
+        [...$familiars`Pocket Professor, Frumious Bandersnatch`, meatFamiliar()].forEach(tryFeast);
+    });
   }
 
   if (myClass() === $class`Pastamancer` && myThrall() !== $thrall`Lasagmbie`) {

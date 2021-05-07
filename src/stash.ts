@@ -45,11 +45,15 @@ export class StashManager {
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
         if (have(item)) continue;
-        const succeeded = takeStash(1, item);
-        if (succeeded) {
-          print(`Took ${item.name} from stash in ${getClanName()}.`, "blue");
-          this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
-        } else {
+        try {
+          const succeeded = takeStash(1, item);
+          if (succeeded) {
+            print(`Took ${item.name} from stash in ${getClanName()}.`, "blue");
+            this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
+          } else {
+            print(`Failed to take ${item.name} from stash in ${getClanName()}.`, "red");
+          }
+        } catch {
           print(`Failed to take ${item.name} from stash in ${getClanName()}.`, "red");
         }
       }
