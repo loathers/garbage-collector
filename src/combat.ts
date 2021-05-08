@@ -41,15 +41,6 @@ export class Macro extends LibramMacro {
     return super.submit();
   }
 
-  tryHaveSkill(skillOrName: Skill | string): Macro {
-    const skill = typeof skillOrName === "string" ? Skill.get(skillOrName) : skillOrName;
-    return this.externalIf(haveSkill(skill), Macro.skill(skill));
-  }
-
-  static tryHaveSkill(skillOrName: Skill | string): Macro {
-    return new Macro().tryHaveSkill(skillOrName);
-  }
-
   meatKill() {
     const sealClubberSetup =
       equippedAmount($item`mafia pointer finger ring`) > 0 &&
@@ -68,7 +59,7 @@ export class Macro extends LibramMacro {
       itemType(equippedItem($slot`weapon`)) === "pistol";
 
     // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
-    return this.tryHaveSkill("Sing Along")
+    return this.trySkill("Sing Along")
       .externalIf(
         shouldRedigitize(),
         Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.skill("Digitize"))
@@ -85,7 +76,7 @@ export class Macro extends LibramMacro {
         myFamiliar() === $familiar`Stocking Mimic`,
         Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))
       )
-      .externalIf(sealClubberSetup, Macro.tryHaveSkill("Furious Wallop").attack())
+      .externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop").attack())
       .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
       .externalIf(katanaSetup, Macro.skill("Summer Siesta").attack())
       .externalIf(capeSetup, Macro.skill("Precision Shot"))
