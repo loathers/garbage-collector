@@ -68,7 +68,7 @@ export class Macro extends LibramMacro {
       itemType(equippedItem($slot`weapon`)) === "pistol";
 
     // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
-    return this.trySkill("Sing Along")
+    return this.tryHaveSkill("Sing Along")
       .externalIf(
         shouldRedigitize(),
         Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.skill("Digitize"))
