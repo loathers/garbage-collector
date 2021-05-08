@@ -101,7 +101,7 @@ export function dailyFights() {
             useFamiliar($familiar`Pocket Professor`);
             meatOutfit(true);
             withMacro(
-              Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Digitize"))
+              Macro.if_("!hasskill Lecture on Relativity", Macro.tryHaveSkill("Digitize"))
                 .trySkill("Lecture on Relativity")
                 .externalIf(!get("_cameraUsed"), Macro.tryItem("4-d camera"))
                 .meatKill(),

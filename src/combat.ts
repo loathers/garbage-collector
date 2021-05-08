@@ -41,6 +41,15 @@ export class Macro extends LibramMacro {
     return super.submit();
   }
 
+  tryHaveSkill(skillOrName: Skill | string): Macro {
+    const skill = typeof skillOrName === "string" ? Skill.get(skillOrName) : skillOrName;
+    return this.externalIf(haveSkill(skill), Macro.skill(skill));
+  }
+
+  static tryHaveSkill(skillOrName: Skill | string): Macro {
+    return new Macro().tryHaveSkill(skillOrName);
+  }
+
   meatKill() {
     const sealClubberSetup =
       equippedAmount($item`mafia pointer finger ring`) > 0 &&

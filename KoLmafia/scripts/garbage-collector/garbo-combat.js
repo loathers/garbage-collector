@@ -44035,6 +44035,12 @@ var Macro = /*#__PURE__*/function (_LibramMacro) {
       return _get(_getPrototypeOf(Macro.prototype), "submit", this).call(this);
     }
   }, {
+    key: "tryHaveSkill",
+    value: function tryHaveSkill(skillOrName) {
+      var skill = typeof skillOrName === "string" ? Skill.get(skillOrName) : skillOrName;
+      return this.externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveSkill)(skill), Macro.skill(skill));
+    }
+  }, {
     key: "meatKill",
     value: function meatKill() {
       var sealClubberSetup = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedAmount)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$item)(_templateObject || (_templateObject = _taggedTemplateLiteral(["mafia pointer finger ring"])))) > 0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myClass)() === (0,libram__WEBPACK_IMPORTED_MODULE_1__.$class)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Seal Clubber"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_1__.have)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$skill)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Furious Wallop"]))));
@@ -44045,6 +44051,11 @@ var Macro = /*#__PURE__*/function (_LibramMacro) {
       return this.trySkill("Sing Along").externalIf(shouldRedigitize(), Macro.if_("monstername ".concat((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_sourceTerminalDigitizeMonster")), Macro.skill("Digitize"))).externalIf(!(0,libram__WEBPACK_IMPORTED_MODULE_1__.have)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$effect)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["On The Trail"])))), Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))).externalIf((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_gallapagosMonster") !== (0,libram__WEBPACK_IMPORTED_MODULE_1__.$monster)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["garbage tourist"]))), Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))).externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)() === (0,libram__WEBPACK_IMPORTED_MODULE_1__.$familiar)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Stocking Mimic"]))), Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))).externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop").attack()).externalIf(opsSetup, Macro.skill("Throw Shield").attack()).externalIf(katanaSetup, Macro.skill("Summer Siesta").attack()).externalIf(capeSetup, Macro.skill("Precision Shot")).trySkill("Curse of Weaksauce").attack().repeat();
     }
   }], [{
+    key: "tryHaveSkill",
+    value: function tryHaveSkill(skillOrName) {
+      return new Macro().tryHaveSkill(skillOrName);
+    }
+  }, {
     key: "meatKill",
     value: function meatKill() {
       return new Macro().meatKill();
