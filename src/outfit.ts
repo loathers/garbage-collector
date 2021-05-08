@@ -1,4 +1,13 @@
-import { myInebriety, inebrietyLimit, useFamiliar, myFamiliar, myClass } from "kolmafia";
+import {
+  myInebriety,
+  inebrietyLimit,
+  useFamiliar,
+  myFamiliar,
+  myClass,
+  retrieveItem,
+  equippedAmount,
+  equip,
+} from "kolmafia";
 import {
   $class,
   $familiar,
@@ -74,8 +83,13 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
       forceEquip.push($item`Kramco Sausage-o-Matic™`);
     }
     // TODO: Fix pointer finger ring construction.
-    if (have($item`haiku katana`) && myClass() != $class`Seal Clubber`) {
-      forceEquip.push($item`haiku katana`);
+    if (myClass() != $class`Seal Clubber`) {
+      if (have($item`haiku katana`)) {
+        forceEquip.push($item`haiku katana`);
+      } else if (have($item`unwrapped retro superhero cape`)) {
+        if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
+        forceEquip.push($item`ice nine`);
+      }
     }
     forceEquip.push($item`mafia pointer finger ring`);
   }
@@ -102,4 +116,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
     ),
   ]);
   maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+  if (equippedAmount($item`ice nine`) > 0) {
+    equip($item`unwrapped retro superhero cape`);
+  }
 }

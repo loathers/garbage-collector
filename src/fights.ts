@@ -156,6 +156,7 @@ export function dailyFights() {
     }
   }
   if (have($item`Packet of tall grass seeds`)) use($item`Packet of tall grass seeds`);
+  if (have($item`unwrapped retro superhero cape`)) cliExecute("retrocape robot kill");
 }
 
 type FreeFightOptions = {
