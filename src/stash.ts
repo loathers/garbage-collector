@@ -6,8 +6,9 @@ import {
   putStash,
   retrieveItem,
   takeStash,
+  userConfirm,
 } from "kolmafia";
-import { Clan, get, have } from "libram";
+import { Clan, get, have, set } from "libram";
 
 export function withStash<T>(itemsToTake: Item[], action: () => T) {
   const manager = new StashManager();
@@ -36,7 +37,20 @@ export class StashManager {
   constructor(clanIdOrName?: string | number) {
     if (clanIdOrName === undefined) {
       clanIdOrName = get("stashClan", undefined);
-      if (!clanIdOrName) throw "No stashClan set.";
+      if (!clanIdOrName) {
+        if (
+          (userConfirm(
+            "You do not presently have a stashClan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)"
+          ),
+          15,
+          true)
+        ) {
+          clanIdOrName = getClanId();
+          set("stashClan", clanIdOrName);
+        } else {
+          throw "No stashClan set.";
+        }
+      }
     }
     this.clanIdOrName = clanIdOrName;
   }

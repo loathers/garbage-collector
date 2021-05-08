@@ -45778,7 +45778,15 @@ var StashManager = /*#__PURE__*/function () {
 
     if (clanIdOrName === undefined) {
       clanIdOrName = (0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("stashClan", undefined);
-      if (!clanIdOrName) throw "No stashClan set.";
+
+      if (!clanIdOrName) {
+        if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.userConfirm)("You do not presently have a stashClan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)"), 15, true) {
+          clanIdOrName = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getClanId)();
+          (0,libram__WEBPACK_IMPORTED_MODULE_1__.set)("stashClan", clanIdOrName);
+        } else {
+          throw "No stashClan set.";
+        }
+      }
     }
 
     this.clanIdOrName = clanIdOrName;
