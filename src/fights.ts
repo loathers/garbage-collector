@@ -4,6 +4,7 @@ import {
   availableAmount,
   buy,
   cliExecute,
+  eat,
   equip,
   faxbot,
   getCampground,
@@ -17,11 +18,17 @@ import {
   myClass,
   myEffects,
   myFamiliar,
+  myHp,
+  myMaxhp,
+  myMaxmp,
+  myMp,
   mySpleenUse,
   numericModifier,
   outfit,
   print,
   putCloset,
+  restoreHp,
+  restoreMp,
   retrieveItem,
   runChoice,
   runCombat,
@@ -64,6 +71,7 @@ import { withStash } from "./stash";
 
 export function dailyFights() {
   meatMood(true).execute(myAdventures() * 1.04 + 50);
+  safeRestore();
   if (have($item`Clan VIP Lounge key`)) {
     const embezzler = $monster`Knob Goblin embezzler`;
     if (
@@ -188,6 +196,7 @@ class FreeFight {
       );
       freeFightMood().execute();
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
+      safeRestore();
       withMacro(Macro.meatKill(), this.run);
     }
   }
@@ -561,5 +570,20 @@ export function freeFights() {
     }
   } finally {
     cliExecute("uneffect Feeling Lost");
+  }
+}
+
+export function safeRestore(): void {
+  if (myHp() < myMaxhp() * 0.5) {
+    restoreHp(myMaxhp() * 0.9);
+  }
+  if (myMp() < 50 && myMaxmp() > 50) {
+    if (
+      (have($item`magical sausage`) || have($item`sausage casing`)) &&
+      get<number>("_sausagesEaten") < 23
+    ) {
+      eat($item`magical sausage`);
+    }
+    restoreMp(50);
   }
 }

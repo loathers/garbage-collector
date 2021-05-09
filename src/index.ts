@@ -50,7 +50,7 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { meatFamiliar } from "./familiar";
-import { dailyFights, freeFights } from "./fights";
+import { dailyFights, freeFights, safeRestore } from "./fights";
 import { ensureEffect } from "./lib";
 import { meatMood } from "./mood";
 import { meatOutfit, Requirement } from "./outfit";
@@ -241,7 +241,7 @@ function barfTurn() {
   // c. set up mood stuff
   meatMood().execute(myAdventures() * 1.04 + 50);
 
-  if (equippedAmount($item`haiku katana`) > 0 && myMp() < 50) eat($item`magical sausage`);
+  safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
 
   // d. run adventure
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
@@ -293,6 +293,7 @@ export function main(argString = "") {
   setAutoAttack(0);
   cliExecute("mood apathetic");
   cliExecute("ccs garbo");
+  safeRestore();
 
   // FIXME: Dynamically figure out pointer ring approach.
   withStash($items`haiku katana, repaid diaper`, () => {
