@@ -97,13 +97,17 @@ export function dailyFights() {
 
             if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
-            if (!get("_cameraUsed")) retrieveItem($item`4-d camera`);
+            if (!get("_cameraUsed") && !have($item`shaking 4-d camera`))
+              retrieveItem($item`4-d camera`);
             useFamiliar($familiar`Pocket Professor`);
             meatOutfit(true);
             withMacro(
               Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Digitize"))
                 .trySkill("Lecture on Relativity")
-                .externalIf(!get("_cameraUsed"), Macro.tryItem("4-d camera"))
+                .externalIf(
+                  !get("_cameraUsed") && !have($item`shaking 4-d camera`),
+                  Macro.tryItem("4-d camera")
+                )
                 .meatKill(),
               () => use($item`photocopied monster`)
             );
