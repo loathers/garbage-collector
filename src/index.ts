@@ -11,6 +11,7 @@ import {
   itemAmount,
   myAdventures,
   myClass,
+  myGardenType,
   myMp,
   myThrall,
   myTurncount,
@@ -156,7 +157,7 @@ function dailySetup() {
 
   if (
     !get("_clanFortuneBuffUsed") &&
-    have($item`clan VIP key`) &&
+    have($item`Clan VIP lounge key`) &&
     getClanLounge()["Clan Carnival Game"] !== undefined
   ) {
     cliExecute("fortune buff meat");
@@ -181,6 +182,15 @@ function dailySetup() {
 function barfTurn() {
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+  }
+  if (have($item`packet of tall grass seeds`) && myGardenType() !== "grass")
+    use($item`packet of tall grass seeds`);
+  if (
+    have($item`unwrapped retro superhero cape`) &&
+    get("retroCapeSuperhero") !== "robot" &&
+    get("retroCapeWashingInstructions") !== "kill"
+  ) {
+    cliExecute("retrocape robot kill");
   }
 
   while (

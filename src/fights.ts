@@ -64,7 +64,7 @@ import { withStash } from "./stash";
 
 export function dailyFights() {
   meatMood(true).execute(myAdventures() * 1.04 + 50);
-  if (have($item`clan VIP key`)) {
+  if (have($item`Clan VIP Lounge key`)) {
     const embezzler = $monster`Knob Goblin embezzler`;
     if (
       (!have($item`photocopied monster`) || get("photocopyMonster") !== embezzler) &&
@@ -73,9 +73,9 @@ export function dailyFights() {
       faxbot(embezzler, "CheeseFax");
     }
 
-    if (getClanLounge()["Clan pool table"] !== undefined)
+    if (getClanLounge()["Clan pool table"] !== undefined) {
       while (get("_poolGames") < 3) cliExecute("pool aggressive");
-
+    }
     if (!get<boolean>("_garbo_professorLecturesUsed", false) || get("spookyPuttyCopiesMade") < 5) {
       withStash($items`Spooky Putty sheet, Platinum Yendorian Express Card`, () => {
         if (
@@ -155,8 +155,6 @@ export function dailyFights() {
       });
     }
   }
-  if (have($item`Packet of tall grass seeds`)) use($item`Packet of tall grass seeds`);
-  if (have($item`unwrapped retro superhero cape`)) cliExecute("retrocape robot kill");
 }
 
 type FreeFightOptions = {
