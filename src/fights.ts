@@ -202,8 +202,11 @@ class FreeFight {
   }
 }
 
-const pygmyMacro = Macro.if_("monstername pygmy bowler", Macro.skill("Snokebomb"))
-  .if_("monstername pygmy orderlies", Macro.skill("Feel Hatred"))
+const pygmyMacro = Macro.if_(
+  "monstername pygmy bowler",
+  Macro.trySkill("Snokebomb").item($item`Louder than Bomb`)
+)
+  .if_("monstername pygmy orderlies", Macro.skill("Feel Hatred").item($item`tennis ball`))
   .abort();
 
 const freeFightSources = [
@@ -291,6 +294,8 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(10 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
+      retrieveItem($item`Louder than Bomb`);
+      retrieveItem($item`tennis ball`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     }
   ),
@@ -369,7 +374,13 @@ const freeFightSources = [
     }
   ),
 
-  // FIXME: Glark cable
+  new FreeFight(
+    () => (get("questL11Ron") === "finished" ? 5 - get("_glarkCableUses") : 0),
+    () => {
+      retrieveItem(5 - get("_glarkCableUses"), $item`glark cable`);
+      adventureMacro($location`The Red Zeppelin`, Macro.item($item`glark cable`));
+    }
+  ),
 
   // Mushroom garden
   new FreeFight(
