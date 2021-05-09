@@ -94,7 +94,7 @@ export function freeFightMood() {
     set("_garbo_defectiveTokenAttempted", true);
     withStash($items`defective game grid token`, () => {
       if (!get("_defectiveTokenUsed") && have($item`defective game grid token`))
-        mood.effect($effect`Video... Games?`);
+        use($item`defective game grid token`);
     });
   }
 

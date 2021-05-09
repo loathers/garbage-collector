@@ -45504,7 +45504,7 @@ function freeFightMood() {
   if (!(0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("_garbo_defectiveTokenAttempted", false)) {
     (0,libram__WEBPACK_IMPORTED_MODULE_2__.set)("_garbo_defectiveTokenAttempted", true);
     (0,_stash__WEBPACK_IMPORTED_MODULE_1__.withStash)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$items)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["defective game grid token"]))), function () {
-      if (!(0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("_defectiveTokenUsed") && (0,libram__WEBPACK_IMPORTED_MODULE_2__.have)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["defective game grid token"]))))) mood.effect((0,libram__WEBPACK_IMPORTED_MODULE_2__.$effect)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Video... Games?"]))));
+      if (!(0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("_defectiveTokenUsed") && (0,libram__WEBPACK_IMPORTED_MODULE_2__.have)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["defective game grid token"]))))) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.use)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["defective game grid token"]))));
     });
   }
 
