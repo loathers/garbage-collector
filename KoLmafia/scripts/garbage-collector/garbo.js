@@ -44095,7 +44095,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! libram */ "./node_modules/libram/dist/index.js");
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(libram__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib */ "./src/lib.ts");
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -44395,25 +44395,25 @@ function runDiet() {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.setProperty)("_timesArrowUsed", "true");
   }
 
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["blue mana"])))) < 3 * MPA) {
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_2__.have)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$skill)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["Ancestral Recall"])))) && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["blue mana"])))) < 3 * MPA) {
     var casts = Math.max(10 - (0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("_ancestralRecallCasts"), 0);
-    acquire(casts, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["blue mana"]))), 3 * MPA);
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.useSkill)(casts, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$skill)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Ancestral Recall"]))));
+    acquire(casts, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["blue mana"]))), 3 * MPA);
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.useSkill)(casts, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$skill)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["Ancestral Recall"]))));
   }
 
-  useIfUnused((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["borrowed time"]))), "_borrowedTimeUsed", 5 * MPA);
+  useIfUnused((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["borrowed time"]))), "_borrowedTimeUsed", 5 * MPA);
   fillSomeSpleen();
   fillStomach();
   fillLiver();
 
   if (!(0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("_distentionPillUsed")) {
-    if (!(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.use)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["distention pill"]))))) {
+    if (!(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.use)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["distention pill"]))))) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("WARNING: Out of distention pills.", "red");
     }
   }
 
   if (!(0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("_syntheticDogHairPillUsed") && 1 <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)()) {
-    if (!(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.use)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["synthetic dog hair pill"]))))) {
+    if (!(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.use)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["synthetic dog hair pill"]))))) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("WARNING: Out of synthetic dog hair pills.", "red");
     }
   }
@@ -44422,17 +44422,17 @@ function runDiet() {
       bestSpleenItem = _getBestSpleenItems3.bestSpleenItem;
 
   var mojoFilterCount = 3 - (0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("currentMojoFilters");
-  acquire(mojoFilterCount, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["mojo filter"]))), valuePerSpleen(bestSpleenItem));
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.use)(mojoFilterCount, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["mojo filter"]))));
+  acquire(mojoFilterCount, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["mojo filter"]))), valuePerSpleen(bestSpleenItem));
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.use)(mojoFilterCount, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["mojo filter"]))));
   fillSomeSpleen();
 
   if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFullness)() < (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fullnessLimit)()) {
-    if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.eat)(1, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["fudge spork"]))));
-    eatSafe(1, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["jumping horseradish"]))));
+    if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)((0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.eat)(1, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["fudge spork"]))));
+    eatSafe(1, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["jumping horseradish"]))));
   }
 
   if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() < (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)()) {
-    drinkSafe(1, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["ambitious turkey"]))));
+    drinkSafe(1, (0,libram__WEBPACK_IMPORTED_MODULE_2__.$item)(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["ambitious turkey"]))));
   }
 }
 
