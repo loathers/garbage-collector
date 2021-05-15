@@ -1,13 +1,17 @@
 import {
+  booleanModifier,
   buy,
   changeMcd,
   cliExecute,
   eat,
   equippedAmount,
+  getClanLounge,
   getCounters,
+  haveSkill,
   itemAmount,
   myAdventures,
   myClass,
+  myGardenType,
   myMp,
   myThrall,
   myTurncount,
@@ -46,7 +50,7 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { meatFamiliar } from "./familiar";
-import { dailyFights, freeFights } from "./fights";
+import { dailyFights, freeFights, safeRestore } from "./fights";
 import { ensureEffect } from "./lib";
 import { meatMood } from "./mood";
 import { meatOutfit, Requirement } from "./outfit";
@@ -97,7 +101,7 @@ function dailySetup() {
     runChoice(4);
   }
 
-  if (get("_bastilleGames") === 0) {
+  if (have($item`Bastille Battalion control rig`) && get("_bastilleGames") === 0) {
     cliExecute("bastille myst brutalist gesture");
   }
 
@@ -108,6 +112,7 @@ function dailySetup() {
   }
 
   if (get("_VYKEACompanionLevel") === 0) {
+    retrieveItem($item`VYKEA hex key`);
     cliExecute("create level 3 couch");
   }
 
@@ -142,11 +147,22 @@ function dailySetup() {
     });
   }
 
-  if (myClass() === $class`Pastamancer` && myThrall() !== $thrall`Lasagmbie`) {
+  if (
+    myClass() === $class`Pastamancer` &&
+    myThrall() !== $thrall`Lasagmbie` &&
+    haveSkill($skill`Bind Lasagmbie`)
+  ) {
     useSkill($skill`Bind Lasagmbie`);
   }
 
-  if (!get("_clanFortuneBuffUsed")) cliExecute("fortune buff meat");
+  if (
+    !get("_clanFortuneBuffUsed") &&
+    have($item`Clan VIP lounge key`) &&
+    getClanLounge()["Clan Carnival Game"] !== undefined
+  ) {
+    cliExecute("fortune buff meat");
+  }
+
   while (SourceTerminal.have() && SourceTerminal.getEnhanceUses() < 3) {
     cliExecute("terminal enhance meat.enh");
   }
@@ -166,6 +182,15 @@ function dailySetup() {
 function barfTurn() {
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+  }
+  if (have($item`packet of tall grass seeds`) && myGardenType() !== "grass")
+    use($item`packet of tall grass seeds`);
+  if (
+    have($item`unwrapped retro superhero cape`) &&
+    get("retroCapeSuperhero") !== "robot" &&
+    get("retroCapeWashingInstructions") !== "kill"
+  ) {
+    cliExecute("retrocape robot kill");
   }
 
   while (
@@ -191,8 +216,12 @@ function barfTurn() {
   let location = embezzlerUp ? $location`Noob Cave` : $location`Barf Mountain`;
   if (
     !get("_envyfishEggUsed") &&
-    have($item`aerated diving helmet`) &&
-    have($item`das boot`) &&
+    (booleanModifier("Adventure Underwater") ||
+      $items`aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying`.some(
+        have
+      )) &&
+    (booleanModifier("Underwater Familiar") ||
+      $items`little bitty bathysphere, das boot`.some(have)) &&
     (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
     !have($item`envyfish egg`) &&
     embezzlerUp
@@ -207,15 +236,12 @@ function barfTurn() {
   }
 
   const underwater = location === $location`The Briny Deeps`;
-  meatOutfit(
-    embezzlerUp,
-    underwater ? [new Requirement([], { forceEquip: $items`aerated diving helmet, das boot` })] : []
-  );
+  meatOutfit(embezzlerUp, underwater ? [new Requirement(["sea"], {})] : []);
 
   // c. set up mood stuff
   meatMood().execute(myAdventures() * 1.04 + 50);
 
-  if (equippedAmount($item`haiku katana`) > 0 && myMp() < 50) eat($item`magical sausage`);
+  safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
 
   // d. run adventure
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
@@ -267,6 +293,7 @@ export function main(argString = "") {
   setAutoAttack(0);
   cliExecute("mood apathetic");
   cliExecute("ccs garbo");
+  safeRestore();
 
   // FIXME: Dynamically figure out pointer ring approach.
   withStash($items`haiku katana, repaid diaper`, () => {

@@ -1,4 +1,5 @@
 import {
+  eat,
   equippedAmount,
   equippedItem,
   haveSkill,
@@ -85,7 +86,7 @@ export class Macro extends LibramMacro {
         myFamiliar() === $familiar`Stocking Mimic`,
         Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))
       )
-      .externalIf(sealClubberSetup, Macro.tryHaveSkill("Furious Wallop").attack())
+      .externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop").attack())
       .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
       .externalIf(katanaSetup, Macro.skill("Summer Siesta").attack())
       .externalIf(capeSetup, Macro.skill("Precision Shot"))

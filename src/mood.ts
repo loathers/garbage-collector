@@ -4,6 +4,7 @@ import {
   getCampground,
   getFuel,
   haveEffect,
+  haveSkill,
   mallPrice,
   myClass,
   myEffects,
@@ -17,13 +18,18 @@ import {
   $effect,
   $effects,
   $item,
+  $items,
   $skill,
   $skills,
   get,
   have,
   Mood,
+  set,
   SongBoom,
+  Witchess,
 } from "libram";
+import { fillAsdonMartinTo } from "./asdon";
+import { withStash } from "./stash";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -58,12 +64,16 @@ export function meatMood(urKels = false) {
   mood.skill($skill`Pride of the Puffin`);
   if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
-  mood.effect($effect`Synthesis: Greed`, () => {
-    if (mySpleenUse() < spleenLimit()) cliExecute("synthesize greed");
-  });
+  if (haveSkill($skill`Sweet Synthesis`)) {
+    mood.effect($effect`Synthesis: Greed`, () => {
+      if (mySpleenUse() < spleenLimit()) cliExecute("synthesize greed");
+    });
+  }
 
-  if (getFuel() < 37) cliExecute("asdonmartin fuel 1 pie man was not meant to eat");
-  mood.effect($effect`Driving Observantly`);
+  if (getCampground()["Asdon Martin keyfob"] !== undefined) {
+    if (getFuel() < 37) cliExecute("asdonmartin fuel 1 pie man was not meant to eat");
+    mood.effect($effect`Driving Observantly`);
+  }
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View To Some Meat`, () => {
@@ -80,7 +90,14 @@ export function meatMood(urKels = false) {
 export function freeFightMood() {
   const mood = new Mood();
 
-  if (!get("_defectiveTokenUsed")) mood.effect($effect`Video... Games?`);
+  if (!get<boolean>("_garbo_defectiveTokenAttempted", false)) {
+    set("_garbo_defectiveTokenAttempted", true);
+    withStash($items`defective game grid token`, () => {
+      if (!get("_defectiveTokenUsed") && have($item`defective game grid token`))
+        use($item`defective game grid token`);
+    });
+  }
+
   if (haveEffect($effect`Blue Swayed`) < 50) {
     use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
   }
@@ -124,7 +141,7 @@ export function freeFightMood() {
   if (have($item`Beach Comb`) && !beachHeadsUsed.toString().split(",").includes("10")) {
     mood.effect($effect`Do I Know You From Somewhere?`);
   }
-  if (getCampground()["Witchess Set"] !== undefined && !get("_witchessBuff")) {
+  if (Witchess.have() && !get("_witchessBuff")) {
     mood.effect($effect`Puzzle Champ`);
   }
 

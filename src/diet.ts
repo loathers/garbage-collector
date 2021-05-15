@@ -285,7 +285,7 @@ export function runDiet(): void {
     setProperty("_timesArrowUsed", "true");
   }
 
-  if (mallPrice($item`blue mana`) < 3 * MPA) {
+  if (have($skill`Ancestral Recall`) && mallPrice($item`blue mana`) < 3 * MPA) {
     const casts = Math.max(10 - get("_ancestralRecallCasts"), 0);
     acquire(casts, $item`blue mana`, 3 * MPA);
     useSkill(casts, $skill`Ancestral Recall`);
