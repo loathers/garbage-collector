@@ -47,6 +47,7 @@ import {
   SongBoom,
   SourceTerminal,
 } from "libram";
+import { getString } from "libram/dist/property";
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { meatFamiliar } from "./familiar";
@@ -161,6 +162,21 @@ function dailySetup() {
     getClanLounge()["Clan Carnival Game"] !== undefined
   ) {
     cliExecute("fortune buff meat");
+  }
+
+  if (
+    !get("demonSummoned") &&
+    get("demonName2", false) &&
+    get("questL11Manor") === "finished"
+  ) {
+    cliExecute("summon Preternatural Greed");
+  }
+
+  if (
+    get("horseryAvailable") &&
+    get("_horsery") !== "dark horse"
+  ) {
+    cliExecute("horsery dark");
   }
 
   while (SourceTerminal.have() && SourceTerminal.getEnhanceUses() < 3) {

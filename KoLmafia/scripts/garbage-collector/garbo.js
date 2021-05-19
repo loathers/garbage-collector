@@ -45239,6 +45239,14 @@ function dailySetup() {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.cliExecute)("fortune buff meat");
   }
 
+  if (!(0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("demonSummoned") && (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("demonName2", false) && (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("questL11Manor") === "finished") {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.cliExecute)("summon Preternatural Greed");
+  }
+
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("horseryAvailable") && (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("_horsery") !== "dark horse") {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.cliExecute)("horsery dark");
+  }
+
   while (libram__WEBPACK_IMPORTED_MODULE_9__.SourceTerminal.have() && libram__WEBPACK_IMPORTED_MODULE_9__.SourceTerminal.getEnhanceUses() < 3) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.cliExecute)("terminal enhance meat.enh");
   }
