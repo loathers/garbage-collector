@@ -163,6 +163,21 @@ function dailySetup() {
     cliExecute("fortune buff meat");
   }
 
+  if (
+    !get("demonSummoned") &&
+    get("demonName2", false) &&
+    get("questL11Manor") === "finished"
+  ) {
+    cliExecute("summon Preternatural Greed");
+  }
+
+  if (
+    get("horseryAvailable") &&
+    get("_horsery") !== "dark horse"
+  ) {
+    cliExecute("horsery dark");
+  }
+
   while (SourceTerminal.have() && SourceTerminal.getEnhanceUses() < 3) {
     cliExecute("terminal enhance meat.enh");
   }
