@@ -45178,7 +45178,7 @@ function dailySetup() {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["bubblin' crude"]))));
     var m = new Map([[(0,libram__WEBPACK_IMPORTED_MODULE_9__.$stat)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Muscle"]))), 1], [(0,libram__WEBPACK_IMPORTED_MODULE_9__.$stat)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Mysticality"]))), 2], [(0,libram__WEBPACK_IMPORTED_MODULE_9__.$stat)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Moxie"]))), 3]]).get((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myPrimestat)() || (0,libram__WEBPACK_IMPORTED_MODULE_9__.$stat)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Mysticality"]))));
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("inv_use.php?pwd&whichitem=9573");
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1");
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("choice.php?whichchoice=1270&pwd&option=1&m=".concat(m, "&e=5&s1=5789,1&s2=706,1&s3=24,1"));
   }
 
   if ((0,libram__WEBPACK_IMPORTED_MODULE_9__.have)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("_saberMod") === 0) {
