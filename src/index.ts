@@ -47,7 +47,6 @@ import {
   SongBoom,
   SourceTerminal,
 } from "libram";
-import { getString } from "libram/dist/property";
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { meatFamiliar } from "./familiar";
