@@ -88,7 +88,8 @@ function dailySetup() {
     retrieveItem($item`ten-leaf clover`);
     retrieveItem($item`porquoise`);
     retrieveItem($item`bubblin' crude`);
-    cliExecute("pantogram medium mp regen|high meat|clover|silent");
+    visitUrl("inv_use.php?pwd&whichitem=9573");
+    visitUrl("choice.php?whichchoice=1270&pwd&option=1&m=1&e=5&s1=5789,1&s2=706,1&s3=24,1");
   }
 
   if (have($item`Fourth of May Cosplay Saber`) && get("_saberMod") === 0) {
@@ -159,11 +160,18 @@ function dailySetup() {
     cliExecute("fortune buff meat");
   }
 
-  if (!get("demonSummoned") && get("demonName2", false) && get("questL11Manor") === "finished") {
+  if (
+    !get("demonSummoned") &&
+    get("demonName2", false) &&
+    get("questL11Manor") === "finished"
+  ) {
     cliExecute("summon Preternatural Greed");
   }
 
-  if (get("horseryAvailable") && get("_horsery") !== "dark horse") {
+  if (
+    get("horseryAvailable") &&
+    get("_horsery") !== "dark horse"
+  ) {
     cliExecute("horsery dark");
   }
 

@@ -45176,7 +45176,8 @@ function dailySetup() {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["ten-leaf clover"]))));
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["porquoise"]))));
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["bubblin' crude"]))));
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.cliExecute)("pantogram medium mp regen|high meat|clover|silent");
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("inv_use.php?pwd&whichitem=9573");
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("choice.php?whichchoice=1270&pwd&option=1&m=1&e=5&s1=5789,1&s2=706,1&s3=24,1");
   }
 
   if ((0,libram__WEBPACK_IMPORTED_MODULE_9__.have)((0,libram__WEBPACK_IMPORTED_MODULE_9__.$item)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("_saberMod") === 0) {
@@ -45534,7 +45535,7 @@ function meatMood() {
     mood.effect((0,libram__WEBPACK_IMPORTED_MODULE_2__.$effect)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["A View To Some Meat"]))), function () {
       if ((0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("_kgbClicksUsed") < 22) {
         var buffTries = Math.ceil((22 - (0,libram__WEBPACK_IMPORTED_MODULE_2__.get)("_kgbClicksUsed")) / 3);
-        (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.cliExecute)("briefcase buff ".concat(new Array(buffTries).fill("meat").join(" ")));
+        (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.cliExecute)("Briefcase buff ".concat(new Array(buffTries).fill("meat").join(" ")));
       }
     });
   }
