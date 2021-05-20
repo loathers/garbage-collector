@@ -442,7 +442,10 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
-    () => adv1($location`The Deep Machine Tunnels`, -1, ""),
+    () => {
+      setChoice(1119, 6);
+      adv1($location`The Deep Machine Tunnels`, -1, "");
+    },
     {
       familiar: () => $familiar`Machine Elf`,
     }
