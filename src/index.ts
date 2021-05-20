@@ -271,7 +271,7 @@ function barfTurn() {
 
   if (
     Object.keys(reverseNumberology()).includes("69") &&
-    get("_universeCalculated") < get("skilllevel144")
+    get("_universeCalculated") < get("skillLevel144")
   ) {
     cliExecute("numberology 69");
   }
