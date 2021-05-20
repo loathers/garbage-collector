@@ -45313,7 +45313,7 @@ function barfTurn() {
     (0,libram__WEBPACK_IMPORTED_MODULE_9__.adventureMacroAuto)(location, _combat__WEBPACK_IMPORTED_MODULE_1__.Macro.externalIf(underwater, _combat__WEBPACK_IMPORTED_MODULE_1__.Macro.item("pulled green taffy")).meatKill());
   }
 
-  if (Object.keys((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.reverseNumberology)()).includes("69") && (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("_universeCalculated") < (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("skilllevel144")) {
+  if (Object.keys((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.reverseNumberology)()).includes("69") && (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("_universeCalculated") < (0,libram__WEBPACK_IMPORTED_MODULE_9__.get)("skillLevel144")) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.cliExecute)("numberology 69");
   }
 }
