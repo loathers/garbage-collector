@@ -8,6 +8,7 @@ import {
   myClass,
   myFamiliar,
   print,
+  setAutoAttack,
 } from "kolmafia";
 import {
   $class,
@@ -72,7 +73,10 @@ export class Macro extends LibramMacro {
     return this.tryHaveSkill("Sing Along")
       .externalIf(
         shouldRedigitize(),
-        Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.skill("Digitize"))
+        Macro.if_(
+          `monstername ${get("_sourceTerminalDigitizeMonster")}`,
+          Macro.trySkill("Digitize")
+        )
       )
       .externalIf(
         !have($effect`On The Trail`),
@@ -101,6 +105,7 @@ export class Macro extends LibramMacro {
 }
 
 export function withMacro<T>(macro: Macro, action: () => T) {
+  setAutoAttack(0);
   macro.save();
   try {
     return action();

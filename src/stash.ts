@@ -39,11 +39,11 @@ export class StashManager {
       clanIdOrName = get("stashClan", undefined);
       if (!clanIdOrName) {
         if (
-          (userConfirm(
-            "You do not presently have a stashClan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)"
-          ),
-          15,
-          true)
+          userConfirm(
+            "You do not presently have a stashClan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)",
+            15000,
+            true
+          )
         ) {
           clanIdOrName = getClanId();
           set("stashClan", clanIdOrName);
