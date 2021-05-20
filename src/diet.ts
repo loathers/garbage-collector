@@ -56,6 +56,7 @@ const priceCaps: { [index: string]: number } = {
   "transdermal smoke patch": 8000,
   "voodoo snuff": 36000,
   "antimatter wad": 24000,
+  "octolus oculus": 12000,
   "blood-drive sticker": 210000,
   "spice melange": 500000,
   "splendid martini": 20000,
