@@ -44922,7 +44922,8 @@ new FreeFight(function () {
 }), new FreeFight(function () {
   return (0,libram__WEBPACK_IMPORTED_MODULE_7__.have)((0,libram__WEBPACK_IMPORTED_MODULE_7__.$familiar)(_templateObject102 || (_templateObject102 = _taggedTemplateLiteral(["Machine Elf"])))) ? (0,_lib__WEBPACK_IMPORTED_MODULE_3__.clamp)(5 - (0,libram__WEBPACK_IMPORTED_MODULE_7__.get)("_machineTunnelsAdv"), 0, 5) : 0;
 }, function () {
-  return (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.adv1)((0,libram__WEBPACK_IMPORTED_MODULE_7__.$location)(_templateObject103 || (_templateObject103 = _taggedTemplateLiteral(["The Deep Machine Tunnels"]))), -1, "");
+  (0,_lib__WEBPACK_IMPORTED_MODULE_3__.setChoice)(1119, 6);
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.adv1)((0,libram__WEBPACK_IMPORTED_MODULE_7__.$location)(_templateObject103 || (_templateObject103 = _taggedTemplateLiteral(["The Deep Machine Tunnels"]))), -1, "");
 }, {
   familiar: function familiar() {
     return (0,libram__WEBPACK_IMPORTED_MODULE_7__.$familiar)(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral(["Machine Elf"])));
