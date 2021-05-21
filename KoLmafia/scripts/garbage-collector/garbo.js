@@ -34856,7 +34856,7 @@ var FreeFight = /*#__PURE__*/function () {
   return FreeFight;
 }();
 
-var pygmyMacro = combat.Macro.if_("monstername pygmy bowler", combat.Macro.trySkill("Snokebomb").item((0,dist.$item)(fights_templateObject32 || (fights_templateObject32 = fights_taggedTemplateLiteral(["Louder than Bomb"]))))).if_("monstername pygmy orderlies", combat.Macro.skill("Feel Hatred").item((0,dist.$item)(fights_templateObject33 || (fights_templateObject33 = fights_taggedTemplateLiteral(["tennis ball"]))))).abort();
+var pygmyMacro = combat.Macro.if_("monstername pygmy bowler", combat.Macro.trySkill("Snokebomb").item((0,dist.$item)(fights_templateObject32 || (fights_templateObject32 = fights_taggedTemplateLiteral(["Louder than Bomb"]))))).if_("monstername pygmy orderlies", combat.Macro.trySkill("Feel Hatred").item((0,dist.$item)(fights_templateObject33 || (fights_templateObject33 = fights_taggedTemplateLiteral(["tennis ball"]))))).abort();
 var freeFightSources = [new FreeFight(function () {
   return dist.TunnelOfLove.have() && !dist.TunnelOfLove.isUsed();
 }, function () {

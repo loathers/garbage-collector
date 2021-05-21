@@ -208,7 +208,7 @@ const pygmyMacro = Macro.if_(
   "monstername pygmy bowler",
   Macro.trySkill("Snokebomb").item($item`Louder than Bomb`)
 )
-  .if_("monstername pygmy orderlies", Macro.skill("Feel Hatred").item($item`tennis ball`))
+  .if_("monstername pygmy orderlies", Macro.trySkill("Feel Hatred").item($item`tennis ball`))
   .abort();
 
 const freeFightSources = [
