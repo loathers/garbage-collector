@@ -85,7 +85,7 @@ export function dailyFights() {
       while (get("_poolGames") < 3) cliExecute("pool aggressive");
     }
     if (!get<boolean>("_garbo_professorLecturesUsed", false) || get("spookyPuttyCopiesMade") < 5) {
-      withStash($items`Spooky Putty sheet, Platinum Yendorian Express Card`, () => {
+      withStash($items`Spooky Putty sheet`, () => {
         if (
           have($familiar`Pocket Professor`) &&
           !get<boolean>("_garbo_professorLecturesUsed", false)
@@ -99,9 +99,11 @@ export function dailyFights() {
           // First round of prof copies with meat drop gear on.
           if (!get("_photocopyUsed")) {
             freeFightMood().execute(30);
-            if (have($item`Platinum Yendorian Express Card`)) {
-              use($item`Platinum Yendorian Express Card`);
-            }
+            withStash($items`Platinum Yendorian Express Card`, () => {
+              if (have($item`Platinum Yendorian Express Card`)) {
+                use($item`Platinum Yendorian Express Card`);
+              }
+            });
 
             if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 

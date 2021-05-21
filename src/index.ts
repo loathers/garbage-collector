@@ -3,8 +3,6 @@ import {
   buy,
   changeMcd,
   cliExecute,
-  eat,
-  equippedAmount,
   getClanLounge,
   getCounters,
   haveSkill,
@@ -12,7 +10,6 @@ import {
   myAdventures,
   myClass,
   myGardenType,
-  myMp,
   myThrall,
   myTurncount,
   print,
@@ -40,7 +37,6 @@ import {
   $thrall,
   adventureMacro,
   adventureMacroAuto,
-  Clan,
   get,
   have,
   setDefaultMaximizeOptions,
@@ -163,18 +159,11 @@ function dailySetup() {
     cliExecute("fortune buff meat");
   }
 
-  if (
-    !get("demonSummoned") &&
-    get("demonName2", false) &&
-    get("questL11Manor") === "finished"
-  ) {
+  if (!get("demonSummoned") && get("demonName2", false) && get("questL11Manor") === "finished") {
     cliExecute("summon Preternatural Greed");
   }
 
-  if (
-    get("horseryAvailable") &&
-    get("_horsery") !== "dark horse"
-  ) {
+  if (get("horseryAvailable") && get("_horsery") !== "dark horse") {
     cliExecute("horsery dark");
   }
 

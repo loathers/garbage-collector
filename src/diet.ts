@@ -30,6 +30,7 @@ import {
   haveEffect,
   myAdventures,
   sweetSynthesis,
+  userConfirm,
 } from "kolmafia";
 import { $class, $effect, $item, $items, $skill, get, have } from "libram";
 import { clamp, ensureEffect } from "./lib";
@@ -297,14 +298,32 @@ export function runDiet(): void {
   fillLiver();
 
   if (!get("_distentionPillUsed")) {
-    if (!use($item`distention pill`)) {
-      print("WARNING: Out of distention pills.", "red");
+    if (
+      have($item`distention pill`, 1) ||
+      !userConfirm(
+        "You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)",
+        15000,
+        false
+      )
+    ) {
+      if (!use($item`distention pill`)) {
+        print("WARNING: Out of distention pills.", "red");
+      }
     }
   }
 
   if (!get("_syntheticDogHairPillUsed") && 1 <= myInebriety()) {
-    if (!use($item`synthetic dog hair pill`)) {
-      print("WARNING: Out of synthetic dog hair pills.", "red");
+    if (
+      have($item`synthetic dog hair pill`, 1) ||
+      !userConfirm(
+        "You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)",
+        15000,
+        false
+      )
+    ) {
+      if (!use($item`synthetic dog hair pill`)) {
+        print("WARNING: Out of synthetic dog hair pills.", "red");
+      }
     }
   }
 
