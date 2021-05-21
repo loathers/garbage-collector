@@ -5,7 +5,14 @@ module.exports = {
     garbo: "./src/index.ts",
     "garbo-combat": "./src/combat.ts",
   },
-  mode: "development",
+  mode: "production",
+
+  optimization: {
+    minimize: false,
+  },
+  performance: {
+    hints: false,
+  },
   devtool: false,
   output: {
     path: path.resolve(__dirname, "KoLmafia", "scripts", "garbage-collector"),
