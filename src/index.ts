@@ -10,7 +10,6 @@ import {
   myAdventures,
   myClass,
   myGardenType,
-  myMp,
   myPrimestat,
   myThrall,
   myTurncount,
@@ -95,7 +94,7 @@ function dailySetup() {
       [$stat`Muscle`, 1],
       [$stat`Mysticality`, 2],
       [$stat`Moxie`, 3],
-    ]).get(myPrimestat() || $stat`Mysticality`);
+    ]).get(myPrimestat());
     visitUrl("inv_use.php?pwd&whichitem=9573");
     visitUrl(`choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1`);
   }
