@@ -79,7 +79,7 @@ export function meatMood(urKels = false) {
     mood.effect($effect`A View To Some Meat`, () => {
       if (get("_kgbClicksUsed") < 22) {
         const buffTries = Math.ceil((22 - get("_kgbClicksUsed")) / 3);
-        cliExecute(`briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
+        cliExecute(`Briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
       }
     });
   }

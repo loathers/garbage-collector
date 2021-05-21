@@ -10,6 +10,7 @@ import {
   myAdventures,
   myClass,
   myGardenType,
+  myPrimestat,
   myThrall,
   myTurncount,
   print,
@@ -34,6 +35,7 @@ import {
   $location,
   $monster,
   $skill,
+  $stat,
   $thrall,
   adventureMacro,
   adventureMacroAuto,
@@ -88,7 +90,13 @@ function dailySetup() {
     retrieveItem($item`ten-leaf clover`);
     retrieveItem($item`porquoise`);
     retrieveItem($item`bubblin' crude`);
-    cliExecute("pantogram medium mp regen|high meat|clover|silent");
+    const m = new Map([
+      [$stat`Muscle`, 1],
+      [$stat`Mysticality`, 2],
+      [$stat`Moxie`, 3],
+    ]).get(myPrimestat());
+    visitUrl("inv_use.php?pwd&whichitem=9573");
+    visitUrl(`choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1`);
   }
 
   if (have($item`Fourth of May Cosplay Saber`) && get("_saberMod") === 0) {
@@ -159,11 +167,18 @@ function dailySetup() {
     cliExecute("fortune buff meat");
   }
 
-  if (!get("demonSummoned") && get("demonName2", false) && get("questL11Manor") === "finished") {
+  if (
+    !get("demonSummoned") &&
+    get("demonName2", false) &&
+    get("questL11Manor") === "finished"
+  ) {
     cliExecute("summon Preternatural Greed");
   }
 
-  if (get("horseryAvailable") && get("_horsery") !== "dark horse") {
+  if (
+    get("horseryAvailable") &&
+    get("_horsery") !== "dark horse"
+  ) {
     cliExecute("horsery dark");
   }
 

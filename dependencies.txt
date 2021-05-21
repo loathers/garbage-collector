@@ -1,0 +1,3 @@
+https://github.com/Ezandora/Bastille/branches/Release/
+https://github.com/Ezandora/Gain/branches/Release/
+https://github.com/Ezandora/Briefcase/branches/Release/
