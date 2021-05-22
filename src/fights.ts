@@ -14,7 +14,6 @@ import {
   myAdventures,
   myAscensions,
   myClass,
-  myFamiliar,
   myHp,
   myMaxhp,
   myMaxmp,
@@ -194,6 +193,9 @@ class FreeFight {
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
       withMacro(Macro.meatKill(), this.run);
+
+      // Slot in our Professor Thesis if it's become available
+      if (thesisReady()) deliverThesis();
     }
   }
 }
@@ -309,7 +311,7 @@ const freeFightSources = [
       get("questL11Worship") !== "unstarted" ? clamp(9 - get("_drunkPygmyBanishes"), 0, 9) : 0,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-      retrieveItem($item`Bowl of Scorpions`);
+      retrieveItem(clamp(9 - get("_drunkPygmyBanishes"), 0, 9), $item`Bowl of Scorpions`);
       retrieveItem($item`Louder than Bomb`);
       retrieveItem($item`tennis ball`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
@@ -525,69 +527,17 @@ const freeFightSources = [
       setChoice(1322, 2); // reject quest.
       setChoice(1324, 5); // pick fight.
       if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
-
-      if (
-        myFamiliar() === $familiar`Pocket Professor` &&
-        $familiar`Pocket Professor`.experience >= 400 &&
-        !get("_thesisDelivered")
-      ) {
-        if (
-          have($item`Powerful Glove`) &&
-          !have($effect`Triple-Sized`) &&
-          get("_powerfulGloveBatteryPowerUsed") <= 95
-        ) {
-          cliExecute("checkpoint");
-          equip($slot`acc1`, $item`Powerful Glove`);
-          ensureEffect($effect`Triple-Sized`);
-          outfit("checkpoint");
-        }
-        cliExecute("gain 1800 muscle");
-        adventureMacro($location`The Neverending Party`, Macro.skill("Deliver your Thesis"));
-      } else {
-        adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
-      }
+      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
     },
     {
-      familiar: () =>
-        $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
-          ? $familiar`Pocket Professor`
-          : null,
       requirements: () => [
         new Requirement(
-          $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
-            ? ["100 Muscle"]
-            : [],
+          [],
           {
             forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
           }
         ),
       ],
-    }
-  ),
-
-  // Not technically a free fight, but if we haven't delivered a thesis yet, we want to dump it somewhere scaling, and we have Uncle Gator's definitely available.
-  new FreeFight(
-    () => !get("_thesisDelivered") && $familiar`Pocket Professor`.experience >= 400,
-    () => {
-      if (
-        have($item`Powerful Glove`) &&
-        !have($effect`Triple-Sized`) &&
-        get("_powerfulGloveBatteryPowerUsed") <= 95
-      ) {
-        cliExecute("checkpoint");
-        equip($slot`acc1`, $item`Powerful Glove`);
-        ensureEffect($effect`Triple-Sized`);
-        outfit("checkpoint");
-      }
-      cliExecute("gain 1800 muscle");
-      adventureMacro(
-        $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
-        Macro.skill("Deliver your Thesis")
-      );
-    },
-    {
-      familiar: () => $familiar`Pocket Professor`,
-      requirements: () => [new Requirement(["100 Muscle"], {})],
     }
   ),
 ];
@@ -688,6 +638,34 @@ export function freeFights() {
   } finally {
     cliExecute("uneffect Feeling Lost");
   }
+}
+
+function thesisReady(): boolean {
+  return !get("_thesisDelivered") && have($familiar`Pocket Professor`) && $familiar`Pocket Professor`.experience >= 400;
+}
+
+function deliverThesis(): void {
+  const thesisInNEP = get("neverendingPartyAlways")  && get("_neverendingPartyFreeTurns") < 10;
+  useFamiliar($familiar`Pocket Professor`);
+  freeFightMood().execute();
+  freeFightOutfit([new Requirement(['100 muscle'], {})]);
+  safeRestore();
+
+  if (
+    have($item`Powerful Glove`) &&
+    !have($effect`Triple-Sized`) &&
+    get("_powerfulGloveBatteryPowerUsed") <= 95
+  ) {
+    cliExecute("checkpoint");
+    equip($slot`acc1`, $item`Powerful Glove`);
+    ensureEffect($effect`Triple-Sized`);
+    outfit("checkpoint");
+  }
+  cliExecute("gain 1800 muscle");
+  adventureMacro(
+    thesisInNEP ? $location`The Neverending Party` : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+    Macro.skill("Deliver your Thesis")
+  );
 }
 
 export function safeRestore(): void {
