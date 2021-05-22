@@ -206,6 +206,19 @@ const pygmyMacro = Macro.if_(
   .abort();
 
 const freeFightSources = [
+  // Get a Fish Head from our robortender if available
+  new FreeFight(
+    () =>
+      have($item`Cargo Cultist Shorts`) &&
+      have($familiar`Robortender`) &&
+      !get("_cargoPocketEmptied") &&
+      !get("cargoPocketsEmptied").includes("428"),
+    () => cliExecute("cargo monster Mob Penguin Thug"),
+    {
+      familiar: () => $familiar`Robortender`,
+    }
+  ),
+
   new FreeFight(
     () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
     () => {
@@ -606,7 +619,22 @@ const freeKillSources = [
     }
   ),
 
-  // 22	1	0	0	Fire the Jokester's Gun	combat skill	must have The Jokester's gun equipped (Batfellow content, tradable)
+  // Use the jokester's gun even if we don't have tot
+  new FreeFight(
+    () => !get("_firedJokestersGun") && have($item`The Jokester's gun`),
+    () =>
+      withMacro(Macro.skill("Sing Along").trySkill("Fire the Jokester's Gun"), () =>
+        use($item`drum machine`)
+      ),
+    {
+      familiar: () =>
+        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      requirements: () => [
+        new Requirement(["100 Item Drop"], { forceEquip: $items`The Jokester's Gun` }),
+      ],
+    }
+  ),
+
   // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
   new FreeFight(
     () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
