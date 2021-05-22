@@ -646,6 +646,14 @@ function thesisReady(): boolean {
 
 function deliverThesis(): void {
   const thesisInNEP = get("neverendingPartyAlways")  && get("_neverendingPartyFreeTurns") < 10;
+
+  //Set up NEP if we haven't yet
+  if (thesisInNEP) {
+    setChoice(1322, 2); // reject quest.
+    setChoice(1324, 5); // pick fight.
+    if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
+  }
+
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
   freeFightOutfit([new Requirement(['100 muscle'], {})]);
