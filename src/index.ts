@@ -304,7 +304,7 @@ export function main(argString = "") {
   print();
 
   setAutoAttack(0);
-  setProperty("battleAction", "combat consult script");
+  setProperty("battleAction", "custom combat script");
   cliExecute("mood apathetic");
   cliExecute("ccs garbo");
   safeRestore();

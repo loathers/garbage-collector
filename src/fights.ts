@@ -4,7 +4,6 @@ import {
   cliExecute,
   eat,
   equip,
-  equippedAmount,
   faxbot,
   getCampground,
   getClanLounge,
@@ -253,8 +252,8 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => have($item`[glitch season reward name]`) && !get("glitchItemAvailable"),
-    () => visitUrl("inv_eat.php?pwd&whichitem=10207")
+    () => have($item`[glitch season reward name]`) && !get("_glitchMonsterFights"),
+    () => withMacro(Macro.meatKill(), () => visitUrl("inv_eat.php?pwd&whichitem=10207")),
   ),
 
   // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
@@ -297,7 +296,7 @@ const freeFightSources = [
       get("questL11Worship") !== "unstarted" ? clamp(9 - get("_drunkPygmyBanishes"), 0, 9) : 0,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-      retrieveItem(9 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
+      retrieveItem($item`Bowl of Scorpions`);
       retrieveItem($item`Louder than Bomb`);
       retrieveItem($item`tennis ball`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
@@ -344,18 +343,18 @@ const freeFightSources = [
         saberedMonster &&
         $monsters`pygmy orderlies, pygmy bowler, pygmy janitor`.includes(saberedMonster);
       const remainingPygmies =
-        (saberedMonster === $monster`drunk pygmy` ? get("_saberForceMonsterCount") - 1 : 0) +
+        (saberedMonster === $monster`drunk pygmy` ? get("_saberForceMonsterCount") : 0) +
         2 * clamp(5 - get("_saberForceUses"), 0, 5);
-      return rightTime && !wrongPygmySabered && remainingPygmies;
+      return get("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && remainingPygmies;
     },
     () => {
-      if (get("_saberForceMonster") !== $monster`drunk pygmy`) {
+      if ((get("_saberForceMonster") !== $monster`drunk pygmy` || get("_saberForceMonsterCount") === 0) && (get("_saberForceUses") < 5)) {
         setChoice(1387, 2);
         putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
         putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
         adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
       } else {
-        retrieveItem(2, $item`Bowl of Scorpions`);
+        retrieveItem($item`Bowl of Scorpions`);
         adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
       }
     },

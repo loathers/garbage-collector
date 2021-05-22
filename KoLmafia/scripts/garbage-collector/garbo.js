@@ -34893,9 +34893,11 @@ var freeFightSources = [new FreeFight(function () {
     return (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject38 || (fights_templateObject38 = fights_taggedTemplateLiteral(["lynyrd snare"]))));
   }
 }), new FreeFight(function () {
-  return (0,dist.have)((0,dist.$item)(fights_templateObject39 || (fights_templateObject39 = fights_taggedTemplateLiteral(["[glitch season reward name]"])))) && !(0,dist.get)("glitchItemAvailable");
+  return (0,dist.have)((0,dist.$item)(fights_templateObject39 || (fights_templateObject39 = fights_taggedTemplateLiteral(["[glitch season reward name]"])))) && !(0,dist.get)("_glitchMonsterFights");
 }, function () {
-  return (0,external_kolmafia_.visitUrl)("inv_eat.php?pwd&whichitem=10207");
+  return (0,combat.withMacro)(combat.Macro.meatKill(), function () {
+    return (0,external_kolmafia_.visitUrl)("inv_eat.php?pwd&whichitem=10207");
+  });
 }), // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
 new FreeFight(function () {
   var maxSeals = (0,dist.have)((0,dist.$item)(fights_templateObject40 || (fights_templateObject40 = fights_taggedTemplateLiteral(["Claw of the Infernal Seal"])))) ? 10 : 5;
@@ -34923,7 +34925,7 @@ new FreeFight(function () {
   return (0,dist.get)("questL11Worship") !== "unstarted" ? clamp(9 - (0,dist.get)("_drunkPygmyBanishes"), 0, 9) : 0;
 }, function () {
   (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(fights_templateObject49 || (fights_templateObject49 = fights_taggedTemplateLiteral(["bowling ball"])))), (0,dist.$item)(fights_templateObject50 || (fights_templateObject50 = fights_taggedTemplateLiteral(["bowling ball"]))));
-  (0,external_kolmafia_.retrieveItem)(9 - (0,dist.get)("_drunkPygmyBanishes"), (0,dist.$item)(fights_templateObject51 || (fights_templateObject51 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
+  (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject51 || (fights_templateObject51 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
   (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject52 || (fights_templateObject52 = fights_taggedTemplateLiteral(["Louder than Bomb"]))));
   (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject53 || (fights_templateObject53 = fights_taggedTemplateLiteral(["tennis ball"]))));
   (0,dist.adventureMacro)((0,dist.$location)(fights_templateObject54 || (fights_templateObject54 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), pygmyMacro);
@@ -34954,16 +34956,16 @@ new FreeFight(function () {
   var rightTime = (0,dist.have)((0,dist.$item)(_templateObject65 || (_templateObject65 = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) && (0,dist.get)("_drunkPygmyBanishes") >= 10;
   var saberedMonster = (0,dist.get)("_saberForceMonster");
   var wrongPygmySabered = saberedMonster && (0,dist.$monsters)(_templateObject66 || (_templateObject66 = fights_taggedTemplateLiteral(["pygmy orderlies, pygmy bowler, pygmy janitor"]))).includes(saberedMonster);
-  var remainingPygmies = (saberedMonster === (0,dist.$monster)(_templateObject67 || (_templateObject67 = fights_taggedTemplateLiteral(["drunk pygmy"]))) ? (0,dist.get)("_saberForceMonsterCount") - 1 : 0) + 2 * clamp(5 - (0,dist.get)("_saberForceUses"), 0, 5);
-  return rightTime && !wrongPygmySabered && remainingPygmies;
+  var remainingPygmies = (saberedMonster === (0,dist.$monster)(_templateObject67 || (_templateObject67 = fights_taggedTemplateLiteral(["drunk pygmy"]))) ? (0,dist.get)("_saberForceMonsterCount") : 0) + 2 * clamp(5 - (0,dist.get)("_saberForceUses"), 0, 5);
+  return (0,dist.get)("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && remainingPygmies;
 }, function () {
-  if ((0,dist.get)("_saberForceMonster") !== (0,dist.$monster)(_templateObject68 || (_templateObject68 = fights_taggedTemplateLiteral(["drunk pygmy"])))) {
+  if (((0,dist.get)("_saberForceMonster") !== (0,dist.$monster)(_templateObject68 || (_templateObject68 = fights_taggedTemplateLiteral(["drunk pygmy"]))) || (0,dist.get)("_saberForceMonsterCount") === 0) && (0,dist.get)("_saberForceUses") < 5) {
     setChoice(1387, 2);
     (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject69 || (_templateObject69 = fights_taggedTemplateLiteral(["bowling ball"])))), (0,dist.$item)(_templateObject70 || (_templateObject70 = fights_taggedTemplateLiteral(["bowling ball"]))));
     (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject71 || (_templateObject71 = fights_taggedTemplateLiteral(["Bowl of Scorpions"])))), (0,dist.$item)(_templateObject72 || (_templateObject72 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
     (0,dist.adventureMacro)((0,dist.$location)(_templateObject73 || (_templateObject73 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), combat.Macro.skill("Use the Force"));
   } else {
-    (0,external_kolmafia_.retrieveItem)(2, (0,dist.$item)(_templateObject74 || (_templateObject74 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(_templateObject74 || (_templateObject74 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
     (0,dist.adventureMacro)((0,dist.$location)(_templateObject75 || (_templateObject75 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), pygmyMacro);
   }
 }, {
@@ -35488,7 +35490,7 @@ function main() {
 
   (0,external_kolmafia_.print)();
   (0,external_kolmafia_.setAutoAttack)(0);
-  (0,external_kolmafia_.setProperty)("battleAction", "combat consult script");
+  (0,external_kolmafia_.setProperty)("battleAction", "custom combat script");
   (0,external_kolmafia_.cliExecute)("mood apathetic");
   (0,external_kolmafia_.cliExecute)("ccs garbo");
   safeRestore(); // FIXME: Dynamically figure out pointer ring approach.
