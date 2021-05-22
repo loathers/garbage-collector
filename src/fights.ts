@@ -253,7 +253,7 @@ const freeFightSources = [
 
   new FreeFight(
     () => have($item`[glitch season reward name]`) && !get("_glitchMonsterFights"),
-    () => withMacro(Macro.meatKill(), () => visitUrl("inv_eat.php?pwd&whichitem=10207")),
+    () => withMacro(Macro.meatKill(), () => visitUrl("inv_eat.php?pwd&whichitem=10207"))
   ),
 
   // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
@@ -342,13 +342,26 @@ const freeFightSources = [
       const wrongPygmySabered =
         saberedMonster &&
         $monsters`pygmy orderlies, pygmy bowler, pygmy janitor`.includes(saberedMonster);
-      const remainingPygmies =
+      const drunksCanAppear =
+        get("_drunkPygmyBanishes") == 10 ||
+        (saberedMonster === $monster`drunk pygmy` && get("_saberForceMonsterCount"));
+      const remainingSaberPygmies =
         (saberedMonster === $monster`drunk pygmy` ? get("_saberForceMonsterCount") : 0) +
         2 * clamp(5 - get("_saberForceUses"), 0, 5);
-      return get("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && remainingPygmies;
+      return (
+        get("questL11Worship") !== "unstarted" &&
+        rightTime &&
+        !wrongPygmySabered &&
+        drunksCanAppear &&
+        remainingSaberPygmies
+      );
     },
     () => {
-      if ((get("_saberForceMonster") !== $monster`drunk pygmy` || get("_saberForceMonsterCount") === 0) && (get("_saberForceUses") < 5)) {
+      if (
+        (get("_saberForceMonster") !== $monster`drunk pygmy` ||
+          get("_saberForceMonsterCount") === 0) &&
+        get("_saberForceUses") < 5
+      ) {
         setChoice(1387, 2);
         putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
         putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
