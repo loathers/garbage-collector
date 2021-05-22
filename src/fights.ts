@@ -531,12 +531,9 @@ const freeFightSources = [
     },
     {
       requirements: () => [
-        new Requirement(
-          [],
-          {
-            forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
-          }
-        ),
+        new Requirement([], {
+          forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
+        }),
       ],
     }
   ),
@@ -641,11 +638,15 @@ export function freeFights() {
 }
 
 function thesisReady(): boolean {
-  return !get("_thesisDelivered") && have($familiar`Pocket Professor`) && $familiar`Pocket Professor`.experience >= 400;
+  return (
+    !get("_thesisDelivered") &&
+    have($familiar`Pocket Professor`) &&
+    $familiar`Pocket Professor`.experience >= 400
+  );
 }
 
 function deliverThesis(): void {
-  const thesisInNEP = get("neverendingPartyAlways")  && get("_neverendingPartyFreeTurns") < 10;
+  const thesisInNEP = get("neverendingPartyAlways") && get("_neverendingPartyFreeTurns") < 10;
 
   //Set up NEP if we haven't yet
   if (thesisInNEP) {
@@ -656,7 +657,7 @@ function deliverThesis(): void {
 
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
-  freeFightOutfit([new Requirement(['100 muscle'], {})]);
+  freeFightOutfit([new Requirement(["100 muscle"], {})]);
   safeRestore();
 
   if (
@@ -671,7 +672,9 @@ function deliverThesis(): void {
   }
   cliExecute("gain 1800 muscle");
   adventureMacro(
-    thesisInNEP ? $location`The Neverending Party` : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+    thesisInNEP
+      ? $location`The Neverending Party`
+      : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
     Macro.skill("Deliver your Thesis")
   );
 }
