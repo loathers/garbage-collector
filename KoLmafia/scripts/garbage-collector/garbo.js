@@ -34971,7 +34971,7 @@ new FreeFight(function () {
   var remainingSaberPygmies = (saberedMonster === (0,dist.$monster)(_templateObject71 || (_templateObject71 = fights_taggedTemplateLiteral(["drunk pygmy"]))) ? (0,dist.get)("_saberForceMonsterCount") : 0) + 2 * clamp(5 - (0,dist.get)("_saberForceUses"), 0, 5);
   return (0,dist.get)("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && drunksCanAppear && remainingSaberPygmies;
 }, function () {
-  if (((0,dist.get)("_saberForceMonster") !== (0,dist.$monster)(_templateObject72 || (_templateObject72 = fights_taggedTemplateLiteral(["drunk pygmy"]))) || (0,dist.get)("_saberForceMonsterCount") === 0) && (0,dist.get)("_saberForceUses") < 5) {
+  if (((0,dist.get)("_saberForceMonster") !== (0,dist.$monster)(_templateObject72 || (_templateObject72 = fights_taggedTemplateLiteral(["drunk pygmy"]))) || (0,dist.get)("_saberForceMonsterCount") === 1) && (0,dist.get)("_saberForceUses") < 5) {
     setChoice(1387, 2);
     (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject73 || (_templateObject73 = fights_taggedTemplateLiteral(["bowling ball"])))), (0,dist.$item)(_templateObject74 || (_templateObject74 = fights_taggedTemplateLiteral(["bowling ball"]))));
     (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject75 || (_templateObject75 = fights_taggedTemplateLiteral(["Bowl of Scorpions"])))), (0,dist.$item)(_templateObject76 || (_templateObject76 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
@@ -35233,7 +35233,7 @@ function deliverThesis() {
 
   (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(_templateObject152 || (_templateObject152 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
   freeFightMood().execute();
-  freeFightOutfit([new Requirement(['100 muscle'], {})]);
+  freeFightOutfit([new Requirement(["100 muscle"], {})]);
   safeRestore();
 
   if ((0,dist.have)((0,dist.$item)(_templateObject153 || (_templateObject153 = fights_taggedTemplateLiteral(["Powerful Glove"])))) && !(0,dist.have)((0,dist.$effect)(_templateObject154 || (_templateObject154 = fights_taggedTemplateLiteral(["Triple-Sized"])))) && (0,dist.get)("_powerfulGloveBatteryPowerUsed") <= 95) {

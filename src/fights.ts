@@ -374,7 +374,7 @@ const freeFightSources = [
     () => {
       if (
         (get("_saberForceMonster") !== $monster`drunk pygmy` ||
-          get("_saberForceMonsterCount") === 0) &&
+          get("_saberForceMonsterCount") === 1) &&
         get("_saberForceUses") < 5
       ) {
         setChoice(1387, 2);
