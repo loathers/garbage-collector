@@ -1,8 +1,6 @@
 import {
   adv1,
-  adventure,
   availableAmount,
-  buy,
   cliExecute,
   eat,
   equip,
@@ -16,16 +14,12 @@ import {
   myAdventures,
   myAscensions,
   myClass,
-  myEffects,
-  myFamiliar,
   myHp,
   myMaxhp,
   myMaxmp,
   myMp,
   mySpleenUse,
-  numericModifier,
   outfit,
-  print,
   putCloset,
   restoreHp,
   restoreMp,
@@ -34,7 +28,6 @@ import {
   runCombat,
   setAutoAttack,
   spleenLimit,
-  toSkill,
   use,
   useFamiliar,
   useSkill,
@@ -48,13 +41,12 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
-  $skills,
   $slot,
   adventureMacro,
   ChateauMantegna,
   get,
-  getAverageAdventures,
   have,
   maximizeCached,
   set,
@@ -107,17 +99,20 @@ export function dailyFights() {
 
             if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
-            if (!get("_cameraUsed") && !have($item`shaking 4-d camera`))
+            if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {
               retrieveItem($item`4-d camera`);
+            }
             useFamiliar($familiar`Pocket Professor`);
             meatOutfit(true);
             withMacro(
-              Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Digitize"))
-                .trySkill("Lecture on Relativity")
-                .externalIf(
+              Macro.if_(
+                "!hasskill Lecture on Relativity",
+                Macro.trySkill("Digitize").externalIf(
                   !get("_cameraUsed") && !have($item`shaking 4-d camera`),
                   Macro.tryItem("4-d camera")
                 )
+              )
+                .trySkill("Lecture on Relativity")
                 .meatKill(),
               () => use($item`photocopied monster`)
             );
@@ -200,6 +195,9 @@ class FreeFight {
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
       withMacro(Macro.meatKill(), this.run);
+
+      // Slot in our Professor Thesis if it's become available
+      if (thesisReady()) deliverThesis();
     }
   }
 }
@@ -208,10 +206,27 @@ const pygmyMacro = Macro.if_(
   "monstername pygmy bowler",
   Macro.trySkill("Snokebomb").item($item`Louder than Bomb`)
 )
-  .if_("monstername pygmy orderlies", Macro.skill("Feel Hatred").item($item`tennis ball`))
+  .if_(
+    "monstername pygmy orderlies",
+    Macro.trySkill("Feel Hatred").item($item`divine champagne popper`)
+  )
+  .if_("monstername pygmy janitor", Macro.item($item`tennis ball`))
   .abort();
 
 const freeFightSources = [
+  // Get a Fish Head from our robortender if available
+  new FreeFight(
+    () =>
+      have($item`Cargo Cultist Shorts`) &&
+      have($familiar`Robortender`) &&
+      !get("_cargoPocketEmptied") &&
+      String(get("cargoPocketsEmptied", "")).indexOf("428") === -1,
+    () => cliExecute("cargo monster Mob Penguin Thug"),
+    {
+      familiar: () => $familiar`Robortender`,
+    }
+  ),
+
   new FreeFight(
     () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
     () => {
@@ -237,9 +252,10 @@ const freeFightSources = [
   new FreeFight(
     () => get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought"),
     () => {
+      const haveEldritchEssence = have($item`eldritch essence`);
       visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
       if (!handlingChoice()) throw "No choice?";
-      runChoice(1);
+      runChoice(haveEldritchEssence ? 2 : 1);
     }
   ),
 
@@ -253,6 +269,14 @@ const freeFightSources = [
     () => use($item`lynyrd snare`),
     {
       cost: () => mallPrice($item`lynyrd snare`),
+    }
+  ),
+
+  new FreeFight(
+    () => have($item`[glitch season reward name]`) && !get("_glitchMonsterFights"),
+    () => {
+      visitUrl("inv_eat.php?pwd&whichitem=10207");
+      runCombat();
     }
   ),
 
@@ -290,50 +314,26 @@ const freeFightSources = [
     }
   ),
 
+  //Initial 9 Pygmy fights
   new FreeFight(
     () =>
-      get("questL11Worship") !== "unstarted" ? clamp(10 - get("_drunkPygmyBanishes"), 0, 10) : 0,
+      get("questL11Worship") !== "unstarted" ? clamp(9 - get("_drunkPygmyBanishes"), 0, 9) : 0,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-      retrieveItem(10 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
+      retrieveItem(clamp(9 - get("_drunkPygmyBanishes"), 0, 9), $item`Bowl of Scorpions`);
       retrieveItem($item`Louder than Bomb`);
       retrieveItem($item`tennis ball`);
+      retrieveItem($item`divine champagne popper`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     }
   ),
 
+  //10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
   new FreeFight(
-    () =>
-      have($item`Fourth of May Cosplay Saber`) && get("_drunkPygmyBanishes") === 10
-        ? 2 * clamp(5 - get("_saberForceUses"), 0, 5)
-        : 0,
-    () => {
-      if (get("_saberForceMonster") === null) {
-        setChoice(1387, 2);
-        putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-        putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
-      }
-      retrieveItem(2, $item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
-      putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
-    },
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`Fourth of May Cosplay Saber`,
-        }),
-      ],
-    }
-  ),
-
-  new FreeFight(
-    () => get("questL11Worship") !== "unstarted" && get("_drunkPygmyBanishes") === 10,
+    () => get("questL11Worship") !== "unstarted" && get("_drunkPygmyBanishes") === 9,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-      retrieveItem(11 - get("_drunkPygmyBanishes"), $item`Bowl of Scorpions`);
+      retrieveItem($item`Bowl of Scorpions`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     {
@@ -345,11 +345,72 @@ const freeFightSources = [
     }
   ),
 
+  //11th pygmy fight if we lack a saber
+  new FreeFight(
+    () =>
+      get("questL11Worship") !== "unstarted" &&
+      get("_drunkPygmyBanishes") === 10 &&
+      !have($item`Fourth of May Cosplay Saber`),
+    () => {
+      putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
+      retrieveItem($item`Bowl of Scorpions`);
+      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+    }
+  ),
+
+  //11th+ pygmy fight if we have a saber- saber friends
+  new FreeFight(
+    () => {
+      const rightTime =
+        have($item`Fourth of May Cosplay Saber`) && get("_drunkPygmyBanishes") >= 10;
+      const saberedMonster = get("_saberForceMonster");
+      const wrongPygmySabered =
+        saberedMonster &&
+        $monsters`pygmy orderlies, pygmy bowler, pygmy janitor`.includes(saberedMonster);
+      const drunksCanAppear =
+        get("_drunkPygmyBanishes") == 10 ||
+        (saberedMonster === $monster`drunk pygmy` && get("_saberForceMonsterCount"));
+      const remainingSaberPygmies =
+        (saberedMonster === $monster`drunk pygmy` ? get("_saberForceMonsterCount") : 0) +
+        2 * clamp(5 - get("_saberForceUses"), 0, 5);
+      return (
+        get("questL11Worship") !== "unstarted" &&
+        rightTime &&
+        !wrongPygmySabered &&
+        drunksCanAppear &&
+        remainingSaberPygmies
+      );
+    },
+    () => {
+      if (
+        (get("_saberForceMonster") !== $monster`drunk pygmy` ||
+          get("_saberForceMonsterCount") === 1) &&
+        get("_saberForceUses") < 5
+      ) {
+        setChoice(1387, 2);
+        putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
+        putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
+        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
+      } else {
+        retrieveItem($item`Bowl of Scorpions`);
+        adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      }
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          forceEquip: $items`Fourth of May Cosplay Saber`,
+        }),
+      ],
+    }
+  ),
+
+  //Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
       get("crystalBallMonster") === $monster`drunk pygmy` &&
-      get("_drunkPygmyBanishes") === 11,
+      get("_drunkPygmyBanishes") >= 11,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(1, $item`Bowl of Scorpions`);
@@ -458,6 +519,17 @@ const freeFightSources = [
   ),
 
   new FreeFight(
+    () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
+    () => {
+      if (!get("snojoSetting")) {
+        visitUrl("place.php?whichplace=snojo&action=snojo_controller");
+        runChoice(3);
+      }
+      adv1($location`The X-32-F Combat Training Snowman`, -1, "");
+    }
+  ),
+
+  new FreeFight(
     () =>
       get("neverendingPartyAlways") ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10) : 0,
     () => {
@@ -465,42 +537,13 @@ const freeFightSources = [
       setChoice(1322, 2); // reject quest.
       setChoice(1324, 5); // pick fight.
       if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
-
-      if (
-        myFamiliar() === $familiar`Pocket Professor` &&
-        $familiar`Pocket Professor`.experience >= 400 &&
-        !get("_thesisDelivered")
-      ) {
-        if (
-          have($item`Powerful Glove`) &&
-          !have($effect`Triple-Sized`) &&
-          get("_powerfulGloveBatteryPowerUsed") <= 95
-        ) {
-          cliExecute("checkpoint");
-          equip($slot`acc1`, $item`Powerful Glove`);
-          ensureEffect($effect`Triple-Sized`);
-          outfit("checkpoint");
-        }
-        cliExecute("gain 1800 muscle");
-        adventureMacro($location`The Neverending Party`, Macro.skill("Deliver your Thesis"));
-      } else {
-        adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
-      }
+      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
     },
     {
-      familiar: () =>
-        $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
-          ? $familiar`Pocket Professor`
-          : null,
       requirements: () => [
-        new Requirement(
-          $familiar`Pocket Professor`.experience >= 400 && !get("_thesisDelivered")
-            ? ["100 Muscle"]
-            : [],
-          {
-            forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
-          }
-        ),
+        new Requirement([], {
+          forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
+        }),
       ],
     }
   ),
@@ -533,7 +576,22 @@ const freeKillSources = [
     }
   ),
 
-  // 22	1	0	0	Fire the Jokester's Gun	combat skill	must have The Jokester's gun equipped (Batfellow content, tradable)
+  // Use the jokester's gun even if we don't have tot
+  new FreeFight(
+    () => !get("_firedJokestersGun") && have($item`The Jokester's gun`),
+    () =>
+      withMacro(Macro.skill("Sing Along").trySkill("Fire the Jokester's Gun"), () =>
+        use($item`drum machine`)
+      ),
+    {
+      familiar: () =>
+        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      requirements: () => [
+        new Requirement(["100 Item Drop"], { forceEquip: $items`The Jokester's Gun` }),
+      ],
+    }
+  ),
+
   // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
   new FreeFight(
     () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
@@ -587,6 +645,48 @@ export function freeFights() {
   } finally {
     cliExecute("uneffect Feeling Lost");
   }
+}
+
+function thesisReady(): boolean {
+  return (
+    !get("_thesisDelivered") &&
+    have($familiar`Pocket Professor`) &&
+    $familiar`Pocket Professor`.experience >= 400
+  );
+}
+
+function deliverThesis(): void {
+  const thesisInNEP = get("neverendingPartyAlways") && get("_neverendingPartyFreeTurns") < 10;
+
+  //Set up NEP if we haven't yet
+  if (thesisInNEP) {
+    setChoice(1322, 2); // reject quest.
+    setChoice(1324, 5); // pick fight.
+    if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
+  }
+
+  useFamiliar($familiar`Pocket Professor`);
+  freeFightMood().execute();
+  freeFightOutfit([new Requirement(["100 muscle"], {})]);
+  safeRestore();
+
+  if (
+    have($item`Powerful Glove`) &&
+    !have($effect`Triple-Sized`) &&
+    get("_powerfulGloveBatteryPowerUsed") <= 95
+  ) {
+    cliExecute("checkpoint");
+    equip($slot`acc1`, $item`Powerful Glove`);
+    ensureEffect($effect`Triple-Sized`);
+    outfit("checkpoint");
+  }
+  cliExecute("gain 1800 muscle");
+  adventureMacro(
+    thesisInNEP
+      ? $location`The Neverending Party`
+      : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+    Macro.skill("Deliver your Thesis")
+  );
 }
 
 export function safeRestore(): void {
