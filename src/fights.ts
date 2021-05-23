@@ -268,11 +268,10 @@ const freeFightSources = [
 
   new FreeFight(
     () => have($item`[glitch season reward name]`) && !get("_glitchMonsterFights"),
-    () =>
-      withMacro(Macro.meatKill(), () => {
-        visitUrl("inv_eat.php?pwd&whichitem=10207");
-        runCombat();
-      })
+    () => {
+      visitUrl("inv_eat.php?pwd&whichitem=10207");
+      runCombat();
+    }
   ),
 
   // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.

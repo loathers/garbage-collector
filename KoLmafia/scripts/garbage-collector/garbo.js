@@ -34906,10 +34906,8 @@ new FreeFight(function () {
 }), new FreeFight(function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject42 || (fights_templateObject42 = fights_taggedTemplateLiteral(["[glitch season reward name]"])))) && !(0,dist.get)("_glitchMonsterFights");
 }, function () {
-  return (0,combat.withMacro)(combat.Macro.meatKill(), function () {
-    (0,external_kolmafia_.visitUrl)("inv_eat.php?pwd&whichitem=10207");
-    (0,external_kolmafia_.runCombat)();
-  });
+  (0,external_kolmafia_.visitUrl)("inv_eat.php?pwd&whichitem=10207");
+  (0,external_kolmafia_.runCombat)();
 }), // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
 new FreeFight(function () {
   var maxSeals = (0,dist.have)((0,dist.$item)(fights_templateObject43 || (fights_templateObject43 = fights_taggedTemplateLiteral(["Claw of the Infernal Seal"])))) ? 10 : 5;
