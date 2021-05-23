@@ -35076,7 +35076,7 @@ new FreeFight(function () {
     (0,external_kolmafia_.runChoice)(3);
   }
 
-  (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject116 || (_templateObject116 = fights_taggedTemplateLiteral([""]))), -1, "The X-32-F Combat Training Snowman");
+  (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject116 || (_templateObject116 = fights_taggedTemplateLiteral(["The X-32-F Combat Training Snowman"]))), -1, "");
 }), new FreeFight(function () {
   return (0,dist.get)("neverendingPartyAlways") ? clamp(10 - (0,dist.get)("_neverendingPartyFreeTurns"), 0, 10) : 0;
 }, function () {

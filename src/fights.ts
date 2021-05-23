@@ -518,7 +518,7 @@ const freeFightSources = [
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         runChoice(3);
       }
-      adv1($location``, -1, "The X-32-F Combat Training Snowman");
+      adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     }
   ),
 
