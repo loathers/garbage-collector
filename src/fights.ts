@@ -216,7 +216,7 @@ const freeFightSources = [
       have($item`Cargo Cultist Shorts`) &&
       have($familiar`Robortender`) &&
       !get("_cargoPocketEmptied") &&
-      !get("cargoPocketsEmptied").includes("428"),
+      String(get("cargoPocketsEmptied", "")).indexOf("428") === -1,
     () => cliExecute("cargo monster Mob Penguin Thug"),
     {
       familiar: () => $familiar`Robortender`,

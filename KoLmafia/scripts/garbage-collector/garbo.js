@@ -34865,7 +34865,7 @@ var FreeFight = /*#__PURE__*/function () {
 var pygmyMacro = combat.Macro.if_("monstername pygmy bowler", combat.Macro.trySkill("Snokebomb").item((0,dist.$item)(fights_templateObject32 || (fights_templateObject32 = fights_taggedTemplateLiteral(["Louder than Bomb"]))))).if_("monstername pygmy orderlies", combat.Macro.trySkill("Feel Hatred").item((0,dist.$item)(fights_templateObject33 || (fights_templateObject33 = fights_taggedTemplateLiteral(["tennis ball"]))))).abort();
 var freeFightSources = [// Get a Fish Head from our robortender if available
 new FreeFight(function () {
-  return (0,dist.have)((0,dist.$item)(fights_templateObject34 || (fights_templateObject34 = fights_taggedTemplateLiteral(["Cargo Cultist Shorts"])))) && (0,dist.have)((0,dist.$familiar)(fights_templateObject35 || (fights_templateObject35 = fights_taggedTemplateLiteral(["Robortender"])))) && !(0,dist.get)("_cargoPocketEmptied") && !(0,dist.get)("cargoPocketsEmptied").includes("428");
+  return (0,dist.have)((0,dist.$item)(fights_templateObject34 || (fights_templateObject34 = fights_taggedTemplateLiteral(["Cargo Cultist Shorts"])))) && (0,dist.have)((0,dist.$familiar)(fights_templateObject35 || (fights_templateObject35 = fights_taggedTemplateLiteral(["Robortender"])))) && !(0,dist.get)("_cargoPocketEmptied") && String((0,dist.get)("cargoPocketsEmptied", "")).indexOf("428") === -1;
 }, function () {
   return (0,external_kolmafia_.cliExecute)("cargo monster Mob Penguin Thug");
 }, {
