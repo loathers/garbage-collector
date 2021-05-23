@@ -206,7 +206,11 @@ const pygmyMacro = Macro.if_(
   "monstername pygmy bowler",
   Macro.trySkill("Snokebomb").item($item`Louder than Bomb`)
 )
-  .if_("monstername pygmy orderlies", Macro.trySkill("Feel Hatred").item($item`tennis ball`))
+  .if_(
+    "monstername pygmy orderlies",
+    Macro.trySkill("Feel Hatred").item($item`divine champagne popper`)
+  )
+  .if_("monstername pygmy janitor", Macro.item($item`tennis ball`))
   .abort();
 
 const freeFightSources = [
@@ -319,6 +323,7 @@ const freeFightSources = [
       retrieveItem(clamp(9 - get("_drunkPygmyBanishes"), 0, 9), $item`Bowl of Scorpions`);
       retrieveItem($item`Louder than Bomb`);
       retrieveItem($item`tennis ball`);
+      retrieveItem($item`divine champagne popper`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     }
   ),
