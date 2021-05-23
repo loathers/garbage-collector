@@ -105,12 +105,14 @@ export function dailyFights() {
             useFamiliar($familiar`Pocket Professor`);
             meatOutfit(true);
             withMacro(
-              Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Digitize"))
-                .trySkill("Lecture on Relativity")
-                .externalIf(
+              Macro.if_(
+                "!hasskill Lecture on Relativity",
+                Macro.trySkill("Digitize").externalIf(
                   !get("_cameraUsed") && !have($item`shaking 4-d camera`),
                   Macro.tryItem("4-d camera")
                 )
+              )
+                .trySkill("Lecture on Relativity")
                 .meatKill(),
               () => use($item`photocopied monster`)
             );

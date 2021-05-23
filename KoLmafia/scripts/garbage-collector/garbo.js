@@ -34774,7 +34774,7 @@ function dailyFights() {
 
             (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(fights_templateObject17 || (fights_templateObject17 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
             meatOutfit(true);
-            (0,combat.withMacro)(combat.Macro.if_("!hasskill Lecture on Relativity", combat.Macro.trySkill("Digitize")).trySkill("Lecture on Relativity").externalIf(!(0,dist.get)("_cameraUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject18 || (fights_templateObject18 = fights_taggedTemplateLiteral(["shaking 4-d camera"])))), combat.Macro.tryItem("4-d camera")).meatKill(), function () {
+            (0,combat.withMacro)(combat.Macro.if_("!hasskill Lecture on Relativity", combat.Macro.trySkill("Digitize").externalIf(!(0,dist.get)("_cameraUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject18 || (fights_templateObject18 = fights_taggedTemplateLiteral(["shaking 4-d camera"])))), combat.Macro.tryItem("4-d camera"))).trySkill("Lecture on Relativity").meatKill(), function () {
               return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject19 || (fights_templateObject19 = fights_taggedTemplateLiteral(["photocopied monster"]))));
             });
           }
