@@ -34732,16 +34732,21 @@ function fights_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.
 
 
 
+function checkFax() {
+  (0,external_kolmafia_.cliExecute)('fax receive');
+  if ((0,dist.get)('photocopyMonster') === (0,dist.$monster)(fights_templateObject || (fights_templateObject = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"])))) return true;
+  (0,external_kolmafia_.cliExecute)('fax send');
+  return false;
+}
+
 function faxEmbezzler() {
   if (!(0,dist.get)('_photocopyUsed')) {
+    if (checkFax()) return;
     (0,external_kolmafia_.chatPrivate)('cheesefax', 'Knob Goblin Embezzler');
 
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
       (0,external_kolmafia_.wait)(10);
-      (0,external_kolmafia_.cliExecute)('fax receive');
-      if ((0,dist.get)('photocopyMonster') === (0,dist.$monster)(fights_templateObject || (fights_templateObject = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"])))) return; // otherwise got the wrong monster, put it back.
-
-      (0,external_kolmafia_.cliExecute)('fax send');
+      if (checkFax()) return;
     }
 
     (0,external_kolmafia_.abort)("Failed to acquire photocopied Knob Goblin Embezzler.");
@@ -34756,7 +34761,7 @@ function dailyFights() {
     var embezzler = (0,dist.$monster)(fights_templateObject3 || (fights_templateObject3 = fights_taggedTemplateLiteral(["Knob Goblin embezzler"])));
 
     if ((!(0,dist.have)((0,dist.$item)(fights_templateObject4 || (fights_templateObject4 = fights_taggedTemplateLiteral(["photocopied monster"])))) || (0,dist.get)("photocopyMonster") !== embezzler) && !(0,dist.get)("_photocopyUsed")) {
-      faxEmbezzler;
+      faxEmbezzler();
     }
 
     if ((0,external_kolmafia_.getClanLounge)()["Clan pool table"] !== undefined) {

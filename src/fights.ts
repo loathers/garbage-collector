@@ -64,15 +64,20 @@ import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
 
+function checkFax(): boolean {
+  cliExecute('fax receive');
+  if (get('photocopyMonster') === $monster`Knob Goblin Embezzler`) return true;
+  cliExecute('fax send');
+  return false;
+}
+
 function faxEmbezzler(): void {
-  if (!get('_photocopyUsed')){   
+  if (!get('_photocopyUsed')){  
+    if (checkFax()) return; 
     chatPrivate('cheesefax', 'Knob Goblin Embezzler');
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
       wait(10);
-      cliExecute('fax receive');
-      if (get('photocopyMonster') === $monster`Knob Goblin Embezzler`) return;
-      // otherwise got the wrong monster, put it back.
-      cliExecute('fax send');
+      if (checkFax()) return; 
     }
     abort("Failed to acquire photocopied Knob Goblin Embezzler.")
   }
