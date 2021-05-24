@@ -521,7 +521,7 @@ const freeFightSources = [
   new FreeFight(
     () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
     () => {
-      if (!get("snojoSetting")) {
+      if (get("snojoSetting", "NONE") === "NONE") {
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         runChoice(3);
       }
