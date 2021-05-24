@@ -1,6 +1,8 @@
 import {
+  abort,
   adv1,
   availableAmount,
+  chatPrivate,
   cliExecute,
   eat,
   equip,
@@ -32,6 +34,7 @@ import {
   useFamiliar,
   useSkill,
   visitUrl,
+  wait,
 } from "kolmafia";
 import {
   $class,
@@ -61,6 +64,20 @@ import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
 
+function faxEmbezzler(): void {
+  if (!get('_photocopyUsed')){   
+    chatPrivate('cheesefax', 'Knob Goblin Embezzler');
+    for (let i = 0; i < 2; i++) {
+      wait(10);
+      cliExecute('fax receive');
+      if (get('photocopyMonster') === $monster`Knob Goblin Embezzler`) return;
+      // otherwise got the wrong monster, put it back.
+      cliExecute('fax send');
+    }
+    abort("Failed to acquire photocopied Knob Goblin Embezzler.")
+  }
+}
+
 export function dailyFights() {
   meatMood(true).execute(myAdventures() * 1.04 + 50);
   safeRestore();
@@ -70,7 +87,7 @@ export function dailyFights() {
       (!have($item`photocopied monster`) || get("photocopyMonster") !== embezzler) &&
       !get("_photocopyUsed")
     ) {
-      faxbot(embezzler, "CheeseFax");
+      faxEmbezzler()
     }
 
     if (getClanLounge()["Clan pool table"] !== undefined) {
