@@ -627,6 +627,19 @@ const freeKillSources = [
       ],
     }
   ),
+
+  new FreeFight(
+    () => (have($item`replica bat-oomerang`) ? clamp(3 - get("_usedReplicaBatoomerang"), 0, 3) : 0),
+    () =>
+      withMacro(Macro.skill("Sing Along").item("replica bat-oomerang"), () => use($item`drum machine`)),
+    {
+      familiar: () =>
+        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      requirements: () => [
+        new Requirement(["100 Item Drop"], {}),
+      ],
+    }
+  ),
 ];
 
 export function freeFights() {

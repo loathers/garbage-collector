@@ -1400,6 +1400,11 @@ core-js-compat@^3.8.0:
     browserslist "^4.16.1"
     semver "7.0.0"
 
+core-js@3.9.0:
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.9.0.tgz#790b1bb11553a2272b36e2625c7179db345492f8"
+  integrity sha512-PyFBJaLq93FlyYdsndE5VaueA9K5cNB7CGzeCj191YYLhkQM0gdZR2SKihM70oF0wdqKSKClv/tEBOpoRmdOVQ==
+
 core-js@^3.8.0:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.8.3.tgz"
@@ -2137,12 +2142,14 @@ kolmafia@^1.0.3:
   resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-1.0.3.tgz"
   integrity sha512-e9H+mhYP/xqhfX56AcbVtc5aIsrWbH2LHNQoG5S2i5k0ST4NaMoIQLxBpkFxPs1rUjHPNDcqxxN1McPviqm/BQ==
 
-libram@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.0.5.tgz#54c6f024885343459564c55d8e517072257072c4"
-  integrity sha512-1Q0oEQrQ+Kdo4pwesSbcc5uyajFem2Bb173aJ6DBeFQ1AIsNKTCStOYIFueWltlGS/ao+bgK8+Z7GqfUhZnoUw==
+libram@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.0.8.tgz#d41184d8b6264e638b8e728aac7567084bd10986"
+  integrity sha512-R/SmxCFkjlfl0Cwk9P0y38FdZUGT+rz2NPMLhCinoQXJMR8DbLwwPCDEgvMZlprrCKCu+9scQEcv33qUu6jaNA==
   dependencies:
+    core-js "3.9.0"
     kolmafia "^1.0.3"
+    lodash-es "^4.17.21"
     node-html-parser "^2.0.0"
 
 loader-runner@^4.2.0:
@@ -2172,6 +2179,11 @@ locate-path@^6.0.0:
   integrity sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==
   dependencies:
     p-locate "^5.0.0"
+
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
 lodash@^4.17.19:
   version "4.17.20"
