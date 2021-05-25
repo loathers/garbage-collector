@@ -74,8 +74,9 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
   maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
 }
 
-export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = []) {
+export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [], sea?: boolean) {
   const forceEquip = [];
+  const additionalRequirements = [];
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
@@ -93,12 +94,16 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
     }
     forceEquip.push($item`mafia pointer finger ring`);
   }
+  if (sea) {
+    additionalRequirements.push("sea")
+  }
   const compiledRequirements = Requirement.merge([
     ...requirements,
     new Requirement(
       [
         `${((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2)} Meat Drop`,
         `${embezzlerUp ? 0 : 0.72} Item Drop`,
+        ...additionalRequirements,
       ],
       {
         forceEquip,
@@ -119,4 +124,5 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
   if (equippedAmount($item`ice nine`) > 0) {
     equip($item`unwrapped retro superhero cape`);
   }
+  if (sea) maximizeCached(["sea -tie"]);
 }

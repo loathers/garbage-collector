@@ -122,7 +122,7 @@ function dailySetup() {
   }
 
   if (have($familiar`Robortender`)) {
-    for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre`) {
+    for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, bloody nora`) {
       if (get("_roboDrinks").includes(drink.name)) continue;
       useFamiliar($familiar`robortender`);
       if (itemAmount(drink) === 0) buy(1, drink, 150000);
@@ -249,7 +249,7 @@ function barfTurn() {
   }
 
   const underwater = location === $location`The Briny Deeps`;
-  meatOutfit(embezzlerUp, underwater ? [new Requirement(["sea"], {})] : []);
+  meatOutfit(embezzlerUp, [], underwater);
 
   // c. set up mood stuff
   meatMood().execute(myAdventures() * 1.04 + 50);

@@ -19,7 +19,7 @@ export function meatFamiliar(): Familiar {
   ) {
     return $familiar`Trick-or-Treating Tot`;
   } else {
-    for (const familiar of $familiars`Robortender, Hobo Monkey, Cat Burglar, Leprechaun`) {
+    for (const familiar of $familiars`Robortender, Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`) {
       if (haveFamiliar(familiar)) return familiar;
     }
   }
@@ -91,7 +91,7 @@ export function freeFightFamiliar(): Familiar {
 
   if (haveFamiliar($familiar`Robortender`)) familiarValue.push([$familiar`Robortender`, 200]);
 
-  for (const familiar of $familiars`Hobo Monkey, Cat Burglar, Leprechaun`) {
+  for (const familiar of $familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`) {
     if (haveFamiliar(familiar)) familiarValue.push([familiar, 1]);
   }
 
