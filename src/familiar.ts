@@ -19,7 +19,7 @@ export function meatFamiliar(): Familiar {
   ) {
     return $familiar`Trick-or-Treating Tot`;
   } else {
-    for (const familiar of $familiars`Robortender, Hobo Monkey, Cat Burglar, Leprechaun`) {
+    for (const familiar of $familiars`Robortender, Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`) {
       if (haveFamiliar(familiar)) return familiar;
     }
   }
