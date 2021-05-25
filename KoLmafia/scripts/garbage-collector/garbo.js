@@ -34268,7 +34268,7 @@ function freeFightFamiliar() {
 
   if ((0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(familiar_templateObject16 || (familiar_templateObject16 = familiar_taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([(0,dist.$familiar)(familiar_templateObject17 || (familiar_templateObject17 = familiar_taggedTemplateLiteral(["Robortender"]))), 200]);
 
-  var _iterator2 = familiar_createForOfIteratorHelper((0,dist.$familiars)(familiar_templateObject19 || (familiar_templateObject19 = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Leprechaun"])))),
+  var _iterator2 = familiar_createForOfIteratorHelper((0,dist.$familiars)(familiar_templateObject19 || (familiar_templateObject19 = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
       _step2;
 
   try {
