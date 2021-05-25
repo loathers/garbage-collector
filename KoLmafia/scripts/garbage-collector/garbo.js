@@ -35072,7 +35072,7 @@ new FreeFight(function () {
 }), new FreeFight(function () {
   return (0,dist.get)("snojoAvailable") && clamp(10 - (0,dist.get)("_snojoFreeFights"), 0, 10);
 }, function () {
-  if (!(0,dist.get)("snojoSetting")) {
+  if ((0,dist.get)("snojoSetting", "NONE") === "NONE") {
     (0,external_kolmafia_.visitUrl)("place.php?whichplace=snojo&action=snojo_controller");
     (0,external_kolmafia_.runChoice)(3);
   }
