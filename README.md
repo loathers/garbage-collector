@@ -9,6 +9,7 @@ Before running Garbage Collector, there are a few tasks you must do.
 
 # Enable Autoattack versus Special Monsters
 You will need to enable autoattack versus special monsters to enable the script to kill several iterations of Knob Goblin Embezzlers. In order to do this, please go to your KOL base game settings, navigate to the "Combat" page, and enable the first setting under your combat options (circled below).
+
 ![image](https://user-images.githubusercontent.com/8014761/120696502-a3514a80-c47a-11eb-85c4-f7244342095c.png)
 
 # Set the value of a marginal adventure
