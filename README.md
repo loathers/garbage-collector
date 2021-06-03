@@ -11,7 +11,7 @@ Before running Garbage Collector, there are a few tasks you must do.
 You will need to enable autoattack versus special monsters to enable the script to kill several iterations of Knob Goblin Embezzlers. In order to do this, please go to your KOL base game settings, navigate to the "Combat" page, and enable the first setting under your combat options (circled below).
 ![image](https://user-images.githubusercontent.com/8014761/120696502-a3514a80-c47a-11eb-85c4-f7244342095c.png)
 
-# Set the value of an incremental adventure
+# Set the value of a marginal adventure
 You need to let Garbo know how much it can expect your turns to be worth near the end of the day. One easy way to do this is to set it at 3000 meat manually, then examine your session logs to see how much meat you were actually generating in the last 10-15 turns of the day. To set this, run the following command in the KoLMafia CLI:
 
 ```set valueOfAdventure = 3000;```
