@@ -304,6 +304,7 @@ export function main(argString = "") {
   print();
 
   setAutoAttack(0);
+  visitUrl("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true); //Check the magic box
   setProperty("battleAction", "custom combat script");
   cliExecute("mood apathetic");
   cliExecute("ccs garbo");
