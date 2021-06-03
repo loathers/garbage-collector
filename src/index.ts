@@ -25,6 +25,7 @@ import {
   useFamiliar,
   useSkill,
   visitUrl,
+  xpath,
 } from "kolmafia";
 import {
   $class,
@@ -304,7 +305,12 @@ export function main(argString = "") {
   print();
 
   setAutoAttack(0);
-  visitUrl("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true); //Check the magic box
+  const aaBossFlag = xpath(
+    visitUrl("account.php?tab=combat"),
+    `//*[@id="opt_flag_aabosses"]/label/input/@value`
+  )[0];
+  if (aaBossFlag !== "1")
+    visitUrl("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true); //Check the magic box
   setProperty("battleAction", "custom combat script");
   cliExecute("mood apathetic");
   cliExecute("ccs garbo");
@@ -338,4 +344,6 @@ export function main(argString = "") {
       setAutoAttack(0);
     }
   });
+  if (aaBossFlag !== "1")
+    visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
 }
