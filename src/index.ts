@@ -25,6 +25,7 @@ import {
   useFamiliar,
   useSkill,
   visitUrl,
+  xpath,
 } from "kolmafia";
 import {
   $class,
@@ -297,44 +298,53 @@ export function main(argString = "") {
     }
   }
 
-  print("Collecting garbage!", "blue");
-  if (globalOptions.stopTurncount !== null) {
-    print(`Stopping in ${globalOptions.stopTurncount - myTurncount()}`, "blue");
-  }
-  print();
-
-  setAutoAttack(0);
-  setProperty("battleAction", "custom combat script");
-  cliExecute("mood apathetic");
-  cliExecute("ccs garbo");
-  safeRestore();
-
-  // FIXME: Dynamically figure out pointer ring approach.
-  withStash($items`haiku katana, repaid diaper`, () => {
-    // 0. diet stuff.
-    runDiet();
-
-    // 1. get a ticket
-    ensureBarfAccess();
-
-    // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
-    dailySetup();
-
-    setDefaultMaximizeOptions({
-      preventEquip: $items`broken champagne bottle`,
-    });
-
-    // 4. do some embezzler stuff
-    freeFights();
-    dailyFights();
-
-    // 5. burn turns at barf
-    try {
-      while (canContinue()) {
-        barfTurn();
-      }
-    } finally {
-      setAutoAttack(0);
+  const aaBossFlag = xpath(
+    visitUrl("account.php?tab=combat"),
+    `//*[@id="opt_flag_aabosses"]/label/input/@value`
+  )[0];
+  try {
+    print("Collecting garbage!", "blue");
+    if (globalOptions.stopTurncount !== null) {
+      print(`Stopping in ${globalOptions.stopTurncount - myTurncount()}`, "blue");
     }
-  });
+    print();
+
+    setAutoAttack(0);
+    visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
+    setProperty("battleAction", "custom combat script");
+    cliExecute("mood apathetic");
+    cliExecute("ccs garbo");
+    safeRestore();
+
+    // FIXME: Dynamically figure out pointer ring approach.
+    withStash($items`haiku katana, repaid diaper`, () => {
+      // 0. diet stuff.
+      runDiet();
+
+      // 1. get a ticket
+      ensureBarfAccess();
+
+      // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+      dailySetup();
+
+      setDefaultMaximizeOptions({
+        preventEquip: $items`broken champagne bottle`,
+      });
+
+      // 4. do some embezzler stuff
+      freeFights();
+      dailyFights();
+
+      // 5. burn turns at barf
+      try {
+        while (canContinue()) {
+          barfTurn();
+        }
+      } finally {
+        setAutoAttack(0);
+      }
+    });
+  } finally {
+    visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
+  }
 }
