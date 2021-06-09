@@ -34907,8 +34907,68 @@ function runDiet() {
   }
 }
 ;// CONCATENATED MODULE: ./src/familiar.ts
-function familiar_templateObject19() {
+function familiar_templateObject25() {
   var data = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"]);
+
+  familiar_templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject24() {
+  var data = familiar_taggedTemplateLiteral(["None"]);
+
+  familiar_templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject23() {
+  var data = familiar_taggedTemplateLiteral(["Robortender"]);
+
+  familiar_templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject22() {
+  var data = familiar_taggedTemplateLiteral(["Robortender"]);
+
+  familiar_templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject21() {
+  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
+
+  familiar_templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject20() {
+  var data = familiar_taggedTemplateLiteral(["Jingle Jangle Jingle"]);
+
+  familiar_templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject19() {
+  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
 
   familiar_templateObject19 = function _templateObject19() {
     return data;
@@ -34918,7 +34978,7 @@ function familiar_templateObject19() {
 }
 
 function familiar_templateObject18() {
-  var data = familiar_taggedTemplateLiteral(["None"]);
+  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
 
   familiar_templateObject18 = function _templateObject18() {
     return data;
@@ -34928,7 +34988,7 @@ function familiar_templateObject18() {
 }
 
 function familiar_templateObject17() {
-  var data = familiar_taggedTemplateLiteral(["Robortender"]);
+  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
 
   familiar_templateObject17 = function _templateObject17() {
     return data;
@@ -34938,7 +34998,7 @@ function familiar_templateObject17() {
 }
 
 function familiar_templateObject16() {
-  var data = familiar_taggedTemplateLiteral(["Robortender"]);
+  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
 
   familiar_templateObject16 = function _templateObject16() {
     return data;
@@ -34948,7 +35008,7 @@ function familiar_templateObject16() {
 }
 
 function familiar_templateObject15() {
-  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
+  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
 
   familiar_templateObject15 = function _templateObject15() {
     return data;
@@ -34958,7 +35018,7 @@ function familiar_templateObject15() {
 }
 
 function familiar_templateObject14() {
-  var data = familiar_taggedTemplateLiteral(["Jingle Jangle Jingle"]);
+  var data = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]);
 
   familiar_templateObject14 = function _templateObject14() {
     return data;
@@ -34968,7 +35028,7 @@ function familiar_templateObject14() {
 }
 
 function familiar_templateObject13() {
-  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
+  var data = familiar_taggedTemplateLiteral(["hot ashes"]);
 
   familiar_templateObject13 = function _templateObject13() {
     return data;
@@ -34978,7 +35038,7 @@ function familiar_templateObject13() {
 }
 
 function familiar_templateObject12() {
-  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
+  var data = familiar_taggedTemplateLiteral(["devilish folio"]);
 
   familiar_templateObject12 = function _templateObject12() {
     return data;
@@ -34988,7 +35048,7 @@ function familiar_templateObject12() {
 }
 
 function familiar_templateObject11() {
-  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
+  var data = familiar_taggedTemplateLiteral(["tiny bottle of absinthe"]);
 
   familiar_templateObject11 = function _templateObject11() {
     return data;
@@ -34998,7 +35058,7 @@ function familiar_templateObject11() {
 }
 
 function familiar_templateObject10() {
-  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
+  var data = familiar_taggedTemplateLiteral(["agua de vida"]);
 
   familiar_templateObject10 = function _templateObject10() {
     return data;
@@ -35008,7 +35068,7 @@ function familiar_templateObject10() {
 }
 
 function familiar_templateObject9() {
-  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
+  var data = familiar_taggedTemplateLiteral(["groose grease"]);
 
   familiar_templateObject9 = function _templateObject9() {
     return data;
@@ -35018,7 +35078,7 @@ function familiar_templateObject9() {
 }
 
 function familiar_templateObject8() {
-  var data = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]);
+  var data = familiar_taggedTemplateLiteral(["Game Grid token"]);
 
   familiar_templateObject8 = function _templateObject8() {
     return data;
@@ -35152,6 +35212,36 @@ var rotatingFamiliars = {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: (0,dist.$item)(familiar_templateObject7()),
     pref: "_transponderDrops"
+  },
+  "Rogue Program": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject8()),
+    pref: "_tokenDrops"
+  },
+  "Bloovian Groose": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject9()),
+    pref: "_grooseDrops"
+  },
+  "Baby Sandworm": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject10()),
+    pref: "_aguaDrops"
+  },
+  "Green Pixie": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject11()),
+    pref: "_absintheDrops"
+  },
+  "Blavious Kloop": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject12()),
+    pref: "_kloopDrops"
+  },
+  "Galloping Grill": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject13()),
+    pref: "_hotAshesDrops"
   }
 };
 var savedMimicDropValue = null;
@@ -35159,15 +35249,15 @@ var savedMimicDropValue = null;
 function mimicDropValue() {
   var _savedMimicDropValue;
 
-  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = averagePrice((0,dist.$items)(familiar_templateObject8())) / (6.29 * 0.95 + 1 * 0.05);
+  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = averagePrice((0,dist.$items)(familiar_templateObject14())) / (6.29 * 0.95 + 1 * 0.05);
 }
 
 function freeFightFamiliar() {
   var familiarValue = [];
 
-  if ((0,dist.have)((0,dist.$familiar)(familiar_templateObject9())) && (0,dist.$familiar)(familiar_templateObject10()).experience < 400 && !(0,dist.get)("_thesisDelivered")) {
+  if ((0,dist.have)((0,dist.$familiar)(familiar_templateObject15())) && (0,dist.$familiar)(familiar_templateObject16()).experience < 400 && !(0,dist.get)("_thesisDelivered")) {
     // Estimate based on value to charge thesis.
-    familiarValue.push([(0,dist.$familiar)(familiar_templateObject11()), 3000]);
+    familiarValue.push([(0,dist.$familiar)(familiar_templateObject17()), 3000]);
   }
 
   for (var _i = 0, _Object$keys = Object.keys(rotatingFamiliars); _i < _Object$keys.length; _i++) {
@@ -35186,16 +35276,16 @@ function freeFightFamiliar() {
     }
   }
 
-  if ((0,dist.have)((0,dist.$familiar)(familiar_templateObject12()))) {
-    var mimicWeight = myFamiliarWeight((0,dist.$familiar)(familiar_templateObject13()));
-    var actionPercentage = 1 / 3 + ((0,external_kolmafia_.haveEffect)((0,dist.$effect)(familiar_templateObject14())) ? 0.1 : 0);
+  if ((0,dist.have)((0,dist.$familiar)(familiar_templateObject18()))) {
+    var mimicWeight = myFamiliarWeight((0,dist.$familiar)(familiar_templateObject19()));
+    var actionPercentage = 1 / 3 + ((0,external_kolmafia_.haveEffect)((0,dist.$effect)(familiar_templateObject20())) ? 0.1 : 0);
     var mimicValue = mimicDropValue() + mimicWeight * actionPercentage * 1 / 4 * 10 * 4 * 1.2;
-    familiarValue.push([(0,dist.$familiar)(familiar_templateObject15()), mimicValue]);
+    familiarValue.push([(0,dist.$familiar)(familiar_templateObject21()), mimicValue]);
   }
 
-  if ((0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(familiar_templateObject16()))) familiarValue.push([(0,dist.$familiar)(familiar_templateObject17()), 200]);
+  if ((0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(familiar_templateObject22()))) familiarValue.push([(0,dist.$familiar)(familiar_templateObject23()), 200]);
 
-  var _iterator2 = familiar_createForOfIteratorHelper((0,dist.$familiars)(familiar_templateObject19())),
+  var _iterator2 = familiar_createForOfIteratorHelper((0,dist.$familiars)(familiar_templateObject25())),
       _step2;
 
   try {
@@ -35209,7 +35299,7 @@ function freeFightFamiliar() {
     _iterator2.f();
   }
 
-  familiarValue.push([(0,dist.$familiar)(familiar_templateObject18()), 0]);
+  familiarValue.push([(0,dist.$familiar)(familiar_templateObject24()), 0]);
   return argmax(familiarValue);
 }
 ;// CONCATENATED MODULE: ./src/stash.ts
@@ -39607,41 +39697,48 @@ function main() {
     _iterator2.f();
   }
 
-  (0,external_kolmafia_.print)("Collecting garbage!", "blue");
+  var aaBossFlag = (0,external_kolmafia_.xpath)((0,external_kolmafia_.visitUrl)("account.php?tab=combat"), "//*[@id=\"opt_flag_aabosses\"]/label/input/@value")[0];
 
-  if (globalOptions.stopTurncount !== null) {
-    (0,external_kolmafia_.print)("Stopping in ".concat(globalOptions.stopTurncount - (0,external_kolmafia_.myTurncount)()), "blue");
-  }
+  try {
+    (0,external_kolmafia_.print)("Collecting garbage!", "blue");
 
-  (0,external_kolmafia_.print)();
-  (0,external_kolmafia_.setAutoAttack)(0);
-  (0,external_kolmafia_.setProperty)("battleAction", "custom combat script");
-  (0,external_kolmafia_.cliExecute)("mood apathetic");
-  (0,external_kolmafia_.cliExecute)("ccs garbo");
-  safeRestore(); // FIXME: Dynamically figure out pointer ring approach.
-
-  withStash((0,dist.$items)(src_templateObject66()), function () {
-    // 0. diet stuff.
-    runDiet(); // 1. get a ticket
-
-    ensureBarfAccess(); // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
-
-    dailySetup();
-    (0,dist.setDefaultMaximizeOptions)({
-      preventEquip: (0,dist.$items)(src_templateObject67())
-    }); // 4. do some embezzler stuff
-
-    freeFights();
-    dailyFights(); // 5. burn turns at barf
-
-    try {
-      while (canContinue()) {
-        barfTurn();
-      }
-    } finally {
-      (0,external_kolmafia_.setAutoAttack)(0);
+    if (globalOptions.stopTurncount !== null) {
+      (0,external_kolmafia_.print)("Stopping in ".concat(globalOptions.stopTurncount - (0,external_kolmafia_.myTurncount)()), "blue");
     }
-  });
+
+    (0,external_kolmafia_.print)();
+    (0,external_kolmafia_.setAutoAttack)(0);
+    (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true);
+    (0,external_kolmafia_.setProperty)("battleAction", "custom combat script");
+    (0,external_kolmafia_.cliExecute)("mood apathetic");
+    (0,external_kolmafia_.cliExecute)("ccs garbo");
+    safeRestore(); // FIXME: Dynamically figure out pointer ring approach.
+
+    withStash((0,dist.$items)(src_templateObject66()), function () {
+      // 0. diet stuff.
+      runDiet(); // 1. get a ticket
+
+      ensureBarfAccess(); // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+
+      dailySetup();
+      (0,dist.setDefaultMaximizeOptions)({
+        preventEquip: (0,dist.$items)(src_templateObject67())
+      }); // 4. do some embezzler stuff
+
+      freeFights();
+      dailyFights(); // 5. burn turns at barf
+
+      try {
+        while (canContinue()) {
+          barfTurn();
+        }
+      } finally {
+        (0,external_kolmafia_.setAutoAttack)(0);
+      }
+    });
+  } finally {
+    (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=".concat(aaBossFlag, "&action=Update"), true);
+  }
 }
 
 /***/ }),

@@ -48,6 +48,36 @@ const rotatingFamiliars: { [index: string]: { expected: number[]; drop: Item; pr
     drop: $item`transporter transponder`,
     pref: "_transponderDrops",
   },
+  "Rogue Program": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`Game Grid token`,
+    pref: "_tokenDrops",
+  },
+  "Bloovian Groose": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`groose grease`,
+    pref: "_grooseDrops",
+  },
+  "Baby Sandworm": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`agua de vida`,
+    pref: "_aguaDrops",
+  },
+  "Green Pixie": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`tiny bottle of absinthe`,
+    pref: "_absintheDrops",
+  },
+  "Blavious Kloop": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`devilish folio`,
+    pref: "_kloopDrops",
+  },
+  "Galloping Grill": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`hot ashes`,
+    pref: "_hotAshesDrops",
+  },
 };
 
 let savedMimicDropValue: number | null = null;
