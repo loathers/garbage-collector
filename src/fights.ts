@@ -118,7 +118,7 @@ export function dailyFights() {
                 use($item`Platinum Yendorian Express Card`);
               }
             });
-            if (have($item`license to chill`) && get("_licenseToChillUsed")) {
+            if (have($item`license to chill`) && !get("_licenseToChillUsed")) {
               use(1, $item`license to chill`);
             }
             if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
