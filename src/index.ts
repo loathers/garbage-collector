@@ -121,6 +121,7 @@ function dailySetup() {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
     SourceTerminal.enquiry($effect`familiar.enq`);
   }
+
   const latte = $item`latte lovers member's mug`;
   if (have(latte)) {
     if (numericModifier(latte, "Familiar Weight") !== 5 || numericModifier(latte, "Meat") !== 40) {
