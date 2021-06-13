@@ -5680,7 +5680,7 @@ function src_templateObject38() {
 }
 
 function src_templateObject37() {
-  var data = src_taggedTemplateLiteral(["the black forest"]);
+  var data = src_taggedTemplateLiteral(["the spooky forest"]);
 
   src_templateObject37 = function _templateObject37() {
     return data;
@@ -6134,7 +6134,7 @@ function dailySetup() {
         setChoice(924, 1);
 
         while (!(0,dist.get)("latteUnlocks").includes("cajun") && dist.Bandersnatch.getRemainingRunaways() > 0) {
-          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject29()), -1, "");
+          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject29()), -1, combat.Macro.step("run away").toString());
         }
       }
 
@@ -6149,7 +6149,7 @@ function dailySetup() {
         setChoice(505, 2);
 
         while (!(0,dist.get)("latteUnlocks").includes("rawhide") && dist.Bandersnatch.getRemainingRunaways() > 0) {
-          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject37()), -1, "");
+          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject37()), -1, combat.Macro.step("run away").toString());
         }
       }
 

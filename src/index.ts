@@ -141,7 +141,7 @@ function dailySetup() {
         setChoice(923, 1);
         setChoice(924, 1);
         while (!get("latteUnlocks").includes("cajun") && Bandersnatch.getRemainingRunaways() > 0) {
-          adv1($location`the black forest`, -1, "");
+          adv1($location`the black forest`, -1, Macro.step("run away").toString());
         }
       }
       if (
@@ -163,7 +163,7 @@ function dailySetup() {
           !get("latteUnlocks").includes("rawhide") &&
           Bandersnatch.getRemainingRunaways() > 0
         ) {
-          adv1($location`the black forest`, -1, "");
+          adv1($location`the spooky forest`, -1, Macro.step("run away").toString());
         }
       }
       if (
