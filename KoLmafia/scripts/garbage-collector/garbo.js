@@ -5690,7 +5690,7 @@ function src_templateObject37() {
 }
 
 function src_templateObject36() {
-  var data = src_taggedTemplateLiteral(["the ode to booze"]);
+  var data = src_taggedTemplateLiteral(["ode to booze"]);
 
   src_templateObject36 = function _templateObject36() {
     return data;
@@ -5770,7 +5770,7 @@ function src_templateObject29() {
 }
 
 function src_templateObject28() {
-  var data = src_taggedTemplateLiteral(["the ode to booze"]);
+  var data = src_taggedTemplateLiteral(["ode to booze"]);
 
   src_templateObject28 = function _templateObject28() {
     return data;
