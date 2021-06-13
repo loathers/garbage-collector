@@ -135,7 +135,7 @@ function dailySetup() {
           ? $familiar`pair of stomping boots`
           : $familiar`frumious bandersnatch`;
         useFamiliar(runFam);
-        maximize("familiar weight", false);
+        maximize("familiar weight, +equip latte lovers member's mug", false);
         if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
         Macro.step("runaway").setAutoAttack();
         setChoice(923, 1);
@@ -154,7 +154,7 @@ function dailySetup() {
           ? $familiar`pair of stomping boots`
           : $familiar`frumious bandersnatch`;
         useFamiliar(runFam);
-        maximize("familiar weight", false);
+        maximize("familiar weight, +equip latte lovers member's mug", false);
         if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
         Macro.step("runaway").setAutoAttack();
         setChoice(502, 2);

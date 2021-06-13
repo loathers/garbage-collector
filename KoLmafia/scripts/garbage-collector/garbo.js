@@ -6127,7 +6127,7 @@ function dailySetup() {
       if (!(0,dist.get)("latteUnlocks").includes("cajun") && ((0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(src_templateObject22())) || (0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(src_templateObject23()))) && dist.Bandersnatch.getRemainingRunaways() > 0) {
         var runFam = (0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(src_templateObject24())) ? (0,dist.$familiar)(src_templateObject25()) : (0,dist.$familiar)(src_templateObject26());
         (0,external_kolmafia_.useFamiliar)(runFam);
-        (0,external_kolmafia_.maximize)("familiar weight", false);
+        (0,external_kolmafia_.maximize)("familiar weight, +equip latte lovers member's mug", false);
         if (runFam === (0,dist.$familiar)(src_templateObject27())) ensureEffect((0,dist.$effect)(src_templateObject28()));
         combat.Macro.step("runaway").setAutoAttack();
         setChoice(923, 1);
@@ -6142,7 +6142,7 @@ function dailySetup() {
         var _runFam = (0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(src_templateObject32())) ? (0,dist.$familiar)(src_templateObject33()) : (0,dist.$familiar)(src_templateObject34());
 
         (0,external_kolmafia_.useFamiliar)(_runFam);
-        (0,external_kolmafia_.maximize)("familiar weight", false);
+        (0,external_kolmafia_.maximize)("familiar weight, +equip latte lovers member's mug", false);
         if (_runFam === (0,dist.$familiar)(src_templateObject35())) ensureEffect((0,dist.$effect)(src_templateObject36()));
         combat.Macro.step("runaway").setAutoAttack();
         setChoice(502, 2);
