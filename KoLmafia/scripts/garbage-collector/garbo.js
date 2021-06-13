@@ -6129,12 +6129,12 @@ function dailySetup() {
         (0,external_kolmafia_.useFamiliar)(runFam);
         (0,external_kolmafia_.maximize)("familiar weight", false);
         if (runFam === (0,dist.$familiar)(src_templateObject27())) ensureEffect((0,dist.$effect)(src_templateObject28()));
-        combat.Macro.step("run away").setAutoAttack();
+        combat.Macro.step("runaway").setAutoAttack();
         setChoice(923, 1);
         setChoice(924, 1);
 
         while (!(0,dist.get)("latteUnlocks").includes("cajun") && dist.Bandersnatch.getRemainingRunaways() > 0) {
-          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject29()), -1, combat.Macro.step("run away").toString());
+          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject29()), -1, combat.Macro.step("runaway").toString());
         }
       }
 
@@ -6144,12 +6144,12 @@ function dailySetup() {
         (0,external_kolmafia_.useFamiliar)(_runFam);
         (0,external_kolmafia_.maximize)("familiar weight", false);
         if (_runFam === (0,dist.$familiar)(src_templateObject35())) ensureEffect((0,dist.$effect)(src_templateObject36()));
-        combat.Macro.step("run away").setAutoAttack();
+        combat.Macro.step("runaway").setAutoAttack();
         setChoice(502, 2);
         setChoice(505, 2);
 
         while (!(0,dist.get)("latteUnlocks").includes("rawhide") && dist.Bandersnatch.getRemainingRunaways() > 0) {
-          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject37()), -1, combat.Macro.step("run away").toString());
+          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject37()), -1, combat.Macro.step("runaway").toString());
         }
       }
 

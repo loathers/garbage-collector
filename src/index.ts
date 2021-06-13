@@ -137,11 +137,11 @@ function dailySetup() {
         useFamiliar(runFam);
         maximize("familiar weight", false);
         if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
-        Macro.step("run away").setAutoAttack();
+        Macro.step("runaway").setAutoAttack();
         setChoice(923, 1);
         setChoice(924, 1);
         while (!get("latteUnlocks").includes("cajun") && Bandersnatch.getRemainingRunaways() > 0) {
-          adv1($location`the black forest`, -1, Macro.step("run away").toString());
+          adv1($location`the black forest`, -1, Macro.step("runaway").toString());
         }
       }
       if (
@@ -156,14 +156,14 @@ function dailySetup() {
         useFamiliar(runFam);
         maximize("familiar weight", false);
         if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
-        Macro.step("run away").setAutoAttack();
+        Macro.step("runaway").setAutoAttack();
         setChoice(502, 2);
         setChoice(505, 2);
         while (
           !get("latteUnlocks").includes("rawhide") &&
           Bandersnatch.getRemainingRunaways() > 0
         ) {
-          adv1($location`the spooky forest`, -1, Macro.step("run away").toString());
+          adv1($location`the spooky forest`, -1, Macro.step("runaway").toString());
         }
       }
       if (
