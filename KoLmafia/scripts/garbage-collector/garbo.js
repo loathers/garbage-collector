@@ -6134,7 +6134,7 @@ function dailySetup() {
         setChoice(924, 1);
 
         while (!(0,dist.get)("latteUnlocks").includes("cajun") && dist.Bandersnatch.getRemainingRunaways() > 0) {
-          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject29()), -1, combat.Macro.step("runaway").toString());
+          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject29()), -1, "");
         }
       }
 
@@ -6149,12 +6149,12 @@ function dailySetup() {
         setChoice(505, 2);
 
         while (!(0,dist.get)("latteUnlocks").includes("rawhide") && dist.Bandersnatch.getRemainingRunaways() > 0) {
-          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject37()), -1, combat.Macro.step("runaway").toString());
+          (0,external_kolmafia_.adv1)((0,dist.$location)(src_templateObject37()), -1, "");
         }
       }
 
       if ((0,dist.get)("latteUnlocks").includes("cajun") && (0,dist.get)("latteUnlocks").includes("rawhide") && (0,dist.get)("_latteRefillsUsed") < 3) {
-        var latteIngredients = "cajun rawhide " + ((0,dist.get)("latteUnlocks").includes("carrot") ? "carrot" : (0,external_kolmafia_.myClass)().primestat === (0,dist.$stat)(src_templateObject38()) ? "vanilla" : (0,external_kolmafia_.myClass)().primestat === (0,dist.$stat)(src_templateObject39()) ? "pumpkin spice" : "cinnamon");
+        var latteIngredients = "cajun rawhide " + ((0,dist.get)("latteUnlocks").includes("carrot") ? "carrot" : (0,external_kolmafia_.myPrimestat)() === (0,dist.$stat)(src_templateObject38()) ? "vanilla" : (0,external_kolmafia_.myPrimestat)() === (0,dist.$stat)(src_templateObject39()) ? "pumpkin spice" : "cinnamon");
         (0,external_kolmafia_.cliExecute)("latte refill ".concat(latteIngredients));
       }
     }
