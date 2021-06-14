@@ -207,7 +207,7 @@ function barfTurn() {
   }
 
   while (
-    get<Monster>("feelNostalgicMonster") === $monster`Knob Goblin Embezzler` &&
+    get<Monster>("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
     have($item`backup camera`) &&
     get<number>("_backUpUses") < 11
   ) {
