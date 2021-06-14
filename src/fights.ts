@@ -118,6 +118,7 @@ export function dailyFights() {
                 use($item`Platinum Yendorian Express Card`);
               }
             });
+            if (have($item`license to chill`) && !get("_licenseToChillUsed")) use($item`license to chill`);
 
             if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
@@ -643,6 +644,7 @@ const freeKillSources = [
 ];
 
 export function freeFights() {
+  visitUrl("place.php?whichplace=town_wrong");
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
   }
