@@ -51,7 +51,7 @@ import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { ensureEffect } from "./lib";
+import { ensureEffect, prepWandererZone } from "./lib";
 import { meatMood } from "./mood";
 import { meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -227,7 +227,7 @@ function barfTurn() {
   useFamiliar(meatFamiliar());
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
-  let location = embezzlerUp ? $location`Noob Cave` : $location`Barf Mountain`;
+  let location = embezzlerUp ? prepWandererZone() : $location`Barf Mountain`;
   if (
     !get("_envyfishEggUsed") &&
     (booleanModifier("Adventure Underwater") ||
