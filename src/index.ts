@@ -263,7 +263,7 @@ function barfTurn() {
   } else {
     adventureMacroAuto(
       location,
-      Macro.externalIf(underwater, Macro.item("pulled green taffy")).meatKill()
+      Macro.externalIf(underwater, Macro.if_(`monsterid ${$monster`knob goblin embezzler`.id}`, Macro.item("pulled green taffy"))).meatKill()
     );
   }
 
