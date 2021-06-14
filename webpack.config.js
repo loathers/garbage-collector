@@ -34,6 +34,7 @@ module.exports = {
   },
   plugins: [],
   externals: {
+    "canadv.ash": "commonjs canadv.ash",
     kolmafia: "commonjs kolmafia",
   },
 };
