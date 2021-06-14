@@ -48,6 +48,7 @@ import {
   $skill,
   $slot,
   adventureMacro,
+  adventureMacroAuto,
   ChateauMantegna,
   get,
   have,
@@ -59,7 +60,7 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { clamp, ensureEffect, mapMonster, setChoice } from "./lib";
+import { clamp, ensureEffect, mapMonster, questStep, setChoice } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -660,6 +661,9 @@ export function freeFights() {
     useFamiliar(freeFightFamiliar());
     freeFightMood().execute();
     freeFightOutfit([new Requirement([], { forceEquip: $items`The Jokester's gun` })]);
+    if (questStep("questL08Trapper") >= 2){
+      adventureMacroAuto($location`Lair of the Ninja Snowmen`, Macro.skill("Sing Along").skill("Fire the Jokester's Gun"));
+    } else if (have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) {
     try {
       Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
       mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
@@ -667,6 +671,7 @@ export function freeFights() {
       setAutoAttack(0);
     }
   }
+}
 
   try {
     for (const freeKillSource of freeKillSources) {
