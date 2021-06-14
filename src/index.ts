@@ -267,7 +267,7 @@ function barfTurn() {
   } else if (have($item`I Voted!" sticker`) && getCounters("Vote", 0, 0) !== "" && get("_voteFreeFights") < 3) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`I Voted!" sticker` })]);
-    adventureMacroAuto($location`noob cave`, Macro.if_(`monsterid ${$monster`Angry ghost`.id}`, Macro.skill("saucestorm").repeat().meatKill());
+    adventureMacroAuto($location`noob cave`, Macro.if_(`monsterid ${$monster`Angry ghost`.id}`, Macro.skill("saucestorm").repeat()).meatKill());
   } else {
     adventureMacroAuto(
       location,
