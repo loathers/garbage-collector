@@ -1,5 +1,5 @@
 import { cliExecute, haveSkill, mallPrice, toUrl, useSkill, visitUrl } from "kolmafia";
-import { $skill, get, have, set } from "libram";
+import { $skill, get, have, property, set } from "libram";
 
 export function setChoice(adventure: number, value: number) {
   set(`choiceAdventure${adventure}`, `${value}`);
@@ -41,4 +41,17 @@ export function argmax<T>(values: [T, number][]) {
   return values.reduce(([minValue, minScore], [value, score]) =>
     score > minScore ? [value, score] : [minValue, minScore]
   )[0];
+}
+
+export function questStep(questName: string) {
+  const stringStep = property.getString(questName);
+  if (stringStep === "unstarted") return -1;
+  else if (stringStep === "started") return 0;
+  else if (stringStep === "finished") return 999;
+  else {
+    if (stringStep.substring(0, 4) !== "step") {
+      throw "Quest state parsing error.";
+    }
+    return parseInt(stringStep.substring(4), 10);
+  }
 }
