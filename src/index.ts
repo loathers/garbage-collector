@@ -49,11 +49,11 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
-import { meatFamiliar } from "./familiar";
+import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import { ensureEffect } from "./lib";
 import { meatMood } from "./mood";
-import { meatOutfit, Requirement } from "./outfit";
+import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -256,11 +256,15 @@ function barfTurn() {
   meatMood().execute(myAdventures() * 1.04 + 50);
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
-
+  const ghostLocation = get("ghostLocation");
   // d. run adventure
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
     meatOutfit(true);
     withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
+  } else if (have($item`protonic accelerator pack`) && get("questPAGhost") !== "unstarted" && ghostLocation) {
+    useFamiliar(freeFightFamiliar());
+    freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
+    adventureMacroAuto(ghostLocation, Macro.trySkill("curse of weaksauce").trySkill("shoot ghost").trySkill("shoot ghost").trySkill("shoot ghost").trySkill("trap ghost"));
   } else {
     adventureMacroAuto(
       location,
