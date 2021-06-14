@@ -95,6 +95,12 @@ export class Macro extends LibramMacro {
       .externalIf(katanaSetup, Macro.skill("Summer Siesta").attack())
       .externalIf(capeSetup, Macro.skill("Precision Shot"))
       .trySkill("Curse of Weaksauce")
+      .if_(
+        "discobandit",
+        Macro.trySkill("Disco Dance of Doom")
+          .trySkill("Disco Dance II: Electric Boogaloo")
+          .trySkill("Disco Dance 3: Back in the Habit")
+      )
       .attack()
       .repeat();
   }

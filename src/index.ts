@@ -124,7 +124,10 @@ function dailySetup() {
 
   const latte = $item`latte lovers member's mug`;
   if (have(latte)) {
-    if (numericModifier(latte, "Familiar Weight") !== 5 || numericModifier(latte, "Meat") !== 40) {
+    if (
+      numericModifier(latte, "Familiar Weight") !== 5 ||
+      numericModifier(latte, "Meat Drop") !== 40
+    ) {
       if (
         !get("latteUnlocks").includes("cajun") &&
         (haveFamiliar($familiar`frumious bandersnatch`) ||
@@ -383,6 +386,7 @@ export function main(argString = "") {
     cliExecute("mood apathetic");
     cliExecute("ccs garbo");
     safeRestore();
+    visitUrl("place.php?whichplace=town_wrong"); //to prevent horsery/lovtunnel/detective shenanigans
 
     // FIXME: Dynamically figure out pointer ring approach.
     withStash($items`haiku katana, repaid diaper`, () => {

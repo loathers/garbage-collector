@@ -210,7 +210,7 @@ var Macro = /*#__PURE__*/function (_LibramMacro) {
       var katanaSetup = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedAmount)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$item)(_templateObject6())) > 0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedAmount)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$item)(_templateObject7())) > 0;
       var capeSetup = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedAmount)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$item)(_templateObject8())) > 0 && (0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("retroCapeSuperhero") === "robot" && (0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("retroCapeWashingInstructions") === "kill" && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemType)((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedItem)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$slot)(_templateObject9()))) === "pistol"; // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
 
-      return this.tryHaveSkill("Sing Along").externalIf(shouldRedigitize(), Macro.if_("monstername ".concat((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_sourceTerminalDigitizeMonster")), Macro.trySkill("Digitize"))).externalIf(!(0,libram__WEBPACK_IMPORTED_MODULE_1__.have)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$effect)(_templateObject10())), Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))).externalIf((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_gallapagosMonster") !== (0,libram__WEBPACK_IMPORTED_MODULE_1__.$monster)(_templateObject11()), Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))).externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)() === (0,libram__WEBPACK_IMPORTED_MODULE_1__.$familiar)(_templateObject12()), Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))).externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop").attack()).externalIf(opsSetup, Macro.skill("Throw Shield").attack()).externalIf(katanaSetup, Macro.skill("Summer Siesta").attack()).externalIf(capeSetup, Macro.skill("Precision Shot")).trySkill("Curse of Weaksauce").attack().repeat();
+      return this.tryHaveSkill("Sing Along").externalIf(shouldRedigitize(), Macro.if_("monstername ".concat((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_sourceTerminalDigitizeMonster")), Macro.trySkill("Digitize"))).externalIf(!(0,libram__WEBPACK_IMPORTED_MODULE_1__.have)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$effect)(_templateObject10())), Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))).externalIf((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_gallapagosMonster") !== (0,libram__WEBPACK_IMPORTED_MODULE_1__.$monster)(_templateObject11()), Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))).externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)() === (0,libram__WEBPACK_IMPORTED_MODULE_1__.$familiar)(_templateObject12()), Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))).externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop").attack()).externalIf(opsSetup, Macro.skill("Throw Shield").attack()).externalIf(katanaSetup, Macro.skill("Summer Siesta").attack()).externalIf(capeSetup, Macro.skill("Precision Shot")).trySkill("Curse of Weaksauce").if_("discobandit", Macro.trySkill("Disco Dance of Doom").trySkill("Disco Dance II: Electric Boogaloo").trySkill("Disco Dance 3: Back in the Habit")).attack().repeat();
     }
   }], [{
     key: "tryHaveSkill",
@@ -6123,7 +6123,7 @@ function dailySetup() {
   var latte = (0,dist.$item)(src_templateObject21());
 
   if ((0,dist.have)(latte)) {
-    if ((0,external_kolmafia_.numericModifier)(latte, "Familiar Weight") !== 5 || (0,external_kolmafia_.numericModifier)(latte, "Meat") !== 40) {
+    if ((0,external_kolmafia_.numericModifier)(latte, "Familiar Weight") !== 5 || (0,external_kolmafia_.numericModifier)(latte, "Meat Drop") !== 40) {
       if (!(0,dist.get)("latteUnlocks").includes("cajun") && ((0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(src_templateObject22())) || (0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(src_templateObject23()))) && dist.Bandersnatch.getRemainingRunaways() > 0) {
         var runFam = (0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(src_templateObject24())) ? (0,dist.$familiar)(src_templateObject25()) : (0,dist.$familiar)(src_templateObject26());
         (0,external_kolmafia_.useFamiliar)(runFam);
@@ -6332,7 +6332,9 @@ function main() {
     (0,external_kolmafia_.setProperty)("battleAction", "custom combat script");
     (0,external_kolmafia_.cliExecute)("mood apathetic");
     (0,external_kolmafia_.cliExecute)("ccs garbo");
-    safeRestore(); // FIXME: Dynamically figure out pointer ring approach.
+    safeRestore();
+    (0,external_kolmafia_.visitUrl)("place.php?whichplace=town_wrong"); //to prevent horsery/lovtunnel/detective shenanigans
+    // FIXME: Dynamically figure out pointer ring approach.
 
     withStash((0,dist.$items)(src_templateObject85()), function () {
       // 0. diet stuff.
