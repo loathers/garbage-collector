@@ -263,11 +263,15 @@ function barfTurn() {
   } else if (have($item`protonic accelerator pack`) && get("questPAGhost") !== "unstarted" && ghostLocation) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
+<<<<<<< HEAD
     adventureMacro(ghostLocation, Macro.trySkill("curse of weaksauce").trySkill("shoot ghost").trySkill("shoot ghost").trySkill("shoot ghost").trySkill("trap ghost"));
   } else if (have($item`I Voted!" sticker`) && getCounters("Vote", 0, 0) !== "" && get("_voteFreeFights") < 3) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`I Voted!" sticker` })]);
     adventureMacroAuto($location`noob cave`, Macro.if_(`monsterid ${$monster`Angry ghost`.id}`, Macro.skill("saucestorm").repeat()).meatKill());
+=======
+    adventureMacroAuto(ghostLocation, Macro.trySkill("curse of weaksauce").trySkill("shoot ghost").trySkill("shoot ghost").trySkill("shoot ghost").trySkill("trap ghost"));
+>>>>>>> 565e39e (fight ghost if up)
   } else {
     adventureMacroAuto(
       location,
