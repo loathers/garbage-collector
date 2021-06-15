@@ -119,7 +119,8 @@ export function dailyFights() {
                 use($item`Platinum Yendorian Express Card`);
               }
             });
-            if (have($item`license to chill`) && !get("_licenseToChillUsed")) use($item`license to chill`);
+            if (have($item`license to chill`) && !get("_licenseToChillUsed"))
+              use($item`license to chill`);
 
             if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
@@ -131,9 +132,12 @@ export function dailyFights() {
             withMacro(
               Macro.if_(
                 "!hasskill Lecture on Relativity",
-                Macro.trySkill("Digitize").externalIf(
-                  !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-                  Macro.tryItem("4-d camera")
+                Macro.trySkill("Meteor Shower").if_(
+                  "!hasskill Lecture on Relativity",
+                  Macro.trySkill("Digitize").externalIf(
+                    !get("_cameraUsed") && !have($item`shaking 4-d camera`),
+                    Macro.tryItem("4-d camera")
+                  )
                 )
               )
                 .trySkill("Lecture on Relativity")
@@ -661,17 +665,20 @@ export function freeFights() {
     useFamiliar(freeFightFamiliar());
     freeFightMood().execute();
     freeFightOutfit([new Requirement([], { forceEquip: $items`The Jokester's gun` })]);
-    if (questStep("questL08Trapper") >= 2){
-      adventureMacroAuto($location`Lair of the Ninja Snowmen`, Macro.skill("Sing Along").skill("Fire the Jokester's Gun"));
+    if (questStep("questL08Trapper") >= 2) {
+      adventureMacroAuto(
+        $location`Lair of the Ninja Snowmen`,
+        Macro.skill("Sing Along").skill("Fire the Jokester's Gun")
+      );
     } else if (have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) {
-    try {
-      Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
-      mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
-    } finally {
-      setAutoAttack(0);
+      try {
+        Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
+        mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
+      } finally {
+        setAutoAttack(0);
+      }
     }
   }
-}
 
   try {
     for (const freeKillSource of freeKillSources) {
