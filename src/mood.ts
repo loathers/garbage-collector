@@ -29,6 +29,7 @@ import {
   Witchess,
 } from "libram";
 import { fillAsdonMartinTo } from "./asdon";
+import { questStep } from "./lib";
 import { withStash } from "./stash";
 
 Mood.setDefaultOptions({
@@ -143,6 +144,9 @@ export function freeFightMood() {
   }
   if (Witchess.have() && !get("_witchessBuff")) {
     mood.effect($effect`Puzzle Champ`);
+  }
+  if (questStep("questL06Friar") === 999 && !get("friarsBlessingReceived")) {
+    cliExecute("friars familiar");
   }
 
   return mood;
