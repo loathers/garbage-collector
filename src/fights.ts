@@ -132,12 +132,9 @@ export function dailyFights() {
             withMacro(
               Macro.if_(
                 "!hasskill Lecture on Relativity",
-                Macro.trySkill("Meteor Shower").if_(
-                  "!hasskill Lecture on Relativity",
-                  Macro.trySkill("Digitize").externalIf(
-                    !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-                    Macro.tryItem("4-d camera")
-                  )
+                Macro.trySkill("Digitize").externalIf(
+                  !get("_cameraUsed") && !have($item`shaking 4-d camera`),
+                  Macro.tryItem("4-d camera")
                 )
               )
                 .trySkill("Lecture on Relativity")
@@ -162,7 +159,8 @@ export function dailyFights() {
           useFamiliar($familiar`Pocket Professor`);
           maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
           withMacro(
-            Macro.trySkill("Lecture on Relativity")
+            Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
+              .trySkill("Lecture on Relativity")
               .tryItem($item`Spooky Putty sheet`)
               .meatKill(),
             () => use($item`shaking 4-d camera`)
