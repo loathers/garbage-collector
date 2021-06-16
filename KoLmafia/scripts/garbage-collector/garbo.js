@@ -34172,12 +34172,12 @@ function runDiet() {
   (0,external_kolmafia_.use)(mojoFilterCount, (0,dist.$item)(_templateObject57 || (_templateObject57 = diet_taggedTemplateLiteral(["mojo filter"]))));
   fillSomeSpleen();
 
-  if ((0,external_kolmafia_.myFullness)() < (0,external_kolmafia_.fullnessLimit)()) {
+  while ((0,external_kolmafia_.myFullness)() < (0,external_kolmafia_.fullnessLimit)()) {
     if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject58 || (_templateObject58 = diet_taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA && !(0,dist.get)("_fudgeSporkUsed")) (0,external_kolmafia_.eat)(1, (0,dist.$item)(_templateObject59 || (_templateObject59 = diet_taggedTemplateLiteral(["fudge spork"]))));
     eatSafe(1, (0,dist.$item)(_templateObject60 || (_templateObject60 = diet_taggedTemplateLiteral(["jumping horseradish"]))));
   }
 
-  if ((0,external_kolmafia_.myInebriety)() < (0,external_kolmafia_.inebrietyLimit)()) {
+  while ((0,external_kolmafia_.myInebriety)() < (0,external_kolmafia_.inebrietyLimit)()) {
     drinkSafe(1, (0,dist.$item)(_templateObject61 || (_templateObject61 = diet_taggedTemplateLiteral(["ambitious turkey"]))));
   }
 }
