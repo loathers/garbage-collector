@@ -1,18 +1,22 @@
 import {
+  adv1,
   booleanModifier,
   buy,
   changeMcd,
   cliExecute,
   getClanLounge,
   getCounters,
+  haveFamiliar,
   haveSkill,
   itemAmount,
+  maximize,
   myAdventures,
   myClass,
   myGardenType,
   myPrimestat,
   myThrall,
   myTurncount,
+  numericModifier,
   print,
   putCloset,
   retrieveItem,
@@ -41,6 +45,7 @@ import {
   $thrall,
   adventureMacro,
   adventureMacroAuto,
+  Bandersnatch,
   get,
   have,
   setDefaultMaximizeOptions,
@@ -51,7 +56,7 @@ import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { ensureEffect } from "./lib";
+import { ensureEffect, setChoice } from "./lib";
 import { meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -115,6 +120,72 @@ function dailySetup() {
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
     SourceTerminal.enquiry($effect`familiar.enq`);
+  }
+
+  const latte = $item`latte lovers member's mug`;
+  if (have(latte)) {
+    if (
+      numericModifier(latte, "Familiar Weight") !== 5 ||
+      numericModifier(latte, "Meat Drop") !== 40
+    ) {
+      if (
+        !get("latteUnlocks").includes("cajun") &&
+        (haveFamiliar($familiar`frumious bandersnatch`) ||
+          haveFamiliar($familiar`pair of stomping boots`)) &&
+        Bandersnatch.getRemainingRunaways() > 0
+      ) {
+        const runFam = haveFamiliar($familiar`pair of stomping boots`)
+          ? $familiar`pair of stomping boots`
+          : $familiar`frumious bandersnatch`;
+        useFamiliar(runFam);
+        maximize("familiar weight, +equip latte lovers member's mug", false);
+        if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+        Macro.step("runaway").setAutoAttack();
+        setChoice(923, 1);
+        setChoice(924, 1);
+        while (!get("latteUnlocks").includes("cajun") && Bandersnatch.getRemainingRunaways() > 0) {
+          adv1($location`the black forest`, -1, "");
+        }
+      }
+      if (
+        !get("latteUnlocks").includes("rawhide") &&
+        (haveFamiliar($familiar`frumious bandersnatch`) ||
+          haveFamiliar($familiar`pair of stomping boots`)) &&
+        Bandersnatch.getRemainingRunaways() > 0
+      ) {
+        const runFam = haveFamiliar($familiar`pair of stomping boots`)
+          ? $familiar`pair of stomping boots`
+          : $familiar`frumious bandersnatch`;
+        useFamiliar(runFam);
+        maximize("familiar weight, +equip latte lovers member's mug", false);
+        if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+        Macro.step("runaway").setAutoAttack();
+        setChoice(502, 2);
+        setChoice(505, 2);
+        while (
+          !get("latteUnlocks").includes("rawhide") &&
+          Bandersnatch.getRemainingRunaways() > 0
+        ) {
+          adv1($location`the spooky forest`, -1, "");
+        }
+      }
+      if (
+        get("latteUnlocks").includes("cajun") &&
+        get("latteUnlocks").includes("rawhide") &&
+        get("_latteRefillsUsed") < 3
+      ) {
+        const latteIngredients =
+          "cajun rawhide " +
+          (get("latteUnlocks").includes("carrot")
+            ? "carrot"
+            : myPrimestat() === $stat`muscle`
+            ? "vanilla"
+            : myPrimestat() === $stat`mysticality`
+            ? "pumpkin spice"
+            : "cinnamon");
+        cliExecute(`latte refill ${latteIngredients}`);
+      }
+    }
   }
 
   if (get("_VYKEACompanionLevel") === 0) {
