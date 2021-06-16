@@ -54,14 +54,18 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.node-version }}
-      - run: npm ci
-      - run: npm run build
       - run: |
           git config user.name "O.A.F."
           git config user.email "<>"
       - run: |
+          git checkout release
+          git checkout main *
+          git restore --staged *
+      - run: npm ci
+      - run: npm run build
+      - run: |
           git add KoLmafia/
           {
             git commit -m "Build Mafia files for commit $GITHUB_SHA"
-            git push origin main
+            git push origin release
           } || exit 0
