@@ -62,6 +62,7 @@ jobs:
       - run: |
           git fetch --all
           git switch release
+          ls -al
       - run: |
           git add KoLmafia/
           {
