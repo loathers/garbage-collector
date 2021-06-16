@@ -60,7 +60,6 @@ jobs:
           git config user.name "O.A.F."
           git config user.email "<>"
       - run: |
-          rm .gitignore
           git add KoLmafia/
           git commit -m "Build Mafia files for commit $GITHUB_SHA"
-          git push origin release || echo Nothing to update
+          git push origin main
