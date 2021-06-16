@@ -1,3 +1,4 @@
+(function(e, a) { for(var i in a) e[i] = a[i]; if(a.__esModule) Object.defineProperty(e, "__esModule", { value: true }); }(exports,
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
@@ -239,72 +240,6 @@ function withMacro(macro, action) {
 function main() {
   Macro.load().submit();
 }
-<<<<<<< HEAD
-
-/***/ }),
-
-/***/ 2886:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-__webpack_require__(9465);
-
-var path = __webpack_require__(3914);
-
-module.exports = path.Object.values;
-
-/***/ }),
-
-/***/ 2319:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var parent = __webpack_require__(2886);
-
-module.exports = parent;
-
-/***/ }),
-
-/***/ 1662:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var isObject = __webpack_require__(6769);
-
-module.exports = function (it) {
-  if (!isObject(it)) {
-    throw TypeError(String(it) + ' is not an object');
-  }
-
-  return it;
-};
-
-/***/ }),
-
-/***/ 3781:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var toIndexedObject = __webpack_require__(2292);
-
-var toLength = __webpack_require__(8129);
-
-var toAbsoluteIndex = __webpack_require__(2381); // `Array.prototype.{ indexOf, includes }` methods implementation
-
-
-var createMethod = function createMethod(IS_INCLUDES) {
-  return function ($this, el, fromIndex) {
-    var O = toIndexedObject($this);
-    var length = toLength(O.length);
-    var index = toAbsoluteIndex(fromIndex, length);
-    var value; // Array#includes uses SameValueZero equality algorithm
-    // eslint-disable-next-line no-self-compare -- NaN check
-
-    if (IS_INCLUDES && el != el) while (length > index) {
-      value = O[index++]; // eslint-disable-next-line no-self-compare -- NaN check
-
-      if (value != value) return true; // Array#indexOf ignores holes, Array#includes - not
-    } else for (; length > index; index++) {
-      if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
-    }
-    return !IS_INCLUDES && -1;
-=======
 
 /***/ }),
 
@@ -754,86 +689,12 @@ if (NATIVE_WEAK_MAP) {
     metadata.facade = it;
     createNonEnumerableProperty(it, STATE, metadata);
     return metadata;
->>>>>>> 6528995 (Phill told me to do this)
-  };
-};
-
 <<<<<<< HEAD
-module.exports = {
-  // `Array.prototype.includes` method
-  // https://tc39.es/ecma262/#sec-array.prototype.includes
-  includes: createMethod(true),
-  // `Array.prototype.indexOf` method
-  // https://tc39.es/ecma262/#sec-array.prototype.indexof
-  indexOf: createMethod(false)
-};
-
-/***/ }),
-
-/***/ 9382:
-/***/ ((module) => {
-
-var toString = {}.toString;
-
-module.exports = function (it) {
-  return toString.call(it).slice(8, -1);
-};
-
-/***/ }),
-
-/***/ 8801:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var has = __webpack_require__(7409);
-
-var ownKeys = __webpack_require__(1890);
-
-var getOwnPropertyDescriptorModule = __webpack_require__(2086);
-
-var definePropertyModule = __webpack_require__(3099);
-
-module.exports = function (target, source) {
-  var keys = ownKeys(source);
-  var defineProperty = definePropertyModule.f;
-  var getOwnPropertyDescriptor = getOwnPropertyDescriptorModule.f;
-
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    if (!has(target, key)) defineProperty(target, key, getOwnPropertyDescriptor(source, key));
-  }
-};
-
-/***/ }),
-
-/***/ 6711:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var DESCRIPTORS = __webpack_require__(3207);
-
-var definePropertyModule = __webpack_require__(3099);
-
-var createPropertyDescriptor = __webpack_require__(9658);
-
-module.exports = DESCRIPTORS ? function (object, key, value) {
-  return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-/***/ }),
-
-/***/ 9658:
-/***/ ((module) => {
-
-module.exports = function (bitmap, value) {
-  return {
-    enumerable: !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable: !(bitmap & 4),
-    value: value
-  };
+>>>>>>> 6528995 (Phill told me to do this)
 =======
+>>>>>>> ed22f6f (built!)
+  };
+
   get = function get(it) {
     return objectHas(it, STATE) ? it[STATE] : {};
   };
@@ -932,6 +793,7 @@ exports.f = DESCRIPTORS ? nativeDefineProperty : function defineProperty(O, P, A
   if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported');
   if ('value' in Attributes) O[P] = Attributes.value;
   return O;
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 };
 
@@ -967,86 +829,12 @@ var EXISTS = isObject(document) && isObject(document.createElement);
 
 module.exports = function (it) {
   return EXISTS ? document.createElement(it) : {};
+=======
+>>>>>>> ed22f6f (built!)
 };
 
 /***/ }),
 
-/***/ 4061:
-/***/ ((module) => {
-
-// IE8- don't enum bug keys
-module.exports = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf'];
-
-/***/ }),
-
-/***/ 5186:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-var global = __webpack_require__(6464);
-
-var getOwnPropertyDescriptor = __webpack_require__(2086).f;
-
-var createNonEnumerableProperty = __webpack_require__(6711);
-
-var redefine = __webpack_require__(1886);
-
-var setGlobal = __webpack_require__(6757);
-
-var copyConstructorProperties = __webpack_require__(8801);
-
-var isForced = __webpack_require__(1450);
-/*
-  options.target      - name of the target object
-  options.global      - target is the global object
-  options.stat        - export as static methods of target
-  options.proto       - export as prototype methods of target
-  options.real        - real prototype method for the `pure` version
-  options.forced      - export even if the native feature is available
-  options.bind        - bind methods to the target, required for the `pure` version
-  options.wrap        - wrap constructors to preventing global pollution, required for the `pure` version
-  options.unsafe      - use the simple assignment of property instead of delete + defineProperty
-  options.sham        - add a flag to not completely full polyfills
-  options.enumerable  - export as enumerable property
-  options.noTargetGet - prevent calling a getter on target
-*/
-
-
-module.exports = function (options, source) {
-  var TARGET = options.target;
-  var GLOBAL = options.global;
-  var STATIC = options.stat;
-  var FORCED, target, key, targetProperty, sourceProperty, descriptor;
-
-  if (GLOBAL) {
-    target = global;
-  } else if (STATIC) {
-    target = global[TARGET] || setGlobal(TARGET, {});
-  } else {
-    target = (global[TARGET] || {}).prototype;
-  }
-
-  if (target) for (key in source) {
-    sourceProperty = source[key];
-
-    if (options.noTargetGet) {
-      descriptor = getOwnPropertyDescriptor(target, key);
-      targetProperty = descriptor && descriptor.value;
-    } else targetProperty = target[key];
-
-    FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced); // contained in target
-
-    if (!FORCED && targetProperty !== undefined) {
-      if (_typeof(sourceProperty) === _typeof(targetProperty)) continue;
-      copyConstructorProperties(sourceProperty, targetProperty);
-    } // add a flag to not completely full polyfills
-
-
-    if (options.sham || targetProperty && targetProperty.sham) {
-      createNonEnumerableProperty(sourceProperty, 'sham', true);
-    } // extend global
-=======
 /***/ 2086:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -1148,6 +936,7 @@ var enumBugKeys = __webpack_require__(4061); // `Object.keys` method
 module.exports = Object.keys || function keys(O) {
   return internalObjectKeys(O, enumBugKeys);
 };
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 
 /***/ }),
@@ -1169,70 +958,11 @@ module.exports = function (exec) {
     return true;
   }
 };
-
-/***/ }),
-
-/***/ 7260:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var path = __webpack_require__(3914);
-
-var global = __webpack_require__(6464);
-
-var aFunction = function aFunction(variable) {
-  return typeof variable == 'function' ? variable : undefined;
-};
-
-module.exports = function (namespace, method) {
-  return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global[namespace]) : path[namespace] && path[namespace][method] || global[namespace] && global[namespace][method];
-};
-
-/***/ }),
-
-/***/ 6464:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-var check = function check(it) {
-  return it && it.Math == Math && it;
-}; // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-
-
-module.exports =
-/* global globalThis -- safe */
-check((typeof globalThis === "undefined" ? "undefined" : _typeof(globalThis)) == 'object' && globalThis) || check((typeof window === "undefined" ? "undefined" : _typeof(window)) == 'object' && window) || check((typeof self === "undefined" ? "undefined" : _typeof(self)) == 'object' && self) || check((typeof __webpack_require__.g === "undefined" ? "undefined" : _typeof(__webpack_require__.g)) == 'object' && __webpack_require__.g) || // eslint-disable-next-line no-new-func -- fallback
-function () {
-  return this;
-}() || Function('return this')();
-
-/***/ }),
-
-/***/ 7409:
-/***/ ((module) => {
-
-var hasOwnProperty = {}.hasOwnProperty;
-
-module.exports = function (it, key) {
-  return hasOwnProperty.call(it, key);
-};
-
-/***/ }),
-
-/***/ 1151:
-/***/ ((module) => {
-
-module.exports = {};
-
-/***/ }),
-
-/***/ 636:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var DESCRIPTORS = __webpack_require__(3207);
-
-var fails = __webpack_require__(7537);
 =======
+>>>>>>> ed22f6f (built!)
+
+/***/ }),
+
 /***/ 5805:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -1324,6 +1054,7 @@ module.exports = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
 var global = __webpack_require__(6464);
 
 module.exports = global;
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 
 var createElement = __webpack_require__(46); // Thank's IE8 for his funny defineProperty
@@ -1552,18 +1283,11 @@ exports.f = DESCRIPTORS ? nativeDefineProperty : function defineProperty(O, P, A
   if ('value' in Attributes) O[P] = Attributes.value;
   return O;
 };
+=======
+>>>>>>> ed22f6f (built!)
 
 /***/ }),
 
-/***/ 2086:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-var DESCRIPTORS = __webpack_require__(3207);
-
-var propertyIsEnumerableModule = __webpack_require__(5805);
-
-var createPropertyDescriptor = __webpack_require__(9658);
-=======
 /***/ 1886:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -1825,6 +1549,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { "@babel/helpers - type
   }
   /*--------------------------------------------------------------------------*/
   // All astral symbols.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 
 var toIndexedObject = __webpack_require__(2292);
@@ -1948,125 +1673,10 @@ exports.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var DESCRIPTORS = __webpack_require__(3207);
-
-var objectKeys = __webpack_require__(6343);
-
-var toIndexedObject = __webpack_require__(2292);
-
-var propertyIsEnumerable = __webpack_require__(5805).f; // `Object.{ entries, values }` methods implementation
-
-
-var createMethod = function createMethod(TO_ENTRIES) {
-  return function (it) {
-    var O = toIndexedObject(it);
-    var keys = objectKeys(O);
-    var length = keys.length;
-    var i = 0;
-    var result = [];
-    var key;
-
-    while (length > i) {
-      key = keys[i++];
-
-      if (!DESCRIPTORS || propertyIsEnumerable.call(O, key)) {
-        result.push(TO_ENTRIES ? [key, O[key]] : O[key]);
-      }
-    }
-
-    return result;
-  };
-};
-
-module.exports = {
-  // `Object.entries` method
-  // https://tc39.es/ecma262/#sec-object.entries
-  entries: createMethod(true),
-  // `Object.values` method
-  // https://tc39.es/ecma262/#sec-object.values
-  values: createMethod(false)
-};
-
-/***/ }),
-
-/***/ 1890:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var getBuiltIn = __webpack_require__(7260);
-
-var getOwnPropertyNamesModule = __webpack_require__(9129);
-
-var getOwnPropertySymbolsModule = __webpack_require__(71);
-
-var anObject = __webpack_require__(1662); // all object keys, includes non-enumerable and symbols
-
-
-module.exports = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
-  var keys = getOwnPropertyNamesModule.f(anObject(it));
-  var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
-  return getOwnPropertySymbols ? keys.concat(getOwnPropertySymbols(it)) : keys;
-};
-
-/***/ }),
-
-/***/ 3914:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var global = __webpack_require__(6464);
-
-module.exports = global;
-
-/***/ }),
-
-/***/ 1886:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var global = __webpack_require__(6464);
-
-var createNonEnumerableProperty = __webpack_require__(6711);
-
-var has = __webpack_require__(7409);
-
-var setGlobal = __webpack_require__(6757);
-
-var inspectSource = __webpack_require__(3194);
-
-var InternalStateModule = __webpack_require__(858);
-
-var getInternalState = InternalStateModule.get;
-var enforceInternalState = InternalStateModule.enforce;
-var TEMPLATE = String(String).split('String');
-(module.exports = function (O, key, value, options) {
-  var unsafe = options ? !!options.unsafe : false;
-  var simple = options ? !!options.enumerable : false;
-  var noTargetGet = options ? !!options.noTargetGet : false;
-  var state;
-
-  if (typeof value == 'function') {
-    if (typeof key == 'string' && !has(value, 'name')) {
-      createNonEnumerableProperty(value, 'name', key);
-    }
-
-    state = enforceInternalState(value);
-
-    if (!state.source) {
-      state.source = TEMPLATE.join(typeof key == 'string' ? key : '');
-    }
-  }
-
-  if (O === global) {
-    if (simple) O[key] = value;else setGlobal(key, value);
-    return;
-  } else if (!unsafe) {
-    delete O[key];
-  } else if (!noTargetGet && O[key]) {
-    simple = true;
-  }
-
-  if (simple) O[key] = value;else createNonEnumerableProperty(O, key, value); // add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
-})(Function.prototype, 'toString', function toString() {
-  return typeof this == 'function' && getInternalState(this).source || inspectSource(this);
-});
 =======
+>>>>>>> ed22f6f (built!)
+
+
   var regexAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g; // All ASCII symbols (not just printable ASCII) except those listed in the
   // first column of the overrides table.
   // https://html.spec.whatwg.org/multipage/syntax.html#table-charref-overrides
@@ -6032,7 +5642,10 @@ var TEMPLATE = String(String).split('String');
       // using named character references.
       string = string.replace(regexEscape, escapeBmpSymbol);
     }
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
     return string // Encode astral symbols.
     .replace(regexAstralSymbols, function ($0) {
@@ -6046,6 +5659,7 @@ var TEMPLATE = String(String).split('String');
     .replace(regexBmpWhitelist, escapeBmpSymbol);
   }; // Expose default options (so they can be overridden globally).
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /***/ 5589:
 /***/ ((module) => {
@@ -12013,113 +11627,93 @@ function () {
    * Create a new macro with an attack step.
    * @returns {Macro} This object itself.
    */
+=======
+>>>>>>> ed22f6f (built!)
 
-
-  Macro.attack = function () {
-    return new this().attack();
+  encode.options = {
+    'allowUnsafeSymbols': false,
+    'encodeEverything': false,
+    'strict': false,
+    'useNamedReferences': false,
+    'decimal': false
   };
 
-  Macro.SAVED_MACRO_PROPERTY = "libram_savedMacro";
-  Macro.cachedMacroId = null;
-  Macro.cachedAutoAttack = null;
-  return Macro;
-}();
+  var decode = function decode(html, options) {
+    options = merge(options, decode.options);
+    var strict = options.strict;
 
-exports.Macro = Macro;
-/**
- * Adventure in a location and handle all combats with a given macro.
- * To use this function you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
- * See examples/consult.ts for an example.
- *
- * @category Combat
- * @param loc Location to adventure in.
- * @param macro Macro to execute.
- */
-
-function adventureMacro(loc, macro) {
-  macro.save();
-
-  try {
-    kolmafia_1.adv1(loc, 0, "");
-
-    while (kolmafia_1.inMultiFight()) {
-      kolmafia_1.runCombat();
+    if (strict && regexInvalidEntity.test(html)) {
+      parseError('malformed character reference');
     }
 
-    if (kolmafia_1.choiceFollowsFight()) kolmafia_1.visitUrl("choice.php");
-  } finally {
-    Macro.clearSaved();
-  }
-}
+    return html.replace(regexDecode, function ($0, $1, $2, $3, $4, $5, $6, $7, $8) {
+      var codePoint;
+      var semicolon;
+      var decDigits;
+      var hexDigits;
+      var reference;
+      var next;
 
-exports.adventureMacro = adventureMacro;
-/**
- * Adventure in a location and handle all combats with a given autoattack and manual macro.
- * To use the nextMacro parameter you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
- * See examples/consult.ts for an example.
- *
- * @category Combat
- * @param loc Location to adventure in.
- * @param autoMacro Macro to execute via KoL autoattack.
- * @param nextMacro Macro to execute manually after autoattack completes.
- */
+      if ($1) {
+        reference = $1; // Note: there is no need to check `has(decodeMap, reference)`.
 
-function adventureMacroAuto(loc, autoMacro, nextMacro) {
-  if (nextMacro === void 0) {
-    nextMacro = null;
-  }
+        return decodeMap[reference];
+      }
 
-  nextMacro = nextMacro !== null && nextMacro !== void 0 ? nextMacro : Macro.abort();
-  autoMacro.setAutoAttack();
-  adventureMacro(loc, nextMacro);
-}
+      if ($2) {
+        // Decode named character references without trailing `;`, e.g. `&amp`.
+        // This is only a parse error if it gets converted to `&`, or if it is
+        // followed by `=` in an attribute context.
+        reference = $2;
+        next = $3;
 
-exports.adventureMacroAuto = adventureMacroAuto;
+        if (next && options.isAttributeValue) {
+          if (strict && next == '=') {
+            parseError('`&` did not start a character reference');
+          }
 
-/***/ }),
-
-/***/ 3021:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
+          return $0;
+        } else {
+          if (strict) {
+            parseError('named character reference was not terminated by a semicolon');
+          } // Note: there is no need to check `has(decodeMapLegacy, reference)`.
 
 
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.error = exports.warn = exports.info = exports.log = void 0;
+          return decodeMapLegacy[reference] + (next || '');
+        }
+      }
 
-var kolmafia_1 = __webpack_require__(1664); // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ($4) {
+        // Decode decimal escapes, e.g. `&#119558;`.
+        decDigits = $4;
+        semicolon = $5;
 
+        if (strict && !semicolon) {
+          parseError('character reference was not terminated by a semicolon');
+        }
 
-var logColor = function logColor(color) {
-  return function () {
-    var args = [];
+        codePoint = parseInt(decDigits, 10);
+        return codePointToSymbol(codePoint, strict);
+      }
 
-    for (var _i = 0; _i < arguments.length; _i++) {
-      args[_i] = arguments[_i];
-    }
-
-    var output = args.map(function (x) {
-      return x.toString();
-    }).join(" ");
-
-    if (color) {
-      kolmafia_1.print(output, color);
-    } else {
-      kolmafia_1.print(output);
-    }
-  };
-};
-
+<<<<<<< HEAD
 exports.log = logColor();
 exports.info = logColor("blue");
 exports.warn = logColor("red");
 exports.error = logColor("red");
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+      if ($6) {
+        // Decode hexadecimal escapes, e.g. `&#x1D306;`.
+        hexDigits = $6;
+        semicolon = $7;
+>>>>>>> ed22f6f (built!)
 
-    var skills = [];
+        if (strict && !semicolon) {
+          parseError('character reference was not terminated by a semicolon');
+        }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     for (var _i = 0; _i < arguments.length; _i++) {
       skills[_i] = arguments[_i];
@@ -12128,6 +11722,890 @@ exports.error = logColor("red");
 /***/ 5944:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+        codePoint = parseInt(hexDigits, 16);
+        return codePointToSymbol(codePoint, strict);
+      } // If we’re still here, `if ($7)` is implied; it’s an ambiguous
+      // ampersand for sure. https://mths.be/notes/ambiguous-ampersands
+>>>>>>> ed22f6f (built!)
+
+
+      if (strict) {
+        parseError('named character reference was not terminated by a semicolon');
+      }
+
+      return $0;
+    });
+  }; // Expose default options (so they can be overridden globally).
+
+
+  decode.options = {
+    'isAttributeValue': false,
+    'strict': false
+  };
+
+  var escape = function escape(string) {
+    return string.replace(regexEscape, function ($0) {
+      // Note: there is no need to check `has(escapeMap, $0)` here.
+      return escapeMap[$0];
+    });
+  };
+  /*--------------------------------------------------------------------------*/
+
+
+  var he = {
+    'version': '1.2.0',
+    'encode': encode,
+    'decode': decode,
+    'escape': escape,
+    'unescape': decode
+  }; // Some AMD build optimizers, like r.js, check for specific condition patterns
+  // like the following:
+
+  if ( true && _typeof(__webpack_require__.amdO) == 'object' && __webpack_require__.amdO) {
+    !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+      return he;
+    }).call(exports, __webpack_require__, exports, module),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (freeExports && !freeExports.nodeType) {
+    if (freeModule) {
+      // in Node.js, io.js, or RingoJS v0.8.0+
+      freeModule.exports = he;
+    } else {
+      // in Narwhal or RingoJS v0.7.0-
+      for (var key in he) {
+        has(he, key) && (freeExports[key] = he[key]);
+      }
+    }
+  } else {
+    // in Rhino or a web browser
+    root.he = he;
+  }
+<<<<<<< HEAD
+}));
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+})(this);
+>>>>>>> ed22f6f (built!)
+
+/***/ }),
+
+/***/ 6041:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+<<<<<<< HEAD
+>>>>>>> 6528995 (Phill told me to do this)
+
+  Macro.tryItem = function () {
+    var _a;
+
+<<<<<<< HEAD
+    var items = [];
+=======
+/** @module GeneralLibrary */
+>>>>>>> 6528995 (Phill told me to do this)
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      items[_i] = arguments[_i];
+    }
+=======
+
+"use strict";
+>>>>>>> ed22f6f (built!)
+
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.uneffect = exports.getAverageAdventures = exports.getAverage = exports.noneToNull = exports.canUse = exports.getBanishedMonsters = exports.getZapGroup = exports.getFoldGroup = exports.isCurrentFamiliar = exports.getWandererChance = exports.getFamiliarWandererChance = exports.getKramcoWandererChance = exports.isWandererNow = exports.isVoteWandererNow = exports.haveWandererCounter = exports.getTotalFamiliarWanderers = exports.haveCounter = exports.Wanderer = exports.haveInCampground = exports.have = exports.getRemainingSpleen = exports.getRemainingStomach = exports.getRemainingLiver = exports.getMonsterLocations = exports.canRememberSong = exports.getSongCount = exports.getActiveSongs = exports.getActiveEffects = exports.isSong = exports.getSongLimit = void 0;
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+function _wrapRegExp(re, groups) { _wrapRegExp = function _wrapRegExp(re, groups) { return new BabelRegExp(re, undefined, groups); }; var _RegExp = _wrapNativeSuper(RegExp); var _super = RegExp.prototype; var _groups = new WeakMap(); function BabelRegExp(re, flags, groups) { var _this = _RegExp.call(this, re, flags); _groups.set(_this, groups || _groups.get(re)); return _this; } _inherits(BabelRegExp, _RegExp); BabelRegExp.prototype.exec = function (str) { var result = _super.exec.call(this, str); if (result) result.groups = buildGroups(result, this); return result; }; BabelRegExp.prototype[Symbol.replace] = function (str, substitution) { if (typeof substitution === "string") { var groups = _groups.get(this); return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) { return "$" + groups[name]; })); } else if (typeof substitution === "function") { var _this = this; return _super[Symbol.replace].call(this, str, function () { var args = []; args.push.apply(args, arguments); if (_typeof(args[args.length - 1]) !== "object") { args.push(buildGroups(args, _this)); } return substitution.apply(this, args); }); } else { return _super[Symbol.replace].call(this, str, substitution); } }; function buildGroups(result, re) { var g = _groups.get(re); return Object.keys(g).reduce(function (groups, name) { groups[name] = result[g[name]]; return groups; }, Object.create(null)); } return _wrapRegExp.apply(this, arguments); }
+>>>>>>> ed22f6f (built!)
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+
+function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+  var c = arguments.length,
+      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+      d;
+  if ((typeof Reflect === "undefined" ? "undefined" : _typeof(Reflect)) === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
+    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  }
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.Clan = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var node_html_parser_1 = __webpack_require__(1133);
+
+var utils_1 = __webpack_require__(1115); // It would be fantastic to have this function properly typed
+// But until someone can work out how to do it, it gets the
+// comment blocks of shame
+
+/* eslint-disable */
+
+
+function validate(target, propertyName, descriptor) {
+  if (!(descriptor === null || descriptor === void 0 ? void 0 : descriptor.value)) return;
+  var method = descriptor.value; // @ts-ignore
+
+  descriptor.value = function () {
+    var args = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    } // @ts-ignore
+
+
+    if (this.id !== kolmafia_1.getClanId()) {
+      throw new Error("You are no longer a member of this clan");
+    }
+
+    return method.apply(this, args);
+  };
+}
+/* eslint-enable */
+
+
+var clanIdCache = {};
+
+var toPlayerId = function toPlayerId(player) {
+  return typeof player === "string" ? kolmafia_1.getPlayerId(player) : player;
+};
+
+var LOG_FAX_PATTERN = /*#__PURE__*/_wrapRegExp(/([0-9]{2}\/[0-9]{2}\/[0-9]{2}, [0-9]{2}:[0-9]{2}(?:AM|PM): )<a (?:(?!>)[\s\S])+>((?:(?!<)[\s\S])+)<\/a>(?: faxed in a (.*?))<br>/, {
+  monster: 3
+});
+
+var WHITELIST_DEGREE_PATTERN = /*#__PURE__*/_wrapRegExp(/(.*?) \(\xB0([0-9]+)\)/, {
+  name: 1,
+  degree: 2
+});
+
+var Clan =
+/** @class */
+function () {
+  function Clan(id, name) {
+    this.id = id;
+    this.name = name;
+  }
+  /**
+   * Join a clan and return its instance
+   * @param clanIdOrName Clan id or name
+   */
+
+
+  Clan.join = function (clanIdOrName) {
+    var clanId;
+
+    if (typeof clanIdOrName === "string") {
+      var clanName_1 = clanIdOrName.toLowerCase();
+
+      if (clanName_1 === kolmafia_1.getClanName().toLowerCase()) {
+        return Clan.get();
+      }
+
+      if (!(clanName_1 in clanIdCache)) {
+        var clan = Clan.getWhitelisted().find(function (c) {
+          return c.name.toLowerCase() === clanName_1;
+        });
+
+        if (!clan) {
+          throw new Error("Player is not whitelisted to clan");
+        }
+
+        clanIdCache[clanName_1] = clan.id;
+      }
+
+      clanId = clanIdCache[clanName_1];
+    } else {
+      clanId = clanIdOrName;
+
+      if (clanId === kolmafia_1.getClanId()) {
+        return Clan.get();
+      }
+    }
+
+    var result = kolmafia_1.visitUrl("showclan.php?recruiter=1&whichclan=" + clanId + "&pwd&whichclan=" + clanId + "&action=joinclan&apply=Apply+to+this+Clan&confirm=on");
+
+    if (!result.includes("clanhalltop.gif")) {
+      throw new Error("Could not join clan");
+    }
+
+    return Clan.get();
+  };
+  /**
+   * Return player's current Clan
+   */
+
+
+  Clan.get = function () {
+    return new Clan(kolmafia_1.getClanId(), kolmafia_1.getClanName());
+  };
+  /**
+   * Get list of clans to which the player is whitelisted
+   */
+
+
+  Clan.getWhitelisted = function () {
+    var root = node_html_parser_1.parse(kolmafia_1.visitUrl("clan_signup.php"));
+    return root.querySelectorAll('select[name="whichclan"] option').map(function (option) {
+      var id = Number.parseInt(option.getAttribute("value"));
+      var name = option.text;
+      return new Clan(id, name);
+    });
+  };
+  /**
+   * Join clan
+   */
+
+
+  Clan.prototype.join = function () {
+    var result = kolmafia_1.visitUrl("showclan.php?recruiter=1&whichclan=" + this.id + "&pwd&whichclan=" + this.id + "&action=joinclan&apply=Apply+to+this+Clan&confirm=on");
+
+    if (!result.includes("clanhalltop.gif")) {
+      throw new Error("Could not join clan");
+    }
+
+    return Clan.get();
+  };
+  /**
+   * Return the monster that is currently in the current clan's fax machine if any
+   */
+
+
+  Clan.prototype.getCurrentFax = function () {
+    var logs = kolmafia_1.visitUrl("clan_log.php");
+    var lastFax = logs.match(LOG_FAX_PATTERN);
+    if (!lastFax) return null;
+    var monsterName = lastFax[3];
+    if (!monsterName) return null;
+    return Monster.get(monsterName);
+  };
+  /**
+   * List available ranks (name, degree and id) from the current clan
+   */
+
+
+  Clan.prototype.getRanks = function () {
+    var root = node_html_parser_1.parse(kolmafia_1.visitUrl("clan_whitelist.php"));
+    return root.querySelectorAll("select[name=level] option").map(function (option) {
+      var match = option.text.match(WHITELIST_DEGREE_PATTERN);
+      var id = option.getAttribute("value");
+      if (!match || !id) return null;
+      var name = match[1],
+          degree = match[2];
+      return {
+        name: name,
+        degree: Number.parseInt(degree),
+        id: Number.parseInt(id)
+      };
+    }).filter(utils_1.notNull);
+  };
+  /**
+   * Add a player to the current clan's whitelist.
+   * If the player is already in the whitelist this will change their rank or title.
+   * @param player Player id or name
+   * @param rankName Rank to give the player. If not provided they will be given the lowest rank
+   * @param title Title to give the player. If not provided, will be blank
+   */
+
+<<<<<<< HEAD
+exports.have = have;
+/**
+ * Return whether an item is in the player's campground
+ *
+ * @category General
+ * @param item The item mafia uses to represent the campground item
+ */
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
+
+  Clan.prototype.addPlayerToWhitelist = function (player, rankName, title) {
+    if (title === void 0) {
+      title = "";
+    }
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+/***/ 5944:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+=======
+exports.haveInCampground = haveInCampground;
+var Wanderer;
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+    var playerId = toPlayerId(player);
+    var ranks = this.getRanks();
+    var rank = rankName ? ranks.find(function (r) {
+      return r.name === rankName;
+    }) : ranks.sort(function (a, b) {
+      return a.degree - b.degree;
+    })[0];
+    if (!rank) return false;
+    var result = kolmafia_1.visitUrl("clan_whitelist.php?action=add&pwd&addwho=" + playerId + "&level=" + rank.id + "&title=" + title);
+    return result.includes("added to whitelist.") || result.includes("That player is already on the whitelist");
+  };
+  /**
+   * Remove a player from the current clan's whitelist
+   * @param player Player id or name
+   */
+>>>>>>> ed22f6f (built!)
+
+
+  Clan.prototype.removePlayerFromWhitelist = function (player) {
+    var playerId = toPlayerId(player);
+    var result = kolmafia_1.visitUrl("clan_whitelist.php?action=updatewl&pwd&who=" + playerId + "&remove=Remove");
+    return result.includes("Whitelist updated.");
+  };
+  /**
+   * Return the amount of meat in the current clan's coffer.
+   */
+
+
+  Clan.prototype.getMeatInCoffer = function () {
+    var page = kolmafia_1.visitUrl("clan_stash.php");
+
+<<<<<<< HEAD
+var __exportStar = this && this.__exportStar || function (m, exports) {
+  for (var p in m) {
+    if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+=======
+function haveCounter(counterName, minTurns, maxTurns) {
+  if (minTurns === void 0) {
+    minTurns = 0;
+>>>>>>> 6528995 (Phill told me to do this)
+  }
+};
+=======
+    var _a = page.match(/Your <b>Clan Coffer<\/b> contains ([\d,]+) Meat./) || ["0", "0"],
+        meat = _a[1];
+>>>>>>> ed22f6f (built!)
+
+    return utils_1.parseNumber(meat);
+  };
+  /**
+   * Add the given amount of meat to the current clan's coffer.
+   * @param amount Amount of meat to put in coffer
+   */
+
+
+  Clan.prototype.putMeatInCoffer = function (amount) {
+    var result = kolmafia_1.visitUrl("clan_stash.php?pwd&action=contribute&howmuch=" + amount);
+    return result.includes("You contributed");
+  };
+
+  __decorate([validate], Clan.prototype, "getCurrentFax", null);
+
+  __decorate([validate], Clan.prototype, "getRanks", null);
+
+  __decorate([validate], Clan.prototype, "addPlayerToWhitelist", null);
+
+  __decorate([validate], Clan.prototype, "removePlayerFromWhitelist", null);
+
+  __decorate([validate], Clan.prototype, "getMeatInCoffer", null);
+
+  __decorate([validate], Clan.prototype, "putMeatInCoffer", null);
+
+  return Clan;
+}();
+
+exports.Clan = Clan;
+
+/***/ }),
+
+/***/ 1498:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.Copier = void 0;
+
+var Copier =
+/** @class */
+function () {
+  function Copier(couldCopy, prepare, canCopy, copiedMonster, fightCopy) {
+    this.fightCopy = null;
+    this.couldCopy = couldCopy;
+    this.prepare = prepare;
+    this.canCopy = canCopy;
+    this.copiedMonster = copiedMonster;
+    if (fightCopy) this.fightCopy = fightCopy;
+  }
+
+  return Copier;
+}();
+
+exports.Copier = Copier;
+
+/***/ }),
+
+/***/ 8648:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __spreadArrays = this && this.__spreadArrays || function () {
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
+    s += arguments[i].length;
+  }
+
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
+    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
+      r[k] = a[j];
+    }
+  }
+
+  return r;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.adventureMacroAuto = exports.adventureMacro = exports.Macro = exports.getMacroId = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var property_1 = __webpack_require__(3579);
+
+var MACRO_NAME = "Script Autoattack Macro";
+/**
+ * Get the KoL native ID of the macro with name Script Autoattack Macro.
+ *
+ * @category Combat
+ * @returns {number} The macro ID.
+ */
+
+function getMacroId() {
+  var macroMatches = kolmafia_1.xpath(kolmafia_1.visitUrl("account_combatmacros.php"), "//select[@name=\"macroid\"]/option[text()=\"" + MACRO_NAME + "\"]/@value");
+
+  if (macroMatches.length === 0) {
+    kolmafia_1.visitUrl("account_combatmacros.php?action=new");
+    var newMacroText = kolmafia_1.visitUrl("account_combatmacros.php?macroid=0&name=" + MACRO_NAME + "&macrotext=abort&action=save");
+    return parseInt(kolmafia_1.xpath(newMacroText, "//input[@name=macroid]/@value")[0], 10);
+  } else {
+    return parseInt(macroMatches[0], 10);
+  }
+}
+
+exports.getMacroId = getMacroId;
+
+function itemOrNameToItem(itemOrName) {
+  return typeof itemOrName === "string" ? Item.get(itemOrName) : itemOrName;
+}
+
+function itemOrItemsBallsMacroName(itemOrItems) {
+  if (Array.isArray(itemOrItems)) {
+    return itemOrItems.map(itemOrItemsBallsMacroName).join(", ");
+  } else {
+    var item = itemOrNameToItem(itemOrItems);
+    return item.name;
+  }
+}
+
+function itemOrItemsBallsMacroPredicate(itemOrItems) {
+  if (Array.isArray(itemOrItems)) {
+    return itemOrItems.map(itemOrItemsBallsMacroName).join(" && ");
+  } else {
+    return "hascombatitem " + itemOrItems;
+  }
+}
+
+function skillOrNameToSkill(skillOrName) {
+  if (typeof skillOrName === "string") {
+    return Skill.get(skillOrName);
+  } else {
+    return skillOrName;
+  }
+}
+
+function skillBallsMacroName(skillOrName) {
+  var skill = skillOrNameToSkill(skillOrName);
+  return skill.name.match(/^[A-Za-z ]+$/) ? skill.name : kolmafia_1.toInt(skill);
+}
+/**
+ * BALLS macro builder for direct submission to KoL.
+ * Create a new macro with `new Macro()` and add steps using the instance methods.
+ * Uses a fluent interface, so each step returns the object for easy chaining of steps.
+ * Each method is also defined as a static method that creates a new Macro with only that step.
+ * For example, you can do `Macro.skill('Saucestorm').attack()`.
+ */
+
+
+var Macro =
+/** @class */
+function () {
+  function Macro() {
+    this.components = [];
+  }
+  /**
+   * Convert macro to string.
+   */
+
+
+  Macro.prototype.toString = function () {
+    return this.components.join(";");
+  };
+  /**
+   * Save a macro to a Mafia property for use in a consult script.
+   */
+
+
+  Macro.prototype.save = function () {
+    property_1.set(Macro.SAVED_MACRO_PROPERTY, this.toString());
+  };
+  /**
+   * Load a saved macro from the Mafia property.
+   */
+
+
+<<<<<<< HEAD
+exports.getFamiliarWandererChance = getFamiliarWandererChance;
+/**
+ * Returns the float chance the player will encounter the queried wanderer
+ * on the next turn.
+ *
+ * @category Wanderers
+ * @param wanderer Wanderer to check
+ */
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+  Macro.load = function () {
+    var _a;
+>>>>>>> ed22f6f (built!)
+
+    return (_a = new this()).step.apply(_a, property_1.get(Macro.SAVED_MACRO_PROPERTY).split(";"));
+  };
+  /**
+   * Clear the saved macro in the Mafia property.
+   */
+
+
+<<<<<<< HEAD
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.uneffect = exports.getAverageAdventures = exports.getAverage = exports.noneToNull = exports.canUse = exports.getBanishedMonsters = exports.getZapGroup = exports.getFoldGroup = exports.isCurrentFamiliar = exports.getWandererChance = exports.getFamiliarWandererChance = exports.getKramcoWandererChance = exports.isWandererNow = exports.isVoteWandererNow = exports.haveWandererCounter = exports.getTotalFamiliarWanderers = exports.haveCounter = exports.Wanderer = exports.haveInCampground = exports.have = exports.getRemainingSpleen = exports.getRemainingStomach = exports.getRemainingLiver = exports.getMonsterLocations = exports.canRememberSong = exports.getSongCount = exports.getActiveSongs = exports.getActiveEffects = exports.isSong = exports.getSongLimit = void 0;
+=======
+  if (wanderer === Wanderer.Kramco) {
+    getKramcoWandererChance();
+  }
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+  Macro.clearSaved = function () {
+    kolmafia_1.removeProperty(Macro.SAVED_MACRO_PROPERTY);
+  };
+  /**
+   * Statefully add one or several steps to a macro.
+   * @param nextSteps The steps to add to the macro.
+   * @returns {Macro} This object itself.
+   */
+>>>>>>> ed22f6f (built!)
+
+
+  Macro.prototype.step = function () {
+    var _a;
+
+    var nextSteps = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      nextSteps[_i] = arguments[_i];
+    }
+
+    var nextStepsStrings = (_a = []).concat.apply(_a, nextSteps.map(function (x) {
+      return x instanceof Macro ? x.components : [x];
+    }));
+
+    this.components = __spreadArrays(this.components, nextStepsStrings.filter(function (s) {
+      return s.length > 0;
+    }));
+    return this;
+  };
+  /**
+   * Statefully add one or several steps to a macro.
+   * @param nextSteps The steps to add to the macro.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.step = function () {
+    var _a;
+
+    var nextSteps = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      nextSteps[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).step.apply(_a, nextSteps);
+  };
+  /**
+   * Submit the built macro to KoL. Only works inside combat.
+   */
+
+
+  Macro.prototype.submit = function () {
+    var _final = this.toString();
+
+    return kolmafia_1.visitUrl("fight.php?action=macro&macrotext=" + kolmafia_1.urlEncode(_final), true, true);
+  };
+  /**
+   * Set this macro as a KoL native autoattack.
+   */
+
+
+  Macro.prototype.setAutoAttack = function () {
+    if (Macro.cachedMacroId === null) Macro.cachedMacroId = getMacroId();
+
+    if (kolmafia_1.getAutoAttack() === 99000000 + Macro.cachedMacroId && this.toString() === Macro.cachedAutoAttack) {
+      // This macro is already set. Don"t make the server request.
+      return;
+    }
+
+    kolmafia_1.visitUrl("account_combatmacros.php?macroid=" + Macro.cachedMacroId + "&name=" + kolmafia_1.urlEncode(MACRO_NAME) + "&macrotext=" + kolmafia_1.urlEncode(this.toString()) + "&action=save", true, true);
+    kolmafia_1.visitUrl("account.php?am=1&action=autoattack&value=" + (99000000 + Macro.cachedMacroId) + "&ajax=1");
+    Macro.cachedAutoAttack = this.toString();
+  };
+  /**
+   * Add an "abort" step to this macro.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.abort = function () {
+    return this.step("abort");
+  };
+  /**
+   * Create a new macro with an "abort" step.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.abort = function () {
+    return new this().abort();
+  };
+  /**
+   * Add an "if" statement to this macro.
+   * @param condition The BALLS condition for the if statement.
+   * @param ifTrue Continuation if the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.if_ = function (condition, ifTrue) {
+    return this.step("if " + condition).step(ifTrue).step("endif");
+  };
+  /**
+   * Create a new macro with an "if" statement.
+   * @param condition The BALLS condition for the if statement.
+   * @param ifTrue Continuation if the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.if_ = function (condition, ifTrue) {
+    return new this().if_(condition, ifTrue);
+  };
+  /**
+   * Add a "while" statement to this macro.
+   * @param condition The BALLS condition for the if statement.
+   * @param contents Loop to repeat while the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.while_ = function (condition, contents) {
+    return this.step("while " + condition).step(contents).step("endwhile");
+  };
+  /**
+   * Create a new macro with a "while" statement.
+   * @param condition The BALLS condition for the if statement.
+   * @param contents Loop to repeat while the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.while_ = function (condition, contents) {
+    return new this().while_(condition, contents);
+  };
+  /**
+   * Conditionally add a step to a macro based on a condition evaluated at the time of building the macro.
+   * @param condition The JS condition.
+   * @param ifTrue Continuation to add if the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.externalIf = function (condition, ifTrue) {
+    return condition ? this.step(ifTrue) : this;
+  };
+  /**
+   * Create a new macro with a condition evaluated at the time of building the macro.
+   * @param condition The JS condition.
+   * @param ifTrue Continuation to add if the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.externalIf = function (condition, ifTrue) {
+    return new this().externalIf(condition, ifTrue);
+  };
+  /**
+   * Add a repeat step to the macro.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.repeat = function () {
+    return this.step("repeat");
+  };
+  /**
+   * Add one or more skill cast steps to the macro.
+   * @param skills Skills to cast.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.skill = function () {
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return this.step.apply(this, skills.map(function (skill) {
+      return "skill " + skillBallsMacroName(skill);
+    }));
+  };
+  /**
+   * Create a new macro with one or more skill cast steps.
+   * @param skills Skills to cast.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.skill = function () {
+    var _a;
+
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).skill.apply(_a, skills);
+  };
+  /**
+   * Add one or more skill cast steps to the macro, where each step checks if you have the skill first.
+   * @param skills Skills to try casting.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.trySkill = function () {
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return this.step.apply(this, skills.map(function (skill) {
+      return Macro.if_("hasskill " + skillBallsMacroName(skill), Macro.skill(skill));
+    }));
+  };
+  /**
+   * Create a new macro with one or more skill cast steps, where each step checks if you have the skill first.
+   * @param skills Skills to try casting.
+   * @returns {Macro} This object itself.
+   */
+
+<<<<<<< HEAD
+exports.getZapGroup = getZapGroup;
+/**
+ * Get a map of banished monsters keyed by what banished them
+>>>>>>> 6528995 (Phill told me to do this)
+ *
+ * @category General
+ */
+=======
+>>>>>>> ed22f6f (built!)
+
+  Macro.trySkill = function () {
+    var _a;
+
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).trySkill.apply(_a, skills);
+  };
+  /**
+   * Add one or more skill-cast-and-repeat steps to the macro, where each step checks if you have the skill first.
+   * @param skills Skills to try repeatedly casting.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.trySkillRepeat = function () {
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return this.step.apply(this, skills.map(function (skill) {
+      return Macro.if_("hasskill " + skillBallsMacroName(skill), Macro.skill(skill).repeat());
+    }));
+  };
+  /**
+   * Create a new macro with one or more skill-cast-and-repeat steps, where each step checks if you have the skill first.
+   * @param skills Skills to try repeatedly casting.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.trySkillRepeat = function () {
+    var _a;
+
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
 
     return (_a = new this()).trySkillRepeat.apply(_a, skills);
   };
@@ -12138,7 +12616,6 @@ exports.error = logColor("red");
    */
 
 
-<<<<<<< HEAD
   Macro.prototype.item = function () {
     var items = [];
 
@@ -12181,88 +12658,6 @@ exports.error = logColor("red");
     for (var _i = 0; _i < arguments.length; _i++) {
       items[_i] = arguments[_i];
     }
-=======
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  Object.defineProperty(o, k2, {
-    enumerable: true,
-    get: function get() {
-      return m[k];
-    }
-  });
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __exportStar = this && this.__exportStar || function (m, exports) {
-  for (var p in m) {
-    if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-  }
-};
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.set = exports.get = exports.property = exports.console = void 0;
-
-__webpack_require__(2319);
-
-__exportStar(__webpack_require__(6041), exports);
-
-__exportStar(__webpack_require__(8648), exports);
-
-__exportStar(__webpack_require__(2017), exports);
-
-__exportStar(__webpack_require__(8289), exports);
-
-__exportStar(__webpack_require__(610), exports);
-
-__exportStar(__webpack_require__(5175), exports);
-
-__exportStar(__webpack_require__(7687), exports);
-
-__exportStar(__webpack_require__(9150), exports);
-
-exports.console = __importStar(__webpack_require__(3021));
-exports.property = __importStar(__webpack_require__(3579));
-
-var property_1 = __webpack_require__(3579);
-
-Object.defineProperty(exports, "get", ({
-  enumerable: true,
-  get: function get() {
-    return property_1.get;
-  }
-}));
-Object.defineProperty(exports, "set", ({
-  enumerable: true,
-  get: function get() {
-    return property_1.set;
-  }
-}));
->>>>>>> 6528995 (Phill told me to do this)
 
     return this.step.apply(this, items.map(function (item) {
       return Macro.if_(itemOrItemsBallsMacroPredicate(item), "use " + itemOrItemsBallsMacroName(item));
@@ -12274,20 +12669,11 @@ Object.defineProperty(exports, "set", ({
    * @returns {Macro} This object itself.
    */
 
-<<<<<<< HEAD
-=======
-/***/ 2017:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
->>>>>>> 6528995 (Phill told me to do this)
 
   Macro.tryItem = function () {
     var _a;
 
-<<<<<<< HEAD
     var items = [];
-=======
-/** @module GeneralLibrary */
->>>>>>> 6528995 (Phill told me to do this)
 
     for (var _i = 0; _i < arguments.length; _i++) {
       items[_i] = arguments[_i];
@@ -12300,13 +12686,6 @@ Object.defineProperty(exports, "set", ({
    * @returns {Macro} This object itself.
    */
 
-<<<<<<< HEAD
-=======
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.uneffect = exports.getAverageAdventures = exports.getAverage = exports.noneToNull = exports.canUse = exports.getBanishedMonsters = exports.getZapGroup = exports.getFoldGroup = exports.isCurrentFamiliar = exports.getWandererChance = exports.getFamiliarWandererChance = exports.getKramcoWandererChance = exports.isWandererNow = exports.isVoteWandererNow = exports.haveWandererCounter = exports.getTotalFamiliarWanderers = exports.haveCounter = exports.Wanderer = exports.haveInCampground = exports.have = exports.getRemainingSpleen = exports.getRemainingStomach = exports.getRemainingLiver = exports.getMonsterLocations = exports.canRememberSong = exports.getSongCount = exports.getActiveSongs = exports.getActiveEffects = exports.isSong = exports.getSongLimit = void 0;
->>>>>>> 6528995 (Phill told me to do this)
 
   Macro.prototype.attack = function () {
     return this.step("attack");
@@ -12316,7 +12695,6 @@ exports.uneffect = exports.getAverageAdventures = exports.getAverage = exports.n
    * @returns {Macro} This object itself.
    */
 
-<<<<<<< HEAD
 
   Macro.attack = function () {
     return new this().attack();
@@ -12342,8 +12720,12 @@ exports.Macro = Macro;
 function adventureMacro(loc, macro) {
   macro.save();
 
+<<<<<<< HEAD
+>>>>>>> 6528995 (Phill told me to do this)
+=======
   try {
     kolmafia_1.adv1(loc, 0, "");
+>>>>>>> ed22f6f (built!)
 
     while (kolmafia_1.inMultiFight()) {
       kolmafia_1.runCombat();
@@ -12419,219 +12801,15 @@ exports.log = logColor();
 exports.info = logColor("blue");
 exports.warn = logColor("red");
 exports.error = logColor("red");
-=======
-var template_string_1 = __webpack_require__(9150);
 
-var property_1 = __webpack_require__(3579);
+/***/ }),
 
-var utils_1 = __webpack_require__(1115);
-/**
- * Returns the current maximum Accordion Thief songs the player can have in their head
- *
- * @category General
- */
-
-
-function getSongLimit() {
-  return 3 + (kolmafia_1.booleanModifier("Four Songs") ? 1 : 0) + kolmafia_1.numericModifier("Additional Song");
-}
-
-exports.getSongLimit = getSongLimit;
-/**
- * Return whether the Skill or Effect provided is an Accordion Thief song
- *
- * @category General
- * @param skillOrEffect The Skill or Effect
- */
-
-function isSong(skillOrEffect) {
-  var skill = skillOrEffect instanceof Effect ? kolmafia_1.toSkill(skillOrEffect) : skillOrEffect;
-  return skill["class"] === template_string_1.$class(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Accordion Thief"], ["Accordion Thief"]))) && skill.buff;
-}
-
-exports.isSong = isSong;
-/**
- * List all active Effects
- *
- * @category General
- */
-
-function getActiveEffects() {
-  return Object.keys(kolmafia_1.myEffects()).map(function (e) {
-    return Effect.get(e);
-  });
-}
-
-exports.getActiveEffects = getActiveEffects;
-/**
- * List currently active Accordion Thief songs
- *
- * @category General
- */
-
-function getActiveSongs() {
-  return getActiveEffects().filter(isSong);
-}
-
-exports.getActiveSongs = getActiveSongs;
-/**
- * List number of active Accordion Thief songs
- *
- * @category General
- */
-
-function getSongCount() {
-  return getActiveSongs().length;
-}
-
-exports.getSongCount = getSongCount;
-/**
- * Returns true if the player can remember another Accordion Thief song
- *
- * @category General
- * @param quantity Number of songs to test the space for
- */
-
-function canRememberSong(quantity) {
-  if (quantity === void 0) {
-    quantity = 1;
-  }
-
-  return getSongLimit() - getSongCount() >= quantity;
-}
-
-exports.canRememberSong = canRememberSong;
-/**
- * Return the locations in which the given monster can be encountered naturally
- *
- * @category General
- * @param monster Monster to find
- */
-
-function getMonsterLocations(monster) {
-  return Location.all().filter(function (location) {
-    return monster.name in kolmafia_1.appearanceRates(location);
-  });
-}
-
-exports.getMonsterLocations = getMonsterLocations;
-/**
- * Return the player's remaining liver space
- *
- * @category General
- */
-
-function getRemainingLiver() {
-  return kolmafia_1.inebrietyLimit() - kolmafia_1.myInebriety();
-}
-
-exports.getRemainingLiver = getRemainingLiver;
-/**
- * Return the player's remaining stomach space
- *
- * @category General
- */
-
-function getRemainingStomach() {
-  return kolmafia_1.fullnessLimit() - kolmafia_1.myFullness();
-}
-
-exports.getRemainingStomach = getRemainingStomach;
-/**
- * Return the player's remaining spleen space
- *
- * @category General
- */
-
-function getRemainingSpleen() {
-  return kolmafia_1.spleenLimit() - kolmafia_1.mySpleenUse();
-}
-
-exports.getRemainingSpleen = getRemainingSpleen;
-/**
- * Return whether the player "has" any entity which one could feasibly "have".
- *
- * @category General
- * @param thing Thing to check
- * @param quantity Number to check that the player has
- */
-
-function have(thing, quantity) {
-  if (quantity === void 0) {
-    quantity = 1;
-  }
-
-  if (thing instanceof Effect) {
-    return kolmafia_1.haveEffect(thing) >= quantity;
-  }
-
-  if (thing instanceof Familiar) {
-    return kolmafia_1.haveFamiliar(thing);
-  }
-
-  if (thing instanceof Item) {
-    return kolmafia_1.availableAmount(thing) >= quantity;
-  }
-
-  if (thing instanceof Servant) {
-    return kolmafia_1.haveServant(thing);
-  }
-
-  if (thing instanceof Skill) {
-    return kolmafia_1.haveSkill(thing);
-  }
-
-  if (thing instanceof Thrall) {
-    var thrall = kolmafia_1.myThrall();
-    return thrall.id === thing.id && thrall.level >= quantity;
-  }
-
-  return false;
-}
-
-exports.have = have;
-/**
- * Return whether an item is in the player's campground
- *
- * @category General
- * @param item The item mafia uses to represent the campground item
- */
->>>>>>> 6528995 (Phill told me to do this)
-
-function haveInCampground(item) {
-  return Object.keys(kolmafia_1.getCampground()).map(function (i) {
-    return Item.get(i);
-  }).includes(item);
-}
-
-<<<<<<< HEAD
 /***/ 5944:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-=======
-exports.haveInCampground = haveInCampground;
-var Wanderer;
->>>>>>> 6528995 (Phill told me to do this)
 
-(function (Wanderer) {
-  Wanderer["Digitize"] = "Digitize Monster";
-  Wanderer["Enamorang"] = "Enamorang Monster";
-  Wanderer["Familiar"] = "Familiar";
-  Wanderer["Holiday"] = "Holiday Monster";
-  Wanderer["Kramco"] = "Kramco";
-  Wanderer["Nemesis"] = "Nemesis Assassin";
-  Wanderer["Portscan"] = "portscan.edu";
-  Wanderer["Romantic"] = "Romantic Monster";
-  Wanderer["Vote"] = "Vote Monster";
-})(Wanderer = exports.Wanderer || (exports.Wanderer = {}));
+"use strict";
 
-var deterministicWanderers = [Wanderer.Digitize, Wanderer.Portscan];
-/**
- * Return whether the player has the queried counter
- *
- * @category General
- */
 
-<<<<<<< HEAD
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
   if (k2 === undefined) k2 = k;
   Object.defineProperty(o, k2, {
@@ -12657,15 +12835,9 @@ var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? fun
 var __exportStar = this && this.__exportStar || function (m, exports) {
   for (var p in m) {
     if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-=======
-function haveCounter(counterName, minTurns, maxTurns) {
-  if (minTurns === void 0) {
-    minTurns = 0;
->>>>>>> 6528995 (Phill told me to do this)
   }
 };
 
-<<<<<<< HEAD
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
@@ -12727,157 +12899,16 @@ Object.defineProperty(exports, "set", ({
 "use strict";
 
 /** @module GeneralLibrary */
-=======
-  if (maxTurns === void 0) {
-    maxTurns = 500;
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
   }
 
-  return kolmafia_1.getCounters(counterName, minTurns, maxTurns) === counterName;
-}
-
-exports.haveCounter = haveCounter;
-/**
- * Returns the player's total number of Artistic Goth Kid and/or Mini-Hipster
- * wanderers encountered today
- *
- * @category Wanderers
- */
-
-function getTotalFamiliarWanderers() {
-  var hipsterFights = property_1.get("_hipsterAdv");
-  var gothFights = property_1.get("_gothKidFights");
-  return hipsterFights + gothFights;
-}
-
-exports.getTotalFamiliarWanderers = getTotalFamiliarWanderers;
-/**
- * Return whether the player has the queried wandering counter
- *
- * @category Wanderers
- */
-
-function haveWandererCounter(wanderer) {
-  if (deterministicWanderers.includes(wanderer)) {
-    return haveCounter(wanderer);
-  }
-
-  var begin = wanderer + " window begin";
-  var end = wanderer + " window end";
-  return haveCounter(begin) || haveCounter(end);
-}
-
-exports.haveWandererCounter = haveWandererCounter;
-/**
- * Returns whether the player will encounter a vote wanderer on the next turn,
- * providing an "I Voted!" sticker is equipped.
- *
- * @category Wanderers
- */
-
-function isVoteWandererNow() {
-  return kolmafia_1.totalTurnsPlayed() % 11 == 1;
-}
-
-exports.isVoteWandererNow = isVoteWandererNow;
-/**
- * Tells us whether we can expect a given wanderer now. Behaves differently
- * for different types of wanderer.
- *
- * - For deterministic wanderers, return whether the player will encounter
- *   the queried wanderer on the next turn
- *
- * - For variable wanderers (window), return whether the player is within
- *   an encounter window for the queried wanderer
- *
- * - For variable wanderers (chance per turn), returns true unless the player
- *   has exhausted the number of wanderers possible
- *
- * @category Wanderers
- * @param wanderer Wanderer to check
- */
-
-function isWandererNow(wanderer) {
-  if (deterministicWanderers.includes(wanderer)) {
-    return haveCounter(wanderer, 0, 0);
-  }
-
-  if (wanderer == Wanderer.Kramco) {
-    return true;
-  }
-
-  if (wanderer === Wanderer.Vote) {
-    return isVoteWandererNow();
-  }
-
-  if (wanderer === Wanderer.Familiar) {
-    return getTotalFamiliarWanderers() < 7;
-  }
-
-  var begin = wanderer + " window begin";
-  var end = wanderer + " window end";
-  return !haveCounter(begin, 1) && haveCounter(end);
-}
-
-exports.isWandererNow = isWandererNow;
-/**
- * Returns the float chance the player will encounter a sausage goblin on the
- * next turn, providing the Kramco Sausage-o-Matic is equipped.
- *
- * @category Wanderers
- */
-
-function getKramcoWandererChance() {
-  var fights = property_1.get("_sausageFights");
-  var lastFight = property_1.get("_lastSausageMonsterTurn");
-  var totalTurns = kolmafia_1.totalTurnsPlayed();
-
-  if (fights < 1) {
-    return lastFight === totalTurns && kolmafia_1.myTurncount() < 1 ? 0.5 : 1.0;
-  }
-
-  var turnsSinceLastFight = totalTurns - lastFight;
-  return Math.min(1.0, (turnsSinceLastFight + 1) / (5 + fights * 3 + Math.pow(Math.max(0, fights - 5), 3)));
-}
-
-exports.getKramcoWandererChance = getKramcoWandererChance;
-/**
- * Returns the float chance the player will encounter an Artistic Goth Kid or
- * Mini-Hipster wanderer on the next turn, providing a familiar is equipped.
- *
- * NOTE: You must complete one combat with the Artistic Goth Kid before you
- * can encounter any wanderers. Consequently,ƒ the first combat with the
- * Artist Goth Kid is effectively 0% chance to encounter a wanderer.
- *
- * @category Wanderers
- */
-
-function getFamiliarWandererChance() {
-  var totalFights = getTotalFamiliarWanderers();
-  var probability = [0.5, 0.4, 0.3, 0.2];
-
-  if (totalFights < 4) {
-    return probability[totalFights];
-  }
-
-  return totalFights > 7 ? 0.0 : 0.1;
-}
-
-exports.getFamiliarWandererChance = getFamiliarWandererChance;
-/**
- * Returns the float chance the player will encounter the queried wanderer
- * on the next turn.
- *
- * @category Wanderers
- * @param wanderer Wanderer to check
- */
->>>>>>> 6528995 (Phill told me to do this)
-
-function getWandererChance(wanderer) {
-  if (deterministicWanderers.includes(wanderer)) {
-    return haveCounter(wanderer, 0, 0) ? 1.0 : 0.0;
-  }
-
-<<<<<<< HEAD
   return cooked;
 };
 
@@ -12885,17 +12916,9 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.uneffect = exports.getAverageAdventures = exports.getAverage = exports.noneToNull = exports.canUse = exports.getBanishedMonsters = exports.getZapGroup = exports.getFoldGroup = exports.isCurrentFamiliar = exports.getWandererChance = exports.getFamiliarWandererChance = exports.getKramcoWandererChance = exports.isWandererNow = exports.isVoteWandererNow = exports.haveWandererCounter = exports.getTotalFamiliarWanderers = exports.haveCounter = exports.Wanderer = exports.haveInCampground = exports.have = exports.getRemainingSpleen = exports.getRemainingStomach = exports.getRemainingLiver = exports.getMonsterLocations = exports.canRememberSong = exports.getSongCount = exports.getActiveSongs = exports.getActiveEffects = exports.isSong = exports.getSongLimit = void 0;
-=======
-  if (wanderer === Wanderer.Kramco) {
-    getKramcoWandererChance();
-  }
->>>>>>> 6528995 (Phill told me to do this)
 
-  if (wanderer === Wanderer.Vote) {
-    return isVoteWandererNow() ? 1.0 : 0.0;
-  }
+var kolmafia_1 = __webpack_require__(1664);
 
-<<<<<<< HEAD
 var template_string_1 = __webpack_require__(9150);
 
 var property_1 = __webpack_require__(3579);
@@ -12941,84 +12964,10 @@ function getActiveEffects() {
 exports.getActiveEffects = getActiveEffects;
 /**
  * List currently active Accordion Thief songs
-=======
-  if (wanderer === Wanderer.Familiar) {
-    getFamiliarWandererChance();
-  }
-
-  var begin = wanderer + " window begin";
-  var end = wanderer + " window end";
-
-  if (haveCounter(begin, 1, 100)) {
-    return 0.0;
-  }
-
-  var counters = property_1.get("relayCounters");
-  var re = new RegExp("(\\d+):" + end);
-  var matches = counters.match(re);
-
-  if (matches && matches.length === 2) {
-    var window = Number.parseInt(matches[1]) - kolmafia_1.myTurncount();
-    return 1.0 / window;
-  }
-
-  return 0.0;
-}
-
-exports.getWandererChance = getWandererChance;
-/**
- * Returns true if the player's current familiar is equal to the one supplied
- *
- * @category General
- * @param familiar Familiar to check
- */
-
-function isCurrentFamiliar(familiar) {
-  return kolmafia_1.myFamiliar() === familiar;
-}
-
-exports.isCurrentFamiliar = isCurrentFamiliar;
-/**
- * Returns the fold group (if any) of which the given item is a part
- *
- * @category General
- * @param item Item that is part of the required fold group
- */
-
-function getFoldGroup(item) {
-  return Object.entries(kolmafia_1.getRelated(item, "fold")).sort(function (_a, _b) {
-    var a = _a[1];
-    var b = _b[1];
-    return a - b;
-  }).map(function (_a) {
-    var i = _a[0];
-    return Item.get(i);
-  });
-}
-
-exports.getFoldGroup = getFoldGroup;
-/**
- * Returns the zap group (if any) of which the given item is a part
- *
- * @category General
- * @param item Item that is part of the required zap group
- */
-
-function getZapGroup(item) {
-  return Object.keys(kolmafia_1.getRelated(item, "zap")).map(function (i) {
-    return Item.get(i);
-  });
-}
-
-exports.getZapGroup = getZapGroup;
-/**
- * Get a map of banished monsters keyed by what banished them
->>>>>>> 6528995 (Phill told me to do this)
  *
  * @category General
  */
 
-<<<<<<< HEAD
 function getActiveSongs() {
   return getActiveEffects().filter(isSong);
 }
@@ -13105,132 +13054,6 @@ exports.getRemainingSpleen = getRemainingSpleen;
  * @param thing Thing to check
  * @param quantity Number to check that the player has
  */
-=======
-function getBanishedMonsters() {
-  var banishes = utils_1.chunk(property_1.get("banishedMonsters").split(":"), 3);
-  var result = new Map();
-
-  for (var _i = 0, banishes_1 = banishes; _i < banishes_1.length; _i++) {
-    var _a = banishes_1[_i],
-        foe = _a[0],
-        banisher = _a[1];
-    if (foe === undefined || banisher === undefined) break; // toItem doesn"t error if the item doesn"t exist, so we have to use that.
-
-    var banisherItem = kolmafia_1.toItem(banisher);
-    var banisherObject = [Item.get("none"), null].includes(banisherItem) ? Skill.get(banisher) : banisherItem;
-    result.set(banisherObject, Monster.get(foe));
-  }
-
-  return result;
-}
-
-exports.getBanishedMonsters = getBanishedMonsters;
-/**
- * Returns true if the item is usable
- *
- * This function will be an ongoing work in progress
- *
- * @param item Item to check
- */
-
-function canUse(item) {
-  var path = kolmafia_1.myPath();
-
-  if (path !== "Nuclear Autumn") {
-    if (template_string_1.$items(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Shrieking Weasel holo-record, Power-Guy 2000 holo-record, Lucky Strikes holo-record, EMD holo-record, Superdrifter holo-record, The Pigs holo-record, Drunk Uncles holo-record"], ["Shrieking Weasel holo-record, Power-Guy 2000 holo-record, Lucky Strikes holo-record, EMD holo-record, Superdrifter holo-record, The Pigs holo-record, Drunk Uncles holo-record"]))).includes(item)) {
-      return false;
-    }
-  }
-
-  if (path === "G-Lover") {
-    if (!item.name.toLowerCase().includes("g")) return false;
-  }
-
-  if (path === "Bees Hate You") {
-    if (item.name.toLowerCase().includes("b")) return false;
-  }
-
-  return true;
-}
-
-exports.canUse = canUse;
-/**
- * Turn KoLmafia `none`s to JavaScript `null`s
- *
- * @param thing Thing that can have a mafia "none" value
- */
-
-function noneToNull(thing) {
-  if (thing instanceof Effect) {
-    return thing === Effect.get("none") ? null : thing;
-  }
-
-  if (thing instanceof Familiar) {
-    return thing === Familiar.get("none") ? null : thing;
-  }
-
-  if (thing instanceof Item) {
-    return thing === Item.get("none") ? null : thing;
-  }
-
-  return thing;
-}
-
-exports.noneToNull = noneToNull;
-/**
- * Return the average value from the sort of range that KoLmafia encodes as a string
- *
- * @param range KoLmafia-style range string
- */
-
-function getAverage(range) {
-  var _a;
-
-  if (range.indexOf("-") < 0) return Number(range);
-
-  var _b = (_a = range.match(/(-?[0-9]+)-(-?[0-9]+)/)) !== null && _a !== void 0 ? _a : ["0", "0", "0"],
-      lower = _b[1],
-      upper = _b[2];
-
-  return (Number(lower) + Number(upper)) / 2;
-}
-
-exports.getAverage = getAverage;
-/**
- * Return average adventures expected from consuming an item
- *
- * If item is not a consumable, will just return "0".
- *
- * @param item Consumable item
- */
-
-function getAverageAdventures(item) {
-  return getAverage(item.adventures);
-}
-
-exports.getAverageAdventures = getAverageAdventures;
-/**
- * Remove an effect
- *
- * @category General
- * @param effect Effect to remove
- */
-
-function uneffect(effect) {
-  return kolmafia_1.cliExecute("uneffect " + effect.name);
-}
-
-exports.uneffect = uneffect;
-var templateObject_1, templateObject_2;
-
-/***/ }),
-
-/***/ 8289:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
->>>>>>> 6528995 (Phill told me to do this)
 
 function have(thing, quantity) {
   if (quantity === void 0) {
@@ -13241,7 +13064,6 @@ function have(thing, quantity) {
     return kolmafia_1.haveEffect(thing) >= quantity;
   }
 
-<<<<<<< HEAD
   if (thing instanceof Familiar) {
     return kolmafia_1.haveFamiliar(thing);
   }
@@ -13774,129 +13596,13 @@ function maximizeCached(objectives, options) {
     return bonus + " bonus " + item;
   })).join(", ");
 
-  var stats = template_string_1.$stats(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Muscle, Mysticality, Moxie"], ["Muscle, Mysticality, Moxie"]))).map(function (stat) {
-    return kolmafia_1.myBasestat(stat);
-  }); // The highest known equip requirement is 300, so don't check after that.
-
-  var statsChanged = updateOnStatThreshold !== null && stats.some(function (newStat, i) {
-    return newStat > cachedStats[i] && cachedStats[i] < 300 && newStat % updateOnStatThreshold === 0;
-  });
-  var familiarChanged = updateOnFamiliarChange && cachedFamiliar !== kolmafia_1.myFamiliar();
-
-  if (statsChanged || familiarChanged || objective !== cachedObjective) {
-    kolmafia_1.maximize(objective, false);
-  }
-
-  cachedFamiliar = kolmafia_1.myFamiliar();
-  cachedStats = stats;
-  cachedObjective = objective;
-}
-
-exports.maximizeCached = maximizeCached;
-var templateObject_1;
+<<<<<<< HEAD
+>>>>>>> 6528995 (Phill told me to do this)
 =======
-var __assign = this && this.__assign || function () {
-  __assign = Object.assign || function (t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-
-      for (var p in s) {
-        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-      }
-    }
-
-    return t;
-  };
-
-  return __assign.apply(this, arguments);
-};
-
-var __spreadArrays = this && this.__spreadArrays || function () {
-  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
-    s += arguments[i].length;
-  }
-
-  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
-    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
-      r[k] = a[j];
-    }
-  }
-
-  return r;
-};
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.maximizeCached = exports.setDefaultMaximizeOptions = void 0;
-
-var kolmafia_1 = __webpack_require__(1664);
-
-var template_string_1 = __webpack_require__(9150);
-
-var defaultMaximizeOptions = {
-  updateOnFamiliarChange: true,
-  updateOnStatThreshold: 10,
-  forceEquip: [],
-  preventEquip: [],
-  bonusEquip: new Map()
-};
-/**
- *
- * @param options Default options for each maximizer run.
- * @param options.updateOnFamiliarChange Re-run the maximizer if familiar has changed. Default true.
- * @param options.updateOnStatThreshold Re-run the maximizer if a stat has newly passed an even multiple
- * of this number (for new equip requirements), or null otherwise. Default 10.
- * @param options.forceEquip Equipment to force-equip ("equip X").
- * @param options.preventEquip Equipment to prevent equipping ("-equip X").
- * @param options.bonusEquip Equipment to apply a bonus to ("200 bonus X").
- */
-
-function setDefaultMaximizeOptions(options) {
-  Object.assign(defaultMaximizeOptions, options);
-}
-
-exports.setDefaultMaximizeOptions = setDefaultMaximizeOptions;
-var cachedObjective = null;
-var cachedStats = [0, 0, 0];
-var cachedFamiliar = null;
-/**
- * Run the maximizer, but only if the objective and certain pieces of game state haven't changed since it was last run.
- * @param objectives Objectives to maximize for.
- * @param options Options for this run of the maximizer.
- * @param options.updateOnFamiliarChange Re-run the maximizer if familiar has changed. Default true.
- * @param options.updateOnStatThreshold Re-run the maximizer if a stat has newly passed an even multiple
- * of this number (for new equip requirements), or null otherwise. Default 10.
- * @param options.forceEquip Equipment to force-equip ("equip X").
- * @param options.preventEquip Equipment to prevent equipping ("-equip X").
- * @param options.bonusEquip Equipment to apply a bonus to ("200 bonus X").
- */
-
-function maximizeCached(objectives, options) {
-  if (options === void 0) {
-    options = {};
-  }
-
-  var _a = __assign(__assign({}, defaultMaximizeOptions), options),
-      updateOnFamiliarChange = _a.updateOnFamiliarChange,
-      updateOnStatThreshold = _a.updateOnStatThreshold,
-      forceEquip = _a.forceEquip,
-      preventEquip = _a.preventEquip,
-      bonusEquip = _a.bonusEquip;
-
-  var objective = __spreadArrays(objectives, forceEquip.map(function (item) {
-    return "equip " + item;
-  }), preventEquip.map(function (item) {
-    return "-equip " + item;
-  }), Array.from(bonusEquip.entries()).map(function (_a) {
-    var item = _a[0],
-        bonus = _a[1];
-    return bonus + " bonus " + item;
-  })).join(", ");
-
   var stats = template_string_1.$stats(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Muscle, Mysticality, Moxie"], ["Muscle, Mysticality, Moxie"]))).map(function (stat) {
     return kolmafia_1.myBasestat(stat);
   }); // The highest known equip requirement is 300, so don't check after that.
+>>>>>>> ed22f6f (built!)
 
   var statsChanged = updateOnStatThreshold !== null && stats.some(function (newStat, i) {
     return newStat > cachedStats[i] && cachedStats[i] < 300 && newStat % updateOnStatThreshold === 0;
@@ -13919,6 +13625,15 @@ var templateObject_1;
 
 /***/ 610:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+<<<<<<< HEAD
+=======
+  Mood.prototype.moreMp = function (minimumTarget) {
+    for (var _i = 0, _a = this.options.mpSources; _i < _a.length; _i++) {
+      var mpSource = _a[_i];
+      var usesRemaining = mpSource.usesRemaining();
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
 "use strict";
 
@@ -13957,6 +13672,20 @@ var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked
   } else {
     cooked.raw = raw;
   }
+<<<<<<< HEAD
+=======
+  Mood.prototype.skill = function (skill) {
+    this.elements.push(new SkillMoodElement(skill));
+    return this;
+  };
+  /**
+   * Add an effect to the mood, with casting based on {effect.default}.
+   * @param effect Effect to add.
+   * @param gainEffect How to gain the effect. Only runs if we don't have the effect.
+   */
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
   return cooked;
 };
@@ -13981,6 +13710,13 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.Mood = exports.MagicalSausages = exports.OscusSoda = exports.MpSource = void 0;
+<<<<<<< HEAD
+=======
+  Mood.prototype.effect = function (effect, gainEffect) {
+    var skill = kolmafia_1.toSkill(effect);
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
 var kolmafia_1 = __webpack_require__(1664);
 
@@ -14030,415 +13766,7 @@ function (_super) {
   OscusSoda.prototype.availableMpMin = function () {
     return this.available() ? 200 : 0;
   };
-
-  OscusSoda.prototype.availableMpMax = function () {
-    return this.available() ? 300 : 0;
-  };
-
-  OscusSoda.prototype.execute = function () {
-    kolmafia_1.use(template_string_1.$item(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Oscus's neverending soda"], ["Oscus's neverending soda"]))));
-  };
-
-  OscusSoda.instance = new OscusSoda();
-  return OscusSoda;
-}(MpSource);
-
-exports.OscusSoda = OscusSoda;
-
-var MagicalSausages =
-/** @class */
-function (_super) {
-  __extends(MagicalSausages, _super);
-
-  function MagicalSausages() {
-    return _super !== null && _super.apply(this, arguments) || this;
-  }
-
-  MagicalSausages.prototype.usesRemaining = function () {
-    return 23 - property_1.get("_sausagesEaten");
-  };
-
-  MagicalSausages.prototype.availableMpMin = function () {
-    var maxSausages = Math.min(23 - property_1.get("_sausagesEaten"), kolmafia_1.itemAmount(template_string_1.$item(templateObject_3 || (templateObject_3 = __makeTemplateObject(["magical sausage"], ["magical sausage"])))) + kolmafia_1.itemAmount(template_string_1.$item(templateObject_4 || (templateObject_4 = __makeTemplateObject(["magical sausage casing"], ["magical sausage casing"])))));
-    return Math.min(kolmafia_1.myMaxmp(), 999) * maxSausages;
-  };
-
-  MagicalSausages.prototype.execute = function () {
-    var mpSpaceAvailable = kolmafia_1.myMaxmp() - kolmafia_1.myMp();
-    if (mpSpaceAvailable < 700) return;
-    var maxSausages = Math.min(23 - property_1.get("_sausagesEaten"), kolmafia_1.itemAmount(template_string_1.$item(templateObject_5 || (templateObject_5 = __makeTemplateObject(["magical sausage"], ["magical sausage"])))) + kolmafia_1.itemAmount(template_string_1.$item(templateObject_6 || (templateObject_6 = __makeTemplateObject(["magical sausage casing"], ["magical sausage casing"])))), Math.floor((kolmafia_1.myMaxmp() - kolmafia_1.myMp()) / Math.min(kolmafia_1.myMaxmp() - kolmafia_1.myMp(), 999)));
-    kolmafia_1.retrieveItem(maxSausages, template_string_1.$item(templateObject_7 || (templateObject_7 = __makeTemplateObject(["magical sausage"], ["magical sausage"]))));
-    kolmafia_1.eat(maxSausages, template_string_1.$item(templateObject_8 || (templateObject_8 = __makeTemplateObject(["magical sausage"], ["magical sausage"]))));
-  };
-
-  MagicalSausages.instance = new MagicalSausages();
-  return MagicalSausages;
-}(MpSource);
-
-exports.MagicalSausages = MagicalSausages;
-
-var MoodElement =
-/** @class */
-function () {
-  function MoodElement() {}
-
-  MoodElement.prototype.mpCostPerTurn = function () {
-    return 0;
-  };
-
-  MoodElement.prototype.turnIncrement = function () {
-    return 1;
-  };
-
-  return MoodElement;
-}();
-
-var SkillMoodElement =
-/** @class */
-function (_super) {
-  __extends(SkillMoodElement, _super);
-
-  function SkillMoodElement(skill) {
-    var _this = _super.call(this) || this;
-
-    _this.skill = skill;
-    return _this;
-  }
-
-  SkillMoodElement.prototype.mpCostPerTurn = function () {
-    var turns = kolmafia_1.turnsPerCast(this.skill);
-    return turns > 0 ? kolmafia_1.mpCost(this.skill) / turns : 0;
-  };
-
-  SkillMoodElement.prototype.turnIncrement = function () {
-    return kolmafia_1.turnsPerCast(this.skill);
-  };
-
-  SkillMoodElement.prototype.execute = function (mood, ensureTurns) {
-    var effect = kolmafia_1.toEffect(this.skill);
-    var initialTurns = kolmafia_1.haveEffect(effect);
-    if (!kolmafia_1.haveSkill(this.skill)) return false;
-    if (initialTurns >= ensureTurns) return true;
-    var oldRemainingCasts = -1;
-    var remainingCasts = Math.ceil((ensureTurns - kolmafia_1.haveEffect(effect)) / kolmafia_1.turnsPerCast(this.skill));
-
-    while (remainingCasts > 0 && oldRemainingCasts !== remainingCasts) {
-      var maxCasts = void 0;
-
-      if (kolmafia_1.hpCost(this.skill) > 0) {
-        // FIXME: restore HP
-        maxCasts = Math.floor(kolmafia_1.myHp() / kolmafia_1.hpCost(this.skill));
-      } else {
-        var cost = kolmafia_1.mpCost(this.skill);
-        maxCasts = Math.floor(kolmafia_1.myMp() / cost);
-
-        if (maxCasts === 0) {
-          mood.moreMp(cost);
-          maxCasts = Math.floor(kolmafia_1.myMp() / cost);
-        }
-      }
-
-      var casts = utils_1.clamp(remainingCasts, 0, Math.min(100, maxCasts));
-      kolmafia_1.useSkill(casts, this.skill);
-      oldRemainingCasts = remainingCasts;
-      remainingCasts = Math.ceil((ensureTurns - kolmafia_1.haveEffect(effect)) / kolmafia_1.turnsPerCast(this.skill));
-    }
-
-    return kolmafia_1.haveEffect(effect) > ensureTurns;
-  };
-
-  return SkillMoodElement;
-}(MoodElement);
-
-var PotionMoodElement =
-/** @class */
-function (_super) {
-  __extends(PotionMoodElement, _super);
-
-  function PotionMoodElement(potion, maxPricePerTurn) {
-    var _this = _super.call(this) || this;
-
-    _this.potion = potion;
-    _this.maxPricePerTurn = maxPricePerTurn;
-    return _this;
-  }
-
-  PotionMoodElement.prototype.execute = function (mood, ensureTurns) {
-    // FIXME: Smarter buying logic.
-    // FIXME: Allow constructing stuff (e.g. snow cleats)
-    var effect = kolmafia_1.effectModifier(this.potion, "Effect");
-    var effectTurns = kolmafia_1.haveEffect(effect);
-    var turnsPerUse = kolmafia_1.numericModifier(this.potion, "Effect Duration");
-
-    if (kolmafia_1.mallPrice(this.potion) > this.maxPricePerTurn * turnsPerUse) {
-      return false;
-    }
-
-    if (effectTurns < ensureTurns) {
-      var uses = (ensureTurns - effectTurns) / turnsPerUse;
-      var quantityToBuy = utils_1.clamp(uses - kolmafia_1.availableAmount(this.potion), 0, 100);
-      kolmafia_1.buy(quantityToBuy, this.potion, this.maxPricePerTurn * turnsPerUse);
-      var quantityToUse = utils_1.clamp(uses, 0, kolmafia_1.availableAmount(this.potion));
-      kolmafia_1.use(quantityToUse, this.potion);
-    }
-
-    return kolmafia_1.haveEffect(effect) >= ensureTurns;
-  };
-
-  return PotionMoodElement;
-}(MoodElement);
-
-var GenieMoodElement =
-/** @class */
-function (_super) {
-  __extends(GenieMoodElement, _super);
-
-  function GenieMoodElement(effect) {
-    var _this = _super.call(this) || this;
-
-    _this.effect = effect;
-    return _this;
-  }
-
-  GenieMoodElement.prototype.execute = function (mood, ensureTurns) {
-    if (kolmafia_1.haveEffect(this.effect) >= ensureTurns) return true;
-    var neededWishes = Math.ceil((kolmafia_1.haveEffect(this.effect) - ensureTurns) / 20);
-    var wishesToBuy = utils_1.clamp(neededWishes - kolmafia_1.availableAmount(template_string_1.$item(templateObject_9 || (templateObject_9 = __makeTemplateObject(["pocket wish"], ["pocket wish"])))), 0, 20);
-    kolmafia_1.buy(wishesToBuy, template_string_1.$item(templateObject_10 || (templateObject_10 = __makeTemplateObject(["pocket wish"], ["pocket wish"]))), 50000);
-    var wishesToUse = utils_1.clamp(neededWishes, 0, kolmafia_1.availableAmount(template_string_1.$item(templateObject_11 || (templateObject_11 = __makeTemplateObject(["pocket wish"], ["pocket wish"])))));
-
-    for (; wishesToUse > 0; wishesToUse--) {
-      kolmafia_1.cliExecute("genie effect " + this.effect.name);
-    }
-
-    return kolmafia_1.haveEffect(this.effect) >= ensureTurns;
-  };
-
-  return GenieMoodElement;
-}(MoodElement);
-
-var CustomMoodElement =
-/** @class */
-function (_super) {
-  __extends(CustomMoodElement, _super);
-
-  function CustomMoodElement(effect, gainEffect) {
-    var _this = _super.call(this) || this;
-
-    _this.effect = effect;
-    _this.gainEffect = gainEffect !== null && gainEffect !== void 0 ? gainEffect : function () {
-      return kolmafia_1.cliExecute(effect["default"]);
-    };
-    return _this;
-  }
-
-  CustomMoodElement.prototype.execute = function (mood, ensureTurns) {
-    var currentTurns = kolmafia_1.haveEffect(this.effect);
-    var lastCurrentTurns = -1;
-
-    while (currentTurns < ensureTurns && currentTurns !== lastCurrentTurns) {
-      this.gainEffect();
-      lastCurrentTurns = currentTurns;
-      currentTurns = kolmafia_1.haveEffect(this.effect);
-    }
-
-    return kolmafia_1.haveEffect(this.effect) > ensureTurns;
-  };
-
-  return CustomMoodElement;
-}(MoodElement);
-/**
- * Class representing a mood object. Add mood elements using the instance methods, which can be chained.
- */
-
-
-var Mood =
-/** @class */
-function () {
-  /**
-   * Construct a new Mood instance.
-   * @param options Options for mood.
-   */
-  function Mood(options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    this.elements = [];
-    this.options = __assign(__assign({}, Mood.defaultOptions), options);
-  }
-  /**
-   * Set default options for new Mood instances.
-   * @param options Default options for new Mood instances.
-   */
-
-
-  Mood.setDefaultOptions = function (options) {
-    Mood.defaultOptions = __assign(__assign({}, Mood.defaultOptions), options);
-  };
-  /**
-   * Get the MP available for casting skills.
-   */
-
->>>>>>> 6528995 (Phill told me to do this)
-
-  Mood.prototype.availableMp = function () {
-    return this.options.mpSources.map(function (mpSource) {
-      return mpSource.availableMpMin();
-    }).reduce(function (x, y) {
-      return x + y;
-    }, 0);
-  };
-
 <<<<<<< HEAD
-/***/ 610:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-=======
-  Mood.prototype.moreMp = function (minimumTarget) {
-    for (var _i = 0, _a = this.options.mpSources; _i < _a.length; _i++) {
-      var mpSource = _a[_i];
-      var usesRemaining = mpSource.usesRemaining();
->>>>>>> 6528995 (Phill told me to do this)
-
-      if (usesRemaining !== null && usesRemaining > 0) {
-        mpSource.execute();
-        if (kolmafia_1.myMp() >= minimumTarget) break;
-      }
-    }
-  };
-  /**
-   * Add a skill to the mood.
-   * @param skill Skill to add.
-   */
-
-
-<<<<<<< HEAD
-var __extends = this && this.__extends || function () {
-  var _extendStatics = function extendStatics(d, b) {
-    _extendStatics = Object.setPrototypeOf || {
-      __proto__: []
-    } instanceof Array && function (d, b) {
-      d.__proto__ = b;
-    } || function (d, b) {
-      for (var p in b) {
-        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
-      }
-    };
-
-    return _extendStatics(d, b);
-  };
-
-  return function (d, b) {
-    _extendStatics(d, b);
-
-    function __() {
-      this.constructor = d;
-    }
-
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-}();
-
-var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
-  if (Object.defineProperty) {
-    Object.defineProperty(cooked, "raw", {
-      value: raw
-    });
-  } else {
-    cooked.raw = raw;
-  }
-=======
-  Mood.prototype.skill = function (skill) {
-    this.elements.push(new SkillMoodElement(skill));
-    return this;
-  };
-  /**
-   * Add an effect to the mood, with casting based on {effect.default}.
-   * @param effect Effect to add.
-   * @param gainEffect How to gain the effect. Only runs if we don't have the effect.
-   */
->>>>>>> 6528995 (Phill told me to do this)
-
-
-<<<<<<< HEAD
-var __assign = this && this.__assign || function () {
-  __assign = Object.assign || function (t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-
-      for (var p in s) {
-        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-      }
-    }
-
-    return t;
-  };
-
-  return __assign.apply(this, arguments);
-};
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.Mood = exports.MagicalSausages = exports.OscusSoda = exports.MpSource = void 0;
-=======
-  Mood.prototype.effect = function (effect, gainEffect) {
-    var skill = kolmafia_1.toSkill(effect);
->>>>>>> 6528995 (Phill told me to do this)
-
-    if (!gainEffect && skill !== template_string_1.$skill(templateObject_12 || (templateObject_12 = __makeTemplateObject(["none"], ["none"])))) {
-      this.skill(skill);
-    } else {
-      this.elements.push(new CustomMoodElement(effect, gainEffect));
-    }
-
-<<<<<<< HEAD
-var lib_1 = __webpack_require__(2017);
-
-var property_1 = __webpack_require__(3579);
-
-var template_string_1 = __webpack_require__(9150);
-
-var utils_1 = __webpack_require__(1115);
-
-var MpSource =
-/** @class */
-function () {
-  function MpSource() {}
-
-  MpSource.prototype.usesRemaining = function () {
-    return null;
-  };
-
-  MpSource.prototype.availableMpMax = function () {
-    return this.availableMpMin();
-  };
-
-  return MpSource;
-}();
-
-exports.MpSource = MpSource;
-
-var OscusSoda =
-/** @class */
-function (_super) {
-  __extends(OscusSoda, _super);
-
-  function OscusSoda() {
-    return _super !== null && _super.apply(this, arguments) || this;
-  }
-
-  OscusSoda.prototype.available = function () {
-    return lib_1.have(template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Oscus's neverending soda"], ["Oscus's neverending soda"]))));
-  };
-
-  OscusSoda.prototype.usesRemaining = function () {
-    return property_1.get("oscusSodaUsed") ? 0 : 1;
-  };
-
-  OscusSoda.prototype.availableMpMin = function () {
-    return this.available() ? 200 : 0;
-  };
 =======
     return this;
   };
@@ -14509,19 +13837,23 @@ function (_super) {
 exports.Mood = Mood;
 var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12;
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
   OscusSoda.prototype.availableMpMax = function () {
     return this.available() ? 300 : 0;
   };
 
-<<<<<<< HEAD
   OscusSoda.prototype.execute = function () {
     kolmafia_1.use(template_string_1.$item(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Oscus's neverending soda"], ["Oscus's neverending soda"]))));
   };
+<<<<<<< HEAD
 =======
 /***/ 3579:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
   OscusSoda.instance = new OscusSoda();
   return OscusSoda;
@@ -14529,7 +13861,6 @@ var templateObject_1, templateObject_2, templateObject_3, templateObject_4, temp
 
 exports.OscusSoda = OscusSoda;
 
-<<<<<<< HEAD
 var MagicalSausages =
 /** @class */
 function (_super) {
@@ -14547,12 +13878,15 @@ function (_super) {
     var maxSausages = Math.min(23 - property_1.get("_sausagesEaten"), kolmafia_1.itemAmount(template_string_1.$item(templateObject_3 || (templateObject_3 = __makeTemplateObject(["magical sausage"], ["magical sausage"])))) + kolmafia_1.itemAmount(template_string_1.$item(templateObject_4 || (templateObject_4 = __makeTemplateObject(["magical sausage casing"], ["magical sausage casing"])))));
     return Math.min(kolmafia_1.myMaxmp(), 999) * maxSausages;
   };
+<<<<<<< HEAD
 =======
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.set = exports.get = exports.getThrall = exports.getStat = exports.getSlot = exports.getSkill = exports.getServant = exports.getPhylum = exports.getMonster = exports.getLocation = exports.getItem = exports.getFamiliar = exports.getElement = exports.getEffect = exports.getCoinmaster = exports.getClass = exports.getBounty = exports.getNumber = exports.getBoolean = exports.getCommaSeparated = exports.getString = void 0;
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
   MagicalSausages.prototype.execute = function () {
     var mpSpaceAvailable = kolmafia_1.myMaxmp() - kolmafia_1.myMp();
@@ -14562,7 +13896,6 @@ exports.set = exports.get = exports.getThrall = exports.getStat = exports.getSlo
     kolmafia_1.eat(maxSausages, template_string_1.$item(templateObject_8 || (templateObject_8 = __makeTemplateObject(["magical sausage"], ["magical sausage"]))));
   };
 
-<<<<<<< HEAD
   MagicalSausages.instance = new MagicalSausages();
   return MagicalSausages;
 }(MpSource);
@@ -14742,6 +14075,7 @@ function (_super) {
 /**
  * Class representing a mood object. Add mood elements using the instance methods, which can be chained.
  */
+<<<<<<< HEAD
 =======
 var propertyTyping_1 = __webpack_require__(1908);
 
@@ -14852,11 +14186,10 @@ function isNumericOrStringProperty(property) {
   return choiceAdventurePattern.test(property);
 }
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
-exports.isNumericOrStringProperty = isNumericOrStringProperty;
-var fakeBooleans = ["trackVoteMonster", "_jickJarAvailable"];
 
-<<<<<<< HEAD
 var Mood =
 /** @class */
 function () {
@@ -15004,6 +14337,7 @@ var templateObject_1, templateObject_2, templateObject_3, templateObject_4, temp
 
 /***/ 3579:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+<<<<<<< HEAD
 =======
 function isBooleanProperty(property, value) {
   if (fakeBooleans.includes(property)) return false;
@@ -15032,6 +14366,8 @@ exports.isMonsterProperty = isMonsterProperty;
 /***/ 8561:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
 "use strict";
 
@@ -15039,7 +14375,6 @@ exports.isMonsterProperty = isMonsterProperty;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-<<<<<<< HEAD
 exports.set = exports.get = exports.getThrall = exports.getStat = exports.getSlot = exports.getSkill = exports.getServant = exports.getPhylum = exports.getMonster = exports.getLocation = exports.getItem = exports.getFamiliar = exports.getElement = exports.getEffect = exports.getCoinmaster = exports.getClass = exports.getBounty = exports.getNumber = exports.getBoolean = exports.getCommaSeparated = exports.getString = void 0;
 
 var kolmafia_1 = __webpack_require__(1664);
@@ -15240,46 +14575,6 @@ exports.getRunaways = getRunaways;
  */
 
 function getMaxRunaways(considerWeightAdjustment) {
-=======
-exports.prepareRunaway = exports.canRunaway = exports.couldRunaway = exports.getRemainingRunaways = exports.getMaxRunaways = exports.getRunaways = exports.have = exports.familiar = void 0;
-
-var kolmafia_1 = __webpack_require__(1664);
-
-var property_1 = __webpack_require__(3579);
-
-var template_string_1 = __webpack_require__(9150);
-
-var lib_1 = __webpack_require__(2017);
-
-exports.familiar = template_string_1.$familiar(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Frumious Bandersnatch"], ["Frumious Bandersnatch"])));
-/**
- * Returns true if the player has the Frumious Bandersnatch in their
- * terrariukm
- */
-
-function have() {
-  return lib_1.have(exports.familiar);
-}
-
-exports.have = have;
-/**
- * Returns the number of free runaways that have already been used
- * @see StompingBoots with which the Bandersnatch shares a counter
- */
-
-function getRunaways() {
-  return property_1.get("_banderRunaways");
-}
-
-exports.getRunaways = getRunaways;
-/**
- * Returns the total number of free runaways that the player can
- * get from their Bandersnatch
- *
- * @param considerWeightAdjustment Include familiar weight modifiers
- */
-
-function getMaxRunaways(considerWeightAdjustment) {
   if (considerWeightAdjustment === void 0) {
     considerWeightAdjustment = true;
   }
@@ -15297,11 +14592,15 @@ exports.getMaxRunaways = getMaxRunaways;
  */
 
 function getRemainingRunaways(considerWeightAdjustment) {
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
   if (considerWeightAdjustment === void 0) {
     considerWeightAdjustment = true;
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   var weightBuffs = considerWeightAdjustment ? kolmafia_1.weightAdjustment() : 0;
   return Math.floor((kolmafia_1.familiarWeight(exports.familiar) + weightBuffs) / 5);
@@ -15322,6 +14621,8 @@ function getRemainingRunaways(considerWeightAdjustment) {
 
 =======
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
   return Math.max(0, getMaxRunaways(considerWeightAdjustment) - getRunaways());
 }
 
@@ -15602,219 +14903,109 @@ var kolmafia_1 = __webpack_require__(1664);
 var lib_1 = __webpack_require__(2017);
 
 var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+exports.box = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Rain-Doh black box"], ["Rain-Doh black box"])));
+
+function have() {
+  return lib_1.getFoldGroup(exports.box).some(function (item) {
+    return lib_1.have(item);
+  });
+}
+
+exports.have = have;
+
+function getRainDohBlackBoxCopiesMade() {
+  return Math.max(0, property_1.get("_raindohCopiesMade"));
+}
+
+exports.getRainDohBlackBoxCopiesMade = getRainDohBlackBoxCopiesMade;
+
+function getRainDohBlackBoxMonster() {
+  return property_1.get("rainDohMonster");
+}
+
+exports.getRainDohBlackBoxMonster = getRainDohBlackBoxMonster;
+
+function useRainDohBlackBox() {
+  return kolmafia_1.use(exports.box);
+}
+
+exports.useRainDohBlackBox = useRainDohBlackBox;
+var templateObject_1;
+
+/***/ }),
+
+/***/ 381:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.UnfinishedIceSculpture = exports.getUnfinishedIceSculptureMonster = exports.couldUseUnfinishedIceSculpture = exports.isUnfinishedIceSculptureUsed = exports.haveUnfinishedIceSculpture = exports.have = void 0;
+
+var Copier_1 = __webpack_require__(1498);
+
+var property_1 = __webpack_require__(3579);
+
+var lib_1 = __webpack_require__(2017);
+
+var template_string_1 = __webpack_require__(9150);
+
+function have() {
+  return lib_1.haveInCampground(template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["packet of winter seeds"], ["packet of winter seeds"]))));
+}
+
+exports.have = have;
+
+function haveUnfinishedIceSculpture() {
+  return lib_1.have(template_string_1.$item(templateObject_2 || (templateObject_2 = __makeTemplateObject(["unfinished ice sculpture"], ["unfinished ice sculpture"]))));
+}
+
+exports.haveUnfinishedIceSculpture = haveUnfinishedIceSculpture;
+
+function isUnfinishedIceSculptureUsed() {
+  return property_1.get("_iceSculptureUsed");
+}
+
+exports.isUnfinishedIceSculptureUsed = isUnfinishedIceSculptureUsed;
+
+function couldUseUnfinishedIceSculpture() {
+  return lib_1.have(template_string_1.$item(templateObject_3 || (templateObject_3 = __makeTemplateObject(["unfinished ice sculpture"], ["unfinished ice sculpture"])))) && !lib_1.have(template_string_1.$item(templateObject_4 || (templateObject_4 = __makeTemplateObject(["finished ice sculpture"], ["finished ice sculpture"]))));
+}
+
+exports.couldUseUnfinishedIceSculpture = couldUseUnfinishedIceSculpture;
+
+function getUnfinishedIceSculptureMonster() {
+  return property_1.get("iceSculptureMonster");
+}
+
+exports.getUnfinishedIceSculptureMonster = getUnfinishedIceSculptureMonster;
+exports.UnfinishedIceSculpture = new Copier_1.Copier(function () {
+  return couldUseUnfinishedIceSculpture();
+}, null, function () {
+  return couldUseUnfinishedIceSculpture();
+}, function () {
+  return getUnfinishedIceSculptureMonster();
+});
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4;
 <<<<<<< HEAD
-
-var template_string_1 = __webpack_require__(9150);
-
-exports.box = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Rain-Doh black box"], ["Rain-Doh black box"])));
-
-function have() {
-  return lib_1.getFoldGroup(exports.box).some(function (item) {
-    return lib_1.have(item);
-  });
-}
-
-exports.have = have;
-
-function getRainDohBlackBoxCopiesMade() {
-  return Math.max(0, property_1.get("_raindohCopiesMade"));
-}
-
-exports.getRainDohBlackBoxCopiesMade = getRainDohBlackBoxCopiesMade;
-
-function getRainDohBlackBoxMonster() {
-  return property_1.get("rainDohMonster");
-}
-
-exports.getRainDohBlackBoxMonster = getRainDohBlackBoxMonster;
-
-function useRainDohBlackBox() {
-  return kolmafia_1.use(exports.box);
-}
-
-exports.useRainDohBlackBox = useRainDohBlackBox;
-var templateObject_1;
-
-/***/ }),
-
-/***/ 381:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
-  if (Object.defineProperty) {
-    Object.defineProperty(cooked, "raw", {
-      value: raw
-    });
-  } else {
-    cooked.raw = raw;
-  }
-
-  return cooked;
-};
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.UnfinishedIceSculpture = exports.getUnfinishedIceSculptureMonster = exports.couldUseUnfinishedIceSculpture = exports.isUnfinishedIceSculptureUsed = exports.haveUnfinishedIceSculpture = exports.have = void 0;
-
-var Copier_1 = __webpack_require__(1498);
-
-var property_1 = __webpack_require__(3579);
-
-var lib_1 = __webpack_require__(2017);
-
-var template_string_1 = __webpack_require__(9150);
-
-function have() {
-  return lib_1.haveInCampground(template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["packet of winter seeds"], ["packet of winter seeds"]))));
-}
-
-exports.have = have;
-
-function haveUnfinishedIceSculpture() {
-  return lib_1.have(template_string_1.$item(templateObject_2 || (templateObject_2 = __makeTemplateObject(["unfinished ice sculpture"], ["unfinished ice sculpture"]))));
-}
-
-exports.haveUnfinishedIceSculpture = haveUnfinishedIceSculpture;
-
-function isUnfinishedIceSculptureUsed() {
-  return property_1.get("_iceSculptureUsed");
-}
-
-exports.isUnfinishedIceSculptureUsed = isUnfinishedIceSculptureUsed;
-
-function couldUseUnfinishedIceSculpture() {
-  return lib_1.have(template_string_1.$item(templateObject_3 || (templateObject_3 = __makeTemplateObject(["unfinished ice sculpture"], ["unfinished ice sculpture"])))) && !lib_1.have(template_string_1.$item(templateObject_4 || (templateObject_4 = __makeTemplateObject(["finished ice sculpture"], ["finished ice sculpture"]))));
-}
-
-exports.couldUseUnfinishedIceSculpture = couldUseUnfinishedIceSculpture;
-
-function getUnfinishedIceSculptureMonster() {
-  return property_1.get("iceSculptureMonster");
-}
-
-exports.getUnfinishedIceSculptureMonster = getUnfinishedIceSculptureMonster;
-exports.UnfinishedIceSculpture = new Copier_1.Copier(function () {
-  return couldUseUnfinishedIceSculpture();
-}, null, function () {
-  return couldUseUnfinishedIceSculpture();
-}, function () {
-  return getUnfinishedIceSculptureMonster();
-});
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4;
-
-/***/ }),
-
-/***/ 6658:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-=======
-
-var template_string_1 = __webpack_require__(9150);
-
-exports.box = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Rain-Doh black box"], ["Rain-Doh black box"])));
-
-function have() {
-  return lib_1.getFoldGroup(exports.box).some(function (item) {
-    return lib_1.have(item);
-  });
-}
-
-exports.have = have;
-
-function getRainDohBlackBoxCopiesMade() {
-  return Math.max(0, property_1.get("_raindohCopiesMade"));
-}
-
-exports.getRainDohBlackBoxCopiesMade = getRainDohBlackBoxCopiesMade;
-
-function getRainDohBlackBoxMonster() {
-  return property_1.get("rainDohMonster");
-}
-
-exports.getRainDohBlackBoxMonster = getRainDohBlackBoxMonster;
-
-function useRainDohBlackBox() {
-  return kolmafia_1.use(exports.box);
-}
-
-exports.useRainDohBlackBox = useRainDohBlackBox;
-var templateObject_1;
-
-/***/ }),
-
-/***/ 381:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
-  if (Object.defineProperty) {
-    Object.defineProperty(cooked, "raw", {
-      value: raw
-    });
-  } else {
-    cooked.raw = raw;
-  }
-
-  return cooked;
-};
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.UnfinishedIceSculpture = exports.getUnfinishedIceSculptureMonster = exports.couldUseUnfinishedIceSculpture = exports.isUnfinishedIceSculptureUsed = exports.haveUnfinishedIceSculpture = exports.have = void 0;
-
-var Copier_1 = __webpack_require__(1498);
-
-var property_1 = __webpack_require__(3579);
-
-var lib_1 = __webpack_require__(2017);
-
-var template_string_1 = __webpack_require__(9150);
-
-function have() {
-  return lib_1.haveInCampground(template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["packet of winter seeds"], ["packet of winter seeds"]))));
-}
-
-exports.have = have;
-
-function haveUnfinishedIceSculpture() {
-  return lib_1.have(template_string_1.$item(templateObject_2 || (templateObject_2 = __makeTemplateObject(["unfinished ice sculpture"], ["unfinished ice sculpture"]))));
-}
-
-exports.haveUnfinishedIceSculpture = haveUnfinishedIceSculpture;
-
-function isUnfinishedIceSculptureUsed() {
-  return property_1.get("_iceSculptureUsed");
-}
-
-exports.isUnfinishedIceSculptureUsed = isUnfinishedIceSculptureUsed;
-
-function couldUseUnfinishedIceSculpture() {
-  return lib_1.have(template_string_1.$item(templateObject_3 || (templateObject_3 = __makeTemplateObject(["unfinished ice sculpture"], ["unfinished ice sculpture"])))) && !lib_1.have(template_string_1.$item(templateObject_4 || (templateObject_4 = __makeTemplateObject(["finished ice sculpture"], ["finished ice sculpture"]))));
-}
-
-exports.couldUseUnfinishedIceSculpture = couldUseUnfinishedIceSculpture;
-
-function getUnfinishedIceSculptureMonster() {
-  return property_1.get("iceSculptureMonster");
-}
-
-exports.getUnfinishedIceSculptureMonster = getUnfinishedIceSculptureMonster;
-exports.UnfinishedIceSculpture = new Copier_1.Copier(function () {
-  return couldUseUnfinishedIceSculpture();
-}, null, function () {
-  return couldUseUnfinishedIceSculpture();
-}, function () {
-  return getUnfinishedIceSculptureMonster();
-});
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4;
 >>>>>>> 6528995 (Phill told me to do this)
 
 
@@ -15886,151 +15077,44 @@ function paintingFought() {
 >>>>>>> 6528995 (Phill told me to do this)
 
 exports.paintingFought = paintingFought;
+=======
+>>>>>>> ed22f6f (built!)
 
-<<<<<<< HEAD
-/***/ 1735:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ }),
+
+/***/ 6658:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
-  if (Object.defineProperty) {
-    Object.defineProperty(cooked, "raw", {
-      value: raw
-    });
-  } else {
-    cooked.raw = raw;
-  }
-
-  return cooked;
-};
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.getPortscanUses = exports.getEnhanceUses = exports.getDuplicateUses = exports.Digitize = exports.canDigitize = exports.prepareDigitize = exports.couldDigitize = exports.getDigitizeUsesRemaining = exports.getMaximumDigitizeUses = exports.getDigitizeMonsterCount = exports.getDigitizeMonster = exports.getDigitizeUses = exports.getChips = exports.extrude = exports.Items = exports.isCurrentSkill = exports.getSkills = exports.educate = exports.Skills = exports.enquiry = exports.RolloverBuffs = exports.enhance = exports.Buffs = exports.have = exports.item = void 0;
+exports.fightPainting = exports.paintingFought = exports.paintingMonster = exports.have = void 0;
 
 var kolmafia_1 = __webpack_require__(1664);
 
-var lodash_es_1 = __webpack_require__(7696);
-
-var Copier_1 = __webpack_require__(1498);
-
-var lib_1 = __webpack_require__(2017);
-
 var property_1 = __webpack_require__(3579);
 
-var template_string_1 = __webpack_require__(9150);
-
-exports.item = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Source Terminal"], ["Source Terminal"])));
-
 function have() {
-  return lib_1.haveInCampground(exports.item);
+  return property_1.get("chateauAvailable");
 }
 
 exports.have = have;
-/**
- * Buffs that can be acquired from Enhance
- *
- * - Items: +30% Item Drop
- * - Meat: +60% Meat Drop
- * - Init: +50% Initiative
- * - Critical: +10% chance of Critical Hit, +10% chance of Spell Critical Hit
- * - Damage: +5 Prismatic Damage
- * - Substats: +3 Stats Per Fight
- */
 
-exports.Buffs = {
-  Items: template_string_1.$effect(templateObject_2 || (templateObject_2 = __makeTemplateObject(["items.enh"], ["items.enh"]))),
-  Meat: template_string_1.$effect(templateObject_3 || (templateObject_3 = __makeTemplateObject(["meat.enh"], ["meat.enh"]))),
-  Init: template_string_1.$effect(templateObject_4 || (templateObject_4 = __makeTemplateObject(["init.enh"], ["init.enh"]))),
-  Critical: template_string_1.$effect(templateObject_5 || (templateObject_5 = __makeTemplateObject(["critical.enh"], ["critical.enh"]))),
-  Damage: template_string_1.$effect(templateObject_6 || (templateObject_6 = __makeTemplateObject(["damage.enh"], ["damage.enh"]))),
-  Substats: template_string_1.$effect(templateObject_7 || (templateObject_7 = __makeTemplateObject(["substats.enh"], ["substats.enh"])))
-};
-/**
- * Acquire a buff from the Source Terminal
- * @param buff The buff to acquire
- * @see Buffs
- */
-
-function enhance(buff) {
-  if (!Object.values(exports.Buffs).includes(buff)) {
-    return false;
-  }
-
-  return kolmafia_1.cliExecute("terminal enhance " + buff.name);
+function paintingMonster() {
+  return property_1.get("chateauMonster");
 }
 
-exports.enhance = enhance;
-/**
- * Rollover buffs that can be acquired from Enquiry
- */
+exports.paintingMonster = paintingMonster;
 
-exports.RolloverBuffs = {
-  /** +5 Familiar Weight */
-  Familiar: template_string_1.$effect(templateObject_8 || (templateObject_8 = __makeTemplateObject(["familiar.enq"], ["familiar.enq"]))),
-
-  /** +25 ML */
-  Monsters: template_string_1.$effect(templateObject_9 || (templateObject_9 = __makeTemplateObject(["monsters.enq"], ["monsters.enq"]))),
-
-  /** +5 Prismatic Resistance */
-  Protect: template_string_1.$effect(templateObject_10 || (templateObject_10 = __makeTemplateObject(["protect.enq"], ["protect.enq"]))),
-
-  /** +100% Muscle, +100% Mysticality, +100% Moxie */
-  Stats: template_string_1.$effect(templateObject_11 || (templateObject_11 = __makeTemplateObject(["stats.enq"], ["stats.enq"])))
-};
-/**
- * Acquire a buff from the Source Terminal
- * @param buff The buff to acquire
- * @see RolloverBuffs
- */
-
-function enquiry(rolloverBuff) {
-  if (!Object.values(exports.RolloverBuffs).includes(rolloverBuff)) {
-    return false;
-  }
-
-  return kolmafia_1.cliExecute("terminal enquiry " + rolloverBuff.name);
+function paintingFought() {
+  return property_1.get("_chateauMonsterFought");
 }
 
-exports.enquiry = enquiry;
-/**
- * Skills that can be acquired from Enhance
- */
+exports.paintingFought = paintingFought;
 
-exports.Skills = {
-  /** Collect Source essence from enemies once per combat */
-  Extract: template_string_1.$skill(templateObject_12 || (templateObject_12 = __makeTemplateObject(["Extract"], ["Extract"]))),
-
-  /** Stagger and create a wandering monster 1-3 times per day */
-  Digitize: template_string_1.$skill(templateObject_13 || (templateObject_13 = __makeTemplateObject(["Digitize"], ["Digitize"]))),
-
-  /** Stagger and deal 25% of enemy HP in damage once per combat */
-  Compress: template_string_1.$skill(templateObject_14 || (templateObject_14 = __makeTemplateObject(["Compress"], ["Compress"]))),
-
-  /** Double monster's HP, attack, defence, attacks per round and item drops once per fight and once per day (five in The Source) */
-  Duplicate: template_string_1.$skill(templateObject_15 || (templateObject_15 = __makeTemplateObject(["Duplicate"], ["Duplicate"]))),
-
-  /** Causes government agent/Source Agent wanderer next turn once per combat and three times per day */
-  Portscan: template_string_1.$skill(templateObject_16 || (templateObject_16 = __makeTemplateObject(["Portscan"], ["Portscan"]))),
-
-  /** Increase Max MP by 100% and recover 1000 MP once per combat with a 30 turn cooldown */
-  Turbo: template_string_1.$skill(templateObject_17 || (templateObject_17 = __makeTemplateObject(["Turbo"], ["Turbo"])))
-};
-/**
- * Make a skill available.
- * The Source Terminal can give the player access to two skills at any time
- * @param skill Skill to learn
- * @see Skills
- */
-
-function educate(skills) {
-  var skillsArray = Array.isArray(skills) ? skills.slice(0, 2) : [skills];
-  if (lodash_es_1.isEqual(skillsArray, getSkills())) return true;
-
-=======
 function fightPainting() {
   kolmafia_1.visitUrl("place.php?whichplace=chateau&action=chateau_painting", false);
   return kolmafia_1.runCombat();
@@ -16182,7 +15266,10 @@ function educate(skills) {
   var skillsArray = Array.isArray(skills) ? skills.slice(0, 2) : [skills];
   if (lodash_es_1.isEqual(skillsArray, getSkills())) return true;
 
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
   for (var _i = 0, skillsArray_1 = skillsArray; _i < skillsArray_1.length; _i++) {
     var skill = skillsArray_1[_i];
     if (!Object.values(exports.Skills).includes(skill)) return false;
@@ -16419,101 +15506,56 @@ function have() {
 }
 
 exports.have = have;
+
+function fightsDone() {
+  return property_1.get("_witchessFights");
+}
+
+exports.fightsDone = fightsDone;
+exports.pieces = Monster.get(["Witchess Pawn", "Witchess Knight", "Witchess Bishop", "Witchess Rook", "Witchess Queen", "Witchess King", "Witchess Witch", "Witchess Ox"]);
+
+function fightPiece(piece) {
+  if (!exports.pieces.includes(piece)) throw new Error("That is not a valid piece.");
+
+  if (!kolmafia_1.visitUrl("campground.php?action=witchess").includes("whichchoice value=1181")) {
+    throw new Error("Failed to open Witchess.");
+  }
+
+  if (!kolmafia_1.runChoice(1).includes("whichchoice=1182")) {
+    throw new Error("Failed to visit shrink ray.");
+  }
+
+  if (!kolmafia_1.visitUrl("choice.php?option=1&pwd=" + kolmafia_1.myHash() + "&whichchoice=1182&piece=" + kolmafia_1.toInt(piece), false).includes(piece.name)) {
+    throw new Error("Failed to start fight.");
+  }
+
+  return kolmafia_1.runCombat();
+}
+
+exports.fightPiece = fightPiece;
+var templateObject_1;
+
+/***/ }),
+
+/***/ 5408:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
 <<<<<<< HEAD
-
-function fightsDone() {
-  return property_1.get("_witchessFights");
-}
-
-exports.fightsDone = fightsDone;
-exports.pieces = Monster.get(["Witchess Pawn", "Witchess Knight", "Witchess Bishop", "Witchess Rook", "Witchess Queen", "Witchess King", "Witchess Witch", "Witchess Ox"]);
-
-function fightPiece(piece) {
-  if (!exports.pieces.includes(piece)) throw new Error("That is not a valid piece.");
-
-  if (!kolmafia_1.visitUrl("campground.php?action=witchess").includes("whichchoice value=1181")) {
-    throw new Error("Failed to open Witchess.");
-  }
-
-  if (!kolmafia_1.runChoice(1).includes("whichchoice=1182")) {
-    throw new Error("Failed to visit shrink ray.");
-  }
-
-  if (!kolmafia_1.visitUrl("choice.php?option=1&pwd=" + kolmafia_1.myHash() + "&whichchoice=1182&piece=" + kolmafia_1.toInt(piece), false).includes(piece.name)) {
-    throw new Error("Failed to start fight.");
-  }
-
-  return kolmafia_1.runCombat();
-}
-
-exports.fightPiece = fightPiece;
-var templateObject_1;
-
-/***/ }),
-
-/***/ 5408:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
-  if (Object.defineProperty) {
-    Object.defineProperty(cooked, "raw", {
-      value: raw
-    });
-  } else {
-    cooked.raw = raw;
-  }
-
-=======
-
-function fightsDone() {
-  return property_1.get("_witchessFights");
-}
-
-exports.fightsDone = fightsDone;
-exports.pieces = Monster.get(["Witchess Pawn", "Witchess Knight", "Witchess Bishop", "Witchess Rook", "Witchess Queen", "Witchess King", "Witchess Witch", "Witchess Ox"]);
-
-function fightPiece(piece) {
-  if (!exports.pieces.includes(piece)) throw new Error("That is not a valid piece.");
-
-  if (!kolmafia_1.visitUrl("campground.php?action=witchess").includes("whichchoice value=1181")) {
-    throw new Error("Failed to open Witchess.");
-  }
-
-  if (!kolmafia_1.runChoice(1).includes("whichchoice=1182")) {
-    throw new Error("Failed to visit shrink ray.");
-  }
-
-  if (!kolmafia_1.visitUrl("choice.php?option=1&pwd=" + kolmafia_1.myHash() + "&whichchoice=1182&piece=" + kolmafia_1.toInt(piece), false).includes(piece.name)) {
-    throw new Error("Failed to start fight.");
-  }
-
-  return kolmafia_1.runCombat();
-}
-
-exports.fightPiece = fightPiece;
-var templateObject_1;
-
-/***/ }),
-
-/***/ 5408:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
-  if (Object.defineProperty) {
-    Object.defineProperty(cooked, "raw", {
-      value: raw
-    });
-  } else {
-    cooked.raw = raw;
-  }
-
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
   return cooked;
 };
 
@@ -16537,217 +15579,6 @@ function have() {
 }
 
 exports.have = have;
-<<<<<<< HEAD
-
-function isUsed() {
-  return property_1.get("_loveTunnelUsed");
-}
-
-exports.isUsed = isUsed;
-
-function haveLovEnamorang() {
-  return lib_1.have(template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["LOV Enamorang"], ["LOV Enamorang"]))));
-}
-
-exports.haveLovEnamorang = haveLovEnamorang;
-
-function getLovEnamorangUses() {
-  return property_1.get("_enamorangs");
-}
-
-exports.getLovEnamorangUses = getLovEnamorangUses;
-
-function couldUseLoveEnamorang() {
-  return !lib_1.haveWandererCounter(lib_1.Wanderer.Enamorang) && getLovEnamorangUses() < 3 && haveLovEnamorang();
-}
-
-exports.couldUseLoveEnamorang = couldUseLoveEnamorang;
-
-function getLovEnamorangMonster() {
-  return property_1.get("enamorangMonster");
-}
-
-exports.getLovEnamorangMonster = getLovEnamorangMonster;
-exports.LovEnamorang = new Copier_1.Copier(function () {
-  return couldUseLoveEnamorang();
-}, null, function () {
-  return couldUseLoveEnamorang();
-}, function () {
-  return getLovEnamorangMonster();
-});
-
-function equipmentChoice(equipment) {
-  switch (equipment) {
-    case "LOV Eardigan":
-      return 1;
-
-    case "LOV Epaulettes":
-      return 2;
-
-    case "LOV Earring":
-      return 3;
-  }
-}
-
-function effectChoice(effect) {
-  switch (effect) {
-    case "Lovebotamy":
-      return 1;
-
-    case "Open Heart Surgery":
-      return 2;
-
-    case "Wandering Eye Surgery":
-      return 3;
-  }
-}
-
-function extraChoice(extra) {
-  switch (extra) {
-    case "LOV Enamorang":
-      return 1;
-
-    case "LOV Emotionizer":
-      return 2;
-
-    case "LOV Extraterrestrial Chocolate":
-      return 3;
-
-    case "LOV Echinacea Bouquet":
-      return 4;
-
-    case "LOV Elephant":
-      return 5;
-
-    case "toast":
-      return 6;
-
-    case null:
-      return 7;
-  }
-}
-/**
- * Fight all LOV monsters and get buffs/equipment.
- * @param equipment Equipment to take from LOV.
- * @param effect Effect to take from LOV.
- * @param extra Extra item to take from LOV.
- */
-
-
-function fightAll(equipment, effect, extra) {
-  property_1.set("choiceAdventure1222", 1); // Entrance
-
-  property_1.set("choiceAdventure1223", 1); // Fight LOV Enforcer
-
-  property_1.set("choiceAdventure1224", equipmentChoice(equipment));
-  property_1.set("choiceAdventure1225", 1); // Fight LOV Engineer
-
-  property_1.set("choiceAdventure1226", effectChoice(effect));
-  property_1.set("choiceAdventure1227", 1); // Fight LOV Equivocator
-
-  property_1.set("choiceAdventure1228", extraChoice(extra));
-  kolmafia_1.adv1(template_string_1.$location(templateObject_2 || (templateObject_2 = __makeTemplateObject(["The Tunnel of L.O.V.E."], ["The Tunnel of L.O.V.E."]))), 0, "");
-}
-
-exports.fightAll = fightAll;
-var templateObject_1, templateObject_2;
-
-/***/ }),
-
-/***/ 4594:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
-  if (Object.defineProperty) {
-    Object.defineProperty(cooked, "raw", {
-      value: raw
-    });
-  } else {
-    cooked.raw = raw;
-  }
-
-  return cooked;
-};
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.dropProgress = exports.setSong = exports.songChangesLeft = exports.song = exports.songBoomSongs = exports.have = exports.item = void 0;
-
-var kolmafia_1 = __webpack_require__(1664);
-
-var lib_1 = __webpack_require__(2017);
-
-var property_1 = __webpack_require__(3579);
-
-var template_string_1 = __webpack_require__(9150);
-
-exports.item = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["SongBoom\u2122 BoomBox"], ["SongBoom\u2122 BoomBox"])));
-
-function have() {
-  return lib_1.have(exports.item);
-}
-
-exports.have = have;
-var keywords = {
-  "Eye of the Giger": "spooky",
-  "Food Vibrations": "food",
-  "Remainin' Alive": "dr",
-  "These Fists Were Made for Punchin'": "damage",
-  "Total Eclipse of Your Meat": "meat"
-};
-exports.songBoomSongs = new Set(Object.keys(keywords));
-/**
- * Current song.
- */
-
-function song() {
-  var stored = property_1.get("boomBoxSong");
-  return exports.songBoomSongs.has(stored) ? stored : null;
-}
-
-exports.song = song;
-/**
- * Song changes left today.
- */
-
-function songChangesLeft() {
-  return property_1.get("_boomBoxSongsLeft");
-}
-
-exports.songChangesLeft = songChangesLeft;
-/**
- * Change the song.
- * @param newSong Song to change to.
- */
-
-function setSong(newSong) {
-  if (song() !== newSong) {
-    if (songChangesLeft() === 0) throw new Error("Out of song changes!");
-    kolmafia_1.cliExecute("boombox " + (newSong ? keywords[newSong] : "none"));
-    return true;
-  } else {
-    return false;
-  }
-}
-
-exports.setSong = setSong;
-/**
- * Progress to next song drop (e.g. gathered meat-clip).
- */
-
-function dropProgress() {
-  return property_1.get("_boomBoxFights");
-}
-
-exports.dropProgress = dropProgress;
-var templateObject_1;
-
-/***/ }),
-=======
 
 function isUsed() {
   return property_1.get("_loveTunnelUsed");
@@ -16962,55 +15793,12 @@ var templateObject_1;
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
->>>>>>> 6528995 (Phill told me to do this)
-
-/***/ 5175:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
 <<<<<<< HEAD
-"use strict";
-
-
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  Object.defineProperty(o, k2, {
-    enumerable: true,
-    get: function get() {
-      return m[k];
-    }
-  });
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
-var __exportStar = this && this.__exportStar || function (m, exports) {
-  for (var p in m) {
-    if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-  }
-};
+>>>>>>> 6528995 (Phill told me to do this)
 =======
+>>>>>>> ed22f6f (built!)
+
+
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
   if (k2 === undefined) k2 = k;
   Object.defineProperty(o, k2, {
@@ -17075,6 +15863,7 @@ __exportStar(__webpack_require__(1030), exports);
 
 "use strict";
 
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 
 Object.defineProperty(exports, "__esModule", ({
@@ -17108,8 +15897,9 @@ var Copier_1 = __webpack_require__(1498);
 var SpookyPutty_1 = __webpack_require__(1746);
 
 var RainDoh_1 = __webpack_require__(9601);
+=======
+>>>>>>> ed22f6f (built!)
 
-<<<<<<< HEAD
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
@@ -17213,6 +16003,7 @@ var KolmafiaVersionError =
 /** @class */
 function (_super) {
   __extends(KolmafiaVersionError, _super);
+<<<<<<< HEAD
 =======
 function getTotalPuttyLikeCopiesMade() {
   return SpookyPutty_1.getSpookyPuttySheetCopiesMade() + RainDoh_1.getRainDohBlackBoxCopiesMade();
@@ -17334,6 +16125,8 @@ KolmafiaVersionError.prototype.name = "KolmafiaVersionError";
 function getScriptName() {
   var _a; // In Rhino, the current script name is available in require.main.id
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
   function KolmafiaVersionError(message) {
     var _this = _super.call(this, message) || this; // Explicitly set the prototype, so that 'instanceof' still works in Node.js
@@ -17341,7 +16134,6 @@ function getScriptName() {
     // See: https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
     // Note that this code isn't needed for Rhino.
 
-<<<<<<< HEAD
 
     Object.setPrototypeOf(_this, KolmafiaVersionError.prototype);
     return _this;
@@ -17440,83 +16232,6 @@ function sinceKolmafiaVersion(majorVersion, minorVersion) {
 
   if (currentMajorVersion < majorVersion || currentMajorVersion === majorVersion && currentMinorVersion < minorVersion) {
     throw new KolmafiaVersionError(getScriptName() + " requires version " + majorVersion + "." + minorVersion + " of kolmafia or higher (current: " + currentMajorVersion + "." + currentMinorVersion + "). Up-to-date builds can be found at https://ci.kolmafia.us/.");
-=======
-  var scriptName = (_a = __webpack_require__.c[__webpack_require__.s]) === null || _a === void 0 ? void 0 : _a.id;
-  return scriptName ? "'" + scriptName + "'" : "This script";
-}
-/**
- * If KoLmafia's revision number is less than `revision`, throws an exception.
- * Otherwise, does nothing.
- *
- * This behaves like the `since rXXX;` statement in ASH.
- * @param revision Revision number
- * @throws {KolmafiaVersionError}
- *    If KoLmafia's revision number is less than `revision`.
- * @throws {TypeError} If `revision` is not an integer
- *
- * @example
- * ```ts
- * // Throws if KoLmafia revision is less than r20500
- * sinceKolmafiaRevision(20500);
- * ```
- */
-
-
-function sinceKolmafiaRevision(revision) {
-  if (!Number.isInteger(revision)) {
-    throw new TypeError("Invalid revision number " + revision + " (must be an integer)");
-  } // Based on net.sourceforge.kolmafia.textui.Parser.sinceException()
-
-
-  if (kolmafia_1.getRevision() < revision) {
-    throw new KolmafiaVersionError(getScriptName() + " requires revision r" + revision + " of kolmafia or higher (current: " + kolmafia_1.getRevision() + "). Up-to-date builds can be found at https://ci.kolmafia.us/.");
-  }
-}
-
-exports.sinceKolmafiaRevision = sinceKolmafiaRevision;
-/**
- * If KoLmafia's version is less than `majorVersion.minorVersion`, throws an
- * exception.
- * Otherwise, does nothing.
- *
- * This behaves like the `since X.Y;` statement in ASH.
- * @param majorVersion Major version number
- * @param minorVersion Minor version number
- * @throws {KolmafiaVersionError}
- *    If KoLmafia's major version is less than `majorVersion`, or if the major
- *    versions are equal but the minor version is less than `minorVersion`
- * @throws {TypeError}
- *    If either `majorVersion` or `minorVersion` are not integers
- *
- * @example
- * ```ts
- * // Throws if KoLmafia version is less than 20.7
- * sinceKolmafiaVersion(20, 7);
- * ```
- */
-
-function sinceKolmafiaVersion(majorVersion, minorVersion) {
-  if (!Number.isInteger(majorVersion)) {
-    throw new TypeError("Invalid major version number " + majorVersion + " (must be an integer)");
-  }
-
-  if (!Number.isInteger(minorVersion)) {
-    throw new TypeError("Invalid minor version number " + minorVersion + " (must be an integer)");
-  }
-
-  var versionStr = kolmafia_1.getVersion();
-  var versionStrMatch = /v(\d+)\.(\d+)/.exec(versionStr);
-
-  if (!versionStrMatch) {
-    // This is not something the user should handle
-    throw new Error("Unexpected KoLmafia version string: \"" + versionStr + "\". You may need to update the script.");
-  }
-
-  var currentMajorVersion = Number(versionStrMatch[1]);
-  var currentMinorVersion = Number(versionStrMatch[2]); // Based on net.sourceforge.kolmafia.textui.Parser.sinceException()
-
-  if (currentMajorVersion < majorVersion || currentMajorVersion === majorVersion && currentMinorVersion < minorVersion) {
-    throw new KolmafiaVersionError(getScriptName() + " requires version " + majorVersion + "." + minorVersion + " of kolmafia or higher (current: " + currentMajorVersion + "." + currentMinorVersion + "). Up-to-date builds can be found at https://ci.kolmafia.us/.");
   }
 }
 
@@ -17533,6 +16248,7 @@ exports.sinceKolmafiaVersion = sinceKolmafiaVersion;
 var __spreadArrays = this && this.__spreadArrays || function () {
   for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
     s += arguments[i].length;
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
   }
 }
@@ -17551,6 +16267,8 @@ exports.sinceKolmafiaVersion = sinceKolmafiaVersion;
 var __spreadArrays = this && this.__spreadArrays || function () {
   for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
     s += arguments[i].length;
+=======
+>>>>>>> ed22f6f (built!)
   }
 
   for (var r = Array(s), k = 0, i = 0; i < il; i++) {
@@ -17562,6 +16280,7 @@ var __spreadArrays = this && this.__spreadArrays || function () {
   return r;
 };
 
+<<<<<<< HEAD
 =======
   for (var r = Array(s), k = 0, i = 0; i < il; i++) {
     for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
@@ -17573,6 +16292,8 @@ var __spreadArrays = this && this.__spreadArrays || function () {
 };
 
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
@@ -17597,7 +16318,6 @@ var createSingleConstant = function createSingleConstant(Type) {
     for (var _i = 1; _i < arguments.length; _i++) {
       placeholders[_i - 1] = arguments[_i];
     }
-<<<<<<< HEAD
 
     var input = concatTemplateString.apply(void 0, __spreadArrays([literals], placeholders));
     return Type.get(input);
@@ -17614,6 +16334,7 @@ var createPluralConstant = function createPluralConstant(Type) {
 
     var input = concatTemplateString.apply(void 0, __spreadArrays([literals], placeholders));
 
+<<<<<<< HEAD
 =======
 
     var input = concatTemplateString.apply(void 0, __spreadArrays([literals], placeholders));
@@ -17632,6 +16353,8 @@ var createPluralConstant = function createPluralConstant(Type) {
     var input = concatTemplateString.apply(void 0, __spreadArrays([literals], placeholders));
 
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
     if (input === "") {
       return Type.all();
     }
@@ -17690,13 +16413,6 @@ exports.$coinmasters = createPluralConstant(Coinmaster);
  *
  * @category In-game constant
  */
-<<<<<<< HEAD
-
-exports.$effect = createSingleConstant(Effect);
-/**
- * A list of Effects specified by a comma-separated list of names.
- * For a list of all possible Effects, leave the template string blank.
-=======
 
 exports.$effect = createSingleConstant(Effect);
 /**
@@ -17717,248 +16433,210 @@ exports.$element = createSingleConstant(Element);
 /**
  * A list of Elements specified by a comma-separated list of names.
  * For a list of all possible Elements, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$effects = createPluralConstant(Effect);
-/**
- * An Element specified by name.
-=======
 exports.$elements = createPluralConstant(Element);
 /**
  * A Familiar specified by name.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$element = createSingleConstant(Element);
-/**
- * A list of Elements specified by a comma-separated list of names.
- * For a list of all possible Elements, leave the template string blank.
-=======
 exports.$familiar = createSingleConstant(Familiar);
 /**
  * A list of Familiars specified by a comma-separated list of names.
  * For a list of all possible Familiars, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$elements = createPluralConstant(Element);
-/**
- * A Familiar specified by name.
-=======
 exports.$familiars = createPluralConstant(Familiar);
 /**
  * An Item specified by name.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$familiar = createSingleConstant(Familiar);
-/**
- * A list of Familiars specified by a comma-separated list of names.
- * For a list of all possible Familiars, leave the template string blank.
-=======
 exports.$item = createSingleConstant(Item);
 /**
  * A list of Items specified by a comma-separated list of names.
  * For a list of all possible Items, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$familiars = createPluralConstant(Familiar);
-/**
- * An Item specified by name.
-=======
 exports.$items = createPluralConstant(Item);
 /**
  * A Location specified by name.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$item = createSingleConstant(Item);
-/**
- * A list of Items specified by a comma-separated list of names.
- * For a list of all possible Items, leave the template string blank.
-=======
 exports.$location = createSingleConstant(Location);
 /**
  * A list of Locations specified by a comma-separated list of names.
  * For a list of all possible Locations, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$items = createPluralConstant(Item);
-/**
- * A Location specified by name.
-=======
 exports.$locations = createPluralConstant(Location);
 /**
  * A Monster specified by name.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$location = createSingleConstant(Location);
-/**
- * A list of Locations specified by a comma-separated list of names.
- * For a list of all possible Locations, leave the template string blank.
-=======
 exports.$monster = createSingleConstant(Monster);
 /**
  * A list of Monsters specified by a comma-separated list of names.
  * For a list of all possible Monsters, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$locations = createPluralConstant(Location);
-/**
- * A Monster specified by name.
-=======
 exports.$monsters = createPluralConstant(Monster);
 /**
  * A Phylum specified by name.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$monster = createSingleConstant(Monster);
-/**
- * A list of Monsters specified by a comma-separated list of names.
- * For a list of all possible Monsters, leave the template string blank.
-=======
 exports.$phylum = createSingleConstant(Phylum);
 /**
  * A list of Phyla specified by a comma-separated list of names.
  * For a list of all possible Phyla, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$monsters = createPluralConstant(Monster);
-/**
- * A Phylum specified by name.
-=======
 exports.$phyla = createPluralConstant(Phylum);
 /**
  * A Servant specified by name.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$phylum = createSingleConstant(Phylum);
-/**
- * A list of Phyla specified by a comma-separated list of names.
- * For a list of all possible Phyla, leave the template string blank.
-=======
 exports.$servant = createSingleConstant(Servant);
 /**
  * A list of Servants specified by a comma-separated list of names.
  * For a list of all possible Servants, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$phyla = createPluralConstant(Phylum);
-/**
- * A Servant specified by name.
-=======
 exports.$servants = createPluralConstant(Servant);
 /**
  * A Skill specified by name.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$servant = createSingleConstant(Servant);
-/**
- * A list of Servants specified by a comma-separated list of names.
- * For a list of all possible Servants, leave the template string blank.
-=======
 exports.$skill = createSingleConstant(Skill);
 /**
  * A list of Skills specified by a comma-separated list of names.
  * For a list of all possible Skills, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$servants = createPluralConstant(Servant);
-/**
- * A Skill specified by name.
-=======
 exports.$skills = createPluralConstant(Skill);
 /**
  * A Slot specified by name.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
-exports.$skill = createSingleConstant(Skill);
-/**
- * A list of Skills specified by a comma-separated list of names.
- * For a list of all possible Skills, leave the template string blank.
-=======
 exports.$slot = createSingleConstant(Slot);
 /**
  * A list of Slots specified by a comma-separated list of names.
  * For a list of all possible Slots, leave the template string blank.
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
+ *
+ * @category In-game constant
+ */
+
+exports.$slots = createPluralConstant(Slot);
+/**
+ * A Stat specified by name.
+<<<<<<< HEAD
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
 <<<<<<< HEAD
-exports.$skills = createPluralConstant(Skill);
-/**
- * A Slot specified by name.
-=======
-exports.$slots = createPluralConstant(Slot);
-/**
- * A Stat specified by name.
->>>>>>> 6528995 (Phill told me to do this)
- *
- * @category In-game constant
- */
-
 <<<<<<< HEAD
 exports.$slot = createSingleConstant(Slot);
 /**
@@ -17988,30 +16666,37 @@ exports.$stats = createPluralConstant(Stat);
  */
 
 <<<<<<< HEAD
+=======
+>>>>>>> ed22f6f (built!)
 exports.$stat = createSingleConstant(Stat);
 /**
  * A list of Stats specified by a comma-separated list of names.
  * For a list of all possible Stats, leave the template string blank.
+<<<<<<< HEAD
 =======
 exports.$thrall = createSingleConstant(Thrall);
 /**
  * A list of Thralls specified by a comma-separated list of names.
  * For a list of all possible Thralls, leave the template string blank.
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
  *
  * @category In-game constant
  */
 
-<<<<<<< HEAD
 exports.$stats = createPluralConstant(Stat);
 /**
  * A Thrall specified by name.
  *
  * @category In-game constant
  */
+<<<<<<< HEAD
 =======
 exports.$thralls = createPluralConstant(Thrall);
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
 exports.$thrall = createSingleConstant(Thrall);
 /**
@@ -18021,70 +16706,72 @@ exports.$thrall = createSingleConstant(Thrall);
  * @category In-game constant
  */
 
-<<<<<<< HEAD
 exports.$thralls = createPluralConstant(Thrall);
 
 /***/ }),
+<<<<<<< HEAD
 =======
 /***/ 1115:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
 /***/ 1115:
 /***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.chunk = exports.clamp = exports.parseNumber = exports.notNull = void 0;
+
+function notNull(value) {
+  return value !== null;
+}
+
+exports.notNull = notNull;
+
+function parseNumber(n) {
+  return Number.parseInt(n.replace(/,/g, ""));
+}
+
+exports.parseNumber = parseNumber;
+/**
+ * Clamp a number between lower and upper bounds.
+ *
+ * @param n Number to clamp.
+ * @param min Lower bound.
+ * @param max Upper bound.
+ */
+
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+exports.clamp = clamp;
+/**
+ * Split an {@param array} into {@param chunkSize} sized chunks
+ *
+ * @param array Array to split
+ * @param chunkSize Size of chunk
+ */
+
+function chunk(array, chunkSize) {
+  var result = [];
+
+  for (var i = 0; i < array.length; i += chunkSize) {
+    result.push(array.slice(i, i + chunkSize));
+  }
+
+  return result;
+}
 
 <<<<<<< HEAD
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.chunk = exports.clamp = exports.parseNumber = exports.notNull = void 0;
-
-function notNull(value) {
-  return value !== null;
-}
-
-exports.notNull = notNull;
-
-function parseNumber(n) {
-  return Number.parseInt(n.replace(/,/g, ""));
-}
-
-exports.parseNumber = parseNumber;
-/**
- * Clamp a number between lower and upper bounds.
- *
- * @param n Number to clamp.
- * @param min Lower bound.
- * @param max Upper bound.
- */
-
-function clamp(n, min, max) {
-  return Math.max(min, Math.min(max, n));
-}
-
-exports.clamp = clamp;
-/**
- * Split an {@param array} into {@param chunkSize} sized chunks
- *
- * @param array Array to split
- * @param chunkSize Size of chunk
- */
-
-function chunk(array, chunkSize) {
-  var result = [];
-
-  for (var i = 0; i < array.length; i += chunkSize) {
-    result.push(array.slice(i, i + chunkSize));
-  }
-
-  return result;
-}
-
 =======
 Object.defineProperty(exports, "__esModule", ({
   value: true
@@ -18133,6 +16820,8 @@ function chunk(array, chunkSize) {
 }
 
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 exports.chunk = chunk;
 
 /***/ }),
@@ -18146,328 +16835,328 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "add": () => (/* reexport */ lodash_es_add),
-  "after": () => (/* reexport */ lodash_es_after),
-  "ary": () => (/* reexport */ lodash_es_ary),
-  "assign": () => (/* reexport */ lodash_es_assign),
-  "assignIn": () => (/* reexport */ lodash_es_assignIn),
-  "assignInWith": () => (/* reexport */ lodash_es_assignInWith),
-  "assignWith": () => (/* reexport */ lodash_es_assignWith),
-  "at": () => (/* reexport */ lodash_es_at),
-  "attempt": () => (/* reexport */ lodash_es_attempt),
-  "before": () => (/* reexport */ lodash_es_before),
-  "bind": () => (/* reexport */ lodash_es_bind),
-  "bindAll": () => (/* reexport */ lodash_es_bindAll),
-  "bindKey": () => (/* reexport */ lodash_es_bindKey),
-  "camelCase": () => (/* reexport */ lodash_es_camelCase),
-  "capitalize": () => (/* reexport */ lodash_es_capitalize),
-  "castArray": () => (/* reexport */ lodash_es_castArray),
-  "ceil": () => (/* reexport */ lodash_es_ceil),
-  "chain": () => (/* reexport */ lodash_es_chain),
-  "chunk": () => (/* reexport */ lodash_es_chunk),
-  "clamp": () => (/* reexport */ lodash_es_clamp),
-  "clone": () => (/* reexport */ lodash_es_clone),
-  "cloneDeep": () => (/* reexport */ lodash_es_cloneDeep),
-  "cloneDeepWith": () => (/* reexport */ lodash_es_cloneDeepWith),
-  "cloneWith": () => (/* reexport */ lodash_es_cloneWith),
-  "commit": () => (/* reexport */ commit),
-  "compact": () => (/* reexport */ lodash_es_compact),
-  "concat": () => (/* reexport */ lodash_es_concat),
-  "cond": () => (/* reexport */ lodash_es_cond),
-  "conforms": () => (/* reexport */ lodash_es_conforms),
-  "conformsTo": () => (/* reexport */ lodash_es_conformsTo),
-  "constant": () => (/* reexport */ lodash_es_constant),
-  "countBy": () => (/* reexport */ lodash_es_countBy),
-  "create": () => (/* reexport */ lodash_es_create),
-  "curry": () => (/* reexport */ lodash_es_curry),
-  "curryRight": () => (/* reexport */ lodash_es_curryRight),
-  "debounce": () => (/* reexport */ lodash_es_debounce),
-  "deburr": () => (/* reexport */ lodash_es_deburr),
-  "default": () => (/* reexport */ lodash_default),
-  "defaultTo": () => (/* reexport */ lodash_es_defaultTo),
-  "defaults": () => (/* reexport */ lodash_es_defaults),
-  "defaultsDeep": () => (/* reexport */ lodash_es_defaultsDeep),
-  "defer": () => (/* reexport */ lodash_es_defer),
-  "delay": () => (/* reexport */ lodash_es_delay),
-  "difference": () => (/* reexport */ lodash_es_difference),
-  "differenceBy": () => (/* reexport */ lodash_es_differenceBy),
-  "differenceWith": () => (/* reexport */ lodash_es_differenceWith),
-  "divide": () => (/* reexport */ lodash_es_divide),
-  "drop": () => (/* reexport */ lodash_es_drop),
-  "dropRight": () => (/* reexport */ lodash_es_dropRight),
-  "dropRightWhile": () => (/* reexport */ lodash_es_dropRightWhile),
-  "dropWhile": () => (/* reexport */ lodash_es_dropWhile),
-  "each": () => (/* reexport */ lodash_es_forEach),
-  "eachRight": () => (/* reexport */ lodash_es_forEachRight),
-  "endsWith": () => (/* reexport */ lodash_es_endsWith),
-  "entries": () => (/* reexport */ lodash_es_toPairs),
-  "entriesIn": () => (/* reexport */ lodash_es_toPairsIn),
-  "eq": () => (/* reexport */ lodash_es_eq),
-  "escape": () => (/* reexport */ lodash_es_escape),
-  "escapeRegExp": () => (/* reexport */ lodash_es_escapeRegExp),
-  "every": () => (/* reexport */ lodash_es_every),
-  "extend": () => (/* reexport */ lodash_es_assignIn),
-  "extendWith": () => (/* reexport */ lodash_es_assignInWith),
-  "fill": () => (/* reexport */ lodash_es_fill),
-  "filter": () => (/* reexport */ lodash_es_filter),
-  "find": () => (/* reexport */ lodash_es_find),
-  "findIndex": () => (/* reexport */ lodash_es_findIndex),
-  "findKey": () => (/* reexport */ lodash_es_findKey),
-  "findLast": () => (/* reexport */ lodash_es_findLast),
-  "findLastIndex": () => (/* reexport */ lodash_es_findLastIndex),
-  "findLastKey": () => (/* reexport */ lodash_es_findLastKey),
-  "first": () => (/* reexport */ lodash_es_head),
-  "flatMap": () => (/* reexport */ lodash_es_flatMap),
-  "flatMapDeep": () => (/* reexport */ lodash_es_flatMapDeep),
-  "flatMapDepth": () => (/* reexport */ lodash_es_flatMapDepth),
-  "flatten": () => (/* reexport */ lodash_es_flatten),
-  "flattenDeep": () => (/* reexport */ lodash_es_flattenDeep),
-  "flattenDepth": () => (/* reexport */ lodash_es_flattenDepth),
-  "flip": () => (/* reexport */ lodash_es_flip),
-  "floor": () => (/* reexport */ lodash_es_floor),
-  "flow": () => (/* reexport */ lodash_es_flow),
-  "flowRight": () => (/* reexport */ lodash_es_flowRight),
-  "forEach": () => (/* reexport */ lodash_es_forEach),
-  "forEachRight": () => (/* reexport */ lodash_es_forEachRight),
-  "forIn": () => (/* reexport */ lodash_es_forIn),
-  "forInRight": () => (/* reexport */ lodash_es_forInRight),
-  "forOwn": () => (/* reexport */ lodash_es_forOwn),
-  "forOwnRight": () => (/* reexport */ lodash_es_forOwnRight),
-  "fromPairs": () => (/* reexport */ lodash_es_fromPairs),
-  "functions": () => (/* reexport */ lodash_es_functions),
-  "functionsIn": () => (/* reexport */ lodash_es_functionsIn),
-  "get": () => (/* reexport */ lodash_es_get),
-  "groupBy": () => (/* reexport */ lodash_es_groupBy),
-  "gt": () => (/* reexport */ lodash_es_gt),
-  "gte": () => (/* reexport */ lodash_es_gte),
-  "has": () => (/* reexport */ lodash_es_has),
-  "hasIn": () => (/* reexport */ lodash_es_hasIn),
-  "head": () => (/* reexport */ lodash_es_head),
-  "identity": () => (/* reexport */ lodash_es_identity),
-  "inRange": () => (/* reexport */ lodash_es_inRange),
-  "includes": () => (/* reexport */ lodash_es_includes),
-  "indexOf": () => (/* reexport */ lodash_es_indexOf),
-  "initial": () => (/* reexport */ lodash_es_initial),
-  "intersection": () => (/* reexport */ lodash_es_intersection),
-  "intersectionBy": () => (/* reexport */ lodash_es_intersectionBy),
-  "intersectionWith": () => (/* reexport */ lodash_es_intersectionWith),
-  "invert": () => (/* reexport */ lodash_es_invert),
-  "invertBy": () => (/* reexport */ lodash_es_invertBy),
-  "invoke": () => (/* reexport */ lodash_es_invoke),
-  "invokeMap": () => (/* reexport */ lodash_es_invokeMap),
-  "isArguments": () => (/* reexport */ lodash_es_isArguments),
-  "isArray": () => (/* reexport */ lodash_es_isArray),
-  "isArrayBuffer": () => (/* reexport */ lodash_es_isArrayBuffer),
-  "isArrayLike": () => (/* reexport */ lodash_es_isArrayLike),
-  "isArrayLikeObject": () => (/* reexport */ lodash_es_isArrayLikeObject),
-  "isBoolean": () => (/* reexport */ lodash_es_isBoolean),
-  "isBuffer": () => (/* reexport */ lodash_es_isBuffer),
-  "isDate": () => (/* reexport */ lodash_es_isDate),
-  "isElement": () => (/* reexport */ lodash_es_isElement),
-  "isEmpty": () => (/* reexport */ lodash_es_isEmpty),
-  "isEqual": () => (/* reexport */ lodash_es_isEqual),
-  "isEqualWith": () => (/* reexport */ lodash_es_isEqualWith),
-  "isError": () => (/* reexport */ lodash_es_isError),
-  "isFinite": () => (/* reexport */ lodash_es_isFinite),
-  "isFunction": () => (/* reexport */ lodash_es_isFunction),
-  "isInteger": () => (/* reexport */ lodash_es_isInteger),
-  "isLength": () => (/* reexport */ lodash_es_isLength),
-  "isMap": () => (/* reexport */ lodash_es_isMap),
-  "isMatch": () => (/* reexport */ lodash_es_isMatch),
-  "isMatchWith": () => (/* reexport */ lodash_es_isMatchWith),
-  "isNaN": () => (/* reexport */ lodash_es_isNaN),
-  "isNative": () => (/* reexport */ lodash_es_isNative),
-  "isNil": () => (/* reexport */ lodash_es_isNil),
-  "isNull": () => (/* reexport */ lodash_es_isNull),
-  "isNumber": () => (/* reexport */ lodash_es_isNumber),
-  "isObject": () => (/* reexport */ lodash_es_isObject),
-  "isObjectLike": () => (/* reexport */ lodash_es_isObjectLike),
-  "isPlainObject": () => (/* reexport */ lodash_es_isPlainObject),
-  "isRegExp": () => (/* reexport */ lodash_es_isRegExp),
-  "isSafeInteger": () => (/* reexport */ lodash_es_isSafeInteger),
-  "isSet": () => (/* reexport */ lodash_es_isSet),
-  "isString": () => (/* reexport */ lodash_es_isString),
-  "isSymbol": () => (/* reexport */ lodash_es_isSymbol),
-  "isTypedArray": () => (/* reexport */ lodash_es_isTypedArray),
-  "isUndefined": () => (/* reexport */ lodash_es_isUndefined),
-  "isWeakMap": () => (/* reexport */ lodash_es_isWeakMap),
-  "isWeakSet": () => (/* reexport */ lodash_es_isWeakSet),
-  "iteratee": () => (/* reexport */ lodash_es_iteratee),
-  "join": () => (/* reexport */ lodash_es_join),
-  "kebabCase": () => (/* reexport */ lodash_es_kebabCase),
-  "keyBy": () => (/* reexport */ lodash_es_keyBy),
-  "keys": () => (/* reexport */ lodash_es_keys),
-  "keysIn": () => (/* reexport */ lodash_es_keysIn),
-  "last": () => (/* reexport */ lodash_es_last),
-  "lastIndexOf": () => (/* reexport */ lodash_es_lastIndexOf),
-  "lodash": () => (/* reexport */ wrapperLodash),
-  "lowerCase": () => (/* reexport */ lodash_es_lowerCase),
-  "lowerFirst": () => (/* reexport */ lodash_es_lowerFirst),
-  "lt": () => (/* reexport */ lodash_es_lt),
-  "lte": () => (/* reexport */ lodash_es_lte),
-  "map": () => (/* reexport */ lodash_es_map),
-  "mapKeys": () => (/* reexport */ lodash_es_mapKeys),
-  "mapValues": () => (/* reexport */ lodash_es_mapValues),
-  "matches": () => (/* reexport */ lodash_es_matches),
-  "matchesProperty": () => (/* reexport */ lodash_es_matchesProperty),
-  "max": () => (/* reexport */ lodash_es_max),
-  "maxBy": () => (/* reexport */ lodash_es_maxBy),
-  "mean": () => (/* reexport */ lodash_es_mean),
-  "meanBy": () => (/* reexport */ lodash_es_meanBy),
-  "memoize": () => (/* reexport */ lodash_es_memoize),
-  "merge": () => (/* reexport */ lodash_es_merge),
-  "mergeWith": () => (/* reexport */ lodash_es_mergeWith),
-  "method": () => (/* reexport */ lodash_es_method),
-  "methodOf": () => (/* reexport */ lodash_es_methodOf),
-  "min": () => (/* reexport */ lodash_es_min),
-  "minBy": () => (/* reexport */ lodash_es_minBy),
-  "mixin": () => (/* reexport */ lodash_es_mixin),
-  "multiply": () => (/* reexport */ lodash_es_multiply),
-  "negate": () => (/* reexport */ lodash_es_negate),
-  "next": () => (/* reexport */ next),
-  "noop": () => (/* reexport */ lodash_es_noop),
-  "now": () => (/* reexport */ lodash_es_now),
-  "nth": () => (/* reexport */ lodash_es_nth),
-  "nthArg": () => (/* reexport */ lodash_es_nthArg),
-  "omit": () => (/* reexport */ lodash_es_omit),
-  "omitBy": () => (/* reexport */ lodash_es_omitBy),
-  "once": () => (/* reexport */ lodash_es_once),
-  "orderBy": () => (/* reexport */ lodash_es_orderBy),
-  "over": () => (/* reexport */ lodash_es_over),
-  "overArgs": () => (/* reexport */ lodash_es_overArgs),
-  "overEvery": () => (/* reexport */ lodash_es_overEvery),
-  "overSome": () => (/* reexport */ lodash_es_overSome),
-  "pad": () => (/* reexport */ lodash_es_pad),
-  "padEnd": () => (/* reexport */ lodash_es_padEnd),
-  "padStart": () => (/* reexport */ lodash_es_padStart),
-  "parseInt": () => (/* reexport */ lodash_es_parseInt),
-  "partial": () => (/* reexport */ lodash_es_partial),
-  "partialRight": () => (/* reexport */ lodash_es_partialRight),
-  "partition": () => (/* reexport */ lodash_es_partition),
-  "pick": () => (/* reexport */ lodash_es_pick),
-  "pickBy": () => (/* reexport */ lodash_es_pickBy),
-  "plant": () => (/* reexport */ plant),
-  "property": () => (/* reexport */ lodash_es_property),
-  "propertyOf": () => (/* reexport */ lodash_es_propertyOf),
-  "pull": () => (/* reexport */ lodash_es_pull),
-  "pullAll": () => (/* reexport */ lodash_es_pullAll),
-  "pullAllBy": () => (/* reexport */ lodash_es_pullAllBy),
-  "pullAllWith": () => (/* reexport */ lodash_es_pullAllWith),
-  "pullAt": () => (/* reexport */ lodash_es_pullAt),
-  "random": () => (/* reexport */ lodash_es_random),
-  "range": () => (/* reexport */ lodash_es_range),
-  "rangeRight": () => (/* reexport */ lodash_es_rangeRight),
-  "rearg": () => (/* reexport */ lodash_es_rearg),
-  "reduce": () => (/* reexport */ lodash_es_reduce),
-  "reduceRight": () => (/* reexport */ lodash_es_reduceRight),
-  "reject": () => (/* reexport */ lodash_es_reject),
-  "remove": () => (/* reexport */ lodash_es_remove),
-  "repeat": () => (/* reexport */ lodash_es_repeat),
-  "replace": () => (/* reexport */ lodash_es_replace),
-  "rest": () => (/* reexport */ lodash_es_rest),
-  "result": () => (/* reexport */ lodash_es_result),
-  "reverse": () => (/* reexport */ lodash_es_reverse),
-  "round": () => (/* reexport */ lodash_es_round),
-  "sample": () => (/* reexport */ lodash_es_sample),
-  "sampleSize": () => (/* reexport */ lodash_es_sampleSize),
-  "set": () => (/* reexport */ lodash_es_set),
-  "setWith": () => (/* reexport */ lodash_es_setWith),
-  "shuffle": () => (/* reexport */ lodash_es_shuffle),
-  "size": () => (/* reexport */ lodash_es_size),
-  "slice": () => (/* reexport */ lodash_es_slice),
-  "snakeCase": () => (/* reexport */ lodash_es_snakeCase),
-  "some": () => (/* reexport */ lodash_es_some),
-  "sortBy": () => (/* reexport */ lodash_es_sortBy),
-  "sortedIndex": () => (/* reexport */ lodash_es_sortedIndex),
-  "sortedIndexBy": () => (/* reexport */ lodash_es_sortedIndexBy),
-  "sortedIndexOf": () => (/* reexport */ lodash_es_sortedIndexOf),
-  "sortedLastIndex": () => (/* reexport */ lodash_es_sortedLastIndex),
-  "sortedLastIndexBy": () => (/* reexport */ lodash_es_sortedLastIndexBy),
-  "sortedLastIndexOf": () => (/* reexport */ lodash_es_sortedLastIndexOf),
-  "sortedUniq": () => (/* reexport */ lodash_es_sortedUniq),
-  "sortedUniqBy": () => (/* reexport */ lodash_es_sortedUniqBy),
-  "split": () => (/* reexport */ lodash_es_split),
-  "spread": () => (/* reexport */ lodash_es_spread),
-  "startCase": () => (/* reexport */ lodash_es_startCase),
-  "startsWith": () => (/* reexport */ lodash_es_startsWith),
-  "stubArray": () => (/* reexport */ lodash_es_stubArray),
-  "stubFalse": () => (/* reexport */ lodash_es_stubFalse),
-  "stubObject": () => (/* reexport */ lodash_es_stubObject),
-  "stubString": () => (/* reexport */ lodash_es_stubString),
-  "stubTrue": () => (/* reexport */ lodash_es_stubTrue),
-  "subtract": () => (/* reexport */ lodash_es_subtract),
-  "sum": () => (/* reexport */ lodash_es_sum),
-  "sumBy": () => (/* reexport */ lodash_es_sumBy),
-  "tail": () => (/* reexport */ lodash_es_tail),
-  "take": () => (/* reexport */ lodash_es_take),
-  "takeRight": () => (/* reexport */ lodash_es_takeRight),
-  "takeRightWhile": () => (/* reexport */ lodash_es_takeRightWhile),
-  "takeWhile": () => (/* reexport */ lodash_es_takeWhile),
-  "tap": () => (/* reexport */ lodash_es_tap),
-  "template": () => (/* reexport */ lodash_es_template),
-  "templateSettings": () => (/* reexport */ lodash_es_templateSettings),
-  "throttle": () => (/* reexport */ lodash_es_throttle),
-  "thru": () => (/* reexport */ lodash_es_thru),
-  "times": () => (/* reexport */ lodash_es_times),
-  "toArray": () => (/* reexport */ lodash_es_toArray),
-  "toFinite": () => (/* reexport */ lodash_es_toFinite),
-  "toInteger": () => (/* reexport */ lodash_es_toInteger),
-  "toIterator": () => (/* reexport */ toIterator),
-  "toJSON": () => (/* reexport */ lodash_es_wrapperValue),
-  "toLength": () => (/* reexport */ lodash_es_toLength),
-  "toLower": () => (/* reexport */ lodash_es_toLower),
-  "toNumber": () => (/* reexport */ lodash_es_toNumber),
-  "toPairs": () => (/* reexport */ lodash_es_toPairs),
-  "toPairsIn": () => (/* reexport */ lodash_es_toPairsIn),
-  "toPath": () => (/* reexport */ lodash_es_toPath),
-  "toPlainObject": () => (/* reexport */ lodash_es_toPlainObject),
-  "toSafeInteger": () => (/* reexport */ lodash_es_toSafeInteger),
-  "toString": () => (/* reexport */ lodash_es_toString),
-  "toUpper": () => (/* reexport */ lodash_es_toUpper),
-  "transform": () => (/* reexport */ lodash_es_transform),
-  "trim": () => (/* reexport */ lodash_es_trim),
-  "trimEnd": () => (/* reexport */ lodash_es_trimEnd),
-  "trimStart": () => (/* reexport */ lodash_es_trimStart),
-  "truncate": () => (/* reexport */ lodash_es_truncate),
-  "unary": () => (/* reexport */ lodash_es_unary),
-  "unescape": () => (/* reexport */ lodash_es_unescape),
-  "union": () => (/* reexport */ lodash_es_union),
-  "unionBy": () => (/* reexport */ lodash_es_unionBy),
-  "unionWith": () => (/* reexport */ lodash_es_unionWith),
-  "uniq": () => (/* reexport */ lodash_es_uniq),
-  "uniqBy": () => (/* reexport */ lodash_es_uniqBy),
-  "uniqWith": () => (/* reexport */ lodash_es_uniqWith),
-  "uniqueId": () => (/* reexport */ lodash_es_uniqueId),
-  "unset": () => (/* reexport */ lodash_es_unset),
-  "unzip": () => (/* reexport */ lodash_es_unzip),
-  "unzipWith": () => (/* reexport */ lodash_es_unzipWith),
-  "update": () => (/* reexport */ lodash_es_update),
-  "updateWith": () => (/* reexport */ lodash_es_updateWith),
-  "upperCase": () => (/* reexport */ lodash_es_upperCase),
-  "upperFirst": () => (/* reexport */ lodash_es_upperFirst),
-  "value": () => (/* reexport */ lodash_es_wrapperValue),
-  "valueOf": () => (/* reexport */ lodash_es_wrapperValue),
-  "values": () => (/* reexport */ lodash_es_values),
-  "valuesIn": () => (/* reexport */ lodash_es_valuesIn),
-  "without": () => (/* reexport */ lodash_es_without),
-  "words": () => (/* reexport */ lodash_es_words),
-  "wrap": () => (/* reexport */ lodash_es_wrap),
-  "wrapperAt": () => (/* reexport */ lodash_es_wrapperAt),
-  "wrapperChain": () => (/* reexport */ lodash_es_wrapperChain),
-  "wrapperCommit": () => (/* reexport */ commit),
-  "wrapperLodash": () => (/* reexport */ wrapperLodash),
-  "wrapperNext": () => (/* reexport */ next),
-  "wrapperPlant": () => (/* reexport */ plant),
-  "wrapperReverse": () => (/* reexport */ lodash_es_wrapperReverse),
-  "wrapperToIterator": () => (/* reexport */ toIterator),
-  "wrapperValue": () => (/* reexport */ lodash_es_wrapperValue),
-  "xor": () => (/* reexport */ lodash_es_xor),
-  "xorBy": () => (/* reexport */ lodash_es_xorBy),
-  "xorWith": () => (/* reexport */ lodash_es_xorWith),
-  "zip": () => (/* reexport */ lodash_es_zip),
-  "zipObject": () => (/* reexport */ lodash_es_zipObject),
-  "zipObjectDeep": () => (/* reexport */ lodash_es_zipObjectDeep),
-  "zipWith": () => (/* reexport */ lodash_es_zipWith)
+  "add": () => /* reexport */ lodash_es_add,
+  "after": () => /* reexport */ lodash_es_after,
+  "ary": () => /* reexport */ lodash_es_ary,
+  "assign": () => /* reexport */ lodash_es_assign,
+  "assignIn": () => /* reexport */ lodash_es_assignIn,
+  "assignInWith": () => /* reexport */ lodash_es_assignInWith,
+  "assignWith": () => /* reexport */ lodash_es_assignWith,
+  "at": () => /* reexport */ lodash_es_at,
+  "attempt": () => /* reexport */ lodash_es_attempt,
+  "before": () => /* reexport */ lodash_es_before,
+  "bind": () => /* reexport */ lodash_es_bind,
+  "bindAll": () => /* reexport */ lodash_es_bindAll,
+  "bindKey": () => /* reexport */ lodash_es_bindKey,
+  "camelCase": () => /* reexport */ lodash_es_camelCase,
+  "capitalize": () => /* reexport */ lodash_es_capitalize,
+  "castArray": () => /* reexport */ lodash_es_castArray,
+  "ceil": () => /* reexport */ lodash_es_ceil,
+  "chain": () => /* reexport */ lodash_es_chain,
+  "chunk": () => /* reexport */ lodash_es_chunk,
+  "clamp": () => /* reexport */ lodash_es_clamp,
+  "clone": () => /* reexport */ lodash_es_clone,
+  "cloneDeep": () => /* reexport */ lodash_es_cloneDeep,
+  "cloneDeepWith": () => /* reexport */ lodash_es_cloneDeepWith,
+  "cloneWith": () => /* reexport */ lodash_es_cloneWith,
+  "commit": () => /* reexport */ commit,
+  "compact": () => /* reexport */ lodash_es_compact,
+  "concat": () => /* reexport */ lodash_es_concat,
+  "cond": () => /* reexport */ lodash_es_cond,
+  "conforms": () => /* reexport */ lodash_es_conforms,
+  "conformsTo": () => /* reexport */ lodash_es_conformsTo,
+  "constant": () => /* reexport */ lodash_es_constant,
+  "countBy": () => /* reexport */ lodash_es_countBy,
+  "create": () => /* reexport */ lodash_es_create,
+  "curry": () => /* reexport */ lodash_es_curry,
+  "curryRight": () => /* reexport */ lodash_es_curryRight,
+  "debounce": () => /* reexport */ lodash_es_debounce,
+  "deburr": () => /* reexport */ lodash_es_deburr,
+  "default": () => /* reexport */ lodash_default,
+  "defaultTo": () => /* reexport */ lodash_es_defaultTo,
+  "defaults": () => /* reexport */ lodash_es_defaults,
+  "defaultsDeep": () => /* reexport */ lodash_es_defaultsDeep,
+  "defer": () => /* reexport */ lodash_es_defer,
+  "delay": () => /* reexport */ lodash_es_delay,
+  "difference": () => /* reexport */ lodash_es_difference,
+  "differenceBy": () => /* reexport */ lodash_es_differenceBy,
+  "differenceWith": () => /* reexport */ lodash_es_differenceWith,
+  "divide": () => /* reexport */ lodash_es_divide,
+  "drop": () => /* reexport */ lodash_es_drop,
+  "dropRight": () => /* reexport */ lodash_es_dropRight,
+  "dropRightWhile": () => /* reexport */ lodash_es_dropRightWhile,
+  "dropWhile": () => /* reexport */ lodash_es_dropWhile,
+  "each": () => /* reexport */ lodash_es_forEach,
+  "eachRight": () => /* reexport */ lodash_es_forEachRight,
+  "endsWith": () => /* reexport */ lodash_es_endsWith,
+  "entries": () => /* reexport */ lodash_es_toPairs,
+  "entriesIn": () => /* reexport */ lodash_es_toPairsIn,
+  "eq": () => /* reexport */ lodash_es_eq,
+  "escape": () => /* reexport */ lodash_es_escape,
+  "escapeRegExp": () => /* reexport */ lodash_es_escapeRegExp,
+  "every": () => /* reexport */ lodash_es_every,
+  "extend": () => /* reexport */ lodash_es_assignIn,
+  "extendWith": () => /* reexport */ lodash_es_assignInWith,
+  "fill": () => /* reexport */ lodash_es_fill,
+  "filter": () => /* reexport */ lodash_es_filter,
+  "find": () => /* reexport */ lodash_es_find,
+  "findIndex": () => /* reexport */ lodash_es_findIndex,
+  "findKey": () => /* reexport */ lodash_es_findKey,
+  "findLast": () => /* reexport */ lodash_es_findLast,
+  "findLastIndex": () => /* reexport */ lodash_es_findLastIndex,
+  "findLastKey": () => /* reexport */ lodash_es_findLastKey,
+  "first": () => /* reexport */ lodash_es_head,
+  "flatMap": () => /* reexport */ lodash_es_flatMap,
+  "flatMapDeep": () => /* reexport */ lodash_es_flatMapDeep,
+  "flatMapDepth": () => /* reexport */ lodash_es_flatMapDepth,
+  "flatten": () => /* reexport */ lodash_es_flatten,
+  "flattenDeep": () => /* reexport */ lodash_es_flattenDeep,
+  "flattenDepth": () => /* reexport */ lodash_es_flattenDepth,
+  "flip": () => /* reexport */ lodash_es_flip,
+  "floor": () => /* reexport */ lodash_es_floor,
+  "flow": () => /* reexport */ lodash_es_flow,
+  "flowRight": () => /* reexport */ lodash_es_flowRight,
+  "forEach": () => /* reexport */ lodash_es_forEach,
+  "forEachRight": () => /* reexport */ lodash_es_forEachRight,
+  "forIn": () => /* reexport */ lodash_es_forIn,
+  "forInRight": () => /* reexport */ lodash_es_forInRight,
+  "forOwn": () => /* reexport */ lodash_es_forOwn,
+  "forOwnRight": () => /* reexport */ lodash_es_forOwnRight,
+  "fromPairs": () => /* reexport */ lodash_es_fromPairs,
+  "functions": () => /* reexport */ lodash_es_functions,
+  "functionsIn": () => /* reexport */ lodash_es_functionsIn,
+  "get": () => /* reexport */ lodash_es_get,
+  "groupBy": () => /* reexport */ lodash_es_groupBy,
+  "gt": () => /* reexport */ lodash_es_gt,
+  "gte": () => /* reexport */ lodash_es_gte,
+  "has": () => /* reexport */ lodash_es_has,
+  "hasIn": () => /* reexport */ lodash_es_hasIn,
+  "head": () => /* reexport */ lodash_es_head,
+  "identity": () => /* reexport */ lodash_es_identity,
+  "inRange": () => /* reexport */ lodash_es_inRange,
+  "includes": () => /* reexport */ lodash_es_includes,
+  "indexOf": () => /* reexport */ lodash_es_indexOf,
+  "initial": () => /* reexport */ lodash_es_initial,
+  "intersection": () => /* reexport */ lodash_es_intersection,
+  "intersectionBy": () => /* reexport */ lodash_es_intersectionBy,
+  "intersectionWith": () => /* reexport */ lodash_es_intersectionWith,
+  "invert": () => /* reexport */ lodash_es_invert,
+  "invertBy": () => /* reexport */ lodash_es_invertBy,
+  "invoke": () => /* reexport */ lodash_es_invoke,
+  "invokeMap": () => /* reexport */ lodash_es_invokeMap,
+  "isArguments": () => /* reexport */ lodash_es_isArguments,
+  "isArray": () => /* reexport */ lodash_es_isArray,
+  "isArrayBuffer": () => /* reexport */ lodash_es_isArrayBuffer,
+  "isArrayLike": () => /* reexport */ lodash_es_isArrayLike,
+  "isArrayLikeObject": () => /* reexport */ lodash_es_isArrayLikeObject,
+  "isBoolean": () => /* reexport */ lodash_es_isBoolean,
+  "isBuffer": () => /* reexport */ lodash_es_isBuffer,
+  "isDate": () => /* reexport */ lodash_es_isDate,
+  "isElement": () => /* reexport */ lodash_es_isElement,
+  "isEmpty": () => /* reexport */ lodash_es_isEmpty,
+  "isEqual": () => /* reexport */ lodash_es_isEqual,
+  "isEqualWith": () => /* reexport */ lodash_es_isEqualWith,
+  "isError": () => /* reexport */ lodash_es_isError,
+  "isFinite": () => /* reexport */ lodash_es_isFinite,
+  "isFunction": () => /* reexport */ lodash_es_isFunction,
+  "isInteger": () => /* reexport */ lodash_es_isInteger,
+  "isLength": () => /* reexport */ lodash_es_isLength,
+  "isMap": () => /* reexport */ lodash_es_isMap,
+  "isMatch": () => /* reexport */ lodash_es_isMatch,
+  "isMatchWith": () => /* reexport */ lodash_es_isMatchWith,
+  "isNaN": () => /* reexport */ lodash_es_isNaN,
+  "isNative": () => /* reexport */ lodash_es_isNative,
+  "isNil": () => /* reexport */ lodash_es_isNil,
+  "isNull": () => /* reexport */ lodash_es_isNull,
+  "isNumber": () => /* reexport */ lodash_es_isNumber,
+  "isObject": () => /* reexport */ lodash_es_isObject,
+  "isObjectLike": () => /* reexport */ lodash_es_isObjectLike,
+  "isPlainObject": () => /* reexport */ lodash_es_isPlainObject,
+  "isRegExp": () => /* reexport */ lodash_es_isRegExp,
+  "isSafeInteger": () => /* reexport */ lodash_es_isSafeInteger,
+  "isSet": () => /* reexport */ lodash_es_isSet,
+  "isString": () => /* reexport */ lodash_es_isString,
+  "isSymbol": () => /* reexport */ lodash_es_isSymbol,
+  "isTypedArray": () => /* reexport */ lodash_es_isTypedArray,
+  "isUndefined": () => /* reexport */ lodash_es_isUndefined,
+  "isWeakMap": () => /* reexport */ lodash_es_isWeakMap,
+  "isWeakSet": () => /* reexport */ lodash_es_isWeakSet,
+  "iteratee": () => /* reexport */ lodash_es_iteratee,
+  "join": () => /* reexport */ lodash_es_join,
+  "kebabCase": () => /* reexport */ lodash_es_kebabCase,
+  "keyBy": () => /* reexport */ lodash_es_keyBy,
+  "keys": () => /* reexport */ lodash_es_keys,
+  "keysIn": () => /* reexport */ lodash_es_keysIn,
+  "last": () => /* reexport */ lodash_es_last,
+  "lastIndexOf": () => /* reexport */ lodash_es_lastIndexOf,
+  "lodash": () => /* reexport */ wrapperLodash,
+  "lowerCase": () => /* reexport */ lodash_es_lowerCase,
+  "lowerFirst": () => /* reexport */ lodash_es_lowerFirst,
+  "lt": () => /* reexport */ lodash_es_lt,
+  "lte": () => /* reexport */ lodash_es_lte,
+  "map": () => /* reexport */ lodash_es_map,
+  "mapKeys": () => /* reexport */ lodash_es_mapKeys,
+  "mapValues": () => /* reexport */ lodash_es_mapValues,
+  "matches": () => /* reexport */ lodash_es_matches,
+  "matchesProperty": () => /* reexport */ lodash_es_matchesProperty,
+  "max": () => /* reexport */ lodash_es_max,
+  "maxBy": () => /* reexport */ lodash_es_maxBy,
+  "mean": () => /* reexport */ lodash_es_mean,
+  "meanBy": () => /* reexport */ lodash_es_meanBy,
+  "memoize": () => /* reexport */ lodash_es_memoize,
+  "merge": () => /* reexport */ lodash_es_merge,
+  "mergeWith": () => /* reexport */ lodash_es_mergeWith,
+  "method": () => /* reexport */ lodash_es_method,
+  "methodOf": () => /* reexport */ lodash_es_methodOf,
+  "min": () => /* reexport */ lodash_es_min,
+  "minBy": () => /* reexport */ lodash_es_minBy,
+  "mixin": () => /* reexport */ lodash_es_mixin,
+  "multiply": () => /* reexport */ lodash_es_multiply,
+  "negate": () => /* reexport */ lodash_es_negate,
+  "next": () => /* reexport */ next,
+  "noop": () => /* reexport */ lodash_es_noop,
+  "now": () => /* reexport */ lodash_es_now,
+  "nth": () => /* reexport */ lodash_es_nth,
+  "nthArg": () => /* reexport */ lodash_es_nthArg,
+  "omit": () => /* reexport */ lodash_es_omit,
+  "omitBy": () => /* reexport */ lodash_es_omitBy,
+  "once": () => /* reexport */ lodash_es_once,
+  "orderBy": () => /* reexport */ lodash_es_orderBy,
+  "over": () => /* reexport */ lodash_es_over,
+  "overArgs": () => /* reexport */ lodash_es_overArgs,
+  "overEvery": () => /* reexport */ lodash_es_overEvery,
+  "overSome": () => /* reexport */ lodash_es_overSome,
+  "pad": () => /* reexport */ lodash_es_pad,
+  "padEnd": () => /* reexport */ lodash_es_padEnd,
+  "padStart": () => /* reexport */ lodash_es_padStart,
+  "parseInt": () => /* reexport */ lodash_es_parseInt,
+  "partial": () => /* reexport */ lodash_es_partial,
+  "partialRight": () => /* reexport */ lodash_es_partialRight,
+  "partition": () => /* reexport */ lodash_es_partition,
+  "pick": () => /* reexport */ lodash_es_pick,
+  "pickBy": () => /* reexport */ lodash_es_pickBy,
+  "plant": () => /* reexport */ plant,
+  "property": () => /* reexport */ lodash_es_property,
+  "propertyOf": () => /* reexport */ lodash_es_propertyOf,
+  "pull": () => /* reexport */ lodash_es_pull,
+  "pullAll": () => /* reexport */ lodash_es_pullAll,
+  "pullAllBy": () => /* reexport */ lodash_es_pullAllBy,
+  "pullAllWith": () => /* reexport */ lodash_es_pullAllWith,
+  "pullAt": () => /* reexport */ lodash_es_pullAt,
+  "random": () => /* reexport */ lodash_es_random,
+  "range": () => /* reexport */ lodash_es_range,
+  "rangeRight": () => /* reexport */ lodash_es_rangeRight,
+  "rearg": () => /* reexport */ lodash_es_rearg,
+  "reduce": () => /* reexport */ lodash_es_reduce,
+  "reduceRight": () => /* reexport */ lodash_es_reduceRight,
+  "reject": () => /* reexport */ lodash_es_reject,
+  "remove": () => /* reexport */ lodash_es_remove,
+  "repeat": () => /* reexport */ lodash_es_repeat,
+  "replace": () => /* reexport */ lodash_es_replace,
+  "rest": () => /* reexport */ lodash_es_rest,
+  "result": () => /* reexport */ lodash_es_result,
+  "reverse": () => /* reexport */ lodash_es_reverse,
+  "round": () => /* reexport */ lodash_es_round,
+  "sample": () => /* reexport */ lodash_es_sample,
+  "sampleSize": () => /* reexport */ lodash_es_sampleSize,
+  "set": () => /* reexport */ lodash_es_set,
+  "setWith": () => /* reexport */ lodash_es_setWith,
+  "shuffle": () => /* reexport */ lodash_es_shuffle,
+  "size": () => /* reexport */ lodash_es_size,
+  "slice": () => /* reexport */ lodash_es_slice,
+  "snakeCase": () => /* reexport */ lodash_es_snakeCase,
+  "some": () => /* reexport */ lodash_es_some,
+  "sortBy": () => /* reexport */ lodash_es_sortBy,
+  "sortedIndex": () => /* reexport */ lodash_es_sortedIndex,
+  "sortedIndexBy": () => /* reexport */ lodash_es_sortedIndexBy,
+  "sortedIndexOf": () => /* reexport */ lodash_es_sortedIndexOf,
+  "sortedLastIndex": () => /* reexport */ lodash_es_sortedLastIndex,
+  "sortedLastIndexBy": () => /* reexport */ lodash_es_sortedLastIndexBy,
+  "sortedLastIndexOf": () => /* reexport */ lodash_es_sortedLastIndexOf,
+  "sortedUniq": () => /* reexport */ lodash_es_sortedUniq,
+  "sortedUniqBy": () => /* reexport */ lodash_es_sortedUniqBy,
+  "split": () => /* reexport */ lodash_es_split,
+  "spread": () => /* reexport */ lodash_es_spread,
+  "startCase": () => /* reexport */ lodash_es_startCase,
+  "startsWith": () => /* reexport */ lodash_es_startsWith,
+  "stubArray": () => /* reexport */ lodash_es_stubArray,
+  "stubFalse": () => /* reexport */ lodash_es_stubFalse,
+  "stubObject": () => /* reexport */ lodash_es_stubObject,
+  "stubString": () => /* reexport */ lodash_es_stubString,
+  "stubTrue": () => /* reexport */ lodash_es_stubTrue,
+  "subtract": () => /* reexport */ lodash_es_subtract,
+  "sum": () => /* reexport */ lodash_es_sum,
+  "sumBy": () => /* reexport */ lodash_es_sumBy,
+  "tail": () => /* reexport */ lodash_es_tail,
+  "take": () => /* reexport */ lodash_es_take,
+  "takeRight": () => /* reexport */ lodash_es_takeRight,
+  "takeRightWhile": () => /* reexport */ lodash_es_takeRightWhile,
+  "takeWhile": () => /* reexport */ lodash_es_takeWhile,
+  "tap": () => /* reexport */ lodash_es_tap,
+  "template": () => /* reexport */ lodash_es_template,
+  "templateSettings": () => /* reexport */ lodash_es_templateSettings,
+  "throttle": () => /* reexport */ lodash_es_throttle,
+  "thru": () => /* reexport */ lodash_es_thru,
+  "times": () => /* reexport */ lodash_es_times,
+  "toArray": () => /* reexport */ lodash_es_toArray,
+  "toFinite": () => /* reexport */ lodash_es_toFinite,
+  "toInteger": () => /* reexport */ lodash_es_toInteger,
+  "toIterator": () => /* reexport */ toIterator,
+  "toJSON": () => /* reexport */ lodash_es_wrapperValue,
+  "toLength": () => /* reexport */ lodash_es_toLength,
+  "toLower": () => /* reexport */ lodash_es_toLower,
+  "toNumber": () => /* reexport */ lodash_es_toNumber,
+  "toPairs": () => /* reexport */ lodash_es_toPairs,
+  "toPairsIn": () => /* reexport */ lodash_es_toPairsIn,
+  "toPath": () => /* reexport */ lodash_es_toPath,
+  "toPlainObject": () => /* reexport */ lodash_es_toPlainObject,
+  "toSafeInteger": () => /* reexport */ lodash_es_toSafeInteger,
+  "toString": () => /* reexport */ lodash_es_toString,
+  "toUpper": () => /* reexport */ lodash_es_toUpper,
+  "transform": () => /* reexport */ lodash_es_transform,
+  "trim": () => /* reexport */ lodash_es_trim,
+  "trimEnd": () => /* reexport */ lodash_es_trimEnd,
+  "trimStart": () => /* reexport */ lodash_es_trimStart,
+  "truncate": () => /* reexport */ lodash_es_truncate,
+  "unary": () => /* reexport */ lodash_es_unary,
+  "unescape": () => /* reexport */ lodash_es_unescape,
+  "union": () => /* reexport */ lodash_es_union,
+  "unionBy": () => /* reexport */ lodash_es_unionBy,
+  "unionWith": () => /* reexport */ lodash_es_unionWith,
+  "uniq": () => /* reexport */ lodash_es_uniq,
+  "uniqBy": () => /* reexport */ lodash_es_uniqBy,
+  "uniqWith": () => /* reexport */ lodash_es_uniqWith,
+  "uniqueId": () => /* reexport */ lodash_es_uniqueId,
+  "unset": () => /* reexport */ lodash_es_unset,
+  "unzip": () => /* reexport */ lodash_es_unzip,
+  "unzipWith": () => /* reexport */ lodash_es_unzipWith,
+  "update": () => /* reexport */ lodash_es_update,
+  "updateWith": () => /* reexport */ lodash_es_updateWith,
+  "upperCase": () => /* reexport */ lodash_es_upperCase,
+  "upperFirst": () => /* reexport */ lodash_es_upperFirst,
+  "value": () => /* reexport */ lodash_es_wrapperValue,
+  "valueOf": () => /* reexport */ lodash_es_wrapperValue,
+  "values": () => /* reexport */ lodash_es_values,
+  "valuesIn": () => /* reexport */ lodash_es_valuesIn,
+  "without": () => /* reexport */ lodash_es_without,
+  "words": () => /* reexport */ lodash_es_words,
+  "wrap": () => /* reexport */ lodash_es_wrap,
+  "wrapperAt": () => /* reexport */ lodash_es_wrapperAt,
+  "wrapperChain": () => /* reexport */ lodash_es_wrapperChain,
+  "wrapperCommit": () => /* reexport */ commit,
+  "wrapperLodash": () => /* reexport */ wrapperLodash,
+  "wrapperNext": () => /* reexport */ next,
+  "wrapperPlant": () => /* reexport */ plant,
+  "wrapperReverse": () => /* reexport */ lodash_es_wrapperReverse,
+  "wrapperToIterator": () => /* reexport */ toIterator,
+  "wrapperValue": () => /* reexport */ lodash_es_wrapperValue,
+  "xor": () => /* reexport */ lodash_es_xor,
+  "xorBy": () => /* reexport */ lodash_es_xorBy,
+  "xorWith": () => /* reexport */ lodash_es_xorWith,
+  "zip": () => /* reexport */ lodash_es_zip,
+  "zipObject": () => /* reexport */ lodash_es_zipObject,
+  "zipObjectDeep": () => /* reexport */ lodash_es_zipObjectDeep,
+  "zipWith": () => /* reexport */ lodash_es_zipWith
 });
 
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_freeGlobal.js
@@ -40657,14 +39346,14 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "CommentNode": () => (/* reexport */ CommentNode),
-  "HTMLElement": () => (/* reexport */ HTMLElement),
-  "Node": () => (/* reexport */ Node),
-  "NodeType": () => (/* reexport */ type),
-  "TextNode": () => (/* reexport */ TextNode),
-  "default": () => (/* reexport */ parse),
-  "parse": () => (/* reexport */ parse),
-  "valid": () => (/* reexport */ valid)
+  "CommentNode": () => /* reexport */ CommentNode,
+  "HTMLElement": () => /* reexport */ HTMLElement,
+  "Node": () => /* reexport */ Node,
+  "NodeType": () => /* reexport */ type,
+  "TextNode": () => /* reexport */ TextNode,
+  "default": () => /* reexport */ parse,
+  "parse": () => /* reexport */ parse,
+  "valid": () => /* reexport */ valid
 });
 
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/nodes/node.js
@@ -40724,7 +39413,7 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
@@ -40758,14 +39447,14 @@ var CommentNode = /*#__PURE__*/function (_Node) {
 
 
   comment_createClass(CommentNode, [{
-    key: "text",
-    get: function get() {
-      return this.rawText;
-    }
-  }, {
     key: "toString",
     value: function toString() {
       return "<!--".concat(this.rawText, "-->");
+    }
+  }, {
+    key: "text",
+    get: function get() {
+      return this.rawText;
     }
   }]);
 
@@ -40795,7 +39484,7 @@ function text_possibleConstructorReturn(self, call) { if (call && (text_typeof(c
 
 function text_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function text_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function text_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 function text_getPrototypeOf(o) { text_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return text_getPrototypeOf(o); }
 
@@ -40833,6 +39522,11 @@ var TextNode = /*#__PURE__*/function (_Node) {
 
 
   text_createClass(TextNode, [{
+    key: "toString",
+    value: function toString() {
+      return this.text;
+    }
+  }, {
     key: "text",
     get: function get() {
       return this.rawText;
@@ -40846,11 +39540,6 @@ var TextNode = /*#__PURE__*/function (_Node) {
     key: "isWhitespace",
     get: function get() {
       return /^(\s|&nbsp;)*$/.test(this.rawText);
-    }
-  }, {
-    key: "toString",
-    value: function toString() {
-      return this.text;
     }
   }]);
 
@@ -41130,17 +39819,12 @@ var Matcher = /*#__PURE__*/function () {
      */
 
   }, {
-    key: "matched",
-    get: function get() {
-      return this.nextMatch === this.matchers.length;
-    }
+    key: "reset",
+
     /**
      * Rest match pointer.
      * @return {[type]} [description]
      */
-
-  }, {
-    key: "reset",
     value: function reset() {
       this.nextMatch = 0;
     }
@@ -41152,6 +39836,11 @@ var Matcher = /*#__PURE__*/function () {
     key: "flushCache",
     value: function flushCache() {
       pMatchFunctionCache = {};
+    }
+  }, {
+    key: "matched",
+    get: function get() {
+      return this.nextMatch === this.matchers.length;
     }
   }]);
 
@@ -41172,7 +39861,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -41231,7 +39920,7 @@ function parse(data) {
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/nodes/html.js
 function html_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { html_typeof = function _typeof(obj) { return typeof obj; }; } else { html_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return html_typeof(obj); }
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = html_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = html_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || html_unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -41239,7 +39928,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function html_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return html_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return html_arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return html_arrayLikeToArray(arr); }
 
@@ -41261,7 +39950,7 @@ function html_possibleConstructorReturn(self, call) { if (call && (html_typeof(c
 
 function html_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function html_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function html_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 function html_getPrototypeOf(o) { html_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return html_getPrototypeOf(o); }
 
@@ -41406,91 +40095,6 @@ var HTMLElement = /*#__PURE__*/function (_Node) {
       });
     }
   }, {
-    key: "tagName",
-    get: function get() {
-      return this.rawTagName ? this.rawTagName.toUpperCase() : this.rawTagName;
-    }
-    /**
-     * Get escpaed (as-it) text value of current node and its children.
-     * @return {string} text content
-     */
-
-  }, {
-    key: "rawText",
-    get: function get() {
-      return this.childNodes.reduce(function (pre, cur) {
-        return pre += cur.rawText;
-      }, '');
-    }
-  }, {
-    key: "textContent",
-    get: function get() {
-      return this.rawText;
-    },
-    set: function set(val) {
-      var content = [new TextNode(val)];
-      this.childNodes = content;
-    }
-    /**
-     * Get unescaped text value of current node and its children.
-     * @return {string} text content
-     */
-
-  }, {
-    key: "text",
-    get: function get() {
-      return decode(this.rawText);
-    }
-    /**
-     * Get structured Text (with '\n' etc.)
-     * @return {string} structured text
-     */
-
-  }, {
-    key: "structuredText",
-    get: function get() {
-      var currentBlock = [];
-      var blocks = [currentBlock];
-
-      function dfs(node) {
-        if (node.nodeType === type.ELEMENT_NODE) {
-          if (kBlockElements.get(node.rawTagName)) {
-            if (currentBlock.length > 0) {
-              blocks.push(currentBlock = []);
-            }
-
-            node.childNodes.forEach(dfs);
-
-            if (currentBlock.length > 0) {
-              blocks.push(currentBlock = []);
-            }
-          } else {
-            node.childNodes.forEach(dfs);
-          }
-        } else if (node.nodeType === type.TEXT_NODE) {
-          if (node.isWhitespace) {
-            // Whitespace node, postponed output
-            currentBlock.prependWhitespace = true;
-          } else {
-            var text = node.text;
-
-            if (currentBlock.prependWhitespace) {
-              text = " ".concat(text);
-              currentBlock.prependWhitespace = false;
-            }
-
-            currentBlock.push(text);
-          }
-        }
-      }
-
-      dfs(this);
-      return blocks.map(function (block) {
-        // Normalize each line's whitespace
-        return block.join('').trim().replace(/\s{2,}/g, ' ');
-      }).join('\n').replace(/\s+$/, ''); // trimRight;
-    }
-  }, {
     key: "toString",
     value: function toString() {
       var tag = this.rawTagName;
@@ -41509,13 +40113,6 @@ var HTMLElement = /*#__PURE__*/function (_Node) {
       return this.innerHTML;
     }
   }, {
-    key: "innerHTML",
-    get: function get() {
-      return this.childNodes.map(function (child) {
-        return child.toString();
-      }).join('');
-    }
-  }, {
     key: "set_content",
     value: function set_content(content) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -41530,18 +40127,13 @@ var HTMLElement = /*#__PURE__*/function (_Node) {
       this.childNodes = content;
     }
   }, {
-    key: "outerHTML",
-    get: function get() {
-      return this.toString();
-    }
+    key: "trimRight",
+
     /**
      * Trim element from right (in block) after seeing pattern in a TextNode.
      * @param  {RegExp} pattern pattern to find
      * @return {HTMLElement}    reference to current node
      */
-
-  }, {
-    key: "trimRight",
     value: function trimRight(pattern) {
       for (var i = 0; i < this.childNodes.length; i++) {
         var childNode = this.childNodes[i];
@@ -41567,42 +40159,12 @@ var HTMLElement = /*#__PURE__*/function (_Node) {
      */
 
   }, {
-    key: "structure",
-    get: function get() {
-      var res = [];
-      var indention = 0;
+    key: "removeWhitespace",
 
-      function write(str) {
-        res.push('  '.repeat(indention) + str);
-      }
-
-      function dfs(node) {
-        var idStr = node.id ? "#".concat(node.id) : '';
-        var classStr = node.classNames.length ? ".".concat(node.classNames.join('.')) : '';
-        write("".concat(node.rawTagName).concat(idStr).concat(classStr));
-        indention++;
-        node.childNodes.forEach(function (childNode) {
-          if (childNode.nodeType === type.ELEMENT_NODE) {
-            dfs(childNode);
-          } else if (childNode.nodeType === type.TEXT_NODE) {
-            if (!childNode.isWhitespace) {
-              write('#text');
-            }
-          }
-        });
-        indention--;
-      }
-
-      dfs(this);
-      return res.join('\n');
-    }
     /**
      * Remove whitespaces in this sub tree.
      * @return {HTMLElement} pointer to this
      */
-
-  }, {
-    key: "removeWhitespace",
     value: function removeWhitespace() {
       var _this3 = this;
 
@@ -41792,83 +40354,6 @@ var HTMLElement = /*#__PURE__*/function (_Node) {
      */
 
   }, {
-    key: "firstChild",
-    get: function get() {
-      return this.childNodes[0];
-    }
-    /**
-     * Get last child node
-     * @return {Node} last child node
-     */
-
-  }, {
-    key: "lastChild",
-    get: function get() {
-      return arr_back(this.childNodes);
-    }
-    /**
-     * Get attributes
-     * @access private
-     * @return {Object} parsed and unescaped attributes
-     */
-
-  }, {
-    key: "attrs",
-    get: function get() {
-      if (this._attrs) {
-        return this._attrs;
-      }
-
-      this._attrs = {};
-      var attrs = this.rawAttributes;
-
-      for (var key in attrs) {
-        var val = attrs[key] || '';
-        this._attrs[key.toLowerCase()] = decode(val);
-      }
-
-      return this._attrs;
-    }
-  }, {
-    key: "attributes",
-    get: function get() {
-      var ret_attrs = {};
-      var attrs = this.rawAttributes;
-
-      for (var key in attrs) {
-        var val = attrs[key] || '';
-        ret_attrs[key] = decode(val);
-      }
-
-      return ret_attrs;
-    }
-    /**
-     * Get escaped (as-it) attributes
-     * @return {Object} parsed attributes
-     */
-
-  }, {
-    key: "rawAttributes",
-    get: function get() {
-      if (this._rawAttrs) {
-        return this._rawAttrs;
-      }
-
-      var attrs = {};
-
-      if (this.rawAttrs) {
-        var re = /\b([a-z][a-z0-9-_]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|(\S+)))?/ig;
-        var match;
-
-        while (match = re.exec(this.rawAttrs)) {
-          attrs[match[1]] = match[2] || match[3] || match[4] || null;
-        }
-      }
-
-      this._rawAttrs = attrs;
-      return attrs;
-    }
-  }, {
     key: "removeAttribute",
     value: function removeAttribute(key) {
       var attrs = this.rawAttributes;
@@ -42019,8 +40504,6 @@ var HTMLElement = /*#__PURE__*/function (_Node) {
 
     }
   }, {
-<<<<<<< HEAD
-=======
     key: "tagName",
     get: function get() {
       return this.rawTagName ? this.rawTagName.toUpperCase() : this.rawTagName;
@@ -42202,7 +40685,6 @@ var HTMLElement = /*#__PURE__*/function (_Node) {
       return attrs;
     }
   }, {
->>>>>>> 6528995 (Phill told me to do this)
     key: "nextSibling",
     get: function get() {
       if (this.parentNode) {
@@ -42640,71 +41122,8 @@ function valid(data) {
   var stack = base_parse(data, options);
   return Boolean(stack.length === 1);
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-;// CONCATENATED MODULE: ./node_modules/node-html-parser/dist/esm/index.js
-
-
-
-
-
-
-
-
-/***/ }),
-
-/***/ 4223:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Macro": () => (/* binding */ Macro),
-/* harmony export */   "withMacro": () => (/* binding */ withMacro),
-/* harmony export */   "main": () => (/* binding */ main)
-/* harmony export */ });
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1664);
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9803);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(libram__WEBPACK_IMPORTED_MODULE_1__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12;
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-
-
-
-function clamp(n, min, max) {
-  return Math.min(Math.max(n, min), max);
-}
-=======
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/index.js
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 =======
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/index.js
@@ -42757,23 +41176,19 @@ function clamp(n, min, max) {
 function withMacro(macro, action) {
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.setAutoAttack)(0);
   macro.save();
-
-  try {
-    return action();
-  } finally {
-    Macro.clearSaved();
-  }
-}
-function main() {
-  Macro.load().submit();
-}
-=======
->>>>>>> 6528995 (Phill told me to do this)
 =======
 
 
 
+>>>>>>> ed22f6f (built!)
+
+
+
+
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 
 /***/ }),
 
@@ -42793,9 +41208,8 @@ module.exports = require("kolmafia");;
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
+/******/ 		if(__webpack_module_cache__[moduleId]) {
+/******/ 			return __webpack_module_cache__[moduleId].exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
@@ -42828,8 +41242,8 @@ module.exports = require("kolmafia");;
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules
 /******/ 		__webpack_require__.n = (module) => {
 /******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
+/******/ 				() => module['default'] :
+/******/ 				() => module;
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
 /******/ 		};
@@ -42861,7 +41275,7 @@ module.exports = require("kolmafia");;
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
@@ -42885,22 +41299,17 @@ module.exports = require("kolmafia");;
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-/******/ 	
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-<<<<<<< HEAD
-<<<<<<< HEAD
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 4223);
-/******/ 	var __webpack_export_target__ = exports;
-/******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
-/******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
-/******/ 	
-=======
 /******/ 	return __webpack_require__(__webpack_require__.s = 8816);
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 =======
 /******/ 	return __webpack_require__(__webpack_require__.s = 8816);
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
 /******/ })()
-;
+
+));
