@@ -335,7 +335,8 @@ export function runDiet(): void {
   fillSomeSpleen();
 
   if (myFullness() < fullnessLimit()) {
-    if (mallPrice($item`fudge spork`) < 3 * MPA) eat(1, $item`fudge spork`);
+    if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
+      eat(1, $item`fudge spork`);
     eatSafe(1, $item`jumping horseradish`);
   }
   if (myInebriety() < inebrietyLimit()) {
