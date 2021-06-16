@@ -41,10 +41,3 @@ svn checkout https://svn.code.sf.net/p/kolmafiascripts/mafiarecovery/code/
 ```
 
 If you have issues with this script, please post about them in the #mafia-and-scripting channel within the [Ascension Speed Society Discord](https://discord.gg/tbUCRT5), and someone will eventually (at some point) endeavor to solve them. Someday. Maybe.
-
-# Developing Garbage Collector
-
-Garbo is a permanent work in progress, and any and all contributions are encouraged. If you want to contribute, feel free to send in pull requests, and they will be dealt with in as timely a manner as possible. When making PRs for garbo, please remember the following:
-
-- Do not check in the files in the KoLmafia directory. Due to a quirk of how we're distributing the code here, we can't just gitignore them, but checking in changes to these files can lead to entirely avoidable merge conflicts. The workflow will automatically build the files once the PR is merged.
-- Make sure to run prettier, or said workflows will prevent you merging.

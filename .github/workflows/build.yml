@@ -59,7 +59,8 @@ jobs:
           git config user.email "<>"
       - run: |
           git checkout release
-          git merge origin main
+          git checkout main *
+          git restore --staged *
       - run: npm ci
       - run: npm run build
       - run: |
