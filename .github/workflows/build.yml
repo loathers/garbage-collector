@@ -58,6 +58,7 @@ jobs:
           git config user.name "O.A.F."
           git config user.email "<>"
       - run: |
+          git fetch --all
           git switch release
           git checkout main *
           git restore --staged *
