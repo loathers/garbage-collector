@@ -64,7 +64,8 @@ jobs:
           git switch release
           mv ./KoLmafia/* ./
       - run: |
-          git add -A
+          git add scripts
+          git add ccs
           {
             git commit -m "Build Mafia files for commit $GITHUB_SHA"
             git push origin release
