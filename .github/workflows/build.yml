@@ -60,7 +60,7 @@ jobs:
       - run: |
           git fetch --all
           git switch release
-          git checkout main *
+          git checkout main -- src package.json package-lock.json tsconfig.json
           git restore --staged *
       - run: npm ci
       - run: npm run build
