@@ -233,6 +233,10987 @@ function withMacro(macro, action) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+  var regexBmpWhitelist = /[\x01-\t\x0B\f\x0E-\x1F\x7F\x81\x8D\x8F\x90\x9D\xA0-\uFFFF]/g;
+  var regexEncodeNonAscii = /<\u20D2|=\u20E5|>\u20D2|\u205F\u200A|\u219D\u0338|\u2202\u0338|\u2220\u20D2|\u2229\uFE00|\u222A\uFE00|\u223C\u20D2|\u223D\u0331|\u223E\u0333|\u2242\u0338|\u224B\u0338|\u224D\u20D2|\u224E\u0338|\u224F\u0338|\u2250\u0338|\u2261\u20E5|\u2264\u20D2|\u2265\u20D2|\u2266\u0338|\u2267\u0338|\u2268\uFE00|\u2269\uFE00|\u226A\u0338|\u226A\u20D2|\u226B\u0338|\u226B\u20D2|\u227F\u0338|\u2282\u20D2|\u2283\u20D2|\u228A\uFE00|\u228B\uFE00|\u228F\u0338|\u2290\u0338|\u2293\uFE00|\u2294\uFE00|\u22B4\u20D2|\u22B5\u20D2|\u22D8\u0338|\u22D9\u0338|\u22DA\uFE00|\u22DB\uFE00|\u22F5\u0338|\u22F9\u0338|\u2933\u0338|\u29CF\u0338|\u29D0\u0338|\u2A6D\u0338|\u2A70\u0338|\u2A7D\u0338|\u2A7E\u0338|\u2AA1\u0338|\u2AA2\u0338|\u2AAC\uFE00|\u2AAD\uFE00|\u2AAF\u0338|\u2AB0\u0338|\u2AC5\u0338|\u2AC6\u0338|\u2ACB\uFE00|\u2ACC\uFE00|\u2AFD\u20E5|[\xA0-\u0113\u0116-\u0122\u0124-\u012B\u012E-\u014D\u0150-\u017E\u0192\u01B5\u01F5\u0237\u02C6\u02C7\u02D8-\u02DD\u0311\u0391-\u03A1\u03A3-\u03A9\u03B1-\u03C9\u03D1\u03D2\u03D5\u03D6\u03DC\u03DD\u03F0\u03F1\u03F5\u03F6\u0401-\u040C\u040E-\u044F\u0451-\u045C\u045E\u045F\u2002-\u2005\u2007-\u2010\u2013-\u2016\u2018-\u201A\u201C-\u201E\u2020-\u2022\u2025\u2026\u2030-\u2035\u2039\u203A\u203E\u2041\u2043\u2044\u204F\u2057\u205F-\u2063\u20AC\u20DB\u20DC\u2102\u2105\u210A-\u2113\u2115-\u211E\u2122\u2124\u2127-\u2129\u212C\u212D\u212F-\u2131\u2133-\u2138\u2145-\u2148\u2153-\u215E\u2190-\u219B\u219D-\u21A7\u21A9-\u21AE\u21B0-\u21B3\u21B5-\u21B7\u21BA-\u21DB\u21DD\u21E4\u21E5\u21F5\u21FD-\u2205\u2207-\u2209\u220B\u220C\u220F-\u2214\u2216-\u2218\u221A\u221D-\u2238\u223A-\u2257\u2259\u225A\u225C\u225F-\u2262\u2264-\u228B\u228D-\u229B\u229D-\u22A5\u22A7-\u22B0\u22B2-\u22BB\u22BD-\u22DB\u22DE-\u22E3\u22E6-\u22F7\u22F9-\u22FE\u2305\u2306\u2308-\u2310\u2312\u2313\u2315\u2316\u231C-\u231F\u2322\u2323\u232D\u232E\u2336\u233D\u233F\u237C\u23B0\u23B1\u23B4-\u23B6\u23DC-\u23DF\u23E2\u23E7\u2423\u24C8\u2500\u2502\u250C\u2510\u2514\u2518\u251C\u2524\u252C\u2534\u253C\u2550-\u256C\u2580\u2584\u2588\u2591-\u2593\u25A1\u25AA\u25AB\u25AD\u25AE\u25B1\u25B3-\u25B5\u25B8\u25B9\u25BD-\u25BF\u25C2\u25C3\u25CA\u25CB\u25EC\u25EF\u25F8-\u25FC\u2605\u2606\u260E\u2640\u2642\u2660\u2663\u2665\u2666\u266A\u266D-\u266F\u2713\u2717\u2720\u2736\u2758\u2772\u2773\u27C8\u27C9\u27E6-\u27ED\u27F5-\u27FA\u27FC\u27FF\u2902-\u2905\u290C-\u2913\u2916\u2919-\u2920\u2923-\u292A\u2933\u2935-\u2939\u293C\u293D\u2945\u2948-\u294B\u294E-\u2976\u2978\u2979\u297B-\u297F\u2985\u2986\u298B-\u2996\u299A\u299C\u299D\u29A4-\u29B7\u29B9\u29BB\u29BC\u29BE-\u29C5\u29C9\u29CD-\u29D0\u29DC-\u29DE\u29E3-\u29E5\u29EB\u29F4\u29F6\u2A00-\u2A02\u2A04\u2A06\u2A0C\u2A0D\u2A10-\u2A17\u2A22-\u2A27\u2A29\u2A2A\u2A2D-\u2A31\u2A33-\u2A3C\u2A3F\u2A40\u2A42-\u2A4D\u2A50\u2A53-\u2A58\u2A5A-\u2A5D\u2A5F\u2A66\u2A6A\u2A6D-\u2A75\u2A77-\u2A9A\u2A9D-\u2AA2\u2AA4-\u2AB0\u2AB3-\u2AC8\u2ACB\u2ACC\u2ACF-\u2ADB\u2AE4\u2AE6-\u2AE9\u2AEB-\u2AF3\u2AFD\uFB00-\uFB04]|\uD835[\uDC9C\uDC9E\uDC9F\uDCA2\uDCA5\uDCA6\uDCA9-\uDCAC\uDCAE-\uDCB9\uDCBB\uDCBD-\uDCC3\uDCC5-\uDCCF\uDD04\uDD05\uDD07-\uDD0A\uDD0D-\uDD14\uDD16-\uDD1C\uDD1E-\uDD39\uDD3B-\uDD3E\uDD40-\uDD44\uDD46\uDD4A-\uDD50\uDD52-\uDD6B]/g;
+  var encodeMap = {
+    '\xAD': 'shy',
+    "\u200C": 'zwnj',
+    "\u200D": 'zwj',
+    "\u200E": 'lrm',
+    "\u2063": 'ic',
+    "\u2062": 'it',
+    "\u2061": 'af',
+    "\u200F": 'rlm',
+    "\u200B": 'ZeroWidthSpace',
+    "\u2060": 'NoBreak',
+    "\u0311": 'DownBreve',
+    "\u20DB": 'tdot',
+    "\u20DC": 'DotDot',
+    '\t': 'Tab',
+    '\n': 'NewLine',
+    "\u2008": 'puncsp',
+    "\u205F": 'MediumSpace',
+    "\u2009": 'thinsp',
+    "\u200A": 'hairsp',
+    "\u2004": 'emsp13',
+    "\u2002": 'ensp',
+    "\u2005": 'emsp14',
+    "\u2003": 'emsp',
+    "\u2007": 'numsp',
+    '\xA0': 'nbsp',
+    "\u205F\u200A": 'ThickSpace',
+    "\u203E": 'oline',
+    '_': 'lowbar',
+    "\u2010": 'dash',
+    "\u2013": 'ndash',
+    "\u2014": 'mdash',
+    "\u2015": 'horbar',
+    ',': 'comma',
+    ';': 'semi',
+    "\u204F": 'bsemi',
+    ':': 'colon',
+    "\u2A74": 'Colone',
+    '!': 'excl',
+    '\xA1': 'iexcl',
+    '?': 'quest',
+    '\xBF': 'iquest',
+    '.': 'period',
+    "\u2025": 'nldr',
+    "\u2026": 'mldr',
+    '\xB7': 'middot',
+    '\'': 'apos',
+    "\u2018": 'lsquo',
+    "\u2019": 'rsquo',
+    "\u201A": 'sbquo',
+    "\u2039": 'lsaquo',
+    "\u203A": 'rsaquo',
+    '"': 'quot',
+    "\u201C": 'ldquo',
+    "\u201D": 'rdquo',
+    "\u201E": 'bdquo',
+    '\xAB': 'laquo',
+    '\xBB': 'raquo',
+    '(': 'lpar',
+    ')': 'rpar',
+    '[': 'lsqb',
+    ']': 'rsqb',
+    '{': 'lcub',
+    '}': 'rcub',
+    "\u2308": 'lceil',
+    "\u2309": 'rceil',
+    "\u230A": 'lfloor',
+    "\u230B": 'rfloor',
+    "\u2985": 'lopar',
+    "\u2986": 'ropar',
+    "\u298B": 'lbrke',
+    "\u298C": 'rbrke',
+    "\u298D": 'lbrkslu',
+    "\u298E": 'rbrksld',
+    "\u298F": 'lbrksld',
+    "\u2990": 'rbrkslu',
+    "\u2991": 'langd',
+    "\u2992": 'rangd',
+    "\u2993": 'lparlt',
+    "\u2994": 'rpargt',
+    "\u2995": 'gtlPar',
+    "\u2996": 'ltrPar',
+    "\u27E6": 'lobrk',
+    "\u27E7": 'robrk',
+    "\u27E8": 'lang',
+    "\u27E9": 'rang',
+    "\u27EA": 'Lang',
+    "\u27EB": 'Rang',
+    "\u27EC": 'loang',
+    "\u27ED": 'roang',
+    "\u2772": 'lbbrk',
+    "\u2773": 'rbbrk',
+    "\u2016": 'Vert',
+    '\xA7': 'sect',
+    '\xB6': 'para',
+    '@': 'commat',
+    '*': 'ast',
+    '/': 'sol',
+    'undefined': null,
+    '&': 'amp',
+    '#': 'num',
+    '%': 'percnt',
+    "\u2030": 'permil',
+    "\u2031": 'pertenk',
+    "\u2020": 'dagger',
+    "\u2021": 'Dagger',
+    "\u2022": 'bull',
+    "\u2043": 'hybull',
+    "\u2032": 'prime',
+    "\u2033": 'Prime',
+    "\u2034": 'tprime',
+    "\u2057": 'qprime',
+    "\u2035": 'bprime',
+    "\u2041": 'caret',
+    '`': 'grave',
+    '\xB4': 'acute',
+    "\u02DC": 'tilde',
+    '^': 'Hat',
+    '\xAF': 'macr',
+    "\u02D8": 'breve',
+    "\u02D9": 'dot',
+    '\xA8': 'die',
+    "\u02DA": 'ring',
+    "\u02DD": 'dblac',
+    '\xB8': 'cedil',
+    "\u02DB": 'ogon',
+    "\u02C6": 'circ',
+    "\u02C7": 'caron',
+    '\xB0': 'deg',
+    '\xA9': 'copy',
+    '\xAE': 'reg',
+    "\u2117": 'copysr',
+    "\u2118": 'wp',
+    "\u211E": 'rx',
+    "\u2127": 'mho',
+    "\u2129": 'iiota',
+    "\u2190": 'larr',
+    "\u219A": 'nlarr',
+    "\u2192": 'rarr',
+    "\u219B": 'nrarr',
+    "\u2191": 'uarr',
+    "\u2193": 'darr',
+    "\u2194": 'harr',
+    "\u21AE": 'nharr',
+    "\u2195": 'varr',
+    "\u2196": 'nwarr',
+    "\u2197": 'nearr',
+    "\u2198": 'searr',
+    "\u2199": 'swarr',
+    "\u219D": 'rarrw',
+    "\u219D\u0338": 'nrarrw',
+    "\u219E": 'Larr',
+    "\u219F": 'Uarr',
+    "\u21A0": 'Rarr',
+    "\u21A1": 'Darr',
+    "\u21A2": 'larrtl',
+    "\u21A3": 'rarrtl',
+    "\u21A4": 'mapstoleft',
+    "\u21A5": 'mapstoup',
+    "\u21A6": 'map',
+    "\u21A7": 'mapstodown',
+    "\u21A9": 'larrhk',
+    "\u21AA": 'rarrhk',
+    "\u21AB": 'larrlp',
+    "\u21AC": 'rarrlp',
+    "\u21AD": 'harrw',
+    "\u21B0": 'lsh',
+    "\u21B1": 'rsh',
+    "\u21B2": 'ldsh',
+    "\u21B3": 'rdsh',
+    "\u21B5": 'crarr',
+    "\u21B6": 'cularr',
+    "\u21B7": 'curarr',
+    "\u21BA": 'olarr',
+    "\u21BB": 'orarr',
+    "\u21BC": 'lharu',
+    "\u21BD": 'lhard',
+    "\u21BE": 'uharr',
+    "\u21BF": 'uharl',
+    "\u21C0": 'rharu',
+    "\u21C1": 'rhard',
+    "\u21C2": 'dharr',
+    "\u21C3": 'dharl',
+    "\u21C4": 'rlarr',
+    "\u21C5": 'udarr',
+    "\u21C6": 'lrarr',
+    "\u21C7": 'llarr',
+    "\u21C8": 'uuarr',
+    "\u21C9": 'rrarr',
+    "\u21CA": 'ddarr',
+    "\u21CB": 'lrhar',
+    "\u21CC": 'rlhar',
+    "\u21D0": 'lArr',
+    "\u21CD": 'nlArr',
+    "\u21D1": 'uArr',
+    "\u21D2": 'rArr',
+    "\u21CF": 'nrArr',
+    "\u21D3": 'dArr',
+    "\u21D4": 'iff',
+    "\u21CE": 'nhArr',
+    "\u21D5": 'vArr',
+    "\u21D6": 'nwArr',
+    "\u21D7": 'neArr',
+    "\u21D8": 'seArr',
+    "\u21D9": 'swArr',
+    "\u21DA": 'lAarr',
+    "\u21DB": 'rAarr',
+    "\u21DD": 'zigrarr',
+    "\u21E4": 'larrb',
+    "\u21E5": 'rarrb',
+    "\u21F5": 'duarr',
+    "\u21FD": 'loarr',
+    "\u21FE": 'roarr',
+    "\u21FF": 'hoarr',
+    "\u2200": 'forall',
+    "\u2201": 'comp',
+    "\u2202": 'part',
+    "\u2202\u0338": 'npart',
+    "\u2203": 'exist',
+    "\u2204": 'nexist',
+    "\u2205": 'empty',
+    "\u2207": 'Del',
+    "\u2208": 'in',
+    "\u2209": 'notin',
+    "\u220B": 'ni',
+    "\u220C": 'notni',
+    "\u03F6": 'bepsi',
+    "\u220F": 'prod',
+    "\u2210": 'coprod',
+    "\u2211": 'sum',
+    '+': 'plus',
+    '\xB1': 'pm',
+    '\xF7': 'div',
+    '\xD7': 'times',
+    '<': 'lt',
+    "\u226E": 'nlt',
+    "<\u20D2": 'nvlt',
+    '=': 'equals',
+    "\u2260": 'ne',
+    "=\u20E5": 'bne',
+    "\u2A75": 'Equal',
+    '>': 'gt',
+    "\u226F": 'ngt',
+    ">\u20D2": 'nvgt',
+    '\xAC': 'not',
+    '|': 'vert',
+    '\xA6': 'brvbar',
+    "\u2212": 'minus',
+    "\u2213": 'mp',
+    "\u2214": 'plusdo',
+    "\u2044": 'frasl',
+    "\u2216": 'setmn',
+    "\u2217": 'lowast',
+    "\u2218": 'compfn',
+    "\u221A": 'Sqrt',
+    "\u221D": 'prop',
+    "\u221E": 'infin',
+    "\u221F": 'angrt',
+    "\u2220": 'ang',
+    "\u2220\u20D2": 'nang',
+    "\u2221": 'angmsd',
+    "\u2222": 'angsph',
+    "\u2223": 'mid',
+    "\u2224": 'nmid',
+    "\u2225": 'par',
+    "\u2226": 'npar',
+    "\u2227": 'and',
+    "\u2228": 'or',
+    "\u2229": 'cap',
+    "\u2229\uFE00": 'caps',
+    "\u222A": 'cup',
+    "\u222A\uFE00": 'cups',
+    "\u222B": 'int',
+    "\u222C": 'Int',
+    "\u222D": 'tint',
+    "\u2A0C": 'qint',
+    "\u222E": 'oint',
+    "\u222F": 'Conint',
+    "\u2230": 'Cconint',
+    "\u2231": 'cwint',
+    "\u2232": 'cwconint',
+    "\u2233": 'awconint',
+    "\u2234": 'there4',
+    "\u2235": 'becaus',
+    "\u2236": 'ratio',
+    "\u2237": 'Colon',
+    "\u2238": 'minusd',
+    "\u223A": 'mDDot',
+    "\u223B": 'homtht',
+    "\u223C": 'sim',
+    "\u2241": 'nsim',
+    "\u223C\u20D2": 'nvsim',
+    "\u223D": 'bsim',
+    "\u223D\u0331": 'race',
+    "\u223E": 'ac',
+    "\u223E\u0333": 'acE',
+    "\u223F": 'acd',
+    "\u2240": 'wr',
+    "\u2242": 'esim',
+    "\u2242\u0338": 'nesim',
+    "\u2243": 'sime',
+    "\u2244": 'nsime',
+    "\u2245": 'cong',
+    "\u2247": 'ncong',
+    "\u2246": 'simne',
+    "\u2248": 'ap',
+    "\u2249": 'nap',
+    "\u224A": 'ape',
+    "\u224B": 'apid',
+    "\u224B\u0338": 'napid',
+    "\u224C": 'bcong',
+    "\u224D": 'CupCap',
+    "\u226D": 'NotCupCap',
+    "\u224D\u20D2": 'nvap',
+    "\u224E": 'bump',
+    "\u224E\u0338": 'nbump',
+    "\u224F": 'bumpe',
+    "\u224F\u0338": 'nbumpe',
+    "\u2250": 'doteq',
+    "\u2250\u0338": 'nedot',
+    "\u2251": 'eDot',
+    "\u2252": 'efDot',
+    "\u2253": 'erDot',
+    "\u2254": 'colone',
+    "\u2255": 'ecolon',
+    "\u2256": 'ecir',
+    "\u2257": 'cire',
+    "\u2259": 'wedgeq',
+    "\u225A": 'veeeq',
+    "\u225C": 'trie',
+    "\u225F": 'equest',
+    "\u2261": 'equiv',
+    "\u2262": 'nequiv',
+    "\u2261\u20E5": 'bnequiv',
+    "\u2264": 'le',
+    "\u2270": 'nle',
+    "\u2264\u20D2": 'nvle',
+    "\u2265": 'ge',
+    "\u2271": 'nge',
+    "\u2265\u20D2": 'nvge',
+    "\u2266": 'lE',
+    "\u2266\u0338": 'nlE',
+    "\u2267": 'gE',
+    "\u2267\u0338": 'ngE',
+    "\u2268\uFE00": 'lvnE',
+    "\u2268": 'lnE',
+    "\u2269": 'gnE',
+    "\u2269\uFE00": 'gvnE',
+    "\u226A": 'll',
+    "\u226A\u0338": 'nLtv',
+    "\u226A\u20D2": 'nLt',
+    "\u226B": 'gg',
+    "\u226B\u0338": 'nGtv',
+    "\u226B\u20D2": 'nGt',
+    "\u226C": 'twixt',
+    "\u2272": 'lsim',
+    "\u2274": 'nlsim',
+    "\u2273": 'gsim',
+    "\u2275": 'ngsim',
+    "\u2276": 'lg',
+    "\u2278": 'ntlg',
+    "\u2277": 'gl',
+    "\u2279": 'ntgl',
+    "\u227A": 'pr',
+    "\u2280": 'npr',
+    "\u227B": 'sc',
+    "\u2281": 'nsc',
+    "\u227C": 'prcue',
+    "\u22E0": 'nprcue',
+    "\u227D": 'sccue',
+    "\u22E1": 'nsccue',
+    "\u227E": 'prsim',
+    "\u227F": 'scsim',
+    "\u227F\u0338": 'NotSucceedsTilde',
+    "\u2282": 'sub',
+    "\u2284": 'nsub',
+    "\u2282\u20D2": 'vnsub',
+    "\u2283": 'sup',
+    "\u2285": 'nsup',
+    "\u2283\u20D2": 'vnsup',
+    "\u2286": 'sube',
+    "\u2288": 'nsube',
+    "\u2287": 'supe',
+    "\u2289": 'nsupe',
+    "\u228A\uFE00": 'vsubne',
+    "\u228A": 'subne',
+    "\u228B\uFE00": 'vsupne',
+    "\u228B": 'supne',
+    "\u228D": 'cupdot',
+    "\u228E": 'uplus',
+    "\u228F": 'sqsub',
+    "\u228F\u0338": 'NotSquareSubset',
+    "\u2290": 'sqsup',
+    "\u2290\u0338": 'NotSquareSuperset',
+    "\u2291": 'sqsube',
+    "\u22E2": 'nsqsube',
+    "\u2292": 'sqsupe',
+    "\u22E3": 'nsqsupe',
+    "\u2293": 'sqcap',
+    "\u2293\uFE00": 'sqcaps',
+    "\u2294": 'sqcup',
+    "\u2294\uFE00": 'sqcups',
+    "\u2295": 'oplus',
+    "\u2296": 'ominus',
+    "\u2297": 'otimes',
+    "\u2298": 'osol',
+    "\u2299": 'odot',
+    "\u229A": 'ocir',
+    "\u229B": 'oast',
+    "\u229D": 'odash',
+    "\u229E": 'plusb',
+    "\u229F": 'minusb',
+    "\u22A0": 'timesb',
+    "\u22A1": 'sdotb',
+    "\u22A2": 'vdash',
+    "\u22AC": 'nvdash',
+    "\u22A3": 'dashv',
+    "\u22A4": 'top',
+    "\u22A5": 'bot',
+    "\u22A7": 'models',
+    "\u22A8": 'vDash',
+    "\u22AD": 'nvDash',
+    "\u22A9": 'Vdash',
+    "\u22AE": 'nVdash',
+    "\u22AA": 'Vvdash',
+    "\u22AB": 'VDash',
+    "\u22AF": 'nVDash',
+    "\u22B0": 'prurel',
+    "\u22B2": 'vltri',
+    "\u22EA": 'nltri',
+    "\u22B3": 'vrtri',
+    "\u22EB": 'nrtri',
+    "\u22B4": 'ltrie',
+    "\u22EC": 'nltrie',
+    "\u22B4\u20D2": 'nvltrie',
+    "\u22B5": 'rtrie',
+    "\u22ED": 'nrtrie',
+    "\u22B5\u20D2": 'nvrtrie',
+    "\u22B6": 'origof',
+    "\u22B7": 'imof',
+    "\u22B8": 'mumap',
+    "\u22B9": 'hercon',
+    "\u22BA": 'intcal',
+    "\u22BB": 'veebar',
+    "\u22BD": 'barvee',
+    "\u22BE": 'angrtvb',
+    "\u22BF": 'lrtri',
+    "\u22C0": 'Wedge',
+    "\u22C1": 'Vee',
+    "\u22C2": 'xcap',
+    "\u22C3": 'xcup',
+    "\u22C4": 'diam',
+    "\u22C5": 'sdot',
+    "\u22C6": 'Star',
+    "\u22C7": 'divonx',
+    "\u22C8": 'bowtie',
+    "\u22C9": 'ltimes',
+    "\u22CA": 'rtimes',
+    "\u22CB": 'lthree',
+    "\u22CC": 'rthree',
+    "\u22CD": 'bsime',
+    "\u22CE": 'cuvee',
+    "\u22CF": 'cuwed',
+    "\u22D0": 'Sub',
+    "\u22D1": 'Sup',
+    "\u22D2": 'Cap',
+    "\u22D3": 'Cup',
+    "\u22D4": 'fork',
+    "\u22D5": 'epar',
+    "\u22D6": 'ltdot',
+    "\u22D7": 'gtdot',
+    "\u22D8": 'Ll',
+    "\u22D8\u0338": 'nLl',
+    "\u22D9": 'Gg',
+    "\u22D9\u0338": 'nGg',
+    "\u22DA\uFE00": 'lesg',
+    "\u22DA": 'leg',
+    "\u22DB": 'gel',
+    "\u22DB\uFE00": 'gesl',
+    "\u22DE": 'cuepr',
+    "\u22DF": 'cuesc',
+    "\u22E6": 'lnsim',
+    "\u22E7": 'gnsim',
+    "\u22E8": 'prnsim',
+    "\u22E9": 'scnsim',
+    "\u22EE": 'vellip',
+    "\u22EF": 'ctdot',
+    "\u22F0": 'utdot',
+    "\u22F1": 'dtdot',
+    "\u22F2": 'disin',
+    "\u22F3": 'isinsv',
+    "\u22F4": 'isins',
+    "\u22F5": 'isindot',
+    "\u22F5\u0338": 'notindot',
+    "\u22F6": 'notinvc',
+    "\u22F7": 'notinvb',
+    "\u22F9": 'isinE',
+    "\u22F9\u0338": 'notinE',
+    "\u22FA": 'nisd',
+    "\u22FB": 'xnis',
+    "\u22FC": 'nis',
+    "\u22FD": 'notnivc',
+    "\u22FE": 'notnivb',
+    "\u2305": 'barwed',
+    "\u2306": 'Barwed',
+    "\u230C": 'drcrop',
+    "\u230D": 'dlcrop',
+    "\u230E": 'urcrop',
+    "\u230F": 'ulcrop',
+    "\u2310": 'bnot',
+    "\u2312": 'profline',
+    "\u2313": 'profsurf',
+    "\u2315": 'telrec',
+    "\u2316": 'target',
+    "\u231C": 'ulcorn',
+    "\u231D": 'urcorn',
+    "\u231E": 'dlcorn',
+    "\u231F": 'drcorn',
+    "\u2322": 'frown',
+    "\u2323": 'smile',
+    "\u232D": 'cylcty',
+    "\u232E": 'profalar',
+    "\u2336": 'topbot',
+    "\u233D": 'ovbar',
+    "\u233F": 'solbar',
+    "\u237C": 'angzarr',
+    "\u23B0": 'lmoust',
+    "\u23B1": 'rmoust',
+    "\u23B4": 'tbrk',
+    "\u23B5": 'bbrk',
+    "\u23B6": 'bbrktbrk',
+    "\u23DC": 'OverParenthesis',
+    "\u23DD": 'UnderParenthesis',
+    "\u23DE": 'OverBrace',
+    "\u23DF": 'UnderBrace',
+    "\u23E2": 'trpezium',
+    "\u23E7": 'elinters',
+    "\u2423": 'blank',
+    "\u2500": 'boxh',
+    "\u2502": 'boxv',
+    "\u250C": 'boxdr',
+    "\u2510": 'boxdl',
+    "\u2514": 'boxur',
+    "\u2518": 'boxul',
+    "\u251C": 'boxvr',
+    "\u2524": 'boxvl',
+    "\u252C": 'boxhd',
+    "\u2534": 'boxhu',
+    "\u253C": 'boxvh',
+    "\u2550": 'boxH',
+    "\u2551": 'boxV',
+    "\u2552": 'boxdR',
+    "\u2553": 'boxDr',
+    "\u2554": 'boxDR',
+    "\u2555": 'boxdL',
+    "\u2556": 'boxDl',
+    "\u2557": 'boxDL',
+    "\u2558": 'boxuR',
+    "\u2559": 'boxUr',
+    "\u255A": 'boxUR',
+    "\u255B": 'boxuL',
+    "\u255C": 'boxUl',
+    "\u255D": 'boxUL',
+    "\u255E": 'boxvR',
+    "\u255F": 'boxVr',
+    "\u2560": 'boxVR',
+    "\u2561": 'boxvL',
+    "\u2562": 'boxVl',
+    "\u2563": 'boxVL',
+    "\u2564": 'boxHd',
+    "\u2565": 'boxhD',
+    "\u2566": 'boxHD',
+    "\u2567": 'boxHu',
+    "\u2568": 'boxhU',
+    "\u2569": 'boxHU',
+    "\u256A": 'boxvH',
+    "\u256B": 'boxVh',
+    "\u256C": 'boxVH',
+    "\u2580": 'uhblk',
+    "\u2584": 'lhblk',
+    "\u2588": 'block',
+    "\u2591": 'blk14',
+    "\u2592": 'blk12',
+    "\u2593": 'blk34',
+    "\u25A1": 'squ',
+    "\u25AA": 'squf',
+    "\u25AB": 'EmptyVerySmallSquare',
+    "\u25AD": 'rect',
+    "\u25AE": 'marker',
+    "\u25B1": 'fltns',
+    "\u25B3": 'xutri',
+    "\u25B4": 'utrif',
+    "\u25B5": 'utri',
+    "\u25B8": 'rtrif',
+    "\u25B9": 'rtri',
+    "\u25BD": 'xdtri',
+    "\u25BE": 'dtrif',
+    "\u25BF": 'dtri',
+    "\u25C2": 'ltrif',
+    "\u25C3": 'ltri',
+    "\u25CA": 'loz',
+    "\u25CB": 'cir',
+    "\u25EC": 'tridot',
+    "\u25EF": 'xcirc',
+    "\u25F8": 'ultri',
+    "\u25F9": 'urtri',
+    "\u25FA": 'lltri',
+    "\u25FB": 'EmptySmallSquare',
+    "\u25FC": 'FilledSmallSquare',
+    "\u2605": 'starf',
+    "\u2606": 'star',
+    "\u260E": 'phone',
+    "\u2640": 'female',
+    "\u2642": 'male',
+    "\u2660": 'spades',
+    "\u2663": 'clubs',
+    "\u2665": 'hearts',
+    "\u2666": 'diams',
+    "\u266A": 'sung',
+    "\u2713": 'check',
+    "\u2717": 'cross',
+    "\u2720": 'malt',
+    "\u2736": 'sext',
+    "\u2758": 'VerticalSeparator',
+    "\u27C8": 'bsolhsub',
+    "\u27C9": 'suphsol',
+    "\u27F5": 'xlarr',
+    "\u27F6": 'xrarr',
+    "\u27F7": 'xharr',
+    "\u27F8": 'xlArr',
+    "\u27F9": 'xrArr',
+    "\u27FA": 'xhArr',
+    "\u27FC": 'xmap',
+    "\u27FF": 'dzigrarr',
+    "\u2902": 'nvlArr',
+    "\u2903": 'nvrArr',
+    "\u2904": 'nvHarr',
+    "\u2905": 'Map',
+    "\u290C": 'lbarr',
+    "\u290D": 'rbarr',
+    "\u290E": 'lBarr',
+    "\u290F": 'rBarr',
+    "\u2910": 'RBarr',
+    "\u2911": 'DDotrahd',
+    "\u2912": 'UpArrowBar',
+    "\u2913": 'DownArrowBar',
+    "\u2916": 'Rarrtl',
+    "\u2919": 'latail',
+    "\u291A": 'ratail',
+    "\u291B": 'lAtail',
+    "\u291C": 'rAtail',
+    "\u291D": 'larrfs',
+    "\u291E": 'rarrfs',
+    "\u291F": 'larrbfs',
+    "\u2920": 'rarrbfs',
+    "\u2923": 'nwarhk',
+    "\u2924": 'nearhk',
+    "\u2925": 'searhk',
+    "\u2926": 'swarhk',
+    "\u2927": 'nwnear',
+    "\u2928": 'toea',
+    "\u2929": 'tosa',
+    "\u292A": 'swnwar',
+    "\u2933": 'rarrc',
+    "\u2933\u0338": 'nrarrc',
+    "\u2935": 'cudarrr',
+    "\u2936": 'ldca',
+    "\u2937": 'rdca',
+    "\u2938": 'cudarrl',
+    "\u2939": 'larrpl',
+    "\u293C": 'curarrm',
+    "\u293D": 'cularrp',
+    "\u2945": 'rarrpl',
+    "\u2948": 'harrcir',
+    "\u2949": 'Uarrocir',
+    "\u294A": 'lurdshar',
+    "\u294B": 'ldrushar',
+    "\u294E": 'LeftRightVector',
+    "\u294F": 'RightUpDownVector',
+    "\u2950": 'DownLeftRightVector',
+    "\u2951": 'LeftUpDownVector',
+    "\u2952": 'LeftVectorBar',
+    "\u2953": 'RightVectorBar',
+    "\u2954": 'RightUpVectorBar',
+    "\u2955": 'RightDownVectorBar',
+    "\u2956": 'DownLeftVectorBar',
+    "\u2957": 'DownRightVectorBar',
+    "\u2958": 'LeftUpVectorBar',
+    "\u2959": 'LeftDownVectorBar',
+    "\u295A": 'LeftTeeVector',
+    "\u295B": 'RightTeeVector',
+    "\u295C": 'RightUpTeeVector',
+    "\u295D": 'RightDownTeeVector',
+    "\u295E": 'DownLeftTeeVector',
+    "\u295F": 'DownRightTeeVector',
+    "\u2960": 'LeftUpTeeVector',
+    "\u2961": 'LeftDownTeeVector',
+    "\u2962": 'lHar',
+    "\u2963": 'uHar',
+    "\u2964": 'rHar',
+    "\u2965": 'dHar',
+    "\u2966": 'luruhar',
+    "\u2967": 'ldrdhar',
+    "\u2968": 'ruluhar',
+    "\u2969": 'rdldhar',
+    "\u296A": 'lharul',
+    "\u296B": 'llhard',
+    "\u296C": 'rharul',
+    "\u296D": 'lrhard',
+    "\u296E": 'udhar',
+    "\u296F": 'duhar',
+    "\u2970": 'RoundImplies',
+    "\u2971": 'erarr',
+    "\u2972": 'simrarr',
+    "\u2973": 'larrsim',
+    "\u2974": 'rarrsim',
+    "\u2975": 'rarrap',
+    "\u2976": 'ltlarr',
+    "\u2978": 'gtrarr',
+    "\u2979": 'subrarr',
+    "\u297B": 'suplarr',
+    "\u297C": 'lfisht',
+    "\u297D": 'rfisht',
+    "\u297E": 'ufisht',
+    "\u297F": 'dfisht',
+    "\u299A": 'vzigzag',
+    "\u299C": 'vangrt',
+    "\u299D": 'angrtvbd',
+    "\u29A4": 'ange',
+    "\u29A5": 'range',
+    "\u29A6": 'dwangle',
+    "\u29A7": 'uwangle',
+    "\u29A8": 'angmsdaa',
+    "\u29A9": 'angmsdab',
+    "\u29AA": 'angmsdac',
+    "\u29AB": 'angmsdad',
+    "\u29AC": 'angmsdae',
+    "\u29AD": 'angmsdaf',
+    "\u29AE": 'angmsdag',
+    "\u29AF": 'angmsdah',
+    "\u29B0": 'bemptyv',
+    "\u29B1": 'demptyv',
+    "\u29B2": 'cemptyv',
+    "\u29B3": 'raemptyv',
+    "\u29B4": 'laemptyv',
+    "\u29B5": 'ohbar',
+    "\u29B6": 'omid',
+    "\u29B7": 'opar',
+    "\u29B9": 'operp',
+    "\u29BB": 'olcross',
+    "\u29BC": 'odsold',
+    "\u29BE": 'olcir',
+    "\u29BF": 'ofcir',
+    "\u29C0": 'olt',
+    "\u29C1": 'ogt',
+    "\u29C2": 'cirscir',
+    "\u29C3": 'cirE',
+    "\u29C4": 'solb',
+    "\u29C5": 'bsolb',
+    "\u29C9": 'boxbox',
+    "\u29CD": 'trisb',
+    "\u29CE": 'rtriltri',
+    "\u29CF": 'LeftTriangleBar',
+    "\u29CF\u0338": 'NotLeftTriangleBar',
+    "\u29D0": 'RightTriangleBar',
+    "\u29D0\u0338": 'NotRightTriangleBar',
+    "\u29DC": 'iinfin',
+    "\u29DD": 'infintie',
+    "\u29DE": 'nvinfin',
+    "\u29E3": 'eparsl',
+    "\u29E4": 'smeparsl',
+    "\u29E5": 'eqvparsl',
+    "\u29EB": 'lozf',
+    "\u29F4": 'RuleDelayed',
+    "\u29F6": 'dsol',
+    "\u2A00": 'xodot',
+    "\u2A01": 'xoplus',
+    "\u2A02": 'xotime',
+    "\u2A04": 'xuplus',
+    "\u2A06": 'xsqcup',
+    "\u2A0D": 'fpartint',
+    "\u2A10": 'cirfnint',
+    "\u2A11": 'awint',
+    "\u2A12": 'rppolint',
+    "\u2A13": 'scpolint',
+    "\u2A14": 'npolint',
+    "\u2A15": 'pointint',
+    "\u2A16": 'quatint',
+    "\u2A17": 'intlarhk',
+    "\u2A22": 'pluscir',
+    "\u2A23": 'plusacir',
+    "\u2A24": 'simplus',
+    "\u2A25": 'plusdu',
+    "\u2A26": 'plussim',
+    "\u2A27": 'plustwo',
+    "\u2A29": 'mcomma',
+    "\u2A2A": 'minusdu',
+    "\u2A2D": 'loplus',
+    "\u2A2E": 'roplus',
+    "\u2A2F": 'Cross',
+    "\u2A30": 'timesd',
+    "\u2A31": 'timesbar',
+    "\u2A33": 'smashp',
+    "\u2A34": 'lotimes',
+    "\u2A35": 'rotimes',
+    "\u2A36": 'otimesas',
+    "\u2A37": 'Otimes',
+    "\u2A38": 'odiv',
+    "\u2A39": 'triplus',
+    "\u2A3A": 'triminus',
+    "\u2A3B": 'tritime',
+    "\u2A3C": 'iprod',
+    "\u2A3F": 'amalg',
+    "\u2A40": 'capdot',
+    "\u2A42": 'ncup',
+    "\u2A43": 'ncap',
+    "\u2A44": 'capand',
+    "\u2A45": 'cupor',
+    "\u2A46": 'cupcap',
+    "\u2A47": 'capcup',
+    "\u2A48": 'cupbrcap',
+    "\u2A49": 'capbrcup',
+    "\u2A4A": 'cupcup',
+    "\u2A4B": 'capcap',
+    "\u2A4C": 'ccups',
+    "\u2A4D": 'ccaps',
+    "\u2A50": 'ccupssm',
+    "\u2A53": 'And',
+    "\u2A54": 'Or',
+    "\u2A55": 'andand',
+    "\u2A56": 'oror',
+    "\u2A57": 'orslope',
+    "\u2A58": 'andslope',
+    "\u2A5A": 'andv',
+    "\u2A5B": 'orv',
+    "\u2A5C": 'andd',
+    "\u2A5D": 'ord',
+    "\u2A5F": 'wedbar',
+    "\u2A66": 'sdote',
+    "\u2A6A": 'simdot',
+    "\u2A6D": 'congdot',
+    "\u2A6D\u0338": 'ncongdot',
+    "\u2A6E": 'easter',
+    "\u2A6F": 'apacir',
+    "\u2A70": 'apE',
+    "\u2A70\u0338": 'napE',
+    "\u2A71": 'eplus',
+    "\u2A72": 'pluse',
+    "\u2A73": 'Esim',
+    "\u2A77": 'eDDot',
+    "\u2A78": 'equivDD',
+    "\u2A79": 'ltcir',
+    "\u2A7A": 'gtcir',
+    "\u2A7B": 'ltquest',
+    "\u2A7C": 'gtquest',
+    "\u2A7D": 'les',
+    "\u2A7D\u0338": 'nles',
+    "\u2A7E": 'ges',
+    "\u2A7E\u0338": 'nges',
+    "\u2A7F": 'lesdot',
+    "\u2A80": 'gesdot',
+    "\u2A81": 'lesdoto',
+    "\u2A82": 'gesdoto',
+    "\u2A83": 'lesdotor',
+    "\u2A84": 'gesdotol',
+    "\u2A85": 'lap',
+    "\u2A86": 'gap',
+    "\u2A87": 'lne',
+    "\u2A88": 'gne',
+    "\u2A89": 'lnap',
+    "\u2A8A": 'gnap',
+    "\u2A8B": 'lEg',
+    "\u2A8C": 'gEl',
+    "\u2A8D": 'lsime',
+    "\u2A8E": 'gsime',
+    "\u2A8F": 'lsimg',
+    "\u2A90": 'gsiml',
+    "\u2A91": 'lgE',
+    "\u2A92": 'glE',
+    "\u2A93": 'lesges',
+    "\u2A94": 'gesles',
+    "\u2A95": 'els',
+    "\u2A96": 'egs',
+    "\u2A97": 'elsdot',
+    "\u2A98": 'egsdot',
+    "\u2A99": 'el',
+    "\u2A9A": 'eg',
+    "\u2A9D": 'siml',
+    "\u2A9E": 'simg',
+    "\u2A9F": 'simlE',
+    "\u2AA0": 'simgE',
+    "\u2AA1": 'LessLess',
+    "\u2AA1\u0338": 'NotNestedLessLess',
+    "\u2AA2": 'GreaterGreater',
+    "\u2AA2\u0338": 'NotNestedGreaterGreater',
+    "\u2AA4": 'glj',
+    "\u2AA5": 'gla',
+    "\u2AA6": 'ltcc',
+    "\u2AA7": 'gtcc',
+    "\u2AA8": 'lescc',
+    "\u2AA9": 'gescc',
+    "\u2AAA": 'smt',
+    "\u2AAB": 'lat',
+    "\u2AAC": 'smte',
+    "\u2AAC\uFE00": 'smtes',
+    "\u2AAD": 'late',
+    "\u2AAD\uFE00": 'lates',
+    "\u2AAE": 'bumpE',
+    "\u2AAF": 'pre',
+    "\u2AAF\u0338": 'npre',
+    "\u2AB0": 'sce',
+    "\u2AB0\u0338": 'nsce',
+    "\u2AB3": 'prE',
+    "\u2AB4": 'scE',
+    "\u2AB5": 'prnE',
+    "\u2AB6": 'scnE',
+    "\u2AB7": 'prap',
+    "\u2AB8": 'scap',
+    "\u2AB9": 'prnap',
+    "\u2ABA": 'scnap',
+    "\u2ABB": 'Pr',
+    "\u2ABC": 'Sc',
+    "\u2ABD": 'subdot',
+    "\u2ABE": 'supdot',
+    "\u2ABF": 'subplus',
+    "\u2AC0": 'supplus',
+    "\u2AC1": 'submult',
+    "\u2AC2": 'supmult',
+    "\u2AC3": 'subedot',
+    "\u2AC4": 'supedot',
+    "\u2AC5": 'subE',
+    "\u2AC5\u0338": 'nsubE',
+    "\u2AC6": 'supE',
+    "\u2AC6\u0338": 'nsupE',
+    "\u2AC7": 'subsim',
+    "\u2AC8": 'supsim',
+    "\u2ACB\uFE00": 'vsubnE',
+    "\u2ACB": 'subnE',
+    "\u2ACC\uFE00": 'vsupnE',
+    "\u2ACC": 'supnE',
+    "\u2ACF": 'csub',
+    "\u2AD0": 'csup',
+    "\u2AD1": 'csube',
+    "\u2AD2": 'csupe',
+    "\u2AD3": 'subsup',
+    "\u2AD4": 'supsub',
+    "\u2AD5": 'subsub',
+    "\u2AD6": 'supsup',
+    "\u2AD7": 'suphsub',
+    "\u2AD8": 'supdsub',
+    "\u2AD9": 'forkv',
+    "\u2ADA": 'topfork',
+    "\u2ADB": 'mlcp',
+    "\u2AE4": 'Dashv',
+    "\u2AE6": 'Vdashl',
+    "\u2AE7": 'Barv',
+    "\u2AE8": 'vBar',
+    "\u2AE9": 'vBarv',
+    "\u2AEB": 'Vbar',
+    "\u2AEC": 'Not',
+    "\u2AED": 'bNot',
+    "\u2AEE": 'rnmid',
+    "\u2AEF": 'cirmid',
+    "\u2AF0": 'midcir',
+    "\u2AF1": 'topcir',
+    "\u2AF2": 'nhpar',
+    "\u2AF3": 'parsim',
+    "\u2AFD": 'parsl',
+    "\u2AFD\u20E5": 'nparsl',
+    "\u266D": 'flat',
+    "\u266E": 'natur',
+    "\u266F": 'sharp',
+    '\xA4': 'curren',
+    '\xA2': 'cent',
+    '$': 'dollar',
+    '\xA3': 'pound',
+    '\xA5': 'yen',
+    "\u20AC": 'euro',
+    '\xB9': 'sup1',
+    '\xBD': 'half',
+    "\u2153": 'frac13',
+    '\xBC': 'frac14',
+    "\u2155": 'frac15',
+    "\u2159": 'frac16',
+    "\u215B": 'frac18',
+    '\xB2': 'sup2',
+    "\u2154": 'frac23',
+    "\u2156": 'frac25',
+    '\xB3': 'sup3',
+    '\xBE': 'frac34',
+    "\u2157": 'frac35',
+    "\u215C": 'frac38',
+    "\u2158": 'frac45',
+    "\u215A": 'frac56',
+    "\u215D": 'frac58',
+    "\u215E": 'frac78',
+    "\uD835\uDCB6": 'ascr',
+    "\uD835\uDD52": 'aopf',
+    "\uD835\uDD1E": 'afr',
+    "\uD835\uDD38": 'Aopf',
+    "\uD835\uDD04": 'Afr',
+    "\uD835\uDC9C": 'Ascr',
+    '\xAA': 'ordf',
+    '\xE1': 'aacute',
+    '\xC1': 'Aacute',
+    '\xE0': 'agrave',
+    '\xC0': 'Agrave',
+    "\u0103": 'abreve',
+    "\u0102": 'Abreve',
+    '\xE2': 'acirc',
+    '\xC2': 'Acirc',
+    '\xE5': 'aring',
+    '\xC5': 'angst',
+    '\xE4': 'auml',
+    '\xC4': 'Auml',
+    '\xE3': 'atilde',
+    '\xC3': 'Atilde',
+    "\u0105": 'aogon',
+    "\u0104": 'Aogon',
+    "\u0101": 'amacr',
+    "\u0100": 'Amacr',
+    '\xE6': 'aelig',
+    '\xC6': 'AElig',
+    "\uD835\uDCB7": 'bscr',
+    "\uD835\uDD53": 'bopf',
+    "\uD835\uDD1F": 'bfr',
+    "\uD835\uDD39": 'Bopf',
+    "\u212C": 'Bscr',
+    "\uD835\uDD05": 'Bfr',
+    "\uD835\uDD20": 'cfr',
+    "\uD835\uDCB8": 'cscr',
+    "\uD835\uDD54": 'copf',
+    "\u212D": 'Cfr',
+    "\uD835\uDC9E": 'Cscr',
+    "\u2102": 'Copf',
+    "\u0107": 'cacute',
+    "\u0106": 'Cacute',
+    "\u0109": 'ccirc',
+    "\u0108": 'Ccirc',
+    "\u010D": 'ccaron',
+    "\u010C": 'Ccaron',
+    "\u010B": 'cdot',
+    "\u010A": 'Cdot',
+    '\xE7': 'ccedil',
+    '\xC7': 'Ccedil',
+    "\u2105": 'incare',
+    "\uD835\uDD21": 'dfr',
+    "\u2146": 'dd',
+    "\uD835\uDD55": 'dopf',
+    "\uD835\uDCB9": 'dscr',
+    "\uD835\uDC9F": 'Dscr',
+    "\uD835\uDD07": 'Dfr',
+    "\u2145": 'DD',
+    "\uD835\uDD3B": 'Dopf',
+    "\u010F": 'dcaron',
+    "\u010E": 'Dcaron',
+    "\u0111": 'dstrok',
+    "\u0110": 'Dstrok',
+    '\xF0': 'eth',
+    '\xD0': 'ETH',
+    "\u2147": 'ee',
+    "\u212F": 'escr',
+    "\uD835\uDD22": 'efr',
+    "\uD835\uDD56": 'eopf',
+    "\u2130": 'Escr',
+    "\uD835\uDD08": 'Efr',
+    "\uD835\uDD3C": 'Eopf',
+    '\xE9': 'eacute',
+    '\xC9': 'Eacute',
+    '\xE8': 'egrave',
+    '\xC8': 'Egrave',
+    '\xEA': 'ecirc',
+    '\xCA': 'Ecirc',
+    "\u011B": 'ecaron',
+    "\u011A": 'Ecaron',
+    '\xEB': 'euml',
+    '\xCB': 'Euml',
+    "\u0117": 'edot',
+    "\u0116": 'Edot',
+    "\u0119": 'eogon',
+    "\u0118": 'Eogon',
+    "\u0113": 'emacr',
+    "\u0112": 'Emacr',
+    "\uD835\uDD23": 'ffr',
+    "\uD835\uDD57": 'fopf',
+    "\uD835\uDCBB": 'fscr',
+    "\uD835\uDD09": 'Ffr',
+    "\uD835\uDD3D": 'Fopf',
+    "\u2131": 'Fscr',
+    "\uFB00": 'fflig',
+    "\uFB03": 'ffilig',
+    "\uFB04": 'ffllig',
+    "\uFB01": 'filig',
+    'fj': 'fjlig',
+    "\uFB02": 'fllig',
+    "\u0192": 'fnof',
+    "\u210A": 'gscr',
+    "\uD835\uDD58": 'gopf',
+    "\uD835\uDD24": 'gfr',
+    "\uD835\uDCA2": 'Gscr',
+    "\uD835\uDD3E": 'Gopf',
+    "\uD835\uDD0A": 'Gfr',
+    "\u01F5": 'gacute',
+    "\u011F": 'gbreve',
+    "\u011E": 'Gbreve',
+    "\u011D": 'gcirc',
+    "\u011C": 'Gcirc',
+    "\u0121": 'gdot',
+    "\u0120": 'Gdot',
+    "\u0122": 'Gcedil',
+    "\uD835\uDD25": 'hfr',
+    "\u210E": 'planckh',
+    "\uD835\uDCBD": 'hscr',
+    "\uD835\uDD59": 'hopf',
+    "\u210B": 'Hscr',
+    "\u210C": 'Hfr',
+    "\u210D": 'Hopf',
+    "\u0125": 'hcirc',
+    "\u0124": 'Hcirc',
+    "\u210F": 'hbar',
+    "\u0127": 'hstrok',
+    "\u0126": 'Hstrok',
+    "\uD835\uDD5A": 'iopf',
+    "\uD835\uDD26": 'ifr',
+    "\uD835\uDCBE": 'iscr',
+    "\u2148": 'ii',
+    "\uD835\uDD40": 'Iopf',
+    "\u2110": 'Iscr',
+    "\u2111": 'Im',
+    '\xED': 'iacute',
+    '\xCD': 'Iacute',
+    '\xEC': 'igrave',
+    '\xCC': 'Igrave',
+    '\xEE': 'icirc',
+    '\xCE': 'Icirc',
+    '\xEF': 'iuml',
+    '\xCF': 'Iuml',
+    "\u0129": 'itilde',
+    "\u0128": 'Itilde',
+    "\u0130": 'Idot',
+    "\u012F": 'iogon',
+    "\u012E": 'Iogon',
+    "\u012B": 'imacr',
+    "\u012A": 'Imacr',
+    "\u0133": 'ijlig',
+    "\u0132": 'IJlig',
+    "\u0131": 'imath',
+    "\uD835\uDCBF": 'jscr',
+    "\uD835\uDD5B": 'jopf',
+    "\uD835\uDD27": 'jfr',
+    "\uD835\uDCA5": 'Jscr',
+    "\uD835\uDD0D": 'Jfr',
+    "\uD835\uDD41": 'Jopf',
+    "\u0135": 'jcirc',
+    "\u0134": 'Jcirc',
+    "\u0237": 'jmath',
+    "\uD835\uDD5C": 'kopf',
+    "\uD835\uDCC0": 'kscr',
+    "\uD835\uDD28": 'kfr',
+    "\uD835\uDCA6": 'Kscr',
+    "\uD835\uDD42": 'Kopf',
+    "\uD835\uDD0E": 'Kfr',
+    "\u0137": 'kcedil',
+    "\u0136": 'Kcedil',
+    "\uD835\uDD29": 'lfr',
+    "\uD835\uDCC1": 'lscr',
+    "\u2113": 'ell',
+    "\uD835\uDD5D": 'lopf',
+    "\u2112": 'Lscr',
+    "\uD835\uDD0F": 'Lfr',
+    "\uD835\uDD43": 'Lopf',
+    "\u013A": 'lacute',
+    "\u0139": 'Lacute',
+    "\u013E": 'lcaron',
+    "\u013D": 'Lcaron',
+    "\u013C": 'lcedil',
+    "\u013B": 'Lcedil',
+    "\u0142": 'lstrok',
+    "\u0141": 'Lstrok',
+    "\u0140": 'lmidot',
+    "\u013F": 'Lmidot',
+    "\uD835\uDD2A": 'mfr',
+    "\uD835\uDD5E": 'mopf',
+    "\uD835\uDCC2": 'mscr',
+    "\uD835\uDD10": 'Mfr',
+    "\uD835\uDD44": 'Mopf',
+    "\u2133": 'Mscr',
+    "\uD835\uDD2B": 'nfr',
+    "\uD835\uDD5F": 'nopf',
+    "\uD835\uDCC3": 'nscr',
+    "\u2115": 'Nopf',
+    "\uD835\uDCA9": 'Nscr',
+    "\uD835\uDD11": 'Nfr',
+    "\u0144": 'nacute',
+    "\u0143": 'Nacute',
+    "\u0148": 'ncaron',
+    "\u0147": 'Ncaron',
+    '\xF1': 'ntilde',
+    '\xD1': 'Ntilde',
+    "\u0146": 'ncedil',
+    "\u0145": 'Ncedil',
+    "\u2116": 'numero',
+    "\u014B": 'eng',
+    "\u014A": 'ENG',
+    "\uD835\uDD60": 'oopf',
+    "\uD835\uDD2C": 'ofr',
+    "\u2134": 'oscr',
+    "\uD835\uDCAA": 'Oscr',
+    "\uD835\uDD12": 'Ofr',
+    "\uD835\uDD46": 'Oopf',
+    '\xBA': 'ordm',
+    '\xF3': 'oacute',
+    '\xD3': 'Oacute',
+    '\xF2': 'ograve',
+    '\xD2': 'Ograve',
+    '\xF4': 'ocirc',
+    '\xD4': 'Ocirc',
+    '\xF6': 'ouml',
+    '\xD6': 'Ouml',
+    "\u0151": 'odblac',
+    "\u0150": 'Odblac',
+    '\xF5': 'otilde',
+    '\xD5': 'Otilde',
+    '\xF8': 'oslash',
+    '\xD8': 'Oslash',
+    "\u014D": 'omacr',
+    "\u014C": 'Omacr',
+    "\u0153": 'oelig',
+    "\u0152": 'OElig',
+    "\uD835\uDD2D": 'pfr',
+    "\uD835\uDCC5": 'pscr',
+    "\uD835\uDD61": 'popf',
+    "\u2119": 'Popf',
+    "\uD835\uDD13": 'Pfr',
+    "\uD835\uDCAB": 'Pscr',
+    "\uD835\uDD62": 'qopf',
+    "\uD835\uDD2E": 'qfr',
+    "\uD835\uDCC6": 'qscr',
+    "\uD835\uDCAC": 'Qscr',
+    "\uD835\uDD14": 'Qfr',
+    "\u211A": 'Qopf',
+    "\u0138": 'kgreen',
+    "\uD835\uDD2F": 'rfr',
+    "\uD835\uDD63": 'ropf',
+    "\uD835\uDCC7": 'rscr',
+    "\u211B": 'Rscr',
+    "\u211C": 'Re',
+    "\u211D": 'Ropf',
+    "\u0155": 'racute',
+    "\u0154": 'Racute',
+    "\u0159": 'rcaron',
+    "\u0158": 'Rcaron',
+    "\u0157": 'rcedil',
+    "\u0156": 'Rcedil',
+    "\uD835\uDD64": 'sopf',
+    "\uD835\uDCC8": 'sscr',
+    "\uD835\uDD30": 'sfr',
+    "\uD835\uDD4A": 'Sopf',
+    "\uD835\uDD16": 'Sfr',
+    "\uD835\uDCAE": 'Sscr',
+    "\u24C8": 'oS',
+    "\u015B": 'sacute',
+    "\u015A": 'Sacute',
+    "\u015D": 'scirc',
+    "\u015C": 'Scirc',
+    "\u0161": 'scaron',
+    "\u0160": 'Scaron',
+    "\u015F": 'scedil',
+    "\u015E": 'Scedil',
+    '\xDF': 'szlig',
+    "\uD835\uDD31": 'tfr',
+    "\uD835\uDCC9": 'tscr',
+    "\uD835\uDD65": 'topf',
+    "\uD835\uDCAF": 'Tscr',
+    "\uD835\uDD17": 'Tfr',
+    "\uD835\uDD4B": 'Topf',
+    "\u0165": 'tcaron',
+    "\u0164": 'Tcaron',
+    "\u0163": 'tcedil',
+    "\u0162": 'Tcedil',
+    "\u2122": 'trade',
+    "\u0167": 'tstrok',
+    "\u0166": 'Tstrok',
+    "\uD835\uDCCA": 'uscr',
+    "\uD835\uDD66": 'uopf',
+    "\uD835\uDD32": 'ufr',
+    "\uD835\uDD4C": 'Uopf',
+    "\uD835\uDD18": 'Ufr',
+    "\uD835\uDCB0": 'Uscr',
+    '\xFA': 'uacute',
+    '\xDA': 'Uacute',
+    '\xF9': 'ugrave',
+    '\xD9': 'Ugrave',
+    "\u016D": 'ubreve',
+    "\u016C": 'Ubreve',
+    '\xFB': 'ucirc',
+    '\xDB': 'Ucirc',
+    "\u016F": 'uring',
+    "\u016E": 'Uring',
+    '\xFC': 'uuml',
+    '\xDC': 'Uuml',
+    "\u0171": 'udblac',
+    "\u0170": 'Udblac',
+    "\u0169": 'utilde',
+    "\u0168": 'Utilde',
+    "\u0173": 'uogon',
+    "\u0172": 'Uogon',
+    "\u016B": 'umacr',
+    "\u016A": 'Umacr',
+    "\uD835\uDD33": 'vfr',
+    "\uD835\uDD67": 'vopf',
+    "\uD835\uDCCB": 'vscr',
+    "\uD835\uDD19": 'Vfr',
+    "\uD835\uDD4D": 'Vopf',
+    "\uD835\uDCB1": 'Vscr',
+    "\uD835\uDD68": 'wopf',
+    "\uD835\uDCCC": 'wscr',
+    "\uD835\uDD34": 'wfr',
+    "\uD835\uDCB2": 'Wscr',
+    "\uD835\uDD4E": 'Wopf',
+    "\uD835\uDD1A": 'Wfr',
+    "\u0175": 'wcirc',
+    "\u0174": 'Wcirc',
+    "\uD835\uDD35": 'xfr',
+    "\uD835\uDCCD": 'xscr',
+    "\uD835\uDD69": 'xopf',
+    "\uD835\uDD4F": 'Xopf',
+    "\uD835\uDD1B": 'Xfr',
+    "\uD835\uDCB3": 'Xscr',
+    "\uD835\uDD36": 'yfr',
+    "\uD835\uDCCE": 'yscr',
+    "\uD835\uDD6A": 'yopf',
+    "\uD835\uDCB4": 'Yscr',
+    "\uD835\uDD1C": 'Yfr',
+    "\uD835\uDD50": 'Yopf',
+    '\xFD': 'yacute',
+    '\xDD': 'Yacute',
+    "\u0177": 'ycirc',
+    "\u0176": 'Ycirc',
+    '\xFF': 'yuml',
+    "\u0178": 'Yuml',
+    "\uD835\uDCCF": 'zscr',
+    "\uD835\uDD37": 'zfr',
+    "\uD835\uDD6B": 'zopf',
+    "\u2128": 'Zfr',
+    "\u2124": 'Zopf',
+    "\uD835\uDCB5": 'Zscr',
+    "\u017A": 'zacute',
+    "\u0179": 'Zacute',
+    "\u017E": 'zcaron',
+    "\u017D": 'Zcaron',
+    "\u017C": 'zdot',
+    "\u017B": 'Zdot',
+    "\u01B5": 'imped',
+    '\xFE': 'thorn',
+    '\xDE': 'THORN',
+    "\u0149": 'napos',
+    "\u03B1": 'alpha',
+    "\u0391": 'Alpha',
+    "\u03B2": 'beta',
+    "\u0392": 'Beta',
+    "\u03B3": 'gamma',
+    "\u0393": 'Gamma',
+    "\u03B4": 'delta',
+    "\u0394": 'Delta',
+    "\u03B5": 'epsi',
+    "\u03F5": 'epsiv',
+    "\u0395": 'Epsilon',
+    "\u03DD": 'gammad',
+    "\u03DC": 'Gammad',
+    "\u03B6": 'zeta',
+    "\u0396": 'Zeta',
+    "\u03B7": 'eta',
+    "\u0397": 'Eta',
+    "\u03B8": 'theta',
+    "\u03D1": 'thetav',
+    "\u0398": 'Theta',
+    "\u03B9": 'iota',
+    "\u0399": 'Iota',
+    "\u03BA": 'kappa',
+    "\u03F0": 'kappav',
+    "\u039A": 'Kappa',
+    "\u03BB": 'lambda',
+    "\u039B": 'Lambda',
+    "\u03BC": 'mu',
+    '\xB5': 'micro',
+    "\u039C": 'Mu',
+    "\u03BD": 'nu',
+    "\u039D": 'Nu',
+    "\u03BE": 'xi',
+    "\u039E": 'Xi',
+    "\u03BF": 'omicron',
+    "\u039F": 'Omicron',
+    "\u03C0": 'pi',
+    "\u03D6": 'piv',
+    "\u03A0": 'Pi',
+    "\u03C1": 'rho',
+    "\u03F1": 'rhov',
+    "\u03A1": 'Rho',
+    "\u03C3": 'sigma',
+    "\u03A3": 'Sigma',
+    "\u03C2": 'sigmaf',
+    "\u03C4": 'tau',
+    "\u03A4": 'Tau',
+    "\u03C5": 'upsi',
+    "\u03A5": 'Upsilon',
+    "\u03D2": 'Upsi',
+    "\u03C6": 'phi',
+    "\u03D5": 'phiv',
+    "\u03A6": 'Phi',
+    "\u03C7": 'chi',
+    "\u03A7": 'Chi',
+    "\u03C8": 'psi',
+    "\u03A8": 'Psi',
+    "\u03C9": 'omega',
+    "\u03A9": 'ohm',
+    "\u0430": 'acy',
+    "\u0410": 'Acy',
+    "\u0431": 'bcy',
+    "\u0411": 'Bcy',
+    "\u0432": 'vcy',
+    "\u0412": 'Vcy',
+    "\u0433": 'gcy',
+    "\u0413": 'Gcy',
+    "\u0453": 'gjcy',
+    "\u0403": 'GJcy',
+    "\u0434": 'dcy',
+    "\u0414": 'Dcy',
+    "\u0452": 'djcy',
+    "\u0402": 'DJcy',
+    "\u0435": 'iecy',
+    "\u0415": 'IEcy',
+    "\u0451": 'iocy',
+    "\u0401": 'IOcy',
+    "\u0454": 'jukcy',
+    "\u0404": 'Jukcy',
+    "\u0436": 'zhcy',
+    "\u0416": 'ZHcy',
+    "\u0437": 'zcy',
+    "\u0417": 'Zcy',
+    "\u0455": 'dscy',
+    "\u0405": 'DScy',
+    "\u0438": 'icy',
+    "\u0418": 'Icy',
+    "\u0456": 'iukcy',
+    "\u0406": 'Iukcy',
+    "\u0457": 'yicy',
+    "\u0407": 'YIcy',
+    "\u0439": 'jcy',
+    "\u0419": 'Jcy',
+    "\u0458": 'jsercy',
+    "\u0408": 'Jsercy',
+    "\u043A": 'kcy',
+    "\u041A": 'Kcy',
+    "\u045C": 'kjcy',
+    "\u040C": 'KJcy',
+    "\u043B": 'lcy',
+    "\u041B": 'Lcy',
+    "\u0459": 'ljcy',
+    "\u0409": 'LJcy',
+    "\u043C": 'mcy',
+    "\u041C": 'Mcy',
+    "\u043D": 'ncy',
+    "\u041D": 'Ncy',
+    "\u045A": 'njcy',
+    "\u040A": 'NJcy',
+    "\u043E": 'ocy',
+    "\u041E": 'Ocy',
+    "\u043F": 'pcy',
+    "\u041F": 'Pcy',
+    "\u0440": 'rcy',
+    "\u0420": 'Rcy',
+    "\u0441": 'scy',
+    "\u0421": 'Scy',
+    "\u0442": 'tcy',
+    "\u0422": 'Tcy',
+    "\u045B": 'tshcy',
+    "\u040B": 'TSHcy',
+    "\u0443": 'ucy',
+    "\u0423": 'Ucy',
+    "\u045E": 'ubrcy',
+    "\u040E": 'Ubrcy',
+    "\u0444": 'fcy',
+    "\u0424": 'Fcy',
+    "\u0445": 'khcy',
+    "\u0425": 'KHcy',
+    "\u0446": 'tscy',
+    "\u0426": 'TScy',
+    "\u0447": 'chcy',
+    "\u0427": 'CHcy',
+    "\u045F": 'dzcy',
+    "\u040F": 'DZcy',
+    "\u0448": 'shcy',
+    "\u0428": 'SHcy',
+    "\u0449": 'shchcy',
+    "\u0429": 'SHCHcy',
+    "\u044A": 'hardcy',
+    "\u042A": 'HARDcy',
+    "\u044B": 'ycy',
+    "\u042B": 'Ycy',
+    "\u044C": 'softcy',
+    "\u042C": 'SOFTcy',
+    "\u044D": 'ecy',
+    "\u042D": 'Ecy',
+    "\u044E": 'yucy',
+    "\u042E": 'YUcy',
+    "\u044F": 'yacy',
+    "\u042F": 'YAcy',
+    "\u2135": 'aleph',
+    "\u2136": 'beth',
+    "\u2137": 'gimel',
+    "\u2138": 'daleth'
+  };
+  var regexEscape = /["&'<>`]/g;
+  var escapeMap = {
+    '"': '&quot;',
+    '&': '&amp;',
+    '\'': '&#x27;',
+    '<': '&lt;',
+    // See https://mathiasbynens.be/notes/ambiguous-ampersands: in HTML, the
+    // following is not strictly necessary unless it’s part of a tag or an
+    // unquoted attribute value. We’re only escaping it to support those
+    // situations, and for XML support.
+    '>': '&gt;',
+    // In Internet Explorer ≤ 8, the backtick character can be used
+    // to break out of (un)quoted attribute values or HTML comments.
+    // See http://html5sec.org/#102, http://html5sec.org/#108, and
+    // http://html5sec.org/#133.
+    '`': '&#x60;'
+  };
+  var regexInvalidEntity = /&#(?:[xX][^a-fA-F0-9]|[^0-9xX])/;
+  var regexInvalidRawCodePoint = /[\0-\x08\x0B\x0E-\x1F\x7F-\x9F\uFDD0-\uFDEF\uFFFE\uFFFF]|[\uD83F\uD87F\uD8BF\uD8FF\uD93F\uD97F\uD9BF\uD9FF\uDA3F\uDA7F\uDABF\uDAFF\uDB3F\uDB7F\uDBBF\uDBFF][\uDFFE\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/;
+  var regexDecode = /&(CounterClockwiseContourIntegral|DoubleLongLeftRightArrow|ClockwiseContourIntegral|NotNestedGreaterGreater|NotSquareSupersetEqual|DiacriticalDoubleAcute|NotRightTriangleEqual|NotSucceedsSlantEqual|NotPrecedesSlantEqual|CloseCurlyDoubleQuote|NegativeVeryThinSpace|DoubleContourIntegral|FilledVerySmallSquare|CapitalDifferentialD|OpenCurlyDoubleQuote|EmptyVerySmallSquare|NestedGreaterGreater|DoubleLongRightArrow|NotLeftTriangleEqual|NotGreaterSlantEqual|ReverseUpEquilibrium|DoubleLeftRightArrow|NotSquareSubsetEqual|NotDoubleVerticalBar|RightArrowLeftArrow|NotGreaterFullEqual|NotRightTriangleBar|SquareSupersetEqual|DownLeftRightVector|DoubleLongLeftArrow|leftrightsquigarrow|LeftArrowRightArrow|NegativeMediumSpace|blacktriangleright|RightDownVectorBar|PrecedesSlantEqual|RightDoubleBracket|SucceedsSlantEqual|NotLeftTriangleBar|RightTriangleEqual|SquareIntersection|RightDownTeeVector|ReverseEquilibrium|NegativeThickSpace|longleftrightarrow|Longleftrightarrow|LongLeftRightArrow|DownRightTeeVector|DownRightVectorBar|GreaterSlantEqual|SquareSubsetEqual|LeftDownVectorBar|LeftDoubleBracket|VerticalSeparator|rightleftharpoons|NotGreaterGreater|NotSquareSuperset|blacktriangleleft|blacktriangledown|NegativeThinSpace|LeftDownTeeVector|NotLessSlantEqual|leftrightharpoons|DoubleUpDownArrow|DoubleVerticalBar|LeftTriangleEqual|FilledSmallSquare|twoheadrightarrow|NotNestedLessLess|DownLeftTeeVector|DownLeftVectorBar|RightAngleBracket|NotTildeFullEqual|NotReverseElement|RightUpDownVector|DiacriticalTilde|NotSucceedsTilde|circlearrowright|NotPrecedesEqual|rightharpoondown|DoubleRightArrow|NotSucceedsEqual|NonBreakingSpace|NotRightTriangle|LessEqualGreater|RightUpTeeVector|LeftAngleBracket|GreaterFullEqual|DownArrowUpArrow|RightUpVectorBar|twoheadleftarrow|GreaterEqualLess|downharpoonright|RightTriangleBar|ntrianglerighteq|NotSupersetEqual|LeftUpDownVector|DiacriticalAcute|rightrightarrows|vartriangleright|UpArrowDownArrow|DiacriticalGrave|UnderParenthesis|EmptySmallSquare|LeftUpVectorBar|leftrightarrows|DownRightVector|downharpoonleft|trianglerighteq|ShortRightArrow|OverParenthesis|DoubleLeftArrow|DoubleDownArrow|NotSquareSubset|bigtriangledown|ntrianglelefteq|UpperRightArrow|curvearrowright|vartriangleleft|NotLeftTriangle|nleftrightarrow|LowerRightArrow|NotHumpDownHump|NotGreaterTilde|rightthreetimes|LeftUpTeeVector|NotGreaterEqual|straightepsilon|LeftTriangleBar|rightsquigarrow|ContourIntegral|rightleftarrows|CloseCurlyQuote|RightDownVector|LeftRightVector|nLeftrightarrow|leftharpoondown|circlearrowleft|SquareSuperset|OpenCurlyQuote|hookrightarrow|HorizontalLine|DiacriticalDot|NotLessGreater|ntriangleright|DoubleRightTee|InvisibleComma|InvisibleTimes|LowerLeftArrow|DownLeftVector|NotSubsetEqual|curvearrowleft|trianglelefteq|NotVerticalBar|TildeFullEqual|downdownarrows|NotGreaterLess|RightTeeVector|ZeroWidthSpace|looparrowright|LongRightArrow|doublebarwedge|ShortLeftArrow|ShortDownArrow|RightVectorBar|GreaterGreater|ReverseElement|rightharpoonup|LessSlantEqual|leftthreetimes|upharpoonright|rightarrowtail|LeftDownVector|Longrightarrow|NestedLessLess|UpperLeftArrow|nshortparallel|leftleftarrows|leftrightarrow|Leftrightarrow|LeftRightArrow|longrightarrow|upharpoonleft|RightArrowBar|ApplyFunction|LeftTeeVector|leftarrowtail|NotEqualTilde|varsubsetneqq|varsupsetneqq|RightTeeArrow|SucceedsEqual|SucceedsTilde|LeftVectorBar|SupersetEqual|hookleftarrow|DifferentialD|VerticalTilde|VeryThinSpace|blacktriangle|bigtriangleup|LessFullEqual|divideontimes|leftharpoonup|UpEquilibrium|ntriangleleft|RightTriangle|measuredangle|shortparallel|longleftarrow|Longleftarrow|LongLeftArrow|DoubleLeftTee|Poincareplane|PrecedesEqual|triangleright|DoubleUpArrow|RightUpVector|fallingdotseq|looparrowleft|PrecedesTilde|NotTildeEqual|NotTildeTilde|smallsetminus|Proportional|triangleleft|triangledown|UnderBracket|NotHumpEqual|exponentiale|ExponentialE|NotLessTilde|HilbertSpace|RightCeiling|blacklozenge|varsupsetneq|HumpDownHump|GreaterEqual|VerticalLine|LeftTeeArrow|NotLessEqual|DownTeeArrow|LeftTriangle|varsubsetneq|Intersection|NotCongruent|DownArrowBar|LeftUpVector|LeftArrowBar|risingdotseq|GreaterTilde|RoundImplies|SquareSubset|ShortUpArrow|NotSuperset|quaternions|precnapprox|backepsilon|preccurlyeq|OverBracket|blacksquare|MediumSpace|VerticalBar|circledcirc|circleddash|CircleMinus|CircleTimes|LessGreater|curlyeqprec|curlyeqsucc|diamondsuit|UpDownArrow|Updownarrow|RuleDelayed|Rrightarrow|updownarrow|RightVector|nRightarrow|nrightarrow|eqslantless|LeftCeiling|Equilibrium|SmallCircle|expectation|NotSucceeds|thickapprox|GreaterLess|SquareUnion|NotPrecedes|NotLessLess|straightphi|succnapprox|succcurlyeq|SubsetEqual|sqsupseteq|Proportion|Laplacetrf|ImaginaryI|supsetneqq|NotGreater|gtreqqless|NotElement|ThickSpace|TildeEqual|TildeTilde|Fouriertrf|rmoustache|EqualTilde|eqslantgtr|UnderBrace|LeftVector|UpArrowBar|nLeftarrow|nsubseteqq|subsetneqq|nsupseteqq|nleftarrow|succapprox|lessapprox|UpTeeArrow|upuparrows|curlywedge|lesseqqgtr|varepsilon|varnothing|RightFloor|complement|CirclePlus|sqsubseteq|Lleftarrow|circledast|RightArrow|Rightarrow|rightarrow|lmoustache|Bernoullis|precapprox|mapstoleft|mapstodown|longmapsto|dotsquare|downarrow|DoubleDot|nsubseteq|supsetneq|leftarrow|nsupseteq|subsetneq|ThinSpace|ngeqslant|subseteqq|HumpEqual|NotSubset|triangleq|NotCupCap|lesseqgtr|heartsuit|TripleDot|Leftarrow|Coproduct|Congruent|varpropto|complexes|gvertneqq|LeftArrow|LessTilde|supseteqq|MinusPlus|CircleDot|nleqslant|NotExists|gtreqless|nparallel|UnionPlus|LeftFloor|checkmark|CenterDot|centerdot|Mellintrf|gtrapprox|bigotimes|OverBrace|spadesuit|therefore|pitchfork|rationals|PlusMinus|Backslash|Therefore|DownBreve|backsimeq|backprime|DownArrow|nshortmid|Downarrow|lvertneqq|eqvparsl|imagline|imagpart|infintie|integers|Integral|intercal|LessLess|Uarrocir|intlarhk|sqsupset|angmsdaf|sqsubset|llcorner|vartheta|cupbrcap|lnapprox|Superset|SuchThat|succnsim|succneqq|angmsdag|biguplus|curlyvee|trpezium|Succeeds|NotTilde|bigwedge|angmsdah|angrtvbd|triminus|cwconint|fpartint|lrcorner|smeparsl|subseteq|urcorner|lurdshar|laemptyv|DDotrahd|approxeq|ldrushar|awconint|mapstoup|backcong|shortmid|triangle|geqslant|gesdotol|timesbar|circledR|circledS|setminus|multimap|naturals|scpolint|ncongdot|RightTee|boxminus|gnapprox|boxtimes|andslope|thicksim|angmsdaa|varsigma|cirfnint|rtriltri|angmsdab|rppolint|angmsdac|barwedge|drbkarow|clubsuit|thetasym|bsolhsub|capbrcup|dzigrarr|doteqdot|DotEqual|dotminus|UnderBar|NotEqual|realpart|otimesas|ulcorner|hksearow|hkswarow|parallel|PartialD|elinters|emptyset|plusacir|bbrktbrk|angmsdad|pointint|bigoplus|angmsdae|Precedes|bigsqcup|varkappa|notindot|supseteq|precneqq|precnsim|profalar|profline|profsurf|leqslant|lesdotor|raemptyv|subplus|notnivb|notnivc|subrarr|zigrarr|vzigzag|submult|subedot|Element|between|cirscir|larrbfs|larrsim|lotimes|lbrksld|lbrkslu|lozenge|ldrdhar|dbkarow|bigcirc|epsilon|simrarr|simplus|ltquest|Epsilon|luruhar|gtquest|maltese|npolint|eqcolon|npreceq|bigodot|ddagger|gtrless|bnequiv|harrcir|ddotseq|equivDD|backsim|demptyv|nsqsube|nsqsupe|Upsilon|nsubset|upsilon|minusdu|nsucceq|swarrow|nsupset|coloneq|searrow|boxplus|napprox|natural|asympeq|alefsym|congdot|nearrow|bigstar|diamond|supplus|tritime|LeftTee|nvinfin|triplus|NewLine|nvltrie|nvrtrie|nwarrow|nexists|Diamond|ruluhar|Implies|supmult|angzarr|suplarr|suphsub|questeq|because|digamma|Because|olcross|bemptyv|omicron|Omicron|rotimes|NoBreak|intprod|angrtvb|orderof|uwangle|suphsol|lesdoto|orslope|DownTee|realine|cudarrl|rdldhar|OverBar|supedot|lessdot|supdsub|topfork|succsim|rbrkslu|rbrksld|pertenk|cudarrr|isindot|planckh|lessgtr|pluscir|gesdoto|plussim|plustwo|lesssim|cularrp|rarrsim|Cayleys|notinva|notinvb|notinvc|UpArrow|Uparrow|uparrow|NotLess|dwangle|precsim|Product|curarrm|Cconint|dotplus|rarrbfs|ccupssm|Cedilla|cemptyv|notniva|quatint|frac35|frac38|frac45|frac56|frac58|frac78|tridot|xoplus|gacute|gammad|Gammad|lfisht|lfloor|bigcup|sqsupe|gbreve|Gbreve|lharul|sqsube|sqcups|Gcedil|apacir|llhard|lmidot|Lmidot|lmoust|andand|sqcaps|approx|Abreve|spades|circeq|tprime|divide|topcir|Assign|topbot|gesdot|divonx|xuplus|timesd|gesles|atilde|solbar|SOFTcy|loplus|timesb|lowast|lowbar|dlcorn|dlcrop|softcy|dollar|lparlt|thksim|lrhard|Atilde|lsaquo|smashp|bigvee|thinsp|wreath|bkarow|lsquor|lstrok|Lstrok|lthree|ltimes|ltlarr|DotDot|simdot|ltrPar|weierp|xsqcup|angmsd|sigmav|sigmaf|zeetrf|Zcaron|zcaron|mapsto|vsupne|thetav|cirmid|marker|mcomma|Zacute|vsubnE|there4|gtlPar|vsubne|bottom|gtrarr|SHCHcy|shchcy|midast|midcir|middot|minusb|minusd|gtrdot|bowtie|sfrown|mnplus|models|colone|seswar|Colone|mstpos|searhk|gtrsim|nacute|Nacute|boxbox|telrec|hairsp|Tcedil|nbumpe|scnsim|ncaron|Ncaron|ncedil|Ncedil|hamilt|Scedil|nearhk|hardcy|HARDcy|tcedil|Tcaron|commat|nequiv|nesear|tcaron|target|hearts|nexist|varrho|scedil|Scaron|scaron|hellip|Sacute|sacute|hercon|swnwar|compfn|rtimes|rthree|rsquor|rsaquo|zacute|wedgeq|homtht|barvee|barwed|Barwed|rpargt|horbar|conint|swarhk|roplus|nltrie|hslash|hstrok|Hstrok|rmoust|Conint|bprime|hybull|hyphen|iacute|Iacute|supsup|supsub|supsim|varphi|coprod|brvbar|agrave|Supset|supset|igrave|Igrave|notinE|Agrave|iiiint|iinfin|copysr|wedbar|Verbar|vangrt|becaus|incare|verbar|inodot|bullet|drcorn|intcal|drcrop|cularr|vellip|Utilde|bumpeq|cupcap|dstrok|Dstrok|CupCap|cupcup|cupdot|eacute|Eacute|supdot|iquest|easter|ecaron|Ecaron|ecolon|isinsv|utilde|itilde|Itilde|curarr|succeq|Bumpeq|cacute|ulcrop|nparsl|Cacute|nprcue|egrave|Egrave|nrarrc|nrarrw|subsup|subsub|nrtrie|jsercy|nsccue|Jsercy|kappav|kcedil|Kcedil|subsim|ulcorn|nsimeq|egsdot|veebar|kgreen|capand|elsdot|Subset|subset|curren|aacute|lacute|Lacute|emptyv|ntilde|Ntilde|lagran|lambda|Lambda|capcap|Ugrave|langle|subdot|emsp13|numero|emsp14|nvdash|nvDash|nVdash|nVDash|ugrave|ufisht|nvHarr|larrfs|nvlArr|larrhk|larrlp|larrpl|nvrArr|Udblac|nwarhk|larrtl|nwnear|oacute|Oacute|latail|lAtail|sstarf|lbrace|odblac|Odblac|lbrack|udblac|odsold|eparsl|lcaron|Lcaron|ograve|Ograve|lcedil|Lcedil|Aacute|ssmile|ssetmn|squarf|ldquor|capcup|ominus|cylcty|rharul|eqcirc|dagger|rfloor|rfisht|Dagger|daleth|equals|origof|capdot|equest|dcaron|Dcaron|rdquor|oslash|Oslash|otilde|Otilde|otimes|Otimes|urcrop|Ubreve|ubreve|Yacute|Uacute|uacute|Rcedil|rcedil|urcorn|parsim|Rcaron|Vdashl|rcaron|Tstrok|percnt|period|permil|Exists|yacute|rbrack|rbrace|phmmat|ccaron|Ccaron|planck|ccedil|plankv|tstrok|female|plusdo|plusdu|ffilig|plusmn|ffllig|Ccedil|rAtail|dfisht|bernou|ratail|Rarrtl|rarrtl|angsph|rarrpl|rarrlp|rarrhk|xwedge|xotime|forall|ForAll|Vvdash|vsupnE|preceq|bigcap|frac12|frac13|frac14|primes|rarrfs|prnsim|frac15|Square|frac16|square|lesdot|frac18|frac23|propto|prurel|rarrap|rangle|puncsp|frac25|Racute|qprime|racute|lesges|frac34|abreve|AElig|eqsim|utdot|setmn|urtri|Equal|Uring|seArr|uring|searr|dashv|Dashv|mumap|nabla|iogon|Iogon|sdote|sdotb|scsim|napid|napos|equiv|natur|Acirc|dblac|erarr|nbump|iprod|erDot|ucirc|awint|esdot|angrt|ncong|isinE|scnap|Scirc|scirc|ndash|isins|Ubrcy|nearr|neArr|isinv|nedot|ubrcy|acute|Ycirc|iukcy|Iukcy|xutri|nesim|caret|jcirc|Jcirc|caron|twixt|ddarr|sccue|exist|jmath|sbquo|ngeqq|angst|ccaps|lceil|ngsim|UpTee|delta|Delta|rtrif|nharr|nhArr|nhpar|rtrie|jukcy|Jukcy|kappa|rsquo|Kappa|nlarr|nlArr|TSHcy|rrarr|aogon|Aogon|fflig|xrarr|tshcy|ccirc|nleqq|filig|upsih|nless|dharl|nlsim|fjlig|ropar|nltri|dharr|robrk|roarr|fllig|fltns|roang|rnmid|subnE|subne|lAarr|trisb|Ccirc|acirc|ccups|blank|VDash|forkv|Vdash|langd|cedil|blk12|blk14|laquo|strns|diams|notin|vDash|larrb|blk34|block|disin|uplus|vdash|vBarv|aelig|starf|Wedge|check|xrArr|lates|lbarr|lBarr|notni|lbbrk|bcong|frasl|lbrke|frown|vrtri|vprop|vnsup|gamma|Gamma|wedge|xodot|bdquo|srarr|doteq|ldquo|boxdl|boxdL|gcirc|Gcirc|boxDl|boxDL|boxdr|boxdR|boxDr|TRADE|trade|rlhar|boxDR|vnsub|npart|vltri|rlarr|boxhd|boxhD|nprec|gescc|nrarr|nrArr|boxHd|boxHD|boxhu|boxhU|nrtri|boxHu|clubs|boxHU|times|colon|Colon|gimel|xlArr|Tilde|nsime|tilde|nsmid|nspar|THORN|thorn|xlarr|nsube|nsubE|thkap|xhArr|comma|nsucc|boxul|boxuL|nsupe|nsupE|gneqq|gnsim|boxUl|boxUL|grave|boxur|boxuR|boxUr|boxUR|lescc|angle|bepsi|boxvh|varpi|boxvH|numsp|Theta|gsime|gsiml|theta|boxVh|boxVH|boxvl|gtcir|gtdot|boxvL|boxVl|boxVL|crarr|cross|Cross|nvsim|boxvr|nwarr|nwArr|sqsup|dtdot|Uogon|lhard|lharu|dtrif|ocirc|Ocirc|lhblk|duarr|odash|sqsub|Hacek|sqcup|llarr|duhar|oelig|OElig|ofcir|boxvR|uogon|lltri|boxVr|csube|uuarr|ohbar|csupe|ctdot|olarr|olcir|harrw|oline|sqcap|omacr|Omacr|omega|Omega|boxVR|aleph|lneqq|lnsim|loang|loarr|rharu|lobrk|hcirc|operp|oplus|rhard|Hcirc|orarr|Union|order|ecirc|Ecirc|cuepr|szlig|cuesc|breve|reals|eDDot|Breve|hoarr|lopar|utrif|rdquo|Umacr|umacr|efDot|swArr|ultri|alpha|rceil|ovbar|swarr|Wcirc|wcirc|smtes|smile|bsemi|lrarr|aring|parsl|lrhar|bsime|uhblk|lrtri|cupor|Aring|uharr|uharl|slarr|rbrke|bsolb|lsime|rbbrk|RBarr|lsimg|phone|rBarr|rbarr|icirc|lsquo|Icirc|emacr|Emacr|ratio|simne|plusb|simlE|simgE|simeq|pluse|ltcir|ltdot|empty|xharr|xdtri|iexcl|Alpha|ltrie|rarrw|pound|ltrif|xcirc|bumpe|prcue|bumpE|asymp|amacr|cuvee|Sigma|sigma|iiint|udhar|iiota|ijlig|IJlig|supnE|imacr|Imacr|prime|Prime|image|prnap|eogon|Eogon|rarrc|mdash|mDDot|cuwed|imath|supne|imped|Amacr|udarr|prsim|micro|rarrb|cwint|raquo|infin|eplus|range|rangd|Ucirc|radic|minus|amalg|veeeq|rAarr|epsiv|ycirc|quest|sharp|quot|zwnj|Qscr|race|qscr|Qopf|qopf|qint|rang|Rang|Zscr|zscr|Zopf|zopf|rarr|rArr|Rarr|Pscr|pscr|prop|prod|prnE|prec|ZHcy|zhcy|prap|Zeta|zeta|Popf|popf|Zdot|plus|zdot|Yuml|yuml|phiv|YUcy|yucy|Yscr|yscr|perp|Yopf|yopf|part|para|YIcy|Ouml|rcub|yicy|YAcy|rdca|ouml|osol|Oscr|rdsh|yacy|real|oscr|xvee|andd|rect|andv|Xscr|oror|ordm|ordf|xscr|ange|aopf|Aopf|rHar|Xopf|opar|Oopf|xopf|xnis|rhov|oopf|omid|xmap|oint|apid|apos|ogon|ascr|Ascr|odot|odiv|xcup|xcap|ocir|oast|nvlt|nvle|nvgt|nvge|nvap|Wscr|wscr|auml|ntlg|ntgl|nsup|nsub|nsim|Nscr|nscr|nsce|Wopf|ring|npre|wopf|npar|Auml|Barv|bbrk|Nopf|nopf|nmid|nLtv|beta|ropf|Ropf|Beta|beth|nles|rpar|nleq|bnot|bNot|nldr|NJcy|rscr|Rscr|Vscr|vscr|rsqb|njcy|bopf|nisd|Bopf|rtri|Vopf|nGtv|ngtr|vopf|boxh|boxH|boxv|nges|ngeq|boxV|bscr|scap|Bscr|bsim|Vert|vert|bsol|bull|bump|caps|cdot|ncup|scnE|ncap|nbsp|napE|Cdot|cent|sdot|Vbar|nang|vBar|chcy|Mscr|mscr|sect|semi|CHcy|Mopf|mopf|sext|circ|cire|mldr|mlcp|cirE|comp|shcy|SHcy|vArr|varr|cong|copf|Copf|copy|COPY|malt|male|macr|lvnE|cscr|ltri|sime|ltcc|simg|Cscr|siml|csub|Uuml|lsqb|lsim|uuml|csup|Lscr|lscr|utri|smid|lpar|cups|smte|lozf|darr|Lopf|Uscr|solb|lopf|sopf|Sopf|lneq|uscr|spar|dArr|lnap|Darr|dash|Sqrt|LJcy|ljcy|lHar|dHar|Upsi|upsi|diam|lesg|djcy|DJcy|leqq|dopf|Dopf|dscr|Dscr|dscy|ldsh|ldca|squf|DScy|sscr|Sscr|dsol|lcub|late|star|Star|Uopf|Larr|lArr|larr|uopf|dtri|dzcy|sube|subE|Lang|lang|Kscr|kscr|Kopf|kopf|KJcy|kjcy|KHcy|khcy|DZcy|ecir|edot|eDot|Jscr|jscr|succ|Jopf|jopf|Edot|uHar|emsp|ensp|Iuml|iuml|eopf|isin|Iscr|iscr|Eopf|epar|sung|epsi|escr|sup1|sup2|sup3|Iota|iota|supe|supE|Iopf|iopf|IOcy|iocy|Escr|esim|Esim|imof|Uarr|QUOT|uArr|uarr|euml|IEcy|iecy|Idot|Euml|euro|excl|Hscr|hscr|Hopf|hopf|TScy|tscy|Tscr|hbar|tscr|flat|tbrk|fnof|hArr|harr|half|fopf|Fopf|tdot|gvnE|fork|trie|gtcc|fscr|Fscr|gdot|gsim|Gscr|gscr|Gopf|gopf|gneq|Gdot|tosa|gnap|Topf|topf|geqq|toea|GJcy|gjcy|tint|gesl|mid|Sfr|ggg|top|ges|gla|glE|glj|geq|gne|gEl|gel|gnE|Gcy|gcy|gap|Tfr|tfr|Tcy|tcy|Hat|Tau|Ffr|tau|Tab|hfr|Hfr|ffr|Fcy|fcy|icy|Icy|iff|ETH|eth|ifr|Ifr|Eta|eta|int|Int|Sup|sup|ucy|Ucy|Sum|sum|jcy|ENG|ufr|Ufr|eng|Jcy|jfr|els|ell|egs|Efr|efr|Jfr|uml|kcy|Kcy|Ecy|ecy|kfr|Kfr|lap|Sub|sub|lat|lcy|Lcy|leg|Dot|dot|lEg|leq|les|squ|div|die|lfr|Lfr|lgE|Dfr|dfr|Del|deg|Dcy|dcy|lne|lnE|sol|loz|smt|Cup|lrm|cup|lsh|Lsh|sim|shy|map|Map|mcy|Mcy|mfr|Mfr|mho|gfr|Gfr|sfr|cir|Chi|chi|nap|Cfr|vcy|Vcy|cfr|Scy|scy|ncy|Ncy|vee|Vee|Cap|cap|nfr|scE|sce|Nfr|nge|ngE|nGg|vfr|Vfr|ngt|bot|nGt|nis|niv|Rsh|rsh|nle|nlE|bne|Bfr|bfr|nLl|nlt|nLt|Bcy|bcy|not|Not|rlm|wfr|Wfr|npr|nsc|num|ocy|ast|Ocy|ofr|xfr|Xfr|Ofr|ogt|ohm|apE|olt|Rho|ape|rho|Rfr|rfr|ord|REG|ang|reg|orv|And|and|AMP|Rcy|amp|Afr|ycy|Ycy|yen|yfr|Yfr|rcy|par|pcy|Pcy|pfr|Pfr|phi|Phi|afr|Acy|acy|zcy|Zcy|piv|acE|acd|zfr|Zfr|pre|prE|psi|Psi|qfr|Qfr|zwj|Or|ge|Gg|gt|gg|el|oS|lt|Lt|LT|Re|lg|gl|eg|ne|Im|it|le|DD|wp|wr|nu|Nu|dd|lE|Sc|sc|pi|Pi|ee|af|ll|Ll|rx|gE|xi|pm|Xi|ic|pr|Pr|in|ni|mp|mu|ac|Mu|or|ap|Gt|GT|ii);|&(Aacute|Agrave|Atilde|Ccedil|Eacute|Egrave|Iacute|Igrave|Ntilde|Oacute|Ograve|Oslash|Otilde|Uacute|Ugrave|Yacute|aacute|agrave|atilde|brvbar|ccedil|curren|divide|eacute|egrave|frac12|frac14|frac34|iacute|igrave|iquest|middot|ntilde|oacute|ograve|oslash|otilde|plusmn|uacute|ugrave|yacute|AElig|Acirc|Aring|Ecirc|Icirc|Ocirc|THORN|Ucirc|acirc|acute|aelig|aring|cedil|ecirc|icirc|iexcl|laquo|micro|ocirc|pound|raquo|szlig|thorn|times|ucirc|Auml|COPY|Euml|Iuml|Ouml|QUOT|Uuml|auml|cent|copy|euml|iuml|macr|nbsp|ordf|ordm|ouml|para|quot|sect|sup1|sup2|sup3|uuml|yuml|AMP|ETH|REG|amp|deg|eth|not|reg|shy|uml|yen|GT|LT|gt|lt)(?!;)([=a-zA-Z0-9]?)|&#([0-9]+)(;?)|&#[xX]([a-fA-F0-9]+)(;?)|&([0-9a-zA-Z]+)/g;
+  var decodeMap = {
+    'aacute': '\xE1',
+    'Aacute': '\xC1',
+    'abreve': "\u0103",
+    'Abreve': "\u0102",
+    'ac': "\u223E",
+    'acd': "\u223F",
+    'acE': "\u223E\u0333",
+    'acirc': '\xE2',
+    'Acirc': '\xC2',
+    'acute': '\xB4',
+    'acy': "\u0430",
+    'Acy': "\u0410",
+    'aelig': '\xE6',
+    'AElig': '\xC6',
+    'af': "\u2061",
+    'afr': "\uD835\uDD1E",
+    'Afr': "\uD835\uDD04",
+    'agrave': '\xE0',
+    'Agrave': '\xC0',
+    'alefsym': "\u2135",
+    'aleph': "\u2135",
+    'alpha': "\u03B1",
+    'Alpha': "\u0391",
+    'amacr': "\u0101",
+    'Amacr': "\u0100",
+    'amalg': "\u2A3F",
+    'amp': '&',
+    'AMP': '&',
+    'and': "\u2227",
+    'And': "\u2A53",
+    'andand': "\u2A55",
+    'andd': "\u2A5C",
+    'andslope': "\u2A58",
+    'andv': "\u2A5A",
+    'ang': "\u2220",
+    'ange': "\u29A4",
+    'angle': "\u2220",
+    'angmsd': "\u2221",
+    'angmsdaa': "\u29A8",
+    'angmsdab': "\u29A9",
+    'angmsdac': "\u29AA",
+    'angmsdad': "\u29AB",
+    'angmsdae': "\u29AC",
+    'angmsdaf': "\u29AD",
+    'angmsdag': "\u29AE",
+    'angmsdah': "\u29AF",
+    'angrt': "\u221F",
+    'angrtvb': "\u22BE",
+    'angrtvbd': "\u299D",
+    'angsph': "\u2222",
+    'angst': '\xC5',
+    'angzarr': "\u237C",
+    'aogon': "\u0105",
+    'Aogon': "\u0104",
+    'aopf': "\uD835\uDD52",
+    'Aopf': "\uD835\uDD38",
+    'ap': "\u2248",
+    'apacir': "\u2A6F",
+    'ape': "\u224A",
+    'apE': "\u2A70",
+    'apid': "\u224B",
+    'apos': '\'',
+    'ApplyFunction': "\u2061",
+    'approx': "\u2248",
+    'approxeq': "\u224A",
+    'aring': '\xE5',
+    'Aring': '\xC5',
+    'ascr': "\uD835\uDCB6",
+    'Ascr': "\uD835\uDC9C",
+    'Assign': "\u2254",
+    'ast': '*',
+    'asymp': "\u2248",
+    'asympeq': "\u224D",
+    'atilde': '\xE3',
+    'Atilde': '\xC3',
+    'auml': '\xE4',
+    'Auml': '\xC4',
+    'awconint': "\u2233",
+    'awint': "\u2A11",
+    'backcong': "\u224C",
+    'backepsilon': "\u03F6",
+    'backprime': "\u2035",
+    'backsim': "\u223D",
+    'backsimeq': "\u22CD",
+    'Backslash': "\u2216",
+    'Barv': "\u2AE7",
+    'barvee': "\u22BD",
+    'barwed': "\u2305",
+    'Barwed': "\u2306",
+    'barwedge': "\u2305",
+    'bbrk': "\u23B5",
+    'bbrktbrk': "\u23B6",
+    'bcong': "\u224C",
+    'bcy': "\u0431",
+    'Bcy': "\u0411",
+    'bdquo': "\u201E",
+    'becaus': "\u2235",
+    'because': "\u2235",
+    'Because': "\u2235",
+    'bemptyv': "\u29B0",
+    'bepsi': "\u03F6",
+    'bernou': "\u212C",
+    'Bernoullis': "\u212C",
+    'beta': "\u03B2",
+    'Beta': "\u0392",
+    'beth': "\u2136",
+    'between': "\u226C",
+    'bfr': "\uD835\uDD1F",
+    'Bfr': "\uD835\uDD05",
+    'bigcap': "\u22C2",
+    'bigcirc': "\u25EF",
+    'bigcup': "\u22C3",
+    'bigodot': "\u2A00",
+    'bigoplus': "\u2A01",
+    'bigotimes': "\u2A02",
+    'bigsqcup': "\u2A06",
+    'bigstar': "\u2605",
+    'bigtriangledown': "\u25BD",
+    'bigtriangleup': "\u25B3",
+    'biguplus': "\u2A04",
+    'bigvee': "\u22C1",
+    'bigwedge': "\u22C0",
+    'bkarow': "\u290D",
+    'blacklozenge': "\u29EB",
+    'blacksquare': "\u25AA",
+    'blacktriangle': "\u25B4",
+    'blacktriangledown': "\u25BE",
+    'blacktriangleleft': "\u25C2",
+    'blacktriangleright': "\u25B8",
+    'blank': "\u2423",
+    'blk12': "\u2592",
+    'blk14': "\u2591",
+    'blk34': "\u2593",
+    'block': "\u2588",
+    'bne': "=\u20E5",
+    'bnequiv': "\u2261\u20E5",
+    'bnot': "\u2310",
+    'bNot': "\u2AED",
+    'bopf': "\uD835\uDD53",
+    'Bopf': "\uD835\uDD39",
+    'bot': "\u22A5",
+    'bottom': "\u22A5",
+    'bowtie': "\u22C8",
+    'boxbox': "\u29C9",
+    'boxdl': "\u2510",
+    'boxdL': "\u2555",
+    'boxDl': "\u2556",
+    'boxDL': "\u2557",
+    'boxdr': "\u250C",
+    'boxdR': "\u2552",
+    'boxDr': "\u2553",
+    'boxDR': "\u2554",
+    'boxh': "\u2500",
+    'boxH': "\u2550",
+    'boxhd': "\u252C",
+    'boxhD': "\u2565",
+    'boxHd': "\u2564",
+    'boxHD': "\u2566",
+    'boxhu': "\u2534",
+    'boxhU': "\u2568",
+    'boxHu': "\u2567",
+    'boxHU': "\u2569",
+    'boxminus': "\u229F",
+    'boxplus': "\u229E",
+    'boxtimes': "\u22A0",
+    'boxul': "\u2518",
+    'boxuL': "\u255B",
+    'boxUl': "\u255C",
+    'boxUL': "\u255D",
+    'boxur': "\u2514",
+    'boxuR': "\u2558",
+    'boxUr': "\u2559",
+    'boxUR': "\u255A",
+    'boxv': "\u2502",
+    'boxV': "\u2551",
+    'boxvh': "\u253C",
+    'boxvH': "\u256A",
+    'boxVh': "\u256B",
+    'boxVH': "\u256C",
+    'boxvl': "\u2524",
+    'boxvL': "\u2561",
+    'boxVl': "\u2562",
+    'boxVL': "\u2563",
+    'boxvr': "\u251C",
+    'boxvR': "\u255E",
+    'boxVr': "\u255F",
+    'boxVR': "\u2560",
+    'bprime': "\u2035",
+    'breve': "\u02D8",
+    'Breve': "\u02D8",
+    'brvbar': '\xA6',
+    'bscr': "\uD835\uDCB7",
+    'Bscr': "\u212C",
+    'bsemi': "\u204F",
+    'bsim': "\u223D",
+    'bsime': "\u22CD",
+    'bsol': '\\',
+    'bsolb': "\u29C5",
+    'bsolhsub': "\u27C8",
+    'bull': "\u2022",
+    'bullet': "\u2022",
+    'bump': "\u224E",
+    'bumpe': "\u224F",
+    'bumpE': "\u2AAE",
+    'bumpeq': "\u224F",
+    'Bumpeq': "\u224E",
+    'cacute': "\u0107",
+    'Cacute': "\u0106",
+    'cap': "\u2229",
+    'Cap': "\u22D2",
+    'capand': "\u2A44",
+    'capbrcup': "\u2A49",
+    'capcap': "\u2A4B",
+    'capcup': "\u2A47",
+    'capdot': "\u2A40",
+    'CapitalDifferentialD': "\u2145",
+    'caps': "\u2229\uFE00",
+    'caret': "\u2041",
+    'caron': "\u02C7",
+    'Cayleys': "\u212D",
+    'ccaps': "\u2A4D",
+    'ccaron': "\u010D",
+    'Ccaron': "\u010C",
+    'ccedil': '\xE7',
+    'Ccedil': '\xC7',
+    'ccirc': "\u0109",
+    'Ccirc': "\u0108",
+    'Cconint': "\u2230",
+    'ccups': "\u2A4C",
+    'ccupssm': "\u2A50",
+    'cdot': "\u010B",
+    'Cdot': "\u010A",
+    'cedil': '\xB8',
+    'Cedilla': '\xB8',
+    'cemptyv': "\u29B2",
+    'cent': '\xA2',
+    'centerdot': '\xB7',
+    'CenterDot': '\xB7',
+    'cfr': "\uD835\uDD20",
+    'Cfr': "\u212D",
+    'chcy': "\u0447",
+    'CHcy': "\u0427",
+    'check': "\u2713",
+    'checkmark': "\u2713",
+    'chi': "\u03C7",
+    'Chi': "\u03A7",
+    'cir': "\u25CB",
+    'circ': "\u02C6",
+    'circeq': "\u2257",
+    'circlearrowleft': "\u21BA",
+    'circlearrowright': "\u21BB",
+    'circledast': "\u229B",
+    'circledcirc': "\u229A",
+    'circleddash': "\u229D",
+    'CircleDot': "\u2299",
+    'circledR': '\xAE',
+    'circledS': "\u24C8",
+    'CircleMinus': "\u2296",
+    'CirclePlus': "\u2295",
+    'CircleTimes': "\u2297",
+    'cire': "\u2257",
+    'cirE': "\u29C3",
+    'cirfnint': "\u2A10",
+    'cirmid': "\u2AEF",
+    'cirscir': "\u29C2",
+    'ClockwiseContourIntegral': "\u2232",
+    'CloseCurlyDoubleQuote': "\u201D",
+    'CloseCurlyQuote': "\u2019",
+    'clubs': "\u2663",
+    'clubsuit': "\u2663",
+    'colon': ':',
+    'Colon': "\u2237",
+    'colone': "\u2254",
+    'Colone': "\u2A74",
+    'coloneq': "\u2254",
+    'comma': ',',
+    'commat': '@',
+    'comp': "\u2201",
+    'compfn': "\u2218",
+    'complement': "\u2201",
+    'complexes': "\u2102",
+    'cong': "\u2245",
+    'congdot': "\u2A6D",
+    'Congruent': "\u2261",
+    'conint': "\u222E",
+    'Conint': "\u222F",
+    'ContourIntegral': "\u222E",
+    'copf': "\uD835\uDD54",
+    'Copf': "\u2102",
+    'coprod': "\u2210",
+    'Coproduct': "\u2210",
+    'copy': '\xA9',
+    'COPY': '\xA9',
+    'copysr': "\u2117",
+    'CounterClockwiseContourIntegral': "\u2233",
+    'crarr': "\u21B5",
+    'cross': "\u2717",
+    'Cross': "\u2A2F",
+    'cscr': "\uD835\uDCB8",
+    'Cscr': "\uD835\uDC9E",
+    'csub': "\u2ACF",
+    'csube': "\u2AD1",
+    'csup': "\u2AD0",
+    'csupe': "\u2AD2",
+    'ctdot': "\u22EF",
+    'cudarrl': "\u2938",
+    'cudarrr': "\u2935",
+    'cuepr': "\u22DE",
+    'cuesc': "\u22DF",
+    'cularr': "\u21B6",
+    'cularrp': "\u293D",
+    'cup': "\u222A",
+    'Cup': "\u22D3",
+    'cupbrcap': "\u2A48",
+    'cupcap': "\u2A46",
+    'CupCap': "\u224D",
+    'cupcup': "\u2A4A",
+    'cupdot': "\u228D",
+    'cupor': "\u2A45",
+    'cups': "\u222A\uFE00",
+    'curarr': "\u21B7",
+    'curarrm': "\u293C",
+    'curlyeqprec': "\u22DE",
+    'curlyeqsucc': "\u22DF",
+    'curlyvee': "\u22CE",
+    'curlywedge': "\u22CF",
+    'curren': '\xA4',
+    'curvearrowleft': "\u21B6",
+    'curvearrowright': "\u21B7",
+    'cuvee': "\u22CE",
+    'cuwed': "\u22CF",
+    'cwconint': "\u2232",
+    'cwint': "\u2231",
+    'cylcty': "\u232D",
+    'dagger': "\u2020",
+    'Dagger': "\u2021",
+    'daleth': "\u2138",
+    'darr': "\u2193",
+    'dArr': "\u21D3",
+    'Darr': "\u21A1",
+    'dash': "\u2010",
+    'dashv': "\u22A3",
+    'Dashv': "\u2AE4",
+    'dbkarow': "\u290F",
+    'dblac': "\u02DD",
+    'dcaron': "\u010F",
+    'Dcaron': "\u010E",
+    'dcy': "\u0434",
+    'Dcy': "\u0414",
+    'dd': "\u2146",
+    'DD': "\u2145",
+    'ddagger': "\u2021",
+    'ddarr': "\u21CA",
+    'DDotrahd': "\u2911",
+    'ddotseq': "\u2A77",
+    'deg': '\xB0',
+    'Del': "\u2207",
+    'delta': "\u03B4",
+    'Delta': "\u0394",
+    'demptyv': "\u29B1",
+    'dfisht': "\u297F",
+    'dfr': "\uD835\uDD21",
+    'Dfr': "\uD835\uDD07",
+    'dHar': "\u2965",
+    'dharl': "\u21C3",
+    'dharr': "\u21C2",
+    'DiacriticalAcute': '\xB4',
+    'DiacriticalDot': "\u02D9",
+    'DiacriticalDoubleAcute': "\u02DD",
+    'DiacriticalGrave': '`',
+    'DiacriticalTilde': "\u02DC",
+    'diam': "\u22C4",
+    'diamond': "\u22C4",
+    'Diamond': "\u22C4",
+    'diamondsuit': "\u2666",
+    'diams': "\u2666",
+    'die': '\xA8',
+    'DifferentialD': "\u2146",
+    'digamma': "\u03DD",
+    'disin': "\u22F2",
+    'div': '\xF7',
+    'divide': '\xF7',
+    'divideontimes': "\u22C7",
+    'divonx': "\u22C7",
+    'djcy': "\u0452",
+    'DJcy': "\u0402",
+    'dlcorn': "\u231E",
+    'dlcrop': "\u230D",
+    'dollar': '$',
+    'dopf': "\uD835\uDD55",
+    'Dopf': "\uD835\uDD3B",
+    'dot': "\u02D9",
+    'Dot': '\xA8',
+    'DotDot': "\u20DC",
+    'doteq': "\u2250",
+    'doteqdot': "\u2251",
+    'DotEqual': "\u2250",
+    'dotminus': "\u2238",
+    'dotplus': "\u2214",
+    'dotsquare': "\u22A1",
+    'doublebarwedge': "\u2306",
+    'DoubleContourIntegral': "\u222F",
+    'DoubleDot': '\xA8',
+    'DoubleDownArrow': "\u21D3",
+    'DoubleLeftArrow': "\u21D0",
+    'DoubleLeftRightArrow': "\u21D4",
+    'DoubleLeftTee': "\u2AE4",
+    'DoubleLongLeftArrow': "\u27F8",
+    'DoubleLongLeftRightArrow': "\u27FA",
+    'DoubleLongRightArrow': "\u27F9",
+    'DoubleRightArrow': "\u21D2",
+    'DoubleRightTee': "\u22A8",
+    'DoubleUpArrow': "\u21D1",
+    'DoubleUpDownArrow': "\u21D5",
+    'DoubleVerticalBar': "\u2225",
+    'downarrow': "\u2193",
+    'Downarrow': "\u21D3",
+    'DownArrow': "\u2193",
+    'DownArrowBar': "\u2913",
+    'DownArrowUpArrow': "\u21F5",
+    'DownBreve': "\u0311",
+    'downdownarrows': "\u21CA",
+    'downharpoonleft': "\u21C3",
+    'downharpoonright': "\u21C2",
+    'DownLeftRightVector': "\u2950",
+    'DownLeftTeeVector': "\u295E",
+    'DownLeftVector': "\u21BD",
+    'DownLeftVectorBar': "\u2956",
+    'DownRightTeeVector': "\u295F",
+    'DownRightVector': "\u21C1",
+    'DownRightVectorBar': "\u2957",
+    'DownTee': "\u22A4",
+    'DownTeeArrow': "\u21A7",
+    'drbkarow': "\u2910",
+    'drcorn': "\u231F",
+    'drcrop': "\u230C",
+    'dscr': "\uD835\uDCB9",
+    'Dscr': "\uD835\uDC9F",
+    'dscy': "\u0455",
+    'DScy': "\u0405",
+    'dsol': "\u29F6",
+    'dstrok': "\u0111",
+    'Dstrok': "\u0110",
+    'dtdot': "\u22F1",
+    'dtri': "\u25BF",
+    'dtrif': "\u25BE",
+    'duarr': "\u21F5",
+    'duhar': "\u296F",
+    'dwangle': "\u29A6",
+    'dzcy': "\u045F",
+    'DZcy': "\u040F",
+    'dzigrarr': "\u27FF",
+    'eacute': '\xE9',
+    'Eacute': '\xC9',
+    'easter': "\u2A6E",
+    'ecaron': "\u011B",
+    'Ecaron': "\u011A",
+    'ecir': "\u2256",
+    'ecirc': '\xEA',
+    'Ecirc': '\xCA',
+    'ecolon': "\u2255",
+    'ecy': "\u044D",
+    'Ecy': "\u042D",
+    'eDDot': "\u2A77",
+    'edot': "\u0117",
+    'eDot': "\u2251",
+    'Edot': "\u0116",
+    'ee': "\u2147",
+    'efDot': "\u2252",
+    'efr': "\uD835\uDD22",
+    'Efr': "\uD835\uDD08",
+    'eg': "\u2A9A",
+    'egrave': '\xE8',
+    'Egrave': '\xC8',
+    'egs': "\u2A96",
+    'egsdot': "\u2A98",
+    'el': "\u2A99",
+    'Element': "\u2208",
+    'elinters': "\u23E7",
+    'ell': "\u2113",
+    'els': "\u2A95",
+    'elsdot': "\u2A97",
+    'emacr': "\u0113",
+    'Emacr': "\u0112",
+    'empty': "\u2205",
+    'emptyset': "\u2205",
+    'EmptySmallSquare': "\u25FB",
+    'emptyv': "\u2205",
+    'EmptyVerySmallSquare': "\u25AB",
+    'emsp': "\u2003",
+    'emsp13': "\u2004",
+    'emsp14': "\u2005",
+    'eng': "\u014B",
+    'ENG': "\u014A",
+    'ensp': "\u2002",
+    'eogon': "\u0119",
+    'Eogon': "\u0118",
+    'eopf': "\uD835\uDD56",
+    'Eopf': "\uD835\uDD3C",
+    'epar': "\u22D5",
+    'eparsl': "\u29E3",
+    'eplus': "\u2A71",
+    'epsi': "\u03B5",
+    'epsilon': "\u03B5",
+    'Epsilon': "\u0395",
+    'epsiv': "\u03F5",
+    'eqcirc': "\u2256",
+    'eqcolon': "\u2255",
+    'eqsim': "\u2242",
+    'eqslantgtr': "\u2A96",
+    'eqslantless': "\u2A95",
+    'Equal': "\u2A75",
+    'equals': '=',
+    'EqualTilde': "\u2242",
+    'equest': "\u225F",
+    'Equilibrium': "\u21CC",
+    'equiv': "\u2261",
+    'equivDD': "\u2A78",
+    'eqvparsl': "\u29E5",
+    'erarr': "\u2971",
+    'erDot': "\u2253",
+    'escr': "\u212F",
+    'Escr': "\u2130",
+    'esdot': "\u2250",
+    'esim': "\u2242",
+    'Esim': "\u2A73",
+    'eta': "\u03B7",
+    'Eta': "\u0397",
+    'eth': '\xF0',
+    'ETH': '\xD0',
+    'euml': '\xEB',
+    'Euml': '\xCB',
+    'euro': "\u20AC",
+    'excl': '!',
+    'exist': "\u2203",
+    'Exists': "\u2203",
+    'expectation': "\u2130",
+    'exponentiale': "\u2147",
+    'ExponentialE': "\u2147",
+    'fallingdotseq': "\u2252",
+    'fcy': "\u0444",
+    'Fcy': "\u0424",
+    'female': "\u2640",
+    'ffilig': "\uFB03",
+    'fflig': "\uFB00",
+    'ffllig': "\uFB04",
+    'ffr': "\uD835\uDD23",
+    'Ffr': "\uD835\uDD09",
+    'filig': "\uFB01",
+    'FilledSmallSquare': "\u25FC",
+    'FilledVerySmallSquare': "\u25AA",
+    'fjlig': 'fj',
+    'flat': "\u266D",
+    'fllig': "\uFB02",
+    'fltns': "\u25B1",
+    'fnof': "\u0192",
+    'fopf': "\uD835\uDD57",
+    'Fopf': "\uD835\uDD3D",
+    'forall': "\u2200",
+    'ForAll': "\u2200",
+    'fork': "\u22D4",
+    'forkv': "\u2AD9",
+    'Fouriertrf': "\u2131",
+    'fpartint': "\u2A0D",
+    'frac12': '\xBD',
+    'frac13': "\u2153",
+    'frac14': '\xBC',
+    'frac15': "\u2155",
+    'frac16': "\u2159",
+    'frac18': "\u215B",
+    'frac23': "\u2154",
+    'frac25': "\u2156",
+    'frac34': '\xBE',
+    'frac35': "\u2157",
+    'frac38': "\u215C",
+    'frac45': "\u2158",
+    'frac56': "\u215A",
+    'frac58': "\u215D",
+    'frac78': "\u215E",
+    'frasl': "\u2044",
+    'frown': "\u2322",
+    'fscr': "\uD835\uDCBB",
+    'Fscr': "\u2131",
+    'gacute': "\u01F5",
+    'gamma': "\u03B3",
+    'Gamma': "\u0393",
+    'gammad': "\u03DD",
+    'Gammad': "\u03DC",
+    'gap': "\u2A86",
+    'gbreve': "\u011F",
+    'Gbreve': "\u011E",
+    'Gcedil': "\u0122",
+    'gcirc': "\u011D",
+    'Gcirc': "\u011C",
+    'gcy': "\u0433",
+    'Gcy': "\u0413",
+    'gdot': "\u0121",
+    'Gdot': "\u0120",
+    'ge': "\u2265",
+    'gE': "\u2267",
+    'gel': "\u22DB",
+    'gEl': "\u2A8C",
+    'geq': "\u2265",
+    'geqq': "\u2267",
+    'geqslant': "\u2A7E",
+    'ges': "\u2A7E",
+    'gescc': "\u2AA9",
+    'gesdot': "\u2A80",
+    'gesdoto': "\u2A82",
+    'gesdotol': "\u2A84",
+    'gesl': "\u22DB\uFE00",
+    'gesles': "\u2A94",
+    'gfr': "\uD835\uDD24",
+    'Gfr': "\uD835\uDD0A",
+    'gg': "\u226B",
+    'Gg': "\u22D9",
+    'ggg': "\u22D9",
+    'gimel': "\u2137",
+    'gjcy': "\u0453",
+    'GJcy': "\u0403",
+    'gl': "\u2277",
+    'gla': "\u2AA5",
+    'glE': "\u2A92",
+    'glj': "\u2AA4",
+    'gnap': "\u2A8A",
+    'gnapprox': "\u2A8A",
+    'gne': "\u2A88",
+    'gnE': "\u2269",
+    'gneq': "\u2A88",
+    'gneqq': "\u2269",
+    'gnsim': "\u22E7",
+    'gopf': "\uD835\uDD58",
+    'Gopf': "\uD835\uDD3E",
+    'grave': '`',
+    'GreaterEqual': "\u2265",
+    'GreaterEqualLess': "\u22DB",
+    'GreaterFullEqual': "\u2267",
+    'GreaterGreater': "\u2AA2",
+    'GreaterLess': "\u2277",
+    'GreaterSlantEqual': "\u2A7E",
+    'GreaterTilde': "\u2273",
+    'gscr': "\u210A",
+    'Gscr': "\uD835\uDCA2",
+    'gsim': "\u2273",
+    'gsime': "\u2A8E",
+    'gsiml': "\u2A90",
+    'gt': '>',
+    'Gt': "\u226B",
+    'GT': '>',
+    'gtcc': "\u2AA7",
+    'gtcir': "\u2A7A",
+    'gtdot': "\u22D7",
+    'gtlPar': "\u2995",
+    'gtquest': "\u2A7C",
+    'gtrapprox': "\u2A86",
+    'gtrarr': "\u2978",
+    'gtrdot': "\u22D7",
+    'gtreqless': "\u22DB",
+    'gtreqqless': "\u2A8C",
+    'gtrless': "\u2277",
+    'gtrsim': "\u2273",
+    'gvertneqq': "\u2269\uFE00",
+    'gvnE': "\u2269\uFE00",
+    'Hacek': "\u02C7",
+    'hairsp': "\u200A",
+    'half': '\xBD',
+    'hamilt': "\u210B",
+    'hardcy': "\u044A",
+    'HARDcy': "\u042A",
+    'harr': "\u2194",
+    'hArr': "\u21D4",
+    'harrcir': "\u2948",
+    'harrw': "\u21AD",
+    'Hat': '^',
+    'hbar': "\u210F",
+    'hcirc': "\u0125",
+    'Hcirc': "\u0124",
+    'hearts': "\u2665",
+    'heartsuit': "\u2665",
+    'hellip': "\u2026",
+    'hercon': "\u22B9",
+    'hfr': "\uD835\uDD25",
+    'Hfr': "\u210C",
+    'HilbertSpace': "\u210B",
+    'hksearow': "\u2925",
+    'hkswarow': "\u2926",
+    'hoarr': "\u21FF",
+    'homtht': "\u223B",
+    'hookleftarrow': "\u21A9",
+    'hookrightarrow': "\u21AA",
+    'hopf': "\uD835\uDD59",
+    'Hopf': "\u210D",
+    'horbar': "\u2015",
+    'HorizontalLine': "\u2500",
+    'hscr': "\uD835\uDCBD",
+    'Hscr': "\u210B",
+    'hslash': "\u210F",
+    'hstrok': "\u0127",
+    'Hstrok': "\u0126",
+    'HumpDownHump': "\u224E",
+    'HumpEqual': "\u224F",
+    'hybull': "\u2043",
+    'hyphen': "\u2010",
+    'iacute': '\xED',
+    'Iacute': '\xCD',
+    'ic': "\u2063",
+    'icirc': '\xEE',
+    'Icirc': '\xCE',
+    'icy': "\u0438",
+    'Icy': "\u0418",
+    'Idot': "\u0130",
+    'iecy': "\u0435",
+    'IEcy': "\u0415",
+    'iexcl': '\xA1',
+    'iff': "\u21D4",
+    'ifr': "\uD835\uDD26",
+    'Ifr': "\u2111",
+    'igrave': '\xEC',
+    'Igrave': '\xCC',
+    'ii': "\u2148",
+    'iiiint': "\u2A0C",
+    'iiint': "\u222D",
+    'iinfin': "\u29DC",
+    'iiota': "\u2129",
+    'ijlig': "\u0133",
+    'IJlig': "\u0132",
+    'Im': "\u2111",
+    'imacr': "\u012B",
+    'Imacr': "\u012A",
+    'image': "\u2111",
+    'ImaginaryI': "\u2148",
+    'imagline': "\u2110",
+    'imagpart': "\u2111",
+    'imath': "\u0131",
+    'imof': "\u22B7",
+    'imped': "\u01B5",
+    'Implies': "\u21D2",
+    'in': "\u2208",
+    'incare': "\u2105",
+    'infin': "\u221E",
+    'infintie': "\u29DD",
+    'inodot': "\u0131",
+    'int': "\u222B",
+    'Int': "\u222C",
+    'intcal': "\u22BA",
+    'integers': "\u2124",
+    'Integral': "\u222B",
+    'intercal': "\u22BA",
+    'Intersection': "\u22C2",
+    'intlarhk': "\u2A17",
+    'intprod': "\u2A3C",
+    'InvisibleComma': "\u2063",
+    'InvisibleTimes': "\u2062",
+    'iocy': "\u0451",
+    'IOcy': "\u0401",
+    'iogon': "\u012F",
+    'Iogon': "\u012E",
+    'iopf': "\uD835\uDD5A",
+    'Iopf': "\uD835\uDD40",
+    'iota': "\u03B9",
+    'Iota': "\u0399",
+    'iprod': "\u2A3C",
+    'iquest': '\xBF',
+    'iscr': "\uD835\uDCBE",
+    'Iscr': "\u2110",
+    'isin': "\u2208",
+    'isindot': "\u22F5",
+    'isinE': "\u22F9",
+    'isins': "\u22F4",
+    'isinsv': "\u22F3",
+    'isinv': "\u2208",
+    'it': "\u2062",
+    'itilde': "\u0129",
+    'Itilde': "\u0128",
+    'iukcy': "\u0456",
+    'Iukcy': "\u0406",
+    'iuml': '\xEF',
+    'Iuml': '\xCF',
+    'jcirc': "\u0135",
+    'Jcirc': "\u0134",
+    'jcy': "\u0439",
+    'Jcy': "\u0419",
+    'jfr': "\uD835\uDD27",
+    'Jfr': "\uD835\uDD0D",
+    'jmath': "\u0237",
+    'jopf': "\uD835\uDD5B",
+    'Jopf': "\uD835\uDD41",
+    'jscr': "\uD835\uDCBF",
+    'Jscr': "\uD835\uDCA5",
+    'jsercy': "\u0458",
+    'Jsercy': "\u0408",
+    'jukcy': "\u0454",
+    'Jukcy': "\u0404",
+    'kappa': "\u03BA",
+    'Kappa': "\u039A",
+    'kappav': "\u03F0",
+    'kcedil': "\u0137",
+    'Kcedil': "\u0136",
+    'kcy': "\u043A",
+    'Kcy': "\u041A",
+    'kfr': "\uD835\uDD28",
+    'Kfr': "\uD835\uDD0E",
+    'kgreen': "\u0138",
+    'khcy': "\u0445",
+    'KHcy': "\u0425",
+    'kjcy': "\u045C",
+    'KJcy': "\u040C",
+    'kopf': "\uD835\uDD5C",
+    'Kopf': "\uD835\uDD42",
+    'kscr': "\uD835\uDCC0",
+    'Kscr': "\uD835\uDCA6",
+    'lAarr': "\u21DA",
+    'lacute': "\u013A",
+    'Lacute': "\u0139",
+    'laemptyv': "\u29B4",
+    'lagran': "\u2112",
+    'lambda': "\u03BB",
+    'Lambda': "\u039B",
+    'lang': "\u27E8",
+    'Lang': "\u27EA",
+    'langd': "\u2991",
+    'langle': "\u27E8",
+    'lap': "\u2A85",
+    'Laplacetrf': "\u2112",
+    'laquo': '\xAB',
+    'larr': "\u2190",
+    'lArr': "\u21D0",
+    'Larr': "\u219E",
+    'larrb': "\u21E4",
+    'larrbfs': "\u291F",
+    'larrfs': "\u291D",
+    'larrhk': "\u21A9",
+    'larrlp': "\u21AB",
+    'larrpl': "\u2939",
+    'larrsim': "\u2973",
+    'larrtl': "\u21A2",
+    'lat': "\u2AAB",
+    'latail': "\u2919",
+    'lAtail': "\u291B",
+    'late': "\u2AAD",
+    'lates': "\u2AAD\uFE00",
+    'lbarr': "\u290C",
+    'lBarr': "\u290E",
+    'lbbrk': "\u2772",
+    'lbrace': '{',
+    'lbrack': '[',
+    'lbrke': "\u298B",
+    'lbrksld': "\u298F",
+    'lbrkslu': "\u298D",
+    'lcaron': "\u013E",
+    'Lcaron': "\u013D",
+    'lcedil': "\u013C",
+    'Lcedil': "\u013B",
+    'lceil': "\u2308",
+    'lcub': '{',
+    'lcy': "\u043B",
+    'Lcy': "\u041B",
+    'ldca': "\u2936",
+    'ldquo': "\u201C",
+    'ldquor': "\u201E",
+    'ldrdhar': "\u2967",
+    'ldrushar': "\u294B",
+    'ldsh': "\u21B2",
+    'le': "\u2264",
+    'lE': "\u2266",
+    'LeftAngleBracket': "\u27E8",
+    'leftarrow': "\u2190",
+    'Leftarrow': "\u21D0",
+    'LeftArrow': "\u2190",
+    'LeftArrowBar': "\u21E4",
+    'LeftArrowRightArrow': "\u21C6",
+    'leftarrowtail': "\u21A2",
+    'LeftCeiling': "\u2308",
+    'LeftDoubleBracket': "\u27E6",
+    'LeftDownTeeVector': "\u2961",
+    'LeftDownVector': "\u21C3",
+    'LeftDownVectorBar': "\u2959",
+    'LeftFloor': "\u230A",
+    'leftharpoondown': "\u21BD",
+    'leftharpoonup': "\u21BC",
+    'leftleftarrows': "\u21C7",
+    'leftrightarrow': "\u2194",
+    'Leftrightarrow': "\u21D4",
+    'LeftRightArrow': "\u2194",
+    'leftrightarrows': "\u21C6",
+    'leftrightharpoons': "\u21CB",
+    'leftrightsquigarrow': "\u21AD",
+    'LeftRightVector': "\u294E",
+    'LeftTee': "\u22A3",
+    'LeftTeeArrow': "\u21A4",
+    'LeftTeeVector': "\u295A",
+    'leftthreetimes': "\u22CB",
+    'LeftTriangle': "\u22B2",
+    'LeftTriangleBar': "\u29CF",
+    'LeftTriangleEqual': "\u22B4",
+    'LeftUpDownVector': "\u2951",
+    'LeftUpTeeVector': "\u2960",
+    'LeftUpVector': "\u21BF",
+    'LeftUpVectorBar': "\u2958",
+    'LeftVector': "\u21BC",
+    'LeftVectorBar': "\u2952",
+    'leg': "\u22DA",
+    'lEg': "\u2A8B",
+    'leq': "\u2264",
+    'leqq': "\u2266",
+    'leqslant': "\u2A7D",
+    'les': "\u2A7D",
+    'lescc': "\u2AA8",
+    'lesdot': "\u2A7F",
+    'lesdoto': "\u2A81",
+    'lesdotor': "\u2A83",
+    'lesg': "\u22DA\uFE00",
+    'lesges': "\u2A93",
+    'lessapprox': "\u2A85",
+    'lessdot': "\u22D6",
+    'lesseqgtr': "\u22DA",
+    'lesseqqgtr': "\u2A8B",
+    'LessEqualGreater': "\u22DA",
+    'LessFullEqual': "\u2266",
+    'LessGreater': "\u2276",
+    'lessgtr': "\u2276",
+    'LessLess': "\u2AA1",
+    'lesssim': "\u2272",
+    'LessSlantEqual': "\u2A7D",
+    'LessTilde': "\u2272",
+    'lfisht': "\u297C",
+    'lfloor': "\u230A",
+    'lfr': "\uD835\uDD29",
+    'Lfr': "\uD835\uDD0F",
+    'lg': "\u2276",
+    'lgE': "\u2A91",
+    'lHar': "\u2962",
+    'lhard': "\u21BD",
+    'lharu': "\u21BC",
+    'lharul': "\u296A",
+    'lhblk': "\u2584",
+    'ljcy': "\u0459",
+    'LJcy': "\u0409",
+    'll': "\u226A",
+    'Ll': "\u22D8",
+    'llarr': "\u21C7",
+    'llcorner': "\u231E",
+    'Lleftarrow': "\u21DA",
+    'llhard': "\u296B",
+    'lltri': "\u25FA",
+    'lmidot': "\u0140",
+    'Lmidot': "\u013F",
+    'lmoust': "\u23B0",
+    'lmoustache': "\u23B0",
+    'lnap': "\u2A89",
+    'lnapprox': "\u2A89",
+    'lne': "\u2A87",
+    'lnE': "\u2268",
+    'lneq': "\u2A87",
+    'lneqq': "\u2268",
+    'lnsim': "\u22E6",
+    'loang': "\u27EC",
+    'loarr': "\u21FD",
+    'lobrk': "\u27E6",
+    'longleftarrow': "\u27F5",
+    'Longleftarrow': "\u27F8",
+    'LongLeftArrow': "\u27F5",
+    'longleftrightarrow': "\u27F7",
+    'Longleftrightarrow': "\u27FA",
+    'LongLeftRightArrow': "\u27F7",
+    'longmapsto': "\u27FC",
+    'longrightarrow': "\u27F6",
+    'Longrightarrow': "\u27F9",
+    'LongRightArrow': "\u27F6",
+    'looparrowleft': "\u21AB",
+    'looparrowright': "\u21AC",
+    'lopar': "\u2985",
+    'lopf': "\uD835\uDD5D",
+    'Lopf': "\uD835\uDD43",
+    'loplus': "\u2A2D",
+    'lotimes': "\u2A34",
+    'lowast': "\u2217",
+    'lowbar': '_',
+    'LowerLeftArrow': "\u2199",
+    'LowerRightArrow': "\u2198",
+    'loz': "\u25CA",
+    'lozenge': "\u25CA",
+    'lozf': "\u29EB",
+    'lpar': '(',
+    'lparlt': "\u2993",
+    'lrarr': "\u21C6",
+    'lrcorner': "\u231F",
+    'lrhar': "\u21CB",
+    'lrhard': "\u296D",
+    'lrm': "\u200E",
+    'lrtri': "\u22BF",
+    'lsaquo': "\u2039",
+    'lscr': "\uD835\uDCC1",
+    'Lscr': "\u2112",
+    'lsh': "\u21B0",
+    'Lsh': "\u21B0",
+    'lsim': "\u2272",
+    'lsime': "\u2A8D",
+    'lsimg': "\u2A8F",
+    'lsqb': '[',
+    'lsquo': "\u2018",
+    'lsquor': "\u201A",
+    'lstrok': "\u0142",
+    'Lstrok': "\u0141",
+    'lt': '<',
+    'Lt': "\u226A",
+    'LT': '<',
+    'ltcc': "\u2AA6",
+    'ltcir': "\u2A79",
+    'ltdot': "\u22D6",
+    'lthree': "\u22CB",
+    'ltimes': "\u22C9",
+    'ltlarr': "\u2976",
+    'ltquest': "\u2A7B",
+    'ltri': "\u25C3",
+    'ltrie': "\u22B4",
+    'ltrif': "\u25C2",
+    'ltrPar': "\u2996",
+    'lurdshar': "\u294A",
+    'luruhar': "\u2966",
+    'lvertneqq': "\u2268\uFE00",
+    'lvnE': "\u2268\uFE00",
+    'macr': '\xAF',
+    'male': "\u2642",
+    'malt': "\u2720",
+    'maltese': "\u2720",
+    'map': "\u21A6",
+    'Map': "\u2905",
+    'mapsto': "\u21A6",
+    'mapstodown': "\u21A7",
+    'mapstoleft': "\u21A4",
+    'mapstoup': "\u21A5",
+    'marker': "\u25AE",
+    'mcomma': "\u2A29",
+    'mcy': "\u043C",
+    'Mcy': "\u041C",
+    'mdash': "\u2014",
+    'mDDot': "\u223A",
+    'measuredangle': "\u2221",
+    'MediumSpace': "\u205F",
+    'Mellintrf': "\u2133",
+    'mfr': "\uD835\uDD2A",
+    'Mfr': "\uD835\uDD10",
+    'mho': "\u2127",
+    'micro': '\xB5',
+    'mid': "\u2223",
+    'midast': '*',
+    'midcir': "\u2AF0",
+    'middot': '\xB7',
+    'minus': "\u2212",
+    'minusb': "\u229F",
+    'minusd': "\u2238",
+    'minusdu': "\u2A2A",
+    'MinusPlus': "\u2213",
+    'mlcp': "\u2ADB",
+    'mldr': "\u2026",
+    'mnplus': "\u2213",
+    'models': "\u22A7",
+    'mopf': "\uD835\uDD5E",
+    'Mopf': "\uD835\uDD44",
+    'mp': "\u2213",
+    'mscr': "\uD835\uDCC2",
+    'Mscr': "\u2133",
+    'mstpos': "\u223E",
+    'mu': "\u03BC",
+    'Mu': "\u039C",
+    'multimap': "\u22B8",
+    'mumap': "\u22B8",
+    'nabla': "\u2207",
+    'nacute': "\u0144",
+    'Nacute': "\u0143",
+    'nang': "\u2220\u20D2",
+    'nap': "\u2249",
+    'napE': "\u2A70\u0338",
+    'napid': "\u224B\u0338",
+    'napos': "\u0149",
+    'napprox': "\u2249",
+    'natur': "\u266E",
+    'natural': "\u266E",
+    'naturals': "\u2115",
+    'nbsp': '\xA0',
+    'nbump': "\u224E\u0338",
+    'nbumpe': "\u224F\u0338",
+    'ncap': "\u2A43",
+    'ncaron': "\u0148",
+    'Ncaron': "\u0147",
+    'ncedil': "\u0146",
+    'Ncedil': "\u0145",
+    'ncong': "\u2247",
+    'ncongdot': "\u2A6D\u0338",
+    'ncup': "\u2A42",
+    'ncy': "\u043D",
+    'Ncy': "\u041D",
+    'ndash': "\u2013",
+    'ne': "\u2260",
+    'nearhk': "\u2924",
+    'nearr': "\u2197",
+    'neArr': "\u21D7",
+    'nearrow': "\u2197",
+    'nedot': "\u2250\u0338",
+    'NegativeMediumSpace': "\u200B",
+    'NegativeThickSpace': "\u200B",
+    'NegativeThinSpace': "\u200B",
+    'NegativeVeryThinSpace': "\u200B",
+    'nequiv': "\u2262",
+    'nesear': "\u2928",
+    'nesim': "\u2242\u0338",
+    'NestedGreaterGreater': "\u226B",
+    'NestedLessLess': "\u226A",
+    'NewLine': '\n',
+    'nexist': "\u2204",
+    'nexists': "\u2204",
+    'nfr': "\uD835\uDD2B",
+    'Nfr': "\uD835\uDD11",
+    'nge': "\u2271",
+    'ngE': "\u2267\u0338",
+    'ngeq': "\u2271",
+    'ngeqq': "\u2267\u0338",
+    'ngeqslant': "\u2A7E\u0338",
+    'nges': "\u2A7E\u0338",
+    'nGg': "\u22D9\u0338",
+    'ngsim': "\u2275",
+    'ngt': "\u226F",
+    'nGt': "\u226B\u20D2",
+    'ngtr': "\u226F",
+    'nGtv': "\u226B\u0338",
+    'nharr': "\u21AE",
+    'nhArr': "\u21CE",
+    'nhpar': "\u2AF2",
+    'ni': "\u220B",
+    'nis': "\u22FC",
+    'nisd': "\u22FA",
+    'niv': "\u220B",
+    'njcy': "\u045A",
+    'NJcy': "\u040A",
+    'nlarr': "\u219A",
+    'nlArr': "\u21CD",
+    'nldr': "\u2025",
+    'nle': "\u2270",
+    'nlE': "\u2266\u0338",
+    'nleftarrow': "\u219A",
+    'nLeftarrow': "\u21CD",
+    'nleftrightarrow': "\u21AE",
+    'nLeftrightarrow': "\u21CE",
+    'nleq': "\u2270",
+    'nleqq': "\u2266\u0338",
+    'nleqslant': "\u2A7D\u0338",
+    'nles': "\u2A7D\u0338",
+    'nless': "\u226E",
+    'nLl': "\u22D8\u0338",
+    'nlsim': "\u2274",
+    'nlt': "\u226E",
+    'nLt': "\u226A\u20D2",
+    'nltri': "\u22EA",
+    'nltrie': "\u22EC",
+    'nLtv': "\u226A\u0338",
+    'nmid': "\u2224",
+    'NoBreak': "\u2060",
+    'NonBreakingSpace': '\xA0',
+    'nopf': "\uD835\uDD5F",
+    'Nopf': "\u2115",
+    'not': '\xAC',
+    'Not': "\u2AEC",
+    'NotCongruent': "\u2262",
+    'NotCupCap': "\u226D",
+    'NotDoubleVerticalBar': "\u2226",
+    'NotElement': "\u2209",
+    'NotEqual': "\u2260",
+    'NotEqualTilde': "\u2242\u0338",
+    'NotExists': "\u2204",
+    'NotGreater': "\u226F",
+    'NotGreaterEqual': "\u2271",
+    'NotGreaterFullEqual': "\u2267\u0338",
+    'NotGreaterGreater': "\u226B\u0338",
+    'NotGreaterLess': "\u2279",
+    'NotGreaterSlantEqual': "\u2A7E\u0338",
+    'NotGreaterTilde': "\u2275",
+    'NotHumpDownHump': "\u224E\u0338",
+    'NotHumpEqual': "\u224F\u0338",
+    'notin': "\u2209",
+    'notindot': "\u22F5\u0338",
+    'notinE': "\u22F9\u0338",
+    'notinva': "\u2209",
+    'notinvb': "\u22F7",
+    'notinvc': "\u22F6",
+    'NotLeftTriangle': "\u22EA",
+    'NotLeftTriangleBar': "\u29CF\u0338",
+    'NotLeftTriangleEqual': "\u22EC",
+    'NotLess': "\u226E",
+    'NotLessEqual': "\u2270",
+    'NotLessGreater': "\u2278",
+    'NotLessLess': "\u226A\u0338",
+    'NotLessSlantEqual': "\u2A7D\u0338",
+    'NotLessTilde': "\u2274",
+    'NotNestedGreaterGreater': "\u2AA2\u0338",
+    'NotNestedLessLess': "\u2AA1\u0338",
+    'notni': "\u220C",
+    'notniva': "\u220C",
+    'notnivb': "\u22FE",
+    'notnivc': "\u22FD",
+    'NotPrecedes': "\u2280",
+    'NotPrecedesEqual': "\u2AAF\u0338",
+    'NotPrecedesSlantEqual': "\u22E0",
+    'NotReverseElement': "\u220C",
+    'NotRightTriangle': "\u22EB",
+    'NotRightTriangleBar': "\u29D0\u0338",
+    'NotRightTriangleEqual': "\u22ED",
+    'NotSquareSubset': "\u228F\u0338",
+    'NotSquareSubsetEqual': "\u22E2",
+    'NotSquareSuperset': "\u2290\u0338",
+    'NotSquareSupersetEqual': "\u22E3",
+    'NotSubset': "\u2282\u20D2",
+    'NotSubsetEqual': "\u2288",
+    'NotSucceeds': "\u2281",
+    'NotSucceedsEqual': "\u2AB0\u0338",
+    'NotSucceedsSlantEqual': "\u22E1",
+    'NotSucceedsTilde': "\u227F\u0338",
+    'NotSuperset': "\u2283\u20D2",
+    'NotSupersetEqual': "\u2289",
+    'NotTilde': "\u2241",
+    'NotTildeEqual': "\u2244",
+    'NotTildeFullEqual': "\u2247",
+    'NotTildeTilde': "\u2249",
+    'NotVerticalBar': "\u2224",
+    'npar': "\u2226",
+    'nparallel': "\u2226",
+    'nparsl': "\u2AFD\u20E5",
+    'npart': "\u2202\u0338",
+    'npolint': "\u2A14",
+    'npr': "\u2280",
+    'nprcue': "\u22E0",
+    'npre': "\u2AAF\u0338",
+    'nprec': "\u2280",
+    'npreceq': "\u2AAF\u0338",
+    'nrarr': "\u219B",
+    'nrArr': "\u21CF",
+    'nrarrc': "\u2933\u0338",
+    'nrarrw': "\u219D\u0338",
+    'nrightarrow': "\u219B",
+    'nRightarrow': "\u21CF",
+    'nrtri': "\u22EB",
+    'nrtrie': "\u22ED",
+    'nsc': "\u2281",
+    'nsccue': "\u22E1",
+    'nsce': "\u2AB0\u0338",
+    'nscr': "\uD835\uDCC3",
+    'Nscr': "\uD835\uDCA9",
+    'nshortmid': "\u2224",
+    'nshortparallel': "\u2226",
+    'nsim': "\u2241",
+    'nsime': "\u2244",
+    'nsimeq': "\u2244",
+    'nsmid': "\u2224",
+    'nspar': "\u2226",
+    'nsqsube': "\u22E2",
+    'nsqsupe': "\u22E3",
+    'nsub': "\u2284",
+    'nsube': "\u2288",
+    'nsubE': "\u2AC5\u0338",
+    'nsubset': "\u2282\u20D2",
+    'nsubseteq': "\u2288",
+    'nsubseteqq': "\u2AC5\u0338",
+    'nsucc': "\u2281",
+    'nsucceq': "\u2AB0\u0338",
+    'nsup': "\u2285",
+    'nsupe': "\u2289",
+    'nsupE': "\u2AC6\u0338",
+    'nsupset': "\u2283\u20D2",
+    'nsupseteq': "\u2289",
+    'nsupseteqq': "\u2AC6\u0338",
+    'ntgl': "\u2279",
+    'ntilde': '\xF1',
+    'Ntilde': '\xD1',
+    'ntlg': "\u2278",
+    'ntriangleleft': "\u22EA",
+    'ntrianglelefteq': "\u22EC",
+    'ntriangleright': "\u22EB",
+    'ntrianglerighteq': "\u22ED",
+    'nu': "\u03BD",
+    'Nu': "\u039D",
+    'num': '#',
+    'numero': "\u2116",
+    'numsp': "\u2007",
+    'nvap': "\u224D\u20D2",
+    'nvdash': "\u22AC",
+    'nvDash': "\u22AD",
+    'nVdash': "\u22AE",
+    'nVDash': "\u22AF",
+    'nvge': "\u2265\u20D2",
+    'nvgt': ">\u20D2",
+    'nvHarr': "\u2904",
+    'nvinfin': "\u29DE",
+    'nvlArr': "\u2902",
+    'nvle': "\u2264\u20D2",
+    'nvlt': "<\u20D2",
+    'nvltrie': "\u22B4\u20D2",
+    'nvrArr': "\u2903",
+    'nvrtrie': "\u22B5\u20D2",
+    'nvsim': "\u223C\u20D2",
+    'nwarhk': "\u2923",
+    'nwarr': "\u2196",
+    'nwArr': "\u21D6",
+    'nwarrow': "\u2196",
+    'nwnear': "\u2927",
+    'oacute': '\xF3',
+    'Oacute': '\xD3',
+    'oast': "\u229B",
+    'ocir': "\u229A",
+    'ocirc': '\xF4',
+    'Ocirc': '\xD4',
+    'ocy': "\u043E",
+    'Ocy': "\u041E",
+    'odash': "\u229D",
+    'odblac': "\u0151",
+    'Odblac': "\u0150",
+    'odiv': "\u2A38",
+    'odot': "\u2299",
+    'odsold': "\u29BC",
+    'oelig': "\u0153",
+    'OElig': "\u0152",
+    'ofcir': "\u29BF",
+    'ofr': "\uD835\uDD2C",
+    'Ofr': "\uD835\uDD12",
+    'ogon': "\u02DB",
+    'ograve': '\xF2',
+    'Ograve': '\xD2',
+    'ogt': "\u29C1",
+    'ohbar': "\u29B5",
+    'ohm': "\u03A9",
+    'oint': "\u222E",
+    'olarr': "\u21BA",
+    'olcir': "\u29BE",
+    'olcross': "\u29BB",
+    'oline': "\u203E",
+    'olt': "\u29C0",
+    'omacr': "\u014D",
+    'Omacr': "\u014C",
+    'omega': "\u03C9",
+    'Omega': "\u03A9",
+    'omicron': "\u03BF",
+    'Omicron': "\u039F",
+    'omid': "\u29B6",
+    'ominus': "\u2296",
+    'oopf': "\uD835\uDD60",
+    'Oopf': "\uD835\uDD46",
+    'opar': "\u29B7",
+    'OpenCurlyDoubleQuote': "\u201C",
+    'OpenCurlyQuote': "\u2018",
+    'operp': "\u29B9",
+    'oplus': "\u2295",
+    'or': "\u2228",
+    'Or': "\u2A54",
+    'orarr': "\u21BB",
+    'ord': "\u2A5D",
+    'order': "\u2134",
+    'orderof': "\u2134",
+    'ordf': '\xAA',
+    'ordm': '\xBA',
+    'origof': "\u22B6",
+    'oror': "\u2A56",
+    'orslope': "\u2A57",
+    'orv': "\u2A5B",
+    'oS': "\u24C8",
+    'oscr': "\u2134",
+    'Oscr': "\uD835\uDCAA",
+    'oslash': '\xF8',
+    'Oslash': '\xD8',
+    'osol': "\u2298",
+    'otilde': '\xF5',
+    'Otilde': '\xD5',
+    'otimes': "\u2297",
+    'Otimes': "\u2A37",
+    'otimesas': "\u2A36",
+    'ouml': '\xF6',
+    'Ouml': '\xD6',
+    'ovbar': "\u233D",
+    'OverBar': "\u203E",
+    'OverBrace': "\u23DE",
+    'OverBracket': "\u23B4",
+    'OverParenthesis': "\u23DC",
+    'par': "\u2225",
+    'para': '\xB6',
+    'parallel': "\u2225",
+    'parsim': "\u2AF3",
+    'parsl': "\u2AFD",
+    'part': "\u2202",
+    'PartialD': "\u2202",
+    'pcy': "\u043F",
+    'Pcy': "\u041F",
+    'percnt': '%',
+    'period': '.',
+    'permil': "\u2030",
+    'perp': "\u22A5",
+    'pertenk': "\u2031",
+    'pfr': "\uD835\uDD2D",
+    'Pfr': "\uD835\uDD13",
+    'phi': "\u03C6",
+    'Phi': "\u03A6",
+    'phiv': "\u03D5",
+    'phmmat': "\u2133",
+    'phone': "\u260E",
+    'pi': "\u03C0",
+    'Pi': "\u03A0",
+    'pitchfork': "\u22D4",
+    'piv': "\u03D6",
+    'planck': "\u210F",
+    'planckh': "\u210E",
+    'plankv': "\u210F",
+    'plus': '+',
+    'plusacir': "\u2A23",
+    'plusb': "\u229E",
+    'pluscir': "\u2A22",
+    'plusdo': "\u2214",
+    'plusdu': "\u2A25",
+    'pluse': "\u2A72",
+    'PlusMinus': '\xB1',
+    'plusmn': '\xB1',
+    'plussim': "\u2A26",
+    'plustwo': "\u2A27",
+    'pm': '\xB1',
+    'Poincareplane': "\u210C",
+    'pointint': "\u2A15",
+    'popf': "\uD835\uDD61",
+    'Popf': "\u2119",
+    'pound': '\xA3',
+    'pr': "\u227A",
+    'Pr': "\u2ABB",
+    'prap': "\u2AB7",
+    'prcue': "\u227C",
+    'pre': "\u2AAF",
+    'prE': "\u2AB3",
+    'prec': "\u227A",
+    'precapprox': "\u2AB7",
+    'preccurlyeq': "\u227C",
+    'Precedes': "\u227A",
+    'PrecedesEqual': "\u2AAF",
+    'PrecedesSlantEqual': "\u227C",
+    'PrecedesTilde': "\u227E",
+    'preceq': "\u2AAF",
+    'precnapprox': "\u2AB9",
+    'precneqq': "\u2AB5",
+    'precnsim': "\u22E8",
+    'precsim': "\u227E",
+    'prime': "\u2032",
+    'Prime': "\u2033",
+    'primes': "\u2119",
+    'prnap': "\u2AB9",
+    'prnE': "\u2AB5",
+    'prnsim': "\u22E8",
+    'prod': "\u220F",
+    'Product': "\u220F",
+    'profalar': "\u232E",
+    'profline': "\u2312",
+    'profsurf': "\u2313",
+    'prop': "\u221D",
+    'Proportion': "\u2237",
+    'Proportional': "\u221D",
+    'propto': "\u221D",
+    'prsim': "\u227E",
+    'prurel': "\u22B0",
+    'pscr': "\uD835\uDCC5",
+    'Pscr': "\uD835\uDCAB",
+    'psi': "\u03C8",
+    'Psi': "\u03A8",
+    'puncsp': "\u2008",
+    'qfr': "\uD835\uDD2E",
+    'Qfr': "\uD835\uDD14",
+    'qint': "\u2A0C",
+    'qopf': "\uD835\uDD62",
+    'Qopf': "\u211A",
+    'qprime': "\u2057",
+    'qscr': "\uD835\uDCC6",
+    'Qscr': "\uD835\uDCAC",
+    'quaternions': "\u210D",
+    'quatint': "\u2A16",
+    'quest': '?',
+    'questeq': "\u225F",
+    'quot': '"',
+    'QUOT': '"',
+    'rAarr': "\u21DB",
+    'race': "\u223D\u0331",
+    'racute': "\u0155",
+    'Racute': "\u0154",
+    'radic': "\u221A",
+    'raemptyv': "\u29B3",
+    'rang': "\u27E9",
+    'Rang': "\u27EB",
+    'rangd': "\u2992",
+    'range': "\u29A5",
+    'rangle': "\u27E9",
+    'raquo': '\xBB',
+    'rarr': "\u2192",
+    'rArr': "\u21D2",
+    'Rarr': "\u21A0",
+    'rarrap': "\u2975",
+    'rarrb': "\u21E5",
+    'rarrbfs': "\u2920",
+    'rarrc': "\u2933",
+    'rarrfs': "\u291E",
+    'rarrhk': "\u21AA",
+    'rarrlp': "\u21AC",
+    'rarrpl': "\u2945",
+    'rarrsim': "\u2974",
+    'rarrtl': "\u21A3",
+    'Rarrtl': "\u2916",
+    'rarrw': "\u219D",
+    'ratail': "\u291A",
+    'rAtail': "\u291C",
+    'ratio': "\u2236",
+    'rationals': "\u211A",
+    'rbarr': "\u290D",
+    'rBarr': "\u290F",
+    'RBarr': "\u2910",
+    'rbbrk': "\u2773",
+    'rbrace': '}',
+    'rbrack': ']',
+    'rbrke': "\u298C",
+    'rbrksld': "\u298E",
+    'rbrkslu': "\u2990",
+    'rcaron': "\u0159",
+    'Rcaron': "\u0158",
+    'rcedil': "\u0157",
+    'Rcedil': "\u0156",
+    'rceil': "\u2309",
+    'rcub': '}',
+    'rcy': "\u0440",
+    'Rcy': "\u0420",
+    'rdca': "\u2937",
+    'rdldhar': "\u2969",
+    'rdquo': "\u201D",
+    'rdquor': "\u201D",
+    'rdsh': "\u21B3",
+    'Re': "\u211C",
+    'real': "\u211C",
+    'realine': "\u211B",
+    'realpart': "\u211C",
+    'reals': "\u211D",
+    'rect': "\u25AD",
+    'reg': '\xAE',
+    'REG': '\xAE',
+    'ReverseElement': "\u220B",
+    'ReverseEquilibrium': "\u21CB",
+    'ReverseUpEquilibrium': "\u296F",
+    'rfisht': "\u297D",
+    'rfloor': "\u230B",
+    'rfr': "\uD835\uDD2F",
+    'Rfr': "\u211C",
+    'rHar': "\u2964",
+    'rhard': "\u21C1",
+    'rharu': "\u21C0",
+    'rharul': "\u296C",
+    'rho': "\u03C1",
+    'Rho': "\u03A1",
+    'rhov': "\u03F1",
+    'RightAngleBracket': "\u27E9",
+    'rightarrow': "\u2192",
+    'Rightarrow': "\u21D2",
+    'RightArrow': "\u2192",
+    'RightArrowBar': "\u21E5",
+    'RightArrowLeftArrow': "\u21C4",
+    'rightarrowtail': "\u21A3",
+    'RightCeiling': "\u2309",
+    'RightDoubleBracket': "\u27E7",
+    'RightDownTeeVector': "\u295D",
+    'RightDownVector': "\u21C2",
+    'RightDownVectorBar': "\u2955",
+    'RightFloor': "\u230B",
+    'rightharpoondown': "\u21C1",
+    'rightharpoonup': "\u21C0",
+    'rightleftarrows': "\u21C4",
+    'rightleftharpoons': "\u21CC",
+    'rightrightarrows': "\u21C9",
+    'rightsquigarrow': "\u219D",
+    'RightTee': "\u22A2",
+    'RightTeeArrow': "\u21A6",
+    'RightTeeVector': "\u295B",
+    'rightthreetimes': "\u22CC",
+    'RightTriangle': "\u22B3",
+    'RightTriangleBar': "\u29D0",
+    'RightTriangleEqual': "\u22B5",
+    'RightUpDownVector': "\u294F",
+    'RightUpTeeVector': "\u295C",
+    'RightUpVector': "\u21BE",
+    'RightUpVectorBar': "\u2954",
+    'RightVector': "\u21C0",
+    'RightVectorBar': "\u2953",
+    'ring': "\u02DA",
+    'risingdotseq': "\u2253",
+    'rlarr': "\u21C4",
+    'rlhar': "\u21CC",
+    'rlm': "\u200F",
+    'rmoust': "\u23B1",
+    'rmoustache': "\u23B1",
+    'rnmid': "\u2AEE",
+    'roang': "\u27ED",
+    'roarr': "\u21FE",
+    'robrk': "\u27E7",
+    'ropar': "\u2986",
+    'ropf': "\uD835\uDD63",
+    'Ropf': "\u211D",
+    'roplus': "\u2A2E",
+    'rotimes': "\u2A35",
+    'RoundImplies': "\u2970",
+    'rpar': ')',
+    'rpargt': "\u2994",
+    'rppolint': "\u2A12",
+    'rrarr': "\u21C9",
+    'Rrightarrow': "\u21DB",
+    'rsaquo': "\u203A",
+    'rscr': "\uD835\uDCC7",
+    'Rscr': "\u211B",
+    'rsh': "\u21B1",
+    'Rsh': "\u21B1",
+    'rsqb': ']',
+    'rsquo': "\u2019",
+    'rsquor': "\u2019",
+    'rthree': "\u22CC",
+    'rtimes': "\u22CA",
+    'rtri': "\u25B9",
+    'rtrie': "\u22B5",
+    'rtrif': "\u25B8",
+    'rtriltri': "\u29CE",
+    'RuleDelayed': "\u29F4",
+    'ruluhar': "\u2968",
+    'rx': "\u211E",
+    'sacute': "\u015B",
+    'Sacute': "\u015A",
+    'sbquo': "\u201A",
+    'sc': "\u227B",
+    'Sc': "\u2ABC",
+    'scap': "\u2AB8",
+    'scaron': "\u0161",
+    'Scaron': "\u0160",
+    'sccue': "\u227D",
+    'sce': "\u2AB0",
+    'scE': "\u2AB4",
+    'scedil': "\u015F",
+    'Scedil': "\u015E",
+    'scirc': "\u015D",
+    'Scirc': "\u015C",
+    'scnap': "\u2ABA",
+    'scnE': "\u2AB6",
+    'scnsim': "\u22E9",
+    'scpolint': "\u2A13",
+    'scsim': "\u227F",
+    'scy': "\u0441",
+    'Scy': "\u0421",
+    'sdot': "\u22C5",
+    'sdotb': "\u22A1",
+    'sdote': "\u2A66",
+    'searhk': "\u2925",
+    'searr': "\u2198",
+    'seArr': "\u21D8",
+    'searrow': "\u2198",
+    'sect': '\xA7',
+    'semi': ';',
+    'seswar': "\u2929",
+    'setminus': "\u2216",
+    'setmn': "\u2216",
+    'sext': "\u2736",
+    'sfr': "\uD835\uDD30",
+    'Sfr': "\uD835\uDD16",
+    'sfrown': "\u2322",
+    'sharp': "\u266F",
+    'shchcy': "\u0449",
+    'SHCHcy': "\u0429",
+    'shcy': "\u0448",
+    'SHcy': "\u0428",
+    'ShortDownArrow': "\u2193",
+    'ShortLeftArrow': "\u2190",
+    'shortmid': "\u2223",
+    'shortparallel': "\u2225",
+    'ShortRightArrow': "\u2192",
+    'ShortUpArrow': "\u2191",
+    'shy': '\xAD',
+    'sigma': "\u03C3",
+    'Sigma': "\u03A3",
+    'sigmaf': "\u03C2",
+    'sigmav': "\u03C2",
+    'sim': "\u223C",
+    'simdot': "\u2A6A",
+    'sime': "\u2243",
+    'simeq': "\u2243",
+    'simg': "\u2A9E",
+    'simgE': "\u2AA0",
+    'siml': "\u2A9D",
+    'simlE': "\u2A9F",
+    'simne': "\u2246",
+    'simplus': "\u2A24",
+    'simrarr': "\u2972",
+    'slarr': "\u2190",
+    'SmallCircle': "\u2218",
+    'smallsetminus': "\u2216",
+    'smashp': "\u2A33",
+    'smeparsl': "\u29E4",
+    'smid': "\u2223",
+    'smile': "\u2323",
+    'smt': "\u2AAA",
+    'smte': "\u2AAC",
+    'smtes': "\u2AAC\uFE00",
+    'softcy': "\u044C",
+    'SOFTcy': "\u042C",
+    'sol': '/',
+    'solb': "\u29C4",
+    'solbar': "\u233F",
+    'sopf': "\uD835\uDD64",
+    'Sopf': "\uD835\uDD4A",
+    'spades': "\u2660",
+    'spadesuit': "\u2660",
+    'spar': "\u2225",
+    'sqcap': "\u2293",
+    'sqcaps': "\u2293\uFE00",
+    'sqcup': "\u2294",
+    'sqcups': "\u2294\uFE00",
+    'Sqrt': "\u221A",
+    'sqsub': "\u228F",
+    'sqsube': "\u2291",
+    'sqsubset': "\u228F",
+    'sqsubseteq': "\u2291",
+    'sqsup': "\u2290",
+    'sqsupe': "\u2292",
+    'sqsupset': "\u2290",
+    'sqsupseteq': "\u2292",
+    'squ': "\u25A1",
+    'square': "\u25A1",
+    'Square': "\u25A1",
+    'SquareIntersection': "\u2293",
+    'SquareSubset': "\u228F",
+    'SquareSubsetEqual': "\u2291",
+    'SquareSuperset': "\u2290",
+    'SquareSupersetEqual': "\u2292",
+    'SquareUnion': "\u2294",
+    'squarf': "\u25AA",
+    'squf': "\u25AA",
+    'srarr': "\u2192",
+    'sscr': "\uD835\uDCC8",
+    'Sscr': "\uD835\uDCAE",
+    'ssetmn': "\u2216",
+    'ssmile': "\u2323",
+    'sstarf': "\u22C6",
+    'star': "\u2606",
+    'Star': "\u22C6",
+    'starf': "\u2605",
+    'straightepsilon': "\u03F5",
+    'straightphi': "\u03D5",
+    'strns': '\xAF',
+    'sub': "\u2282",
+    'Sub': "\u22D0",
+    'subdot': "\u2ABD",
+    'sube': "\u2286",
+    'subE': "\u2AC5",
+    'subedot': "\u2AC3",
+    'submult': "\u2AC1",
+    'subne': "\u228A",
+    'subnE': "\u2ACB",
+    'subplus': "\u2ABF",
+    'subrarr': "\u2979",
+    'subset': "\u2282",
+    'Subset': "\u22D0",
+    'subseteq': "\u2286",
+    'subseteqq': "\u2AC5",
+    'SubsetEqual': "\u2286",
+    'subsetneq': "\u228A",
+    'subsetneqq': "\u2ACB",
+    'subsim': "\u2AC7",
+    'subsub': "\u2AD5",
+    'subsup': "\u2AD3",
+    'succ': "\u227B",
+    'succapprox': "\u2AB8",
+    'succcurlyeq': "\u227D",
+    'Succeeds': "\u227B",
+    'SucceedsEqual': "\u2AB0",
+    'SucceedsSlantEqual': "\u227D",
+    'SucceedsTilde': "\u227F",
+    'succeq': "\u2AB0",
+    'succnapprox': "\u2ABA",
+    'succneqq': "\u2AB6",
+    'succnsim': "\u22E9",
+    'succsim': "\u227F",
+    'SuchThat': "\u220B",
+    'sum': "\u2211",
+    'Sum': "\u2211",
+    'sung': "\u266A",
+    'sup': "\u2283",
+    'Sup': "\u22D1",
+    'sup1': '\xB9',
+    'sup2': '\xB2',
+    'sup3': '\xB3',
+    'supdot': "\u2ABE",
+    'supdsub': "\u2AD8",
+    'supe': "\u2287",
+    'supE': "\u2AC6",
+    'supedot': "\u2AC4",
+    'Superset': "\u2283",
+    'SupersetEqual': "\u2287",
+    'suphsol': "\u27C9",
+    'suphsub': "\u2AD7",
+    'suplarr': "\u297B",
+    'supmult': "\u2AC2",
+    'supne': "\u228B",
+    'supnE': "\u2ACC",
+    'supplus': "\u2AC0",
+    'supset': "\u2283",
+    'Supset': "\u22D1",
+    'supseteq': "\u2287",
+    'supseteqq': "\u2AC6",
+    'supsetneq': "\u228B",
+    'supsetneqq': "\u2ACC",
+    'supsim': "\u2AC8",
+    'supsub': "\u2AD4",
+    'supsup': "\u2AD6",
+    'swarhk': "\u2926",
+    'swarr': "\u2199",
+    'swArr': "\u21D9",
+    'swarrow': "\u2199",
+    'swnwar': "\u292A",
+    'szlig': '\xDF',
+    'Tab': '\t',
+    'target': "\u2316",
+    'tau': "\u03C4",
+    'Tau': "\u03A4",
+    'tbrk': "\u23B4",
+    'tcaron': "\u0165",
+    'Tcaron': "\u0164",
+    'tcedil': "\u0163",
+    'Tcedil': "\u0162",
+    'tcy': "\u0442",
+    'Tcy': "\u0422",
+    'tdot': "\u20DB",
+    'telrec': "\u2315",
+    'tfr': "\uD835\uDD31",
+    'Tfr': "\uD835\uDD17",
+    'there4': "\u2234",
+    'therefore': "\u2234",
+    'Therefore': "\u2234",
+    'theta': "\u03B8",
+    'Theta': "\u0398",
+    'thetasym': "\u03D1",
+    'thetav': "\u03D1",
+    'thickapprox': "\u2248",
+    'thicksim': "\u223C",
+    'ThickSpace': "\u205F\u200A",
+    'thinsp': "\u2009",
+    'ThinSpace': "\u2009",
+    'thkap': "\u2248",
+    'thksim': "\u223C",
+    'thorn': '\xFE',
+    'THORN': '\xDE',
+    'tilde': "\u02DC",
+    'Tilde': "\u223C",
+    'TildeEqual': "\u2243",
+    'TildeFullEqual': "\u2245",
+    'TildeTilde': "\u2248",
+    'times': '\xD7',
+    'timesb': "\u22A0",
+    'timesbar': "\u2A31",
+    'timesd': "\u2A30",
+    'tint': "\u222D",
+    'toea': "\u2928",
+    'top': "\u22A4",
+    'topbot': "\u2336",
+    'topcir': "\u2AF1",
+    'topf': "\uD835\uDD65",
+    'Topf': "\uD835\uDD4B",
+    'topfork': "\u2ADA",
+    'tosa': "\u2929",
+    'tprime': "\u2034",
+    'trade': "\u2122",
+    'TRADE': "\u2122",
+    'triangle': "\u25B5",
+    'triangledown': "\u25BF",
+    'triangleleft': "\u25C3",
+    'trianglelefteq': "\u22B4",
+    'triangleq': "\u225C",
+    'triangleright': "\u25B9",
+    'trianglerighteq': "\u22B5",
+    'tridot': "\u25EC",
+    'trie': "\u225C",
+    'triminus': "\u2A3A",
+    'TripleDot': "\u20DB",
+    'triplus': "\u2A39",
+    'trisb': "\u29CD",
+    'tritime': "\u2A3B",
+    'trpezium': "\u23E2",
+    'tscr': "\uD835\uDCC9",
+    'Tscr': "\uD835\uDCAF",
+    'tscy': "\u0446",
+    'TScy': "\u0426",
+    'tshcy': "\u045B",
+    'TSHcy': "\u040B",
+    'tstrok': "\u0167",
+    'Tstrok': "\u0166",
+    'twixt': "\u226C",
+    'twoheadleftarrow': "\u219E",
+    'twoheadrightarrow': "\u21A0",
+    'uacute': '\xFA',
+    'Uacute': '\xDA',
+    'uarr': "\u2191",
+    'uArr': "\u21D1",
+    'Uarr': "\u219F",
+    'Uarrocir': "\u2949",
+    'ubrcy': "\u045E",
+    'Ubrcy': "\u040E",
+    'ubreve': "\u016D",
+    'Ubreve': "\u016C",
+    'ucirc': '\xFB',
+    'Ucirc': '\xDB',
+    'ucy': "\u0443",
+    'Ucy': "\u0423",
+    'udarr': "\u21C5",
+    'udblac': "\u0171",
+    'Udblac': "\u0170",
+    'udhar': "\u296E",
+    'ufisht': "\u297E",
+    'ufr': "\uD835\uDD32",
+    'Ufr': "\uD835\uDD18",
+    'ugrave': '\xF9',
+    'Ugrave': '\xD9',
+    'uHar': "\u2963",
+    'uharl': "\u21BF",
+    'uharr': "\u21BE",
+    'uhblk': "\u2580",
+    'ulcorn': "\u231C",
+    'ulcorner': "\u231C",
+    'ulcrop': "\u230F",
+    'ultri': "\u25F8",
+    'umacr': "\u016B",
+    'Umacr': "\u016A",
+    'uml': '\xA8',
+    'UnderBar': '_',
+    'UnderBrace': "\u23DF",
+    'UnderBracket': "\u23B5",
+    'UnderParenthesis': "\u23DD",
+    'Union': "\u22C3",
+    'UnionPlus': "\u228E",
+    'uogon': "\u0173",
+    'Uogon': "\u0172",
+    'uopf': "\uD835\uDD66",
+    'Uopf': "\uD835\uDD4C",
+    'uparrow': "\u2191",
+    'Uparrow': "\u21D1",
+    'UpArrow': "\u2191",
+    'UpArrowBar': "\u2912",
+    'UpArrowDownArrow': "\u21C5",
+    'updownarrow': "\u2195",
+    'Updownarrow': "\u21D5",
+    'UpDownArrow': "\u2195",
+    'UpEquilibrium': "\u296E",
+    'upharpoonleft': "\u21BF",
+    'upharpoonright': "\u21BE",
+    'uplus': "\u228E",
+    'UpperLeftArrow': "\u2196",
+    'UpperRightArrow': "\u2197",
+    'upsi': "\u03C5",
+    'Upsi': "\u03D2",
+    'upsih': "\u03D2",
+    'upsilon': "\u03C5",
+    'Upsilon': "\u03A5",
+    'UpTee': "\u22A5",
+    'UpTeeArrow': "\u21A5",
+    'upuparrows': "\u21C8",
+    'urcorn': "\u231D",
+    'urcorner': "\u231D",
+    'urcrop': "\u230E",
+    'uring': "\u016F",
+    'Uring': "\u016E",
+    'urtri': "\u25F9",
+    'uscr': "\uD835\uDCCA",
+    'Uscr': "\uD835\uDCB0",
+    'utdot': "\u22F0",
+    'utilde': "\u0169",
+    'Utilde': "\u0168",
+    'utri': "\u25B5",
+    'utrif': "\u25B4",
+    'uuarr': "\u21C8",
+    'uuml': '\xFC',
+    'Uuml': '\xDC',
+    'uwangle': "\u29A7",
+    'vangrt': "\u299C",
+    'varepsilon': "\u03F5",
+    'varkappa': "\u03F0",
+    'varnothing': "\u2205",
+    'varphi': "\u03D5",
+    'varpi': "\u03D6",
+    'varpropto': "\u221D",
+    'varr': "\u2195",
+    'vArr': "\u21D5",
+    'varrho': "\u03F1",
+    'varsigma': "\u03C2",
+    'varsubsetneq': "\u228A\uFE00",
+    'varsubsetneqq': "\u2ACB\uFE00",
+    'varsupsetneq': "\u228B\uFE00",
+    'varsupsetneqq': "\u2ACC\uFE00",
+    'vartheta': "\u03D1",
+    'vartriangleleft': "\u22B2",
+    'vartriangleright': "\u22B3",
+    'vBar': "\u2AE8",
+    'Vbar': "\u2AEB",
+    'vBarv': "\u2AE9",
+    'vcy': "\u0432",
+    'Vcy': "\u0412",
+    'vdash': "\u22A2",
+    'vDash': "\u22A8",
+    'Vdash': "\u22A9",
+    'VDash': "\u22AB",
+    'Vdashl': "\u2AE6",
+    'vee': "\u2228",
+    'Vee': "\u22C1",
+    'veebar': "\u22BB",
+    'veeeq': "\u225A",
+    'vellip': "\u22EE",
+    'verbar': '|',
+    'Verbar': "\u2016",
+    'vert': '|',
+    'Vert': "\u2016",
+    'VerticalBar': "\u2223",
+    'VerticalLine': '|',
+    'VerticalSeparator': "\u2758",
+    'VerticalTilde': "\u2240",
+    'VeryThinSpace': "\u200A",
+    'vfr': "\uD835\uDD33",
+    'Vfr': "\uD835\uDD19",
+    'vltri': "\u22B2",
+    'vnsub': "\u2282\u20D2",
+    'vnsup': "\u2283\u20D2",
+    'vopf': "\uD835\uDD67",
+    'Vopf': "\uD835\uDD4D",
+    'vprop': "\u221D",
+    'vrtri': "\u22B3",
+    'vscr': "\uD835\uDCCB",
+    'Vscr': "\uD835\uDCB1",
+    'vsubne': "\u228A\uFE00",
+    'vsubnE': "\u2ACB\uFE00",
+    'vsupne': "\u228B\uFE00",
+    'vsupnE': "\u2ACC\uFE00",
+    'Vvdash': "\u22AA",
+    'vzigzag': "\u299A",
+    'wcirc': "\u0175",
+    'Wcirc': "\u0174",
+    'wedbar': "\u2A5F",
+    'wedge': "\u2227",
+    'Wedge': "\u22C0",
+    'wedgeq': "\u2259",
+    'weierp': "\u2118",
+    'wfr': "\uD835\uDD34",
+    'Wfr': "\uD835\uDD1A",
+    'wopf': "\uD835\uDD68",
+    'Wopf': "\uD835\uDD4E",
+    'wp': "\u2118",
+    'wr': "\u2240",
+    'wreath': "\u2240",
+    'wscr': "\uD835\uDCCC",
+    'Wscr': "\uD835\uDCB2",
+    'xcap': "\u22C2",
+    'xcirc': "\u25EF",
+    'xcup': "\u22C3",
+    'xdtri': "\u25BD",
+    'xfr': "\uD835\uDD35",
+    'Xfr': "\uD835\uDD1B",
+    'xharr': "\u27F7",
+    'xhArr': "\u27FA",
+    'xi': "\u03BE",
+    'Xi': "\u039E",
+    'xlarr': "\u27F5",
+    'xlArr': "\u27F8",
+    'xmap': "\u27FC",
+    'xnis': "\u22FB",
+    'xodot': "\u2A00",
+    'xopf': "\uD835\uDD69",
+    'Xopf': "\uD835\uDD4F",
+    'xoplus': "\u2A01",
+    'xotime': "\u2A02",
+    'xrarr': "\u27F6",
+    'xrArr': "\u27F9",
+    'xscr': "\uD835\uDCCD",
+    'Xscr': "\uD835\uDCB3",
+    'xsqcup': "\u2A06",
+    'xuplus': "\u2A04",
+    'xutri': "\u25B3",
+    'xvee': "\u22C1",
+    'xwedge': "\u22C0",
+    'yacute': '\xFD',
+    'Yacute': '\xDD',
+    'yacy': "\u044F",
+    'YAcy': "\u042F",
+    'ycirc': "\u0177",
+    'Ycirc': "\u0176",
+    'ycy': "\u044B",
+    'Ycy': "\u042B",
+    'yen': '\xA5',
+    'yfr': "\uD835\uDD36",
+    'Yfr': "\uD835\uDD1C",
+    'yicy': "\u0457",
+    'YIcy': "\u0407",
+    'yopf': "\uD835\uDD6A",
+    'Yopf': "\uD835\uDD50",
+    'yscr': "\uD835\uDCCE",
+    'Yscr': "\uD835\uDCB4",
+    'yucy': "\u044E",
+    'YUcy': "\u042E",
+    'yuml': '\xFF',
+    'Yuml': "\u0178",
+    'zacute': "\u017A",
+    'Zacute': "\u0179",
+    'zcaron': "\u017E",
+    'Zcaron': "\u017D",
+    'zcy': "\u0437",
+    'Zcy': "\u0417",
+    'zdot': "\u017C",
+    'Zdot': "\u017B",
+    'zeetrf': "\u2128",
+    'ZeroWidthSpace': "\u200B",
+    'zeta': "\u03B6",
+    'Zeta': "\u0396",
+    'zfr': "\uD835\uDD37",
+    'Zfr': "\u2128",
+    'zhcy': "\u0436",
+    'ZHcy': "\u0416",
+    'zigrarr': "\u21DD",
+    'zopf': "\uD835\uDD6B",
+    'Zopf': "\u2124",
+    'zscr': "\uD835\uDCCF",
+    'Zscr': "\uD835\uDCB5",
+    'zwj': "\u200D",
+    'zwnj': "\u200C"
+=======
+  try {
+    return action();
+  } finally {
+    Macro.clearSaved();
+  }
+}
+function main() {
+  Macro.load().submit();
+}
+
+/***/ }),
+
+/***/ 4744:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "canContinue": () => /* binding */ canContinue,
+  "globalOptions": () => /* binding */ globalOptions,
+  "main": () => /* binding */ main
+});
+
+// EXTERNAL MODULE: external "kolmafia"
+var external_kolmafia_ = __webpack_require__(1664);
+// EXTERNAL MODULE: ../kol-js-starter/node_modules/libram/dist/index.js
+var dist = __webpack_require__(5944);
+// EXTERNAL MODULE: ./src/combat.ts
+var combat = __webpack_require__(8816);
+;// CONCATENATED MODULE: ./src/lib.ts
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["Map the Monsters"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["Map the Monsters"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+function setChoice(adventure, value) {
+  (0,dist.set)("choiceAdventure".concat(adventure), "".concat(value));
+}
+function ensureEffect(effect) {
+  if (!(0,dist.have)(effect)) (0,external_kolmafia_.cliExecute)(effect["default"]);
+}
+function clamp(n, min, max) {
+  return Math.min(Math.max(n, min), max);
+}
+function mapMonster(location, monster) {
+  if ((0,external_kolmafia_.haveSkill)((0,dist.$skill)(_templateObject())) && !(0,dist.get)("mappingMonsters") && (0,dist.get)("_monstersMapped") < 3) {
+    (0,external_kolmafia_.useSkill)((0,dist.$skill)(_templateObject2()));
+  }
+
+  if (!(0,dist.get)("mappingMonsters")) throw "Failed to setup Map the Monsters.";
+  var mapPage = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(location), false, true);
+  if (!mapPage.includes("Leading Yourself Right to Them")) throw "Something went wrong mapping.";
+  var fightPage = (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
+  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
+}
+function averagePrice(items) {
+  return items.reduce(function (s, it) {
+    return s + (0,external_kolmafia_.mallPrice)(it);
+  }, 0) / items.length;
+}
+function argmax(values) {
+  return values.reduce(function (_ref, _ref2) {
+    var _ref3 = _slicedToArray(_ref, 2),
+        minValue = _ref3[0],
+        minScore = _ref3[1];
+
+    var _ref4 = _slicedToArray(_ref2, 2),
+        value = _ref4[0],
+        score = _ref4[1];
+
+    return score > minScore ? [value, score] : [minValue, minScore];
+  })[0];
+}
+;// CONCATENATED MODULE: ./src/diet.ts
+function _templateObject59() {
+  var data = diet_taggedTemplateLiteral(["ambitious turkey"]);
+
+  _templateObject59 = function _templateObject59() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject58() {
+  var data = diet_taggedTemplateLiteral(["jumping horseradish"]);
+
+  _templateObject58 = function _templateObject58() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject57() {
+  var data = diet_taggedTemplateLiteral(["fudge spork"]);
+
+  _templateObject57 = function _templateObject57() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject56() {
+  var data = diet_taggedTemplateLiteral(["fudge spork"]);
+
+  _templateObject56 = function _templateObject56() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject55() {
+  var data = diet_taggedTemplateLiteral(["mojo filter"]);
+
+  _templateObject55 = function _templateObject55() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject54() {
+  var data = diet_taggedTemplateLiteral(["mojo filter"]);
+
+  _templateObject54 = function _templateObject54() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject53() {
+  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
+
+  _templateObject53 = function _templateObject53() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject52() {
+  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
+
+  _templateObject52 = function _templateObject52() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject51() {
+  var data = diet_taggedTemplateLiteral(["distention pill"]);
+
+  _templateObject51 = function _templateObject51() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject50() {
+  var data = diet_taggedTemplateLiteral(["distention pill"]);
+
+  _templateObject50 = function _templateObject50() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject49() {
+  var data = diet_taggedTemplateLiteral(["borrowed time"]);
+
+  _templateObject49 = function _templateObject49() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject48() {
+  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
+
+  _templateObject48 = function _templateObject48() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject47() {
+  var data = diet_taggedTemplateLiteral(["blue mana"]);
+
+  _templateObject47 = function _templateObject47() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject46() {
+  var data = diet_taggedTemplateLiteral(["blue mana"]);
+
+  _templateObject46 = function _templateObject46() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject45() {
+  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
+
+  _templateObject45 = function _templateObject45() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject44() {
+  var data = diet_taggedTemplateLiteral(["time's arrow"]);
+
+  _templateObject44 = function _templateObject44() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject43() {
+  var data = diet_taggedTemplateLiteral(["time's arrow"]);
+
+  _templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject42() {
+  var data = diet_taggedTemplateLiteral(["essential tofu"]);
+
+  _templateObject42 = function _templateObject42() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject41() {
+  var data = diet_taggedTemplateLiteral(["fancy chocolate sculpture"]);
+
+  _templateObject41 = function _templateObject41() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject40() {
+  var data = diet_taggedTemplateLiteral(["none"]);
+
+  _templateObject40 = function _templateObject40() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject39() {
+  var data = diet_taggedTemplateLiteral(["chocolate disco ball"]);
+
+  _templateObject39 = function _templateObject39() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject38() {
+  var data = diet_taggedTemplateLiteral(["Disco Bandit"]);
+
+  _templateObject38 = function _templateObject38() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject37() {
+  var data = diet_taggedTemplateLiteral(["chocolate stolen accordion"]);
+
+  _templateObject37 = function _templateObject37() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject36() {
+  var data = diet_taggedTemplateLiteral(["Accordion Thief"]);
+
+  _templateObject36 = function _templateObject36() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject35() {
+  var data = diet_taggedTemplateLiteral(["chocolate saucepan"]);
+
+  _templateObject35 = function _templateObject35() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject34() {
+  var data = diet_taggedTemplateLiteral(["Sauceror"]);
+
+  _templateObject34 = function _templateObject34() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject33() {
+  var data = diet_taggedTemplateLiteral(["chocolate pasta spoon"]);
+
+  _templateObject33 = function _templateObject33() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject32() {
+  var data = diet_taggedTemplateLiteral(["Pastamancer"]);
+
+  _templateObject32 = function _templateObject32() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject31() {
+  var data = diet_taggedTemplateLiteral(["chocolate turtle totem"]);
+
+  _templateObject31 = function _templateObject31() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject30() {
+  var data = diet_taggedTemplateLiteral(["Turtle Tamer"]);
+
+  _templateObject30 = function _templateObject30() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject29() {
+  var data = diet_taggedTemplateLiteral(["chocolate seal-clubbing club"]);
+
+  _templateObject29 = function _templateObject29() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject28() {
+  var data = diet_taggedTemplateLiteral(["Seal Clubber"]);
+
+  _templateObject28 = function _templateObject28() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject27() {
+  var data = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]);
+
+  _templateObject27 = function _templateObject27() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject26() {
+  var data = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]);
+
+  _templateObject26 = function _templateObject26() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject25() {
+  var data = diet_taggedTemplateLiteral(["fancy chocolate car"]);
+
+  _templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject24() {
+  var data = diet_taggedTemplateLiteral(["Boxing Day Glow"]);
+
+  _templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject23() {
+  var data = diet_taggedTemplateLiteral(["body spradium"]);
+
+  _templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject22() {
+  var data = diet_taggedTemplateLiteral(["Synthesis: Collection"]);
+
+  _templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject21() {
+  var data = diet_taggedTemplateLiteral(["Sweet Synthesis"]);
+
+  _templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject20() {
+  var data = diet_taggedTemplateLiteral(["Eau d' Clochard"]);
+
+  _templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject19() {
+  var data = diet_taggedTemplateLiteral(["jar of fermented pickle juice"]);
+
+  _templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject18() {
+  var data = diet_taggedTemplateLiteral(["Frosty's frosty mug"]);
+
+  _templateObject18 = function _templateObject18() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject17() {
+  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
+
+  _templateObject17 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject16() {
+  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
+
+  _templateObject16 = function _templateObject16() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject15() {
+  var data = diet_taggedTemplateLiteral(["splendid martini"]);
+
+  _templateObject15 = function _templateObject15() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject14() {
+  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
+
+  _templateObject14 = function _templateObject14() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject13() {
+  var data = diet_taggedTemplateLiteral(["tuxedo shirt"]);
+
+  _templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject12() {
+  var data = diet_taggedTemplateLiteral(["mime army shotglass"]);
+
+  _templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject11() {
+  var data = diet_taggedTemplateLiteral(["extra-greasy slider"]);
+
+  _templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject10() {
+  var data = diet_taggedTemplateLiteral(["Ol' Scratch's salad fork"]);
+
+  _templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject9() {
+  var data = diet_taggedTemplateLiteral(["milk of magnesium"]);
+
+  _templateObject9 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject8() {
+  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
+
+  _templateObject8 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject7() {
+  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
+
+  _templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject6() {
+  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
+
+  _templateObject6 = function _templateObject6() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject5() {
+  var data = diet_taggedTemplateLiteral(["Synthesis: Greed"]);
+
+  _templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject4() {
+  var data = diet_taggedTemplateLiteral(["Synthesis: Greed"]);
+
+  _templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = diet_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _templateObject3() {
+  var data = diet_taggedTemplateLiteral(["octolus oculus, transdermal smoke patch, antimatter wad, voodoo snuff, blood-drive sticker"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function diet_templateObject2() {
+  var data = diet_taggedTemplateLiteral(["voodoo snuff"]);
+
+  diet_templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function diet_slicedToArray(arr, i) { return diet_arrayWithHoles(arr) || diet_iterableToArrayLimit(arr, i) || diet_unsupportedIterableToArray(arr, i) || diet_nonIterableRest(); }
+
+function diet_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function diet_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return diet_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return diet_arrayLikeToArray(o, minLen); }
+
+function diet_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function diet_iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function diet_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function diet_templateObject() {
+  var data = diet_taggedTemplateLiteral(["Special Seasoning"]);
+
+  diet_templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function diet_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+var MPA = (0,dist.get)("valueOfAdventure");
+(0,external_kolmafia_.print)("Using adventure value ".concat(MPA, "."), "blue");
+
+function totalAmount(item) {
+  return shopAmount(item) + itemAmount(item);
+}
+
+function itemPriority() {
+  for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
+    items[_key] = arguments[_key];
+  }
+
+  for (var _i = 0, _items = items; _i < _items.length; _i++) {
+    var item = _items[_i];
+    if ((0,dist.have)(item)) return item;
+  }
+
+  return items[items.length - 1];
+}
+
+var priceCaps = {
+  "jar of fermented pickle juice": 75000,
+  "Frosty's frosty mug": 45000,
+  "extra-greasy slider": 45000,
+  "Ol' Scratch's salad fork": 50000,
+  "transdermal smoke patch": 8000,
+  "voodoo snuff": 36000,
+  "antimatter wad": 24000,
+  "octolus oculus": 12000,
+  "blood-drive sticker": 210000,
+  "spice melange": 500000,
+  "splendid martini": 20000,
+  "Eye and a Twist": 20000,
+  "jumping horseradish": 20000,
+  "Ambitious Turkey": 20000,
+  "Special Seasoning": 20000
+};
+
+function acquire(qty, item, maxPrice) {
+  if (maxPrice === undefined) maxPrice = priceCaps[item.name];
+  if (maxPrice === undefined) throw "No price cap for ".concat(item.name, ".");
+  if (qty * (0,external_kolmafia_.mallPrice)(item) > 1000000) throw "bad get!";
+  var remaining = qty - (0,external_kolmafia_.itemAmount)(item);
+  if (remaining <= 0) return;
+  var getCloset = Math.min(remaining, (0,external_kolmafia_.closetAmount)(item));
+  if (!(0,external_kolmafia_.takeCloset)(getCloset, item)) throw "failed to remove from closet";
+  remaining -= getCloset;
+  if (remaining <= 0) return;
+  var getMall = Math.min(remaining, (0,external_kolmafia_.shopAmount)(item));
+
+  if (!(0,external_kolmafia_.takeShop)(getMall, item)) {
+    (0,external_kolmafia_.cliExecute)("refresh shop");
+    (0,external_kolmafia_.cliExecute)("refresh inventory");
+    remaining = qty - (0,external_kolmafia_.itemAmount)(item);
+    getMall = Math.min(remaining, (0,external_kolmafia_.shopAmount)(item));
+    if (!(0,external_kolmafia_.takeShop)(getMall, item)) throw "failed to remove from shop";
+  }
+
+  remaining -= getMall;
+  if (remaining <= 0) return;
+  (0,external_kolmafia_.buy)(remaining, item, maxPrice);
+  if ((0,external_kolmafia_.itemAmount)(item) < qty) throw "Mall price too high for ".concat(item.name, ".");
+}
+
+function eatSafe(qty, item) {
+  acquire(qty, (0,dist.$item)(diet_templateObject()));
+  acquire(qty, item);
+  if (!(0,external_kolmafia_.eat)(qty, item)) throw "Failed to eat safely";
+}
+
+function drinkSafe(qty, item) {
+  acquire(qty, item);
+  if (!(0,external_kolmafia_.drink)(qty, item)) throw "Failed to drink safely";
+}
+
+function chewSafe(qty, item) {
+  acquire(qty, item);
+  if (!(0,external_kolmafia_.chew)(qty, item)) throw "Failed to chew safely";
+}
+
+function eatSpleen(qty, item) {
+  if ((0,external_kolmafia_.mySpleenUse)() < 5) throw "No spleen to clear with this.";
+  eatSafe(qty, item);
+}
+
+function drinkSpleen(qty, item) {
+  if ((0,external_kolmafia_.mySpleenUse)() < 5) throw "No spleen to clear with this.";
+  drinkSafe(qty, item);
+}
+
+function adventureGain(item) {
+  if (item.adventures.includes("-")) {
+    var _item$adventures$spli = item.adventures.split("-").map(function (s) {
+      return parseInt(s, 10);
+    }),
+        _item$adventures$spli2 = diet_slicedToArray(_item$adventures$spli, 2),
+        min = _item$adventures$spli2[0],
+        max = _item$adventures$spli2[1];
+
+    return (min + max) / 2.0;
+  } else {
+    return parseInt(item.adventures, 10);
+  }
+}
+
+function propTrue(prop) {
+  if (typeof prop === "boolean") {
+    return prop;
+  } else {
+    return (0,dist.get)(prop);
+  }
+}
+
+function useIfUnused(item, prop, maxPrice) {
+  if (!propTrue(prop)) {
+    if ((0,external_kolmafia_.mallPrice)(item) <= maxPrice) {
+      acquire(1, item, maxPrice);
+      (0,external_kolmafia_.use)(1, item);
+    } else {
+      (0,external_kolmafia_.print)("Skipping ".concat(item.name, "; too expensive (").concat((0,external_kolmafia_.mallPrice)(item), " > ").concat(maxPrice, ")."));
+    }
+  }
+}
+
+var snuff = (0,dist.$item)(diet_templateObject2());
+
+var valuePerSpleen = function valuePerSpleen(item) {
+  return -(adventureGain(item) * MPA - (0,external_kolmafia_.mallPrice)(item)) / item.spleen;
+};
+
+var savedBestSpleenItem = null;
+var savedPotentialSpleenItems = null;
+
+function getBestSpleenItems() {
+  if (savedBestSpleenItem === null || savedPotentialSpleenItems === null) {
+    savedPotentialSpleenItems = (0,dist.$items)(_templateObject3());
+    savedPotentialSpleenItems.sort(function (x, y) {
+      return valuePerSpleen(x) - valuePerSpleen(y);
+    });
+
+    var _iterator = _createForOfIteratorHelper(savedPotentialSpleenItems),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var spleenItem = _step.value;
+        (0,external_kolmafia_.print)("".concat(spleenItem, " value/spleen: ").concat(-valuePerSpleen(spleenItem)));
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+
+    savedBestSpleenItem = savedPotentialSpleenItems[0];
+  }
+
+  return {
+    bestSpleenItem: savedBestSpleenItem,
+    potentialSpleenItems: savedPotentialSpleenItems
+  };
+}
+
+function fillSomeSpleen() {
+  var _getBestSpleenItems = getBestSpleenItems(),
+      bestSpleenItem = _getBestSpleenItems.bestSpleenItem;
+
+  (0,external_kolmafia_.print)("Spleen item: ".concat(bestSpleenItem));
+  fillSpleenWith(bestSpleenItem);
+}
+
+function fillAllSpleen() {
+  var _getBestSpleenItems2 = getBestSpleenItems(),
+      potentialSpleenItems = _getBestSpleenItems2.potentialSpleenItems;
+
+  var _iterator2 = _createForOfIteratorHelper(potentialSpleenItems),
+      _step2;
+
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var spleenItem = _step2.value;
+      print("Filling spleen with ".concat(spleenItem, "."));
+      fillSpleenWith(spleenItem);
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+}
+
+function fillSpleenWith(spleenItem) {
+  if ((0,external_kolmafia_.mySpleenUse)() + spleenItem.spleen <= (0,external_kolmafia_.spleenLimit)()) {
+    // (adventureGain * spleenA + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
+    // spleenA + spleenB = spleenTotal
+    // (adventureGain * (spleenTotal - spleenB) + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
+    // 1.04 * adventureGain * (spleenTotal - spleenB) + 1.04 * adventures + 40 = 30 * spleenB + synthTurns
+    // 1.04 * adventureGain * spleenTotal - 1.04 * adventureGain * spleenB + 1.04 * adventures + 40 = 30 * spleenB + synthTurns
+    // 1.04 * adventureGain * spleenTotal + 1.04 * adventures + 40 = 30 * spleenB + synthTurns + 1.04 * adventureGain * spleenB
+    // (1.04 * adventureGain * spleenTotal + 1.04 * adventures + 40 - synthTurns) / (30 + 1.04 * adventureGain) = spleenB
+    var synthTurns = (0,external_kolmafia_.haveEffect)((0,dist.$effect)(_templateObject4()));
+    var spleenTotal = (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)();
+    var adventuresPerItem = adventureGain(spleenItem);
+    var spleenSynth = Math.ceil((1.04 * adventuresPerItem * spleenTotal + 1.04 * (0,external_kolmafia_.myAdventures)() + 40 - synthTurns) / (30 + 1.04 * adventuresPerItem));
+
+    for (var i = 0; i < clamp(spleenSynth, 0, (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()); i++) {
+      (0,external_kolmafia_.sweetSynthesis)((0,dist.$effect)(_templateObject5()));
+    }
+
+    var count = Math.floor(((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()) / spleenItem.spleen);
+    acquire(count, spleenItem);
+    chewSafe(count, spleenItem);
+  }
+}
+
+function fillStomach() {
+  if ((0,external_kolmafia_.myLevel)() >= 15 && !(0,dist.get)("_hungerSauceUsed") && (0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject6())) < 3 * MPA) {
+    acquire(1, (0,dist.$item)(_templateObject7()), 3 * MPA);
+    (0,external_kolmafia_.use)(1, (0,dist.$item)(_templateObject8()));
+  }
+
+  useIfUnused((0,dist.$item)(_templateObject9()), "_milkOfMagnesiumUsed", 5 * MPA);
+
+  while ((0,external_kolmafia_.myFullness)() + 5 <= (0,external_kolmafia_.fullnessLimit)()) {
+    if ((0,external_kolmafia_.myMaxhp)() < 1000) (0,external_kolmafia_.maximize)("0.05hp, hot res", false);
+    var count = Math.floor(Math.min(((0,external_kolmafia_.fullnessLimit)() - (0,external_kolmafia_.myFullness)()) / 5, (0,external_kolmafia_.mySpleenUse)() / 5));
+    eatSpleen(count, (0,dist.$item)(_templateObject10()));
+    eatSpleen(count, (0,dist.$item)(_templateObject11()));
+    fillSomeSpleen();
+  }
+}
+
+function fillLiver() {
+  if (!(0,dist.get)("_mimeArmyShotglassUsed") && (0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject12())) > 0) {
+    (0,external_kolmafia_.equip)((0,dist.$item)(_templateObject13()));
+    (0,external_kolmafia_.drink)(itemPriority((0,dist.$item)(_templateObject14()), (0,dist.$item)(_templateObject15())));
+  }
+
+  while ((0,external_kolmafia_.myInebriety)() + 1 <= (0,external_kolmafia_.inebrietyLimit)() && (0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject16())) > 0) {
+    (0,external_kolmafia_.drink)(1, (0,dist.$item)(_templateObject17()));
+  }
+
+  while ((0,external_kolmafia_.myInebriety)() + 5 <= (0,external_kolmafia_.inebrietyLimit)()) {
+    if ((0,external_kolmafia_.myMaxhp)() < 1000) (0,external_kolmafia_.maximize)("0.05hp, cold res", false);
+    var count = Math.floor(Math.min(((0,external_kolmafia_.inebrietyLimit)() - (0,external_kolmafia_.myInebriety)()) / 5, (0,external_kolmafia_.mySpleenUse)() / 5));
+    drinkSpleen(count, (0,dist.$item)(_templateObject18()));
+    drinkSpleen(count, (0,dist.$item)(_templateObject19()));
+    fillSomeSpleen();
+  }
+}
+
+function runDiet() {
+  if ((0,external_kolmafia_.mySpleenUse)() === 0) {
+    ensureEffect((0,dist.$effect)(_templateObject20()));
+    if ((0,dist.have)((0,dist.$skill)(_templateObject21()))) ensureEffect((0,dist.$effect)(_templateObject22()));
+    if ((0,dist.have)((0,dist.$item)(_templateObject23()))) ensureEffect((0,dist.$effect)(_templateObject24()));
+  }
+
+  useIfUnused((0,dist.$item)(_templateObject25()), (0,dist.get)("_chocolatesUsed") === 0, 2 * MPA);
+  var loveChocolateCount = Math.max(3 - Math.floor(20000 / MPA) - (0,dist.get)("_loveChocolatesUsed"), 0);
+  var loveChocolateEat = Math.min(loveChocolateCount, (0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject26())));
+  (0,external_kolmafia_.use)(loveChocolateEat, (0,dist.$item)(_templateObject27()));
+  var choco = new Map([[(0,external_kolmafia_.toInt)((0,dist.$class)(_templateObject28())), (0,dist.$item)(_templateObject29())], [(0,external_kolmafia_.toInt)((0,dist.$class)(_templateObject30())), (0,dist.$item)(_templateObject31())], [(0,external_kolmafia_.toInt)((0,dist.$class)(_templateObject32())), (0,dist.$item)(_templateObject33())], [(0,external_kolmafia_.toInt)((0,dist.$class)(_templateObject34())), (0,dist.$item)(_templateObject35())], [(0,external_kolmafia_.toInt)((0,dist.$class)(_templateObject36())), (0,dist.$item)(_templateObject37())], [(0,external_kolmafia_.toInt)((0,dist.$class)(_templateObject38())), (0,dist.$item)(_templateObject39())]]);
+
+  if (choco.has((0,external_kolmafia_.toInt)((0,external_kolmafia_.myClass)())) && (0,dist.get)("_chocolatesUsed") < 3) {
+    var used = (0,dist.get)("_chocolatesUsed");
+    var item = choco.get((0,external_kolmafia_.toInt)((0,external_kolmafia_.myClass)())) || (0,dist.$item)(_templateObject40());
+    var count = clamp(3 - used, 0, 3);
+    (0,external_kolmafia_.use)(count, item);
+  }
+
+  useIfUnused((0,dist.$item)(_templateObject41()), (0,dist.get)("_chocolateSculpturesUsed") < 1, 5 * MPA + 5000);
+  useIfUnused((0,dist.$item)(_templateObject42()), "_essentialTofuUsed", 5 * MPA);
+
+  if ((0,external_kolmafia_.getProperty)("_timesArrowUsed") !== "true" && (0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject43())) < 5 * MPA) {
+    acquire(1, (0,dist.$item)(_templateObject44()), 5 * MPA);
+    (0,external_kolmafia_.cliExecute)("csend 1 time's arrow to botticelli");
+    (0,external_kolmafia_.setProperty)("_timesArrowUsed", "true");
+  }
+
+  if ((0,dist.have)((0,dist.$skill)(_templateObject45())) && (0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject46())) < 3 * MPA) {
+    var casts = Math.max(10 - (0,dist.get)("_ancestralRecallCasts"), 0);
+    acquire(casts, (0,dist.$item)(_templateObject47()), 3 * MPA);
+    (0,external_kolmafia_.useSkill)(casts, (0,dist.$skill)(_templateObject48()));
+  }
+
+  useIfUnused((0,dist.$item)(_templateObject49()), "_borrowedTimeUsed", 5 * MPA);
+  fillSomeSpleen();
+  fillStomach();
+  fillLiver();
+
+  if (!(0,dist.get)("_distentionPillUsed")) {
+    if ((0,dist.have)((0,dist.$item)(_templateObject50()), 1) || !(0,external_kolmafia_.userConfirm)("You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)", 15000, false)) {
+      if (!(0,external_kolmafia_.use)((0,dist.$item)(_templateObject51()))) {
+        (0,external_kolmafia_.print)("WARNING: Out of distention pills.", "red");
+      }
+    }
+  }
+
+  if (!(0,dist.get)("_syntheticDogHairPillUsed") && 1 <= (0,external_kolmafia_.myInebriety)()) {
+    if ((0,dist.have)((0,dist.$item)(_templateObject52()), 1) || !(0,external_kolmafia_.userConfirm)("You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)", 15000, false)) {
+      if (!(0,external_kolmafia_.use)((0,dist.$item)(_templateObject53()))) {
+        (0,external_kolmafia_.print)("WARNING: Out of synthetic dog hair pills.", "red");
+      }
+    }
+  }
+
+  var _getBestSpleenItems3 = getBestSpleenItems(),
+      bestSpleenItem = _getBestSpleenItems3.bestSpleenItem;
+
+  var mojoFilterCount = 3 - (0,dist.get)("currentMojoFilters");
+  acquire(mojoFilterCount, (0,dist.$item)(_templateObject54()), valuePerSpleen(bestSpleenItem));
+  (0,external_kolmafia_.use)(mojoFilterCount, (0,dist.$item)(_templateObject55()));
+  fillSomeSpleen();
+
+  if ((0,external_kolmafia_.myFullness)() < (0,external_kolmafia_.fullnessLimit)()) {
+    if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject56())) < 3 * MPA) (0,external_kolmafia_.eat)(1, (0,dist.$item)(_templateObject57()));
+    eatSafe(1, (0,dist.$item)(_templateObject58()));
+  }
+
+  if ((0,external_kolmafia_.myInebriety)() < (0,external_kolmafia_.inebrietyLimit)()) {
+    drinkSafe(1, (0,dist.$item)(_templateObject59()));
+  }
+}
+;// CONCATENATED MODULE: ./src/familiar.ts
+function familiar_templateObject25() {
+  var data = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"]);
+
+  familiar_templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject24() {
+  var data = familiar_taggedTemplateLiteral(["None"]);
+
+  familiar_templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject23() {
+  var data = familiar_taggedTemplateLiteral(["Robortender"]);
+
+  familiar_templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject22() {
+  var data = familiar_taggedTemplateLiteral(["Robortender"]);
+
+  familiar_templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject21() {
+  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
+
+  familiar_templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject20() {
+  var data = familiar_taggedTemplateLiteral(["Jingle Jangle Jingle"]);
+
+  familiar_templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject19() {
+  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
+
+  familiar_templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject18() {
+  var data = familiar_taggedTemplateLiteral(["Stocking Mimic"]);
+
+  familiar_templateObject18 = function _templateObject18() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject17() {
+  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
+
+  familiar_templateObject17 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject16() {
+  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
+
+  familiar_templateObject16 = function _templateObject16() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject15() {
+  var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
+
+  familiar_templateObject15 = function _templateObject15() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject14() {
+  var data = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]);
+
+  familiar_templateObject14 = function _templateObject14() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject13() {
+  var data = familiar_taggedTemplateLiteral(["hot ashes"]);
+
+  familiar_templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject12() {
+  var data = familiar_taggedTemplateLiteral(["devilish folio"]);
+
+  familiar_templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject11() {
+  var data = familiar_taggedTemplateLiteral(["tiny bottle of absinthe"]);
+
+  familiar_templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject10() {
+  var data = familiar_taggedTemplateLiteral(["agua de vida"]);
+
+  familiar_templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject9() {
+  var data = familiar_taggedTemplateLiteral(["groose grease"]);
+
+  familiar_templateObject9 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject8() {
+  var data = familiar_taggedTemplateLiteral(["Game Grid token"]);
+
+  familiar_templateObject8 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject7() {
+  var data = familiar_taggedTemplateLiteral(["transporter transponder"]);
+
+  familiar_templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject6() {
+  var data = familiar_taggedTemplateLiteral(["llama lama gong"]);
+
+  familiar_templateObject6 = function _templateObject6() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject5() {
+  var data = familiar_taggedTemplateLiteral(["Ambitious Turkey"]);
+
+  familiar_templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject4() {
+  var data = familiar_taggedTemplateLiteral(["Robortender, Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"]);
+
+  familiar_templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = familiar_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function familiar_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return familiar_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return familiar_arrayLikeToArray(o, minLen); }
+
+function familiar_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function familiar_templateObject3() {
+  var data = familiar_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  familiar_templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject2() {
+  var data = familiar_taggedTemplateLiteral(["li'l pirate costume"]);
+
+  familiar_templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_templateObject() {
+  var data = familiar_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  familiar_templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function familiar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+function meatFamiliar() {
+  if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() && (0,dist.have)((0,dist.$familiar)(familiar_templateObject())) && (0,dist.have)((0,dist.$item)(familiar_templateObject2()))) {
+    return (0,dist.$familiar)(familiar_templateObject3());
+  } else {
+    var _iterator = familiar_createForOfIteratorHelper((0,dist.$familiars)(familiar_templateObject4())),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var familiar = _step.value;
+        if ((0,external_kolmafia_.haveFamiliar)(familiar)) return familiar;
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  }
+
+  throw new Error("No good Barf familiars!");
+}
+
+function myFamiliarWeight() {
+  var familiar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  if (familiar === null) familiar = (0,external_kolmafia_.myFamiliar)();
+  return (0,external_kolmafia_.familiarWeight)(familiar) + (0,external_kolmafia_.weightAdjustment)();
+} // 5, 10, 15, 20, 25 +5/turn: 5.29, 4.52, 3.91, 3.42, 3.03
+
+
+var rotatingFamiliars = {
+  "Fist Turkey": {
+    expected: [3.91, 4.52, 4.52, 5.29, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject5()),
+    pref: "_turkeyBooze"
+  },
+  "Llama Lama": {
+    expected: [3.42, 3.91, 4.52, 5.29, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject6()),
+    pref: "_gongDrops"
+  },
+  "Li'l Xenomorph": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject7()),
+    pref: "_transponderDrops"
+  },
+  "Rogue Program": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject8()),
+    pref: "_tokenDrops"
+  },
+  "Bloovian Groose": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject9()),
+    pref: "_grooseDrops"
+  },
+  "Baby Sandworm": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject10()),
+    pref: "_aguaDrops"
+  },
+  "Green Pixie": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject11()),
+    pref: "_absintheDrops"
+  },
+  "Blavious Kloop": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject12()),
+    pref: "_kloopDrops"
+  },
+  "Galloping Grill": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: (0,dist.$item)(familiar_templateObject13()),
+    pref: "_hotAshesDrops"
+  }
+};
+var savedMimicDropValue = null;
+
+function mimicDropValue() {
+  var _savedMimicDropValue;
+
+  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = averagePrice((0,dist.$items)(familiar_templateObject14())) / (6.29 * 0.95 + 1 * 0.05);
+}
+
+function freeFightFamiliar() {
+  var familiarValue = [];
+
+  if ((0,dist.have)((0,dist.$familiar)(familiar_templateObject15())) && (0,dist.$familiar)(familiar_templateObject16()).experience < 400 && !(0,dist.get)("_thesisDelivered")) {
+    // Estimate based on value to charge thesis.
+    familiarValue.push([(0,dist.$familiar)(familiar_templateObject17()), 3000]);
+  }
+
+  for (var _i = 0, _Object$keys = Object.keys(rotatingFamiliars); _i < _Object$keys.length; _i++) {
+    var familiarName = _Object$keys[_i];
+    var familiar = Familiar.get(familiarName);
+
+    if ((0,dist.have)(familiar)) {
+      var _rotatingFamiliars$fa = rotatingFamiliars[familiarName],
+          expected = _rotatingFamiliars$fa.expected,
+          drop = _rotatingFamiliars$fa.drop,
+          pref = _rotatingFamiliars$fa.pref;
+      var dropsAlready = (0,dist.get)(pref);
+      if (dropsAlready >= expected.length) continue;
+      var value = (0,external_kolmafia_.mallPrice)(drop) / expected[dropsAlready];
+      familiarValue.push([familiar, value]);
+    }
+  }
+
+  if ((0,dist.have)((0,dist.$familiar)(familiar_templateObject18()))) {
+    var mimicWeight = myFamiliarWeight((0,dist.$familiar)(familiar_templateObject19()));
+    var actionPercentage = 1 / 3 + ((0,external_kolmafia_.haveEffect)((0,dist.$effect)(familiar_templateObject20())) ? 0.1 : 0);
+    var mimicValue = mimicDropValue() + mimicWeight * actionPercentage * 1 / 4 * 10 * 4 * 1.2;
+    familiarValue.push([(0,dist.$familiar)(familiar_templateObject21()), mimicValue]);
+  }
+
+  if ((0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(familiar_templateObject22()))) familiarValue.push([(0,dist.$familiar)(familiar_templateObject23()), 200]);
+
+  var _iterator2 = familiar_createForOfIteratorHelper((0,dist.$familiars)(familiar_templateObject25())),
+      _step2;
+
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var _familiar = _step2.value;
+      if ((0,external_kolmafia_.haveFamiliar)(_familiar)) familiarValue.push([_familiar, 1]);
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+
+  familiarValue.push([(0,dist.$familiar)(familiar_templateObject24()), 0]);
+  return argmax(familiarValue);
+}
+;// CONCATENATED MODULE: ./src/stash.ts
+function stash_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = stash_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || stash_unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function stash_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return stash_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return stash_arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return stash_arrayLikeToArray(arr); }
+
+function stash_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+
+function withStash(itemsToTake, action) {
+  var manager = new StashManager();
+
+  try {
+    manager.take.apply(manager, _toConsumableArray(itemsToTake));
+    return action();
+  } finally {
+    manager.putBackAll();
+  }
+}
+
+function withClan(clanIdOrName, action) {
+  var startingClanId = (0,external_kolmafia_.getClanId)();
+  dist.Clan.join(clanIdOrName);
+
+  try {
+    return action();
+  } finally {
+    dist.Clan.join(startingClanId);
+  }
+}
+
+var StashManager = /*#__PURE__*/function () {
+  function StashManager(clanIdOrName) {
+    _classCallCheck(this, StashManager);
+
+    _defineProperty(this, "clanIdOrName", void 0);
+
+    _defineProperty(this, "taken", new Map());
+
+    if (clanIdOrName === undefined) {
+      clanIdOrName = (0,dist.get)("stashClan", undefined);
+
+      if (!clanIdOrName) {
+        if ((0,external_kolmafia_.userConfirm)("You do not presently have a stashClan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)", 15000, true)) {
+          clanIdOrName = (0,external_kolmafia_.getClanId)();
+          (0,dist.set)("stashClan", clanIdOrName);
+        } else {
+          throw "No stashClan set.";
+        }
+      }
+    }
+
+    this.clanIdOrName = clanIdOrName;
+  }
+
+  _createClass(StashManager, [{
+    key: "take",
+    value: function take() {
+      var _this = this;
+
+      for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
+        items[_key] = arguments[_key];
+      }
+
+      withClan(this.clanIdOrName, function () {
+        var _iterator = stash_createForOfIteratorHelper(items),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var item = _step.value;
+            if ((0,dist.have)(item)) continue;
+
+            try {
+              var succeeded = (0,external_kolmafia_.takeStash)(1, item);
+
+              if (succeeded) {
+                var _this$taken$get;
+
+                (0,external_kolmafia_.print)("Took ".concat(item.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
+
+                _this.taken.set(item, ((_this$taken$get = _this.taken.get(item)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
+              } else {
+                (0,external_kolmafia_.print)("Failed to take ".concat(item.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+              }
+            } catch (_unused) {
+              (0,external_kolmafia_.print)("Failed to take ".concat(item.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+            }
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      });
+    }
+    /**
+     * Ensure at least one of each of {items} in inventory.
+     * @param items Items to take from the stash.
+     */
+
+  }, {
+    key: "ensure",
+    value: function ensure() {
+      for (var _len2 = arguments.length, items = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        items[_key2] = arguments[_key2];
+      }
+
+      this.take.apply(this, _toConsumableArray(items.filter(function (item) {
+        return (0,external_kolmafia_.availableAmount)(item) === 0;
+      })));
+    }
+  }, {
+    key: "putBack",
+    value: function putBack() {
+      var _this2 = this;
+
+      for (var _len3 = arguments.length, items = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        items[_key3] = arguments[_key3];
+      }
+
+      withClan(this.clanIdOrName, function () {
+        var _iterator2 = stash_createForOfIteratorHelper(items),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _this2$taken$get;
+
+            var item = _step2.value;
+            var count = (_this2$taken$get = _this2.taken.get(item)) !== null && _this2$taken$get !== void 0 ? _this2$taken$get : 0;
+
+            if (count > 0) {
+              (0,external_kolmafia_.retrieveItem)(count, item);
+
+              if ((0,external_kolmafia_.putStash)(count, item)) {
+                (0,external_kolmafia_.print)("Returned ".concat(item.name, " to stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
+
+                _this2.taken["delete"](item);
+              } else {
+                throw "Failed to return ".concat(item.name, " to stash.");
+              }
+            }
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+      });
+    }
+    /**
+     * Put all items back in the stash.
+     */
+
+  }, {
+    key: "putBackAll",
+    value: function putBackAll() {
+      this.putBack.apply(this, _toConsumableArray(this.taken.keys()));
+    }
+  }]);
+
+  return StashManager;
+}();
+;// CONCATENATED MODULE: ./src/mood.ts
+function mood_templateObject55() {
+  var data = mood_taggedTemplateLiteral(["Puzzle Champ"]);
+
+  mood_templateObject55 = function _templateObject55() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject54() {
+  var data = mood_taggedTemplateLiteral(["Do I Know You From Somewhere?"]);
+
+  mood_templateObject54 = function _templateObject54() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject53() {
+  var data = mood_taggedTemplateLiteral(["Beach Comb"]);
+
+  mood_templateObject53 = function _templateObject53() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject52() {
+  var data = mood_taggedTemplateLiteral(["redwood rain stick"]);
+
+  mood_templateObject52 = function _templateObject52() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject51() {
+  var data = mood_taggedTemplateLiteral(["redwood rain stick"]);
+
+  mood_templateObject51 = function _templateObject51() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject50() {
+  var data = mood_taggedTemplateLiteral(["cyclops eyedrops"]);
+
+  mood_templateObject50 = function _templateObject50() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject49() {
+  var data = mood_taggedTemplateLiteral(["eagle feather"]);
+
+  mood_templateObject49 = function _templateObject49() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject48() {
+  var data = mood_taggedTemplateLiteral(["blue snowcone"]);
+
+  mood_templateObject48 = function _templateObject48() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject47() {
+  var data = mood_taggedTemplateLiteral(["resolution: be happier"]);
+
+  mood_templateObject47 = function _templateObject47() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject46() {
+  var data = mood_taggedTemplateLiteral(["Polka Pop"]);
+
+  mood_templateObject46 = function _templateObject46() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject45() {
+  var data = mood_taggedTemplateLiteral(["Meat-inflating powder"]);
+
+  mood_templateObject45 = function _templateObject45() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject44() {
+  var data = mood_taggedTemplateLiteral(["resolution: be luckier"]);
+
+  mood_templateObject44 = function _templateObject44() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject43() {
+  var data = mood_taggedTemplateLiteral(["pink candy heart"]);
+
+  mood_templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject42() {
+  var data = mood_taggedTemplateLiteral(["recording of The Ballad of Richie Thingfinder"]);
+
+  mood_templateObject42 = function _templateObject42() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject41() {
+  var data = mood_taggedTemplateLiteral(["recording of Chorale of Companionship"]);
+
+  mood_templateObject41 = function _templateObject41() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject40() {
+  var data = mood_taggedTemplateLiteral(["Accordion Thief"]);
+
+  mood_templateObject40 = function _templateObject40() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject39() {
+  var data = mood_taggedTemplateLiteral(["Chorale of Companionship, The Ballad of Richie Thingfinder, Ur-Kel's Aria of Annoyance, The Polka of Plenty"]);
+
+  mood_templateObject39 = function _templateObject39() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject38() {
+  var data = mood_taggedTemplateLiteral(["frost flower"]);
+
+  mood_templateObject38 = function _templateObject38() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject37() {
+  var data = mood_taggedTemplateLiteral(["frost flower"]);
+
+  mood_templateObject37 = function _templateObject37() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject36() {
+  var data = mood_taggedTemplateLiteral(["frost flower"]);
+
+  mood_templateObject36 = function _templateObject36() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject35() {
+  var data = mood_taggedTemplateLiteral(["frost flower"]);
+
+  mood_templateObject35 = function _templateObject35() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject34() {
+  var data = mood_taggedTemplateLiteral(["Frosty"]);
+
+  mood_templateObject34 = function _templateObject34() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject33() {
+  var data = mood_taggedTemplateLiteral(["white candy heart"]);
+
+  mood_templateObject33 = function _templateObject33() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject32() {
+  var data = mood_taggedTemplateLiteral(["pulled blue taffy"]);
+
+  mood_templateObject32 = function _templateObject32() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject31() {
+  var data = mood_taggedTemplateLiteral(["Blue Swayed"]);
+
+  mood_templateObject31 = function _templateObject31() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject30() {
+  var data = mood_taggedTemplateLiteral(["Blue Swayed"]);
+
+  mood_templateObject30 = function _templateObject30() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject29() {
+  var data = mood_taggedTemplateLiteral(["defective game grid token"]);
+
+  mood_templateObject29 = function _templateObject29() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject28() {
+  var data = mood_taggedTemplateLiteral(["defective game grid token"]);
+
+  mood_templateObject28 = function _templateObject28() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject27() {
+  var data = mood_taggedTemplateLiteral(["defective game grid token"]);
+
+  mood_templateObject27 = function _templateObject27() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject26() {
+  var data = mood_taggedTemplateLiteral(["A View To Some Meat"]);
+
+  mood_templateObject26 = function _templateObject26() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject25() {
+  var data = mood_taggedTemplateLiteral(["Kremlin's Greatest Briefcase"]);
+
+  mood_templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject24() {
+  var data = mood_taggedTemplateLiteral(["Driving Observantly"]);
+
+  mood_templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject23() {
+  var data = mood_taggedTemplateLiteral(["Synthesis: Greed"]);
+
+  mood_templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject22() {
+  var data = mood_taggedTemplateLiteral(["Sweet Synthesis"]);
+
+  mood_templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject21() {
+  var data = mood_taggedTemplateLiteral(["Bind Lasagmbie"]);
+
+  mood_templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject20() {
+  var data = mood_taggedTemplateLiteral(["Pastamancer"]);
+
+  mood_templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject19() {
+  var data = mood_taggedTemplateLiteral(["Pride of the Puffin"]);
+
+  mood_templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject18() {
+  var data = mood_taggedTemplateLiteral(["Drescher's Annoying Noise"]);
+
+  mood_templateObject18 = function _templateObject18() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject17() {
+  var data = mood_taggedTemplateLiteral(["The Spirit of Taking"]);
+
+  mood_templateObject17 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject16() {
+  var data = mood_taggedTemplateLiteral(["Singer's Faithful Ocelot"]);
+
+  mood_templateObject16 = function _templateObject16() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject15() {
+  var data = mood_taggedTemplateLiteral(["Fat Leon's Phat Loot Lyric"]);
+
+  mood_templateObject15 = function _templateObject15() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject14() {
+  var data = mood_taggedTemplateLiteral(["Ur-Kel's Aria of Annoyance"]);
+
+  mood_templateObject14 = function _templateObject14() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject13() {
+  var data = mood_taggedTemplateLiteral(["Disco Leer"]);
+
+  mood_templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject12() {
+  var data = mood_taggedTemplateLiteral(["The Polka of Plenty"]);
+
+  mood_templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject11() {
+  var data = mood_taggedTemplateLiteral(["Empathy of the Newt"]);
+
+  mood_templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject10() {
+  var data = mood_taggedTemplateLiteral(["Leash of Linguini"]);
+
+  mood_templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject9() {
+  var data = mood_taggedTemplateLiteral(["Blood Bond"]);
+
+  mood_templateObject9 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject8() {
+  var data = mood_taggedTemplateLiteral(["Flaskfull of Hollow"]);
+
+  mood_templateObject8 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject7() {
+  var data = mood_taggedTemplateLiteral(["resolution: be happier"]);
+
+  mood_templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject6() {
+  var data = mood_taggedTemplateLiteral(["resolution: be wealthier"]);
+
+  mood_templateObject6 = function _templateObject6() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject5() {
+  var data = mood_taggedTemplateLiteral(["How to Avoid Scams"]);
+
+  mood_templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject4() {
+  var data = mood_taggedTemplateLiteral(["The Ballad of Richie Thingfinder"]);
+
+  mood_templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject3() {
+  var data = mood_taggedTemplateLiteral(["Chorale of Companionship"]);
+
+  mood_templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject2() {
+  var data = mood_taggedTemplateLiteral(["Fat Leon's Phat Loot Lyric, Ur-Kel's Aria of Annoyance"]);
+
+  mood_templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_templateObject() {
+  var data = mood_taggedTemplateLiteral(["Polka of Plenty"]);
+
+  mood_templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function mood_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+dist.Mood.setDefaultOptions({
+  songSlots: [(0,dist.$effects)(mood_templateObject()), (0,dist.$effects)(mood_templateObject2()), (0,dist.$effects)(mood_templateObject3()), (0,dist.$effects)(mood_templateObject4())]
+});
+var baseMeat = dist.SongBoom.have() ? 275 : 250;
+function meatMood() {
+  var urKels = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var mood = new dist.Mood(); // TODO: Check all potions and grab those that are worth.
+
+  mood.potion((0,dist.$item)(mood_templateObject5()), 3 * baseMeat);
+  mood.potion((0,dist.$item)(mood_templateObject6()), 0.3 * baseMeat);
+  mood.potion((0,dist.$item)(mood_templateObject7()), 0.15 * 0.45 * 0.8 * 200);
+  mood.potion((0,dist.$item)(mood_templateObject8()), 5);
+  mood.skill((0,dist.$skill)(mood_templateObject9()));
+  mood.skill((0,dist.$skill)(mood_templateObject10()));
+  mood.skill((0,dist.$skill)(mood_templateObject11()));
+  mood.skill((0,dist.$skill)(mood_templateObject12()));
+  mood.skill((0,dist.$skill)(mood_templateObject13()));
+  mood.skill(urKels ? (0,dist.$skill)(mood_templateObject14()) : (0,dist.$skill)(mood_templateObject15()));
+  mood.skill((0,dist.$skill)(mood_templateObject16()));
+  mood.skill((0,dist.$skill)(mood_templateObject17()));
+  mood.skill((0,dist.$skill)(mood_templateObject18()));
+  mood.skill((0,dist.$skill)(mood_templateObject19()));
+  if ((0,external_kolmafia_.myClass)() !== (0,dist.$class)(mood_templateObject20())) mood.skill((0,dist.$skill)(mood_templateObject21()));
+
+  if ((0,external_kolmafia_.haveSkill)((0,dist.$skill)(mood_templateObject22()))) {
+    mood.effect((0,dist.$effect)(mood_templateObject23()), function () {
+      if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) (0,external_kolmafia_.cliExecute)("synthesize greed");
+    });
+  }
+
+  if ((0,external_kolmafia_.getCampground)()["Asdon Martin keyfob"] !== undefined) {
+    if ((0,external_kolmafia_.getFuel)() < 37) (0,external_kolmafia_.cliExecute)("asdonmartin fuel 1 pie man was not meant to eat");
+    mood.effect((0,dist.$effect)(mood_templateObject24()));
+  }
+
+  if ((0,dist.have)((0,dist.$item)(mood_templateObject25()))) {
+    mood.effect((0,dist.$effect)(mood_templateObject26()), function () {
+      if ((0,dist.get)("_kgbClicksUsed") < 22) {
+        var buffTries = Math.ceil((22 - (0,dist.get)("_kgbClicksUsed")) / 3);
+        (0,external_kolmafia_.cliExecute)("Briefcase buff ".concat(new Array(buffTries).fill("meat").join(" ")));
+      }
+    });
+  }
+
+  return mood;
+}
+function freeFightMood() {
+  var mood = new dist.Mood();
+
+  if (!(0,dist.get)("_garbo_defectiveTokenAttempted", false)) {
+    (0,dist.set)("_garbo_defectiveTokenAttempted", true);
+    withStash((0,dist.$items)(mood_templateObject27()), function () {
+      if (!(0,dist.get)("_defectiveTokenUsed") && (0,dist.have)((0,dist.$item)(mood_templateObject28()))) (0,external_kolmafia_.use)((0,dist.$item)(mood_templateObject29()));
+    });
+  }
+
+  if ((0,external_kolmafia_.haveEffect)((0,dist.$effect)(mood_templateObject30())) < 50) {
+    (0,external_kolmafia_.use)(Math.ceil((50 - (0,external_kolmafia_.haveEffect)((0,dist.$effect)(mood_templateObject31()))) / 10), (0,dist.$item)(mood_templateObject32()));
+  }
+
+  mood.potion((0,dist.$item)(mood_templateObject33()), 30); // FIXME: Figure out what's actually good!
+
+  if (!(0,dist.have)((0,dist.$effect)(mood_templateObject34())) && (0,external_kolmafia_.mallPrice)((0,dist.$item)(mood_templateObject35())) < 70000) {
+    if (!(0,dist.get)("_freePillKeeperUsed")) (0,external_kolmafia_.cliExecute)("pillkeeper extend");
+    if (!(0,dist.have)((0,dist.$item)(mood_templateObject36()))) (0,external_kolmafia_.buy)((0,dist.$item)(mood_templateObject37()));
+    (0,external_kolmafia_.use)((0,dist.$item)(mood_templateObject38()));
+  }
+
+  var goodSongs = (0,dist.$skills)(mood_templateObject39());
+
+  for (var _i = 0, _Object$keys = Object.keys((0,external_kolmafia_.myEffects)()); _i < _Object$keys.length; _i++) {
+    var effectName = _Object$keys[_i];
+    var effect = Effect.get(effectName);
+    var skill = (0,external_kolmafia_.toSkill)(effect);
+
+    if (skill["class"] === (0,dist.$class)(mood_templateObject40()) && skill.buff && !goodSongs.includes(skill)) {
+      (0,external_kolmafia_.cliExecute)("shrug ".concat(effectName));
+    }
+  }
+
+  mood.potion((0,dist.$item)(mood_templateObject41()), 500);
+  mood.potion((0,dist.$item)(mood_templateObject42()), 500);
+  mood.potion((0,dist.$item)(mood_templateObject43()), 300);
+  mood.potion((0,dist.$item)(mood_templateObject44()), 120);
+  mood.potion((0,dist.$item)(mood_templateObject45()), 500);
+  mood.potion((0,dist.$item)(mood_templateObject46()), 500);
+  mood.potion((0,dist.$item)(mood_templateObject47()), 500);
+  mood.potion((0,dist.$item)(mood_templateObject48()), 500);
+  mood.potion((0,dist.$item)(mood_templateObject49()), 500);
+  mood.potion((0,dist.$item)(mood_templateObject50()), 500);
+
+  if (((0,dist.get)("daycareOpen") || (0,dist.get)("_daycareToday")) && !(0,dist.get)("_daycareSpa")) {
+    (0,external_kolmafia_.cliExecute)("daycare mysticality");
+  }
+
+  if ((0,dist.have)((0,dist.$item)(mood_templateObject51())) && !(0,dist.get)("_redwoodRainStickUsed")) {
+    (0,external_kolmafia_.use)((0,dist.$item)(mood_templateObject52()));
+  }
+
+  var beachHeadsUsed = (0,dist.get)("_beachHeadsUsed");
+
+  if ((0,dist.have)((0,dist.$item)(mood_templateObject53())) && !beachHeadsUsed.toString().split(",").includes("10")) {
+    mood.effect((0,dist.$effect)(mood_templateObject54()));
+  }
+
+  if (dist.Witchess.have() && !(0,dist.get)("_witchessBuff")) {
+    mood.effect((0,dist.$effect)(mood_templateObject55()));
+  }
+
+  return mood;
+}
+;// CONCATENATED MODULE: ./src/outfit.ts
+function outfit_templateObject26() {
+  var data = outfit_taggedTemplateLiteral(["unwrapped retro superhero cape"]);
+
+  outfit_templateObject26 = function _templateObject26() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject25() {
+  var data = outfit_taggedTemplateLiteral(["ice nine"]);
+
+  outfit_templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject24() {
+  var data = outfit_taggedTemplateLiteral(["pantogram pants"]);
+
+  outfit_templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject23() {
+  var data = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]);
+
+  outfit_templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject22() {
+  var data = outfit_taggedTemplateLiteral(["mafia thumb ring"]);
+
+  outfit_templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject21() {
+  var data = outfit_taggedTemplateLiteral(["lucky gold ring"]);
+
+  outfit_templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject20() {
+  var data = outfit_taggedTemplateLiteral(["cheap sunglasses"]);
+
+  outfit_templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject19() {
+  var data = outfit_taggedTemplateLiteral(["broken champagne bottle, unwrapped retro superhero cape"]);
+
+  outfit_templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject18() {
+  var data = outfit_taggedTemplateLiteral(["mafia pointer finger ring"]);
+
+  outfit_templateObject18 = function _templateObject18() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject17() {
+  var data = outfit_taggedTemplateLiteral(["protonic accelerator pack"]);
+
+  outfit_templateObject17 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject16() {
+  var data = outfit_taggedTemplateLiteral(["ice nine"]);
+
+  outfit_templateObject16 = function _templateObject16() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject15() {
+  var data = outfit_taggedTemplateLiteral(["protonic accelerator pack"]);
+
+  outfit_templateObject15 = function _templateObject15() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject14() {
+  var data = outfit_taggedTemplateLiteral(["ice nine"]);
+
+  outfit_templateObject14 = function _templateObject14() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject13() {
+  var data = outfit_taggedTemplateLiteral(["ice nine"]);
+
+  outfit_templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject12() {
+  var data = outfit_taggedTemplateLiteral(["ice nine"]);
+
+  outfit_templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject11() {
+  var data = outfit_taggedTemplateLiteral(["unwrapped retro superhero cape"]);
+
+  outfit_templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject10() {
+  var data = outfit_taggedTemplateLiteral(["haiku katana"]);
+
+  outfit_templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject9() {
+  var data = outfit_taggedTemplateLiteral(["haiku katana"]);
+
+  outfit_templateObject9 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject8() {
+  var data = outfit_taggedTemplateLiteral(["Seal Clubber"]);
+
+  outfit_templateObject8 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject7() {
+  var data = outfit_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]);
+
+  outfit_templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject6() {
+  var data = outfit_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]);
+
+  outfit_templateObject6 = function _templateObject6() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject5() {
+  var data = outfit_taggedTemplateLiteral(["Drunkula's wineglass"]);
+
+  outfit_templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject4() {
+  var data = outfit_taggedTemplateLiteral(["pantogram pants"]);
+
+  outfit_templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject3() {
+  var data = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]);
+
+  outfit_templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject2() {
+  var data = outfit_taggedTemplateLiteral(["lucky gold ring"]);
+
+  outfit_templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_templateObject() {
+  var data = outfit_taggedTemplateLiteral(["Pocket Professor"]);
+
+  outfit_templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function outfit_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { outfit_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function outfit_toConsumableArray(arr) { return outfit_arrayWithoutHoles(arr) || outfit_iterableToArray(arr) || outfit_unsupportedIterableToArray(arr) || outfit_nonIterableSpread(); }
+
+function outfit_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function outfit_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return outfit_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return outfit_arrayLikeToArray(o, minLen); }
+
+function outfit_iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function outfit_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return outfit_arrayLikeToArray(arr); }
+
+function outfit_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function outfit_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function outfit_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function outfit_createClass(Constructor, protoProps, staticProps) { if (protoProps) outfit_defineProperties(Constructor.prototype, protoProps); if (staticProps) outfit_defineProperties(Constructor, staticProps); return Constructor; }
+
+function outfit_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+var Requirement = /*#__PURE__*/function () {
+  function Requirement(maximizeParameters_, maximizeOptions_) {
+    outfit_classCallCheck(this, Requirement);
+
+    outfit_defineProperty(this, "maximizeParameters_", void 0);
+
+    outfit_defineProperty(this, "maximizeOptions_", void 0);
+
+    this.maximizeParameters_ = maximizeParameters_;
+    this.maximizeOptions_ = maximizeOptions_;
+  }
+
+  outfit_createClass(Requirement, [{
+    key: "maximizeParameters",
+    value: function maximizeParameters() {
+      return this.maximizeParameters_;
+    }
+  }, {
+    key: "maximizeOptions",
+    value: function maximizeOptions() {
+      return this.maximizeOptions_;
+    }
+  }, {
+    key: "merge",
+    value: function merge(other) {
+      var _optionsA$bonusEquip$, _optionsA$bonusEquip, _optionsB$bonusEquip$, _optionsB$bonusEquip, _optionsA$forceEquip, _optionsB$forceEquip, _optionsA$preventEqui, _optionsB$preventEqui;
+
+      var optionsA = this.maximizeOptions();
+      var optionsB = other.maximizeOptions();
+      return new Requirement([].concat(outfit_toConsumableArray(this.maximizeParameters()), outfit_toConsumableArray(other.maximizeParameters())), _objectSpread(_objectSpread(_objectSpread({}, optionsA), optionsB), {}, {
+        bonusEquip: new Map([].concat(outfit_toConsumableArray((_optionsA$bonusEquip$ = (_optionsA$bonusEquip = optionsA.bonusEquip) === null || _optionsA$bonusEquip === void 0 ? void 0 : _optionsA$bonusEquip.entries()) !== null && _optionsA$bonusEquip$ !== void 0 ? _optionsA$bonusEquip$ : []), outfit_toConsumableArray((_optionsB$bonusEquip$ = (_optionsB$bonusEquip = optionsB.bonusEquip) === null || _optionsB$bonusEquip === void 0 ? void 0 : _optionsB$bonusEquip.entries()) !== null && _optionsB$bonusEquip$ !== void 0 ? _optionsB$bonusEquip$ : []))),
+        forceEquip: [].concat(outfit_toConsumableArray((_optionsA$forceEquip = optionsA.forceEquip) !== null && _optionsA$forceEquip !== void 0 ? _optionsA$forceEquip : []), outfit_toConsumableArray((_optionsB$forceEquip = optionsB.forceEquip) !== null && _optionsB$forceEquip !== void 0 ? _optionsB$forceEquip : [])),
+        preventEquip: [].concat(outfit_toConsumableArray((_optionsA$preventEqui = optionsA.preventEquip) !== null && _optionsA$preventEqui !== void 0 ? _optionsA$preventEqui : []), outfit_toConsumableArray((_optionsB$preventEqui = optionsB.preventEquip) !== null && _optionsB$preventEqui !== void 0 ? _optionsB$preventEqui : []))
+      }));
+    }
+  }], [{
+    key: "merge",
+    value: function merge(allRequirements) {
+      return allRequirements.reduce(function (x, y) {
+        return x.merge(y);
+      });
+    }
+  }]);
+
+  return Requirement;
+}();
+function freeFightOutfit() {
+  var requirements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var compiledRequirements = Requirement.merge([].concat(outfit_toConsumableArray(requirements), [new Requirement((0,external_kolmafia_.myFamiliar)() === (0,dist.$familiar)(outfit_templateObject()) ? ["Familiar Experience"] : ["Familiar Weight"], {
+    bonusEquip: new Map([[(0,dist.$item)(outfit_templateObject2()), 400], [(0,dist.$item)(outfit_templateObject3()), 250], [(0,dist.$item)(outfit_templateObject4()), 100]])
+  })]));
+  (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+}
+function meatOutfit(embezzlerUp) {
+  var requirements = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var sea = arguments.length > 2 ? arguments[2] : undefined;
+  var forceEquip = [];
+  var additionalRequirements = [];
+
+  if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) {
+    forceEquip.push((0,dist.$item)(outfit_templateObject5()));
+  } else if (!embezzlerUp) {
+    if ((0,dist.getKramcoWandererChance)() > 0.05 && (0,dist.have)((0,dist.$item)(outfit_templateObject6()))) {
+      forceEquip.push((0,dist.$item)(outfit_templateObject7()));
+    } // TODO: Fix pointer finger ring construction.
+
+
+    if ((0,external_kolmafia_.myClass)() != (0,dist.$class)(outfit_templateObject8())) {
+      if ((0,dist.have)((0,dist.$item)(outfit_templateObject9()))) {
+        forceEquip.push((0,dist.$item)(outfit_templateObject10()));
+      } else if ((0,dist.have)((0,dist.$item)(outfit_templateObject11()))) {
+        if (!(0,dist.have)((0,dist.$item)(outfit_templateObject12()))) (0,external_kolmafia_.retrieveItem)((0,dist.$item)(outfit_templateObject13()));
+        forceEquip.push((0,dist.$item)(outfit_templateObject14()));
+      }
+    }
+
+    if ((0,dist.have)((0,dist.$item)(outfit_templateObject15())) && (0,dist.get)("questPAGhost") === "unstarted" && (0,dist.get)("nextParanormalActivity") <= (0,external_kolmafia_.totalTurnsPlayed)() && !forceEquip.includes((0,dist.$item)(outfit_templateObject16()))) {
+      forceEquip.push((0,dist.$item)(outfit_templateObject17()));
+    }
+
+    forceEquip.push((0,dist.$item)(outfit_templateObject18()));
+  }
+
+  if (sea) {
+    additionalRequirements.push("sea");
+  }
+
+  var compiledRequirements = Requirement.merge([].concat(outfit_toConsumableArray(requirements), [new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(additionalRequirements), {
+    forceEquip: forceEquip,
+    preventEquip: [].concat(outfit_toConsumableArray((0,dist.$items)(outfit_templateObject19())), outfit_toConsumableArray(embezzlerUp ? (0,dist.$items)(outfit_templateObject20()) : [])),
+    bonusEquip: new Map([[(0,dist.$item)(outfit_templateObject21()), 400], [(0,dist.$item)(outfit_templateObject22()), 300], [(0,dist.$item)(outfit_templateObject23()), 250], [(0,dist.$item)(outfit_templateObject24()), 100]])
+  })]));
+  (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+
+  if ((0,external_kolmafia_.equippedAmount)((0,dist.$item)(outfit_templateObject25())) > 0) {
+    (0,external_kolmafia_.equip)((0,dist.$item)(outfit_templateObject26()));
+  }
+
+  if (sea) (0,dist.maximizeCached)(["sea -tie"]);
+}
+;// CONCATENATED MODULE: ./src/fights.ts
+function _templateObject169() {
+  var data = fights_taggedTemplateLiteral(["magical sausage"]);
+
+  _templateObject169 = function _templateObject169() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject168() {
+  var data = fights_taggedTemplateLiteral(["sausage casing"]);
+
+  _templateObject168 = function _templateObject168() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject167() {
+  var data = fights_taggedTemplateLiteral(["magical sausage"]);
+
+  _templateObject167 = function _templateObject167() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject166() {
+  var data = fights_taggedTemplateLiteral(["Uncle Gator's Country Fun-Time Liquid Waste Sluice"]);
+
+  _templateObject166 = function _templateObject166() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject165() {
+  var data = fights_taggedTemplateLiteral(["The Neverending Party"]);
+
+  _templateObject165 = function _templateObject165() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject164() {
+  var data = fights_taggedTemplateLiteral(["Triple-Sized"]);
+
+  _templateObject164 = function _templateObject164() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject163() {
+  var data = fights_taggedTemplateLiteral(["Powerful Glove"]);
+
+  _templateObject163 = function _templateObject163() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject162() {
+  var data = fights_taggedTemplateLiteral(["acc1"]);
+
+  _templateObject162 = function _templateObject162() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject161() {
+  var data = fights_taggedTemplateLiteral(["Triple-Sized"]);
+
+  _templateObject161 = function _templateObject161() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject160() {
+  var data = fights_taggedTemplateLiteral(["Powerful Glove"]);
+
+  _templateObject160 = function _templateObject160() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject159() {
+  var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+
+  _templateObject159 = function _templateObject159() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject158() {
+  var data = fights_taggedTemplateLiteral(["The Neverending Party"]);
+
+  _templateObject158 = function _templateObject158() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject157() {
+  var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+
+  _templateObject157 = function _templateObject157() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject156() {
+  var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+
+  _templateObject156 = function _templateObject156() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject155() {
+  var data = fights_taggedTemplateLiteral(["Steely-Eyed Squint"]);
+
+  _templateObject155 = function _templateObject155() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject154() {
+  var data = fights_taggedTemplateLiteral(["Steely-Eyed Squint"]);
+
+  _templateObject154 = function _templateObject154() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject153() {
+  var data = fights_taggedTemplateLiteral(["Feeling Lost"]);
+
+  _templateObject153 = function _templateObject153() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject152() {
+  var data = fights_taggedTemplateLiteral(["amateur ninja"]);
+
+  _templateObject152 = function _templateObject152() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject151() {
+  var data = fights_taggedTemplateLiteral(["The Haiku Dungeon"]);
+
+  _templateObject151 = function _templateObject151() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject150() {
+  var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
+
+  _templateObject150 = function _templateObject150() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject149() {
+  var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
+
+  _templateObject149 = function _templateObject149() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject148() {
+  var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
+
+  _templateObject148 = function _templateObject148() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject147() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject147 = function _templateObject147() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject146() {
+  var data = fights_taggedTemplateLiteral(["li'l ninja costume"]);
+
+  _templateObject146 = function _templateObject146() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = fights_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function fights_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return fights_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return fights_arrayLikeToArray(o, minLen); }
+
+function fights_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _templateObject145() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject145 = function _templateObject145() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject144() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject144 = function _templateObject144() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject143() {
+  var data = fights_taggedTemplateLiteral(["drum machine"]);
+
+  _templateObject143 = function _templateObject143() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject142() {
+  var data = fights_taggedTemplateLiteral(["replica bat-oomerang"]);
+
+  _templateObject142 = function _templateObject142() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject141() {
+  var data = fights_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"]);
+
+  _templateObject141 = function _templateObject141() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject140() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject140 = function _templateObject140() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject139() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject139 = function _templateObject139() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject138() {
+  var data = fights_taggedTemplateLiteral(["drum machine"]);
+
+  _templateObject138 = function _templateObject138() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject137() {
+  var data = fights_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"]);
+
+  _templateObject137 = function _templateObject137() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject136() {
+  var data = fights_taggedTemplateLiteral(["The Jokester's Gun"]);
+
+  _templateObject136 = function _templateObject136() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject135() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject135 = function _templateObject135() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject134() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject134 = function _templateObject134() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject133() {
+  var data = fights_taggedTemplateLiteral(["drum machine"]);
+
+  _templateObject133 = function _templateObject133() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject132() {
+  var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
+
+  _templateObject132 = function _templateObject132() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject131() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject131 = function _templateObject131() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject130() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject130 = function _templateObject130() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject129() {
+  var data = fights_taggedTemplateLiteral(["drum machine"]);
+
+  _templateObject129 = function _templateObject129() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject128() {
+  var data = fights_taggedTemplateLiteral(["Shattering Punch"]);
+
+  _templateObject128 = function _templateObject128() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject127() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject127 = function _templateObject127() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject126() {
+  var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  _templateObject126 = function _templateObject126() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject125() {
+  var data = fights_taggedTemplateLiteral(["drum machine"]);
+
+  _templateObject125 = function _templateObject125() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject124() {
+  var data = fights_taggedTemplateLiteral(["Gingerbread Mob Hit"]);
+
+  _templateObject124 = function _templateObject124() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject123() {
+  var data = fights_taggedTemplateLiteral(["makeshift garbage shirt"]);
+
+  _templateObject123 = function _templateObject123() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject122() {
+  var data = fights_taggedTemplateLiteral(["January's Garbage Tote"]);
+
+  _templateObject122 = function _templateObject122() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject121() {
+  var data = fights_taggedTemplateLiteral(["The Neverending Party"]);
+
+  _templateObject121 = function _templateObject121() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject120() {
+  var data = fights_taggedTemplateLiteral(["The Neverending Party"]);
+
+  _templateObject120 = function _templateObject120() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject119() {
+  var data = fights_taggedTemplateLiteral(["The X-32-F Combat Training Snowman"]);
+
+  _templateObject119 = function _templateObject119() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject118() {
+  var data = fights_taggedTemplateLiteral(["Witchess Bishop"]);
+
+  _templateObject118 = function _templateObject118() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject117() {
+  var data = fights_taggedTemplateLiteral(["Machine Elf"]);
+
+  _templateObject117 = function _templateObject117() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject116() {
+  var data = fights_taggedTemplateLiteral(["The Deep Machine Tunnels"]);
+
+  _templateObject116 = function _templateObject116() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject115() {
+  var data = fights_taggedTemplateLiteral(["Machine Elf"]);
+
+  _templateObject115 = function _templateObject115() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject114() {
+  var data = fights_taggedTemplateLiteral(["God Lobster"]);
+
+  _templateObject114 = function _templateObject114() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject113() {
+  var data = fights_taggedTemplateLiteral(["God Lobster"]);
+
+  _templateObject113 = function _templateObject113() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject112() {
+  var data = fights_taggedTemplateLiteral(["Your Mushroom Garden"]);
+
+  _templateObject112 = function _templateObject112() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject111() {
+  var data = fights_taggedTemplateLiteral(["Portscan"]);
+
+  _templateObject111 = function _templateObject111() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject110() {
+  var data = fights_taggedTemplateLiteral(["Extract"]);
+
+  _templateObject110 = function _templateObject110() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject109() {
+  var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+
+  _templateObject109 = function _templateObject109() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject108() {
+  var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+
+  _templateObject108 = function _templateObject108() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject107() {
+  var data = fights_taggedTemplateLiteral(["Macrometeorite"]);
+
+  _templateObject107 = function _templateObject107() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject106() {
+  var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+
+  _templateObject106 = function _templateObject106() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject105() {
+  var data = fights_taggedTemplateLiteral(["Robortender"]);
+
+  _templateObject105 = function _templateObject105() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject104() {
+  var data = fights_taggedTemplateLiteral(["Robortender"]);
+
+  _templateObject104 = function _templateObject104() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject103() {
+  var data = fights_taggedTemplateLiteral(["Packet of tall grass seeds"]);
+
+  _templateObject103 = function _templateObject103() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject102() {
+  var data = fights_taggedTemplateLiteral(["Packet of tall grass seeds"]);
+
+  _templateObject102 = function _templateObject102() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject101() {
+  var data = fights_taggedTemplateLiteral(["Your Mushroom Garden"]);
+
+  _templateObject101 = function _templateObject101() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject100() {
+  var data = fights_taggedTemplateLiteral(["Portscan"]);
+
+  _templateObject100 = function _templateObject100() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject99() {
+  var data = fights_taggedTemplateLiteral(["Extract"]);
+
+  _templateObject99 = function _templateObject99() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject98() {
+  var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+
+  _templateObject98 = function _templateObject98() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject97() {
+  var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+
+  _templateObject97 = function _templateObject97() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject96() {
+  var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+
+  _templateObject96 = function _templateObject96() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject95() {
+  var data = fights_taggedTemplateLiteral(["glark cable"]);
+
+  _templateObject95 = function _templateObject95() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject94() {
+  var data = fights_taggedTemplateLiteral(["The Red Zeppelin"]);
+
+  _templateObject94 = function _templateObject94() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject93() {
+  var data = fights_taggedTemplateLiteral(["glark cable"]);
+
+  _templateObject93 = function _templateObject93() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject92() {
+  var data = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]);
+
+  _templateObject92 = function _templateObject92() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject91() {
+  var data = fights_taggedTemplateLiteral(["Noob Cave"]);
+
+  _templateObject91 = function _templateObject91() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject90() {
+  var data = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]);
+
+  _templateObject90 = function _templateObject90() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject89() {
+  var data = fights_taggedTemplateLiteral(["miniature crystal ball"]);
+
+  _templateObject89 = function _templateObject89() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject88() {
+  var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+
+  _templateObject88 = function _templateObject88() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject87() {
+  var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+
+  _templateObject87 = function _templateObject87() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject86() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  _templateObject86 = function _templateObject86() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject85() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  _templateObject85 = function _templateObject85() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject84() {
+  var data = fights_taggedTemplateLiteral(["drunk pygmy"]);
+
+  _templateObject84 = function _templateObject84() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject83() {
+  var data = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+
+  _templateObject83 = function _templateObject83() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject82() {
+  var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+
+  _templateObject82 = function _templateObject82() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject81() {
+  var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+
+  _templateObject81 = function _templateObject81() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject80() {
+  var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+
+  _templateObject80 = function _templateObject80() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject79() {
+  var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+
+  _templateObject79 = function _templateObject79() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject78() {
+  var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+
+  _templateObject78 = function _templateObject78() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject77() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  _templateObject77 = function _templateObject77() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject76() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  _templateObject76 = function _templateObject76() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject75() {
+  var data = fights_taggedTemplateLiteral(["drunk pygmy"]);
+
+  _templateObject75 = function _templateObject75() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject74() {
+  var data = fights_taggedTemplateLiteral(["drunk pygmy"]);
+
+  _templateObject74 = function _templateObject74() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject73() {
+  var data = fights_taggedTemplateLiteral(["drunk pygmy"]);
+
+  _templateObject73 = function _templateObject73() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject72() {
+  var data = fights_taggedTemplateLiteral(["pygmy orderlies, pygmy bowler, pygmy janitor"]);
+
+  _templateObject72 = function _templateObject72() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject71() {
+  var data = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+
+  _templateObject71 = function _templateObject71() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject70() {
+  var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+
+  _templateObject70 = function _templateObject70() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject69() {
+  var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+
+  _templateObject69 = function _templateObject69() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject68() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  _templateObject68 = function _templateObject68() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject67() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  _templateObject67 = function _templateObject67() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject66() {
+  var data = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+
+  _templateObject66 = function _templateObject66() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject65() {
+  var data = fights_taggedTemplateLiteral(["miniature crystal ball"]);
+
+  _templateObject65 = function _templateObject65() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject64() {
+  var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+
+  _templateObject64 = function _templateObject64() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject63() {
+  var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+
+  _templateObject63 = function _templateObject63() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject62() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  _templateObject62 = function _templateObject62() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject61() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  _templateObject61 = function _templateObject61() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject60() {
+  var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+
+  _templateObject60 = function _templateObject60() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject59() {
+  var data = fights_taggedTemplateLiteral(["divine champagne popper"]);
+
+  fights_templateObject59 = function _templateObject59() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject58() {
+  var data = fights_taggedTemplateLiteral(["tennis ball"]);
+
+  fights_templateObject58 = function _templateObject58() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject57() {
+  var data = fights_taggedTemplateLiteral(["Louder than Bomb"]);
+
+  fights_templateObject57 = function _templateObject57() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject56() {
+  var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+
+  fights_templateObject56 = function _templateObject56() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject55() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  fights_templateObject55 = function _templateObject55() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject54() {
+  var data = fights_taggedTemplateLiteral(["bowling ball"]);
+
+  fights_templateObject54 = function _templateObject54() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject53() {
+  var data = fights_taggedTemplateLiteral(["BRICKO brick"]);
+
+  fights_templateObject53 = function _templateObject53() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject52() {
+  var data = fights_taggedTemplateLiteral(["BRICKO eye brick"]);
+
+  fights_templateObject52 = function _templateObject52() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject51() {
+  var data = fights_taggedTemplateLiteral(["BRICKO ooze"]);
+
+  fights_templateObject51 = function _templateObject51() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject50() {
+  var data = fights_taggedTemplateLiteral(["seal-blubber candle"]);
+
+  fights_templateObject50 = function _templateObject50() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject49() {
+  var data = fights_taggedTemplateLiteral(["figurine of an ancient seal"]);
+
+  fights_templateObject49 = function _templateObject49() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject48() {
+  var data = fights_taggedTemplateLiteral(["figurine of a wretched-looking seal"]);
+
+  fights_templateObject48 = function _templateObject48() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject47() {
+  var data = fights_taggedTemplateLiteral(["Seal Clubber"]);
+
+  fights_templateObject47 = function _templateObject47() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject46() {
+  var data = fights_taggedTemplateLiteral(["seal-blubber candle"]);
+
+  fights_templateObject46 = function _templateObject46() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject45() {
+  var data = fights_taggedTemplateLiteral(["Claw of the Infernal Seal"]);
+
+  fights_templateObject45 = function _templateObject45() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject44() {
+  var data = fights_taggedTemplateLiteral(["[glitch season reward name]"]);
+
+  fights_templateObject44 = function _templateObject44() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject43() {
+  var data = fights_taggedTemplateLiteral(["lynyrd snare"]);
+
+  fights_templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject42() {
+  var data = fights_taggedTemplateLiteral(["lynyrd snare"]);
+
+  fights_templateObject42 = function _templateObject42() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject41() {
+  var data = fights_taggedTemplateLiteral(["Evoke Eldritch Horror"]);
+
+  fights_templateObject41 = function _templateObject41() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject40() {
+  var data = fights_taggedTemplateLiteral(["Evoke Eldritch Horror"]);
+
+  fights_templateObject40 = function _templateObject40() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject39() {
+  var data = fights_taggedTemplateLiteral(["eldritch essence"]);
+
+  fights_templateObject39 = function _templateObject39() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject38() {
+  var data = fights_taggedTemplateLiteral(["Robortender"]);
+
+  fights_templateObject38 = function _templateObject38() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject37() {
+  var data = fights_taggedTemplateLiteral(["Robortender"]);
+
+  fights_templateObject37 = function _templateObject37() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject36() {
+  var data = fights_taggedTemplateLiteral(["Cargo Cultist Shorts"]);
+
+  fights_templateObject36 = function _templateObject36() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject35() {
+  var data = fights_taggedTemplateLiteral(["tennis ball"]);
+
+  fights_templateObject35 = function _templateObject35() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject34() {
+  var data = fights_taggedTemplateLiteral(["divine champagne popper"]);
+
+  fights_templateObject34 = function _templateObject34() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject33() {
+  var data = fights_taggedTemplateLiteral(["Louder than Bomb"]);
+
+  fights_templateObject33 = function _templateObject33() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function fights_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function fights_createClass(Constructor, protoProps, staticProps) { if (protoProps) fights_defineProperties(Constructor.prototype, protoProps); if (staticProps) fights_defineProperties(Constructor, staticProps); return Constructor; }
+
+function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function fights_templateObject32() {
+  var data = fights_taggedTemplateLiteral(["Spooky Putty monster"]);
+
+  fights_templateObject32 = function _templateObject32() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject31() {
+  var data = fights_taggedTemplateLiteral(["Spooky Putty sheet"]);
+
+  fights_templateObject31 = function _templateObject31() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject30() {
+  var data = fights_taggedTemplateLiteral(["Spooky Putty monster"]);
+
+  fights_templateObject30 = function _templateObject30() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject29() {
+  var data = fights_taggedTemplateLiteral(["photocopied monster"]);
+
+  fights_templateObject29 = function _templateObject29() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject28() {
+  var data = fights_taggedTemplateLiteral(["Spooky Putty sheet"]);
+
+  fights_templateObject28 = function _templateObject28() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject27() {
+  var data = fights_taggedTemplateLiteral(["shaking 4-d camera"]);
+
+  fights_templateObject27 = function _templateObject27() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject26() {
+  var data = fights_taggedTemplateLiteral(["Spooky Putty sheet"]);
+
+  fights_templateObject26 = function _templateObject26() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject25() {
+  var data = fights_taggedTemplateLiteral(["Pocket Professor memory chip"]);
+
+  fights_templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject24() {
+  var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+
+  fights_templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject23() {
+  var data = fights_taggedTemplateLiteral(["Your Mushroom Garden"]);
+
+  fights_templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject22() {
+  var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+
+  fights_templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject21() {
+  var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+
+  fights_templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject20() {
+  var data = fights_taggedTemplateLiteral(["photocopied monster"]);
+
+  fights_templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject19() {
+  var data = fights_taggedTemplateLiteral(["shaking 4-d camera"]);
+
+  fights_templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject18() {
+  var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+
+  fights_templateObject18 = function _templateObject18() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject17() {
+  var data = fights_taggedTemplateLiteral(["4-d camera"]);
+
+  fights_templateObject17 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject16() {
+  var data = fights_taggedTemplateLiteral(["shaking 4-d camera"]);
+
+  fights_templateObject16 = function _templateObject16() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject15() {
+  var data = fights_taggedTemplateLiteral(["Digitize"]);
+
+  fights_templateObject15 = function _templateObject15() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject14() {
+  var data = fights_taggedTemplateLiteral(["Extract"]);
+
+  fights_templateObject14 = function _templateObject14() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject13() {
+  var data = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]);
+
+  fights_templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject12() {
+  var data = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]);
+
+  fights_templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject11() {
+  var data = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]);
+
+  fights_templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject10() {
+  var data = fights_taggedTemplateLiteral(["Boxing Day Glow"]);
+
+  fights_templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject9() {
+  var data = fights_taggedTemplateLiteral(["body spradium"]);
+
+  fights_templateObject9 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject8() {
+  var data = fights_taggedTemplateLiteral(["Eau d' Clochard"]);
+
+  fights_templateObject8 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject7() {
+  var data = fights_taggedTemplateLiteral(["Peppermint Twisted"]);
+
+  fights_templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject6() {
+  var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+
+  fights_templateObject6 = function _templateObject6() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject5() {
+  var data = fights_taggedTemplateLiteral(["Spooky Putty sheet"]);
+
+  fights_templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject4() {
+  var data = fights_taggedTemplateLiteral(["photocopied monster"]);
+
+  fights_templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject3() {
+  var data = fights_taggedTemplateLiteral(["Knob Goblin embezzler"]);
+
+  fights_templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject2() {
+  var data = fights_taggedTemplateLiteral(["Clan VIP Lounge key"]);
+
+  fights_templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_templateObject() {
+  var data = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]);
+
+  fights_templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function fights_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+
+
+
+
+
+
+function checkFax() {
+  (0,external_kolmafia_.cliExecute)("fax receive");
+  if ((0,dist.get)("photocopyMonster") === (0,dist.$monster)(fights_templateObject())) return true;
+  (0,external_kolmafia_.cliExecute)("fax send");
+  return false;
+}
+
+function faxEmbezzler() {
+  if (!(0,dist.get)("_photocopyUsed")) {
+    if (checkFax()) return;
+    (0,external_kolmafia_.chatPrivate)("cheesefax", "Knob Goblin Embezzler");
+
+    for (var i = 0; i < 3; i++) {
+      (0,external_kolmafia_.wait)(10);
+      if (checkFax()) return;
+    }
+
+    (0,external_kolmafia_.abort)("Failed to acquire photocopied Knob Goblin Embezzler.");
+  }
+}
+
+function dailyFights() {
+  meatMood(true).execute((0,external_kolmafia_.myAdventures)() * 1.04 + 50);
+  safeRestore();
+
+  if ((0,dist.have)((0,dist.$item)(fights_templateObject2()))) {
+    var embezzler = (0,dist.$monster)(fights_templateObject3());
+
+    if ((!(0,dist.have)((0,dist.$item)(fights_templateObject4())) || (0,dist.get)("photocopyMonster") !== embezzler) && !(0,dist.get)("_photocopyUsed")) {
+      faxEmbezzler();
+    }
+
+    if ((0,external_kolmafia_.getClanLounge)()["Clan pool table"] !== undefined) {
+      while ((0,dist.get)("_poolGames") < 3) {
+        (0,external_kolmafia_.cliExecute)("pool aggressive");
+      }
+    }
+
+    if (!(0,dist.get)("_garbo_professorLecturesUsed", false) || (0,dist.get)("spookyPuttyCopiesMade") < 5) {
+      withStash((0,dist.$items)(fights_templateObject5()), function () {
+        if ((0,dist.have)((0,dist.$familiar)(fights_templateObject6())) && !(0,dist.get)("_garbo_professorLecturesUsed", false)) {
+          ensureEffect((0,dist.$effect)(fights_templateObject7()));
+          if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) ensureEffect((0,dist.$effect)(fights_templateObject8()));
+
+          if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)() && (0,dist.have)((0,dist.$item)(fights_templateObject9()))) {
+            ensureEffect((0,dist.$effect)(fights_templateObject10()));
+          } // First round of prof copies with meat drop gear on.
+
+
+          if (!(0,dist.get)("_photocopyUsed")) {
+            freeFightMood().execute(30);
+            withStash((0,dist.$items)(fights_templateObject11()), function () {
+              if ((0,dist.have)((0,dist.$item)(fights_templateObject12()))) {
+                (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject13()));
+              }
+            });
+            if (dist.SourceTerminal.have()) dist.SourceTerminal.educate([(0,dist.$skill)(fights_templateObject14()), (0,dist.$skill)(fights_templateObject15())]);
+
+            if (!(0,dist.get)("_cameraUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject16()))) {
+              (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject17()));
+            }
+
+            (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(fights_templateObject18()));
+            meatOutfit(true);
+            (0,combat.withMacro)(combat.Macro.if_("!hasskill Lecture on Relativity", combat.Macro.trySkill("Digitize").externalIf(!(0,dist.get)("_cameraUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject19())), combat.Macro.tryItem("4-d camera"))).trySkill("Lecture on Relativity").meatKill(), function () {
+              return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject20()));
+            });
+          }
+
+          if ((0,external_kolmafia_.getCounters)("Digitize Monster", 0, 100).trim() === "" && (0,dist.get)("_mushroomGardenFights") === 0) {
+            if ((0,dist.have)((0,dist.$item)(fights_templateObject21()))) (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject22())); // adventure in mushroom garden to start digitize timer.
+
+            freeFightOutfit();
+            (0,external_kolmafia_.useFamiliar)(meatFamiliar());
+            (0,dist.adventureMacro)((0,dist.$location)(fights_templateObject23()), combat.Macro.meatKill());
+          } // Second round of prof copies with familiar weight on.
+
+
+          freeFightMood().execute(20);
+          (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(fights_templateObject24()));
+          (0,dist.maximizeCached)(["Familiar Weight"], {
+            forceEquip: (0,dist.$items)(fights_templateObject25())
+          });
+          (0,combat.withMacro)(combat.Macro.trySkill("Lecture on Relativity").tryItem((0,dist.$item)(fights_templateObject26())).meatKill(), function () {
+            return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject27()));
+          });
+          (0,dist.set)("_garbo_professorLecturesUsed", true);
+        } else if (!(0,dist.get)("_photocopyUsed")) {
+          (0,combat.withMacro)(combat.Macro.tryItem((0,dist.$item)(fights_templateObject28())).meatKill(), function () {
+            (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject29()));
+          });
+          (0,dist.set)("_garbo_professorLecturesUsed", true);
+        }
+
+        var puttyCount = 1;
+
+        while ((0,external_kolmafia_.availableAmount)((0,dist.$item)(fights_templateObject30())) > 0 && puttyCount <= 5) {
+          (0,external_kolmafia_.useFamiliar)(meatFamiliar());
+          meatOutfit(true);
+          (0,combat.withMacro)(combat.Macro.externalIf((0,dist.get)("spookyPuttyCopiesMade") < 5 && puttyCount < 5, combat.Macro.item((0,dist.$item)(fights_templateObject31()))).meatKill(), function () {
+            return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject32()));
+          });
+          puttyCount++;
+        }
+
+        (0,dist.set)("spookyPuttyCopiesMade", 5);
+      });
+    }
+  }
+}
+
+var FreeFight = /*#__PURE__*/function () {
+  function FreeFight(available, run) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+    fights_classCallCheck(this, FreeFight);
+
+    fights_defineProperty(this, "available", void 0);
+
+    fights_defineProperty(this, "run", void 0);
+
+    fights_defineProperty(this, "options", void 0);
+
+    this.available = available;
+    this.run = run;
+    this.options = options;
+  }
+
+  fights_createClass(FreeFight, [{
+    key: "runAll",
+    value: function runAll() {
+      if (!this.available()) return; // FIXME: make a better decision here.
+
+      if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
+
+      while (this.available()) {
+        var _this$options$familia;
+
+        (0,external_kolmafia_.useFamiliar)(this.options.familiar ? (_this$options$familia = this.options.familiar()) !== null && _this$options$familia !== void 0 ? _this$options$familia : freeFightFamiliar() : freeFightFamiliar());
+        freeFightMood().execute();
+        freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
+        safeRestore();
+        (0,combat.withMacro)(combat.Macro.meatKill(), this.run); // Slot in our Professor Thesis if it's become available
+
+        if (thesisReady()) deliverThesis();
+      }
+    }
+  }]);
+
+  return FreeFight;
+}();
+
+var pygmyMacro = combat.Macro.if_("monstername pygmy bowler", combat.Macro.trySkill("Snokebomb").item((0,dist.$item)(fights_templateObject33()))).if_("monstername pygmy orderlies", combat.Macro.trySkill("Feel Hatred").item((0,dist.$item)(fights_templateObject34()))).if_("monstername pygmy janitor", combat.Macro.item((0,dist.$item)(fights_templateObject35()))).abort();
+var freeFightSources = [// Get a Fish Head from our robortender if available
+new FreeFight(function () {
+  return (0,dist.have)((0,dist.$item)(fights_templateObject36())) && (0,dist.have)((0,dist.$familiar)(fights_templateObject37())) && !(0,dist.get)("_cargoPocketEmptied") && String((0,dist.get)("cargoPocketsEmptied", "")).indexOf("428") === -1;
+}, function () {
+  return (0,external_kolmafia_.cliExecute)("cargo monster Mob Penguin Thug");
+}, {
+  familiar: function familiar() {
+    return (0,dist.$familiar)(fights_templateObject38());
+  }
+}), new FreeFight(function () {
+  return dist.TunnelOfLove.have() && !dist.TunnelOfLove.isUsed();
+}, function () {
+  dist.TunnelOfLove.fightAll("LOV Epaulettes", "Open Heart Surgery", "LOV Extraterrestrial Chocolate");
+  (0,external_kolmafia_.visitUrl)("choice.php");
+  if ((0,external_kolmafia_.handlingChoice)()) throw "Did not get all the way through LOV.";
+}), new FreeFight(function () {
+  var _ChateauMantegna$pain, _ChateauMantegna$pain2, _ChateauMantegna$pain3;
+
+  return dist.ChateauMantegna.have() && !dist.ChateauMantegna.paintingFought() && ((_ChateauMantegna$pain = (_ChateauMantegna$pain2 = dist.ChateauMantegna.paintingMonster()) === null || _ChateauMantegna$pain2 === void 0 ? void 0 : (_ChateauMantegna$pain3 = _ChateauMantegna$pain2.attributes) === null || _ChateauMantegna$pain3 === void 0 ? void 0 : _ChateauMantegna$pain3.includes("FREE")) !== null && _ChateauMantegna$pain !== void 0 ? _ChateauMantegna$pain : false);
+}, function () {
+  return dist.ChateauMantegna.fightPainting();
+}), new FreeFight(function () {
+  return (0,dist.get)("questL02Larva") !== "unstarted" && !(0,dist.get)("_eldritchTentacleFought");
+}, function () {
+  var haveEldritchEssence = (0,dist.have)((0,dist.$item)(fights_templateObject39()));
+  (0,external_kolmafia_.visitUrl)("place.php?whichplace=forestvillage&action=fv_scientist", false);
+  if (!(0,external_kolmafia_.handlingChoice)()) throw "No choice?";
+  (0,external_kolmafia_.runChoice)(haveEldritchEssence ? 2 : 1);
+}), new FreeFight(function () {
+  return (0,dist.have)((0,dist.$skill)(fights_templateObject40())) && !(0,dist.get)("_eldritchHorrorEvoked");
+}, function () {
+  return (0,external_kolmafia_.useSkill)((0,dist.$skill)(fights_templateObject41()));
+}), new FreeFight(function () {
+  return clamp(3 - (0,dist.get)("_lynyrdSnareUses"), 0, 3);
+}, function () {
+  return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject42()));
+}, {
+  cost: function cost() {
+    return (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject43()));
+  }
+}), new FreeFight(function () {
+  return (0,dist.have)((0,dist.$item)(fights_templateObject44())) && !(0,dist.get)("_glitchMonsterFights");
+}, function () {
+  (0,external_kolmafia_.visitUrl)("inv_eat.php?pwd&whichitem=10207");
+  (0,external_kolmafia_.runCombat)();
+}), // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
+new FreeFight(function () {
+  var maxSeals = (0,dist.have)((0,dist.$item)(fights_templateObject45())) ? 10 : 5;
+  var maxSealsAvailable = (0,dist.get)("lastGuildStoreOpen") === (0,external_kolmafia_.myAscensions)() ? maxSeals : Math.min(maxSeals, (0,external_kolmafia_.availableAmount)((0,dist.$item)(fights_templateObject46())));
+  return (0,external_kolmafia_.myClass)() === (0,dist.$class)(fights_templateObject47()) ? Math.max(maxSealsAvailable - (0,dist.get)("_sealsSummoned"), 0) : 0;
+}, function () {
+  var figurine = (0,dist.get)("lastGuildStoreOpen") === (0,external_kolmafia_.myAscensions)() ? (0,dist.$item)(fights_templateObject48()) : (0,dist.$item)(fights_templateObject49());
+  (0,external_kolmafia_.retrieveItem)(1, figurine);
+  (0,external_kolmafia_.retrieveItem)(1, (0,dist.$item)(fights_templateObject50()));
+  (0,external_kolmafia_.use)(figurine);
+}, {
+  requirements: function requirements() {
+    return [new Requirement(["Club"], {})];
+  }
+}), new FreeFight(function () {
+  return clamp(10 - (0,dist.get)("_brickoFights"), 0, 10);
+}, function () {
+  return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject51()));
+}, {
+  cost: function cost() {
+    return (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject52())) + 2 * (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject53()));
+  }
+}), //Initial 9 Pygmy fights
+new FreeFight(function () {
+  return (0,dist.get)("questL11Worship") !== "unstarted" ? clamp(9 - (0,dist.get)("_drunkPygmyBanishes"), 0, 9) : 0;
+}, function () {
+  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(fights_templateObject54())), (0,dist.$item)(fights_templateObject55()));
+  (0,external_kolmafia_.retrieveItem)(clamp(9 - (0,dist.get)("_drunkPygmyBanishes"), 0, 9), (0,dist.$item)(fights_templateObject56()));
+  (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject57()));
+  (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject58()));
+  (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject59()));
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject60()), pygmyMacro);
+}), //10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
+new FreeFight(function () {
+  return (0,dist.get)("questL11Worship") !== "unstarted" && (0,dist.get)("_drunkPygmyBanishes") === 9;
+}, function () {
+  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject61())), (0,dist.$item)(_templateObject62()));
+  (0,external_kolmafia_.retrieveItem)((0,dist.$item)(_templateObject63()));
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject64()), pygmyMacro);
+}, {
+  requirements: function requirements() {
+    return [new Requirement([], {
+      forceEquip: (0,dist.$items)(_templateObject65()).filter(function (item) {
+        return (0,dist.have)(item);
+      })
+    })];
+  }
+}), //11th pygmy fight if we lack a saber
+new FreeFight(function () {
+  return (0,dist.get)("questL11Worship") !== "unstarted" && (0,dist.get)("_drunkPygmyBanishes") === 10 && !(0,dist.have)((0,dist.$item)(_templateObject66()));
+}, function () {
+  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject67())), (0,dist.$item)(_templateObject68()));
+  (0,external_kolmafia_.retrieveItem)((0,dist.$item)(_templateObject69()));
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject70()), pygmyMacro);
+}), //11th+ pygmy fight if we have a saber- saber friends
+new FreeFight(function () {
+  var rightTime = (0,dist.have)((0,dist.$item)(_templateObject71())) && (0,dist.get)("_drunkPygmyBanishes") >= 10;
+  var saberedMonster = (0,dist.get)("_saberForceMonster");
+  var wrongPygmySabered = saberedMonster && (0,dist.$monsters)(_templateObject72()).includes(saberedMonster);
+  var drunksCanAppear = (0,dist.get)("_drunkPygmyBanishes") == 10 || saberedMonster === (0,dist.$monster)(_templateObject73()) && (0,dist.get)("_saberForceMonsterCount");
+  var remainingSaberPygmies = (saberedMonster === (0,dist.$monster)(_templateObject74()) ? (0,dist.get)("_saberForceMonsterCount") : 0) + 2 * clamp(5 - (0,dist.get)("_saberForceUses"), 0, 5);
+  return (0,dist.get)("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && drunksCanAppear && remainingSaberPygmies;
+}, function () {
+  if (((0,dist.get)("_saberForceMonster") !== (0,dist.$monster)(_templateObject75()) || (0,dist.get)("_saberForceMonsterCount") === 1) && (0,dist.get)("_saberForceUses") < 5) {
+    setChoice(1387, 2);
+    (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject76())), (0,dist.$item)(_templateObject77()));
+    (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject78())), (0,dist.$item)(_templateObject79()));
+    (0,dist.adventureMacro)((0,dist.$location)(_templateObject80()), combat.Macro.skill("Use the Force"));
+  } else {
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(_templateObject81()));
+    (0,dist.adventureMacro)((0,dist.$location)(_templateObject82()), pygmyMacro);
+  }
+}, {
+  requirements: function requirements() {
+    return [new Requirement([], {
+      forceEquip: (0,dist.$items)(_templateObject83())
+    })];
+  }
+}), //Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
+new FreeFight(function () {
+  return (0,dist.get)("questL11Worship") !== "unstarted" && (0,dist.get)("crystalBallMonster") === (0,dist.$monster)(_templateObject84()) && (0,dist.get)("_drunkPygmyBanishes") >= 11;
+}, function () {
+  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject85())), (0,dist.$item)(_templateObject86()));
+  (0,external_kolmafia_.retrieveItem)(1, (0,dist.$item)(_templateObject87()));
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject88()), combat.Macro.abort());
+}, {
+  requirements: function requirements() {
+    return [new Requirement([], {
+      forceEquip: (0,dist.$items)(_templateObject89()).filter(function (item) {
+        return (0,dist.have)(item);
+      })
+    })];
+  }
+}), new FreeFight(function () {
+  return (0,dist.get)("_sausageFights") === 0 && (0,dist.have)((0,dist.$item)(_templateObject90()));
+}, function () {
+  return (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject91()), -1, "");
+}, {
+  requirements: function requirements() {
+    return [new Requirement([], {
+      forceEquip: (0,dist.$items)(_templateObject92())
+    })];
+  }
+}), new FreeFight(function () {
+  return (0,dist.get)("questL11Ron") === "finished" ? 5 - (0,dist.get)("_glarkCableUses") : 0;
+}, function () {
+  (0,external_kolmafia_.retrieveItem)(5 - (0,dist.get)("_glarkCableUses"), (0,dist.$item)(_templateObject93()));
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject94()), combat.Macro.item((0,dist.$item)(_templateObject95())));
+}), // Mushroom garden
+new FreeFight(function () {
+  return ((0,dist.have)((0,dist.$item)(_templateObject96())) || (0,external_kolmafia_.getCampground)()["packet of mushroom spores"] !== undefined) && (0,dist.get)("_mushroomGardenFights") === 0;
+}, function () {
+  if ((0,dist.have)((0,dist.$item)(_templateObject97()))) (0,external_kolmafia_.use)((0,dist.$item)(_templateObject98()));
+
+  if (dist.SourceTerminal.have()) {
+    dist.SourceTerminal.educate([(0,dist.$skill)(_templateObject99()), (0,dist.$skill)(_templateObject100())]);
+  }
+
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject101()), combat.Macro.trySkill("Portscan").meatKill());
+  if ((0,dist.have)((0,dist.$item)(_templateObject102()))) (0,external_kolmafia_.use)((0,dist.$item)(_templateObject103()));
+}, {
+  familiar: function familiar() {
+    return (0,dist.have)((0,dist.$familiar)(_templateObject104())) ? (0,dist.$familiar)(_templateObject105()) : null;
+  }
+}), // Portscan and mushroom garden
+new FreeFight(function () {
+  return ((0,dist.have)((0,dist.$item)(_templateObject106())) || (0,external_kolmafia_.getCampground)()["packet of mushroom spores"] !== undefined) && (0,external_kolmafia_.getCounters)("portscan.edu", 0, 0) === "portscan.edu" && (0,dist.have)((0,dist.$skill)(_templateObject107())) && (0,dist.get)("_macrometeoriteUses") < 10;
+}, function () {
+  if ((0,dist.have)((0,dist.$item)(_templateObject108()))) (0,external_kolmafia_.use)((0,dist.$item)(_templateObject109()));
+
+  if (dist.SourceTerminal.have()) {
+    dist.SourceTerminal.educate([(0,dist.$skill)(_templateObject110()), (0,dist.$skill)(_templateObject111())]);
+  }
+
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject112()), combat.Macro.if_("monstername government agent", combat.Macro.skill("Macrometeorite")).if_("monstername piranha plant", combat.Macro.trySkill("Portscan").meatKill()));
+}), new FreeFight(function () {
+  return (0,dist.have)((0,dist.$familiar)(_templateObject113())) ? clamp(3 - (0,dist.get)("_godLobsterFights"), 0, 3) : 0;
+}, function () {
+  setChoice(1310, 3);
+  (0,external_kolmafia_.visitUrl)("main.php?fightgodlobster=1");
+  (0,external_kolmafia_.runCombat)();
+  (0,external_kolmafia_.visitUrl)("choice.php");
+  if ((0,external_kolmafia_.handlingChoice)()) (0,external_kolmafia_.runChoice)(3);
+}, {
+  familiar: function familiar() {
+    return (0,dist.$familiar)(_templateObject114());
+  }
+}), new FreeFight(function () {
+  return (0,dist.have)((0,dist.$familiar)(_templateObject115())) ? clamp(5 - (0,dist.get)("_machineTunnelsAdv"), 0, 5) : 0;
+}, function () {
+  setChoice(1119, 6);
+  (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject116()), -1, "");
+}, {
+  familiar: function familiar() {
+    return (0,dist.$familiar)(_templateObject117());
+  }
+}), // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
+new FreeFight(function () {
+  return dist.Witchess.have() ? clamp(5 - dist.Witchess.fightsDone(), 0, 5) : 0;
+}, function () {
+  return dist.Witchess.fightPiece((0,dist.$monster)(_templateObject118()));
+}), new FreeFight(function () {
+  return (0,dist.get)("snojoAvailable") && clamp(10 - (0,dist.get)("_snojoFreeFights"), 0, 10);
+}, function () {
+  if ((0,dist.get)("snojoSetting", "NONE") === "NONE") {
+    (0,external_kolmafia_.visitUrl)("place.php?whichplace=snojo&action=snojo_controller");
+    (0,external_kolmafia_.runChoice)(3);
+  }
+
+  (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject119()), -1, "");
+}), new FreeFight(function () {
+  return (0,dist.get)("neverendingPartyAlways") ? clamp(10 - (0,dist.get)("_neverendingPartyFreeTurns"), 0, 10) : 0;
+}, function () {
+  // FIXME: Check quest if Gerald(ine).
+  setChoice(1322, 2); // reject quest.
+
+  setChoice(1324, 5); // pick fight.
+
+  if ((0,dist.get)("_questPartyFair") === "unstarted") (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject120()), -1, "");
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject121()), combat.Macro.trySkill("Feel Pride").meatKill());
+}, {
+  requirements: function requirements() {
+    return [new Requirement([], {
+      forceEquip: (0,dist.have)((0,dist.$item)(_templateObject122())) ? (0,dist.$items)(_templateObject123()) : []
+    })];
+  }
+})];
+var freeKillSources = [new FreeFight(function () {
+  return !(0,dist.get)("_gingerbreadMobHitUsed") && (0,dist.have)((0,dist.$skill)(_templateObject124()));
+}, function () {
+  return (0,combat.withMacro)(combat.Macro.skill("Sing Along").trySkill("Gingerbread Mob Hit"), function () {
+    return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject125()));
+  });
+}, {
+  familiar: function familiar() {
+    return (0,dist.have)((0,dist.$familiar)(_templateObject126())) ? (0,dist.$familiar)(_templateObject127()) : null;
+  },
+  requirements: function requirements() {
+    return [new Requirement(["100 Item Drop"], {})];
+  }
+}), new FreeFight(function () {
+  return (0,dist.have)((0,dist.$skill)(_templateObject128())) ? clamp(3 - (0,dist.get)("_shatteringPunchUsed"), 0, 3) : 0;
+}, function () {
+  return (0,combat.withMacro)(combat.Macro.skill("Sing Along").trySkill("Shattering Punch"), function () {
+    return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject129()));
+  });
+}, {
+  familiar: function familiar() {
+    return (0,dist.have)((0,dist.$familiar)(_templateObject130())) ? (0,dist.$familiar)(_templateObject131()) : null;
+  },
+  requirements: function requirements() {
+    return [new Requirement(["100 Item Drop"], {})];
+  }
+}), // Use the jokester's gun even if we don't have tot
+new FreeFight(function () {
+  return !(0,dist.get)("_firedJokestersGun") && (0,dist.have)((0,dist.$item)(_templateObject132()));
+}, function () {
+  return (0,combat.withMacro)(combat.Macro.skill("Sing Along").trySkill("Fire the Jokester's Gun"), function () {
+    return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject133()));
+  });
+}, {
+  familiar: function familiar() {
+    return (0,dist.have)((0,dist.$familiar)(_templateObject134())) ? (0,dist.$familiar)(_templateObject135()) : null;
+  },
+  requirements: function requirements() {
+    return [new Requirement(["100 Item Drop"], {
+      forceEquip: (0,dist.$items)(_templateObject136())
+    })];
+  }
+}), // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
+new FreeFight(function () {
+  return (0,dist.have)((0,dist.$item)(_templateObject137())) ? clamp(3 - (0,dist.get)("_chestXRayUsed"), 0, 3) : 0;
+}, function () {
+  return (0,combat.withMacro)(combat.Macro.skill("Sing Along").trySkill("Chest X-Ray"), function () {
+    return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject138()));
+  });
+}, {
+  familiar: function familiar() {
+    return (0,dist.have)((0,dist.$familiar)(_templateObject139())) ? (0,dist.$familiar)(_templateObject140()) : null;
+  },
+  requirements: function requirements() {
+    return [new Requirement(["100 Item Drop"], {
+      forceEquip: (0,dist.$items)(_templateObject141())
+    })];
+  }
+}), new FreeFight(function () {
+  return (0,dist.have)((0,dist.$item)(_templateObject142())) ? clamp(3 - (0,dist.get)("_usedReplicaBatoomerang"), 0, 3) : 0;
+}, function () {
+  return (0,combat.withMacro)(combat.Macro.skill("Sing Along").item("replica bat-oomerang"), function () {
+    return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject143()));
+  });
+}, {
+  familiar: function familiar() {
+    return (0,dist.have)((0,dist.$familiar)(_templateObject144())) ? (0,dist.$familiar)(_templateObject145()) : null;
+  },
+  requirements: function requirements() {
+    return [new Requirement(["100 Item Drop"], {})];
+  }
+})];
+function freeFights() {
+  var _iterator = fights_createForOfIteratorHelper(freeFightSources),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var freeFightSource = _step.value;
+      freeFightSource.runAll();
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+
+  if (!(0,dist.have)((0,dist.$item)(_templateObject146())) && (0,dist.have)((0,dist.$familiar)(_templateObject147())) && !(0,dist.get)("_firedJokestersGun") && (0,dist.have)((0,dist.$item)(_templateObject148()))) {
+    freeFightMood().execute();
+    freeFightOutfit([new Requirement([], {
+      forceEquip: (0,dist.$items)(_templateObject149())
+    })]);
+    (0,external_kolmafia_.useFamiliar)(freeFightFamiliar());
+    freeFightMood().execute();
+    freeFightOutfit([new Requirement([], {
+      forceEquip: (0,dist.$items)(_templateObject150())
+    })]);
+
+    try {
+      combat.Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
+      mapMonster((0,dist.$location)(_templateObject151()), (0,dist.$monster)(_templateObject152()));
+    } finally {
+      (0,external_kolmafia_.setAutoAttack)(0);
+    }
+  }
+
+  try {
+    var _iterator2 = fights_createForOfIteratorHelper(freeKillSources),
+        _step2;
+
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var freeKillSource = _step2.value;
+
+        if (freeKillSource.available()) {
+          ensureEffect((0,dist.$effect)(_templateObject153()));
+
+          if ((0,dist.have)((0,dist.$skill)(_templateObject154())) && !(0,dist.get)("_steelyEyedSquintUsed")) {
+            (0,external_kolmafia_.useSkill)((0,dist.$skill)(_templateObject155()));
+          }
+        }
+
+        freeKillSource.runAll();
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+  } finally {
+    (0,external_kolmafia_.cliExecute)("uneffect Feeling Lost");
+  }
+}
+
+function thesisReady() {
+  return !(0,dist.get)("_thesisDelivered") && (0,dist.have)((0,dist.$familiar)(_templateObject156())) && (0,dist.$familiar)(_templateObject157()).experience >= 400;
+}
+
+function deliverThesis() {
+  var thesisInNEP = (0,dist.get)("neverendingPartyAlways") && (0,dist.get)("_neverendingPartyFreeTurns") < 10; //Set up NEP if we haven't yet
+
+  if (thesisInNEP) {
+    setChoice(1322, 2); // reject quest.
+
+    setChoice(1324, 5); // pick fight.
+
+    if ((0,dist.get)("_questPartyFair") === "unstarted") (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject158()), -1, "");
+  }
+
+  (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(_templateObject159()));
+  freeFightMood().execute();
+  freeFightOutfit([new Requirement(["100 muscle"], {})]);
+  safeRestore();
+
+  if ((0,dist.have)((0,dist.$item)(_templateObject160())) && !(0,dist.have)((0,dist.$effect)(_templateObject161())) && (0,dist.get)("_powerfulGloveBatteryPowerUsed") <= 95) {
+    (0,external_kolmafia_.cliExecute)("checkpoint");
+    (0,external_kolmafia_.equip)((0,dist.$slot)(_templateObject162()), (0,dist.$item)(_templateObject163()));
+    ensureEffect((0,dist.$effect)(_templateObject164()));
+    (0,external_kolmafia_.outfit)("checkpoint");
+  }
+
+  (0,external_kolmafia_.cliExecute)("gain 1800 muscle");
+  (0,dist.adventureMacro)(thesisInNEP ? (0,dist.$location)(_templateObject165()) : (0,dist.$location)(_templateObject166()), combat.Macro.skill("Deliver your Thesis"));
+}
+
+function safeRestore() {
+  if ((0,external_kolmafia_.myHp)() < (0,external_kolmafia_.myMaxhp)() * 0.5) {
+    (0,external_kolmafia_.restoreHp)((0,external_kolmafia_.myMaxhp)() * 0.9);
+  }
+
+  if ((0,external_kolmafia_.myMp)() < 50 && (0,external_kolmafia_.myMaxmp)() > 50) {
+    if (((0,dist.have)((0,dist.$item)(_templateObject167())) || (0,dist.have)((0,dist.$item)(_templateObject168()))) && (0,dist.get)("_sausagesEaten") < 23) {
+      (0,external_kolmafia_.eat)((0,dist.$item)(_templateObject169()));
+    }
+
+    (0,external_kolmafia_.restoreMp)(50);
+  }
+}
+;// CONCATENATED MODULE: ./src/index.ts
+function src_templateObject73() {
+  var data = src_taggedTemplateLiteral(["broken champagne bottle"]);
+
+  src_templateObject73 = function _templateObject73() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject72() {
+  var data = src_taggedTemplateLiteral(["haiku katana, repaid diaper"]);
+
+  src_templateObject72 = function _templateObject72() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject71() {
+  var data = src_taggedTemplateLiteral(["Angry ghost"]);
+
+  src_templateObject71 = function _templateObject71() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject70() {
+  var data = src_taggedTemplateLiteral(["noob cave"]);
+
+  src_templateObject70 = function _templateObject70() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject69() {
+  var data = src_taggedTemplateLiteral(["I Voted!\" sticker"]);
+
+  src_templateObject69 = function _templateObject69() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject68() {
+  var data = src_taggedTemplateLiteral(["I Voted!\" sticker"]);
+
+  src_templateObject68 = function _templateObject68() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject67() {
+  var data = src_taggedTemplateLiteral(["protonic accelerator pack"]);
+
+  src_templateObject67 = function _templateObject67() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject66() {
+  var data = src_taggedTemplateLiteral(["protonic accelerator pack"]);
+
+  src_templateObject66 = function _templateObject66() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject65() {
+  var data = src_taggedTemplateLiteral(["envyfish egg"]);
+
+  src_templateObject65 = function _templateObject65() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject64() {
+  var data = src_taggedTemplateLiteral(["envyfish egg"]);
+
+  src_templateObject64 = function _templateObject64() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject63() {
+  var data = src_taggedTemplateLiteral(["The Briny Deeps"]);
+
+  src_templateObject63 = function _templateObject63() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject62() {
+  var data = src_taggedTemplateLiteral(["The Briny Deeps"]);
+
+  src_templateObject62 = function _templateObject62() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject61() {
+  var data = src_taggedTemplateLiteral(["fishy pipe"]);
+
+  src_templateObject61 = function _templateObject61() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject60() {
+  var data = src_taggedTemplateLiteral(["Fishy"]);
+
+  src_templateObject60 = function _templateObject60() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject59() {
+  var data = src_taggedTemplateLiteral(["pulled green taffy"]);
+
+  src_templateObject59 = function _templateObject59() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject58() {
+  var data = src_taggedTemplateLiteral(["envyfish egg"]);
+
+  src_templateObject58 = function _templateObject58() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject57() {
+  var data = src_taggedTemplateLiteral(["fishy pipe"]);
+
+  src_templateObject57 = function _templateObject57() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject56() {
+  var data = src_taggedTemplateLiteral(["Fishy"]);
+
+  src_templateObject56 = function _templateObject56() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject55() {
+  var data = src_taggedTemplateLiteral(["little bitty bathysphere, das boot"]);
+
+  src_templateObject55 = function _templateObject55() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject54() {
+  var data = src_taggedTemplateLiteral(["aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying"]);
+
+  src_templateObject54 = function _templateObject54() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject53() {
+  var data = src_taggedTemplateLiteral(["Barf Mountain"]);
+
+  src_templateObject53 = function _templateObject53() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject52() {
+  var data = src_taggedTemplateLiteral(["Noob Cave"]);
+
+  src_templateObject52 = function _templateObject52() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject51() {
+  var data = src_taggedTemplateLiteral(["Noob Cave"]);
+
+  src_templateObject51 = function _templateObject51() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject50() {
+  var data = src_taggedTemplateLiteral(["backup camera"]);
+
+  src_templateObject50 = function _templateObject50() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject49() {
+  var data = src_taggedTemplateLiteral(["backup camera"]);
+
+  src_templateObject49 = function _templateObject49() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject48() {
+  var data = src_taggedTemplateLiteral(["Knob Goblin Embezzler"]);
+
+  src_templateObject48 = function _templateObject48() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject47() {
+  var data = src_taggedTemplateLiteral(["unwrapped retro superhero cape"]);
+
+  src_templateObject47 = function _templateObject47() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject46() {
+  var data = src_taggedTemplateLiteral(["packet of tall grass seeds"]);
+
+  src_templateObject46 = function _templateObject46() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject45() {
+  var data = src_taggedTemplateLiteral(["packet of tall grass seeds"]);
+
+  src_templateObject45 = function _templateObject45() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject44() {
+  var data = src_taggedTemplateLiteral(["Digitize"]);
+
+  src_templateObject44 = function _templateObject44() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject43() {
+  var data = src_taggedTemplateLiteral(["Extract"]);
+
+  src_templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject42() {
+  var data = src_taggedTemplateLiteral(["sand dollar"]);
+
+  src_templateObject42 = function _templateObject42() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject41() {
+  var data = src_taggedTemplateLiteral(["sand dollar"]);
+
+  src_templateObject41 = function _templateObject41() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject40() {
+  var data = src_taggedTemplateLiteral(["hobo nickel"]);
+
+  src_templateObject40 = function _templateObject40() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject39() {
+  var data = src_taggedTemplateLiteral(["hobo nickel"]);
+
+  src_templateObject39 = function _templateObject39() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject38() {
+  var data = src_taggedTemplateLiteral(["Half a Purse"]);
+
+  src_templateObject38 = function _templateObject38() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject37() {
+  var data = src_taggedTemplateLiteral(["Down the Rabbit Hole"]);
+
+  src_templateObject37 = function _templateObject37() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject36() {
+  var data = src_taggedTemplateLiteral(["Clan VIP lounge key"]);
+
+  src_templateObject36 = function _templateObject36() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject35() {
+  var data = src_taggedTemplateLiteral(["Bind Lasagmbie"]);
+
+  src_templateObject35 = function _templateObject35() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject34() {
+  var data = src_taggedTemplateLiteral(["Bind Lasagmbie"]);
+
+  src_templateObject34 = function _templateObject34() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject33() {
+  var data = src_taggedTemplateLiteral(["Lasagmbie"]);
+
+  src_templateObject33 = function _templateObject33() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject32() {
+  var data = src_taggedTemplateLiteral(["Pastamancer"]);
+
+  src_templateObject32 = function _templateObject32() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject31() {
+  var data = src_taggedTemplateLiteral(["Pocket Professor, Frumious Bandersnatch"]);
+
+  src_templateObject31 = function _templateObject31() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_toConsumableArray(arr) { return src_arrayWithoutHoles(arr) || src_iterableToArray(arr) || src_unsupportedIterableToArray(arr) || src_nonIterableSpread(); }
+
+function src_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function src_iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function src_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return src_arrayLikeToArray(arr); }
+
+function src_templateObject30() {
+  var data = src_taggedTemplateLiteral(["moveable feast"]);
+
+  src_templateObject30 = function _templateObject30() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject29() {
+  var data = src_taggedTemplateLiteral(["moveable feast"]);
+
+  src_templateObject29 = function _templateObject29() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject28() {
+  var data = src_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  src_templateObject28 = function _templateObject28() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject27() {
+  var data = src_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+
+  src_templateObject27 = function _templateObject27() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject26() {
+  var data = src_taggedTemplateLiteral(["mumming trunk"]);
+
+  src_templateObject26 = function _templateObject26() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject25() {
+  var data = src_taggedTemplateLiteral(["mumming trunk"]);
+
+  src_templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject24() {
+  var data = src_taggedTemplateLiteral(["robortender"]);
+
+  src_templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject23() {
+  var data = src_taggedTemplateLiteral(["Newark, drive-by shooting, Feliz Navidad, single entendre, bloody nora"]);
+
+  src_templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = src_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function src_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return src_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return src_arrayLikeToArray(o, minLen); }
+
+function src_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function src_templateObject22() {
+  var data = src_taggedTemplateLiteral(["Robortender"]);
+
+  src_templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject21() {
+  var data = src_taggedTemplateLiteral(["VYKEA hex key"]);
+
+  src_templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject20() {
+  var data = src_taggedTemplateLiteral(["familiar.enq"]);
+
+  src_templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject19() {
+  var data = src_taggedTemplateLiteral(["Digitize"]);
+
+  src_templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject18() {
+  var data = src_taggedTemplateLiteral(["Extract"]);
+
+  src_templateObject18 = function _templateObject18() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject17() {
+  var data = src_taggedTemplateLiteral(["Bastille Battalion control rig"]);
+
+  src_templateObject17 = function _templateObject17() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject16() {
+  var data = src_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+
+  src_templateObject16 = function _templateObject16() {
+    return data;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+  };
+
+  return data;
+}
+
+function src_templateObject15() {
+  var data = src_taggedTemplateLiteral(["Moxie"]);
+
+  src_templateObject15 = function _templateObject15() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject14() {
+  var data = src_taggedTemplateLiteral(["Mysticality"]);
+
+  src_templateObject14 = function _templateObject14() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject13() {
+  var data = src_taggedTemplateLiteral(["Muscle"]);
+
+  src_templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject12() {
+  var data = src_taggedTemplateLiteral(["bubblin' crude"]);
+
+  src_templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject11() {
+  var data = src_taggedTemplateLiteral(["porquoise"]);
+
+  src_templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject10() {
+  var data = src_taggedTemplateLiteral(["ten-leaf clover"]);
+
+  src_templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject9() {
+  var data = src_taggedTemplateLiteral(["pantogram pants"]);
+
+  src_templateObject9 = function _templateObject9() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject8() {
+  var data = src_taggedTemplateLiteral(["portable pantogram"]);
+
+  src_templateObject8 = function _templateObject8() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject7() {
+  var data = src_taggedTemplateLiteral(["box of Familiar Jacks"]);
+
+  src_templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject6() {
+  var data = src_taggedTemplateLiteral(["Cornbeefadon"]);
+
+  src_templateObject6 = function _templateObject6() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject5() {
+  var data = src_taggedTemplateLiteral(["amulet coin"]);
+
+  src_templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject4() {
+  var data = src_taggedTemplateLiteral(["Cornbeefadon"]);
+
+  src_templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject3() {
+  var data = src_taggedTemplateLiteral(["moveable feast"]);
+
+  src_templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject2() {
+  var data = src_taggedTemplateLiteral(["bag of park garbage"]);
+
+  src_templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_templateObject() {
+  var data = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]);
+
+  src_templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function src_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+
+
+
+
+
+
+ // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
+
+var TICKET_MAX_PRICE = 500000;
+
+function ensureBarfAccess() {
+  if (!((0,dist.get)("stenchAirportAlways") || (0,dist.get)("_stenchAirportToday"))) {
+    var ticket = (0,dist.$item)(src_templateObject()); // TODO: Get better item acquisition logic that e.g. checks own mall store.
+
+    if (!(0,dist.have)(ticket)) (0,external_kolmafia_.buy)(1, ticket, TICKET_MAX_PRICE);
+    (0,external_kolmafia_.use)(ticket);
+  }
+
+  if (!(0,dist.get)("_dinseyGarbageDisposed")) {
+    (0,external_kolmafia_.print)("Disposing of garbage.", "blue");
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject2()));
+    (0,external_kolmafia_.visitUrl)("place.php?whichplace=airport_stench&action=airport3_tunnels");
+    (0,external_kolmafia_.runChoice)(6);
+    (0,external_kolmafia_.cliExecute)("refresh inv");
+  }
+}
+
+function tryFeast(familiar) {
+  if ((0,dist.have)(familiar)) {
+    (0,external_kolmafia_.useFamiliar)(familiar);
+    (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject3()));
+  }
+}
+
+function dailySetup() {
+  if ((0,dist.have)((0,dist.$familiar)(src_templateObject4())) && !(0,dist.have)((0,dist.$item)(src_templateObject5()))) {
+    (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(src_templateObject6()));
+    (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject7()));
+  }
+
+  if ((0,dist.have)((0,dist.$item)(src_templateObject8())) && !(0,dist.have)((0,dist.$item)(src_templateObject9()))) {
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject10()));
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject11()));
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject12()));
+    var m = new Map([[(0,dist.$stat)(src_templateObject13()), 1], [(0,dist.$stat)(src_templateObject14()), 2], [(0,dist.$stat)(src_templateObject15()), 3]]).get((0,external_kolmafia_.myPrimestat)());
+    (0,external_kolmafia_.visitUrl)("inv_use.php?pwd&whichitem=9573");
+    (0,external_kolmafia_.visitUrl)("choice.php?whichchoice=1270&pwd&option=1&m=".concat(m, "&e=5&s1=5789,1&s2=706,1&s3=24,1"));
+  }
+
+  if ((0,dist.have)((0,dist.$item)(src_templateObject16())) && (0,dist.get)("_saberMod") === 0) {
+    // Get familiar weight.
+    (0,external_kolmafia_.visitUrl)("main.php?action=may4");
+    (0,external_kolmafia_.runChoice)(4);
+  }
+
+  if ((0,dist.have)((0,dist.$item)(src_templateObject17())) && (0,dist.get)("_bastilleGames") === 0) {
+    (0,external_kolmafia_.cliExecute)("bastille myst brutalist gesture");
+  }
+
+  dist.SongBoom.setSong("Total Eclipse of Your Meat");
+
+  if (dist.SourceTerminal.have()) {
+    dist.SourceTerminal.educate([(0,dist.$skill)(src_templateObject18()), (0,dist.$skill)(src_templateObject19())]);
+    dist.SourceTerminal.enquiry((0,dist.$effect)(src_templateObject20()));
+  }
+
+  if ((0,dist.get)("_VYKEACompanionLevel") === 0) {
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject21()));
+    (0,external_kolmafia_.cliExecute)("create level 3 couch");
+  }
+
+  if ((0,dist.have)((0,dist.$familiar)(src_templateObject22()))) {
+    var _iterator = src_createForOfIteratorHelper((0,dist.$items)(src_templateObject23())),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var drink = _step.value;
+        if ((0,dist.get)("_roboDrinks").includes(drink.name)) continue;
+        (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(src_templateObject24()));
+        if ((0,external_kolmafia_.itemAmount)(drink) === 0) (0,external_kolmafia_.buy)(1, drink, 150000);
+        (0,external_kolmafia_.print)("Feeding robortender ".concat(drink, "."), "blue");
+        (0,external_kolmafia_.visitUrl)("inventory.php?action=robooze&which=1&whichitem=".concat((0,external_kolmafia_.toInt)(drink)));
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  }
+
+  if ((0,dist.have)((0,dist.$item)(src_templateObject25())) && !(0,dist.get)("_mummeryMods").includes("Meat Drop")) {
+    (0,external_kolmafia_.useFamiliar)(meatFamiliar());
+    (0,external_kolmafia_.cliExecute)("mummery meat");
+  }
+
+  if ((0,dist.have)((0,dist.$item)(src_templateObject26())) && !(0,dist.get)("_mummeryMods").includes("Item Drop") && (0,dist.have)((0,dist.$familiar)(src_templateObject27()))) {
+    (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(src_templateObject28()));
+    (0,external_kolmafia_.cliExecute)("mummery item");
+  }
+
+  if ((0,dist.get)("_feastUsed") === 0) {
+    withStash((0,dist.$items)(src_templateObject29()), function () {
+      if ((0,dist.have)((0,dist.$item)(src_templateObject30()))) [].concat(src_toConsumableArray((0,dist.$familiars)(src_templateObject31())), [meatFamiliar()]).forEach(tryFeast);
+    });
+  }
+
+  if ((0,external_kolmafia_.myClass)() === (0,dist.$class)(src_templateObject32()) && (0,external_kolmafia_.myThrall)() !== (0,dist.$thrall)(src_templateObject33()) && (0,external_kolmafia_.haveSkill)((0,dist.$skill)(src_templateObject34()))) {
+    (0,external_kolmafia_.useSkill)((0,dist.$skill)(src_templateObject35()));
+  }
+
+  if (!(0,dist.get)("_clanFortuneBuffUsed") && (0,dist.have)((0,dist.$item)(src_templateObject36())) && (0,external_kolmafia_.getClanLounge)()["Clan Carnival Game"] !== undefined) {
+    (0,external_kolmafia_.cliExecute)("fortune buff meat");
+  }
+
+  if (!(0,dist.get)("demonSummoned") && (0,dist.get)("demonName2", false) && (0,dist.get)("questL11Manor") === "finished") {
+    (0,external_kolmafia_.cliExecute)("summon Preternatural Greed");
+  }
+
+  if ((0,dist.get)("horseryAvailable") && (0,dist.get)("_horsery") !== "dark horse") {
+    (0,external_kolmafia_.cliExecute)("horsery dark");
+  }
+
+  while (dist.SourceTerminal.have() && dist.SourceTerminal.getEnhanceUses() < 3) {
+    (0,external_kolmafia_.cliExecute)("terminal enhance meat.enh");
+  }
+
+  if (!(0,dist.get)("_madTeaParty")) {
+    ensureEffect((0,dist.$effect)(src_templateObject37()));
+    (0,external_kolmafia_.cliExecute)("hatter 22");
+  }
+
+  (0,external_kolmafia_.changeMcd)(10);
+  (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject38()));
+  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(src_templateObject39())), (0,dist.$item)(src_templateObject40()));
+  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(src_templateObject41())), (0,dist.$item)(src_templateObject42()));
+}
+
+function barfTurn() {
+  if (dist.SourceTerminal.have()) {
+    dist.SourceTerminal.educate([(0,dist.$skill)(src_templateObject43()), (0,dist.$skill)(src_templateObject44())]);
+  }
+
+  if ((0,dist.have)((0,dist.$item)(src_templateObject45())) && (0,external_kolmafia_.myGardenType)() !== "grass") (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject46()));
+
+  if ((0,dist.have)((0,dist.$item)(src_templateObject47())) && ((0,dist.get)("retroCapeSuperhero") !== "robot" || (0,dist.get)("retroCapeWashingInstructions") !== "kill")) {
+    (0,external_kolmafia_.cliExecute)("retrocape robot kill");
+  }
+
+  while ((0,dist.get)("feelNostalgicMonster") === (0,dist.$monster)(src_templateObject48()) && (0,dist.have)((0,dist.$item)(src_templateObject49())) && (0,dist.get)("_backUpUses") < 11) {
+    (0,external_kolmafia_.useFamiliar)(meatFamiliar());
+    meatOutfit(true, [new Requirement([], {
+      forceEquip: (0,dist.$items)(src_templateObject50())
+    })]);
+    (0,dist.adventureMacro)((0,dist.$location)(src_templateObject51()), combat.Macro.if_("!monstername Knob Goblin Embezzler", combat.Macro.skill("Back-Up to Your Last Enemy")).meatKill());
+  } // a. set up familiar
+
+
+  (0,external_kolmafia_.useFamiliar)(meatFamiliar());
+  var embezzlerUp = (0,external_kolmafia_.getCounters)("Digitize Monster", 0, 0).trim() !== "";
+  var location = embezzlerUp ? (0,dist.$location)(src_templateObject52()) : (0,dist.$location)(src_templateObject53());
+
+  if (!(0,dist.get)("_envyfishEggUsed") && ((0,external_kolmafia_.booleanModifier)("Adventure Underwater") || (0,dist.$items)(src_templateObject54()).some(dist.have)) && ((0,external_kolmafia_.booleanModifier)("Underwater Familiar") || (0,dist.$items)(src_templateObject55()).some(dist.have)) && ((0,dist.have)((0,dist.$effect)(src_templateObject56())) || (0,dist.have)((0,dist.$item)(src_templateObject57())) && !(0,dist.get)("_fishyPipeUsed")) && !(0,dist.have)((0,dist.$item)(src_templateObject58())) && embezzlerUp) {
+    // now fight one underwater
+    if ((0,dist.get)("questS01OldGuy") === "unstarted") {
+      (0,external_kolmafia_.visitUrl)("place.php?whichplace=sea_oldman&action=oldman_oldman");
+    }
+
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject59()));
+    if (!(0,dist.have)((0,dist.$effect)(src_templateObject60()))) (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject61()));
+    location = (0,dist.$location)(src_templateObject62());
+  }
+
+  var underwater = location === (0,dist.$location)(src_templateObject63());
+  meatOutfit(embezzlerUp, [], underwater); // c. set up mood stuff
+
+  meatMood().execute((0,external_kolmafia_.myAdventures)() * 1.04 + 50);
+  safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
+
+  var ghostLocation = (0,dist.get)("ghostLocation"); // d. run adventure
+
+  if ((0,dist.have)((0,dist.$item)(src_templateObject64())) && !(0,dist.get)("_envyfishEggUsed")) {
+    meatOutfit(true);
+    (0,combat.withMacro)(combat.Macro.meatKill(), function () {
+      return (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject65()));
+    });
+  } else if ((0,dist.have)((0,dist.$item)(src_templateObject66())) && (0,dist.get)("questPAGhost") !== "unstarted" && ghostLocation) {
+    (0,external_kolmafia_.useFamiliar)(freeFightFamiliar());
+    freeFightOutfit([new Requirement([], {
+      forceEquip: (0,dist.$items)(src_templateObject67())
+    })]);
+    (0,dist.adventureMacro)(ghostLocation, combat.Macro.trySkill("curse of weaksauce").trySkill("shoot ghost").trySkill("shoot ghost").trySkill("shoot ghost").trySkill("trap ghost"));
+  } else if ((0,dist.have)((0,dist.$item)(src_templateObject68())) && (0,external_kolmafia_.getCounters)("Vote", 0, 0) !== "" && (0,dist.get)("_voteFreeFights") < 3) {
+    (0,external_kolmafia_.useFamiliar)(freeFightFamiliar());
+    freeFightOutfit([new Requirement([], {
+      forceEquip: (0,dist.$items)(src_templateObject69())
+    })]);
+    (0,dist.adventureMacroAuto)((0,dist.$location)(src_templateObject70()), combat.Macro.if_("monsterid ".concat((0,dist.$monster)(src_templateObject71()).id), combat.Macro.skill("saucestorm").repeat()).meatKill());
+  } else {
+    (0,dist.adventureMacroAuto)(location, combat.Macro.externalIf(underwater, combat.Macro.item("pulled green taffy")).meatKill());
+  }
+
+  if (Object.keys((0,external_kolmafia_.reverseNumberology)()).includes("69") && (0,dist.get)("_universeCalculated") < (0,dist.get)("skillLevel144")) {
+    (0,external_kolmafia_.cliExecute)("numberology 69");
+  }
+}
+
+var globalOptions = {
+  stopTurncount: null
+};
+function canContinue() {
+  return (0,external_kolmafia_.myAdventures)() > 0 && (globalOptions.stopTurncount === null || (0,external_kolmafia_.myTurncount)() < globalOptions.stopTurncount);
+}
+function main() {
+  var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+  // TODO: How do we handle Synth? Needs to be integrated with diet stuff.
+  // Similar for jumping horseradish etc.
+  var args = argString.split(" ");
+
+  var _iterator2 = src_createForOfIteratorHelper(args),
+      _step2;
+
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var arg = _step2.value;
+
+      if (arg.match(/\d+/)) {
+        globalOptions.stopTurncount = (0,external_kolmafia_.myTurncount)() + parseInt(arg, 10);
+      }
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+
+  var aaBossFlag = (0,external_kolmafia_.xpath)((0,external_kolmafia_.visitUrl)("account.php?tab=combat"), "//*[@id=\"opt_flag_aabosses\"]/label/input/@value")[0];
+
+  try {
+    (0,external_kolmafia_.print)("Collecting garbage!", "blue");
+
+    if (globalOptions.stopTurncount !== null) {
+      (0,external_kolmafia_.print)("Stopping in ".concat(globalOptions.stopTurncount - (0,external_kolmafia_.myTurncount)()), "blue");
+    }
+
+    (0,external_kolmafia_.print)();
+    (0,external_kolmafia_.setAutoAttack)(0);
+    (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true);
+    (0,external_kolmafia_.setProperty)("battleAction", "custom combat script");
+    (0,external_kolmafia_.cliExecute)("mood apathetic");
+    (0,external_kolmafia_.cliExecute)("ccs garbo");
+    safeRestore(); // FIXME: Dynamically figure out pointer ring approach.
+
+    withStash((0,dist.$items)(src_templateObject72()), function () {
+      // 0. diet stuff.
+      runDiet(); // 1. get a ticket
+
+      ensureBarfAccess(); // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+
+      dailySetup();
+      (0,dist.setDefaultMaximizeOptions)({
+        preventEquip: (0,dist.$items)(src_templateObject73())
+      }); // 4. do some embezzler stuff
+
+      freeFights();
+      dailyFights(); // 5. burn turns at barf
+
+      try {
+        while (canContinue()) {
+          barfTurn();
+        }
+      } finally {
+        (0,external_kolmafia_.setAutoAttack)(0);
+      }
+    });
+  } finally {
+    (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=".concat(aaBossFlag, "&action=Update"), true);
+  }
+}
+
+/***/ }),
+
+/***/ 2886:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+__webpack_require__(9465);
+
+var path = __webpack_require__(3914);
+
+module.exports = path.Object.values;
+
+/***/ }),
+
+/***/ 2319:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var parent = __webpack_require__(2886);
+
+module.exports = parent;
+
+/***/ }),
+
+/***/ 1662:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isObject = __webpack_require__(6769);
+
+module.exports = function (it) {
+  if (!isObject(it)) {
+    throw TypeError(String(it) + ' is not an object');
+  }
+
+  return it;
+};
+
+/***/ }),
+
+/***/ 3781:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var toIndexedObject = __webpack_require__(2292);
+
+var toLength = __webpack_require__(8129);
+
+var toAbsoluteIndex = __webpack_require__(2381); // `Array.prototype.{ indexOf, includes }` methods implementation
+
+
+var createMethod = function createMethod(IS_INCLUDES) {
+  return function ($this, el, fromIndex) {
+    var O = toIndexedObject($this);
+    var length = toLength(O.length);
+    var index = toAbsoluteIndex(fromIndex, length);
+    var value; // Array#includes uses SameValueZero equality algorithm
+    // eslint-disable-next-line no-self-compare -- NaN check
+
+    if (IS_INCLUDES && el != el) while (length > index) {
+      value = O[index++]; // eslint-disable-next-line no-self-compare -- NaN check
+
+      if (value != value) return true; // Array#indexOf ignores holes, Array#includes - not
+    } else for (; length > index; index++) {
+      if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
+    }
+    return !IS_INCLUDES && -1;
+  };
+};
+
+module.exports = {
+  // `Array.prototype.includes` method
+  // https://tc39.es/ecma262/#sec-array.prototype.includes
+  includes: createMethod(true),
+  // `Array.prototype.indexOf` method
+  // https://tc39.es/ecma262/#sec-array.prototype.indexof
+  indexOf: createMethod(false)
+};
+
+/***/ }),
+
+/***/ 9382:
+/***/ ((module) => {
+
+var toString = {}.toString;
+
+module.exports = function (it) {
+  return toString.call(it).slice(8, -1);
+};
+
+/***/ }),
+
+/***/ 8801:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var has = __webpack_require__(7409);
+
+var ownKeys = __webpack_require__(1890);
+
+var getOwnPropertyDescriptorModule = __webpack_require__(2086);
+
+var definePropertyModule = __webpack_require__(3099);
+
+module.exports = function (target, source) {
+  var keys = ownKeys(source);
+  var defineProperty = definePropertyModule.f;
+  var getOwnPropertyDescriptor = getOwnPropertyDescriptorModule.f;
+
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    if (!has(target, key)) defineProperty(target, key, getOwnPropertyDescriptor(source, key));
+  }
+};
+
+/***/ }),
+
+/***/ 6711:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var DESCRIPTORS = __webpack_require__(3207);
+
+var definePropertyModule = __webpack_require__(3099);
+
+var createPropertyDescriptor = __webpack_require__(9658);
+
+module.exports = DESCRIPTORS ? function (object, key, value) {
+  return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+/***/ }),
+
+/***/ 9658:
+/***/ ((module) => {
+
+module.exports = function (bitmap, value) {
+  return {
+    enumerable: !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable: !(bitmap & 4),
+    value: value
+  };
+};
+
+/***/ }),
+
+/***/ 3207:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var fails = __webpack_require__(7537); // Detect IE8's incomplete defineProperty implementation
+
+
+module.exports = !fails(function () {
+  return Object.defineProperty({}, 1, {
+    get: function get() {
+      return 7;
+    }
+  })[1] != 7;
+});
+
+/***/ }),
+
+/***/ 46:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var global = __webpack_require__(6464);
+
+var isObject = __webpack_require__(6769);
+
+var document = global.document; // typeof document.createElement is 'object' in old IE
+
+var EXISTS = isObject(document) && isObject(document.createElement);
+
+module.exports = function (it) {
+  return EXISTS ? document.createElement(it) : {};
+};
+
+/***/ }),
+
+/***/ 4061:
+/***/ ((module) => {
+
+// IE8- don't enum bug keys
+module.exports = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf'];
+
+/***/ }),
+
+/***/ 5186:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var global = __webpack_require__(6464);
+
+var getOwnPropertyDescriptor = __webpack_require__(2086).f;
+
+var createNonEnumerableProperty = __webpack_require__(6711);
+
+var redefine = __webpack_require__(1886);
+
+var setGlobal = __webpack_require__(6757);
+
+var copyConstructorProperties = __webpack_require__(8801);
+
+var isForced = __webpack_require__(1450);
+/*
+  options.target      - name of the target object
+  options.global      - target is the global object
+  options.stat        - export as static methods of target
+  options.proto       - export as prototype methods of target
+  options.real        - real prototype method for the `pure` version
+  options.forced      - export even if the native feature is available
+  options.bind        - bind methods to the target, required for the `pure` version
+  options.wrap        - wrap constructors to preventing global pollution, required for the `pure` version
+  options.unsafe      - use the simple assignment of property instead of delete + defineProperty
+  options.sham        - add a flag to not completely full polyfills
+  options.enumerable  - export as enumerable property
+  options.noTargetGet - prevent calling a getter on target
+*/
+
+
+module.exports = function (options, source) {
+  var TARGET = options.target;
+  var GLOBAL = options.global;
+  var STATIC = options.stat;
+  var FORCED, target, key, targetProperty, sourceProperty, descriptor;
+
+  if (GLOBAL) {
+    target = global;
+  } else if (STATIC) {
+    target = global[TARGET] || setGlobal(TARGET, {});
+  } else {
+    target = (global[TARGET] || {}).prototype;
+  }
+
+  if (target) for (key in source) {
+    sourceProperty = source[key];
+
+    if (options.noTargetGet) {
+      descriptor = getOwnPropertyDescriptor(target, key);
+      targetProperty = descriptor && descriptor.value;
+    } else targetProperty = target[key];
+
+    FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced); // contained in target
+
+    if (!FORCED && targetProperty !== undefined) {
+      if (_typeof(sourceProperty) === _typeof(targetProperty)) continue;
+      copyConstructorProperties(sourceProperty, targetProperty);
+    } // add a flag to not completely full polyfills
+
+
+    if (options.sham || targetProperty && targetProperty.sham) {
+      createNonEnumerableProperty(sourceProperty, 'sham', true);
+    } // extend global
+
+
+    redefine(target, key, sourceProperty, options);
+  }
+};
+
+/***/ }),
+
+/***/ 7537:
+/***/ ((module) => {
+
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (error) {
+    return true;
+  }
+};
+
+/***/ }),
+
+/***/ 7260:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var path = __webpack_require__(3914);
+
+var global = __webpack_require__(6464);
+
+var aFunction = function aFunction(variable) {
+  return typeof variable == 'function' ? variable : undefined;
+};
+
+module.exports = function (namespace, method) {
+  return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global[namespace]) : path[namespace] && path[namespace][method] || global[namespace] && global[namespace][method];
+};
+
+/***/ }),
+
+/***/ 6464:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var check = function check(it) {
+  return it && it.Math == Math && it;
+}; // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+
+
+module.exports =
+/* global globalThis -- safe */
+check((typeof globalThis === "undefined" ? "undefined" : _typeof(globalThis)) == 'object' && globalThis) || check((typeof window === "undefined" ? "undefined" : _typeof(window)) == 'object' && window) || check((typeof self === "undefined" ? "undefined" : _typeof(self)) == 'object' && self) || check((typeof __webpack_require__.g === "undefined" ? "undefined" : _typeof(__webpack_require__.g)) == 'object' && __webpack_require__.g) || // eslint-disable-next-line no-new-func -- fallback
+function () {
+  return this;
+}() || Function('return this')();
+
+/***/ }),
+
+/***/ 7409:
+/***/ ((module) => {
+
+var hasOwnProperty = {}.hasOwnProperty;
+
+module.exports = function (it, key) {
+  return hasOwnProperty.call(it, key);
+};
+
+/***/ }),
+
+/***/ 1151:
+/***/ ((module) => {
+
+module.exports = {};
+
+/***/ }),
+
+/***/ 636:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var DESCRIPTORS = __webpack_require__(3207);
+
+var fails = __webpack_require__(7537);
+
+var createElement = __webpack_require__(46); // Thank's IE8 for his funny defineProperty
+
+
+module.exports = !DESCRIPTORS && !fails(function () {
+  return Object.defineProperty(createElement('div'), 'a', {
+    get: function get() {
+      return 7;
+    }
+  }).a != 7;
+});
+
+/***/ }),
+
+/***/ 6300:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var fails = __webpack_require__(7537);
+
+var classof = __webpack_require__(9382);
+
+var split = ''.split; // fallback for non-array-like ES3 and non-enumerable old V8 strings
+
+module.exports = fails(function () {
+  // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
+  // eslint-disable-next-line no-prototype-builtins -- safe
+  return !Object('z').propertyIsEnumerable(0);
+}) ? function (it) {
+  return classof(it) == 'String' ? split.call(it, '') : Object(it);
+} : Object;
+
+/***/ }),
+
+/***/ 3194:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var store = __webpack_require__(1225);
+
+var functionToString = Function.toString; // this helper broken in `3.4.1-3.4.4`, so we can't use `shared` helper
+
+if (typeof store.inspectSource != 'function') {
+  store.inspectSource = function (it) {
+    return functionToString.call(it);
+  };
+}
+
+module.exports = store.inspectSource;
+
+/***/ }),
+
+/***/ 858:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var NATIVE_WEAK_MAP = __webpack_require__(3724);
+
+var global = __webpack_require__(6464);
+
+var isObject = __webpack_require__(6769);
+
+var createNonEnumerableProperty = __webpack_require__(6711);
+
+var objectHas = __webpack_require__(7409);
+
+var shared = __webpack_require__(1225);
+
+var sharedKey = __webpack_require__(7709);
+
+var hiddenKeys = __webpack_require__(1151);
+
+var WeakMap = global.WeakMap;
+var set, get, has;
+
+var enforce = function enforce(it) {
+  return has(it) ? get(it) : set(it, {});
+};
+
+var getterFor = function getterFor(TYPE) {
+  return function (it) {
+    var state;
+
+    if (!isObject(it) || (state = get(it)).type !== TYPE) {
+      throw TypeError('Incompatible receiver, ' + TYPE + ' required');
+    }
+
+    return state;
+  };
+};
+
+if (NATIVE_WEAK_MAP) {
+  var store = shared.state || (shared.state = new WeakMap());
+  var wmget = store.get;
+  var wmhas = store.has;
+  var wmset = store.set;
+
+  set = function set(it, metadata) {
+    metadata.facade = it;
+    wmset.call(store, it, metadata);
+    return metadata;
+  };
+
+  get = function get(it) {
+    return wmget.call(store, it) || {};
+  };
+
+  has = function has(it) {
+    return wmhas.call(store, it);
+  };
+} else {
+  var STATE = sharedKey('state');
+  hiddenKeys[STATE] = true;
+
+  set = function set(it, metadata) {
+    metadata.facade = it;
+    createNonEnumerableProperty(it, STATE, metadata);
+    return metadata;
+  };
+
+  get = function get(it) {
+    return objectHas(it, STATE) ? it[STATE] : {};
+  };
+
+  has = function has(it) {
+    return objectHas(it, STATE);
+  };
+}
+
+module.exports = {
+  set: set,
+  get: get,
+  has: has,
+  enforce: enforce,
+  getterFor: getterFor
+};
+
+/***/ }),
+
+/***/ 1450:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var fails = __webpack_require__(7537);
+
+var replacement = /#|\.prototype\./;
+
+var isForced = function isForced(feature, detection) {
+  var value = data[normalize(feature)];
+  return value == POLYFILL ? true : value == NATIVE ? false : typeof detection == 'function' ? fails(detection) : !!detection;
+};
+
+var normalize = isForced.normalize = function (string) {
+  return String(string).replace(replacement, '.').toLowerCase();
+};
+
+var data = isForced.data = {};
+var NATIVE = isForced.NATIVE = 'N';
+var POLYFILL = isForced.POLYFILL = 'P';
+module.exports = isForced;
+
+/***/ }),
+
+/***/ 6769:
+/***/ ((module) => {
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+module.exports = function (it) {
+  return _typeof(it) === 'object' ? it !== null : typeof it === 'function';
+};
+
+/***/ }),
+
+/***/ 9538:
+/***/ ((module) => {
+
+module.exports = false;
+
+/***/ }),
+
+/***/ 3724:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var global = __webpack_require__(6464);
+
+var inspectSource = __webpack_require__(3194);
+
+var WeakMap = global.WeakMap;
+module.exports = typeof WeakMap === 'function' && /native code/.test(inspectSource(WeakMap));
+
+/***/ }),
+
+/***/ 3099:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+var DESCRIPTORS = __webpack_require__(3207);
+
+var IE8_DOM_DEFINE = __webpack_require__(636);
+
+var anObject = __webpack_require__(1662);
+
+var toPrimitive = __webpack_require__(5333);
+
+var nativeDefineProperty = Object.defineProperty; // `Object.defineProperty` method
+// https://tc39.es/ecma262/#sec-object.defineproperty
+
+exports.f = DESCRIPTORS ? nativeDefineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPrimitive(P, true);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return nativeDefineProperty(O, P, Attributes);
+  } catch (error) {
+    /* empty */
+  }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
+};
+
+/***/ }),
+
+/***/ 2086:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+var DESCRIPTORS = __webpack_require__(3207);
+
+var propertyIsEnumerableModule = __webpack_require__(5805);
+
+var createPropertyDescriptor = __webpack_require__(9658);
+
+var toIndexedObject = __webpack_require__(2292);
+
+var toPrimitive = __webpack_require__(5333);
+
+var has = __webpack_require__(7409);
+
+var IE8_DOM_DEFINE = __webpack_require__(636);
+
+var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor; // `Object.getOwnPropertyDescriptor` method
+// https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
+
+exports.f = DESCRIPTORS ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
+  O = toIndexedObject(O);
+  P = toPrimitive(P, true);
+  if (IE8_DOM_DEFINE) try {
+    return nativeGetOwnPropertyDescriptor(O, P);
+  } catch (error) {
+    /* empty */
+  }
+  if (has(O, P)) return createPropertyDescriptor(!propertyIsEnumerableModule.f.call(O, P), O[P]);
+};
+
+/***/ }),
+
+/***/ 9129:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+var internalObjectKeys = __webpack_require__(2800);
+
+var enumBugKeys = __webpack_require__(4061);
+
+var hiddenKeys = enumBugKeys.concat('length', 'prototype'); // `Object.getOwnPropertyNames` method
+// https://tc39.es/ecma262/#sec-object.getownpropertynames
+
+exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
+  return internalObjectKeys(O, hiddenKeys);
+};
+
+/***/ }),
+
+/***/ 71:
+/***/ ((__unused_webpack_module, exports) => {
+
+exports.f = Object.getOwnPropertySymbols;
+
+/***/ }),
+
+/***/ 2800:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var has = __webpack_require__(7409);
+
+var toIndexedObject = __webpack_require__(2292);
+
+var indexOf = __webpack_require__(3781).indexOf;
+
+var hiddenKeys = __webpack_require__(1151);
+
+module.exports = function (object, names) {
+  var O = toIndexedObject(object);
+  var i = 0;
+  var result = [];
+  var key;
+
+  for (key in O) {
+    !has(hiddenKeys, key) && has(O, key) && result.push(key);
+  } // Don't enum bug & hidden keys
+
+
+  while (names.length > i) {
+    if (has(O, key = names[i++])) {
+      ~indexOf(result, key) || result.push(key);
+    }
+  }
+
+  return result;
+};
+
+/***/ }),
+
+/***/ 6343:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var internalObjectKeys = __webpack_require__(2800);
+
+var enumBugKeys = __webpack_require__(4061); // `Object.keys` method
+// https://tc39.es/ecma262/#sec-object.keys
+
+
+module.exports = Object.keys || function keys(O) {
+  return internalObjectKeys(O, enumBugKeys);
+};
+
+/***/ }),
+
+/***/ 5805:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
+var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor; // Nashorn ~ JDK8 bug
+
+var NASHORN_BUG = getOwnPropertyDescriptor && !nativePropertyIsEnumerable.call({
+  1: 2
+}, 1); // `Object.prototype.propertyIsEnumerable` method implementation
+// https://tc39.es/ecma262/#sec-object.prototype.propertyisenumerable
+
+exports.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
+  var descriptor = getOwnPropertyDescriptor(this, V);
+  return !!descriptor && descriptor.enumerable;
+} : nativePropertyIsEnumerable;
+
+/***/ }),
+
+/***/ 1344:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var DESCRIPTORS = __webpack_require__(3207);
+
+var objectKeys = __webpack_require__(6343);
+
+var toIndexedObject = __webpack_require__(2292);
+
+var propertyIsEnumerable = __webpack_require__(5805).f; // `Object.{ entries, values }` methods implementation
+
+
+var createMethod = function createMethod(TO_ENTRIES) {
+  return function (it) {
+    var O = toIndexedObject(it);
+    var keys = objectKeys(O);
+    var length = keys.length;
+    var i = 0;
+    var result = [];
+    var key;
+
+    while (length > i) {
+      key = keys[i++];
+
+      if (!DESCRIPTORS || propertyIsEnumerable.call(O, key)) {
+        result.push(TO_ENTRIES ? [key, O[key]] : O[key]);
+      }
+    }
+
+    return result;
+  };
+};
+
+module.exports = {
+  // `Object.entries` method
+  // https://tc39.es/ecma262/#sec-object.entries
+  entries: createMethod(true),
+  // `Object.values` method
+  // https://tc39.es/ecma262/#sec-object.values
+  values: createMethod(false)
+};
+
+/***/ }),
+
+/***/ 1890:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var getBuiltIn = __webpack_require__(7260);
+
+var getOwnPropertyNamesModule = __webpack_require__(9129);
+
+var getOwnPropertySymbolsModule = __webpack_require__(71);
+
+var anObject = __webpack_require__(1662); // all object keys, includes non-enumerable and symbols
+
+
+module.exports = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
+  var keys = getOwnPropertyNamesModule.f(anObject(it));
+  var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
+  return getOwnPropertySymbols ? keys.concat(getOwnPropertySymbols(it)) : keys;
+};
+
+/***/ }),
+
+/***/ 3914:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var global = __webpack_require__(6464);
+
+module.exports = global;
+
+/***/ }),
+
+/***/ 1886:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var global = __webpack_require__(6464);
+
+var createNonEnumerableProperty = __webpack_require__(6711);
+
+var has = __webpack_require__(7409);
+
+var setGlobal = __webpack_require__(6757);
+
+var inspectSource = __webpack_require__(3194);
+
+var InternalStateModule = __webpack_require__(858);
+
+var getInternalState = InternalStateModule.get;
+var enforceInternalState = InternalStateModule.enforce;
+var TEMPLATE = String(String).split('String');
+(module.exports = function (O, key, value, options) {
+  var unsafe = options ? !!options.unsafe : false;
+  var simple = options ? !!options.enumerable : false;
+  var noTargetGet = options ? !!options.noTargetGet : false;
+  var state;
+
+  if (typeof value == 'function') {
+    if (typeof key == 'string' && !has(value, 'name')) {
+      createNonEnumerableProperty(value, 'name', key);
+    }
+
+    state = enforceInternalState(value);
+
+    if (!state.source) {
+      state.source = TEMPLATE.join(typeof key == 'string' ? key : '');
+    }
+  }
+
+  if (O === global) {
+    if (simple) O[key] = value;else setGlobal(key, value);
+    return;
+  } else if (!unsafe) {
+    delete O[key];
+  } else if (!noTargetGet && O[key]) {
+    simple = true;
+  }
+
+  if (simple) O[key] = value;else createNonEnumerableProperty(O, key, value); // add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
+})(Function.prototype, 'toString', function toString() {
+  return typeof this == 'function' && getInternalState(this).source || inspectSource(this);
+});
+
+/***/ }),
+
+/***/ 5589:
+/***/ ((module) => {
+
+// `RequireObjectCoercible` abstract operation
+// https://tc39.es/ecma262/#sec-requireobjectcoercible
+module.exports = function (it) {
+  if (it == undefined) throw TypeError("Can't call method on " + it);
+  return it;
+};
+
+/***/ }),
+
+/***/ 6757:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var global = __webpack_require__(6464);
+
+var createNonEnumerableProperty = __webpack_require__(6711);
+
+module.exports = function (key, value) {
+  try {
+    createNonEnumerableProperty(global, key, value);
+  } catch (error) {
+    global[key] = value;
+  }
+
+  return value;
+};
+
+/***/ }),
+
+/***/ 7709:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var shared = __webpack_require__(174);
+
+var uid = __webpack_require__(2157);
+
+var keys = shared('keys');
+
+module.exports = function (key) {
+  return keys[key] || (keys[key] = uid(key));
+};
+
+/***/ }),
+
+/***/ 1225:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var global = __webpack_require__(6464);
+
+var setGlobal = __webpack_require__(6757);
+
+var SHARED = '__core-js_shared__';
+var store = global[SHARED] || setGlobal(SHARED, {});
+module.exports = store;
+
+/***/ }),
+
+/***/ 174:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var IS_PURE = __webpack_require__(9538);
+
+var store = __webpack_require__(1225);
+
+(module.exports = function (key, value) {
+  return store[key] || (store[key] = value !== undefined ? value : {});
+})('versions', []).push({
+  version: '3.9.0',
+  mode: IS_PURE ? 'pure' : 'global',
+  copyright: '© 2021 Denis Pushkarev (zloirock.ru)'
+});
+
+/***/ }),
+
+/***/ 2381:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var toInteger = __webpack_require__(6046);
+
+<<<<<<< HEAD
+function skillOrNameToSkill(skillOrName) {
+  if (typeof skillOrName === "string") {
+    return Skill.get(skillOrName);
+  } else {
+    return skillOrName;
+=======
+=======
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> ed22f6f (built!)
+  try {
+    return action();
+  } finally {
+    Macro.clearSaved();
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> 6528995 (Phill told me to do this)
+  }
+}
+function main() {
+  Macro.load().submit();
+}
+<<<<<<< HEAD
+
+/***/ }),
+
+/***/ 4744:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "canContinue": () => /* binding */ canContinue,
+  "globalOptions": () => /* binding */ globalOptions,
+  "main": () => /* binding */ main
+});
+
+// EXTERNAL MODULE: external "kolmafia"
+var external_kolmafia_ = __webpack_require__(1664);
+// EXTERNAL MODULE: ../kol-js-starter/node_modules/libram/dist/index.js
+var dist = __webpack_require__(5944);
+// EXTERNAL MODULE: ./src/combat.ts
+var combat = __webpack_require__(8816);
+;// CONCATENATED MODULE: ./src/lib.ts
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["Map the Monsters"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["Map the Monsters"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+function setChoice(adventure, value) {
+  (0,dist.set)("choiceAdventure".concat(adventure), "".concat(value));
+}
+function ensureEffect(effect) {
+  if (!(0,dist.have)(effect)) (0,external_kolmafia_.cliExecute)(effect["default"]);
+}
+function clamp(n, min, max) {
+  return Math.min(Math.max(n, min), max);
+}
+function mapMonster(location, monster) {
+  if ((0,external_kolmafia_.haveSkill)((0,dist.$skill)(_templateObject())) && !(0,dist.get)("mappingMonsters") && (0,dist.get)("_monstersMapped") < 3) {
+    (0,external_kolmafia_.useSkill)((0,dist.$skill)(_templateObject2()));
+  }
+
+  if (!(0,dist.get)("mappingMonsters")) throw "Failed to setup Map the Monsters.";
+  var mapPage = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(location), false, true);
+  if (!mapPage.includes("Leading Yourself Right to Them")) throw "Something went wrong mapping.";
+  var fightPage = (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
+  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
+}
+function averagePrice(items) {
+  return items.reduce(function (s, it) {
+    return s + (0,external_kolmafia_.mallPrice)(it);
+  }, 0) / items.length;
+}
+function argmax(values) {
+  return values.reduce(function (_ref, _ref2) {
+    var _ref3 = _slicedToArray(_ref, 2),
+        minValue = _ref3[0],
+        minScore = _ref3[1];
+
+    var _ref4 = _slicedToArray(_ref2, 2),
+        value = _ref4[0],
+        score = _ref4[1];
+
+    return score > minScore ? [value, score] : [minValue, minScore];
+  })[0];
+}
+;// CONCATENATED MODULE: ./src/diet.ts
+function _templateObject59() {
+  var data = diet_taggedTemplateLiteral(["ambitious turkey"]);
+
+  _templateObject59 = function _templateObject59() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject58() {
+  var data = diet_taggedTemplateLiteral(["jumping horseradish"]);
+
+  _templateObject58 = function _templateObject58() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject57() {
+  var data = diet_taggedTemplateLiteral(["fudge spork"]);
+
+  _templateObject57 = function _templateObject57() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject56() {
+  var data = diet_taggedTemplateLiteral(["fudge spork"]);
+
+  _templateObject56 = function _templateObject56() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject55() {
+  var data = diet_taggedTemplateLiteral(["mojo filter"]);
+
+  _templateObject55 = function _templateObject55() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject54() {
+  var data = diet_taggedTemplateLiteral(["mojo filter"]);
+
+  _templateObject54 = function _templateObject54() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject53() {
+  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
+
+  _templateObject53 = function _templateObject53() {
+    return data;
+  };
+=======
+var max = Math.max;
+var min = Math.min; // Helper for a popular repeating case of the spec:
+// Let integer be ? ToInteger(index).
+// If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
+
+module.exports = function (index, length) {
+  var integer = toInteger(index);
+  return integer < 0 ? max(integer + length, 0) : min(integer, length);
+};
+
+/***/ }),
+
+/***/ 2292:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// toObject with fallback for non-array-like ES3 strings
+var IndexedObject = __webpack_require__(6300);
+
+var requireObjectCoercible = __webpack_require__(5589);
+
+module.exports = function (it) {
+  return IndexedObject(requireObjectCoercible(it));
+};
+
+/***/ }),
+
+/***/ 6046:
+/***/ ((module) => {
+
+var ceil = Math.ceil;
+var floor = Math.floor; // `ToInteger` abstract operation
+// https://tc39.es/ecma262/#sec-tointeger
+
+module.exports = function (argument) {
+  return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
+};
+
+/***/ }),
+
+/***/ 8129:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var toInteger = __webpack_require__(6046);
+
+var min = Math.min; // `ToLength` abstract operation
+// https://tc39.es/ecma262/#sec-tolength
+
+module.exports = function (argument) {
+  return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
+};
+
+/***/ }),
+
+/***/ 5333:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isObject = __webpack_require__(6769); // `ToPrimitive` abstract operation
+// https://tc39.es/ecma262/#sec-toprimitive
+// instead of the ES6 spec version, we didn't implement @@toPrimitive case
+// and the second argument - flag - preferred type is a string
+
+
+module.exports = function (input, PREFERRED_STRING) {
+  if (!isObject(input)) return input;
+  var fn, val;
+  if (PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
+  if (typeof (fn = input.valueOf) == 'function' && !isObject(val = fn.call(input))) return val;
+  if (!PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
+  throw TypeError("Can't convert object to primitive value");
+};
+
+/***/ }),
+
+/***/ 2157:
+/***/ ((module) => {
+
+var id = 0;
+var postfix = Math.random();
+
+module.exports = function (key) {
+  return 'Symbol(' + String(key === undefined ? '' : key) + ')_' + (++id + postfix).toString(36);
+};
+
+/***/ }),
+
+/***/ 9465:
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+var $ = __webpack_require__(5186);
+
+var $values = __webpack_require__(1344).values; // `Object.values` method
+// https://tc39.es/ecma262/#sec-object.values
+
+
+$({
+  target: 'Object',
+  stat: true
+}, {
+  values: function values(O) {
+    return $values(O);
+  }
+});
+
+/***/ }),
+
+/***/ 5874:
+/***/ (function(module, exports, __webpack_require__) {
+
+/* module decorator */ module = __webpack_require__.nmd(module);
+var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/*! https://mths.be/he v1.2.0 by @mathias | MIT license */
+;
+
+(function (root) {
+  // Detect free variables `exports`.
+  var freeExports = ( false ? 0 : _typeof(exports)) == 'object' && exports; // Detect free variable `module`.
+
+  var freeModule = ( false ? 0 : _typeof(module)) == 'object' && module && module.exports == freeExports && module; // Detect free variable `global`, from Node.js or Browserified code,
+  // and use it as `root`.
+
+  var freeGlobal = (typeof __webpack_require__.g === "undefined" ? "undefined" : _typeof(__webpack_require__.g)) == 'object' && __webpack_require__.g;
+
+  if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+    root = freeGlobal;
+  }
+  /*--------------------------------------------------------------------------*/
+  // All astral symbols.
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+
+  return data;
+}
+
+function _templateObject52() {
+  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
+
+<<<<<<< HEAD
+  _templateObject52 = function _templateObject52() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject51() {
+  var data = diet_taggedTemplateLiteral(["distention pill"]);
+
+  _templateObject51 = function _templateObject51() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject50() {
+  var data = diet_taggedTemplateLiteral(["distention pill"]);
+
+  _templateObject50 = function _templateObject50() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject49() {
+  var data = diet_taggedTemplateLiteral(["borrowed time"]);
+
+  _templateObject49 = function _templateObject49() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject48() {
+  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
+
+  _templateObject48 = function _templateObject48() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject47() {
+  var data = diet_taggedTemplateLiteral(["blue mana"]);
+
+  _templateObject47 = function _templateObject47() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject46() {
+  var data = diet_taggedTemplateLiteral(["blue mana"]);
+
+  _templateObject46 = function _templateObject46() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject45() {
+  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
+
+  _templateObject45 = function _templateObject45() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject44() {
+  var data = diet_taggedTemplateLiteral(["time's arrow"]);
+
+  _templateObject44 = function _templateObject44() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject43() {
+  var data = diet_taggedTemplateLiteral(["time's arrow"]);
+
+  _templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject42() {
+  var data = diet_taggedTemplateLiteral(["essential tofu"]);
+
+  _templateObject42 = function _templateObject42() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject41() {
+  var data = diet_taggedTemplateLiteral(["fancy chocolate sculpture"]);
+
+  _templateObject41 = function _templateObject41() {
+    return data;
+  };
+=======
+  var regexAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g; // All ASCII symbols (not just printable ASCII) except those listed in the
+  // first column of the overrides table.
+  // https://html.spec.whatwg.org/multipage/syntax.html#table-charref-overrides
+
+  var regexAsciiWhitelist = /[\x01-\x7F]/g; // All BMP symbols that are not ASCII newlines, printable ASCII symbols, or
+  // code points listed in the first column of the overrides table on
+  // https://html.spec.whatwg.org/multipage/syntax.html#table-charref-overrides.
+
   var regexBmpWhitelist = /[\x01-\t\x0B\f\x0E-\x1F\x7F\x81\x8D\x8F\x90\x9D\xA0-\uFFFF]/g;
   var regexEncodeNonAscii = /<\u20D2|=\u20E5|>\u20D2|\u205F\u200A|\u219D\u0338|\u2202\u0338|\u2220\u20D2|\u2229\uFE00|\u222A\uFE00|\u223C\u20D2|\u223D\u0331|\u223E\u0333|\u2242\u0338|\u224B\u0338|\u224D\u20D2|\u224E\u0338|\u224F\u0338|\u2250\u0338|\u2261\u20E5|\u2264\u20D2|\u2265\u20D2|\u2266\u0338|\u2267\u0338|\u2268\uFE00|\u2269\uFE00|\u226A\u0338|\u226A\u20D2|\u226B\u0338|\u226B\u20D2|\u227F\u0338|\u2282\u20D2|\u2283\u20D2|\u228A\uFE00|\u228B\uFE00|\u228F\u0338|\u2290\u0338|\u2293\uFE00|\u2294\uFE00|\u22B4\u20D2|\u22B5\u20D2|\u22D8\u0338|\u22D9\u0338|\u22DA\uFE00|\u22DB\uFE00|\u22F5\u0338|\u22F9\u0338|\u2933\u0338|\u29CF\u0338|\u29D0\u0338|\u2A6D\u0338|\u2A70\u0338|\u2A7D\u0338|\u2A7E\u0338|\u2AA1\u0338|\u2AA2\u0338|\u2AAC\uFE00|\u2AAD\uFE00|\u2AAF\u0338|\u2AB0\u0338|\u2AC5\u0338|\u2AC6\u0338|\u2ACB\uFE00|\u2ACC\uFE00|\u2AFD\u20E5|[\xA0-\u0113\u0116-\u0122\u0124-\u012B\u012E-\u014D\u0150-\u017E\u0192\u01B5\u01F5\u0237\u02C6\u02C7\u02D8-\u02DD\u0311\u0391-\u03A1\u03A3-\u03A9\u03B1-\u03C9\u03D1\u03D2\u03D5\u03D6\u03DC\u03DD\u03F0\u03F1\u03F5\u03F6\u0401-\u040C\u040E-\u044F\u0451-\u045C\u045E\u045F\u2002-\u2005\u2007-\u2010\u2013-\u2016\u2018-\u201A\u201C-\u201E\u2020-\u2022\u2025\u2026\u2030-\u2035\u2039\u203A\u203E\u2041\u2043\u2044\u204F\u2057\u205F-\u2063\u20AC\u20DB\u20DC\u2102\u2105\u210A-\u2113\u2115-\u211E\u2122\u2124\u2127-\u2129\u212C\u212D\u212F-\u2131\u2133-\u2138\u2145-\u2148\u2153-\u215E\u2190-\u219B\u219D-\u21A7\u21A9-\u21AE\u21B0-\u21B3\u21B5-\u21B7\u21BA-\u21DB\u21DD\u21E4\u21E5\u21F5\u21FD-\u2205\u2207-\u2209\u220B\u220C\u220F-\u2214\u2216-\u2218\u221A\u221D-\u2238\u223A-\u2257\u2259\u225A\u225C\u225F-\u2262\u2264-\u228B\u228D-\u229B\u229D-\u22A5\u22A7-\u22B0\u22B2-\u22BB\u22BD-\u22DB\u22DE-\u22E3\u22E6-\u22F7\u22F9-\u22FE\u2305\u2306\u2308-\u2310\u2312\u2313\u2315\u2316\u231C-\u231F\u2322\u2323\u232D\u232E\u2336\u233D\u233F\u237C\u23B0\u23B1\u23B4-\u23B6\u23DC-\u23DF\u23E2\u23E7\u2423\u24C8\u2500\u2502\u250C\u2510\u2514\u2518\u251C\u2524\u252C\u2534\u253C\u2550-\u256C\u2580\u2584\u2588\u2591-\u2593\u25A1\u25AA\u25AB\u25AD\u25AE\u25B1\u25B3-\u25B5\u25B8\u25B9\u25BD-\u25BF\u25C2\u25C3\u25CA\u25CB\u25EC\u25EF\u25F8-\u25FC\u2605\u2606\u260E\u2640\u2642\u2660\u2663\u2665\u2666\u266A\u266D-\u266F\u2713\u2717\u2720\u2736\u2758\u2772\u2773\u27C8\u27C9\u27E6-\u27ED\u27F5-\u27FA\u27FC\u27FF\u2902-\u2905\u290C-\u2913\u2916\u2919-\u2920\u2923-\u292A\u2933\u2935-\u2939\u293C\u293D\u2945\u2948-\u294B\u294E-\u2976\u2978\u2979\u297B-\u297F\u2985\u2986\u298B-\u2996\u299A\u299C\u299D\u29A4-\u29B7\u29B9\u29BB\u29BC\u29BE-\u29C5\u29C9\u29CD-\u29D0\u29DC-\u29DE\u29E3-\u29E5\u29EB\u29F4\u29F6\u2A00-\u2A02\u2A04\u2A06\u2A0C\u2A0D\u2A10-\u2A17\u2A22-\u2A27\u2A29\u2A2A\u2A2D-\u2A31\u2A33-\u2A3C\u2A3F\u2A40\u2A42-\u2A4D\u2A50\u2A53-\u2A58\u2A5A-\u2A5D\u2A5F\u2A66\u2A6A\u2A6D-\u2A75\u2A77-\u2A9A\u2A9D-\u2AA2\u2AA4-\u2AB0\u2AB3-\u2AC8\u2ACB\u2ACC\u2ACF-\u2ADB\u2AE4\u2AE6-\u2AE9\u2AEB-\u2AF3\u2AFD\uFB00-\uFB04]|\uD835[\uDC9C\uDC9E\uDC9F\uDCA2\uDCA5\uDCA6\uDCA9-\uDCAC\uDCAE-\uDCB9\uDCBB\uDCBD-\uDCC3\uDCC5-\uDCCF\uDD04\uDD05\uDD07-\uDD0A\uDD0D-\uDD14\uDD16-\uDD1C\uDD1E-\uDD39\uDD3B-\uDD3E\uDD40-\uDD44\uDD46\uDD4A-\uDD50\uDD52-\uDD6B]/g;
   var encodeMap = {
@@ -4073,8 +15054,571 @@ function withMacro(macro, action) {
 
     return result;
   }; // Modified version of `ucs2encode`; see https://mths.be/punycode.
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject40() {
+  var data = diet_taggedTemplateLiteral(["none"]);
+
+  _templateObject40 = function _templateObject40() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject39() {
+  var data = diet_taggedTemplateLiteral(["chocolate disco ball"]);
+
+  _templateObject39 = function _templateObject39() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject38() {
+  var data = diet_taggedTemplateLiteral(["Disco Bandit"]);
+
+  _templateObject38 = function _templateObject38() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject37() {
+  var data = diet_taggedTemplateLiteral(["chocolate stolen accordion"]);
+
+  _templateObject37 = function _templateObject37() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject36() {
+  var data = diet_taggedTemplateLiteral(["Accordion Thief"]);
+
+  _templateObject36 = function _templateObject36() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject35() {
+  var data = diet_taggedTemplateLiteral(["chocolate saucepan"]);
+
+  _templateObject35 = function _templateObject35() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject34() {
+  var data = diet_taggedTemplateLiteral(["Sauceror"]);
+
+  _templateObject34 = function _templateObject34() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject33() {
+  var data = diet_taggedTemplateLiteral(["chocolate pasta spoon"]);
+
+  _templateObject33 = function _templateObject33() {
+=======
+
+/***/ }),
+
+/***/ 4744:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "canContinue": () => /* binding */ canContinue,
+  "globalOptions": () => /* binding */ globalOptions,
+  "main": () => /* binding */ main
+});
+
+// EXTERNAL MODULE: external "kolmafia"
+var external_kolmafia_ = __webpack_require__(1664);
+// EXTERNAL MODULE: ../kol-js-starter/node_modules/libram/dist/index.js
+var dist = __webpack_require__(5944);
+// EXTERNAL MODULE: ./src/combat.ts
+var combat = __webpack_require__(8816);
+;// CONCATENATED MODULE: ./src/lib.ts
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["Map the Monsters"]);
+
+  _templateObject2 = function _templateObject2() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+<<<<<<< HEAD
+
+function _templateObject32() {
+  var data = diet_taggedTemplateLiteral(["Pastamancer"]);
+
+  _templateObject32 = function _templateObject32() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject31() {
+  var data = diet_taggedTemplateLiteral(["chocolate turtle totem"]);
+
+  _templateObject31 = function _templateObject31() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject30() {
+  var data = diet_taggedTemplateLiteral(["Turtle Tamer"]);
+
+  _templateObject30 = function _templateObject30() {
+    return data;
+  };
+
+  return data;
+=======
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["Map the Monsters"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
+
+function setChoice(adventure, value) {
+  (0,dist.set)("choiceAdventure".concat(adventure), "".concat(value));
+}
+function ensureEffect(effect) {
+  if (!(0,dist.have)(effect)) (0,external_kolmafia_.cliExecute)(effect["default"]);
+}
+function clamp(n, min, max) {
+  return Math.min(Math.max(n, min), max);
+}
+function mapMonster(location, monster) {
+  if ((0,external_kolmafia_.haveSkill)((0,dist.$skill)(_templateObject())) && !(0,dist.get)("mappingMonsters") && (0,dist.get)("_monstersMapped") < 3) {
+    (0,external_kolmafia_.useSkill)((0,dist.$skill)(_templateObject2()));
+  }
+
+  if (!(0,dist.get)("mappingMonsters")) throw "Failed to setup Map the Monsters.";
+  var mapPage = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(location), false, true);
+  if (!mapPage.includes("Leading Yourself Right to Them")) throw "Something went wrong mapping.";
+  var fightPage = (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
+  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
+}
+function averagePrice(items) {
+  return items.reduce(function (s, it) {
+    return s + (0,external_kolmafia_.mallPrice)(it);
+  }, 0) / items.length;
+>>>>>>> 6528995 (Phill told me to do this)
+}
+function argmax(values) {
+  return values.reduce(function (_ref, _ref2) {
+    var _ref3 = _slicedToArray(_ref, 2),
+        minValue = _ref3[0],
+        minScore = _ref3[1];
+
+<<<<<<< HEAD
+function _templateObject29() {
+  var data = diet_taggedTemplateLiteral(["chocolate seal-clubbing club"]);
+
+  _templateObject29 = function _templateObject29() {
+=======
+    var _ref4 = _slicedToArray(_ref2, 2),
+        value = _ref4[0],
+        score = _ref4[1];
+
+    return score > minScore ? [value, score] : [minValue, minScore];
+  })[0];
+}
+;// CONCATENATED MODULE: ./src/diet.ts
+function _templateObject59() {
+  var data = diet_taggedTemplateLiteral(["ambitious turkey"]);
+
+  _templateObject59 = function _templateObject59() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject28() {
+  var data = diet_taggedTemplateLiteral(["Seal Clubber"]);
+
+  _templateObject28 = function _templateObject28() {
+=======
+function _templateObject58() {
+  var data = diet_taggedTemplateLiteral(["jumping horseradish"]);
+
+  _templateObject58 = function _templateObject58() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject27() {
+  var data = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]);
+
+  _templateObject27 = function _templateObject27() {
+=======
+function _templateObject57() {
+  var data = diet_taggedTemplateLiteral(["fudge spork"]);
+
+  _templateObject57 = function _templateObject57() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject26() {
+  var data = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]);
+
+  _templateObject26 = function _templateObject26() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject25() {
+  var data = diet_taggedTemplateLiteral(["fancy chocolate car"]);
+
+  _templateObject25 = function _templateObject25() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject24() {
+  var data = diet_taggedTemplateLiteral(["Boxing Day Glow"]);
+
+  _templateObject24 = function _templateObject24() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject23() {
+  var data = diet_taggedTemplateLiteral(["body spradium"]);
+
+  _templateObject23 = function _templateObject23() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject22() {
+  var data = diet_taggedTemplateLiteral(["Synthesis: Collection"]);
+
+  _templateObject22 = function _templateObject22() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject21() {
+  var data = diet_taggedTemplateLiteral(["Sweet Synthesis"]);
+
+  _templateObject21 = function _templateObject21() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject20() {
+  var data = diet_taggedTemplateLiteral(["Eau d' Clochard"]);
+
+  _templateObject20 = function _templateObject20() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject19() {
+  var data = diet_taggedTemplateLiteral(["jar of fermented pickle juice"]);
+
+  _templateObject19 = function _templateObject19() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject18() {
+  var data = diet_taggedTemplateLiteral(["Frosty's frosty mug"]);
+
+  _templateObject18 = function _templateObject18() {
+=======
+function _templateObject56() {
+  var data = diet_taggedTemplateLiteral(["fudge spork"]);
+
+  _templateObject56 = function _templateObject56() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject55() {
+  var data = diet_taggedTemplateLiteral(["mojo filter"]);
+
+  _templateObject55 = function _templateObject55() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject54() {
+  var data = diet_taggedTemplateLiteral(["mojo filter"]);
+
+  _templateObject54 = function _templateObject54() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject53() {
+  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
+
+  _templateObject53 = function _templateObject53() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject52() {
+  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
+
+  _templateObject52 = function _templateObject52() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject51() {
+  var data = diet_taggedTemplateLiteral(["distention pill"]);
+
+  _templateObject51 = function _templateObject51() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject50() {
+  var data = diet_taggedTemplateLiteral(["distention pill"]);
+
+  _templateObject50 = function _templateObject50() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject49() {
+  var data = diet_taggedTemplateLiteral(["borrowed time"]);
+
+  _templateObject49 = function _templateObject49() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject48() {
+  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
+
+  _templateObject48 = function _templateObject48() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject47() {
+  var data = diet_taggedTemplateLiteral(["blue mana"]);
+
+  _templateObject47 = function _templateObject47() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject17() {
+  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
+
+  _templateObject17 = function _templateObject17() {
+=======
+function _templateObject46() {
+  var data = diet_taggedTemplateLiteral(["blue mana"]);
+
+  _templateObject46 = function _templateObject46() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject16() {
+  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
+
+  _templateObject16 = function _templateObject16() {
+=======
+function _templateObject45() {
+  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
+
+  _templateObject45 = function _templateObject45() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject15() {
+  var data = diet_taggedTemplateLiteral(["splendid martini"]);
+
+  _templateObject15 = function _templateObject15() {
+=======
+function _templateObject44() {
+  var data = diet_taggedTemplateLiteral(["time's arrow"]);
+
+  _templateObject44 = function _templateObject44() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject14() {
+  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
+
+  _templateObject14 = function _templateObject14() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject13() {
+  var data = diet_taggedTemplateLiteral(["tuxedo shirt"]);
+
+  _templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject12() {
+  var data = diet_taggedTemplateLiteral(["mime army shotglass"]);
+
+  _templateObject12 = function _templateObject12() {
+=======
+function _templateObject43() {
+  var data = diet_taggedTemplateLiteral(["time's arrow"]);
+
+  _templateObject43 = function _templateObject43() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject42() {
+  var data = diet_taggedTemplateLiteral(["essential tofu"]);
+
+  _templateObject42 = function _templateObject42() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject11() {
+  var data = diet_taggedTemplateLiteral(["extra-greasy slider"]);
+
+  _templateObject11 = function _templateObject11() {
+=======
+function _templateObject41() {
+  var data = diet_taggedTemplateLiteral(["fancy chocolate sculpture"]);
+
+  _templateObject41 = function _templateObject41() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+=======
   var codePointToSymbol = function codePointToSymbol(codePoint, strict) {
     var output = '';
 
@@ -4340,17 +15884,31 @@ function withMacro(macro, action) {
 
 /***/ }),
 
-/***/ 1662:
+/***/ 6041:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
 
-function _wrapRegExp() { _wrapRegExp = function _wrapRegExp(re, groups) { return new BabelRegExp(re, undefined, groups); }; var _super = RegExp.prototype; var _groups = new WeakMap(); function BabelRegExp(re, flags, groups) { var _this = new RegExp(re, flags); _groups.set(_this, groups || _groups.get(re)); return _setPrototypeOf(_this, BabelRegExp.prototype); } _inherits(BabelRegExp, RegExp); BabelRegExp.prototype.exec = function (str) { var result = _super.exec.call(this, str); if (result) result.groups = buildGroups(result, this); return result; }; BabelRegExp.prototype[Symbol.replace] = function (str, substitution) { if (typeof substitution === "string") { var groups = _groups.get(this); return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) { return "$" + groups[name]; })); } else if (typeof substitution === "function") { var _this = this; return _super[Symbol.replace].call(this, str, function () { var args = arguments; if (_typeof(args[args.length - 1]) !== "object") { args = [].slice.call(args); args.push(buildGroups(args, _this)); } return substitution.apply(this, args); }); } else { return _super[Symbol.replace].call(this, str, substitution); } }; function buildGroups(result, re) { var g = _groups.get(re); return Object.keys(g).reduce(function (groups, name) { groups[name] = result[g[name]]; return groups; }, Object.create(null)); } return _wrapRegExp.apply(this, arguments); }
+function _wrapRegExp(re, groups) { _wrapRegExp = function _wrapRegExp(re, groups) { return new BabelRegExp(re, undefined, groups); }; var _RegExp = _wrapNativeSuper(RegExp); var _super = RegExp.prototype; var _groups = new WeakMap(); function BabelRegExp(re, flags, groups) { var _this = _RegExp.call(this, re, flags); _groups.set(_this, groups || _groups.get(re)); return _this; } _inherits(BabelRegExp, _RegExp); BabelRegExp.prototype.exec = function (str) { var result = _super.exec.call(this, str); if (result) result.groups = buildGroups(result, this); return result; }; BabelRegExp.prototype[Symbol.replace] = function (str, substitution) { if (typeof substitution === "string") { var groups = _groups.get(this); return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) { return "$" + groups[name]; })); } else if (typeof substitution === "function") { var _this = this; return _super[Symbol.replace].call(this, str, function () { var args = []; args.push.apply(args, arguments); if (_typeof(args[args.length - 1]) !== "object") { args.push(buildGroups(args, _this)); } return substitution.apply(this, args); }); } else { return _super[Symbol.replace].call(this, str, substitution); } }; function buildGroups(result, re) { var g = _groups.get(re); return Object.keys(g).reduce(function (groups, name) { groups[name] = result[g[name]]; return groups; }, Object.create(null)); } return _wrapRegExp.apply(this, arguments); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+
+function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -4371,9 +15929,9 @@ exports.Clan = void 0;
 
 var kolmafia_1 = __webpack_require__(1664);
 
-var node_html_parser_1 = __webpack_require__(1891);
+var node_html_parser_1 = __webpack_require__(1133);
 
-var utils_1 = __webpack_require__(8588); // It would be fantastic to have this function properly typed
+var utils_1 = __webpack_require__(1115); // It would be fantastic to have this function properly typed
 // But until someone can work out how to do it, it gets the
 // comment blocks of shame
 
@@ -4398,9 +15956,176 @@ function validate(target, propertyName, descriptor) {
 
     return method.apply(this, args);
   };
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 }
 /* eslint-enable */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+function _templateObject10() {
+  var data = diet_taggedTemplateLiteral(["Ol' Scratch's salad fork"]);
+
+  _templateObject10 = function _templateObject10() {
+=======
+function _templateObject40() {
+  var data = diet_taggedTemplateLiteral(["none"]);
+
+  _templateObject40 = function _templateObject40() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject9() {
+  var data = diet_taggedTemplateLiteral(["milk of magnesium"]);
+
+  _templateObject9 = function _templateObject9() {
+=======
+function _templateObject39() {
+  var data = diet_taggedTemplateLiteral(["chocolate disco ball"]);
+
+  _templateObject39 = function _templateObject39() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject8() {
+  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
+
+  _templateObject8 = function _templateObject8() {
+=======
+function _templateObject38() {
+  var data = diet_taggedTemplateLiteral(["Disco Bandit"]);
+
+  _templateObject38 = function _templateObject38() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject7() {
+  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
+
+  _templateObject7 = function _templateObject7() {
+=======
+function _templateObject37() {
+  var data = diet_taggedTemplateLiteral(["chocolate stolen accordion"]);
+
+  _templateObject37 = function _templateObject37() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject6() {
+  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
+
+  _templateObject6 = function _templateObject6() {
+=======
+function _templateObject36() {
+  var data = diet_taggedTemplateLiteral(["Accordion Thief"]);
+
+  _templateObject36 = function _templateObject36() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject5() {
+  var data = diet_taggedTemplateLiteral(["Synthesis: Greed"]);
+
+  _templateObject5 = function _templateObject5() {
+=======
+function _templateObject35() {
+  var data = diet_taggedTemplateLiteral(["chocolate saucepan"]);
+
+  _templateObject35 = function _templateObject35() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _templateObject4() {
+  var data = diet_taggedTemplateLiteral(["Synthesis: Greed"]);
+
+  _templateObject4 = function _templateObject4() {
+=======
+function _templateObject34() {
+  var data = diet_taggedTemplateLiteral(["Sauceror"]);
+
+  _templateObject34 = function _templateObject34() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = diet_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _templateObject3() {
+  var data = diet_taggedTemplateLiteral(["octolus oculus, transdermal smoke patch, antimatter wad, voodoo snuff, blood-drive sticker"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function diet_templateObject2() {
+  var data = diet_taggedTemplateLiteral(["voodoo snuff"]);
+
+  diet_templateObject2 = function _templateObject2() {
+=======
+function _templateObject33() {
+  var data = diet_taggedTemplateLiteral(["chocolate pasta spoon"]);
+
+  _templateObject33 = function _templateObject33() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject32() {
+  var data = diet_taggedTemplateLiteral(["Pastamancer"]);
+
+  _templateObject32 = function _templateObject32() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
+
+  return data;
+}
+
+<<<<<<< HEAD
+function diet_slicedToArray(arr, i) { return diet_arrayWithHoles(arr) || diet_iterableToArrayLimit(arr, i) || diet_unsupportedIterableToArray(arr, i) || diet_nonIterableRest(); }
+
+function diet_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function diet_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return diet_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return diet_arrayLikeToArray(o, minLen); }
+=======
 
 var clanIdCache = {};
 
@@ -4613,15 +16338,45 @@ function () {
 }();
 
 exports.Clan = Clan;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
-/***/ }),
+function diet_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-/***/ 2219:
+<<<<<<< HEAD
+function diet_iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+=======
+/***/ 1498:
 /***/ ((__unused_webpack_module, exports) => {
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
-"use strict";
+function diet_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function diet_templateObject() {
+  var data = diet_taggedTemplateLiteral(["Special Seasoning"]);
 
+<<<<<<< HEAD
+  diet_templateObject = function _templateObject() {
+=======
+function _templateObject31() {
+  var data = diet_taggedTemplateLiteral(["chocolate turtle totem"]);
+
+  _templateObject31 = function _templateObject31() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject30() {
+  var data = diet_taggedTemplateLiteral(["Turtle Tamer"]);
+
+  _templateObject30 = function _templateObject30() {
+    return data;
+  };
+
+  return data;
+}
+=======
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
@@ -4646,34 +16401,50 @@ exports.Copier = Copier;
 
 /***/ }),
 
-/***/ 1762:
+/***/ 8648:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
-var __spreadArrays = this && this.__spreadArrays || function () {
-  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
-    s += arguments[i].length;
-  }
+function _templateObject29() {
+  var data = diet_taggedTemplateLiteral(["chocolate seal-clubbing club"]);
 
-  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
-    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
-      r[k] = a[j];
-    }
-  }
+  _templateObject29 = function _templateObject29() {
+>>>>>>> 6528995 (Phill told me to do this)
+    return data;
+  };
 
-  return r;
-};
+  return data;
+}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+function diet_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+=======
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.adventureMacroAuto = exports.adventureMacro = exports.Macro = exports.getMacroId = void 0;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
-var kolmafia_1 = __webpack_require__(1664);
 
-var property_1 = __webpack_require__(1347);
+<<<<<<< HEAD
+
+
+var MPA = (0,dist.get)("valueOfAdventure");
+(0,external_kolmafia_.print)("Using adventure value ".concat(MPA, "."), "blue");
+
+function totalAmount(item) {
+  return shopAmount(item) + itemAmount(item);
+}
+
+function itemPriority() {
+  for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
+    items[_key] = arguments[_key];
+=======
+var property_1 = __webpack_require__(3579);
 
 var MACRO_NAME = "Script Autoattack Macro";
 /**
@@ -4692,1131 +16463,11 @@ function getMacroId() {
     return parseInt(kolmafia_1.xpath(newMacroText, "//input[@name=macroid]/@value")[0], 10);
   } else {
     return parseInt(macroMatches[0], 10);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   }
 }
 
-exports.getMacroId = getMacroId;
-
-function itemOrNameToItem(itemOrName) {
-  return typeof itemOrName === "string" ? Item.get(itemOrName) : itemOrName;
-}
-
-function itemOrItemsBallsMacroName(itemOrItems) {
-  if (Array.isArray(itemOrItems)) {
-    return itemOrItems.map(itemOrItemsBallsMacroName).join(", ");
-  } else {
-    var item = itemOrNameToItem(itemOrItems);
-    return item.name;
-  }
-}
-
-function itemOrItemsBallsMacroPredicate(itemOrItems) {
-  if (Array.isArray(itemOrItems)) {
-    return itemOrItems.map(itemOrItemsBallsMacroName).join(" && ");
-  } else {
-    return "hascombatitem " + itemOrItems;
-  }
-}
-
-function skillOrNameToSkill(skillOrName) {
-  if (typeof skillOrName === "string") {
-    return Skill.get(skillOrName);
-  } else {
-    return skillOrName;
-=======
-=======
->>>>>>> 6528995 (Phill told me to do this)
-=======
->>>>>>> ed22f6f (built!)
-  try {
-    return action();
-  } finally {
-    Macro.clearSaved();
 <<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 6528995 (Phill told me to do this)
-=======
->>>>>>> 6528995 (Phill told me to do this)
-  }
-}
-function main() {
-  Macro.load().submit();
-}
-<<<<<<< HEAD
-
-/***/ }),
-
-/***/ 4744:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "canContinue": () => /* binding */ canContinue,
-  "globalOptions": () => /* binding */ globalOptions,
-  "main": () => /* binding */ main
-});
-
-// EXTERNAL MODULE: external "kolmafia"
-var external_kolmafia_ = __webpack_require__(1664);
-// EXTERNAL MODULE: ../kol-js-starter/node_modules/libram/dist/index.js
-var dist = __webpack_require__(5944);
-// EXTERNAL MODULE: ./src/combat.ts
-var combat = __webpack_require__(8816);
-;// CONCATENATED MODULE: ./src/lib.ts
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["Map the Monsters"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["Map the Monsters"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-
-
-function setChoice(adventure, value) {
-  (0,dist.set)("choiceAdventure".concat(adventure), "".concat(value));
-}
-function ensureEffect(effect) {
-  if (!(0,dist.have)(effect)) (0,external_kolmafia_.cliExecute)(effect["default"]);
-}
-function clamp(n, min, max) {
-  return Math.min(Math.max(n, min), max);
-}
-function mapMonster(location, monster) {
-  if ((0,external_kolmafia_.haveSkill)((0,dist.$skill)(_templateObject())) && !(0,dist.get)("mappingMonsters") && (0,dist.get)("_monstersMapped") < 3) {
-    (0,external_kolmafia_.useSkill)((0,dist.$skill)(_templateObject2()));
-  }
-
-  if (!(0,dist.get)("mappingMonsters")) throw "Failed to setup Map the Monsters.";
-  var mapPage = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(location), false, true);
-  if (!mapPage.includes("Leading Yourself Right to Them")) throw "Something went wrong mapping.";
-  var fightPage = (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
-  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
-}
-function averagePrice(items) {
-  return items.reduce(function (s, it) {
-    return s + (0,external_kolmafia_.mallPrice)(it);
-  }, 0) / items.length;
-}
-function argmax(values) {
-  return values.reduce(function (_ref, _ref2) {
-    var _ref3 = _slicedToArray(_ref, 2),
-        minValue = _ref3[0],
-        minScore = _ref3[1];
-
-    var _ref4 = _slicedToArray(_ref2, 2),
-        value = _ref4[0],
-        score = _ref4[1];
-
-    return score > minScore ? [value, score] : [minValue, minScore];
-  })[0];
-}
-;// CONCATENATED MODULE: ./src/diet.ts
-function _templateObject59() {
-  var data = diet_taggedTemplateLiteral(["ambitious turkey"]);
-
-  _templateObject59 = function _templateObject59() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject58() {
-  var data = diet_taggedTemplateLiteral(["jumping horseradish"]);
-
-  _templateObject58 = function _templateObject58() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject57() {
-  var data = diet_taggedTemplateLiteral(["fudge spork"]);
-
-  _templateObject57 = function _templateObject57() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject56() {
-  var data = diet_taggedTemplateLiteral(["fudge spork"]);
-
-  _templateObject56 = function _templateObject56() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject55() {
-  var data = diet_taggedTemplateLiteral(["mojo filter"]);
-
-  _templateObject55 = function _templateObject55() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject54() {
-  var data = diet_taggedTemplateLiteral(["mojo filter"]);
-
-  _templateObject54 = function _templateObject54() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject53() {
-  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
-
-  _templateObject53 = function _templateObject53() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject52() {
-  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
-
-  _templateObject52 = function _templateObject52() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject51() {
-  var data = diet_taggedTemplateLiteral(["distention pill"]);
-
-  _templateObject51 = function _templateObject51() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject50() {
-  var data = diet_taggedTemplateLiteral(["distention pill"]);
-
-  _templateObject50 = function _templateObject50() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject49() {
-  var data = diet_taggedTemplateLiteral(["borrowed time"]);
-
-  _templateObject49 = function _templateObject49() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject48() {
-  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
-
-  _templateObject48 = function _templateObject48() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject47() {
-  var data = diet_taggedTemplateLiteral(["blue mana"]);
-
-  _templateObject47 = function _templateObject47() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject46() {
-  var data = diet_taggedTemplateLiteral(["blue mana"]);
-
-  _templateObject46 = function _templateObject46() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject45() {
-  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
-
-  _templateObject45 = function _templateObject45() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject44() {
-  var data = diet_taggedTemplateLiteral(["time's arrow"]);
-
-  _templateObject44 = function _templateObject44() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject43() {
-  var data = diet_taggedTemplateLiteral(["time's arrow"]);
-
-  _templateObject43 = function _templateObject43() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject42() {
-  var data = diet_taggedTemplateLiteral(["essential tofu"]);
-
-  _templateObject42 = function _templateObject42() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject41() {
-  var data = diet_taggedTemplateLiteral(["fancy chocolate sculpture"]);
-
-  _templateObject41 = function _templateObject41() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject40() {
-  var data = diet_taggedTemplateLiteral(["none"]);
-
-  _templateObject40 = function _templateObject40() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject39() {
-  var data = diet_taggedTemplateLiteral(["chocolate disco ball"]);
-
-  _templateObject39 = function _templateObject39() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject38() {
-  var data = diet_taggedTemplateLiteral(["Disco Bandit"]);
-
-  _templateObject38 = function _templateObject38() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject37() {
-  var data = diet_taggedTemplateLiteral(["chocolate stolen accordion"]);
-
-  _templateObject37 = function _templateObject37() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject36() {
-  var data = diet_taggedTemplateLiteral(["Accordion Thief"]);
-
-  _templateObject36 = function _templateObject36() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject35() {
-  var data = diet_taggedTemplateLiteral(["chocolate saucepan"]);
-
-  _templateObject35 = function _templateObject35() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject34() {
-  var data = diet_taggedTemplateLiteral(["Sauceror"]);
-
-  _templateObject34 = function _templateObject34() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject33() {
-  var data = diet_taggedTemplateLiteral(["chocolate pasta spoon"]);
-
-  _templateObject33 = function _templateObject33() {
-=======
-
-/***/ }),
-
-/***/ 4744:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "canContinue": () => /* binding */ canContinue,
-  "globalOptions": () => /* binding */ globalOptions,
-  "main": () => /* binding */ main
-});
-
-// EXTERNAL MODULE: external "kolmafia"
-var external_kolmafia_ = __webpack_require__(1664);
-// EXTERNAL MODULE: ../kol-js-starter/node_modules/libram/dist/index.js
-var dist = __webpack_require__(5944);
-// EXTERNAL MODULE: ./src/combat.ts
-var combat = __webpack_require__(8816);
-;// CONCATENATED MODULE: ./src/lib.ts
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["Map the Monsters"]);
-
-  _templateObject2 = function _templateObject2() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-<<<<<<< HEAD
-
-function _templateObject32() {
-  var data = diet_taggedTemplateLiteral(["Pastamancer"]);
-
-  _templateObject32 = function _templateObject32() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject31() {
-  var data = diet_taggedTemplateLiteral(["chocolate turtle totem"]);
-
-  _templateObject31 = function _templateObject31() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject30() {
-  var data = diet_taggedTemplateLiteral(["Turtle Tamer"]);
-
-  _templateObject30 = function _templateObject30() {
-    return data;
-  };
-
-  return data;
-=======
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["Map the Monsters"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-
-
-function setChoice(adventure, value) {
-  (0,dist.set)("choiceAdventure".concat(adventure), "".concat(value));
-}
-function ensureEffect(effect) {
-  if (!(0,dist.have)(effect)) (0,external_kolmafia_.cliExecute)(effect["default"]);
-}
-function clamp(n, min, max) {
-  return Math.min(Math.max(n, min), max);
-}
-function mapMonster(location, monster) {
-  if ((0,external_kolmafia_.haveSkill)((0,dist.$skill)(_templateObject())) && !(0,dist.get)("mappingMonsters") && (0,dist.get)("_monstersMapped") < 3) {
-    (0,external_kolmafia_.useSkill)((0,dist.$skill)(_templateObject2()));
-  }
-
-  if (!(0,dist.get)("mappingMonsters")) throw "Failed to setup Map the Monsters.";
-  var mapPage = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(location), false, true);
-  if (!mapPage.includes("Leading Yourself Right to Them")) throw "Something went wrong mapping.";
-  var fightPage = (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
-  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
-}
-function averagePrice(items) {
-  return items.reduce(function (s, it) {
-    return s + (0,external_kolmafia_.mallPrice)(it);
-  }, 0) / items.length;
->>>>>>> 6528995 (Phill told me to do this)
-}
-function argmax(values) {
-  return values.reduce(function (_ref, _ref2) {
-    var _ref3 = _slicedToArray(_ref, 2),
-        minValue = _ref3[0],
-        minScore = _ref3[1];
-
-<<<<<<< HEAD
-function _templateObject29() {
-  var data = diet_taggedTemplateLiteral(["chocolate seal-clubbing club"]);
-
-  _templateObject29 = function _templateObject29() {
-=======
-    var _ref4 = _slicedToArray(_ref2, 2),
-        value = _ref4[0],
-        score = _ref4[1];
-
-    return score > minScore ? [value, score] : [minValue, minScore];
-  })[0];
-}
-;// CONCATENATED MODULE: ./src/diet.ts
-function _templateObject59() {
-  var data = diet_taggedTemplateLiteral(["ambitious turkey"]);
-
-  _templateObject59 = function _templateObject59() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject28() {
-  var data = diet_taggedTemplateLiteral(["Seal Clubber"]);
-
-  _templateObject28 = function _templateObject28() {
-=======
-function _templateObject58() {
-  var data = diet_taggedTemplateLiteral(["jumping horseradish"]);
-
-  _templateObject58 = function _templateObject58() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject27() {
-  var data = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]);
-
-  _templateObject27 = function _templateObject27() {
-=======
-function _templateObject57() {
-  var data = diet_taggedTemplateLiteral(["fudge spork"]);
-
-  _templateObject57 = function _templateObject57() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject26() {
-  var data = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]);
-
-  _templateObject26 = function _templateObject26() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject25() {
-  var data = diet_taggedTemplateLiteral(["fancy chocolate car"]);
-
-  _templateObject25 = function _templateObject25() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject24() {
-  var data = diet_taggedTemplateLiteral(["Boxing Day Glow"]);
-
-  _templateObject24 = function _templateObject24() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject23() {
-  var data = diet_taggedTemplateLiteral(["body spradium"]);
-
-  _templateObject23 = function _templateObject23() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject22() {
-  var data = diet_taggedTemplateLiteral(["Synthesis: Collection"]);
-
-  _templateObject22 = function _templateObject22() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject21() {
-  var data = diet_taggedTemplateLiteral(["Sweet Synthesis"]);
-
-  _templateObject21 = function _templateObject21() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject20() {
-  var data = diet_taggedTemplateLiteral(["Eau d' Clochard"]);
-
-  _templateObject20 = function _templateObject20() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject19() {
-  var data = diet_taggedTemplateLiteral(["jar of fermented pickle juice"]);
-
-  _templateObject19 = function _templateObject19() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject18() {
-  var data = diet_taggedTemplateLiteral(["Frosty's frosty mug"]);
-
-  _templateObject18 = function _templateObject18() {
-=======
-function _templateObject56() {
-  var data = diet_taggedTemplateLiteral(["fudge spork"]);
-
-  _templateObject56 = function _templateObject56() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject55() {
-  var data = diet_taggedTemplateLiteral(["mojo filter"]);
-
-  _templateObject55 = function _templateObject55() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject54() {
-  var data = diet_taggedTemplateLiteral(["mojo filter"]);
-
-  _templateObject54 = function _templateObject54() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject53() {
-  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
-
-  _templateObject53 = function _templateObject53() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject52() {
-  var data = diet_taggedTemplateLiteral(["synthetic dog hair pill"]);
-
-  _templateObject52 = function _templateObject52() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject51() {
-  var data = diet_taggedTemplateLiteral(["distention pill"]);
-
-  _templateObject51 = function _templateObject51() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject50() {
-  var data = diet_taggedTemplateLiteral(["distention pill"]);
-
-  _templateObject50 = function _templateObject50() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject49() {
-  var data = diet_taggedTemplateLiteral(["borrowed time"]);
-
-  _templateObject49 = function _templateObject49() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject48() {
-  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
-
-  _templateObject48 = function _templateObject48() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject47() {
-  var data = diet_taggedTemplateLiteral(["blue mana"]);
-
-  _templateObject47 = function _templateObject47() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject17() {
-  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
-
-  _templateObject17 = function _templateObject17() {
-=======
-function _templateObject46() {
-  var data = diet_taggedTemplateLiteral(["blue mana"]);
-
-  _templateObject46 = function _templateObject46() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject16() {
-  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
-
-  _templateObject16 = function _templateObject16() {
-=======
-function _templateObject45() {
-  var data = diet_taggedTemplateLiteral(["Ancestral Recall"]);
-
-  _templateObject45 = function _templateObject45() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject15() {
-  var data = diet_taggedTemplateLiteral(["splendid martini"]);
-
-  _templateObject15 = function _templateObject15() {
-=======
-function _templateObject44() {
-  var data = diet_taggedTemplateLiteral(["time's arrow"]);
-
-  _templateObject44 = function _templateObject44() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject14() {
-  var data = diet_taggedTemplateLiteral(["astral pilsner"]);
-
-  _templateObject14 = function _templateObject14() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject13() {
-  var data = diet_taggedTemplateLiteral(["tuxedo shirt"]);
-
-  _templateObject13 = function _templateObject13() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject12() {
-  var data = diet_taggedTemplateLiteral(["mime army shotglass"]);
-
-  _templateObject12 = function _templateObject12() {
-=======
-function _templateObject43() {
-  var data = diet_taggedTemplateLiteral(["time's arrow"]);
-
-  _templateObject43 = function _templateObject43() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject42() {
-  var data = diet_taggedTemplateLiteral(["essential tofu"]);
-
-  _templateObject42 = function _templateObject42() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject11() {
-  var data = diet_taggedTemplateLiteral(["extra-greasy slider"]);
-
-  _templateObject11 = function _templateObject11() {
-=======
-function _templateObject41() {
-  var data = diet_taggedTemplateLiteral(["fancy chocolate sculpture"]);
-
-  _templateObject41 = function _templateObject41() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject10() {
-  var data = diet_taggedTemplateLiteral(["Ol' Scratch's salad fork"]);
-
-  _templateObject10 = function _templateObject10() {
-=======
-function _templateObject40() {
-  var data = diet_taggedTemplateLiteral(["none"]);
-
-  _templateObject40 = function _templateObject40() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject9() {
-  var data = diet_taggedTemplateLiteral(["milk of magnesium"]);
-
-  _templateObject9 = function _templateObject9() {
-=======
-function _templateObject39() {
-  var data = diet_taggedTemplateLiteral(["chocolate disco ball"]);
-
-  _templateObject39 = function _templateObject39() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject8() {
-  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
-
-  _templateObject8 = function _templateObject8() {
-=======
-function _templateObject38() {
-  var data = diet_taggedTemplateLiteral(["Disco Bandit"]);
-
-  _templateObject38 = function _templateObject38() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject7() {
-  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
-
-  _templateObject7 = function _templateObject7() {
-=======
-function _templateObject37() {
-  var data = diet_taggedTemplateLiteral(["chocolate stolen accordion"]);
-
-  _templateObject37 = function _templateObject37() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject6() {
-  var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
-
-  _templateObject6 = function _templateObject6() {
-=======
-function _templateObject36() {
-  var data = diet_taggedTemplateLiteral(["Accordion Thief"]);
-
-  _templateObject36 = function _templateObject36() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject5() {
-  var data = diet_taggedTemplateLiteral(["Synthesis: Greed"]);
-
-  _templateObject5 = function _templateObject5() {
-=======
-function _templateObject35() {
-  var data = diet_taggedTemplateLiteral(["chocolate saucepan"]);
-
-  _templateObject35 = function _templateObject35() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _templateObject4() {
-  var data = diet_taggedTemplateLiteral(["Synthesis: Greed"]);
-
-  _templateObject4 = function _templateObject4() {
-=======
-function _templateObject34() {
-  var data = diet_taggedTemplateLiteral(["Sauceror"]);
-
-  _templateObject34 = function _templateObject34() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = diet_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _templateObject3() {
-  var data = diet_taggedTemplateLiteral(["octolus oculus, transdermal smoke patch, antimatter wad, voodoo snuff, blood-drive sticker"]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
-function diet_templateObject2() {
-  var data = diet_taggedTemplateLiteral(["voodoo snuff"]);
-
-  diet_templateObject2 = function _templateObject2() {
-=======
-function _templateObject33() {
-  var data = diet_taggedTemplateLiteral(["chocolate pasta spoon"]);
-
-  _templateObject33 = function _templateObject33() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject32() {
-  var data = diet_taggedTemplateLiteral(["Pastamancer"]);
-
-  _templateObject32 = function _templateObject32() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function diet_slicedToArray(arr, i) { return diet_arrayWithHoles(arr) || diet_iterableToArrayLimit(arr, i) || diet_unsupportedIterableToArray(arr, i) || diet_nonIterableRest(); }
-
-function diet_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function diet_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return diet_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return diet_arrayLikeToArray(o, minLen); }
-
-function diet_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function diet_iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function diet_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function diet_templateObject() {
-  var data = diet_taggedTemplateLiteral(["Special Seasoning"]);
-
-  diet_templateObject = function _templateObject() {
-=======
-function _templateObject31() {
-  var data = diet_taggedTemplateLiteral(["chocolate turtle totem"]);
-
-  _templateObject31 = function _templateObject31() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject30() {
-  var data = diet_taggedTemplateLiteral(["Turtle Tamer"]);
-
-  _templateObject30 = function _templateObject30() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject29() {
-  var data = diet_taggedTemplateLiteral(["chocolate seal-clubbing club"]);
-
-  _templateObject29 = function _templateObject29() {
->>>>>>> 6528995 (Phill told me to do this)
-    return data;
-  };
-
-  return data;
-}
-
-<<<<<<< HEAD
-function diet_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-
-
-
-var MPA = (0,dist.get)("valueOfAdventure");
-(0,external_kolmafia_.print)("Using adventure value ".concat(MPA, "."), "blue");
-
-function totalAmount(item) {
-  return shopAmount(item) + itemAmount(item);
-}
-
-function itemPriority() {
-  for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
-    items[_key] = arguments[_key];
-  }
-
   for (var _i = 0, _items = items; _i < _items.length; _i++) {
     var item = _items[_i];
     if ((0,dist.have)(item)) return item;
@@ -6164,8 +16815,252 @@ function _templateObject25() {
 
   _templateObject25 = function _templateObject25() {
     return data;
-  };
+=======
+exports.getMacroId = getMacroId;
 
+function itemOrNameToItem(itemOrName) {
+  return typeof itemOrName === "string" ? Item.get(itemOrName) : itemOrName;
+}
+
+function itemOrItemsBallsMacroName(itemOrItems) {
+  if (Array.isArray(itemOrItems)) {
+    return itemOrItems.map(itemOrItemsBallsMacroName).join(", ");
+  } else {
+    var item = itemOrNameToItem(itemOrItems);
+    return item.name;
+  }
+}
+
+function itemOrItemsBallsMacroPredicate(itemOrItems) {
+  if (Array.isArray(itemOrItems)) {
+    return itemOrItems.map(itemOrItemsBallsMacroName).join(" && ");
+  } else {
+    return "hascombatitem " + itemOrItems;
+  }
+}
+
+function skillOrNameToSkill(skillOrName) {
+  if (typeof skillOrName === "string") {
+    return Skill.get(skillOrName);
+  } else {
+    return skillOrName;
+  }
+}
+
+function skillBallsMacroName(skillOrName) {
+  var skill = skillOrNameToSkill(skillOrName);
+  return skill.name.match(/^[A-Za-z ]+$/) ? skill.name : kolmafia_1.toInt(skill);
+}
+/**
+ * BALLS macro builder for direct submission to KoL.
+ * Create a new macro with `new Macro()` and add steps using the instance methods.
+ * Uses a fluent interface, so each step returns the object for easy chaining of steps.
+ * Each method is also defined as a static method that creates a new Macro with only that step.
+ * For example, you can do `Macro.skill('Saucestorm').attack()`.
+ */
+
+
+var Macro =
+/** @class */
+function () {
+  function Macro() {
+    this.components = [];
+  }
+  /**
+   * Convert macro to string.
+   */
+
+
+  Macro.prototype.toString = function () {
+    return this.components.join(";");
+  };
+  /**
+   * Save a macro to a Mafia property for use in a consult script.
+   */
+
+
+  Macro.prototype.save = function () {
+    property_1.set(Macro.SAVED_MACRO_PROPERTY, this.toString());
+  };
+  /**
+   * Load a saved macro from the Mafia property.
+   */
+
+
+  Macro.load = function () {
+    var _a;
+
+    return (_a = new this()).step.apply(_a, property_1.get(Macro.SAVED_MACRO_PROPERTY).split(";"));
+  };
+  /**
+   * Clear the saved macro in the Mafia property.
+   */
+
+
+  Macro.clearSaved = function () {
+    kolmafia_1.removeProperty(Macro.SAVED_MACRO_PROPERTY);
+  };
+  /**
+   * Statefully add one or several steps to a macro.
+   * @param nextSteps The steps to add to the macro.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.step = function () {
+    var _a;
+
+    var nextSteps = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      nextSteps[_i] = arguments[_i];
+    }
+
+    var nextStepsStrings = (_a = []).concat.apply(_a, nextSteps.map(function (x) {
+      return x instanceof Macro ? x.components : [x];
+    }));
+
+    this.components = __spreadArrays(this.components, nextStepsStrings.filter(function (s) {
+      return s.length > 0;
+    }));
+    return this;
+  };
+  /**
+   * Statefully add one or several steps to a macro.
+   * @param nextSteps The steps to add to the macro.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.step = function () {
+    var _a;
+
+    var nextSteps = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      nextSteps[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).step.apply(_a, nextSteps);
+  };
+  /**
+   * Submit the built macro to KoL. Only works inside combat.
+   */
+
+
+  Macro.prototype.submit = function () {
+    var _final = this.toString();
+
+    return kolmafia_1.visitUrl("fight.php?action=macro&macrotext=" + kolmafia_1.urlEncode(_final), true, true);
+  };
+  /**
+   * Set this macro as a KoL native autoattack.
+   */
+
+
+  Macro.prototype.setAutoAttack = function () {
+    if (Macro.cachedMacroId === null) Macro.cachedMacroId = getMacroId();
+
+    if (kolmafia_1.getAutoAttack() === 99000000 + Macro.cachedMacroId && this.toString() === Macro.cachedAutoAttack) {
+      // This macro is already set. Don"t make the server request.
+      return;
+    }
+
+    kolmafia_1.visitUrl("account_combatmacros.php?macroid=" + Macro.cachedMacroId + "&name=" + kolmafia_1.urlEncode(MACRO_NAME) + "&macrotext=" + kolmafia_1.urlEncode(this.toString()) + "&action=save", true, true);
+    kolmafia_1.visitUrl("account.php?am=1&action=autoattack&value=" + (99000000 + Macro.cachedMacroId) + "&ajax=1");
+    Macro.cachedAutoAttack = this.toString();
+  };
+  /**
+   * Add an "abort" step to this macro.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.abort = function () {
+    return this.step("abort");
+  };
+  /**
+   * Create a new macro with an "abort" step.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.abort = function () {
+    return new this().abort();
+  };
+  /**
+   * Add an "if" statement to this macro.
+   * @param condition The BALLS condition for the if statement.
+   * @param ifTrue Continuation if the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.if_ = function (condition, ifTrue) {
+    return this.step("if " + condition).step(ifTrue).step("endif");
+  };
+  /**
+   * Create a new macro with an "if" statement.
+   * @param condition The BALLS condition for the if statement.
+   * @param ifTrue Continuation if the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.if_ = function (condition, ifTrue) {
+    return new this().if_(condition, ifTrue);
+  };
+  /**
+   * Add a "while" statement to this macro.
+   * @param condition The BALLS condition for the if statement.
+   * @param contents Loop to repeat while the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.while_ = function (condition, contents) {
+    return this.step("while " + condition).step(contents).step("endwhile");
+  };
+  /**
+   * Create a new macro with a "while" statement.
+   * @param condition The BALLS condition for the if statement.
+   * @param contents Loop to repeat while the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.while_ = function (condition, contents) {
+    return new this().while_(condition, contents);
+  };
+  /**
+   * Conditionally add a step to a macro based on a condition evaluated at the time of building the macro.
+   * @param condition The JS condition.
+   * @param ifTrue Continuation to add if the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.externalIf = function (condition, ifTrue) {
+    return condition ? this.step(ifTrue) : this;
+  };
+  /**
+   * Create a new macro with a condition evaluated at the time of building the macro.
+   * @param condition The JS condition.
+   * @param ifTrue Continuation to add if the condition is true.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.externalIf = function (condition, ifTrue) {
+    return new this().externalIf(condition, ifTrue);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+  };
+  /**
+   * Add a repeat step to the macro.
+   * @returns {Macro} This object itself.
+   */
+
+<<<<<<< HEAD
   return data;
 }
 
@@ -6184,8 +17079,37 @@ function _templateObject23() {
 
   _templateObject23 = function _templateObject23() {
     return data;
-  };
+=======
 
+  Macro.prototype.repeat = function () {
+    return this.step("repeat");
+  };
+  /**
+   * Add one or more skill cast steps to the macro.
+   * @param skills Skills to cast.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.skill = function () {
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return this.step.apply(this, skills.map(function (skill) {
+      return "skill " + skillBallsMacroName(skill);
+    }));
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+  };
+  /**
+   * Create a new macro with one or more skill cast steps.
+   * @param skills Skills to cast.
+   * @returns {Macro} This object itself.
+   */
+
+<<<<<<< HEAD
   return data;
 }
 
@@ -6234,8 +17158,63 @@ function _templateObject18() {
 
   _templateObject18 = function _templateObject18() {
     return data;
-  };
+=======
 
+  Macro.skill = function () {
+    var _a;
+
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).skill.apply(_a, skills);
+  };
+  /**
+   * Add one or more skill cast steps to the macro, where each step checks if you have the skill first.
+   * @param skills Skills to try casting.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.prototype.trySkill = function () {
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return this.step.apply(this, skills.map(function (skill) {
+      return Macro.if_("hasskill " + skillBallsMacroName(skill), Macro.skill(skill));
+    }));
+  };
+  /**
+   * Create a new macro with one or more skill cast steps, where each step checks if you have the skill first.
+   * @param skills Skills to try casting.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.trySkill = function () {
+    var _a;
+
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).trySkill.apply(_a, skills);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+  };
+  /**
+   * Add one or more skill-cast-and-repeat steps to the macro, where each step checks if you have the skill first.
+   * @param skills Skills to try repeatedly casting.
+   * @returns {Macro} This object itself.
+   */
+
+<<<<<<< HEAD
   return data;
 }
 
@@ -6254,8 +17233,27 @@ function _templateObject16() {
 
   _templateObject16 = function _templateObject16() {
     return data;
-  };
+=======
 
+  Macro.prototype.trySkillRepeat = function () {
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return this.step.apply(this, skills.map(function (skill) {
+      return Macro.if_("hasskill " + skillBallsMacroName(skill), Macro.skill(skill).repeat());
+    }));
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+  };
+  /**
+   * Create a new macro with one or more skill-cast-and-repeat steps, where each step checks if you have the skill first.
+   * @param skills Skills to try repeatedly casting.
+   * @returns {Macro} This object itself.
+   */
+
+<<<<<<< HEAD
   return data;
 }
 
@@ -6268,10 +17266,30 @@ function _templateObject15() {
 
   return data;
 }
+=======
+
+  Macro.trySkillRepeat = function () {
+    var _a;
+
+    var skills = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      skills[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).trySkillRepeat.apply(_a, skills);
+  };
+  /**
+   * Add one or more item steps to the macro.
+   * @param items Items to use. Pass a tuple [item1, item2] to funksling.
+   * @returns {Macro} This object itself.
+   */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function _templateObject14() {
   var data = diet_taggedTemplateLiteral(["astral pilsner"]);
 
+<<<<<<< HEAD
   _templateObject14 = function _templateObject14() {
     return data;
   };
@@ -6285,17 +17303,73 @@ function _templateObject13() {
   _templateObject13 = function _templateObject13() {
     return data;
   };
+=======
+  Macro.prototype.item = function () {
+    var items = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      items[_i] = arguments[_i];
+    }
+
+    return this.step.apply(this, items.map(function (itemOrItems) {
+      return "use " + itemOrItemsBallsMacroName(itemOrItems);
+    }));
+  };
+  /**
+   * Create a new macro with one or more item steps.
+   * @param items Items to use. Pass a tuple [item1, item2] to funksling.
+   * @returns {Macro} This object itself.
+   */
+
+
+  Macro.item = function () {
+    var _a;
+
+    var items = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      items[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).item.apply(_a, items);
+  };
+  /**
+   * Add one or more item steps to the macro, where each step checks to see if you have the item first.
+   * @param items Items to try using. Pass a tuple [item1, item2] to funksling.
+   * @returns {Macro} This object itself.
+   */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject12() {
   var data = diet_taggedTemplateLiteral(["mime army shotglass"]);
+=======
+  Macro.prototype.tryItem = function () {
+    var items = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      items[_i] = arguments[_i];
+    }
+
+    return this.step.apply(this, items.map(function (item) {
+      return Macro.if_(itemOrItemsBallsMacroPredicate(item), "use " + itemOrItemsBallsMacroName(item));
+    }));
+  };
+  /**
+   * Create a new macro with one or more item steps, where each step checks to see if you have the item first.
+   * @param items Items to try using. Pass a tuple [item1, item2] to funksling.
+   * @returns {Macro} This object itself.
+   */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject12 = function _templateObject12() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
 
@@ -6305,6 +17379,23 @@ function _templateObject11() {
   _templateObject11 = function _templateObject11() {
     return data;
   };
+=======
+  Macro.tryItem = function () {
+    var _a;
+
+    var items = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      items[_i] = arguments[_i];
+    }
+
+    return (_a = new this()).tryItem.apply(_a, items);
+  };
+  /**
+   * Add an attack step to the macro.
+   * @returns {Macro} This object itself.
+   */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -6312,9 +17403,19 @@ function _templateObject11() {
 function _templateObject10() {
   var data = diet_taggedTemplateLiteral(["Ol' Scratch's salad fork"]);
 
+<<<<<<< HEAD
   _templateObject10 = function _templateObject10() {
     return data;
   };
+=======
+  Macro.prototype.attack = function () {
+    return this.step("attack");
+  };
+  /**
+   * Create a new macro with an attack step.
+   * @returns {Macro} This object itself.
+   */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 >>>>>>> 6528995 (Phill told me to do this)
@@ -6323,6 +17424,7 @@ function _templateObject10() {
 function familiar_templateObject25() {
   var data = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"]);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   familiar_templateObject25 = function _templateObject25() {
     return data;
@@ -6352,12 +17454,79 @@ function _templateObject9() {
   _templateObject9 = function _templateObject9() {
     return data;
   };
+=======
+  Macro.attack = function () {
+    return new this().attack();
+  };
+
+  Macro.SAVED_MACRO_PROPERTY = "libram_savedMacro";
+  Macro.cachedMacroId = null;
+  Macro.cachedAutoAttack = null;
+  return Macro;
+}();
+
+exports.Macro = Macro;
+/**
+ * Adventure in a location and handle all combats with a given macro.
+ * To use this function you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
+ * See examples/consult.ts for an example.
+ *
+ * @category Combat
+ * @param loc Location to adventure in.
+ * @param macro Macro to execute.
+ */
+
+function adventureMacro(loc, macro) {
+  macro.save();
+
+  try {
+    kolmafia_1.adv1(loc, 0, "");
+
+    while (kolmafia_1.inMultiFight()) {
+      kolmafia_1.runCombat();
+    }
+
+    if (kolmafia_1.choiceFollowsFight()) kolmafia_1.visitUrl("choice.php");
+  } finally {
+    Macro.clearSaved();
+  }
+}
+
+exports.adventureMacro = adventureMacro;
+/**
+ * Adventure in a location and handle all combats with a given autoattack and manual macro.
+ * To use the nextMacro parameter you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
+ * See examples/consult.ts for an example.
+ *
+ * @category Combat
+ * @param loc Location to adventure in.
+ * @param autoMacro Macro to execute via KoL autoattack.
+ * @param nextMacro Macro to execute manually after autoattack completes.
+ */
+
+function adventureMacroAuto(loc, autoMacro, nextMacro) {
+  if (nextMacro === void 0) {
+    nextMacro = null;
+  }
+
+  nextMacro = nextMacro !== null && nextMacro !== void 0 ? nextMacro : Macro.abort();
+  autoMacro.setAutoAttack();
+  adventureMacro(loc, nextMacro);
+}
+
+exports.adventureMacroAuto = adventureMacroAuto;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject8() {
   var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
+=======
+/***/ 3021:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject8 = function _templateObject8() {
     return data;
@@ -6366,6 +17535,7 @@ function _templateObject8() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject7() {
   var data = diet_taggedTemplateLiteral(["Hunger&trade; sauce"]);
 
@@ -6389,8 +17559,36 @@ function _templateObject6() {
   _templateObject6 = function _templateObject6() {
 >>>>>>> 6528995 (Phill told me to do this)
     return data;
+=======
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.error = exports.warn = exports.info = exports.log = void 0;
+
+var kolmafia_1 = __webpack_require__(1664); // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+
+var logColor = function logColor(color) {
+  return function () {
+    var args = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+
+    var output = args.map(function (x) {
+      return x.toString();
+    }).join(" ");
+
+    if (color) {
+      kolmafia_1.print(output, color);
+    } else {
+      kolmafia_1.print(output);
+    }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   };
 
+<<<<<<< HEAD
   return data;
 }
 
@@ -6480,17 +17678,138 @@ function familiar_templateObject17() {
 
 function familiar_templateObject16() {
   var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
+=======
+exports.log = logColor();
+exports.info = logColor("blue");
+exports.warn = logColor("red");
+exports.error = logColor("red");
+
+/***/ }),
+
+/***/ 5944:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function get() {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __exportStar = this && this.__exportStar || function (m, exports) {
+  for (var p in m) {
+    if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+  }
+};
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.set = exports.get = exports.property = exports.console = void 0;
+
+__webpack_require__(2319);
+
+__exportStar(__webpack_require__(6041), exports);
+
+__exportStar(__webpack_require__(8648), exports);
+
+__exportStar(__webpack_require__(2017), exports);
+
+__exportStar(__webpack_require__(8289), exports);
+
+__exportStar(__webpack_require__(610), exports);
+
+__exportStar(__webpack_require__(5175), exports);
+
+__exportStar(__webpack_require__(7687), exports);
+
+__exportStar(__webpack_require__(9150), exports);
+
+exports.console = __importStar(__webpack_require__(3021));
+exports.property = __importStar(__webpack_require__(3579));
+
+var property_1 = __webpack_require__(3579);
+
+Object.defineProperty(exports, "get", ({
+  enumerable: true,
+  get: function get() {
+    return property_1.get;
+  }
+}));
+Object.defineProperty(exports, "set", ({
+  enumerable: true,
+  get: function get() {
+    return property_1.set;
+  }
+}));
+
+/***/ }),
+
+/***/ 2017:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+/** @module GeneralLibrary */
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   familiar_templateObject16 = function _templateObject16() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.uneffect = exports.getAverageAdventures = exports.getAverage = exports.noneToNull = exports.canUse = exports.getBanishedMonsters = exports.getZapGroup = exports.getFoldGroup = exports.isCurrentFamiliar = exports.getWandererChance = exports.getFamiliarWandererChance = exports.getKramcoWandererChance = exports.isWandererNow = exports.isVoteWandererNow = exports.haveWandererCounter = exports.getTotalFamiliarWanderers = exports.haveCounter = exports.Wanderer = exports.haveInCampground = exports.have = exports.getRemainingSpleen = exports.getRemainingStomach = exports.getRemainingLiver = exports.getMonsterLocations = exports.canRememberSong = exports.getSongCount = exports.getActiveSongs = exports.getActiveEffects = exports.isSong = exports.getSongLimit = void 0;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function familiar_templateObject15() {
   var data = familiar_taggedTemplateLiteral(["Pocket Professor"]);
 
+<<<<<<< HEAD
   familiar_templateObject15 = function _templateObject15() {
     return data;
   };
@@ -6701,9 +18020,368 @@ function propTrue(prop) {
     return prop;
   } else {
     return (0,dist.get)(prop);
+=======
+var template_string_1 = __webpack_require__(9150);
+
+var property_1 = __webpack_require__(3579);
+
+var utils_1 = __webpack_require__(1115);
+/**
+ * Returns the current maximum Accordion Thief songs the player can have in their head
+ *
+ * @category General
+ */
+
+
+function getSongLimit() {
+  return 3 + (kolmafia_1.booleanModifier("Four Songs") ? 1 : 0) + kolmafia_1.numericModifier("Additional Song");
+}
+
+exports.getSongLimit = getSongLimit;
+/**
+ * Return whether the Skill or Effect provided is an Accordion Thief song
+ *
+ * @category General
+ * @param skillOrEffect The Skill or Effect
+ */
+
+function isSong(skillOrEffect) {
+  var skill = skillOrEffect instanceof Effect ? kolmafia_1.toSkill(skillOrEffect) : skillOrEffect;
+  return skill["class"] === template_string_1.$class(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Accordion Thief"], ["Accordion Thief"]))) && skill.buff;
+}
+
+exports.isSong = isSong;
+/**
+ * List all active Effects
+ *
+ * @category General
+ */
+
+function getActiveEffects() {
+  return Object.keys(kolmafia_1.myEffects()).map(function (e) {
+    return Effect.get(e);
+  });
+}
+
+exports.getActiveEffects = getActiveEffects;
+/**
+ * List currently active Accordion Thief songs
+ *
+ * @category General
+ */
+
+function getActiveSongs() {
+  return getActiveEffects().filter(isSong);
+}
+
+exports.getActiveSongs = getActiveSongs;
+/**
+ * List number of active Accordion Thief songs
+ *
+ * @category General
+ */
+
+function getSongCount() {
+  return getActiveSongs().length;
+}
+
+exports.getSongCount = getSongCount;
+/**
+ * Returns true if the player can remember another Accordion Thief song
+ *
+ * @category General
+ * @param quantity Number of songs to test the space for
+ */
+
+function canRememberSong(quantity) {
+  if (quantity === void 0) {
+    quantity = 1;
+  }
+
+  return getSongLimit() - getSongCount() >= quantity;
+}
+
+exports.canRememberSong = canRememberSong;
+/**
+ * Return the locations in which the given monster can be encountered naturally
+ *
+ * @category General
+ * @param monster Monster to find
+ */
+
+function getMonsterLocations(monster) {
+  return Location.all().filter(function (location) {
+    return monster.name in kolmafia_1.appearanceRates(location);
+  });
+}
+
+exports.getMonsterLocations = getMonsterLocations;
+/**
+ * Return the player's remaining liver space
+ *
+ * @category General
+ */
+
+function getRemainingLiver() {
+  return kolmafia_1.inebrietyLimit() - kolmafia_1.myInebriety();
+}
+
+exports.getRemainingLiver = getRemainingLiver;
+/**
+ * Return the player's remaining stomach space
+ *
+ * @category General
+ */
+
+function getRemainingStomach() {
+  return kolmafia_1.fullnessLimit() - kolmafia_1.myFullness();
+}
+
+exports.getRemainingStomach = getRemainingStomach;
+/**
+ * Return the player's remaining spleen space
+ *
+ * @category General
+ */
+
+function getRemainingSpleen() {
+  return kolmafia_1.spleenLimit() - kolmafia_1.mySpleenUse();
+}
+
+exports.getRemainingSpleen = getRemainingSpleen;
+/**
+ * Return whether the player "has" any entity which one could feasibly "have".
+ *
+ * @category General
+ * @param thing Thing to check
+ * @param quantity Number to check that the player has
+ */
+
+function have(thing, quantity) {
+  if (quantity === void 0) {
+    quantity = 1;
+  }
+
+  if (thing instanceof Effect) {
+    return kolmafia_1.haveEffect(thing) >= quantity;
+  }
+
+  if (thing instanceof Familiar) {
+    return kolmafia_1.haveFamiliar(thing);
+  }
+
+  if (thing instanceof Item) {
+    return kolmafia_1.availableAmount(thing) >= quantity;
+  }
+
+  if (thing instanceof Servant) {
+    return kolmafia_1.haveServant(thing);
+  }
+
+  if (thing instanceof Skill) {
+    return kolmafia_1.haveSkill(thing);
+  }
+
+  if (thing instanceof Thrall) {
+    var thrall = kolmafia_1.myThrall();
+    return thrall.id === thing.id && thrall.level >= quantity;
+  }
+
+  return false;
+}
+
+exports.have = have;
+/**
+ * Return whether an item is in the player's campground
+ *
+ * @category General
+ * @param item The item mafia uses to represent the campground item
+ */
+
+function haveInCampground(item) {
+  return Object.keys(kolmafia_1.getCampground()).map(function (i) {
+    return Item.get(i);
+  }).includes(item);
+}
+
+exports.haveInCampground = haveInCampground;
+var Wanderer;
+
+(function (Wanderer) {
+  Wanderer["Digitize"] = "Digitize Monster";
+  Wanderer["Enamorang"] = "Enamorang Monster";
+  Wanderer["Familiar"] = "Familiar";
+  Wanderer["Holiday"] = "Holiday Monster";
+  Wanderer["Kramco"] = "Kramco";
+  Wanderer["Nemesis"] = "Nemesis Assassin";
+  Wanderer["Portscan"] = "portscan.edu";
+  Wanderer["Romantic"] = "Romantic Monster";
+  Wanderer["Vote"] = "Vote Monster";
+})(Wanderer = exports.Wanderer || (exports.Wanderer = {}));
+
+var deterministicWanderers = [Wanderer.Digitize, Wanderer.Portscan];
+/**
+ * Return whether the player has the queried counter
+ *
+ * @category General
+ */
+
+function haveCounter(counterName, minTurns, maxTurns) {
+  if (minTurns === void 0) {
+    minTurns = 0;
+  }
+
+  if (maxTurns === void 0) {
+    maxTurns = 500;
+  }
+
+  return kolmafia_1.getCounters(counterName, minTurns, maxTurns) === counterName;
+}
+
+exports.haveCounter = haveCounter;
+/**
+ * Returns the player's total number of Artistic Goth Kid and/or Mini-Hipster
+ * wanderers encountered today
+ *
+ * @category Wanderers
+ */
+
+function getTotalFamiliarWanderers() {
+  var hipsterFights = property_1.get("_hipsterAdv");
+  var gothFights = property_1.get("_gothKidFights");
+  return hipsterFights + gothFights;
+}
+
+exports.getTotalFamiliarWanderers = getTotalFamiliarWanderers;
+/**
+ * Return whether the player has the queried wandering counter
+ *
+ * @category Wanderers
+ */
+
+function haveWandererCounter(wanderer) {
+  if (deterministicWanderers.includes(wanderer)) {
+    return haveCounter(wanderer);
+  }
+
+  var begin = wanderer + " window begin";
+  var end = wanderer + " window end";
+  return haveCounter(begin) || haveCounter(end);
+}
+
+exports.haveWandererCounter = haveWandererCounter;
+/**
+ * Returns whether the player will encounter a vote wanderer on the next turn,
+ * providing an "I Voted!" sticker is equipped.
+ *
+ * @category Wanderers
+ */
+
+function isVoteWandererNow() {
+  return kolmafia_1.totalTurnsPlayed() % 11 == 1;
+}
+
+exports.isVoteWandererNow = isVoteWandererNow;
+/**
+ * Tells us whether we can expect a given wanderer now. Behaves differently
+ * for different types of wanderer.
+ *
+ * - For deterministic wanderers, return whether the player will encounter
+ *   the queried wanderer on the next turn
+ *
+ * - For variable wanderers (window), return whether the player is within
+ *   an encounter window for the queried wanderer
+ *
+ * - For variable wanderers (chance per turn), returns true unless the player
+ *   has exhausted the number of wanderers possible
+ *
+ * @category Wanderers
+ * @param wanderer Wanderer to check
+ */
+
+function isWandererNow(wanderer) {
+  if (deterministicWanderers.includes(wanderer)) {
+    return haveCounter(wanderer, 0, 0);
+  }
+
+  if (wanderer == Wanderer.Kramco) {
+    return true;
+  }
+
+  if (wanderer === Wanderer.Vote) {
+    return isVoteWandererNow();
+  }
+
+  if (wanderer === Wanderer.Familiar) {
+    return getTotalFamiliarWanderers() < 7;
+  }
+
+  var begin = wanderer + " window begin";
+  var end = wanderer + " window end";
+  return !haveCounter(begin, 1) && haveCounter(end);
+}
+
+exports.isWandererNow = isWandererNow;
+/**
+ * Returns the float chance the player will encounter a sausage goblin on the
+ * next turn, providing the Kramco Sausage-o-Matic is equipped.
+ *
+ * @category Wanderers
+ */
+
+function getKramcoWandererChance() {
+  var fights = property_1.get("_sausageFights");
+  var lastFight = property_1.get("_lastSausageMonsterTurn");
+  var totalTurns = kolmafia_1.totalTurnsPlayed();
+
+  if (fights < 1) {
+    return lastFight === totalTurns && kolmafia_1.myTurncount() < 1 ? 0.5 : 1.0;
+  }
+
+  var turnsSinceLastFight = totalTurns - lastFight;
+  return Math.min(1.0, (turnsSinceLastFight + 1) / (5 + fights * 3 + Math.pow(Math.max(0, fights - 5), 3)));
+}
+
+exports.getKramcoWandererChance = getKramcoWandererChance;
+/**
+ * Returns the float chance the player will encounter an Artistic Goth Kid or
+ * Mini-Hipster wanderer on the next turn, providing a familiar is equipped.
+ *
+ * NOTE: You must complete one combat with the Artistic Goth Kid before you
+ * can encounter any wanderers. Consequently,ƒ the first combat with the
+ * Artist Goth Kid is effectively 0% chance to encounter a wanderer.
+ *
+ * @category Wanderers
+ */
+
+function getFamiliarWandererChance() {
+  var totalFights = getTotalFamiliarWanderers();
+  var probability = [0.5, 0.4, 0.3, 0.2];
+
+  if (totalFights < 4) {
+    return probability[totalFights];
+  }
+
+  return totalFights > 7 ? 0.0 : 0.1;
+}
+
+exports.getFamiliarWandererChance = getFamiliarWandererChance;
+/**
+ * Returns the float chance the player will encounter the queried wanderer
+ * on the next turn.
+ *
+ * @category Wanderers
+ * @param wanderer Wanderer to check
+ */
+
+function getWandererChance(wanderer) {
+  if (deterministicWanderers.includes(wanderer)) {
+    return haveCounter(wanderer, 0, 0) ? 1.0 : 0.0;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   }
 }
 
+<<<<<<< HEAD
 function useIfUnused(item, prop, maxPrice) {
   if (!propTrue(prop)) {
     if ((0,external_kolmafia_.mallPrice)(item) <= maxPrice) {
@@ -6846,6 +18524,207 @@ function meatFamiliar() {
   } else {
     var _iterator = familiar_createForOfIteratorHelper((0,dist.$familiars)(familiar_templateObject4())),
         _step;
+=======
+  if (wanderer === Wanderer.Kramco) {
+    getKramcoWandererChance();
+  }
+
+  if (wanderer === Wanderer.Vote) {
+    return isVoteWandererNow() ? 1.0 : 0.0;
+  }
+
+  if (wanderer === Wanderer.Familiar) {
+    getFamiliarWandererChance();
+  }
+
+  var begin = wanderer + " window begin";
+  var end = wanderer + " window end";
+
+  if (haveCounter(begin, 1, 100)) {
+    return 0.0;
+  }
+
+  var counters = property_1.get("relayCounters");
+  var re = new RegExp("(\\d+):" + end);
+  var matches = counters.match(re);
+
+  if (matches && matches.length === 2) {
+    var window = Number.parseInt(matches[1]) - kolmafia_1.myTurncount();
+    return 1.0 / window;
+  }
+
+  return 0.0;
+}
+
+exports.getWandererChance = getWandererChance;
+/**
+ * Returns true if the player's current familiar is equal to the one supplied
+ *
+ * @category General
+ * @param familiar Familiar to check
+ */
+
+function isCurrentFamiliar(familiar) {
+  return kolmafia_1.myFamiliar() === familiar;
+}
+
+exports.isCurrentFamiliar = isCurrentFamiliar;
+/**
+ * Returns the fold group (if any) of which the given item is a part
+ *
+ * @category General
+ * @param item Item that is part of the required fold group
+ */
+
+function getFoldGroup(item) {
+  return Object.entries(kolmafia_1.getRelated(item, "fold")).sort(function (_a, _b) {
+    var a = _a[1];
+    var b = _b[1];
+    return a - b;
+  }).map(function (_a) {
+    var i = _a[0];
+    return Item.get(i);
+  });
+}
+
+exports.getFoldGroup = getFoldGroup;
+/**
+ * Returns the zap group (if any) of which the given item is a part
+ *
+ * @category General
+ * @param item Item that is part of the required zap group
+ */
+
+function getZapGroup(item) {
+  return Object.keys(kolmafia_1.getRelated(item, "zap")).map(function (i) {
+    return Item.get(i);
+  });
+}
+
+exports.getZapGroup = getZapGroup;
+/**
+ * Get a map of banished monsters keyed by what banished them
+ *
+ * @category General
+ */
+
+function getBanishedMonsters() {
+  var banishes = utils_1.chunk(property_1.get("banishedMonsters").split(":"), 3);
+  var result = new Map();
+
+  for (var _i = 0, banishes_1 = banishes; _i < banishes_1.length; _i++) {
+    var _a = banishes_1[_i],
+        foe = _a[0],
+        banisher = _a[1];
+    if (foe === undefined || banisher === undefined) break; // toItem doesn"t error if the item doesn"t exist, so we have to use that.
+
+    var banisherItem = kolmafia_1.toItem(banisher);
+    var banisherObject = [Item.get("none"), null].includes(banisherItem) ? Skill.get(banisher) : banisherItem;
+    result.set(banisherObject, Monster.get(foe));
+  }
+
+  return result;
+}
+
+exports.getBanishedMonsters = getBanishedMonsters;
+/**
+ * Returns true if the item is usable
+ *
+ * This function will be an ongoing work in progress
+ *
+ * @param item Item to check
+ */
+
+function canUse(item) {
+  var path = kolmafia_1.myPath();
+
+  if (path !== "Nuclear Autumn") {
+    if (template_string_1.$items(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Shrieking Weasel holo-record, Power-Guy 2000 holo-record, Lucky Strikes holo-record, EMD holo-record, Superdrifter holo-record, The Pigs holo-record, Drunk Uncles holo-record"], ["Shrieking Weasel holo-record, Power-Guy 2000 holo-record, Lucky Strikes holo-record, EMD holo-record, Superdrifter holo-record, The Pigs holo-record, Drunk Uncles holo-record"]))).includes(item)) {
+      return false;
+    }
+  }
+
+  if (path === "G-Lover") {
+    if (!item.name.toLowerCase().includes("g")) return false;
+  }
+
+  if (path === "Bees Hate You") {
+    if (item.name.toLowerCase().includes("b")) return false;
+  }
+
+  return true;
+}
+
+exports.canUse = canUse;
+/**
+ * Turn KoLmafia `none`s to JavaScript `null`s
+ *
+ * @param thing Thing that can have a mafia "none" value
+ */
+
+function noneToNull(thing) {
+  if (thing instanceof Effect) {
+    return thing === Effect.get("none") ? null : thing;
+  }
+
+  if (thing instanceof Familiar) {
+    return thing === Familiar.get("none") ? null : thing;
+  }
+
+  if (thing instanceof Item) {
+    return thing === Item.get("none") ? null : thing;
+  }
+
+  return thing;
+}
+
+exports.noneToNull = noneToNull;
+/**
+ * Return the average value from the sort of range that KoLmafia encodes as a string
+ *
+ * @param range KoLmafia-style range string
+ */
+
+function getAverage(range) {
+  var _a;
+
+  if (range.indexOf("-") < 0) return Number(range);
+
+  var _b = (_a = range.match(/(-?[0-9]+)-(-?[0-9]+)/)) !== null && _a !== void 0 ? _a : ["0", "0", "0"],
+      lower = _b[1],
+      upper = _b[2];
+
+  return (Number(lower) + Number(upper)) / 2;
+}
+
+exports.getAverage = getAverage;
+/**
+ * Return average adventures expected from consuming an item
+ *
+ * If item is not a consumable, will just return "0".
+ *
+ * @param item Consumable item
+ */
+
+function getAverageAdventures(item) {
+  return getAverage(item.adventures);
+}
+
+exports.getAverageAdventures = getAverageAdventures;
+/**
+ * Remove an effect
+ *
+ * @category General
+ * @param effect Effect to remove
+ */
+
+function uneffect(effect) {
+  return kolmafia_1.cliExecute("uneffect " + effect.name);
+}
+
+exports.uneffect = uneffect;
+var templateObject_1, templateObject_2;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -6859,8 +18738,13 @@ function meatFamiliar() {
     }
   }
 
+<<<<<<< HEAD
   throw new Error("No good Barf familiars!");
 }
+=======
+/***/ 8289:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function myFamiliarWeight() {
   var familiar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -6918,6 +18802,7 @@ var rotatingFamiliars = {
 };
 var savedMimicDropValue = null;
 
+<<<<<<< HEAD
 function mimicDropValue() {
   var _savedMimicDropValue;
 
@@ -7041,6 +18926,161 @@ var StashManager = /*#__PURE__*/function () {
         }
       }
     }
+=======
+var __assign = this && this.__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+var __spreadArrays = this && this.__spreadArrays || function () {
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
+    s += arguments[i].length;
+  }
+
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
+    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
+      r[k] = a[j];
+    }
+  }
+
+  return r;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.maximizeCached = exports.setDefaultMaximizeOptions = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var template_string_1 = __webpack_require__(9150);
+
+var defaultMaximizeOptions = {
+  updateOnFamiliarChange: true,
+  updateOnStatThreshold: 10,
+  forceEquip: [],
+  preventEquip: [],
+  bonusEquip: new Map()
+};
+/**
+ *
+ * @param options Default options for each maximizer run.
+ * @param options.updateOnFamiliarChange Re-run the maximizer if familiar has changed. Default true.
+ * @param options.updateOnStatThreshold Re-run the maximizer if a stat has newly passed an even multiple
+ * of this number (for new equip requirements), or null otherwise. Default 10.
+ * @param options.forceEquip Equipment to force-equip ("equip X").
+ * @param options.preventEquip Equipment to prevent equipping ("-equip X").
+ * @param options.bonusEquip Equipment to apply a bonus to ("200 bonus X").
+ */
+
+function setDefaultMaximizeOptions(options) {
+  Object.assign(defaultMaximizeOptions, options);
+}
+
+exports.setDefaultMaximizeOptions = setDefaultMaximizeOptions;
+var cachedObjective = null;
+var cachedStats = [0, 0, 0];
+var cachedFamiliar = null;
+/**
+ * Run the maximizer, but only if the objective and certain pieces of game state haven't changed since it was last run.
+ * @param objectives Objectives to maximize for.
+ * @param options Options for this run of the maximizer.
+ * @param options.updateOnFamiliarChange Re-run the maximizer if familiar has changed. Default true.
+ * @param options.updateOnStatThreshold Re-run the maximizer if a stat has newly passed an even multiple
+ * of this number (for new equip requirements), or null otherwise. Default 10.
+ * @param options.forceEquip Equipment to force-equip ("equip X").
+ * @param options.preventEquip Equipment to prevent equipping ("-equip X").
+ * @param options.bonusEquip Equipment to apply a bonus to ("200 bonus X").
+ */
+
+function maximizeCached(objectives, options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  var _a = __assign(__assign({}, defaultMaximizeOptions), options),
+      updateOnFamiliarChange = _a.updateOnFamiliarChange,
+      updateOnStatThreshold = _a.updateOnStatThreshold,
+      forceEquip = _a.forceEquip,
+      preventEquip = _a.preventEquip,
+      bonusEquip = _a.bonusEquip;
+
+  var objective = __spreadArrays(objectives, forceEquip.map(function (item) {
+    return "equip " + item;
+  }), preventEquip.map(function (item) {
+    return "-equip " + item;
+  }), Array.from(bonusEquip.entries()).map(function (_a) {
+    var item = _a[0],
+        bonus = _a[1];
+    return bonus + " bonus " + item;
+  })).join(", ");
+
+  var stats = template_string_1.$stats(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Muscle, Mysticality, Moxie"], ["Muscle, Mysticality, Moxie"]))).map(function (stat) {
+    return kolmafia_1.myBasestat(stat);
+  }); // The highest known equip requirement is 300, so don't check after that.
+
+  var statsChanged = updateOnStatThreshold !== null && stats.some(function (newStat, i) {
+    return newStat > cachedStats[i] && cachedStats[i] < 300 && newStat % updateOnStatThreshold === 0;
+  });
+  var familiarChanged = updateOnFamiliarChange && cachedFamiliar !== kolmafia_1.myFamiliar();
+
+  if (statsChanged || familiarChanged || objective !== cachedObjective) {
+    kolmafia_1.maximize(objective, false);
+  }
+
+  cachedFamiliar = kolmafia_1.myFamiliar();
+  cachedStats = stats;
+  cachedObjective = objective;
+}
+
+exports.maximizeCached = maximizeCached;
+var templateObject_1;
+
+/***/ }),
+
+/***/ 610:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     this.clanIdOrName = clanIdOrName;
   }
@@ -7050,14 +19090,38 @@ var StashManager = /*#__PURE__*/function () {
     value: function take() {
       var _this = this;
 
+<<<<<<< HEAD
       for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
         items[_key] = arguments[_key];
       }
+=======
+var __assign = this && this.__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.Mood = exports.MagicalSausages = exports.OscusSoda = exports.MpSource = void 0;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
       withClan(this.clanIdOrName, function () {
         var _iterator = stash_createForOfIteratorHelper(items),
             _step;
 
+<<<<<<< HEAD
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var item = _step.value;
@@ -7438,10 +19502,333 @@ function familiar_templateObject15() {
   familiar_templateObject15 = function _templateObject15() {
     return data;
   };
+=======
+var lib_1 = __webpack_require__(2017);
+
+var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+var utils_1 = __webpack_require__(1115);
+
+var MpSource =
+/** @class */
+function () {
+  function MpSource() {}
+
+  MpSource.prototype.usesRemaining = function () {
+    return null;
+  };
+
+  MpSource.prototype.availableMpMax = function () {
+    return this.availableMpMin();
+  };
+
+  return MpSource;
+}();
+
+exports.MpSource = MpSource;
+
+var OscusSoda =
+/** @class */
+function (_super) {
+  __extends(OscusSoda, _super);
+
+  function OscusSoda() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  OscusSoda.prototype.available = function () {
+    return lib_1.have(template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Oscus's neverending soda"], ["Oscus's neverending soda"]))));
+  };
+
+  OscusSoda.prototype.usesRemaining = function () {
+    return property_1.get("oscusSodaUsed") ? 0 : 1;
+  };
+
+  OscusSoda.prototype.availableMpMin = function () {
+    return this.available() ? 200 : 0;
+  };
+
+  OscusSoda.prototype.availableMpMax = function () {
+    return this.available() ? 300 : 0;
+  };
+
+  OscusSoda.prototype.execute = function () {
+    kolmafia_1.use(template_string_1.$item(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Oscus's neverending soda"], ["Oscus's neverending soda"]))));
+  };
+
+  OscusSoda.instance = new OscusSoda();
+  return OscusSoda;
+}(MpSource);
+
+exports.OscusSoda = OscusSoda;
+
+var MagicalSausages =
+/** @class */
+function (_super) {
+  __extends(MagicalSausages, _super);
+
+  function MagicalSausages() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  MagicalSausages.prototype.usesRemaining = function () {
+    return 23 - property_1.get("_sausagesEaten");
+  };
+
+  MagicalSausages.prototype.availableMpMin = function () {
+    var maxSausages = Math.min(23 - property_1.get("_sausagesEaten"), kolmafia_1.itemAmount(template_string_1.$item(templateObject_3 || (templateObject_3 = __makeTemplateObject(["magical sausage"], ["magical sausage"])))) + kolmafia_1.itemAmount(template_string_1.$item(templateObject_4 || (templateObject_4 = __makeTemplateObject(["magical sausage casing"], ["magical sausage casing"])))));
+    return Math.min(kolmafia_1.myMaxmp(), 999) * maxSausages;
+  };
+
+  MagicalSausages.prototype.execute = function () {
+    var mpSpaceAvailable = kolmafia_1.myMaxmp() - kolmafia_1.myMp();
+    if (mpSpaceAvailable < 700) return;
+    var maxSausages = Math.min(23 - property_1.get("_sausagesEaten"), kolmafia_1.itemAmount(template_string_1.$item(templateObject_5 || (templateObject_5 = __makeTemplateObject(["magical sausage"], ["magical sausage"])))) + kolmafia_1.itemAmount(template_string_1.$item(templateObject_6 || (templateObject_6 = __makeTemplateObject(["magical sausage casing"], ["magical sausage casing"])))), Math.floor((kolmafia_1.myMaxmp() - kolmafia_1.myMp()) / Math.min(kolmafia_1.myMaxmp() - kolmafia_1.myMp(), 999)));
+    kolmafia_1.retrieveItem(maxSausages, template_string_1.$item(templateObject_7 || (templateObject_7 = __makeTemplateObject(["magical sausage"], ["magical sausage"]))));
+    kolmafia_1.eat(maxSausages, template_string_1.$item(templateObject_8 || (templateObject_8 = __makeTemplateObject(["magical sausage"], ["magical sausage"]))));
+  };
+
+  MagicalSausages.instance = new MagicalSausages();
+  return MagicalSausages;
+}(MpSource);
+
+exports.MagicalSausages = MagicalSausages;
+
+var MoodElement =
+/** @class */
+function () {
+  function MoodElement() {}
+
+  MoodElement.prototype.mpCostPerTurn = function () {
+    return 0;
+  };
+
+  MoodElement.prototype.turnIncrement = function () {
+    return 1;
+  };
+
+  return MoodElement;
+}();
+
+var SkillMoodElement =
+/** @class */
+function (_super) {
+  __extends(SkillMoodElement, _super);
+
+  function SkillMoodElement(skill) {
+    var _this = _super.call(this) || this;
+
+    _this.skill = skill;
+    return _this;
+  }
+
+  SkillMoodElement.prototype.mpCostPerTurn = function () {
+    var turns = kolmafia_1.turnsPerCast(this.skill);
+    return turns > 0 ? kolmafia_1.mpCost(this.skill) / turns : 0;
+  };
+
+  SkillMoodElement.prototype.turnIncrement = function () {
+    return kolmafia_1.turnsPerCast(this.skill);
+  };
+
+  SkillMoodElement.prototype.execute = function (mood, ensureTurns) {
+    var effect = kolmafia_1.toEffect(this.skill);
+    var initialTurns = kolmafia_1.haveEffect(effect);
+    if (!kolmafia_1.haveSkill(this.skill)) return false;
+    if (initialTurns >= ensureTurns) return true;
+    var oldRemainingCasts = -1;
+    var remainingCasts = Math.ceil((ensureTurns - kolmafia_1.haveEffect(effect)) / kolmafia_1.turnsPerCast(this.skill));
+
+    while (remainingCasts > 0 && oldRemainingCasts !== remainingCasts) {
+      var maxCasts = void 0;
+
+      if (kolmafia_1.hpCost(this.skill) > 0) {
+        // FIXME: restore HP
+        maxCasts = Math.floor(kolmafia_1.myHp() / kolmafia_1.hpCost(this.skill));
+      } else {
+        var cost = kolmafia_1.mpCost(this.skill);
+        maxCasts = Math.floor(kolmafia_1.myMp() / cost);
+
+        if (maxCasts === 0) {
+          mood.moreMp(cost);
+          maxCasts = Math.floor(kolmafia_1.myMp() / cost);
+        }
+      }
+
+      var casts = utils_1.clamp(remainingCasts, 0, Math.min(100, maxCasts));
+      kolmafia_1.useSkill(casts, this.skill);
+      oldRemainingCasts = remainingCasts;
+      remainingCasts = Math.ceil((ensureTurns - kolmafia_1.haveEffect(effect)) / kolmafia_1.turnsPerCast(this.skill));
+    }
+
+    return kolmafia_1.haveEffect(effect) > ensureTurns;
+  };
+
+  return SkillMoodElement;
+}(MoodElement);
+
+var PotionMoodElement =
+/** @class */
+function (_super) {
+  __extends(PotionMoodElement, _super);
+
+  function PotionMoodElement(potion, maxPricePerTurn) {
+    var _this = _super.call(this) || this;
+
+    _this.potion = potion;
+    _this.maxPricePerTurn = maxPricePerTurn;
+    return _this;
+  }
+
+  PotionMoodElement.prototype.execute = function (mood, ensureTurns) {
+    // FIXME: Smarter buying logic.
+    // FIXME: Allow constructing stuff (e.g. snow cleats)
+    var effect = kolmafia_1.effectModifier(this.potion, "Effect");
+    var effectTurns = kolmafia_1.haveEffect(effect);
+    var turnsPerUse = kolmafia_1.numericModifier(this.potion, "Effect Duration");
+
+    if (kolmafia_1.mallPrice(this.potion) > this.maxPricePerTurn * turnsPerUse) {
+      return false;
+    }
+
+    if (effectTurns < ensureTurns) {
+      var uses = (ensureTurns - effectTurns) / turnsPerUse;
+      var quantityToBuy = utils_1.clamp(uses - kolmafia_1.availableAmount(this.potion), 0, 100);
+      kolmafia_1.buy(quantityToBuy, this.potion, this.maxPricePerTurn * turnsPerUse);
+      var quantityToUse = utils_1.clamp(uses, 0, kolmafia_1.availableAmount(this.potion));
+      kolmafia_1.use(quantityToUse, this.potion);
+    }
+
+    return kolmafia_1.haveEffect(effect) >= ensureTurns;
+  };
+
+  return PotionMoodElement;
+}(MoodElement);
+
+var GenieMoodElement =
+/** @class */
+function (_super) {
+  __extends(GenieMoodElement, _super);
+
+  function GenieMoodElement(effect) {
+    var _this = _super.call(this) || this;
+
+    _this.effect = effect;
+    return _this;
+  }
+
+  GenieMoodElement.prototype.execute = function (mood, ensureTurns) {
+    if (kolmafia_1.haveEffect(this.effect) >= ensureTurns) return true;
+    var neededWishes = Math.ceil((kolmafia_1.haveEffect(this.effect) - ensureTurns) / 20);
+    var wishesToBuy = utils_1.clamp(neededWishes - kolmafia_1.availableAmount(template_string_1.$item(templateObject_9 || (templateObject_9 = __makeTemplateObject(["pocket wish"], ["pocket wish"])))), 0, 20);
+    kolmafia_1.buy(wishesToBuy, template_string_1.$item(templateObject_10 || (templateObject_10 = __makeTemplateObject(["pocket wish"], ["pocket wish"]))), 50000);
+    var wishesToUse = utils_1.clamp(neededWishes, 0, kolmafia_1.availableAmount(template_string_1.$item(templateObject_11 || (templateObject_11 = __makeTemplateObject(["pocket wish"], ["pocket wish"])))));
+
+    for (; wishesToUse > 0; wishesToUse--) {
+      kolmafia_1.cliExecute("genie effect " + this.effect.name);
+    }
+
+    return kolmafia_1.haveEffect(this.effect) >= ensureTurns;
+  };
+
+  return GenieMoodElement;
+}(MoodElement);
+
+var CustomMoodElement =
+/** @class */
+function (_super) {
+  __extends(CustomMoodElement, _super);
+
+  function CustomMoodElement(effect, gainEffect) {
+    var _this = _super.call(this) || this;
+
+    _this.effect = effect;
+    _this.gainEffect = gainEffect !== null && gainEffect !== void 0 ? gainEffect : function () {
+      return kolmafia_1.cliExecute(effect["default"]);
+    };
+    return _this;
+  }
+
+  CustomMoodElement.prototype.execute = function (mood, ensureTurns) {
+    var currentTurns = kolmafia_1.haveEffect(this.effect);
+    var lastCurrentTurns = -1;
+
+    while (currentTurns < ensureTurns && currentTurns !== lastCurrentTurns) {
+      this.gainEffect();
+      lastCurrentTurns = currentTurns;
+      currentTurns = kolmafia_1.haveEffect(this.effect);
+    }
+
+    return kolmafia_1.haveEffect(this.effect) > ensureTurns;
+  };
+
+  return CustomMoodElement;
+}(MoodElement);
+/**
+ * Class representing a mood object. Add mood elements using the instance methods, which can be chained.
+ */
+
+
+var Mood =
+/** @class */
+function () {
+  /**
+   * Construct a new Mood instance.
+   * @param options Options for mood.
+   */
+  function Mood(options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    this.elements = [];
+    this.options = __assign(__assign({}, Mood.defaultOptions), options);
+  }
+  /**
+   * Set default options for new Mood instances.
+   * @param options Default options for new Mood instances.
+   */
+
+
+  Mood.setDefaultOptions = function (options) {
+    Mood.defaultOptions = __assign(__assign({}, Mood.defaultOptions), options);
+  };
+  /**
+   * Get the MP available for casting skills.
+   */
+
+
+  Mood.prototype.availableMp = function () {
+    return this.options.mpSources.map(function (mpSource) {
+      return mpSource.availableMpMin();
+    }).reduce(function (x, y) {
+      return x + y;
+    }, 0);
+  };
+
+  Mood.prototype.moreMp = function (minimumTarget) {
+    for (var _i = 0, _a = this.options.mpSources; _i < _a.length; _i++) {
+      var mpSource = _a[_i];
+      var usesRemaining = mpSource.usesRemaining();
+
+      if (usesRemaining !== null && usesRemaining > 0) {
+        mpSource.execute();
+        if (kolmafia_1.myMp() >= minimumTarget) break;
+      }
+    }
+  };
+  /**
+   * Add a skill to the mood.
+   * @param skill Skill to add.
+   */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
 
+<<<<<<< HEAD
 function familiar_templateObject14() {
   var data = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]);
 
@@ -7508,10 +19895,108 @@ function familiar_templateObject8() {
   familiar_templateObject8 = function _templateObject8() {
     return data;
   };
+=======
+  Mood.prototype.skill = function (skill) {
+    this.elements.push(new SkillMoodElement(skill));
+    return this;
+  };
+  /**
+   * Add an effect to the mood, with casting based on {effect.default}.
+   * @param effect Effect to add.
+   * @param gainEffect How to gain the effect. Only runs if we don't have the effect.
+   */
+
+
+  Mood.prototype.effect = function (effect, gainEffect) {
+    var skill = kolmafia_1.toSkill(effect);
+
+    if (!gainEffect && skill !== template_string_1.$skill(templateObject_12 || (templateObject_12 = __makeTemplateObject(["none"], ["none"])))) {
+      this.skill(skill);
+    } else {
+      this.elements.push(new CustomMoodElement(effect, gainEffect));
+    }
+
+    return this;
+  };
+  /**
+   * Add a potion to the mood.
+   * @param potion Potion to add.
+   * @param maxPricePerTurn Maximum price to pay per turn of the effect.
+   */
+
+
+  Mood.prototype.potion = function (potion, maxPricePerTurn) {
+    this.elements.push(new PotionMoodElement(potion, maxPricePerTurn));
+    return this;
+  };
+  /**
+   * Add an effect to acquire via pocket wishes to the mood.
+   * @param effect Effect to wish for in the mood.
+   */
+
+
+  Mood.prototype.genie = function (effect) {
+    this.elements.push(new GenieMoodElement(effect));
+    return this;
+  };
+  /**
+   * Execute the mood, trying to ensure {ensureTurns} of each effect.
+   * @param ensureTurns Turns of each effect to try and achieve.
+   * @returns Whether or not we successfully got this many turns of every effect in the mood.
+   */
+
+
+  Mood.prototype.execute = function (ensureTurns) {
+    if (ensureTurns === void 0) {
+      ensureTurns = 1;
+    }
+
+    var availableMp = this.availableMp();
+    var totalMpPerTurn = this.elements.map(function (element) {
+      return element.mpCostPerTurn();
+    }).reduce(function (x, y) {
+      return x + y;
+    }, 0);
+    var potentialTurns = Math.floor(availableMp / totalMpPerTurn);
+    var completeSuccess = true;
+
+    for (var _i = 0, _a = this.elements; _i < _a.length; _i++) {
+      var element = _a[_i];
+      var elementTurns = ensureTurns;
+
+      if (element.mpCostPerTurn() > 0) {
+        var elementPotentialTurns = Math.floor(potentialTurns / element.turnIncrement()) * element.turnIncrement();
+        elementTurns = Math.min(ensureTurns, elementPotentialTurns);
+      }
+
+      completeSuccess = element.execute(this, elementTurns) || completeSuccess;
+    }
+
+    return completeSuccess;
+  };
+
+  Mood.defaultOptions = {
+    songSlots: [],
+    mpSources: [MagicalSausages.instance, OscusSoda.instance]
+  };
+  return Mood;
+}();
+
+exports.Mood = Mood;
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12;
+
+/***/ }),
+
+/***/ 3579:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
 
+<<<<<<< HEAD
 function familiar_templateObject7() {
   var data = familiar_taggedTemplateLiteral(["transporter transponder"]);
 
@@ -7521,10 +20006,17 @@ function familiar_templateObject7() {
 
   return data;
 }
+=======
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.set = exports.get = exports.getThrall = exports.getStat = exports.getSlot = exports.getSkill = exports.getServant = exports.getPhylum = exports.getMonster = exports.getLocation = exports.getItem = exports.getFamiliar = exports.getElement = exports.getEffect = exports.getCoinmaster = exports.getClass = exports.getBounty = exports.getNumber = exports.getBoolean = exports.getCommaSeparated = exports.getString = void 0;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function familiar_templateObject6() {
   var data = familiar_taggedTemplateLiteral(["llama lama gong"]);
 
+<<<<<<< HEAD
   familiar_templateObject6 = function _templateObject6() {
     return data;
   };
@@ -7649,14 +20141,154 @@ function mood_templateObject48() {
 
 function mood_templateObject47() {
   var data = mood_taggedTemplateLiteral(["resolution: be happier"]);
+=======
+var propertyTyping_1 = __webpack_require__(1908);
+
+var createPropertyGetter = function createPropertyGetter(transform) {
+  return function (property, default_) {
+    var value = kolmafia_1.getProperty(property);
+
+    if (default_ !== undefined && value === "") {
+      return default_;
+    }
+
+    return transform(value, property);
+  };
+};
+
+var createMafiaClassPropertyGetter = function createMafiaClassPropertyGetter(Type) {
+  return createPropertyGetter(function (value) {
+    if (value === "") return null;
+    var v = Type.get(value);
+    return v === Type.get("none") ? null : v;
+  });
+};
+
+exports.getString = createPropertyGetter(function (value) {
+  return value;
+});
+exports.getCommaSeparated = createPropertyGetter(function (value) {
+  return value.split(/, ?/);
+});
+exports.getBoolean = createPropertyGetter(function (value) {
+  return value === "true";
+});
+exports.getNumber = createPropertyGetter(function (value) {
+  return Number(value);
+});
+exports.getBounty = createMafiaClassPropertyGetter(Bounty);
+exports.getClass = createMafiaClassPropertyGetter(Class);
+exports.getCoinmaster = createMafiaClassPropertyGetter(Coinmaster);
+exports.getEffect = createMafiaClassPropertyGetter(Effect);
+exports.getElement = createMafiaClassPropertyGetter(Element);
+exports.getFamiliar = createMafiaClassPropertyGetter(Familiar);
+exports.getItem = createMafiaClassPropertyGetter(Item);
+exports.getLocation = createMafiaClassPropertyGetter(Location);
+exports.getMonster = createMafiaClassPropertyGetter(Monster);
+exports.getPhylum = createMafiaClassPropertyGetter(Phylum);
+exports.getServant = createMafiaClassPropertyGetter(Servant);
+exports.getSkill = createMafiaClassPropertyGetter(Skill);
+exports.getSlot = createMafiaClassPropertyGetter(Slot);
+exports.getStat = createMafiaClassPropertyGetter(Stat);
+exports.getThrall = createMafiaClassPropertyGetter(Thrall);
+
+function get(property, _default) {
+  var value = exports.getString(property);
+
+  if (propertyTyping_1.isMonsterProperty(property)) {
+    return exports.getMonster(property, _default);
+  }
+
+  if (propertyTyping_1.isLocationProperty(property)) {
+    return exports.getLocation(property, _default);
+  }
+
+  if (value === "") {
+    return _default === undefined ? "" : _default;
+  }
+
+  if (propertyTyping_1.isBooleanProperty(property, value)) {
+    return exports.getBoolean(property, _default);
+  }
+
+  if (propertyTyping_1.isNumericProperty(property, value)) {
+    return exports.getNumber(property, _default);
+  }
+
+  return value;
+}
+
+exports.get = get;
+
+function set(property, value) {
+  var stringValue = value === null ? "" : value.toString();
+  kolmafia_1.setProperty(property, stringValue);
+}
+
+exports.set = set;
+
+/***/ }),
+
+/***/ 1908:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.isMonsterProperty = exports.isLocationProperty = exports.isBooleanProperty = exports.isNumericOrStringProperty = exports.isNumericProperty = void 0;
+
+function isNumericProperty(property, value) {
+  return !isNaN(Number(value)) && !isNaN(parseFloat(value));
+}
+
+exports.isNumericProperty = isNumericProperty;
+var choiceAdventurePattern = /^choiceAdventure\d+$/;
+
+function isNumericOrStringProperty(property) {
+  return choiceAdventurePattern.test(property);
+}
+
+exports.isNumericOrStringProperty = isNumericOrStringProperty;
+var fakeBooleans = ["trackVoteMonster", "_jickJarAvailable"];
+
+function isBooleanProperty(property, value) {
+  if (fakeBooleans.includes(property)) return false;
+  return ["true", "false"].includes(value);
+}
+
+exports.isBooleanProperty = isBooleanProperty;
+var otherLocations = ["nextSpookyravenElizabethRoom", "nextSpookyravenStephenRoom", "sourceOracleTarget"];
+
+function isLocationProperty(property) {
+  return otherLocations.includes(property) || property.endsWith("Location");
+}
+
+exports.isLocationProperty = isLocationProperty;
+var otherMonsters = ["romanticTarget", "yearbookCameraTarget"];
+
+function isMonsterProperty(property) {
+  if (otherMonsters.includes(property)) return true;
+  return property.endsWith("Monster");
+}
+
+exports.isMonsterProperty = isMonsterProperty;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   mood_templateObject47 = function _templateObject47() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 =======
 function familiar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+=======
+/***/ 8561:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -7739,12 +20371,20 @@ var rotatingFamiliars = {
 };
 var savedMimicDropValue = null;
 
+<<<<<<< HEAD
 function mimicDropValue() {
   var _savedMimicDropValue;
+=======
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.prepareRunaway = exports.canRunaway = exports.couldRunaway = exports.getRemainingRunaways = exports.getMaxRunaways = exports.getRunaways = exports.have = exports.familiar = void 0;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = averagePrice((0,dist.$items)(familiar_templateObject14())) / (6.29 * 0.95 + 1 * 0.05);
 }
 
+<<<<<<< HEAD
 function freeFightFamiliar() {
   var familiarValue = [];
 
@@ -7995,8 +20635,92 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return stash_arrayLik
 
 function stash_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+=======
+var property_1 = __webpack_require__(3579);
 
+var template_string_1 = __webpack_require__(9150);
 
+var lib_1 = __webpack_require__(2017);
+
+exports.familiar = template_string_1.$familiar(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Frumious Bandersnatch"], ["Frumious Bandersnatch"])));
+/**
+ * Returns true if the player has the Frumious Bandersnatch in their
+ * terrariukm
+ */
+
+function have() {
+  return lib_1.have(exports.familiar);
+}
+
+exports.have = have;
+/**
+ * Returns the number of free runaways that have already been used
+ * @see StompingBoots with which the Bandersnatch shares a counter
+ */
+
+function getRunaways() {
+  return property_1.get("_banderRunaways");
+}
+
+exports.getRunaways = getRunaways;
+/**
+ * Returns the total number of free runaways that the player can
+ * get from their Bandersnatch
+ *
+ * @param considerWeightAdjustment Include familiar weight modifiers
+ */
+
+function getMaxRunaways(considerWeightAdjustment) {
+  if (considerWeightAdjustment === void 0) {
+    considerWeightAdjustment = true;
+  }
+
+  var weightBuffs = considerWeightAdjustment ? kolmafia_1.weightAdjustment() : 0;
+  return Math.floor((kolmafia_1.familiarWeight(exports.familiar) + weightBuffs) / 5);
+}
+
+exports.getMaxRunaways = getMaxRunaways;
+/**
+ * Returns the number of remaining free runaways the player can
+ * get from their Bandersnatch
+ *
+ * @param considerWeightAdjustment
+ */
+
+function getRemainingRunaways(considerWeightAdjustment) {
+  if (considerWeightAdjustment === void 0) {
+    considerWeightAdjustment = true;
+  }
+
+  return Math.max(0, getMaxRunaways(considerWeightAdjustment) - getRunaways());
+}
+
+exports.getRemainingRunaways = getRemainingRunaways;
+/**
+ * Returns true if the player could use their Bandersnatch to
+ * get a free run in theory
+ *
+ * @param considerWeightAdjustment Include familiar weight modifiers
+ */
+
+function couldRunaway(considerWeightAdjustment) {
+  if (considerWeightAdjustment === void 0) {
+    considerWeightAdjustment = true;
+  }
+
+  return have() && getRemainingRunaways(considerWeightAdjustment) > 0;
+}
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+
+exports.couldRunaway = couldRunaway;
+var odeSkill = template_string_1.$skill(templateObject_2 || (templateObject_2 = __makeTemplateObject(["The Ode to Booze"], ["The Ode to Booze"])));
+var odeEffect = template_string_1.$effect(templateObject_3 || (templateObject_3 = __makeTemplateObject(["Ode to Booze"], ["Ode to Booze"])));
+/**
+ * Returns true if the player can use their Bandersnatch to get a
+ * free run right now
+ */
+
+<<<<<<< HEAD
 function withStash(itemsToTake, action) {
   var manager = new StashManager();
 
@@ -8047,14 +20771,63 @@ var StashManager = /*#__PURE__*/function () {
     key: "take",
     value: function take() {
       var _this = this;
+=======
+function canRunaway() {
+  return lib_1.isCurrentFamiliar(exports.familiar) && couldRunaway() && lib_1.have(odeEffect);
+}
+
+exports.canRunaway = canRunaway;
+/**
+ * Prepare a Bandersnatch runaway.
+ *
+ * This will cast Ode to Booze and equip take your Bandersnatch with you.
+ * If any of those steps fail, it will return false.
+ *
+ * @param songsToRemove Ordered list of songs that could be shrugged to make room for Ode to Booze
+ */
+
+function prepareRunaway(songsToRemove) {
+  if (!lib_1.have(odeEffect)) {
+    if (!lib_1.have(odeSkill)) {
+      return false;
+    }
+
+    if (!lib_1.canRememberSong()) {
+      var activeSongs = lib_1.getActiveSongs();
+
+      for (var _i = 0, songsToRemove_1 = songsToRemove; _i < songsToRemove_1.length; _i++) {
+        var song = songsToRemove_1[_i];
+
+        if (activeSongs.includes(song) && lib_1.uneffect(song)) {
+          break;
+        }
+      }
+    }
+
+    if (!kolmafia_1.useSkill(odeSkill)) {
+      return false;
+    }
+  }
+
+  return kolmafia_1.useFamiliar(exports.familiar);
+}
+
+exports.prepareRunaway = prepareRunaway;
+var templateObject_1, templateObject_2, templateObject_3;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
       for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
         items[_key] = arguments[_key];
       }
 
+<<<<<<< HEAD
       withClan(this.clanIdOrName, function () {
         var _iterator = stash_createForOfIteratorHelper(items),
             _step;
+=======
+/***/ 1746:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -8064,6 +20837,7 @@ var StashManager = /*#__PURE__*/function () {
             try {
               var succeeded = (0,external_kolmafia_.takeStash)(1, item);
 
+<<<<<<< HEAD
               if (succeeded) {
                 var _this$taken$get;
 
@@ -8296,14 +21070,192 @@ function mood_templateObject21() {
 
   return data;
 }
+=======
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.useSpookyPuttySheet = exports.getSpookyPuttySheetMonster = exports.prepareSpookyPuttySheet = exports.getSpookyPuttySheetCopiesMade = exports.have = exports.sheet = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var lib_1 = __webpack_require__(2017);
+
+var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+exports.sheet = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Spooky Putty sheet"], ["Spooky Putty sheet"])));
+
+function have() {
+  return lib_1.getFoldGroup(exports.sheet).some(function (item) {
+    return lib_1.have(item);
+  });
+}
+
+exports.have = have;
+
+function getSpookyPuttySheetCopiesMade() {
+  return Math.max(0, property_1.get("spookyPuttyCopiesMade"));
+}
+
+exports.getSpookyPuttySheetCopiesMade = getSpookyPuttySheetCopiesMade;
+
+function prepareSpookyPuttySheet() {
+  if (!have()) return false;
+  if (lib_1.have(exports.sheet)) return true;
+  return kolmafia_1.cliExecute("fold Spooky putty sheet");
+}
+
+exports.prepareSpookyPuttySheet = prepareSpookyPuttySheet;
+
+function getSpookyPuttySheetMonster() {
+  return property_1.get("spookyPuttyMonster");
+}
+
+exports.getSpookyPuttySheetMonster = getSpookyPuttySheetMonster;
+
+function useSpookyPuttySheet() {
+  return kolmafia_1.use(exports.sheet);
+}
+
+exports.useSpookyPuttySheet = useSpookyPuttySheet;
+var templateObject_1;
+
+/***/ }),
+
+/***/ 4476:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.BadlyRomanticArrow = exports.getBadlyRomanticArrowMonster = exports.canUseBadlyRomanticArrow = exports.prepareBadlyRomanticArrow = exports.couldUseBadlyRomanticArrow = exports.haveBadlyRomanticArrowUsesRemaining = exports.getBadlyRomanticArrowUses = exports.have = exports.familiar = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var Copier_1 = __webpack_require__(1498);
+
+var lib_1 = __webpack_require__(2017);
+
+var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+exports.familiar = template_string_1.$familiar(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Obtuse Angel"], ["Obtuse Angel"])));
+/**
+ * Returns true if the player has an Obtuse Angel
+ */
+
+function have() {
+  return lib_1.have(exports.familiar);
+}
+
+exports.have = have;
+/**
+ * Returns number of badly romantic arrows used
+ */
+
+function getBadlyRomanticArrowUses() {
+  return Math.max(0, property_1.get("_badlyRomanticArrows"));
+}
+
+exports.getBadlyRomanticArrowUses = getBadlyRomanticArrowUses;
+/**
+ * Returns true if badly romantic arrow can still be used
+ */
+
+function haveBadlyRomanticArrowUsesRemaining() {
+  return getBadlyRomanticArrowUses() === 0;
+}
+
+exports.haveBadlyRomanticArrowUsesRemaining = haveBadlyRomanticArrowUsesRemaining;
+/**
+ * Returns true if the player could use badly romantic arrow in theory
+ */
+
+function couldUseBadlyRomanticArrow() {
+  return have() && haveBadlyRomanticArrowUsesRemaining();
+}
+
+exports.couldUseBadlyRomanticArrow = couldUseBadlyRomanticArrow;
+/**
+ * Prepares badly romantic arrow for use
+ */
+
+function prepareBadlyRomanticArrow() {
+  return kolmafia_1.useFamiliar(exports.familiar);
+}
+
+exports.prepareBadlyRomanticArrow = prepareBadlyRomanticArrow;
+/**
+ * Returns true if the player can use badly romantic arrow right now
+ */
+
+function canUseBadlyRomanticArrow() {
+  return lib_1.isCurrentFamiliar(exports.familiar) && haveBadlyRomanticArrowUsesRemaining();
+}
+
+exports.canUseBadlyRomanticArrow = canUseBadlyRomanticArrow;
+/**
+ * Returns the current badly romantic arrow monster target
+ */
+
+function getBadlyRomanticArrowMonster() {
+  return property_1.get("romanticTarget");
+}
+
+exports.getBadlyRomanticArrowMonster = getBadlyRomanticArrowMonster;
+exports.BadlyRomanticArrow = new Copier_1.Copier(function () {
+  return couldUseBadlyRomanticArrow();
+}, function () {
+  return prepareBadlyRomanticArrow();
+}, function () {
+  return canUseBadlyRomanticArrow();
+}, function () {
+  return getBadlyRomanticArrowMonster();
+});
+var templateObject_1;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function mood_templateObject20() {
   var data = mood_taggedTemplateLiteral(["Pastamancer"]);
 
+<<<<<<< HEAD
   mood_templateObject20 = function _templateObject20() {
 =======
 function mood_templateObject47() {
   var data = mood_taggedTemplateLiteral(["resolution: be happier"]);
+=======
+/***/ 9601:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   mood_templateObject47 = function _templateObject47() {
     return data;
@@ -8312,6 +21264,7 @@ function mood_templateObject47() {
   return data;
 }
 
+<<<<<<< HEAD
 function mood_templateObject46() {
   var data = mood_taggedTemplateLiteral(["Polka Pop"]);
 
@@ -8824,10 +21777,519 @@ function mood_templateObject24() {
 
   return data;
 }
+=======
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.useRainDohBlackBox = exports.getRainDohBlackBoxMonster = exports.getRainDohBlackBoxCopiesMade = exports.have = exports.box = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var lib_1 = __webpack_require__(2017);
+
+var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+exports.box = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Rain-Doh black box"], ["Rain-Doh black box"])));
+
+function have() {
+  return lib_1.getFoldGroup(exports.box).some(function (item) {
+    return lib_1.have(item);
+  });
+}
+
+exports.have = have;
+
+function getRainDohBlackBoxCopiesMade() {
+  return Math.max(0, property_1.get("_raindohCopiesMade"));
+}
+
+exports.getRainDohBlackBoxCopiesMade = getRainDohBlackBoxCopiesMade;
+
+function getRainDohBlackBoxMonster() {
+  return property_1.get("rainDohMonster");
+}
+
+exports.getRainDohBlackBoxMonster = getRainDohBlackBoxMonster;
+
+function useRainDohBlackBox() {
+  return kolmafia_1.use(exports.box);
+}
+
+exports.useRainDohBlackBox = useRainDohBlackBox;
+var templateObject_1;
+
+/***/ }),
+
+/***/ 381:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.UnfinishedIceSculpture = exports.getUnfinishedIceSculptureMonster = exports.couldUseUnfinishedIceSculpture = exports.isUnfinishedIceSculptureUsed = exports.haveUnfinishedIceSculpture = exports.have = void 0;
+
+var Copier_1 = __webpack_require__(1498);
+
+var property_1 = __webpack_require__(3579);
+
+var lib_1 = __webpack_require__(2017);
+
+var template_string_1 = __webpack_require__(9150);
+
+function have() {
+  return lib_1.haveInCampground(template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["packet of winter seeds"], ["packet of winter seeds"]))));
+}
+
+exports.have = have;
+
+function haveUnfinishedIceSculpture() {
+  return lib_1.have(template_string_1.$item(templateObject_2 || (templateObject_2 = __makeTemplateObject(["unfinished ice sculpture"], ["unfinished ice sculpture"]))));
+}
+
+exports.haveUnfinishedIceSculpture = haveUnfinishedIceSculpture;
+
+function isUnfinishedIceSculptureUsed() {
+  return property_1.get("_iceSculptureUsed");
+}
+
+exports.isUnfinishedIceSculptureUsed = isUnfinishedIceSculptureUsed;
+
+function couldUseUnfinishedIceSculpture() {
+  return lib_1.have(template_string_1.$item(templateObject_3 || (templateObject_3 = __makeTemplateObject(["unfinished ice sculpture"], ["unfinished ice sculpture"])))) && !lib_1.have(template_string_1.$item(templateObject_4 || (templateObject_4 = __makeTemplateObject(["finished ice sculpture"], ["finished ice sculpture"]))));
+}
+
+exports.couldUseUnfinishedIceSculpture = couldUseUnfinishedIceSculpture;
+
+function getUnfinishedIceSculptureMonster() {
+  return property_1.get("iceSculptureMonster");
+}
+
+exports.getUnfinishedIceSculptureMonster = getUnfinishedIceSculptureMonster;
+exports.UnfinishedIceSculpture = new Copier_1.Copier(function () {
+  return couldUseUnfinishedIceSculpture();
+}, null, function () {
+  return couldUseUnfinishedIceSculpture();
+}, function () {
+  return getUnfinishedIceSculptureMonster();
+});
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4;
+
+/***/ }),
+
+/***/ 6658:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.fightPainting = exports.paintingFought = exports.paintingMonster = exports.have = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var property_1 = __webpack_require__(3579);
+
+function have() {
+  return property_1.get("chateauAvailable");
+}
+
+exports.have = have;
+
+function paintingMonster() {
+  return property_1.get("chateauMonster");
+}
+
+exports.paintingMonster = paintingMonster;
+
+function paintingFought() {
+  return property_1.get("_chateauMonsterFought");
+}
+
+exports.paintingFought = paintingFought;
+
+function fightPainting() {
+  kolmafia_1.visitUrl("place.php?whichplace=chateau&action=chateau_painting", false);
+  return kolmafia_1.runCombat();
+}
+
+exports.fightPainting = fightPainting;
+
+/***/ }),
+
+/***/ 1735:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.getPortscanUses = exports.getEnhanceUses = exports.getDuplicateUses = exports.Digitize = exports.canDigitize = exports.prepareDigitize = exports.couldDigitize = exports.getDigitizeUsesRemaining = exports.getMaximumDigitizeUses = exports.getDigitizeMonsterCount = exports.getDigitizeMonster = exports.getDigitizeUses = exports.getChips = exports.extrude = exports.Items = exports.isCurrentSkill = exports.getSkills = exports.educate = exports.Skills = exports.enquiry = exports.RolloverBuffs = exports.enhance = exports.Buffs = exports.have = exports.item = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var lodash_es_1 = __webpack_require__(7696);
+
+var Copier_1 = __webpack_require__(1498);
+
+var lib_1 = __webpack_require__(2017);
+
+var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+exports.item = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Source Terminal"], ["Source Terminal"])));
+
+function have() {
+  return lib_1.haveInCampground(exports.item);
+}
+
+exports.have = have;
+/**
+ * Buffs that can be acquired from Enhance
+ *
+ * - Items: +30% Item Drop
+ * - Meat: +60% Meat Drop
+ * - Init: +50% Initiative
+ * - Critical: +10% chance of Critical Hit, +10% chance of Spell Critical Hit
+ * - Damage: +5 Prismatic Damage
+ * - Substats: +3 Stats Per Fight
+ */
+
+exports.Buffs = {
+  Items: template_string_1.$effect(templateObject_2 || (templateObject_2 = __makeTemplateObject(["items.enh"], ["items.enh"]))),
+  Meat: template_string_1.$effect(templateObject_3 || (templateObject_3 = __makeTemplateObject(["meat.enh"], ["meat.enh"]))),
+  Init: template_string_1.$effect(templateObject_4 || (templateObject_4 = __makeTemplateObject(["init.enh"], ["init.enh"]))),
+  Critical: template_string_1.$effect(templateObject_5 || (templateObject_5 = __makeTemplateObject(["critical.enh"], ["critical.enh"]))),
+  Damage: template_string_1.$effect(templateObject_6 || (templateObject_6 = __makeTemplateObject(["damage.enh"], ["damage.enh"]))),
+  Substats: template_string_1.$effect(templateObject_7 || (templateObject_7 = __makeTemplateObject(["substats.enh"], ["substats.enh"])))
+};
+/**
+ * Acquire a buff from the Source Terminal
+ * @param buff The buff to acquire
+ * @see Buffs
+ */
+
+function enhance(buff) {
+  if (!Object.values(exports.Buffs).includes(buff)) {
+    return false;
+  }
+
+  return kolmafia_1.cliExecute("terminal enhance " + buff.name);
+}
+
+exports.enhance = enhance;
+/**
+ * Rollover buffs that can be acquired from Enquiry
+ */
+
+exports.RolloverBuffs = {
+  /** +5 Familiar Weight */
+  Familiar: template_string_1.$effect(templateObject_8 || (templateObject_8 = __makeTemplateObject(["familiar.enq"], ["familiar.enq"]))),
+
+  /** +25 ML */
+  Monsters: template_string_1.$effect(templateObject_9 || (templateObject_9 = __makeTemplateObject(["monsters.enq"], ["monsters.enq"]))),
+
+  /** +5 Prismatic Resistance */
+  Protect: template_string_1.$effect(templateObject_10 || (templateObject_10 = __makeTemplateObject(["protect.enq"], ["protect.enq"]))),
+
+  /** +100% Muscle, +100% Mysticality, +100% Moxie */
+  Stats: template_string_1.$effect(templateObject_11 || (templateObject_11 = __makeTemplateObject(["stats.enq"], ["stats.enq"])))
+};
+/**
+ * Acquire a buff from the Source Terminal
+ * @param buff The buff to acquire
+ * @see RolloverBuffs
+ */
+
+function enquiry(rolloverBuff) {
+  if (!Object.values(exports.RolloverBuffs).includes(rolloverBuff)) {
+    return false;
+  }
+
+  return kolmafia_1.cliExecute("terminal enquiry " + rolloverBuff.name);
+}
+
+exports.enquiry = enquiry;
+/**
+ * Skills that can be acquired from Enhance
+ */
+
+exports.Skills = {
+  /** Collect Source essence from enemies once per combat */
+  Extract: template_string_1.$skill(templateObject_12 || (templateObject_12 = __makeTemplateObject(["Extract"], ["Extract"]))),
+
+  /** Stagger and create a wandering monster 1-3 times per day */
+  Digitize: template_string_1.$skill(templateObject_13 || (templateObject_13 = __makeTemplateObject(["Digitize"], ["Digitize"]))),
+
+  /** Stagger and deal 25% of enemy HP in damage once per combat */
+  Compress: template_string_1.$skill(templateObject_14 || (templateObject_14 = __makeTemplateObject(["Compress"], ["Compress"]))),
+
+  /** Double monster's HP, attack, defence, attacks per round and item drops once per fight and once per day (five in The Source) */
+  Duplicate: template_string_1.$skill(templateObject_15 || (templateObject_15 = __makeTemplateObject(["Duplicate"], ["Duplicate"]))),
+
+  /** Causes government agent/Source Agent wanderer next turn once per combat and three times per day */
+  Portscan: template_string_1.$skill(templateObject_16 || (templateObject_16 = __makeTemplateObject(["Portscan"], ["Portscan"]))),
+
+  /** Increase Max MP by 100% and recover 1000 MP once per combat with a 30 turn cooldown */
+  Turbo: template_string_1.$skill(templateObject_17 || (templateObject_17 = __makeTemplateObject(["Turbo"], ["Turbo"])))
+};
+/**
+ * Make a skill available.
+ * The Source Terminal can give the player access to two skills at any time
+ * @param skill Skill to learn
+ * @see Skills
+ */
+
+function educate(skills) {
+  var skillsArray = Array.isArray(skills) ? skills.slice(0, 2) : [skills];
+  if (lodash_es_1.isEqual(skillsArray, getSkills())) return true;
+
+  for (var _i = 0, skillsArray_1 = skillsArray; _i < skillsArray_1.length; _i++) {
+    var skill = skillsArray_1[_i];
+    if (!Object.values(exports.Skills).includes(skill)) return false;
+    kolmafia_1.cliExecute("terminal educate " + skill.name.toLowerCase() + ".edu");
+  }
+
+  return true;
+}
+
+exports.educate = educate;
+/**
+ * Return the Skills currently available from Source Terminal
+ */
+
+function getSkills() {
+  return ["sourceTerminalEducate1", "sourceTerminalEducate2"].map(function (p) {
+    return property_1.get(p);
+  }).filter(function (s) {
+    return s !== "";
+  }).map(function (s) {
+    return Skill.get(s.slice(0, -4));
+  });
+}
+
+exports.getSkills = getSkills;
+
+function isCurrentSkill(skills) {
+  var currentSkills = getSkills();
+  var skillsArray = Array.isArray(skills) ? skills.slice(0, 2) : [skills];
+  return skillsArray.every(function (skill) {
+    return currentSkills.includes(skill);
+  });
+}
+
+exports.isCurrentSkill = isCurrentSkill;
+/**
+ * Items that can be generated by the Source Terminal
+ */
+
+exports.Items = {
+  /** 4 fullness EPIC food */
+  BrowserCookie: template_string_1.$item(templateObject_18 || (templateObject_18 = __makeTemplateObject(["browser cookie"], ["browser cookie"]))),
+
+  /** 4 potency EPIC booze */
+  HackedGibson: template_string_1.$item(templateObject_19 || (templateObject_19 = __makeTemplateObject(["hacked gibson"], ["hacked gibson"]))),
+
+  /** +10% item drop, improved yield from extraction skill */
+  Shades: template_string_1.$item(templateObject_20 || (templateObject_20 = __makeTemplateObject(["Source shades"], ["Source shades"]))),
+  GRAM: template_string_1.$item(templateObject_21 || (templateObject_21 = __makeTemplateObject(["Source terminal GRAM chip"], ["Source terminal GRAM chip"]))),
+  PRAM: template_string_1.$item(templateObject_22 || (templateObject_22 = __makeTemplateObject(["Source terminal PRAM chip"], ["Source terminal PRAM chip"]))),
+  SPAM: template_string_1.$item(templateObject_23 || (templateObject_23 = __makeTemplateObject(["Source terminal SPAM chip"], ["Source terminal SPAM chip"]))),
+  CRAM: template_string_1.$item(templateObject_24 || (templateObject_24 = __makeTemplateObject(["Source terminal CRAM chip"], ["Source terminal CRAM chip"]))),
+  DRAM: template_string_1.$item(templateObject_25 || (templateObject_25 = __makeTemplateObject(["Source terminal DRAM chip"], ["Source terminal DRAM chip"]))),
+
+  /** Increase maximum daily casts of Digitze by one, usable once per player */
+  TRAM: template_string_1.$item(templateObject_26 || (templateObject_26 = __makeTemplateObject(["Source terminal TRAM chip"], ["Source terminal TRAM chip"]))),
+  SoftwareBug: template_string_1.$item(templateObject_27 || (templateObject_27 = __makeTemplateObject(["software bug"], ["software bug"])))
+};
+/**
+ * Collect an item from the Source Terminal (up to three times a day)
+ * @param item Item to collect
+ * @see Items
+ */
+
+function extrude(item) {
+  if (!Object.values(exports.Items).includes(item)) {
+    return false;
+  }
+
+  return kolmafia_1.cliExecute("terminal extrude " + item.name);
+}
+
+exports.extrude = extrude;
+/**
+ * Return chips currently installed to player's Source Terminal
+ */
+
+function getChips() {
+  return property_1.get("sourceTerminalChips").split(",");
+}
+
+exports.getChips = getChips;
+/**
+ * Return number of times digitize was cast today
+ */
+
+function getDigitizeUses() {
+  return property_1.get("_sourceTerminalDigitizeUses");
+}
+
+exports.getDigitizeUses = getDigitizeUses;
+/**
+ * Return Monster that is currently digitized, else null
+ */
+
+function getDigitizeMonster() {
+  return property_1.get("_sourceTerminalDigitizeMonster");
+}
+
+exports.getDigitizeMonster = getDigitizeMonster;
+/**
+ * Return number of digitized monsters encountered since it was last cast
+ */
+
+function getDigitizeMonsterCount() {
+  return property_1.get("_sourceTerminalDigitizeMonsterCount");
+}
+
+exports.getDigitizeMonsterCount = getDigitizeMonsterCount;
+/**
+ * Return maximum number of digitizes player can cast
+ */
+
+function getMaximumDigitizeUses() {
+  var chips = getChips();
+  return 1 + (chips.includes("TRAM") ? 1 : 0) + (chips.includes("TRIGRAM") ? 1 : 0);
+}
+
+exports.getMaximumDigitizeUses = getMaximumDigitizeUses;
+/**
+ * Returns the current day's number of remaining digitize uses
+ */
+
+function getDigitizeUsesRemaining() {
+  return getMaximumDigitizeUses() - getDigitizeUses();
+}
+
+exports.getDigitizeUsesRemaining = getDigitizeUsesRemaining;
+/**
+ * Returns whether the player could theoretically cast Digitize
+ */
+
+function couldDigitize() {
+  return getDigitizeUses() < getMaximumDigitizeUses();
+}
+
+exports.couldDigitize = couldDigitize;
+
+function prepareDigitize() {
+  if (!isCurrentSkill(exports.Skills.Digitize)) {
+    return educate(exports.Skills.Digitize);
+  }
+
+  return true;
+}
+
+exports.prepareDigitize = prepareDigitize;
+/**
+ * Returns whether the player can cast Digitize immediately
+ * This only considers whether the player has learned the skill
+ * and has sufficient daily casts remaining, not whether they have sufficient MP
+ */
+
+function canDigitize() {
+  return couldDigitize() && getSkills().includes(exports.Skills.Digitize);
+}
+
+exports.canDigitize = canDigitize;
+exports.Digitize = new Copier_1.Copier(function () {
+  return couldDigitize();
+}, function () {
+  return prepareDigitize();
+}, function () {
+  return canDigitize();
+}, function () {
+  return getDigitizeMonster();
+});
+/**
+ * Return number of times duplicate was cast today
+ */
+
+function getDuplicateUses() {
+  return property_1.get("_sourceTerminalDuplicateUses");
+}
+
+exports.getDuplicateUses = getDuplicateUses;
+/**
+ * Return number of times enhance was cast today
+ */
+
+function getEnhanceUses() {
+  return property_1.get("_sourceTerminalEnhanceUses");
+}
+
+exports.getEnhanceUses = getEnhanceUses;
+/**
+ * Return number of times portscan was cast today
+ */
+
+function getPortscanUses() {
+  return property_1.get("_sourceTerminalPortscanUses");
+}
+
+exports.getPortscanUses = getPortscanUses;
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25, templateObject_26, templateObject_27;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function mood_templateObject23() {
   var data = mood_taggedTemplateLiteral(["Synthesis: Greed"]);
 
+<<<<<<< HEAD
   mood_templateObject23 = function _templateObject23() {
     return data;
   };
@@ -9170,10 +22632,334 @@ function outfit_templateObject10() {
 
   return data;
 }
+=======
+/***/ 3300:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.fightPiece = exports.pieces = exports.fightsDone = exports.have = exports.item = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var lib_1 = __webpack_require__(2017);
+
+var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+exports.item = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Witchess Set"], ["Witchess Set"])));
+
+function have() {
+  return lib_1.haveInCampground(exports.item);
+}
+
+exports.have = have;
+
+function fightsDone() {
+  return property_1.get("_witchessFights");
+}
+
+exports.fightsDone = fightsDone;
+exports.pieces = Monster.get(["Witchess Pawn", "Witchess Knight", "Witchess Bishop", "Witchess Rook", "Witchess Queen", "Witchess King", "Witchess Witch", "Witchess Ox"]);
+
+function fightPiece(piece) {
+  if (!exports.pieces.includes(piece)) throw new Error("That is not a valid piece.");
+
+  if (!kolmafia_1.visitUrl("campground.php?action=witchess").includes("whichchoice value=1181")) {
+    throw new Error("Failed to open Witchess.");
+  }
+
+  if (!kolmafia_1.runChoice(1).includes("whichchoice=1182")) {
+    throw new Error("Failed to visit shrink ray.");
+  }
+
+  if (!kolmafia_1.visitUrl("choice.php?option=1&pwd=" + kolmafia_1.myHash() + "&whichchoice=1182&piece=" + kolmafia_1.toInt(piece), false).includes(piece.name)) {
+    throw new Error("Failed to start fight.");
+  }
+
+  return kolmafia_1.runCombat();
+}
+
+exports.fightPiece = fightPiece;
+var templateObject_1;
+
+/***/ }),
+
+/***/ 5408:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.fightAll = exports.LovEnamorang = exports.getLovEnamorangMonster = exports.couldUseLoveEnamorang = exports.getLovEnamorangUses = exports.haveLovEnamorang = exports.isUsed = exports.have = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var Copier_1 = __webpack_require__(1498);
+
+var lib_1 = __webpack_require__(2017);
+
+var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+function have() {
+  return property_1.get("loveTunnelAvailable");
+}
+
+exports.have = have;
+
+function isUsed() {
+  return property_1.get("_loveTunnelUsed");
+}
+
+exports.isUsed = isUsed;
+
+function haveLovEnamorang() {
+  return lib_1.have(template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["LOV Enamorang"], ["LOV Enamorang"]))));
+}
+
+exports.haveLovEnamorang = haveLovEnamorang;
+
+function getLovEnamorangUses() {
+  return property_1.get("_enamorangs");
+}
+
+exports.getLovEnamorangUses = getLovEnamorangUses;
+
+function couldUseLoveEnamorang() {
+  return !lib_1.haveWandererCounter(lib_1.Wanderer.Enamorang) && getLovEnamorangUses() < 3 && haveLovEnamorang();
+}
+
+exports.couldUseLoveEnamorang = couldUseLoveEnamorang;
+
+function getLovEnamorangMonster() {
+  return property_1.get("enamorangMonster");
+}
+
+exports.getLovEnamorangMonster = getLovEnamorangMonster;
+exports.LovEnamorang = new Copier_1.Copier(function () {
+  return couldUseLoveEnamorang();
+}, null, function () {
+  return couldUseLoveEnamorang();
+}, function () {
+  return getLovEnamorangMonster();
+});
+
+function equipmentChoice(equipment) {
+  switch (equipment) {
+    case "LOV Eardigan":
+      return 1;
+
+    case "LOV Epaulettes":
+      return 2;
+
+    case "LOV Earring":
+      return 3;
+  }
+}
+
+function effectChoice(effect) {
+  switch (effect) {
+    case "Lovebotamy":
+      return 1;
+
+    case "Open Heart Surgery":
+      return 2;
+
+    case "Wandering Eye Surgery":
+      return 3;
+  }
+}
+
+function extraChoice(extra) {
+  switch (extra) {
+    case "LOV Enamorang":
+      return 1;
+
+    case "LOV Emotionizer":
+      return 2;
+
+    case "LOV Extraterrestrial Chocolate":
+      return 3;
+
+    case "LOV Echinacea Bouquet":
+      return 4;
+
+    case "LOV Elephant":
+      return 5;
+
+    case "toast":
+      return 6;
+
+    case null:
+      return 7;
+  }
+}
+/**
+ * Fight all LOV monsters and get buffs/equipment.
+ * @param equipment Equipment to take from LOV.
+ * @param effect Effect to take from LOV.
+ * @param extra Extra item to take from LOV.
+ */
+
+
+function fightAll(equipment, effect, extra) {
+  property_1.set("choiceAdventure1222", 1); // Entrance
+
+  property_1.set("choiceAdventure1223", 1); // Fight LOV Enforcer
+
+  property_1.set("choiceAdventure1224", equipmentChoice(equipment));
+  property_1.set("choiceAdventure1225", 1); // Fight LOV Engineer
+
+  property_1.set("choiceAdventure1226", effectChoice(effect));
+  property_1.set("choiceAdventure1227", 1); // Fight LOV Equivocator
+
+  property_1.set("choiceAdventure1228", extraChoice(extra));
+  kolmafia_1.adv1(template_string_1.$location(templateObject_2 || (templateObject_2 = __makeTemplateObject(["The Tunnel of L.O.V.E."], ["The Tunnel of L.O.V.E."]))), 0, "");
+}
+
+exports.fightAll = fightAll;
+var templateObject_1, templateObject_2;
+
+/***/ }),
+
+/***/ 4594:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = this && this.__makeTemplateObject || function (cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.dropProgress = exports.setSong = exports.songChangesLeft = exports.song = exports.songBoomSongs = exports.have = exports.item = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+
+var lib_1 = __webpack_require__(2017);
+
+var property_1 = __webpack_require__(3579);
+
+var template_string_1 = __webpack_require__(9150);
+
+exports.item = template_string_1.$item(templateObject_1 || (templateObject_1 = __makeTemplateObject(["SongBoom\u2122 BoomBox"], ["SongBoom\u2122 BoomBox"])));
+
+function have() {
+  return lib_1.have(exports.item);
+}
+
+exports.have = have;
+var keywords = {
+  "Eye of the Giger": "spooky",
+  "Food Vibrations": "food",
+  "Remainin' Alive": "dr",
+  "These Fists Were Made for Punchin'": "damage",
+  "Total Eclipse of Your Meat": "meat"
+};
+exports.songBoomSongs = new Set(Object.keys(keywords));
+/**
+ * Current song.
+ */
+
+function song() {
+  var stored = property_1.get("boomBoxSong");
+  return exports.songBoomSongs.has(stored) ? stored : null;
+}
+
+exports.song = song;
+/**
+ * Song changes left today.
+ */
+
+function songChangesLeft() {
+  return property_1.get("_boomBoxSongsLeft");
+}
+
+exports.songChangesLeft = songChangesLeft;
+/**
+ * Change the song.
+ * @param newSong Song to change to.
+ */
+
+function setSong(newSong) {
+  if (song() !== newSong) {
+    if (songChangesLeft() === 0) throw new Error("Out of song changes!");
+    kolmafia_1.cliExecute("boombox " + (newSong ? keywords[newSong] : "none"));
+    return true;
+  } else {
+    return false;
+  }
+}
+
+exports.setSong = setSong;
+/**
+ * Progress to next song drop (e.g. gathered meat-clip).
+ */
+
+function dropProgress() {
+  return property_1.get("_boomBoxFights");
+}
+
+exports.dropProgress = dropProgress;
+var templateObject_1;
+
+/***/ }),
+
+/***/ 5175:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function outfit_templateObject9() {
   var data = outfit_taggedTemplateLiteral(["haiku katana"]);
 
+<<<<<<< HEAD
   outfit_templateObject9 = function _templateObject9() {
     return data;
   };
@@ -9209,10 +22995,74 @@ function mood_templateObject() {
 
   return data;
 }
+=======
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function get() {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+var __exportStar = this && this.__exportStar || function (m, exports) {
+  for (var p in m) {
+    if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+  }
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.Witchess = exports.WinterGarden = exports.TunnelOfLove = exports.SpookyPutty = exports.SourceTerminal = exports.SongBoom = exports.RainDoh = exports.ObtuseAngel = exports.ChateauMantegna = exports.Bandersnatch = void 0;
+exports.Bandersnatch = __importStar(__webpack_require__(8561));
+exports.ChateauMantegna = __importStar(__webpack_require__(6658));
+exports.ObtuseAngel = __importStar(__webpack_require__(4476));
+exports.RainDoh = __importStar(__webpack_require__(9601));
+exports.SongBoom = __importStar(__webpack_require__(4594));
+exports.SourceTerminal = __importStar(__webpack_require__(1735));
+exports.SpookyPutty = __importStar(__webpack_require__(1746));
+exports.TunnelOfLove = __importStar(__webpack_require__(5408));
+exports.WinterGarden = __importStar(__webpack_require__(381));
+exports.Witchess = __importStar(__webpack_require__(3300));
+
+__exportStar(__webpack_require__(1030), exports);
+
+/***/ }),
+
+/***/ 1030:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function mood_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
+<<<<<<< HEAD
 
 
 dist.Mood.setDefaultOptions({
@@ -9363,8 +23213,220 @@ function outfit_defineProperty(obj, key, value) { if (key in obj) { Object.defin
 
   if ((0,external_kolmafia_.haveEffect)((0,dist.$effect)(mood_templateObject30())) < 50) {
     (0,external_kolmafia_.use)(Math.ceil((50 - (0,external_kolmafia_.haveEffect)((0,dist.$effect)(mood_templateObject31()))) / 10), (0,dist.$item)(mood_templateObject32()));
+=======
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.SpookyPuttySheet = exports.couldUseSpookyPuttySheet = exports.RainDohBlackBox = exports.couldUseRainDohBlackBox = exports.getTotalPuttyLikeCopiesMade = void 0;
+
+var Copier_1 = __webpack_require__(1498);
+
+var SpookyPutty_1 = __webpack_require__(1746);
+
+var RainDoh_1 = __webpack_require__(9601);
+
+function getTotalPuttyLikeCopiesMade() {
+  return SpookyPutty_1.getSpookyPuttySheetCopiesMade() + RainDoh_1.getRainDohBlackBoxCopiesMade();
+}
+
+exports.getTotalPuttyLikeCopiesMade = getTotalPuttyLikeCopiesMade;
+
+function couldUseRainDohBlackBox() {
+  return RainDoh_1.have() && RainDoh_1.getRainDohBlackBoxCopiesMade() < 5 && getTotalPuttyLikeCopiesMade() < 6;
+}
+
+exports.couldUseRainDohBlackBox = couldUseRainDohBlackBox;
+exports.RainDohBlackBox = new Copier_1.Copier(function () {
+  return couldUseRainDohBlackBox();
+}, null, function () {
+  return couldUseRainDohBlackBox();
+}, function () {
+  return RainDoh_1.getRainDohBlackBoxMonster();
+}, function () {
+  return RainDoh_1.useRainDohBlackBox();
+});
+
+function couldUseSpookyPuttySheet() {
+  return SpookyPutty_1.have() && SpookyPutty_1.getSpookyPuttySheetCopiesMade() < 5 && getTotalPuttyLikeCopiesMade() < 6;
+}
+
+exports.couldUseSpookyPuttySheet = couldUseSpookyPuttySheet;
+exports.SpookyPuttySheet = new Copier_1.Copier(function () {
+  return couldUseSpookyPuttySheet();
+}, function () {
+  return SpookyPutty_1.prepareSpookyPuttySheet();
+}, function () {
+  return couldUseSpookyPuttySheet();
+}, function () {
+  return SpookyPutty_1.getSpookyPuttySheetMonster();
+}, function () {
+  return SpookyPutty_1.useSpookyPuttySheet();
+});
+
+/***/ }),
+
+/***/ 7687:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Provides functions for checking KoLmafia's version and revision.
+ * @packageDocumentation
+ */
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.sinceKolmafiaVersion = exports.sinceKolmafiaRevision = exports.KolmafiaVersionError = void 0;
+
+var kolmafia_1 = __webpack_require__(1664);
+/**
+ * Represents an exception thrown when the current KoLmafia version does not
+ * match an expected condition.
+ */
+
+
+var KolmafiaVersionError =
+/** @class */
+function (_super) {
+  __extends(KolmafiaVersionError, _super);
+
+  function KolmafiaVersionError(message) {
+    var _this = _super.call(this, message) || this; // Explicitly set the prototype, so that 'instanceof' still works in Node.js
+    // even when the class is transpiled down to ES5
+    // See: https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+    // Note that this code isn't needed for Rhino.
+
+
+    Object.setPrototypeOf(_this, KolmafiaVersionError.prototype);
+    return _this;
   }
 
+  return KolmafiaVersionError;
+}(Error);
+
+exports.KolmafiaVersionError = KolmafiaVersionError; // Manually set class name, so that the stack trace shows proper name in Rhino
+
+KolmafiaVersionError.prototype.name = "KolmafiaVersionError";
+/**
+ * Returns the currently executing script name, suitable for embedding in an
+ * error message.
+ * @returns Path of the main script wrapped in single-quotes, or `"This script"`
+ *    if the path cannot be determined
+ */
+
+function getScriptName() {
+  var _a; // In Rhino, the current script name is available in require.main.id
+
+
+  var scriptName = (_a = __webpack_require__.c[__webpack_require__.s]) === null || _a === void 0 ? void 0 : _a.id;
+  return scriptName ? "'" + scriptName + "'" : "This script";
+}
+/**
+ * If KoLmafia's revision number is less than `revision`, throws an exception.
+ * Otherwise, does nothing.
+ *
+ * This behaves like the `since rXXX;` statement in ASH.
+ * @param revision Revision number
+ * @throws {KolmafiaVersionError}
+ *    If KoLmafia's revision number is less than `revision`.
+ * @throws {TypeError} If `revision` is not an integer
+ *
+ * @example
+ * ```ts
+ * // Throws if KoLmafia revision is less than r20500
+ * sinceKolmafiaRevision(20500);
+ * ```
+ */
+
+
+function sinceKolmafiaRevision(revision) {
+  if (!Number.isInteger(revision)) {
+    throw new TypeError("Invalid revision number " + revision + " (must be an integer)");
+  } // Based on net.sourceforge.kolmafia.textui.Parser.sinceException()
+
+
+  if (kolmafia_1.getRevision() < revision) {
+    throw new KolmafiaVersionError(getScriptName() + " requires revision r" + revision + " of kolmafia or higher (current: " + kolmafia_1.getRevision() + "). Up-to-date builds can be found at https://ci.kolmafia.us/.");
+  }
+}
+
+exports.sinceKolmafiaRevision = sinceKolmafiaRevision;
+/**
+ * If KoLmafia's version is less than `majorVersion.minorVersion`, throws an
+ * exception.
+ * Otherwise, does nothing.
+ *
+ * This behaves like the `since X.Y;` statement in ASH.
+ * @param majorVersion Major version number
+ * @param minorVersion Minor version number
+ * @throws {KolmafiaVersionError}
+ *    If KoLmafia's major version is less than `majorVersion`, or if the major
+ *    versions are equal but the minor version is less than `minorVersion`
+ * @throws {TypeError}
+ *    If either `majorVersion` or `minorVersion` are not integers
+ *
+ * @example
+ * ```ts
+ * // Throws if KoLmafia version is less than 20.7
+ * sinceKolmafiaVersion(20, 7);
+ * ```
+ */
+
+function sinceKolmafiaVersion(majorVersion, minorVersion) {
+  if (!Number.isInteger(majorVersion)) {
+    throw new TypeError("Invalid major version number " + majorVersion + " (must be an integer)");
+  }
+
+  if (!Number.isInteger(minorVersion)) {
+    throw new TypeError("Invalid minor version number " + minorVersion + " (must be an integer)");
+  }
+
+  var versionStr = kolmafia_1.getVersion();
+  var versionStrMatch = /v(\d+)\.(\d+)/.exec(versionStr);
+
+  if (!versionStrMatch) {
+    // This is not something the user should handle
+    throw new Error("Unexpected KoLmafia version string: \"" + versionStr + "\". You may need to update the script.");
+  }
+
+  var currentMajorVersion = Number(versionStrMatch[1]);
+  var currentMinorVersion = Number(versionStrMatch[2]); // Based on net.sourceforge.kolmafia.textui.Parser.sinceException()
+
+  if (currentMajorVersion < majorVersion || currentMajorVersion === majorVersion && currentMinorVersion < minorVersion) {
+    throw new KolmafiaVersionError(getScriptName() + " requires version " + majorVersion + "." + minorVersion + " of kolmafia or higher (current: " + currentMajorVersion + "." + currentMinorVersion + "). Up-to-date builds can be found at https://ci.kolmafia.us/.");
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+  }
+}
+
+<<<<<<< HEAD
   mood.potion((0,dist.$item)(mood_templateObject33()), 30); // FIXME: Figure out what's actually good!
 
   if (!(0,dist.have)((0,dist.$effect)(mood_templateObject34())) && (0,external_kolmafia_.mallPrice)((0,dist.$item)(mood_templateObject35())) < 70000) {
@@ -9576,6 +23638,305 @@ function meatOutfit(embezzlerUp) {
   if (sea) {
     additionalRequirements.push("sea");
   }
+=======
+exports.sinceKolmafiaVersion = sinceKolmafiaVersion;
+
+/***/ }),
+
+/***/ 9150:
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+
+var __spreadArrays = this && this.__spreadArrays || function () {
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
+    s += arguments[i].length;
+  }
+
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
+    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
+      r[k] = a[j];
+    }
+  }
+
+  return r;
+};
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.$thralls = exports.$thrall = exports.$stats = exports.$stat = exports.$slots = exports.$slot = exports.$skills = exports.$skill = exports.$servants = exports.$servant = exports.$phyla = exports.$phylum = exports.$monsters = exports.$monster = exports.$locations = exports.$location = exports.$items = exports.$item = exports.$familiars = exports.$familiar = exports.$elements = exports.$element = exports.$effects = exports.$effect = exports.$coinmasters = exports.$coinmaster = exports.$classes = exports.$class = exports.$bounties = exports.$bounty = void 0;
+
+var concatTemplateString = function concatTemplateString(literals) {
+  var placeholders = [];
+
+  for (var _i = 1; _i < arguments.length; _i++) {
+    placeholders[_i - 1] = arguments[_i];
+  }
+
+  return literals.reduce(function (acc, literal, i) {
+    return acc + literal + (placeholders[i] || "");
+  }, "");
+};
+
+var createSingleConstant = function createSingleConstant(Type) {
+  return function (literals) {
+    var placeholders = [];
+
+    for (var _i = 1; _i < arguments.length; _i++) {
+      placeholders[_i - 1] = arguments[_i];
+    }
+
+    var input = concatTemplateString.apply(void 0, __spreadArrays([literals], placeholders));
+    return Type.get(input);
+  };
+};
+
+var createPluralConstant = function createPluralConstant(Type) {
+  return function (literals) {
+    var placeholders = [];
+
+    for (var _i = 1; _i < arguments.length; _i++) {
+      placeholders[_i - 1] = arguments[_i];
+    }
+
+    var input = concatTemplateString.apply(void 0, __spreadArrays([literals], placeholders));
+
+    if (input === "") {
+      return Type.all();
+    }
+
+    return Type.get(input.split(/\s*,\s*/));
+  };
+};
+/**
+ * A Bounty specified by name.
+ *
+ * @category In-game constant
+ */
+
+
+exports.$bounty = createSingleConstant(Bounty);
+/**
+ * A list of Bounties specified by a comma-separated list of names.
+ * For a list of all possible Bounties, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$bounties = createPluralConstant(Bounty);
+/**
+ * A Class specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$class = createSingleConstant(Class);
+/**
+ * A list of Classes specified by a comma-separated list of names.
+ * For a list of all possible Classes, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$classes = createPluralConstant(Class);
+/**
+ * A Coinmaster specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$coinmaster = createSingleConstant(Coinmaster);
+/**
+ * A list of Coinmasters specified by a comma-separated list of names.
+ * For a list of all possible Coinmasters, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$coinmasters = createPluralConstant(Coinmaster);
+/**
+ * An Effect specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$effect = createSingleConstant(Effect);
+/**
+ * A list of Effects specified by a comma-separated list of names.
+ * For a list of all possible Effects, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$effects = createPluralConstant(Effect);
+/**
+ * An Element specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$element = createSingleConstant(Element);
+/**
+ * A list of Elements specified by a comma-separated list of names.
+ * For a list of all possible Elements, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$elements = createPluralConstant(Element);
+/**
+ * A Familiar specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$familiar = createSingleConstant(Familiar);
+/**
+ * A list of Familiars specified by a comma-separated list of names.
+ * For a list of all possible Familiars, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$familiars = createPluralConstant(Familiar);
+/**
+ * An Item specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$item = createSingleConstant(Item);
+/**
+ * A list of Items specified by a comma-separated list of names.
+ * For a list of all possible Items, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$items = createPluralConstant(Item);
+/**
+ * A Location specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$location = createSingleConstant(Location);
+/**
+ * A list of Locations specified by a comma-separated list of names.
+ * For a list of all possible Locations, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$locations = createPluralConstant(Location);
+/**
+ * A Monster specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$monster = createSingleConstant(Monster);
+/**
+ * A list of Monsters specified by a comma-separated list of names.
+ * For a list of all possible Monsters, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$monsters = createPluralConstant(Monster);
+/**
+ * A Phylum specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$phylum = createSingleConstant(Phylum);
+/**
+ * A list of Phyla specified by a comma-separated list of names.
+ * For a list of all possible Phyla, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$phyla = createPluralConstant(Phylum);
+/**
+ * A Servant specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$servant = createSingleConstant(Servant);
+/**
+ * A list of Servants specified by a comma-separated list of names.
+ * For a list of all possible Servants, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$servants = createPluralConstant(Servant);
+/**
+ * A Skill specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$skill = createSingleConstant(Skill);
+/**
+ * A list of Skills specified by a comma-separated list of names.
+ * For a list of all possible Skills, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$skills = createPluralConstant(Skill);
+/**
+ * A Slot specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$slot = createSingleConstant(Slot);
+/**
+ * A list of Slots specified by a comma-separated list of names.
+ * For a list of all possible Slots, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$slots = createPluralConstant(Slot);
+/**
+ * A Stat specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$stat = createSingleConstant(Stat);
+/**
+ * A list of Stats specified by a comma-separated list of names.
+ * For a list of all possible Stats, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$stats = createPluralConstant(Stat);
+/**
+ * A Thrall specified by name.
+ *
+ * @category In-game constant
+ */
+
+exports.$thrall = createSingleConstant(Thrall);
+/**
+ * A list of Thralls specified by a comma-separated list of names.
+ * For a list of all possible Thralls, leave the template string blank.
+ *
+ * @category In-game constant
+ */
+
+exports.$thralls = createPluralConstant(Thrall);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   var compiledRequirements = Requirement.merge([].concat(outfit_toConsumableArray(requirements), [new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(additionalRequirements), {
     forceEquip: forceEquip,
@@ -9584,6 +23945,7 @@ function meatOutfit(embezzlerUp) {
   })]));
   (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
 
+<<<<<<< HEAD
   if ((0,external_kolmafia_.equippedAmount)((0,dist.$item)(outfit_templateObject25())) > 0) {
     (0,external_kolmafia_.equip)((0,dist.$item)(outfit_templateObject26()));
   }
@@ -9592,11 +23954,18 @@ function meatOutfit(embezzlerUp) {
 =======
 function outfit_templateObject19() {
   var data = outfit_taggedTemplateLiteral(["broken champagne bottle, unwrapped retro superhero cape"]);
+=======
+/***/ 1115:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   outfit_templateObject19 = function _templateObject19() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
 
@@ -9638,10 +24007,60 @@ function _templateObject168() {
   _templateObject168 = function _templateObject168() {
     return data;
   };
+=======
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.chunk = exports.clamp = exports.parseNumber = exports.notNull = void 0;
+
+function notNull(value) {
+  return value !== null;
+}
+
+exports.notNull = notNull;
+
+function parseNumber(n) {
+  return Number.parseInt(n.replace(/,/g, ""));
+}
+
+exports.parseNumber = parseNumber;
+/**
+ * Clamp a number between lower and upper bounds.
+ *
+ * @param n Number to clamp.
+ * @param min Lower bound.
+ * @param max Upper bound.
+ */
+
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+exports.clamp = clamp;
+/**
+ * Split an {@param array} into {@param chunkSize} sized chunks
+ *
+ * @param array Array to split
+ * @param chunkSize Size of chunk
+ */
+
+function chunk(array, chunkSize) {
+  var result = [];
+
+  for (var i = 0; i < array.length; i += chunkSize) {
+    result.push(array.slice(i, i + chunkSize));
+  }
+
+  return result;
+}
+
+exports.chunk = chunk;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject167() {
   var data = fights_taggedTemplateLiteral(["magical sausage"]);
 
@@ -9654,6 +24073,349 @@ function _templateObject167() {
 
 function _templateObject166() {
   var data = fights_taggedTemplateLiteral(["Uncle Gator's Country Fun-Time Liquid Waste Sluice"]);
+=======
+/***/ 7696:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "add": () => /* reexport */ lodash_es_add,
+  "after": () => /* reexport */ lodash_es_after,
+  "ary": () => /* reexport */ lodash_es_ary,
+  "assign": () => /* reexport */ lodash_es_assign,
+  "assignIn": () => /* reexport */ lodash_es_assignIn,
+  "assignInWith": () => /* reexport */ lodash_es_assignInWith,
+  "assignWith": () => /* reexport */ lodash_es_assignWith,
+  "at": () => /* reexport */ lodash_es_at,
+  "attempt": () => /* reexport */ lodash_es_attempt,
+  "before": () => /* reexport */ lodash_es_before,
+  "bind": () => /* reexport */ lodash_es_bind,
+  "bindAll": () => /* reexport */ lodash_es_bindAll,
+  "bindKey": () => /* reexport */ lodash_es_bindKey,
+  "camelCase": () => /* reexport */ lodash_es_camelCase,
+  "capitalize": () => /* reexport */ lodash_es_capitalize,
+  "castArray": () => /* reexport */ lodash_es_castArray,
+  "ceil": () => /* reexport */ lodash_es_ceil,
+  "chain": () => /* reexport */ lodash_es_chain,
+  "chunk": () => /* reexport */ lodash_es_chunk,
+  "clamp": () => /* reexport */ lodash_es_clamp,
+  "clone": () => /* reexport */ lodash_es_clone,
+  "cloneDeep": () => /* reexport */ lodash_es_cloneDeep,
+  "cloneDeepWith": () => /* reexport */ lodash_es_cloneDeepWith,
+  "cloneWith": () => /* reexport */ lodash_es_cloneWith,
+  "commit": () => /* reexport */ commit,
+  "compact": () => /* reexport */ lodash_es_compact,
+  "concat": () => /* reexport */ lodash_es_concat,
+  "cond": () => /* reexport */ lodash_es_cond,
+  "conforms": () => /* reexport */ lodash_es_conforms,
+  "conformsTo": () => /* reexport */ lodash_es_conformsTo,
+  "constant": () => /* reexport */ lodash_es_constant,
+  "countBy": () => /* reexport */ lodash_es_countBy,
+  "create": () => /* reexport */ lodash_es_create,
+  "curry": () => /* reexport */ lodash_es_curry,
+  "curryRight": () => /* reexport */ lodash_es_curryRight,
+  "debounce": () => /* reexport */ lodash_es_debounce,
+  "deburr": () => /* reexport */ lodash_es_deburr,
+  "default": () => /* reexport */ lodash_default,
+  "defaultTo": () => /* reexport */ lodash_es_defaultTo,
+  "defaults": () => /* reexport */ lodash_es_defaults,
+  "defaultsDeep": () => /* reexport */ lodash_es_defaultsDeep,
+  "defer": () => /* reexport */ lodash_es_defer,
+  "delay": () => /* reexport */ lodash_es_delay,
+  "difference": () => /* reexport */ lodash_es_difference,
+  "differenceBy": () => /* reexport */ lodash_es_differenceBy,
+  "differenceWith": () => /* reexport */ lodash_es_differenceWith,
+  "divide": () => /* reexport */ lodash_es_divide,
+  "drop": () => /* reexport */ lodash_es_drop,
+  "dropRight": () => /* reexport */ lodash_es_dropRight,
+  "dropRightWhile": () => /* reexport */ lodash_es_dropRightWhile,
+  "dropWhile": () => /* reexport */ lodash_es_dropWhile,
+  "each": () => /* reexport */ lodash_es_forEach,
+  "eachRight": () => /* reexport */ lodash_es_forEachRight,
+  "endsWith": () => /* reexport */ lodash_es_endsWith,
+  "entries": () => /* reexport */ lodash_es_toPairs,
+  "entriesIn": () => /* reexport */ lodash_es_toPairsIn,
+  "eq": () => /* reexport */ lodash_es_eq,
+  "escape": () => /* reexport */ lodash_es_escape,
+  "escapeRegExp": () => /* reexport */ lodash_es_escapeRegExp,
+  "every": () => /* reexport */ lodash_es_every,
+  "extend": () => /* reexport */ lodash_es_assignIn,
+  "extendWith": () => /* reexport */ lodash_es_assignInWith,
+  "fill": () => /* reexport */ lodash_es_fill,
+  "filter": () => /* reexport */ lodash_es_filter,
+  "find": () => /* reexport */ lodash_es_find,
+  "findIndex": () => /* reexport */ lodash_es_findIndex,
+  "findKey": () => /* reexport */ lodash_es_findKey,
+  "findLast": () => /* reexport */ lodash_es_findLast,
+  "findLastIndex": () => /* reexport */ lodash_es_findLastIndex,
+  "findLastKey": () => /* reexport */ lodash_es_findLastKey,
+  "first": () => /* reexport */ lodash_es_head,
+  "flatMap": () => /* reexport */ lodash_es_flatMap,
+  "flatMapDeep": () => /* reexport */ lodash_es_flatMapDeep,
+  "flatMapDepth": () => /* reexport */ lodash_es_flatMapDepth,
+  "flatten": () => /* reexport */ lodash_es_flatten,
+  "flattenDeep": () => /* reexport */ lodash_es_flattenDeep,
+  "flattenDepth": () => /* reexport */ lodash_es_flattenDepth,
+  "flip": () => /* reexport */ lodash_es_flip,
+  "floor": () => /* reexport */ lodash_es_floor,
+  "flow": () => /* reexport */ lodash_es_flow,
+  "flowRight": () => /* reexport */ lodash_es_flowRight,
+  "forEach": () => /* reexport */ lodash_es_forEach,
+  "forEachRight": () => /* reexport */ lodash_es_forEachRight,
+  "forIn": () => /* reexport */ lodash_es_forIn,
+  "forInRight": () => /* reexport */ lodash_es_forInRight,
+  "forOwn": () => /* reexport */ lodash_es_forOwn,
+  "forOwnRight": () => /* reexport */ lodash_es_forOwnRight,
+  "fromPairs": () => /* reexport */ lodash_es_fromPairs,
+  "functions": () => /* reexport */ lodash_es_functions,
+  "functionsIn": () => /* reexport */ lodash_es_functionsIn,
+  "get": () => /* reexport */ lodash_es_get,
+  "groupBy": () => /* reexport */ lodash_es_groupBy,
+  "gt": () => /* reexport */ lodash_es_gt,
+  "gte": () => /* reexport */ lodash_es_gte,
+  "has": () => /* reexport */ lodash_es_has,
+  "hasIn": () => /* reexport */ lodash_es_hasIn,
+  "head": () => /* reexport */ lodash_es_head,
+  "identity": () => /* reexport */ lodash_es_identity,
+  "inRange": () => /* reexport */ lodash_es_inRange,
+  "includes": () => /* reexport */ lodash_es_includes,
+  "indexOf": () => /* reexport */ lodash_es_indexOf,
+  "initial": () => /* reexport */ lodash_es_initial,
+  "intersection": () => /* reexport */ lodash_es_intersection,
+  "intersectionBy": () => /* reexport */ lodash_es_intersectionBy,
+  "intersectionWith": () => /* reexport */ lodash_es_intersectionWith,
+  "invert": () => /* reexport */ lodash_es_invert,
+  "invertBy": () => /* reexport */ lodash_es_invertBy,
+  "invoke": () => /* reexport */ lodash_es_invoke,
+  "invokeMap": () => /* reexport */ lodash_es_invokeMap,
+  "isArguments": () => /* reexport */ lodash_es_isArguments,
+  "isArray": () => /* reexport */ lodash_es_isArray,
+  "isArrayBuffer": () => /* reexport */ lodash_es_isArrayBuffer,
+  "isArrayLike": () => /* reexport */ lodash_es_isArrayLike,
+  "isArrayLikeObject": () => /* reexport */ lodash_es_isArrayLikeObject,
+  "isBoolean": () => /* reexport */ lodash_es_isBoolean,
+  "isBuffer": () => /* reexport */ lodash_es_isBuffer,
+  "isDate": () => /* reexport */ lodash_es_isDate,
+  "isElement": () => /* reexport */ lodash_es_isElement,
+  "isEmpty": () => /* reexport */ lodash_es_isEmpty,
+  "isEqual": () => /* reexport */ lodash_es_isEqual,
+  "isEqualWith": () => /* reexport */ lodash_es_isEqualWith,
+  "isError": () => /* reexport */ lodash_es_isError,
+  "isFinite": () => /* reexport */ lodash_es_isFinite,
+  "isFunction": () => /* reexport */ lodash_es_isFunction,
+  "isInteger": () => /* reexport */ lodash_es_isInteger,
+  "isLength": () => /* reexport */ lodash_es_isLength,
+  "isMap": () => /* reexport */ lodash_es_isMap,
+  "isMatch": () => /* reexport */ lodash_es_isMatch,
+  "isMatchWith": () => /* reexport */ lodash_es_isMatchWith,
+  "isNaN": () => /* reexport */ lodash_es_isNaN,
+  "isNative": () => /* reexport */ lodash_es_isNative,
+  "isNil": () => /* reexport */ lodash_es_isNil,
+  "isNull": () => /* reexport */ lodash_es_isNull,
+  "isNumber": () => /* reexport */ lodash_es_isNumber,
+  "isObject": () => /* reexport */ lodash_es_isObject,
+  "isObjectLike": () => /* reexport */ lodash_es_isObjectLike,
+  "isPlainObject": () => /* reexport */ lodash_es_isPlainObject,
+  "isRegExp": () => /* reexport */ lodash_es_isRegExp,
+  "isSafeInteger": () => /* reexport */ lodash_es_isSafeInteger,
+  "isSet": () => /* reexport */ lodash_es_isSet,
+  "isString": () => /* reexport */ lodash_es_isString,
+  "isSymbol": () => /* reexport */ lodash_es_isSymbol,
+  "isTypedArray": () => /* reexport */ lodash_es_isTypedArray,
+  "isUndefined": () => /* reexport */ lodash_es_isUndefined,
+  "isWeakMap": () => /* reexport */ lodash_es_isWeakMap,
+  "isWeakSet": () => /* reexport */ lodash_es_isWeakSet,
+  "iteratee": () => /* reexport */ lodash_es_iteratee,
+  "join": () => /* reexport */ lodash_es_join,
+  "kebabCase": () => /* reexport */ lodash_es_kebabCase,
+  "keyBy": () => /* reexport */ lodash_es_keyBy,
+  "keys": () => /* reexport */ lodash_es_keys,
+  "keysIn": () => /* reexport */ lodash_es_keysIn,
+  "last": () => /* reexport */ lodash_es_last,
+  "lastIndexOf": () => /* reexport */ lodash_es_lastIndexOf,
+  "lodash": () => /* reexport */ wrapperLodash,
+  "lowerCase": () => /* reexport */ lodash_es_lowerCase,
+  "lowerFirst": () => /* reexport */ lodash_es_lowerFirst,
+  "lt": () => /* reexport */ lodash_es_lt,
+  "lte": () => /* reexport */ lodash_es_lte,
+  "map": () => /* reexport */ lodash_es_map,
+  "mapKeys": () => /* reexport */ lodash_es_mapKeys,
+  "mapValues": () => /* reexport */ lodash_es_mapValues,
+  "matches": () => /* reexport */ lodash_es_matches,
+  "matchesProperty": () => /* reexport */ lodash_es_matchesProperty,
+  "max": () => /* reexport */ lodash_es_max,
+  "maxBy": () => /* reexport */ lodash_es_maxBy,
+  "mean": () => /* reexport */ lodash_es_mean,
+  "meanBy": () => /* reexport */ lodash_es_meanBy,
+  "memoize": () => /* reexport */ lodash_es_memoize,
+  "merge": () => /* reexport */ lodash_es_merge,
+  "mergeWith": () => /* reexport */ lodash_es_mergeWith,
+  "method": () => /* reexport */ lodash_es_method,
+  "methodOf": () => /* reexport */ lodash_es_methodOf,
+  "min": () => /* reexport */ lodash_es_min,
+  "minBy": () => /* reexport */ lodash_es_minBy,
+  "mixin": () => /* reexport */ lodash_es_mixin,
+  "multiply": () => /* reexport */ lodash_es_multiply,
+  "negate": () => /* reexport */ lodash_es_negate,
+  "next": () => /* reexport */ next,
+  "noop": () => /* reexport */ lodash_es_noop,
+  "now": () => /* reexport */ lodash_es_now,
+  "nth": () => /* reexport */ lodash_es_nth,
+  "nthArg": () => /* reexport */ lodash_es_nthArg,
+  "omit": () => /* reexport */ lodash_es_omit,
+  "omitBy": () => /* reexport */ lodash_es_omitBy,
+  "once": () => /* reexport */ lodash_es_once,
+  "orderBy": () => /* reexport */ lodash_es_orderBy,
+  "over": () => /* reexport */ lodash_es_over,
+  "overArgs": () => /* reexport */ lodash_es_overArgs,
+  "overEvery": () => /* reexport */ lodash_es_overEvery,
+  "overSome": () => /* reexport */ lodash_es_overSome,
+  "pad": () => /* reexport */ lodash_es_pad,
+  "padEnd": () => /* reexport */ lodash_es_padEnd,
+  "padStart": () => /* reexport */ lodash_es_padStart,
+  "parseInt": () => /* reexport */ lodash_es_parseInt,
+  "partial": () => /* reexport */ lodash_es_partial,
+  "partialRight": () => /* reexport */ lodash_es_partialRight,
+  "partition": () => /* reexport */ lodash_es_partition,
+  "pick": () => /* reexport */ lodash_es_pick,
+  "pickBy": () => /* reexport */ lodash_es_pickBy,
+  "plant": () => /* reexport */ plant,
+  "property": () => /* reexport */ lodash_es_property,
+  "propertyOf": () => /* reexport */ lodash_es_propertyOf,
+  "pull": () => /* reexport */ lodash_es_pull,
+  "pullAll": () => /* reexport */ lodash_es_pullAll,
+  "pullAllBy": () => /* reexport */ lodash_es_pullAllBy,
+  "pullAllWith": () => /* reexport */ lodash_es_pullAllWith,
+  "pullAt": () => /* reexport */ lodash_es_pullAt,
+  "random": () => /* reexport */ lodash_es_random,
+  "range": () => /* reexport */ lodash_es_range,
+  "rangeRight": () => /* reexport */ lodash_es_rangeRight,
+  "rearg": () => /* reexport */ lodash_es_rearg,
+  "reduce": () => /* reexport */ lodash_es_reduce,
+  "reduceRight": () => /* reexport */ lodash_es_reduceRight,
+  "reject": () => /* reexport */ lodash_es_reject,
+  "remove": () => /* reexport */ lodash_es_remove,
+  "repeat": () => /* reexport */ lodash_es_repeat,
+  "replace": () => /* reexport */ lodash_es_replace,
+  "rest": () => /* reexport */ lodash_es_rest,
+  "result": () => /* reexport */ lodash_es_result,
+  "reverse": () => /* reexport */ lodash_es_reverse,
+  "round": () => /* reexport */ lodash_es_round,
+  "sample": () => /* reexport */ lodash_es_sample,
+  "sampleSize": () => /* reexport */ lodash_es_sampleSize,
+  "set": () => /* reexport */ lodash_es_set,
+  "setWith": () => /* reexport */ lodash_es_setWith,
+  "shuffle": () => /* reexport */ lodash_es_shuffle,
+  "size": () => /* reexport */ lodash_es_size,
+  "slice": () => /* reexport */ lodash_es_slice,
+  "snakeCase": () => /* reexport */ lodash_es_snakeCase,
+  "some": () => /* reexport */ lodash_es_some,
+  "sortBy": () => /* reexport */ lodash_es_sortBy,
+  "sortedIndex": () => /* reexport */ lodash_es_sortedIndex,
+  "sortedIndexBy": () => /* reexport */ lodash_es_sortedIndexBy,
+  "sortedIndexOf": () => /* reexport */ lodash_es_sortedIndexOf,
+  "sortedLastIndex": () => /* reexport */ lodash_es_sortedLastIndex,
+  "sortedLastIndexBy": () => /* reexport */ lodash_es_sortedLastIndexBy,
+  "sortedLastIndexOf": () => /* reexport */ lodash_es_sortedLastIndexOf,
+  "sortedUniq": () => /* reexport */ lodash_es_sortedUniq,
+  "sortedUniqBy": () => /* reexport */ lodash_es_sortedUniqBy,
+  "split": () => /* reexport */ lodash_es_split,
+  "spread": () => /* reexport */ lodash_es_spread,
+  "startCase": () => /* reexport */ lodash_es_startCase,
+  "startsWith": () => /* reexport */ lodash_es_startsWith,
+  "stubArray": () => /* reexport */ lodash_es_stubArray,
+  "stubFalse": () => /* reexport */ lodash_es_stubFalse,
+  "stubObject": () => /* reexport */ lodash_es_stubObject,
+  "stubString": () => /* reexport */ lodash_es_stubString,
+  "stubTrue": () => /* reexport */ lodash_es_stubTrue,
+  "subtract": () => /* reexport */ lodash_es_subtract,
+  "sum": () => /* reexport */ lodash_es_sum,
+  "sumBy": () => /* reexport */ lodash_es_sumBy,
+  "tail": () => /* reexport */ lodash_es_tail,
+  "take": () => /* reexport */ lodash_es_take,
+  "takeRight": () => /* reexport */ lodash_es_takeRight,
+  "takeRightWhile": () => /* reexport */ lodash_es_takeRightWhile,
+  "takeWhile": () => /* reexport */ lodash_es_takeWhile,
+  "tap": () => /* reexport */ lodash_es_tap,
+  "template": () => /* reexport */ lodash_es_template,
+  "templateSettings": () => /* reexport */ lodash_es_templateSettings,
+  "throttle": () => /* reexport */ lodash_es_throttle,
+  "thru": () => /* reexport */ lodash_es_thru,
+  "times": () => /* reexport */ lodash_es_times,
+  "toArray": () => /* reexport */ lodash_es_toArray,
+  "toFinite": () => /* reexport */ lodash_es_toFinite,
+  "toInteger": () => /* reexport */ lodash_es_toInteger,
+  "toIterator": () => /* reexport */ toIterator,
+  "toJSON": () => /* reexport */ lodash_es_wrapperValue,
+  "toLength": () => /* reexport */ lodash_es_toLength,
+  "toLower": () => /* reexport */ lodash_es_toLower,
+  "toNumber": () => /* reexport */ lodash_es_toNumber,
+  "toPairs": () => /* reexport */ lodash_es_toPairs,
+  "toPairsIn": () => /* reexport */ lodash_es_toPairsIn,
+  "toPath": () => /* reexport */ lodash_es_toPath,
+  "toPlainObject": () => /* reexport */ lodash_es_toPlainObject,
+  "toSafeInteger": () => /* reexport */ lodash_es_toSafeInteger,
+  "toString": () => /* reexport */ lodash_es_toString,
+  "toUpper": () => /* reexport */ lodash_es_toUpper,
+  "transform": () => /* reexport */ lodash_es_transform,
+  "trim": () => /* reexport */ lodash_es_trim,
+  "trimEnd": () => /* reexport */ lodash_es_trimEnd,
+  "trimStart": () => /* reexport */ lodash_es_trimStart,
+  "truncate": () => /* reexport */ lodash_es_truncate,
+  "unary": () => /* reexport */ lodash_es_unary,
+  "unescape": () => /* reexport */ lodash_es_unescape,
+  "union": () => /* reexport */ lodash_es_union,
+  "unionBy": () => /* reexport */ lodash_es_unionBy,
+  "unionWith": () => /* reexport */ lodash_es_unionWith,
+  "uniq": () => /* reexport */ lodash_es_uniq,
+  "uniqBy": () => /* reexport */ lodash_es_uniqBy,
+  "uniqWith": () => /* reexport */ lodash_es_uniqWith,
+  "uniqueId": () => /* reexport */ lodash_es_uniqueId,
+  "unset": () => /* reexport */ lodash_es_unset,
+  "unzip": () => /* reexport */ lodash_es_unzip,
+  "unzipWith": () => /* reexport */ lodash_es_unzipWith,
+  "update": () => /* reexport */ lodash_es_update,
+  "updateWith": () => /* reexport */ lodash_es_updateWith,
+  "upperCase": () => /* reexport */ lodash_es_upperCase,
+  "upperFirst": () => /* reexport */ lodash_es_upperFirst,
+  "value": () => /* reexport */ lodash_es_wrapperValue,
+  "valueOf": () => /* reexport */ lodash_es_wrapperValue,
+  "values": () => /* reexport */ lodash_es_values,
+  "valuesIn": () => /* reexport */ lodash_es_valuesIn,
+  "without": () => /* reexport */ lodash_es_without,
+  "words": () => /* reexport */ lodash_es_words,
+  "wrap": () => /* reexport */ lodash_es_wrap,
+  "wrapperAt": () => /* reexport */ lodash_es_wrapperAt,
+  "wrapperChain": () => /* reexport */ lodash_es_wrapperChain,
+  "wrapperCommit": () => /* reexport */ commit,
+  "wrapperLodash": () => /* reexport */ wrapperLodash,
+  "wrapperNext": () => /* reexport */ next,
+  "wrapperPlant": () => /* reexport */ plant,
+  "wrapperReverse": () => /* reexport */ lodash_es_wrapperReverse,
+  "wrapperToIterator": () => /* reexport */ toIterator,
+  "wrapperValue": () => /* reexport */ lodash_es_wrapperValue,
+  "xor": () => /* reexport */ lodash_es_xor,
+  "xorBy": () => /* reexport */ lodash_es_xorBy,
+  "xorWith": () => /* reexport */ lodash_es_xorWith,
+  "zip": () => /* reexport */ lodash_es_zip,
+  "zipObject": () => /* reexport */ lodash_es_zipObject,
+  "zipObjectDeep": () => /* reexport */ lodash_es_zipObjectDeep,
+  "zipWith": () => /* reexport */ lodash_es_zipWith
+});
+
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_freeGlobal.js
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = (typeof global === "undefined" ? "undefined" : _typeof(global)) == 'object' && global && global.Object === Object && global;
+/* harmony default export */ const _freeGlobal = (freeGlobal);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_root.js
+function _root_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _root_typeof = function _typeof(obj) { return typeof obj; }; } else { _root_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _root_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject166 = function _templateObject166() {
 =======
@@ -9667,15 +24429,27 @@ function outfit_templateObject16() {
   return data;
 }
 
+<<<<<<< HEAD
 function outfit_templateObject15() {
   var data = outfit_taggedTemplateLiteral(["protonic accelerator pack"]);
+=======
+var root = _freeGlobal || freeSelf || Function('return this')();
+/* harmony default export */ const _root = (root);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_Symbol.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   outfit_templateObject15 = function _templateObject15() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var _Symbol = _root.Symbol;
+/* harmony default export */ const lodash_es_Symbol = (_Symbol);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getRawTag.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function outfit_templateObject14() {
   var data = outfit_taggedTemplateLiteral(["ice nine"]);
@@ -9716,8 +24490,20 @@ function outfit_templateObject12() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject164() {
   var data = fights_taggedTemplateLiteral(["Triple-Sized"]);
+=======
+/* harmony default export */ const _getRawTag = (getRawTag);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_objectToString.js
+/** Used for built-in method references. */
+var _objectToString_objectProto = Object.prototype;
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject164 = function _templateObject164() {
     return data;
@@ -9726,8 +24512,14 @@ function _templateObject164() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject163() {
   var data = fights_taggedTemplateLiteral(["Powerful Glove"]);
+=======
+/* harmony default export */ const _objectToString = (objectToString);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseGetTag.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject163 = function _templateObject163() {
     return data;
@@ -9751,8 +24543,14 @@ function outfit_templateObject11() {
   return data;
 }
 
+<<<<<<< HEAD
 function outfit_templateObject10() {
   var data = outfit_taggedTemplateLiteral(["haiku katana"]);
+=======
+/* harmony default export */ const _baseGetTag = (baseGetTag);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isObjectLike.js
+function isObjectLike_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { isObjectLike_typeof = function _typeof(obj) { return typeof obj; }; } else { isObjectLike_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return isObjectLike_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   outfit_templateObject10 = function _templateObject10() {
     return data;
@@ -9761,8 +24559,14 @@ function outfit_templateObject10() {
   return data;
 }
 
+<<<<<<< HEAD
 function outfit_templateObject9() {
   var data = outfit_taggedTemplateLiteral(["haiku katana"]);
+=======
+/* harmony default export */ const lodash_es_isObjectLike = (isObjectLike);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isSymbol.js
+function isSymbol_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { isSymbol_typeof = function _typeof(obj) { return typeof obj; }; } else { isSymbol_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return isSymbol_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   outfit_templateObject9 = function _templateObject9() {
     return data;
@@ -9781,8 +24585,13 @@ function outfit_templateObject8() {
   return data;
 }
 
+<<<<<<< HEAD
 function outfit_templateObject7() {
   var data = outfit_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]);
+=======
+/* harmony default export */ const lodash_es_isSymbol = (isSymbol);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseToNumber.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   outfit_templateObject7 = function _templateObject7() {
 >>>>>>> 6528995 (Phill told me to do this)
@@ -9810,8 +24619,26 @@ function outfit_templateObject6() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject160() {
   var data = fights_taggedTemplateLiteral(["Powerful Glove"]);
+=======
+/* harmony default export */ const _baseToNumber = (baseToNumber);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayMap.js
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject160 = function _templateObject160() {
 =======
@@ -9827,8 +24654,39 @@ function outfit_templateObject5() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject159() {
   var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+=======
+/* harmony default export */ const _arrayMap = (arrayMap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isArray.js
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+/* harmony default export */ const lodash_es_isArray = (isArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseToString.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject159 = function _templateObject159() {
 =======
@@ -9871,8 +24729,13 @@ function _templateObject157() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject156() {
   var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+=======
+/* harmony default export */ const _baseToString = (baseToString);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createMathOperation.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject156 = function _templateObject156() {
     return data;
@@ -9911,15 +24774,38 @@ function _templateObject153() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject152() {
   var data = fights_taggedTemplateLiteral(["amateur ninja"]);
+=======
+/* harmony default export */ const _createMathOperation = (createMathOperation);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/add.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject152 = function _templateObject152() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var add = _createMathOperation(function (augend, addend) {
+  return augend + addend;
+}, 0);
+/* harmony default export */ const lodash_es_add = (add);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_trimmedEndIndex.js
+/** Used to match a single whitespace character. */
+var reWhitespace = /\s/;
+/**
+ * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
+ * character of `string`.
+ *
+ * @private
+ * @param {string} string The string to inspect.
+ * @returns {number} Returns the index of the last non-whitespace character.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function _templateObject151() {
   var data = fights_taggedTemplateLiteral(["The Haiku Dungeon"]);
@@ -9931,8 +24817,13 @@ function _templateObject151() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject150() {
   var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
+=======
+/* harmony default export */ const _trimmedEndIndex = (trimmedEndIndex);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseTrim.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject150 = function _templateObject150() {
     return data;
@@ -9951,9 +24842,15 @@ function _templateObject149() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject148() {
   var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
 =======
+=======
+/* harmony default export */ const _baseTrim = (baseTrim);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isObject.js
+function isObject_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { isObject_typeof = function _typeof(obj) { return typeof obj; }; } else { isObject_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return isObject_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function outfit_templateObject2() {
   var data = outfit_taggedTemplateLiteral(["lucky gold ring"]);
@@ -9965,12 +24862,17 @@ function outfit_templateObject2() {
   return data;
 }
 
+<<<<<<< HEAD
 function outfit_templateObject() {
   var data = outfit_taggedTemplateLiteral(["Pocket Professor"]);
 
   outfit_templateObject = function _templateObject() {
     return data;
   };
+=======
+/* harmony default export */ const lodash_es_isObject = (isObject);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toNumber.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -9999,7 +24901,12 @@ function outfit_defineProperties(target, props) { for (var i = 0; i < props.leng
 
 function outfit_createClass(Constructor, protoProps, staticProps) { if (protoProps) outfit_defineProperties(Constructor.prototype, protoProps); if (staticProps) outfit_defineProperties(Constructor, staticProps); return Constructor; }
 
+<<<<<<< HEAD
 function outfit_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+=======
+/* harmony default export */ const lodash_es_toNumber = (toNumber);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toFinite.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -10063,6 +24970,7 @@ function meatOutfit(embezzlerUp) {
   var forceEquip = [];
   var additionalRequirements = [];
 
+<<<<<<< HEAD
   if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) {
     forceEquip.push((0,dist.$item)(outfit_templateObject5()));
   } else if (!embezzlerUp) {
@@ -10070,6 +24978,10 @@ function meatOutfit(embezzlerUp) {
       forceEquip.push((0,dist.$item)(outfit_templateObject7()));
     } // TODO: Fix pointer finger ring construction.
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+/* harmony default export */ const lodash_es_toFinite = (toFinite);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toInteger.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject148 = function _templateObject148() {
     return data;
@@ -10079,8 +24991,13 @@ function meatOutfit(embezzlerUp) {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject147() {
   var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+=======
+/* harmony default export */ const lodash_es_toInteger = (toInteger);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/after.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject147 = function _templateObject147() {
     return data;
@@ -10096,10 +25013,37 @@ function _templateObject146() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
 
 function fights_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = fights_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+=======
+/* harmony default export */ const lodash_es_after = (after);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/identity.js
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+/* harmony default export */ const lodash_es_identity = (identity);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isFunction.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return fights_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return fights_arrayLikeToArray(o, minLen); }
 
@@ -10130,22 +25074,33 @@ function _templateObject145() {
     additionalRequirements.push("sea");
   }
 
+<<<<<<< HEAD
   var compiledRequirements = Requirement.merge([].concat(outfit_toConsumableArray(requirements), [new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(additionalRequirements), {
     forceEquip: forceEquip,
     preventEquip: [].concat(outfit_toConsumableArray((0,dist.$items)(outfit_templateObject19())), outfit_toConsumableArray(embezzlerUp ? (0,dist.$items)(outfit_templateObject20()) : [])),
     bonusEquip: new Map([[(0,dist.$item)(outfit_templateObject21()), 400], [(0,dist.$item)(outfit_templateObject22()), 300], [(0,dist.$item)(outfit_templateObject23()), 250], [(0,dist.$item)(outfit_templateObject24()), 100]])
   })]));
   (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+=======
+/* harmony default export */ const lodash_es_isFunction = (isFunction);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_coreJsData.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,external_kolmafia_.equippedAmount)((0,dist.$item)(outfit_templateObject25())) > 0) {
     (0,external_kolmafia_.equip)((0,dist.$item)(outfit_templateObject26()));
   }
 
+<<<<<<< HEAD
   if (sea) (0,dist.maximizeCached)(["sea -tie"]);
 }
 ;// CONCATENATED MODULE: ./src/fights.ts
 function _templateObject169() {
   var data = fights_taggedTemplateLiteral(["magical sausage"]);
+=======
+var coreJsData = _root["__core-js_shared__"];
+/* harmony default export */ const _coreJsData = (coreJsData);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isMasked.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject169 = function _templateObject169() {
     return data;
@@ -10162,8 +25117,16 @@ function _templateObject168() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _isMasked = (isMasked);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_toSource.js
+/** Used for built-in method references. */
+var funcProto = Function.prototype;
+/** Used to resolve the decompiled source of functions. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function _templateObject144() {
@@ -10183,8 +25146,14 @@ function _templateObject167() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject143() {
   var data = fights_taggedTemplateLiteral(["drum machine"]);
+=======
+/* harmony default export */ const _toSource = (toSource);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsNative.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject143 = function _templateObject143() {
 =======
@@ -10234,6 +25203,7 @@ function _templateObject164() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject140() {
   var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
 
@@ -10253,6 +25223,24 @@ function _templateObject163() {
 <<<<<<< HEAD
 function _templateObject139() {
   var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+=======
+/* harmony default export */ const _baseIsNative = (baseIsNative);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getValue.js
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+/* harmony default export */ const _getValue = (getValue);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getNative.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject139 = function _templateObject139() {
 =======
@@ -10268,8 +25256,13 @@ function _templateObject162() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject138() {
   var data = fights_taggedTemplateLiteral(["drum machine"]);
+=======
+/* harmony default export */ const _getNative = (getNative);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_WeakMap.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject138 = function _templateObject138() {
 =======
@@ -10281,17 +25274,29 @@ function _templateObject161() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var WeakMap = _getNative(_root, 'WeakMap');
+/* harmony default export */ const _WeakMap = (WeakMap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_metaMap.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function _templateObject137() {
   var data = fights_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"]);
 
+<<<<<<< HEAD
   _templateObject137 = function _templateObject137() {
 =======
 function _templateObject160() {
   var data = fights_taggedTemplateLiteral(["Powerful Glove"]);
+=======
+var metaMap = _WeakMap && new _WeakMap();
+/* harmony default export */ const _metaMap = (metaMap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseSetData.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject160 = function _templateObject160() {
 >>>>>>> 6528995 (Phill told me to do this)
@@ -10302,8 +25307,17 @@ function _templateObject160() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject136() {
   var data = fights_taggedTemplateLiteral(["The Jokester's Gun"]);
+=======
+var baseSetData = !_metaMap ? lodash_es_identity : function (func, data) {
+  _metaMap.set(func, data);
+  return func;
+};
+/* harmony default export */ const _baseSetData = (baseSetData);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseCreate.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject136 = function _templateObject136() {
 =======
@@ -10332,8 +25346,13 @@ function _templateObject158() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _baseCreate = (baseCreate);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createCtor.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function _templateObject134() {
@@ -10388,8 +25407,13 @@ function _templateObject131() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _createCtor = (createCtor);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createBind.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function _templateObject130() {
   var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
@@ -10411,8 +25435,27 @@ function _templateObject129() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject128() {
   var data = fights_taggedTemplateLiteral(["Shattering Punch"]);
+=======
+/* harmony default export */ const _createBind = (createBind);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_apply.js
+/**
+ * A faster alternative to `Function#apply`, this function invokes `func`
+ * with the `this` binding of `thisArg` and the arguments of `args`.
+ *
+ * @private
+ * @param {Function} func The function to invoke.
+ * @param {*} thisArg The `this` binding of `func`.
+ * @param {Array} args The arguments to invoke `func` with.
+ * @returns {*} Returns the result of `func`.
+ */
+function apply(func, thisArg, args) {
+  switch (args.length) {
+    case 0:
+      return func.call(thisArg);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject128 = function _templateObject128() {
     return data;
@@ -10431,8 +25474,26 @@ function _templateObject127() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject126() {
   var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+=======
+/* harmony default export */ const _apply = (apply);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_composeArgs.js
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
+/**
+ * Creates an array that is the composition of partially applied arguments,
+ * placeholders, and provided arguments into a single array of arguments.
+ *
+ * @private
+ * @param {Array} args The provided arguments.
+ * @param {Array} partials The arguments to prepend to those provided.
+ * @param {Array} holders The `partials` placeholder indexes.
+ * @params {boolean} [isCurried] Specify composing for a curried function.
+ * @returns {Array} Returns the new array of composed arguments.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject126 = function _templateObject126() {
     return data;
@@ -10451,8 +25512,26 @@ function _templateObject125() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject124() {
   var data = fights_taggedTemplateLiteral(["Gingerbread Mob Hit"]);
+=======
+/* harmony default export */ const _composeArgs = (composeArgs);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_composeArgsRight.js
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var _composeArgsRight_nativeMax = Math.max;
+/**
+ * This function is like `composeArgs` except that the arguments composition
+ * is tailored for `_.partialRight`.
+ *
+ * @private
+ * @param {Array} args The provided arguments.
+ * @param {Array} partials The arguments to append to those provided.
+ * @param {Array} holders The `partials` placeholder indexes.
+ * @params {boolean} [isCurried] Specify composing for a curried function.
+ * @returns {Array} Returns the new array of composed arguments.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject124 = function _templateObject124() {
 =======
@@ -10476,8 +25555,24 @@ function _templateObject154() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject153() {
   var data = fights_taggedTemplateLiteral(["Feeling Lost"]);
+=======
+/* harmony default export */ const _composeArgsRight = (composeArgsRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_countHolders.js
+/**
+ * Gets the number of `placeholder` occurrences in `array`.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} placeholder The placeholder to search for.
+ * @returns {number} Returns the placeholder count.
+ */
+function countHolders(array, placeholder) {
+  var length = array.length,
+      result = 0;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject153 = function _templateObject153() {
     return data;
@@ -10486,6 +25581,7 @@ function _templateObject153() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject152() {
   var data = fights_taggedTemplateLiteral(["amateur ninja"]);
 
@@ -10498,6 +25594,20 @@ function _templateObject152() {
 
 function _templateObject151() {
   var data = fights_taggedTemplateLiteral(["The Haiku Dungeon"]);
+=======
+/* harmony default export */ const _countHolders = (countHolders);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseLodash.js
+/**
+ * The function whose prototype chain sequence wrappers inherit from.
+ *
+ * @private
+ */
+function baseLodash() {// No operation performed.
+}
+
+/* harmony default export */ const _baseLodash = (baseLodash);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_LazyWrapper.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject151 = function _templateObject151() {
     return data;
@@ -10516,6 +25626,7 @@ function _templateObject150() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject149() {
   var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
 
@@ -10530,16 +25641,64 @@ function _templateObject149() {
 <<<<<<< HEAD
 function _templateObject123() {
   var data = fights_taggedTemplateLiteral(["makeshift garbage shirt"]);
+=======
+LazyWrapper.prototype = _baseCreate(_baseLodash.prototype);
+LazyWrapper.prototype.constructor = LazyWrapper;
+/* harmony default export */ const _LazyWrapper = (LazyWrapper);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/noop.js
+/**
+ * This method returns `undefined`.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.3.0
+ * @category Util
+ * @example
+ *
+ * _.times(2, _.noop);
+ * // => [undefined, undefined]
+ */
+function noop() {// No operation performed.
+}
+
+/* harmony default export */ const lodash_es_noop = (noop);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getData.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject123 = function _templateObject123() {
 =======
 function _templateObject148() {
   var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
 
+<<<<<<< HEAD
   _templateObject148 = function _templateObject148() {
 >>>>>>> 6528995 (Phill told me to do this)
     return data;
   };
+=======
+/**
+ * Gets metadata for `func`.
+ *
+ * @private
+ * @param {Function} func The function to query.
+ * @returns {*} Returns the metadata for `func`.
+ */
+
+var getData = !_metaMap ? lodash_es_noop : function (func) {
+  return _metaMap.get(func);
+};
+/* harmony default export */ const _getData = (getData);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_realNames.js
+/** Used to lookup unminified function names. */
+var realNames = {};
+/* harmony default export */ const _realNames = (realNames);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getFuncName.js
+
+/** Used for built-in method references. */
+
+var _getFuncName_objectProto = Object.prototype;
+/** Used to check objects for own properties. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -10562,8 +25721,13 @@ function _templateObject147() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject121() {
   var data = fights_taggedTemplateLiteral(["The Neverending Party"]);
+=======
+/* harmony default export */ const _getFuncName = (getFuncName);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_LodashWrapper.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject121 = function _templateObject121() {
 =======
@@ -10579,8 +25743,27 @@ function _templateObject146() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject120() {
   var data = fights_taggedTemplateLiteral(["The Neverending Party"]);
+=======
+LodashWrapper.prototype = _baseCreate(_baseLodash.prototype);
+LodashWrapper.prototype.constructor = LodashWrapper;
+/* harmony default export */ const _LodashWrapper = (LodashWrapper);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_copyArray.js
+/**
+ * Copies the values of `source` to `array`.
+ *
+ * @private
+ * @param {Array} source The array to copy values from.
+ * @param {Array} [array=[]] The array to copy values to.
+ * @returns {Array} Returns `array`.
+ */
+function copyArray(source, array) {
+  var index = -1,
+      length = source.length;
+  array || (array = Array(length));
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject120 = function _templateObject120() {
     return data;
@@ -10589,8 +25772,13 @@ function _templateObject120() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject119() {
   var data = fights_taggedTemplateLiteral(["The X-32-F Combat Training Snowman"]);
+=======
+/* harmony default export */ const _copyArray = (copyArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_wrapperClone.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject119 = function _templateObject119() {
 =======
@@ -10612,8 +25800,13 @@ function _templateObject145() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject118() {
   var data = fights_taggedTemplateLiteral(["Witchess Bishop"]);
+=======
+/* harmony default export */ const _wrapperClone = (wrapperClone);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/wrapperLodash.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject118 = function _templateObject118() {
 =======
@@ -10666,6 +25859,7 @@ function _templateObject142() {
 function _templateObject115() {
   var data = fights_taggedTemplateLiteral(["Machine Elf"]);
 
+<<<<<<< HEAD
   _templateObject115 = function _templateObject115() {
 =======
 function _templateObject141() {
@@ -10675,6 +25869,12 @@ function _templateObject141() {
 >>>>>>> 6528995 (Phill told me to do this)
     return data;
   };
+=======
+lodash.prototype = _baseLodash.prototype;
+lodash.prototype.constructor = lodash;
+/* harmony default export */ const wrapperLodash = (lodash);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isLaziable.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -10714,8 +25914,17 @@ function _templateObject139() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject112() {
   var data = fights_taggedTemplateLiteral(["Your Mushroom Garden"]);
+=======
+/* harmony default export */ const _isLaziable = (isLaziable);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_shortOut.js
+/** Used to detect hot functions by number of calls within a span of milliseconds. */
+var HOT_COUNT = 800,
+    HOT_SPAN = 16;
+/* Built-in method references for those with the same name as other `lodash` methods. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject112 = function _templateObject112() {
 =======
@@ -10744,8 +25953,13 @@ function _templateObject137() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _shortOut = (shortOut);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_setData.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function _templateObject110() {
@@ -10756,17 +25970,48 @@ function _templateObject110() {
 function _templateObject136() {
   var data = fights_taggedTemplateLiteral(["The Jokester's Gun"]);
 
+<<<<<<< HEAD
   _templateObject136 = function _templateObject136() {
 >>>>>>> 6528995 (Phill told me to do this)
     return data;
   };
+=======
+var setData = _shortOut(_baseSetData);
+/* harmony default export */ const _setData = (setData);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getWrapDetails.js
+/** Used to match wrap detail comments. */
+var reWrapDetails = /\{\n\/\* \[wrapped with (.+)\] \*/,
+    reSplitDetails = /,? & /;
+/**
+ * Extracts wrapper details from the `source` body comment.
+ *
+ * @private
+ * @param {string} source The source to inspect.
+ * @returns {Array} Returns the wrapper details.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject109() {
   var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+=======
+/* harmony default export */ const _getWrapDetails = (getWrapDetails);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_insertWrapDetails.js
+/** Used to match wrap detail comments. */
+var reWrapComment = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/;
+/**
+ * Inserts wrapper `details` in a comment at the top of the `source` body.
+ *
+ * @private
+ * @param {string} source The source to modify.
+ * @returns {Array} details The details to insert.
+ * @returns {string} Returns the modified source.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject109 = function _templateObject109() {
 =======
@@ -10782,6 +26027,7 @@ function _templateObject135() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject108() {
   var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
 
@@ -10793,10 +26039,41 @@ function _templateObject134() {
   _templateObject134 = function _templateObject134() {
 >>>>>>> 6528995 (Phill told me to do this)
     return data;
+=======
+/* harmony default export */ const _insertWrapDetails = (insertWrapDetails);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/constant.js
+/**
+ * Creates a function that returns `value`.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {*} value The value to return from the new function.
+ * @returns {Function} Returns the new constant function.
+ * @example
+ *
+ * var objects = _.times(2, _.constant({ 'a': 1 }));
+ *
+ * console.log(objects);
+ * // => [{ 'a': 1 }, { 'a': 1 }]
+ *
+ * console.log(objects[0] === objects[1]);
+ * // => true
+ */
+function constant(value) {
+  return function () {
+    return value;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const lodash_es_constant = (constant);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_defineProperty.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function _templateObject107() {
@@ -10807,10 +26084,15 @@ function _templateObject107() {
 function _templateObject133() {
   var data = fights_taggedTemplateLiteral(["drum machine"]);
 
+<<<<<<< HEAD
   _templateObject133 = function _templateObject133() {
 >>>>>>> 6528995 (Phill told me to do this)
     return data;
   };
+=======
+/* harmony default export */ const _defineProperty = (defineProperty);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseSetToString.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -10824,10 +26106,23 @@ function _templateObject106() {
 function _templateObject132() {
   var data = fights_taggedTemplateLiteral(["The Jokester's gun"]);
 
+<<<<<<< HEAD
   _templateObject132 = function _templateObject132() {
 >>>>>>> 6528995 (Phill told me to do this)
     return data;
   };
+=======
+var baseSetToString = !_defineProperty ? lodash_es_identity : function (func, string) {
+  return _defineProperty(func, 'toString', {
+    'configurable': true,
+    'enumerable': false,
+    'value': lodash_es_constant(string),
+    'writable': true
+  });
+};
+/* harmony default export */ const _baseSetToString = (baseSetToString);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_setToString.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -10836,10 +26131,28 @@ function _templateObject132() {
 function _templateObject105() {
   var data = fights_taggedTemplateLiteral(["Robortender"]);
 
+<<<<<<< HEAD
   _templateObject105 = function _templateObject105() {
 =======
 function _templateObject131() {
   var data = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
+=======
+var setToString = _shortOut(_baseSetToString);
+/* harmony default export */ const _setToString = (setToString);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayEach.js
+/**
+ * A specialized version of `_.forEach` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns `array`.
+ */
+function arrayEach(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject131 = function _templateObject131() {
 >>>>>>> 6528995 (Phill told me to do this)
@@ -10850,8 +26163,27 @@ function _templateObject131() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject104() {
   var data = fights_taggedTemplateLiteral(["Robortender"]);
+=======
+/* harmony default export */ const _arrayEach = (arrayEach);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseFindIndex.js
+/**
+ * The base implementation of `_.findIndex` and `_.findLastIndex` without
+ * support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} predicate The function invoked per iteration.
+ * @param {number} fromIndex The index to search from.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseFindIndex(array, predicate, fromIndex, fromRight) {
+  var length = array.length,
+      index = fromIndex + (fromRight ? 1 : -1);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject104 = function _templateObject104() {
 =======
@@ -10863,12 +26195,43 @@ function _templateObject130() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
 
 <<<<<<< HEAD
 function _templateObject103() {
   var data = fights_taggedTemplateLiteral(["Packet of tall grass seeds"]);
+=======
+/* harmony default export */ const _baseFindIndex = (baseFindIndex);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsNaN.js
+/**
+ * The base implementation of `_.isNaN` without support for number objects.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
+ */
+function baseIsNaN(value) {
+  return value !== value;
+}
+
+/* harmony default export */ const _baseIsNaN = (baseIsNaN);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_strictIndexOf.js
+/**
+ * A specialized version of `_.indexOf` which performs strict equality
+ * comparisons of values, i.e. `===`.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function strictIndexOf(array, value, fromIndex) {
+  var index = fromIndex - 1,
+      length = array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject103 = function _templateObject103() {
 =======
@@ -10880,8 +26243,13 @@ function _templateObject129() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _strictIndexOf = (strictIndexOf);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIndexOf.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function _templateObject102() {
@@ -10901,8 +26269,13 @@ function _templateObject128() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject101() {
   var data = fights_taggedTemplateLiteral(["Your Mushroom Garden"]);
+=======
+/* harmony default export */ const _baseIndexOf = (baseIndexOf);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayIncludes.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject101 = function _templateObject101() {
 =======
@@ -10918,8 +26291,13 @@ function _templateObject127() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject100() {
   var data = fights_taggedTemplateLiteral(["Portscan"]);
+=======
+/* harmony default export */ const _arrayIncludes = (arrayIncludes);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_updateWrapDetails.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject100 = function _templateObject100() {
 =======
@@ -10945,8 +26323,13 @@ function _templateObject99() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject98() {
   var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+=======
+/* harmony default export */ const _updateWrapDetails = (updateWrapDetails);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_setWrapToString.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject98 = function _templateObject98() {
     return data;
@@ -10965,8 +26348,13 @@ function _templateObject97() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject96() {
   var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+=======
+/* harmony default export */ const _setWrapToString = (setWrapToString);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createRecurry.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject96 = function _templateObject96() {
     return data;
@@ -11005,6 +26393,7 @@ function _templateObject93() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject92() {
   var data = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]);
 
@@ -11017,6 +26406,25 @@ function _templateObject92() {
 
 function _templateObject91() {
   var data = fights_taggedTemplateLiteral(["Noob Cave"]);
+=======
+/* harmony default export */ const _createRecurry = (createRecurry);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getHolder.js
+/**
+ * Gets the argument placeholder value for `func`.
+ *
+ * @private
+ * @param {Function} func The function to inspect.
+ * @returns {*} Returns the placeholder value.
+ */
+function getHolder(func) {
+  var object = func;
+  return object.placeholder;
+}
+
+/* harmony default export */ const _getHolder = (getHolder);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isIndex.js
+function _isIndex_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _isIndex_typeof = function _typeof(obj) { return typeof obj; }; } else { _isIndex_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _isIndex_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject91 = function _templateObject91() {
     return data;
@@ -11035,8 +26443,13 @@ function _templateObject90() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject89() {
   var data = fights_taggedTemplateLiteral(["miniature crystal ball"]);
+=======
+/* harmony default export */ const _isIndex = (isIndex);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_reorder.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject89 = function _templateObject89() {
     return data;
@@ -11065,8 +26478,24 @@ function _templateObject87() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject86() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _reorder = (reorder);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_replaceHolders.js
+/** Used as the internal argument placeholder. */
+var PLACEHOLDER = '__lodash_placeholder__';
+/**
+ * Replaces all `placeholder` elements in `array` with an internal placeholder
+ * and returns an array of their indexes.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {*} placeholder The placeholder to replace.
+ * @returns {Array} Returns the new array of placeholder indexes.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject86 = function _templateObject86() {
     return data;
@@ -11085,8 +26514,13 @@ function _templateObject85() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject84() {
   var data = fights_taggedTemplateLiteral(["drunk pygmy"]);
+=======
+/* harmony default export */ const _replaceHolders = (replaceHolders);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createHybrid.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject84 = function _templateObject84() {
     return data;
@@ -11170,8 +26604,13 @@ function _templateObject124() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject123() {
   var data = fights_taggedTemplateLiteral(["makeshift garbage shirt"]);
+=======
+/* harmony default export */ const _createHybrid = (createHybrid);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createCurry.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject123 = function _templateObject123() {
     return data;
@@ -11220,8 +26659,13 @@ function _templateObject119() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject118() {
   var data = fights_taggedTemplateLiteral(["Witchess Bishop"]);
+=======
+/* harmony default export */ const _createCurry = (createCurry);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createPartial.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject118 = function _templateObject118() {
     return data;
@@ -11260,8 +26704,13 @@ function _templateObject115() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject114() {
   var data = fights_taggedTemplateLiteral(["God Lobster"]);
+=======
+/* harmony default export */ const _createPartial = (createPartial);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_mergeData.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject114 = function _templateObject114() {
     return data;
@@ -11350,8 +26799,13 @@ function _templateObject106() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject105() {
   var data = fights_taggedTemplateLiteral(["Robortender"]);
+=======
+/* harmony default export */ const _mergeData = (mergeData);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createWrap.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject105 = function _templateObject105() {
 >>>>>>> 6528995 (Phill told me to do this)
@@ -11464,8 +26918,13 @@ function _templateObject99() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject71() {
   var data = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+=======
+/* harmony default export */ const _createWrap = (createWrap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/ary.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject71 = function _templateObject71() {
 =======
@@ -11481,8 +26940,13 @@ function _templateObject98() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject70() {
   var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+=======
+/* harmony default export */ const lodash_es_ary = (ary);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseAssignValue.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject70 = function _templateObject70() {
 =======
@@ -11494,12 +26958,55 @@ function _templateObject97() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
 
 <<<<<<< HEAD
 function _templateObject69() {
   var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+=======
+/* harmony default export */ const _baseAssignValue = (baseAssignValue);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/eq.js
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || value !== value && other !== other;
+}
+
+/* harmony default export */ const lodash_es_eq = (eq);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_assignValue.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject69 = function _templateObject69() {
 =======
@@ -11532,8 +27039,13 @@ function _templateObject95() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject67() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _assignValue = (assignValue);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_copyObject.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject67 = function _templateObject67() {
 =======
@@ -11566,8 +27078,13 @@ function _templateObject93() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function _templateObject65() {
   var data = fights_taggedTemplateLiteral(["miniature crystal ball"]);
+=======
+/* harmony default export */ const _copyObject = (copyObject);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_overRest.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject65 = function _templateObject65() {
 =======
@@ -11603,8 +27120,13 @@ function _templateObject63() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject62() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _overRest = (overRest);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseRest.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject62 = function _templateObject62() {
     return data;
@@ -11623,8 +27145,41 @@ function _templateObject61() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject60() {
   var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+=======
+/* harmony default export */ const _baseRest = (baseRest);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isLength.js
+/** Used as references for various `Number` constants. */
+var isLength_MAX_SAFE_INTEGER = 9007199254740991;
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject60 = function _templateObject60() {
 =======
@@ -11639,8 +27194,13 @@ function _templateObject91() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject90() {
   var data = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]);
+=======
+/* harmony default export */ const lodash_es_isLength = (isLength);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isArrayLike.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject90 = function _templateObject90() {
     return data;
@@ -11659,8 +27219,14 @@ function _templateObject89() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject88() {
   var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+=======
+/* harmony default export */ const lodash_es_isArrayLike = (isArrayLike);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isIterateeCall.js
+function _isIterateeCall_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _isIterateeCall_typeof = function _typeof(obj) { return typeof obj; }; } else { _isIterateeCall_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _isIterateeCall_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject88 = function _templateObject88() {
     return data;
@@ -11698,8 +27264,13 @@ function _templateObject86() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function fights_templateObject58() {
   var data = fights_taggedTemplateLiteral(["tennis ball"]);
+=======
+/* harmony default export */ const _isIterateeCall = (isIterateeCall);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createAssigner.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject58 = function _templateObject58() {
 =======
@@ -11725,8 +27296,22 @@ function fights_templateObject57() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject56() {
   var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+=======
+/* harmony default export */ const _createAssigner = (createAssigner);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isPrototype.js
+/** Used for built-in method references. */
+var _isPrototype_objectProto = Object.prototype;
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject56 = function _templateObject56() {
     return data;
@@ -11735,8 +27320,25 @@ function fights_templateObject56() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject55() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _isPrototype = (isPrototype);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseTimes.js
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject55 = function _templateObject55() {
     return data;
@@ -11745,8 +27347,16 @@ function fights_templateObject55() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject54() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _baseTimes = (baseTimes);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsArguments.js
+
+
+/** `Object#toString` result references. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject54 = function _templateObject54() {
     return data;
@@ -11755,8 +27365,14 @@ function fights_templateObject54() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject53() {
   var data = fights_taggedTemplateLiteral(["BRICKO brick"]);
+=======
+/* harmony default export */ const _baseIsArguments = (baseIsArguments);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isArguments.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject53 = function _templateObject53() {
     return data;
@@ -11772,11 +27388,42 @@ function fights_templateObject52() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
 
 function fights_templateObject51() {
   var data = fights_taggedTemplateLiteral(["BRICKO ooze"]);
+=======
+var isArguments = _baseIsArguments(function () {
+  return arguments;
+}()) ? _baseIsArguments : function (value) {
+  return lodash_es_isObjectLike(value) && isArguments_hasOwnProperty.call(value, 'callee') && !propertyIsEnumerable.call(value, 'callee');
+};
+/* harmony default export */ const lodash_es_isArguments = (isArguments);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/stubFalse.js
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+function stubFalse() {
+  return false;
+}
+
+/* harmony default export */ const lodash_es_stubFalse = (stubFalse);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isBuffer.js
+function isBuffer_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { isBuffer_typeof = function _typeof(obj) { return typeof obj; }; } else { isBuffer_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return isBuffer_typeof(obj); }
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject51 = function _templateObject51() {
     return data;
@@ -11802,8 +27449,14 @@ function fights_templateObject49() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var isBuffer = nativeIsBuffer || lodash_es_stubFalse;
+/* harmony default export */ const lodash_es_isBuffer = (isBuffer);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsTypedArray.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_templateObject48() {
   var data = fights_taggedTemplateLiteral(["figurine of a wretched-looking seal"]);
@@ -11825,15 +27478,36 @@ function fights_templateObject47() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject46() {
   var data = fights_taggedTemplateLiteral(["seal-blubber candle"]);
 
   fights_templateObject46 = function _templateObject46() {
     return data;
+=======
+/* harmony default export */ const _baseIsTypedArray = (baseIsTypedArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseUnary.js
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function (value) {
+    return func(value);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _baseUnary = (baseUnary);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_nodeUtil.js
+function _nodeUtil_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _nodeUtil_typeof = function _typeof(obj) { return typeof obj; }; } else { _nodeUtil_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _nodeUtil_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_templateObject45() {
   var data = fights_taggedTemplateLiteral(["Claw of the Infernal Seal"]);
@@ -11868,9 +27542,14 @@ function fights_templateObject43() {
 function fights_templateObject42() {
   var data = fights_taggedTemplateLiteral(["lynyrd snare"]);
 
+<<<<<<< HEAD
   fights_templateObject42 = function _templateObject42() {
     return data;
   };
+=======
+/* harmony default export */ const _nodeUtil = (nodeUtil);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isTypedArray.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -11885,8 +27564,14 @@ function fights_templateObject41() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject40() {
   var data = fights_taggedTemplateLiteral(["Evoke Eldritch Horror"]);
+=======
+var isTypedArray = nodeIsTypedArray ? _baseUnary(nodeIsTypedArray) : _baseIsTypedArray;
+/* harmony default export */ const lodash_es_isTypedArray = (isTypedArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayLikeKeys.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject40 = function _templateObject40() {
     return data;
@@ -11925,18 +27610,45 @@ function fights_templateObject37() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject36() {
   var data = fights_taggedTemplateLiteral(["Cargo Cultist Shorts"]);
 
   fights_templateObject36 = function _templateObject36() {
     return data;
   };
+=======
+/* harmony default export */ const _arrayLikeKeys = (arrayLikeKeys);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_overArg.js
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function (arg) {
+    return func(transform(arg));
+  };
+}
+
+/* harmony default export */ const _overArg = (overArg);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_nativeKeys.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject35() {
   var data = fights_taggedTemplateLiteral(["tennis ball"]);
+=======
+var nativeKeys = _overArg(Object.keys, Object);
+/* harmony default export */ const _nativeKeys = (nativeKeys);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseKeys.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject35 = function _templateObject35() {
     return data;
@@ -11965,7 +27677,13 @@ function fights_templateObject33() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+=======
+/* harmony default export */ const _baseKeys = (baseKeys);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/keys.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
@@ -11973,8 +27691,13 @@ function fights_createClass(Constructor, protoProps, staticProps) { if (protoPro
 
 function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+<<<<<<< HEAD
 function fights_templateObject32() {
   var data = fights_taggedTemplateLiteral(["Spooky Putty monster"]);
+=======
+/* harmony default export */ const lodash_es_keys = (keys);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/assign.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject32 = function _templateObject32() {
     return data;
@@ -12006,9 +27729,31 @@ function fights_templateObject30() {
 function fights_templateObject29() {
   var data = fights_taggedTemplateLiteral(["photocopied monster"]);
 
+<<<<<<< HEAD
   fights_templateObject29 = function _templateObject29() {
     return data;
   };
+=======
+  for (var key in source) {
+    if (assign_hasOwnProperty.call(source, key)) {
+      _assignValue(object, key, source[key]);
+    }
+  }
+});
+/* harmony default export */ const lodash_es_assign = (assign_assign);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_nativeKeysIn.js
+/**
+ * This function is like
+ * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * except that it includes inherited enumerable properties.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function nativeKeysIn(object) {
+  var result = [];
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 // EXPORTS
@@ -12351,8 +28096,13 @@ function fights_templateObject28() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject27() {
   var data = fights_taggedTemplateLiteral(["shaking 4-d camera"]);
+=======
+/* harmony default export */ const _nativeKeysIn = (nativeKeysIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseKeysIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject27 = function _templateObject27() {
     return data;
@@ -12391,8 +28141,13 @@ function fights_templateObject24() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject23() {
   var data = fights_taggedTemplateLiteral(["Your Mushroom Garden"]);
+=======
+/* harmony default export */ const _baseKeysIn = (baseKeysIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/keysIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject23 = function _templateObject23() {
     return data;
@@ -12411,8 +28166,13 @@ function fights_templateObject22() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject21() {
   var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+=======
+/* harmony default export */ const lodash_es_keysIn = (keysIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/assignIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject21 = function _templateObject21() {
     return data;
@@ -12424,9 +28184,17 @@ function fights_templateObject21() {
 function fights_templateObject20() {
   var data = fights_taggedTemplateLiteral(["photocopied monster"]);
 
+<<<<<<< HEAD
   fights_templateObject20 = function _templateObject20() {
     return data;
   };
+=======
+var assignIn = _createAssigner(function (object, source) {
+  _copyObject(source, lodash_es_keysIn(source), object);
+});
+/* harmony default export */ const lodash_es_assignIn = (assignIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/assignInWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -12438,8 +28206,16 @@ function fights_templateObject19() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var assignInWith = _createAssigner(function (object, source, srcIndex, customizer) {
+  _copyObject(source, lodash_es_keysIn(source), object, customizer);
+});
+/* harmony default export */ const lodash_es_assignInWith = (assignInWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/assignWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_templateObject18() {
   var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
@@ -12451,8 +28227,17 @@ function fights_templateObject18() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject17() {
   var data = fights_taggedTemplateLiteral(["4-d camera"]);
+=======
+var assignWith = _createAssigner(function (object, source, srcIndex, customizer) {
+  _copyObject(source, lodash_es_keys(source), object, customizer);
+});
+/* harmony default export */ const lodash_es_assignWith = (assignWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isKey.js
+function _isKey_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _isKey_typeof = function _typeof(obj) { return typeof obj; }; } else { _isKey_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _isKey_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject17 = function _templateObject17() {
     return data;
@@ -12481,15 +28266,26 @@ function fights_templateObject15() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject14() {
   var data = fights_taggedTemplateLiteral(["Extract"]);
+=======
+/* harmony default export */ const _isKey = (isKey);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_nativeCreate.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject14 = function _templateObject14() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var nativeCreate = _getNative(Object, 'create');
+/* harmony default export */ const _nativeCreate = (nativeCreate);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_hashClear.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_templateObject13() {
   var data = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]);
@@ -12498,11 +28294,34 @@ function fights_templateObject13() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
 
 function fights_templateObject12() {
   var data = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]);
+=======
+/* harmony default export */ const _hashClear = (hashClear);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_hashDelete.js
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+/* harmony default export */ const _hashDelete = (hashDelete);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_hashGet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject12 = function _templateObject12() {
     return data;
@@ -12531,8 +28350,13 @@ function fights_templateObject10() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject9() {
   var data = fights_taggedTemplateLiteral(["body spradium"]);
+=======
+/* harmony default export */ const _hashGet = (hashGet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_hashHas.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject9 = function _templateObject9() {
     return data;
@@ -12548,8 +28372,13 @@ function fights_templateObject8() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _hashHas = (hashHas);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_hashSet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_templateObject7() {
   var data = fights_taggedTemplateLiteral(["Peppermint Twisted"]);
@@ -12561,8 +28390,13 @@ function fights_templateObject7() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject6() {
   var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+=======
+/* harmony default export */ const _hashSet = (hashSet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_Hash.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject6 = function _templateObject6() {
     return data;
@@ -12593,11 +28427,35 @@ function _templateObject84() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
 
 function _templateObject83() {
   var data = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+=======
+Hash.prototype.clear = _hashClear;
+Hash.prototype['delete'] = _hashDelete;
+Hash.prototype.get = _hashGet;
+Hash.prototype.has = _hashHas;
+Hash.prototype.set = _hashSet;
+/* harmony default export */ const _Hash = (Hash);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_listCacheClear.js
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+/* harmony default export */ const _listCacheClear = (listCacheClear);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_assocIndexOf.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject83 = function _templateObject83() {
     return data;
@@ -12616,8 +28474,13 @@ function _templateObject82() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject81() {
   var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+=======
+/* harmony default export */ const _assocIndexOf = (assocIndexOf);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_listCacheDelete.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject81 = function _templateObject81() {
     return data;
@@ -12646,8 +28509,13 @@ function _templateObject79() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject78() {
   var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+=======
+/* harmony default export */ const _listCacheDelete = (listCacheDelete);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_listCacheGet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject78 = function _templateObject78() {
     return data;
@@ -12656,8 +28524,13 @@ function _templateObject78() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject77() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _listCacheGet = (listCacheGet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_listCacheHas.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject77 = function _templateObject77() {
     return data;
@@ -12666,8 +28539,13 @@ function _templateObject77() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject76() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _listCacheHas = (listCacheHas);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_listCacheSet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject76 = function _templateObject76() {
     return data;
@@ -12686,8 +28564,13 @@ function _templateObject75() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject74() {
   var data = fights_taggedTemplateLiteral(["drunk pygmy"]);
+=======
+/* harmony default export */ const _listCacheSet = (listCacheSet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_ListCache.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject74 = function _templateObject74() {
     return data;
@@ -12716,8 +28599,18 @@ function _templateObject72() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject71() {
   var data = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+=======
+ListCache.prototype.clear = _listCacheClear;
+ListCache.prototype['delete'] = _listCacheDelete;
+ListCache.prototype.get = _listCacheGet;
+ListCache.prototype.has = _listCacheHas;
+ListCache.prototype.set = _listCacheSet;
+/* harmony default export */ const _ListCache = (ListCache);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_Map.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject71 = function _templateObject71() {
     return data;
@@ -12726,8 +28619,14 @@ function _templateObject71() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject70() {
   var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+=======
+var Map = _getNative(_root, 'Map');
+/* harmony default export */ const _Map = (Map);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_mapCacheClear.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject70 = function _templateObject70() {
     return data;
@@ -12746,8 +28645,14 @@ function _templateObject69() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject68() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _mapCacheClear = (mapCacheClear);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isKeyable.js
+function _isKeyable_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _isKeyable_typeof = function _typeof(obj) { return typeof obj; }; } else { _isKeyable_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _isKeyable_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject68 = function _templateObject68() {
     return data;
@@ -12756,8 +28661,13 @@ function _templateObject68() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject67() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _isKeyable = (isKeyable);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getMapData.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject67 = function _templateObject67() {
     return data;
@@ -12766,8 +28676,13 @@ function _templateObject67() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject66() {
   var data = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+=======
+/* harmony default export */ const _getMapData = (getMapData);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_mapCacheDelete.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject66 = function _templateObject66() {
     return data;
@@ -12776,8 +28691,13 @@ function _templateObject66() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject65() {
   var data = fights_taggedTemplateLiteral(["miniature crystal ball"]);
+=======
+/* harmony default export */ const _mapCacheDelete = (mapCacheDelete);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_mapCacheGet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject65 = function _templateObject65() {
     return data;
@@ -12786,8 +28706,13 @@ function _templateObject65() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject64() {
   var data = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]);
+=======
+/* harmony default export */ const _mapCacheGet = (mapCacheGet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_mapCacheHas.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject64 = function _templateObject64() {
     return data;
@@ -12796,8 +28721,13 @@ function _templateObject64() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject63() {
   var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
+=======
+/* harmony default export */ const _mapCacheHas = (mapCacheHas);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_mapCacheSet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject63 = function _templateObject63() {
     return data;
@@ -12806,8 +28736,13 @@ function _templateObject63() {
   return data;
 }
 
+<<<<<<< HEAD
 function _templateObject62() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _mapCacheSet = (mapCacheSet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_MapCache.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   _templateObject62 = function _templateObject62() {
     return data;
@@ -12836,8 +28771,18 @@ function _templateObject60() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject59() {
   var data = fights_taggedTemplateLiteral(["divine champagne popper"]);
+=======
+MapCache.prototype.clear = _mapCacheClear;
+MapCache.prototype['delete'] = _mapCacheDelete;
+MapCache.prototype.get = _mapCacheGet;
+MapCache.prototype.has = _mapCacheHas;
+MapCache.prototype.set = _mapCacheSet;
+/* harmony default export */ const _MapCache = (MapCache);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/memoize.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject59 = function _templateObject59() {
     return data;
@@ -12869,9 +28814,15 @@ function fights_templateObject57() {
 function fights_templateObject56() {
   var data = fights_taggedTemplateLiteral(["Bowl of Scorpions"]);
 
+<<<<<<< HEAD
   fights_templateObject56 = function _templateObject56() {
     return data;
   };
+=======
+memoize.Cache = _MapCache;
+/* harmony default export */ const lodash_es_memoize = (memoize);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_memoizeCapped.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -12886,8 +28837,13 @@ function fights_templateObject55() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject54() {
   var data = fights_taggedTemplateLiteral(["bowling ball"]);
+=======
+/* harmony default export */ const _memoizeCapped = (memoizeCapped);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_stringToPath.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject54 = function _templateObject54() {
     return data;
@@ -12906,8 +28862,18 @@ function fights_templateObject53() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject52() {
   var data = fights_taggedTemplateLiteral(["BRICKO eye brick"]);
+=======
+  string.replace(rePropName, function (match, number, quote, subString) {
+    result.push(quote ? subString.replace(reEscapeChar, '$1') : number || match);
+  });
+  return result;
+});
+/* harmony default export */ const _stringToPath = (stringToPath);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toString.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject52 = function _templateObject52() {
     return data;
@@ -12916,8 +28882,14 @@ function fights_templateObject52() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject51() {
   var data = fights_taggedTemplateLiteral(["BRICKO ooze"]);
+=======
+/* harmony default export */ const lodash_es_toString = (toString_toString);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_castPath.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject51 = function _templateObject51() {
     return data;
@@ -12936,8 +28908,13 @@ function fights_templateObject50() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject49() {
   var data = fights_taggedTemplateLiteral(["figurine of an ancient seal"]);
+=======
+/* harmony default export */ const _castPath = (castPath);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_toKey.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject49 = function _templateObject49() {
     return data;
@@ -12956,8 +28933,13 @@ function fights_templateObject48() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject47() {
   var data = fights_taggedTemplateLiteral(["Seal Clubber"]);
+=======
+/* harmony default export */ const _toKey = (toKey);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseGet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject47 = function _templateObject47() {
     return data;
@@ -12976,8 +28958,13 @@ function fights_templateObject46() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject45() {
   var data = fights_taggedTemplateLiteral(["Claw of the Infernal Seal"]);
+=======
+/* harmony default export */ const _baseGet = (baseGet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/get.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject45 = function _templateObject45() {
     return data;
@@ -12986,8 +28973,13 @@ function fights_templateObject45() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject44() {
   var data = fights_taggedTemplateLiteral(["[glitch season reward name]"]);
+=======
+/* harmony default export */ const lodash_es_get = (get);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseAt.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject44 = function _templateObject44() {
     return data;
@@ -13006,8 +28998,25 @@ function fights_templateObject43() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject42() {
   var data = fights_taggedTemplateLiteral(["lynyrd snare"]);
+=======
+/* harmony default export */ const _baseAt = (baseAt);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayPush.js
+/**
+ * Appends the elements of `values` to `array`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to append.
+ * @returns {Array} Returns `array`.
+ */
+function arrayPush(array, values) {
+  var index = -1,
+      length = values.length,
+      offset = array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject42 = function _templateObject42() {
     return data;
@@ -13016,8 +29025,13 @@ function fights_templateObject42() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject41() {
   var data = fights_taggedTemplateLiteral(["Evoke Eldritch Horror"]);
+=======
+/* harmony default export */ const _arrayPush = (arrayPush);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isFlattenable.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject41 = function _templateObject41() {
     return data;
@@ -13036,8 +29050,14 @@ function fights_templateObject40() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject39() {
   var data = fights_taggedTemplateLiteral(["eldritch essence"]);
+=======
+/* harmony default export */ const _isFlattenable = (isFlattenable);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseFlatten.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject39 = function _templateObject39() {
     return data;
@@ -13056,8 +29076,13 @@ function fights_templateObject38() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject37() {
   var data = fights_taggedTemplateLiteral(["Robortender"]);
+=======
+/* harmony default export */ const _baseFlatten = (baseFlatten);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flatten.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject37 = function _templateObject37() {
     return data;
@@ -13066,8 +29091,13 @@ function fights_templateObject37() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject36() {
   var data = fights_taggedTemplateLiteral(["Cargo Cultist Shorts"]);
+=======
+/* harmony default export */ const lodash_es_flatten = (flatten);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_flatRest.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject36 = function _templateObject36() {
     return data;
@@ -13086,8 +29116,13 @@ function fights_templateObject35() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject34() {
   var data = fights_taggedTemplateLiteral(["divine champagne popper"]);
+=======
+/* harmony default export */ const _flatRest = (flatRest);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/at.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject34 = function _templateObject34() {
     return data;
@@ -13096,15 +29131,27 @@ function fights_templateObject34() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject33() {
   var data = fights_taggedTemplateLiteral(["Louder than Bomb"]);
+=======
+var at = _flatRest(_baseAt);
+/* harmony default export */ const lodash_es_at = (at);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getPrototype.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject33 = function _templateObject33() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var getPrototype = _overArg(Object.getPrototypeOf, Object);
+/* harmony default export */ const _getPrototype = (getPrototype);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isPlainObject.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -13153,8 +29200,13 @@ function fights_templateObject2() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject() {
   var data = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]);
+=======
+/* harmony default export */ const lodash_es_isPlainObject = (isPlainObject);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isError.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject = function _templateObject() {
     return data;
@@ -13168,10 +29220,27 @@ function fights_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.
 
 
 
+<<<<<<< HEAD
+=======
+/* harmony default export */ const lodash_es_isError = (isError);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/attempt.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
 
+<<<<<<< HEAD
+=======
+var attempt = _baseRest(function (func, args) {
+  try {
+    return _apply(func, undefined, args);
+  } catch (e) {
+    return lodash_es_isError(e) ? e : new Error(e);
+  }
+});
+/* harmony default export */ const lodash_es_attempt = (attempt);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/before.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 function checkFax() {
@@ -13218,9 +29287,14 @@ function dailyFights() {
           ensureEffect((0,dist.$effect)(fights_templateObject7()));
           if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) ensureEffect((0,dist.$effect)(fights_templateObject8()));
 
+<<<<<<< HEAD
           if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)() && (0,dist.have)((0,dist.$item)(fights_templateObject9()))) {
             ensureEffect((0,dist.$effect)(fights_templateObject10()));
           } // First round of prof copies with meat drop gear on.
+=======
+/* harmony default export */ const lodash_es_before = (before);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/bind.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
           if (!(0,dist.get)("_photocopyUsed")) {
@@ -13268,7 +29342,13 @@ function dailyFights() {
           (0,dist.set)("_garbo_professorLecturesUsed", true);
         }
 
+<<<<<<< HEAD
         var puttyCount = 1;
+=======
+bind.placeholder = {};
+/* harmony default export */ const lodash_es_bind = (bind);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/bindAll.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
         while ((0,external_kolmafia_.availableAmount)((0,dist.$item)(fights_templateObject30())) > 0 && puttyCount <= 5) {
           (0,external_kolmafia_.useFamiliar)(meatFamiliar());
@@ -13293,7 +29373,19 @@ var FreeFight = /*#__PURE__*/function () {
 
     fights_defineProperty(this, "available", void 0);
 
+<<<<<<< HEAD
     fights_defineProperty(this, "run", void 0);
+=======
+var bindAll = _flatRest(function (object, methodNames) {
+  _arrayEach(methodNames, function (key) {
+    key = _toKey(key);
+    _baseAssignValue(object, key, lodash_es_bind(object[key], object));
+  });
+  return object;
+});
+/* harmony default export */ const lodash_es_bindAll = (bindAll);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/bindKey.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     fights_defineProperty(this, "options", void 0);
 
@@ -13326,6 +29418,7 @@ var FreeFight = /*#__PURE__*/function () {
   return FreeFight;
 }();
 
+<<<<<<< HEAD
 var pygmyMacro = combat.Macro.if_("monstername pygmy bowler", combat.Macro.trySkill("Snokebomb").item((0,dist.$item)(fights_templateObject33()))).if_("monstername pygmy orderlies", combat.Macro.trySkill("Feel Hatred").item((0,dist.$item)(fights_templateObject34()))).if_("monstername pygmy janitor", combat.Macro.item((0,dist.$item)(fights_templateObject35()))).abort();
 var freeFightSources = [// Get a Fish Head from our robortender if available
 new FreeFight(function () {
@@ -13344,6 +29437,23 @@ new FreeFight(function () {
   if ((0,external_kolmafia_.handlingChoice)()) throw "Did not get all the way through LOV.";
 }), new FreeFight(function () {
   var _ChateauMantegna$pain, _ChateauMantegna$pain2, _ChateauMantegna$pain3;
+=======
+bindKey.placeholder = {};
+/* harmony default export */ const lodash_es_bindKey = (bindKey);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseSlice.js
+/**
+ * The base implementation of `_.slice` without an iteratee call guard.
+ *
+ * @private
+ * @param {Array} array The array to slice.
+ * @param {number} [start=0] The start position.
+ * @param {number} [end=array.length] The end position.
+ * @returns {Array} Returns the slice of `array`.
+ */
+function baseSlice(array, start, end) {
+  var index = -1,
+      length = array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return dist.ChateauMantegna.have() && !dist.ChateauMantegna.paintingFought() && ((_ChateauMantegna$pain = (_ChateauMantegna$pain2 = dist.ChateauMantegna.paintingMonster()) === null || _ChateauMantegna$pain2 === void 0 ? void 0 : (_ChateauMantegna$pain3 = _ChateauMantegna$pain2.attributes) === null || _ChateauMantegna$pain3 === void 0 ? void 0 : _ChateauMantegna$pain3.includes("FREE")) !== null && _ChateauMantegna$pain !== void 0 ? _ChateauMantegna$pain : false);
 }, function () {
@@ -13548,7 +29658,12 @@ new FreeFight(function () {
   // FIXME: Check quest if Gerald(ine).
   setChoice(1322, 2); // reject quest.
 
+<<<<<<< HEAD
   setChoice(1324, 5); // pick fight.
+=======
+/* harmony default export */ const _baseSlice = (baseSlice);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_castSlice.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,dist.get)("_questPartyFair") === "unstarted") (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject120()), -1, "");
   (0,dist.adventureMacro)((0,dist.$location)(_templateObject121()), combat.Macro.trySkill("Feel Pride").meatKill());
@@ -13693,9 +29808,22 @@ function freeFights() {
   }
 }
 
+<<<<<<< HEAD
 function thesisReady() {
   return !(0,dist.get)("_thesisDelivered") && (0,dist.have)((0,dist.$familiar)(_templateObject156())) && (0,dist.$familiar)(_templateObject157()).experience >= 400;
 }
+=======
+/* harmony default export */ const _castSlice = (castSlice);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_hasUnicode.js
+/** Used to compose unicode character classes. */
+var rsAstralRange = "\\ud800-\\udfff",
+    rsComboMarksRange = "\\u0300-\\u036f",
+    reComboHalfMarksRange = "\\ufe20-\\ufe2f",
+    rsComboSymbolsRange = "\\u20d0-\\u20ff",
+    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,
+    rsVarRange = "\\ufe0e\\ufe0f";
+/** Used to compose unicode capture groups. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function deliverThesis() {
   var thesisInNEP = (0,dist.get)("neverendingPartyAlways") && (0,dist.get)("_neverendingPartyFreeTurns") < 10; //Set up NEP if we haven't yet
@@ -13724,6 +29852,7 @@ function deliverThesis() {
   (0,dist.adventureMacro)(thesisInNEP ? (0,dist.$location)(_templateObject165()) : (0,dist.$location)(_templateObject166()), combat.Macro.skill("Deliver your Thesis"));
 }
 
+<<<<<<< HEAD
 function safeRestore() {
   if ((0,external_kolmafia_.myHp)() < (0,external_kolmafia_.myMaxhp)() * 0.5) {
     (0,external_kolmafia_.restoreHp)((0,external_kolmafia_.myMaxhp)() * 0.9);
@@ -13749,6 +29878,31 @@ function fights_templateObject30() {
 
 function fights_templateObject29() {
   var data = fights_taggedTemplateLiteral(["photocopied monster"]);
+=======
+/* harmony default export */ const _hasUnicode = (hasUnicode);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_asciiToArray.js
+/**
+ * Converts an ASCII `string` to an array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the converted array.
+ */
+function asciiToArray(string) {
+  return string.split('');
+}
+
+/* harmony default export */ const _asciiToArray = (asciiToArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_unicodeToArray.js
+/** Used to compose unicode character classes. */
+var _unicodeToArray_rsAstralRange = "\\ud800-\\udfff",
+    _unicodeToArray_rsComboMarksRange = "\\u0300-\\u036f",
+    _unicodeToArray_reComboHalfMarksRange = "\\ufe20-\\ufe2f",
+    _unicodeToArray_rsComboSymbolsRange = "\\u20d0-\\u20ff",
+    _unicodeToArray_rsComboRange = _unicodeToArray_rsComboMarksRange + _unicodeToArray_reComboHalfMarksRange + _unicodeToArray_rsComboSymbolsRange,
+    _unicodeToArray_rsVarRange = "\\ufe0e\\ufe0f";
+/** Used to compose unicode capture groups. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject29 = function _templateObject29() {
     return data;
@@ -13767,8 +29921,13 @@ function fights_templateObject28() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject27() {
   var data = fights_taggedTemplateLiteral(["shaking 4-d camera"]);
+=======
+/* harmony default export */ const _unicodeToArray = (unicodeToArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_stringToArray.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject27 = function _templateObject27() {
     return data;
@@ -13787,8 +29946,13 @@ function fights_templateObject26() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject25() {
   var data = fights_taggedTemplateLiteral(["Pocket Professor memory chip"]);
+=======
+/* harmony default export */ const _stringToArray = (stringToArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createCaseFirst.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject25 = function _templateObject25() {
     return data;
@@ -13817,15 +29981,26 @@ function fights_templateObject23() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject22() {
   var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
+=======
+/* harmony default export */ const _createCaseFirst = (createCaseFirst);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/upperFirst.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject22 = function _templateObject22() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var upperFirst = _createCaseFirst('toUpperCase');
+/* harmony default export */ const lodash_es_upperFirst = (upperFirst);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/capitalize.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_templateObject21() {
   var data = fights_taggedTemplateLiteral(["packet of mushroom spores"]);
@@ -13837,8 +30012,28 @@ function fights_templateObject21() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject20() {
   var data = fights_taggedTemplateLiteral(["photocopied monster"]);
+=======
+/* harmony default export */ const lodash_es_capitalize = (capitalize);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayReduce.js
+/**
+ * A specialized version of `_.reduce` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {*} [accumulator] The initial value.
+ * @param {boolean} [initAccum] Specify using the first element of `array` as
+ *  the initial value.
+ * @returns {*} Returns the accumulated value.
+ */
+function arrayReduce(array, iteratee, accumulator, initAccum) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject20 = function _templateObject20() {
     return data;
@@ -13857,22 +30052,251 @@ function fights_templateObject19() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject18() {
   var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
 
   fights_templateObject18 = function _templateObject18() {
     return data;
+=======
+/* harmony default export */ const _arrayReduce = (arrayReduce);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_basePropertyOf.js
+/**
+ * The base implementation of `_.propertyOf` without support for deep paths.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Function} Returns the new accessor function.
+ */
+function basePropertyOf(object) {
+  return function (key) {
+    return object == null ? undefined : object[key];
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   };
 
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject17() {
   var data = fights_taggedTemplateLiteral(["4-d camera"]);
 
   fights_templateObject17 = function _templateObject17() {
     return data;
   };
+=======
+/* harmony default export */ const _basePropertyOf = (basePropertyOf);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_deburrLetter.js
+
+/** Used to map Latin Unicode letters to basic Latin letters. */
+
+var deburredLetters = {
+  // Latin-1 Supplement block.
+  '\xc0': 'A',
+  '\xc1': 'A',
+  '\xc2': 'A',
+  '\xc3': 'A',
+  '\xc4': 'A',
+  '\xc5': 'A',
+  '\xe0': 'a',
+  '\xe1': 'a',
+  '\xe2': 'a',
+  '\xe3': 'a',
+  '\xe4': 'a',
+  '\xe5': 'a',
+  '\xc7': 'C',
+  '\xe7': 'c',
+  '\xd0': 'D',
+  '\xf0': 'd',
+  '\xc8': 'E',
+  '\xc9': 'E',
+  '\xca': 'E',
+  '\xcb': 'E',
+  '\xe8': 'e',
+  '\xe9': 'e',
+  '\xea': 'e',
+  '\xeb': 'e',
+  '\xcc': 'I',
+  '\xcd': 'I',
+  '\xce': 'I',
+  '\xcf': 'I',
+  '\xec': 'i',
+  '\xed': 'i',
+  '\xee': 'i',
+  '\xef': 'i',
+  '\xd1': 'N',
+  '\xf1': 'n',
+  '\xd2': 'O',
+  '\xd3': 'O',
+  '\xd4': 'O',
+  '\xd5': 'O',
+  '\xd6': 'O',
+  '\xd8': 'O',
+  '\xf2': 'o',
+  '\xf3': 'o',
+  '\xf4': 'o',
+  '\xf5': 'o',
+  '\xf6': 'o',
+  '\xf8': 'o',
+  '\xd9': 'U',
+  '\xda': 'U',
+  '\xdb': 'U',
+  '\xdc': 'U',
+  '\xf9': 'u',
+  '\xfa': 'u',
+  '\xfb': 'u',
+  '\xfc': 'u',
+  '\xdd': 'Y',
+  '\xfd': 'y',
+  '\xff': 'y',
+  '\xc6': 'Ae',
+  '\xe6': 'ae',
+  '\xde': 'Th',
+  '\xfe': 'th',
+  '\xdf': 'ss',
+  // Latin Extended-A block.
+  "\u0100": 'A',
+  "\u0102": 'A',
+  "\u0104": 'A',
+  "\u0101": 'a',
+  "\u0103": 'a',
+  "\u0105": 'a',
+  "\u0106": 'C',
+  "\u0108": 'C',
+  "\u010A": 'C',
+  "\u010C": 'C',
+  "\u0107": 'c',
+  "\u0109": 'c',
+  "\u010B": 'c',
+  "\u010D": 'c',
+  "\u010E": 'D',
+  "\u0110": 'D',
+  "\u010F": 'd',
+  "\u0111": 'd',
+  "\u0112": 'E',
+  "\u0114": 'E',
+  "\u0116": 'E',
+  "\u0118": 'E',
+  "\u011A": 'E',
+  "\u0113": 'e',
+  "\u0115": 'e',
+  "\u0117": 'e',
+  "\u0119": 'e',
+  "\u011B": 'e',
+  "\u011C": 'G',
+  "\u011E": 'G',
+  "\u0120": 'G',
+  "\u0122": 'G',
+  "\u011D": 'g',
+  "\u011F": 'g',
+  "\u0121": 'g',
+  "\u0123": 'g',
+  "\u0124": 'H',
+  "\u0126": 'H',
+  "\u0125": 'h',
+  "\u0127": 'h',
+  "\u0128": 'I',
+  "\u012A": 'I',
+  "\u012C": 'I',
+  "\u012E": 'I',
+  "\u0130": 'I',
+  "\u0129": 'i',
+  "\u012B": 'i',
+  "\u012D": 'i',
+  "\u012F": 'i',
+  "\u0131": 'i',
+  "\u0134": 'J',
+  "\u0135": 'j',
+  "\u0136": 'K',
+  "\u0137": 'k',
+  "\u0138": 'k',
+  "\u0139": 'L',
+  "\u013B": 'L',
+  "\u013D": 'L',
+  "\u013F": 'L',
+  "\u0141": 'L',
+  "\u013A": 'l',
+  "\u013C": 'l',
+  "\u013E": 'l',
+  "\u0140": 'l',
+  "\u0142": 'l',
+  "\u0143": 'N',
+  "\u0145": 'N',
+  "\u0147": 'N',
+  "\u014A": 'N',
+  "\u0144": 'n',
+  "\u0146": 'n',
+  "\u0148": 'n',
+  "\u014B": 'n',
+  "\u014C": 'O',
+  "\u014E": 'O',
+  "\u0150": 'O',
+  "\u014D": 'o',
+  "\u014F": 'o',
+  "\u0151": 'o',
+  "\u0154": 'R',
+  "\u0156": 'R',
+  "\u0158": 'R',
+  "\u0155": 'r',
+  "\u0157": 'r',
+  "\u0159": 'r',
+  "\u015A": 'S',
+  "\u015C": 'S',
+  "\u015E": 'S',
+  "\u0160": 'S',
+  "\u015B": 's',
+  "\u015D": 's',
+  "\u015F": 's',
+  "\u0161": 's',
+  "\u0162": 'T',
+  "\u0164": 'T',
+  "\u0166": 'T',
+  "\u0163": 't',
+  "\u0165": 't',
+  "\u0167": 't',
+  "\u0168": 'U',
+  "\u016A": 'U',
+  "\u016C": 'U',
+  "\u016E": 'U',
+  "\u0170": 'U',
+  "\u0172": 'U',
+  "\u0169": 'u',
+  "\u016B": 'u',
+  "\u016D": 'u',
+  "\u016F": 'u',
+  "\u0171": 'u',
+  "\u0173": 'u',
+  "\u0174": 'W',
+  "\u0175": 'w',
+  "\u0176": 'Y',
+  "\u0177": 'y',
+  "\u0178": 'Y',
+  "\u0179": 'Z',
+  "\u017B": 'Z',
+  "\u017D": 'Z',
+  "\u017A": 'z',
+  "\u017C": 'z',
+  "\u017E": 'z',
+  "\u0132": 'IJ',
+  "\u0133": 'ij',
+  "\u0152": 'Oe',
+  "\u0153": 'oe',
+  "\u0149": "'n",
+  "\u017F": 's'
+};
+/**
+ * Used by `_.deburr` to convert Latin-1 Supplement and Latin Extended-A
+ * letters to basic Latin letters.
+ *
+ * @private
+ * @param {string} letter The matched letter to deburr.
+ * @returns {string} Returns the deburred letter.
+ */
+
+var deburrLetter = _basePropertyOf(deburredLetters);
+/* harmony default export */ const _deburrLetter = (deburrLetter);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/deburr.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -13897,18 +30321,69 @@ function fights_templateObject15() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject14() {
   var data = fights_taggedTemplateLiteral(["Extract"]);
 
   fights_templateObject14 = function _templateObject14() {
     return data;
   };
+=======
+/* harmony default export */ const lodash_es_deburr = (deburr);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_asciiWords.js
+/** Used to match words composed of alphanumeric characters. */
+var reAsciiWord = /[^\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/g;
+/**
+ * Splits an ASCII `string` into an array of its words.
+ *
+ * @private
+ * @param {string} The string to inspect.
+ * @returns {Array} Returns the words of `string`.
+ */
+
+function asciiWords(string) {
+  return string.match(reAsciiWord) || [];
+}
+
+/* harmony default export */ const _asciiWords = (asciiWords);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_hasUnicodeWord.js
+/** Used to detect strings that need a more robust regexp to match words. */
+var reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
+/**
+ * Checks if `string` contains a word composed of Unicode symbols.
+ *
+ * @private
+ * @param {string} string The string to inspect.
+ * @returns {boolean} Returns `true` if a word is found, else `false`.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject13() {
   var data = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]);
+=======
+/* harmony default export */ const _hasUnicodeWord = (hasUnicodeWord);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_unicodeWords.js
+/** Used to compose unicode character classes. */
+var _unicodeWords_rsAstralRange = "\\ud800-\\udfff",
+    _unicodeWords_rsComboMarksRange = "\\u0300-\\u036f",
+    _unicodeWords_reComboHalfMarksRange = "\\ufe20-\\ufe2f",
+    _unicodeWords_rsComboSymbolsRange = "\\u20d0-\\u20ff",
+    _unicodeWords_rsComboRange = _unicodeWords_rsComboMarksRange + _unicodeWords_reComboHalfMarksRange + _unicodeWords_rsComboSymbolsRange,
+    rsDingbatRange = "\\u2700-\\u27bf",
+    rsLowerRange = 'a-z\\xdf-\\xf6\\xf8-\\xff',
+    rsMathOpRange = '\\xac\\xb1\\xd7\\xf7',
+    rsNonCharRange = '\\x00-\\x2f\\x3a-\\x40\\x5b-\\x60\\x7b-\\xbf',
+    rsPunctuationRange = "\\u2000-\\u206f",
+    rsSpaceRange = " \\t\\x0b\\f\\xa0\\ufeff\\n\\r\\u2028\\u2029\\u1680\\u180e\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u202f\\u205f\\u3000",
+    rsUpperRange = 'A-Z\\xc0-\\xd6\\xd8-\\xde',
+    _unicodeWords_rsVarRange = "\\ufe0e\\ufe0f",
+    rsBreakRange = rsMathOpRange + rsNonCharRange + rsPunctuationRange + rsSpaceRange;
+/** Used to compose unicode capture groups. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject13 = function _templateObject13() {
     return data;
@@ -13927,8 +30402,13 @@ function fights_templateObject12() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject11() {
   var data = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]);
+=======
+/* harmony default export */ const _unicodeWords = (unicodeWords);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/words.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject11 = function _templateObject11() {
     return data;
@@ -13962,9 +30442,14 @@ function src_templateObject73() {
   var data = src_taggedTemplateLiteral(["broken champagne bottle"]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   src_templateObject73 = function _templateObject73() {
     return data;
   };
+=======
+/* harmony default export */ const lodash_es_words = (words);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createCompounder.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -13989,8 +30474,13 @@ function src_templateObject71() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject70() {
   var data = src_taggedTemplateLiteral(["noob cave"]);
+=======
+/* harmony default export */ const _createCompounder = (createCompounder);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/camelCase.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject70 = function _templateObject70() {
 =======
@@ -14001,8 +30491,17 @@ function fights_templateObject8() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var camelCase = _createCompounder(function (result, word, index) {
+  word = word.toLowerCase();
+  return result + (index ? lodash_es_capitalize(word) : word);
+});
+/* harmony default export */ const lodash_es_camelCase = (camelCase);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/castArray.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function fights_templateObject7() {
   var data = fights_taggedTemplateLiteral(["Peppermint Twisted"]);
@@ -14014,8 +30513,13 @@ function fights_templateObject7() {
   return data;
 }
 
+<<<<<<< HEAD
 function fights_templateObject6() {
   var data = fights_taggedTemplateLiteral(["Pocket Professor"]);
+=======
+/* harmony default export */ const lodash_es_castArray = (castArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createRound.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject6 = function _templateObject6() {
     return data;
@@ -14049,17 +30553,28 @@ function fights_templateObject4() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _createRound = (createRound);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/ceil.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function src_templateObject68() {
   var data = src_taggedTemplateLiteral(["I Voted!\" sticker"]);
 
+<<<<<<< HEAD
   src_templateObject68 = function _templateObject68() {
 =======
 function fights_templateObject3() {
   var data = fights_taggedTemplateLiteral(["Knob Goblin embezzler"]);
+=======
+var ceil = _createRound('ceil');
+/* harmony default export */ const lodash_es_ceil = (ceil);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/chain.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   fights_templateObject3 = function _templateObject3() {
 >>>>>>> 6528995 (Phill told me to do this)
@@ -14070,8 +30585,13 @@ function fights_templateObject3() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function src_templateObject67() {
   var data = src_taggedTemplateLiteral(["protonic accelerator pack"]);
+=======
+/* harmony default export */ const lodash_es_chain = (chain);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/chunk.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject67 = function _templateObject67() {
 =======
@@ -14118,8 +30638,27 @@ function fights_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function src_templateObject64() {
   var data = src_taggedTemplateLiteral(["envyfish egg"]);
+=======
+/* harmony default export */ const lodash_es_chunk = (chunk);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseClamp.js
+/**
+ * The base implementation of `_.clamp` which doesn't coerce arguments.
+ *
+ * @private
+ * @param {number} number The number to clamp.
+ * @param {number} [lower] The lower bound.
+ * @param {number} upper The upper bound.
+ * @returns {number} Returns the clamped number.
+ */
+function baseClamp(number, lower, upper) {
+  if (number === number) {
+    if (upper !== undefined) {
+      number = number <= upper ? number : upper;
+    }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject64 = function _templateObject64() {
     return data;
@@ -14128,8 +30667,13 @@ function src_templateObject64() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject63() {
   var data = src_taggedTemplateLiteral(["The Briny Deeps"]);
+=======
+/* harmony default export */ const _baseClamp = (baseClamp);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/clamp.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject63 = function _templateObject63() {
     return data;
@@ -14148,8 +30692,13 @@ function src_templateObject62() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject61() {
   var data = src_taggedTemplateLiteral(["fishy pipe"]);
+=======
+/* harmony default export */ const lodash_es_clamp = (clamp);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_stackClear.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject61 = function _templateObject61() {
     return data;
@@ -14158,6 +30707,7 @@ function src_templateObject61() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject60() {
   var data = src_taggedTemplateLiteral(["Fishy"]);
 
@@ -14170,6 +30720,59 @@ function src_templateObject60() {
 
 function src_templateObject59() {
   var data = src_taggedTemplateLiteral(["pulled green taffy"]);
+=======
+/* harmony default export */ const _stackClear = (stackClear);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_stackDelete.js
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function stackDelete(key) {
+  var data = this.__data__,
+      result = data['delete'](key);
+  this.size = data.size;
+  return result;
+}
+
+/* harmony default export */ const _stackDelete = (stackDelete);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_stackGet.js
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function stackGet(key) {
+  return this.__data__.get(key);
+}
+
+/* harmony default export */ const _stackGet = (stackGet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_stackHas.js
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function stackHas(key) {
+  return this.__data__.has(key);
+}
+
+/* harmony default export */ const _stackHas = (stackHas);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_stackSet.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject59 = function _templateObject59() {
     return data;
@@ -14198,8 +30801,14 @@ function src_templateObject57() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject56() {
   var data = src_taggedTemplateLiteral(["Fishy"]);
+=======
+/* harmony default export */ const _stackSet = (stackSet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_Stack.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject56 = function _templateObject56() {
     return data;
@@ -14225,8 +30834,18 @@ function src_templateObject54() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+Stack.prototype.clear = _stackClear;
+Stack.prototype['delete'] = _stackDelete;
+Stack.prototype.get = _stackGet;
+Stack.prototype.has = _stackHas;
+Stack.prototype.set = _stackSet;
+/* harmony default export */ const _Stack = (Stack);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseAssign.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function src_templateObject53() {
   var data = src_taggedTemplateLiteral(["Barf Mountain"]);
@@ -14238,8 +30857,14 @@ function src_templateObject53() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject52() {
   var data = src_taggedTemplateLiteral(["Noob Cave"]);
+=======
+/* harmony default export */ const _baseAssign = (baseAssign);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseAssignIn.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject52 = function _templateObject52() {
     return data;
@@ -14248,8 +30873,14 @@ function src_templateObject52() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject51() {
   var data = src_taggedTemplateLiteral(["Noob Cave"]);
+=======
+/* harmony default export */ const _baseAssignIn = (baseAssignIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_cloneBuffer.js
+function _cloneBuffer_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _cloneBuffer_typeof = function _typeof(obj) { return typeof obj; }; } else { _cloneBuffer_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _cloneBuffer_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject51 = function _templateObject51() {
     return data;
@@ -14278,8 +30909,30 @@ function src_templateObject49() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject48() {
   var data = src_taggedTemplateLiteral(["Knob Goblin Embezzler"]);
+=======
+/* harmony default export */ const _cloneBuffer = (cloneBuffer);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayFilter.js
+/**
+ * A specialized version of `_.filter` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+function arrayFilter(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      resIndex = 0,
+      result = [];
+
+  while (++index < length) {
+    var value = array[index];
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject48 = function _templateObject48() {
     return data;
@@ -14288,12 +30941,41 @@ function src_templateObject48() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject47() {
   var data = src_taggedTemplateLiteral(["unwrapped retro superhero cape"]);
 
   src_templateObject47 = function _templateObject47() {
     return data;
   };
+=======
+/* harmony default export */ const _arrayFilter = (arrayFilter);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/stubArray.js
+/**
+ * This method returns a new empty array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {Array} Returns the new empty array.
+ * @example
+ *
+ * var arrays = _.times(2, _.stubArray);
+ *
+ * console.log(arrays);
+ * // => [[], []]
+ *
+ * console.log(arrays[0] === arrays[1]);
+ * // => false
+ */
+function stubArray() {
+  return [];
+}
+
+/* harmony default export */ const lodash_es_stubArray = (stubArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getSymbols.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -14315,8 +30997,18 @@ function src_templateObject45() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+  object = Object(object);
+  return _arrayFilter(nativeGetSymbols(object), function (symbol) {
+    return _getSymbols_propertyIsEnumerable.call(object, symbol);
+  });
+};
+/* harmony default export */ const _getSymbols = (getSymbols);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_copySymbols.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function src_templateObject44() {
   var data = src_taggedTemplateLiteral(["Digitize"]);
@@ -14328,8 +31020,13 @@ function src_templateObject44() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject43() {
   var data = src_taggedTemplateLiteral(["Extract"]);
+=======
+/* harmony default export */ const _copySymbols = (copySymbols);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getSymbolsIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject43 = function _templateObject43() {
     return data;
@@ -14350,16 +31047,28 @@ function src_templateObject42() {
 
 
 
+<<<<<<< HEAD
+=======
+  return result;
+};
+/* harmony default export */ const _getSymbolsIn = (getSymbolsIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_copySymbolsIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
 
+<<<<<<< HEAD
 function checkFax() {
   (0,external_kolmafia_.cliExecute)('fax receive');
   if ((0,dist.get)('photocopyMonster') === (0,dist.$monster)(fights_templateObject())) return true;
   (0,external_kolmafia_.cliExecute)('fax send');
   return false;
 }
+=======
+/* harmony default export */ const _copySymbolsIn = (copySymbolsIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseGetAllKeys.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function faxEmbezzler() {
   if (!(0,dist.get)('_photocopyUsed')) {
@@ -14375,9 +31084,14 @@ function faxEmbezzler() {
   }
 }
 
+<<<<<<< HEAD
 function dailyFights() {
   meatMood(true).execute((0,external_kolmafia_.myAdventures)() * 1.04 + 50);
   safeRestore();
+=======
+/* harmony default export */ const _baseGetAllKeys = (baseGetAllKeys);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getAllKeys.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,dist.have)((0,dist.$item)(fights_templateObject2()))) {
     var embezzler = (0,dist.$monster)(fights_templateObject3());
@@ -14398,9 +31112,14 @@ function dailyFights() {
           ensureEffect((0,dist.$effect)(fights_templateObject7()));
           if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) ensureEffect((0,dist.$effect)(fights_templateObject8()));
 
+<<<<<<< HEAD
           if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)() && (0,dist.have)((0,dist.$item)(fights_templateObject9()))) {
             ensureEffect((0,dist.$effect)(fights_templateObject10()));
           } // First round of prof copies with meat drop gear on.
+=======
+/* harmony default export */ const _getAllKeys = (getAllKeys);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getAllKeysIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
           if (!(0,dist.get)("_photocopyUsed")) {
@@ -14423,8 +31142,13 @@ function dailyFights() {
             });
           }
 
+<<<<<<< HEAD
           if ((0,external_kolmafia_.getCounters)("Digitize Monster", 0, 100).trim() === "" && (0,dist.get)("_mushroomGardenFights") === 0) {
             if ((0,dist.have)((0,dist.$item)(fights_templateObject21()))) (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject22())); // adventure in mushroom garden to start digitize timer.
+=======
+/* harmony default export */ const _getAllKeysIn = (getAllKeysIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_DataView.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
             freeFightOutfit();
             (0,external_kolmafia_.useFamiliar)(meatFamiliar());
@@ -14432,6 +31156,7 @@ function dailyFights() {
           } // Second round of prof copies with familiar weight on.
 
 
+<<<<<<< HEAD
           freeFightMood().execute(20);
           (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(fights_templateObject24()));
           (0,dist.maximizeCached)(["Familiar Weight"], {
@@ -14447,6 +31172,11 @@ function dailyFights() {
           });
           (0,dist.set)("_garbo_professorLecturesUsed", true);
         }
+=======
+var DataView = _getNative(_root, 'DataView');
+/* harmony default export */ const _DataView = (DataView);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_Promise.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
         var puttyCount = 1;
 
@@ -14459,11 +31189,17 @@ function dailyFights() {
           puttyCount++;
         }
 
+<<<<<<< HEAD
         (0,dist.set)("spookyPuttyCopiesMade", 5);
       });
     }
   }
 }
+=======
+var Promise = _getNative(_root, 'Promise');
+/* harmony default export */ const _Promise = (Promise);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_Set.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var FreeFight = /*#__PURE__*/function () {
   function FreeFight(available, run) {
@@ -14471,7 +31207,13 @@ var FreeFight = /*#__PURE__*/function () {
 
     fights_classCallCheck(this, FreeFight);
 
+<<<<<<< HEAD
     fights_defineProperty(this, "available", void 0);
+=======
+var Set = _getNative(_root, 'Set');
+/* harmony default export */ const _Set = (Set);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getTag.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     fights_defineProperty(this, "run", void 0);
 
@@ -14730,6 +31472,7 @@ new FreeFight(function () {
 
   setChoice(1324, 5); // pick fight.
 
+<<<<<<< HEAD
   if ((0,dist.get)("_questPartyFair") === "unstarted") (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject120()), -1, "");
   (0,dist.adventureMacro)((0,dist.$location)(_templateObject121()), combat.Macro.trySkill("Feel Pride").meatKill());
 }, {
@@ -14814,6 +31557,13 @@ new FreeFight(function () {
 function freeFights() {
   var _iterator = fights_createForOfIteratorHelper(freeFightSources),
       _step;
+=======
+/* harmony default export */ const _getTag = (getTag);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_initCloneArray.js
+/** Used for built-in method references. */
+var _initCloneArray_objectProto = Object.prototype;
+/** Used to check objects for own properties. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -14849,17 +31599,28 @@ function freeFights() {
     var _iterator2 = fights_createForOfIteratorHelper(freeKillSources),
         _step2;
 
+<<<<<<< HEAD
     try {
       for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
         var freeKillSource = _step2.value;
+=======
+/* harmony default export */ const _initCloneArray = (initCloneArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_Uint8Array.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
         if (freeKillSource.available()) {
           ensureEffect((0,dist.$effect)(_templateObject153()));
 
+<<<<<<< HEAD
           if ((0,dist.have)((0,dist.$skill)(_templateObject154())) && !(0,dist.get)("_steelyEyedSquintUsed")) {
             (0,external_kolmafia_.useSkill)((0,dist.$skill)(_templateObject155()));
           }
         }
+=======
+var Uint8Array = _root.Uint8Array;
+/* harmony default export */ const _Uint8Array = (Uint8Array);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_cloneArrayBuffer.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
         freeKillSource.runAll();
       }
@@ -14877,28 +31638,52 @@ function thesisReady() {
   return !(0,dist.get)("_thesisDelivered") && (0,dist.have)((0,dist.$familiar)(_templateObject156())) && (0,dist.$familiar)(_templateObject157()).experience >= 400;
 }
 
+<<<<<<< HEAD
 function deliverThesis() {
   var thesisInNEP = (0,dist.get)("neverendingPartyAlways") && (0,dist.get)("_neverendingPartyFreeTurns") < 10; //Set up NEP if we haven't yet
+=======
+/* harmony default export */ const _cloneArrayBuffer = (cloneArrayBuffer);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_cloneDataView.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if (thesisInNEP) {
     setChoice(1322, 2); // reject quest.
 
     setChoice(1324, 5); // pick fight.
 
+<<<<<<< HEAD
     if ((0,dist.get)("_questPartyFair") === "unstarted") (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject158()), -1, "");
   }
+=======
+/* harmony default export */ const _cloneDataView = (cloneDataView);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_cloneRegExp.js
+/** Used to match `RegExp` flags from their coerced string values. */
+var reFlags = /\w*$/;
+/**
+ * Creates a clone of `regexp`.
+ *
+ * @private
+ * @param {Object} regexp The regexp to clone.
+ * @returns {Object} Returns the cloned regexp.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(_templateObject159()));
   freeFightMood().execute();
   freeFightOutfit([new Requirement(["100 muscle"], {})]);
   safeRestore();
 
+<<<<<<< HEAD
   if ((0,dist.have)((0,dist.$item)(_templateObject160())) && !(0,dist.have)((0,dist.$effect)(_templateObject161())) && (0,dist.get)("_powerfulGloveBatteryPowerUsed") <= 95) {
     (0,external_kolmafia_.cliExecute)("checkpoint");
     (0,external_kolmafia_.equip)((0,dist.$slot)(_templateObject162()), (0,dist.$item)(_templateObject163()));
     ensureEffect((0,dist.$effect)(_templateObject164()));
     (0,external_kolmafia_.outfit)("checkpoint");
   }
+=======
+/* harmony default export */ const _cloneRegExp = (cloneRegExp);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_cloneSymbol.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   (0,external_kolmafia_.cliExecute)("gain 1800 muscle");
   (0,dist.adventureMacro)(thesisInNEP ? (0,dist.$location)(_templateObject165()) : (0,dist.$location)(_templateObject166()), combat.Macro.skill("Deliver your Thesis"));
@@ -14923,8 +31708,13 @@ function src_templateObject73() {
   var data = src_taggedTemplateLiteral(["broken champagne bottle"]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function src_templateObject41() {
   var data = src_taggedTemplateLiteral(["sand dollar"]);
+=======
+/* harmony default export */ const _cloneSymbol = (cloneSymbol);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_cloneTypedArray.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject41 = function _templateObject41() {
     return data;
@@ -14933,8 +31723,13 @@ function src_templateObject41() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject40() {
   var data = src_taggedTemplateLiteral(["hobo nickel"]);
+=======
+/* harmony default export */ const _cloneTypedArray = (cloneTypedArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_initCloneByTag.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject40 = function _templateObject40() {
     return data;
@@ -14993,8 +31788,13 @@ function src_templateObject35() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject34() {
   var data = src_taggedTemplateLiteral(["Bind Lasagmbie"]);
+=======
+/* harmony default export */ const _initCloneByTag = (initCloneByTag);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_initCloneObject.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject34 = function _templateObject34() {
     return data;
@@ -15013,8 +31813,13 @@ function src_templateObject33() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject32() {
   var data = src_taggedTemplateLiteral(["Pastamancer"]);
+=======
+/* harmony default export */ const _initCloneObject = (initCloneObject);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsMap.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject32 = function _templateObject32() {
     return data;
@@ -15033,7 +31838,12 @@ function src_templateObject31() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_toConsumableArray(arr) { return src_arrayWithoutHoles(arr) || src_iterableToArray(arr) || src_unsupportedIterableToArray(arr) || src_nonIterableSpread(); }
+=======
+/* harmony default export */ const _baseIsMap = (baseIsMap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isMap.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function src_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
@@ -15044,11 +31854,17 @@ function src_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return src_arrayLi
 function src_templateObject30() {
   var data = src_taggedTemplateLiteral(["moveable feast"]);
 
+<<<<<<< HEAD
   src_templateObject30 = function _templateObject30() {
 =======
   src_templateObject73 = function _templateObject73() {
     return data;
   };
+=======
+var isMap = nodeIsMap ? _baseUnary(nodeIsMap) : _baseIsMap;
+/* harmony default export */ const lodash_es_isMap = (isMap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsSet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -15063,8 +31879,13 @@ function src_templateObject72() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject71() {
   var data = src_taggedTemplateLiteral(["Angry ghost"]);
+=======
+/* harmony default export */ const _baseIsSet = (baseIsSet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isSet.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject71 = function _templateObject71() {
     return data;
@@ -15080,8 +31901,14 @@ function src_templateObject70() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+var isSet = nodeIsSet ? _baseUnary(nodeIsSet) : _baseIsSet;
+/* harmony default export */ const lodash_es_isSet = (isSet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseClone.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function src_templateObject69() {
   var data = src_taggedTemplateLiteral(["I Voted!\" sticker"]);
@@ -15241,8 +32068,13 @@ function src_templateObject60() {
     return data;
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _baseClone = (baseClone);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/clone.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function src_templateObject59() {
   var data = src_taggedTemplateLiteral(["pulled green taffy"]);
@@ -15254,8 +32086,13 @@ function src_templateObject59() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject58() {
   var data = src_taggedTemplateLiteral(["envyfish egg"]);
+=======
+/* harmony default export */ const lodash_es_clone = (clone);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/cloneDeep.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject58 = function _templateObject58() {
     return data;
@@ -15276,7 +32113,12 @@ function src_templateObject57() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function src_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = src_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+=======
+/* harmony default export */ const lodash_es_cloneDeep = (cloneDeep);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/cloneDeepWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function src_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return src_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return src_arrayLikeToArray(o, minLen); }
 
@@ -15292,8 +32134,13 @@ function src_templateObject22() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject21() {
   var data = src_taggedTemplateLiteral(["VYKEA hex key"]);
+=======
+/* harmony default export */ const lodash_es_cloneDeepWith = (cloneDeepWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/cloneWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject21 = function _templateObject21() {
 =======
@@ -15307,8 +32154,13 @@ function src_templateObject56() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject55() {
   var data = src_taggedTemplateLiteral(["little bitty bathysphere, das boot"]);
+=======
+/* harmony default export */ const lodash_es_cloneWith = (cloneWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/commit.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject55 = function _templateObject55() {
     return data;
@@ -15317,8 +32169,36 @@ function src_templateObject55() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject54() {
   var data = src_taggedTemplateLiteral(["aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying"]);
+=======
+/* harmony default export */ const commit = (wrapperCommit);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/compact.js
+/**
+ * Creates an array with all falsey values removed. The values `false`, `null`,
+ * `0`, `""`, `undefined`, and `NaN` are falsey.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to compact.
+ * @returns {Array} Returns the new array of filtered values.
+ * @example
+ *
+ * _.compact([0, 1, false, 2, '', 3]);
+ * // => [1, 2, 3]
+ */
+function compact(array) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      resIndex = 0,
+      result = [];
+
+  while (++index < length) {
+    var value = array[index];
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject54 = function _templateObject54() {
     return data;
@@ -15327,8 +32207,13 @@ function src_templateObject54() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject53() {
   var data = src_taggedTemplateLiteral(["Barf Mountain"]);
+=======
+/* harmony default export */ const lodash_es_compact = (compact);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/concat.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject53 = function _templateObject53() {
 >>>>>>> 6528995 (Phill told me to do this)
@@ -15373,8 +32258,25 @@ function src_templateObject51() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function src_templateObject18() {
   var data = src_taggedTemplateLiteral(["Extract"]);
+=======
+/* harmony default export */ const lodash_es_concat = (concat);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_setCacheAdd.js
+/** Used to stand-in for `undefined` hash values. */
+var _setCacheAdd_HASH_UNDEFINED = '__lodash_hash_undefined__';
+/**
+ * Adds `value` to the array cache.
+ *
+ * @private
+ * @name add
+ * @memberOf SetCache
+ * @alias push
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache instance.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject18 = function _templateObject18() {
     return data;
@@ -15383,6 +32285,7 @@ function src_templateObject18() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject17() {
   var data = src_taggedTemplateLiteral(["Bastille Battalion control rig"]);
 
@@ -15395,6 +32298,25 @@ function src_templateObject17() {
 
 function src_templateObject16() {
   var data = src_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]);
+=======
+/* harmony default export */ const _setCacheAdd = (setCacheAdd);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_setCacheHas.js
+/**
+ * Checks if `value` is in the array cache.
+ *
+ * @private
+ * @name has
+ * @memberOf SetCache
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `true` if `value` is found, else `false`.
+ */
+function setCacheHas(value) {
+  return this.__data__.has(value);
+}
+
+/* harmony default export */ const _setCacheHas = (setCacheHas);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_SetCache.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject16 = function _templateObject16() {
 =======
@@ -15418,8 +32340,28 @@ function src_templateObject49() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject48() {
   var data = src_taggedTemplateLiteral(["Knob Goblin Embezzler"]);
+=======
+SetCache.prototype.add = SetCache.prototype.push = _setCacheAdd;
+SetCache.prototype.has = _setCacheHas;
+/* harmony default export */ const _SetCache = (SetCache);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arraySome.js
+/**
+ * A specialized version of `_.some` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+function arraySome(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject48 = function _templateObject48() {
     return data;
@@ -15428,12 +32370,31 @@ function src_templateObject48() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject47() {
   var data = src_taggedTemplateLiteral(["unwrapped retro superhero cape"]);
 
   src_templateObject47 = function _templateObject47() {
     return data;
   };
+=======
+/* harmony default export */ const _arraySome = (arraySome);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_cacheHas.js
+/**
+ * Checks if a `cache` value for `key` exists.
+ *
+ * @private
+ * @param {Object} cache The cache to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function cacheHas(cache, key) {
+  return cache.has(key);
+}
+
+/* harmony default export */ const _cacheHas = (cacheHas);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_equalArrays.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -15504,6 +32465,7 @@ function src_templateObject12() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject11() {
   var data = src_taggedTemplateLiteral(["porquoise"]);
 
@@ -15526,6 +32488,46 @@ function src_templateObject10() {
 
 function src_templateObject9() {
   var data = src_taggedTemplateLiteral(["pantogram pants"]);
+=======
+/* harmony default export */ const _equalArrays = (equalArrays);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_mapToArray.js
+/**
+ * Converts `map` to its key-value pairs.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the key-value pairs.
+ */
+function mapToArray(map) {
+  var index = -1,
+      result = Array(map.size);
+  map.forEach(function (value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+/* harmony default export */ const _mapToArray = (mapToArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_setToArray.js
+/**
+ * Converts `set` to an array of its values.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the values.
+ */
+function setToArray(set) {
+  var index = -1,
+      result = Array(set.size);
+  set.forEach(function (value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+/* harmony default export */ const _setToArray = (setToArray);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_equalByTag.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject9 = function _templateObject9() {
     return data;
@@ -15619,8 +32621,13 @@ function src_templateObject39() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject38() {
   var data = src_taggedTemplateLiteral(["Half a Purse"]);
+=======
+/* harmony default export */ const _equalByTag = (equalByTag);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_equalObjects.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject38 = function _templateObject38() {
     return data;
@@ -15698,8 +32705,13 @@ function src_templateObject32() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function src_templateObject3() {
   var data = src_taggedTemplateLiteral(["moveable feast"]);
+=======
+/* harmony default export */ const _equalObjects = (equalObjects);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsEqualDeep.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject3 = function _templateObject3() {
     return data;
@@ -15764,10 +32776,15 @@ function src_templateObject29() {
 
 <<<<<<< HEAD
 
+<<<<<<< HEAD
 =======
   src_templateObject29 = function _templateObject29() {
     return data;
   };
+=======
+/* harmony default export */ const _baseIsEqualDeep = (baseIsEqualDeep);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsEqual.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return data;
 }
@@ -15786,9 +32803,14 @@ function src_templateObject28() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject27() {
   var data = src_taggedTemplateLiteral(["Trick-or-Treating Tot"]);
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+/* harmony default export */ const _baseIsEqual = (baseIsEqual);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIsMatch.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject27 = function _templateObject27() {
     return data;
@@ -15886,10 +32908,15 @@ function dailySetup() {
     (0,external_kolmafia_.cliExecute)("mummery meat");
   }
 
+<<<<<<< HEAD
   if ((0,dist.have)((0,dist.$item)(src_templateObject26())) && !(0,dist.get)("_mummeryMods").includes("Item Drop") && (0,dist.have)((0,dist.$familiar)(src_templateObject27()))) {
     (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(src_templateObject28()));
     (0,external_kolmafia_.cliExecute)("mummery item");
   }
+=======
+/* harmony default export */ const _baseIsMatch = (baseIsMatch);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_isStrictComparable.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,dist.get)("_feastUsed") === 0) {
     withStash((0,dist.$items)(src_templateObject29()), function () {
@@ -15901,9 +32928,14 @@ function dailySetup() {
     (0,external_kolmafia_.useSkill)((0,dist.$skill)(src_templateObject35()));
   }
 
+<<<<<<< HEAD
   if (!(0,dist.get)("_clanFortuneBuffUsed") && (0,dist.have)((0,dist.$item)(src_templateObject36())) && (0,external_kolmafia_.getClanLounge)()["Clan Carnival Game"] !== undefined) {
     (0,external_kolmafia_.cliExecute)("fortune buff meat");
   }
+=======
+/* harmony default export */ const _isStrictComparable = (isStrictComparable);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_getMatchData.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if (!(0,dist.get)("demonSummoned") && (0,dist.get)("demonName2", false) && (0,dist.get)("questL11Manor") === "finished") {
     (0,external_kolmafia_.cliExecute)("summon Preternatural Greed");
@@ -15928,16 +32960,40 @@ function dailySetup() {
   (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(src_templateObject41())), (0,dist.$item)(src_templateObject42()));
 }
 
+<<<<<<< HEAD
 function barfTurn() {
   if (dist.SourceTerminal.have()) {
     dist.SourceTerminal.educate([(0,dist.$skill)(src_templateObject43()), (0,dist.$skill)(src_templateObject44())]);
   }
+=======
+/* harmony default export */ const _getMatchData = (getMatchData);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_matchesStrictComparable.js
+/**
+ * A specialized version of `matchesProperty` for source values suitable
+ * for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function matchesStrictComparable(key, srcValue) {
+  return function (object) {
+    if (object == null) {
+      return false;
+    }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,dist.have)((0,dist.$item)(src_templateObject45())) && (0,external_kolmafia_.myGardenType)() !== "grass") (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject46()));
 
+<<<<<<< HEAD
   if ((0,dist.have)((0,dist.$item)(src_templateObject47())) && (0,dist.get)("retroCapeSuperhero") !== "robot" && (0,dist.get)("retroCapeWashingInstructions") !== "kill") {
     (0,external_kolmafia_.cliExecute)("retrocape robot kill");
   }
+=======
+/* harmony default export */ const _matchesStrictComparable = (matchesStrictComparable);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseMatches.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   while ((0,dist.get)("feelNostalgicMonster") === (0,dist.$monster)(src_templateObject48()) && (0,dist.have)((0,dist.$item)(src_templateObject49())) && (0,dist.get)("_backUpUses") < 11) {
     (0,external_kolmafia_.useFamiliar)(meatFamiliar());
@@ -15966,10 +33022,29 @@ function barfTurn() {
   var underwater = location === (0,dist.$location)(src_templateObject63());
   meatOutfit(embezzlerUp, [], underwater); // c. set up mood stuff
 
+<<<<<<< HEAD
   meatMood().execute((0,external_kolmafia_.myAdventures)() * 1.04 + 50);
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
 
   var ghostLocation = (0,dist.get)("ghostLocation"); // d. run adventure
+=======
+/* harmony default export */ const _baseMatches = (baseMatches);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseHasIn.js
+/**
+ * The base implementation of `_.hasIn` without support for deep paths.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHasIn(object, key) {
+  return object != null && key in Object(object);
+}
+
+/* harmony default export */ const _baseHasIn = (baseHasIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_hasPath.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,dist.have)((0,dist.$item)(src_templateObject64())) && !(0,dist.get)("_envyfishEggUsed")) {
     meatOutfit(true);
@@ -16036,8 +33111,14 @@ function src_templateObject24() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject23() {
   var data = src_taggedTemplateLiteral(["Newark, drive-by shooting, Feliz Navidad, single entendre, bloody nora"]);
+=======
+/* harmony default export */ const _hasPath = (hasPath);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/hasIn.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject23 = function _templateObject23() {
     return data;
@@ -16046,7 +33127,12 @@ function src_templateObject23() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = src_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+=======
+/* harmony default export */ const lodash_es_hasIn = (hasIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseMatchesProperty.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function src_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return src_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return src_arrayLikeToArray(o, minLen); }
 
@@ -16082,15 +33168,35 @@ function src_templateObject20() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject19() {
   var data = src_taggedTemplateLiteral(["Digitize"]);
 
   src_templateObject19 = function _templateObject19() {
     return data;
+=======
+/* harmony default export */ const _baseMatchesProperty = (baseMatchesProperty);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseProperty.js
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function baseProperty(key) {
+  return function (object) {
+    return object == null ? undefined : object[key];
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   };
 
+<<<<<<< HEAD
   return data;
 }
+=======
+/* harmony default export */ const _baseProperty = (baseProperty);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_basePropertyDeep.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function src_templateObject18() {
   var data = src_taggedTemplateLiteral(["Extract"]);
@@ -16102,8 +33208,13 @@ function src_templateObject18() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject17() {
   var data = src_taggedTemplateLiteral(["Bastille Battalion control rig"]);
+=======
+/* harmony default export */ const _basePropertyDeep = (basePropertyDeep);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/property.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject17 = function _templateObject17() {
     return data;
@@ -16122,8 +33233,14 @@ function src_templateObject16() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject15() {
   var data = src_taggedTemplateLiteral(["Moxie"]);
+=======
+/* harmony default export */ const lodash_es_property = (property);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIteratee.js
+function _baseIteratee_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _baseIteratee_typeof = function _typeof(obj) { return typeof obj; }; } else { _baseIteratee_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _baseIteratee_typeof(obj); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject15 = function _templateObject15() {
     return data;
@@ -16162,8 +33279,13 @@ function src_templateObject12() {
   return data;
 }
 
+<<<<<<< HEAD
 function src_templateObject11() {
   var data = src_taggedTemplateLiteral(["porquoise"]);
+=======
+/* harmony default export */ const _baseIteratee = (baseIteratee);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/cond.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject11 = function _templateObject11() {
     return data;
@@ -16240,7 +33362,22 @@ function main() {
   }
 }
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const lodash_es_cond = (cond);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseConformsTo.js
+/**
+ * The base implementation of `_.conformsTo` which accepts `props` to check.
+ *
+ * @private
+ * @param {Object} object The object to inspect.
+ * @param {Object} source The object of property predicates to conform to.
+ * @returns {boolean} Returns `true` if `object` conforms, else `false`.
+ */
+function baseConformsTo(object, source, props) {
+  var length = props.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 2886:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16275,7 +33412,12 @@ module.exports = function (it) {
   return it;
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const _baseConformsTo = (baseConformsTo);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseConforms.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 3781:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16306,6 +33448,7 @@ var createMethod = function createMethod(IS_INCLUDES) {
   };
 };
 
+<<<<<<< HEAD
 module.exports = {
   // `Array.prototype.includes` method
   // https://tc39.es/ecma262/#sec-array.prototype.includes
@@ -16314,6 +33457,10 @@ module.exports = {
   // https://tc39.es/ecma262/#sec-array.prototype.indexof
   indexOf: createMethod(false)
 };
+=======
+/* harmony default export */ const _baseConforms = (baseConforms);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/conforms.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -16326,7 +33473,12 @@ module.exports = function (it) {
   return toString.call(it).slice(8, -1);
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const lodash_es_conforms = (conforms);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/conformsTo.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 8801:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16335,7 +33487,25 @@ var has = __webpack_require__(7409);
 
 var ownKeys = __webpack_require__(1890);
 
+<<<<<<< HEAD
 var getOwnPropertyDescriptorModule = __webpack_require__(2086);
+=======
+/* harmony default export */ const lodash_es_conformsTo = (conformsTo);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayAggregator.js
+/**
+ * A specialized version of `baseAggregator` for arrays.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} setter The function to set `accumulator` values.
+ * @param {Function} iteratee The iteratee to transform keys.
+ * @param {Object} accumulator The initial aggregated object.
+ * @returns {Function} Returns `accumulator`.
+ */
+function arrayAggregator(array, setter, iteratee, accumulator) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var definePropertyModule = __webpack_require__(3099);
 
@@ -16352,8 +33522,26 @@ module.exports = function (target, source) {
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 6711:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+/* harmony default export */ const _arrayAggregator = (arrayAggregator);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createBaseFor.js
+/**
+ * Creates a base function for methods like `_.forIn` and `_.forOwn`.
+ *
+ * @private
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseFor(fromRight) {
+  return function (object, iteratee, keysFunc) {
+    var index = -1,
+        iterable = Object(object),
+        props = keysFunc(object),
+        length = props.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var DESCRIPTORS = __webpack_require__(3207);
 
@@ -16361,17 +33549,28 @@ var definePropertyModule = __webpack_require__(3099);
 
 var createPropertyDescriptor = __webpack_require__(9658);
 
+<<<<<<< HEAD
 module.exports = DESCRIPTORS ? function (object, key, value) {
   return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
 } : function (object, key, value) {
   object[key] = value;
   return object;
 };
+=======
+/* harmony default export */ const _createBaseFor = (createBaseFor);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseFor.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 9658:
 /***/ ((module) => {
+=======
+var baseFor = _createBaseFor();
+/* harmony default export */ const _baseFor = (baseFor);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseForOwn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 module.exports = function (bitmap, value) {
   return {
@@ -16387,7 +33586,12 @@ module.exports = function (bitmap, value) {
 /***/ 3207:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var fails = __webpack_require__(7537); // Detect IE8's incomplete defineProperty implementation
+=======
+/* harmony default export */ const _baseForOwn = (baseForOwn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createBaseEach.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 module.exports = !fails(function () {
@@ -16407,7 +33611,12 @@ var global = __webpack_require__(6464);
 
 var isObject = __webpack_require__(6769);
 
+<<<<<<< HEAD
 var document = global.document; // typeof document.createElement is 'object' in old IE
+=======
+/* harmony default export */ const _createBaseEach = (createBaseEach);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseEach.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var EXISTS = isObject(document) && isObject(document.createElement);
 
@@ -16415,7 +33624,13 @@ module.exports = function (it) {
   return EXISTS ? document.createElement(it) : {};
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+var baseEach = _createBaseEach(_baseForOwn);
+/* harmony default export */ const _baseEach = (baseEach);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseAggregator.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 4061:
 /***/ ((module) => {
@@ -16423,7 +33638,12 @@ module.exports = function (it) {
 // IE8- don't enum bug keys
 module.exports = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf'];
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const _baseAggregator = (baseAggregator);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createAggregator.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 5186:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16436,7 +33656,12 @@ var getOwnPropertyDescriptor = __webpack_require__(2086).f;
 
 var createNonEnumerableProperty = __webpack_require__(6711);
 
+<<<<<<< HEAD
 var redefine = __webpack_require__(1886);
+=======
+/* harmony default export */ const _createAggregator = (createAggregator);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/countBy.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var setGlobal = __webpack_require__(6757);
 
@@ -16472,6 +33697,12 @@ module.exports = function (options, source) {
   } else {
     target = (global[TARGET] || {}).prototype;
   }
+<<<<<<< HEAD
+=======
+});
+/* harmony default export */ const lodash_es_countBy = (countBy);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/create.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if (target) for (key in source) {
     sourceProperty = source[key];
@@ -16483,10 +33714,15 @@ module.exports = function (options, source) {
 
     FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced); // contained in target
 
+<<<<<<< HEAD
     if (!FORCED && targetProperty !== undefined) {
       if (_typeof(sourceProperty) === _typeof(targetProperty)) continue;
       copyConstructorProperties(sourceProperty, targetProperty);
     } // add a flag to not completely full polyfills
+=======
+/* harmony default export */ const lodash_es_create = (create);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/curry.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
     if (options.sham || targetProperty && targetProperty.sham) {
@@ -16498,7 +33734,13 @@ module.exports = function (options, source) {
   }
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+curry.placeholder = {};
+/* harmony default export */ const lodash_es_curry = (curry);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/curryRight.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 7537:
 /***/ ((module) => {
@@ -16516,7 +33758,13 @@ module.exports = function (exec) {
 /***/ 7260:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var path = __webpack_require__(3914);
+=======
+curryRight.placeholder = {};
+/* harmony default export */ const lodash_es_curryRight = (curryRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/now.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var global = __webpack_require__(6464);
 
@@ -16524,11 +33772,16 @@ var aFunction = function aFunction(variable) {
   return typeof variable == 'function' ? variable : undefined;
 };
 
+<<<<<<< HEAD
 module.exports = function (namespace, method) {
   return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global[namespace]) : path[namespace] && path[namespace][method] || global[namespace] && global[namespace][method];
 =======
 function src_templateObject10() {
   var data = src_taggedTemplateLiteral(["ten-leaf clover"]);
+=======
+/* harmony default export */ const lodash_es_now = (now);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/debounce.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   src_templateObject10 = function _templateObject10() {
     return data;
@@ -16631,7 +33884,38 @@ function src_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.sli
 
 
 
+<<<<<<< HEAD
 
+=======
+/* harmony default export */ const lodash_es_debounce = (debounce);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/defaultTo.js
+/**
+ * Checks `value` to determine whether a default value should be returned in
+ * its place. The `defaultValue` is returned if `value` is `NaN`, `null`,
+ * or `undefined`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.14.0
+ * @category Util
+ * @param {*} value The value to check.
+ * @param {*} defaultValue The default value.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * _.defaultTo(1, 10);
+ * // => 1
+ *
+ * _.defaultTo(undefined, 10);
+ * // => 10
+ */
+function defaultTo(value, defaultValue) {
+  return value == null || value !== value ? defaultValue : value;
+}
+
+/* harmony default export */ const lodash_es_defaultTo = (defaultTo);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/defaults.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -16666,11 +33950,18 @@ function tryFeast(familiar) {
   }
 }
 
+<<<<<<< HEAD
 function dailySetup() {
   if ((0,dist.have)((0,dist.$familiar)(src_templateObject4())) && !(0,dist.have)((0,dist.$item)(src_templateObject5()))) {
     (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(src_templateObject6()));
     (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject7()));
   }
+=======
+  return object;
+});
+/* harmony default export */ const lodash_es_defaults = (defaults);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_assignMergeValue.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,dist.have)((0,dist.$item)(src_templateObject8())) && !(0,dist.have)((0,dist.$item)(src_templateObject9()))) {
     (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject10()));
@@ -16691,7 +33982,12 @@ function dailySetup() {
     (0,external_kolmafia_.cliExecute)("bastille myst brutalist gesture");
   }
 
+<<<<<<< HEAD
   dist.SongBoom.setSong("Total Eclipse of Your Meat");
+=======
+/* harmony default export */ const _assignMergeValue = (assignMergeValue);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isArrayLikeObject.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if (dist.SourceTerminal.have()) {
     dist.SourceTerminal.educate([(0,dist.$skill)(src_templateObject18()), (0,dist.$skill)(src_templateObject19())]);
@@ -16707,6 +34003,7 @@ function dailySetup() {
     var _iterator = src_createForOfIteratorHelper((0,dist.$items)(src_templateObject23())),
         _step;
 
+<<<<<<< HEAD
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var drink = _step.value;
@@ -16721,6 +34018,21 @@ function dailySetup() {
     } finally {
       _iterator.f();
     }
+=======
+/* harmony default export */ const lodash_es_isArrayLikeObject = (isArrayLikeObject);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_safeGet.js
+/**
+ * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function safeGet(object, key) {
+  if (key === 'constructor' && typeof object[key] === 'function') {
+    return;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   }
 
   if ((0,dist.have)((0,dist.$item)(src_templateObject25())) && !(0,dist.get)("_mummeryMods").includes("Meat Drop")) {
@@ -16728,10 +34040,18 @@ function dailySetup() {
     (0,external_kolmafia_.cliExecute)("mummery meat");
   }
 
+<<<<<<< HEAD
   if ((0,dist.have)((0,dist.$item)(src_templateObject26())) && !(0,dist.get)("_mummeryMods").includes("Item Drop") && (0,dist.have)((0,dist.$familiar)(src_templateObject27()))) {
     (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(src_templateObject28()));
     (0,external_kolmafia_.cliExecute)("mummery item");
   }
+=======
+  return object[key];
+}
+
+/* harmony default export */ const _safeGet = (safeGet);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toPlainObject.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,dist.get)("_feastUsed") === 0) {
     withStash((0,dist.$items)(src_templateObject29()), function () {
@@ -16747,9 +34067,14 @@ function dailySetup() {
     (0,external_kolmafia_.cliExecute)("fortune buff meat");
   }
 
+<<<<<<< HEAD
   if (!(0,dist.get)("demonSummoned") && (0,dist.get)("demonName2", false) && (0,dist.get)("questL11Manor") === "finished") {
     (0,external_kolmafia_.cliExecute)("summon Preternatural Greed");
   }
+=======
+/* harmony default export */ const lodash_es_toPlainObject = (toPlainObject);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseMergeDeep.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,dist.get)("horseryAvailable") && (0,dist.get)("_horsery") !== "dark horse") {
     (0,external_kolmafia_.cliExecute)("horsery dark");
@@ -16873,9 +34198,14 @@ function main() {
   try {
     (0,external_kolmafia_.print)("Collecting garbage!", "blue");
 
+<<<<<<< HEAD
     if (globalOptions.stopTurncount !== null) {
       (0,external_kolmafia_.print)("Stopping in ".concat(globalOptions.stopTurncount - (0,external_kolmafia_.myTurncount)()), "blue");
     }
+=======
+/* harmony default export */ const _baseMergeDeep = (baseMergeDeep);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseMerge.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     (0,external_kolmafia_.print)();
     (0,external_kolmafia_.setAutoAttack)(0);
@@ -16925,8 +34255,13 @@ module.exports = path.Object.values;
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 2319:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+/* harmony default export */ const _baseMerge = (baseMerge);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_customDefaultsMerge.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var parent = __webpack_require__(2886);
 
@@ -16948,7 +34283,12 @@ module.exports = function (it) {
 >>>>>>> 6528995 (Phill told me to do this)
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const _customDefaultsMerge = (customDefaultsMerge);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/mergeWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 /***/ 6464:
@@ -16956,12 +34296,20 @@ module.exports = function (it) {
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+<<<<<<< HEAD
 var check = function check(it) {
   return it && it.Math == Math && it;
 }; // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 =======
 /***/ 3781:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+var mergeWith = _createAssigner(function (object, source, srcIndex, customizer) {
+  _baseMerge(object, source, srcIndex, customizer);
+});
+/* harmony default export */ const lodash_es_mergeWith = (mergeWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/defaultsDeep.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var toIndexedObject = __webpack_require__(2292);
 
@@ -16978,13 +34326,35 @@ function () {
 }() || Function('return this')();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /***/ }),
+=======
+var defaultsDeep = _baseRest(function (args) {
+  args.push(undefined, _customDefaultsMerge);
+  return _apply(lodash_es_mergeWith, undefined, args);
+});
+/* harmony default export */ const lodash_es_defaultsDeep = (defaultsDeep);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseDelay.js
+/** Error message constants. */
+var _baseDelay_FUNC_ERROR_TEXT = 'Expected a function';
+/**
+ * The base implementation of `_.delay` and `_.defer` which accepts `args`
+ * to provide to `func`.
+ *
+ * @private
+ * @param {Function} func The function to delay.
+ * @param {number} wait The number of milliseconds to delay invocation.
+ * @param {Array} args The arguments to provide to `func`.
+ * @returns {number|Object} Returns the timer id or timeout object.
+ */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 7409:
 /***/ ((module) => {
 
 var hasOwnProperty = {}.hasOwnProperty;
 
+<<<<<<< HEAD
 module.exports = function (it, key) {
   return hasOwnProperty.call(it, key);
 =======
@@ -16995,6 +34365,10 @@ var createMethod = function createMethod(IS_INCLUDES) {
     var index = toAbsoluteIndex(fromIndex, length);
     var value; // Array#includes uses SameValueZero equality algorithm
     // eslint-disable-next-line no-self-compare -- NaN check
+=======
+/* harmony default export */ const _baseDelay = (baseDelay);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/defer.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     if (IS_INCLUDES && el != el) while (length > index) {
       value = O[index++]; // eslint-disable-next-line no-self-compare -- NaN check
@@ -17007,6 +34381,7 @@ var createMethod = function createMethod(IS_INCLUDES) {
   };
 };
 
+<<<<<<< HEAD
 module.exports = {
   // `Array.prototype.includes` method
   // https://tc39.es/ecma262/#sec-array.prototype.includes
@@ -17016,6 +34391,13 @@ module.exports = {
   indexOf: createMethod(false)
 >>>>>>> 6528995 (Phill told me to do this)
 };
+=======
+var defer = _baseRest(function (func, args) {
+  return _baseDelay(func, 1, args);
+});
+/* harmony default export */ const lodash_es_defer = (defer);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/delay.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -17025,14 +34407,39 @@ module.exports = {
 
 module.exports = {};
 
+<<<<<<< HEAD
 /***/ }),
+=======
+var delay = _baseRest(function (func, wait, args) {
+  return _baseDelay(func, lodash_es_toNumber(wait) || 0, args);
+});
+/* harmony default export */ const lodash_es_delay = (delay);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayIncludesWith.js
+/**
+ * This function is like `arrayIncludes` except that it accepts a comparator.
+ *
+ * @private
+ * @param {Array} [array] The array to inspect.
+ * @param {*} target The value to search for.
+ * @param {Function} comparator The comparator invoked per element.
+ * @returns {boolean} Returns `true` if `target` is found, else `false`.
+ */
+function arrayIncludesWith(array, value, comparator) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 636:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var DESCRIPTORS = __webpack_require__(3207);
 
+<<<<<<< HEAD
 var fails = __webpack_require__(7537);
+=======
+/* harmony default export */ const _arrayIncludesWith = (arrayIncludesWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseDifference.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var createElement = __webpack_require__(46); // Thank's IE8 for his funny defineProperty
 
@@ -17083,8 +34490,13 @@ module.exports = store.inspectSource;
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 858:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+/* harmony default export */ const _baseDifference = (baseDifference);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/difference.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var NATIVE_WEAK_MAP = __webpack_require__(3724);
 
@@ -17094,9 +34506,38 @@ var isObject = __webpack_require__(6769);
 
 var createNonEnumerableProperty = __webpack_require__(6711);
 
+<<<<<<< HEAD
 var objectHas = __webpack_require__(7409);
 
 var shared = __webpack_require__(1225);
+=======
+var difference = _baseRest(function (array, values) {
+  return lodash_es_isArrayLikeObject(array) ? _baseDifference(array, _baseFlatten(values, 1, lodash_es_isArrayLikeObject, true)) : [];
+});
+/* harmony default export */ const lodash_es_difference = (difference);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/last.js
+/**
+ * Gets the last element of `array`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to query.
+ * @returns {*} Returns the last element of `array`.
+ * @example
+ *
+ * _.last([1, 2, 3]);
+ * // => 3
+ */
+function last(array) {
+  var length = array == null ? 0 : array.length;
+  return length ? array[length - 1] : undefined;
+}
+
+/* harmony default export */ const lodash_es_last = (last);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/differenceBy.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var sharedKey = __webpack_require__(7709);
 
@@ -17127,11 +34568,18 @@ if (NATIVE_WEAK_MAP) {
   var wmhas = store.has;
   var wmset = store.set;
 
+<<<<<<< HEAD
   set = function set(it, metadata) {
     metadata.facade = it;
     wmset.call(store, it, metadata);
     return metadata;
   };
+=======
+  return lodash_es_isArrayLikeObject(array) ? _baseDifference(array, _baseFlatten(values, 1, lodash_es_isArrayLikeObject, true), _baseIteratee(iteratee, 2)) : [];
+});
+/* harmony default export */ const lodash_es_differenceBy = (differenceBy);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/differenceWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   get = function get(it) {
     return wmget.call(store, it) || {};
@@ -17169,12 +34617,27 @@ module.exports = {
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 1450:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+  return lodash_es_isArrayLikeObject(array) ? _baseDifference(array, _baseFlatten(values, 1, lodash_es_isArrayLikeObject, true), undefined, comparator) : [];
+});
+/* harmony default export */ const lodash_es_differenceWith = (differenceWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/divide.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var fails = __webpack_require__(7537);
 
+<<<<<<< HEAD
 var replacement = /#|\.prototype\./;
+=======
+var divide = _createMathOperation(function (dividend, divisor) {
+  return dividend / divisor;
+}, 1);
+/* harmony default export */ const lodash_es_divide = (divide);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/drop.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var isForced = function isForced(feature, detection) {
   var value = data[normalize(feature)];
@@ -17195,7 +34658,12 @@ module.exports = isForced;
 /***/ 6769:
 /***/ ((module) => {
 
+<<<<<<< HEAD
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+=======
+/* harmony default export */ const lodash_es_drop = (drop);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/dropRight.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 module.exports = function (it) {
   return _typeof(it) === 'object' ? it !== null : typeof it === 'function';
@@ -17210,8 +34678,13 @@ module.exports = false;
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 3724:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+/* harmony default export */ const lodash_es_dropRight = (dropRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseWhile.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var global = __webpack_require__(6464);
 
@@ -17222,8 +34695,13 @@ module.exports = typeof WeakMap === 'function' && /native code/.test(inspectSour
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 3099:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+=======
+/* harmony default export */ const _baseWhile = (baseWhile);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/dropRightWhile.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var DESCRIPTORS = __webpack_require__(3207);
 
@@ -17231,7 +34709,12 @@ var IE8_DOM_DEFINE = __webpack_require__(636);
 
 var anObject = __webpack_require__(1662);
 
+<<<<<<< HEAD
 var toPrimitive = __webpack_require__(5333);
+=======
+/* harmony default export */ const lodash_es_dropRightWhile = (dropRightWhile);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/dropWhile.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var nativeDefineProperty = Object.defineProperty; // `Object.defineProperty` method
 // https://tc39.es/ecma262/#sec-object.defineproperty
@@ -17245,14 +34728,24 @@ module.exports = function (it) {
   return toString.call(it).slice(8, -1);
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const lodash_es_dropWhile = (dropWhile);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_castFunction.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 8801:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var has = __webpack_require__(7409);
 
+<<<<<<< HEAD
 var ownKeys = __webpack_require__(1890);
+=======
+/* harmony default export */ const _castFunction = (castFunction);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/forEach.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var getOwnPropertyDescriptorModule = __webpack_require__(2086);
 
@@ -17271,14 +34764,35 @@ module.exports = function (target, source) {
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 6711:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+/* harmony default export */ const lodash_es_forEach = (forEach);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayEachRight.js
+/**
+ * A specialized version of `_.forEachRight` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns `array`.
+ */
+function arrayEachRight(array, iteratee) {
+  var length = array == null ? 0 : array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var DESCRIPTORS = __webpack_require__(3207);
 
 var definePropertyModule = __webpack_require__(3099);
 
+<<<<<<< HEAD
 var createPropertyDescriptor = __webpack_require__(9658);
+=======
+/* harmony default export */ const _arrayEachRight = (arrayEachRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseForRight.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 module.exports = DESCRIPTORS ? function (object, key, value) {
   return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
@@ -17287,7 +34801,13 @@ module.exports = DESCRIPTORS ? function (object, key, value) {
   return object;
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+var baseForRight = _createBaseFor(true);
+/* harmony default export */ const _baseForRight = (baseForRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseForOwnRight.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 9658:
 /***/ ((module) => {
@@ -17303,12 +34823,18 @@ module.exports = function (bitmap, value) {
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 3207:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+/* harmony default export */ const _baseForOwnRight = (baseForOwnRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseEachRight.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var fails = __webpack_require__(7537); // Detect IE8's incomplete defineProperty implementation
 
 
+<<<<<<< HEAD
 module.exports = !fails(function () {
   return Object.defineProperty({}, 1, {
     get: function get() {
@@ -17316,6 +34842,11 @@ module.exports = !fails(function () {
     }
   })[1] != 7;
 });
+=======
+var baseEachRight = _createBaseEach(_baseForOwnRight, true);
+/* harmony default export */ const _baseEachRight = (baseEachRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/forEachRight.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -17328,7 +34859,12 @@ var isObject = __webpack_require__(6769);
 
 var document = global.document; // typeof document.createElement is 'object' in old IE
 
+<<<<<<< HEAD
 var EXISTS = isObject(document) && isObject(document.createElement);
+=======
+/* harmony default export */ const lodash_es_forEachRight = (forEachRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/endsWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 module.exports = function (it) {
   return EXISTS ? document.createElement(it) : {};
@@ -17344,16 +34880,44 @@ module.exports = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsE
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 5186:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+/* harmony default export */ const lodash_es_endsWith = (endsWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseToPairs.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var global = __webpack_require__(6464);
 
+<<<<<<< HEAD
 var getOwnPropertyDescriptor = __webpack_require__(2086).f;
 
 var createNonEnumerableProperty = __webpack_require__(6711);
+=======
+/* harmony default export */ const _baseToPairs = (baseToPairs);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_setToPairs.js
+/**
+ * Converts `set` to its value-value pairs.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the value-value pairs.
+ */
+function setToPairs(set) {
+  var index = -1,
+      result = Array(set.size);
+  set.forEach(function (value) {
+    result[++index] = [value, value];
+  });
+  return result;
+}
+
+/* harmony default export */ const _setToPairs = (setToPairs);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createToPairs.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var redefine = __webpack_require__(1886);
 
@@ -17400,7 +34964,12 @@ module.exports = function (options, source) {
       targetProperty = descriptor && descriptor.value;
     } else targetProperty = target[key];
 
+<<<<<<< HEAD
     FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced); // contained in target
+=======
+/* harmony default export */ const _createToPairs = (createToPairs);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toPairs.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     if (!FORCED && targetProperty !== undefined) {
       if (_typeof(sourceProperty) === _typeof(targetProperty)) continue;
@@ -17408,16 +34977,28 @@ module.exports = function (options, source) {
     } // add a flag to not completely full polyfills
 
 
+<<<<<<< HEAD
     if (options.sham || targetProperty && targetProperty.sham) {
       createNonEnumerableProperty(sourceProperty, 'sham', true);
     } // extend global
+=======
+var toPairs = _createToPairs(lodash_es_keys);
+/* harmony default export */ const lodash_es_toPairs = (toPairs);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toPairsIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
     redefine(target, key, sourceProperty, options);
   }
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+var toPairsIn = _createToPairs(lodash_es_keysIn);
+/* harmony default export */ const lodash_es_toPairsIn = (toPairsIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_escapeHtmlChar.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 7537:
 /***/ ((module) => {
@@ -17430,7 +35011,13 @@ module.exports = function (exec) {
   }
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+var escapeHtmlChar = _basePropertyOf(htmlEscapes);
+/* harmony default export */ const _escapeHtmlChar = (escapeHtmlChar);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/escape.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 7260:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -17443,9 +35030,14 @@ var aFunction = function aFunction(variable) {
   return typeof variable == 'function' ? variable : undefined;
 };
 
+<<<<<<< HEAD
 module.exports = function (namespace, method) {
   return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global[namespace]) : path[namespace] && path[namespace][method] || global[namespace] && global[namespace][method];
 };
+=======
+/* harmony default export */ const lodash_es_escape = (escape_escape);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/escapeRegExp.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -17454,10 +35046,28 @@ module.exports = function (namespace, method) {
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+<<<<<<< HEAD
 var check = function check(it) {
   return it && it.Math == Math && it;
 }; // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+/* harmony default export */ const lodash_es_escapeRegExp = (escapeRegExp);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_arrayEvery.js
+/**
+ * A specialized version of `_.every` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if all elements pass the predicate check,
+ *  else `false`.
+ */
+function arrayEvery(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 exports.f = DESCRIPTORS ? nativeDefineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
@@ -17474,14 +35084,27 @@ exports.f = DESCRIPTORS ? nativeDefineProperty : function defineProperty(O, P, A
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /***/ }),
+=======
+  return true;
+}
+
+/* harmony default export */ const _arrayEvery = (arrayEvery);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseEvery.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 2086:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 var DESCRIPTORS = __webpack_require__(3207);
 
+<<<<<<< HEAD
 var propertyIsEnumerableModule = __webpack_require__(5805);
+=======
+/* harmony default export */ const _baseEvery = (baseEvery);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/every.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var createPropertyDescriptor = __webpack_require__(9658);
 
@@ -17509,6 +35132,7 @@ exports.f = DESCRIPTORS ? nativeGetOwnPropertyDescriptor : function getOwnProper
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 9129:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 =======
@@ -17518,6 +35142,10 @@ check((typeof globalThis === "undefined" ? "undefined" : _typeof(globalThis)) ==
 function () {
   return this;
 }() || Function('return this')();
+=======
+/* harmony default export */ const lodash_es_every = (every);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toLength.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -17530,7 +35158,12 @@ module.exports = function (it, key) {
   return hasOwnProperty.call(it, key);
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const lodash_es_toLength = (toLength);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseFill.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 1151:
 /***/ ((module) => {
@@ -17554,8 +35187,13 @@ var internalObjectKeys = __webpack_require__(2800);
 <<<<<<< HEAD
 var enumBugKeys = __webpack_require__(4061);
 
+<<<<<<< HEAD
 var hiddenKeys = enumBugKeys.concat('length', 'prototype'); // `Object.getOwnPropertyNames` method
 // https://tc39.es/ecma262/#sec-object.getownpropertynames
+=======
+/* harmony default export */ const _baseFill = (baseFill);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/fill.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
   return internalObjectKeys(O, hiddenKeys);
@@ -17573,7 +35211,12 @@ exports.f = Object.getOwnPropertySymbols;
 /***/ 2800:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var has = __webpack_require__(7409);
+=======
+/* harmony default export */ const lodash_es_fill = (fill);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseFilter.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var toIndexedObject = __webpack_require__(2292);
 
@@ -17587,9 +35230,14 @@ module.exports = function (object, names) {
   var result = [];
   var key;
 
+<<<<<<< HEAD
   for (key in O) {
     !has(hiddenKeys, key) && has(O, key) && result.push(key);
   } // Don't enum bug & hidden keys
+=======
+/* harmony default export */ const _baseFilter = (baseFilter);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/filter.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
   while (names.length > i) {
@@ -17606,7 +35254,12 @@ module.exports = function (object, names) {
 /***/ 6343:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var internalObjectKeys = __webpack_require__(2800);
+=======
+/* harmony default export */ const lodash_es_filter = (filter);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createFind.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var enumBugKeys = __webpack_require__(4061); // `Object.keys` method
 // https://tc39.es/ecma262/#sec-object.keys
@@ -17638,7 +35291,12 @@ module.exports = fails(function () {
   return classof(it) == 'String' ? split.call(it, '') : Object(it);
 } : Object;
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const _createFind = (createFind);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/findIndex.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 3194:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -17664,15 +35322,50 @@ var NATIVE_WEAK_MAP = __webpack_require__(3724);
 
 var global = __webpack_require__(6464);
 
+<<<<<<< HEAD
 var isObject = __webpack_require__(6769);
+=======
+/* harmony default export */ const lodash_es_findIndex = (findIndex);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/find.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var createNonEnumerableProperty = __webpack_require__(6711);
 
 var objectHas = __webpack_require__(7409);
 
+<<<<<<< HEAD
 var shared = __webpack_require__(1225);
 
 var sharedKey = __webpack_require__(7709);
+=======
+var find = _createFind(lodash_es_findIndex);
+/* harmony default export */ const lodash_es_find = (find);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseFindKey.js
+/**
+ * The base implementation of methods like `_.findKey` and `_.findLastKey`,
+ * without support for iteratee shorthands, which iterates over `collection`
+ * using `eachFunc`.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to inspect.
+ * @param {Function} predicate The function invoked per iteration.
+ * @param {Function} eachFunc The function to iterate over `collection`.
+ * @returns {*} Returns the found element or its key, else `undefined`.
+ */
+function baseFindKey(collection, predicate, eachFunc) {
+  var result;
+  eachFunc(collection, function (value, key, collection) {
+    if (predicate(value, key, collection)) {
+      result = key;
+      return false;
+    }
+  });
+  return result;
+}
+
+/* harmony default export */ const _baseFindKey = (baseFindKey);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/findKey.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var hiddenKeys = __webpack_require__(1151);
 >>>>>>> 6528995 (Phill told me to do this)
@@ -17687,8 +35380,13 @@ module.exports = Object.keys || function keys(O) {
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 5805:
 /***/ ((__unused_webpack_module, exports) => {
+=======
+/* harmony default export */ const lodash_es_findKey = (findKey);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/findLastIndex.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 "use strict";
 
@@ -17715,7 +35413,12 @@ var DESCRIPTORS = __webpack_require__(3207);
 
 var objectKeys = __webpack_require__(6343);
 
+<<<<<<< HEAD
 var toIndexedObject = __webpack_require__(2292);
+=======
+/* harmony default export */ const lodash_es_findLastIndex = (findLastIndex);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/findLast.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var propertyIsEnumerable = __webpack_require__(5805).f; // `Object.{ entries, values }` methods implementation
 =======
@@ -17727,9 +35430,15 @@ var getterFor = function getterFor(TYPE) {
   return function (it) {
     var state;
 
+<<<<<<< HEAD
     if (!isObject(it) || (state = get(it)).type !== TYPE) {
       throw TypeError('Incompatible receiver, ' + TYPE + ' required');
     }
+=======
+var findLast = _createFind(lodash_es_findLastIndex);
+/* harmony default export */ const lodash_es_findLast = (findLast);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/findLastKey.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     return state;
   };
@@ -17751,6 +35460,7 @@ if (NATIVE_WEAK_MAP) {
     return wmget.call(store, it) || {};
   };
 
+<<<<<<< HEAD
   has = function has(it) {
     return wmhas.call(store, it);
   };
@@ -17780,6 +35490,34 @@ module.exports = {
   enforce: enforce,
   getterFor: getterFor
 };
+=======
+/* harmony default export */ const lodash_es_findLastKey = (findLastKey);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/head.js
+/**
+ * Gets the first element of `array`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @alias first
+ * @category Array
+ * @param {Array} array The array to query.
+ * @returns {*} Returns the first element of `array`.
+ * @example
+ *
+ * _.head([1, 2, 3]);
+ * // => 1
+ *
+ * _.head([]);
+ * // => undefined
+ */
+function head(array) {
+  return array && array.length ? array[0] : undefined;
+}
+
+/* harmony default export */ const lodash_es_head = (head);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseMap.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -17789,7 +35527,12 @@ module.exports = {
 var fails = __webpack_require__(7537);
 >>>>>>> 6528995 (Phill told me to do this)
 
+<<<<<<< HEAD
 var replacement = /#|\.prototype\./;
+=======
+/* harmony default export */ const _baseMap = (baseMap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/map.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 var createMethod = function createMethod(TO_ENTRIES) {
@@ -17822,7 +35565,12 @@ module.exports = {
   values: createMethod(false)
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const lodash_es_map = (map);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flatMap.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 1890:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -17831,7 +35579,12 @@ var getBuiltIn = __webpack_require__(7260);
 
 var getOwnPropertyNamesModule = __webpack_require__(9129);
 
+<<<<<<< HEAD
 var getOwnPropertySymbolsModule = __webpack_require__(71);
+=======
+/* harmony default export */ const lodash_es_flatMap = (flatMap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flatMapDeep.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var anObject = __webpack_require__(1662); // all object keys, includes non-enumerable and symbols
 =======
@@ -17851,8 +35604,13 @@ module.exports = isForced;
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 6769:
 /***/ ((module) => {
+=======
+/* harmony default export */ const lodash_es_flatMapDeep = (flatMapDeep);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flatMapDepth.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -17865,7 +35623,12 @@ module.exports = function (it) {
 /***/ 9538:
 /***/ ((module) => {
 
+<<<<<<< HEAD
 module.exports = false;
+=======
+/* harmony default export */ const lodash_es_flatMapDepth = (flatMapDepth);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flattenDeep.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 >>>>>>> 6528995 (Phill told me to do this)
@@ -17880,7 +35643,12 @@ module.exports = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
   return getOwnPropertySymbols ? keys.concat(getOwnPropertySymbols(it)) : keys;
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const lodash_es_flattenDeep = (flattenDeep);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flattenDepth.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 3914:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -17894,7 +35662,12 @@ module.exports = global;
 /***/ 1886:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var global = __webpack_require__(6464);
+=======
+/* harmony default export */ const lodash_es_flattenDepth = (flattenDepth);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flip.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var createNonEnumerableProperty = __webpack_require__(6711);
 
@@ -17902,10 +35675,16 @@ var has = __webpack_require__(7409);
 
 var setGlobal = __webpack_require__(6757);
 
+<<<<<<< HEAD
 var inspectSource = __webpack_require__(3194);
+=======
+/* harmony default export */ const lodash_es_flip = (flip);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/floor.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var InternalStateModule = __webpack_require__(858);
 
+<<<<<<< HEAD
 var getInternalState = InternalStateModule.get;
 var enforceInternalState = InternalStateModule.enforce;
 var TEMPLATE = String(String).split('String');
@@ -17914,6 +35693,11 @@ var TEMPLATE = String(String).split('String');
   var simple = options ? !!options.enumerable : false;
   var noTargetGet = options ? !!options.noTargetGet : false;
   var state;
+=======
+var floor = _createRound('floor');
+/* harmony default export */ const lodash_es_floor = (floor);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createFlow.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if (typeof value == 'function') {
     if (typeof key == 'string' && !has(value, 'name')) {
@@ -17996,11 +35780,69 @@ exports.f = DESCRIPTORS ? nativeDefineProperty : function defineProperty(O, P, A
 
 var DESCRIPTORS = __webpack_require__(3207);
 
+<<<<<<< HEAD
 var propertyIsEnumerableModule = __webpack_require__(5805);
 
 var createPropertyDescriptor = __webpack_require__(9658);
 
 var toIndexedObject = __webpack_require__(2292);
+=======
+/* harmony default export */ const _createFlow = (createFlow);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flow.js
+
+/**
+ * Creates a function that returns the result of invoking the given functions
+ * with the `this` binding of the created function, where each successive
+ * invocation is supplied the return value of the previous.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Util
+ * @param {...(Function|Function[])} [funcs] The functions to invoke.
+ * @returns {Function} Returns the new composite function.
+ * @see _.flowRight
+ * @example
+ *
+ * function square(n) {
+ *   return n * n;
+ * }
+ *
+ * var addSquare = _.flow([_.add, square]);
+ * addSquare(1, 2);
+ * // => 9
+ */
+
+var flow = _createFlow();
+/* harmony default export */ const lodash_es_flow = (flow);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/flowRight.js
+
+/**
+ * This method is like `_.flow` except that it creates a function that
+ * invokes the given functions from right to left.
+ *
+ * @static
+ * @since 3.0.0
+ * @memberOf _
+ * @category Util
+ * @param {...(Function|Function[])} [funcs] The functions to invoke.
+ * @returns {Function} Returns the new composite function.
+ * @see _.flow
+ * @example
+ *
+ * function square(n) {
+ *   return n * n;
+ * }
+ *
+ * var addSquare = _.flowRight([square, _.add]);
+ * addSquare(1, 2);
+ * // => 9
+ */
+
+var flowRight = _createFlow(true);
+/* harmony default export */ const lodash_es_flowRight = (flowRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/forIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var toPrimitive = __webpack_require__(5333);
 
@@ -18011,6 +35853,7 @@ var IE8_DOM_DEFINE = __webpack_require__(636);
 var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor; // `Object.getOwnPropertyDescriptor` method
 // https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
 
+<<<<<<< HEAD
 exports.f = DESCRIPTORS ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
   O = toIndexedObject(O);
   P = toPrimitive(P, true);
@@ -18022,6 +35865,10 @@ exports.f = DESCRIPTORS ? nativeGetOwnPropertyDescriptor : function getOwnProper
   if (has(O, P)) return createPropertyDescriptor(!propertyIsEnumerableModule.f.call(O, P), O[P]);
 >>>>>>> 6528995 (Phill told me to do this)
 };
+=======
+/* harmony default export */ const lodash_es_forIn = (forIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/forInRight.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -18033,12 +35880,17 @@ var global = __webpack_require__(6464);
 
 var createNonEnumerableProperty = __webpack_require__(6711);
 
+<<<<<<< HEAD
 module.exports = function (key, value) {
   try {
     createNonEnumerableProperty(global, key, value);
   } catch (error) {
     global[key] = value;
   }
+=======
+/* harmony default export */ const lodash_es_forInRight = (forInRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/forOwn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return value;
 =======
@@ -18049,8 +35901,13 @@ var internalObjectKeys = __webpack_require__(2800);
 
 var enumBugKeys = __webpack_require__(4061);
 
+<<<<<<< HEAD
 var hiddenKeys = enumBugKeys.concat('length', 'prototype'); // `Object.getOwnPropertyNames` method
 // https://tc39.es/ecma262/#sec-object.getownpropertynames
+=======
+/* harmony default export */ const lodash_es_forOwn = (forOwn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/forOwnRight.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
   return internalObjectKeys(O, hiddenKeys);
@@ -18063,15 +35920,44 @@ exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
 /***/ 7709:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var shared = __webpack_require__(174);
+=======
+/* harmony default export */ const lodash_es_forOwnRight = (forOwnRight);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/fromPairs.js
+/**
+ * The inverse of `_.toPairs`; this method returns an object composed
+ * from key-value `pairs`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Array
+ * @param {Array} pairs The key-value pairs.
+ * @returns {Object} Returns the new object.
+ * @example
+ *
+ * _.fromPairs([['a', 1], ['b', 2]]);
+ * // => { 'a': 1, 'b': 2 }
+ */
+function fromPairs(pairs) {
+  var index = -1,
+      length = pairs == null ? 0 : pairs.length,
+      result = {};
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var uid = __webpack_require__(2157);
 
 var keys = shared('keys');
 
+<<<<<<< HEAD
 module.exports = function (key) {
   return keys[key] || (keys[key] = uid(key));
 };
+=======
+/* harmony default export */ const lodash_es_fromPairs = (fromPairs);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseFunctions.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -18080,7 +35966,12 @@ module.exports = function (key) {
 
 var global = __webpack_require__(6464);
 
+<<<<<<< HEAD
 var setGlobal = __webpack_require__(6757);
+=======
+/* harmony default export */ const _baseFunctions = (baseFunctions);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/functions.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || setGlobal(SHARED, {});
@@ -18091,7 +35982,12 @@ module.exports = store;
 /***/ 174:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var IS_PURE = __webpack_require__(9538);
+=======
+/* harmony default export */ const lodash_es_functions = (functions);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/functionsIn.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var store = __webpack_require__(1225);
 
@@ -18105,8 +36001,13 @@ var store = __webpack_require__(1225);
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 2381:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+=======
+/* harmony default export */ const lodash_es_functionsIn = (functionsIn);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/groupBy.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var toInteger = __webpack_require__(6046);
 
@@ -18122,11 +36023,38 @@ module.exports = function (index, length) {
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 2292:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 // toObject with fallback for non-array-like ES3 strings
 var IndexedObject = __webpack_require__(6300);
+=======
+var groupBy = _createAggregator(function (result, value, key) {
+  if (groupBy_hasOwnProperty.call(result, key)) {
+    result[key].push(value);
+  } else {
+    _baseAssignValue(result, key, [value]);
+  }
+});
+/* harmony default export */ const lodash_es_groupBy = (groupBy);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseGt.js
+/**
+ * The base implementation of `_.gt` which doesn't coerce arguments.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if `value` is greater than `other`,
+ *  else `false`.
+ */
+function baseGt(value, other) {
+  return value > other;
+}
+
+/* harmony default export */ const _baseGt = (baseGt);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createRelationalOperation.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var requireObjectCoercible = __webpack_require__(5589);
 
@@ -18136,8 +36064,13 @@ module.exports = function (it) {
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ 6046:
 /***/ ((module) => {
+=======
+/* harmony default export */ const _createRelationalOperation = (createRelationalOperation);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/gt.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var ceil = Math.ceil;
 var floor = Math.floor; // `ToInteger` abstract operation
@@ -18147,12 +36080,29 @@ module.exports = function (argument) {
   return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+var gt = _createRelationalOperation(_baseGt);
+/* harmony default export */ const lodash_es_gt = (gt);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/gte.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 8129:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var toInteger = __webpack_require__(6046);
+=======
+var gte = _createRelationalOperation(function (value, other) {
+  return value >= other;
+});
+/* harmony default export */ const lodash_es_gte = (gte);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseHas.js
+/** Used for built-in method references. */
+var _baseHas_objectProto = Object.prototype;
+/** Used to check objects for own properties. */
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var min = Math.min; // `ToLength` abstract operation
 // https://tc39.es/ecma262/#sec-tolength
@@ -18161,7 +36111,12 @@ module.exports = function (argument) {
   return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
 };
 
+<<<<<<< HEAD
 /***/ }),
+=======
+/* harmony default export */ const _baseHas = (baseHas);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/has.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 5333:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -18172,6 +36127,7 @@ var isObject = __webpack_require__(6769); // `ToPrimitive` abstract operation
 // and the second argument - flag - preferred type is a string
 
 
+<<<<<<< HEAD
 module.exports = function (input, PREFERRED_STRING) {
   if (!isObject(input)) return input;
   var fn, val;
@@ -18182,6 +36138,29 @@ module.exports = function (input, PREFERRED_STRING) {
 };
 
 /***/ }),
+=======
+/* harmony default export */ const lodash_es_has = (has);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseInRange.js
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var _baseInRange_nativeMax = Math.max,
+    _baseInRange_nativeMin = Math.min;
+/**
+ * The base implementation of `_.inRange` which doesn't coerce arguments.
+ *
+ * @private
+ * @param {number} number The number to check.
+ * @param {number} start The start of the range.
+ * @param {number} end The end of the range.
+ * @returns {boolean} Returns `true` if `number` is in the range, else `false`.
+ */
+
+function baseInRange(number, start, end) {
+  return number >= _baseInRange_nativeMin(start, end) && number < _baseInRange_nativeMax(start, end);
+}
+
+/* harmony default export */ const _baseInRange = (baseInRange);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/inRange.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ 2157:
 /***/ ((module) => {
@@ -18200,8 +36179,13 @@ module.exports = function (key) {
 
 var $ = __webpack_require__(5186);
 
+<<<<<<< HEAD
 var $values = __webpack_require__(1344).values; // `Object.values` method
 // https://tc39.es/ecma262/#sec-object.values
+=======
+/* harmony default export */ const lodash_es_inRange = (inRange);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isString.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 $({
@@ -18221,13 +36205,23 @@ exports.f = Object.getOwnPropertySymbols;
 /***/ 2800:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+<<<<<<< HEAD
 var has = __webpack_require__(7409);
+=======
+/* harmony default export */ const lodash_es_isString = (isString);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseValues.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var toIndexedObject = __webpack_require__(2292);
 
 var indexOf = __webpack_require__(3781).indexOf;
 
+<<<<<<< HEAD
 var hiddenKeys = __webpack_require__(1151);
+=======
+/* harmony default export */ const _baseValues = (baseValues);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/values.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 module.exports = function (object, names) {
   var O = toIndexedObject(object);
@@ -18240,11 +36234,16 @@ module.exports = function (object, names) {
   } // Don't enum bug & hidden keys
 
 
+<<<<<<< HEAD
   while (names.length > i) {
     if (has(O, key = names[i++])) {
       ~indexOf(result, key) || result.push(key);
     }
   }
+=======
+/* harmony default export */ const lodash_es_values = (values);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/includes.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   return result;
 };
@@ -18269,7 +36268,12 @@ module.exports = Object.keys || function keys(O) {
 /***/ 5805:
 /***/ ((__unused_webpack_module, exports) => {
 
+<<<<<<< HEAD
 "use strict";
+=======
+/* harmony default export */ const lodash_es_includes = (includes);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/indexOf.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
@@ -18294,11 +36298,17 @@ var DESCRIPTORS = __webpack_require__(3207);
 
 var objectKeys = __webpack_require__(6343);
 
+<<<<<<< HEAD
 var toIndexedObject = __webpack_require__(2292);
+=======
+/* harmony default export */ const lodash_es_indexOf = (indexOf);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/initial.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var propertyIsEnumerable = __webpack_require__(5805).f; // `Object.{ entries, values }` methods implementation
 
 
+<<<<<<< HEAD
 var createMethod = function createMethod(TO_ENTRIES) {
   return function (it) {
     var O = toIndexedObject(it);
@@ -18307,6 +36317,10 @@ var createMethod = function createMethod(TO_ENTRIES) {
     var i = 0;
     var result = [];
     var key;
+=======
+/* harmony default export */ const lodash_es_initial = (initial);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseIntersection.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     while (length > i) {
       key = keys[i++];
@@ -18365,13 +36379,23 @@ module.exports = global;
 
 var global = __webpack_require__(6464);
 
+<<<<<<< HEAD
 var createNonEnumerableProperty = __webpack_require__(6711);
+=======
+/* harmony default export */ const _baseIntersection = (baseIntersection);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_castArrayLikeObject.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var has = __webpack_require__(7409);
 
 var setGlobal = __webpack_require__(6757);
 
+<<<<<<< HEAD
 var inspectSource = __webpack_require__(3194);
+=======
+/* harmony default export */ const _castArrayLikeObject = (castArrayLikeObject);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/intersection.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var InternalStateModule = __webpack_require__(858);
 
@@ -18397,6 +36421,11 @@ var TEMPLATE = String(String).split('String');
 >>>>>>> 6528995 (Phill told me to do this)
   }
 });
+<<<<<<< HEAD
+=======
+/* harmony default export */ const lodash_es_intersection = (intersection);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/intersectionBy.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 /***/ }),
@@ -18422,8 +36451,17 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { "@babel/helpers - type
   if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
     root = freeGlobal;
   }
+<<<<<<< HEAD
   /*--------------------------------------------------------------------------*/
   // All astral symbols.
+=======
+
+  return mapped.length && mapped[0] === arrays[0] ? _baseIntersection(mapped, _baseIteratee(iteratee, 2)) : [];
+});
+/* harmony default export */ const lodash_es_intersectionBy = (intersectionBy);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/intersectionWith.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
   var regexAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g; // All ASCII symbols (not just printable ASCII) except those listed in the
@@ -86379,10 +104417,13 @@ function _parent_parent(object, path) {
 
 /* harmony default export */ const _parent = (_parent_parent);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseInvoke.js
+<<<<<<< HEAD
 
 >>>>>>> ed22f6f (built!)
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 /**
@@ -86645,7 +104686,10 @@ function baseIsArrayBuffer(value) {
 
 /* harmony default export */ const _baseIsArrayBuffer = (baseIsArrayBuffer);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isArrayBuffer.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 <<<<<<< HEAD
@@ -86729,6 +104773,7 @@ function baseIsDate(value) {
 
 /* harmony default export */ const _baseIsDate = (baseIsDate);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isDate.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
 
     object = lodash_es_isFunction(value) ? value.call(object) : value;
@@ -86814,6 +104859,8 @@ function arraySample(array) {
   var length = array.length;
   return length ? array[_baseRandom(0, length - 1)] : undefined;
 }
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /* harmony default export */ const _arraySample = (arraySample);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseSample.js
@@ -86992,7 +105039,10 @@ function isEqual(value, other) {
 
 /* harmony default export */ const lodash_es_isEqual = (isEqual);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isEqualWith.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /**
  * This method is like `_.isEqual` except that it accepts `customizer` which
@@ -87049,8 +105099,11 @@ function isEqualWith(value, other, customizer) {
 
 /* harmony default export */ const lodash_es_isEqualWith = (isEqualWith);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isFinite.js
+<<<<<<< HEAD
 
 <<<<<<< HEAD
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 =======
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -87593,7 +105646,10 @@ function isUndefined(value) {
 
 /* harmony default export */ const lodash_es_isUndefined = (isUndefined);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isWeakMap.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 /** `Object#toString` result references. */
@@ -87642,7 +105698,10 @@ function isWeakMap(value) {
 
 /* harmony default export */ const lodash_es_isWeakMap = (isWeakMap);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/isWeakSet.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 /** `Object#toString` result references. */
@@ -88151,6 +106210,7 @@ function baseLt(value, other) {
 var lt = _createRelationalOperation(_baseLt);
 /* harmony default export */ const lodash_es_lt = (lt);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/lte.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
 
 /** `Object#toString` result references. */
@@ -88203,6 +106263,8 @@ function size(collection) {
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/slice.js
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /**
  * Creates a slice of `array` from `start` up to, but not including, `end`.
@@ -89069,6 +107131,7 @@ function minBy(array, iteratee) {
 
 /* harmony default export */ const lodash_es_minBy = (minBy);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/mixin.js
+<<<<<<< HEAD
 
 
 
@@ -89078,6 +107141,8 @@ function minBy(array, iteratee) {
 <<<<<<< HEAD
 =======
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -89996,7 +108061,10 @@ function startsWith(string, target, position) {
 =======
 /* harmony default export */ const lodash_es_once = (once);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseSortBy.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 /**
  * The base implementation of `_.sortBy` which uses `comparer` to define the
  * sort order of `array` and replaces criteria objects with their corresponding
@@ -90031,7 +108099,10 @@ function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol 
 
 /* harmony default export */ const _baseSortBy = (baseSortBy);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_compareAscending.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /**
  * Compares values to sort them in ascending order.
@@ -90822,7 +108893,10 @@ function parseInt_parseInt(string, radix, guard) {
 
 /* harmony default export */ const lodash_es_parseInt = (parseInt_parseInt);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/partial.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function sum(array) {
   return array && array.length ? _baseSum(array, lodash_es_identity) : 0;
@@ -91565,7 +109639,10 @@ function pullAll(array, values) {
 var pull = _baseRest(lodash_es_pullAll);
 /* harmony default export */ const lodash_es_pull = (pull);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/pullAllBy.js
+<<<<<<< HEAD
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 /** Error message constants. */
@@ -91887,7 +109964,10 @@ function baseRange(start, end, step, fromRight) {
 
 /* harmony default export */ const _baseRange = (baseRange);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_createRange.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -93202,9 +111282,14 @@ function throttle(func, wait, options) {
 =======
 >>>>>>> ed22f6f (built!)
 
+<<<<<<< HEAD
   if (typeof func != 'function') {
     throw new TypeError(throttle_FUNC_ERROR_TEXT);
   }
+=======
+/* harmony default export */ const _baseShuffle = (baseShuffle);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/shuffle.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if (lodash_es_isObject(options)) {
     leading = 'leading' in options ? !!options.leading : leading;
@@ -93248,8 +111333,15 @@ function thru(value, interceptor) {
   return interceptor(value);
 }
 
+<<<<<<< HEAD
 /* harmony default export */ const lodash_es_thru = (thru);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/times.js
+=======
+/* harmony default export */ const lodash_es_shuffle = (shuffle);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/size.js
+
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -93301,7 +111393,10 @@ function size(collection) {
 
 /* harmony default export */ const lodash_es_size = (size);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/slice.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var times_MAX_SAFE_INTEGER = 9007199254740991;
 /** Used as references for the maximum length and index of an array. */
@@ -93464,6 +111559,7 @@ function baseSome(collection, predicate) {
 
 /* harmony default export */ const _baseSome = (baseSome);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/some.js
+<<<<<<< HEAD
 
 
 >>>>>>> ed22f6f (built!)
@@ -93613,6 +111709,8 @@ function toPath(value) {
 /* harmony default export */ const lodash_es_toPath = (toPath);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toSafeInteger.js
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /** Used as references for various `Number` constants. */
 
@@ -94207,8 +112305,13 @@ function trim(string, chars, guard) {
   return _castSlice(strSymbols, start, end).join('');
 }
 
+<<<<<<< HEAD
 /* harmony default export */ const lodash_es_trim = (trim);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/trimEnd.js
+=======
+/* harmony default export */ const lodash_es_sortedIndexOf = (sortedIndexOf);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/sortedLastIndex.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function eatSafe(qty, item) {
@@ -94260,8 +112363,13 @@ function trim(string, chars, guard) {
   return _castSlice(strSymbols, start, end).join('');
 }
 
+<<<<<<< HEAD
 /* harmony default export */ const lodash_es_trim = (trim);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/trimEnd.js
+=======
+/* harmony default export */ const lodash_es_sortedLastIndex = (sortedLastIndex);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/sortedLastIndexBy.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 >>>>>>> 6528995 (Phill told me to do this)
 
@@ -94993,10 +113101,45 @@ function runDiet() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   var mojoFilterCount = 3 - (0,dist.get)("currentMojoFilters");
   acquire(mojoFilterCount, (0,dist.$item)(_templateObject54 || (_templateObject54 = diet_taggedTemplateLiteral(["mojo filter"]))), valuePerSpleen(bestSpleenItem));
   (0,external_kolmafia_.use)(mojoFilterCount, (0,dist.$item)(_templateObject55 || (_templateObject55 = diet_taggedTemplateLiteral(["mojo filter"]))));
   fillSomeSpleen();
+=======
+/* harmony default export */ const lodash_es_spread = (spread);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/startCase.js
+
+
+/**
+ * Converts `string` to
+ * [start case](https://en.wikipedia.org/wiki/Letter_case#Stylistic_or_specialised_usage).
+ *
+ * @static
+ * @memberOf _
+ * @since 3.1.0
+ * @category String
+ * @param {string} [string=''] The string to convert.
+ * @returns {string} Returns the start cased string.
+ * @example
+ *
+ * _.startCase('--foo-bar--');
+ * // => 'Foo Bar'
+ *
+ * _.startCase('fooBar');
+ * // => 'Foo Bar'
+ *
+ * _.startCase('__FOO_BAR__');
+ * // => 'FOO BAR'
+ */
+
+var startCase = _createCompounder(function (result, word, index) {
+  return result + (index ? ' ' : '') + lodash_es_upperFirst(word);
+});
+/* harmony default export */ const lodash_es_startCase = (startCase);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/startsWith.js
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   if ((0,external_kolmafia_.myFullness)() < (0,external_kolmafia_.fullnessLimit)()) {
     if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject56 || (_templateObject56 = diet_taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA) (0,external_kolmafia_.eat)(1, (0,dist.$item)(_templateObject57 || (_templateObject57 = diet_taggedTemplateLiteral(["fudge spork"]))));
@@ -95273,6 +113416,7 @@ function take(array, n, guard) {
 
 /* harmony default export */ const lodash_es_take = (take);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/takeRight.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
 
 /** Used to map HTML entities to characters. */
@@ -95348,6 +113492,8 @@ function unary(func) {
 
 /* harmony default export */ const lodash_es_unary = (unary);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_unescapeHtmlChar.js
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /** Used to map HTML entities to characters. */
 
@@ -95527,7 +113673,10 @@ function tap(value, interceptor) {
 
 /* harmony default export */ const lodash_es_tap = (tap);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_customDefaultsAssignIn.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /** Used for built-in method references. */
 
@@ -95646,10 +113795,13 @@ var reEscape = /<%-([\s\S]+?)%>/g;
 var reEvaluate = /<%([\s\S]+?)%>/g;
 /* harmony default export */ const _reEvaluate = (reEvaluate);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/templateSettings.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
 
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -96185,7 +114337,10 @@ function uniq(array) {
 
 /* harmony default export */ const lodash_es_template = (template);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/throttle.js
+<<<<<<< HEAD
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 /** Used to generate unique IDs. */
@@ -96317,7 +114472,10 @@ var unzip_nativeMax = Math.max;
 =======
 /* harmony default export */ const lodash_es_throttle = (throttle);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/thru.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 /**
  * This method is like `_.tap` except that it returns the result of `interceptor`.
  * The purpose of this method is to "pass thru" values replacing intermediate
@@ -96503,7 +114661,10 @@ var savedMimicDropValue = null;
 
 /* harmony default export */ const lodash_es_times = (times);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/toIterator.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 /**
  * Enables the wrapper to be iterable.
  *
@@ -97384,7 +115545,10 @@ function uniq(array) {
 
 /* harmony default export */ const lodash_es_uniq = (uniq);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/uniqBy.js
+<<<<<<< HEAD
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 /**
@@ -97449,9 +115613,14 @@ function update(object, path, updater) {
   return object == null ? object : _baseUpdate(object, path, _castFunction(updater));
 }
 
+<<<<<<< HEAD
 /* harmony default export */ const lodash_es_update = (update);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/updateWith.js
 
+=======
+/* harmony default export */ const lodash_es_uniqBy = (uniqBy);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/uniqWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /**
  * This method is like `_.update` except that it accepts `customizer` which is
@@ -97483,6 +115652,7 @@ function updateWith(object, path, updater, customizer) {
   return object == null ? object : _baseUpdate(object, path, _castFunction(updater), customizer);
 }
 
+<<<<<<< HEAD
 /* harmony default export */ const lodash_es_updateWith = (updateWith);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/upperCase.js
 
@@ -97512,6 +115682,10 @@ var upperCase = _createCompounder(function (result, word, index) {
 });
 /* harmony default export */ const lodash_es_upperCase = (upperCase);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/valuesIn.js
+=======
+/* harmony default export */ const lodash_es_uniqWith = (uniqWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/uniqueId.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 /**
@@ -97543,10 +115717,15 @@ function valuesIn(object) {
   return object == null ? [] : _baseValues(object, lodash_es_keysIn(object));
 }
 
+<<<<<<< HEAD
 /* harmony default export */ const lodash_es_valuesIn = (valuesIn);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/without.js
 
 
+=======
+/* harmony default export */ const lodash_es_uniqueId = (uniqueId);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/unset.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /**
  * Creates an array excluding all given values using
@@ -97658,10 +115837,15 @@ var xorBy = _baseRest(function (arrays) {
     iteratee = undefined;
   }
 
+<<<<<<< HEAD
   return _baseXor(_arrayFilter(arrays, lodash_es_isArrayLikeObject), _baseIteratee(iteratee, 2));
 });
 /* harmony default export */ const lodash_es_xorBy = (xorBy);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/xorWith.js
+=======
+/* harmony default export */ const lodash_es_unset = (unset);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/unzip.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -97741,6 +115925,7 @@ function baseZipObject(props, values, assignFunc) {
   return result;
 }
 
+<<<<<<< HEAD
 /* harmony default export */ const _baseZipObject = (baseZipObject);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/zipObject.js
 
@@ -97789,6 +115974,10 @@ function zipObject(props, values) {
 function zipObjectDeep(props, values) {
   return _baseZipObject(props || [], values || [], _baseSet);
 }
+=======
+/* harmony default export */ const lodash_es_unzip = (unzip);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/unzipWith.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /* harmony default export */ const lodash_es_zipObjectDeep = (zipObjectDeep);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/zipWith.js
@@ -97829,6 +116018,11 @@ var zipWith = _baseRest(function (arrays) {
 
 
 
+<<<<<<< HEAD
+=======
+/* harmony default export */ const lodash_es_unzipWith = (unzipWith);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/_baseUpdate.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 =======
 
@@ -98035,6 +116229,11 @@ var without = _baseRest(function (array, values) {
 >>>>>>> ed22f6f (built!)
 
 
+<<<<<<< HEAD
+=======
+/* harmony default export */ const lodash_es_wrap = (wrap);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/wrapperAt.js
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 =======
@@ -98215,7 +116414,10 @@ function baseXor(arrays, iteratee, comparator) {
 
 /* harmony default export */ const _baseXor = (baseXor);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/xor.js
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -98247,9 +116449,12 @@ var xor = _baseRest(function (arrays) {
 });
 /* harmony default export */ const lodash_es_xor = (xor);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/xorBy.js
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -98294,6 +116499,7 @@ var xorBy = _baseRest(function (arrays) {
 });
 /* harmony default export */ const lodash_es_xorBy = (xorBy);
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/xorWith.js
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 
 
@@ -98302,6 +116508,8 @@ var xorBy = _baseRest(function (arrays) {
 
 <<<<<<< HEAD
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 >>>>>>> 6528995 (Phill told me to do this)
 
@@ -98921,8 +117129,11 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
   zipWith: lodash_es_zipWith
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/collection.default.js
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -98995,6 +117206,7 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
   now: lodash_es_now
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/function.default.js
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> ed22f6f (built!)
@@ -99034,6 +117246,8 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
   now: lodash_es_now
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/function.default.js
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -99093,6 +117307,7 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/lang.default.js
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 =======
 >>>>>>> ed22f6f (built!)
@@ -99132,6 +117347,8 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
 >>>>>>> 6528995 (Phill told me to do this)
 =======
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -99317,6 +117534,7 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
   toString: lodash_es_toString
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/math.default.js
+<<<<<<< HEAD
 =======
 >>>>>>> 6528995 (Phill told me to do this)
 =======
@@ -99364,6 +117582,8 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
 
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 >>>>>>> ed22f6f (built!)
 
@@ -99444,10 +117664,13 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
   random: lodash_es_random
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/object.default.js
+<<<<<<< HEAD
 =======
 >>>>>>> ed22f6f (built!)
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 <<<<<<< HEAD
@@ -99677,8 +117900,11 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
   valuesIn: lodash_es_valuesIn
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/seq.default.js
+<<<<<<< HEAD
 =======
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -99731,10 +117957,13 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
   wrapperChain: lodash_es_wrapperChain
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/string.default.js
+<<<<<<< HEAD
 =======
 >>>>>>> 6528995 (Phill told me to do this)
 =======
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -99873,6 +118102,7 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
   words: lodash_es_words
 });
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/lodash-es/util.default.js
+<<<<<<< HEAD
 =======
 >>>>>>> 6528995 (Phill told me to do this)
 =======
@@ -99956,6 +118186,8 @@ function fights_defineProperty(obj, key, value) { if (key in obj) { Object.defin
  * @memberOf LazyWrapper
  * @returns {Object} Returns the cloned `LazyWrapper` object.
  */
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function lazyClone() {
   var result = new _LazyWrapper(this.__wrapped__);
@@ -101107,6 +119339,7 @@ if (lodash_default_symIterator) {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 
@@ -101431,6 +119664,8 @@ if (lodash_default_symIterator) {
 
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -101479,6 +119714,7 @@ if (lodash_default_symIterator) {
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
       return this.tryHaveSkill("Sing Along").externalIf(shouldRedigitize(), Macro.if_("monstername ".concat((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_sourceTerminalDigitizeMonster")), Macro.trySkill("Digitize"))).externalIf(!(0,libram__WEBPACK_IMPORTED_MODULE_1__.have)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$effect)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["On The Trail"])))), Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))).externalIf((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)("_gallapagosMonster") !== (0,libram__WEBPACK_IMPORTED_MODULE_1__.$monster)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["garbage tourist"]))), Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))).externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)() === (0,libram__WEBPACK_IMPORTED_MODULE_1__.$familiar)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Stocking Mimic"]))), Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))).externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop").attack()).externalIf(opsSetup, Macro.skill("Throw Shield").attack()).externalIf(katanaSetup, Macro.skill("Summer Siesta").attack()).externalIf(capeSetup, Macro.skill("Precision Shot")).if_("discobandit", Macro.trySkill("Disco Dance of Doom").trySkill("Disco Dance II: Electric Boogaloo").trySkill("Disco Dance 3: Back in the Habit")).trySkill("Curse of Weaksauce").attack().repeat();
@@ -101502,6 +119738,8 @@ if (lodash_default_symIterator) {
 
 
 
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -101637,11 +119875,14 @@ if (lodash_default_symIterator) {
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 =======
 >>>>>>> 6528995 (Phill told me to do this)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
@@ -101653,6 +119894,7 @@ if (lodash_default_symIterator) {
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 function checkFax() {
@@ -101914,16 +120156,68 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
+<<<<<<< HEAD
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+=======
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 
 
 
+<<<<<<< HEAD
 var CommentNode = /*#__PURE__*/function (_Node) {
   _inherits(CommentNode, _Node);
 
@@ -102099,6 +120393,11 @@ new FreeFight(function () {
   if (dist.SourceTerminal.have()) {
     dist.SourceTerminal.educate([(0,dist.$skill)(_templateObject99 || (_templateObject99 = fights_taggedTemplateLiteral(["Extract"]))), (0,dist.$skill)(_templateObject100 || (_templateObject100 = fights_taggedTemplateLiteral(["Portscan"])))]);
   }
+=======
+
+
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   (0,dist.adventureMacro)((0,dist.$location)(_templateObject101 || (_templateObject101 = fights_taggedTemplateLiteral(["Your Mushroom Garden"]))), combat.Macro.trySkill("Portscan").meatKill());
   if ((0,dist.have)((0,dist.$item)(_templateObject102 || (_templateObject102 = fights_taggedTemplateLiteral(["Packet of tall grass seeds"]))))) (0,external_kolmafia_.use)((0,dist.$item)(_templateObject103 || (_templateObject103 = fights_taggedTemplateLiteral(["Packet of tall grass seeds"]))));
@@ -102112,6 +120411,7 @@ new FreeFight(function () {
 }, function () {
   if ((0,dist.have)((0,dist.$item)(_templateObject108 || (_templateObject108 = fights_taggedTemplateLiteral(["packet of mushroom spores"]))))) (0,external_kolmafia_.use)((0,dist.$item)(_templateObject109 || (_templateObject109 = fights_taggedTemplateLiteral(["packet of mushroom spores"]))));
 
+<<<<<<< HEAD
   if (dist.SourceTerminal.have()) {
     dist.SourceTerminal.educate([(0,dist.$skill)(_templateObject110 || (_templateObject110 = fights_taggedTemplateLiteral(["Extract"]))), (0,dist.$skill)(_templateObject111 || (_templateObject111 = fights_taggedTemplateLiteral(["Portscan"])))]);
   }
@@ -102318,6 +120618,35 @@ function text_setPrototypeOf(o, p) { text_setPrototypeOf = Object.setPrototypeOf
 function text_createSuper(Derived) { var hasNativeReflectConstruct = text_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = text_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = text_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return text_possibleConstructorReturn(this, result); }; }
 
 function text_possibleConstructorReturn(self, call) { if (call && (text_typeof(call) === "object" || typeof call === "function")) { return call; } return text_assertThisInitialized(self); }
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 function fillLiver() {
@@ -102330,6 +120659,7 @@ function fillLiver() {
     (0,external_kolmafia_.drink)(itemPriority((0,dist.$item)(_templateObject16 || (_templateObject16 = diet_taggedTemplateLiteral(["astral pilsner"]))), (0,dist.$item)(_templateObject17 || (_templateObject17 = diet_taggedTemplateLiteral(["splendid martini"])))));
   }
 
+<<<<<<< HEAD
   while ((0,external_kolmafia_.myInebriety)() + 1 <= (0,external_kolmafia_.inebrietyLimit)() && (0,external_kolmafia_.itemAmount)((0,dist.$item)(_templateObject18 || (_templateObject18 = diet_taggedTemplateLiteral(["astral pilsner"])))) > 0) {
     (0,external_kolmafia_.drink)(1, (0,dist.$item)(_templateObject19 || (_templateObject19 = diet_taggedTemplateLiteral(["astral pilsner"]))));
   }
@@ -102630,9 +120960,29 @@ var src_templateObject, src_templateObject2, src_templateObject3, src_templateOb
 
 ;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/matcher.js
 function matcher_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function matcher_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
+<<<<<<< HEAD
 function matcher_createClass(Constructor, protoProps, staticProps) { if (protoProps) matcher_defineProperties(Constructor.prototype, protoProps); if (staticProps) matcher_defineProperties(Constructor, staticProps); return Constructor; }
 
 /**
@@ -102682,6 +121032,17 @@ var functionCache = {
 
     tagName = tagName || '';
     classes = classes || [];
+=======
+
+
+
+
+
+
+
+
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     for (var cls = classes, i = 0; i < cls.length; i++) {
       if (el.classNames.indexOf(cls[i]) === -1) {
@@ -102689,6 +121050,7 @@ var functionCache = {
       }
     }
 
+<<<<<<< HEAD
     return true;
   },
   f15: function f15(el, tagName) {
@@ -102814,6 +121176,12 @@ var Matcher = /*#__PURE__*/function () {
    */
   function Matcher(selector) {
     matcher_classCallCheck(this, Matcher);
+=======
+
+
+
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
     this.nextMatch = 0;
     this.matchers = selector.split(' ').map(function (matcher) {
@@ -102856,6 +121224,7 @@ var Matcher = /*#__PURE__*/function () {
         function_name += '4';
       } // source += 'return true;';// 5
 
+<<<<<<< HEAD
 
       function_name += '5';
       var obj = {
@@ -102883,6 +121252,29 @@ var Matcher = /*#__PURE__*/function () {
         this.nextMatch++;
         return true;
       }
+=======
+/***/ 1133:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "CommentNode": () => /* reexport */ CommentNode,
+  "HTMLElement": () => /* reexport */ HTMLElement,
+  "Node": () => /* reexport */ Node,
+  "NodeType": () => /* reexport */ type,
+  "TextNode": () => /* reexport */ TextNode,
+  "default": () => /* reexport */ parse,
+  "parse": () => /* reexport */ parse,
+  "valid": () => /* reexport */ valid
+});
+
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/nodes/node.js
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
       return false;
     }
@@ -102900,6 +121292,7 @@ var Matcher = /*#__PURE__*/function () {
      * @return {bool} true when the match is made
      */
 
+<<<<<<< HEAD
   }, {
     key: "reset",
 
@@ -102913,6 +121306,47 @@ var Matcher = /*#__PURE__*/function () {
     /**
      * flush cache to free memory
      */
+=======
+/**
+ * Node Class as base class for TextNode and HTMLElement.
+ */
+var Node = /*#__PURE__*/function () {
+  function Node() {
+    _classCallCheck(this, Node);
+
+    this.childNodes = [];
+  }
+
+  _createClass(Node, [{
+    key: "innerText",
+    get: function get() {
+      return this.rawText;
+    }
+  }]);
+
+  return Node;
+}();
+
+
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/nodes/type.js
+var NodeType;
+
+(function (NodeType) {
+  NodeType[NodeType["ELEMENT_NODE"] = 1] = "ELEMENT_NODE";
+  NodeType[NodeType["TEXT_NODE"] = 3] = "TEXT_NODE";
+  NodeType[NodeType["COMMENT_NODE"] = 8] = "COMMENT_NODE";
+})(NodeType || (NodeType = {}));
+
+/* harmony default export */ const type = (NodeType);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/nodes/comment.js
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function comment_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function comment_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function comment_createClass(Constructor, protoProps, staticProps) { if (protoProps) comment_defineProperties(Constructor.prototype, protoProps); if (staticProps) comment_defineProperties(Constructor, staticProps); return Constructor; }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
   }, {
     key: "flushCache",
@@ -102939,7 +121373,11 @@ function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArra
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
+<<<<<<< HEAD
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+=======
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 <<<<<<< HEAD
 
@@ -102958,6 +121396,7 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+<<<<<<< HEAD
 
 
 <<<<<<< HEAD
@@ -103058,9 +121497,79 @@ function html_createClass(Constructor, protoProps, staticProps) { if (protoProps
 function html_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) html_setPrototypeOf(subClass, superClass); }
 
 function html_setPrototypeOf(o, p) { html_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return html_setPrototypeOf(o, p); }
+=======
+var CommentNode = /*#__PURE__*/function (_Node) {
+  _inherits(CommentNode, _Node);
+
+  var _super = _createSuper(CommentNode);
+
+  function CommentNode(rawText) {
+    var _this;
+
+    comment_classCallCheck(this, CommentNode);
+
+    _this = _super.call(this);
+    _this.rawText = rawText;
+    /**
+     * Node Type declaration.
+     * @type {Number}
+     */
+
+    _this.nodeType = type.COMMENT_NODE;
+    return _this;
+  }
+  /**
+   * Get unescaped text value of current node and its children.
+   * @return {string} text content
+   */
+
+
+  comment_createClass(CommentNode, [{
+    key: "toString",
+    value: function toString() {
+      return "<!--".concat(this.rawText, "-->");
+    }
+  }, {
+    key: "text",
+    get: function get() {
+      return this.rawText;
+    }
+  }]);
+
+  return CommentNode;
+}(Node);
+
+
+// EXTERNAL MODULE: ../kol-js-starter/node_modules/he/he.js
+var he = __webpack_require__(5874);
+var he_default = /*#__PURE__*/__webpack_require__.n(he);
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/nodes/text.js
+function text_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { text_typeof = function _typeof(obj) { return typeof obj; }; } else { text_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return text_typeof(obj); }
+
+function text_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function text_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function text_createClass(Constructor, protoProps, staticProps) { if (protoProps) text_defineProperties(Constructor.prototype, protoProps); if (staticProps) text_defineProperties(Constructor, staticProps); return Constructor; }
+
+function text_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) text_setPrototypeOf(subClass, superClass); }
+
+function text_setPrototypeOf(o, p) { text_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return text_setPrototypeOf(o, p); }
+
+function text_createSuper(Derived) { var hasNativeReflectConstruct = text_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = text_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = text_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return text_possibleConstructorReturn(this, result); }; }
+
+function text_possibleConstructorReturn(self, call) { if (call && (text_typeof(call) === "object" || typeof call === "function")) { return call; } return text_assertThisInitialized(self); }
+
+function text_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function text_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function text_getPrototypeOf(o) { text_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return text_getPrototypeOf(o); }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 function html_createSuper(Derived) { var hasNativeReflectConstruct = html_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = html_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = html_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return html_possibleConstructorReturn(this, result); }; }
 
+<<<<<<< HEAD
 function html_possibleConstructorReturn(self, call) { if (call && (html_typeof(call) === "object" || typeof call === "function")) { return call; } return html_assertThisInitialized(self); }
 
 function html_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
@@ -103076,6 +121585,64 @@ function html_getPrototypeOf(o) { html_getPrototypeOf = Object.setPrototypeOf ? 
 
 
 
+=======
+
+/**
+ * TextNode to contain a text element in DOM tree.
+ * @param {string} value [description]
+ */
+
+var TextNode = /*#__PURE__*/function (_Node) {
+  text_inherits(TextNode, _Node);
+
+  var _super = text_createSuper(TextNode);
+
+  function TextNode(rawText) {
+    var _this;
+
+    text_classCallCheck(this, TextNode);
+
+    _this = _super.call(this);
+    _this.rawText = rawText;
+    /**
+     * Node Type declaration.
+     * @type {Number}
+     */
+
+    _this.nodeType = type.TEXT_NODE;
+    return _this;
+  }
+  /**
+   * Get unescaped text value of current node and its children.
+   * @return {string} text content
+   */
+
+
+  text_createClass(TextNode, [{
+    key: "toString",
+    value: function toString() {
+      return this.text;
+    }
+  }, {
+    key: "text",
+    get: function get() {
+      return this.rawText;
+    }
+    /**
+     * Detect if the node contains only white space.
+     * @return {bool}
+     */
+
+  }, {
+    key: "isWhitespace",
+    get: function get() {
+      return /^(\s|&nbsp;)*$/.test(this.rawText);
+    }
+  }]);
+
+  return TextNode;
+}(Node);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 var decode = (he_default()).decode;
 var kBlockElements = new Map();
@@ -103085,6 +121652,7 @@ kBlockElements.set('P', true);
 kBlockElements.set('p', true); // ul: true,
 // ol: true,
 
+<<<<<<< HEAD
 kBlockElements.set('LI', true);
 kBlockElements.set('li', true); // table: true,
 // tr: true,
@@ -103255,10 +121823,163 @@ function src_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symb
       }
 
       this.childNodes = content;
+=======
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/matcher.js
+function matcher_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function matcher_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function matcher_createClass(Constructor, protoProps, staticProps) { if (protoProps) matcher_defineProperties(Constructor.prototype, protoProps); if (staticProps) matcher_defineProperties(Constructor, staticProps); return Constructor; }
+
+/**
+ * Cache to store generated match functions
+ * @type {Object}
+ */
+var pMatchFunctionCache = {};
+
+function compare_tagname(tag1, tag2) {
+  if (!tag1) {
+    return !tag2;
+  }
+
+  if (!tag2) {
+    return !tag1;
+  }
+
+  return tag1.toLowerCase() === tag2.toLowerCase();
+}
+/**
+ * Function cache
+ */
+
+
+var functionCache = {
+  f145: function f145(el, tagName, classes) {
+    'use strict';
+
+    tagName = tagName || '';
+    classes = classes || [];
+
+    if (el.id !== tagName.substr(1)) {
+      return false;
+    }
+
+    for (var cls = classes, i = 0; i < cls.length; i++) {
+      if (el.classNames.indexOf(cls[i]) === -1) {
+        return false;
+      }
+    }
+
+    return true;
+  },
+  f45: function f45(el, tagName, classes) {
+    'use strict';
+
+    tagName = tagName || '';
+    classes = classes || [];
+
+    for (var cls = classes, i = 0; i < cls.length; i++) {
+      if (el.classNames.indexOf(cls[i]) === -1) {
+        return false;
+      }
+    }
+
+    return true;
+  },
+  f15: function f15(el, tagName) {
+    'use strict';
+
+    tagName = tagName || '';
+
+    if (el.id !== tagName.substr(1)) {
+      return false;
+    }
+
+    return true;
+  },
+  f1: function f1(el, tagName) {
+    'use strict';
+
+    tagName = tagName || '';
+
+    if (el.id !== tagName.substr(1)) {
+      return false;
+    }
+  },
+  f5: function f5() {
+    'use strict';
+
+    return true;
+  },
+  f55: function f55(el, tagName, classes, attr_key) {
+    'use strict';
+
+    tagName = tagName || '';
+    classes = classes || [];
+    attr_key = attr_key || '';
+    var attrs = el.attributes;
+    return attrs.hasOwnProperty(attr_key);
+  },
+  f245: function f245(el, tagName, classes, attr_key, value) {
+    'use strict';
+
+    tagName = tagName || '';
+    classes = classes || [];
+    attr_key = (attr_key || '').toLowerCase();
+    value = value || '';
+    var attrs = el.attributes;
+    return Object.keys(attrs).some(function (key) {
+      var val = attrs[key];
+      return key.toLowerCase() === attr_key && val === value;
+    }); // for (let cls = classes, i = 0; i < cls.length; i++) {if (el.classNames.indexOf(cls[i]) === -1){ return false;}}
+    // return true;
+  },
+  f25: function f25(el, tagName, classes, attr_key, value) {
+    'use strict';
+
+    tagName = tagName || '';
+    classes = classes || [];
+    attr_key = (attr_key || '').toLowerCase();
+    value = value || '';
+    var attrs = el.attributes;
+    return Object.keys(attrs).some(function (key) {
+      var val = attrs[key];
+      return key.toLowerCase() === attr_key && val === value;
+    }); // return true;
+  },
+  f2: function f2(el, tagName, classes, attr_key, value) {
+    'use strict';
+
+    tagName = tagName || '';
+    classes = classes || [];
+    attr_key = (attr_key || '').toLowerCase();
+    value = value || '';
+    var attrs = el.attributes;
+    return Object.keys(attrs).some(function (key) {
+      var val = attrs[key];
+      return key.toLowerCase() === attr_key && val === value;
+    });
+  },
+  f345: function f345(el, tagName, classes) {
+    'use strict';
+
+    tagName = tagName || '';
+    classes = classes || [];
+
+    if (!compare_tagname(el.tagName, tagName)) {
+      return false;
+    }
+
+    for (var cls = classes, i = 0; i < cls.length; i++) {
+      if (el.classNames.indexOf(cls[i]) === -1) {
+        return false;
+      }
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
     }
   }, {
     key: "trimRight",
 
+<<<<<<< HEAD
     /**
      * Trim element from right (in block) after seeing pattern in a TextNode.
      * @param  {RegExp} pattern pattern to find
@@ -103674,9 +122395,315 @@ var Matcher = /*#__PURE__*/function () {
 
 =======
 >>>>>>> ed22f6f (built!)
+=======
+    return true;
+  },
+  f35: function f35(el, tagName) {
+    'use strict';
+
+    tagName = tagName || '';
+    return compare_tagname(el.tagName, tagName);
+  },
+  f3: function f3(el, tagName) {
+    'use strict';
+
+    tagName = tagName || ''; // if (el.tagName !== tagName) {
+    // 	return false;
+    // }
+
+    return compare_tagname(el.tagName, tagName);
+  }
+};
+/**
+ * Matcher class to make CSS match
+ *
+ * @class Matcher
+ */
+
+var Matcher = /*#__PURE__*/function () {
+  /**
+   * Creates an instance of Matcher.
+   * @param {string} selector
+   *
+   * @memberof Matcher
+   */
+  function Matcher(selector) {
+    matcher_classCallCheck(this, Matcher);
+
+    this.nextMatch = 0;
+    this.matchers = selector.split(' ').map(function (matcher) {
+      if (pMatchFunctionCache[matcher]) {
+        return pMatchFunctionCache[matcher];
+      }
+
+      var parts = matcher.split('.');
+      var tagName = parts[0];
+      var classes = parts.slice(1).sort(); // let source = '"use strict";';
+
+      var function_name = 'f';
+      var attr_key = '';
+      var value = '';
+
+      if (tagName && tagName !== '*') {
+        if (tagName.startsWith('#')) {
+          // source += 'if (el.id != ' + JSON.stringify(tagName.substr(1)) + ') return false;';// 1
+          function_name += '1';
+        } else {
+          // https://github.com/taoqf/node-html-parser/issues/86
+          // const reg = /\[\s*([\w-]+)(\s*=\s*(((?<quote>'|")\s*(.*)(\k<quote>))|(\S*)))?\s*\]/.exec(tagName);
+          // `[a-b]`,`[ a-b ]`,`[a-b=c]`, `[a-b=c'd]`,`[a-b='c\' d"e ']`,`[ a-b = 'c\' d"e ' ]`,`[a-b="c' d\"e " ]`,`[ a-b = "c' d\"e " ]`
+          var reg = /\[\s*([\w-]+)(\s*=\s*(('\s*(.*)'|"\s*(.*)")|(\S*)))?\s*\]/.exec(tagName);
+
+          if (reg) {
+            attr_key = reg[1];
+            value = reg[5] || reg[6] || reg[7]; // source += `let attrs = el.attributes;for (let key in attrs){const val = attrs[key]; if (key == "${attr_key}" && val == "${value}"){return true;}} return false;`;// 2
+
+            function_name += '2';
+          } else {
+            // source += 'if (el.tagName != ' + JSON.stringify(tagName) + ') return false;';// 3
+            function_name += '3';
+          }
+        }
+      }
+
+      if (classes.length > 0) {
+        // source += 'for (let cls = ' + JSON.stringify(classes) + ', i = 0; i < cls.length; i++) if (el.classNames.indexOf(cls[i]) === -1) return false;';// 4
+        function_name += '4';
+      } // source += 'return true;';// 5
+
+
+      function_name += '5';
+      var obj = {
+        func: functionCache[function_name],
+        tagName: tagName || '',
+        classes: classes || '',
+        attr_key: attr_key || '',
+        value: value || ''
+      }; // source = source || '';
+
+      return pMatchFunctionCache[matcher] = obj;
+    });
+  }
+  /**
+   * Trying to advance match pointer
+   * @param  {HTMLElement} el element to make the match
+   * @return {bool}           true when pointer advanced.
+   */
+
+
+  matcher_createClass(Matcher, [{
+    key: "advance",
+    value: function advance(el) {
+      if (this.nextMatch < this.matchers.length && this.matchers[this.nextMatch].func(el, this.matchers[this.nextMatch].tagName, this.matchers[this.nextMatch].classes, this.matchers[this.nextMatch].attr_key, this.matchers[this.nextMatch].value)) {
+        this.nextMatch++;
+        return true;
+      }
+
+      return false;
+    }
+    /**
+     * Rewind the match pointer
+     */
+
+  }, {
+    key: "rewind",
+    value: function rewind() {
+      this.nextMatch--;
+    }
+    /**
+     * Trying to determine if match made.
+     * @return {bool} true when the match is made
+     */
+
+  }, {
+    key: "reset",
+
+    /**
+     * Rest match pointer.
+     * @return {[type]} [description]
+     */
+    value: function reset() {
+      this.nextMatch = 0;
+    }
+    /**
+     * flush cache to free memory
+     */
+
+  }, {
+    key: "flushCache",
+    value: function flushCache() {
+      pMatchFunctionCache = {};
+    }
+  }, {
+    key: "matched",
+    get: function get() {
+      return this.nextMatch === this.matchers.length;
+    }
+  }]);
+
+  return Matcher;
+}();
+
+
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/back.js
+function arr_back(arr) {
+  return arr[arr.length - 1];
+}
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/parse.js
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+/**
+ * Parses HTML and returns a root element
+ * Parse a chuck of HTML source.
+ */
+
+function parse(data) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+    lowerCaseTagName: false,
+    comment: false
+  };
+  var stack = base_parse(data, options);
+
+  var _stack = _slicedToArray(stack, 1),
+      root = _stack[0];
+
+  var _loop = function _loop() {
+    // Handle each error elements.
+    var last = stack.pop();
+    var oneBefore = arr_back(stack);
+
+    if (last.parentNode && last.parentNode.parentNode) {
+      if (last.parentNode === oneBefore && last.tagName === oneBefore.tagName) {
+        // Pair error case <h3> <h3> handle : Fixes to <h3> </h3>
+        oneBefore.removeChild(last);
+        last.childNodes.forEach(function (child) {
+          oneBefore.parentNode.appendChild(child);
+        });
+        stack.pop();
+      } else {
+        // Single error  <div> <h3> </div> handle: Just removes <h3>
+        oneBefore.removeChild(last);
+        last.childNodes.forEach(function (child) {
+          oneBefore.appendChild(child);
+        });
+      }
+    } else {// If it's final element just skip.
+    }
+  };
+
+  while (stack.length > 1) {
+    _loop();
+  } // response.childNodes.forEach((node) => {
+  // 	if (node instanceof HTMLElement) {
+  // 		node.parentNode = null;
+  // 	}
+  // });
+
+
+  return root;
+}
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/nodes/html.js
+function html_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { html_typeof = function _typeof(obj) { return typeof obj; }; } else { html_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return html_typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = html_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || html_unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function html_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return html_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return html_arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return html_arrayLikeToArray(arr); }
+
+function html_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function html_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function html_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function html_createClass(Constructor, protoProps, staticProps) { if (protoProps) html_defineProperties(Constructor.prototype, protoProps); if (staticProps) html_defineProperties(Constructor, staticProps); return Constructor; }
+
+function html_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) html_setPrototypeOf(subClass, superClass); }
+
+function html_setPrototypeOf(o, p) { html_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return html_setPrototypeOf(o, p); }
+
+function html_createSuper(Derived) { var hasNativeReflectConstruct = html_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = html_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = html_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return html_possibleConstructorReturn(this, result); }; }
+
+function html_possibleConstructorReturn(self, call) { if (call && (html_typeof(call) === "object" || typeof call === "function")) { return call; } return html_assertThisInitialized(self); }
+
+function html_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function html_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function html_getPrototypeOf(o) { html_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return html_getPrototypeOf(o); }
+
+
+
+
+
+
+
+
+
+var decode = (he_default()).decode;
+var kBlockElements = new Map();
+kBlockElements.set('DIV', true);
+kBlockElements.set('div', true);
+kBlockElements.set('P', true);
+kBlockElements.set('p', true); // ul: true,
+// ol: true,
+
+kBlockElements.set('LI', true);
+kBlockElements.set('li', true); // table: true,
+// tr: true,
+
+kBlockElements.set('TD', true);
+kBlockElements.set('td', true);
+kBlockElements.set('SECTION', true);
+kBlockElements.set('section', true);
+kBlockElements.set('BR', true);
+kBlockElements.set('br', true);
+/**
+ * HTMLElement, which contains a set of children.
+ *
+ * Note: this is a minimalist implementation, no complete tree
+ *   structure provided (no parentNode, nextSibling,
+ *   previousSibling etc).
+ * @class HTMLElement
+ * @extends {Node}
+ */
+
+var HTMLElement = /*#__PURE__*/function (_Node) {
+  html_inherits(HTMLElement, _Node);
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+
+  var _super = html_createSuper(HTMLElement);
+
+  /**
+   * Creates an instance of HTMLElement.
+   * @param keyAttrs	id and class attribute
+   * @param [rawAttrs]	attributes in string
+   *
+   * @memberof HTMLElement
+   */
+  function HTMLElement(tagName, keyAttrs) {
+    var _this;
+
+<<<<<<< HEAD
 
 
 
@@ -103899,6 +122926,376 @@ var TextNode = /*#__PURE__*/function (_Node) {
     key: "toString",
     value: function toString() {
       return this.text;
+=======
+    var rawAttrs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    var parentNode = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+    html_classCallCheck(this, HTMLElement);
+
+    _this = _super.call(this);
+    _this.rawAttrs = rawAttrs;
+    _this.parentNode = parentNode;
+    _this.classNames = [];
+    /**
+     * Node Type declaration.
+     */
+
+    _this.nodeType = type.ELEMENT_NODE;
+    _this.rawTagName = tagName;
+    _this.rawAttrs = rawAttrs || '';
+    _this.childNodes = [];
+
+    if (keyAttrs.id) {
+      _this.id = keyAttrs.id;
+
+      if (!rawAttrs) {
+        _this.rawAttrs = "id=\"".concat(keyAttrs.id, "\"");
+      }
+    }
+
+    if (keyAttrs["class"]) {
+      _this.classNames = keyAttrs["class"].split(/\s+/);
+
+      if (!rawAttrs) {
+        var cls = "class=\"".concat(_this.classNames.join(' '), "\"");
+
+        if (_this.rawAttrs) {
+          _this.rawAttrs += " ".concat(cls);
+        } else {
+          _this.rawAttrs = cls;
+        }
+      }
+    }
+
+    return _this;
+  }
+  /**
+   * Remove current element
+   */
+
+
+  html_createClass(HTMLElement, [{
+    key: "remove",
+    value: function remove() {
+      var _this2 = this;
+
+      if (this.parentNode) {
+        var children = this.parentNode.childNodes;
+        this.parentNode.childNodes = children.filter(function (child) {
+          return _this2 !== child;
+        });
+      }
+    }
+    /**
+     * Remove Child element from childNodes array
+     * @param {HTMLElement} node     node to remove
+     */
+
+  }, {
+    key: "removeChild",
+    value: function removeChild(node) {
+      this.childNodes = this.childNodes.filter(function (child) {
+        return child !== node;
+      });
+    }
+    /**
+     * Exchanges given child with new child
+     * @param {HTMLElement} oldNode     node to exchange
+     * @param {HTMLElement} newNode     new node
+     */
+
+  }, {
+    key: "exchangeChild",
+    value: function exchangeChild(oldNode, newNode) {
+      var children = this.childNodes;
+      this.childNodes = children.map(function (child) {
+        if (child === oldNode) {
+          return newNode;
+        }
+
+        return child;
+      });
+    }
+  }, {
+    key: "toString",
+    value: function toString() {
+      var tag = this.rawTagName;
+
+      if (tag) {
+        var is_void = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/i.test(tag);
+        var attrs = this.rawAttrs ? " ".concat(this.rawAttrs) : '';
+
+        if (is_void) {
+          return "<".concat(tag).concat(attrs, ">");
+        }
+
+        return "<".concat(tag).concat(attrs, ">").concat(this.innerHTML, "</").concat(tag, ">");
+      }
+
+      return this.innerHTML;
+    }
+  }, {
+    key: "set_content",
+    value: function set_content(content) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      if (content instanceof Node) {
+        content = [content];
+      } else if (typeof content == 'string') {
+        var r = parse(content, options);
+        content = r.childNodes.length ? r.childNodes : [new TextNode(content)];
+      }
+
+      this.childNodes = content;
+    }
+  }, {
+    key: "trimRight",
+
+    /**
+     * Trim element from right (in block) after seeing pattern in a TextNode.
+     * @param  {RegExp} pattern pattern to find
+     * @return {HTMLElement}    reference to current node
+     */
+    value: function trimRight(pattern) {
+      for (var i = 0; i < this.childNodes.length; i++) {
+        var childNode = this.childNodes[i];
+
+        if (childNode.nodeType === type.ELEMENT_NODE) {
+          childNode.trimRight(pattern);
+        } else {
+          var index = childNode.rawText.search(pattern);
+
+          if (index > -1) {
+            childNode.rawText = childNode.rawText.substr(0, index); // trim all following nodes.
+
+            this.childNodes.length = i + 1;
+          }
+        }
+      }
+
+      return this;
+    }
+    /**
+     * Get DOM structure
+     * @return {string} strucutre
+     */
+
+  }, {
+    key: "removeWhitespace",
+
+    /**
+     * Remove whitespaces in this sub tree.
+     * @return {HTMLElement} pointer to this
+     */
+    value: function removeWhitespace() {
+      var _this3 = this;
+
+      var o = 0;
+      this.childNodes.forEach(function (node) {
+        if (node.nodeType === type.TEXT_NODE) {
+          if (node.isWhitespace) {
+            return;
+          }
+
+          node.rawText = node.rawText.trim();
+        } else if (node.nodeType === type.ELEMENT_NODE) {
+          node.removeWhitespace();
+        }
+
+        _this3.childNodes[o++] = node;
+      });
+      this.childNodes.length = o;
+      return this;
+    }
+    /**
+     * Query CSS selector to find matching nodes.
+     * @param  {string}         selector Simplified CSS selector
+     * @param  {Matcher}        selector A Matcher instance
+     * @return {HTMLElement[]}  matching elements
+     */
+
+  }, {
+    key: "querySelectorAll",
+    value: function querySelectorAll(selector) {
+      var _this4 = this;
+
+      var matcher;
+
+      if (selector instanceof Matcher) {
+        matcher = selector;
+        matcher.reset();
+      } else {
+        if (selector.includes(',')) {
+          var selectors = selector.split(',');
+          return Array.from(selectors.reduce(function (pre, cur) {
+            var result = _this4.querySelectorAll(cur.trim());
+
+            return result.reduce(function (p, c) {
+              return p.add(c);
+            }, pre);
+          }, new Set()));
+        }
+
+        matcher = new Matcher(selector);
+      }
+
+      var stack = [];
+      return this.childNodes.reduce(function (res, cur) {
+        stack.push([cur, 0, false]);
+
+        while (stack.length) {
+          var state = arr_back(stack); // get last element
+
+          var el = state[0];
+
+          if (state[1] === 0) {
+            // Seen for first time.
+            if (el.nodeType !== type.ELEMENT_NODE) {
+              stack.pop();
+              continue;
+            }
+
+            var html_el = el;
+            state[2] = matcher.advance(html_el);
+
+            if (state[2]) {
+              if (matcher.matched) {
+                res.push(html_el);
+                res.push.apply(res, _toConsumableArray(html_el.querySelectorAll(selector))); // no need to go further.
+
+                matcher.rewind();
+                stack.pop();
+                continue;
+              }
+            }
+          }
+
+          if (state[1] < el.childNodes.length) {
+            stack.push([el.childNodes[state[1]++], 0, false]);
+          } else {
+            if (state[2]) {
+              matcher.rewind();
+            }
+
+            stack.pop();
+          }
+        }
+
+        return res;
+      }, []);
+    }
+    /**
+     * Query CSS Selector to find matching node.
+     * @param  {string}         selector Simplified CSS selector
+     * @param  {Matcher}        selector A Matcher instance
+     * @return {HTMLElement}    matching node
+     */
+
+  }, {
+    key: "querySelector",
+    value: function querySelector(selector) {
+      var matcher;
+
+      if (selector instanceof Matcher) {
+        matcher = selector;
+        matcher.reset();
+      } else {
+        matcher = new Matcher(selector);
+      }
+
+      var stack = [];
+
+      var _iterator = _createForOfIteratorHelper(this.childNodes),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var node = _step.value;
+          stack.push([node, 0, false]);
+
+          while (stack.length) {
+            var state = arr_back(stack);
+            var el = state[0];
+
+            if (state[1] === 0) {
+              // Seen for first time.
+              if (el.nodeType !== type.ELEMENT_NODE) {
+                stack.pop();
+                continue;
+              }
+
+              state[2] = matcher.advance(el);
+
+              if (state[2]) {
+                if (matcher.matched) {
+                  return el;
+                }
+              }
+            }
+
+            if (state[1] < el.childNodes.length) {
+              stack.push([el.childNodes[state[1]++], 0, false]);
+            } else {
+              if (state[2]) {
+                matcher.rewind();
+              }
+
+              stack.pop();
+            }
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return null;
+    }
+    /**
+     * Append a child node to childNodes
+     * @param  {Node} node node to append
+     * @return {Node}      node appended
+     */
+
+  }, {
+    key: "appendChild",
+    value: function appendChild(node) {
+      // node.parentNode = this;
+      this.childNodes.push(node);
+
+      if (node instanceof HTMLElement) {
+        node.parentNode = this;
+      }
+
+      return node;
+    }
+    /**
+     * Get first child node
+     * @return {Node} first child node
+     */
+
+  }, {
+    key: "removeAttribute",
+    value: function removeAttribute(key) {
+      var attrs = this.rawAttributes;
+      delete attrs[key]; // Update this.attribute
+
+      if (this._attrs) {
+        delete this._attrs[key];
+      } // Update rawString
+
+
+      this.rawAttrs = Object.keys(attrs).map(function (name) {
+        var val = JSON.stringify(attrs[name]);
+
+        if (val === undefined || val === 'null') {
+          return name;
+        }
+
+        return "".concat(name, "=").concat(val);
+      }).join(' ');
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
     }
 <<<<<<< HEAD
     /**
@@ -103909,6 +123306,7 @@ var TextNode = /*#__PURE__*/function (_Node) {
 =======
 >>>>>>> ed22f6f (built!)
   }, {
+<<<<<<< HEAD
     key: "text",
     get: function get() {
       return this.rawText;
@@ -105205,6 +124603,606 @@ var HTMLElement = /*#__PURE__*/function (_Node) {
 <<<<<<< HEAD
 <<<<<<< HEAD
     (0,external_kolmafia_.restoreMp)(50);
+=======
+    key: "hasAttribute",
+    value: function hasAttribute(key) {
+      return key in this.attributes;
+    }
+    /**
+     * Get an attribute
+     * @return {string} value of the attribute
+     */
+
+  }, {
+    key: "getAttribute",
+    value: function getAttribute(key) {
+      return this.attributes[key];
+    }
+    /**
+     * Set an attribute value to the HTMLElement
+     * @param {string} key The attribute name
+     * @param {string} value The value to set, or null / undefined to remove an attribute
+     */
+
+  }, {
+    key: "setAttribute",
+    value: function setAttribute(key, value) {
+      if (arguments.length < 2) {
+        throw new Error('Failed to execute \'setAttribute\' on \'Element\'');
+      }
+
+      var attrs = this.rawAttributes;
+      attrs[key] = String(value);
+
+      if (this._attrs) {
+        this._attrs[key] = decode(attrs[key]);
+      } // Update rawString
+
+
+      this.rawAttrs = Object.keys(attrs).map(function (name) {
+        var val = JSON.stringify(attrs[name]);
+
+        if (val === 'null' || val === '""') {
+          return name;
+        }
+
+        return "".concat(name, "=").concat(val);
+      }).join(' ');
+    }
+    /**
+     * Replace all the attributes of the HTMLElement by the provided attributes
+     * @param {Attributes} attributes the new attribute set
+     */
+
+  }, {
+    key: "setAttributes",
+    value: function setAttributes(attributes) {
+      // Invalidate current this.attributes
+      if (this._attrs) {
+        delete this._attrs;
+      } // Invalidate current this.rawAttributes
+
+
+      if (this._rawAttrs) {
+        delete this._rawAttrs;
+      } // Update rawString
+
+
+      this.rawAttrs = Object.keys(attributes).map(function (name) {
+        var val = attributes[name];
+
+        if (val === 'null' || val === '""') {
+          return name;
+        }
+
+        return "".concat(name, "=").concat(JSON.stringify(String(val)));
+      }).join(' ');
+    }
+  }, {
+    key: "insertAdjacentHTML",
+    value: function insertAdjacentHTML(where, html) {
+      var _this5 = this;
+
+      if (arguments.length < 2) {
+        throw new Error('2 arguments required');
+      }
+
+      var p = parse(html);
+
+      if (where === 'afterend') {
+        var _this$parentNode$chil;
+
+        var idx = this.parentNode.childNodes.findIndex(function (child) {
+          return child === _this5;
+        });
+
+        (_this$parentNode$chil = this.parentNode.childNodes).splice.apply(_this$parentNode$chil, [idx + 1, 0].concat(_toConsumableArray(p.childNodes)));
+
+        p.childNodes.forEach(function (n) {
+          if (n instanceof HTMLElement) {
+            n.parentNode = _this5.parentNode;
+          }
+        });
+      } else if (where === 'afterbegin') {
+        var _this$childNodes;
+
+        (_this$childNodes = this.childNodes).unshift.apply(_this$childNodes, _toConsumableArray(p.childNodes));
+      } else if (where === 'beforeend') {
+        p.childNodes.forEach(function (n) {
+          _this5.appendChild(n);
+        });
+      } else if (where === 'beforebegin') {
+        var _this$parentNode$chil2;
+
+        var _idx = this.parentNode.childNodes.findIndex(function (child) {
+          return child === _this5;
+        });
+
+        (_this$parentNode$chil2 = this.parentNode.childNodes).splice.apply(_this$parentNode$chil2, [_idx, 0].concat(_toConsumableArray(p.childNodes)));
+
+        p.childNodes.forEach(function (n) {
+          if (n instanceof HTMLElement) {
+            n.parentNode = _this5.parentNode;
+          }
+        });
+      } else {
+        throw new Error("The value provided ('".concat(where, "') is not one of 'beforebegin', 'afterbegin', 'beforeend', or 'afterend'"));
+      } // if (!where || html === undefined || html === null) {
+      // 	return;
+      // }
+
+    }
+  }, {
+    key: "tagName",
+    get: function get() {
+      return this.rawTagName ? this.rawTagName.toUpperCase() : this.rawTagName;
+    }
+    /**
+     * Get escpaed (as-it) text value of current node and its children.
+     * @return {string} text content
+     */
+
+  }, {
+    key: "rawText",
+    get: function get() {
+      return this.childNodes.reduce(function (pre, cur) {
+        return pre += cur.rawText;
+      }, '');
+    }
+    /**
+     * Get unescaped text value of current node and its children.
+     * @return {string} text content
+     */
+
+  }, {
+    key: "text",
+    get: function get() {
+      return decode(this.rawText);
+    }
+    /**
+     * Get structured Text (with '\n' etc.)
+     * @return {string} structured text
+     */
+
+  }, {
+    key: "structuredText",
+    get: function get() {
+      var currentBlock = [];
+      var blocks = [currentBlock];
+
+      function dfs(node) {
+        if (node.nodeType === type.ELEMENT_NODE) {
+          if (kBlockElements.get(node.rawTagName)) {
+            if (currentBlock.length > 0) {
+              blocks.push(currentBlock = []);
+            }
+
+            node.childNodes.forEach(dfs);
+
+            if (currentBlock.length > 0) {
+              blocks.push(currentBlock = []);
+            }
+          } else {
+            node.childNodes.forEach(dfs);
+          }
+        } else if (node.nodeType === type.TEXT_NODE) {
+          if (node.isWhitespace) {
+            // Whitespace node, postponed output
+            currentBlock.prependWhitespace = true;
+          } else {
+            var text = node.text;
+
+            if (currentBlock.prependWhitespace) {
+              text = " ".concat(text);
+              currentBlock.prependWhitespace = false;
+            }
+
+            currentBlock.push(text);
+          }
+        }
+      }
+
+      dfs(this);
+      return blocks.map(function (block) {
+        // Normalize each line's whitespace
+        return block.join('').trim().replace(/\s{2,}/g, ' ');
+      }).join('\n').replace(/\s+$/, ''); // trimRight;
+    }
+  }, {
+    key: "innerHTML",
+    get: function get() {
+      return this.childNodes.map(function (child) {
+        return child.toString();
+      }).join('');
+    }
+  }, {
+    key: "outerHTML",
+    get: function get() {
+      return this.toString();
+    }
+  }, {
+    key: "structure",
+    get: function get() {
+      var res = [];
+      var indention = 0;
+
+      function write(str) {
+        res.push('  '.repeat(indention) + str);
+      }
+
+      function dfs(node) {
+        var idStr = node.id ? "#".concat(node.id) : '';
+        var classStr = node.classNames.length ? ".".concat(node.classNames.join('.')) : '';
+        write(node.rawTagName + idStr + classStr);
+        indention++;
+        node.childNodes.forEach(function (childNode) {
+          if (childNode.nodeType === type.ELEMENT_NODE) {
+            dfs(childNode);
+          } else if (childNode.nodeType === type.TEXT_NODE) {
+            if (!childNode.isWhitespace) {
+              write('#text');
+            }
+          }
+        });
+        indention--;
+      }
+
+      dfs(this);
+      return res.join('\n');
+    }
+  }, {
+    key: "firstChild",
+    get: function get() {
+      return this.childNodes[0];
+    }
+    /**
+     * Get last child node
+     * @return {Node} last child node
+     */
+
+  }, {
+    key: "lastChild",
+    get: function get() {
+      return arr_back(this.childNodes);
+    }
+    /**
+     * Get attributes
+     * @return {Object} parsed and unescaped attributes
+     */
+
+  }, {
+    key: "attributes",
+    get: function get() {
+      if (this._attrs) {
+        return this._attrs;
+      }
+
+      this._attrs = {};
+      var attrs = this.rawAttributes;
+
+      for (var key in attrs) {
+        var val = attrs[key] || '';
+        this._attrs[key] = decode(val);
+      }
+
+      return this._attrs;
+    }
+    /**
+     * Get escaped (as-it) attributes
+     * @return {Object} parsed attributes
+     */
+
+  }, {
+    key: "rawAttributes",
+    get: function get() {
+      if (this._rawAttrs) {
+        return this._rawAttrs;
+      }
+
+      var attrs = {};
+
+      if (this.rawAttrs) {
+        var re = /\b([a-z][a-z0-9-_]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|(\S+)))?/ig;
+        var match;
+
+        while (match = re.exec(this.rawAttrs)) {
+          attrs[match[1]] = match[2] || match[3] || match[4] || null;
+        }
+      }
+
+      this._rawAttrs = attrs;
+      return attrs;
+    }
+  }, {
+    key: "nextSibling",
+    get: function get() {
+      if (this.parentNode) {
+        var children = this.parentNode.childNodes;
+        var i = 0;
+
+        while (i < children.length) {
+          var child = children[i++];
+
+          if (this === child) {
+            return children[i] || null;
+          }
+        }
+
+        return null;
+      }
+    }
+  }, {
+    key: "nextElementSibling",
+    get: function get() {
+      if (this.parentNode) {
+        var children = this.parentNode.childNodes;
+        var i = 0;
+        var find = false;
+
+        while (i < children.length) {
+          var child = children[i++];
+
+          if (find) {
+            if (child instanceof HTMLElement) {
+              return child || null;
+            }
+          } else if (this === child) {
+            find = true;
+          }
+        }
+
+        return null;
+      }
+    }
+  }]);
+
+  return HTMLElement;
+}(Node); // https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name
+
+
+
+var kMarkupPattern = /<!--[^]*?(?=-->)-->|<(\/?)([a-z][-.:0-9_a-z]*)\s*([^>]*?)(\/?)>/ig; // <(?<tag>[^\s]*)(.*)>(.*)</\k<tag>>
+// <([a-z][-.:0-9_a-z]*)\s*\/>
+// <(area|base|br|col|hr|img|input|link|meta|source)\s*(.*)\/?>
+// <(area|base|br|col|hr|img|input|link|meta|source)\s*(.*)\/?>|<(?<tag>[^\s]*)(.*)>(.*)</\k<tag>>
+
+var kAttributePattern = /(^|\s)(id|class)\s*=\s*("([^"]+)"|'([^']+)'|(\S+))/ig;
+var kSelfClosingElements = {
+  area: true,
+  AREA: true,
+  base: true,
+  BASE: true,
+  br: true,
+  BR: true,
+  col: true,
+  COL: true,
+  hr: true,
+  HR: true,
+  img: true,
+  IMG: true,
+  input: true,
+  INPUT: true,
+  link: true,
+  LINK: true,
+  meta: true,
+  META: true,
+  source: true,
+  SOURCE: true,
+  embed: true,
+  EMBED: true,
+  param: true,
+  PARAM: true,
+  track: true,
+  TRACK: true,
+  wbr: true,
+  WBR: true
+};
+var kElementsClosedByOpening = {
+  li: {
+    li: true,
+    LI: true
+  },
+  LI: {
+    li: true,
+    LI: true
+  },
+  p: {
+    p: true,
+    div: true,
+    P: true,
+    DIV: true
+  },
+  P: {
+    p: true,
+    div: true,
+    P: true,
+    DIV: true
+  },
+  b: {
+    div: true,
+    DIV: true
+  },
+  B: {
+    div: true,
+    DIV: true
+  },
+  td: {
+    td: true,
+    th: true,
+    TD: true,
+    TH: true
+  },
+  TD: {
+    td: true,
+    th: true,
+    TD: true,
+    TH: true
+  },
+  th: {
+    td: true,
+    th: true,
+    TD: true,
+    TH: true
+  },
+  TH: {
+    td: true,
+    th: true,
+    TD: true,
+    TH: true
+  },
+  h1: {
+    h1: true,
+    H1: true
+  },
+  H1: {
+    h1: true,
+    H1: true
+  },
+  h2: {
+    h2: true,
+    H2: true
+  },
+  H2: {
+    h2: true,
+    H2: true
+  },
+  h3: {
+    h3: true,
+    H3: true
+  },
+  H3: {
+    h3: true,
+    H3: true
+  },
+  h4: {
+    h4: true,
+    H4: true
+  },
+  H4: {
+    h4: true,
+    H4: true
+  },
+  h5: {
+    h5: true,
+    H5: true
+  },
+  H5: {
+    h5: true,
+    H5: true
+  },
+  h6: {
+    h6: true,
+    H6: true
+  },
+  H6: {
+    h6: true,
+    H6: true
+  }
+};
+var kElementsClosedByClosing = {
+  li: {
+    ul: true,
+    ol: true,
+    UL: true,
+    OL: true
+  },
+  LI: {
+    ul: true,
+    ol: true,
+    UL: true,
+    OL: true
+  },
+  a: {
+    div: true,
+    DIV: true
+  },
+  A: {
+    div: true,
+    DIV: true
+  },
+  b: {
+    div: true,
+    DIV: true
+  },
+  B: {
+    div: true,
+    DIV: true
+  },
+  i: {
+    div: true,
+    DIV: true
+  },
+  I: {
+    div: true,
+    DIV: true
+  },
+  p: {
+    div: true,
+    DIV: true
+  },
+  P: {
+    div: true,
+    DIV: true
+  },
+  td: {
+    tr: true,
+    table: true,
+    TR: true,
+    TABLE: true
+  },
+  TD: {
+    tr: true,
+    table: true,
+    TR: true,
+    TABLE: true
+  },
+  th: {
+    tr: true,
+    table: true,
+    TR: true,
+    TABLE: true
+  },
+  TH: {
+    tr: true,
+    table: true,
+    TR: true,
+    TABLE: true
+  }
+};
+var frameflag = 'documentfragmentcontainer';
+/**
+ * Parses HTML and returns a root element
+ * Parse a chuck of HTML source.
+ * @param  {string} data      html
+ * @return {HTMLElement}      root element
+ */
+
+function base_parse(data) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+    lowerCaseTagName: false,
+    comment: false
+  };
+  var elements = options.blockTextElements || {
+    script: true,
+    noscript: true,
+    style: true,
+    pre: true
+  };
+  var element_names = Object.keys(elements);
+  var kBlockTextElements = element_names.map(function (it) {
+    return new RegExp(it, 'i');
+  });
+  var kIgnoreElements = element_names.filter(function (it) {
+    return elements[it];
+  }).map(function (it) {
+    return new RegExp(it, 'i');
+  });
+
+  function element_should_be_ignore(tag) {
+    return kIgnoreElements.some(function (it) {
+      return it.test(tag);
+    });
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
   }
 }
 ;// CONCATENATED MODULE: ./src/index.ts
@@ -105223,6 +125221,7 @@ var src_templateObject, src_templateObject2, src_templateObject3, src_templateOb
      */
 >>>>>>> ebaaa81 (Phill told me to do this)
 
+<<<<<<< HEAD
   }, {
     key: "text",
     get: function get() {
@@ -105374,12 +125373,42 @@ var src_templateObject, src_templateObject2, src_templateObject3, src_templateOb
     key: "text",
     get: function get() {
       return decode(this.rawText);
+=======
+  function is_block_text_element(tag) {
+    return kBlockTextElements.some(function (it) {
+      return it.test(tag);
+    });
+  }
+
+  var root = new HTMLElement(null, {});
+  var currentParent = root;
+  var stack = [root];
+  var lastTextPos = -1;
+  var match; // https://github.com/taoqf/node-html-parser/issues/38
+
+  data = "<".concat(frameflag, ">").concat(data, "</").concat(frameflag, ">");
+
+  while (match = kMarkupPattern.exec(data)) {
+    if (lastTextPos > -1) {
+      if (lastTextPos + match[0].length < kMarkupPattern.lastIndex) {
+        // if has content
+        var text = data.substring(lastTextPos, kMarkupPattern.lastIndex - match[0].length);
+        currentParent.appendChild(new TextNode(text));
+      }
+    }
+
+    lastTextPos = kMarkupPattern.lastIndex;
+
+    if (match[2] === frameflag) {
+      continue;
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
     }
     /**
      * Get structured Text (with '\n' etc.)
      * @return {string} structured text
      */
 
+<<<<<<< HEAD
   }, {
     key: "structuredText",
     get: function get() {
@@ -105994,12 +126023,108 @@ function barfTurn() {
   (0,external_kolmafia_.useFamiliar)(meatFamiliar());
   var embezzlerUp = (0,external_kolmafia_.getCounters)("Digitize Monster", 0, 0).trim() !== "";
   var location = embezzlerUp ? (0,dist.$location)(src_templateObject52 || (src_templateObject52 = src_taggedTemplateLiteral(["Noob Cave"]))) : (0,dist.$location)(src_templateObject53 || (src_templateObject53 = src_taggedTemplateLiteral(["Barf Mountain"])));
+=======
+    if (match[0][1] === '!') {
+      // this is a comment
+      if (options.comment) {
+        // Only keep what is in between <!-- and -->
+        var _text = data.substring(lastTextPos - 3, lastTextPos - match[0].length + 4);
 
-  if (!(0,dist.get)("_envyfishEggUsed") && ((0,external_kolmafia_.booleanModifier)("Adventure Underwater") || (0,dist.$items)(src_templateObject54 || (src_templateObject54 = src_taggedTemplateLiteral(["aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying"]))).some(dist.have)) && ((0,external_kolmafia_.booleanModifier)("Underwater Familiar") || (0,dist.$items)(src_templateObject55 || (src_templateObject55 = src_taggedTemplateLiteral(["little bitty bathysphere, das boot"]))).some(dist.have)) && ((0,dist.have)((0,dist.$effect)(src_templateObject56 || (src_templateObject56 = src_taggedTemplateLiteral(["Fishy"])))) || (0,dist.have)((0,dist.$item)(src_templateObject57 || (src_templateObject57 = src_taggedTemplateLiteral(["fishy pipe"])))) && !(0,dist.get)("_fishyPipeUsed")) && !(0,dist.have)((0,dist.$item)(src_templateObject58 || (src_templateObject58 = src_taggedTemplateLiteral(["envyfish egg"])))) && embezzlerUp) {
-    // now fight one underwater
-    if ((0,dist.get)("questS01OldGuy") === "unstarted") {
-      (0,external_kolmafia_.visitUrl)("place.php?whichplace=sea_oldman&action=oldman_oldman");
+        currentParent.appendChild(new CommentNode(_text));
+      }
+
+      continue;
     }
+
+    if (options.lowerCaseTagName) {
+      match[2] = match[2].toLowerCase();
+    }
+
+    if (!match[1]) {
+      // not </ tags
+      var attrs = {};
+
+      for (var attMatch; attMatch = kAttributePattern.exec(match[3]);) {
+        attrs[attMatch[2].toLowerCase()] = attMatch[4] || attMatch[5] || attMatch[6];
+      }
+
+      var tagName = currentParent.rawTagName;
+
+      if (!match[4] && kElementsClosedByOpening[tagName]) {
+        if (kElementsClosedByOpening[tagName][match[2]]) {
+          stack.pop();
+          currentParent = arr_back(stack);
+        }
+      } // ignore container tag we add above
+      // https://github.com/taoqf/node-html-parser/issues/38
+
+
+      currentParent = currentParent.appendChild(new HTMLElement(match[2], attrs, match[3]));
+      stack.push(currentParent);
+
+      if (is_block_text_element(match[2])) {
+        (function () {
+          // a little test to find next </script> or </style> ...
+          var closeMarkup = "</".concat(match[2], ">");
+
+          var index = function () {
+            if (options.lowerCaseTagName) {
+              return data.toLocaleLowerCase().indexOf(closeMarkup, kMarkupPattern.lastIndex);
+            }
+
+            return data.indexOf(closeMarkup, kMarkupPattern.lastIndex);
+          }();
+
+          if (element_should_be_ignore(match[2])) {
+            var _text2;
+
+            if (index === -1) {
+              // there is no matching ending for the text element.
+              _text2 = data.substr(kMarkupPattern.lastIndex);
+            } else {
+              _text2 = data.substring(kMarkupPattern.lastIndex, index);
+            }
+
+            if (_text2.length > 0) {
+              currentParent.appendChild(new TextNode(_text2));
+            }
+          }
+
+          if (index === -1) {
+            lastTextPos = kMarkupPattern.lastIndex = data.length + 1;
+          } else {
+            lastTextPos = kMarkupPattern.lastIndex = index + closeMarkup.length;
+            match[1] = 'true';
+          }
+        })();
+      }
+    }
+
+    if (match[1] || match[4] || kSelfClosingElements[match[2]]) {
+      // </ or /> or <br> etc.
+      while (true) {
+        if (currentParent.rawTagName === match[2]) {
+          stack.pop();
+          currentParent = arr_back(stack);
+          break;
+        } else {
+          var _tagName = currentParent.tagName; // Trying to close current tag, and move on
+
+          if (kElementsClosedByClosing[_tagName]) {
+            if (kElementsClosedByClosing[_tagName][match[2]]) {
+              stack.pop();
+              currentParent = arr_back(stack);
+              continue;
+            }
+          } // Use aggressive strategy to handle unmatching markups.
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
+
+          break;
+        }
+      }
+    }
+<<<<<<< HEAD
 
     (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject59 || (src_templateObject59 = src_taggedTemplateLiteral(["pulled green taffy"]))));
     if (!(0,dist.have)((0,dist.$effect)(src_templateObject60 || (src_templateObject60 = src_taggedTemplateLiteral(["Fishy"]))))) (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject61 || (src_templateObject61 = src_taggedTemplateLiteral(["fishy pipe"]))));
@@ -106234,6 +126359,35 @@ function valid(data) {
 =======
 >>>>>>> ed22f6f (built!)
 
+=======
+  }
+
+  return stack;
+}
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/valid.js
+
+/**
+ * Parses HTML and returns a root element
+ * Parse a chuck of HTML source.
+ */
+
+function valid(data) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+    lowerCaseTagName: false,
+    comment: false
+  };
+  var stack = base_parse(data, options);
+  return Boolean(stack.length === 1);
+}
+;// CONCATENATED MODULE: ../kol-js-starter/node_modules/node-html-parser/dist/esm/index.js
+
+
+
+
+
+
+
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 
 /***/ }),
 
@@ -106349,12 +126503,15 @@ module.exports = require("kolmafia");;
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 4744);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 6528995 (Phill told me to do this)
 =======
 /******/ 	return __webpack_require__(__webpack_require__.s = 4744);
 >>>>>>> 6528995 (Phill told me to do this)
 =======
 >>>>>>> ed22f6f (built!)
+=======
+>>>>>>> 71367a048253ca2a8e7be6d5f4d7650140eae5d0
 /******/ })()
 
 ));
