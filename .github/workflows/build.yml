@@ -55,4 +55,10 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
       - run: npm ci
-      - run: npm run lint
+      - run: npm run build
+      - run: |
+          git config user.name "O.A.F."
+          git config user.email "<>"
+          git add KoLmafia/
+          git commit -m "Build Mafia files for commit $GITHUB_SHA"
+          git push origin main
