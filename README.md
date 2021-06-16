@@ -5,7 +5,7 @@ This script is an automated turn-burning script for the Kingdom of Loathing that
 To install the script, use the following command in the KoLMafia CLI.
 
 ```
-svn checkout https://github.com/Loathing-Associates-Scripting-Society/garbage-collector/branches/release/KoLmafia/
+svn checkout https://github.com/Loathing-Associates-Scripting-Society/garbage-collector/branches/release/
 ```
 
 Before running Garbage Collector, there are a few tasks you must do.
