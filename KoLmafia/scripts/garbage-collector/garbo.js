@@ -38222,16 +38222,16 @@ function fights_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.
 
 
 function checkFax() {
-  (0,external_kolmafia_.cliExecute)('fax receive');
-  if ((0,dist.get)('photocopyMonster') === (0,dist.$monster)(fights_templateObject())) return true;
-  (0,external_kolmafia_.cliExecute)('fax send');
+  (0,external_kolmafia_.cliExecute)("fax receive");
+  if ((0,dist.get)("photocopyMonster") === (0,dist.$monster)(fights_templateObject())) return true;
+  (0,external_kolmafia_.cliExecute)("fax send");
   return false;
 }
 
 function faxEmbezzler() {
-  if (!(0,dist.get)('_photocopyUsed')) {
+  if (!(0,dist.get)("_photocopyUsed")) {
     if (checkFax()) return;
-    (0,external_kolmafia_.chatPrivate)('cheesefax', 'Knob Goblin Embezzler');
+    (0,external_kolmafia_.chatPrivate)("cheesefax", "Knob Goblin Embezzler");
 
     for (var i = 0; i < 3; i++) {
       (0,external_kolmafia_.wait)(10);
