@@ -31,8 +31,10 @@ import {
   myAdventures,
   sweetSynthesis,
   userConfirm,
+  myFamiliar,
+  useFamiliar,
 } from "kolmafia";
-import { $class, $effect, $item, $items, $skill, get, have } from "libram";
+import { $class, $effect, $item, $items, $skill, get, have, $familiar } from "libram";
 import { clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
@@ -227,6 +229,9 @@ function fillStomach() {
 }
 
 function fillLiver() {
+  if (myFamiliar() === $familiar`Stooper`) {
+    useFamiliar($familiar`none`);
+  }
   if (!get("_mimeArmyShotglassUsed") && itemAmount($item`mime army shotglass`) > 0) {
     equip($item`tuxedo shirt`);
     drink(itemPriority($item`astral pilsner`, $item`splendid martini`));

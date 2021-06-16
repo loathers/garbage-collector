@@ -85,6 +85,10 @@ export function meatMood(urKels = false) {
     });
   }
 
+  if (!get("concertVisited") && get("sidequestArenaCompleted") === "fratboy") {
+    cliExecute("concert winklered");
+  }
+
   return mood;
 }
 
