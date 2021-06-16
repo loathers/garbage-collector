@@ -95,7 +95,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
     forceEquip.push($item`mafia pointer finger ring`);
   }
   if (sea) {
-    additionalRequirements.push("sea")
+    additionalRequirements.push("sea");
   }
   const compiledRequirements = Requirement.merge([
     ...requirements,
