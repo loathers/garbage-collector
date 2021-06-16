@@ -57,15 +57,13 @@ jobs:
       - run: |
           git config user.name "O.A.F."
           git config user.email "<>"
-      - run: |
-          git fetch --all
-          git switch release
-          git checkout main -- src patches package.json package-lock.json tsconfig.json webpack.config.js
-          git restore --staged *
       - run: npm ci
       - run: npm run build
       - run: |
-          git add KoLmafia/ -f
+          git fetch --all
+          git switch release
+      - run: |
+          git add KoLmafia/
           {
             git commit -m "Build Mafia files for commit $GITHUB_SHA"
             git push origin release
