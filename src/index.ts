@@ -359,7 +359,7 @@ function barfTurn() {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`I Voted!" sticker` })]);
     adventureMacroAuto(
-      $location`noob cave`,
+      prepWandererZone(),
       Macro.if_(
         `monsterid ${$monster`Angry ghost`.id}`,
         Macro.skill("saucestorm").repeat()
