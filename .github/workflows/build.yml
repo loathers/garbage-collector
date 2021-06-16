@@ -61,5 +61,7 @@ jobs:
           git config user.email "<>"
       - run: |
           git add KoLmafia/
-          git commit -m "Build Mafia files for commit $GITHUB_SHA"
-          git push origin main
+          {
+            git commit -m "Build Mafia files for commit $GITHUB_SHA"
+            git push origin main
+          } || echo "No changes made to compiled files"
