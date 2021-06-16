@@ -58,7 +58,7 @@ jobs:
           git config user.name "O.A.F."
           git config user.email "<>"
       - run: |
-          git checkout release
+          git checkout origin/release
           git checkout main *
           git restore --staged *
       - run: npm ci
