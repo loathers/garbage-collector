@@ -7,12 +7,14 @@ import {
   retrieveItem,
   equippedAmount,
   equip,
+  totalTurnsPlayed,
 } from "kolmafia";
 import {
   $class,
   $familiar,
   $item,
   $items,
+  get,
   getKramcoWandererChance,
   have,
   maximizeCached,
@@ -91,6 +93,14 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
         if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
         forceEquip.push($item`ice nine`);
       }
+    }
+    if (
+      have($item`protonic accelerator pack`) &&
+      get("questPAGhost") === "unstarted" &&
+      get("nextParanormalActivity") <= totalTurnsPlayed() &&
+      !forceEquip.includes($item`ice nine`)
+    ) {
+      forceEquip.push($item`protonic accelerator pack`);
     }
     forceEquip.push($item`mafia pointer finger ring`);
   }
