@@ -65,7 +65,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: |
-          git add KoLmafia/
+          git add KoLmafia/ -f
           {
             git commit -m "Build Mafia files for commit $GITHUB_SHA"
             git push origin release
