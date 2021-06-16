@@ -201,8 +201,8 @@ function barfTurn() {
     use($item`packet of tall grass seeds`);
   if (
     have($item`unwrapped retro superhero cape`) &&
-    get("retroCapeSuperhero") !== "robot" &&
-    get("retroCapeWashingInstructions") !== "kill"
+    (get("retroCapeSuperhero") !== "robot" ||
+    get("retroCapeWashingInstructions") !== "kill")
   ) {
     cliExecute("retrocape robot kill");
   }
