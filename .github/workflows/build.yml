@@ -62,8 +62,8 @@ jobs:
       - run: |
           git fetch --all
           git switch release
-          git rm -r scripts/
-          cp -r KoLmafia/scripts ./scripts
+          rm -r scripts/
+          mv KoLmafia/scripts scripts
       - run: |
           git add scripts/
           {
