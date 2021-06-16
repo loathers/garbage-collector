@@ -207,7 +207,7 @@ function barfTurn() {
   }
 
   while (
-    get<Monster>("feelNostalgicMonster") === $monster`Knob Goblin Embezzler` &&
+    get<Monster>("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
     have($item`backup camera`) &&
     get<number>("_backUpUses") < 11
   ) {
@@ -263,7 +263,13 @@ function barfTurn() {
   } else {
     adventureMacroAuto(
       location,
-      Macro.externalIf(underwater, Macro.item("pulled green taffy")).meatKill()
+      Macro.externalIf(
+        underwater,
+        Macro.if_(
+          `monsterid ${$monster`knob goblin embezzler`.id}`,
+          Macro.item("pulled green taffy")
+        )
+      ).meatKill()
     );
   }
 

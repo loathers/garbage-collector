@@ -48,6 +48,7 @@ import {
   $skill,
   $slot,
   adventureMacro,
+  adventureMacroAuto,
   ChateauMantegna,
   get,
   have,
@@ -59,7 +60,7 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { clamp, ensureEffect, mapMonster, setChoice } from "./lib";
+import { clamp, ensureEffect, mapMonster, questStep, setChoice } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -118,6 +119,8 @@ export function dailyFights() {
                 use($item`Platinum Yendorian Express Card`);
               }
             });
+            if (have($item`license to chill`) && !get("_licenseToChillUsed"))
+              use($item`license to chill`);
 
             if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
@@ -156,7 +159,8 @@ export function dailyFights() {
           useFamiliar($familiar`Pocket Professor`);
           maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
           withMacro(
-            Macro.trySkill("Lecture on Relativity")
+            Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
+              .trySkill("Lecture on Relativity")
               .tryItem($item`Spooky Putty sheet`)
               .meatKill(),
             () => use($item`shaking 4-d camera`)
@@ -643,6 +647,7 @@ const freeKillSources = [
 ];
 
 export function freeFights() {
+  visitUrl("place.php?whichplace=town_wrong");
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
   }
@@ -658,11 +663,18 @@ export function freeFights() {
     useFamiliar(freeFightFamiliar());
     freeFightMood().execute();
     freeFightOutfit([new Requirement([], { forceEquip: $items`The Jokester's gun` })]);
-    try {
-      Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
-      mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
-    } finally {
-      setAutoAttack(0);
+    if (questStep("questL08Trapper") >= 2) {
+      adventureMacroAuto(
+        $location`Lair of the Ninja Snowmen`,
+        Macro.skill("Sing Along").skill("Fire the Jokester's Gun")
+      );
+    } else if (have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) {
+      try {
+        Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
+        mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
+      } finally {
+        setAutoAttack(0);
+      }
     }
   }
 
