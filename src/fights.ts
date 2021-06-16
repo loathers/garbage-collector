@@ -65,21 +65,21 @@ import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
 
 function checkFax(): boolean {
-  cliExecute('fax receive');
-  if (get('photocopyMonster') === $monster`Knob Goblin Embezzler`) return true;
-  cliExecute('fax send');
+  cliExecute("fax receive");
+  if (get("photocopyMonster") === $monster`Knob Goblin Embezzler`) return true;
+  cliExecute("fax send");
   return false;
 }
 
 function faxEmbezzler(): void {
-  if (!get('_photocopyUsed')){  
-    if (checkFax()) return; 
-    chatPrivate('cheesefax', 'Knob Goblin Embezzler');
+  if (!get("_photocopyUsed")) {
+    if (checkFax()) return;
+    chatPrivate("cheesefax", "Knob Goblin Embezzler");
     for (let i = 0; i < 3; i++) {
       wait(10);
-      if (checkFax()) return; 
+      if (checkFax()) return;
     }
-    abort("Failed to acquire photocopied Knob Goblin Embezzler.")
+    abort("Failed to acquire photocopied Knob Goblin Embezzler.");
   }
 }
 
@@ -92,7 +92,7 @@ export function dailyFights() {
       (!have($item`photocopied monster`) || get("photocopyMonster") !== embezzler) &&
       !get("_photocopyUsed")
     ) {
-      faxEmbezzler()
+      faxEmbezzler();
     }
 
     if (getClanLounge()["Clan pool table"] !== undefined) {
@@ -631,13 +631,13 @@ const freeKillSources = [
   new FreeFight(
     () => (have($item`replica bat-oomerang`) ? clamp(3 - get("_usedReplicaBatoomerang"), 0, 3) : 0),
     () =>
-      withMacro(Macro.skill("Sing Along").item("replica bat-oomerang"), () => use($item`drum machine`)),
+      withMacro(Macro.skill("Sing Along").item("replica bat-oomerang"), () =>
+        use($item`drum machine`)
+      ),
     {
       familiar: () =>
         have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
-      requirements: () => [
-        new Requirement(["100 Item Drop"], {}),
-      ],
+      requirements: () => [new Requirement(["100 Item Drop"], {})],
     }
   ),
 ];
