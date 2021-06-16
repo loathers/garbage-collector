@@ -14,7 +14,7 @@ env:
   node-version: "12"
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -43,7 +43,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
 
-  deploy:
+  build:
     runs-on: ubuntu-latest
     needs: [test, lint]
     if: github.ref == 'refs/heads/main'
