@@ -64,4 +64,4 @@ jobs:
           {
             git commit -m "Build Mafia files for commit $GITHUB_SHA"
             git push origin main
-          }
+          } || exit 0
