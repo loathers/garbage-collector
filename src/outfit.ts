@@ -69,6 +69,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`lucky gold ring`, 400],
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
+          [$item`Mr. Screege's spectacles`, 180]
         ]),
       }
     ),
@@ -126,6 +127,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`mafia thumb ring`, 300],
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
+          [$item`Mr. Screege's spectacles`, 180]
         ]),
       }
     ),
