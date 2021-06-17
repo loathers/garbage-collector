@@ -578,9 +578,10 @@ const freeFightSources = [
     () => (have($item`time-spinner`) && $location`the hidden bowling alley`.combatQueue.includes("Drunk Pygmy")) ? Math.ceil((10 - get("_timeSpinnerMinutesUsed")) / 3) : 0,
     () => {
       retrieveItem($item`bowl of scorpions`);
-      withMacro(Macro.trySkill("Extract").trySkill("Sing Along"), () => { visitUrl(`inv_use.php?whichitem=${toInt($item`time-spinner`)}`);
+      Macro.trySkill("Extract").trySkill("Sing Along").setAutoAttack;
+      visitUrl(`inv_use.php?whichitem=${toInt($item`time-spinner`)}`);
       runChoice(1);
-      visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`); })
+      visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
     },
   ),
 ];
