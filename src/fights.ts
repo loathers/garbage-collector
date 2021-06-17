@@ -705,7 +705,10 @@ function thesisReady(): boolean {
 }
 
 function deliverThesis(): void {
-  const thesisInNEP = get("neverendingPartyAlways") && get("_neverendingPartyFreeTurns") < 10 && questStep("_questPartyFair") < 999;
+  const thesisInNEP =
+    get("neverendingPartyAlways") &&
+    get("_neverendingPartyFreeTurns") < 10 &&
+    questStep("_questPartyFair") < 999;
 
   //Set up NEP if we haven't yet
   if (thesisInNEP) {
