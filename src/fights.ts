@@ -557,7 +557,7 @@ const freeFightSources = [
 
   new FreeFight(
     () =>
-      get("neverendingPartyAlways") ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10) : 0,
+      (get("neverendingPartyAlways") && questStep("_questPartyFair") < 999) ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10) : 0,
     () => {
       // FIXME: Check quest if Gerald(ine).
       setChoice(1322, 2); // reject quest.
