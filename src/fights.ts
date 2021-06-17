@@ -453,6 +453,18 @@ const freeFightSources = [
   ),
 
   new FreeFight(
+    () => have($item`time-spinner`) && $location`the hidden bowling alley`.combatQueue.includes("Drunk Pygmy")  && get("_timeSpinnerMinutesUsed") < 8,
+    () => {
+      retrieveItem($item`bowl of scorpions`);
+      Macro.trySkill("Extract").trySkill("Sing Along").setAutoAttack;
+      visitUrl(`inv_use.php?whichitem=${toInt($item`time-spinner`)}`);
+      runChoice(1);
+      visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
+    },
+  ),
+
+
+  new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
     () => adv1($location`Noob Cave`, -1, ""),
     {
@@ -575,16 +587,6 @@ const freeFightSources = [
         }),
       ],
     }
-  ),
-  new FreeFight(
-    () => (have($item`time-spinner`) && $location`the hidden bowling alley`.combatQueue.includes("Drunk Pygmy")) ? Math.ceil((10 - get("_timeSpinnerMinutesUsed")) / 3) : 0,
-    () => {
-      retrieveItem($item`bowl of scorpions`);
-      Macro.trySkill("Extract").trySkill("Sing Along").setAutoAttack;
-      visitUrl(`inv_use.php?whichitem=${toInt($item`time-spinner`)}`);
-      runChoice(1);
-      visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
-    },
   ),
 ];
 
