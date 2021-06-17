@@ -405,10 +405,15 @@ export function main(argString = "") {
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
   );
-  const aaBossFlag = xpath(
-    visitUrl("account.php?tab=combat"),
-    `//*[@id="opt_flag_aabosses"]/label/input/@value`
-  )[0];
+
+  const aaBossFlag =
+    xpath(
+      visitUrl("account.php?tab=combat"),
+      `//*[@id="opt_flag_aabosses"]/label/input[@type='checkbox']@checked`
+    )[0] === "checked"
+      ? 1
+      : 0;
+
   try {
     print("Collecting garbage!", "blue");
     if (globalOptions.stopTurncount !== null) {
