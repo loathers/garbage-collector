@@ -57,7 +57,7 @@ import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { ensureEffect, setChoice } from "./lib";
+import { ensureEffect, questStep, setChoice } from "./lib";
 import { meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -124,7 +124,7 @@ function dailySetup() {
   }
 
   const latte = $item`latte lovers member's mug`;
-  if (have(latte)) {
+  if (have(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
     if (
       numericModifier(latte, "Familiar Weight") !== 5 ||
       numericModifier(latte, "Meat Drop") !== 40
