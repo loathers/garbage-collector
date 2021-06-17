@@ -557,7 +557,9 @@ const freeFightSources = [
 
   new FreeFight(
     () =>
-      get("neverendingPartyAlways") ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10) : 0,
+      get("neverendingPartyAlways") && questStep("_questPartyFair") < 999
+        ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
+        : 0,
     () => {
       // FIXME: Check quest if Gerald(ine).
       setChoice(1322, 2); // reject quest.
@@ -703,7 +705,10 @@ function thesisReady(): boolean {
 }
 
 function deliverThesis(): void {
-  const thesisInNEP = get("neverendingPartyAlways") && get("_neverendingPartyFreeTurns") < 10;
+  const thesisInNEP =
+    get("neverendingPartyAlways") &&
+    get("_neverendingPartyFreeTurns") < 10 &&
+    questStep("_questPartyFair") < 999;
 
   //Set up NEP if we haven't yet
   if (thesisInNEP) {

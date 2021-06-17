@@ -4,6 +4,7 @@ import {
   buy,
   changeMcd,
   cliExecute,
+  getCampground,
   getClanLounge,
   getCounters,
   haveFamiliar,
@@ -56,7 +57,7 @@ import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { ensureEffect, setChoice } from "./lib";
+import { ensureEffect, questStep, setChoice } from "./lib";
 import { meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -123,7 +124,7 @@ function dailySetup() {
   }
 
   const latte = $item`latte lovers member's mug`;
-  if (have(latte)) {
+  if (have(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
     if (
       numericModifier(latte, "Familiar Weight") !== 5 ||
       numericModifier(latte, "Meat Drop") !== 40
@@ -268,8 +269,6 @@ function barfTurn() {
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
-  if (have($item`packet of tall grass seeds`) && myGardenType() !== "grass")
-    use($item`packet of tall grass seeds`);
   if (
     have($item`unwrapped retro superhero cape`) &&
     (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
@@ -402,7 +401,10 @@ export function main(argString = "") {
       globalOptions.stopTurncount = myTurncount() + parseInt(arg, 10);
     }
   }
-
+  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
+  const startingGarden = gardens.find((garden) =>
+    Object.getOwnPropertyNames(getCampground()).includes(garden.name)
+  );
   const aaBossFlag = xpath(
     visitUrl("account.php?tab=combat"),
     `//*[@id="opt_flag_aabosses"]/label/input/@value`
@@ -413,6 +415,9 @@ export function main(argString = "") {
       print(`Stopping in ${globalOptions.stopTurncount - myTurncount()}`, "blue");
     }
     print();
+
+    if (have($item`packet of tall grass seeds`) && myGardenType() !== "grass")
+      use($item`packet of tall grass seeds`);
 
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
@@ -451,5 +456,6 @@ export function main(argString = "") {
     });
   } finally {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
+    if (startingGarden && have(startingGarden)) use(startingGarden);
   }
 }
