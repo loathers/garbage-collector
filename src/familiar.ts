@@ -7,6 +7,7 @@ import {
   haveEffect,
   myFamiliar,
   weightAdjustment,
+  numericModifier,
 } from "kolmafia";
 import { have, $familiar, $item, $familiars, get, $effect, $items } from "libram";
 import { argmax, averagePrice } from "./lib";
@@ -19,7 +20,7 @@ export function meatFamiliar(): Familiar {
   ) {
     return $familiar`Trick-or-Treating Tot`;
   } else {
-    for (const familiar of $familiars`Robortender, Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`) {
+    for (const familiar of $familiars`Robortender, ${numericModifier($item`depleted grimacite grappling hook`, "Adventures") === 0 ? "Mutant Cactus Bud, " : ""}Hobo Monkey, ${numericModifier($item`depleted grimacite grappling hook`, "Adventures") === 1 ? "Mutant Cactus Bud, " : ""}Cat Burglar, Urchin Urchin, Leprechaun`) {
       if (haveFamiliar(familiar)) return familiar;
     }
   }
