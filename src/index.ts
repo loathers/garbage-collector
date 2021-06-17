@@ -436,7 +436,7 @@ export function main(argString = "") {
     }
     if (questStep("questM25Armorer") === -1) {
       visitUrl("shop.php?whichshop=armory&action=talk");
-            runChoice(1);
+      runChoice(1);
     }
 
     // FIXME: Dynamically figure out pointer ring approach.
