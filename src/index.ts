@@ -402,7 +402,9 @@ export function main(argString = "") {
     }
   }
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
-  const startingGarden = gardens.find((garden) =>(Object.getOwnPropertyNames(getCampground()).includes(garden.name)));
+  const startingGarden = gardens.find((garden) =>
+    Object.getOwnPropertyNames(getCampground()).includes(garden.name)
+  );
   const aaBossFlag = xpath(
     visitUrl("account.php?tab=combat"),
     `//*[@id="opt_flag_aabosses"]/label/input/@value`
