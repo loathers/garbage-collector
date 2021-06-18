@@ -45,7 +45,7 @@ export function argmax<T>(values: [T, number][]) {
 
 export function questStep(questName: string) {
   const stringStep = property.getString(questName);
-  if (stringStep === "unstarted") return -1;
+  if (stringStep === "unstarted" || stringStep === "") return -1;
   else if (stringStep === "started") return 0;
   else if (stringStep === "finished") return 999;
   else {
