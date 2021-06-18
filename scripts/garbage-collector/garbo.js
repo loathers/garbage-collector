@@ -33823,7 +33823,7 @@ function argmax(values) {
 }
 function questStep(questName) {
   var stringStep = dist.property.getString(questName);
-  if (stringStep === "unstarted") return -1;else if (stringStep === "started") return 0;else if (stringStep === "finished") return 999;else {
+  if (stringStep === "unstarted" || stringStep === "") return -1;else if (stringStep === "started") return 0;else if (stringStep === "finished") return 999;else {
     if (stringStep.substring(0, 4) !== "step") {
       throw "Quest state parsing error.";
     }
