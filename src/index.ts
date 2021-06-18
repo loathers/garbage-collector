@@ -266,6 +266,7 @@ function dailySetup() {
 }
 
 function barfTurn() {
+  if (have($effect`beaten up`)) throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
