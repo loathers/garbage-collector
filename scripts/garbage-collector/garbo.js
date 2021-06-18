@@ -35683,7 +35683,23 @@ function main() {
     (0,external_kolmafia_.setProperty)("battleAction", "custom combat script");
     (0,external_kolmafia_.cliExecute)("mood apathetic");
     (0,external_kolmafia_.cliExecute)("ccs garbo");
-    safeRestore(); // FIXME: Dynamically figure out pointer ring approach.
+    safeRestore();
+
+    if (questStep("questM23Meatsmith") === -1) {
+      (0,external_kolmafia_.visitUrl)("shop.php?whichshop=meatsmith&action=talk");
+      (0,external_kolmafia_.runChoice)(1);
+    }
+
+    if (questStep("questM24Doc") === -1) {
+      (0,external_kolmafia_.visitUrl)("shop.php?whichshop=doc&action=talk");
+      (0,external_kolmafia_.runChoice)(1);
+    }
+
+    if (questStep("questM25Armorer") === -1) {
+      (0,external_kolmafia_.visitUrl)("shop.php?whichshop=armory&action=talk");
+      (0,external_kolmafia_.runChoice)(1);
+    } // FIXME: Dynamically figure out pointer ring approach.
+
 
     withStash((0,dist.$items)(src_templateObject93 || (src_templateObject93 = src_taggedTemplateLiteral(["haiku katana, repaid diaper"]))), function () {
       // 0. diet stuff.
