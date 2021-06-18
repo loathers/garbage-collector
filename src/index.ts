@@ -426,6 +426,19 @@ export function main(argString = "") {
     cliExecute("ccs garbo");
     safeRestore();
 
+    if (questStep("questM23Meatsmith") === -1) {
+      visitUrl("shop.php?whichshop=meatsmith&action=talk");
+      runChoice(1);
+    }
+    if (questStep("questM24Doc") === -1) {
+      visitUrl("shop.php?whichshop=doc&action=talk");
+      runChoice(1);
+    }
+    if (questStep("questM25Armorer") === -1) {
+      visitUrl("shop.php?whichshop=armory&action=talk");
+      runChoice(1);
+    }
+
     // FIXME: Dynamically figure out pointer ring approach.
     withStash($items`haiku katana, repaid diaper`, () => {
       // 0. diet stuff.
