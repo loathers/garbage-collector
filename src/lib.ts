@@ -267,6 +267,7 @@ function guzzlrCheck() {
     guzzlZone === $location`belowdecks` ||
     guzzlZone === $location`8-Bit Realm` ||
     (guzzlZone.zone === "BatHole" && guzzlZone !== $location`The Bat Hole Entrance`) ||
+    guzzlZone === $location`The Secret Government Laboratory` ||
     !canAdv(guzzlZone, false)
   ) {
     return false;
