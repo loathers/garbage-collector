@@ -453,7 +453,7 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => have($item`time-spinner`) && $location`the hidden bowling alley`.combatQueue.includes("Drunk Pygmy")  && get("_timeSpinnerMinutesUsed") < 8,
+    () => have($item`time-spinner`) && $location`the hidden bowling alley`.combatQueue.includes("drunk pygmy")  && get("_timeSpinnerMinutesUsed") < 8,
     () => {
       retrieveItem($item`bowl of scorpions`);
       Macro.trySkill("Extract").trySkill("Sing Along").setAutoAttack;
