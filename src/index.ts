@@ -233,12 +233,14 @@ function dailySetup() {
     useSkill($skill`Bind Lasagmbie`);
   }
 
-  if (
-    !get("_clanFortuneBuffUsed") &&
-    have($item`Clan VIP lounge key`) &&
-    getClanLounge()["Clan Carnival Game"] !== undefined
-  ) {
-    cliExecute("fortune buff meat");
+  if (have($item`Clan VIP lounge key`)) {
+    if (!get("_clanFortuneBuffUsed") && getClanLounge()["Clan Carnival Game"] !== undefined) {
+      cliExecute("fortune buff meat");
+    }
+
+    if (!get("_floundryItemCreated")) {
+      cliExecute("create carpe");
+    }
   }
 
   if (!get("demonSummoned") && get("demonName2", false) && get("questL11Manor") === "finished") {

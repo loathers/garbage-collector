@@ -35,6 +35,7 @@ import {
   useSkill,
   visitUrl,
   wait,
+  adventure,
 } from "kolmafia";
 import {
   $class,
@@ -188,6 +189,16 @@ export function dailyFights() {
         }
         set("spookyPuttyCopiesMade", 5);
       });
+    }
+
+    if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
+      cliExecute("pillkeeper free semirare");
+
+      if (get("semirareLocation") !== $location`Cobb's Knob Treasury`) {
+        adventureMacro($location`Cobb's Knob Treasury`, Macro.meatKill());
+      } else {
+        adventure($location`The Castle in the Clouds in the Sky (Top Floor)`, 1);
+      }
     }
   }
 }
