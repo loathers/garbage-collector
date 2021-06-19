@@ -191,12 +191,13 @@ export function prepWandererZone() {
     }
   }
 
-  let freeFightZone = defaultLocation;
-  if (guzzlrCheck()) {
-    freeFightZone = get("guzzlrQuestLocation") || defaultLocation;
+  const guzzlZone = get("guzzlrQuestLocation");
+  if (!guzzlrCheck()) return defaultLocation;
+  else if (!guzzlZone) return defaultLocation;
+  else {
     if (get("guzzlrQuestTier") === "platinum") {
       zonePotions.forEach((place) => {
-        if (freeFightZone.zone === place.zone && !have(place.effect)) {
+        if (guzzlZone.zone === place.zone && !have(place.effect)) {
           if (!have(place.potion)) {
             buy(1, place.potion, 10000);
           }
@@ -204,8 +205,6 @@ export function prepWandererZone() {
         }
       });
     }
-  }
-  if (freeFightZone === get("guzzlrQuestLocation")) {
     if (property.getString("guzzlrQuestBooze") === "Guzzlr cocktail set") {
       if (
         !$items`buttery boy, steamboat, ghiaccio colada, nog-on-the-cob, sourfinger`.some((drink) =>
@@ -217,14 +216,14 @@ export function prepWandererZone() {
     } else {
       const guzzlrBooze = toItem(get("guzzlrQuestBooze"));
       if (guzzlrBooze === $item`none`) {
-        freeFightZone = defaultLocation;
+        return defaultLocation;
       } else if (!have(guzzlrBooze)) {
         print(`just picking up some booze before we roll`, "blue");
         cliExecute("acquire " + get("guzzlrQuestBooze"));
       }
     }
+    return guzzlZone;
   }
-  return freeFightZone;
 }
 
 function guzzlrCheck() {
