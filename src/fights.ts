@@ -59,6 +59,7 @@ import {
   TunnelOfLove,
   Witchess,
 } from "libram";
+import { fillAsdonMartinTo } from "./asdon";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { clamp, ensureEffect, mapMonster, questStep, setChoice } from "./lib";
@@ -656,6 +657,21 @@ const freeKillSources = [
       withMacro(Macro.skill("Sing Along").item("replica bat-oomerang"), () =>
         use($item`drum machine`)
       ),
+    {
+      familiar: () =>
+        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      requirements: () => [new Requirement(["100 Item Drop"], {})],
+    }
+  ),
+
+  new FreeFight(
+    () => !get("_missileLauncherUsed") && getCampground()["Asdon Martin keyfob"] !== undefined,
+    () => {
+      fillAsdonMartinTo(100);
+      withMacro(Macro.skill("Sing Along").skill("Asdon Martin: Missile Launcher"), () =>
+        use($item`drum machine`)
+      );
+    },
     {
       familiar: () =>
         have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
