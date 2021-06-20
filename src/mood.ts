@@ -103,6 +103,10 @@ export function freeFightMood() {
     });
   }
 
+  if (!get("_glennGoldenDiceUsed")) {
+    if (have($item`Glenn's golden dice`)) use($item`Glenn's golden dice`);
+  }
+
   if (haveEffect($effect`Blue Swayed`) < 50) {
     use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
   }
