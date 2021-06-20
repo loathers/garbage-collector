@@ -35696,7 +35696,7 @@ function main() {
   var startingGarden = gardens.find(function (garden) {
     return Object.getOwnPropertyNames((0,external_kolmafia_.getCampground)()).includes(garden.name);
   });
-  var aaBossFlag = (0,external_kolmafia_.xpath)((0,external_kolmafia_.visitUrl)("account.php?tab=combat"), "//*[@id=\"opt_flag_aabosses\"]/label/input/@value")[0];
+  var aaBossFlag = (0,external_kolmafia_.xpath)((0,external_kolmafia_.visitUrl)("account.php?tab=combat"), "//*[@id=\"opt_flag_aabosses\"]/label/input[@type='checkbox']@checked")[0] === "checked" ? 1 : 0;
 
   try {
     (0,external_kolmafia_.print)("Collecting garbage!", "blue");
