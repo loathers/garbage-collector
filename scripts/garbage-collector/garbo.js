@@ -35766,8 +35766,16 @@ function canContinue() {
 }
 function src_main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  // TODO: How do we handle Synth? Needs to be integrated with diet stuff.
-  // Similar for jumping horseradish etc.
+  (0,dist.sinceKolmafiaRevision)(20767);
+
+  if ((0,dist.get)("valueOfAdventure") <= 3500) {
+    throw "Your valueOfAdventure is set to ".concat((0,dist.get)("valueOfAdventure"), ", which is too low for barf farming to be worthwhile. If you forgot to set it, use \"set valueOfAdventure = XXXX\" to set it to your marginal turn meat value.");
+  }
+
+  if ((0,dist.get)("valueOfAdventure") >= 10000) {
+    throw "Your valueOfAdventure is set to ".concat((0,dist.get)("valueOfAdventure"), ", which is definitely incorrect. Please set it to your reliable marginal turn value.");
+  }
+
   var args = argString.split(" ");
 
   var _iterator2 = src_createForOfIteratorHelper(args),
