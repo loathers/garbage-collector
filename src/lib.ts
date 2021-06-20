@@ -59,7 +59,6 @@ export function questStep(questName: string) {
 export function voterSetup() {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
   visitUrl("place.php?whichplace=town_right&action=townright_vote");
-  runChoice(2);
 
   const votingMonsterPriority = [
     "terrible mutant",
@@ -93,12 +92,12 @@ export function voterSetup() {
     initPriority.get(get("_voteLocal4")) || 1,
   ];
 
-  const [firstPriority, secondPriority] = voteLocalPriorityArr.sort((a, b) => a - b).slice(0, 1);
+  const firstPriority = voteLocalPriorityArr.sort((a, b) => a - b)[0];
+  const secondPriority = voteLocalPriorityArr.sort((a, b) => a - b)[0];
 
   const firstInit = voteLocalPriorityArr.indexOf(firstPriority);
   const secondInit = voteLocalPriorityArr.indexOf(secondPriority);
 
-  visitUrl("place.php?whichplace=town_right&action=townright_vote");
   visitUrl(
     `choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${firstInit}&local[]=${secondInit}`
   );
