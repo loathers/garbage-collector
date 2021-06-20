@@ -35768,7 +35768,6 @@ function src_main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   // TODO: How do we handle Synth? Needs to be integrated with diet stuff.
   // Similar for jumping horseradish etc.
-  (0,dist.sinceKolmafiaRevision)(20767);
   var args = argString.split(" ");
 
   var _iterator2 = src_createForOfIteratorHelper(args),
