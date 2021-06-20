@@ -74,9 +74,9 @@ export function voterSetup() {
     ["Familiar Experience: +2", 8],
     ["Adventures: +1", 7],
     ["Monster Level: +10", 5],
-    ["Meat Drop: -30", -1],
-    ["Item Drop: -15", -1],
-    ["Familiar Experience: -2", -1],
+    ["Meat Drop: -30", -2],
+    ["Item Drop: -15", -2],
+    ["Familiar Experience: -2", -2],
   ]);
 
   const monsterVote =
@@ -86,10 +86,10 @@ export function voterSetup() {
       : 2;
 
   const voteLocalPriorityArr = [
-    initPriority.get(get("_voteLocal1")) || 1,
-    initPriority.get(get("_voteLocal2")) || 1,
-    initPriority.get(get("_voteLocal3")) || 1,
-    initPriority.get(get("_voteLocal4")) || 1,
+    initPriority.get(get("_voteLocal1")) || get("_voteLocal1").indexOf("-") === -1 ? 1 : -1,
+    initPriority.get(get("_voteLocal2")) || get("_voteLocal2").indexOf("-") === -1 ? 1 : -1,
+    initPriority.get(get("_voteLocal3")) || get("_voteLocal3").indexOf("-") === -1 ? 1 : -1,
+    initPriority.get(get("_voteLocal4")) || get("_voteLocal4").indexOf("-") === -1 ? 1 : -1,
   ];
 
   const firstPriority = voteLocalPriorityArr.sort((a, b) => a - b)[0];
