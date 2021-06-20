@@ -57,7 +57,7 @@ import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { ensureEffect, questStep, setChoice } from "./lib";
+import { ensureEffect, questStep, setChoice, voterSetup } from "./lib";
 import { meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -89,6 +89,7 @@ function tryFeast(familiar: Familiar) {
 }
 
 function dailySetup() {
+  voterSetup();
   if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
     useFamiliar($familiar`Cornbeefadon`);
     use($item`box of Familiar Jacks`);
