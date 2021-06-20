@@ -93,7 +93,7 @@ export function voterSetup() {
   ];
 
   const firstPriority = voteLocalPriorityArr.sort((a, b) => a - b)[0];
-  const secondPriority = voteLocalPriorityArr.sort((a, b) => a - b)[0];
+  const secondPriority = voteLocalPriorityArr.sort((a, b) => a - b)[1];
 
   const firstInit = voteLocalPriorityArr.indexOf(firstPriority);
   const secondInit = voteLocalPriorityArr.indexOf(secondPriority);
