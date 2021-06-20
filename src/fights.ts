@@ -30,6 +30,7 @@ import {
   runCombat,
   setAutoAttack,
   spleenLimit,
+  toInt,
   use,
   useFamiliar,
   useSkill,
@@ -448,6 +449,20 @@ const freeFightSources = [
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
         }),
       ],
+    }
+  ),
+
+  new FreeFight(
+    () =>
+      have($item`time-spinner`) &&
+      $location`the hidden bowling alley`.combatQueue.includes("drunk pygmy") &&
+      get("_timeSpinnerMinutesUsed") < 8,
+    () => {
+      retrieveItem($item`bowl of scorpions`);
+      Macro.trySkill("Extract").trySkill("Sing Along").setAutoAttack;
+      visitUrl(`inv_use.php?whichitem=${toInt($item`time-spinner`)}`);
+      runChoice(1);
+      visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
     }
   ),
 
