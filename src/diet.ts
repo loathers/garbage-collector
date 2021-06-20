@@ -34,7 +34,7 @@ import {
   myFamiliar,
   useFamiliar,
 } from "kolmafia";
-import { $class, $effect, $item, $items, $skill, get, have, $familiar } from "libram";
+import { $class, $effect, $item, $items, $skill, get, have, $familiar, set } from "libram";
 import { clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
@@ -303,33 +303,41 @@ export function runDiet(): void {
   fillStomach();
   fillLiver();
 
-  if (!get("_distentionPillUsed")) {
+  if (!get("_distentionPillUsed") && 1 <= myInebriety()) {
+    if (!get<boolean>("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
+      set(
+        "garbo_skipPillCheck",
+        userConfirm(
+          "You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)",
+          15000,
+          false
+        )
+      );
+    }
     if (
-      have($item`distention pill`, 1) ||
-      !userConfirm(
-        "You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)",
-        15000,
-        false
-      )
+      (have($item`distention pill`, 1) || !get<boolean>("garbo_skipPillCheck", false)) &&
+      !use($item`distention pill`)
     ) {
-      if (!use($item`distention pill`)) {
-        print("WARNING: Out of distention pills.", "red");
-      }
+      print("WARNING: Out of distention pills.", "red");
     }
   }
 
   if (!get("_syntheticDogHairPillUsed") && 1 <= myInebriety()) {
+    if (!get<boolean>("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
+      set(
+        "garbo_skipPillCheck",
+        userConfirm(
+          "You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)",
+          15000,
+          false
+        )
+      );
+    }
     if (
-      have($item`synthetic dog hair pill`, 1) ||
-      !userConfirm(
-        "You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)",
-        15000,
-        false
-      )
+      (have($item`synthetic dog hair pill`, 1) || !get<boolean>("garbo_skipPillCheck", false)) &&
+      !use($item`synthetic dog hair pill`)
     ) {
-      if (!use($item`synthetic dog hair pill`)) {
-        print("WARNING: Out of synthetic dog hair pills.", "red");
-      }
+      print("WARNING: Out of synthetic dog hair pills.", "red");
     }
   }
 
