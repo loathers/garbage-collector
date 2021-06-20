@@ -58,7 +58,7 @@ import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { ensureEffect, questStep, setChoice, voterSetup } from "./lib";
+import { ensureEffect, questStep, setChoice, voterSetup, prepWandererZone } from "./lib";
 import { meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -302,7 +302,7 @@ function barfTurn() {
   useFamiliar(meatFamiliar());
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
-  let location = embezzlerUp ? $location`Noob Cave` : $location`Barf Mountain`;
+  let location = embezzlerUp ? prepWandererZone() : $location`Barf Mountain`;
   if (
     !get("_envyfishEggUsed") &&
     (booleanModifier("Adventure Underwater") ||
@@ -359,7 +359,7 @@ function barfTurn() {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`I Voted!" sticker` })]);
     adventureMacroAuto(
-      $location`noob cave`,
+      prepWandererZone(),
       Macro.if_(
         `monsterid ${$monster`Angry ghost`.id}`,
         Macro.skill("saucestorm").repeat()

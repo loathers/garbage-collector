@@ -62,7 +62,7 @@ import {
 import { fillAsdonMartinTo } from "./asdon";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { clamp, ensureEffect, mapMonster, questStep, setChoice } from "./lib";
+import { clamp, ensureEffect, mapMonster, prepWandererZone, questStep, setChoice } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -470,7 +470,7 @@ const freeFightSources = [
 
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => adv1($location`Noob Cave`, -1, ""),
+    () => adv1(prepWandererZone(), -1, ""),
     {
       requirements: () => [
         new Requirement([], {
