@@ -238,6 +238,7 @@ const pygmyMacro = Macro.if_(
     Macro.trySkill("Feel Hatred").item($item`divine champagne popper`)
   )
   .if_("monstername pygmy janitor", Macro.item($item`tennis ball`))
+  .if_("monstername time-spinner prank", Macro.meatKill())
   .abort();
 
 const freeFightSources = [
