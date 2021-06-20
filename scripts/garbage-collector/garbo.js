@@ -33765,7 +33765,7 @@ var dist = __webpack_require__(9803);
 // EXTERNAL MODULE: ./src/combat.ts
 var combat = __webpack_require__(4223);
 ;// CONCATENATED MODULE: ./src/lib.ts
-var _templateObject, _templateObject2;
+var _templateObject, _templateObject2, _templateObject3;
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -33831,8 +33831,24 @@ function questStep(questName) {
     return parseInt(stringStep.substring(4), 10);
   }
 }
+function voterSetup() {
+  if ((0,dist.have)((0,dist.$item)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["\"I Voted!\" sticker"])))) || !((0,dist.get)("voteAlways") || (0,dist.get)("_voteToday"))) return;
+  (0,external_kolmafia_.visitUrl)("place.php?whichplace=town_right&action=townright_vote");
+  var votingMonsterPriority = ["terrible mutant", "angry ghost", "government bureaucrat", "annoyed snake", "slime blob"];
+  var initPriority = new Map([["Meat Drop: +30", 10], ["Item Drop: +15", 9], ["Familiar Experience: +2", 8], ["Adventures: +1", 7], ["Monster Level: +10", 5], ["Meat Drop: -30", -2], ["Item Drop: -15", -2], ["Familiar Experience: -2", -2]]);
+  var monsterVote = votingMonsterPriority.indexOf((0,dist.get)("_voteMonster1")) < votingMonsterPriority.indexOf((0,dist.get)("_voteMonster2")) ? 1 : 2;
+  var voteLocalPriorityArr = [initPriority.get((0,dist.get)("_voteLocal1")) || (0,dist.get)("_voteLocal1").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal2")) || (0,dist.get)("_voteLocal2").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal3")) || (0,dist.get)("_voteLocal3").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal4")) || (0,dist.get)("_voteLocal4").indexOf("-") === -1 ? 1 : -1];
+  var bestVotes = voteLocalPriorityArr.sort(function (a, b) {
+    return a - b;
+  });
+  var firstPriority = bestVotes[0];
+  var secondPriority = bestVotes[1];
+  var firstInit = voteLocalPriorityArr.indexOf(firstPriority);
+  var secondInit = voteLocalPriorityArr.indexOf(secondPriority);
+  (0,external_kolmafia_.visitUrl)("choice.php?option=1&whichchoice=1331&g=".concat(monsterVote, "&local[]=").concat(firstInit, "&local[]=").concat(secondInit));
+}
 ;// CONCATENATED MODULE: ./src/diet.ts
-var diet_templateObject, diet_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61;
+var diet_templateObject, diet_templateObject2, diet_templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = diet_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -33988,7 +34004,7 @@ var savedPotentialSpleenItems = null;
 
 function getBestSpleenItems() {
   if (savedBestSpleenItem === null || savedPotentialSpleenItems === null) {
-    savedPotentialSpleenItems = (0,dist.$items)(_templateObject3 || (_templateObject3 = diet_taggedTemplateLiteral(["octolus oculus, transdermal smoke patch, antimatter wad, voodoo snuff, blood-drive sticker"])));
+    savedPotentialSpleenItems = (0,dist.$items)(diet_templateObject3 || (diet_templateObject3 = diet_taggedTemplateLiteral(["octolus oculus, transdermal smoke patch, antimatter wad, voodoo snuff, blood-drive sticker"])));
     savedPotentialSpleenItems.sort(function (x, y) {
       return valuePerSpleen(x) - valuePerSpleen(y);
     });
@@ -35432,6 +35448,8 @@ function tryFeast(familiar) {
 }
 
 function dailySetup() {
+  voterSetup();
+
   if ((0,dist.have)((0,dist.$familiar)(src_templateObject4 || (src_templateObject4 = src_taggedTemplateLiteral(["Cornbeefadon"])))) && !(0,dist.have)((0,dist.$item)(src_templateObject5 || (src_templateObject5 = src_taggedTemplateLiteral(["amulet coin"]))))) {
     (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(src_templateObject6 || (src_templateObject6 = src_taggedTemplateLiteral(["Cornbeefadon"]))));
     (0,external_kolmafia_.use)((0,dist.$item)(src_templateObject7 || (src_templateObject7 = src_taggedTemplateLiteral(["box of Familiar Jacks"]))));
