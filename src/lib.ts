@@ -1,4 +1,4 @@
-import { cliExecute, haveSkill, mallPrice, toUrl, useSkill, visitUrl } from "kolmafia";
+import { cliExecute, haveSkill, mallPrice, runChoice, toUrl, useSkill, visitUrl } from "kolmafia";
 import { $item, $skill, get, have, property, set } from "libram";
 
 export function setChoice(adventure: number, value: number) {
@@ -59,6 +59,7 @@ export function questStep(questName: string) {
 export function voterSetup() {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
   visitUrl("place.php?whichplace=town_right&action=townright_vote");
+  runChoice(2);
 
   const votingMonsterPriority = [
     "terrible mutant",
@@ -97,6 +98,7 @@ export function voterSetup() {
   const firstInit = voteLocalPriorityArr.indexOf(firstPriority);
   const secondInit = voteLocalPriorityArr.indexOf(secondPriority);
 
+  visitUrl("place.php?whichplace=town_right&action=townright_vote");
   visitUrl(
     `choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${firstInit}&local[]=${secondInit}`
   );
