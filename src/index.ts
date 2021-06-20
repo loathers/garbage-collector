@@ -398,8 +398,11 @@ export function canContinue() {
 }
 
 export function main(argString = "") {
-  // TODO: How do we handle Synth? Needs to be integrated with diet stuff.
-  // Similar for jumping horseradish etc.
+  if (get("valueOfAdventure") <= 3500) {
+    throw `Your valueOfAdventure is set to ${get(
+      "valueOfAdventure"
+    )}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
+  }
 
   sinceKolmafiaRevision(20767);
 
