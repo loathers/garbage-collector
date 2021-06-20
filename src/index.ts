@@ -398,13 +398,18 @@ export function canContinue() {
 }
 
 export function main(argString = "") {
+  sinceKolmafiaRevision(20767);
+
   if (get("valueOfAdventure") <= 3500) {
     throw `Your valueOfAdventure is set to ${get(
       "valueOfAdventure"
     )}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
   }
-
-  sinceKolmafiaRevision(20767);
+  if (get("valueOfAdventure") >= 10000) {
+    throw `Your valueOfAdventure is set to ${get(
+      "valueOfAdventure"
+    )}, which is definitely incorrect. Please set it to your reliable marginal turn value.`;
+  }
 
   const args = argString.split(" ");
   for (const arg of args) {
