@@ -50,6 +50,7 @@ import {
   get,
   have,
   setDefaultMaximizeOptions,
+  sinceKolmafiaRevision,
   SongBoom,
   SourceTerminal,
 } from "libram";
@@ -399,6 +400,8 @@ export function canContinue() {
 export function main(argString = "") {
   // TODO: How do we handle Synth? Needs to be integrated with diet stuff.
   // Similar for jumping horseradish etc.
+
+  sinceKolmafiaRevision(20767);
 
   const args = argString.split(" ");
   for (const arg of args) {
