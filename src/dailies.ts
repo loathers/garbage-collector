@@ -212,6 +212,7 @@ export function dailySetup() {
     cliExecute("summon Preternatural Greed");
   }
 
+  visitUrl("place.php?whichplace=town_right");
   if (get("horseryAvailable") && get("_horsery") !== "dark horse") {
     cliExecute("horsery dark");
   }
