@@ -228,21 +228,8 @@ export function dailySetup() {
   changeMcd(10);
 
   retrieveItem($item`Half a Purse`);
+  
   volcanoDailies();
-
-  if (
-    !get("_internetViralVideoBought") &&
-    have($item`infinite BACON machine`) &&
-    itemAmount($item`BACON`) >= 20
-  ) {
-    buy($coinmaster`Internet Meme Shop`, 1, $item`viral video`);
-  }
-  if (have($item`deck of every card`)) {
-    ["1952 Mickey Mantle Card", "Island", "Ancestral Recall"].forEach((card) => {
-      if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
-        cliExecute(`deck cheat ${card}`);
-    });
-  }
 
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
