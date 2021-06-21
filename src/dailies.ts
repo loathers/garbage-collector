@@ -237,6 +237,12 @@ export function dailySetup() {
   ) {
     buy($coinmaster`Internet Meme Shop`, 1, $item`viral video`);
   }
+  if (have($item`deck of every card`)) {
+    ["1952 mickey mantle card", "island", "ancestral recall"].forEach((card) => {
+      if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
+        cliExecute(`deck cheat ${card}`);
+    });
+  }
 
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
