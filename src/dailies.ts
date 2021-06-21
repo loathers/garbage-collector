@@ -41,6 +41,7 @@ import {
   $class,
   $thrall,
   property,
+  $coinmaster,
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import { voterSetup, questStep, ensureEffect, setChoice } from "./lib";
@@ -228,25 +229,17 @@ export function dailySetup() {
   retrieveItem($item`Half a Purse`);
   volcanoDailies();
 
+  if (!get("_internetViralVideoBought") && have($item`infinite BACON machine`)) {
+    buy($coinmaster`Internet Meme Shop`, 1, $item`viral video`);
+}
+
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
 }
 
 function volcanoDailies() {
   if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
-  if (!get("_volcanoItemRedeemed")) {
-    const volcanoChoice = checkVolcanoQuest();
-    if (volcanoChoice !== $item`none` && volcanoChoice !== $item`fused fuse`) {
-      const volcanoItems: Map<Item, number> = new Map<Item, number>([
-        [property.getItem("_volcanoItem1") || $item`none`, 1],
-        [property.getItem("_volcanoItem2") || $item`none`, 2],
-        [property.getItem("_volcanoItem3") || $item`none`, 3],
-      ]);
-      const choice = volcanoItems.get(volcanoChoice) || 4;
-      visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-      runChoice(choice);
-    }
-  }
+  if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
   print("Getting my free volcoino!", "blue");
   if (!get("_infernoDiscoVisited")) {
@@ -254,6 +247,7 @@ function volcanoDailies() {
     visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
     runChoice(7);
   }
+
 }
 function checkVolcanoQuest() {
   print("Checking volcano quest", "blue");
@@ -334,10 +328,11 @@ function checkVolcanoQuest() {
   for (const [volcanoItem, tryToGetIt] of volcanoWhatToDo.entries()) {
     if (volcanoItems.includes(volcanoItem)) {
       if (tryToGetIt()) {
-        print(
-          `Alright garbo user, you're going to do the volcano quest with a ${volcanoItem.name} or whatever`,
-          "blue"
-        );
+        if (volcanoItem !== $item`fused fuse`) {
+          visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+          const choice = volcanoItems.indexOf(volcanoItem) === -1 ? 4 : 1 + volcanoItems.indexOf(volcanoItem);
+          runChoice(choice);
+        }
         return volcanoItem;
       }
     }
