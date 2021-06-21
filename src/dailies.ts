@@ -230,9 +230,13 @@ export function dailySetup() {
   retrieveItem($item`Half a Purse`);
   volcanoDailies();
 
-  if (!get("_internetViralVideoBought") && have($item`infinite BACON machine`) && itemAmount($item`BACON`) >= 20) {
+  if (
+    !get("_internetViralVideoBought") &&
+    have($item`infinite BACON machine`) &&
+    itemAmount($item`BACON`) >= 20
+  ) {
     buy($coinmaster`Internet Meme Shop`, 1, $item`viral video`);
-}
+  }
 
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
@@ -248,7 +252,6 @@ function volcanoDailies() {
     visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
     runChoice(7);
   }
-
 }
 function checkVolcanoQuest() {
   print("Checking volcano quest", "blue");
@@ -331,7 +334,8 @@ function checkVolcanoQuest() {
       if (tryToGetIt()) {
         if (volcanoItem !== $item`fused fuse`) {
           visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-          const choice = volcanoItems.indexOf(volcanoItem) === -1 ? 4 : 1 + volcanoItems.indexOf(volcanoItem);
+          const choice =
+            volcanoItems.indexOf(volcanoItem) === -1 ? 4 : 1 + volcanoItems.indexOf(volcanoItem);
           runChoice(choice);
         }
         return volcanoItem;
