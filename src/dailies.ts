@@ -228,7 +228,7 @@ export function dailySetup() {
   changeMcd(10);
 
   retrieveItem($item`Half a Purse`);
-  
+
   volcanoDailies();
 
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
