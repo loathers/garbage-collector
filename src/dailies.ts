@@ -230,7 +230,7 @@ export function dailySetup() {
   retrieveItem($item`Half a Purse`);
   volcanoDailies();
 
-  if (!get("_internetViralVideoBought") && have($item`infinite BACON machine`)) {
+  if (!get("_internetViralVideoBought") && have($item`infinite BACON machine`) && itemAmount($item`BACON`) >= 20) {
     buy($coinmaster`Internet Meme Shop`, 1, $item`viral video`);
 }
 
