@@ -327,13 +327,12 @@ function checkVolcanoQuest() {
       if (tryToGetIt()) {
         if (volcanoItem !== $item`fused fuse`) {
           visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+          print(`Alright buddy, turning in ${volcanoItem.plural} for a volcoino!`);
           const choice =
             volcanoItems.indexOf(volcanoItem) === -1 ? 4 : 1 + volcanoItems.indexOf(volcanoItem);
           runChoice(choice);
         }
-        return volcanoItem;
       }
     }
   }
-  return $item`none`;
 }
