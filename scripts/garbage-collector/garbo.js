@@ -33838,7 +33838,7 @@ function voterSetup() {
   if ((0,dist.have)((0,dist.$item)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["\"I Voted!\" sticker"])))) || !((0,dist.get)("voteAlways") || (0,dist.get)("_voteToday"))) return;
   (0,external_kolmafia_.visitUrl)("place.php?whichplace=town_right&action=townright_vote");
   var votingMonsterPriority = ["terrible mutant", "angry ghost", "government bureaucrat", "annoyed snake", "slime blob"];
-  var initPriority = new Map([["Meat Drop: +30", 10], ["Item Drop: +15", 9], ["Familiar Experience: +2", 8], ["Adventures: +1", 7], ["Monster Level: +10", 5], ["Meat Drop: -30", -2], ["Item Drop: -15", -2], ["Familiar Experience: -2", -2]]);
+  var initPriority = new Map([["Meat Drop: +30", 10], ["Item Drop: +15", 9], ["Familiar Experience: +2", 8], ["Adventures: +1", 7], ["Monster Level: +10", 5], ["".concat((0,external_kolmafia_.myPrimestat)(), " Percent: +25"), 3], ["Experience (".concat((0,external_kolmafia_.myPrimestat)(), "): +4"), 2], ["Meat Drop: -30", -2], ["Item Drop: -15", -2], ["Familiar Experience: -2", -2]]);
   var monsterVote = votingMonsterPriority.indexOf((0,dist.get)("_voteMonster1")) < votingMonsterPriority.indexOf((0,dist.get)("_voteMonster2")) ? 1 : 2;
   var voteLocalPriorityArr = [initPriority.get((0,dist.get)("_voteLocal1")) || (0,dist.get)("_voteLocal1").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal2")) || (0,dist.get)("_voteLocal2").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal3")) || (0,dist.get)("_voteLocal3").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal4")) || (0,dist.get)("_voteLocal4").indexOf("-") === -1 ? 1 : -1];
   var bestVotes = voteLocalPriorityArr.sort(function (a, b) {
