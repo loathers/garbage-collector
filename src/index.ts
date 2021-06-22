@@ -173,6 +173,25 @@ function dailySetup() {
         }
       }
       if (
+        !get("latteUnlocks").includes("carrot") &&
+        (haveFamiliar($familiar`frumious bandersnatch`) ||
+          haveFamiliar($familiar`pair of stomping boots`)) &&
+        Bandersnatch.getRemainingRunaways() > 0
+      ) {
+        const runFam = haveFamiliar($familiar`pair of stomping boots`)
+          ? $familiar`pair of stomping boots`
+          : $familiar`frumious bandersnatch`;
+        useFamiliar(runFam);
+        maximize("familiar weight, +equip latte lovers member's mug", false);
+        if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+        Macro.step("runaway").setAutoAttack();
+        setChoice(502, 2);
+        setChoice(505, 2);
+        while (!get("latteUnlocks").includes("carrot") && Bandersnatch.getRemainingRunaways() > 0) {
+          adv1($location`the dire warren`, -1, "");
+        }
+      }
+      if (
         get("latteUnlocks").includes("cajun") &&
         get("latteUnlocks").includes("rawhide") &&
         get("_latteRefillsUsed") < 3
