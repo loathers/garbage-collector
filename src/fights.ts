@@ -319,6 +319,7 @@ export function dailyFights() {
       set("_garbo_weightChain", true);
     }
 
+    // REMAINING EMBEZZLER FIGHTS
     let nextFight = getEmbezzlerFight();
     while (nextFight !== null) {
       withMacro(embezzlerMacro(), () => {
@@ -343,9 +344,10 @@ export function dailyFights() {
             retrieveItem($item`pulled green taffy`);
             if (!have($effect`Fishy`)) use($item`fishy pipe`);
             nextFight.run($location`The Briny Deeps`);
+          } else {
+            meatOutfit(true);
+            nextFight.run(prepWandererZone());
           }
-          meatOutfit(true);
-          nextFight.run(prepWandererZone());
         }
       });
       nextFight = getEmbezzlerFight();
