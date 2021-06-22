@@ -208,6 +208,32 @@ const embezzlerSources = [
   ),
   new EmbezzlerFight(
     () =>
+      have($item`shaking 4-d camera`) &&
+      get("cameraMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_cameraUsed"),
+    () =>
+      have($item`shaking 4-d camera`) &&
+      get("cameraMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_cameraUsed")
+        ? 1
+        : 0,
+    () => use($item`shaking 4-d camera`)
+  ),
+  new EmbezzlerFight(
+    () =>
+      have($item`envyfish egg`) &&
+      get("envyfishMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_envyfishEggUsed"),
+    () =>
+      have($item`envyfish egg`) &&
+      get("envyfishMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_envyfishEggUsed")
+        ? 1
+        : 0,
+    () => use($item`envyfish egg`)
+  ),
+  new EmbezzlerFight(
+    () =>
       get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
       have($item`backup camera`) &&
       get<number>("_backUpUses") < 11,
