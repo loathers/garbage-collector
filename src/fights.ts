@@ -348,6 +348,8 @@ export function dailyFights() {
     // REMAINING EMBEZZLER FIGHTS
     let nextFight = getEmbezzlerFight();
     while (nextFight !== null) {
+      if (have($skill`musk of the moose`) && !have($effect`musk of the moose`))
+        useSkill($skill`musk of the moose`);
       withMacro(embezzlerMacro(), () => {
         if (nextFight) {
           useFamiliar(meatFamiliar());
