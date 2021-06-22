@@ -284,9 +284,10 @@ function checkVolcanoQuest() {
         if (availableAmount($item`gooey lava globs`) >= 5) {
           return true;
         } else {
+          const toBuy = 5 - availableAmount($item`gooey lava globs`);
           return (
-            buy(5 - availableAmount($item`gooey lava globs`), $item`gooey lava globs`, 5000) ===
-            5 - availableAmount($item`gooey lava globs`)
+            buy(toBuy, $item`gooey lava globs`, 5000) ===
+            toBuy
           );
         }
       },
