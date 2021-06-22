@@ -22,6 +22,7 @@ import {
   myMp,
   mySpleenUse,
   outfit,
+  print,
   putCloset,
   restoreHp,
   restoreMp,
@@ -578,11 +579,28 @@ const freeFightSources = [
         ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
         : 0,
     () => {
-      // FIXME: Check quest if Gerald(ine).
-      setChoice(1322, 2); // reject quest.
       setChoice(1324, 5); // pick fight.
-      if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
+      if (get("_questPartyFairQuest") === "unstarted") {
+        visitUrl("adventure.php?snarfblat=528");
+    runChoice(["booze", "food"].includes(get("_questPartyFairQuest")) ? 1 : 2);
+    if (get("_questPartyFairQuest") === "food") {
+      runChoice(1);
+      setChoice(1324, 2);
+      setChoice(1326, 3);
+    } else if (get("_questPartyFairQuest") === "booze") {
+      runChoice(1);
+      setChoice(1324, 3);
+      setChoice(1327, 3);
+    } else {
+      runChoice(2);
+      setChoice(1324, 5);
+    }
+  }
       adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
+      if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
+        print("Found Gerald/ine!", "blue");
+        set("choiceAdventure1324", 5);
+      }
     },
     {
       requirements: () => [
