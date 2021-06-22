@@ -494,7 +494,10 @@ export function main(argString = "") {
     if (startingGarden && have(startingGarden)) use(startingGarden);
     if (questStep("_questPartyFair") > 0) {
       const partyFairInfo = get("_questPartyFairProgress").split(" ");
-      print(`Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`, "blue");
+      print(
+        `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`,
+        "blue"
+      );
     }
   }
 }
