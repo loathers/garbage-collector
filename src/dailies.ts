@@ -285,10 +285,7 @@ function checkVolcanoQuest() {
           return true;
         } else {
           const toBuy = 5 - availableAmount($item`gooey lava globs`);
-          return (
-            buy(toBuy, $item`gooey lava globs`, 5000) ===
-            toBuy
-          );
+          return buy(toBuy, $item`gooey lava globs`, 5000) === toBuy;
         }
       },
     ],
