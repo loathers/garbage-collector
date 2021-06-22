@@ -26,6 +26,7 @@ import {
   setAutoAttack,
   setProperty,
   toInt,
+  toItem,
   use,
   useFamiliar,
   useSkill,
@@ -510,5 +511,12 @@ export function main(argString = "") {
   } finally {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
+    if (questStep("_questPartyFair") > 0) {
+      const partyFairInfo = get("_questPartyFairProgress").split(" ");
+      print(
+        `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`,
+        "blue"
+      );
+    }
   }
 }
