@@ -281,16 +281,18 @@ function barfTurn() {
   }
 
   while (
-    get<Monster>("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+    get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
     have($item`backup camera`) &&
-    get<number>("_backUpUses") < 11
+    get("_backUpUses") < 11
   ) {
     if (have($effect`beaten up`))
       throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
     useFamiliar(meatFamiliar());
+    if (have($skill`musk of the moose`) && !have($effect`musk of the moose`))
+      useSkill($skill`musk of the moose`);
     meatOutfit(true, [new Requirement([], { forceEquip: $items`backup camera` })]);
     adventureMacro(
-      $location`Noob Cave`,
+      prepWandererZone().combatPercent === 100 ? prepWandererZone() : $location`noob cave`,
       Macro.if_(
         "!monstername Knob Goblin Embezzler",
         Macro.skill("Back-Up to Your Last Enemy")
