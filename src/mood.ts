@@ -2,6 +2,7 @@ import {
   buy,
   cliExecute,
   getCampground,
+  getClanLounge,
   getFuel,
   haveEffect,
   haveSkill,
@@ -107,6 +108,10 @@ export function freeFightMood() {
     if (have($item`Glenn's golden dice`)) use($item`Glenn's golden dice`);
   }
 
+  if (getClanLounge()["Clan pool table"] !== undefined) {
+    while (get("_poolGames") < 3) cliExecute("pool aggressive");
+  }
+
   if (haveEffect($effect`Blue Swayed`) < 50) {
     use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
   }
@@ -114,7 +119,6 @@ export function freeFightMood() {
 
   // FIXME: Figure out what's actually good!
   if (!have($effect`Frosty`) && mallPrice($item`frost flower`) < 70000) {
-    if (!get("_freePillKeeperUsed")) cliExecute("pillkeeper extend");
     if (!have($item`frost flower`)) buy($item`frost flower`);
     use($item`frost flower`);
   }
