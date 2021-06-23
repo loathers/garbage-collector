@@ -37,7 +37,14 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro, withMacro } from "./combat";
-import { configureGear, configureMisc, dailyBuffs, horse, prepFamiliars, voterSetup } from "./dailies";
+import {
+  configureGear,
+  configureMisc,
+  dailyBuffs,
+  horse,
+  prepFamiliars,
+  voterSetup,
+} from "./dailies";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
@@ -71,8 +78,8 @@ function dailySetup() {
   horse();
   prepFamiliars();
   dailyBuffs();
-  configureMisc(); 
-  
+  configureMisc();
+
   retrieveItem($item`Half a Purse`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);

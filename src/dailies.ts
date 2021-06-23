@@ -1,5 +1,44 @@
-import { visitUrl, myPrimestat, useFamiliar, use, retrieveItem, runChoice, cliExecute, numericModifier, haveFamiliar, maximize, adv1, buy, itemAmount, print, toInt, getClanLounge, changeMcd, haveSkill, myClass, myThrall, useSkill } from "kolmafia";
-import { have, $item, get, $familiar, $stat, Bandersnatch, $effect, Macro, $location, $familiars, $items, SourceTerminal, $class, $skill, $thrall, SongBoom } from "libram";
+import {
+  visitUrl,
+  myPrimestat,
+  useFamiliar,
+  use,
+  retrieveItem,
+  runChoice,
+  cliExecute,
+  numericModifier,
+  haveFamiliar,
+  maximize,
+  adv1,
+  buy,
+  itemAmount,
+  print,
+  toInt,
+  getClanLounge,
+  changeMcd,
+  haveSkill,
+  myClass,
+  myThrall,
+  useSkill,
+} from "kolmafia";
+import {
+  have,
+  $item,
+  get,
+  $familiar,
+  $stat,
+  Bandersnatch,
+  $effect,
+  Macro,
+  $location,
+  $familiars,
+  $items,
+  SourceTerminal,
+  $class,
+  $skill,
+  $thrall,
+  SongBoom,
+} from "libram";
 import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, setChoice, tryFeast } from "./lib";
 import { withStash } from "./stash";
@@ -202,7 +241,6 @@ export function prepFamiliars() {
         [...$familiars`Pocket Professor, Frumious Bandersnatch`, meatFamiliar()].forEach(tryFeast);
     });
   }
-
 }
 
 export function horse() {
