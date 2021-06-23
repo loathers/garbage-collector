@@ -238,7 +238,7 @@ function dropGuzzlrQuest() {
   runChoice(5);
 }
 
-export const fetchTheGhostKiller = Macro.trySkill("curse of weaksauce")
+export const physicalImmuneMacro = Macro.trySkill("curse of weaksauce")
   .trySkill("sing along")
   .trySkill("extract")
   .externalIf(have($skill`saucestorm`), Macro.skill("Saucestorm").repeat())

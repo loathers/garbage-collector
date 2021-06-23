@@ -48,7 +48,7 @@ import {
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { questStep, prepWandererZone, fetchTheGhostKiller } from "./lib";
+import { questStep, prepWandererZone, physicalImmuneMacro } from "./lib";
 import { meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -143,7 +143,7 @@ function barfTurn() {
   ) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
-    adventureMacro(ghostLocation, fetchTheGhostKiller);
+    adventureMacro(ghostLocation, physicalImmuneMacro);
   } else if (
     have($item`I Voted!" sticker`) &&
     getCounters("Vote", 0, 0) !== "" &&
@@ -151,7 +151,7 @@ function barfTurn() {
   ) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`I Voted!" sticker` })]);
-    adventureMacroAuto(prepWandererZone(), Macro.step(fetchTheGhostKiller).meatKill());
+    adventureMacroAuto(prepWandererZone(), Macro.step(physicalImmuneMacro).meatKill());
   } else {
     adventureMacroAuto(
       location,
