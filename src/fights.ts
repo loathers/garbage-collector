@@ -10,7 +10,6 @@ import {
   getCampground,
   getClanLounge,
   getCounters,
-  getProperty,
   handlingChoice,
   itemAmount,
   mallPrice,
@@ -71,7 +70,7 @@ import { withStash } from "./stash";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
-  if (getProperty("photocopyMonster") === "Knob Goblin Embezzler") return true;
+  if (get("photocopyMonster") === $monster`Knob Goblin Embezzler`) return true;
   cliExecute("fax send");
   return false;
 }
