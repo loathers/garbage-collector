@@ -199,8 +199,10 @@ function fillSpleenWith(spleenItem: Item) {
       (1.04 * adventuresPerItem * spleenTotal + 1.04 * myAdventures() + 40 - synthTurns) /
         (30 + 1.04 * adventuresPerItem)
     );
-    for (let i = 0; i < clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()); i++) {
-      sweetSynthesis($effect`Synthesis: Greed`);
+    if (have($skill`Sweet Synthesis`)) {
+      for (let i = 0; i < clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()); i++) {
+        sweetSynthesis($effect`Synthesis: Greed`);
+      }
     }
     const count = Math.floor((spleenLimit() - mySpleenUse()) / spleenItem.spleen);
     acquire(count, spleenItem);
