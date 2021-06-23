@@ -28,6 +28,7 @@ import {
   $locations,
   $skill,
   $slot,
+  adventureMacroAuto,
   Bandersnatch,
   get,
   getSongCount,
@@ -339,3 +340,13 @@ const freeRuns: freeRun[] = [
     Macro.item("louder than bomb")
   ),
 ];
+
+export function tryToRun(location: Location) {
+  const runSource = freeRuns.find((run) => run.available());
+  if (runSource) {
+    runSource.prepare();
+    adventureMacroAuto(location, runSource.macro);
+    return true;
+  }
+  return false;
+}
