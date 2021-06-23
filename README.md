@@ -23,7 +23,7 @@ set valueOfAdventure = 3000;
 When at all possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):
 
 ```
-set stashClan = "Bonus Adventures from Hell"`
+set stashClan = "Bonus Adventures from Hell"
 ```
 
 # Install "Universal Recovery"
