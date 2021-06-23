@@ -20,6 +20,7 @@ import {
   myClass,
   myThrall,
   useSkill,
+  availableAmount,
 } from "kolmafia";
 import {
   have,
@@ -38,6 +39,7 @@ import {
   $skill,
   $thrall,
   SongBoom,
+  property,
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, setChoice, tryFeast } from "./lib";
@@ -293,4 +295,104 @@ export function configureMisc() {
   }
 
   changeMcd(10);
+}
+
+export function volcanoDailies() {
+  if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
+  if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
+
+  print("Getting my free volcoino!", "blue");
+  if (!get("_infernoDiscoVisited")) {
+    maximize("disco style", false);
+    visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
+    runChoice(7);
+  }
+}
+function checkVolcanoQuest() {
+  print("Checking volcano quest", "blue");
+  visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+  const volcanoItems = [
+    property.getItem("_volcanoItem1") || $item`none`,
+    property.getItem("_volcanoItem2") || $item`none`,
+    property.getItem("_volcanoItem3") || $item`none`,
+  ];
+  const volcanoWhatToDo: Map<Item, () => boolean> = new Map<Item, () => boolean>([
+    [
+      $item`new age healing crystal`,
+      () => {
+        if (availableAmount($item`new age healing crystal`) >= 5) return true;
+        else {
+          return (
+            buy(
+              5 - availableAmount($item`new age healing crystal`),
+              $item`new age healing crystal`,
+              1000
+            ) ===
+            5 - availableAmount($item`new age healing crystal`)
+          );
+        }
+      },
+    ],
+    [
+      $item`smooch bottlecap`,
+      () => {
+        if (availableAmount($item`smooch bottlecap`) > 0) return true;
+        else return buy(1, $item`smooch bottlecap`, 5000) === 1;
+      },
+    ],
+    [
+      $item`gooey lava globs`,
+      () => {
+        if (availableAmount($item`gooey lava globs`) >= 5) {
+          return true;
+        } else {
+          const toBuy = 5 - availableAmount($item`gooey lava globs`);
+          return buy(toBuy, $item`gooey lava globs`, 5000) === toBuy;
+        }
+      },
+    ],
+    [
+      $item`fused fuse`,
+      () => {
+        return have($item`clara's bell`);
+      },
+    ],
+    [
+      $item`smooth velvet bra`,
+      () => {
+        if (availableAmount($item`smooth velvet bra`) < 3) {
+          cliExecute(
+            `acquire ${(
+              3 - availableAmount($item`smooth velvet bra`)
+            ).toString()} smooth velvet bra`
+          );
+        }
+        return availableAmount($item`smooth velvet bra`) >= 3;
+      },
+    ],
+    [
+      $item`smooch bracers`,
+      () => {
+        if (availableAmount($item`smooch bracers`) < 3) {
+          cliExecute(
+            `acquire ${(3 - availableAmount($item`smooch bracers`)).toString()} smooch bracers`
+          );
+        }
+        return availableAmount($item`smooch bracers`) >= 3;
+      },
+    ],
+  ]);
+  for (const [volcanoItem, tryToGetIt] of volcanoWhatToDo.entries()) {
+    if (volcanoItems.includes(volcanoItem)) {
+      if (tryToGetIt()) {
+        if (volcanoItem !== $item`fused fuse`) {
+          visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+          print(`Alright buddy, turning in ${volcanoItem.plural} for a volcoino!`, "red");
+          const choice =
+            volcanoItems.indexOf(volcanoItem) === -1 ? 4 : 1 + volcanoItems.indexOf(volcanoItem);
+          runChoice(choice);
+        }
+      }
+    }
+  }
 }
