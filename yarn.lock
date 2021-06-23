@@ -2146,11 +2146,6 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-he@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
-  integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
-
 human-signals@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
@@ -2488,15 +2483,14 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.0.8.tgz#d41184d8b6264e638b8e728aac7567084bd10986"
-  integrity sha512-R/SmxCFkjlfl0Cwk9P0y38FdZUGT+rz2NPMLhCinoQXJMR8DbLwwPCDEgvMZlprrCKCu+9scQEcv33qUu6jaNA==
+libram@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.0.9.tgz#c811545a4b645e3414ffe87c17d729d8df014fad"
+  integrity sha512-BjN2Vj7sYIrkcy4FS28s7Q/G4K4FFlwnOpGyQNjDELBM3qzsAEKNvFB79SQgvPeLorPGBJG6xg3jkCHQtQCgIw==
   dependencies:
     core-js "3.9.0"
     kolmafia "^1.0.3"
     lodash-es "^4.17.21"
-    node-html-parser "^2.0.0"
 
 loader-runner@^4.2.0:
   version "4.2.0"
@@ -2688,13 +2682,6 @@ nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
-
-node-html-parser@^2.0.0:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/node-html-parser/-/node-html-parser-2.2.1.tgz#6507a8658810d1612890a8ddd534e01b2f97e07e"
-  integrity sha512-Vccqb62t6t7DkMVwqPQgb0NWO+gUMMDm+1X3LzqbtXLqjilCTtUYTlniKk08yuA1zIhEFVzu/dozpqs5KZbRFQ==
-  dependencies:
-    he "1.2.0"
 
 node-releases@^1.1.71:
   version "1.1.73"
