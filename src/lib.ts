@@ -341,7 +341,7 @@ const freeRuns: freeRun[] = [
   ),
 ];
 
-export function tryToRun(location: Location) {
+export function tryToRun() {
   const runSource = freeRuns.find((run) => run.available());
   if (runSource) {
     runSource.prepare();

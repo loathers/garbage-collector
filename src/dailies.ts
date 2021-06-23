@@ -7,9 +7,7 @@ import {
   runChoice,
   cliExecute,
   numericModifier,
-  haveFamiliar,
   maximize,
-  adv1,
   buy,
   itemAmount,
   print,
@@ -21,6 +19,7 @@ import {
   myThrall,
   useSkill,
   availableAmount,
+  equip,
 } from "kolmafia";
 import {
   have,
@@ -28,9 +27,7 @@ import {
   get,
   $familiar,
   $stat,
-  Bandersnatch,
   $effect,
-  Macro,
   $location,
   $familiars,
   $items,
@@ -40,9 +37,11 @@ import {
   $thrall,
   SongBoom,
   property,
+  $slot,
+  adventureMacroAuto,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { questStep, ensureEffect, setChoice, tryFeast } from "./lib";
+import { questStep, ensureEffect, setChoice, tryFeast, tryToRun } from "./lib";
 import { withStash } from "./stash";
 
 export function voterSetup() {
@@ -134,62 +133,43 @@ export function latte() {
     ) {
       if (
         !get("latteUnlocks").includes("cajun") &&
-        (haveFamiliar($familiar`frumious bandersnatch`) ||
-          haveFamiliar($familiar`pair of stomping boots`)) &&
-        Bandersnatch.getRemainingRunaways() > 0
+        tryToRun()
       ) {
-        const runFam = haveFamiliar($familiar`pair of stomping boots`)
-          ? $familiar`pair of stomping boots`
-          : $familiar`frumious bandersnatch`;
-        useFamiliar(runFam);
-        maximize("familiar weight, +equip latte lovers member's mug", false);
-        if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
-        Macro.step("runaway").setAutoAttack();
+        equip($slot`off-hand`, latte);
         setChoice(923, 1);
         setChoice(924, 1);
-        while (!get("latteUnlocks").includes("cajun") && Bandersnatch.getRemainingRunaways() > 0) {
-          adv1($location`the black forest`, -1, "");
+        while (!get("latteUnlocks").includes("cajun")) {
+          const runMacro = tryToRun();
+          if (!runMacro) break;
+          adventureMacroAuto($location`the black forest`, runMacro);
         }
       }
       if (
         !get("latteUnlocks").includes("rawhide") &&
-        (haveFamiliar($familiar`frumious bandersnatch`) ||
-          haveFamiliar($familiar`pair of stomping boots`)) &&
-        Bandersnatch.getRemainingRunaways() > 0
+        tryToRun()
       ) {
-        const runFam = haveFamiliar($familiar`pair of stomping boots`)
-          ? $familiar`pair of stomping boots`
-          : $familiar`frumious bandersnatch`;
-        useFamiliar(runFam);
-        maximize("familiar weight, +equip latte lovers member's mug", false);
-        if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
-        Macro.step("runaway").setAutoAttack();
+        equip($slot`off-hand`, latte);
         setChoice(502, 2);
         setChoice(505, 2);
         while (
-          !get("latteUnlocks").includes("rawhide") &&
-          Bandersnatch.getRemainingRunaways() > 0
+          !get("latteUnlocks").includes("rawhide")
         ) {
-          adv1($location`the spooky forest`, -1, "");
+          const runMacro = tryToRun();
+          if (!runMacro) break;
+          adventureMacroAuto($location`the spooky forest`, runMacro);
         }
       }
       if (
         !get("latteUnlocks").includes("carrot") &&
-        (haveFamiliar($familiar`frumious bandersnatch`) ||
-          haveFamiliar($familiar`pair of stomping boots`)) &&
-        Bandersnatch.getRemainingRunaways() > 0
+        tryToRun()
       ) {
-        const runFam = haveFamiliar($familiar`pair of stomping boots`)
-          ? $familiar`pair of stomping boots`
-          : $familiar`frumious bandersnatch`;
-        useFamiliar(runFam);
-        maximize("familiar weight, +equip latte lovers member's mug", false);
-        if (runFam === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
-        Macro.step("runaway").setAutoAttack();
+        equip($slot`off-hand`, latte);
         setChoice(502, 2);
         setChoice(505, 2);
-        while (!get("latteUnlocks").includes("carrot") && Bandersnatch.getRemainingRunaways() > 0) {
-          adv1($location`the dire warren`, -1, "");
+        while (!get("latteUnlocks").includes("carrot")) {
+          const runMacro = tryToRun();
+          if (!runMacro) break;
+          adventureMacroAuto($location`the dire warrent`, runMacro);
         }
       }
       if (
