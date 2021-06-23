@@ -13,6 +13,7 @@ import {
   getClanLounge,
   getCounters,
   handlingChoice,
+  inMultiFight,
   itemAmount,
   mallPrice,
   myAdventures,
@@ -315,6 +316,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
         );
         visitUrl("main.php", false);
         runCombat();
+        while (inMultiFight()) runCombat();
       }
     );
   }
@@ -332,9 +334,10 @@ export function dailyFights() {
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
         meatOutfit(true, [
+          ...fightSource.requirements,
           new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
         ]);
-        withMacro(firstChainMacro(), () => fightSource.run($location`Noob Cave`));
+        withMacro(firstChainMacro(), () => fightSource.run(prepWandererZone()));
         set("_garbo_meatChain", true);
       }
 
@@ -355,8 +358,14 @@ export function dailyFights() {
         const fightSource = getEmbezzlerFight();
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
-        maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
-        withMacro(secondChainMacro(), () => fightSource.run($location`Noob Cave`));
+        let requirements = new Requirement(["Familiar Weight"], {
+          forceEquip: $items`Pocket Professor memory chip`,
+        });
+        for (let requirement of fightSource.requirements) {
+          requirements = requirements.merge(requirement);
+        }
+        maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
+        withMacro(secondChainMacro(), () => fightSource.run(prepWandererZone()));
         set("_garbo_weightChain", true);
       }
 
