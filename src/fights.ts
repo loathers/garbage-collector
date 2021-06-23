@@ -18,6 +18,7 @@ import {
   myAdventures,
   myAscensions,
   myClass,
+  myHash,
   myHp,
   myMaxhp,
   myMaxmp,
@@ -306,7 +307,14 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
       () => 0,
       () => {
         retrieveItem($item`pocket wish`);
-        cliExecute("genie fight knob goblin embezzler");
+        visitUrl("inv_use.php?pwd=" + myHash() + "&which=3&whichitem=9537", false, true);
+        visitUrl(
+          "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
+          true,
+          true
+        );
+        visitUrl("main.php", false);
+        runCombat();
       }
     );
   }
