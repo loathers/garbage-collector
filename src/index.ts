@@ -43,6 +43,7 @@ import {
   dailyBuffs,
   horse,
   prepFamiliars,
+  viral,
   voterSetup,
 } from "./dailies";
 import { runDiet } from "./diet";
@@ -79,6 +80,7 @@ function dailySetup() {
   prepFamiliars();
   dailyBuffs();
   configureMisc();
+  viral();
 
   retrieveItem($item`Half a Purse`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);

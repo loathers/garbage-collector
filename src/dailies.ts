@@ -38,6 +38,7 @@ import {
   $skill,
   $thrall,
   SongBoom,
+  $coinmaster,
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, setChoice, tryFeast } from "./lib";
@@ -293,4 +294,14 @@ export function configureMisc() {
   }
 
   changeMcd(10);
+}
+
+export function viral() {
+  if (
+    !get("_internetViralVideoBought") &&
+    have($item`infinite BACON machine`) &&
+    itemAmount($item`BACON`) >= 20
+  ) {
+    buy($coinmaster`Internet Meme Shop`, 1, $item`viral video`);
+  }
 }
