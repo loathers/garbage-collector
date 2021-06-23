@@ -131,10 +131,7 @@ export function latte() {
       numericModifier(latte, "Familiar Weight") !== 5 ||
       numericModifier(latte, "Meat Drop") !== 40
     ) {
-      if (
-        !get("latteUnlocks").includes("cajun") &&
-        tryToRun()
-      ) {
+      if (!get("latteUnlocks").includes("cajun") && tryToRun()) {
         equip($slot`off-hand`, latte);
         setChoice(923, 1);
         setChoice(924, 1);
@@ -144,25 +141,17 @@ export function latte() {
           adventureMacroAuto($location`the black forest`, runMacro);
         }
       }
-      if (
-        !get("latteUnlocks").includes("rawhide") &&
-        tryToRun()
-      ) {
+      if (!get("latteUnlocks").includes("rawhide") && tryToRun()) {
         equip($slot`off-hand`, latte);
         setChoice(502, 2);
         setChoice(505, 2);
-        while (
-          !get("latteUnlocks").includes("rawhide")
-        ) {
+        while (!get("latteUnlocks").includes("rawhide")) {
           const runMacro = tryToRun();
           if (!runMacro) break;
           adventureMacroAuto($location`the spooky forest`, runMacro);
         }
       }
-      if (
-        !get("latteUnlocks").includes("carrot") &&
-        tryToRun()
-      ) {
+      if (!get("latteUnlocks").includes("carrot") && tryToRun()) {
         equip($slot`off-hand`, latte);
         setChoice(502, 2);
         setChoice(505, 2);
