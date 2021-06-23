@@ -14,7 +14,7 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $items, $location, $skill, get, have, Macro, property, set } from "libram";
+import { $effect, $item, $items, $location, $locations, $skill, get, have, Macro, property, set } from "libram";
 
 export function setChoice(adventure: number, value: number) {
   set(`choiceAdventure${adventure}`, `${value}`);
@@ -209,19 +209,12 @@ function guzzlrCheck() {
       use(1, place.potion);
     }
   });
+  const blacklist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, Madness Bakery, The Secret Government Laboratory`;
   if (
     forbiddenZones.includes(guzzlZone.zone) ||
+    blacklist.includes(guzzlZone) ||
     !guzzlZone.wanderers ||
-    guzzlZone === $location`The Oasis` ||
-    guzzlZone === $location`The Bubblin' Caldera` ||
     guzzlZone.environment === "underwater" ||
-    guzzlZone === $location`Barrrney's Barrr` ||
-    guzzlZone === $location`The F'c'le` ||
-    guzzlZone === $location`the poop deck` ||
-    guzzlZone === $location`belowdecks` ||
-    guzzlZone === $location`8-Bit Realm` ||
-    (guzzlZone.zone === "BatHole" && guzzlZone !== $location`The Bat Hole Entrance`) ||
-    guzzlZone === $location`The Secret Government Laboratory` ||
     !canAdv(guzzlZone, false)
   ) {
     return false;
