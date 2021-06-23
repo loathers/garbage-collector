@@ -2,10 +2,15 @@ import { canAdv } from "canadv.ash";
 import {
   buy,
   cliExecute,
+  equip,
   haveSkill,
   mallPrice,
+  maximize,
+  myFamiliar,
   myPrimestat,
   print,
+  restoreMp,
+  retrieveItem,
   runChoice,
   toItem,
   toUrl,
@@ -16,12 +21,17 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $items,
   $location,
   $locations,
   $skill,
+  $slot,
+  Bandersnatch,
   get,
+  getSongCount,
+  getSongLimit,
   have,
   Macro,
   property,
@@ -258,3 +268,74 @@ export function tryFeast(familiar: Familiar) {
     use($item`moveable feast`);
   }
 }
+
+class freeRun {
+  available: () => boolean;
+  prepare: () => void;
+  macro: Macro;
+
+  constructor(available: () => boolean, prepare: () => void, macro: Macro) {
+    this.available = available;
+    this.prepare = prepare;
+    this.macro = macro;
+  }
+}
+
+const freeRuns: freeRun[] = [
+  new freeRun(
+    () =>
+      ((have($familiar`frumious bandersnatch`) && have($effect`ode to booze`)) ||
+        getSongCount() < getSongLimit() ||
+        have($familiar`pair of stomping boots`)) &&
+      Bandersnatch.getRemainingRunaways() > 0,
+    () => {
+      maximize("familiar weight", false);
+      if (have($familiar`frumious bandersnatch`)) useFamiliar($familiar`frumious bandersnatch`);
+      else useFamiliar($familiar`pair of stomping boots`);
+      if (myFamiliar() === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+    },
+    Macro.step("runaway")
+  ),
+
+  new freeRun(
+    () => get("_snokebombUsed") < 3 && have($skill`snokebomb`),
+    () => restoreMp(50),
+    Macro.skill("snokebomb")
+  ),
+
+  new freeRun(
+    () => get("_feelHatredUsed") < 3 && have($skill`emotionally chipped`),
+    () => {},
+    Macro.skill("feel hatred")
+  ),
+
+  new freeRun(
+    () => have($item`kremlin's greatest briefcase`) && get("_kgbTranquilizerDartUses") < 3,
+    () => equip($slot`acc3`, $item`kremlin's greatest briefcase`),
+    Macro.skill("KGB tranquilizer dart")
+  ),
+
+  new freeRun(
+    () => have($item`latte lovers member's mug`) && get("_latteBanishUsed"),
+    () => equip($slot`off-hand`, $item`latte lovers member's mug`),
+    Macro.skill("Throw Latte on Opponent")
+  ),
+
+  new freeRun(
+    () => have($item`Lil' Doctor™ bag`) && get("_reflexHammerUsed") < 3,
+    () => equip($slot`acc3`, $item`Lil' Doctor™ bag`),
+    Macro.skill("reflex hammer")
+  ),
+
+  new freeRun(
+    () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
+    () => equip($slot`acc3`, $item`mafia middle finger ring`),
+    Macro.skill("Show them your ring")
+  ),
+
+  new freeRun(
+    () => retrieveItem($item`louder than bomb`),
+    () => retrieveItem($item`louder than bomb`),
+    Macro.item("louder than bomb")
+  ),
+];
