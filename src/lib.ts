@@ -345,8 +345,7 @@ export function tryToRun(location: Location) {
   const runSource = freeRuns.find((run) => run.available());
   if (runSource) {
     runSource.prepare();
-    adventureMacroAuto(location, runSource.macro);
-    return true;
+    return runSource.macro;
   }
-  return false;
+  return;
 }
