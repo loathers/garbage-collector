@@ -1,21 +1,25 @@
+import { canAdv } from "canadv.ash";
 import {
   abort,
   adv1,
   availableAmount,
+  booleanModifier,
   chatPrivate,
   cliExecute,
+  combatRateModifier,
   eat,
   equip,
-  faxbot,
   getCampground,
   getClanLounge,
   getCounters,
   handlingChoice,
+  inMultiFight,
   itemAmount,
   mallPrice,
   myAdventures,
   myAscensions,
   myClass,
+  myHash,
   myHp,
   myMaxhp,
   myMaxmp,
@@ -34,6 +38,7 @@ import {
   toInt,
   use,
   useFamiliar,
+  userConfirm,
   useSkill,
   visitUrl,
   wait,
@@ -87,111 +92,324 @@ function faxEmbezzler(): void {
   }
 }
 
-export function dailyFights() {
+class EmbezzlerFight {
+  available: () => boolean;
+  potential: () => number;
+  run: (location: Location) => void;
+  requirements: Requirement[];
+  draggable: boolean;
+
+  constructor(
+    available: () => boolean,
+    potential: () => number,
+    run: (location: Location) => void,
+    requirements: Requirement[] = [],
+    draggable = false
+  ) {
+    this.available = available;
+    this.potential = potential;
+    this.run = run;
+    this.requirements = requirements;
+    this.draggable = draggable;
+  }
+}
+
+const firstChainMacro = () =>
+  Macro.if_(
+    "monstername Knob Goblin Embezzler",
+    Macro.if_(
+      "!hasskill Lecture on Relativity",
+      Macro.trySkill("Digitize")
+        .externalIf(get("spookyPuttyCopiesMade") < 5, Macro.tryItem($item`Spooky Putty sheet`))
+        .externalIf(
+          !get("_cameraUsed") && !have($item`shaking 4-d camera`),
+          Macro.tryItem($item`4-d camera`)
+        )
+    )
+      .trySkill("Lecture on Relativity")
+      .meatKill()
+  ).abort();
+
+const secondChainMacro = () =>
+  Macro.if_(
+    "monstername Knob Goblin Embezzler",
+    Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
+      .trySkill("Lecture on Relativity")
+      .meatKill()
+  ).abort();
+
+const embezzlerMacro = () =>
+  Macro.if_(
+    "monstername Knob Goblin Embezzler",
+    Macro.if_("snarfblat 186", Macro.item($item`green taffy`))
+      .externalIf(
+        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        Macro.trySkill("Digitize")
+      )
+      .externalIf(get("spookyPuttyCopiesMade") < 5, Macro.tryItem($item`Spooky Putty sheet`))
+      .externalIf(
+        !get("_cameraUsed") && !have($item`shaking 4-d camera`),
+        Macro.tryItem($item`4-d camera`)
+      )
+      .meatKill()
+  ).abort();
+
+const embezzlerSources = [
+  new EmbezzlerFight(
+    () =>
+      get("_sourceTerminalDigitizeMonster") === $monster`Knob Goblin Embezzler` &&
+      getCounters("Digitize Monster", 0, 0).trim() !== "",
+    () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
+    (location: Location) => {
+      adv1(location);
+    }
+  ),
+  new EmbezzlerFight(
+    () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
+    () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
+    () => {
+      faxEmbezzler();
+      use($item`photocopied monster`);
+    }
+  ),
+  new EmbezzlerFight(
+    () => canAdv($location`Knob Treasury`, true) && !get("_freePillKeeperUsed"),
+    () => (canAdv($location`Knob Treasury`, true) && !get("_freePillKeeperUsed") ? 1 : 0),
+    () => {
+      cliExecute("pillkeeper semirare");
+      adv1($location`Knob Treasury`);
+    }
+  ),
+  new EmbezzlerFight(
+    () =>
+      ChateauMantegna.have() &&
+      !ChateauMantegna.paintingFought() &&
+      ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`,
+    () =>
+      ChateauMantegna.have() &&
+      !ChateauMantegna.paintingFought() &&
+      ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`
+        ? 1
+        : 0,
+    () => ChateauMantegna.fightPainting()
+  ),
+  new EmbezzlerFight(
+    () =>
+      have($item`Spooky putty monster`) &&
+      get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`,
+    () => {
+      if (have($item`Spooky putty sheet`)) {
+        return 5 - get("spookyPuttyCopiesMade");
+      }
+      if (
+        have($item`Spooky putty monster`) &&
+        get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`
+      ) {
+        return 6 - get("spookyPuttyCopiesMade");
+      }
+      return 0;
+    },
+    () => use($item`Spooky putty monster`)
+  ),
+  new EmbezzlerFight(
+    () =>
+      have($item`shaking 4-d camera`) &&
+      get("cameraMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_cameraUsed"),
+    () =>
+      have($item`shaking 4-d camera`) &&
+      get("cameraMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_cameraUsed")
+        ? 1
+        : 0,
+    () => use($item`shaking 4-d camera`)
+  ),
+  new EmbezzlerFight(
+    () =>
+      have($item`envyfish egg`) &&
+      get("envyfishMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_envyfishEggUsed"),
+    () =>
+      have($item`envyfish egg`) &&
+      get("envyfishMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_envyfishEggUsed")
+        ? 1
+        : 0,
+    () => use($item`envyfish egg`)
+  ),
+  new EmbezzlerFight(
+    () =>
+      get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+      have($item`backup camera`) &&
+      get<number>("_backUpUses") < 11,
+    () => (have($item`backup camera`) ? 11 - get<number>("_backUpUses") : 0),
+    (location: Location) => {
+      const realLocation = location.combatPercent >= 100 ? location : $location`Noob Cave`;
+      adventureMacro(
+        realLocation,
+        Macro.if_(
+          "!monstername Knob Goblin Embezzler",
+          Macro.skill("Back-Up to Your Last Enemy")
+        ).step(embezzlerMacro())
+      );
+    },
+    [
+      new Requirement([], {
+        forceEquip: $items`backup camera`,
+        bonusEquip: new Map([[$item`backup camera`, 5000]]),
+      }),
+    ],
+    true
+  ),
+  new EmbezzlerFight(
+    () => false,
+    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 1 : 0),
+    () => {}
+  ),
+  new EmbezzlerFight(
+    () => false,
+    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 1 : 0),
+    () => {}
+  ),
+];
+
+function embezzlerSetup() {
   meatMood(true).execute(myAdventures() * 1.04 + 50);
   safeRestore();
-  if (have($item`Clan VIP Lounge key`)) {
-    const embezzler = $monster`Knob Goblin embezzler`;
-    if (
-      (!have($item`photocopied monster`) || get("photocopyMonster") !== embezzler) &&
-      !get("_photocopyUsed")
-    ) {
-      faxEmbezzler();
+  ensureEffect($effect`Peppermint Twisted`);
+  if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
+  if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
+    ensureEffect($effect`Boxing Day Glow`);
+  }
+  freeFightMood().execute(30);
+  withStash($items`Platinum Yendorian Express Card`, () => {
+    if (have($item`Platinum Yendorian Express Card`)) {
+      use($item`Platinum Yendorian Express Card`);
     }
+  });
+  if (have($item`license to chill`) && !get("_licenseToChillUsed")) use($item`license to chill`);
 
-    if (getClanLounge()["Clan pool table"] !== undefined) {
-      while (get("_poolGames") < 3) cliExecute("pool aggressive");
-    }
-    if (!get<boolean>("_garbo_professorLecturesUsed", false) || get("spookyPuttyCopiesMade") < 5) {
-      withStash($items`Spooky Putty sheet`, () => {
-        if (
-          have($familiar`Pocket Professor`) &&
-          !get<boolean>("_garbo_professorLecturesUsed", false)
-        ) {
-          ensureEffect($effect`Peppermint Twisted`);
-          if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
-          if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
-            ensureEffect($effect`Boxing Day Glow`);
-          }
+  if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+  if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {
+    retrieveItem($item`4-d camera`);
+  }
+}
 
-          // First round of prof copies with meat drop gear on.
-          if (!get("_photocopyUsed")) {
-            freeFightMood().execute(30);
-            withStash($items`Platinum Yendorian Express Card`, () => {
-              if (have($item`Platinum Yendorian Express Card`)) {
-                use($item`Platinum Yendorian Express Card`);
-              }
-            });
-            if (have($item`license to chill`) && !get("_licenseToChillUsed"))
-              use($item`license to chill`);
+function getEmbezzlerFight(): EmbezzlerFight | null {
+  let potentials = false;
+  for (let fight of embezzlerSources) {
+    if (fight.available()) return fight;
+    if (fight.potential()) potentials = true;
+  }
+  if (
+    potentials &&
+    get("_genieFightsUsed") < 3 &&
+    userConfirm(
+      "Garbo has detected you have potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"
+    )
+  ) {
+    return new EmbezzlerFight(
+      () => false,
+      () => 0,
+      () => {
+        retrieveItem($item`pocket wish`);
+        visitUrl("inv_use.php?pwd=" + myHash() + "&which=3&whichitem=9537", false, true);
+        visitUrl(
+          "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
+          true,
+          true
+        );
+        visitUrl("main.php", false);
+        runCombat();
+        while (inMultiFight()) runCombat();
+      }
+    );
+  }
+  return null;
+}
 
-            if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+export function dailyFights() {
+  if (embezzlerSources.some((source) => source.potential)) {
+    withStash($items`Spooky putty sheet`, () => {
+      embezzlerSetup();
 
-            if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {
-              retrieveItem($item`4-d camera`);
-            }
-            useFamiliar($familiar`Pocket Professor`);
-            meatOutfit(true);
-            withMacro(
-              Macro.if_(
-                "!hasskill Lecture on Relativity",
-                Macro.trySkill("Digitize").externalIf(
-                  !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-                  Macro.tryItem("4-d camera")
-                )
-              )
-                .trySkill("Lecture on Relativity")
-                .meatKill(),
-              () => use($item`photocopied monster`)
-            );
-          }
+      // FIRST EMBEZZLER CHAIN
+      if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
+        const fightSource = getEmbezzlerFight();
+        if (!fightSource) return;
+        useFamiliar($familiar`Pocket Professor`);
+        meatOutfit(true, [
+          ...fightSource.requirements,
+          new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
+        ]);
+        withMacro(firstChainMacro(), () => fightSource.run(prepWandererZone()));
+        set("_garbo_meatChain", true);
+      }
 
-          if (
-            getCounters("Digitize Monster", 0, 100).trim() === "" &&
-            get("_mushroomGardenFights") === 0
-          ) {
-            if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
-            // adventure in mushroom garden to start digitize timer.
-            freeFightOutfit();
+      // START DIGITIZE IF APPLICABLE
+      if (
+        getCounters("Digitize Monster", 0, 100).trim() === "" &&
+        get("_mushroomGardenFights") === 0
+      ) {
+        if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
+        // adventure in mushroom garden to start digitize timer.
+        freeFightOutfit();
+        useFamiliar(meatFamiliar());
+        adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
+      }
+
+      // SECOND EMBEZZLER CHAIN
+      if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
+        const fightSource = getEmbezzlerFight();
+        if (!fightSource) return;
+        useFamiliar($familiar`Pocket Professor`);
+        const requirements = Requirement.merge([
+          new Requirement(["Familiar Weight"], {
+            forceEquip: $items`Pocket Professor memory chip`,
+          }),
+          ...fightSource.requirements,
+        ]);
+        maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
+        withMacro(secondChainMacro(), () => fightSource.run(prepWandererZone()));
+        set("_garbo_weightChain", true);
+      }
+
+      // REMAINING EMBEZZLER FIGHTS
+      let nextFight = getEmbezzlerFight();
+      while (nextFight !== null) {
+        if (have($skill`musk of the moose`) && !have($effect`musk of the moose`))
+          useSkill($skill`musk of the moose`);
+        withMacro(embezzlerMacro(), () => {
+          if (nextFight) {
             useFamiliar(meatFamiliar());
-            adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
+            if (
+              nextFight.draggable &&
+              !get("_envyfishEggUsed") &&
+              (booleanModifier("Adventure Underwater") ||
+                $items`aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying`.some(
+                  have
+                )) &&
+              (booleanModifier("Underwater Familiar") ||
+                $items`little bitty bathysphere, das boot`.some(have)) &&
+              (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
+              !have($item`envyfish egg`)
+            ) {
+              meatOutfit(true, nextFight.requirements, true);
+              if (get("questS01OldGuy") === "unstarted") {
+                visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+              }
+              retrieveItem($item`pulled green taffy`);
+              if (!have($effect`Fishy`)) use($item`fishy pipe`);
+              nextFight.run($location`The Briny Deeps`);
+            } else {
+              meatOutfit(true, nextFight.requirements);
+              nextFight.run(prepWandererZone());
+            }
           }
-
-          // Second round of prof copies with familiar weight on.
-          freeFightMood().execute(20);
-          useFamiliar($familiar`Pocket Professor`);
-          maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
-          withMacro(
-            Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
-              .trySkill("Lecture on Relativity")
-              .tryItem($item`Spooky Putty sheet`)
-              .meatKill(),
-            () => use($item`shaking 4-d camera`)
-          );
-          set("_garbo_professorLecturesUsed", true);
-        } else if (!get("_photocopyUsed")) {
-          withMacro(Macro.tryItem($item`Spooky Putty sheet`).meatKill(), () => {
-            use($item`photocopied monster`);
-          });
-          set("_garbo_professorLecturesUsed", true);
-        }
-
-        let puttyCount = 1;
-        while (availableAmount($item`Spooky Putty monster`) > 0 && puttyCount <= 5) {
-          useFamiliar(meatFamiliar());
-          meatOutfit(true);
-          withMacro(
-            Macro.externalIf(
-              get("spookyPuttyCopiesMade") < 5 && puttyCount < 5,
-              Macro.item($item`Spooky Putty sheet`)
-            ).meatKill(),
-            () => use($item`Spooky Putty monster`)
-          );
-          puttyCount++;
-        }
-        set("spookyPuttyCopiesMade", 5);
-      });
-    }
+        });
+        nextFight = getEmbezzlerFight();
+      }
+    });
   }
 }
 
