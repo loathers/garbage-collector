@@ -366,10 +366,11 @@ function barfTurn() {
     adventureMacro(
       ghostLocation,
       Macro.trySkill("curse of weaksauce")
-        .trySkill("shoot ghost")
-        .trySkill("shoot ghost")
-        .trySkill("shoot ghost")
-        .trySkill("trap ghost")
+        .externalIf(have($skill`saucestorm`), Macro.skill("Saucestorm").repeat())
+        .externalIf(have($skill`saucegeyser`), Macro.skill("Saucegeyser").repeat())
+        .externalIf(have($skill`Cannelloni Cannon`), Macro.skill("Cannelloni Cannon").repeat())
+        .externalIf(have($skill`Wave of Sauce`), Macro.skill("Wave of Sauce").repeat())
+        .externalIf(have($skill`Saucecicle`), Macro.skill("Saucecicle").repeat()) //The Freezewoman is spooky-aligned, don't worry
     );
   } else if (
     have($item`I Voted!" sticker`) &&
@@ -382,7 +383,12 @@ function barfTurn() {
       prepWandererZone(),
       Macro.if_(
         `monsterid ${$monster`Angry ghost`.id}`,
-        Macro.skill("saucestorm").repeat()
+        Macro.trySkill("curse of weaksauce")
+          .externalIf(have($skill`saucestorm`), Macro.skill("Saucestorm").repeat())
+          .externalIf(have($skill`saucegeyser`), Macro.skill("Saucegeyser").repeat())
+          .externalIf(have($skill`Cannelloni Cannon`), Macro.skill("Cannelloni Cannon").repeat())
+          .externalIf(have($skill`Wave of Sauce`), Macro.skill("Wave of Sauce").repeat())
+          .externalIf(have($skill`Saucecicle`), Macro.skill("Saucecicle").repeat())
       ).meatKill()
     );
   } else {
