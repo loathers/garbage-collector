@@ -297,7 +297,6 @@ export function configureMisc() {
   changeMcd(10);
 }
 
-
 export function volcanoDailies() {
   if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
