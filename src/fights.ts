@@ -94,17 +94,20 @@ class EmbezzlerFight {
   available: () => boolean;
   potential: () => number;
   run: (location: Location) => void;
+  requirements: Requirement[];
   draggable: boolean;
 
   constructor(
     available: () => boolean,
     potential: () => number,
     run: (location: Location) => void,
+    requirements: Requirement[] = [],
     draggable = false
   ) {
     this.available = available;
     this.potential = potential;
     this.run = run;
+    this.requirements = requirements;
     this.draggable = draggable;
   }
 }
@@ -248,6 +251,7 @@ const embezzlerSources = [
         ).step(embezzlerMacro())
       );
     },
+    [new Requirement([], { forceEquip: $items`backup camera` })],
     true
   ),
   new EmbezzlerFight(
@@ -365,7 +369,7 @@ export function dailyFights() {
             (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
             !have($item`envyfish egg`)
           ) {
-            meatOutfit(true, [], true);
+            meatOutfit(true, nextFight.requirements, true);
             if (get("questS01OldGuy") === "unstarted") {
               visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
             }
@@ -373,7 +377,7 @@ export function dailyFights() {
             if (!have($effect`Fishy`)) use($item`fishy pipe`);
             nextFight.run($location`The Briny Deeps`);
           } else {
-            meatOutfit(true);
+            meatOutfit(true, nextFight.requirements);
             nextFight.run(prepWandererZone());
           }
         }
