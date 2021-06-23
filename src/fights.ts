@@ -253,7 +253,12 @@ const embezzlerSources = [
         ).step(embezzlerMacro())
       );
     },
-    [new Requirement([], { forceEquip: $items`backup camera` })],
+    [
+      new Requirement([], {
+        forceEquip: $items`backup camera`,
+        bonusEquip: new Map([[$item`backup camera`, 5000]]),
+      }),
+    ],
     true
   ),
   new EmbezzlerFight(
