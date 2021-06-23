@@ -301,7 +301,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
       "Garbo has detected you have potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"
     )
   ) {
-    new EmbezzlerFight(
+    return new EmbezzlerFight(
       () => false,
       () => 0,
       () => {
