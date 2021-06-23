@@ -44,6 +44,7 @@ import {
   dailyBuffs,
   horse,
   prepFamiliars,
+  volcanoDailies,
   voterSetup,
 } from "./dailies";
 import { runDiet } from "./diet";
@@ -80,6 +81,7 @@ function dailySetup() {
   prepFamiliars();
   dailyBuffs();
   configureMisc();
+  volcanoDailies();
   cheat();
 
   retrieveItem($item`Half a Purse`);
