@@ -14,7 +14,19 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $items, $location, $locations, $skill, get, have, Macro, property, set } from "libram";
+import {
+  $effect,
+  $item,
+  $items,
+  $location,
+  $locations,
+  $skill,
+  get,
+  have,
+  Macro,
+  property,
+  set,
+} from "libram";
 
 export function setChoice(adventure: number, value: number) {
   set(`choiceAdventure${adventure}`, `${value}`);
