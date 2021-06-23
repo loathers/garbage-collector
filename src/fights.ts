@@ -358,12 +358,12 @@ export function dailyFights() {
         const fightSource = getEmbezzlerFight();
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
-        let requirements = new Requirement(["Familiar Weight"], {
-          forceEquip: $items`Pocket Professor memory chip`,
-        });
-        for (let requirement of fightSource.requirements) {
-          requirements = requirements.merge(requirement);
-        }
+        const requirements = Requirement.merge([
+          new Requirement(["Familiar Weight"], {
+            forceEquip: $items`Pocket Professor memory chip`,
+          }),
+          ...fightSource.requirements,
+        ]);
         maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
         withMacro(secondChainMacro(), () => fightSource.run(prepWandererZone()));
         set("_garbo_weightChain", true);
