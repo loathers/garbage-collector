@@ -10,6 +10,7 @@ import {
   toItem,
   toUrl,
   use,
+  useFamiliar,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -70,55 +71,6 @@ export function questStep(questName: string) {
   }
 }
 
-export function voterSetup() {
-  if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
-  visitUrl("place.php?whichplace=town_right&action=townright_vote");
-
-  const votingMonsterPriority = [
-    "terrible mutant",
-    "angry ghost",
-    "government bureaucrat",
-    "annoyed snake",
-    "slime blob",
-  ];
-
-  const initPriority = new Map<string, number>([
-    ["Meat Drop: +30", 10],
-    ["Item Drop: +15", 9],
-    ["Familiar Experience: +2", 8],
-    ["Adventures: +1", 7],
-    ["Monster Level: +10", 5],
-    [`${myPrimestat()} Percent: +25`, 3],
-    [`Experience (${myPrimestat()}): +4`, 2],
-    ["Meat Drop: -30", -2],
-    ["Item Drop: -15", -2],
-    ["Familiar Experience: -2", -2],
-  ]);
-
-  const monsterVote =
-    votingMonsterPriority.indexOf(get("_voteMonster1")) <
-    votingMonsterPriority.indexOf(get("_voteMonster2"))
-      ? 1
-      : 2;
-
-  const voteLocalPriorityArr = [
-    initPriority.get(get("_voteLocal1")) || get("_voteLocal1").indexOf("-") === -1 ? 1 : -1,
-    initPriority.get(get("_voteLocal2")) || get("_voteLocal2").indexOf("-") === -1 ? 1 : -1,
-    initPriority.get(get("_voteLocal3")) || get("_voteLocal3").indexOf("-") === -1 ? 1 : -1,
-    initPriority.get(get("_voteLocal4")) || get("_voteLocal4").indexOf("-") === -1 ? 1 : -1,
-  ];
-
-  const bestVotes = voteLocalPriorityArr.sort((a, b) => a - b);
-  const firstPriority = bestVotes[0];
-  const secondPriority = bestVotes[1];
-
-  const firstInit = voteLocalPriorityArr.indexOf(firstPriority);
-  const secondInit = voteLocalPriorityArr.indexOf(secondPriority);
-
-  visitUrl(
-    `choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${firstInit}&local[]=${secondInit}`
-  );
-}
 interface zonePotion {
   zone: String;
   effect: Effect;
@@ -284,4 +236,11 @@ function dropGuzzlrQuest() {
   visitUrl("inventory.php?tap=guzzlr", false);
   runChoice(1);
   runChoice(5);
+}
+
+export function tryFeast(familiar: Familiar) {
+  if (have(familiar)) {
+    useFamiliar(familiar);
+    use($item`moveable feast`);
+  }
 }
