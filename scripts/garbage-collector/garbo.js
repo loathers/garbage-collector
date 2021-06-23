@@ -29448,35 +29448,34 @@ function getEmbezzlerFight() {
   return null;
 }
 
+function startDigitize() {
+  if ((0,external_kolmafia_.getCounters)("Digitize Monster", 0, 100).trim() === "" && (0,dist.get)("_sourceTerminalDigitizeUses") !== 0) {
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject57 || (fights_templateObject57 = fights_taggedTemplateLiteral(["Louder than Bomb"]))));
+    (0,dist.adventureMacro)((0,dist.$location)(fights_templateObject58 || (fights_templateObject58 = fights_taggedTemplateLiteral(["The Noob Cave"]))), combat.Macro.tryItem((0,dist.$item)(fights_templateObject59 || (fights_templateObject59 = fights_taggedTemplateLiteral(["Louder than Bomb"])))));
+  }
+}
+
 function dailyFights() {
   if (embezzlerSources.some(function (source) {
     return source.potential;
   })) {
-    withStash((0,dist.$items)(fights_templateObject57 || (fights_templateObject57 = fights_taggedTemplateLiteral(["Spooky putty sheet"]))), function () {
+    withStash((0,dist.$items)(fights_templateObject60 || (fights_templateObject60 = fights_taggedTemplateLiteral(["Spooky putty sheet"]))), function () {
       embezzlerSetup(); // FIRST EMBEZZLER CHAIN
 
-      if ((0,dist.have)((0,dist.$familiar)(fights_templateObject58 || (fights_templateObject58 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,dist.get)("_garbo_meatChain", false)) {
+      if ((0,dist.have)((0,dist.$familiar)(fights_templateObject61 || (fights_templateObject61 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,dist.get)("_garbo_meatChain", false)) {
         var fightSource = getEmbezzlerFight();
         if (!fightSource) return;
-        (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(fights_templateObject59 || (fights_templateObject59 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
+        (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(fights_templateObject62 || (fights_templateObject62 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
         meatOutfit(true, [].concat(fights_toConsumableArray(fightSource.requirements), [new Requirement([], {
-          forceEquip: (0,dist.$items)(fights_templateObject60 || (fights_templateObject60 = fights_taggedTemplateLiteral(["Pocket Professor memory chip"])))
+          forceEquip: (0,dist.$items)(fights_templateObject63 || (fights_templateObject63 = fights_taggedTemplateLiteral(["Pocket Professor memory chip"])))
         })]));
         (0,combat.withMacro)(firstChainMacro(), function () {
           return fightSource.run(prepWandererZone());
         });
         (0,dist.set)("_garbo_meatChain", true);
-      } // START DIGITIZE IF APPLICABLE
+      }
 
-
-      if ((0,external_kolmafia_.getCounters)("Digitize Monster", 0, 100).trim() === "" && (0,dist.get)("_mushroomGardenFights") === 0) {
-        if ((0,dist.have)((0,dist.$item)(fights_templateObject61 || (fights_templateObject61 = fights_taggedTemplateLiteral(["packet of mushroom spores"]))))) (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject62 || (fights_templateObject62 = fights_taggedTemplateLiteral(["packet of mushroom spores"])))); // adventure in mushroom garden to start digitize timer.
-
-        freeFightOutfit();
-        (0,external_kolmafia_.useFamiliar)(meatFamiliar());
-        (0,dist.adventureMacro)((0,dist.$location)(fights_templateObject63 || (fights_templateObject63 = fights_taggedTemplateLiteral(["Your Mushroom Garden"]))), combat.Macro.meatKill());
-      } // SECOND EMBEZZLER CHAIN
-
+      startDigitize(); // SECOND EMBEZZLER CHAIN
 
       if ((0,dist.have)((0,dist.$familiar)(_templateObject64 || (_templateObject64 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,dist.get)("_garbo_weightChain", false)) {
         var _fightSource = getEmbezzlerFight();
@@ -29491,8 +29490,9 @@ function dailyFights() {
           return _fightSource.run(prepWandererZone());
         });
         (0,dist.set)("_garbo_weightChain", true);
-      } // REMAINING EMBEZZLER FIGHTS
+      }
 
+      startDigitize(); // REMAINING EMBEZZLER FIGHTS
 
       var nextFight = getEmbezzlerFight();
 
@@ -29518,6 +29518,7 @@ function dailyFights() {
             }
           }
         });
+        startDigitize();
         nextFight = getEmbezzlerFight();
       }
     });
