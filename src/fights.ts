@@ -314,77 +314,81 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
 }
 
 export function dailyFights() {
-  withStash($items`Spooky putty sheet`, () => {
-    embezzlerSetup();
+  if (embezzlerSources.some((source) => source.potential)) {
+    withStash($items`Spooky putty sheet`, () => {
+      embezzlerSetup();
 
-    // FIRST EMBEZZLER CHAIN
-    if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
-      const fightSource = getEmbezzlerFight();
-      if (!fightSource) return;
-      useFamiliar($familiar`Pocket Professor`);
-      meatOutfit(true, [new Requirement([], { forceEquip: $items`Pocket Professor memory chip` })]);
-      withMacro(firstChainMacro(), () => fightSource.run($location`Noob Cave`));
-      set("_garbo_meatChain", true);
-    }
+      // FIRST EMBEZZLER CHAIN
+      if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
+        const fightSource = getEmbezzlerFight();
+        if (!fightSource) return;
+        useFamiliar($familiar`Pocket Professor`);
+        meatOutfit(true, [
+          new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
+        ]);
+        withMacro(firstChainMacro(), () => fightSource.run($location`Noob Cave`));
+        set("_garbo_meatChain", true);
+      }
 
-    // START DIGITIZE IF APPLICABLE
-    if (
-      getCounters("Digitize Monster", 0, 100).trim() === "" &&
-      get("_mushroomGardenFights") === 0
-    ) {
-      if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
-      // adventure in mushroom garden to start digitize timer.
-      freeFightOutfit();
-      useFamiliar(meatFamiliar());
-      adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
-    }
+      // START DIGITIZE IF APPLICABLE
+      if (
+        getCounters("Digitize Monster", 0, 100).trim() === "" &&
+        get("_mushroomGardenFights") === 0
+      ) {
+        if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
+        // adventure in mushroom garden to start digitize timer.
+        freeFightOutfit();
+        useFamiliar(meatFamiliar());
+        adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
+      }
 
-    // SECOND EMBEZZLER CHAIN
-    if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
-      const fightSource = getEmbezzlerFight();
-      if (!fightSource) return;
-      useFamiliar($familiar`Pocket Professor`);
-      maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
-      withMacro(secondChainMacro(), () => fightSource.run($location`Noob Cave`));
-      set("_garbo_weightChain", true);
-    }
+      // SECOND EMBEZZLER CHAIN
+      if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
+        const fightSource = getEmbezzlerFight();
+        if (!fightSource) return;
+        useFamiliar($familiar`Pocket Professor`);
+        maximizeCached(["Familiar Weight"], { forceEquip: $items`Pocket Professor memory chip` });
+        withMacro(secondChainMacro(), () => fightSource.run($location`Noob Cave`));
+        set("_garbo_weightChain", true);
+      }
 
-    // REMAINING EMBEZZLER FIGHTS
-    let nextFight = getEmbezzlerFight();
-    while (nextFight !== null) {
-      if (have($skill`musk of the moose`) && !have($effect`musk of the moose`))
-        useSkill($skill`musk of the moose`);
-      withMacro(embezzlerMacro(), () => {
-        if (nextFight) {
-          useFamiliar(meatFamiliar());
-          if (
-            nextFight.draggable &&
-            !get("_envyfishEggUsed") &&
-            (booleanModifier("Adventure Underwater") ||
-              $items`aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying`.some(
-                have
-              )) &&
-            (booleanModifier("Underwater Familiar") ||
-              $items`little bitty bathysphere, das boot`.some(have)) &&
-            (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-            !have($item`envyfish egg`)
-          ) {
-            meatOutfit(true, nextFight.requirements, true);
-            if (get("questS01OldGuy") === "unstarted") {
-              visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+      // REMAINING EMBEZZLER FIGHTS
+      let nextFight = getEmbezzlerFight();
+      while (nextFight !== null) {
+        if (have($skill`musk of the moose`) && !have($effect`musk of the moose`))
+          useSkill($skill`musk of the moose`);
+        withMacro(embezzlerMacro(), () => {
+          if (nextFight) {
+            useFamiliar(meatFamiliar());
+            if (
+              nextFight.draggable &&
+              !get("_envyfishEggUsed") &&
+              (booleanModifier("Adventure Underwater") ||
+                $items`aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying`.some(
+                  have
+                )) &&
+              (booleanModifier("Underwater Familiar") ||
+                $items`little bitty bathysphere, das boot`.some(have)) &&
+              (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
+              !have($item`envyfish egg`)
+            ) {
+              meatOutfit(true, nextFight.requirements, true);
+              if (get("questS01OldGuy") === "unstarted") {
+                visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+              }
+              retrieveItem($item`pulled green taffy`);
+              if (!have($effect`Fishy`)) use($item`fishy pipe`);
+              nextFight.run($location`The Briny Deeps`);
+            } else {
+              meatOutfit(true, nextFight.requirements);
+              nextFight.run(prepWandererZone());
             }
-            retrieveItem($item`pulled green taffy`);
-            if (!have($effect`Fishy`)) use($item`fishy pipe`);
-            nextFight.run($location`The Briny Deeps`);
-          } else {
-            meatOutfit(true, nextFight.requirements);
-            nextFight.run(prepWandererZone());
           }
-        }
-      });
-      nextFight = getEmbezzlerFight();
-    }
-  });
+        });
+        nextFight = getEmbezzlerFight();
+      }
+    });
+  }
 }
 
 type FreeFightOptions = {
