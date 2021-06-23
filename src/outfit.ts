@@ -1,7 +1,6 @@
 import {
   myInebriety,
   inebrietyLimit,
-  useFamiliar,
   myFamiliar,
   myClass,
   retrieveItem,
@@ -137,6 +136,6 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
   if (equippedAmount($item`ice nine`) > 0) {
     equip($item`unwrapped retro superhero cape`);
   }
-  if ((sea && !booleanModifier("Adventure Underwater")) || !booleanModifier("Underwater Familiar"))
+  if (sea && (!booleanModifier("Adventure Underwater") || !booleanModifier("Underwater Familiar")))
     maximizeCached(["sea -tie"]);
 }
