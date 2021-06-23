@@ -250,7 +250,7 @@ function guzzlrCheck() {
   }
 
   zonePotions.forEach((place) => {
-    if (guzzlZone.zone === place.zone && have(place.effect)) {
+    if (guzzlZone.zone === place.zone && !have(place.effect)) {
       if (!have(place.potion)) {
         buy(1, place.potion, 10000);
       }
