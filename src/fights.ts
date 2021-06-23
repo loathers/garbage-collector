@@ -328,6 +328,16 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
   return null;
 }
 
+function startDigitize() {
+  if (
+    getCounters("Digitize Monster", 0, 100).trim() === "" &&
+    get("_sourceTerminalDigitizeUses") !== 0
+  ) {
+    retrieveItem($item`Louder than Bomb`);
+    adventureMacro($location`The Noob Cave`, Macro.tryItem($item`Louder than Bomb`));
+  }
+}
+
 export function dailyFights() {
   if (embezzlerSources.some((source) => source.potential)) {
     withStash($items`Spooky putty sheet`, () => {
@@ -346,17 +356,7 @@ export function dailyFights() {
         set("_garbo_meatChain", true);
       }
 
-      // START DIGITIZE IF APPLICABLE
-      if (
-        getCounters("Digitize Monster", 0, 100).trim() === "" &&
-        get("_mushroomGardenFights") === 0
-      ) {
-        if (have($item`packet of mushroom spores`)) use($item`packet of mushroom spores`);
-        // adventure in mushroom garden to start digitize timer.
-        freeFightOutfit();
-        useFamiliar(meatFamiliar());
-        adventureMacro($location`Your Mushroom Garden`, Macro.meatKill());
-      }
+      startDigitize();
 
       // SECOND EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
@@ -373,6 +373,8 @@ export function dailyFights() {
         withMacro(secondChainMacro(), () => fightSource.run(prepWandererZone()));
         set("_garbo_weightChain", true);
       }
+
+      startDigitize();
 
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getEmbezzlerFight();
@@ -407,6 +409,7 @@ export function dailyFights() {
             }
           }
         });
+        startDigitize();
         nextFight = getEmbezzlerFight();
       }
     });
