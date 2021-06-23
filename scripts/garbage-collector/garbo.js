@@ -27791,7 +27791,7 @@ var combat = __webpack_require__(4223);
 ;// CONCATENATED MODULE: external "canadv.ash"
 const external_canadv_ash_namespaceObject = require("canadv.ash");;
 ;// CONCATENATED MODULE: ./src/lib.ts
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24;
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -27972,8 +27972,9 @@ function guzzlrCheck() {
       (0,external_kolmafia_.use)(1, place.potion);
     }
   });
+  var blacklist = (0,dist.$locations)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, Madness Bakery, The Secret Government Laboratory"])));
 
-  if (forbiddenZones.includes(guzzlZone.zone) || !guzzlZone.wanderers || guzzlZone === (0,dist.$location)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["The Oasis"]))) || guzzlZone === (0,dist.$location)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["The Bubblin' Caldera"]))) || guzzlZone.environment === "underwater" || guzzlZone === (0,dist.$location)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Barrrney's Barrr"]))) || guzzlZone === (0,dist.$location)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["The F'c'le"]))) || guzzlZone === (0,dist.$location)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["the poop deck"]))) || guzzlZone === (0,dist.$location)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["belowdecks"]))) || guzzlZone === (0,dist.$location)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["8-Bit Realm"]))) || guzzlZone.zone === "BatHole" && guzzlZone !== (0,dist.$location)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["The Bat Hole Entrance"]))) || guzzlZone === (0,dist.$location)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["The Secret Government Laboratory"]))) || !(0,external_canadv_ash_namespaceObject.canAdv)(guzzlZone, false)) {
+  if (forbiddenZones.includes(guzzlZone.zone) || blacklist.includes(guzzlZone) || !guzzlZone.wanderers || guzzlZone.environment === "underwater" || !(0,external_canadv_ash_namespaceObject.canAdv)(guzzlZone, false)) {
     return false;
   } else {
     return true;
@@ -27988,16 +27989,16 @@ function dropGuzzlrQuest() {
   (0,external_kolmafia_.runChoice)(5);
 }
 
-var physicalImmuneMacro = dist.Macro.trySkill("curse of weaksauce").trySkill("sing along").trySkill("extract").externalIf((0,dist.have)((0,dist.$skill)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["saucestorm"])))), dist.Macro.skill("Saucestorm").repeat()).externalIf((0,dist.have)((0,dist.$skill)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["saucegeyser"])))), dist.Macro.skill("Saucegeyser").repeat()).externalIf((0,dist.have)((0,dist.$skill)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Cannelloni Cannon"])))), dist.Macro.skill("Cannelloni Cannon").repeat()).externalIf((0,dist.have)((0,dist.$skill)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Wave of Sauce"])))), dist.Macro.skill("Wave of Sauce").repeat()).externalIf((0,dist.have)((0,dist.$skill)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Saucecicle"])))), dist.Macro.skill("Saucecicle").repeat()); //The Freezewoman is spooky-aligned, don't worry
+var physicalImmuneMacro = dist.Macro.trySkill("curse of weaksauce").trySkill("sing along").trySkill("extract").externalIf((0,dist.have)((0,dist.$skill)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["saucestorm"])))), dist.Macro.skill("Saucestorm").repeat()).externalIf((0,dist.have)((0,dist.$skill)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["saucegeyser"])))), dist.Macro.skill("Saucegeyser").repeat()).externalIf((0,dist.have)((0,dist.$skill)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Cannelloni Cannon"])))), dist.Macro.skill("Cannelloni Cannon").repeat()).externalIf((0,dist.have)((0,dist.$skill)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Wave of Sauce"])))), dist.Macro.skill("Wave of Sauce").repeat()).externalIf((0,dist.have)((0,dist.$skill)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Saucecicle"])))), dist.Macro.skill("Saucecicle").repeat()); //The Freezewoman is spooky-aligned, don't worry
 
 function tryFeast(familiar) {
   if ((0,dist.have)(familiar)) {
     (0,external_kolmafia_.useFamiliar)(familiar);
-    (0,external_kolmafia_.use)((0,dist.$item)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["moveable feast"]))));
+    (0,external_kolmafia_.use)((0,dist.$item)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["moveable feast"]))));
   }
 }
 ;// CONCATENATED MODULE: ./src/familiar.ts
-var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11, familiar_templateObject12, familiar_templateObject13, familiar_templateObject14, familiar_templateObject15, familiar_templateObject16, familiar_templateObject17, familiar_templateObject18, familiar_templateObject19, familiar_templateObject20, familiar_templateObject21, familiar_templateObject22, familiar_templateObject23, familiar_templateObject24, familiar_templateObject25, familiar_templateObject26, familiar_templateObject27;
+var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11, familiar_templateObject12, familiar_templateObject13, familiar_templateObject14, familiar_templateObject15, familiar_templateObject16, familiar_templateObject17, familiar_templateObject18, familiar_templateObject19, familiar_templateObject20, familiar_templateObject21, familiar_templateObject22, familiar_templateObject23, familiar_templateObject24, _templateObject25, _templateObject26, _templateObject27;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = familiar_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -28125,9 +28126,9 @@ function freeFightFamiliar() {
     familiarValue.push([(0,dist.$familiar)(familiar_templateObject23 || (familiar_templateObject23 = familiar_taggedTemplateLiteral(["Stocking Mimic"]))), mimicValue]);
   }
 
-  if ((0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(familiar_templateObject24 || (familiar_templateObject24 = familiar_taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([(0,dist.$familiar)(familiar_templateObject25 || (familiar_templateObject25 = familiar_taggedTemplateLiteral(["Robortender"]))), 200]);
+  if ((0,external_kolmafia_.haveFamiliar)((0,dist.$familiar)(familiar_templateObject24 || (familiar_templateObject24 = familiar_taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([(0,dist.$familiar)(_templateObject25 || (_templateObject25 = familiar_taggedTemplateLiteral(["Robortender"]))), 200]);
 
-  var _iterator2 = _createForOfIteratorHelper((0,dist.$familiars)(familiar_templateObject27 || (familiar_templateObject27 = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
+  var _iterator2 = _createForOfIteratorHelper((0,dist.$familiars)(_templateObject27 || (_templateObject27 = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
       _step2;
 
   try {
@@ -28141,7 +28142,7 @@ function freeFightFamiliar() {
     _iterator2.f();
   }
 
-  familiarValue.push([(0,dist.$familiar)(familiar_templateObject26 || (familiar_templateObject26 = familiar_taggedTemplateLiteral(["None"]))), 0]);
+  familiarValue.push([(0,dist.$familiar)(_templateObject26 || (_templateObject26 = familiar_taggedTemplateLiteral(["None"]))), 0]);
   return argmax(familiarValue);
 }
 ;// CONCATENATED MODULE: ./src/stash.ts
@@ -28325,7 +28326,7 @@ var StashManager = /*#__PURE__*/function () {
   return StashManager;
 }();
 ;// CONCATENATED MODULE: ./src/dailies.ts
-var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20, dailies_templateObject21, dailies_templateObject22, dailies_templateObject23, dailies_templateObject24, dailies_templateObject25, dailies_templateObject26, dailies_templateObject27, dailies_templateObject28, dailies_templateObject29, dailies_templateObject30, dailies_templateObject31, dailies_templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89;
+var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20, dailies_templateObject21, dailies_templateObject22, dailies_templateObject23, dailies_templateObject24, dailies_templateObject25, dailies_templateObject26, dailies_templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89;
 
 function dailies_slicedToArray(arr, i) { return dailies_arrayWithHoles(arr) || dailies_iterableToArrayLimit(arr, i) || dailies_unsupportedIterableToArray(arr, i) || dailies_nonIterableRest(); }
 
@@ -28417,17 +28418,17 @@ function latte() {
       }
 
       if (!get("latteUnlocks").includes("rawhide") && (haveFamiliar($familiar(dailies_templateObject25 || (dailies_templateObject25 = dailies_taggedTemplateLiteral(["frumious bandersnatch"])))) || haveFamiliar($familiar(dailies_templateObject26 || (dailies_templateObject26 = dailies_taggedTemplateLiteral(["pair of stomping boots"]))))) && Bandersnatch.getRemainingRunaways() > 0) {
-        var _runFam = haveFamiliar($familiar(dailies_templateObject27 || (dailies_templateObject27 = dailies_taggedTemplateLiteral(["pair of stomping boots"])))) ? $familiar(dailies_templateObject28 || (dailies_templateObject28 = dailies_taggedTemplateLiteral(["pair of stomping boots"]))) : $familiar(dailies_templateObject29 || (dailies_templateObject29 = dailies_taggedTemplateLiteral(["frumious bandersnatch"])));
+        var _runFam = haveFamiliar($familiar(dailies_templateObject27 || (dailies_templateObject27 = dailies_taggedTemplateLiteral(["pair of stomping boots"])))) ? $familiar(_templateObject28 || (_templateObject28 = dailies_taggedTemplateLiteral(["pair of stomping boots"]))) : $familiar(_templateObject29 || (_templateObject29 = dailies_taggedTemplateLiteral(["frumious bandersnatch"])));
 
         useFamiliar(_runFam);
         maximize("familiar weight, +equip latte lovers member's mug", false);
-        if (_runFam === $familiar(dailies_templateObject30 || (dailies_templateObject30 = dailies_taggedTemplateLiteral(["frumious bandersnatch"])))) ensureEffect($effect(dailies_templateObject31 || (dailies_templateObject31 = dailies_taggedTemplateLiteral(["ode to booze"]))));
+        if (_runFam === $familiar(_templateObject30 || (_templateObject30 = dailies_taggedTemplateLiteral(["frumious bandersnatch"])))) ensureEffect($effect(_templateObject31 || (_templateObject31 = dailies_taggedTemplateLiteral(["ode to booze"]))));
         Macro.step("runaway").setAutoAttack();
         setChoice(502, 2);
         setChoice(505, 2);
 
         while (!get("latteUnlocks").includes("rawhide") && Bandersnatch.getRemainingRunaways() > 0) {
-          adv1($location(dailies_templateObject32 || (dailies_templateObject32 = dailies_taggedTemplateLiteral(["the spooky forest"]))), -1, "");
+          adv1($location(_templateObject32 || (_templateObject32 = dailies_taggedTemplateLiteral(["the spooky forest"]))), -1, "");
         }
       }
 
