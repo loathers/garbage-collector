@@ -38,6 +38,7 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import {
+  cheat,
   configureGear,
   configureMisc,
   dailyBuffs,
@@ -79,6 +80,7 @@ function dailySetup() {
   prepFamiliars();
   dailyBuffs();
   configureMisc();
+  cheat();
 
   retrieveItem($item`Half a Purse`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);

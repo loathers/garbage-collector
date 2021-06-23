@@ -294,3 +294,12 @@ export function configureMisc() {
 
   changeMcd(10);
 }
+
+export function cheat() {
+  if (have($item`deck of every card`)) {
+    ["1952 Mickey Mantle", "Island", "Ancestral Recall"].forEach((card) => {
+      if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
+        cliExecute(`cheat ${card}`);
+    });
+  }
+}
