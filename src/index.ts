@@ -48,11 +48,7 @@ import {
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import {
-  questStep,
-  prepWandererZone,
-  fetchTheGhostKiller,
-} from "./lib";
+import { questStep, prepWandererZone, fetchTheGhostKiller } from "./lib";
 import { meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
