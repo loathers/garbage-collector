@@ -59,7 +59,14 @@ import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { ensureEffect, questStep, setChoice, voterSetup, prepWandererZone } from "./lib";
+import {
+  ensureEffect,
+  questStep,
+  setChoice,
+  voterSetup,
+  prepWandererZone,
+  fetchTheGhostKiller,
+} from "./lib";
 import { meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -363,15 +370,7 @@ function barfTurn() {
   ) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
-    adventureMacro(
-      ghostLocation,
-      Macro.trySkill("curse of weaksauce")
-        .externalIf(have($skill`saucestorm`), Macro.skill("Saucestorm").repeat())
-        .externalIf(have($skill`saucegeyser`), Macro.skill("Saucegeyser").repeat())
-        .externalIf(have($skill`Cannelloni Cannon`), Macro.skill("Cannelloni Cannon").repeat())
-        .externalIf(have($skill`Wave of Sauce`), Macro.skill("Wave of Sauce").repeat())
-        .externalIf(have($skill`Saucecicle`), Macro.skill("Saucecicle").repeat()) //The Freezewoman is spooky-aligned, don't worry
-    );
+    adventureMacro(ghostLocation, fetchTheGhostKiller);
   } else if (
     have($item`I Voted!" sticker`) &&
     getCounters("Vote", 0, 0) !== "" &&
@@ -379,18 +378,7 @@ function barfTurn() {
   ) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`I Voted!" sticker` })]);
-    adventureMacroAuto(
-      prepWandererZone(),
-      Macro.if_(
-        `monsterid ${$monster`Angry ghost`.id}`,
-        Macro.trySkill("curse of weaksauce")
-          .externalIf(have($skill`saucestorm`), Macro.skill("Saucestorm").repeat())
-          .externalIf(have($skill`saucegeyser`), Macro.skill("Saucegeyser").repeat())
-          .externalIf(have($skill`Cannelloni Cannon`), Macro.skill("Cannelloni Cannon").repeat())
-          .externalIf(have($skill`Wave of Sauce`), Macro.skill("Wave of Sauce").repeat())
-          .externalIf(have($skill`Saucecicle`), Macro.skill("Saucecicle").repeat())
-      ).meatKill()
-    );
+    adventureMacroAuto(prepWandererZone(), Macro.step(fetchTheGhostKiller).meatKill());
   } else {
     adventureMacroAuto(
       location,

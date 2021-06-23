@@ -13,7 +13,7 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $items, $location, $skill, get, have, property, set } from "libram";
+import { $effect, $item, $items, $location, $skill, get, have, Macro, property, set } from "libram";
 
 export function setChoice(adventure: number, value: number) {
   set(`choiceAdventure${adventure}`, `${value}`);
@@ -285,3 +285,12 @@ function dropGuzzlrQuest() {
   runChoice(1);
   runChoice(5);
 }
+
+export const fetchTheGhostKiller = Macro.trySkill("curse of weaksauce")
+  .trySkill("sing along")
+  .trySkill("extract")
+  .externalIf(have($skill`saucestorm`), Macro.skill("Saucestorm").repeat())
+  .externalIf(have($skill`saucegeyser`), Macro.skill("Saucegeyser").repeat())
+  .externalIf(have($skill`Cannelloni Cannon`), Macro.skill("Cannelloni Cannon").repeat())
+  .externalIf(have($skill`Wave of Sauce`), Macro.skill("Wave of Sauce").repeat())
+  .externalIf(have($skill`Saucecicle`), Macro.skill("Saucecicle").repeat()); //The Freezewoman is spooky-aligned, don't worry
