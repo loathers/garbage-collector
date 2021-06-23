@@ -33956,7 +33956,7 @@ function guzzlrCheck() {
   }
 
   zonePotions.forEach(function (place) {
-    if (guzzlZone.zone === place.zone && (0,dist.have)(place.effect)) {
+    if (guzzlZone.zone === place.zone && !(0,dist.have)(place.effect)) {
       if (!(0,dist.have)(place.potion)) {
         (0,external_kolmafia_.buy)(1, place.potion, 10000);
       }
