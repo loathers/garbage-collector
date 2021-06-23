@@ -307,6 +307,10 @@ export function volcanoDailies() {
     visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
     runChoice(7);
   }
+
+  if (get("_unaccompaniedMinerUsed") < 5) {
+    cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`);
+  }
 }
 function checkVolcanoQuest() {
   print("Checking volcano quest", "blue");
