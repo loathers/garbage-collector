@@ -34,6 +34,7 @@ import {
   runChoice,
   runCombat,
   setAutoAttack,
+  setLocation,
   spleenLimit,
   toInt,
   use,
@@ -173,8 +174,16 @@ const embezzlerSources = [
     }
   ),
   new EmbezzlerFight(
-    () => canAdv($location`Knob Treasury`, true) && !get("_freePillKeeperUsed"),
-    () => (canAdv($location`Knob Treasury`, true) && !get("_freePillKeeperUsed") ? 1 : 0),
+    () =>
+      have($item`Eight Days a Week Pill Keeper`) &&
+      canAdv($location`Knob Treasury`, true) &&
+      !get("_freePillKeeperUsed"),
+    () =>
+      have($item`Eight Days a Week Pill Keeper`) &&
+      canAdv($location`Knob Treasury`, true) &&
+      !get("_freePillKeeperUsed")
+        ? 1
+        : 0,
     () => {
       cliExecute("pillkeeper semirare");
       adv1($location`Knob Treasury`);
@@ -334,7 +343,7 @@ function startDigitize() {
     get("_sourceTerminalDigitizeUses") !== 0
   ) {
     retrieveItem($item`Louder than Bomb`);
-    adventureMacro($location`The Noob Cave`, Macro.tryItem($item`Louder than Bomb`));
+    adventureMacro($location`Noob Cave`, Macro.tryItem($item`Louder than Bomb`));
   }
 }
 
@@ -396,6 +405,7 @@ export function dailyFights() {
               (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
               !have($item`envyfish egg`)
             ) {
+              setLocation($location`The Briny Deeps`);
               meatOutfit(true, nextFight.requirements, true);
               if (get("questS01OldGuy") === "unstarted") {
                 visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
@@ -403,9 +413,15 @@ export function dailyFights() {
               retrieveItem($item`pulled green taffy`);
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
               nextFight.run($location`The Briny Deeps`);
-            } else {
+            } else if (nextFight.draggable) {
+              const location = prepWandererZone();
+              setLocation(location);
               meatOutfit(true, nextFight.requirements);
-              nextFight.run(prepWandererZone());
+              nextFight.run(location);
+            } else {
+              setLocation($location`Noob Cave`);
+              meatOutfit(true, nextFight.requirements);
+              nextFight.run($location`Noob Cave`);
             }
           }
         });
