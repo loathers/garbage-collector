@@ -173,8 +173,16 @@ const embezzlerSources = [
     }
   ),
   new EmbezzlerFight(
-    () => canAdv($location`Knob Treasury`, true) && !get("_freePillKeeperUsed"),
-    () => (canAdv($location`Knob Treasury`, true) && !get("_freePillKeeperUsed") ? 1 : 0),
+    () =>
+      have($item`Eight Days a Week Pill Keeper`) &&
+      canAdv($location`Knob Treasury`, true) &&
+      !get("_freePillKeeperUsed"),
+    () =>
+      have($item`Eight Days a Week Pill Keeper`) &&
+      canAdv($location`Knob Treasury`, true) &&
+      !get("_freePillKeeperUsed")
+        ? 1
+        : 0,
     () => {
       cliExecute("pillkeeper semirare");
       adv1($location`Knob Treasury`);
