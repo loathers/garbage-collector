@@ -403,9 +403,12 @@ export function dailyFights() {
               retrieveItem($item`pulled green taffy`);
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
               nextFight.run($location`The Briny Deeps`);
-            } else {
+            } else if (nextFight.draggable) {
               meatOutfit(true, nextFight.requirements);
               nextFight.run(prepWandererZone());
+            } else {
+              meatOutfit(true, nextFight.requirements);
+              nextFight.run($location`The Noob Cave`);
             }
           }
         });
