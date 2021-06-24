@@ -42,6 +42,7 @@ import {
   configureGear,
   configureMisc,
   dailyBuffs,
+  gin,
   horse,
   latte,
   prepFamiliars,
@@ -91,6 +92,7 @@ function dailySetup() {
   configureMisc();
   volcanoDailies();
   cheat();
+  gin();
 
   retrieveItem($item`Half a Purse`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
