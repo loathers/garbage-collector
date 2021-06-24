@@ -35,6 +35,7 @@ import {
   useFamiliar,
 } from "kolmafia";
 import { $class, $effect, $item, $items, $skill, get, have, $familiar, set } from "libram";
+import { globalOptions } from ".";
 import { clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
@@ -152,7 +153,6 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   }
 }
 
-const snuff = $item`voodoo snuff`;
 const valuePerSpleen = (item: Item) => -(adventureGain(item) * MPA - mallPrice(item)) / item.spleen;
 let savedBestSpleenItem: Item | null = null;
 let savedPotentialSpleenItems: Item[] | null = null;
@@ -288,6 +288,10 @@ export function runDiet(): void {
   );
   useIfUnused($item`essential tofu`, "_essentialTofuUsed", 5 * MPA);
 
+  if (!get("_etchedHourglassUsed") && have($item`etched hourglass`)) {
+    use(1, $item`etched hourglass`);
+  }
+
   if (getProperty("_timesArrowUsed") !== "true" && mallPrice($item`time's arrow`) < 5 * MPA) {
     acquire(1, $item`time's arrow`, 5 * MPA);
     cliExecute("csend 1 time's arrow to botticelli");
@@ -300,7 +304,8 @@ export function runDiet(): void {
     useSkill(casts, $skill`Ancestral Recall`);
   }
 
-  useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 5 * MPA);
+  if (globalOptions.ascending) useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 5 * MPA);
+
   fillSomeSpleen();
   fillStomach();
   fillLiver();
