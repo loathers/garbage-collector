@@ -308,7 +308,7 @@ export function volcanoDailies() {
     runChoice(7);
   }
 
-  if (get("_unaccompaniedMinerUsed") < 5) {
+  if (get("_unaccompaniedMinerUsed") < 5 && have($skill`unaccompanied miner`)) {
     cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`);
   }
 }
