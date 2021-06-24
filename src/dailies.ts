@@ -372,11 +372,24 @@ function checkVolcanoQuest() {
     }
   }
 }
+
 export function cheat() {
   if (have($item`deck of every card`)) {
     ["1952 Mickey Mantle", "Island", "Ancestral Recall"].forEach((card) => {
       if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
         cliExecute(`cheat ${card}`);
     });
+  }
+}
+
+export function gin() {
+  if (have($item`Time-Spinner`)) {
+    if (
+      !get("_timeSpinnerReplicatorUsed") &&
+      get("timeSpinnerMedals") >= 5 &&
+      get("_timeSpinnerMinutesUsed") <= 8
+    ) {
+      cliExecute("farfuture drink");
+    }
   }
 }
