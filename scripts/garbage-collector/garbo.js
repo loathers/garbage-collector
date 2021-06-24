@@ -29607,7 +29607,7 @@ function startDigitize() {
 
 function dailyFights() {
   if (embezzlerSources.some(function (source) {
-    return source.potential;
+    return source.potential();
   })) {
     withStash((0,dist.$items)(fights_templateObject62 || (fights_templateObject62 = fights_taggedTemplateLiteral(["Spooky putty sheet"]))), function () {
       embezzlerSetup(); // FIRST EMBEZZLER CHAIN
