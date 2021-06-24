@@ -152,7 +152,6 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   }
 }
 
-const snuff = $item`voodoo snuff`;
 const valuePerSpleen = (item: Item) => -(adventureGain(item) * MPA - mallPrice(item)) / item.spleen;
 let savedBestSpleenItem: Item | null = null;
 let savedPotentialSpleenItems: Item[] | null = null;
@@ -287,6 +286,10 @@ export function runDiet(): void {
     5 * MPA + 5000
   );
   useIfUnused($item`essential tofu`, "_essentialTofuUsed", 5 * MPA);
+
+  if (!get("_etchedHourglassUsed") && have($item`etched hourglass`)) {
+    use(1, $item`etched hourglass`);
+  }
 
   if (getProperty("_timesArrowUsed") !== "true" && mallPrice($item`time's arrow`) < 5 * MPA) {
     acquire(1, $item`time's arrow`, 5 * MPA);
