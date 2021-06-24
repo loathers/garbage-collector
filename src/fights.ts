@@ -69,7 +69,7 @@ import {
 import { fillAsdonMartinTo } from "./asdon";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { clamp, ensureEffect, mapMonster, prepWandererZone, questStep, setChoice } from "./lib";
+import { clamp, ensureEffect, mapMonster, prepWandererZone, questStep, setChoice, tryToRun } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
@@ -342,8 +342,8 @@ function startDigitize() {
     getCounters("Digitize Monster", 0, 100).trim() === "" &&
     get("_sourceTerminalDigitizeUses") !== 0
   ) {
-    retrieveItem($item`Louder than Bomb`);
-    adventureMacro($location`Noob Cave`, Macro.tryItem($item`Louder than Bomb`));
+    tryToRun()
+    adv1($location`Noob Cave`, -1, "");
   }
 }
 
