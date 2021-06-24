@@ -53,7 +53,13 @@ import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import { questStep, prepWandererZone, physicalImmuneMacro } from "./lib";
 import { meatMood } from "./mood";
-import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
+import {
+  familiarWaterBreathingEquipment,
+  freeFightOutfit,
+  meatOutfit,
+  Requirement,
+  waterBreathingEquipment,
+} from "./outfit";
 import { withStash } from "./stash";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -111,12 +117,8 @@ function barfTurn() {
   let location = embezzlerUp ? prepWandererZone() : $location`Barf Mountain`;
   if (
     !get("_envyfishEggUsed") &&
-    (booleanModifier("Adventure Underwater") ||
-      $items`aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying`.some(
-        have
-      )) &&
-    (booleanModifier("Underwater Familiar") ||
-      $items`little bitty bathysphere, das boot`.some(have)) &&
+    (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
+    (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
     (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
     !have($item`envyfish egg`) &&
     embezzlerUp

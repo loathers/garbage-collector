@@ -6,11 +6,9 @@ import {
   booleanModifier,
   chatPrivate,
   cliExecute,
-  combatRateModifier,
   eat,
   equip,
   getCampground,
-  getClanLounge,
   getCounters,
   handlingChoice,
   inMultiFight,
@@ -80,7 +78,13 @@ import {
   setChoice,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
-import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
+import {
+  familiarWaterBreathingEquipment,
+  freeFightOutfit,
+  meatOutfit,
+  Requirement,
+  waterBreathingEquipment,
+} from "./outfit";
 import { withStash } from "./stash";
 
 function checkFax(): boolean {
@@ -412,12 +416,9 @@ export function dailyFights() {
             if (
               nextFight.draggable &&
               !get("_envyfishEggUsed") &&
-              (booleanModifier("Adventure Underwater") ||
-                $items`aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank, The Crown of Ed the Undying`.some(
-                  have
-                )) &&
+              (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
               (booleanModifier("Underwater Familiar") ||
-                $items`little bitty bathysphere, das boot`.some(have)) &&
+                familiarWaterBreathingEquipment.some(have)) &&
               (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
               !have($item`envyfish egg`)
             ) {
