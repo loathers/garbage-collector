@@ -8,6 +8,7 @@ import {
   equip,
   totalTurnsPlayed,
   booleanModifier,
+  cliExecute,
 } from "kolmafia";
 import {
   $class,
@@ -140,6 +141,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
     if (!booleanModifier("Adventure Underwater")) {
       for (let airSource of waterBreathingEquipment) {
         if (have(airSource)) {
+          if (airSource === $item`the crown of ed the undying`) cliExecute("edpiece fish");
           equip(airSource);
           break;
         }
