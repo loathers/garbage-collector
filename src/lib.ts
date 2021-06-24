@@ -3,6 +3,7 @@ import {
   buy,
   cliExecute,
   equip,
+  getWorkshed,
   haveSkill,
   mallPrice,
   maximize,
@@ -38,6 +39,7 @@ import {
   property,
   set,
 } from "libram";
+import { fillAsdonMartinTo } from "./asdon";
 
 export function setChoice(adventure: number, value: number) {
   set(`choiceAdventure${adventure}`, `${value}`);
@@ -283,6 +285,14 @@ class freeRun {
 }
 
 const freeRuns: freeRun[] = [
+  new freeRun(
+    () =>
+      getWorkshed() === $item`Asdon Martin keyfob` &&
+      !get("banishedMonsters").toLowerCase().includes("spring-loaded front bumper"),
+    () => fillAsdonMartinTo(50),
+    Macro.skill("Asdon Martin: Spring-Loaded Front Bumper")
+  ),
+
   new freeRun(
     () =>
       ((have($familiar`frumious bandersnatch`) && have($effect`ode to booze`)) ||
