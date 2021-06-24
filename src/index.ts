@@ -179,8 +179,9 @@ function barfTurn() {
   }
 }
 
-export const globalOptions: { stopTurncount: number | null } = {
+export const globalOptions: { ascending: boolean; stopTurncount: number | null } = {
   stopTurncount: null,
+  ascending: false,
 };
 
 export function canContinue() {
@@ -208,6 +209,9 @@ export function main(argString = "") {
   for (const arg of args) {
     if (arg.match(/\d+/)) {
       globalOptions.stopTurncount = myTurncount() + parseInt(arg, 10);
+    }
+    if (arg.match(/ascend/)) {
+      globalOptions.ascending = true;
     }
   }
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;

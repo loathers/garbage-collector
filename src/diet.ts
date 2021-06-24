@@ -35,6 +35,7 @@ import {
   useFamiliar,
 } from "kolmafia";
 import { $class, $effect, $item, $items, $skill, get, have, $familiar, set } from "libram";
+import { globalOptions } from ".";
 import { clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
@@ -303,7 +304,8 @@ export function runDiet(): void {
     useSkill(casts, $skill`Ancestral Recall`);
   }
 
-  useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 5 * MPA);
+  if (globalOptions.ascending) useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 5 * MPA);
+
   fillSomeSpleen();
   fillStomach();
   fillLiver();
