@@ -29695,7 +29695,7 @@ new FreeFight(function () {
 }), new FreeFight(function () {
   return (0,dist.get)("questL02Larva") !== "unstarted" && !(0,dist.get)("_eldritchTentacleFought");
 }, function () {
-  var haveEldritchEssence = (0,dist.have)((0,dist.$item)(fights_templateObject90 || (fights_templateObject90 = fights_taggedTemplateLiteral(["eldritch essence"]))));
+  var haveEldritchEssence = (0,external_kolmafia_.itemAmount)((0,dist.$item)(fights_templateObject90 || (fights_templateObject90 = fights_taggedTemplateLiteral(["eldritch essence"])))) !== 0;
   (0,external_kolmafia_.visitUrl)("place.php?whichplace=forestvillage&action=fv_scientist", false);
   if (!(0,external_kolmafia_.handlingChoice)()) throw "No choice?";
   (0,external_kolmafia_.runChoice)(haveEldritchEssence ? 2 : 1);
