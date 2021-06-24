@@ -519,7 +519,7 @@ const freeFightSources = [
   new FreeFight(
     () => get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought"),
     () => {
-      const haveEldritchEssence = have($item`eldritch essence`);
+      const haveEldritchEssence = itemAmount($item`eldritch essence`) !== 0;
       visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
       if (!handlingChoice()) throw "No choice?";
       runChoice(haveEldritchEssence ? 2 : 1);
@@ -817,9 +817,8 @@ const freeFightSources = [
         : 0,
     () => {
       setChoice(1324, 5); // pick fight.
-      if (get("_questPartyFairQuest") === "unstarted") {
+      if (get("_questPartyFair") === "unstarted") {
         visitUrl("adventure.php?snarfblat=528");
-        runChoice(["booze", "food"].includes(get("_questPartyFairQuest")) ? 1 : 2);
         if (get("_questPartyFairQuest") === "food") {
           runChoice(1);
           setChoice(1324, 2);

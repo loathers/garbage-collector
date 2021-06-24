@@ -43,6 +43,7 @@ import {
   configureMisc,
   dailyBuffs,
   horse,
+  latte,
   prepFamiliars,
   volcanoDailies,
   voterSetup,
@@ -78,6 +79,7 @@ function dailySetup() {
   voterSetup();
   configureGear();
   horse();
+  latte();
   prepFamiliars();
   dailyBuffs();
   configureMisc();
