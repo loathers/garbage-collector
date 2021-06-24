@@ -272,7 +272,7 @@ export function tryFeast(familiar: Familiar) {
   }
 }
 
-class freeRun {
+export class freeRun {
   available: () => boolean;
   prepare: () => void;
   macro: Macro;
@@ -343,19 +343,8 @@ const freeRuns: freeRun[] = [
     () => equip($slot`acc3`, $item`mafia middle finger ring`),
     Macro.skill("Show them your ring")
   ),
-
-  new freeRun(
-    () => retrieveItem($item`louder than bomb`),
-    () => retrieveItem($item`louder than bomb`),
-    Macro.item("louder than bomb")
-  ),
 ];
 
-export function tryToRun() {
-  const runSource = freeRuns.find((run) => run.available());
-  if (runSource) {
-    runSource.macro.setAutoAttack();
-    return true;
-  }
-  return false;
+export function findRun() {
+  return freeRuns.find((run) => run.available);
 }

@@ -72,11 +72,12 @@ import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   clamp,
   ensureEffect,
+  findRun,
+  freeRun,
   mapMonster,
   prepWandererZone,
   questStep,
   setChoice,
-  tryToRun,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, Requirement } from "./outfit";
@@ -350,8 +351,15 @@ function startDigitize() {
     getCounters("Digitize Monster", 0, 100).trim() === "" &&
     get("_sourceTerminalDigitizeUses") !== 0
   ) {
-    tryToRun();
-    adv1($location`Noob Cave`, -1, "");
+    const run =
+      findRun() ||
+      new freeRun(
+        () => retrieveItem($item`louder than bomb`),
+        () => retrieveItem($item`louder than bomb`),
+        Macro.item("louder than bomb")
+      );
+    run.prepare();
+    adventureMacro($location`Noob Cave`, run.macro);
   }
 }
 
