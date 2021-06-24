@@ -352,7 +352,7 @@ function startDigitize() {
 }
 
 export function dailyFights() {
-  if (embezzlerSources.some((source) => source.potential)) {
+  if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky putty sheet`, () => {
       embezzlerSetup();
 
