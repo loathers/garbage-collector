@@ -106,17 +106,22 @@ function faxEmbezzler(): void {
   }
 }
 
+type EmbezzlerFightOptions = {
+  location?: Location;
+  macro?: Macro;
+};
+
 class EmbezzlerFight {
   available: () => boolean;
   potential: () => number;
-  run: (location: Location) => void;
+  run: (options: EmbezzlerFightOptions) => void;
   requirements: Requirement[];
   draggable: boolean;
 
   constructor(
     available: () => boolean,
     potential: () => number,
-    run: (location: Location) => void,
+    run: (options: EmbezzlerFightOptions) => void,
     requirements: Requirement[] = [],
     draggable = false
   ) {
@@ -174,9 +179,38 @@ const embezzlerSources = [
       get("_sourceTerminalDigitizeMonster") === $monster`Knob Goblin Embezzler` &&
       getCounters("Digitize Monster", 0, 0).trim() !== "",
     () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
-    (location: Location) => {
-      adv1(location);
-    }
+    (options: EmbezzlerFightOptions) => {
+      adv1(options.location || $location`Noob Cave`);
+    },
+    [],
+    true
+  ),
+  new EmbezzlerFight(
+    () =>
+      get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+      have($item`backup camera`) &&
+      get<number>("_backUpUses") < 11,
+    () => (have($item`backup camera`) ? 11 - get<number>("_backUpUses") : 0),
+    (options: EmbezzlerFightOptions) => {
+      const realLocation =
+        options.location && options.location.combatPercent >= 100
+          ? options.location
+          : $location`Noob Cave`;
+      adventureMacro(
+        realLocation,
+        Macro.if_(
+          "!monstername Knob Goblin Embezzler",
+          Macro.skill("Back-Up to Your Last Enemy")
+        ).step(options.macro || embezzlerMacro())
+      );
+    },
+    [
+      new Requirement([], {
+        forceEquip: $items`backup camera`,
+        bonusEquip: new Map([[$item`backup camera`, 5000]]),
+      }),
+    ],
+    true
   ),
   new EmbezzlerFight(
     () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
@@ -258,30 +292,6 @@ const embezzlerSources = [
         ? 1
         : 0,
     () => use($item`envyfish egg`)
-  ),
-  new EmbezzlerFight(
-    () =>
-      get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-      have($item`backup camera`) &&
-      get<number>("_backUpUses") < 11,
-    () => (have($item`backup camera`) ? 11 - get<number>("_backUpUses") : 0),
-    (location: Location) => {
-      const realLocation = location.combatPercent >= 100 ? location : $location`Noob Cave`;
-      adventureMacro(
-        realLocation,
-        Macro.if_(
-          "!monstername Knob Goblin Embezzler",
-          Macro.skill("Back-Up to Your Last Enemy")
-        ).step(embezzlerMacro())
-      );
-    },
-    [
-      new Requirement([], {
-        forceEquip: $items`backup camera`,
-        bonusEquip: new Map([[$item`backup camera`, 5000]]),
-      }),
-    ],
-    true
   ),
   new EmbezzlerFight(
     () => false,
@@ -381,7 +391,9 @@ export function dailyFights() {
           ...fightSource.requirements,
           new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
         ]);
-        withMacro(firstChainMacro(), () => fightSource.run(prepWandererZone()));
+        withMacro(firstChainMacro(), () =>
+          fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
+        );
         set("_garbo_meatChain", true);
       }
 
@@ -399,7 +411,9 @@ export function dailyFights() {
           ...fightSource.requirements,
         ]);
         maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
-        withMacro(secondChainMacro(), () => fightSource.run(prepWandererZone()));
+        withMacro(secondChainMacro(), () =>
+          fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
+        );
         set("_garbo_weightChain", true);
       }
 
@@ -429,16 +443,16 @@ export function dailyFights() {
               }
               retrieveItem($item`pulled green taffy`);
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
-              nextFight.run($location`The Briny Deeps`);
+              nextFight.run({ location: $location`The Briny Deeps` });
             } else if (nextFight.draggable) {
               const location = prepWandererZone();
               setLocation(location);
               meatOutfit(true, nextFight.requirements);
-              nextFight.run(location);
+              nextFight.run({ location });
             } else {
               setLocation($location`Noob Cave`);
               meatOutfit(true, nextFight.requirements);
-              nextFight.run($location`Noob Cave`);
+              nextFight.run({ location: $location`Noob Cave` });
             }
           }
         });
