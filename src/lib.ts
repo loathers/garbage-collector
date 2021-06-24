@@ -344,8 +344,8 @@ const freeRuns: freeRun[] = [
 export function tryToRun() {
   const runSource = freeRuns.find((run) => run.available());
   if (runSource) {
-    runSource.prepare();
-    return runSource.macro;
+    runSource.macro.setAutoAttack();
+    return true;
   }
-  return;
+  return false;
 }

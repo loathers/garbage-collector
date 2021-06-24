@@ -20,6 +20,7 @@ import {
   useSkill,
   availableAmount,
   equip,
+  adv1,
 } from "kolmafia";
 import {
   have,
@@ -135,30 +136,24 @@ export function latte() {
         equip($slot`off-hand`, latte);
         setChoice(923, 1);
         setChoice(924, 1);
-        while (!get("latteUnlocks").includes("cajun")) {
-          const runMacro = tryToRun();
-          if (!runMacro) break;
-          adventureMacroAuto($location`the black forest`, runMacro);
+        while (!get("latteUnlocks").includes("cajun") && tryToRun()) {
+          adv1($location`the black forest`, -1, "");
         }
       }
       if (!get("latteUnlocks").includes("rawhide") && tryToRun()) {
         equip($slot`off-hand`, latte);
         setChoice(502, 2);
         setChoice(505, 2);
-        while (!get("latteUnlocks").includes("rawhide")) {
-          const runMacro = tryToRun();
-          if (!runMacro) break;
-          adventureMacroAuto($location`the spooky forest`, runMacro);
+        while (!get("latteUnlocks").includes("rawhide") && tryToRun()) {
+          adv1($location`the spooky forest`, -1, "");
         }
       }
       if (!get("latteUnlocks").includes("carrot") && tryToRun()) {
         equip($slot`off-hand`, latte);
         setChoice(502, 2);
         setChoice(505, 2);
-        while (!get("latteUnlocks").includes("carrot")) {
-          const runMacro = tryToRun();
-          if (!runMacro) break;
-          adventureMacroAuto($location`the dire warrent`, runMacro);
+        while (!get("latteUnlocks").includes("carrot") && tryToRun()) {
+          adv1($location`the dire warren`, -1, "");
         }
       }
       if (
