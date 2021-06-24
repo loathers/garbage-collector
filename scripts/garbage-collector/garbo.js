@@ -29899,9 +29899,8 @@ new FreeFight(function () {
 }, function () {
   setChoice(1324, 5); // pick fight.
 
-  if ((0,dist.get)("_questPartyFairQuest") === "unstarted") {
+  if ((0,dist.get)("_questPartyFair") === "unstarted") {
     (0,external_kolmafia_.visitUrl)("adventure.php?snarfblat=528");
-    (0,external_kolmafia_.runChoice)(["booze", "food"].includes((0,dist.get)("_questPartyFairQuest")) ? 1 : 2);
 
     if ((0,dist.get)("_questPartyFairQuest") === "food") {
       (0,external_kolmafia_.runChoice)(1);
