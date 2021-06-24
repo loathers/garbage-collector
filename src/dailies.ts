@@ -296,7 +296,8 @@ export function configureMisc() {
 
   if (
     getClanLounge()["Olympic-sized Clan crate"] !== undefined &&
-    !get("_olympicSwimmingPoolItemFound")
+    !get("_olympicSwimmingPoolItemFound") &&
+    have($item` Clan VIP Lounge key`)
   ) {
     cliExecute("swim item");
   }
