@@ -294,6 +294,14 @@ export function configureMisc() {
     useSkill($skill`Bind Lasagmbie`);
   }
 
+  if (
+    getClanLounge()["Olympic-sized Clan crate"] !== undefined &&
+    !get("_olympicSwimmingPoolItemFound") &&
+    have($item` Clan VIP Lounge key`)
+  ) {
+    cliExecute("swim item");
+  }
+
   changeMcd(10);
 }
 
