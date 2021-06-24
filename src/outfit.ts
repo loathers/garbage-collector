@@ -136,6 +136,25 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
   if (equippedAmount($item`ice nine`) > 0) {
     equip($item`unwrapped retro superhero cape`);
   }
-  if (sea && (!booleanModifier("Adventure Underwater") || !booleanModifier("Underwater Familiar")))
-    maximizeCached(["sea -tie"]);
+  if (sea) {
+    if (!booleanModifier("Adventure Underwater")) {
+      for (let airSource of waterBreathingEquipment) {
+        if (have(airSource)) {
+          equip(airSource);
+          break;
+        }
+      }
+    }
+    if (!booleanModifier("Underwater Familiar")) {
+      for (let airSource of familiarWaterBreathingEquipment) {
+        if (have(airSource)) {
+          equip(airSource);
+          break;
+        }
+      }
+    }
+  }
 }
+
+export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
+export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
