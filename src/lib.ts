@@ -285,7 +285,7 @@ export class freeRun {
   }
 }
 
-const banishesToUse = questStep("questL11Worship") > 0 ? 2 : 3;
+const banishesToUse = questStep("questL11Worship") > 0 && get("_drunkPygmyBanishes") === 0 ? 2 : 3;
 
 const freeRuns: freeRun[] = [
   new freeRun(
