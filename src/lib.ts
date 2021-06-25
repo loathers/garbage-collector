@@ -285,6 +285,8 @@ export class freeRun {
   }
 }
 
+const banishesToUse = questStep("questL11Worship") > 0 ? 2 : 3;
+
 const freeRuns: freeRun[] = [
   new freeRun(
     () => {
@@ -314,13 +316,13 @@ const freeRuns: freeRun[] = [
   ),
 
   new freeRun(
-    () => get("_snokebombUsed") < 3 && have($skill`snokebomb`),
+    () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
     () => restoreMp(50),
     Macro.skill("snokebomb")
   ),
 
   new freeRun(
-    () => get("_feelHatredUsed") < 3 && have($skill`emotionally chipped`),
+    () => get("_feelHatredUsed") < banishesToUse && have($skill`emotionally chipped`),
     () => {},
     Macro.skill("feel hatred")
   ),
