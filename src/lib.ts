@@ -346,5 +346,5 @@ const freeRuns: freeRun[] = [
 ];
 
 export function findRun() {
-  return freeRuns.find((run) => run.available);
+  return freeRuns.find((run) => run.available());
 }
