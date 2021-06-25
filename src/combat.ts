@@ -3,11 +3,13 @@ import {
   equippedAmount,
   equippedItem,
   haveSkill,
+  inMultiFight,
   itemType,
   myAdventures,
   myClass,
   myFamiliar,
   print,
+  runCombat,
   setAutoAttack,
 } from "kolmafia";
 import {
@@ -122,4 +124,5 @@ export function withMacro<T>(macro: Macro, action: () => T) {
 
 export function main(): void {
   Macro.load().submit();
+  while (inMultiFight()) runCombat();
 }

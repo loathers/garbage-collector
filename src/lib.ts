@@ -341,7 +341,7 @@ const freeRuns: freeRun[] = [
   ),
 
   new freeRun(
-    () => have($item`latte lovers member's mug`) && get("_latteBanishUsed"),
+    () => have($item`latte lovers member's mug`) && !get("_latteBanishUsed"),
     () => equip($slot`off-hand`, $item`latte lovers member's mug`),
     Macro.skill("Throw Latte on Opponent")
   ),
