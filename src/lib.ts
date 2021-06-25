@@ -2,10 +2,17 @@ import { canAdv } from "canadv.ash";
 import {
   buy,
   cliExecute,
+  equip,
+  getWorkshed,
   haveSkill,
   mallPrice,
+  maximize,
+  myFamiliar,
   myPrimestat,
+  myTurncount,
   print,
+  restoreMp,
+  retrieveItem,
   runChoice,
   toItem,
   toUrl,
@@ -16,17 +23,24 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $items,
   $location,
   $locations,
   $skill,
+  $slot,
+  adventureMacroAuto,
+  Bandersnatch,
   get,
+  getSongCount,
+  getSongLimit,
   have,
   Macro,
   property,
   set,
 } from "libram";
+import { fillAsdonMartinTo } from "./asdon";
 
 export function setChoice(adventure: number, value: number) {
   set(`choiceAdventure${adventure}`, `${value}`);
@@ -262,4 +276,87 @@ export function tryFeast(familiar: Familiar) {
     useFamiliar(familiar);
     use($item`moveable feast`);
   }
+}
+
+export class freeRun {
+  available: () => boolean;
+  prepare: () => void;
+  macro: Macro;
+
+  constructor(available: () => boolean, prepare: () => void, macro: Macro) {
+    this.available = available;
+    this.prepare = prepare;
+    this.macro = macro;
+  }
+}
+
+const banishesToUse = questStep("questL11Worship") > 0 && get("_drunkPygmyBanishes") === 0 ? 2 : 3;
+
+const freeRuns: freeRun[] = [
+  new freeRun(
+    () => {
+      if (getWorkshed() !== $item`Asdon Martin keyfob`) return false;
+      const banishes = get("banishedMonsters").split(":");
+      const bumperIndex = banishes.indexOf("spring-loaded ront bumper");
+      if (bumperIndex === -1) return true;
+      return myTurncount() - parseInt(banishes[bumperIndex + 1]) > 30;
+    },
+    () => fillAsdonMartinTo(50),
+    Macro.skill("Asdon Martin: Spring-Loaded Front Bumper")
+  ),
+
+  new freeRun(
+    () =>
+      ((have($familiar`frumious bandersnatch`) && have($effect`ode to booze`)) ||
+        getSongCount() < getSongLimit() ||
+        have($familiar`pair of stomping boots`)) &&
+      Bandersnatch.getRemainingRunaways() > 0,
+    () => {
+      maximize("familiar weight", false);
+      if (have($familiar`frumious bandersnatch`)) useFamiliar($familiar`frumious bandersnatch`);
+      else useFamiliar($familiar`pair of stomping boots`);
+      if (myFamiliar() === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+    },
+    Macro.step("runaway")
+  ),
+
+  new freeRun(
+    () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
+    () => restoreMp(50),
+    Macro.skill("snokebomb")
+  ),
+
+  new freeRun(
+    () => get("_feelHatredUsed") < banishesToUse && have($skill`emotionally chipped`),
+    () => {},
+    Macro.skill("feel hatred")
+  ),
+
+  new freeRun(
+    () => have($item`kremlin's greatest briefcase`) && get("_kgbTranquilizerDartUses") < 3,
+    () => equip($slot`acc3`, $item`kremlin's greatest briefcase`),
+    Macro.skill("KGB tranquilizer dart")
+  ),
+
+  new freeRun(
+    () => have($item`latte lovers member's mug`) && get("_latteBanishUsed"),
+    () => equip($slot`off-hand`, $item`latte lovers member's mug`),
+    Macro.skill("Throw Latte on Opponent")
+  ),
+
+  new freeRun(
+    () => have($item`Lil' Doctor™ bag`) && get("_reflexHammerUsed") < 3,
+    () => equip($slot`acc3`, $item`Lil' Doctor™ bag`),
+    Macro.skill("reflex hammer")
+  ),
+
+  new freeRun(
+    () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
+    () => equip($slot`acc3`, $item`mafia middle finger ring`),
+    Macro.skill("Show them your ring")
+  ),
+];
+
+export function findRun() {
+  return freeRuns.find((run) => run.available());
 }
