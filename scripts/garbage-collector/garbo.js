@@ -28094,7 +28094,9 @@ var freeRun = function freeRun(available, prepare, macro) {
 var banishesToUse = questStep("questL11Worship") > 0 && (0,dist.get)("_drunkPygmyBanishes") === 0 ? 2 : 3;
 var freeRuns = [new freeRun(function () {
   if ((0,external_kolmafia_.getWorkshed)() !== (0,dist.$item)(_templateObject27 || (_templateObject27 = lib_taggedTemplateLiteral(["Asdon Martin keyfob"])))) return false;
-  var banishes = (0,dist.get)("banishedMonsters").split(":");
+  var banishes = (0,dist.get)("banishedMonsters").split(":").map(function (string) {
+    return string.toLowerCase();
+  });
   var bumperIndex = banishes.indexOf("spring-loaded front bumper");
   if (bumperIndex === -1) return true;
   return (0,external_kolmafia_.myTurncount)() - parseInt(banishes[bumperIndex + 1]) > 30;
