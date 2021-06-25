@@ -100,6 +100,11 @@ const zonePotions = [
     effect: $effect`absinthe-minded`,
     potion: $item`tiny bottle of absinthe`,
   },
+  {
+    zone: "RabbitHole",
+    effect: $effect`Down the Rabbit Hole`,
+    potion: $item`"DRINK ME" potion`,
+  },
 ];
 
 export function prepWandererZone() {
@@ -196,7 +201,7 @@ export function prepWandererZone() {
 function guzzlrCheck() {
   const guzzlZone = get("guzzlrQuestLocation");
   if (!guzzlZone) return false;
-  const forbiddenZones: String[] = ["The Rabbit Hole"]; //can't stockpile these potions,
+  const forbiddenZones: String[] = [""]; //can't stockpile these potions,
   if (!get("_spookyAirportToday") && !get("spookyAirportAlways")) {
     forbiddenZones.push("Conspiracy Island");
   }
