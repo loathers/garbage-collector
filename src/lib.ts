@@ -297,7 +297,7 @@ const freeRuns: freeRun[] = [
   new freeRun(
     () => {
       if (getWorkshed() !== $item`Asdon Martin keyfob`) return false;
-      const banishes = get("banishedMonsters").split(":").map((string) => string.toLowerCase());
+      const banishes = get("banishedMonsters").split(":");
       const bumperIndex = banishes.indexOf("spring-loaded front bumper");
       if (bumperIndex === -1) return true;
       return myTurncount() - parseInt(banishes[bumperIndex + 1]) > 30;
