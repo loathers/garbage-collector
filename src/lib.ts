@@ -103,8 +103,8 @@ const zonePotions = [
   {
     zone: "RabbitHole",
     effect: $effect`Down the Rabbit Hole`,
-    potion: $item`"DRINK ME" potion`
-  }
+    potion: $item`"DRINK ME" potion`,
+  },
 ];
 
 export function prepWandererZone() {
