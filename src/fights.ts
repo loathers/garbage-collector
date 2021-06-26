@@ -34,6 +34,7 @@ import {
   setAutoAttack,
   setLocation,
   spleenLimit,
+  takeCloset,
   toInt,
   use,
   useFamiliar,
@@ -690,7 +691,7 @@ const freeFightSources = [
         putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
         adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
       } else {
-        retrieveItem($item`Bowl of Scorpions`);
+        takeCloset(1, $item`Bowl of Scorpions`) ||  retrieveItem($item`Bowl of Scorpions`);
         adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
       }
     },
