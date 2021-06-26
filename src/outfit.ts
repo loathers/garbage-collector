@@ -73,7 +73,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`buddy bjorn`, bjornChoice.meatVal * bjornChoice.probability()]
+          [$item`buddy bjorn`, bjornChoice.meatVal * bjornChoice.probability()],
         ]),
       }
     ),
@@ -133,7 +133,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`buddy bjorn`, bjornChoice.meatVal * bjornChoice.probability()]
+          [$item`buddy bjorn`, bjornChoice.meatVal * bjornChoice.probability()],
         ]),
       }
     ),
