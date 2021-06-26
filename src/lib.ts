@@ -309,8 +309,8 @@ const freeRuns: freeRun[] = [
 
   new freeRun(
     () =>
-      ((have($familiar`frumious bandersnatch`) && have($effect`ode to booze`)) ||
-        getSongCount() < getSongLimit() ||
+      ((have($familiar`frumious bandersnatch`) && (have($effect`ode to booze`)) ||
+        getSongCount() < getSongLimit()) ||
         have($familiar`pair of stomping boots`)) &&
       Bandersnatch.getRemainingRunaways() > 0,
     () => {
