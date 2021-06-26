@@ -9,6 +9,8 @@ import {
   totalTurnsPlayed,
   booleanModifier,
   cliExecute,
+  haveEquipped,
+  bjornifyFamiliar,
 } from "kolmafia";
 import {
   $class,
@@ -79,6 +81,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
     ),
   ]);
   maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+  if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
 }
 
 export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [], sea?: boolean) {
@@ -142,6 +145,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
   if (equippedAmount($item`ice nine`) > 0) {
     equip($item`unwrapped retro superhero cape`);
   }
+  if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (let airSource of waterBreathingEquipment) {
