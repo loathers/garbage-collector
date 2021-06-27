@@ -28103,7 +28103,7 @@ var freeRuns = [new freeRun(function () {
 }, function () {
   return fillAsdonMartinTo(50);
 }, dist.Macro.skill("Asdon Martin: Spring-Loaded Front Bumper")), new freeRun(function () {
-  return ((0,dist.have)((0,dist.$familiar)(_templateObject28 || (_templateObject28 = lib_taggedTemplateLiteral(["frumious bandersnatch"])))) && (0,dist.have)((0,dist.$effect)(_templateObject29 || (_templateObject29 = lib_taggedTemplateLiteral(["ode to booze"])))) || (0,dist.getSongCount)() < (0,dist.getSongLimit)() || (0,dist.have)((0,dist.$familiar)(_templateObject30 || (_templateObject30 = lib_taggedTemplateLiteral(["pair of stomping boots"]))))) && dist.Bandersnatch.getRemainingRunaways() > 0;
+  return ((0,dist.have)((0,dist.$familiar)(_templateObject28 || (_templateObject28 = lib_taggedTemplateLiteral(["frumious bandersnatch"])))) && ((0,dist.have)((0,dist.$effect)(_templateObject29 || (_templateObject29 = lib_taggedTemplateLiteral(["ode to booze"])))) || (0,dist.getSongCount)() < (0,dist.getSongLimit)()) || (0,dist.have)((0,dist.$familiar)(_templateObject30 || (_templateObject30 = lib_taggedTemplateLiteral(["pair of stomping boots"]))))) && dist.Bandersnatch.getRemainingRunaways() > 0;
 }, function () {
   (0,external_kolmafia_.maximize)("familiar weight", false);
   if ((0,dist.have)((0,dist.$familiar)(_templateObject31 || (_templateObject31 = lib_taggedTemplateLiteral(["frumious bandersnatch"]))))) (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(_templateObject32 || (_templateObject32 = lib_taggedTemplateLiteral(["frumious bandersnatch"]))));else (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(_templateObject33 || (_templateObject33 = lib_taggedTemplateLiteral(["pair of stomping boots"]))));
