@@ -298,7 +298,9 @@ const freeRuns: freeRun[] = [
     () => {
       if (getWorkshed() !== $item`Asdon Martin keyfob`) return false;
       const banishes = get("banishedMonsters").split(":");
-      const bumperIndex = banishes.map((string) => string.toLowerCase()).indexOf("spring-loaded front bumper");
+      const bumperIndex = banishes
+        .map((string) => string.toLowerCase())
+        .indexOf("spring-loaded front bumper");
       if (bumperIndex === -1) return true;
       return myTurncount() - parseInt(banishes[bumperIndex + 1]) > 30;
     },
@@ -361,8 +363,15 @@ const freeRuns: freeRun[] = [
 export function findRun() {
   return freeRuns.find((run) => run.available());
 }
-function averageValue(items: Item[]) {
-  return items.map((item) => mallPrice(item)).reduce((x, price) => x + price, 0) / items.length;
+function trueValue(...items: Item[]) {
+  return items
+    .map((item) => {
+      if (!item.discardable) {
+        return mallPrice(item) > 2 * autosellPrice(item) ? mallPrice(item) : autosellPrice(item);
+      }
+      return mallPrice(item) > 100 ? mallPrice(item) : 0;
+    })
+    .reduce((s, price) => s + price, 0) / items.length;
 }
 interface famPick {
   familiar: Familiar;
@@ -373,73 +382,73 @@ interface famPick {
 const bjornFams = [
   {
     familiar: $familiar`puck man`,
-    meatVal: mallPrice($item`yellow pixel`),
+    meatVal: trueValue($item`yellow pixel`),
     probability: () => (get("_yellowPixelDropsCrown") < 25 ? 0.25 : 0),
   },
   {
     familiar: $familiar`grimstone golem`,
-    meatVal: mallPrice($item`grimstone mask`),
+    meatVal: trueValue($item`grimstone mask`),
     probability: () => (get("_grimstoneMaskDropsCrown") === 0 ? 0.5 : 0),
   },
   { familiar: $familiar`Knob Goblin Organ Grinder`, meatVal: 30, probability: () => 1 },
   {
     familiar: $familiar`garbage fire`,
-    meatVal: mallPrice($item`burning newspaper`),
+    meatVal: trueValue($item`burning newspaper`),
     probability: () => (get("_garbageFireDropsCrown") < 3 ? 0.5 : 0),
   },
   {
     familiar: $familiar`machine elf`,
-    meatVal: averagePrice(
-      $items`abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose`
+    meatVal: trueValue(
+      ...$items`abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose`
     ),
     probability: () => (get("_abstractionDropsCrown") < 25 ? 0.2 : 0),
   },
   {
     familiar: $familiar`trick-or-treating tot`,
-    meatVal: mallPrice($item`hoarded candy wad`),
+    meatVal: trueValue($item`hoarded candy wad`),
     probability: () => (get("_hoardedCandyDropsCrown") < 3 ? 0.5 : 0),
   },
   {
     familiar: $familiar`warbear drone`,
-    meatVal: mallPrice($item`warbear whosit`),
+    meatVal: trueValue($item`warbear whosit`),
     probability: () => 1 / 4.5,
   },
   {
     familiar: $familiar`li'l xenomorph`,
-    meatVal: mallPrice($item`lunar isotope`),
+    meatVal: trueValue($item`lunar isotope`),
     probability: () => 0.05,
   },
   {
     familiar: $familiar`pottery barn owl`,
-    meatVal: mallPrice($item`volcanic ash`),
+    meatVal: trueValue($item`volcanic ash`),
     probability: () => 0.1,
   },
   {
     familiar: $familiar`grim brother`,
-    meatVal: mallPrice($item`grim fairy tale`),
+    meatVal: trueValue($item`grim fairy tale`),
     probability: () => (get("_grimFairyTaleDropsCrown") < 2 ? 1 : 0),
   },
   {
     familiar: $familiar`optimistic candle`,
-    meatVal: mallPrice($item`glob of melted wax`),
+    meatVal: trueValue($item`glob of melted wax`),
     probability: () => (get("_optimisticCandleDropsCrown") < 3 ? 1 : 0),
   },
   {
     familiar: $familiar`Adventurous Spelunker`,
-    meatVal: averagePrice(
-      $items`teflon ore, Velcro ore, Vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore`
+    meatVal: trueValue(
+      ...$items`teflon ore, Velcro ore, Vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore`
     ),
     probability: () => (get("_oreDropsCrown") < 6 ? 1 : 0),
   },
   {
     familiar: $familiar`Twitching Space Critter`,
-    meatVal: mallPrice($item`space beast fur`),
+    meatVal: trueValue($item`space beast fur`),
     probability: () => (get("_spaceFurDropsCrown") < 1 ? 1 : 0),
   },
   {
     familiar: $familiar`party mouse`,
-    meatVal: averagePrice(
-      Item.all().filter(
+    meatVal: trueValue(
+      ...Item.all().filter(
         (booze) =>
           ["decent", "good"].includes(booze.quality) &&
           booze.inebriety > 0 &&
@@ -454,12 +463,12 @@ const bjornFams = [
   },
   {
     familiar: $familiar`yule hound`,
-    meatVal: mallPrice($item`candy cane`),
+    meatVal: trueValue($item`candy cane`),
     probability: () => 1,
   },
   {
     familiar: $familiar`gluttonous green ghost`,
-    meatVal: averagePrice($items`bean burrito, enchanted bean burrito, jumping bean burrito`),
+    meatVal: trueValue(...$items`bean burrito, enchanted bean burrito, jumping bean burrito`),
     probability: () => 1,
   },
   {
@@ -469,24 +478,24 @@ const bjornFams = [
   },
   {
     familiar: $familiar`Hunchbacked Minion`,
-    meatVal: averagePrice($items`176,163,163,163,163`),
+    meatVal: trueValue(...$items`176,163,163,163,163`),
     probability: () => 1,
   },
   {
     familiar: $familiar`reanimated reanimator`,
-    meatVal: averagePrice($items`hot wing,broken skull`),
+    meatVal: trueValue(...$items`hot wing,broken skull`),
     probability: () => 1,
   },
   {
     familiar: $familiar`attention-deficit demon`,
-    meatVal: averagePrice(
-      $items`chorizo brownies,white chocolate and tomato pizza,carob chunk noodles`
+    meatVal: trueValue(
+      ...$items`chorizo brownies,white chocolate and tomato pizza,carob chunk noodles`
     ),
     probability: () => 1,
   },
   {
     familiar: $familiar`piano cat`,
-    meatVal: averagePrice($items`beertini,papaya slung,salty slug,tomato daiquiri`),
+    meatVal: trueValue(...$items`beertini,papaya slung,salty slug,tomato daiquiri`),
     probability: () => 1,
   },
   {
@@ -496,57 +505,57 @@ const bjornFams = [
   },
   {
     familiar: $familiar`robot reindeer`,
-    meatVal: averageValue($items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
+    meatVal: trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
     probability: () => 0.3,
   },
   {
     familiar: $familiar`stocking mimic`,
-    meatVal: averageValue($items`540,617,906,908,909`),
+    meatVal: trueValue(...$items`540,617,906,908,909`),
     probability: () => 0.3,
   },
   {
     familiar: $familiar`BRICKO chick`,
-    meatVal: autosellPrice($item`BRICKO brick`),
+    meatVal: trueValue($item`BRICKO brick`),
     probability: () => 1,
   },
   {
     familiar: $familiar`Cotton Candy Carnie`,
-    meatVal: mallPrice($item`cotton candy pinch`),
+    meatVal: trueValue($item`cotton candy pinch`),
     probability: () => 1,
   },
   {
     familiar: $familiar`untamed turtle`,
-    meatVal: averageValue($items`snailmail bits,turtlemail bits,turtle wax`),
+    meatVal: trueValue(...$items`snailmail bits,turtlemail bits,turtle wax`),
     probability: () => 0.35,
   },
   {
     familiar: $familiar`astral badger`,
-    meatVal: 2 * averageValue($items`spooky mushroom, knob mushroom, knoll mushroom`),
+    meatVal: 2 * trueValue(...$items`spooky mushroom, knob mushroom, knoll mushroom`),
     probability: () => 1,
   },
   {
     familiar: $familiar`green pixie`,
-    meatVal: mallPrice($item`bottle of tequila`),
+    meatVal: trueValue($item`bottle of tequila`),
     probability: () => 0.2,
   },
   {
     familiar: $familiar`angry goat`,
-    meatVal: autosellPrice($item`goat cheese pizza`),
+    meatVal: trueValue($item`goat cheese pizza`),
     probability: () => 1,
   },
   {
     familiar: $familiar`adorable seal larva`,
-    meatVal: averageValue($items`1445,1446,1447,1448,1449`),
+    meatVal: trueValue(...$items`1445,1446,1447,1448,1449`),
     probability: () => 0.35,
   },
   {
     familiar: $familiar`ancient yuletide troll`,
-    meatVal: averageValue($items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
+    meatVal: trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
     probability: () => 0.3,
   },
   {
     familiar: $familiar`sweet nutcracker`,
-    meatVal: averageValue($items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
+    meatVal: trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
     probability: () => 0.3,
   },
 ];
