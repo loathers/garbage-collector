@@ -6,6 +6,7 @@ import {
   booleanModifier,
   chatPrivate,
   cliExecute,
+  closetAmount,
   eat,
   equip,
   getCampground,
@@ -691,7 +692,9 @@ const freeFightSources = [
         putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
         adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
       } else {
-        takeCloset(1, $item`Bowl of Scorpions`) || retrieveItem($item`Bowl of Scorpions`);
+        if (closetAmount($item`Bowl of Scorpions`) > 0)
+          takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
+        else retrieveItem($item`Bowl of Scorpions`);
         adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
       }
     },
