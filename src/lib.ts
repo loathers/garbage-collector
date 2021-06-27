@@ -9,11 +9,9 @@ import {
   mallPrice,
   maximize,
   myFamiliar,
-  myPrimestat,
   myTurncount,
   print,
   restoreMp,
-  retrieveItem,
   runChoice,
   toItem,
   toUrl,
@@ -31,7 +29,6 @@ import {
   $locations,
   $skill,
   $slot,
-  adventureMacroAuto,
   Bandersnatch,
   get,
   getSongCount,
@@ -42,6 +39,7 @@ import {
   set,
 } from "libram";
 import { fillAsdonMartinTo } from "./asdon";
+import { baseMeat } from "./mood";
 
 export function setChoice(adventure: number, value: number) {
   set(`choiceAdventure${adventure}`, `${value}`);
@@ -375,13 +373,26 @@ function trueValue(...items: Item[]) {
       .reduce((s, price) => s + price, 0) / items.length
   );
 }
-interface famPick {
+
+enum BjornModifierType {
+  MEAT,
+  ITEM,
+  FMWT,
+}
+
+type BjornModifier = {
+  type: BjornModifierType;
+  modifier: number;
+};
+
+type BjornedFamiliar = {
   familiar: Familiar;
   meatVal: number;
   probability: () => number;
-}
+  modifier?: BjornModifier;
+};
 
-const bjornFams = [
+const bjornFams: BjornedFamiliar[] = [
   {
     familiar: $familiar`puck man`,
     meatVal: trueValue($item`yellow pixel`),
@@ -562,9 +573,33 @@ const bjornFams = [
   },
 ];
 
-export function pickBjorn() {
+export enum PickBjornMode {
+  FREE,
+  EMBEZZLER,
+  BARF,
+}
+
+export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
+  const additionalValue = (familiar: BjornedFamiliar) => {
+    if (!familiar.modifier) return 0;
+    const meatVal =
+      mode === PickBjornMode.FREE ? 0 : baseMeat + mode === PickBjornMode.EMBEZZLER ? 750 : 0;
+    const itemVal = PickBjornMode.BARF ? 72 : 0;
+    if (familiar.modifier.type === BjornModifierType.MEAT)
+      return familiar.modifier.modifier * meatVal;
+    if (familiar.modifier.type === BjornModifierType.ITEM)
+      return familiar.modifier.modifier * itemVal;
+    if (familiar.modifier.type === BjornModifierType.FMWT)
+      return familiar.modifier.modifier * meatVal * 2; //horrible hack, improve
+    return 0;
+  };
   return bjornFams
     .filter((bjornFam) => have(bjornFam.familiar))
     .filter((bjornFam) => myFamiliar() !== bjornFam.familiar)
-    .sort((b, a) => a.meatVal * a.probability() - b.meatVal * b.probability())[0];
+    .sort(
+      (a, b) =>
+        a.meatVal * a.probability() +
+        additionalValue(a) -
+        (b.meatVal * b.probability() + additionalValue(b))
+    )[0];
 }
