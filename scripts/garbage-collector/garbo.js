@@ -28119,7 +28119,7 @@ var freeRuns = [new freeRun(function () {
 }, function () {
   return (0,external_kolmafia_.equip)((0,dist.$slot)(_templateObject39 || (_templateObject39 = lib_taggedTemplateLiteral(["acc3"]))), (0,dist.$item)(_templateObject40 || (_templateObject40 = lib_taggedTemplateLiteral(["kremlin's greatest briefcase"]))));
 }, dist.Macro.skill("KGB tranquilizer dart")), new freeRun(function () {
-  return (0,dist.have)((0,dist.$item)(_templateObject41 || (_templateObject41 = lib_taggedTemplateLiteral(["latte lovers member's mug"])))) && (0,dist.get)("_latteBanishUsed");
+  return (0,dist.have)((0,dist.$item)(_templateObject41 || (_templateObject41 = lib_taggedTemplateLiteral(["latte lovers member's mug"])))) && !(0,dist.get)("_latteBanishUsed");
 }, function () {
   return (0,external_kolmafia_.equip)((0,dist.$slot)(_templateObject42 || (_templateObject42 = lib_taggedTemplateLiteral(["off-hand"]))), (0,dist.$item)(_templateObject43 || (_templateObject43 = lib_taggedTemplateLiteral(["latte lovers member's mug"]))));
 }, dist.Macro.skill("Throw Latte on Opponent")), new freeRun(function () {
@@ -28543,7 +28543,6 @@ function latte() {
   if ((0,dist.have)(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
     if ((0,external_kolmafia_.numericModifier)(latte, "Familiar Weight") !== 5 || (0,external_kolmafia_.numericModifier)(latte, "Meat Drop") !== 40) {
       if (!(0,dist.get)("latteUnlocks").includes("cajun") && findRun()) {
-        (0,external_kolmafia_.equip)((0,dist.$slot)(dailies_templateObject17 || (dailies_templateObject17 = dailies_taggedTemplateLiteral(["off-hand"]))), latte);
         setChoice(923, 1);
         setChoice(924, 1);
 
@@ -28551,12 +28550,12 @@ function latte() {
           var runSource = findRun();
           if (!runSource) break;
           runSource.prepare();
+          (0,external_kolmafia_.equip)((0,dist.$slot)(dailies_templateObject17 || (dailies_templateObject17 = dailies_taggedTemplateLiteral(["off-hand"]))), latte);
           (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject18 || (dailies_templateObject18 = dailies_taggedTemplateLiteral(["the black forest"]))), runSource.macro);
         }
       }
 
       if (!(0,dist.get)("latteUnlocks").includes("rawhide") && findRun()) {
-        (0,external_kolmafia_.equip)((0,dist.$slot)(dailies_templateObject19 || (dailies_templateObject19 = dailies_taggedTemplateLiteral(["off-hand"]))), latte);
         setChoice(502, 2);
         setChoice(505, 2);
 
@@ -28567,12 +28566,12 @@ function latte() {
 
           _runSource.prepare();
 
+          (0,external_kolmafia_.equip)((0,dist.$slot)(dailies_templateObject19 || (dailies_templateObject19 = dailies_taggedTemplateLiteral(["off-hand"]))), latte);
           (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject20 || (dailies_templateObject20 = dailies_taggedTemplateLiteral(["the spooky forest"]))), _runSource.macro);
         }
       }
 
       if (!(0,dist.get)("latteUnlocks").includes("carrot") && findRun()) {
-        (0,external_kolmafia_.equip)((0,dist.$slot)(dailies_templateObject21 || (dailies_templateObject21 = dailies_taggedTemplateLiteral(["off-hand"]))), latte);
         setChoice(502, 2);
         setChoice(505, 2);
 
@@ -28583,6 +28582,7 @@ function latte() {
 
           _runSource2.prepare();
 
+          (0,external_kolmafia_.equip)((0,dist.$slot)(dailies_templateObject21 || (dailies_templateObject21 = dailies_taggedTemplateLiteral(["off-hand"]))), latte);
           (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject22 || (dailies_templateObject22 = dailies_taggedTemplateLiteral(["the dire warren"]))), _runSource2.macro);
         }
       }
