@@ -554,5 +554,6 @@ const bjornFams = [
 export function pickBjorn() {
   return bjornFams
     .filter((bjornFam) => have(bjornFam.familiar))
+    .filter((bjornFam) => myFamiliar() !== bjornFam.familiar)
     .sort((a, b) => a.meatVal * a.probability() - b.meatVal * b.probability())[0];
 }
