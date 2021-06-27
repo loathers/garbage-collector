@@ -531,7 +531,7 @@ const bjornFams = [
   },
   {
     familiar: $familiar`angry goat`,
-    meatVal: mallPrice($item`goat cheese pizza`),
+    meatVal: autosellPrice($item`goat cheese pizza`),
     probability: () => 1,
   },
   {
@@ -555,5 +555,5 @@ export function pickBjorn() {
   return bjornFams
     .filter((bjornFam) => have(bjornFam.familiar))
     .filter((bjornFam) => myFamiliar() !== bjornFam.familiar)
-    .sort((a, b) => a.meatVal * a.probability() - b.meatVal * b.probability())[0];
+    .sort((b, a) => a.meatVal * a.probability() - b.meatVal * b.probability())[0];
 }
