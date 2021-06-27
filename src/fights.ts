@@ -12,7 +12,6 @@ import {
   getCampground,
   getCounters,
   handlingChoice,
-  inMultiFight,
   itemAmount,
   mallPrice,
   myAdventures,
@@ -355,7 +354,6 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
         );
         visitUrl("main.php", false);
         runCombat();
-        while (inMultiFight()) runCombat();
       }
     );
   }
