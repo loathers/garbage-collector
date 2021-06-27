@@ -403,7 +403,24 @@ const bjornFams: BjornedFamiliar[] = [
     meatVal: trueValue($item`grimstone mask`),
     probability: () => (get("_grimstoneMaskDropsCrown") === 0 ? 0.5 : 0),
   },
-  { familiar: $familiar`Knob Goblin Organ Grinder`, meatVal: 30, probability: () => 1 },
+  {
+    familiar: $familiar`Knob Goblin Organ Grinder`,
+    meatVal: 30,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 25,
+    },
+  },
+  {
+    familiar: $familiar`Happy Medium`,
+    meatVal: 30,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 25,
+    },
+  },
   {
     familiar: $familiar`garbage fire`,
     meatVal: trueValue($item`burning newspaper`),
@@ -430,6 +447,10 @@ const bjornFams: BjornedFamiliar[] = [
     familiar: $familiar`li'l xenomorph`,
     meatVal: trueValue($item`lunar isotope`),
     probability: () => 0.05,
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 15,
+    },
   },
   {
     familiar: $familiar`pottery barn owl`,
@@ -445,6 +466,10 @@ const bjornFams: BjornedFamiliar[] = [
     familiar: $familiar`optimistic candle`,
     meatVal: trueValue($item`glob of melted wax`),
     probability: () => (get("_optimisticCandleDropsCrown") < 3 ? 1 : 0),
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 15,
+    },
   },
   {
     familiar: $familiar`Adventurous Spelunker`,
@@ -452,6 +477,10 @@ const bjornFams: BjornedFamiliar[] = [
       ...$items`teflon ore, Velcro ore, Vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore`
     ),
     probability: () => (get("_oreDropsCrown") < 6 ? 1 : 0),
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 15,
+    },
   },
   {
     familiar: $familiar`Twitching Space Critter`,
@@ -488,6 +517,19 @@ const bjornFams: BjornedFamiliar[] = [
     familiar: $familiar`Reassembled Blackbird`,
     meatVal: mallPrice($item`blackberry`),
     probability: () => 1,
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 10,
+    },
+  },
+  {
+    familiar: $familiar`Reconstituted Crow`,
+    meatVal: mallPrice($item`blackberry`),
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 10,
+    },
   },
   {
     familiar: $familiar`Hunchbacked Minion`,
@@ -505,16 +547,28 @@ const bjornFams: BjornedFamiliar[] = [
       ...$items`chorizo brownies,white chocolate and tomato pizza,carob chunk noodles`
     ),
     probability: () => 1,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
   },
   {
     familiar: $familiar`piano cat`,
     meatVal: trueValue(...$items`beertini,papaya slung,salty slug,tomato daiquiri`),
     probability: () => 1,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
   },
   {
     familiar: $familiar`golden monkey`,
     meatVal: 100,
     probability: () => 0.5,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 25,
+    },
   },
   {
     familiar: $familiar`robot reindeer`,
@@ -571,6 +625,159 @@ const bjornFams: BjornedFamiliar[] = [
     meatVal: trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
     probability: () => 0.3,
   },
+  {
+    familiar: $familiar`casagnova gnome`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`coffee pixie`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`dancing frog`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`grouper groupie`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`hand turkey`,
+    meatVal: 30,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`hippo ballerina`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`jitterbug`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`leprechaun`,
+    meatVal: 30,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`obtuse angel`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`psychadelic bear`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`robortender`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 20,
+    },
+  },
+  {
+    familiar: $familiar`ghost of crimbo commerce`,
+    meatVal: 30,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 25,
+    },
+  },
+  {
+    familiar: $familiar`hobo monkey`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.MEAT,
+      modifier: 25,
+    },
+  },
+  {
+    familiar: $familiar`rockin' robin`,
+    meatVal: 60,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 15,
+    },
+  },
+  {
+    familiar: $familiar`feral kobold`,
+    meatVal: 30,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 15,
+    },
+  },
+  {
+    familiar: $familiar`oily woim`,
+    meatVal: 30,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 10,
+    },
+  },
+  {
+    familiar: $familiar`cat burglar`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 10,
+    },
+  },
 ];
 
 export enum PickBjornMode {
@@ -594,8 +801,7 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
     return 0;
   };
   return bjornFams
-    .filter((bjornFam) => have(bjornFam.familiar))
-    .filter((bjornFam) => myFamiliar() !== bjornFam.familiar)
+    .filter((bjornFam) => have(bjornFam.familiar) && myFamiliar() !== bjornFam.familiar)
     .sort(
       (a, b) =>
         a.meatVal * a.probability() +
