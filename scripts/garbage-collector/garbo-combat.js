@@ -27765,6 +27765,10 @@ function withMacro(macro, action) {
 }
 function main() {
   Macro.load().submit();
+
+  while ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inMultiFight)()) {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.runCombat)();
+  }
 }
 
 /***/ }),

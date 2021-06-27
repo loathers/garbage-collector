@@ -27764,6 +27764,10 @@ function withMacro(macro, action) {
 }
 function main() {
   Macro.load().submit();
+
+  while (inMultiFight()) {
+    runCombat();
+  }
 }
 
 /***/ }),
@@ -29661,10 +29665,6 @@ function getEmbezzlerFight() {
       (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ", true, true);
       (0,external_kolmafia_.visitUrl)("main.php", false);
       (0,external_kolmafia_.runCombat)();
-
-      while ((0,external_kolmafia_.inMultiFight)()) {
-        (0,external_kolmafia_.runCombat)();
-      }
     });
   }
 
