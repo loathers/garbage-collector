@@ -23,7 +23,7 @@ import {
   maximizeCached,
   MaximizeOptions,
 } from "libram";
-import { pickBjorn } from "./lib";
+import { pickBjorn, PickBjornMode } from "./lib";
 import { baseMeat } from "./mood";
 
 export class Requirement {
@@ -64,7 +64,7 @@ export class Requirement {
 }
 
 export function freeFightOutfit(requirements: Requirement[] = []) {
-  const bjornChoice = pickBjorn();
+  const bjornChoice = pickBjorn(PickBjornMode.FREE);
   const compiledRequirements = Requirement.merge([
     ...requirements,
     new Requirement(
@@ -87,7 +87,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
 export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [], sea?: boolean) {
   const forceEquip = [];
   const additionalRequirements = [];
-  const bjornChoice = pickBjorn();
+  const bjornChoice = pickBjorn(embezzlerUp ? PickBjornMode.EMBEZZLER : PickBjornMode.BARF);
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
