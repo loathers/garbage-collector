@@ -458,7 +458,7 @@ const bjornFams = [
     probability: () => 1,
   },
   {
-    familiar: $familiar`gluttinous green ghost`,
+    familiar: $familiar`gluttonous green ghost`,
     meatVal: averagePrice($items`bean burrito, enchanted bean burrito, jumping bean burrito`),
     probability: () => 1,
   },
@@ -515,7 +515,7 @@ const bjornFams = [
     probability: () => 1,
   },
   {
-    familiar: $familiar`unnamed turtle`,
+    familiar: $familiar`untamed turtle`,
     meatVal: averageValue($items`snailmail bits,turtlemail bits,turtle wax`),
     probability: () => 0.35,
   },
