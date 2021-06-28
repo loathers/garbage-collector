@@ -365,15 +365,17 @@ function startDigitize() {
     getCounters("Digitize Monster", 0, 100).trim() === "" &&
     get("_sourceTerminalDigitizeUses") !== 0
   ) {
-    const run =
-      findRun() ||
-      new freeRun(
-        () => retrieveItem($item`louder than bomb`),
-        () => retrieveItem($item`louder than bomb`),
-        Macro.item("louder than bomb")
-      );
-    run.prepare();
-    adventureMacro($location`Noob Cave`, run.macro);
+    do {
+      const run =
+        findRun() ||
+        new freeRun(
+          () => retrieveItem($item`louder than bomb`),
+          () => retrieveItem($item`louder than bomb`),
+          Macro.item("louder than bomb")
+        );
+      run.prepare();
+      adventureMacro($location`Noob Cave`, run.macro);
+    } while (get("lastCopyableMonster") === $monster`government agent`);
   }
 }
 
