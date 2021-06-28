@@ -28508,7 +28508,7 @@ function voterSetup() {
   var monsterVote = votingMonsterPriority.indexOf((0,dist.get)("_voteMonster1")) < votingMonsterPriority.indexOf((0,dist.get)("_voteMonster2")) ? 1 : 2;
   var voteLocalPriorityArr = [initPriority.get((0,dist.get)("_voteLocal1")) || (0,dist.get)("_voteLocal1").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal2")) || (0,dist.get)("_voteLocal2").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal3")) || (0,dist.get)("_voteLocal3").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal4")) || (0,dist.get)("_voteLocal4").indexOf("-") === -1 ? 1 : -1];
   var bestVotes = voteLocalPriorityArr.sort(function (a, b) {
-    return a - b;
+    return b - a;
   });
   var firstPriority = bestVotes[0];
   var secondPriority = bestVotes[1];
