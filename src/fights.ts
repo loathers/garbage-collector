@@ -800,6 +800,7 @@ const freeFightSources = [
           Macro.trySkill("Portscan").meatKill()
         )
       );
+      if (have($item`Packet of tall grass seeds`)) use($item`Packet of tall grass seeds`);
     }
   ),
 
