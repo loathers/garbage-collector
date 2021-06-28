@@ -10,6 +10,7 @@ import {
   maximize,
   myFamiliar,
   myTurncount,
+  numericModifier,
   print,
   restoreMp,
   runChoice,
@@ -39,6 +40,7 @@ import {
   set,
 } from "libram";
 import { fillAsdonMartinTo } from "./asdon";
+import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
 
 export function setChoice(adventure: number, value: number) {
@@ -784,8 +786,8 @@ const bjornFams: BjornedFamiliar[] = [
     probability: () => 1,
     modifier: {
       type: BjornModifierType.FMWT,
-      modifier: 5
-    }
+      modifier: 5,
+    },
   },
   {
     familiar: $familiar`Gelatinous Cubeling`,
@@ -793,9 +795,9 @@ const bjornFams: BjornedFamiliar[] = [
     probability: () => 0,
     modifier: {
       type: BjornModifierType.FMWT,
-      modifier: 5
-    }
-  }
+      modifier: 5,
+    },
+  },
 ];
 
 export enum PickBjornMode {
@@ -814,8 +816,16 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
       return (familiar.modifier.modifier * meatVal) / 100;
     if (familiar.modifier.type === BjornModifierType.ITEM)
       return (familiar.modifier.modifier * itemVal) / 100;
-    if (familiar.modifier.type === BjornModifierType.FMWT)
-      return (familiar.modifier.modifier * meatVal * 2) / 100; //horrible hack, improve
+    if (familiar.modifier.type === BjornModifierType.FMWT) {
+      const lepMultiplier = numericModifier(meatFamiliar(), "Leprechaun", 1, Item.get("none"));
+      const fairyMultiplier = numericModifier(meatFamiliar(), "Fairy", 1, Item.get("none"));
+      return (
+        (meatVal * (10 * lepMultiplier + (75 * Math.sqrt(lepMultiplier)) / Math.sqrt(245)) +
+          itemVal *
+            (5 * fairyMultiplier + (5 * Math.sqrt(55 * fairyMultiplier)) / (2 * Math.sqrt(60)))) /
+        100
+      );
+    }
     return 0;
   };
   return bjornFams
