@@ -778,6 +778,24 @@ const bjornFams: BjornedFamiliar[] = [
       modifier: 10,
     },
   },
+  {
+    familiar: $familiar`misshapen animal skeleton`,
+    meatVal: 30,
+    probability: () => 1,
+    modifier: {
+      type: BjornModifierType.FMWT,
+      modifier: 5
+    }
+  },
+  {
+    familiar: $familiar`Gelatinous Cubeling`,
+    meatVal: 0,
+    probability: () => 0,
+    modifier: {
+      type: BjornModifierType.FMWT,
+      modifier: 5
+    }
+  }
 ];
 
 export enum PickBjornMode {
