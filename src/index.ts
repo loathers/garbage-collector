@@ -32,6 +32,7 @@ import {
   adventureMacroAuto,
   get,
   have,
+  set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
   SourceTerminal,
@@ -292,6 +293,7 @@ export function main(argString = "") {
   } finally {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
+    set("choiceAdventure1412", "");
     if (questStep("_questPartyFair") > 0) {
       const partyFairInfo = get("_questPartyFairProgress").split(" ");
       print(
