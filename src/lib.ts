@@ -365,7 +365,7 @@ function trueValue(...items: Item[]) {
   return (
     items
       .map((item) => {
-        if (!item.discardable) {
+        if (item.discardable) {
           return mallPrice(item) > 2 * autosellPrice(item) ? mallPrice(item) : autosellPrice(item);
         }
         return mallPrice(item) > 100 ? mallPrice(item) : 0;
