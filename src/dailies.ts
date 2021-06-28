@@ -407,7 +407,7 @@ const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Cha
 export function pickTea() {
   if (!getCampground()["potted tea tree"] || get("_pottedTeaTreeUsed")) return;
   const bestTea = teas.sort((a, b) => trueValue(b) - trueValue(a))[0];
-  const shakeVal = trueValue(...teas);
+  const shakeVal = 3 * trueValue(...teas);
   const teaAction = shakeVal > trueValue(bestTea) ? "shake" : bestTea.name;
   cliExecute(`teatree ${teaAction}`);
 }
