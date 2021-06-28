@@ -793,17 +793,17 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
       mode === PickBjornMode.FREE ? 0 : baseMeat + mode === PickBjornMode.EMBEZZLER ? 750 : 0;
     const itemVal = PickBjornMode.BARF ? 72 : 0;
     if (familiar.modifier.type === BjornModifierType.MEAT)
-      return familiar.modifier.modifier * meatVal;
+      return (familiar.modifier.modifier * meatVal) / 100;
     if (familiar.modifier.type === BjornModifierType.ITEM)
-      return familiar.modifier.modifier * itemVal;
+      return (familiar.modifier.modifier * itemVal) / 100;
     if (familiar.modifier.type === BjornModifierType.FMWT)
-      return familiar.modifier.modifier * meatVal * 2; //horrible hack, improve
+      return (familiar.modifier.modifier * meatVal * 2) / 100; //horrible hack, improve
     return 0;
   };
   return bjornFams
     .filter((bjornFam) => have(bjornFam.familiar) && myFamiliar() !== bjornFam.familiar)
     .sort(
-      (a, b) =>
+      (b, a) =>
         a.meatVal * a.probability() +
         additionalValue(a) -
         (b.meatVal * b.probability() + additionalValue(b))
