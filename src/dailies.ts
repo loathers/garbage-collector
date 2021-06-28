@@ -41,7 +41,7 @@ import {
   adventureMacro,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { questStep, ensureEffect, setChoice, tryFeast, findRun } from "./lib";
+import { questStep, ensureEffect, setChoice, tryFeast, findRun, trueValue } from "./lib";
 import { withStash } from "./stash";
 
 export function voterSetup() {
@@ -400,4 +400,12 @@ export function gin() {
       cliExecute("farfuture drink");
     }
   }
+}
+
+const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi Tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, Cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
+export function pickTea() {
+  const bestTea = teas.sort((a, b) => trueValue(b) - trueValue(a))[0];
+  const shakeVal = trueValue(...teas);
+  const teaAction = shakeVal > trueValue(bestTea) ? "shake" : bestTea.name;
+  cliExecute(`teatree ${teaAction}`);
 }
