@@ -707,7 +707,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`psychadelic bear`,
+    familiar: $familiar`psychedelic bear`,
     meatVal: 0,
     probability: () => 0,
     modifier: {
