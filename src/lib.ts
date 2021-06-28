@@ -134,7 +134,7 @@ export function prepWandererZone() {
       (get("guzzlrPlatinumDeliveries") < 30 ||
         (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
     ) {
-     setChoice(1412, 4);
+      setChoice(1412, 4);
       use(1, $item`guzzlr tablet`);
     } else if (
       get("_guzzlrGoldDeliveries") < 3 &&
@@ -144,7 +144,7 @@ export function prepWandererZone() {
       setChoice(1412, 3);
       use(1, $item`guzzlr tablet`);
     } else {
-     setChoice(1412, 2);
+      setChoice(1412, 2);
       use(1, $item`guzzlr tablet`);
     }
   }
@@ -162,17 +162,17 @@ export function prepWandererZone() {
       (get("guzzlrPlatinumDeliveries") < 30 ||
         (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
     ) {
-     setChoice(1412, 4);
+      setChoice(1412, 4);
       use(1, $item`guzzlr tablet`);
     } else if (
       get("_guzzlrGoldDeliveries") < 3 &&
       get("guzzlrBronzeDeliveries") >= 5 &&
       (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
     ) {
-     setChoice(1412, 3);
+      setChoice(1412, 3);
       use(1, $item`guzzlr tablet`);
     } else {
-     setChoice(1412, 2);
+      setChoice(1412, 2);
       use(1, $item`guzzlr tablet`);
     }
   }
