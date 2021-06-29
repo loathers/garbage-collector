@@ -850,4 +850,25 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
         additionalValue(a) -
         (b.meatVal() * b.probability() + additionalValue(b))
     )[0];
+type Property = {
+  name: string;
+  value: any;
+}
+
+export function withProperties(properties: Property[], functionToRun: () => void) {
+  const propertiesToSetBack = properties.map((property) => ({name: property.name, value: get(property.name)}))
+  for (const property of properties) {
+     set(property.name, property.value)
+  }
+  try {
+    functionToRun()
+  } finally {
+    for (const property of propertiesToSetBack ) {
+       set(property.name, property.value)
+    }
+  }
+}
+
+export function withChoice(choiceVals: Map<number, number>, functionToRun: () => void) {
+
 }
