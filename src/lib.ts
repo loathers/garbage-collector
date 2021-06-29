@@ -363,7 +363,8 @@ const freeRuns: freeRun[] = [
 export function findRun() {
   return freeRuns.find((run) => run.available());
 }
-function trueValue(...items: Item[]) {
+
+export function trueValue(...items: Item[]) {
   return (
     items
       .map((item) => {
