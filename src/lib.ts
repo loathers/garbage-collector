@@ -43,6 +43,10 @@ import { fillAsdonMartinTo } from "./asdon";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
 
+export function setChoice(adventure: number, value: number) {
+  set(`choiceAdventure${adventure}`, `${value}`);
+}
+
 export function ensureEffect(effect: Effect) {
   if (!have(effect)) cliExecute(effect.default);
 }
@@ -245,8 +249,8 @@ function dropGuzzlrQuest() {
   print("We hate this guzzlr quest!", "blue");
   withProperties([{ name: "choiceAdventure1412", value: "" }], () => {
     visitUrl("inventory.php?tap=guzzlr", false);
-  runChoice(1);
-  runChoice(5);
+    runChoice(1);
+    runChoice(5);
   });
 }
 
