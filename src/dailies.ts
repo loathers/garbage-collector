@@ -42,7 +42,7 @@ import {
   adventureMacro,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { questStep, ensureEffect, setChoice, tryFeast, findRun, trueValue, withChoice } from "./lib";
+import { questStep, ensureEffect, tryFeast, findRun, trueValue, withChoice } from "./lib";
 import { withStash } from "./stash";
 
 export function voterSetup() {
