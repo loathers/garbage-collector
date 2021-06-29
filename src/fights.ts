@@ -156,9 +156,12 @@ const firstChainMacro = () =>
 const secondChainMacro = () =>
   Macro.if_(
     "monstername Knob Goblin Embezzler",
-    Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
-      .trySkill("Lecture on Relativity")
-      .meatKill()
+    Macro.externalIf(
+      myFamiliar() === $familiar`pocket professor`,
+      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower")).trySkill(
+        "Lecture on Relativity"
+      )
+    ).meatKill()
   ).abort();
 
 const embezzlerMacro = () =>
