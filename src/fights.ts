@@ -9,6 +9,7 @@ import {
   closetAmount,
   eat,
   equip,
+  familiarWeight,
   getCampground,
   getCounters,
   handlingChoice,
@@ -17,6 +18,7 @@ import {
   myAdventures,
   myAscensions,
   myClass,
+  myFamiliar,
   myHash,
   myHp,
   myMaxhp,
@@ -42,6 +44,7 @@ import {
   useSkill,
   visitUrl,
   wait,
+  weightAdjustment,
 } from "kolmafia";
 import {
   $class,
@@ -393,6 +396,13 @@ export function dailyFights() {
           ...fightSource.requirements,
           new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
         ]);
+        if (
+          get("_pocketProfessorLectures") <
+          2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
+        ) {
+          useFamiliar(meatFamiliar());
+          meatOutfit(true, fightSource.requirements);
+        }
         withMacro(firstChainMacro(), () =>
           fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
         );
@@ -413,6 +423,13 @@ export function dailyFights() {
           ...fightSource.requirements,
         ]);
         maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
+        if (
+          get("_pocketProfessorLectures") <
+          2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
+        ) {
+          useFamiliar(meatFamiliar());
+          meatOutfit(true, fightSource.requirements);
+        }
         withMacro(secondChainMacro(), () =>
           fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
         );
