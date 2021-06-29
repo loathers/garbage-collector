@@ -1,5 +1,6 @@
 import { canAdv } from "canadv.ash";
 import {
+  autosellPrice,
   buy,
   cliExecute,
   equip,
@@ -361,4 +362,17 @@ const freeRuns: freeRun[] = [
 
 export function findRun() {
   return freeRuns.find((run) => run.available());
+}
+
+export function trueValue(...items: Item[]) {
+  return (
+    items
+      .map((item) => {
+        if (item.discardable) {
+          return mallPrice(item) > 2 * autosellPrice(item) ? mallPrice(item) : autosellPrice(item);
+        }
+        return mallPrice(item) > 100 ? mallPrice(item) : 0;
+      })
+      .reduce((s, price) => s + price, 0) / items.length
+  );
 }

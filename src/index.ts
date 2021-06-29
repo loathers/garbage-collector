@@ -45,6 +45,7 @@ import {
   gin,
   horse,
   latte,
+  pickTea,
   prepFamiliars,
   volcanoDailies,
   voterSetup,
@@ -93,6 +94,7 @@ function dailySetup() {
   volcanoDailies();
   cheat();
   gin();
+  pickTea();
 
   retrieveItem($item`Half a Purse`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
