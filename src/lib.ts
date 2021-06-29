@@ -853,22 +853,33 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
 type Property = {
   name: string;
   value: any;
-}
+};
 
 export function withProperties(properties: Property[], functionToRun: () => void) {
-  const propertiesToSetBack = properties.map((property) => ({name: property.name, value: get(property.name)}))
+  const propertiesToSetBack = properties.map((property) => ({
+    name: property.name,
+    value: get(property.name),
+  }));
   for (const property of properties) {
-     set(property.name, property.value)
+    set(property.name, property.value);
   }
   try {
-    functionToRun()
+    functionToRun();
   } finally {
-    for (const property of propertiesToSetBack ) {
-       set(property.name, property.value)
+    for (const property of propertiesToSetBack) {
+      set(property.name, property.value);
     }
   }
 }
 
 export function withChoice(choiceVals: Map<number, number>, functionToRun: () => void) {
-
+  withProperties(
+    Array.from(choiceVals.entries()).map((key, mapValue) => {
+      return {
+        name: `choiceAdventure${key.toString()}`,
+        value: mapValue,
+      };
+    }),
+    functionToRun
+  );
 }
