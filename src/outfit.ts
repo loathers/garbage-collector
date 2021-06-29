@@ -11,6 +11,7 @@ import {
   cliExecute,
   haveEquipped,
   bjornifyFamiliar,
+  enthroneFamiliar,
 } from "kolmafia";
 import {
   $class,
@@ -65,6 +66,7 @@ export class Requirement {
 
 export function freeFightOutfit(requirements: Requirement[] = []) {
   const bjornChoice = pickBjorn(PickBjornMode.FREE);
+  const bjornAlike = have($item`buddy bjorn`) ? $item`buddy bjorn` : $item`crown of thrones`;
   const compiledRequirements = Requirement.merge([
     ...requirements,
     new Requirement(
@@ -75,19 +77,21 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`buddy bjorn`, bjornChoice.meatVal * bjornChoice.probability()],
+          [bjornAlike, bjornChoice.meatVal * bjornChoice.probability()],
         ]),
       }
     ),
   ]);
   maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
   if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
 }
 
 export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [], sea?: boolean) {
   const forceEquip = [];
   const additionalRequirements = [];
   const bjornChoice = pickBjorn(embezzlerUp ? PickBjornMode.EMBEZZLER : PickBjornMode.BARF);
+  const bjornAlike = have($item`buddy bjorn`) ? $item`buddy bjorn` : $item`crown of thrones`;
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
@@ -136,7 +140,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`buddy bjorn`, bjornChoice.meatVal * bjornChoice.probability()],
+          [bjornAlike, bjornChoice.meatVal * bjornChoice.probability()],
         ]),
       }
     ),
@@ -146,6 +150,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
     equip($item`unwrapped retro superhero cape`);
   }
   if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (let airSource of waterBreathingEquipment) {
