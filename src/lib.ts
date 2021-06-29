@@ -43,10 +43,6 @@ import { fillAsdonMartinTo } from "./asdon";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
 
-export function setChoice(adventure: number, value: number) {
-  set(`choiceAdventure${adventure}`, `${value}`);
-}
-
 export function ensureEffect(effect: Effect) {
   if (!have(effect)) cliExecute(effect.default);
 }
@@ -131,18 +127,15 @@ export function prepWandererZone() {
       (get("guzzlrPlatinumDeliveries") < 30 ||
         (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
     ) {
-      set("choiceAdventure1412", 4);
-      use(1, $item`guzzlr tablet`);
+      withChoice(new Map<number, number>([[1412, 4]]), () => use(1, $item`guzzlr tablet`));
     } else if (
       get("_guzzlrGoldDeliveries") < 3 &&
       get("guzzlrBronzeDeliveries") >= 5 &&
       (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
     ) {
-      set("choiceAdventure1412", 3);
-      use(1, $item`guzzlr tablet`);
+      withChoice(new Map<number, number>([[1412, 3]]), () => use(1, $item`guzzlr tablet`));
     } else {
-      set("choiceAdventure1412", 2);
-      use(1, $item`guzzlr tablet`);
+      withChoice(new Map<number, number>([[1412, 2]]), () => use(1, $item`guzzlr tablet`));
     }
   }
 
@@ -159,18 +152,15 @@ export function prepWandererZone() {
       (get("guzzlrPlatinumDeliveries") < 30 ||
         (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
     ) {
-      set("choiceAdventure1412", 4);
-      use(1, $item`guzzlr tablet`);
+      withChoice(new Map<number, number>([[1412, 4]]), () => use(1, $item`guzzlr tablet`));
     } else if (
       get("_guzzlrGoldDeliveries") < 3 &&
       get("guzzlrBronzeDeliveries") >= 5 &&
       (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
     ) {
-      set("choiceAdventure1412", 3);
-      use(1, $item`guzzlr tablet`);
+      withChoice(new Map<number, number>([[1412, 3]]), () => use(1, $item`guzzlr tablet`));
     } else {
-      set("choiceAdventure1412", 2);
-      use(1, $item`guzzlr tablet`);
+      withChoice(new Map<number, number>([[1412, 2]]), () => use(1, $item`guzzlr tablet`));
     }
   }
 
@@ -253,10 +243,11 @@ function guzzlrCheck() {
 
 function dropGuzzlrQuest() {
   print("We hate this guzzlr quest!", "blue");
-  set("choiceAdventure1412", "");
-  visitUrl("inventory.php?tap=guzzlr", false);
+  withProperties([{ name: "choiceAdventure1412", value: "" }], () => {
+    visitUrl("inventory.php?tap=guzzlr", false);
   runChoice(1);
   runChoice(5);
+  });
 }
 
 export const physicalImmuneMacro = Macro.trySkill("curse of weaksauce")
