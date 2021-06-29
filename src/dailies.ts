@@ -42,7 +42,7 @@ import {
   adventureMacro,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { questStep, ensureEffect, setChoice, tryFeast, findRun, trueValue } from "./lib";
+import { questStep, ensureEffect, setChoice, tryFeast, findRun, trueValue, withChoice } from "./lib";
 import { withStash } from "./stash";
 
 export function voterSetup() {
@@ -130,30 +130,40 @@ export function latte() {
       numericModifier(latte, "Meat Drop") !== 40
     ) {
       if (!get("latteUnlocks").includes("cajun") && findRun()) {
-        setChoice(923, 1);
-        setChoice(924, 1);
-        while (!get("latteUnlocks").includes("cajun") && findRun()) {
-          const runSource = findRun();
-          if (!runSource) break;
-          runSource.prepare();
-          equip($slot`off-hand`, latte);
-          adventureMacro($location`the black forest`, runSource.macro);
-        }
+        withChoice(
+          new Map<number, number>([
+            [923, 1],
+            [924, 1],
+          ]),
+          () => {
+            while (!get("latteUnlocks").includes("cajun") && findRun()) {
+              const runSource = findRun();
+              if (!runSource) break;
+              runSource.prepare();
+              equip($slot`off-hand`, latte);
+              adventureMacro($location`the black forest`, runSource.macro);
+            }
+          }
+        );
       }
       if (!get("latteUnlocks").includes("rawhide") && findRun()) {
-        setChoice(502, 2);
-        setChoice(505, 2);
-        while (!get("latteUnlocks").includes("rawhide") && findRun()) {
-          const runSource = findRun();
-          if (!runSource) break;
-          runSource.prepare();
-          equip($slot`off-hand`, latte);
-          adventureMacro($location`the spooky forest`, runSource.macro);
-        }
+        withChoice(
+          new Map<number, number>([
+            [502, 2],
+            [505, 2],
+          ]),
+          () => {
+            while (!get("latteUnlocks").includes("rawhide") && findRun()) {
+              const runSource = findRun();
+              if (!runSource) break;
+              runSource.prepare();
+              equip($slot`off-hand`, latte);
+              adventureMacro($location`the spooky forest`, runSource.macro);
+            }
+          }
+        );
       }
       if (!get("latteUnlocks").includes("carrot") && findRun()) {
-        setChoice(502, 2);
-        setChoice(505, 2);
         while (!get("latteUnlocks").includes("carrot") && findRun()) {
           const runSource = findRun();
           if (!runSource) break;
