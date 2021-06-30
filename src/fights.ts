@@ -58,6 +58,7 @@ import {
   adventureMacroAuto,
   ChateauMantegna,
   get,
+  getFoldGroup,
   have,
   maximizeCached,
   set,
@@ -381,6 +382,7 @@ function startDigitize() {
 
 export function dailyFights() {
   if (embezzlerSources.some((source) => source.potential())) {
+    const puttiesOwned = getFoldGroup($item`Spooky Putty Sheet`).reduce((rollingAmount, item) => rollingAmount + availableAmount(item), 0);
     withStash($items`Spooky putty sheet`, () => {
       embezzlerSetup();
 
@@ -457,6 +459,8 @@ export function dailyFights() {
               nextFight.run({ location: $location`Noob Cave` });
             }
           }
+          if (getFoldGroup($item`Spooky Putty Sheet`).some(have) && !have($item`Spooky Putty Sheet`))
+            cliExecute("fold Spooky Putty Sheet");
         });
         startDigitize();
         nextFight = getEmbezzlerFight();
