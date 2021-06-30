@@ -83,7 +83,12 @@ export function voterSetup() {
     initPriority.get(get("_voteLocal4")) || get("_voteLocal4").indexOf("-") === -1 ? 1 : -1,
   ];
 
-  const bestVotes = voteLocalPriorityArr.sort((a, b) => b - a);
+  const bestVotes = [
+    initPriority.get(get("_voteLocal1")) || get("_voteLocal1").indexOf("-") === -1 ? 1 : -1,
+    initPriority.get(get("_voteLocal2")) || get("_voteLocal2").indexOf("-") === -1 ? 1 : -1,
+    initPriority.get(get("_voteLocal3")) || get("_voteLocal3").indexOf("-") === -1 ? 1 : -1,
+    initPriority.get(get("_voteLocal4")) || get("_voteLocal4").indexOf("-") === -1 ? 1 : -1,
+  ].sort((a, b) => b - a);
   const firstPriority = bestVotes[0];
   const secondPriority = bestVotes[1];
 
