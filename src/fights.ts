@@ -400,7 +400,7 @@ export function dailyFights() {
           new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
         ]);
         if (
-          get("_pocketProfessorLectures") <
+          get("_pocketProfessorLectures") >=
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
           useFamiliar(meatFamiliar());
@@ -427,7 +427,7 @@ export function dailyFights() {
         ]);
         maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
         if (
-          get("_pocketProfessorLectures") <
+          get("_pocketProfessorLectures") >=
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
           useFamiliar(meatFamiliar());
