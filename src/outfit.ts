@@ -120,7 +120,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
       {
         forceEquip,
         preventEquip: [
-          ...$items`broken champagne bottle, unwrapped retro superhero cape`,
+          ...$items`broken champagne bottle, unwrapped retro superhero cape, spooky putty leotard`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
         ],
         bonusEquip: new Map([
