@@ -821,9 +821,8 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
       const lepMultiplier = numericModifier(meatFamiliar(), "Leprechaun", 1, Item.get("none"));
       const fairyMultiplier = numericModifier(meatFamiliar(), "Fairy", 1, Item.get("none"));
       return (
-        (meatVal * (10 * lepMultiplier + (75 * Math.sqrt(lepMultiplier)) / Math.sqrt(245)) +
-          itemVal *
-            (5 * fairyMultiplier + (5 * Math.sqrt(55 * fairyMultiplier)) / (2 * Math.sqrt(60)))) /
+        (meatVal * (10 * lepMultiplier + 5 * Math.sqrt(lepMultiplier)) +
+          itemVal * (5 * fairyMultiplier + 2.5 * Math.sqrt(fairyMultiplier))) /
         100
       );
     }
