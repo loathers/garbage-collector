@@ -251,6 +251,22 @@ export function main(argString = "") {
           name: "battleAction",
           value: "custom combat script",
         },
+        {
+          name: "autoSatisfyWithMall",
+          value: true
+        },
+        {
+          name: "autoSatisfyWithNPCs",
+          value: true
+        },
+        {
+          name: "autoSatisfyWithCoinmasters",
+          value: true
+        },
+        {
+          name: "dontStopForCounters",
+          value: true
+        }
       ],
       () => {
         cliExecute("mood apathetic");
