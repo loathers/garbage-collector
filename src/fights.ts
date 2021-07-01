@@ -1006,11 +1006,11 @@ export function freeFights() {
     if (questStep("questL08Trapper") >= 2) {
       adventureMacroAuto(
         $location`Lair of the Ninja Snowmen`,
-        Macro.skill("Sing Along").skill("Fire the Jokester's Gun")
+        Macro.skill("Fire the Jokester's Gun")
       );
     } else if (have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) {
       try {
-        Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
+        Macro.skill("Fire the Jokester's Gun").setAutoAttack();
         mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
       } finally {
         setAutoAttack(0);
