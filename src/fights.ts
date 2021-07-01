@@ -403,13 +403,13 @@ export function dailyFights() {
           get("_pocketProfessorLectures") >=
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
-          useFamiliar(meatFamiliar());
-          meatOutfit(true, fightSource.requirements);
+          set("_garbo_meatChain", true);
+        } else {
+          withMacro(firstChainMacro(), () =>
+            fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
+          );
+          set("_garbo_meatChain", true);
         }
-        withMacro(firstChainMacro(), () =>
-          fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
-        );
-        set("_garbo_meatChain", true);
       }
 
       startDigitize();
@@ -430,13 +430,13 @@ export function dailyFights() {
           get("_pocketProfessorLectures") >=
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
-          useFamiliar(meatFamiliar());
-          meatOutfit(true, fightSource.requirements);
+          set("_garbo_weightChain", true);
+        } else {
+          withMacro(secondChainMacro(), () =>
+            fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
+          );
+          set("_garbo_weightChain", true);
         }
-        withMacro(secondChainMacro(), () =>
-          fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
-        );
-        set("_garbo_weightChain", true);
       }
 
       startDigitize();
