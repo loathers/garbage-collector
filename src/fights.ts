@@ -9,6 +9,7 @@ import {
   closetAmount,
   eat,
   equip,
+  familiarWeight,
   getCampground,
   getCounters,
   handlingChoice,
@@ -17,6 +18,7 @@ import {
   myAdventures,
   myAscensions,
   myClass,
+  myFamiliar,
   myHash,
   myHp,
   myMaxhp,
@@ -42,6 +44,7 @@ import {
   useSkill,
   visitUrl,
   wait,
+  weightAdjustment,
 } from "kolmafia";
 import {
   $class,
@@ -153,9 +156,12 @@ const firstChainMacro = () =>
 const secondChainMacro = () =>
   Macro.if_(
     "monstername Knob Goblin Embezzler",
-    Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
-      .trySkill("Lecture on Relativity")
-      .meatKill()
+    Macro.externalIf(
+      myFamiliar() === $familiar`pocket professor`,
+      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower")).trySkill(
+        "Lecture on Relativity"
+      )
+    ).meatKill()
   ).abort();
 
 const embezzlerMacro = () =>
@@ -393,9 +399,14 @@ export function dailyFights() {
           ...fightSource.requirements,
           new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
         ]);
-        withMacro(firstChainMacro(), () =>
-          fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
-        );
+        if (
+          get("_pocketProfessorLectures") <
+          2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
+        ) {
+          withMacro(firstChainMacro(), () =>
+            fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
+          );
+        }
         set("_garbo_meatChain", true);
       }
 
@@ -413,9 +424,14 @@ export function dailyFights() {
           ...fightSource.requirements,
         ]);
         maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
-        withMacro(secondChainMacro(), () =>
-          fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
-        );
+        if (
+          get("_pocketProfessorLectures") <
+          2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
+        ) {
+          withMacro(secondChainMacro(), () =>
+            fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
+          );
+        }
         set("_garbo_weightChain", true);
       }
 
