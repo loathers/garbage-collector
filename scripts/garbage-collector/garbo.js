@@ -28184,7 +28184,7 @@ function freeFightMood() {
   return mood;
 }
 ;// CONCATENATED MODULE: ./src/lib.ts
-var lib_templateObject, lib_templateObject2, lib_templateObject3, lib_templateObject4, lib_templateObject5, lib_templateObject6, lib_templateObject7, lib_templateObject8, lib_templateObject9, lib_templateObject10, lib_templateObject11, lib_templateObject12, lib_templateObject13, lib_templateObject14, lib_templateObject15, lib_templateObject16, lib_templateObject17, lib_templateObject18, lib_templateObject19, lib_templateObject20, lib_templateObject21, lib_templateObject22, lib_templateObject23, lib_templateObject24, lib_templateObject25, lib_templateObject26, lib_templateObject27, lib_templateObject28, lib_templateObject29, lib_templateObject30, lib_templateObject31, lib_templateObject32, lib_templateObject33, lib_templateObject34, lib_templateObject35, lib_templateObject36, lib_templateObject37, lib_templateObject38, lib_templateObject39, lib_templateObject40, lib_templateObject41, lib_templateObject42, lib_templateObject43, lib_templateObject44, lib_templateObject45, lib_templateObject46, lib_templateObject47, lib_templateObject48, lib_templateObject49, lib_templateObject50, lib_templateObject51, lib_templateObject52, lib_templateObject53, lib_templateObject54, lib_templateObject55, lib_templateObject56, lib_templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135;
+var lib_templateObject, lib_templateObject2, lib_templateObject3, lib_templateObject4, lib_templateObject5, lib_templateObject6, lib_templateObject7, lib_templateObject8, lib_templateObject9, lib_templateObject10, lib_templateObject11, lib_templateObject12, lib_templateObject13, lib_templateObject14, lib_templateObject15, lib_templateObject16, lib_templateObject17, lib_templateObject18, lib_templateObject19, lib_templateObject20, lib_templateObject21, lib_templateObject22, lib_templateObject23, lib_templateObject24, lib_templateObject25, lib_templateObject26, lib_templateObject27, lib_templateObject28, lib_templateObject29, lib_templateObject30, lib_templateObject31, lib_templateObject32, lib_templateObject33, lib_templateObject34, lib_templateObject35, lib_templateObject36, lib_templateObject37, lib_templateObject38, lib_templateObject39, lib_templateObject40, lib_templateObject41, lib_templateObject42, lib_templateObject43, lib_templateObject44, lib_templateObject45, lib_templateObject46, lib_templateObject47, lib_templateObject48, lib_templateObject49, lib_templateObject50, lib_templateObject51, lib_templateObject52, lib_templateObject53, lib_templateObject54, lib_templateObject55, lib_templateObject56, lib_templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134;
 
 function lib_toConsumableArray(arr) { return lib_arrayWithoutHoles(arr) || lib_iterableToArray(arr) || lib_unsupportedIterableToArray(arr) || lib_nonIterableSpread(); }
 
@@ -28237,11 +28237,6 @@ function mapMonster(location, monster) {
   if (!mapPage.includes("Leading Yourself Right to Them")) throw "Something went wrong mapping.";
   var fightPage = (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
   if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
-}
-function averagePrice(items) {
-  return items.reduce(function (s, it) {
-    return s + (0,external_kolmafia_.mallPrice)(it);
-  }, 0) / items.length;
 }
 function argmax(values) {
   return values.reduce(function (_ref, _ref2) {
@@ -28467,17 +28462,23 @@ function findRun() {
     return run.available();
   });
 }
+var valueMap = new Map();
+var MALL_VALUE_MODIFIER = 0.9;
 function trueValue() {
   for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
     items[_key] = arguments[_key];
   }
 
   return items.map(function (item) {
+    if (valueMap.has(item)) return valueMap.get(item) || 0;
+
     if (item.discardable) {
-      return (0,external_kolmafia_.mallPrice)(item) > 2 * (0,external_kolmafia_.autosellPrice)(item) ? (0,external_kolmafia_.mallPrice)(item) : (0,external_kolmafia_.autosellPrice)(item);
+      valueMap.set(item, (0,external_kolmafia_.mallPrice)(item) > 2 * (0,external_kolmafia_.autosellPrice)(item) ? MALL_VALUE_MODIFIER * (0,external_kolmafia_.mallPrice)(item) : (0,external_kolmafia_.autosellPrice)(item));
+    } else {
+      valueMap.set(item, (0,external_kolmafia_.mallPrice)(item) > 100 ? MALL_VALUE_MODIFIER * (0,external_kolmafia_.mallPrice)(item) : 0);
     }
 
-    return (0,external_kolmafia_.mallPrice)(item) > 100 ? (0,external_kolmafia_.mallPrice)(item) : 0;
+    return valueMap.get(item) || 0;
   }).reduce(function (s, price) {
     return s + price;
   }, 0) / items.length;
@@ -28492,19 +28493,25 @@ var BjornModifierType;
 
 var bjornFams = [{
   familiar: (0,dist.$familiar)(lib_templateObject50 || (lib_templateObject50 = lib_taggedTemplateLiteral(["puck man"]))),
-  meatVal: trueValue((0,dist.$item)(lib_templateObject51 || (lib_templateObject51 = lib_taggedTemplateLiteral(["yellow pixel"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(lib_templateObject51 || (lib_templateObject51 = lib_taggedTemplateLiteral(["yellow pixel"]))));
+  },
   probability: function probability() {
     return (0,dist.get)("_yellowPixelDropsCrown") < 25 ? 0.25 : 0;
   }
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject52 || (lib_templateObject52 = lib_taggedTemplateLiteral(["grimstone golem"]))),
-  meatVal: trueValue((0,dist.$item)(lib_templateObject53 || (lib_templateObject53 = lib_taggedTemplateLiteral(["grimstone mask"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(lib_templateObject53 || (lib_templateObject53 = lib_taggedTemplateLiteral(["grimstone mask"]))));
+  },
   probability: function probability() {
     return (0,dist.get)("_grimstoneMaskDropsCrown") === 0 ? 0.5 : 0;
   }
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject54 || (lib_templateObject54 = lib_taggedTemplateLiteral(["Knob Goblin Organ Grinder"]))),
-  meatVal: 30,
+  meatVal: function meatVal() {
+    return 30;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28514,7 +28521,9 @@ var bjornFams = [{
   }
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject55 || (lib_templateObject55 = lib_taggedTemplateLiteral(["Happy Medium"]))),
-  meatVal: 30,
+  meatVal: function meatVal() {
+    return 30;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28524,31 +28533,41 @@ var bjornFams = [{
   }
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject56 || (lib_templateObject56 = lib_taggedTemplateLiteral(["garbage fire"]))),
-  meatVal: trueValue((0,dist.$item)(lib_templateObject57 || (lib_templateObject57 = lib_taggedTemplateLiteral(["burning newspaper"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(lib_templateObject57 || (lib_templateObject57 = lib_taggedTemplateLiteral(["burning newspaper"]))));
+  },
   probability: function probability() {
     return (0,dist.get)("_garbageFireDropsCrown") < 3 ? 0.5 : 0;
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject58 || (_templateObject58 = lib_taggedTemplateLiteral(["machine elf"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject59 || (_templateObject59 = lib_taggedTemplateLiteral(["abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"]))))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject59 || (_templateObject59 = lib_taggedTemplateLiteral(["abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"])))));
+  },
   probability: function probability() {
     return (0,dist.get)("_abstractionDropsCrown") < 25 ? 0.2 : 0;
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject60 || (_templateObject60 = lib_taggedTemplateLiteral(["trick-or-treating tot"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject61 || (_templateObject61 = lib_taggedTemplateLiteral(["hoarded candy wad"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject61 || (_templateObject61 = lib_taggedTemplateLiteral(["hoarded candy wad"]))));
+  },
   probability: function probability() {
     return (0,dist.get)("_hoardedCandyDropsCrown") < 3 ? 0.5 : 0;
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject62 || (_templateObject62 = lib_taggedTemplateLiteral(["warbear drone"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject63 || (_templateObject63 = lib_taggedTemplateLiteral(["warbear whosit"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject63 || (_templateObject63 = lib_taggedTemplateLiteral(["warbear whosit"]))));
+  },
   probability: function probability() {
     return 1 / 4.5;
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject64 || (_templateObject64 = lib_taggedTemplateLiteral(["li'l xenomorph"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject65 || (_templateObject65 = lib_taggedTemplateLiteral(["lunar isotope"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject65 || (_templateObject65 = lib_taggedTemplateLiteral(["lunar isotope"]))));
+  },
   probability: function probability() {
     return 0.05;
   },
@@ -28558,19 +28577,25 @@ var bjornFams = [{
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject66 || (_templateObject66 = lib_taggedTemplateLiteral(["pottery barn owl"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject67 || (_templateObject67 = lib_taggedTemplateLiteral(["volcanic ash"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject67 || (_templateObject67 = lib_taggedTemplateLiteral(["volcanic ash"]))));
+  },
   probability: function probability() {
     return 0.1;
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject68 || (_templateObject68 = lib_taggedTemplateLiteral(["grim brother"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject69 || (_templateObject69 = lib_taggedTemplateLiteral(["grim fairy tale"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject69 || (_templateObject69 = lib_taggedTemplateLiteral(["grim fairy tale"]))));
+  },
   probability: function probability() {
     return (0,dist.get)("_grimFairyTaleDropsCrown") < 2 ? 1 : 0;
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject70 || (_templateObject70 = lib_taggedTemplateLiteral(["optimistic candle"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject71 || (_templateObject71 = lib_taggedTemplateLiteral(["glob of melted wax"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject71 || (_templateObject71 = lib_taggedTemplateLiteral(["glob of melted wax"]))));
+  },
   probability: function probability() {
     return (0,dist.get)("_optimisticCandleDropsCrown") < 3 ? 1 : 0;
   },
@@ -28580,7 +28605,9 @@ var bjornFams = [{
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject72 || (_templateObject72 = lib_taggedTemplateLiteral(["Adventurous Spelunker"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject73 || (_templateObject73 = lib_taggedTemplateLiteral(["teflon ore, Velcro ore, Vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"]))))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject73 || (_templateObject73 = lib_taggedTemplateLiteral(["teflon ore, Velcro ore, Vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"])))));
+  },
   probability: function probability() {
     return (0,dist.get)("_oreDropsCrown") < 6 ? 1 : 0;
   },
@@ -28590,33 +28617,57 @@ var bjornFams = [{
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject74 || (_templateObject74 = lib_taggedTemplateLiteral(["Twitching Space Critter"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject75 || (_templateObject75 = lib_taggedTemplateLiteral(["space beast fur"])))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject75 || (_templateObject75 = lib_taggedTemplateLiteral(["space beast fur"]))));
+  },
   probability: function probability() {
     return (0,dist.get)("_spaceFurDropsCrown") < 1 ? 1 : 0;
   }
 }, {
   familiar: (0,dist.$familiar)(_templateObject76 || (_templateObject76 = lib_taggedTemplateLiteral(["party mouse"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray(Item.all().filter(function (booze) {
-    return ["decent", "good"].includes(booze.quality) && booze.inebriety > 0 && booze.tradeable && booze.discardable && !(0,dist.$items)(_templateObject77 || (_templateObject77 = lib_taggedTemplateLiteral(["glass of \"milk\", cup of \"tea\", thermos of \"whiskey\", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy"]))).includes(booze);
-  }))),
+  meatVal: function meatVal() {
+    return 50;
+  },
+
+  /*
+  The below code is more accurate. However, party mouse is virtually never going to be worthwhile and this causes so many useless mall hits it isn't funny.
+     trueValue(
+      ...Item.all().filter(
+        (booze) =>
+          ["decent", "good"].includes(booze.quality) &&
+          booze.inebriety > 0 &&
+          booze.tradeable &&
+          booze.discardable &&
+          !$items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`.includes(
+            booze
+          )
+      )
+    ),
+    */
   probability: function probability() {
     return 0.05;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject78 || (_templateObject78 = lib_taggedTemplateLiteral(["yule hound"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject79 || (_templateObject79 = lib_taggedTemplateLiteral(["candy cane"])))),
+  familiar: (0,dist.$familiar)(_templateObject77 || (_templateObject77 = lib_taggedTemplateLiteral(["yule hound"]))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject78 || (_templateObject78 = lib_taggedTemplateLiteral(["candy cane"]))));
+  },
   probability: function probability() {
     return 1;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject80 || (_templateObject80 = lib_taggedTemplateLiteral(["gluttonous green ghost"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject81 || (_templateObject81 = lib_taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"]))))),
+  familiar: (0,dist.$familiar)(_templateObject79 || (_templateObject79 = lib_taggedTemplateLiteral(["gluttonous green ghost"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject80 || (_templateObject80 = lib_taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"])))));
+  },
   probability: function probability() {
     return 1;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject82 || (_templateObject82 = lib_taggedTemplateLiteral(["Reassembled Blackbird"]))),
-  meatVal: (0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject83 || (_templateObject83 = lib_taggedTemplateLiteral(["blackberry"])))),
+  familiar: (0,dist.$familiar)(_templateObject81 || (_templateObject81 = lib_taggedTemplateLiteral(["Reassembled Blackbird"]))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject82 || (_templateObject82 = lib_taggedTemplateLiteral(["blackberry"]))));
+  },
   probability: function probability() {
     return 1;
   },
@@ -28625,8 +28676,10 @@ var bjornFams = [{
     modifier: 10
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject84 || (_templateObject84 = lib_taggedTemplateLiteral(["Reconstituted Crow"]))),
-  meatVal: (0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject85 || (_templateObject85 = lib_taggedTemplateLiteral(["blackberry"])))),
+  familiar: (0,dist.$familiar)(_templateObject83 || (_templateObject83 = lib_taggedTemplateLiteral(["Reconstituted Crow"]))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject84 || (_templateObject84 = lib_taggedTemplateLiteral(["blackberry"]))));
+  },
   probability: function probability() {
     return 1;
   },
@@ -28635,20 +28688,26 @@ var bjornFams = [{
     modifier: 10
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject86 || (_templateObject86 = lib_taggedTemplateLiteral(["Hunchbacked Minion"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject87 || (_templateObject87 = lib_taggedTemplateLiteral(["176,163,163,163,163"]))))),
+  familiar: (0,dist.$familiar)(_templateObject85 || (_templateObject85 = lib_taggedTemplateLiteral(["Hunchbacked Minion"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject86 || (_templateObject86 = lib_taggedTemplateLiteral(["176,163,163,163,163"])))));
+  },
   probability: function probability() {
     return 1;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject88 || (_templateObject88 = lib_taggedTemplateLiteral(["reanimated reanimator"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject89 || (_templateObject89 = lib_taggedTemplateLiteral(["hot wing,broken skull"]))))),
+  familiar: (0,dist.$familiar)(_templateObject87 || (_templateObject87 = lib_taggedTemplateLiteral(["reanimated reanimator"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject88 || (_templateObject88 = lib_taggedTemplateLiteral(["hot wing,broken skull"])))));
+  },
   probability: function probability() {
     return 1;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject90 || (_templateObject90 = lib_taggedTemplateLiteral(["attention-deficit demon"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject91 || (_templateObject91 = lib_taggedTemplateLiteral(["chorizo brownies,white chocolate and tomato pizza,carob chunk noodles"]))))),
+  familiar: (0,dist.$familiar)(_templateObject89 || (_templateObject89 = lib_taggedTemplateLiteral(["attention-deficit demon"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject90 || (_templateObject90 = lib_taggedTemplateLiteral(["chorizo brownies,white chocolate and tomato pizza,carob chunk noodles"])))));
+  },
   probability: function probability() {
     return 1;
   },
@@ -28657,8 +28716,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject92 || (_templateObject92 = lib_taggedTemplateLiteral(["piano cat"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject93 || (_templateObject93 = lib_taggedTemplateLiteral(["beertini,papaya slung,salty slug,tomato daiquiri"]))))),
+  familiar: (0,dist.$familiar)(_templateObject91 || (_templateObject91 = lib_taggedTemplateLiteral(["piano cat"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject92 || (_templateObject92 = lib_taggedTemplateLiteral(["beertini,papaya slung,salty slug,tomato daiquiri"])))));
+  },
   probability: function probability() {
     return 1;
   },
@@ -28667,8 +28728,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject94 || (_templateObject94 = lib_taggedTemplateLiteral(["golden monkey"]))),
-  meatVal: 100,
+  familiar: (0,dist.$familiar)(_templateObject93 || (_templateObject93 = lib_taggedTemplateLiteral(["golden monkey"]))),
+  meatVal: function meatVal() {
+    return 100;
+  },
   probability: function probability() {
     return 0.5;
   },
@@ -28677,74 +28740,98 @@ var bjornFams = [{
     modifier: 25
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject95 || (_templateObject95 = lib_taggedTemplateLiteral(["robot reindeer"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject96 || (_templateObject96 = lib_taggedTemplateLiteral(["candy cane,eggnog,fruitcake,gingerbread bugbear"]))))),
+  familiar: (0,dist.$familiar)(_templateObject94 || (_templateObject94 = lib_taggedTemplateLiteral(["robot reindeer"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject95 || (_templateObject95 = lib_taggedTemplateLiteral(["candy cane,eggnog,fruitcake,gingerbread bugbear"])))));
+  },
   probability: function probability() {
     return 0.3;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject97 || (_templateObject97 = lib_taggedTemplateLiteral(["stocking mimic"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject98 || (_templateObject98 = lib_taggedTemplateLiteral(["540,617,906,908,909"]))))),
+  familiar: (0,dist.$familiar)(_templateObject96 || (_templateObject96 = lib_taggedTemplateLiteral(["stocking mimic"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject97 || (_templateObject97 = lib_taggedTemplateLiteral(["540,617,906,908,909"])))));
+  },
   probability: function probability() {
     return 0.3;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject99 || (_templateObject99 = lib_taggedTemplateLiteral(["BRICKO chick"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject100 || (_templateObject100 = lib_taggedTemplateLiteral(["BRICKO brick"])))),
+  familiar: (0,dist.$familiar)(_templateObject98 || (_templateObject98 = lib_taggedTemplateLiteral(["BRICKO chick"]))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject99 || (_templateObject99 = lib_taggedTemplateLiteral(["BRICKO brick"]))));
+  },
   probability: function probability() {
     return 1;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject101 || (_templateObject101 = lib_taggedTemplateLiteral(["Cotton Candy Carnie"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject102 || (_templateObject102 = lib_taggedTemplateLiteral(["cotton candy pinch"])))),
+  familiar: (0,dist.$familiar)(_templateObject100 || (_templateObject100 = lib_taggedTemplateLiteral(["Cotton Candy Carnie"]))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject101 || (_templateObject101 = lib_taggedTemplateLiteral(["cotton candy pinch"]))));
+  },
   probability: function probability() {
     return 1;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject103 || (_templateObject103 = lib_taggedTemplateLiteral(["untamed turtle"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject104 || (_templateObject104 = lib_taggedTemplateLiteral(["snailmail bits,turtlemail bits,turtle wax"]))))),
+  familiar: (0,dist.$familiar)(_templateObject102 || (_templateObject102 = lib_taggedTemplateLiteral(["untamed turtle"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject103 || (_templateObject103 = lib_taggedTemplateLiteral(["snailmail bits,turtlemail bits,turtle wax"])))));
+  },
   probability: function probability() {
     return 0.35;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject105 || (_templateObject105 = lib_taggedTemplateLiteral(["astral badger"]))),
-  meatVal: 2 * trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject106 || (_templateObject106 = lib_taggedTemplateLiteral(["spooky mushroom, knob mushroom, knoll mushroom"]))))),
+  familiar: (0,dist.$familiar)(_templateObject104 || (_templateObject104 = lib_taggedTemplateLiteral(["astral badger"]))),
+  meatVal: function meatVal() {
+    return 2 * trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject105 || (_templateObject105 = lib_taggedTemplateLiteral(["spooky mushroom, knob mushroom, knoll mushroom"])))));
+  },
   probability: function probability() {
     return 1;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject107 || (_templateObject107 = lib_taggedTemplateLiteral(["green pixie"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject108 || (_templateObject108 = lib_taggedTemplateLiteral(["bottle of tequila"])))),
+  familiar: (0,dist.$familiar)(_templateObject106 || (_templateObject106 = lib_taggedTemplateLiteral(["green pixie"]))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject107 || (_templateObject107 = lib_taggedTemplateLiteral(["bottle of tequila"]))));
+  },
   probability: function probability() {
     return 0.2;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject109 || (_templateObject109 = lib_taggedTemplateLiteral(["angry goat"]))),
-  meatVal: trueValue((0,dist.$item)(_templateObject110 || (_templateObject110 = lib_taggedTemplateLiteral(["goat cheese pizza"])))),
+  familiar: (0,dist.$familiar)(_templateObject108 || (_templateObject108 = lib_taggedTemplateLiteral(["angry goat"]))),
+  meatVal: function meatVal() {
+    return trueValue((0,dist.$item)(_templateObject109 || (_templateObject109 = lib_taggedTemplateLiteral(["goat cheese pizza"]))));
+  },
   probability: function probability() {
     return 1;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject111 || (_templateObject111 = lib_taggedTemplateLiteral(["adorable seal larva"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject112 || (_templateObject112 = lib_taggedTemplateLiteral(["1445,1446,1447,1448,1449"]))))),
+  familiar: (0,dist.$familiar)(_templateObject110 || (_templateObject110 = lib_taggedTemplateLiteral(["adorable seal larva"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject111 || (_templateObject111 = lib_taggedTemplateLiteral(["1445,1446,1447,1448,1449"])))));
+  },
   probability: function probability() {
     return 0.35;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject113 || (_templateObject113 = lib_taggedTemplateLiteral(["ancient yuletide troll"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject114 || (_templateObject114 = lib_taggedTemplateLiteral(["candy cane,eggnog,fruitcake,gingerbread bugbear"]))))),
+  familiar: (0,dist.$familiar)(_templateObject112 || (_templateObject112 = lib_taggedTemplateLiteral(["ancient yuletide troll"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject113 || (_templateObject113 = lib_taggedTemplateLiteral(["candy cane,eggnog,fruitcake,gingerbread bugbear"])))));
+  },
   probability: function probability() {
     return 0.3;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject115 || (_templateObject115 = lib_taggedTemplateLiteral(["sweet nutcracker"]))),
-  meatVal: trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject116 || (_templateObject116 = lib_taggedTemplateLiteral(["candy cane,eggnog,fruitcake,gingerbread bugbear"]))))),
+  familiar: (0,dist.$familiar)(_templateObject114 || (_templateObject114 = lib_taggedTemplateLiteral(["sweet nutcracker"]))),
+  meatVal: function meatVal() {
+    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(_templateObject115 || (_templateObject115 = lib_taggedTemplateLiteral(["candy cane,eggnog,fruitcake,gingerbread bugbear"])))));
+  },
   probability: function probability() {
     return 0.3;
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject117 || (_templateObject117 = lib_taggedTemplateLiteral(["casagnova gnome"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject116 || (_templateObject116 = lib_taggedTemplateLiteral(["casagnova gnome"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28753,8 +28840,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject118 || (_templateObject118 = lib_taggedTemplateLiteral(["coffee pixie"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject117 || (_templateObject117 = lib_taggedTemplateLiteral(["coffee pixie"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28763,8 +28852,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject119 || (_templateObject119 = lib_taggedTemplateLiteral(["dancing frog"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject118 || (_templateObject118 = lib_taggedTemplateLiteral(["dancing frog"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28773,8 +28864,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject120 || (_templateObject120 = lib_taggedTemplateLiteral(["grouper groupie"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject119 || (_templateObject119 = lib_taggedTemplateLiteral(["grouper groupie"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28783,8 +28876,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject121 || (_templateObject121 = lib_taggedTemplateLiteral(["hand turkey"]))),
-  meatVal: 30,
+  familiar: (0,dist.$familiar)(_templateObject120 || (_templateObject120 = lib_taggedTemplateLiteral(["hand turkey"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28793,8 +28888,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject122 || (_templateObject122 = lib_taggedTemplateLiteral(["hippo ballerina"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject121 || (_templateObject121 = lib_taggedTemplateLiteral(["hippo ballerina"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28803,8 +28900,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject123 || (_templateObject123 = lib_taggedTemplateLiteral(["jitterbug"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject122 || (_templateObject122 = lib_taggedTemplateLiteral(["jitterbug"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28813,8 +28912,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject124 || (_templateObject124 = lib_taggedTemplateLiteral(["leprechaun"]))),
-  meatVal: 30,
+  familiar: (0,dist.$familiar)(_templateObject123 || (_templateObject123 = lib_taggedTemplateLiteral(["leprechaun"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28823,8 +28924,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject125 || (_templateObject125 = lib_taggedTemplateLiteral(["obtuse angel"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject124 || (_templateObject124 = lib_taggedTemplateLiteral(["obtuse angel"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28833,8 +28936,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject126 || (_templateObject126 = lib_taggedTemplateLiteral(["psychedelic bear"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject125 || (_templateObject125 = lib_taggedTemplateLiteral(["psychedelic bear"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28843,8 +28948,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject127 || (_templateObject127 = lib_taggedTemplateLiteral(["robortender"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject126 || (_templateObject126 = lib_taggedTemplateLiteral(["robortender"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28853,8 +28960,10 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject128 || (_templateObject128 = lib_taggedTemplateLiteral(["ghost of crimbo commerce"]))),
-  meatVal: 30,
+  familiar: (0,dist.$familiar)(_templateObject127 || (_templateObject127 = lib_taggedTemplateLiteral(["ghost of crimbo commerce"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28863,8 +28972,10 @@ var bjornFams = [{
     modifier: 25
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject129 || (_templateObject129 = lib_taggedTemplateLiteral(["hobo monkey"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject128 || (_templateObject128 = lib_taggedTemplateLiteral(["hobo monkey"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28873,8 +28984,10 @@ var bjornFams = [{
     modifier: 25
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject130 || (_templateObject130 = lib_taggedTemplateLiteral(["rockin' robin"]))),
-  meatVal: 60,
+  familiar: (0,dist.$familiar)(_templateObject129 || (_templateObject129 = lib_taggedTemplateLiteral(["rockin' robin"]))),
+  meatVal: function meatVal() {
+    return 60;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28883,8 +28996,10 @@ var bjornFams = [{
     modifier: 15
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject131 || (_templateObject131 = lib_taggedTemplateLiteral(["feral kobold"]))),
-  meatVal: 30,
+  familiar: (0,dist.$familiar)(_templateObject130 || (_templateObject130 = lib_taggedTemplateLiteral(["feral kobold"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28893,8 +29008,10 @@ var bjornFams = [{
     modifier: 15
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject132 || (_templateObject132 = lib_taggedTemplateLiteral(["oily woim"]))),
-  meatVal: 30,
+  familiar: (0,dist.$familiar)(_templateObject131 || (_templateObject131 = lib_taggedTemplateLiteral(["oily woim"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28903,8 +29020,10 @@ var bjornFams = [{
     modifier: 10
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject133 || (_templateObject133 = lib_taggedTemplateLiteral(["cat burglar"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject132 || (_templateObject132 = lib_taggedTemplateLiteral(["cat burglar"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28913,8 +29032,10 @@ var bjornFams = [{
     modifier: 10
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject134 || (_templateObject134 = lib_taggedTemplateLiteral(["misshapen animal skeleton"]))),
-  meatVal: 30,
+  familiar: (0,dist.$familiar)(_templateObject133 || (_templateObject133 = lib_taggedTemplateLiteral(["misshapen animal skeleton"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
   probability: function probability() {
     return 1;
   },
@@ -28923,8 +29044,10 @@ var bjornFams = [{
     modifier: 5
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject135 || (_templateObject135 = lib_taggedTemplateLiteral(["Gelatinous Cubeling"]))),
-  meatVal: 0,
+  familiar: (0,dist.$familiar)(_templateObject134 || (_templateObject134 = lib_taggedTemplateLiteral(["Gelatinous Cubeling"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
   probability: function probability() {
     return 0;
   },
@@ -28963,7 +29086,7 @@ function pickBjorn() {
   return bjornFams.filter(function (bjornFam) {
     return (0,dist.have)(bjornFam.familiar) && (0,external_kolmafia_.myFamiliar)() !== bjornFam.familiar;
   }).sort(function (b, a) {
-    return a.meatVal * a.probability() + additionalValue(a) - (b.meatVal * b.probability() + additionalValue(b));
+    return a.meatVal() * a.probability() + additionalValue(a) - (b.meatVal() * b.probability() + additionalValue(b));
   })[0];
 }
 ;// CONCATENATED MODULE: ./src/familiar.ts
@@ -28971,7 +29094,15 @@ var familiar_templateObject, familiar_templateObject2, familiar_templateObject3,
 
 function familiar_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = familiar_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
+function familiar_toConsumableArray(arr) { return familiar_arrayWithoutHoles(arr) || familiar_iterableToArray(arr) || familiar_unsupportedIterableToArray(arr) || familiar_nonIterableSpread(); }
+
+function familiar_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
 function familiar_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return familiar_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return familiar_arrayLikeToArray(o, minLen); }
+
+function familiar_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function familiar_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return familiar_arrayLikeToArray(arr); }
 
 function familiar_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -29055,7 +29186,7 @@ var savedMimicDropValue = null;
 function mimicDropValue() {
   var _savedMimicDropValue;
 
-  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = averagePrice((0,dist.$items)(familiar_templateObject19 || (familiar_templateObject19 = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"])))) / (6.29 * 0.95 + 1 * 0.05);
+  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = trueValue.apply(void 0, familiar_toConsumableArray((0,dist.$items)(familiar_templateObject19 || (familiar_templateObject19 = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
 }
 
 function freeFightFamiliar() {
@@ -29866,7 +29997,7 @@ function freeFightOutfit() {
   var bjornChoice = pickBjorn(PickBjornMode.FREE);
   var bjornAlike = (0,dist.have)((0,dist.$item)(outfit_templateObject || (outfit_templateObject = outfit_taggedTemplateLiteral(["buddy bjorn"])))) ? (0,dist.$item)(outfit_templateObject2 || (outfit_templateObject2 = outfit_taggedTemplateLiteral(["buddy bjorn"]))) : (0,dist.$item)(outfit_templateObject3 || (outfit_templateObject3 = outfit_taggedTemplateLiteral(["crown of thrones"])));
   var compiledRequirements = Requirement.merge([].concat(outfit_toConsumableArray(requirements), [new Requirement((0,external_kolmafia_.myFamiliar)() === (0,dist.$familiar)(outfit_templateObject4 || (outfit_templateObject4 = outfit_taggedTemplateLiteral(["Pocket Professor"]))) ? ["Familiar Experience"] : ["Familiar Weight"], {
-    bonusEquip: new Map([[(0,dist.$item)(outfit_templateObject5 || (outfit_templateObject5 = outfit_taggedTemplateLiteral(["lucky gold ring"]))), 400], [(0,dist.$item)(outfit_templateObject6 || (outfit_templateObject6 = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 250], [(0,dist.$item)(outfit_templateObject7 || (outfit_templateObject7 = outfit_taggedTemplateLiteral(["pantogram pants"]))), 100], [(0,dist.$item)(outfit_templateObject8 || (outfit_templateObject8 = outfit_taggedTemplateLiteral(["Mr. Screege's spectacles"]))), 180], [bjornAlike, bjornChoice.meatVal * bjornChoice.probability()]])
+    bonusEquip: new Map([[(0,dist.$item)(outfit_templateObject5 || (outfit_templateObject5 = outfit_taggedTemplateLiteral(["lucky gold ring"]))), 400], [(0,dist.$item)(outfit_templateObject6 || (outfit_templateObject6 = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 250], [(0,dist.$item)(outfit_templateObject7 || (outfit_templateObject7 = outfit_taggedTemplateLiteral(["pantogram pants"]))), 100], [(0,dist.$item)(outfit_templateObject8 || (outfit_templateObject8 = outfit_taggedTemplateLiteral(["Mr. Screege's spectacles"]))), 180], [bjornAlike, bjornChoice.meatVal() * bjornChoice.probability()]])
   })]));
   (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
   if ((0,external_kolmafia_.haveEquipped)((0,dist.$item)(outfit_templateObject9 || (outfit_templateObject9 = outfit_taggedTemplateLiteral(["buddy bjorn"]))))) (0,external_kolmafia_.bjornifyFamiliar)(bjornChoice.familiar);
@@ -29913,7 +30044,7 @@ function meatOutfit(embezzlerUp) {
   var compiledRequirements = Requirement.merge([].concat(outfit_toConsumableArray(requirements), [new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(additionalRequirements), {
     forceEquip: forceEquip,
     preventEquip: [].concat(outfit_toConsumableArray((0,dist.$items)(outfit_templateObject29 || (outfit_templateObject29 = outfit_taggedTemplateLiteral(["broken champagne bottle, unwrapped retro superhero cape"])))), outfit_toConsumableArray(embezzlerUp ? (0,dist.$items)(outfit_templateObject30 || (outfit_templateObject30 = outfit_taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === (0,dist.$item)(outfit_templateObject31 || (outfit_templateObject31 = outfit_taggedTemplateLiteral(["buddy bjorn"]))) ? (0,dist.$item)(outfit_templateObject32 || (outfit_templateObject32 = outfit_taggedTemplateLiteral(["crown of thrones"]))) : (0,dist.$item)(outfit_templateObject33 || (outfit_templateObject33 = outfit_taggedTemplateLiteral(["buddy bjorn"])))]),
-    bonusEquip: new Map([[(0,dist.$item)(outfit_templateObject34 || (outfit_templateObject34 = outfit_taggedTemplateLiteral(["lucky gold ring"]))), 400], [(0,dist.$item)(outfit_templateObject35 || (outfit_templateObject35 = outfit_taggedTemplateLiteral(["mafia thumb ring"]))), 300], [(0,dist.$item)(outfit_templateObject36 || (outfit_templateObject36 = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 250], [(0,dist.$item)(outfit_templateObject37 || (outfit_templateObject37 = outfit_taggedTemplateLiteral(["pantogram pants"]))), 100], [(0,dist.$item)(outfit_templateObject38 || (outfit_templateObject38 = outfit_taggedTemplateLiteral(["Mr. Screege's spectacles"]))), 180], [bjornAlike, bjornChoice.meatVal * bjornChoice.probability()]])
+    bonusEquip: new Map([[(0,dist.$item)(outfit_templateObject34 || (outfit_templateObject34 = outfit_taggedTemplateLiteral(["lucky gold ring"]))), 400], [(0,dist.$item)(outfit_templateObject35 || (outfit_templateObject35 = outfit_taggedTemplateLiteral(["mafia thumb ring"]))), 300], [(0,dist.$item)(outfit_templateObject36 || (outfit_templateObject36 = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 250], [(0,dist.$item)(outfit_templateObject37 || (outfit_templateObject37 = outfit_taggedTemplateLiteral(["pantogram pants"]))), 100], [(0,dist.$item)(outfit_templateObject38 || (outfit_templateObject38 = outfit_taggedTemplateLiteral(["Mr. Screege's spectacles"]))), 180], [bjornAlike, bjornChoice.meatVal() * bjornChoice.probability()]])
   })]));
   (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
 
@@ -29970,7 +30101,7 @@ function meatOutfit(embezzlerUp) {
 var waterBreathingEquipment = (0,dist.$items)(outfit_templateObject44 || (outfit_templateObject44 = outfit_taggedTemplateLiteral(["The Crown of Ed the Undying, aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank"])));
 var familiarWaterBreathingEquipment = (0,dist.$items)(outfit_templateObject45 || (outfit_templateObject45 = outfit_taggedTemplateLiteral(["das boot, little bitty bathysphere"])));
 ;// CONCATENATED MODULE: ./src/fights.ts
-var fights_templateObject, fights_templateObject2, fights_templateObject3, fights_templateObject4, fights_templateObject5, fights_templateObject6, fights_templateObject7, fights_templateObject8, fights_templateObject9, fights_templateObject10, fights_templateObject11, fights_templateObject12, fights_templateObject13, fights_templateObject14, fights_templateObject15, fights_templateObject16, fights_templateObject17, fights_templateObject18, fights_templateObject19, fights_templateObject20, fights_templateObject21, fights_templateObject22, fights_templateObject23, fights_templateObject24, fights_templateObject25, fights_templateObject26, fights_templateObject27, fights_templateObject28, fights_templateObject29, fights_templateObject30, fights_templateObject31, fights_templateObject32, fights_templateObject33, fights_templateObject34, fights_templateObject35, fights_templateObject36, fights_templateObject37, fights_templateObject38, fights_templateObject39, fights_templateObject40, fights_templateObject41, fights_templateObject42, fights_templateObject43, fights_templateObject44, fights_templateObject45, fights_templateObject46, fights_templateObject47, fights_templateObject48, fights_templateObject49, fights_templateObject50, fights_templateObject51, fights_templateObject52, fights_templateObject53, fights_templateObject54, fights_templateObject55, fights_templateObject56, fights_templateObject57, fights_templateObject58, fights_templateObject59, fights_templateObject60, fights_templateObject61, fights_templateObject62, fights_templateObject63, fights_templateObject64, fights_templateObject65, fights_templateObject66, fights_templateObject67, fights_templateObject68, fights_templateObject69, fights_templateObject70, fights_templateObject71, fights_templateObject72, fights_templateObject73, fights_templateObject74, fights_templateObject75, fights_templateObject76, fights_templateObject77, fights_templateObject78, fights_templateObject79, fights_templateObject80, fights_templateObject81, fights_templateObject82, fights_templateObject83, fights_templateObject84, fights_templateObject85, fights_templateObject86, fights_templateObject87, fights_templateObject88, fights_templateObject89, fights_templateObject90, fights_templateObject91, fights_templateObject92, fights_templateObject93, fights_templateObject94, fights_templateObject95, fights_templateObject96, fights_templateObject97, fights_templateObject98, fights_templateObject99, fights_templateObject100, fights_templateObject101, fights_templateObject102, fights_templateObject103, fights_templateObject104, fights_templateObject105, fights_templateObject106, fights_templateObject107, fights_templateObject108, fights_templateObject109, fights_templateObject110, fights_templateObject111, fights_templateObject112, fights_templateObject113, fights_templateObject114, fights_templateObject115, fights_templateObject116, fights_templateObject117, fights_templateObject118, fights_templateObject119, fights_templateObject120, fights_templateObject121, fights_templateObject122, fights_templateObject123, fights_templateObject124, fights_templateObject125, fights_templateObject126, fights_templateObject127, fights_templateObject128, fights_templateObject129, fights_templateObject130, fights_templateObject131, fights_templateObject132, fights_templateObject133, fights_templateObject134, fights_templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183, _templateObject184, _templateObject185, _templateObject186, _templateObject187, _templateObject188, _templateObject189, _templateObject190, _templateObject191, _templateObject192, _templateObject193, _templateObject194, _templateObject195, _templateObject196, _templateObject197, _templateObject198, _templateObject199, _templateObject200, _templateObject201, _templateObject202, _templateObject203, _templateObject204, _templateObject205, _templateObject206, _templateObject207, _templateObject208, _templateObject209, _templateObject210, _templateObject211, _templateObject212, _templateObject213, _templateObject214, _templateObject215, _templateObject216, _templateObject217, _templateObject218, _templateObject219, _templateObject220, _templateObject221, _templateObject222, _templateObject223, _templateObject224, _templateObject225, _templateObject226, _templateObject227, _templateObject228, _templateObject229, _templateObject230, _templateObject231, _templateObject232, _templateObject233, _templateObject234;
+var fights_templateObject, fights_templateObject2, fights_templateObject3, fights_templateObject4, fights_templateObject5, fights_templateObject6, fights_templateObject7, fights_templateObject8, fights_templateObject9, fights_templateObject10, fights_templateObject11, fights_templateObject12, fights_templateObject13, fights_templateObject14, fights_templateObject15, fights_templateObject16, fights_templateObject17, fights_templateObject18, fights_templateObject19, fights_templateObject20, fights_templateObject21, fights_templateObject22, fights_templateObject23, fights_templateObject24, fights_templateObject25, fights_templateObject26, fights_templateObject27, fights_templateObject28, fights_templateObject29, fights_templateObject30, fights_templateObject31, fights_templateObject32, fights_templateObject33, fights_templateObject34, fights_templateObject35, fights_templateObject36, fights_templateObject37, fights_templateObject38, fights_templateObject39, fights_templateObject40, fights_templateObject41, fights_templateObject42, fights_templateObject43, fights_templateObject44, fights_templateObject45, fights_templateObject46, fights_templateObject47, fights_templateObject48, fights_templateObject49, fights_templateObject50, fights_templateObject51, fights_templateObject52, fights_templateObject53, fights_templateObject54, fights_templateObject55, fights_templateObject56, fights_templateObject57, fights_templateObject58, fights_templateObject59, fights_templateObject60, fights_templateObject61, fights_templateObject62, fights_templateObject63, fights_templateObject64, fights_templateObject65, fights_templateObject66, fights_templateObject67, fights_templateObject68, fights_templateObject69, fights_templateObject70, fights_templateObject71, fights_templateObject72, fights_templateObject73, fights_templateObject74, fights_templateObject75, fights_templateObject76, fights_templateObject77, fights_templateObject78, fights_templateObject79, fights_templateObject80, fights_templateObject81, fights_templateObject82, fights_templateObject83, fights_templateObject84, fights_templateObject85, fights_templateObject86, fights_templateObject87, fights_templateObject88, fights_templateObject89, fights_templateObject90, fights_templateObject91, fights_templateObject92, fights_templateObject93, fights_templateObject94, fights_templateObject95, fights_templateObject96, fights_templateObject97, fights_templateObject98, fights_templateObject99, fights_templateObject100, fights_templateObject101, fights_templateObject102, fights_templateObject103, fights_templateObject104, fights_templateObject105, fights_templateObject106, fights_templateObject107, fights_templateObject108, fights_templateObject109, fights_templateObject110, fights_templateObject111, fights_templateObject112, fights_templateObject113, fights_templateObject114, fights_templateObject115, fights_templateObject116, fights_templateObject117, fights_templateObject118, fights_templateObject119, fights_templateObject120, fights_templateObject121, fights_templateObject122, fights_templateObject123, fights_templateObject124, fights_templateObject125, fights_templateObject126, fights_templateObject127, fights_templateObject128, fights_templateObject129, fights_templateObject130, fights_templateObject131, fights_templateObject132, fights_templateObject133, fights_templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183, _templateObject184, _templateObject185, _templateObject186, _templateObject187, _templateObject188, _templateObject189, _templateObject190, _templateObject191, _templateObject192, _templateObject193, _templateObject194, _templateObject195, _templateObject196, _templateObject197, _templateObject198, _templateObject199, _templateObject200, _templateObject201, _templateObject202, _templateObject203, _templateObject204, _templateObject205, _templateObject206, _templateObject207, _templateObject208, _templateObject209, _templateObject210, _templateObject211, _templateObject212, _templateObject213, _templateObject214, _templateObject215, _templateObject216, _templateObject217, _templateObject218, _templateObject219, _templateObject220, _templateObject221, _templateObject222, _templateObject223, _templateObject224, _templateObject225, _templateObject226, _templateObject227, _templateObject228, _templateObject229, _templateObject230, _templateObject231, _templateObject232, _templateObject233, _templateObject234;
 
 function fights_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
@@ -30461,7 +30592,7 @@ new FreeFight(function () {
     (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,dist.$item)(fights_templateObject130 || (fights_templateObject130 = fights_taggedTemplateLiteral(["Bowl of Scorpions"])))), (0,dist.$item)(fights_templateObject131 || (fights_templateObject131 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
     (0,dist.adventureMacro)((0,dist.$location)(fights_templateObject132 || (fights_templateObject132 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), combat.Macro.skill("Use the Force"));
   } else {
-    if ((0,external_kolmafia_.closetAmount)((0,dist.$item)(fights_templateObject133 || (fights_templateObject133 = fights_taggedTemplateLiteral(["Bowl of Scorpions"])))) > 0) (0,external_kolmafia_.takeCloset)((0,external_kolmafia_.closetAmount)((0,dist.$item)(fights_templateObject134 || (fights_templateObject134 = fights_taggedTemplateLiteral(["Bowl of Scorpions"])))), (0,dist.$item)(fights_templateObject135 || (fights_templateObject135 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));else (0,external_kolmafia_.retrieveItem)((0,dist.$item)(_templateObject136 || (_templateObject136 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
+    if ((0,external_kolmafia_.closetAmount)((0,dist.$item)(fights_templateObject133 || (fights_templateObject133 = fights_taggedTemplateLiteral(["Bowl of Scorpions"])))) > 0) (0,external_kolmafia_.takeCloset)((0,external_kolmafia_.closetAmount)((0,dist.$item)(fights_templateObject134 || (fights_templateObject134 = fights_taggedTemplateLiteral(["Bowl of Scorpions"])))), (0,dist.$item)(_templateObject135 || (_templateObject135 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));else (0,external_kolmafia_.retrieveItem)((0,dist.$item)(_templateObject136 || (_templateObject136 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
     (0,dist.adventureMacro)((0,dist.$location)(_templateObject137 || (_templateObject137 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), pygmyMacro);
   }
 }, {
