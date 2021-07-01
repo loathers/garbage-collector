@@ -10,7 +10,7 @@ import {
   numericModifier,
 } from "kolmafia";
 import { have, $familiar, $item, $familiars, get, $effect, $items } from "libram";
-import { argmax, averagePrice } from "./lib";
+import { argmax, trueValue } from "./lib";
 
 export function meatFamiliar(): Familiar {
   if (
@@ -96,7 +96,7 @@ function mimicDropValue() {
   return (
     savedMimicDropValue ??
     (savedMimicDropValue =
-      averagePrice($items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
+      trueValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
   );
 }
 
