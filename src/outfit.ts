@@ -12,12 +12,14 @@ import {
   haveEquipped,
   bjornifyFamiliar,
   enthroneFamiliar,
+  toSlot,
 } from "kolmafia";
 import {
   $class,
   $familiar,
   $item,
   $items,
+  $slot,
   get,
   getKramcoWandererChance,
   have,
@@ -133,6 +135,9 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
         preventEquip: [
           ...$items`broken champagne bottle, unwrapped retro superhero cape`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
+          ...(forceEquip.some((item) => toSlot(item) === $slot`back`) || !have($item`buddy bjorn`)
+            ? []
+            : $items`crown of thrones`),
         ],
         bonusEquip: new Map([
           [$item`lucky gold ring`, 400],
