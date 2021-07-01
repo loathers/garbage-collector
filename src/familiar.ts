@@ -20,19 +20,21 @@ export function meatFamiliar(): Familiar {
   ) {
     return $familiar`Trick-or-Treating Tot`;
   } else {
-    for (const familiar of $familiars`Robortender, ${
-      numericModifier($item`depleted grimacite grappling hook`, "Adventures") === 0
-        ? "Mutant Cactus Bud, "
-        : ""
-    }Hobo Monkey, ${
-      numericModifier($item`depleted grimacite grappling hook`, "Adventures") === 1
-        ? "Mutant Cactus Bud, "
-        : ""
-    }Cat Burglar, Urchin Urchin, Leprechaun`) {
-      if (haveFamiliar(familiar)) return familiar;
-    }
+    const bestLeps = Familiar.all()
+      .filter(have)
+      .sort(
+        (a, b) =>
+          numericModifier(b, "Leprechaun", 1, $item`none`) -
+          numericModifier(a, "Leprechaun", 1, $item`none`)
+      );
+    const bestLepMult = numericModifier(bestLeps[0], "Leprechaun", 1, $item`none`);
+    return bestLeps
+      .filter((familiar) => numericModifier(familiar, "Leprechaun", 1, $item`none`) === bestLepMult)
+      .sort(
+        (a, b) =>
+          numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
+      )[0];
   }
-  throw new Error("No good Barf familiars!");
 }
 
 function myFamiliarWeight(familiar: Familiar | null = null) {
