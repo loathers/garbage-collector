@@ -42,7 +42,7 @@ import {
   adventureMacro,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { questStep, ensureEffect, tryFeast, findRun, trueValue, withChoice } from "./lib";
+import { questStep, ensureEffect, tryFeast, findRun, trueValue, withProperties } from "./lib";
 import { withStash } from "./stash";
 
 export function voterSetup() {
@@ -130,11 +130,9 @@ export function latte() {
       numericModifier(latte, "Meat Drop") !== 40
     ) {
       if (!get("latteUnlocks").includes("cajun") && findRun()) {
-        withChoice(
-          new Map<number, number>([
-            [923, 1],
-            [924, 1],
-          ]),
+       withProperties([{ name: "choiceAdventure923", value: 1},
+            {name: "choiceAdventure924", value: 1},
+          ],
           () => {
             while (!get("latteUnlocks").includes("cajun") && findRun()) {
               const runSource = findRun();
@@ -147,11 +145,9 @@ export function latte() {
         );
       }
       if (!get("latteUnlocks").includes("rawhide") && findRun()) {
-        withChoice(
-          new Map<number, number>([
-            [502, 2],
-            [505, 2],
-          ]),
+        withProperties([{ name: "choiceAdventure502", value: 2},
+            { name: "choiceAdventure505", value: 2},
+          ],
           () => {
             while (!get("latteUnlocks").includes("rawhide") && findRun()) {
               const runSource = findRun();
