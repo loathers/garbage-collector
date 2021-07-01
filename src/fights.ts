@@ -400,16 +400,14 @@ export function dailyFights() {
           new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
         ]);
         if (
-          get("_pocketProfessorLectures") >=
+          get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
-          set("_garbo_meatChain", true);
-        } else {
           withMacro(firstChainMacro(), () =>
             fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
           );
-          set("_garbo_meatChain", true);
         }
+       set("_garbo_meatChain", true);
       }
 
       startDigitize();
