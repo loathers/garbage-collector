@@ -407,7 +407,7 @@ export function dailyFights() {
             fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
           );
         }
-       set("_garbo_meatChain", true);
+        set("_garbo_meatChain", true);
       }
 
       startDigitize();
