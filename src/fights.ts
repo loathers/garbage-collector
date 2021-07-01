@@ -427,16 +427,14 @@ export function dailyFights() {
         ]);
         maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
         if (
-          get("_pocketProfessorLectures") >=
+          get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
-          set("_garbo_weightChain", true);
-        } else {
           withMacro(secondChainMacro(), () =>
             fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
           );
-          set("_garbo_weightChain", true);
         }
+        set("_garbo_weightChain", true);
       }
 
       startDigitize();
