@@ -130,8 +130,10 @@ export function latte() {
       numericModifier(latte, "Meat Drop") !== 40
     ) {
       if (!get("latteUnlocks").includes("cajun") && findRun()) {
-       withProperties([{ name: "choiceAdventure923", value: 1},
-            {name: "choiceAdventure924", value: 1},
+        withProperties(
+          [
+            { name: "choiceAdventure923", value: 1 },
+            { name: "choiceAdventure924", value: 1 },
           ],
           () => {
             while (!get("latteUnlocks").includes("cajun") && findRun()) {
@@ -145,8 +147,10 @@ export function latte() {
         );
       }
       if (!get("latteUnlocks").includes("rawhide") && findRun()) {
-        withProperties([{ name: "choiceAdventure502", value: 2},
-            { name: "choiceAdventure505", value: 2},
+        withProperties(
+          [
+            { name: "choiceAdventure502", value: 2 },
+            { name: "choiceAdventure505", value: 2 },
           ],
           () => {
             while (!get("latteUnlocks").includes("rawhide") && findRun()) {
