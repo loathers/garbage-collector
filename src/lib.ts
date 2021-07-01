@@ -75,10 +75,6 @@ export function mapMonster(location: Location, monster: Monster) {
   if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
 }
 
-export function averagePrice(items: Item[]) {
-  return items.reduce((s, it) => s + mallPrice(it), 0) / items.length;
-}
-
 export function argmax<T>(values: [T, number][]) {
   return values.reduce(([minValue, minScore], [value, score]) =>
     score > minScore ? [value, score] : [minValue, minScore]
@@ -364,14 +360,26 @@ export function findRun() {
   return freeRuns.find((run) => run.available());
 }
 
+const valueMap: Map<Item, number> = new Map();
+
+const MALL_VALUE_MODIFIER = 0.9;
+
 export function trueValue(...items: Item[]) {
   return (
     items
       .map((item) => {
+        if (valueMap.has(item)) return valueMap.get(item) || 0;
         if (item.discardable) {
-          return mallPrice(item) > 2 * autosellPrice(item) ? mallPrice(item) : autosellPrice(item);
+          valueMap.set(
+            item,
+            mallPrice(item) > 2 * autosellPrice(item)
+              ? MALL_VALUE_MODIFIER * mallPrice(item)
+              : autosellPrice(item)
+          );
+        } else {
+          valueMap.set(item, mallPrice(item) > 100 ? MALL_VALUE_MODIFIER * mallPrice(item) : 0);
         }
-        return mallPrice(item) > 100 ? mallPrice(item) : 0;
+        return valueMap.get(item) || 0;
       })
       .reduce((s, price) => s + price, 0) / items.length
   );
