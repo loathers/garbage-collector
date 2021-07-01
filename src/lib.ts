@@ -863,7 +863,7 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
         additionalValue(a) -
         (b.meatVal() * b.probability() + additionalValue(b))
     )[0];
-    }
+}
 type Property = {
   name: string;
   value: any;

@@ -270,10 +270,10 @@ export function main(argString = "") {
           runChoice(1);
         }
 
-    // FIXME: Dynamically figure out pointer ring approach.
-    withStash($items`haiku katana, repaid diaper, buddy bjorn, crown of thrones`, () => {
-      // 0. diet stuff.
-      runDiet();
+        // FIXME: Dynamically figure out pointer ring approach.
+        withStash($items`haiku katana, repaid diaper, buddy bjorn, crown of thrones`, () => {
+          // 0. diet stuff.
+          runDiet();
 
           // 1. get a ticket
           ensureBarfAccess();
