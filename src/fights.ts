@@ -603,7 +603,7 @@ const freeFightSources = [
       const maxSealsAvailable =
         get("lastGuildStoreOpen") === myAscensions()
           ? maxSeals
-          : Math.min(maxSeals, availableAmount($item`seal-blubber candle`));
+          : Math.min(maxSeals, availableAmount($item`seal-blubber candle`) / 3);
       return myClass() === $class`Seal Clubber`
         ? Math.max(maxSealsAvailable - get("_sealsSummoned"), 0)
         : 0;
@@ -614,7 +614,10 @@ const freeFightSources = [
           ? $item`figurine of a wretched-looking seal`
           : $item`figurine of an ancient seal`;
       retrieveItem(1, figurine);
-      retrieveItem(1, $item`seal-blubber candle`);
+      retrieveItem(
+        get("lastGuildStoreOpen") === myAscensions() ? 1 : 3,
+        $item`seal-blubber candle`
+      );
       use(figurine);
     },
     {
