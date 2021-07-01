@@ -93,7 +93,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
   const forceEquip = [];
   const additionalRequirements = [];
   const bjornChoice = pickBjorn(embezzlerUp ? PickBjornMode.EMBEZZLER : PickBjornMode.BARF);
-  const bjornAlike = have($item`buddy bjorn`) ? $item`buddy bjorn` : $item`crown of thrones`;
+
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
@@ -122,6 +122,10 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
   if (sea) {
     additionalRequirements.push("sea");
   }
+  const bjornAlike =
+    have($item`buddy bjorn`) && !forceEquip.some((item) => toSlot(item) === $slot`back`)
+      ? $item`buddy bjorn`
+      : $item`crown of thrones`;
   const compiledRequirements = Requirement.merge([
     ...requirements,
     new Requirement(
@@ -135,9 +139,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
         preventEquip: [
           ...$items`broken champagne bottle, unwrapped retro superhero cape`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
-          ...(forceEquip.some((item) => toSlot(item) === $slot`back`) || !have($item`buddy bjorn`)
-            ? []
-            : $items`crown of thrones`),
+          bjornAlike === $item`buddy bjorn` ? $item`crown of thrones` : $item`buddy bjorn`,
         ],
         bonusEquip: new Map([
           [$item`lucky gold ring`, 400],
