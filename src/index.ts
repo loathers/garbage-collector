@@ -264,7 +264,7 @@ export function main(argString = "") {
     }
 
     // FIXME: Dynamically figure out pointer ring approach.
-    withStash($items`haiku katana, repaid diaper`, () => {
+    withStash($items`haiku katana, repaid diaper, buddy bjorn, crown of thrones`, () => {
       // 0. diet stuff.
       runDiet();
 
