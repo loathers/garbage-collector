@@ -131,15 +131,21 @@ export function prepWandererZone() {
       (get("guzzlrPlatinumDeliveries") < 30 ||
         (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
     ) {
-      withChoice(new Map<number, number>([[1412, 4]]), () => use(1, $item`guzzlr tablet`));
+      withProperties([{ name: "choiceAdventure1412", value: 4 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     } else if (
       get("_guzzlrGoldDeliveries") < 3 &&
       get("guzzlrBronzeDeliveries") >= 5 &&
       (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
     ) {
-      withChoice(new Map<number, number>([[1412, 3]]), () => use(1, $item`guzzlr tablet`));
+      withProperties([{ name: "choiceAdventure1412", value: 3 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     } else {
-      withChoice(new Map<number, number>([[1412, 2]]), () => use(1, $item`guzzlr tablet`));
+      withProperties([{ name: "choiceAdventure1412", value: 2 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     }
   }
 
@@ -156,15 +162,27 @@ export function prepWandererZone() {
       (get("guzzlrPlatinumDeliveries") < 30 ||
         (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
     ) {
-      withChoice(new Map<number, number>([[1412, 4]]), () => use(1, $item`guzzlr tablet`));
+      withProperties(
+        [
+          {
+            name: "choiceAdventure1412",
+            value: 4,
+          },
+        ],
+        () => use(1, $item`guzzlr tablet`)
+      );
     } else if (
       get("_guzzlrGoldDeliveries") < 3 &&
       get("guzzlrBronzeDeliveries") >= 5 &&
       (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
     ) {
-      withChoice(new Map<number, number>([[1412, 3]]), () => use(1, $item`guzzlr tablet`));
+      withProperties([{ name: "choiceAdventure1412", value: 3 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     } else {
-      withChoice(new Map<number, number>([[1412, 2]]), () => use(1, $item`guzzlr tablet`));
+      withProperties([{ name: "choiceAdventure1412", value: 2 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     }
   }
 
@@ -866,16 +884,4 @@ export function withProperties(properties: Property[], functionToRun: () => void
       set(property.name, property.value);
     }
   }
-}
-
-export function withChoice(choiceVals: Map<number, number>, functionToRun: () => void) {
-  withProperties(
-    Array.from(choiceVals.entries()).map((key, mapValue) => {
-      return {
-        name: `choiceAdventure${key.toString()}`,
-        value: mapValue,
-      };
-    }),
-    functionToRun
-  );
 }
