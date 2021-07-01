@@ -28515,14 +28515,12 @@ function voterSetup() {
   var votingMonsterPriority = ["terrible mutant", "angry ghost", "government bureaucrat", "annoyed snake", "slime blob"];
   var initPriority = new Map([["Meat Drop: +30", 10], ["Item Drop: +15", 9], ["Familiar Experience: +2", 8], ["Adventures: +1", 7], ["Monster Level: +10", 5], ["".concat((0,external_kolmafia_.myPrimestat)(), " Percent: +25"), 3], ["Experience (".concat((0,external_kolmafia_.myPrimestat)(), "): +4"), 2], ["Meat Drop: -30", -2], ["Item Drop: -15", -2], ["Familiar Experience: -2", -2]]);
   var monsterVote = votingMonsterPriority.indexOf((0,dist.get)("_voteMonster1")) < votingMonsterPriority.indexOf((0,dist.get)("_voteMonster2")) ? 1 : 2;
-  var voteLocalPriorityArr = [initPriority.get((0,dist.get)("_voteLocal1")) || (0,dist.get)("_voteLocal1").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal2")) || (0,dist.get)("_voteLocal2").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal3")) || (0,dist.get)("_voteLocal3").indexOf("-") === -1 ? 1 : -1, initPriority.get((0,dist.get)("_voteLocal4")) || (0,dist.get)("_voteLocal4").indexOf("-") === -1 ? 1 : -1];
+  var voteLocalPriorityArr = [[0, initPriority.get((0,dist.get)("_voteLocal1")) || ((0,dist.get)("_voteLocal1").indexOf("-") === -1 ? 1 : -1)], [1, initPriority.get((0,dist.get)("_voteLocal2")) || ((0,dist.get)("_voteLocal2").indexOf("-") === -1 ? 1 : -1)], [2, initPriority.get((0,dist.get)("_voteLocal3")) || ((0,dist.get)("_voteLocal3").indexOf("-") === -1 ? 1 : -1)], [3, initPriority.get((0,dist.get)("_voteLocal4")) || ((0,dist.get)("_voteLocal4").indexOf("-") === -1 ? 1 : -1)]];
   var bestVotes = voteLocalPriorityArr.sort(function (a, b) {
-    return b - a;
+    return b[1] - a[1];
   });
-  var firstPriority = bestVotes[0];
-  var secondPriority = bestVotes[1];
-  var firstInit = voteLocalPriorityArr.indexOf(firstPriority);
-  var secondInit = voteLocalPriorityArr.indexOf(secondPriority);
+  var firstInit = bestVotes[0][0];
+  var secondInit = bestVotes[1][0];
   (0,external_kolmafia_.visitUrl)("choice.php?option=1&whichchoice=1331&g=".concat(monsterVote, "&local[]=").concat(firstInit, "&local[]=").concat(secondInit));
 }
 function configureGear() {
