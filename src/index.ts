@@ -253,20 +253,20 @@ export function main(argString = "") {
         },
         {
           name: "autoSatisfyWithMall",
-          value: true
+          value: true,
         },
         {
           name: "autoSatisfyWithNPCs",
-          value: true
+          value: true,
         },
         {
           name: "autoSatisfyWithCoinmasters",
-          value: true
+          value: true,
         },
         {
           name: "dontStopForCounters",
-          value: true
-        }
+          value: true,
+        },
       ],
       () => {
         cliExecute("mood apathetic");
