@@ -30721,10 +30721,10 @@ function freeFights() {
     })]);
 
     if (questStep("questL08Trapper") >= 2) {
-      (0,dist.adventureMacroAuto)((0,dist.$location)(_templateObject214 || (_templateObject214 = fights_taggedTemplateLiteral(["Lair of the Ninja Snowmen"]))), combat.Macro.skill("Fire the Jokester's Gun"));
+      (0,dist.adventureMacroAuto)((0,dist.$location)(_templateObject214 || (_templateObject214 = fights_taggedTemplateLiteral(["Lair of the Ninja Snowmen"]))), combat.Macro.skill("Sing Along").skill("Fire the Jokester's Gun"));
     } else if ((0,dist.have)((0,dist.$skill)(_templateObject215 || (_templateObject215 = fights_taggedTemplateLiteral(["Comprehensive Cartography"])))) && (0,dist.get)("_monstersMapped") < 3) {
       try {
-        combat.Macro.skill("Fire the Jokester's Gun").setAutoAttack();
+        combat.Macro.skill("Sing Along").skill("Fire the Jokester's Gun").setAutoAttack();
         mapMonster((0,dist.$location)(_templateObject216 || (_templateObject216 = fights_taggedTemplateLiteral(["The Haiku Dungeon"]))), (0,dist.$monster)(_templateObject217 || (_templateObject217 = fights_taggedTemplateLiteral(["amateur ninja"]))));
       } finally {
         (0,external_kolmafia_.setAutoAttack)(0);
