@@ -77,18 +77,15 @@ export function voterSetup() {
       : 2;
 
   const voteLocalPriorityArr = [
-    initPriority.get(get("_voteLocal1")) || get("_voteLocal1").indexOf("-") === -1 ? 1 : -1,
-    initPriority.get(get("_voteLocal2")) || get("_voteLocal2").indexOf("-") === -1 ? 1 : -1,
-    initPriority.get(get("_voteLocal3")) || get("_voteLocal3").indexOf("-") === -1 ? 1 : -1,
-    initPriority.get(get("_voteLocal4")) || get("_voteLocal4").indexOf("-") === -1 ? 1 : -1,
+    [0, initPriority.get(get("_voteLocal1")) || (get("_voteLocal1").indexOf("-") === -1 ? 1 : -1)],
+    [1, initPriority.get(get("_voteLocal2")) || (get("_voteLocal2").indexOf("-") === -1 ? 1 : -1)],
+    [2, initPriority.get(get("_voteLocal3")) || (get("_voteLocal3").indexOf("-") === -1 ? 1 : -1)],
+    [3, initPriority.get(get("_voteLocal4")) || (get("_voteLocal4").indexOf("-") === -1 ? 1 : -1)],
   ];
 
-  const bestVotes = voteLocalPriorityArr.sort((a, b) => b - a);
-  const firstPriority = bestVotes[0];
-  const secondPriority = bestVotes[1];
-
-  const firstInit = voteLocalPriorityArr.indexOf(firstPriority);
-  const secondInit = voteLocalPriorityArr.indexOf(secondPriority);
+  const bestVotes = voteLocalPriorityArr.sort((a, b) => b[1] - a[1]);
+  const firstInit = bestVotes[0][0];
+  const secondInit = bestVotes[1][0];
 
   visitUrl(
     `choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${firstInit}&local[]=${secondInit}`
