@@ -416,7 +416,6 @@ type BjornedFamiliar = {
   modifier?: BjornModifier;
 };
 
-
 export enum PickBjornMode {
   FREE,
   EMBEZZLER,
@@ -444,6 +443,9 @@ export function withProperties(properties: Property[], functionToRun: () => void
     }
   }
 }
+const expectedValue = (bjornFam: BjornedFamiliar, bjornMode: PickBjornMode) =>
+  bjornFam.meatVal() * bjornFam.probability() + additionalValue(bjornFam, bjornMode);
+
 const temporaryBjorn: BjornedFamiliar[] = [
   {
     familiar: $familiar`puck man`,
@@ -506,7 +508,11 @@ const temporaryBjorn: BjornedFamiliar[] = [
   },
 ]
   .filter((bjornChoice) => have(bjornChoice.familiar))
-  .filter((familiar) => familiar.probability() !== 0);
+  .filter((familiar) =>
+    [PickBjornMode.BARF, PickBjornMode.FREE, PickBjornMode.EMBEZZLER].some(
+      (mode) => expectedValue(familiar, mode) > expectedValue(permanentBjorn[mode], mode)
+    )
+  );
 
 const permanentFamiliars: BjornedFamiliar[] = [
   {
@@ -908,22 +914,7 @@ export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
   if (temporaryBjorn === []) return permPick;
 
-  const expectedValue = (bjornFam: BjornedFamiliar, bjornMode: PickBjornMode) =>
-    bjornFam.meatVal() * bjornFam.probability() + additionalValue(bjornFam, bjornMode);
-
-  temporaryBjorn.filter(
-    (bjornFam) =>
-      Math.max(
-        ...[PickBjornMode.BARF, PickBjornMode.FREE, PickBjornMode.EMBEZZLER].map((bjornMode) =>
-          expectedValue(bjornFam, bjornMode)
-        )
-      ) >
-      Math.min(
-        ...[PickBjornMode.BARF, PickBjornMode.FREE, PickBjornMode.EMBEZZLER].map((bjornMode) =>
-          expectedValue(permanentBjorn[bjornMode], bjornMode)
-        )
-      )
-  );
+  temporaryBjorn.filter((bjornFam) => bjornFam.probability() !== 0);
 
   const availableTemporaryBjorns = [...temporaryBjorn].filter(
     (bjornFamiliar) => bjornFamiliar.familiar !== myFamiliar()
