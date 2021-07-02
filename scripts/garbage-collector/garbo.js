@@ -31267,7 +31267,7 @@ function src_main() {
       }
 
       var stashItems = (0,dist.$items)(src_templateObject31 || (src_templateObject31 = src_taggedTemplateLiteral(["repaid diaper, buddy bjorn, crown of thrones"])));
-      if ((0,external_kolmafia_.myClass)() !== (0,dist.$class)(src_templateObject32 || (src_templateObject32 = src_taggedTemplateLiteral(["seal clubber"]))) || !(0,dist.have)((0,dist.$skill)(src_templateObject33 || (src_templateObject33 = src_taggedTemplateLiteral(["furious wallop"]))))) stashItems.push((0,dist.$item)(src_templateObject34 || (src_templateObject34 = src_taggedTemplateLiteral(["haiku katana"])))); // FIXME: Dynamically figure out pointer ring approach.
+      if ((0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() && ((0,external_kolmafia_.myClass)() !== (0,dist.$class)(src_templateObject32 || (src_templateObject32 = src_taggedTemplateLiteral(["seal clubber"]))) || !(0,dist.have)((0,dist.$skill)(src_templateObject33 || (src_templateObject33 = src_taggedTemplateLiteral(["furious wallop"])))))) stashItems.push((0,dist.$item)(src_templateObject34 || (src_templateObject34 = src_taggedTemplateLiteral(["haiku katana"])))); // FIXME: Dynamically figure out pointer ring approach.
 
       withStash(stashItems, function () {
         // 0. diet stuff.
