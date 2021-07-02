@@ -6,6 +6,7 @@ import {
   getCounters,
   itemAmount,
   myAdventures,
+  myClass,
   myGardenType,
   myTurncount,
   print,
@@ -22,6 +23,7 @@ import {
   xpath,
 } from "kolmafia";
 import {
+  $class,
   $effect,
   $item,
   $items,
@@ -285,9 +287,11 @@ export function main(argString = "") {
           visitUrl("shop.php?whichshop=armory&action=talk");
           runChoice(1);
         }
-
+        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones`;
+        if (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))
+          stashItems.push($item`haiku katana`);
         // FIXME: Dynamically figure out pointer ring approach.
-        withStash($items`haiku katana, repaid diaper, buddy bjorn, crown of thrones`, () => {
+        withStash(stashItems, () => {
           // 0. diet stuff.
           runDiet();
 
