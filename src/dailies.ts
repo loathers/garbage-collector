@@ -43,6 +43,7 @@ import {
   $slot,
   adventureMacro,
 } from "libram";
+import { globalOptions } from ".";
 import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, tryFeast, findRun, trueValue, withProperties } from "./lib";
 import { withStash } from "./stash";
@@ -264,15 +265,24 @@ export function configureMisc() {
   }
 
   if (get("_VYKEACompanionLevel") === 0) {
-    if (
-      (myAdventures() / 0.96) * 0.1 * 3 * 275 >
+    const expectedTurns =
+      myAdventures() / 0.96 - (globalOptions.stopTurncount ? globalOptions.stopTurncount : 0);
+    const vykeas: [number, number][] = [
+      [1, 0],
+      [2, 1],
+      [3, 11],
+    ]; //excluding 4 and 5 as per bean's suggestion
+    const vykeaProfit = (level: number, cost: number) =>
+      expectedTurns * 275 * 0.1 * level -
       5 * mallPrice($item`vykea rail`) +
-        11 * mallPrice($item`vykea dowel`) +
-        5 * mallPrice($item`vykea plank`) +
-        1 * mallPrice($item`VYKEA hex key`)
-    ) {
+      cost * mallPrice($item`vykea dowel`) +
+      5 * mallPrice($item`vykea plank`) +
+      1 * mallPrice($item`VYKEA hex key`);
+
+    if (vykeas.some(([level, cost]) => vykeaProfit(level, cost) > 0)) {
+      const level = vykeas.sort((a, b) => vykeaProfit(...b) - vykeaProfit(...a))[0][0];
       retrieveItem($item`VYKEA hex key`);
-      cliExecute("create level 3 couch");
+      cliExecute(`create level ${level} couch`);
     }
   }
 
