@@ -275,25 +275,25 @@ export function main(argString = "") {
         cliExecute("ccs garbo");
         safeRestore();
 
-    if (questStep("questM23Meatsmith") === -1) {
-      visitUrl("shop.php?whichshop=meatsmith&action=talk");
-      runChoice(1);
-    }
-    if (questStep("questM24Doc") === -1) {
-      visitUrl("shop.php?whichshop=doc&action=talk");
-      runChoice(1);
-    }
-    if (questStep("questM25Armorer") === -1) {
-      visitUrl("shop.php?whichshop=armory&action=talk");
-      runChoice(1);
-    }
-    const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones`;
-    if (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))
-      stashItems.push($item`haiku katana`);
-    // FIXME: Dynamically figure out pointer ring approach.
-    withStash(stashItems, () => {
-      // 0. diet stuff.
-      runDiet();
+        if (questStep("questM23Meatsmith") === -1) {
+          visitUrl("shop.php?whichshop=meatsmith&action=talk");
+          runChoice(1);
+        }
+        if (questStep("questM24Doc") === -1) {
+          visitUrl("shop.php?whichshop=doc&action=talk");
+          runChoice(1);
+        }
+        if (questStep("questM25Armorer") === -1) {
+          visitUrl("shop.php?whichshop=armory&action=talk");
+          runChoice(1);
+        }
+        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones`;
+        if (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))
+          stashItems.push($item`haiku katana`);
+        // FIXME: Dynamically figure out pointer ring approach.
+        withStash(stashItems, () => {
+          // 0. diet stuff.
+          runDiet();
 
           // 1. get a ticket
           ensureBarfAccess();
