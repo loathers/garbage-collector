@@ -13,6 +13,7 @@ import {
   getCampground,
   getCounters,
   handlingChoice,
+  haveFamiliar,
   itemAmount,
   mallPrice,
   myAdventures,
@@ -50,6 +51,7 @@ import {
   $class,
   $effect,
   $familiar,
+  $familiars,
   $item,
   $items,
   $location,
@@ -169,6 +171,8 @@ const embezzlerMacro = () =>
   Macro.if_(
     "monstername Knob Goblin Embezzler",
     Macro.if_("snarfblat 186", Macro.item($item`green taffy`))
+      .if_("hasskill Wink at", Macro.trySkill("Wink At"))
+      .if_("hasskill 7108", Macro.trySkill("Fire a badly romantic arrow"))
       .externalIf(
         get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
         Macro.trySkill("Digitize")
@@ -446,6 +450,17 @@ export function dailyFights() {
         withMacro(embezzlerMacro(), () => {
           if (nextFight) {
             useFamiliar(meatFamiliar());
+            if (
+              (haveFamiliar($familiar`Reanimated Reanimator`) ||
+                haveFamiliar($familiar`Obtuse Angel`)) &&
+              get("_badlyRomanticArrows") === 0 &&
+              get("_envyfishEggUsed")
+            ) {
+              for (const f of $familiars`Obtuse Angel, Reanimated Reanimator`) {
+                useFamiliar(f);
+              }
+            }
+
             if (
               nextFight.draggable &&
               !get("_envyfishEggUsed") &&
