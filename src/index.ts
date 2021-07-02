@@ -288,7 +288,7 @@ export function main(argString = "") {
       runChoice(1);
     }
     const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones`;
-    if (myClass() !== $class`seal clubber` && have($skill`furious wallop`))
+    if (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))
       stashItems.push($item`haiku katana`);
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
