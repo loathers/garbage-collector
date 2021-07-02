@@ -68,7 +68,23 @@ export class Requirement {
 
 export function freeFightOutfit(requirements: Requirement[] = []) {
   const bjornChoice = pickBjorn(PickBjornMode.FREE);
-  const bjornAlike = have($item`buddy bjorn`) ? $item`buddy bjorn` : $item`crown of thrones`;
+
+  const bjornAlike =
+    have($item`buddy bjorn`) &&
+    !requirements.some((requirement) => {
+      requirement.maximizeOptions_.forceEquip &&
+        requirement.maximizeOptions_.forceEquip.some(
+          (equipment) => toSlot(equipment) === $slot`back`
+        );
+    })
+      ? $item`buddy bjorn`
+      : $item`crown of thrones`;
+  if (bjornAlike === $item`buddy bjorn`)
+    requirements.push(
+      new Requirement([], {
+        preventEquip: $items`crown of thrones`,
+      })
+    );
   const compiledRequirements = Requirement.merge([
     ...requirements,
     new Requirement(
