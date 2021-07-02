@@ -68,7 +68,7 @@ export class Requirement {
 
 export function freeFightOutfit(requirements: Requirement[] = []) {
   const bjornChoice = pickBjorn(PickBjornMode.FREE);
-  const bjornAlike = have($item`buddy bjorn`) ? $item`buddy bjorn` : $item`crown of thrones`;
+
   const compiledRequirements = Requirement.merge([
     ...requirements,
     new Requirement(
@@ -79,11 +79,31 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
-          [bjornAlike, bjornChoice.meatVal() * bjornChoice.probability()],
         ]),
       }
     ),
   ]);
+  const bjornAlike =
+    have($item`buddy bjorn`) &&
+    !(
+      compiledRequirements.maximizeOptions_.forceEquip &&
+      compiledRequirements.maximizeOptions_.forceEquip.some(
+        (equipment) => toSlot(equipment) === $slot`back`
+      )
+    )
+      ? $item`buddy bjorn`
+      : $item`crown of thrones`;
+  if (bjornAlike === $item`buddy bjorn`)
+    requirements.push(
+      new Requirement([], {
+        preventEquip: $items`crown of thrones`,
+      })
+    );
+  compiledRequirements.merge(
+    new Requirement([], {
+      bonusEquip: new Map([[bjornAlike, bjornChoice.meatVal() * bjornChoice.probability()]]),
+    })
+  );
   withProperties(
     [
       {
