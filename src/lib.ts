@@ -775,36 +775,6 @@ export enum PickBjornMode {
   BARF,
 }
 
-export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
-  const additionalValue = (familiar: BjornedFamiliar) => {
-    if (!familiar.modifier) return 0;
-    const meatVal =
-      mode === PickBjornMode.FREE ? 0 : baseMeat + mode === PickBjornMode.EMBEZZLER ? 750 : 0;
-    const itemVal = PickBjornMode.BARF ? 72 : 0;
-    if (familiar.modifier.type === BjornModifierType.MEAT)
-      return (familiar.modifier.modifier * meatVal) / 100;
-    if (familiar.modifier.type === BjornModifierType.ITEM)
-      return (familiar.modifier.modifier * itemVal) / 100;
-    if (familiar.modifier.type === BjornModifierType.FMWT) {
-      const lepMultiplier = numericModifier(meatFamiliar(), "Leprechaun", 1, Item.get("none"));
-      const fairyMultiplier = numericModifier(meatFamiliar(), "Fairy", 1, Item.get("none"));
-      return (
-        (meatVal * (10 * lepMultiplier + 5 * Math.sqrt(lepMultiplier)) +
-          itemVal * (5 * fairyMultiplier + 2.5 * Math.sqrt(fairyMultiplier))) /
-        100
-      );
-    }
-    return 0;
-  };
-  return bjornFams
-    .filter((bjornFam) => have(bjornFam.familiar) && myFamiliar() !== bjornFam.familiar)
-    .sort(
-      (b, a) =>
-        a.meatVal() * a.probability() +
-        additionalValue(a) -
-        (b.meatVal() * b.probability() + additionalValue(b))
-    )[0];
-}
 type Property = {
   name: string;
   value: any;
@@ -1243,7 +1213,7 @@ const permanentFamiliars: BjornedFamiliar[] = [
   },
 ].filter((bjornChoice) => have(bjornChoice.familiar));
 
-const additionalValue = (familiar: BjornedFamiliar, mode: PickBjornMode) => {
+function additionalValue(familiar: BjornedFamiliar, mode: PickBjornMode) {
   if (!familiar.modifier) return 0;
   const meatVal =
     mode === PickBjornMode.FREE ? 0 : baseMeat + mode === PickBjornMode.EMBEZZLER ? 750 : 0;
@@ -1262,40 +1232,33 @@ const additionalValue = (familiar: BjornedFamiliar, mode: PickBjornMode) => {
     );
   }
   return 0;
-};
-const permanentBjorn = new Map<PickBjornMode, BjornedFamiliar>([
-  [
-    PickBjornMode.BARF,
-    permanentFamiliars.sort(
-      (b, a) =>
-        b.meatVal() * b.probability() +
-        additionalValue(b, PickBjornMode.BARF) -
-        (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.BARF))
-    )[0],
-  ],
-  [
-    PickBjornMode.FREE,
-    permanentFamiliars.sort(
-      (b, a) =>
-        b.meatVal() * b.probability() +
-        additionalValue(b, PickBjornMode.FREE) -
-        (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.FREE))
-    )[0],
-  ],
-  [
-    PickBjornMode.EMBEZZLER,
-    permanentFamiliars.sort(
-      (b, a) =>
-        b.meatVal() * b.probability() +
-        additionalValue(b, PickBjornMode.EMBEZZLER) -
-        (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.EMBEZZLER))
-    )[0],
-  ],
-]);
+}
+const permanentBjorn: Record<PickBjornMode, BjornedFamiliar> = {
+  [PickBjornMode.BARF]: permanentFamiliars.sort(
+    (b, a) =>
+      b.meatVal() * b.probability() +
+      additionalValue(b, PickBjornMode.BARF) -
+      (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.BARF))
+  )[0],
 
-export function pickBjorn2(mode: PickBjornMode) {
+  [PickBjornMode.FREE]: permanentFamiliars.sort(
+    (b, a) =>
+      b.meatVal() * b.probability() +
+      additionalValue(b, PickBjornMode.FREE) -
+      (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.FREE))
+  )[0],
+
+  [PickBjornMode.EMBEZZLER]: permanentFamiliars.sort(
+    (b, a) =>
+      b.meatVal() * b.probability() +
+      additionalValue(b, PickBjornMode.EMBEZZLER) -
+      (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.EMBEZZLER))
+  )[0],
+};
+
+export function pickBjorn(mode: PickBjornMode) {
   temporaryBjorn.filter((bjornFam) => bjornFam.probability() !== 0);
-  if (temporaryBjorn === []) return permanentBjorn.get(mode);
+  if (temporaryBjorn === []) return permanentBjorn[mode];
   return temporaryBjorn.sort(
     (b, a) =>
       b.meatVal() * b.probability() +
