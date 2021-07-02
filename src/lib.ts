@@ -1257,10 +1257,11 @@ const permanentBjorn: Record<PickBjornMode, BjornedFamiliar> = {
 };
 
 export function pickBjorn(mode: PickBjornMode) {
+  const permPick = permanentBjorn[mode];
+  if (temporaryBjorn === []) return permPick;
+
   const expectedValue = (bjornFam: BjornedFamiliar, bjornMode: PickBjornMode) =>
     bjornFam.meatVal() * bjornFam.probability() + additionalValue(bjornFam, bjornMode);
-
-  const permPick = permanentBjorn[mode];
 
   temporaryBjorn.filter(
     (bjornFam) =>
