@@ -53,7 +53,7 @@ import {
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { questStep, prepWandererZone, physicalImmuneMacro } from "./lib";
+import { questStep, prepWandererZone, physicalImmuneMacro, withProperties } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -245,52 +245,77 @@ export function main(argString = "") {
 
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
-    setProperty("battleAction", "custom combat script");
-    cliExecute("mood apathetic");
-    cliExecute("ccs garbo");
-    safeRestore();
+    withProperties(
+      [
+        {
+          name: "battleAction",
+          value: "custom combat script",
+        },
+        {
+          name: "autoSatisfyWithMall",
+          value: true,
+        },
+        {
+          name: "autoSatisfyWithNPCs",
+          value: true,
+        },
+        {
+          name: "autoSatisfyWithCoinmasters",
+          value: true,
+        },
+        {
+          name: "dontStopForCounters",
+          value: true,
+        },
+      ],
+      () => {
+        cliExecute("mood apathetic");
+        cliExecute("ccs garbo");
+        safeRestore();
 
-    if (questStep("questM23Meatsmith") === -1) {
-      visitUrl("shop.php?whichshop=meatsmith&action=talk");
-      runChoice(1);
-    }
-    if (questStep("questM24Doc") === -1) {
-      visitUrl("shop.php?whichshop=doc&action=talk");
-      runChoice(1);
-    }
-    if (questStep("questM25Armorer") === -1) {
-      visitUrl("shop.php?whichshop=armory&action=talk");
-      runChoice(1);
-    }
-
-    // FIXME: Dynamically figure out pointer ring approach.
-    withStash($items`haiku katana, repaid diaper, buddy bjorn, crown of thrones`, () => {
-      // 0. diet stuff.
-      runDiet();
-
-      // 1. get a ticket
-      ensureBarfAccess();
-
-      // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
-      dailySetup();
-
-      setDefaultMaximizeOptions({
-        preventEquip: $items`broken champagne bottle`,
-      });
-
-      // 4. do some embezzler stuff
-      freeFights();
-      dailyFights();
-
-      // 5. burn turns at barf
-      try {
-        while (canContinue()) {
-          barfTurn();
+        if (questStep("questM23Meatsmith") === -1) {
+          visitUrl("shop.php?whichshop=meatsmith&action=talk");
+          runChoice(1);
         }
-      } finally {
-        setAutoAttack(0);
+        if (questStep("questM24Doc") === -1) {
+          visitUrl("shop.php?whichshop=doc&action=talk");
+          runChoice(1);
+        }
+        if (questStep("questM25Armorer") === -1) {
+          visitUrl("shop.php?whichshop=armory&action=talk");
+          runChoice(1);
+        }
+
+        // FIXME: Dynamically figure out pointer ring approach.
+        withStash($items`haiku katana, repaid diaper, buddy bjorn, crown of thrones`, () => {
+          // 0. diet stuff.
+          runDiet();
+
+          // 1. get a ticket
+          ensureBarfAccess();
+
+          // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+          dailySetup();
+
+          setDefaultMaximizeOptions({
+            preventEquip: $items`broken champagne bottle`,
+          });
+
+          // 4. do some embezzler stuff
+          freeFights();
+          dailyFights();
+
+          // 5. burn turns at barf
+          try {
+            while (canContinue()) {
+              barfTurn();
+            }
+          } finally {
+            setAutoAttack(0);
+          }
+        });
       }
-    });
+    );
   } finally {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);

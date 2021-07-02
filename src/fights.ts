@@ -80,6 +80,7 @@ import {
   prepWandererZone,
   questStep,
   setChoice,
+  withProperties,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
@@ -706,10 +707,11 @@ const freeFightSources = [
           get("_saberForceMonsterCount") === 1) &&
         get("_saberForceUses") < 5
       ) {
-        setChoice(1387, 2);
-        putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-        putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
+        withProperties([{ name: "choiceAdventure1387", value: 2 }], () => {
+          putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
+          putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
+          adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
+        });
       } else {
         if (closetAmount($item`Bowl of Scorpions`) > 0)
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
@@ -825,13 +827,13 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
-    () => {
-      setChoice(1310, 3);
-      visitUrl("main.php?fightgodlobster=1");
-      runCombat();
-      visitUrl("choice.php");
-      if (handlingChoice()) runChoice(3);
-    },
+    () =>
+      withProperties([{ name: "choiceAdventure1310", value: 3 }], () => {
+        visitUrl("main.php?fightgodlobster=1");
+        runCombat();
+        visitUrl("choice.php");
+        if (handlingChoice()) runChoice(3);
+      }),
     {
       familiar: () => $familiar`God Lobster`,
     }
@@ -840,8 +842,9 @@ const freeFightSources = [
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
     () => {
-      setChoice(1119, 6);
-      adv1($location`The Deep Machine Tunnels`, -1, "");
+      withProperties([{ name: "choiceAdventure1119", value: 6 }], () =>
+        adv1($location`The Deep Machine Tunnels`, -1, "")
+      );
     },
     {
       familiar: () => $familiar`Machine Elf`,
@@ -870,29 +873,37 @@ const freeFightSources = [
       get("neverendingPartyAlways") && questStep("_questPartyFair") < 999
         ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
         : 0,
-    () => {
-      setChoice(1324, 5); // pick fight.
-      if (get("_questPartyFair") === "unstarted") {
-        visitUrl("adventure.php?snarfblat=528");
-        if (get("_questPartyFairQuest") === "food") {
-          runChoice(1);
-          setChoice(1324, 2);
-          setChoice(1326, 3);
-        } else if (get("_questPartyFairQuest") === "booze") {
-          runChoice(1);
-          setChoice(1324, 3);
-          setChoice(1327, 3);
-        } else {
-          runChoice(2);
-          setChoice(1324, 5);
+    () =>
+      withProperties(
+        [
+          { name: "choiceAdventure1324", value: 5 },
+          { name: "choiceAdventure1326", value: 3 },
+          { name: "choiceAdventure1327", value: 3 },
+        ],
+        () => {
+          setChoice(1324, 5); // pick fight.
+          if (get("_questPartyFair") === "unstarted") {
+            visitUrl("adventure.php?snarfblat=528");
+            if (get("_questPartyFairQuest") === "food") {
+              runChoice(1);
+              setChoice(1324, 2);
+              setChoice(1326, 3);
+            } else if (get("_questPartyFairQuest") === "booze") {
+              runChoice(1);
+              setChoice(1324, 3);
+              setChoice(1327, 3);
+            } else {
+              runChoice(2);
+              setChoice(1324, 5);
+            }
+          }
+          adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
+          if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
+            print("Found Gerald/ine!", "blue");
+            set("choiceAdventure1324", 5);
+          }
         }
-      }
-      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
-      if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
-        print("Found Gerald/ine!", "blue");
-        set("choiceAdventure1324", 5);
-      }
-    },
+      ),
     {
       requirements: () => [
         new Requirement([], {
@@ -1034,6 +1045,7 @@ export function freeFights() {
     }
   } finally {
     cliExecute("uneffect Feeling Lost");
+    if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
   }
 }
 
@@ -1053,9 +1065,15 @@ function deliverThesis(): void {
 
   //Set up NEP if we haven't yet
   if (thesisInNEP) {
-    setChoice(1322, 2); // reject quest.
-    setChoice(1324, 5); // pick fight.
-    if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
+    withProperties(
+      [
+        { name: "choiceAdventure1322", value: 2 },
+        { name: "choiceAdventure1324", value: 5 },
+      ],
+      () => {
+        if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
+      }
+    );
   }
 
   useFamiliar($familiar`Pocket Professor`);

@@ -131,18 +131,21 @@ export function prepWandererZone() {
       (get("guzzlrPlatinumDeliveries") < 30 ||
         (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
     ) {
-      set("choiceAdventure1412", 4);
-      use(1, $item`guzzlr tablet`);
+      withProperties([{ name: "choiceAdventure1412", value: 4 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     } else if (
       get("_guzzlrGoldDeliveries") < 3 &&
       get("guzzlrBronzeDeliveries") >= 5 &&
       (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
     ) {
-      set("choiceAdventure1412", 3);
-      use(1, $item`guzzlr tablet`);
+      withProperties([{ name: "choiceAdventure1412", value: 3 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     } else {
-      set("choiceAdventure1412", 2);
-      use(1, $item`guzzlr tablet`);
+      withProperties([{ name: "choiceAdventure1412", value: 2 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     }
   }
 
@@ -159,18 +162,27 @@ export function prepWandererZone() {
       (get("guzzlrPlatinumDeliveries") < 30 ||
         (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
     ) {
-      set("choiceAdventure1412", 4);
-      use(1, $item`guzzlr tablet`);
+      withProperties(
+        [
+          {
+            name: "choiceAdventure1412",
+            value: 4,
+          },
+        ],
+        () => use(1, $item`guzzlr tablet`)
+      );
     } else if (
       get("_guzzlrGoldDeliveries") < 3 &&
       get("guzzlrBronzeDeliveries") >= 5 &&
       (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
     ) {
-      set("choiceAdventure1412", 3);
-      use(1, $item`guzzlr tablet`);
+      withProperties([{ name: "choiceAdventure1412", value: 3 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     } else {
-      set("choiceAdventure1412", 2);
-      use(1, $item`guzzlr tablet`);
+      withProperties([{ name: "choiceAdventure1412", value: 2 }], () =>
+        use(1, $item`guzzlr tablet`)
+      );
     }
   }
 
@@ -253,10 +265,11 @@ function guzzlrCheck() {
 
 function dropGuzzlrQuest() {
   print("We hate this guzzlr quest!", "blue");
-  set("choiceAdventure1412", "");
-  visitUrl("inventory.php?tap=guzzlr", false);
-  runChoice(1);
-  runChoice(5);
+  withProperties([{ name: "choiceAdventure1412", value: "" }], () => {
+    visitUrl("inventory.php?tap=guzzlr", false);
+    runChoice(1);
+    runChoice(5);
+  });
 }
 
 export const physicalImmuneMacro = Macro.trySkill("curse of weaksauce")
@@ -850,4 +863,25 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE) {
         additionalValue(a) -
         (b.meatVal() * b.probability() + additionalValue(b))
     )[0];
+}
+type Property = {
+  name: string;
+  value: any;
+};
+
+export function withProperties(properties: Property[], functionToRun: () => void) {
+  const propertiesToSetBack = properties.map((property) => ({
+    name: property.name,
+    value: get(property.name),
+  }));
+  for (const property of properties) {
+    set(property.name, property.value);
+  }
+  try {
+    functionToRun();
+  } finally {
+    for (const property of propertiesToSetBack) {
+      set(property.name, property.value);
+    }
+  }
 }

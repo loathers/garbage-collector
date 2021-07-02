@@ -26,7 +26,7 @@ import {
   maximizeCached,
   MaximizeOptions,
 } from "libram";
-import { pickBjorn, PickBjornMode } from "./lib";
+import { pickBjorn, PickBjornMode, withProperties } from "./lib";
 import { baseMeat } from "./mood";
 
 export class Requirement {
@@ -104,7 +104,19 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
       bonusEquip: new Map([[bjornAlike, bjornChoice.meatVal() * bjornChoice.probability()]]),
     })
   );
-  maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+  withProperties(
+    [
+      {
+        name: "maximizerFoldables",
+        value: "false",
+      },
+    ],
+    () =>
+      maximizeCached(
+        compiledRequirements.maximizeParameters(),
+        compiledRequirements.maximizeOptions()
+      )
+  );
   if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
 }
@@ -172,7 +184,19 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
       }
     ),
   ]);
-  maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+  withProperties(
+    [
+      {
+        name: "maximizerFoldables",
+        value: "false",
+      },
+    ],
+    () =>
+      maximizeCached(
+        compiledRequirements.maximizeParameters(),
+        compiledRequirements.maximizeOptions()
+      )
+  );
   if (equippedAmount($item`ice nine`) > 0) {
     equip($item`unwrapped retro superhero cape`);
   }
