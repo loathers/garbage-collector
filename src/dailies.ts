@@ -21,6 +21,8 @@ import {
   availableAmount,
   equip,
   getCampground,
+  myAdventures,
+  mallPrice,
 } from "kolmafia";
 import {
   have,
@@ -262,8 +264,16 @@ export function configureMisc() {
   }
 
   if (get("_VYKEACompanionLevel") === 0) {
-    retrieveItem($item`VYKEA hex key`);
-    cliExecute("create level 3 couch");
+    if (
+      (myAdventures() / 0.96) * 0.1 * 3 * 275 >
+      5 * mallPrice($item`vykea rail`) +
+        11 * mallPrice($item`vykea dowel`) +
+        5 * mallPrice($item`vykea plank`) +
+        1 * mallPrice($item`VYKEA hex key`)
+    ) {
+      retrieveItem($item`VYKEA hex key`);
+      cliExecute("create level 3 couch");
+    }
   }
 
   if (
