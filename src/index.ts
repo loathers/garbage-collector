@@ -4,10 +4,12 @@ import {
   cliExecute,
   getCampground,
   getCounters,
+  inebrietyLimit,
   itemAmount,
   myAdventures,
   myClass,
   myGardenType,
+  myInebriety,
   myTurncount,
   print,
   putCloset,
@@ -288,7 +290,10 @@ export function main(argString = "") {
           runChoice(1);
         }
         const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones`;
-        if (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))
+        if (
+          myInebriety() <= inebrietyLimit() &&
+          (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))
+        )
           stashItems.push($item`haiku katana`);
         // FIXME: Dynamically figure out pointer ring approach.
         withStash(stashItems, () => {
