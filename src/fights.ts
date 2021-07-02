@@ -604,7 +604,7 @@ const freeFightSources = [
       const maxSealsAvailable =
         get("lastGuildStoreOpen") === myAscensions()
           ? maxSeals
-          : Math.min(maxSeals, availableAmount($item`seal-blubber candle`) / 3);
+          : Math.min(maxSeals, Math.floor(availableAmount($item`seal-blubber candle`) / 3));
       return myClass() === $class`Seal Clubber`
         ? Math.max(maxSealsAvailable - get("_sealsSummoned"), 0)
         : 0;
