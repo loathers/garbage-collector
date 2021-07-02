@@ -1257,20 +1257,31 @@ const permanentBjorn: Record<PickBjornMode, BjornedFamiliar> = {
 };
 
 export function pickBjorn(mode: PickBjornMode) {
+  const expectedValue = (bjornFam: BjornedFamiliar, bjornMode: PickBjornMode) =>
+    bjornFam.meatVal() * bjornFam.probability() + additionalValue(bjornFam, bjornMode);
   const permPick = permanentBjorn[mode];
   temporaryBjorn.filter(
     (bjornFam) =>
-      bjornFam.meatVal() * bjornFam.probability() + additionalValue(bjornFam, mode) >
-      permPick.meatVal() * permPick.probability() + additionalValue(permPick, mode)
+      Math.max(
+        ...[PickBjornMode.BARF, PickBjornMode.FREE, PickBjornMode.EMBEZZLER].map((bjornMode) =>
+          expectedValue(bjornFam, bjornMode)
+        )
+      ) >
+      Math.min(
+        ...[PickBjornMode.BARF, PickBjornMode.FREE, PickBjornMode.EMBEZZLER].map((bjornMode) =>
+          expectedValue(permanentBjorn[bjornMode], bjornMode)
+        )
+      )
   );
   const availableTemporaryBjorns = [...temporaryBjorn].filter(
     (bjornFamiliar) => bjornFamiliar.familiar !== myFamiliar()
   );
   if (availableTemporaryBjorns === []) return permPick;
-  return availableTemporaryBjorns.sort(
+  const tempPick = availableTemporaryBjorns.sort(
     (b, a) =>
       b.meatVal() * b.probability() +
       additionalValue(b, mode) -
       (a.meatVal() * a.probability() + additionalValue(a, mode))
   )[0];
+  return expectedValue(tempPick, mode) > expectedValue(permPick, mode) ? tempPick : permPick;
 }
