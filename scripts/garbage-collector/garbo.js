@@ -31053,7 +31053,7 @@ function safeRestore() {
   }
 }
 ;// CONCATENATED MODULE: ./src/index.ts
-var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32;
+var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35;
 
 function src_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = src_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -31264,10 +31264,12 @@ function src_main() {
       if (questStep("questM25Armorer") === -1) {
         (0,external_kolmafia_.visitUrl)("shop.php?whichshop=armory&action=talk");
         (0,external_kolmafia_.runChoice)(1);
-      } // FIXME: Dynamically figure out pointer ring approach.
+      }
 
+      var stashItems = (0,dist.$items)(src_templateObject31 || (src_templateObject31 = src_taggedTemplateLiteral(["repaid diaper, buddy bjorn, crown of thrones"])));
+      if ((0,external_kolmafia_.myClass)() !== (0,dist.$class)(src_templateObject32 || (src_templateObject32 = src_taggedTemplateLiteral(["seal clubber"]))) || !(0,dist.have)((0,dist.$skill)(src_templateObject33 || (src_templateObject33 = src_taggedTemplateLiteral(["furious wallop"]))))) stashItems.push((0,dist.$item)(src_templateObject34 || (src_templateObject34 = src_taggedTemplateLiteral(["haiku katana"])))); // FIXME: Dynamically figure out pointer ring approach.
 
-      withStash((0,dist.$items)(src_templateObject31 || (src_templateObject31 = src_taggedTemplateLiteral(["haiku katana, repaid diaper, buddy bjorn, crown of thrones"]))), function () {
+      withStash(stashItems, function () {
         // 0. diet stuff.
         runDiet(); // 1. get a ticket
 
@@ -31275,7 +31277,7 @@ function src_main() {
 
         dailySetup();
         (0,dist.setDefaultMaximizeOptions)({
-          preventEquip: (0,dist.$items)(src_templateObject32 || (src_templateObject32 = src_taggedTemplateLiteral(["broken champagne bottle"])))
+          preventEquip: (0,dist.$items)(src_templateObject35 || (src_templateObject35 = src_taggedTemplateLiteral(["broken champagne bottle"])))
         }); // 4. do some embezzler stuff
 
         freeFights();
