@@ -46,6 +46,7 @@ import {
 import { globalOptions } from ".";
 import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, tryFeast, findRun, trueValue, withProperties } from "./lib";
+import { baseMeat } from "./mood";
 import { withStash } from "./stash";
 
 export function voterSetup() {
@@ -273,7 +274,7 @@ export function configureMisc() {
       [3, 11],
     ]; //excluding 4 and 5 as per bean's suggestion
     const vykeaProfit = (level: number, cost: number) =>
-      expectedTurns * 275 * 0.1 * level -
+      expectedTurns * baseMeat * 0.1 * level -
       5 * mallPrice($item`vykea rail`) +
       cost * mallPrice($item`vykea dowel`) +
       5 * mallPrice($item`vykea plank`) +
