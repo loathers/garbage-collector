@@ -1263,8 +1263,11 @@ export function pickBjorn(mode: PickBjornMode) {
       bjornFam.meatVal() * bjornFam.probability() + additionalValue(bjornFam, mode) >
       permPick.meatVal() * permPick.probability() + additionalValue(permPick, mode)
   );
-  if (temporaryBjorn === []) return permPick;
-  return temporaryBjorn.sort(
+  const availableTemporaryBjorns = [...temporaryBjorn].filter(
+    (bjornFamiliar) => bjornFamiliar.familiar !== myFamiliar()
+  );
+  if (availableTemporaryBjorns === []) return permPick;
+  return availableTemporaryBjorns.sort(
     (b, a) =>
       b.meatVal() * b.probability() +
       additionalValue(b, mode) -
