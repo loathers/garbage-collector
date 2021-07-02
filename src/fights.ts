@@ -1042,6 +1042,7 @@ export function freeFights() {
     }
   } finally {
     cliExecute("uneffect Feeling Lost");
+    if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
   }
 }
 
