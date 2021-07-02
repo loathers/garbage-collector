@@ -1211,7 +1211,7 @@ const permanentFamiliars: BjornedFamiliar[] = [
       modifier: 5,
     },
   },
-].filter((bjornChoice) => have(bjornChoice.familiar));
+].filter((bjornChoice) => have(bjornChoice.familiar) && bjornChoice.familiar !== meatFamiliar());
 
 function additionalValue(familiar: BjornedFamiliar, mode: PickBjornMode) {
   if (!familiar.modifier) return 0;
