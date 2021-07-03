@@ -398,6 +398,28 @@ export function trueValue(...items: Item[]) {
   );
 }
 
+type Property = {
+  name: string;
+  value: any;
+};
+
+export function withProperties(properties: Property[], functionToRun: () => void) {
+  const propertiesToSetBack = properties.map((property) => ({
+    name: property.name,
+    value: get(property.name),
+  }));
+  for (const property of properties) {
+    set(property.name, property.value);
+  }
+  try {
+    functionToRun();
+  } finally {
+    for (const property of propertiesToSetBack) {
+      set(property.name, property.value);
+    }
+  }
+}
+
 enum BjornModifierType {
   MEAT,
   ITEM,
@@ -422,27 +444,6 @@ export enum PickBjornMode {
   BARF,
 }
 
-type Property = {
-  name: string;
-  value: any;
-};
-
-export function withProperties(properties: Property[], functionToRun: () => void) {
-  const propertiesToSetBack = properties.map((property) => ({
-    name: property.name,
-    value: get(property.name),
-  }));
-  for (const property of properties) {
-    set(property.name, property.value);
-  }
-  try {
-    functionToRun();
-  } finally {
-    for (const property of propertiesToSetBack) {
-      set(property.name, property.value);
-    }
-  }
-}
 const expectedValue = (bjornFam: BjornedFamiliar, bjornMode: PickBjornMode) =>
   bjornFam.meatVal() * bjornFam.probability() + additionalValue(bjornFam, bjornMode);
 
