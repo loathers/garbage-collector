@@ -821,15 +821,15 @@ function additionalValue(familiar: BjornedFamiliar, mode: PickBjornMode) {
   return 0;
 }
 const permanentBjorn: Record<PickBjornMode, BjornedFamiliar> = {
-  [PickBjornMode.BARF]: permanentFamiliars.sort(
+  [PickBjornMode.BARF]: [...permanentFamiliars].sort(
     (a, b) => expectedValue(b, PickBjornMode.BARF) - expectedValue(a, PickBjornMode.BARF)
   )[0],
 
-  [PickBjornMode.FREE]: permanentFamiliars.sort(
+  [PickBjornMode.FREE]: [...permanentFamiliars].sort(
     (a, b) => expectedValue(b, PickBjornMode.FREE) - expectedValue(a, PickBjornMode.FREE)
   )[0],
 
-  [PickBjornMode.EMBEZZLER]: permanentFamiliars.sort(
+  [PickBjornMode.EMBEZZLER]: [...permanentFamiliars].sort(
     (a, b) => expectedValue(b, PickBjornMode.EMBEZZLER) - expectedValue(a, PickBjornMode.EMBEZZLER)
   )[0],
 };
@@ -897,21 +897,30 @@ const temporaryBjorn: BjornedFamiliar[] = [
 ].filter((bjornChoice) => have(bjornChoice.familiar));
 
 const tempFamiliars: Record<PickBjornMode, BjornedFamiliar[]> = {
-  [PickBjornMode.FREE]: temporaryBjorn.filter(
-    (bjornChoice) =>
-      expectedValue(bjornChoice, PickBjornMode.FREE) >
-      expectedValue(permanentBjorn[PickBjornMode.FREE], PickBjornMode.FREE)
-  ),
-  [PickBjornMode.BARF]: temporaryBjorn.filter(
-    (bjornChoice) =>
-      expectedValue(bjornChoice, PickBjornMode.BARF) >
-      expectedValue(permanentBjorn[PickBjornMode.BARF], PickBjornMode.BARF)
-  ),
-  [PickBjornMode.EMBEZZLER]: temporaryBjorn.filter(
-    (bjornChoice) =>
-      expectedValue(bjornChoice, PickBjornMode.EMBEZZLER) >
-      expectedValue(permanentBjorn[PickBjornMode.EMBEZZLER], PickBjornMode.EMBEZZLER)
-  ),
+  [PickBjornMode.FREE]: [...temporaryBjorn]
+    .filter(
+      (bjornChoice) =>
+        expectedValue(bjornChoice, PickBjornMode.FREE) >
+        expectedValue(permanentBjorn[PickBjornMode.FREE], PickBjornMode.FREE)
+    )
+    .sort((a, b) => expectedValue(b, PickBjornMode.FREE) - expectedValue(a, PickBjornMode.FREE)),
+  [PickBjornMode.BARF]: [...temporaryBjorn]
+    .filter(
+      (bjornChoice) =>
+        expectedValue(bjornChoice, PickBjornMode.BARF) >
+        expectedValue(permanentBjorn[PickBjornMode.BARF], PickBjornMode.BARF)
+    )
+    .sort((a, b) => expectedValue(b, PickBjornMode.BARF) - expectedValue(a, PickBjornMode.BARF)),
+  [PickBjornMode.EMBEZZLER]: [...temporaryBjorn]
+    .filter(
+      (bjornChoice) =>
+        expectedValue(bjornChoice, PickBjornMode.EMBEZZLER) >
+        expectedValue(permanentBjorn[PickBjornMode.EMBEZZLER], PickBjornMode.EMBEZZLER)
+    )
+    .sort(
+      (a, b) =>
+        expectedValue(b, PickBjornMode.EMBEZZLER) - expectedValue(a, PickBjornMode.EMBEZZLER)
+    ),
 };
 
 const emptyBjornChoice: BjornedFamiliar = {
@@ -929,8 +938,9 @@ export function pickBjorn(mode: PickBjornMode) {
     tempFamiliars[mode] &&
     tempFamiliars[mode].length &&
     tempFamiliars[mode][0].probability() === 0
-  )
+  ) {
     tempFamiliars[mode].shift();
+  }
 
   if (!temporaryBjorn || !temporaryBjorn.length) return permPick;
 
