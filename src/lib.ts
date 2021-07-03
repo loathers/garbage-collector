@@ -904,6 +904,12 @@ const temporaryBjorn: BjornedFamiliar[] = [
 
 export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
+  print(
+    `Permanent choice for this type of fight is ${
+      permPick.familiar.name
+    }, with an expected value of ${expectedValue(permPick, mode)}.`,
+    "red"
+  );
 
   temporaryBjorn.filter((bjornFam) => bjornFam.probability() !== 0);
   if (temporaryBjorn === []) return permPick;
@@ -915,11 +921,14 @@ export function pickBjorn(mode: PickBjornMode) {
   if (availableTemporaryBjorns === []) return permPick;
 
   const tempPick = availableTemporaryBjorns.sort(
-    (b, a) =>
-      b.meatVal() * b.probability() +
-      additionalValue(b, mode) -
-      (a.meatVal() * a.probability() + additionalValue(a, mode))
+    (b, a) => expectedValue(b, mode) - expectedValue(a, mode)
   )[0];
+  print(
+    `Temporary choice for this type of fight is ${
+      tempPick.familiar.name
+    }, with an expected value of ${expectedValue(tempPick, mode)}`,
+    "red"
+  );
 
   return expectedValue(tempPick, mode) > expectedValue(permPick, mode) ? tempPick : permPick;
 }
