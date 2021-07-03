@@ -894,21 +894,33 @@ const temporaryBjorn: BjornedFamiliar[] = [
     meatVal: () => trueValue($item`hoarded candy wad`),
     probability: () => (get("_hoardedCandyDropsCrown") < 3 ? 0.5 : 0),
   },
-]
-  .filter((bjornChoice) => have(bjornChoice.familiar))
-  .filter((familiar) =>
-    [PickBjornMode.BARF, PickBjornMode.FREE, PickBjornMode.EMBEZZLER].some(
-      (mode) => expectedValue(familiar, mode) > expectedValue(permanentBjorn[mode], mode)
-    )
-  );
+].filter((bjornChoice) => have(bjornChoice.familiar));
+
+const tempFamiliars: Record<PickBjornMode, BjornedFamiliar[]> = {
+  [PickBjornMode.FREE]: temporaryBjorn.filter(
+    (bjornChoice) =>
+      expectedValue(bjornChoice, PickBjornMode.FREE) >
+      expectedValue(permanentBjorn[PickBjornMode.FREE], PickBjornMode.FREE)
+  ),
+  [PickBjornMode.BARF]: temporaryBjorn.filter(
+    (bjornChoice) =>
+      expectedValue(bjornChoice, PickBjornMode.BARF) >
+      expectedValue(permanentBjorn[PickBjornMode.BARF], PickBjornMode.BARF)
+  ),
+  [PickBjornMode.EMBEZZLER]: temporaryBjorn.filter(
+    (bjornChoice) =>
+      expectedValue(bjornChoice, PickBjornMode.EMBEZZLER) >
+      expectedValue(permanentBjorn[PickBjornMode.EMBEZZLER], PickBjornMode.EMBEZZLER)
+  ),
+};
 
 export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
   if (!temporaryBjorn || !temporaryBjorn.length) return permPick;
 
   temporaryBjorn.sort((a, b) => expectedValue(b, mode) - expectedValue(a, mode));
-  const startCut = temporaryBjorn.findIndex((bjornFam) => bjornFam.probability() === 0);
-  if (startCut !== -1) temporaryBjorn.splice(startCut, temporaryBjorn.length - 1);
+  if (temporaryBjorn.every((bjornFam) => bjornFam.probability() === 0))
+    temporaryBjorn.splice(0, temporaryBjorn.length - 1);
   if (!temporaryBjorn || !temporaryBjorn.length) return permPick;
 
   const availableTemporaryBjorns = temporaryBjorn.filter(
