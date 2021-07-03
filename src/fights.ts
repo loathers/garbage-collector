@@ -171,8 +171,8 @@ const embezzlerMacro = () =>
   Macro.if_(
     "monstername Knob Goblin Embezzler",
     Macro.if_("snarfblat 186", Macro.item($item`green taffy`))
-      .if_("hasskill Wink at", Macro.trySkill("Wink At"))
-      .if_("hasskill 7108", Macro.trySkill("Fire a badly romantic arrow"))
+      .trySkill("Wink At")
+      .trySkill("Fire a badly romantic arrow")
       .externalIf(
         get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
         Macro.trySkill("Digitize")
@@ -454,7 +454,7 @@ export function dailyFights() {
               (haveFamiliar($familiar`Reanimated Reanimator`) ||
                 haveFamiliar($familiar`Obtuse Angel`)) &&
               get("_badlyRomanticArrows") === 0 &&
-              get("_envyfishEggUsed")
+              !nextFight.draggable
             ) {
               for (const f of $familiars`Obtuse Angel, Reanimated Reanimator`) {
                 useFamiliar(f);
