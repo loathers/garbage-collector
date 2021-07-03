@@ -916,20 +916,15 @@ const tempFamiliars: Record<PickBjornMode, BjornedFamiliar[]> = {
 
 export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
+  if (!tempFamiliars[mode] || !tempFamiliars[mode].length) return permPick;
+
+  if (tempFamiliars[mode][0].probability() === 0) tempFamiliars[mode].shift();
   if (!temporaryBjorn || !temporaryBjorn.length) return permPick;
 
-  temporaryBjorn.sort((a, b) => expectedValue(b, mode) - expectedValue(a, mode));
-  if (temporaryBjorn.every((bjornFam) => bjornFam.probability() === 0))
-    temporaryBjorn.splice(0, temporaryBjorn.length - 1);
-  if (!temporaryBjorn || !temporaryBjorn.length) return permPick;
-
-  const availableTemporaryBjorns = temporaryBjorn.filter(
-    (bjornFamiliar) => bjornFamiliar.familiar !== myFamiliar()
-  );
-
-  if (!temporaryBjorn || !temporaryBjorn.length) return permPick;
-
-  const tempPick = availableTemporaryBjorns[0];
+  const tempPick = tempFamiliars[mode].filter(
+    (bjornChoice) => bjornChoice.familiar !== myFamiliar()
+  )[0];
+  if (!tempPick) return permPick;
 
   return expectedValue(tempPick, mode) > expectedValue(permPick, mode) ? tempPick : permPick;
 }
