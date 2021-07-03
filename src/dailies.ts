@@ -224,7 +224,10 @@ export function prepFamiliars() {
   if (get("_feastUsed") === 0) {
     withStash($items`moveable feast`, () => {
       if (have($item`moveable feast`))
-        [...$familiars`Pocket Professor, Frumious Bandersnatch`, meatFamiliar()].forEach(tryFeast);
+        [
+          ...$familiars`Pocket Professor, Frumious Bandersnatch, Pair of Stomping Boots`,
+          meatFamiliar(),
+        ].forEach(tryFeast);
     });
   }
 }
