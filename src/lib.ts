@@ -904,6 +904,7 @@ const temporaryBjorn: BjornedFamiliar[] = [
 
 export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
+  if (temporaryBjorn === []) return permPick;
 
   temporaryBjorn.sort((a, b) => expectedValue(b, mode) - expectedValue(a, mode));
   const startCut = temporaryBjorn.findIndex((bjornFam) => bjornFam.probability() === 0);
