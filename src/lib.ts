@@ -822,15 +822,15 @@ function additionalValue(familiar: BjornedFamiliar, mode: PickBjornMode) {
 }
 const permanentBjorn: Record<PickBjornMode, BjornedFamiliar> = {
   [PickBjornMode.BARF]: permanentFamiliars.sort(
-    (b, a) => expectedValue(b, PickBjornMode.BARF) - expectedValue(a, PickBjornMode.BARF)
+    (a, b) => expectedValue(b, PickBjornMode.BARF) - expectedValue(a, PickBjornMode.BARF)
   )[0],
 
   [PickBjornMode.FREE]: permanentFamiliars.sort(
-    (b, a) => expectedValue(b, PickBjornMode.FREE) - expectedValue(a, PickBjornMode.FREE)
+    (a, b) => expectedValue(b, PickBjornMode.FREE) - expectedValue(a, PickBjornMode.FREE)
   )[0],
 
   [PickBjornMode.EMBEZZLER]: permanentFamiliars.sort(
-    (b, a) => expectedValue(b, PickBjornMode.EMBEZZLER) - expectedValue(a, PickBjornMode.EMBEZZLER)
+    (a, b) => expectedValue(b, PickBjornMode.EMBEZZLER) - expectedValue(a, PickBjornMode.EMBEZZLER)
   )[0],
 };
 
@@ -921,7 +921,7 @@ export function pickBjorn(mode: PickBjornMode) {
   if (availableTemporaryBjorns === []) return permPick;
 
   const tempPick = availableTemporaryBjorns.sort(
-    (b, a) => expectedValue(b, mode) - expectedValue(a, mode)
+    (a, b) => expectedValue(b, mode) - expectedValue(a, mode)
   )[0];
   print(
     `Temporary choice for this type of fight is ${
