@@ -924,7 +924,5 @@ export function pickBjorn(mode: PickBjornMode) {
   const tempPick = tempFamiliars[mode].filter(
     (bjornChoice) => bjornChoice.familiar !== myFamiliar()
   )[0];
-  if (!tempPick) return permPick;
-
-  return expectedValue(tempPick, mode) > expectedValue(permPick, mode) ? tempPick : permPick;
+  return tempPick || permPick;
 }
