@@ -385,7 +385,7 @@ export function trueValue(...items: Item[]) {
         if (item.discardable) {
           valueMap.set(
             item,
-            mallPrice(item) > 2 * autosellPrice(item)
+            mallPrice(item) > Math.max(2 * autosellPrice(item), 100)
               ? MALL_VALUE_MODIFIER * mallPrice(item)
               : autosellPrice(item)
           );
