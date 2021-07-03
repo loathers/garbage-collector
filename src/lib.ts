@@ -890,7 +890,7 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE): BjornedFami
   if (bjornList) {
     while (bjornList[0].dropPredicate && !bjornList[0].dropPredicate()) bjornList.shift();
     if (myFamiliar() !== bjornList[0].familiar) return bjornList[0];
-    while (bjornList[1].dropPredicate && !bjornList[1].dropPredicate()) bjornList.shift();
+    while (bjornList[1].dropPredicate && !bjornList[1].dropPredicate()) bjornList.splice(1, 1);
     return bjornList[1];
   }
   throw new Error("Something went wrong while selecting a familiar to bjornify or crownulate");
