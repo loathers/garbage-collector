@@ -890,24 +890,15 @@ function additionalValue(familiar: BjornedFamiliar, mode: PickBjornMode) {
 }
 const permanentBjorn: Record<PickBjornMode, BjornedFamiliar> = {
   [PickBjornMode.BARF]: permanentFamiliars.sort(
-    (b, a) =>
-      b.meatVal() * b.probability() +
-      additionalValue(b, PickBjornMode.BARF) -
-      (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.BARF))
+    (b, a) => expectedValue(b, PickBjornMode.BARF) - expectedValue(a, PickBjornMode.BARF)
   )[0],
 
   [PickBjornMode.FREE]: permanentFamiliars.sort(
-    (b, a) =>
-      b.meatVal() * b.probability() +
-      additionalValue(b, PickBjornMode.FREE) -
-      (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.FREE))
+    (b, a) => expectedValue(b, PickBjornMode.FREE) - expectedValue(a, PickBjornMode.FREE)
   )[0],
 
   [PickBjornMode.EMBEZZLER]: permanentFamiliars.sort(
-    (b, a) =>
-      b.meatVal() * b.probability() +
-      additionalValue(b, PickBjornMode.EMBEZZLER) -
-      (a.meatVal() * a.probability() + additionalValue(a, PickBjornMode.EMBEZZLER))
+    (b, a) => expectedValue(b, PickBjornMode.EMBEZZLER) - expectedValue(a, PickBjornMode.EMBEZZLER)
   )[0],
 };
 
