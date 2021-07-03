@@ -914,7 +914,14 @@ const tempFamiliars: Record<PickBjornMode, BjornedFamiliar[]> = {
   ),
 };
 
+const emptyBjornChoice: BjornedFamiliar = {
+  familiar: $familiar`none`,
+  meatVal: () => 0,
+  probability: () => 0,
+};
+
 export function pickBjorn(mode: PickBjornMode) {
+  if (!have($item`buddy bjorn`) && !have($item`crown of thrones`)) return emptyBjornChoice;
   const permPick = permanentBjorn[mode];
   if (!tempFamiliars[mode] || !tempFamiliars[mode].length) return permPick;
 
