@@ -904,18 +904,18 @@ const temporaryBjorn: BjornedFamiliar[] = [
 
 export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
-  if (temporaryBjorn === []) return permPick;
+  if (temporaryBjorn.length === 0) return permPick;
 
   temporaryBjorn.sort((a, b) => expectedValue(b, mode) - expectedValue(a, mode));
   const startCut = temporaryBjorn.findIndex((bjornFam) => bjornFam.probability() === 0);
   if (startCut !== -1) temporaryBjorn.splice(startCut, temporaryBjorn.length - 1);
-  if (temporaryBjorn === []) return permPick;
+  if (temporaryBjorn.length === 0) return permPick;
 
   const availableTemporaryBjorns = temporaryBjorn.filter(
     (bjornFamiliar) => bjornFamiliar.familiar !== myFamiliar()
   );
 
-  if (availableTemporaryBjorns === []) return permPick;
+  if (availableTemporaryBjorns.length === 0) return permPick;
 
   const tempPick = availableTemporaryBjorns[0];
 
