@@ -4,6 +4,7 @@ import {
   cliExecute,
   getCampground,
   getCounters,
+  guildStoreAvailable,
   inebrietyLimit,
   itemAmount,
   myAdventures,
@@ -288,6 +289,13 @@ export function main(argString = "") {
         if (questStep("questM25Armorer") === -1) {
           visitUrl("shop.php?whichshop=armory&action=talk");
           runChoice(1);
+        }
+        if (
+          myClass() === $class`Seal Clubber` &&
+          !have($skill`Furious Wallop`) &&
+          guildStoreAvailable()
+        ) {
+          visitUrl("guild.php?action=buyskill&skillid=32", true);
         }
         const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones`;
         if (
