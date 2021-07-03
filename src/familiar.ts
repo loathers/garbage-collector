@@ -12,29 +12,36 @@ import {
 import { have, $familiar, $item, $familiars, get, $effect, $items } from "libram";
 import { argmax, trueValue } from "./lib";
 
+let _meatFamiliar: Familiar;
 export function meatFamiliar(): Familiar {
-  if (
-    myInebriety() > inebrietyLimit() &&
-    have($familiar`Trick-or-Treating Tot`) &&
-    have($item`li'l pirate costume`)
-  ) {
-    return $familiar`Trick-or-Treating Tot`;
-  } else {
-    const bestLeps = Familiar.all()
-      .filter(have)
-      .sort(
-        (a, b) =>
-          numericModifier(b, "Leprechaun", 1, $item`none`) -
-          numericModifier(a, "Leprechaun", 1, $item`none`)
-      );
-    const bestLepMult = numericModifier(bestLeps[0], "Leprechaun", 1, $item`none`);
-    return bestLeps
-      .filter((familiar) => numericModifier(familiar, "Leprechaun", 1, $item`none`) === bestLepMult)
-      .sort(
-        (a, b) =>
-          numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
-      )[0];
+  if (!_meatFamiliar) {
+    if (
+      myInebriety() > inebrietyLimit() &&
+      have($familiar`Trick-or-Treating Tot`) &&
+      have($item`li'l pirate costume`)
+    ) {
+      _meatFamiliar = $familiar`Trick-or-Treating Tot`;
+    } else {
+      const bestLeps = Familiar.all()
+        .filter(have)
+        .sort(
+          (a, b) =>
+            numericModifier(b, "Leprechaun", 1, $item`none`) -
+            numericModifier(a, "Leprechaun", 1, $item`none`)
+        );
+      const bestLepMult = numericModifier(bestLeps[0], "Leprechaun", 1, $item`none`);
+      _meatFamiliar = bestLeps
+        .filter(
+          (familiar) => numericModifier(familiar, "Leprechaun", 1, $item`none`) === bestLepMult
+        )
+        .sort(
+          (a, b) =>
+            numericModifier(b, "Fairy", 1, $item`none`) -
+            numericModifier(a, "Fairy", 1, $item`none`)
+        )[0];
+    }
   }
+  return _meatFamiliar;
 }
 
 function myFamiliarWeight(familiar: Familiar | null = null) {
