@@ -913,9 +913,9 @@ const permanentBjorn: Record<PickBjornMode, BjornedFamiliar> = {
 
 export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
-  if (temporaryBjorn === []) return permPick;
 
   temporaryBjorn.filter((bjornFam) => bjornFam.probability() !== 0);
+  if (temporaryBjorn === []) return permPick;
 
   const availableTemporaryBjorns = [...temporaryBjorn].filter(
     (bjornFamiliar) => bjornFamiliar.familiar !== myFamiliar()
