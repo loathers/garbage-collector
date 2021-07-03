@@ -447,74 +447,6 @@ export enum PickBjornMode {
 const expectedValue = (bjornFam: BjornedFamiliar, bjornMode: PickBjornMode) =>
   bjornFam.meatVal() * bjornFam.probability() + additionalValue(bjornFam, bjornMode);
 
-const temporaryBjorn: BjornedFamiliar[] = [
-  {
-    familiar: $familiar`puck man`,
-    meatVal: () => trueValue($item`yellow pixel`),
-    probability: () => (get("_yellowPixelDropsCrown") < 25 ? 0.25 : 0),
-  },
-  {
-    familiar: $familiar`grimstone golem`,
-    meatVal: () => trueValue($item`grimstone mask`),
-    probability: () => (get("_grimstoneMaskDropsCrown") === 0 ? 0.5 : 0),
-  },
-  {
-    familiar: $familiar`grim brother`,
-    meatVal: () => trueValue($item`grim fairy tale`),
-    probability: () => (get("_grimFairyTaleDropsCrown") < 2 ? 1 : 0),
-  },
-  {
-    familiar: $familiar`optimistic candle`,
-    meatVal: () => trueValue($item`glob of melted wax`),
-    probability: () => (get("_optimisticCandleDropsCrown") < 3 ? 1 : 0),
-    modifier: {
-      type: BjornModifierType.ITEM,
-      modifier: 15,
-    },
-  },
-  {
-    familiar: $familiar`Adventurous Spelunker`,
-    meatVal: () =>
-      trueValue(
-        ...$items`teflon ore, Velcro ore, Vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore`
-      ),
-    probability: () => (get("_oreDropsCrown") < 6 ? 1 : 0),
-    modifier: {
-      type: BjornModifierType.ITEM,
-      modifier: 15,
-    },
-  },
-  {
-    familiar: $familiar`Twitching Space Critter`,
-    meatVal: () => trueValue($item`space beast fur`),
-    probability: () => (get("_spaceFurDropsCrown") < 1 ? 1 : 0),
-  },
-  {
-    familiar: $familiar`garbage fire`,
-    meatVal: () => trueValue($item`burning newspaper`),
-    probability: () => (get("_garbageFireDropsCrown") < 3 ? 0.5 : 0),
-  },
-  {
-    familiar: $familiar`machine elf`,
-    meatVal: () =>
-      trueValue(
-        ...$items`abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose`
-      ),
-    probability: () => (get("_abstractionDropsCrown") < 25 ? 0.2 : 0),
-  },
-  {
-    familiar: $familiar`trick-or-treating tot`,
-    meatVal: () => trueValue($item`hoarded candy wad`),
-    probability: () => (get("_hoardedCandyDropsCrown") < 3 ? 0.5 : 0),
-  },
-]
-  .filter((bjornChoice) => have(bjornChoice.familiar))
-  .filter((familiar) =>
-    [PickBjornMode.BARF, PickBjornMode.FREE, PickBjornMode.EMBEZZLER].some(
-      (mode) => expectedValue(familiar, mode) > expectedValue(permanentBjorn[mode], mode)
-    )
-  );
-
 const permanentFamiliars: BjornedFamiliar[] = [
   {
     familiar: $familiar`Knob Goblin Organ Grinder`,
@@ -901,6 +833,74 @@ const permanentBjorn: Record<PickBjornMode, BjornedFamiliar> = {
     (b, a) => expectedValue(b, PickBjornMode.EMBEZZLER) - expectedValue(a, PickBjornMode.EMBEZZLER)
   )[0],
 };
+
+const temporaryBjorn: BjornedFamiliar[] = [
+  {
+    familiar: $familiar`puck man`,
+    meatVal: () => trueValue($item`yellow pixel`),
+    probability: () => (get("_yellowPixelDropsCrown") < 25 ? 0.25 : 0),
+  },
+  {
+    familiar: $familiar`grimstone golem`,
+    meatVal: () => trueValue($item`grimstone mask`),
+    probability: () => (get("_grimstoneMaskDropsCrown") === 0 ? 0.5 : 0),
+  },
+  {
+    familiar: $familiar`grim brother`,
+    meatVal: () => trueValue($item`grim fairy tale`),
+    probability: () => (get("_grimFairyTaleDropsCrown") < 2 ? 1 : 0),
+  },
+  {
+    familiar: $familiar`optimistic candle`,
+    meatVal: () => trueValue($item`glob of melted wax`),
+    probability: () => (get("_optimisticCandleDropsCrown") < 3 ? 1 : 0),
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 15,
+    },
+  },
+  {
+    familiar: $familiar`Adventurous Spelunker`,
+    meatVal: () =>
+      trueValue(
+        ...$items`teflon ore, Velcro ore, Vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore`
+      ),
+    probability: () => (get("_oreDropsCrown") < 6 ? 1 : 0),
+    modifier: {
+      type: BjornModifierType.ITEM,
+      modifier: 15,
+    },
+  },
+  {
+    familiar: $familiar`Twitching Space Critter`,
+    meatVal: () => trueValue($item`space beast fur`),
+    probability: () => (get("_spaceFurDropsCrown") < 1 ? 1 : 0),
+  },
+  {
+    familiar: $familiar`garbage fire`,
+    meatVal: () => trueValue($item`burning newspaper`),
+    probability: () => (get("_garbageFireDropsCrown") < 3 ? 0.5 : 0),
+  },
+  {
+    familiar: $familiar`machine elf`,
+    meatVal: () =>
+      trueValue(
+        ...$items`abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose`
+      ),
+    probability: () => (get("_abstractionDropsCrown") < 25 ? 0.2 : 0),
+  },
+  {
+    familiar: $familiar`trick-or-treating tot`,
+    meatVal: () => trueValue($item`hoarded candy wad`),
+    probability: () => (get("_hoardedCandyDropsCrown") < 3 ? 0.5 : 0),
+  },
+]
+  .filter((bjornChoice) => have(bjornChoice.familiar))
+  .filter((familiar) =>
+    [PickBjornMode.BARF, PickBjornMode.FREE, PickBjornMode.EMBEZZLER].some(
+      (mode) => expectedValue(familiar, mode) > expectedValue(permanentBjorn[mode], mode)
+    )
+  );
 
 export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
