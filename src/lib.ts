@@ -918,7 +918,13 @@ export function pickBjorn(mode: PickBjornMode) {
   const permPick = permanentBjorn[mode];
   if (!tempFamiliars[mode] || !tempFamiliars[mode].length) return permPick;
 
-  if (tempFamiliars[mode][0].probability() === 0) tempFamiliars[mode].shift();
+  while (
+    tempFamiliars[mode] &&
+    tempFamiliars[mode].length &&
+    tempFamiliars[mode][0].probability() === 0
+  )
+    tempFamiliars[mode].shift();
+
   if (!temporaryBjorn || !temporaryBjorn.length) return permPick;
 
   const tempPick = tempFamiliars[mode].filter(
