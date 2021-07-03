@@ -28503,7 +28503,7 @@ function trueValue() {
     if (valueMap.has(item)) return valueMap.get(item) || 0;
 
     if (item.discardable) {
-      valueMap.set(item, (0,external_kolmafia_.mallPrice)(item) > 2 * (0,external_kolmafia_.autosellPrice)(item) ? MALL_VALUE_MODIFIER * (0,external_kolmafia_.mallPrice)(item) : (0,external_kolmafia_.autosellPrice)(item));
+      valueMap.set(item, (0,external_kolmafia_.mallPrice)(item) > Math.max(2 * (0,external_kolmafia_.autosellPrice)(item), 100) ? MALL_VALUE_MODIFIER * (0,external_kolmafia_.mallPrice)(item) : (0,external_kolmafia_.autosellPrice)(item));
     } else {
       valueMap.set(item, (0,external_kolmafia_.mallPrice)(item) > 100 ? MALL_VALUE_MODIFIER * (0,external_kolmafia_.mallPrice)(item) : 0);
     }
