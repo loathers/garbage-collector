@@ -29271,7 +29271,7 @@ function freeFightFamiliar() {
   return argmax(familiarValue);
 }
 ;// CONCATENATED MODULE: ./src/dailies.ts
-var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20, dailies_templateObject21, dailies_templateObject22, dailies_templateObject23, dailies_templateObject24, dailies_templateObject25, dailies_templateObject26, dailies_templateObject27, dailies_templateObject28, dailies_templateObject29, dailies_templateObject30, dailies_templateObject31, dailies_templateObject32, dailies_templateObject33, dailies_templateObject34, dailies_templateObject35, dailies_templateObject36, dailies_templateObject37, dailies_templateObject38, dailies_templateObject39, dailies_templateObject40, dailies_templateObject41, dailies_templateObject42, dailies_templateObject43, dailies_templateObject44, dailies_templateObject45, dailies_templateObject46, dailies_templateObject47, dailies_templateObject48, dailies_templateObject49, dailies_templateObject50, dailies_templateObject51, dailies_templateObject52, dailies_templateObject53, dailies_templateObject54, dailies_templateObject55, dailies_templateObject56, dailies_templateObject57, dailies_templateObject58, dailies_templateObject59, dailies_templateObject60, dailies_templateObject61, dailies_templateObject62, dailies_templateObject63, dailies_templateObject64, dailies_templateObject65, dailies_templateObject66, dailies_templateObject67, dailies_templateObject68, dailies_templateObject69, dailies_templateObject70, dailies_templateObject71, dailies_templateObject72, dailies_templateObject73, dailies_templateObject74, dailies_templateObject75, dailies_templateObject76, dailies_templateObject77, dailies_templateObject78, dailies_templateObject79;
+var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20, dailies_templateObject21, dailies_templateObject22, dailies_templateObject23, dailies_templateObject24, dailies_templateObject25, dailies_templateObject26, dailies_templateObject27, dailies_templateObject28, dailies_templateObject29, dailies_templateObject30, dailies_templateObject31, dailies_templateObject32, dailies_templateObject33, dailies_templateObject34, dailies_templateObject35, dailies_templateObject36, dailies_templateObject37, dailies_templateObject38, dailies_templateObject39, dailies_templateObject40, dailies_templateObject41, dailies_templateObject42, dailies_templateObject43, dailies_templateObject44, dailies_templateObject45, dailies_templateObject46, dailies_templateObject47, dailies_templateObject48, dailies_templateObject49, dailies_templateObject50, dailies_templateObject51, dailies_templateObject52, dailies_templateObject53, dailies_templateObject54, dailies_templateObject55, dailies_templateObject56, dailies_templateObject57, dailies_templateObject58, dailies_templateObject59, dailies_templateObject60, dailies_templateObject61, dailies_templateObject62, dailies_templateObject63, dailies_templateObject64, dailies_templateObject65, dailies_templateObject66, dailies_templateObject67, dailies_templateObject68, dailies_templateObject69, dailies_templateObject70, dailies_templateObject71, dailies_templateObject72, dailies_templateObject73, dailies_templateObject74, dailies_templateObject75, dailies_templateObject76, dailies_templateObject77, dailies_templateObject78, dailies_templateObject79, dailies_templateObject80;
 
 function dailies_slicedToArray(arr, i) { return dailies_arrayWithHoles(arr) || dailies_iterableToArrayLimit(arr, i) || dailies_unsupportedIterableToArray(arr, i) || dailies_nonIterableRest(); }
 
@@ -29459,7 +29459,8 @@ function dailyBuffs() {
   }
 
   if (!(0,dist.get)("_madTeaParty")) {
-    ensureEffect((0,dist.$effect)(dailies_templateObject36 || (dailies_templateObject36 = dailies_taggedTemplateLiteral(["Down the Rabbit Hole"]))));
+    (0,external_kolmafia_.retrieveItem)((0,dist.$item)(dailies_templateObject36 || (dailies_templateObject36 = dailies_taggedTemplateLiteral(["filthy knitted dread sack"]))));
+    ensureEffect((0,dist.$effect)(dailies_templateObject37 || (dailies_templateObject37 = dailies_taggedTemplateLiteral(["Down the Rabbit Hole"]))));
     (0,external_kolmafia_.cliExecute)("hatter 22");
   }
 }
@@ -29467,8 +29468,8 @@ function configureMisc() {
   dist.SongBoom.setSong("Total Eclipse of Your Meat");
 
   if (dist.SourceTerminal.have()) {
-    dist.SourceTerminal.educate([(0,dist.$skill)(dailies_templateObject37 || (dailies_templateObject37 = dailies_taggedTemplateLiteral(["Extract"]))), (0,dist.$skill)(dailies_templateObject38 || (dailies_templateObject38 = dailies_taggedTemplateLiteral(["Digitize"])))]);
-    dist.SourceTerminal.enquiry((0,dist.$effect)(dailies_templateObject39 || (dailies_templateObject39 = dailies_taggedTemplateLiteral(["familiar.enq"]))));
+    dist.SourceTerminal.educate([(0,dist.$skill)(dailies_templateObject38 || (dailies_templateObject38 = dailies_taggedTemplateLiteral(["Extract"]))), (0,dist.$skill)(dailies_templateObject39 || (dailies_templateObject39 = dailies_taggedTemplateLiteral(["Digitize"])))]);
+    dist.SourceTerminal.enquiry((0,dist.$effect)(dailies_templateObject40 || (dailies_templateObject40 = dailies_taggedTemplateLiteral(["familiar.enq"]))));
   }
 
   if ((0,dist.get)("_VYKEACompanionLevel") === 0) {
@@ -29476,7 +29477,7 @@ function configureMisc() {
     var vykeas = [[1, 0], [2, 1], [3, 11]]; //excluding 4 and 5 as per bean's suggestion
 
     var vykeaProfit = function vykeaProfit(level, cost) {
-      return expectedTurns * baseMeat * 0.1 * level - 5 * (0,external_kolmafia_.mallPrice)((0,dist.$item)(dailies_templateObject40 || (dailies_templateObject40 = dailies_taggedTemplateLiteral(["vykea rail"])))) + cost * (0,external_kolmafia_.mallPrice)((0,dist.$item)(dailies_templateObject41 || (dailies_templateObject41 = dailies_taggedTemplateLiteral(["vykea dowel"])))) + 5 * (0,external_kolmafia_.mallPrice)((0,dist.$item)(dailies_templateObject42 || (dailies_templateObject42 = dailies_taggedTemplateLiteral(["vykea plank"])))) + 1 * (0,external_kolmafia_.mallPrice)((0,dist.$item)(dailies_templateObject43 || (dailies_templateObject43 = dailies_taggedTemplateLiteral(["VYKEA hex key"]))));
+      return expectedTurns * baseMeat * 0.1 * level - 5 * (0,external_kolmafia_.mallPrice)((0,dist.$item)(dailies_templateObject41 || (dailies_templateObject41 = dailies_taggedTemplateLiteral(["vykea rail"])))) + cost * (0,external_kolmafia_.mallPrice)((0,dist.$item)(dailies_templateObject42 || (dailies_templateObject42 = dailies_taggedTemplateLiteral(["vykea dowel"])))) + 5 * (0,external_kolmafia_.mallPrice)((0,dist.$item)(dailies_templateObject43 || (dailies_templateObject43 = dailies_taggedTemplateLiteral(["vykea plank"])))) + 1 * (0,external_kolmafia_.mallPrice)((0,dist.$item)(dailies_templateObject44 || (dailies_templateObject44 = dailies_taggedTemplateLiteral(["VYKEA hex key"]))));
     };
 
     if (vykeas.some(function (_ref) {
@@ -29489,16 +29490,16 @@ function configureMisc() {
       var level = vykeas.sort(function (a, b) {
         return vykeaProfit.apply(void 0, dailies_toConsumableArray(b)) - vykeaProfit.apply(void 0, dailies_toConsumableArray(a));
       })[0][0];
-      (0,external_kolmafia_.retrieveItem)((0,dist.$item)(dailies_templateObject44 || (dailies_templateObject44 = dailies_taggedTemplateLiteral(["VYKEA hex key"]))));
+      (0,external_kolmafia_.retrieveItem)((0,dist.$item)(dailies_templateObject45 || (dailies_templateObject45 = dailies_taggedTemplateLiteral(["VYKEA hex key"]))));
       (0,external_kolmafia_.cliExecute)("create level ".concat(level, " couch"));
     }
   }
 
-  if ((0,external_kolmafia_.myClass)() === (0,dist.$class)(dailies_templateObject45 || (dailies_templateObject45 = dailies_taggedTemplateLiteral(["Pastamancer"]))) && (0,external_kolmafia_.myThrall)() !== (0,dist.$thrall)(dailies_templateObject46 || (dailies_templateObject46 = dailies_taggedTemplateLiteral(["Lasagmbie"]))) && (0,external_kolmafia_.haveSkill)((0,dist.$skill)(dailies_templateObject47 || (dailies_templateObject47 = dailies_taggedTemplateLiteral(["Bind Lasagmbie"]))))) {
-    (0,external_kolmafia_.useSkill)((0,dist.$skill)(dailies_templateObject48 || (dailies_templateObject48 = dailies_taggedTemplateLiteral(["Bind Lasagmbie"]))));
+  if ((0,external_kolmafia_.myClass)() === (0,dist.$class)(dailies_templateObject46 || (dailies_templateObject46 = dailies_taggedTemplateLiteral(["Pastamancer"]))) && (0,external_kolmafia_.myThrall)() !== (0,dist.$thrall)(dailies_templateObject47 || (dailies_templateObject47 = dailies_taggedTemplateLiteral(["Lasagmbie"]))) && (0,external_kolmafia_.haveSkill)((0,dist.$skill)(dailies_templateObject48 || (dailies_templateObject48 = dailies_taggedTemplateLiteral(["Bind Lasagmbie"]))))) {
+    (0,external_kolmafia_.useSkill)((0,dist.$skill)(dailies_templateObject49 || (dailies_templateObject49 = dailies_taggedTemplateLiteral(["Bind Lasagmbie"]))));
   }
 
-  if ((0,external_kolmafia_.getClanLounge)()["Olympic-sized Clan crate"] !== undefined && !(0,dist.get)("_olympicSwimmingPoolItemFound") && (0,dist.have)((0,dist.$item)(dailies_templateObject49 || (dailies_templateObject49 = dailies_taggedTemplateLiteral([" Clan VIP Lounge key"]))))) {
+  if ((0,external_kolmafia_.getClanLounge)()["Olympic-sized Clan crate"] !== undefined && !(0,dist.get)("_olympicSwimmingPoolItemFound") && (0,dist.have)((0,dist.$item)(dailies_templateObject50 || (dailies_templateObject50 = dailies_taggedTemplateLiteral([" Clan VIP Lounge key"]))))) {
     (0,external_kolmafia_.cliExecute)("swim item");
   }
 
@@ -29515,7 +29516,7 @@ function volcanoDailies() {
     (0,external_kolmafia_.runChoice)(7);
   }
 
-  if ((0,dist.have)((0,dist.$skill)(dailies_templateObject50 || (dailies_templateObject50 = dailies_taggedTemplateLiteral(["Unaccompanied Miner"])))) && (0,dist.get)("_unaccompaniedMinerUsed") < 5) {
+  if ((0,dist.have)((0,dist.$skill)(dailies_templateObject51 || (dailies_templateObject51 = dailies_taggedTemplateLiteral(["Unaccompanied Miner"])))) && (0,dist.get)("_unaccompaniedMinerUsed") < 5) {
     (0,external_kolmafia_.cliExecute)("minevolcano.ash ".concat(5 - (0,dist.get)("_unaccompaniedMinerUsed")));
   }
 }
@@ -29523,34 +29524,34 @@ function volcanoDailies() {
 function checkVolcanoQuest() {
   (0,external_kolmafia_.print)("Checking volcano quest", "blue");
   (0,external_kolmafia_.visitUrl)("place.php?whichplace=airport_hot&action=airport4_questhub");
-  var volcanoItems = [dist.property.getItem("_volcanoItem1") || (0,dist.$item)(dailies_templateObject51 || (dailies_templateObject51 = dailies_taggedTemplateLiteral(["none"]))), dist.property.getItem("_volcanoItem2") || (0,dist.$item)(dailies_templateObject52 || (dailies_templateObject52 = dailies_taggedTemplateLiteral(["none"]))), dist.property.getItem("_volcanoItem3") || (0,dist.$item)(dailies_templateObject53 || (dailies_templateObject53 = dailies_taggedTemplateLiteral(["none"])))];
-  var volcanoWhatToDo = new Map([[(0,dist.$item)(dailies_templateObject54 || (dailies_templateObject54 = dailies_taggedTemplateLiteral(["new age healing crystal"]))), function () {
-    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject55 || (dailies_templateObject55 = dailies_taggedTemplateLiteral(["new age healing crystal"])))) >= 5) return true;else {
-      return (0,external_kolmafia_.buy)(5 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject56 || (dailies_templateObject56 = dailies_taggedTemplateLiteral(["new age healing crystal"])))), (0,dist.$item)(dailies_templateObject57 || (dailies_templateObject57 = dailies_taggedTemplateLiteral(["new age healing crystal"]))), 1000) === 5 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject58 || (dailies_templateObject58 = dailies_taggedTemplateLiteral(["new age healing crystal"]))));
+  var volcanoItems = [dist.property.getItem("_volcanoItem1") || (0,dist.$item)(dailies_templateObject52 || (dailies_templateObject52 = dailies_taggedTemplateLiteral(["none"]))), dist.property.getItem("_volcanoItem2") || (0,dist.$item)(dailies_templateObject53 || (dailies_templateObject53 = dailies_taggedTemplateLiteral(["none"]))), dist.property.getItem("_volcanoItem3") || (0,dist.$item)(dailies_templateObject54 || (dailies_templateObject54 = dailies_taggedTemplateLiteral(["none"])))];
+  var volcanoWhatToDo = new Map([[(0,dist.$item)(dailies_templateObject55 || (dailies_templateObject55 = dailies_taggedTemplateLiteral(["new age healing crystal"]))), function () {
+    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject56 || (dailies_templateObject56 = dailies_taggedTemplateLiteral(["new age healing crystal"])))) >= 5) return true;else {
+      return (0,external_kolmafia_.buy)(5 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject57 || (dailies_templateObject57 = dailies_taggedTemplateLiteral(["new age healing crystal"])))), (0,dist.$item)(dailies_templateObject58 || (dailies_templateObject58 = dailies_taggedTemplateLiteral(["new age healing crystal"]))), 1000) === 5 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject59 || (dailies_templateObject59 = dailies_taggedTemplateLiteral(["new age healing crystal"]))));
     }
-  }], [(0,dist.$item)(dailies_templateObject59 || (dailies_templateObject59 = dailies_taggedTemplateLiteral(["smooch bottlecap"]))), function () {
-    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject60 || (dailies_templateObject60 = dailies_taggedTemplateLiteral(["smooch bottlecap"])))) > 0) return true;else return (0,external_kolmafia_.buy)(1, (0,dist.$item)(dailies_templateObject61 || (dailies_templateObject61 = dailies_taggedTemplateLiteral(["smooch bottlecap"]))), 5000) === 1;
-  }], [(0,dist.$item)(dailies_templateObject62 || (dailies_templateObject62 = dailies_taggedTemplateLiteral(["gooey lava globs"]))), function () {
-    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject63 || (dailies_templateObject63 = dailies_taggedTemplateLiteral(["gooey lava globs"])))) >= 5) {
+  }], [(0,dist.$item)(dailies_templateObject60 || (dailies_templateObject60 = dailies_taggedTemplateLiteral(["smooch bottlecap"]))), function () {
+    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject61 || (dailies_templateObject61 = dailies_taggedTemplateLiteral(["smooch bottlecap"])))) > 0) return true;else return (0,external_kolmafia_.buy)(1, (0,dist.$item)(dailies_templateObject62 || (dailies_templateObject62 = dailies_taggedTemplateLiteral(["smooch bottlecap"]))), 5000) === 1;
+  }], [(0,dist.$item)(dailies_templateObject63 || (dailies_templateObject63 = dailies_taggedTemplateLiteral(["gooey lava globs"]))), function () {
+    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject64 || (dailies_templateObject64 = dailies_taggedTemplateLiteral(["gooey lava globs"])))) >= 5) {
       return true;
     } else {
-      var toBuy = 5 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject64 || (dailies_templateObject64 = dailies_taggedTemplateLiteral(["gooey lava globs"]))));
-      return (0,external_kolmafia_.buy)(toBuy, (0,dist.$item)(dailies_templateObject65 || (dailies_templateObject65 = dailies_taggedTemplateLiteral(["gooey lava globs"]))), 5000) === toBuy;
+      var toBuy = 5 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject65 || (dailies_templateObject65 = dailies_taggedTemplateLiteral(["gooey lava globs"]))));
+      return (0,external_kolmafia_.buy)(toBuy, (0,dist.$item)(dailies_templateObject66 || (dailies_templateObject66 = dailies_taggedTemplateLiteral(["gooey lava globs"]))), 5000) === toBuy;
     }
-  }], [(0,dist.$item)(dailies_templateObject66 || (dailies_templateObject66 = dailies_taggedTemplateLiteral(["fused fuse"]))), function () {
-    return (0,dist.have)((0,dist.$item)(dailies_templateObject67 || (dailies_templateObject67 = dailies_taggedTemplateLiteral(["clara's bell"]))));
-  }], [(0,dist.$item)(dailies_templateObject68 || (dailies_templateObject68 = dailies_taggedTemplateLiteral(["smooth velvet bra"]))), function () {
-    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject69 || (dailies_templateObject69 = dailies_taggedTemplateLiteral(["smooth velvet bra"])))) < 3) {
-      (0,external_kolmafia_.cliExecute)("acquire ".concat((3 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject70 || (dailies_templateObject70 = dailies_taggedTemplateLiteral(["smooth velvet bra"]))))).toString(), " smooth velvet bra"));
-    }
-
-    return (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject71 || (dailies_templateObject71 = dailies_taggedTemplateLiteral(["smooth velvet bra"])))) >= 3;
-  }], [(0,dist.$item)(dailies_templateObject72 || (dailies_templateObject72 = dailies_taggedTemplateLiteral(["smooch bracers"]))), function () {
-    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject73 || (dailies_templateObject73 = dailies_taggedTemplateLiteral(["smooch bracers"])))) < 3) {
-      (0,external_kolmafia_.cliExecute)("acquire ".concat((3 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject74 || (dailies_templateObject74 = dailies_taggedTemplateLiteral(["smooch bracers"]))))).toString(), " smooch bracers"));
+  }], [(0,dist.$item)(dailies_templateObject67 || (dailies_templateObject67 = dailies_taggedTemplateLiteral(["fused fuse"]))), function () {
+    return (0,dist.have)((0,dist.$item)(dailies_templateObject68 || (dailies_templateObject68 = dailies_taggedTemplateLiteral(["clara's bell"]))));
+  }], [(0,dist.$item)(dailies_templateObject69 || (dailies_templateObject69 = dailies_taggedTemplateLiteral(["smooth velvet bra"]))), function () {
+    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject70 || (dailies_templateObject70 = dailies_taggedTemplateLiteral(["smooth velvet bra"])))) < 3) {
+      (0,external_kolmafia_.cliExecute)("acquire ".concat((3 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject71 || (dailies_templateObject71 = dailies_taggedTemplateLiteral(["smooth velvet bra"]))))).toString(), " smooth velvet bra"));
     }
 
-    return (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject75 || (dailies_templateObject75 = dailies_taggedTemplateLiteral(["smooch bracers"])))) >= 3;
+    return (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject72 || (dailies_templateObject72 = dailies_taggedTemplateLiteral(["smooth velvet bra"])))) >= 3;
+  }], [(0,dist.$item)(dailies_templateObject73 || (dailies_templateObject73 = dailies_taggedTemplateLiteral(["smooch bracers"]))), function () {
+    if ((0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject74 || (dailies_templateObject74 = dailies_taggedTemplateLiteral(["smooch bracers"])))) < 3) {
+      (0,external_kolmafia_.cliExecute)("acquire ".concat((3 - (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject75 || (dailies_templateObject75 = dailies_taggedTemplateLiteral(["smooch bracers"]))))).toString(), " smooch bracers"));
+    }
+
+    return (0,external_kolmafia_.availableAmount)((0,dist.$item)(dailies_templateObject76 || (dailies_templateObject76 = dailies_taggedTemplateLiteral(["smooch bracers"])))) >= 3;
   }]]);
 
   var _iterator2 = dailies_createForOfIteratorHelper(volcanoWhatToDo.entries()),
@@ -29564,7 +29565,7 @@ function checkVolcanoQuest() {
 
       if (volcanoItems.includes(volcanoItem)) {
         if (tryToGetIt()) {
-          if (volcanoItem !== (0,dist.$item)(dailies_templateObject76 || (dailies_templateObject76 = dailies_taggedTemplateLiteral(["fused fuse"])))) {
+          if (volcanoItem !== (0,dist.$item)(dailies_templateObject77 || (dailies_templateObject77 = dailies_taggedTemplateLiteral(["fused fuse"])))) {
             (0,external_kolmafia_.visitUrl)("place.php?whichplace=airport_hot&action=airport4_questhub");
             (0,external_kolmafia_.print)("Alright buddy, turning in ".concat(volcanoItem.plural, " for a volcoino!"), "red");
             var choice = volcanoItems.indexOf(volcanoItem) === -1 ? 4 : 1 + volcanoItems.indexOf(volcanoItem);
@@ -29581,20 +29582,20 @@ function checkVolcanoQuest() {
 }
 
 function cheat() {
-  if ((0,dist.have)((0,dist.$item)(dailies_templateObject77 || (dailies_templateObject77 = dailies_taggedTemplateLiteral(["deck of every card"]))))) {
+  if ((0,dist.have)((0,dist.$item)(dailies_templateObject78 || (dailies_templateObject78 = dailies_taggedTemplateLiteral(["deck of every card"]))))) {
     ["1952 Mickey Mantle", "Island", "Ancestral Recall"].forEach(function (card) {
       if ((0,dist.get)("_deckCardsDrawn") <= 10 && !(0,dist.get)("_deckCardsSeen").includes(card)) (0,external_kolmafia_.cliExecute)("cheat ".concat(card));
     });
   }
 }
 function gin() {
-  if ((0,dist.have)((0,dist.$item)(dailies_templateObject78 || (dailies_templateObject78 = dailies_taggedTemplateLiteral(["Time-Spinner"]))))) {
+  if ((0,dist.have)((0,dist.$item)(dailies_templateObject79 || (dailies_templateObject79 = dailies_taggedTemplateLiteral(["Time-Spinner"]))))) {
     if (!(0,dist.get)("_timeSpinnerReplicatorUsed") && (0,dist.get)("timeSpinnerMedals") >= 5 && (0,dist.get)("_timeSpinnerMinutesUsed") <= 8) {
       (0,external_kolmafia_.cliExecute)("farfuture drink");
     }
   }
 }
-var teas = (0,dist.$items)(dailies_templateObject79 || (dailies_templateObject79 = dailies_taggedTemplateLiteral(["cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi Tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, Cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea"])));
+var teas = (0,dist.$items)(dailies_templateObject80 || (dailies_templateObject80 = dailies_taggedTemplateLiteral(["cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi Tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, Cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea"])));
 function pickTea() {
   if (!(0,external_kolmafia_.getCampground)()["potted tea tree"] || (0,dist.get)("_pottedTeaTreeUsed")) return;
   var bestTea = teas.sort(function (a, b) {
