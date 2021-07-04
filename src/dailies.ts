@@ -256,6 +256,7 @@ export function dailyBuffs() {
     cliExecute("terminal enhance meat.enh");
   }
   if (!get("_madTeaParty")) {
+    retrieveItem($item`filthy knitted dread sack`);
     ensureEffect($effect`Down the Rabbit Hole`);
     cliExecute("hatter 22");
   }
