@@ -101,7 +101,14 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
     );
   compiledRequirements.merge(
     new Requirement([], {
-      bonusEquip: new Map([[bjornAlike, bjornChoice.meatVal() * bjornChoice.probability()]]),
+      bonusEquip: new Map([
+        [
+          bjornAlike,
+          !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+            ? bjornChoice.meatVal() * bjornChoice.probability
+            : 0,
+        ],
+      ]),
     })
   );
   withProperties(
@@ -179,7 +186,12 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
-          [bjornAlike, bjornChoice.meatVal() * bjornChoice.probability()],
+          [
+            bjornAlike,
+            !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+              ? bjornChoice.meatVal() * bjornChoice.probability
+              : 0,
+          ],
         ]),
       }
     ),
