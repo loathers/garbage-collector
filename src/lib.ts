@@ -875,11 +875,11 @@ function generateBjornList(mode: PickBjornMode): BjornedFamiliar[] {
   };
   return [...bjornFams].sort(
     (a, b) =>
-      (mode !== PickBjornMode.EMBEZZLER && (!b.dropPredicate || b.dropPredicate())
+      (!b.dropPredicate || (b.dropPredicate() && mode !== PickBjornMode.EMBEZZLER)
         ? b.meatVal() * b.probability
         : 0) +
       additionalValue(b) -
-      ((mode !== PickBjornMode.EMBEZZLER && (!a.dropPredicate || a.dropPredicate())
+      ((!a.dropPredicate || (a.dropPredicate() && mode !== PickBjornMode.EMBEZZLER)
         ? a.meatVal() * a.probability
         : 0) +
         additionalValue(a))
