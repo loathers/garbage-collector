@@ -94,7 +94,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
       ? $item`buddy bjorn`
       : $item`crown of thrones`;
   if (bjornAlike === $item`buddy bjorn`)
-    requirements.push(
+    compiledRequirements.merge(
       new Requirement([], {
         preventEquip: $items`crown of thrones`,
       })
