@@ -373,8 +373,8 @@ const freeRuns: freeRun[] = [
   ),
 ];
 
-export function findRun(useBander: boolean = false) {
-  return freeRuns.find((run) => run.available() && (run !== banderRun || useBander));
+export function findRun(useBander: boolean = true) {
+  return freeRuns.find((run) => run.available() && (useBander || run !== banderRun));
 }
 
 const valueMap: Map<Item, number> = new Map();
