@@ -49,6 +49,7 @@ import {
   dailyBuffs,
   gin,
   horse,
+  jellyfish,
   latte,
   pickTea,
   prepFamiliars,
@@ -93,6 +94,7 @@ function dailySetup() {
   configureGear();
   horse();
   latte();
+  jellyfish();
   prepFamiliars();
   dailyBuffs();
   configureMisc();
