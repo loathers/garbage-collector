@@ -304,6 +304,21 @@ export class freeRun {
 
 const banishesToUse = questStep("questL11Worship") > 0 && get("_drunkPygmyBanishes") === 0 ? 2 : 3;
 
+const banderRun = new freeRun(
+  () =>
+    ((have($familiar`frumious bandersnatch`) &&
+      (have($effect`ode to booze`) || getSongCount() < getSongLimit())) ||
+      have($familiar`pair of stomping boots`)) &&
+    Bandersnatch.getRemainingRunaways() > 0,
+  () => {
+    maximize("familiar weight", false);
+    if (have($familiar`frumious bandersnatch`)) useFamiliar($familiar`frumious bandersnatch`);
+    else useFamiliar($familiar`pair of stomping boots`);
+    if (myFamiliar() === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+  },
+  Macro.step("runaway")
+);
+
 const freeRuns: freeRun[] = [
   new freeRun(
     () => {
@@ -319,20 +334,7 @@ const freeRuns: freeRun[] = [
     Macro.skill("Asdon Martin: Spring-Loaded Front Bumper")
   ),
 
-  new freeRun(
-    () =>
-      ((have($familiar`frumious bandersnatch`) &&
-        (have($effect`ode to booze`) || getSongCount() < getSongLimit())) ||
-        have($familiar`pair of stomping boots`)) &&
-      Bandersnatch.getRemainingRunaways() > 0,
-    () => {
-      maximize("familiar weight", false);
-      if (have($familiar`frumious bandersnatch`)) useFamiliar($familiar`frumious bandersnatch`);
-      else useFamiliar($familiar`pair of stomping boots`);
-      if (myFamiliar() === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
-    },
-    Macro.step("runaway")
-  ),
+  banderRun,
 
   new freeRun(
     () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
@@ -371,8 +373,8 @@ const freeRuns: freeRun[] = [
   ),
 ];
 
-export function findRun() {
-  return freeRuns.find((run) => run.available());
+export function findRun(useBander: boolean = false) {
+  return freeRuns.find((run) => run.available() && (run !== banderRun || useBander));
 }
 
 const valueMap: Map<Item, number> = new Map();
