@@ -94,8 +94,8 @@ function dailySetup() {
   configureGear();
   horse();
   latte();
-  jellyfish();
   prepFamiliars();
+  jellyfish();
   dailyBuffs();
   configureMisc();
   volcanoDailies();
