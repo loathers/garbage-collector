@@ -918,21 +918,3 @@ export function withProperties(properties: Property[], functionToRun: () => void
     }
   }
 }
-
-export function withFoldables(items: Item[], action: () => void) {
-  const originals: Item[] = [];
-  items.forEach((item) => {
-    if (!have(item)) {
-      const original = getFoldGroup(item).find(have);
-      if (original) {
-        originals.push(original);
-        cliExecute(`fold ${item.name}`);
-      }
-    }
-  });
-  try {
-    action();
-  } finally {
-    originals.forEach((item) => cliExecute(`fold ${item.name}`));
-  }
-}
