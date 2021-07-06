@@ -14,6 +14,7 @@ import {
   numericModifier,
   print,
   restoreMp,
+  retrieveItem,
   runChoice,
   toItem,
   toUrl,
@@ -330,8 +331,11 @@ const freeRuns: freeRun[] = [
       if (bumperIndex === -1) return true;
       return myTurncount() - parseInt(banishes[bumperIndex + 1]) > 30;
     },
-    () => fillAsdonMartinTo(50),
-    Macro.skill("Asdon Martin: Spring-Loaded Front Bumper")
+    () => {
+      fillAsdonMartinTo(50);
+      retrieveItem(1, $item`louder than bomb`);
+    },
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("louder than bomb")
   ),
 
   banderRun,
