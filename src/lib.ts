@@ -346,37 +346,37 @@ const freeRuns: freeRun[] = [
   new freeRun(
     () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
     () => restoreMp(50),
-    Macro.skill("snokebomb")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("snokebomb")
   ),
 
   new freeRun(
     () => get("_feelHatredUsed") < banishesToUse && have($skill`emotionally chipped`),
     () => {},
-    Macro.skill("feel hatred")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("feel hatred")
   ),
 
   new freeRun(
     () => have($item`kremlin's greatest briefcase`) && get("_kgbTranquilizerDartUses") < 3,
     () => equip($slot`acc3`, $item`kremlin's greatest briefcase`),
-    Macro.skill("KGB tranquilizer dart")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("KGB tranquilizer dart")
   ),
 
   new freeRun(
     () => have($item`latte lovers member's mug`) && !get("_latteBanishUsed"),
     () => equip($slot`off-hand`, $item`latte lovers member's mug`),
-    Macro.skill("Throw Latte on Opponent")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Throw Latte on Opponent")
   ),
 
   new freeRun(
     () => have($item`Lil' Doctor™ bag`) && get("_reflexHammerUsed") < 3,
     () => equip($slot`acc3`, $item`Lil' Doctor™ bag`),
-    Macro.skill("reflex hammer")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("reflex hammer")
   ),
 
   new freeRun(
     () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
     () => equip($slot`acc3`, $item`mafia middle finger ring`),
-    Macro.skill("Show them your ring")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show them your ring")
   ),
 ];
 
