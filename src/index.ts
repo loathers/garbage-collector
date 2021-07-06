@@ -272,6 +272,10 @@ export function main(argString = "") {
           name: "dontStopForCounters",
           value: true,
         },
+        {
+          name: "maximizerFoldables",
+          value: false,
+        },
       ],
       () => {
         cliExecute("mood apathetic");
