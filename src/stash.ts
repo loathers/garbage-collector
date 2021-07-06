@@ -67,17 +67,17 @@ export class StashManager {
         if (getFoldGroup(item).includes(item)) {
           for (const fold of getFoldGroup(item)) {
             try {
-              const succeeded = takeStash(1, item);
+              const succeeded = takeStash(1, fold);
               if (succeeded) {
-                print(`Took ${item.name} from stash in ${getClanName()}.`, "blue");
-                cliExecute(`fold ${item.name}`);
-                this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
+                print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
+                cliExecute(`fold ${fold.name}`);
+                this.taken.set(fold, (this.taken.get(fold) ?? 0) + 1);
                 continue;
               } else {
-                print(`Failed to take ${item.name} from stash in ${getClanName()}.`, "red");
+                print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
               }
             } catch {
-              print(`Failed to take ${item.name} from stash in ${getClanName()}.`, "red");
+              print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
             }
           }
         }
