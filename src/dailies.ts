@@ -465,8 +465,8 @@ export function jellyfish() {
     const runSource = findRun(false);
     if (!runSource) break;
     const jellyMacro = Macro.while_(
-      "!pastround 28 && haveskill macrometeorite",
-      Macro.skill("macrometeorite").skill("extract jelly")
+      "!pastround 28 && hasskill macrometeorite",
+      Macro.skill("extract jelly").skill("macrometeorite")
     ).step(runSource.macro);
     adventureMacro($location`barf mountain`, jellyMacro);
   }
@@ -476,8 +476,8 @@ export function jellyfish() {
       const runSource = findRun(false);
       if (!runSource) break;
       const jellyMacro = Macro.while_(
-        "!pastround 28 && haveskill CHEAT CODE: Replace Enemy",
-        Macro.skill("CHEAT CODE: Replace Enemy").skill("extract jelly")
+        "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
+        Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
       ).step(runSource.macro);
       adventureMacro($location`barf mountain`, jellyMacro);
     }
