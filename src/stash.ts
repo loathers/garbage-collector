@@ -72,7 +72,7 @@ export class StashManager {
             const succeeded = takeStash(1, fold);
             if (succeeded) {
               print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
-              if (fold !== item) cliExecute(`fold ${fold.name}`);
+              if (fold !== item) cliExecute(`fold ${item.name}`);
               this.taken.set(item, (this.taken.get(fold) ?? 0) + 1);
               continue;
             } else {
