@@ -321,8 +321,9 @@ const banderRun = new freeRun(
 );
 
 const freeRuns: freeRun[] = [
+  /*
   new freeRun(
-    () => {
+     () => {
       if (getWorkshed() !== $item`Asdon Martin keyfob`) return false;
       const banishes = get("banishedMonsters").split(":");
       const bumperIndex = banishes
@@ -330,13 +331,15 @@ const freeRuns: freeRun[] = [
         .indexOf("spring-loaded front bumper");
       if (bumperIndex === -1) return true;
       return myTurncount() - parseInt(banishes[bumperIndex + 1]) > 30;
-    },
+    }, 
     () => {
       fillAsdonMartinTo(50);
       retrieveItem(1, $item`louder than bomb`);
     },
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("louder than bomb")
-  ),
+  ), 
+  code removed because of boss monsters
+  */
 
   banderRun,
 
