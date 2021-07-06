@@ -64,21 +64,21 @@ export class StashManager {
           cliExecute(`fold ${item.name}`);
           continue;
         }
-        if (getFoldGroup(item).includes(item)) {
-          for (const fold of getFoldGroup(item)) {
-            try {
-              const succeeded = takeStash(1, fold);
-              if (succeeded) {
-                print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
-                cliExecute(`fold ${fold.name}`);
-                this.taken.set(fold, (this.taken.get(fold) ?? 0) + 1);
-                continue;
-              } else {
-                print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
-              }
-            } catch {
+        const foldArray = getFoldGroup(item);
+        if (!foldArray.includes(item)) foldArray.push(item);
+        for (const fold of foldArray) {
+          try {
+            const succeeded = takeStash(1, fold);
+            if (succeeded) {
+              print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
+              cliExecute(`fold ${fold.name}`);
+              this.taken.set(fold, (this.taken.get(fold) ?? 0) + 1);
+              continue;
+            } else {
               print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
             }
+          } catch {
+            print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
           }
         }
       }
