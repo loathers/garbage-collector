@@ -921,5 +921,5 @@ export function withProperties(properties: Property[], functionToRun: () => void
 }
 
 export function getFoldGroupWithoutEntries(item: Item) {
-  return Object.getOwnPropertyNames(getRelated(item, "fold")).map(toItem);
+  return Object.getOwnPropertyNames(getRelated(item, "fold")).map((item) => toItem(item));
 }

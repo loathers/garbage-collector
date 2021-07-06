@@ -61,7 +61,7 @@ export class StashManager {
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
         if (have(item)) continue;
-        if (getFoldGroupWithoutEntries(item).some(have)) {
+        if (getFoldGroupWithoutEntries(item).some((item) => have(item))) {
           cliExecute(`fold ${item.name}`);
           continue;
         }
@@ -72,8 +72,8 @@ export class StashManager {
             const succeeded = takeStash(1, fold);
             if (succeeded) {
               print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
-              cliExecute(`fold ${fold.name}`);
-              this.taken.set(fold, (this.taken.get(fold) ?? 0) + 1);
+              if (fold !== item) cliExecute(`fold ${fold.name}`);
+              this.taken.set(item, (this.taken.get(fold) ?? 0) + 1);
               continue;
             } else {
               print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
