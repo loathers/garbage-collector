@@ -32,6 +32,7 @@ import {
   $slot,
   Bandersnatch,
   get,
+  getFoldGroup,
   getSongCount,
   getSongLimit,
   have,
@@ -915,5 +916,23 @@ export function withProperties(properties: Property[], functionToRun: () => void
     for (const property of propertiesToSetBack) {
       set(property.name, property.value);
     }
+  }
+}
+
+export function withFoldables(items: Item[], action: () => void) {
+  const originals: Item[] = [];
+  items.forEach((item) => {
+    if (!have(item)) {
+      const original = getFoldGroup(item).find(have);
+      if (original) {
+        originals.push(original);
+        cliExecute(`fold ${item.name}`);
+      }
+    }
+  });
+  try {
+    action();
+  } finally {
+    originals.forEach((item) => cliExecute(`fold ${item.name}`));
   }
 }
