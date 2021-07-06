@@ -93,12 +93,6 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
     )
       ? $item`buddy bjorn`
       : $item`crown of thrones`;
-  if (bjornAlike === $item`buddy bjorn`)
-    compiledRequirements.merge(
-      new Requirement([], {
-        preventEquip: $items`crown of thrones`,
-      })
-    );
   compiledRequirements.merge(
     new Requirement([], {
       bonusEquip: new Map([
@@ -109,6 +103,8 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
             : 0,
         ],
       ]),
+      preventEquip:
+        bjornAlike === $item`buddy bjorn` ? $items`crown of thrones` : $items`buddy bjorn`,
     })
   );
   withProperties(
