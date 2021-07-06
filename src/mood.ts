@@ -42,7 +42,11 @@ Mood.setDefaultOptions({
   ],
 });
 
-export const baseMeat = SongBoom.have() ? 275 : 250;
+export const baseMeat =
+  SongBoom.have() &&
+  (SongBoom.songChangesLeft() > 0 || SongBoom.song() === "Total Eclipse of Your Meat")
+    ? 275
+    : 250;
 
 export function meatMood(urKels = false) {
   const mood = new Mood();
