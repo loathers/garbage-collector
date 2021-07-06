@@ -10,6 +10,7 @@ import {
   userConfirm,
 } from "kolmafia";
 import { Clan, get, getFoldGroup, have, set } from "libram";
+import { getFoldGroupWithoutEntries } from "./lib";
 
 export function withStash<T>(itemsToTake: Item[], action: () => T) {
   const manager = new StashManager();
@@ -60,11 +61,11 @@ export class StashManager {
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
         if (have(item)) continue;
-        if (getFoldGroup(item).some(have)) {
+        if (getFoldGroupWithoutEntries(item).some(have)) {
           cliExecute(`fold ${item.name}`);
           continue;
         }
-        const foldArray = getFoldGroup(item);
+        const foldArray = getFoldGroupWithoutEntries(item);
         if (!foldArray.includes(item)) foldArray.push(item);
         for (const fold of foldArray) {
           try {
