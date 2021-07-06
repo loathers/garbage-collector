@@ -186,11 +186,8 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
     ),
   ]);
 
-  () =>
-    maximizeCached(
-      compiledRequirements.maximizeParameters(),
-      compiledRequirements.maximizeOptions()
-    );
+  maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+
   if (equippedAmount($item`ice nine`) > 0) {
     equip($item`unwrapped retro superhero cape`);
   }
