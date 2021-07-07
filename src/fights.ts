@@ -72,6 +72,7 @@ import {
 } from "libram";
 import { fillAsdonMartinTo } from "./asdon";
 import { Macro, withMacro } from "./combat";
+import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   clamp,
@@ -526,7 +527,7 @@ class FreeFight {
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
       withMacro(Macro.meatKill(), this.run);
-
+      horseradish();
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
     }

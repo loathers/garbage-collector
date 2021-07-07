@@ -363,3 +363,11 @@ export function runDiet(): void {
     drinkSafe(1, $item`ambitious turkey`);
   }
 }
+
+export function horseradish() {
+  if (myFullness() < fullnessLimit()) {
+    if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
+      eat(1, $item`fudge spork`);
+    eatSafe(1, $item`jumping horseradish`);
+  }
+}

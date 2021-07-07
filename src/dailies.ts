@@ -45,6 +45,7 @@ import {
 } from "libram";
 import { songBoomSongs } from "libram/dist/resources/2018/SongBoom";
 import { globalOptions } from ".";
+import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, tryFeast, findRun, trueValue, withProperties } from "./lib";
 import { baseMeat } from "./mood";
@@ -147,6 +148,7 @@ export function latte() {
               runSource.prepare();
               equip($slot`off-hand`, latte);
               adventureMacro($location`the black forest`, runSource.macro);
+              horseradish();
             }
           }
         );
@@ -164,6 +166,7 @@ export function latte() {
               runSource.prepare();
               equip($slot`off-hand`, latte);
               adventureMacro($location`the spooky forest`, runSource.macro);
+              horseradish();
             }
           }
         );
@@ -175,6 +178,7 @@ export function latte() {
           runSource.prepare();
           equip($slot`off-hand`, latte);
           adventureMacro($location`the dire warren`, runSource.macro);
+          horseradish();
         }
       }
       if (

@@ -55,7 +55,7 @@ import {
   volcanoDailies,
   voterSetup,
 } from "./dailies";
-import { runDiet } from "./diet";
+import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import { questStep, prepWandererZone, physicalImmuneMacro, withProperties } from "./lib";
@@ -139,6 +139,7 @@ function barfTurn() {
     retrieveItem($item`pulled green taffy`);
     if (!have($effect`Fishy`)) use($item`fishy pipe`);
     location = $location`The Briny Deeps`;
+    horseradish();
   }
 
   const underwater = location === $location`The Briny Deeps`;
