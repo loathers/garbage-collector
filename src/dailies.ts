@@ -43,6 +43,7 @@ import {
   $slot,
   adventureMacro,
 } from "libram";
+import { songBoomSongs } from "libram/dist/resources/2018/SongBoom";
 import { globalOptions } from ".";
 import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, tryFeast, findRun, trueValue, withProperties } from "./lib";
@@ -263,7 +264,7 @@ export function dailyBuffs() {
 }
 
 export function configureMisc() {
-  SongBoom.setSong("Total Eclipse of Your Meat");
+  if (SongBoom.songChangesLeft() > 0) SongBoom.setSong("Total Eclipse of Your Meat");
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
     SourceTerminal.enquiry($effect`familiar.enq`);
