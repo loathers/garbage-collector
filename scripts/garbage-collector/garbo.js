@@ -28058,7 +28058,7 @@ function mood_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.sl
 dist.Mood.setDefaultOptions({
   songSlots: [(0,dist.$effects)(mood_templateObject || (mood_templateObject = mood_taggedTemplateLiteral(["Polka of Plenty"]))), (0,dist.$effects)(mood_templateObject2 || (mood_templateObject2 = mood_taggedTemplateLiteral(["Fat Leon's Phat Loot Lyric, Ur-Kel's Aria of Annoyance"]))), (0,dist.$effects)(_templateObject3 || (_templateObject3 = mood_taggedTemplateLiteral(["Chorale of Companionship"]))), (0,dist.$effects)(_templateObject4 || (_templateObject4 = mood_taggedTemplateLiteral(["The Ballad of Richie Thingfinder"])))]
 });
-var baseMeat = dist.SongBoom.have() ? 275 : 250;
+var baseMeat = dist.SongBoom.have() && (dist.SongBoom.songChangesLeft() > 0 || dist.SongBoom.song() === "Total Eclipse of Your Meat") ? 275 : 250;
 function meatMood() {
   var urKels = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   var mood = new dist.Mood(); // TODO: Check all potions and grab those that are worth.
@@ -29465,7 +29465,7 @@ function dailyBuffs() {
   }
 }
 function configureMisc() {
-  dist.SongBoom.setSong("Total Eclipse of Your Meat");
+  if (dist.SongBoom.songChangesLeft() > 0) dist.SongBoom.setSong("Total Eclipse of Your Meat");
 
   if (dist.SourceTerminal.have()) {
     dist.SourceTerminal.educate([(0,dist.$skill)(dailies_templateObject38 || (dailies_templateObject38 = dailies_taggedTemplateLiteral(["Extract"]))), (0,dist.$skill)(dailies_templateObject39 || (dailies_templateObject39 = dailies_taggedTemplateLiteral(["Digitize"])))]);
