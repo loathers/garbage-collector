@@ -306,7 +306,7 @@ export function main(argString = "") {
         ) {
           visitUrl("guild.php?action=buyskill&skillid=32", true);
         }
-        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones, origami pasties`;
+        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones, origami pasties, pantsgiving`;
         if (
           myInebriety() <= inebrietyLimit() &&
           (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))

@@ -13,6 +13,8 @@ import {
   bjornifyFamiliar,
   enthroneFamiliar,
   toSlot,
+  myAdventures,
+  mallPrice,
 } from "kolmafia";
 import {
   $class,
@@ -79,6 +81,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
+          [$item`pantsgiving`, pantsgivingBonus()],
         ]),
       }
     ),
@@ -171,6 +174,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
+          [$item`pantsgiving`, pantsgivingBonus()],
           [
             bjornAlike,
             !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
@@ -212,3 +216,15 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+
+function pantsgivingBonus() {
+  if (!have($item`pantsgiving`)) return 0;
+  const count = get("_pantsgivingCount");
+  const turns = 5 * Math.pow(10, Math.ceil(Math.log10(count / 5)));
+  if (turns - count > myAdventures() * 1.04) return 0;
+  const fullnessValue =
+    50 * 1.0 * baseMeat +
+    get("valueOfAdventure") * 6.5 -
+    (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
+  return fullnessValue / turns;
+}
