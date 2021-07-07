@@ -17,6 +17,7 @@ import {
   mallPrice,
   fullnessLimit,
   myFullness,
+  numericModifier,
 } from "kolmafia";
 import {
   $class,
@@ -70,6 +71,15 @@ export class Requirement {
   }
 }
 
+const bestAdventuresFromPants =
+  Item.all()
+    .filter(
+      (item) =>
+        toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
+    )
+    .map((pants) => numericModifier(pants, "Adventures"))
+    .sort((a, b) => b - a)[0] || 0;
+
 export function freeFightOutfit(requirements: Requirement[] = []) {
   const bjornChoice = pickBjorn(PickBjornMode.FREE);
 
@@ -84,6 +94,10 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, pantsgivingBonus()],
+          [
+            $item`stinky cheese eye`,
+            (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure"),
+          ],
         ]),
       }
     ),
@@ -177,6 +191,10 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
+          [
+            $item`stinky cheese eye`,
+            (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure"),
+          ],
           [
             bjornAlike,
             !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
