@@ -222,8 +222,9 @@ function pantsgivingBonus() {
   const count = get("_pantsgivingCount");
   const turns = 5 * Math.pow(10, Math.ceil(Math.log10(count / 5)));
   if (turns - count > myAdventures() * 1.04) return 0;
+  const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
   const fullnessValue =
-    50 * 1.0 * baseMeat +
+    sinusVal +
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
   return fullnessValue / turns;
