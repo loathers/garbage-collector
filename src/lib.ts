@@ -875,9 +875,13 @@ function generateBjornList(mode: PickBjornMode): BjornedFamiliar[] {
   };
   return [...bjornFams].sort(
     (a, b) =>
-      (!b.dropPredicate || b.dropPredicate() ? b.meatVal() * b.probability : 0) +
+      (!b.dropPredicate || (b.dropPredicate() && mode !== PickBjornMode.EMBEZZLER)
+        ? b.meatVal() * b.probability
+        : 0) +
       additionalValue(b) -
-      ((!a.dropPredicate || a.dropPredicate() ? a.meatVal() * a.probability : 0) +
+      ((!a.dropPredicate || (a.dropPredicate() && mode !== PickBjornMode.EMBEZZLER)
+        ? a.meatVal() * a.probability
+        : 0) +
         additionalValue(a))
   );
 }
