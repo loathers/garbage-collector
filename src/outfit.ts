@@ -96,7 +96,9 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`pantsgiving`, pantsgivingBonus()],
           [
             $item`stinky cheese eye`,
-            (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure"),
+            get("_stinkyCheeseCount") < 100
+              ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
+              : 0,
           ],
         ]),
       }
@@ -193,7 +195,9 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
           [
             $item`stinky cheese eye`,
-            (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure"),
+            get("_stinkyCheeseCount") < 100
+              ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
+              : 0,
           ],
           [
             bjornAlike,
