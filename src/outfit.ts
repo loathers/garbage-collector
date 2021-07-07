@@ -31,6 +31,7 @@ import {
   maximizeCached,
   MaximizeOptions,
 } from "libram";
+import { globalOptions } from ".";
 import { pickBjorn, PickBjornMode, withProperties } from "./lib";
 import { baseMeat } from "./mood";
 
@@ -96,7 +97,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`pantsgiving`, pantsgivingBonus()],
           [
             $item`stinky cheese eye`,
-            get("_stinkyCheeseCount") < 100
+            get("_stinkyCheeseCount") < 100 && !globalOptions.ascending
               ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
               : 0,
           ],
@@ -195,7 +196,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
           [
             $item`stinky cheese eye`,
-            get("_stinkyCheeseCount") < 100
+            get("_stinkyCheeseCount") < 100 && !globalOptions.ascending
               ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
               : 0,
           ],
