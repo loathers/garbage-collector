@@ -940,7 +940,7 @@ export function getFoldGroupWithoutEntries(item: Item) {
 export function tryFold(item: Item, number: number = 1) {
   if (have(item, number)) return;
   const canFoldInto = getFoldGroupWithoutEntries(item).filter((element) => element !== item);
-  while (canFoldInto.some(have) && !have(item, number)) {
+  while (canFoldInto.some((item) => have(item)) && !have(item, number)) {
     cliExecute(`fold ${item.name}`);
   }
 }
