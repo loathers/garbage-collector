@@ -220,12 +220,12 @@ export const familiarWaterBreathingEquipment = $items`das boot, little bitty bat
 function pantsgivingBonus() {
   if (!have($item`pantsgiving`)) return 0;
   const count = get("_pantsgivingCount");
-  const turns = 5 * Math.pow(10, Math.ceil(Math.log10(count / 5)));
+  const turns = 5 * Math.pow(10, Math.ceil(Math.max(0, Math.log10(Math.max(1, count / 5)))));
   if (turns - count > myAdventures() * 1.04) return 0;
   const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
-  return fullnessValue / (turns - 5 * Math.pow(10, Math.floor(Math.log10(count / 5))));
+  return fullnessValue / (turns * 0.9);
 }
