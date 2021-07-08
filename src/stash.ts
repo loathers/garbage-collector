@@ -65,8 +65,8 @@ export class StashManager {
           cliExecute(`fold ${item.name}`);
           continue;
         }
-        const foldArray = getFoldGroupWithoutEntries(item);
-        if (!foldArray.includes(item)) foldArray.push(item);
+        const foldArray = [item, ...getFoldGroupWithoutEntries(item)];
+
         for (const fold of foldArray) {
           try {
             const succeeded = takeStash(1, fold);
