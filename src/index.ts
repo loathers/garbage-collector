@@ -107,6 +107,7 @@ function dailySetup() {
 }
 
 function barfTurn() {
+  horseradish();
   if (have($effect`beaten up`))
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
   if (SourceTerminal.have()) {
@@ -139,7 +140,6 @@ function barfTurn() {
     retrieveItem($item`pulled green taffy`);
     if (!have($effect`Fishy`)) use($item`fishy pipe`);
     location = $location`The Briny Deeps`;
-    horseradish();
   }
 
   const underwater = location === $location`The Briny Deeps`;
