@@ -5,7 +5,9 @@ import {
   getClanName,
   print,
   putStash,
+  refreshStash,
   retrieveItem,
+  stashAmount,
   takeStash,
   userConfirm,
 } from "kolmafia";
@@ -67,21 +69,22 @@ export class StashManager {
         }
         const foldArray = [item, ...getFoldGroupWithoutEntries(item)];
 
+        refreshStash();
         for (const fold of foldArray) {
           try {
-            const succeeded = takeStash(1, fold);
-            if (succeeded) {
+            if (stashAmount(fold) > 0) {
+              takeStash(1, fold);
               print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
               if (fold !== item) cliExecute(`fold ${item.name}`);
-              this.taken.set(item, (this.taken.get(fold) ?? 0) + 1);
-              continue;
-            } else {
-              print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
+              this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
+              break;
             }
           } catch {
             print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
           }
         }
+        if (have(item)) continue;
+        print(`Couldn't find ${item.name} in clan stash for ${getClanName()}.`, "red");
       }
     });
   }
