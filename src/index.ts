@@ -276,6 +276,10 @@ export function main(argString = "") {
           name: "dontStopForCounters",
           value: true,
         },
+        {
+          name: "maximizerFoldables",
+          value: false,
+        },
       ],
       () => {
         cliExecute("mood apathetic");
@@ -301,7 +305,7 @@ export function main(argString = "") {
         ) {
           visitUrl("guild.php?action=buyskill&skillid=32", true);
         }
-        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones`;
+        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones, origami pasties`;
         if (
           myInebriety() <= inebrietyLimit() &&
           (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))

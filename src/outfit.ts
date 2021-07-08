@@ -107,19 +107,8 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
         bjornAlike === $item`buddy bjorn` ? $items`crown of thrones` : $items`buddy bjorn`,
     })
   );
-  withProperties(
-    [
-      {
-        name: "maximizerFoldables",
-        value: "false",
-      },
-    ],
-    () =>
-      maximizeCached(
-        compiledRequirements.maximizeParameters(),
-        compiledRequirements.maximizeOptions()
-      )
-  );
+
+  maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
   if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
 }
@@ -192,19 +181,9 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
       }
     ),
   ]);
-  withProperties(
-    [
-      {
-        name: "maximizerFoldables",
-        value: "false",
-      },
-    ],
-    () =>
-      maximizeCached(
-        compiledRequirements.maximizeParameters(),
-        compiledRequirements.maximizeOptions()
-      )
-  );
+
+  maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+
   if (equippedAmount($item`ice nine`) > 0) {
     equip($item`unwrapped retro superhero cape`);
   }
