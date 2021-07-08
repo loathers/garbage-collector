@@ -15,6 +15,8 @@ import {
   toSlot,
   myAdventures,
   mallPrice,
+  fullnessLimit,
+  myFullness,
 } from "kolmafia";
 import {
   $class,
@@ -220,7 +222,12 @@ export const familiarWaterBreathingEquipment = $items`das boot, little bitty bat
 function pantsgivingBonus() {
   if (!have($item`pantsgiving`)) return 0;
   const count = get("_pantsgivingCount");
-  const turns = [5, 50, 500, 5000].find((x) => count < x) || 50000;
+  const turnArray = [5, 50, 500, 5000];
+  const index =
+    myFullness() === fullnessLimit()
+      ? get("_pantsgivingFullness")
+      : turnArray.findIndex((x) => count < x);
+  const turns = turnArray[index] || 50000;
   if (turns - count > myAdventures() * 1.04) return 0;
   const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
   const fullnessValue =
