@@ -76,7 +76,7 @@ export class StashManager {
               takeStash(1, fold);
               print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
               if (fold !== item) cliExecute(`fold ${item.name}`);
-              this.taken.set(item, (this.taken.get(fold) ?? 0) + 1);
+              this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
               break;
             }
           } catch {
