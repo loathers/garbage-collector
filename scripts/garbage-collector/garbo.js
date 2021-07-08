@@ -27964,6 +27964,7 @@ var StashManager = /*#__PURE__*/function () {
             }
 
             var foldArray = [item].concat(_toConsumableArray(getFoldGroupWithoutEntries(item)));
+            (0,external_kolmafia_.refreshStash)();
 
             var _iterator2 = _createForOfIteratorHelper(foldArray),
                 _step2;
@@ -27973,19 +27974,16 @@ var StashManager = /*#__PURE__*/function () {
                 var fold = _step2.value;
 
                 try {
-                  var succeeded = (0,external_kolmafia_.takeStash)(1, fold);
-
-                  if (succeeded) {
+                  if ((0,external_kolmafia_.stashAmount)(fold) > 0) {
                     var _this$taken$get;
 
+                    (0,external_kolmafia_.takeStash)(1, fold);
                     (0,external_kolmafia_.print)("Took ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
                     if (fold !== item) (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
 
-                    _this.taken.set(item, ((_this$taken$get = _this.taken.get(fold)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
+                    _this.taken.set(item, ((_this$taken$get = _this.taken.get(item)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
 
-                    continue;
-                  } else {
-                    (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+                    break;
                   }
                 } catch (_unused) {
                   (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
@@ -27996,6 +27994,9 @@ var StashManager = /*#__PURE__*/function () {
             } finally {
               _iterator2.f();
             }
+
+            if ((0,dist.have)(item)) continue;
+            (0,external_kolmafia_.print)("Couldn't find ".concat(item.name, " in clan stash for ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
           }
         } catch (err) {
           _iterator.e(err);
