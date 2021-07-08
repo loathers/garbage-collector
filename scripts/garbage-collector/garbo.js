@@ -27891,6 +27891,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
 function withStash(itemsToTake, action) {
   var manager = new StashManager();
 
@@ -27955,20 +27956,45 @@ var StashManager = /*#__PURE__*/function () {
             var item = _step.value;
             if ((0,dist.have)(item)) continue;
 
+            if (getFoldGroupWithoutEntries(item).some(function (item) {
+              return (0,dist.have)(item);
+            })) {
+              (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
+              continue;
+            }
+
+            var foldArray = [item].concat(_toConsumableArray(getFoldGroupWithoutEntries(item)));
+
+            var _iterator2 = _createForOfIteratorHelper(foldArray),
+                _step2;
+
             try {
-              var succeeded = (0,external_kolmafia_.takeStash)(1, item);
+              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+                var fold = _step2.value;
 
-              if (succeeded) {
-                var _this$taken$get;
+                try {
+                  var succeeded = (0,external_kolmafia_.takeStash)(1, fold);
 
-                (0,external_kolmafia_.print)("Took ".concat(item.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
+                  if (succeeded) {
+                    var _this$taken$get;
 
-                _this.taken.set(item, ((_this$taken$get = _this.taken.get(item)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
-              } else {
-                (0,external_kolmafia_.print)("Failed to take ".concat(item.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+                    (0,external_kolmafia_.print)("Took ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
+                    if (fold !== item) (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
+
+                    _this.taken.set(item, ((_this$taken$get = _this.taken.get(fold)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
+
+                    continue;
+                  } else {
+                    (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+                  }
+                } catch (_unused) {
+                  (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+                }
               }
-            } catch (_unused) {
-              (0,external_kolmafia_.print)("Failed to take ".concat(item.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+            } catch (err) {
+              _iterator2.e(err);
+            } finally {
+              _iterator2.f();
             }
           }
         } catch (err) {
@@ -28004,14 +28030,14 @@ var StashManager = /*#__PURE__*/function () {
       }
 
       withClan(this.clanIdOrName, function () {
-        var _iterator2 = _createForOfIteratorHelper(items),
-            _step2;
+        var _iterator3 = _createForOfIteratorHelper(items),
+            _step3;
 
         try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
             var _this2$taken$get;
 
-            var item = _step2.value;
+            var item = _step3.value;
             var count = (_this2$taken$get = _this2.taken.get(item)) !== null && _this2$taken$get !== void 0 ? _this2$taken$get : 0;
 
             if (count > 0) {
@@ -28027,9 +28053,9 @@ var StashManager = /*#__PURE__*/function () {
             }
           }
         } catch (err) {
-          _iterator2.e(err);
+          _iterator3.e(err);
         } finally {
-          _iterator2.f();
+          _iterator3.f();
         }
       });
     }
@@ -29113,6 +29139,11 @@ function withProperties(properties, functionToRun) {
     }
   }
 }
+function getFoldGroupWithoutEntries(item) {
+  return Object.getOwnPropertyNames((0,external_kolmafia_.getRelated)(item, "fold")).map(function (item) {
+    return (0,external_kolmafia_.toItem)(item);
+  });
+}
 ;// CONCATENATED MODULE: ./src/familiar.ts
 var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11, familiar_templateObject12, familiar_templateObject13, familiar_templateObject14, familiar_templateObject15, familiar_templateObject16, familiar_templateObject17, familiar_templateObject18, familiar_templateObject19, familiar_templateObject20, familiar_templateObject21, familiar_templateObject22, familiar_templateObject23, familiar_templateObject24, familiar_templateObject25, familiar_templateObject26, familiar_templateObject27, familiar_templateObject28, familiar_templateObject29, familiar_templateObject30;
 
@@ -30058,12 +30089,7 @@ function freeFightOutfit() {
     bonusEquip: new Map([[bjornAlike, !bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0]]),
     preventEquip: bjornAlike === (0,dist.$item)(outfit_templateObject10 || (outfit_templateObject10 = outfit_taggedTemplateLiteral(["buddy bjorn"]))) ? (0,dist.$items)(outfit_templateObject11 || (outfit_templateObject11 = outfit_taggedTemplateLiteral(["crown of thrones"]))) : (0,dist.$items)(outfit_templateObject12 || (outfit_templateObject12 = outfit_taggedTemplateLiteral(["buddy bjorn"])))
   }));
-  withProperties([{
-    name: "maximizerFoldables",
-    value: "false"
-  }], function () {
-    return (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
-  });
+  (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
   if ((0,external_kolmafia_.haveEquipped)((0,dist.$item)(outfit_templateObject13 || (outfit_templateObject13 = outfit_taggedTemplateLiteral(["buddy bjorn"]))))) (0,external_kolmafia_.bjornifyFamiliar)(bjornChoice.familiar);
   if ((0,external_kolmafia_.haveEquipped)((0,dist.$item)(outfit_templateObject14 || (outfit_templateObject14 = outfit_taggedTemplateLiteral(["crown of thrones"]))))) (0,external_kolmafia_.enthroneFamiliar)(bjornChoice.familiar);
 }
@@ -30110,12 +30136,7 @@ function meatOutfit(embezzlerUp) {
     preventEquip: [].concat(outfit_toConsumableArray((0,dist.$items)(outfit_templateObject33 || (outfit_templateObject33 = outfit_taggedTemplateLiteral(["broken champagne bottle, unwrapped retro superhero cape"])))), outfit_toConsumableArray(embezzlerUp ? (0,dist.$items)(outfit_templateObject34 || (outfit_templateObject34 = outfit_taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === (0,dist.$item)(outfit_templateObject35 || (outfit_templateObject35 = outfit_taggedTemplateLiteral(["buddy bjorn"]))) ? (0,dist.$item)(outfit_templateObject36 || (outfit_templateObject36 = outfit_taggedTemplateLiteral(["crown of thrones"]))) : (0,dist.$item)(outfit_templateObject37 || (outfit_templateObject37 = outfit_taggedTemplateLiteral(["buddy bjorn"])))]),
     bonusEquip: new Map([[(0,dist.$item)(outfit_templateObject38 || (outfit_templateObject38 = outfit_taggedTemplateLiteral(["lucky gold ring"]))), 400], [(0,dist.$item)(outfit_templateObject39 || (outfit_templateObject39 = outfit_taggedTemplateLiteral(["mafia thumb ring"]))), 300], [(0,dist.$item)(outfit_templateObject40 || (outfit_templateObject40 = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 250], [(0,dist.$item)(outfit_templateObject41 || (outfit_templateObject41 = outfit_taggedTemplateLiteral(["pantogram pants"]))), 100], [(0,dist.$item)(outfit_templateObject42 || (outfit_templateObject42 = outfit_taggedTemplateLiteral(["Mr. Screege's spectacles"]))), 180], [bjornAlike, !bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0]])
   })]));
-  withProperties([{
-    name: "maximizerFoldables",
-    value: "false"
-  }], function () {
-    return (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
-  });
+  (0,dist.maximizeCached)(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
 
   if ((0,external_kolmafia_.equippedAmount)((0,dist.$item)(outfit_templateObject43 || (outfit_templateObject43 = outfit_taggedTemplateLiteral(["ice nine"])))) > 0) {
     (0,external_kolmafia_.equip)((0,dist.$item)(outfit_templateObject44 || (outfit_templateObject44 = outfit_taggedTemplateLiteral(["unwrapped retro superhero cape"]))));
@@ -31242,6 +31263,9 @@ function src_main() {
     }, {
       name: "dontStopForCounters",
       value: true
+    }, {
+      name: "maximizerFoldables",
+      value: false
     }], function () {
       (0,external_kolmafia_.cliExecute)("mood apathetic");
       (0,external_kolmafia_.cliExecute)("ccs garbo");
@@ -31266,7 +31290,7 @@ function src_main() {
         (0,external_kolmafia_.visitUrl)("guild.php?action=buyskill&skillid=32", true);
       }
 
-      var stashItems = (0,dist.$items)(src_templateObject34 || (src_templateObject34 = src_taggedTemplateLiteral(["repaid diaper, buddy bjorn, crown of thrones"])));
+      var stashItems = (0,dist.$items)(src_templateObject34 || (src_templateObject34 = src_taggedTemplateLiteral(["repaid diaper, buddy bjorn, crown of thrones, origami pasties"])));
       if ((0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() && ((0,external_kolmafia_.myClass)() !== (0,dist.$class)(src_templateObject35 || (src_templateObject35 = src_taggedTemplateLiteral(["seal clubber"]))) || !(0,dist.have)((0,dist.$skill)(src_templateObject36 || (src_templateObject36 = src_taggedTemplateLiteral(["furious wallop"])))))) stashItems.push((0,dist.$item)(src_templateObject37 || (src_templateObject37 = src_taggedTemplateLiteral(["haiku katana"])))); // FIXME: Dynamically figure out pointer ring approach.
 
       withStash(stashItems, function () {
