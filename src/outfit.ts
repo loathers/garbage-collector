@@ -93,7 +93,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
     )
       ? $item`buddy bjorn`
       : $item`crown of thrones`;
-  compiledRequirements.merge(
+  const finalRequirements = compiledRequirements.merge(
     new Requirement([], {
       bonusEquip: new Map([
         [
@@ -108,7 +108,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
     })
   );
 
-  maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+  maximizeCached(finalRequirements.maximizeParameters(), finalRequirements.maximizeOptions());
   if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
 }
