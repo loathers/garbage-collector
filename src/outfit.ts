@@ -227,5 +227,5 @@ function pantsgivingBonus() {
     sinusVal +
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
-  return fullnessValue / turns;
+  return fullnessValue / (turns - 5 * Math.pow(10, Math.floor(Math.log10(count / 5))));
 }
