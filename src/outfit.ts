@@ -13,6 +13,10 @@ import {
   bjornifyFamiliar,
   enthroneFamiliar,
   toSlot,
+  myAdventures,
+  mallPrice,
+  fullnessLimit,
+  myFullness,
 } from "kolmafia";
 import {
   $class,
@@ -79,6 +83,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
+          [$item`pantsgiving`, pantsgivingBonus()],
         ]),
       }
     ),
@@ -171,6 +176,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
+          [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
           [
             bjornAlike,
             !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
@@ -212,3 +218,21 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+
+function pantsgivingBonus() {
+  if (!have($item`pantsgiving`)) return 0;
+  const count = get("_pantsgivingCount");
+  const turnArray = [5, 50, 500, 5000];
+  const index =
+    myFullness() === fullnessLimit()
+      ? get("_pantsgivingFullness")
+      : turnArray.findIndex((x) => count < x);
+  const turns = turnArray[index] || 50000;
+  if (turns - count > myAdventures() * 1.04) return 0;
+  const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
+  const fullnessValue =
+    sinusVal +
+    get("valueOfAdventure") * 6.5 -
+    (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
+  return fullnessValue / (turns * 0.9);
+}

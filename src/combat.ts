@@ -96,6 +96,7 @@ export class Macro extends LibramMacro {
       .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
       .externalIf(katanaSetup, Macro.skill("Summer Siesta").attack())
       .externalIf(capeSetup, Macro.skill("Precision Shot"))
+      .trySkill("Pocket Crumbs")
       .if_(
         "discobandit",
         Macro.trySkill("Disco Dance of Doom")

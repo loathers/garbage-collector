@@ -57,7 +57,7 @@ import {
   volcanoDailies,
   voterSetup,
 } from "./dailies";
-import { runDiet } from "./diet";
+import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import { questStep, prepWandererZone, physicalImmuneMacro, withProperties } from "./lib";
@@ -111,6 +111,7 @@ function dailySetup() {
 }
 
 function barfTurn() {
+  horseradish();
   if (have($effect`beaten up`))
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
   if (SourceTerminal.have()) {
@@ -309,7 +310,7 @@ export function main(argString = "") {
         ) {
           visitUrl("guild.php?action=buyskill&skillid=32", true);
         }
-        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones, origami pasties`;
+        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones, origami pasties, pantsgiving`;
         if (
           myInebriety() <= inebrietyLimit() &&
           (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))
