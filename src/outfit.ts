@@ -101,6 +101,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
               ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
               : 0,
           ],
+          ...cheeses(false),
         ]),
       }
     ),
@@ -262,7 +263,10 @@ function pantsgivingBonus() {
 }
 function cheeses(embezzlerUp: boolean) {
   const bonusVal =
-    get("_stinkyCheeseCount") < 100 && myAdventures() < 100 && !embezzlerUp
+    get("_stinkyCheeseCount") < 100 &&
+    myAdventures() < 100 &&
+    !embezzlerUp &&
+    !globalOptions.ascending
       ? get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100)
       : 0;
   return new Map<Item, number>(
