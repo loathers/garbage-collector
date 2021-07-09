@@ -14,6 +14,7 @@ import {
   numericModifier,
   print,
   restoreMp,
+  retrieveItem,
   runChoice,
   toItem,
   toUrl,
@@ -304,9 +305,25 @@ export class freeRun {
 
 const banishesToUse = questStep("questL11Worship") > 0 && get("_drunkPygmyBanishes") === 0 ? 2 : 3;
 
+const banderRun = new freeRun(
+  () =>
+    ((have($familiar`frumious bandersnatch`) &&
+      (have($effect`ode to booze`) || getSongCount() < getSongLimit())) ||
+      have($familiar`pair of stomping boots`)) &&
+    Bandersnatch.getRemainingRunaways() > 0,
+  () => {
+    maximize("familiar weight", false);
+    if (have($familiar`frumious bandersnatch`)) useFamiliar($familiar`frumious bandersnatch`);
+    else useFamiliar($familiar`pair of stomping boots`);
+    if (myFamiliar() === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+  },
+  Macro.step("runaway")
+);
+
 const freeRuns: freeRun[] = [
+  /*
   new freeRun(
-    () => {
+     () => {
       if (getWorkshed() !== $item`Asdon Martin keyfob`) return false;
       const banishes = get("banishedMonsters").split(":");
       const bumperIndex = banishes
@@ -314,65 +331,57 @@ const freeRuns: freeRun[] = [
         .indexOf("spring-loaded front bumper");
       if (bumperIndex === -1) return true;
       return myTurncount() - parseInt(banishes[bumperIndex + 1]) > 30;
-    },
-    () => fillAsdonMartinTo(50),
-    Macro.skill("Asdon Martin: Spring-Loaded Front Bumper")
-  ),
-
-  new freeRun(
-    () =>
-      ((have($familiar`frumious bandersnatch`) &&
-        (have($effect`ode to booze`) || getSongCount() < getSongLimit())) ||
-        have($familiar`pair of stomping boots`)) &&
-      Bandersnatch.getRemainingRunaways() > 0,
+    }, 
     () => {
-      maximize("familiar weight", false);
-      if (have($familiar`frumious bandersnatch`)) useFamiliar($familiar`frumious bandersnatch`);
-      else useFamiliar($familiar`pair of stomping boots`);
-      if (myFamiliar() === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+      fillAsdonMartinTo(50);
+      retrieveItem(1, $item`louder than bomb`);
     },
-    Macro.step("runaway")
-  ),
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("louder than bomb")
+  ), 
+  code removed because of boss monsters
+  */
+
+  banderRun,
 
   new freeRun(
     () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
     () => restoreMp(50),
-    Macro.skill("snokebomb")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("snokebomb")
   ),
 
   new freeRun(
     () => get("_feelHatredUsed") < banishesToUse && have($skill`emotionally chipped`),
     () => {},
-    Macro.skill("feel hatred")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("feel hatred")
   ),
 
   new freeRun(
     () => have($item`kremlin's greatest briefcase`) && get("_kgbTranquilizerDartUses") < 3,
     () => equip($slot`acc3`, $item`kremlin's greatest briefcase`),
-    Macro.skill("KGB tranquilizer dart")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("KGB tranquilizer dart")
   ),
 
   new freeRun(
     () => have($item`latte lovers member's mug`) && !get("_latteBanishUsed"),
     () => equip($slot`off-hand`, $item`latte lovers member's mug`),
-    Macro.skill("Throw Latte on Opponent")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Throw Latte on Opponent")
   ),
 
   new freeRun(
     () => have($item`Lil' Doctor™ bag`) && get("_reflexHammerUsed") < 3,
     () => equip($slot`acc3`, $item`Lil' Doctor™ bag`),
-    Macro.skill("reflex hammer")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("reflex hammer")
   ),
 
   new freeRun(
     () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
     () => equip($slot`acc3`, $item`mafia middle finger ring`),
-    Macro.skill("Show them your ring")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show them your ring")
   ),
 ];
 
-export function findRun() {
-  return freeRuns.find((run) => run.available());
+export function findRun(useBander: boolean = true) {
+  return freeRuns.find((run) => run.available() && (useBander || run !== banderRun));
 }
 
 const valueMap: Map<Item, number> = new Map();

@@ -23,6 +23,7 @@ import {
   getCampground,
   myAdventures,
   mallPrice,
+  setAutoAttack,
 } from "kolmafia";
 import {
   have,
@@ -42,12 +43,14 @@ import {
   property,
   $slot,
   adventureMacro,
+  Macro,
 } from "libram";
 import { songBoomSongs } from "libram/dist/resources/2018/SongBoom";
 import { globalOptions } from ".";
 import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, tryFeast, findRun, trueValue, withProperties } from "./lib";
 import { baseMeat } from "./mood";
+import { freeFightOutfit, Requirement } from "./outfit";
 import { withStash } from "./stash";
 
 export function voterSetup() {
@@ -445,9 +448,45 @@ export function pickTea() {
   cliExecute(`teatree ${teaAction}`);
 }
 
+
 export function gaze() {
   if (!get("getawayCampsiteUnlocked")) return;
   if (!get("_campAwayCloudBuffs")) visitUrl("place.php?whichplace=campaway&action=campaway_sky");
   while (get("_campAwaySmileBuffs") < 3)
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
+}
+export function jellyfish() {
+  if (
+    !have($familiar`space jellyfish`) ||
+    !(
+      (have($skill`meteor lore`) && get("_macrometeoriteUses") < 10) ||
+      (have($item`powerful glove`) && get("_powerfulGloveBatteryPowerUsed") < 91)
+    )
+  ) {
+    return;
+  }
+  useFamiliar($familiar`space jellyfish`);
+  setAutoAttack(0);
+  freeFightOutfit();
+  while (findRun(false) && have($skill`meteor lore`) && get("_macrometeoriteUses") < 10) {
+    const runSource = findRun(false);
+    if (!runSource) break;
+    const jellyMacro = Macro.while_(
+      "!pastround 28 && hasskill macrometeorite",
+      Macro.skill("extract jelly").skill("macrometeorite")
+    ).step(runSource.macro);
+    adventureMacro($location`barf mountain`, jellyMacro);
+  }
+  if (have($item`powerful glove`)) {
+    freeFightOutfit([new Requirement([], { forceEquip: $items`powerful glove` })]);
+    while (findRun(false) && get("_powerfulGloveBatteryPowerUsed") < 91) {
+      const runSource = findRun(false);
+      if (!runSource) break;
+      const jellyMacro = Macro.while_(
+        "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
+        Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
+      ).step(runSource.macro);
+      adventureMacro($location`barf mountain`, jellyMacro);
+    }
+  }
 }

@@ -50,6 +50,7 @@ import {
   gaze,
   gin,
   horse,
+  jellyfish,
   latte,
   pickTea,
   prepFamiliars,
@@ -96,6 +97,7 @@ function dailySetup() {
   horse();
   latte();
   prepFamiliars();
+  jellyfish();
   dailyBuffs();
   configureMisc();
   volcanoDailies();
