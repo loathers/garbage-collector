@@ -176,7 +176,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`pantsgiving`, pantsgivingBonus()],
+          [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
           [
             bjornAlike,
             !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
