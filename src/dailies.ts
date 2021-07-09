@@ -448,7 +448,6 @@ export function pickTea() {
   cliExecute(`teatree ${teaAction}`);
 }
 
-
 export function gaze() {
   if (!get("getawayCampsiteUnlocked")) return;
   if (!get("_campAwayCloudBuffs")) visitUrl("place.php?whichplace=campaway&action=campaway_sky");
