@@ -32,7 +32,7 @@ import {
   MaximizeOptions,
 } from "libram";
 import { globalOptions } from ".";
-import { pickBjorn, PickBjornMode, withProperties } from "./lib";
+import { getFoldGroupWithoutEntries, pickBjorn, PickBjornMode, withProperties } from "./lib";
 import { baseMeat } from "./mood";
 
 export class Requirement {
@@ -200,6 +200,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
               ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
               : 0,
           ],
+          ...cheeses(),
           [
             bjornAlike,
             !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
@@ -258,4 +259,13 @@ function pantsgivingBonus() {
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
   return fullnessValue / (turns * 0.9);
+}
+function cheeses() {
+  const bonusVal =
+    get("_stinkyCheeseCount") < 100 && myAdventures() < 100
+      ? get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100)
+      : 0;
+  return new Map<Item, number>(
+    getFoldGroupWithoutEntries($item`stinky cheese diaper`).map((item) => [item, bonusVal])
+  );
 }
