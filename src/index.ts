@@ -60,7 +60,13 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { questStep, prepWandererZone, physicalImmuneMacro, withProperties, tryFold } from "./lib";
+import {
+  questStep,
+  prepWandererZone,
+  physicalImmuneMacro,
+  withProperties,
+  getFoldGroupWithoutEntries,
+} from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -309,6 +315,15 @@ export function main(argString = "") {
           guildStoreAvailable()
         ) {
           visitUrl("guild.php?action=buyskill&skillid=32", true);
+        }
+        const cheeses = getFoldGroupWithoutEntries($item`stinky cheese diaper`);
+        if (cheeses.some((item) => have(item))) {
+          if (!have($item`stinky cheese eye`)) cliExecute("fold stinky cheese eye");
+          while (cheeses.some((item) => have(item, 2)) && cheeses.some((item) => !have(item))) {
+            const foldMe = cheeses.find((item) => have(item, 2));
+            if (foldMe) use(foldMe);
+            else break;
+          }
         }
         const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones, origami pasties, pantsgiving`;
         if (
