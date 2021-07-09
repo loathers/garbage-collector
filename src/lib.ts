@@ -936,11 +936,3 @@ export function withProperties(properties: Property[], functionToRun: () => void
 export function getFoldGroupWithoutEntries(item: Item) {
   return Object.getOwnPropertyNames(getRelated(item, "fold")).map((item) => toItem(item));
 }
-
-export function tryFold(item: Item, number: number = 1) {
-  if (have(item, number)) return;
-  const canFoldInto = getFoldGroupWithoutEntries(item).filter((element) => element !== item);
-  while (canFoldInto.some((item) => have(item)) && !have(item, number)) {
-    cliExecute(`fold ${item.name}`);
-  }
-}
