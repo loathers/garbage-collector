@@ -200,7 +200,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
               ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
               : 0,
           ],
-          ...cheeses(),
+          ...cheeses(embezzlerUp),
           [
             bjornAlike,
             !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
@@ -260,9 +260,9 @@ function pantsgivingBonus() {
     (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
   return fullnessValue / (turns * 0.9);
 }
-function cheeses() {
+function cheeses(embezzlerUp: boolean) {
   const bonusVal =
-    get("_stinkyCheeseCount") < 100 && myAdventures() < 100
+    get("_stinkyCheeseCount") < 100 && myAdventures() < 100 && !embezzlerUp
       ? get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100)
       : 0;
   return new Map<Item, number>(
