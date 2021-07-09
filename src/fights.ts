@@ -452,14 +452,12 @@ export function dailyFights() {
           if (nextFight) {
             useFamiliar(meatFamiliar());
             if (
-              (haveFamiliar($familiar`Reanimated Reanimator`) ||
-                haveFamiliar($familiar`Obtuse Angel`)) &&
+              (have($familiar`Reanimated Reanimator`) || have($familiar`Obtuse Angel`)) &&
               get("_badlyRomanticArrows") === 0 &&
               !nextFight.draggable
             ) {
-              for (const f of $familiars`Obtuse Angel, Reanimated Reanimator`) {
-                useFamiliar(f);
-              }
+              if (have($familiar`obtuse angel`)) useFamiliar($familiar`obtuse angel`);
+              else useFamiliar($familiar`reanimated reanimator`);
             }
 
             if (
