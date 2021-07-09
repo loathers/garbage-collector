@@ -185,7 +185,7 @@ function barfTurn() {
         )
       ).meatKill(),
       Macro.if_(
-        `(monsterid ${$monster`knob goblin embezzler`.id}) && !(pastround 1)`,
+        `(monsterid ${$monster`knob goblin embezzler`.id}) && !gotjump && !(pastround 2))`,
         Macro.externalIf(underwater, Macro.item("pulled green taffy")).meatKill()
       ).abort()
     );
