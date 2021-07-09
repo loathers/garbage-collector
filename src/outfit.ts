@@ -148,6 +148,10 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
     }
     forceEquip.push($item`mafia pointer finger ring`);
   }
+  if (myFamiliar() === $familiar`obtuse angel`) {
+    forceEquip.push($item`quake of arrows`);
+    if (!have($item`quake of arrows`)) retrieveItem($item`quake of arrows`);
+  }
   if (sea) {
     additionalRequirements.push("sea");
   }
