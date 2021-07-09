@@ -444,3 +444,10 @@ export function pickTea() {
   const teaAction = shakeVal > trueValue(bestTea) ? "shake" : bestTea.name;
   cliExecute(`teatree ${teaAction}`);
 }
+
+export function gaze() {
+  if (!get("getawayCampsiteUnlocked")) return;
+  if (!get("_campAwayCloudBuffs")) visitUrl("place.php?whichplace=campaway&action=campaway_sky");
+  while (get("_campAwaySmileBuffs") < 3)
+    visitUrl("place.php?whichplace=campaway&action=campaway_sky");
+}

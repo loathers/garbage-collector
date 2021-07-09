@@ -47,6 +47,7 @@ import {
   configureGear,
   configureMisc,
   dailyBuffs,
+  gaze,
   gin,
   horse,
   latte,
@@ -90,6 +91,7 @@ function ensureBarfAccess() {
 
 function dailySetup() {
   voterSetup();
+  gaze();
   configureGear();
   horse();
   latte();
