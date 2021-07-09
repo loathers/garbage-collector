@@ -29772,6 +29772,14 @@ function pickTea() {
   var teaAction = shakeVal > trueValue(bestTea) ? "shake" : bestTea.name;
   (0,external_kolmafia_.cliExecute)("teatree ".concat(teaAction));
 }
+function gaze() {
+  if (!(0,dist.get)("getawayCampsiteUnlocked")) return;
+  if (!(0,dist.get)("_campAwayCloudBuffs")) (0,external_kolmafia_.visitUrl)("place.php?whichplace=campaway&action=campaway_sky");
+
+  while ((0,dist.get)("_campAwaySmileBuffs") < 3) {
+    (0,external_kolmafia_.visitUrl)("place.php?whichplace=campaway&action=campaway_sky");
+  }
+}
 function jellyfish() {
   if (!(0,dist.have)((0,dist.$familiar)(dailies_templateObject81 || (dailies_templateObject81 = dailies_taggedTemplateLiteral(["space jellyfish"])))) || !((0,dist.have)((0,dist.$skill)(dailies_templateObject82 || (dailies_templateObject82 = dailies_taggedTemplateLiteral(["meteor lore"])))) && (0,dist.get)("_macrometeoriteUses") < 10 || (0,dist.have)((0,dist.$item)(dailies_templateObject83 || (dailies_templateObject83 = dailies_taggedTemplateLiteral(["powerful glove"])))) && (0,dist.get)("_powerfulGloveBatteryPowerUsed") < 91)) {
     return;
@@ -31158,6 +31166,7 @@ function ensureBarfAccess() {
 
 function dailySetup() {
   voterSetup();
+  gaze();
   configureGear();
   horse();
   latte();
