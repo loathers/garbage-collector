@@ -47,6 +47,7 @@ import {
   configureGear,
   configureMisc,
   dailyBuffs,
+  dna,
   gaze,
   gin,
   horse,
@@ -99,7 +100,7 @@ function dailySetup() {
   latte();
   prepFamiliars();
   jellyfish();
-
+  dna();
   dailyBuffs();
   configureMisc();
   volcanoDailies();

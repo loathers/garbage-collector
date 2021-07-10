@@ -585,3 +585,21 @@ export function hybridizeConstellation(): boolean {
   }
   return false;
 }
+
+export function dna() {
+  if (
+    getWorkshed() !== $item`Little Geneticist DNA-Splicing Lab` ||
+    isIntrinsic($effect`human-fish hybrid`) ||
+    isIntrinsic($effect`human-constellation hybrid`)
+  )
+    return;
+  if (numericModifier(meatFamiliar(), "Leprechaun", 1, $item`none`) > 1.9) {
+    hybridizeFish();
+    if (isIntrinsic($effect`human-fish hybrid`)) return;
+    hybridizeConstellation();
+  } else {
+    hybridizeConstellation();
+    if (isIntrinsic($effect`human-constellation hybrid`)) return;
+    hybridizeFish();
+  }
+}
