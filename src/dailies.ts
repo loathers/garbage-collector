@@ -52,7 +52,7 @@ import { meatFamiliar } from "./familiar";
 import { questStep, ensureEffect, tryFeast, findRun, trueValue, withProperties } from "./lib";
 import { baseMeat } from "./mood";
 import { freeFightOutfit, Requirement } from "./outfit";
-import { withStash } from "./stash";
+import { withStash } from "./clan";
 
 export function voterSetup() {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;

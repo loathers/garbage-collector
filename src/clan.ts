@@ -11,7 +11,7 @@ import {
   takeStash,
   userConfirm,
 } from "kolmafia";
-import { Clan, get, getFoldGroup, have, set } from "libram";
+import { $item, Clan, get, have, set } from "libram";
 import { getFoldGroupWithoutEntries } from "./lib";
 
 export function withStash<T>(itemsToTake: Item[], action: () => T) {
@@ -24,7 +24,24 @@ export function withStash<T>(itemsToTake: Item[], action: () => T) {
   }
 }
 
-export function withClan<T>(clanIdOrName: string | number, action: () => T) {
+export function withVIPClan<T>(action: () => T) {
+  let clanIdOrName: number | string | undefined = get("garbo_vipClan", undefined);
+  if (!clanIdOrName && have($item`Clan VIP lounge key`)) {
+    if (
+      userConfirm(
+        "You do not presently have a VIP clan set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
+        15000,
+        true
+      )
+    ) {
+      clanIdOrName = getClanId();
+      set("garbo_vipClan", clanIdOrName);
+    }
+  }
+  return withClan(clanIdOrName || getClanId(), action);
+}
+
+function withClan<T>(clanIdOrName: string | number, action: () => T) {
   const startingClanId = getClanId();
   Clan.join(clanIdOrName);
   try {

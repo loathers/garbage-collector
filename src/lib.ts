@@ -938,20 +938,3 @@ export function withProperties(properties: Property[], functionToRun: () => void
 export function getFoldGroupWithoutEntries(item: Item) {
   return Object.getOwnPropertyNames(getRelated(item, "fold")).map((item) => toItem(item));
 }
-
-export function getVIPClan(): number | string {
-  let clanIdOrName: number | string | undefined = get("garbo_vipClan", undefined);
-  if (!clanIdOrName && have($item`Clan VIP lounge key`)) {
-    if (
-      userConfirm(
-        "You do not presently have a VIP clan set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
-        15000,
-        true
-      )
-    ) {
-      clanIdOrName = getClanId();
-      set("garbo_vipClan", clanIdOrName);
-    }
-  }
-  return clanIdOrName || getClanId();
-}

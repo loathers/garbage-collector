@@ -60,13 +60,7 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import {
-  questStep,
-  prepWandererZone,
-  physicalImmuneMacro,
-  withProperties,
-  getVIPClan,
-} from "./lib";
+import { questStep, prepWandererZone, physicalImmuneMacro, withProperties } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -75,7 +69,7 @@ import {
   Requirement,
   waterBreathingEquipment,
 } from "./outfit";
-import { withClan, withStash } from "./stash";
+import { withVIPClan, withStash } from "./clan";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -324,7 +318,7 @@ export function main(argString = "") {
           stashItems.push($item`haiku katana`);
         // FIXME: Dynamically figure out pointer ring approach.
         withStash(stashItems, () => {
-          withClan(getVIPClan(), () => {
+          withVIPClan(() => {
             // 0. diet stuff.
             runDiet();
 
