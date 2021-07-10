@@ -27772,7 +27772,7 @@ function main() {
 
 /***/ }),
 
-/***/ 9201:
+/***/ 2375:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -27951,8 +27951,10 @@ function freeFightFamiliar() {
   familiarValue.push([(0,dist.$familiar)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["None"]))), 0]);
   return argmax(familiarValue);
 }
-;// CONCATENATED MODULE: ./src/stash.ts
-function stash_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = stash_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+;// CONCATENATED MODULE: ./src/clan.ts
+var clan_templateObject;
+
+function clan_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = clan_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -27962,17 +27964,19 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function stash_toConsumableArray(arr) { return stash_arrayWithoutHoles(arr) || stash_iterableToArray(arr) || stash_unsupportedIterableToArray(arr) || stash_nonIterableSpread(); }
+function clan_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-function stash_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function clan_toConsumableArray(arr) { return clan_arrayWithoutHoles(arr) || clan_iterableToArray(arr) || clan_unsupportedIterableToArray(arr) || clan_nonIterableSpread(); }
 
-function stash_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return stash_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return stash_arrayLikeToArray(o, minLen); }
+function clan_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function stash_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function clan_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return clan_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return clan_arrayLikeToArray(o, minLen); }
 
-function stash_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return stash_arrayLikeToArray(arr); }
+function clan_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
-function stash_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function clan_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return clan_arrayLikeToArray(arr); }
+
+function clan_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 
 
@@ -27981,11 +27985,23 @@ function withStash(itemsToTake, action) {
   var manager = new StashManager();
 
   try {
-    manager.take.apply(manager, stash_toConsumableArray(itemsToTake));
+    manager.take.apply(manager, clan_toConsumableArray(itemsToTake));
     return action();
   } finally {
     manager.putBackAll();
   }
+}
+function withVIPClan(action) {
+  var clanIdOrName = (0,dist.get)("garbo_vipClan", undefined);
+
+  if (!clanIdOrName && (0,dist.have)((0,dist.$item)(clan_templateObject || (clan_templateObject = clan_taggedTemplateLiteral(["Clan VIP lounge key"]))))) {
+    if ((0,external_kolmafia_.userConfirm)("You do not presently have a VIP clan set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)", 15000, true)) {
+      clanIdOrName = (0,external_kolmafia_.getClanId)();
+      (0,dist.set)("garbo_vipClan", clanIdOrName);
+    }
+  }
+
+  return withClan(clanIdOrName || (0,external_kolmafia_.getClanId)(), action);
 }
 
 function withClan(clanIdOrName, action) {
@@ -28008,12 +28024,12 @@ var StashManager = /*#__PURE__*/function () {
     _defineProperty(this, "taken", new Map());
 
     if (clanIdOrName === undefined) {
-      clanIdOrName = (0,dist.get)("stashClan", undefined);
+      clanIdOrName = (0,dist.get)("garbo_stashClan", undefined);
 
       if (!clanIdOrName) {
-        if ((0,external_kolmafia_.userConfirm)("You do not presently have a stashClan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)", 15000, true)) {
+        if ((0,external_kolmafia_.userConfirm)("You do not presently have a stash clan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)", 15000, true)) {
           clanIdOrName = (0,external_kolmafia_.getClanId)();
-          (0,dist.set)("stashClan", clanIdOrName);
+          (0,dist.set)("garbo_stashClan", clanIdOrName);
         } else {
           throw "No stashClan set.";
         }
@@ -28033,7 +28049,7 @@ var StashManager = /*#__PURE__*/function () {
       }
 
       withClan(this.clanIdOrName, function () {
-        var _iterator = stash_createForOfIteratorHelper(items),
+        var _iterator = clan_createForOfIteratorHelper(items),
             _step;
 
         try {
@@ -28048,10 +28064,10 @@ var StashManager = /*#__PURE__*/function () {
               continue;
             }
 
-            var foldArray = [item].concat(stash_toConsumableArray(getFoldGroupWithoutEntries(item)));
+            var foldArray = [item].concat(clan_toConsumableArray(getFoldGroupWithoutEntries(item)));
             (0,external_kolmafia_.refreshStash)();
 
-            var _iterator2 = stash_createForOfIteratorHelper(foldArray),
+            var _iterator2 = clan_createForOfIteratorHelper(foldArray),
                 _step2;
 
             try {
@@ -28102,7 +28118,7 @@ var StashManager = /*#__PURE__*/function () {
         items[_key2] = arguments[_key2];
       }
 
-      this.take.apply(this, stash_toConsumableArray(items.filter(function (item) {
+      this.take.apply(this, clan_toConsumableArray(items.filter(function (item) {
         return (0,external_kolmafia_.availableAmount)(item) === 0;
       })));
     }
@@ -28116,7 +28132,7 @@ var StashManager = /*#__PURE__*/function () {
       }
 
       withClan(this.clanIdOrName, function () {
-        var _iterator3 = stash_createForOfIteratorHelper(items),
+        var _iterator3 = clan_createForOfIteratorHelper(items),
             _step3;
 
         try {
@@ -28152,7 +28168,7 @@ var StashManager = /*#__PURE__*/function () {
   }, {
     key: "putBackAll",
     value: function putBackAll() {
-      this.putBack.apply(this, stash_toConsumableArray(this.taken.keys()));
+      this.putBack.apply(this, clan_toConsumableArray(this.taken.keys()));
     }
   }]);
 
@@ -31377,26 +31393,28 @@ function src_main() {
       if ((0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() && ((0,external_kolmafia_.myClass)() !== (0,dist.$class)(src_templateObject35 || (src_templateObject35 = src_taggedTemplateLiteral(["seal clubber"]))) || !(0,dist.have)((0,dist.$skill)(src_templateObject36 || (src_templateObject36 = src_taggedTemplateLiteral(["furious wallop"])))))) stashItems.push((0,dist.$item)(src_templateObject37 || (src_templateObject37 = src_taggedTemplateLiteral(["haiku katana"])))); // FIXME: Dynamically figure out pointer ring approach.
 
       withStash(stashItems, function () {
-        // 0. diet stuff.
-        runDiet(); // 1. get a ticket
+        withVIPClan(function () {
+          // 0. diet stuff.
+          runDiet(); // 1. get a ticket
 
-        ensureBarfAccess(); // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+          ensureBarfAccess(); // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
 
-        dailySetup();
-        (0,dist.setDefaultMaximizeOptions)({
-          preventEquip: (0,dist.$items)(src_templateObject38 || (src_templateObject38 = src_taggedTemplateLiteral(["broken champagne bottle"])))
-        }); // 4. do some embezzler stuff
+          dailySetup();
+          (0,dist.setDefaultMaximizeOptions)({
+            preventEquip: (0,dist.$items)(src_templateObject38 || (src_templateObject38 = src_taggedTemplateLiteral(["broken champagne bottle"])))
+          }); // 4. do some embezzler stuff
 
-        freeFights();
-        dailyFights(); // 5. burn turns at barf
+          freeFights();
+          dailyFights(); // 5. burn turns at barf
 
-        try {
-          while (canContinue()) {
-            barfTurn();
+          try {
+            while (canContinue()) {
+              barfTurn();
+            }
+          } finally {
+            (0,external_kolmafia_.setAutoAttack)(0);
           }
-        } finally {
-          (0,external_kolmafia_.setAutoAttack)(0);
-        }
+        });
       });
     });
   } finally {
@@ -31507,7 +31525,7 @@ module.exports = require("kolmafia");;
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 9201);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 2375);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
