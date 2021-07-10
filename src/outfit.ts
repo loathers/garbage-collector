@@ -26,6 +26,7 @@ import {
   $items,
   $slot,
   get,
+  getFoldGroup,
   getKramcoWandererChance,
   have,
   maximizeCached,
@@ -195,12 +196,6 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`pantogram pants`, 100],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
-          [
-            $item`stinky cheese eye`,
-            get("_stinkyCheeseCount") < 100 && !globalOptions.ascending
-              ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
-              : 0,
-          ],
           ...cheeses(embezzlerUp),
           [
             bjornAlike,
@@ -261,15 +256,20 @@ function pantsgivingBonus() {
     (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
   return fullnessValue / (turns * 0.9);
 }
+const haveSomeCheese = getFoldGroupWithoutEntries($item`stinky cheese diaper`).some((item) =>
+  have(item)
+);
 function cheeses(embezzlerUp: boolean) {
-  const bonusVal =
+  return haveSomeCheese &&
+    !globalOptions.ascending &&
     get("_stinkyCheeseCount") < 100 &&
     myAdventures() < 100 &&
-    !embezzlerUp &&
-    !globalOptions.ascending
-      ? get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100)
-      : 0;
-  return new Map<Item, number>(
-    getFoldGroupWithoutEntries($item`stinky cheese diaper`).map((item) => [item, bonusVal])
-  );
+    !embezzlerUp
+    ? new Map<Item, number>(
+        getFoldGroupWithoutEntries($item`stinky cheese diaper`).map((item) => [
+          item,
+          get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100),
+        ])
+      )
+    : [];
 }
