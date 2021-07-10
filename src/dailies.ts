@@ -481,7 +481,8 @@ export function jellyfish() {
     adventureMacro($location`barf mountain`, jellyMacro);
   }
   if (have($item`powerful glove`)) {
-    freeFightOutfit([new Requirement([], { forceEquip: $items`powerful glove` })]);
+    freeFightOutfit();
+    equip($slot`acc2`, $item`powerful glove`);
     while (findRun(false) && get("_powerfulGloveBatteryPowerUsed") < 91) {
       const runSource = findRun(false);
       if (!runSource) break;
