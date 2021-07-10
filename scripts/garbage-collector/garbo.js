@@ -27995,7 +27995,7 @@ function withVIPClan(action) {
   var clanIdOrName = (0,dist.get)("garbo_vipClan", undefined);
 
   if (!clanIdOrName && (0,dist.have)((0,dist.$item)(clan_templateObject || (clan_templateObject = clan_taggedTemplateLiteral(["Clan VIP lounge key"]))))) {
-    if ((0,external_kolmafia_.userConfirm)("You do not presently have a VIP clan set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)", 15000, true)) {
+    if ((0,external_kolmafia_.userConfirm)("The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)", 15000, true)) {
       clanIdOrName = (0,external_kolmafia_.getClanId)();
       (0,dist.set)("garbo_vipClan", clanIdOrName);
     }
@@ -28027,11 +28027,11 @@ var StashManager = /*#__PURE__*/function () {
       clanIdOrName = (0,dist.get)("garbo_stashClan", undefined);
 
       if (!clanIdOrName) {
-        if ((0,external_kolmafia_.userConfirm)("You do not presently have a stash clan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)", 15000, true)) {
+        if ((0,external_kolmafia_.userConfirm)("The preference 'garbo_stashClan' is not set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)", 15000, true)) {
           clanIdOrName = (0,external_kolmafia_.getClanId)();
           (0,dist.set)("garbo_stashClan", clanIdOrName);
         } else {
-          throw "No stashClan set.";
+          throw "No garbo_stashClan set.";
         }
       }
     }
