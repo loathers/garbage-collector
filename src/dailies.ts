@@ -1,11 +1,14 @@
 import {
   availableAmount,
+  booleanModifier,
   buy,
   changeMcd,
   cliExecute,
   equip,
   getCampground,
   getClanLounge,
+  getWorkshed,
+  haveEffect,
   haveSkill,
   itemAmount,
   mallPrice,
@@ -47,12 +50,16 @@ import {
 } from "libram";
 import { globalOptions } from ".";
 import { horseradish } from "./diet";
-import { meatFamiliar } from "./familiar";
 import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
 import { baseMeat } from "./mood";
-import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
 import { withChoices } from "libram/dist/property";
+import { freeFightFamiliar, meatFamiliar } from "./familiar";
+import {
+  familiarWaterBreathingEquipment,
+  freeFightOutfit,
+  waterBreathingEquipment,
+} from "./outfit";
 
 export function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -490,4 +497,44 @@ export function jellyfish(): void {
       adventureMacro($location`Barf Mountain`, jellyMacro);
     }
   }
+}
+export function getFished() {
+  if (
+    getWorkshed() !== $item`Little Geneticist DNA-Splicing Lab` ||
+    haveEffect($effect`Human-Fish Hybrid`) === 2147483547
+  ) {
+    return true;
+  }
+  if (get("dnaSyringe") !== "fish") {
+    if (!have($effect`Fishy`) && get("_fishyPipeUsed") && have($item`fishy pipe`))
+      use($item`fishy pipe`);
+    if (!have($effect`fish`)) return;
+    const runSource =
+      findRun(false) ||
+      new freeRun(
+        () => retrieveItem($item`Louder Than Bomb`),
+        () => retrieveItem($item`Louder Than Bomb`),
+        Macro.item("louder than bomb")
+      );
+    setAutoAttack(0);
+    freeFightOutfit();
+    if (!booleanModifier("Adventure Underwater")) {
+      const breathe = waterBreathingEquipment.find((gear) => have(gear));
+      if (breathe) equip(breathe);
+      else return false;
+    }
+    useFamiliar(freeFightFamiliar());
+    if (!booleanModifier("Underwater Familiar")) {
+      const familiarbreathe = familiarWaterBreathingEquipment.find((gear) => have(gear));
+      if (familiarbreathe) equip(familiarbreathe);
+      else useFamiliar($familiar`none`);
+    }
+    runSource.prepare();
+    adventureMacro(
+      $location`The Briny Deeps`,
+      Macro.tryItem($item`DNA extraction syringe`).step(runSource.macro)
+    );
+  }
+  if (get("dnaSyringe") === "fish") cliExecute("camp dnainject");
+  return haveEffect($effect`Human-Fish Hybrid`) === 2147483547;
 }
