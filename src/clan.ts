@@ -57,17 +57,17 @@ export class StashManager {
 
   constructor(clanIdOrName?: string | number) {
     if (clanIdOrName === undefined) {
-      clanIdOrName = get("stashClan", undefined);
+      clanIdOrName = get("garbo_stashClan", undefined);
       if (!clanIdOrName) {
         if (
           userConfirm(
-            "You do not presently have a stashClan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)",
+            "You do not presently have a stash clan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)",
             15000,
             true
           )
         ) {
           clanIdOrName = getClanId();
-          set("stashClan", clanIdOrName);
+          set("garbo_stashClan", clanIdOrName);
         } else {
           throw "No stashClan set.";
         }
