@@ -93,7 +93,7 @@ import {
   Requirement,
   waterBreathingEquipment,
 } from "./outfit";
-import { withStash } from "./stash";
+import { withStash } from "./clan";
 
 function checkFax(): boolean {
   cliExecute("fax receive");

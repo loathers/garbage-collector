@@ -31,7 +31,7 @@ import {
 } from "libram";
 import { fillAsdonMartinTo } from "./asdon";
 import { questStep } from "./lib";
-import { withStash } from "./stash";
+import { withStash } from "./clan";
 
 Mood.setDefaultOptions({
   songSlots: [
