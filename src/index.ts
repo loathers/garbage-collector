@@ -48,7 +48,6 @@ import {
   configureMisc,
   dailyBuffs,
   gaze,
-  getFished,
   gin,
   horse,
   jellyfish,
@@ -100,7 +99,7 @@ function dailySetup() {
   latte();
   prepFamiliars();
   jellyfish();
-  getFished();
+
   dailyBuffs();
   configureMisc();
   volcanoDailies();

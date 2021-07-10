@@ -41,19 +41,18 @@ import {
   $stat,
   $thrall,
   adventureMacro,
-  get,
   have,
-  Macro,
   property,
   SongBoom,
   SourceTerminal,
 } from "libram";
 import { globalOptions } from ".";
+import { Macro, withMacro } from "./combat";
 import { horseradish } from "./diet";
-import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
+import { ensureEffect, findRun, FreeRun, questStep, trueValue, tryFeast } from "./lib";
 import { baseMeat } from "./mood";
 import { withStash } from "./clan";
-import { withChoices } from "libram/dist/property";
+import { get, withChoices } from "libram/dist/property";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   familiarWaterBreathingEquipment,
@@ -498,20 +497,24 @@ export function jellyfish(): void {
     }
   }
 }
-export function getFished() {
+function isIntrinsic(effect: Effect) {
+  return haveEffect(effect) === 2147483547;
+}
+export function hybridizeFish(): boolean {
   if (
     getWorkshed() !== $item`Little Geneticist DNA-Splicing Lab` ||
-    haveEffect($effect`Human-Fish Hybrid`) === 2147483547
+    isIntrinsic($effect`Human-Fish Hybrid`) ||
+    isIntrinsic($effect`Human-Constellation Hybrid`)
   ) {
     return true;
   }
   if (get("dnaSyringe") !== "fish") {
     if (!have($effect`Fishy`) && get("_fishyPipeUsed") && have($item`fishy pipe`))
       use($item`fishy pipe`);
-    if (!have($effect`fish`)) return;
+    if (!have($effect`Fishy`)) return false;
     const runSource =
       findRun(false) ||
-      new freeRun(
+      new FreeRun(
         () => retrieveItem($item`Louder Than Bomb`),
         () => retrieveItem($item`Louder Than Bomb`),
         Macro.item("louder than bomb")
@@ -537,4 +540,48 @@ export function getFished() {
   }
   if (get("dnaSyringe") === "fish") cliExecute("camp dnainject");
   return haveEffect($effect`Human-Fish Hybrid`) === 2147483547;
+}
+export function hybridizeConstellation(): boolean {
+  if (
+    getWorkshed() !== $item`Little Geneticist DNA-Splicing Lab` ||
+    isIntrinsic($effect`Human-Fish Hybrid`) ||
+    isIntrinsic($effect`Human-Constellation Hybrid`)
+  ) {
+    return true;
+  }
+  if (get("dnaSyringe") !== "constellation") {
+    if (
+      have($item`Cargo Cultist Shorts`) &&
+      !get("_cargoPocketEmptied") &&
+      !(get("cargoPocketsEmptied").includes("317") && get("cargoPocketsEmptied").includes("383"))
+    ) {
+      useFamiliar(have($familiar`Robortender`) ? $familiar`Robortender` : freeFightFamiliar());
+      freeFightOutfit();
+      const pocketPick = get("cargoPocketsEmptied").includes("317") ? 383 : 317;
+      withMacro(Macro.tryItem($item`DNA extraction syringe`).meatKill(), () => {
+        cliExecute(`cargo pocket ${pocketPick}`);
+      });
+    } else if (have($item`steam-powered model rocketship`)) {
+      const runSource =
+        findRun(false) ||
+        new FreeRun(
+          () => retrieveItem($item`Louder Than Bomb`),
+          () => retrieveItem($item`Louder Than Bomb`),
+          Macro.item("louder than bomb")
+        );
+      setAutoAttack(0);
+      //const constellationFamiliar = have($familiar`robortender`) ? $familiar`robortender` : freeFightFamiliar();
+      useFamiliar(freeFightFamiliar());
+      runSource.prepare();
+      adventureMacro(
+        $location`The Hole in the Sky`,
+        Macro.tryItem($item`DNA extraction syringe`).step(runSource.macro)
+      );
+    }
+  }
+  if (get("dnaSyringe") === "constellation") {
+    cliExecute("camp dnainject");
+    return true;
+  }
+  return false;
 }
