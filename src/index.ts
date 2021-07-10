@@ -60,7 +60,13 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { questStep, prepWandererZone, physicalImmuneMacro, withProperties } from "./lib";
+import {
+  questStep,
+  prepWandererZone,
+  physicalImmuneMacro,
+  withProperties,
+  getVIPClan,
+} from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -69,7 +75,7 @@ import {
   Requirement,
   waterBreathingEquipment,
 } from "./outfit";
-import { withStash } from "./stash";
+import { withClan, withStash } from "./stash";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -318,31 +324,33 @@ export function main(argString = "") {
           stashItems.push($item`haiku katana`);
         // FIXME: Dynamically figure out pointer ring approach.
         withStash(stashItems, () => {
-          // 0. diet stuff.
-          runDiet();
+          withClan(getVIPClan(), () => {
+            // 0. diet stuff.
+            runDiet();
 
-          // 1. get a ticket
-          ensureBarfAccess();
+            // 1. get a ticket
+            ensureBarfAccess();
 
-          // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
-          dailySetup();
+            // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+            dailySetup();
 
-          setDefaultMaximizeOptions({
-            preventEquip: $items`broken champagne bottle`,
-          });
+            setDefaultMaximizeOptions({
+              preventEquip: $items`broken champagne bottle`,
+            });
 
-          // 4. do some embezzler stuff
-          freeFights();
-          dailyFights();
+            // 4. do some embezzler stuff
+            freeFights();
+            dailyFights();
 
-          // 5. burn turns at barf
-          try {
-            while (canContinue()) {
-              barfTurn();
+            // 5. burn turns at barf
+            try {
+              while (canContinue()) {
+                barfTurn();
+              }
+            } finally {
+              setAutoAttack(0);
             }
-          } finally {
-            setAutoAttack(0);
-          }
+          });
         });
       }
     );

@@ -24,7 +24,7 @@ export function withStash<T>(itemsToTake: Item[], action: () => T) {
   }
 }
 
-function withClan<T>(clanIdOrName: string | number, action: () => T) {
+export function withClan<T>(clanIdOrName: string | number, action: () => T) {
   const startingClanId = getClanId();
   Clan.join(clanIdOrName);
   try {
