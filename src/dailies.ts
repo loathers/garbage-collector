@@ -550,18 +550,7 @@ export function hybridizeConstellation(): boolean {
     return true;
   }
   if (get("dnaSyringe") !== "constellation") {
-    if (
-      have($item`Cargo Cultist Shorts`) &&
-      !get("_cargoPocketEmptied") &&
-      !(get("cargoPocketsEmptied").includes("317") && get("cargoPocketsEmptied").includes("383"))
-    ) {
-      useFamiliar(have($familiar`Robortender`) ? $familiar`Robortender` : freeFightFamiliar());
-      freeFightOutfit();
-      const pocketPick = get("cargoPocketsEmptied").includes("317") ? 383 : 317;
-      withMacro(Macro.tryItem($item`DNA extraction syringe`).meatKill(), () => {
-        cliExecute(`cargo pocket ${pocketPick}`);
-      });
-    } else if (have($item`steam-powered model rocketship`)) {
+    if (have($item`steam-powered model rocketship`)) {
       const runSource =
         findRun(false) ||
         new FreeRun(
@@ -577,6 +566,17 @@ export function hybridizeConstellation(): boolean {
         $location`The Hole in the Sky`,
         Macro.tryItem($item`DNA extraction syringe`).step(runSource.macro)
       );
+    } else if (
+      have($item`Cargo Cultist Shorts`) &&
+      !get("_cargoPocketEmptied") &&
+      !(get("cargoPocketsEmptied").includes("317") && get("cargoPocketsEmptied").includes("383"))
+    ) {
+      useFamiliar(have($familiar`Robortender`) ? $familiar`Robortender` : freeFightFamiliar());
+      freeFightOutfit();
+      const pocketPick = get("cargoPocketsEmptied").includes("317") ? 383 : 317;
+      withMacro(Macro.tryItem($item`DNA extraction syringe`).meatKill(), () => {
+        cliExecute(`cargo pocket ${pocketPick}`);
+      });
     }
   }
   if (get("dnaSyringe") === "constellation") {
@@ -586,20 +586,20 @@ export function hybridizeConstellation(): boolean {
   return false;
 }
 
-export function dna() {
+export function dna(): void {
   if (
     getWorkshed() !== $item`Little Geneticist DNA-Splicing Lab` ||
-    isIntrinsic($effect`human-fish hybrid`) ||
-    isIntrinsic($effect`human-constellation hybrid`)
+    isIntrinsic($effect`Human-Fish Hybrid`) ||
+    isIntrinsic($effect`Human-Constellation Hybrid`)
   )
     return;
   if (numericModifier(meatFamiliar(), "Leprechaun", 1, $item`none`) > 1.9) {
     hybridizeFish();
-    if (isIntrinsic($effect`human-fish hybrid`)) return;
+    if (isIntrinsic($effect`Human-Fish Hybrid`)) return;
     hybridizeConstellation();
   } else {
     hybridizeConstellation();
-    if (isIntrinsic($effect`human-constellation hybrid`)) return;
+    if (isIntrinsic($effect`Human-Constellation Hybrid`)) return;
     hybridizeFish();
   }
 }
