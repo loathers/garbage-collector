@@ -539,7 +539,7 @@ export function hybridizeFish(): boolean {
     );
   }
   if (get("dnaSyringe") === "fish") cliExecute("camp dnainject");
-  return haveEffect($effect`Human-Fish Hybrid`) === 2147483547;
+  return isIntrinsic($effect`Human-Fish Hybrid`);
 }
 export function hybridizeConstellation(): boolean {
   if (
@@ -579,11 +579,8 @@ export function hybridizeConstellation(): boolean {
       });
     }
   }
-  if (get("dnaSyringe") === "constellation") {
-    cliExecute("camp dnainject");
-    return true;
-  }
-  return false;
+  if (get("dnaSyringe") === "constellation") cliExecute("camp dnainject");
+  return isIntrinsic($effect`Human-Constellation Hybrid`);
 }
 
 export function dna(): void {
