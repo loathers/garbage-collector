@@ -29,7 +29,7 @@ export function withVIPClan<T>(action: () => T) {
   if (!clanIdOrName && have($item`Clan VIP lounge key`)) {
     if (
       userConfirm(
-        "You do not presently have a VIP clan set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
+        "The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
         15000,
         true
       )
@@ -61,7 +61,7 @@ export class StashManager {
       if (!clanIdOrName) {
         if (
           userConfirm(
-            "You do not presently have a stash clan set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)",
+            "The preference 'garbo_stashClan' is not set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)",
             15000,
             true
           )
@@ -69,7 +69,7 @@ export class StashManager {
           clanIdOrName = getClanId();
           set("garbo_stashClan", clanIdOrName);
         } else {
-          throw "No stashClan set.";
+          throw "No garbo_stashClan set.";
         }
       }
     }
