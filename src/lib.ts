@@ -4,6 +4,7 @@ import {
   buy,
   cliExecute,
   equip,
+  getClanId,
   getRelated,
   getWorkshed,
   haveSkill,
@@ -20,6 +21,7 @@ import {
   toUrl,
   use,
   useFamiliar,
+  userConfirm,
   useSkill,
   visitUrl,
 } from "kolmafia";
