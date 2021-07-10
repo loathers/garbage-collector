@@ -485,6 +485,7 @@ export function jellyfish() {
     while (findRun(false) && get("_powerfulGloveBatteryPowerUsed") < 91) {
       const runSource = findRun(false);
       if (!runSource) break;
+      runSource.prepare();
       const jellyMacro = Macro.while_(
         "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
         Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
