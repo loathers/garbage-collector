@@ -263,7 +263,7 @@ function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&
     !globalOptions.ascending &&
     get("_stinkyCheeseCount") < 100 &&
-    myAdventures() < 100 &&
+    myAdventures() >= 100 &&
     !embezzlerUp
     ? new Map<Item, number>(
         getFoldGroupWithoutEntries($item`stinky cheese diaper`).map((item) => [
