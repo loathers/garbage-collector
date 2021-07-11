@@ -290,7 +290,7 @@ export function main(argString = "") {
         },
         {
           name: "maximizerFoldables",
-          value: false,
+          value: true,
         },
       ],
       () => {
@@ -317,17 +317,6 @@ export function main(argString = "") {
         ) {
           visitUrl("guild.php?action=buyskill&skillid=32", true);
         }
-        const cheeses = getFoldGroupWithoutEntries($item`stinky cheese diaper`);
-        if (!have($skill`spirit of rigatoni`) && !haveEquipped($item`special sauce glove`))
-          cheeses.splice(cheeses.indexOf($item`Staff of Queso Escusado`));
-        if (cheeses.some((item) => have(item))) {
-          if (!have($item`stinky cheese eye`)) cliExecute("fold stinky cheese eye");
-          while (cheeses.some((item) => have(item, 2)) && cheeses.some((item) => !have(item))) {
-            const foldMe = cheeses.find((item) => have(item, 2));
-            if (foldMe) use(foldMe);
-            else break;
-          }
-        }
         const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones, origami pasties, pantsgiving`;
         if (
           myInebriety() <= inebrietyLimit() &&
@@ -347,7 +336,7 @@ export function main(argString = "") {
             dailySetup();
 
             setDefaultMaximizeOptions({
-              preventEquip: $items`broken champagne bottle`,
+              preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball`,
             });
 
             // 4. do some embezzler stuff
