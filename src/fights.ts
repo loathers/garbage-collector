@@ -79,6 +79,7 @@ import {
   ensureEffect,
   findRun,
   freeRun,
+  kramcoGuaranteed,
   mapMonster,
   prepWandererZone,
   questStep,
@@ -489,6 +490,7 @@ export function dailyFights() {
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location: $location`Noob Cave` });
             }
+            if (kramcoGuaranteed()) doSausage();
           }
         });
         startDigitize();
@@ -1129,4 +1131,12 @@ export function safeRestore(): void {
     }
     restoreMp(50);
   }
+}
+
+function doSausage() {
+  if (!kramcoGuaranteed()) return;
+  useFamiliar(freeFightFamiliar());
+  freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
+  adventureMacroAuto(prepWandererZone(), Macro.meatKill());
+  setAutoAttack(0);
 }

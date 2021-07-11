@@ -942,7 +942,8 @@ export function getFoldGroupWithoutEntries(item: Item) {
 
 export function kramcoGuaranteed() {
   return (
+    have($item`oKramco Sausage-o-Matic™`) &&
     totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1 >=
-    5 + 3 * get("_sausageFights") + Math.pow(Math.max(0, get("_sausageFights") - 5), 3)
+      5 + 3 * get("_sausageFights") + Math.pow(Math.max(0, get("_sausageFights") - 5), 3)
   );
 }
