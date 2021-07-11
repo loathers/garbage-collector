@@ -1139,4 +1139,5 @@ function doSausage() {
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
   adventureMacroAuto(prepWandererZone(), Macro.meatKill());
   setAutoAttack(0);
+  embezzlerMacro().save();
 }
