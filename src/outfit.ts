@@ -81,7 +81,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
         bonusEquip: new Map([
           [$item`lucky gold ring`, 400],
           [$item`Mr. Cheeng's spectacles`, 250],
-          [$item`pantogram pants`, 100],
+          [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, pantsgivingBonus()],
         ]),
@@ -174,7 +174,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`lucky gold ring`, 400],
           [$item`mafia thumb ring`, 300],
           [$item`Mr. Cheeng's spectacles`, 250],
-          [$item`pantogram pants`, 100],
+          [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
           [
