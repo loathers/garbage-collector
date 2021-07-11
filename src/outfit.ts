@@ -93,7 +93,7 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
         bonusEquip: new Map([
           [$item`lucky gold ring`, 400],
           [$item`Mr. Cheeng's spectacles`, 250],
-          [$item`pantogram pants`, 100],
+          [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, pantsgivingBonus()],
           [
@@ -167,6 +167,10 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
     }
     forceEquip.push($item`mafia pointer finger ring`);
   }
+  if (myFamiliar() === $familiar`obtuse angel`) {
+    forceEquip.push($item`quake of arrows`);
+    if (!have($item`quake of arrows`)) retrieveItem($item`quake of arrows`);
+  }
   if (sea) {
     additionalRequirements.push("sea");
   }
@@ -193,7 +197,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`lucky gold ring`, 400],
           [$item`mafia thumb ring`, 300],
           [$item`Mr. Cheeng's spectacles`, 250],
-          [$item`pantogram pants`, 100],
+          [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
           ...cheeses(embezzlerUp),

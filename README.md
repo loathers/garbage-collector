@@ -18,12 +18,18 @@ You need to let Garbo know how much it can expect your turns to be worth near th
 set valueOfAdventure = 3000;
 ```
 
-# Set your "stash clan"
+# Set your Stash and VIP clans
 
 When at all possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):
 
 ```
-set stashClan = "Bonus Adventures from Hell"
+set garbo_stashClan = "Bonus Adventures from Hell"
+```
+
+Additionally, if you have a VIP Lounge Key, Garbo will try to make use of any VIP furniture to augment its farming. To set your VIP clan, copy the name of your intended VIP clan and run the following code (once again using BAFH as an example):
+
+```
+set garbo_vipClan = "Bonus Adventures from Hell"
 ```
 
 # Install "Universal Recovery"
