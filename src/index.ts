@@ -5,6 +5,7 @@ import {
   getCampground,
   getCounters,
   guildStoreAvailable,
+  haveEquipped,
   inebrietyLimit,
   itemAmount,
   myAdventures,
@@ -317,6 +318,8 @@ export function main(argString = "") {
           visitUrl("guild.php?action=buyskill&skillid=32", true);
         }
         const cheeses = getFoldGroupWithoutEntries($item`stinky cheese diaper`);
+        if (!have($skill`spirit of rigatoni`) && !haveEquipped($item`special sauce glove`))
+          cheeses.splice(cheeses.indexOf($item`Staff of Queso Escusado`));
         if (cheeses.some((item) => have(item))) {
           if (!have($item`stinky cheese eye`)) cliExecute("fold stinky cheese eye");
           while (cheeses.some((item) => have(item, 2)) && cheeses.some((item) => !have(item))) {
