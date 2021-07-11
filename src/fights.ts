@@ -490,9 +490,9 @@ export function dailyFights() {
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location: $location`Noob Cave` });
             }
-            if (kramcoGuaranteed()) doSausage();
           }
         });
+        if (kramcoGuaranteed()) doSausage();
         startDigitize();
         nextFight = getEmbezzlerFight();
       }
@@ -1139,5 +1139,4 @@ function doSausage() {
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
   adventureMacroAuto(prepWandererZone(), Macro.meatKill());
   setAutoAttack(0);
-  embezzlerMacro().save();
 }
