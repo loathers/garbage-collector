@@ -106,8 +106,13 @@ function eatSafe(qty: number, item: Item) {
 }
 
 function drinkSafe(qty: number, item: Item) {
+  const prevDrunk = myInebriety();
   acquire(qty, item);
   if (!drink(qty, item)) throw "Failed to drink safely";
+  if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
+    // sometimes mafia does not track the mime army shot glass property
+    setProperty("_mimeArmyShotglassUsed", "true");
+  }
 }
 
 function chewSafe(qty: number, item: Item) {
