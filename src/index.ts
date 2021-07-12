@@ -336,7 +336,7 @@ export function main(argString = "") {
             dailySetup();
 
             setDefaultMaximizeOptions({
-              preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball`,
+              preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre`,
             });
 
             // 4. do some embezzler stuff
