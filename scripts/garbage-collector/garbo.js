@@ -29351,8 +29351,14 @@ function eatSafe(qty, item) {
 }
 
 function drinkSafe(qty, item) {
+  var prevDrunk = (0,external_kolmafia_.myInebriety)();
   acquire(qty, item);
   if (!(0,external_kolmafia_.drink)(qty, item)) throw "Failed to drink safely";
+
+  if (item.inebriety === 1 && prevDrunk === qty + (0,external_kolmafia_.myInebriety)() - 1) {
+    // sometimes mafia does not track the mime army shot glass property
+    (0,external_kolmafia_.setProperty)("_mimeArmyShotglassUsed", "true");
+  }
 }
 
 function chewSafe(qty, item) {
