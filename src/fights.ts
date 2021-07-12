@@ -746,6 +746,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`Fourth of May Cosplay Saber`,
+          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
         }),
       ],
     }
@@ -766,6 +767,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
         }),
       ],
     }
@@ -782,6 +784,11 @@ const freeFightSources = [
       visitUrl(`inv_use.php?whichitem=${toInt($item`time-spinner`)}`);
       runChoice(1);
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
+    },
+    {
+      requirements: () => [
+        new Requirement([], { bonusEquip: new Map([[$item`garbage sticker`, 100]]) }),
+      ],
     }
   ),
 
