@@ -5,6 +5,7 @@ import {
   getCampground,
   getCounters,
   guildStoreAvailable,
+  haveEquipped,
   inebrietyLimit,
   itemAmount,
   myAdventures,
@@ -60,7 +61,13 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { questStep, prepWandererZone, physicalImmuneMacro, withProperties } from "./lib";
+import {
+  questStep,
+  prepWandererZone,
+  physicalImmuneMacro,
+  withProperties,
+  getFoldGroupWithoutEntries,
+} from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -283,7 +290,7 @@ export function main(argString = "") {
         },
         {
           name: "maximizerFoldables",
-          value: false,
+          value: true,
         },
       ],
       () => {
@@ -329,7 +336,7 @@ export function main(argString = "") {
             dailySetup();
 
             setDefaultMaximizeOptions({
-              preventEquip: $items`broken champagne bottle`,
+              preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball`,
             });
 
             // 4. do some embezzler stuff

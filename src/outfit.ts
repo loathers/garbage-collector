@@ -17,6 +17,7 @@ import {
   mallPrice,
   fullnessLimit,
   myFullness,
+  numericModifier,
 } from "kolmafia";
 import {
   $class,
@@ -25,12 +26,14 @@ import {
   $items,
   $slot,
   get,
+  getFoldGroup,
   getKramcoWandererChance,
   have,
   maximizeCached,
   MaximizeOptions,
 } from "libram";
-import { pickBjorn, PickBjornMode, withProperties } from "./lib";
+import { globalOptions } from ".";
+import { getFoldGroupWithoutEntries, pickBjorn, PickBjornMode, withProperties } from "./lib";
 import { baseMeat } from "./mood";
 
 export class Requirement {
@@ -70,6 +73,15 @@ export class Requirement {
   }
 }
 
+const bestAdventuresFromPants =
+  Item.all()
+    .filter(
+      (item) =>
+        toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
+    )
+    .map((pants) => numericModifier(pants, "Adventures"))
+    .sort((a, b) => b - a)[0] || 0;
+
 export function freeFightOutfit(requirements: Requirement[] = []) {
   const bjornChoice = pickBjorn(PickBjornMode.FREE);
 
@@ -84,6 +96,13 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, pantsgivingBonus()],
+          [
+            $item`stinky cheese eye`,
+            get("_stinkyCheeseCount") < 100 && !globalOptions.ascending
+              ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
+              : 0,
+          ],
+          ...cheeses(false),
         ]),
       }
     ),
@@ -181,6 +200,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
+          ...cheeses(embezzlerUp),
           [
             bjornAlike,
             !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
@@ -239,4 +259,21 @@ function pantsgivingBonus() {
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
   return fullnessValue / (turns * 0.9);
+}
+const haveSomeCheese = getFoldGroupWithoutEntries($item`stinky cheese diaper`).some((item) =>
+  have(item)
+);
+function cheeses(embezzlerUp: boolean) {
+  return haveSomeCheese &&
+    !globalOptions.ascending &&
+    get("_stinkyCheeseCount") < 100 &&
+    myAdventures() >= 100 &&
+    !embezzlerUp
+    ? new Map<Item, number>(
+        getFoldGroupWithoutEntries($item`stinky cheese diaper`).map((item) => [
+          item,
+          get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100),
+        ])
+      )
+    : [];
 }
