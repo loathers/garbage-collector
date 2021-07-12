@@ -15,6 +15,7 @@ import {
   handlingChoice,
   haveFamiliar,
   itemAmount,
+  itemDrops,
   mallPrice,
   myAdventures,
   myAscensions,
@@ -83,6 +84,7 @@ import {
   prepWandererZone,
   questStep,
   setChoice,
+  trueValue,
   withProperties,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
@@ -390,7 +392,14 @@ function startDigitize() {
     } while (get("lastCopyableMonster") === $monster`government agent`);
   }
 }
-
+const witchessPieces = [
+  { piece: $monster`witchess bishop`, drop: $item`sacramento wine` },
+  { piece: $monster`witchess knight`, drop: $item`jumping horseradish` },
+  { piece: $monster`witchess pawn`, drop: $item`armored prawn` },
+  { piece: $monster`witchess rook`, drop: $item`greek fire` },
+];
+const bestWitchessPiece = witchessPieces.sort((a, b) => trueValue(b.drop) - trueValue(a.drop))[0]
+  .piece;
 export function dailyFights() {
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky putty sheet`, () => {
@@ -868,7 +877,7 @@ const freeFightSources = [
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
-    () => Witchess.fightPiece($monster`Witchess Bishop`)
+    () => Witchess.fightPiece(bestWitchessPiece)
   ),
 
   new FreeFight(
