@@ -90,7 +90,7 @@ export class StashManager {
         for (const fold of foldArray) {
           try {
             if (stashAmount(fold) > 0) {
-              takeStash(1, fold);
+              const success = takeStash(1, fold);
               print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
               if (fold !== item) cliExecute(`fold ${item.name}`);
               this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
