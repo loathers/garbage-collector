@@ -474,6 +474,7 @@ export function jellyfish() {
   while (findRun(false) && have($skill`meteor lore`) && get("_macrometeoriteUses") < 10) {
     const runSource = findRun(false);
     if (!runSource) break;
+    runSource.prepare();
     const jellyMacro = Macro.while_(
       "!pastround 28 && hasskill macrometeorite",
       Macro.skill("extract jelly").skill("macrometeorite")

@@ -80,6 +80,7 @@ import {
   ensureEffect,
   findRun,
   freeRun,
+  kramcoGuaranteed,
   mapMonster,
   prepWandererZone,
   questStep,
@@ -498,6 +499,7 @@ export function dailyFights() {
             }
           }
         });
+        if (kramcoGuaranteed()) doSausage();
         startDigitize();
         nextFight = getEmbezzlerFight();
       }
@@ -623,7 +625,7 @@ const freeFightSources = [
   // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
   new FreeFight(
     () => {
-      const maxSeals = have($item`Claw of the Infernal Seal`) ? 10 : 5;
+      const maxSeals = retrieveItem(1, $item`Claw of the Infernal Seal`) ? 10 : 5;
       const maxSealsAvailable =
         get("lastGuildStoreOpen") === myAscensions()
           ? maxSeals
@@ -1143,4 +1145,12 @@ export function safeRestore(): void {
     }
     restoreMp(50);
   }
+}
+
+function doSausage() {
+  if (!kramcoGuaranteed()) return;
+  useFamiliar(freeFightFamiliar());
+  freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
+  adventureMacroAuto(prepWandererZone(), Macro.meatKill());
+  setAutoAttack(0);
 }
