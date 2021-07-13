@@ -936,10 +936,6 @@ export function withProperties(properties: Property[], functionToRun: () => void
   }
 }
 
-export function getFoldGroupWithoutEntries(item: Item) {
-  return Object.getOwnPropertyNames(getRelated(item, "fold")).map((item) => toItem(item));
-}
-
 export function kramcoGuaranteed() {
   return (
     have($item`Kramco Sausage-o-Matic™`) &&

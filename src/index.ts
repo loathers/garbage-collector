@@ -61,13 +61,7 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import {
-  questStep,
-  prepWandererZone,
-  physicalImmuneMacro,
-  withProperties,
-  getFoldGroupWithoutEntries,
-} from "./lib";
+import { questStep, prepWandererZone, physicalImmuneMacro, withProperties } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
