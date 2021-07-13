@@ -65,8 +65,8 @@ jobs:
           git fetch --all
           git switch release
           rm -r scripts/
-          rm -r data/ || true
-          rm -r relay/ || true
+          rm -r data/
+          rm -r relay/
           mv KoLmafia/scripts scripts
           mv mafia/data ./data
           mv mafia/relay ./relay
