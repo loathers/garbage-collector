@@ -28076,15 +28076,18 @@ var StashManager = /*#__PURE__*/function () {
 
                 try {
                   if ((0,external_kolmafia_.stashAmount)(fold) > 0) {
-                    var _this$taken$get;
+                    if ((0,external_kolmafia_.takeStash)(1, fold)) {
+                      var _this$taken$get;
 
-                    (0,external_kolmafia_.takeStash)(1, fold);
-                    (0,external_kolmafia_.print)("Took ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
-                    if (fold !== item) (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
+                      (0,external_kolmafia_.print)("Took ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
+                      if (fold !== item) (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
 
-                    _this.taken.set(item, ((_this$taken$get = _this.taken.get(item)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
+                      _this.taken.set(item, ((_this$taken$get = _this.taken.get(item)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
 
-                    break;
+                      break;
+                    } else {
+                      (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from the stash. Do you have stash access in ").concat((0,external_kolmafia_.getClanName)(), "?"), "red");
+                    }
                   }
                 } catch (_unused) {
                   (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
