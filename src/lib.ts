@@ -37,6 +37,7 @@ import {
   Macro,
   property,
   set,
+  Guzzlr,
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
@@ -116,79 +117,42 @@ const zonePotions = [
   },
 ];
 
+function acceptBestGuzzlrQuest() {
+  if (!Guzzlr.isQuestActive()) {
+    if (
+      Guzzlr.canPlatinum() &&
+      (!Guzzlr.haveFullPlatinumBonus() ||
+        (Guzzlr.haveFullBronzeBonus() && Guzzlr.haveFullGoldBonus()))
+    ) {
+      Guzzlr.acceptPlatinum();
+    } else if (Guzzlr.canGold() && (!Guzzlr.haveFullGoldBonus() || Guzzlr.haveFullBronzeBonus())) {
+      Guzzlr.acceptGold();
+    } else {
+      Guzzlr.acceptBronze();
+    }
+  }
+}
+
 export function prepWandererZone() {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`the deep dark jungle`
       : $location`noob cave`;
-  if (!have($item`guzzlr tablet`)) return defaultLocation;
-  if (get("questGuzzlr") === "unstarted") {
-    if (
-      get("_guzzlrPlatinumDeliveries") === 0 &&
-      get("guzzlrGoldDeliveries") >= 5 &&
-      (get("guzzlrPlatinumDeliveries") < 30 ||
-        (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
-    ) {
-      withProperties([{ name: "choiceAdventure1412", value: 4 }], () =>
-        use(1, $item`guzzlr tablet`)
-      );
-    } else if (
-      get("_guzzlrGoldDeliveries") < 3 &&
-      get("guzzlrBronzeDeliveries") >= 5 &&
-      (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
-    ) {
-      withProperties([{ name: "choiceAdventure1412", value: 3 }], () =>
-        use(1, $item`guzzlr tablet`)
-      );
-    } else {
-      withProperties([{ name: "choiceAdventure1412", value: 2 }], () =>
-        use(1, $item`guzzlr tablet`)
-      );
+  if (!Guzzlr.have()) return defaultLocation;
+
+  acceptBestGuzzlrQuest();
+  if (!Guzzlr.isQuestActive()) {
+    if (!guzzlrCheck()) {
+      Guzzlr.abandon();
     }
   }
+  acceptBestGuzzlrQuest();
 
-  if (get("questGuzzlr") !== "unstarted") {
-    if (!guzzlrCheck() && !get("_guzzlrQuestAbandoned")) {
-      dropGuzzlrQuest();
-    }
-  }
-
-  if (get("questGuzzlr") === "unstarted") {
-    if (
-      get("_guzzlrPlatinumDeliveries") === 0 &&
-      get("guzzlrGoldDeliveries") >= 5 &&
-      (get("guzzlrPlatinumDeliveries") < 30 ||
-        (get("guzzlrGoldDeliveries") >= 150 && get("guzzlrBronzeDeliveries") >= 196))
-    ) {
-      withProperties(
-        [
-          {
-            name: "choiceAdventure1412",
-            value: 4,
-          },
-        ],
-        () => use(1, $item`guzzlr tablet`)
-      );
-    } else if (
-      get("_guzzlrGoldDeliveries") < 3 &&
-      get("guzzlrBronzeDeliveries") >= 5 &&
-      (get("guzzlrGoldDeliveries") < 150 || get("guzzlrBronzeDeliveries") >= 196)
-    ) {
-      withProperties([{ name: "choiceAdventure1412", value: 3 }], () =>
-        use(1, $item`guzzlr tablet`)
-      );
-    } else {
-      withProperties([{ name: "choiceAdventure1412", value: 2 }], () =>
-        use(1, $item`guzzlr tablet`)
-      );
-    }
-  }
-
-  const guzzlZone = get("guzzlrQuestLocation");
+  const guzzlZone = Guzzlr.getLocation();
   if (!guzzlrCheck()) return defaultLocation;
   else if (!guzzlZone) return defaultLocation;
   else {
-    if (get("guzzlrQuestTier") === "platinum") {
+    if (Guzzlr.getTier() === "platinum") {
       zonePotions.forEach((place) => {
         if (guzzlZone.zone === place.zone && !have(place.effect)) {
           if (!have(place.potion)) {
@@ -197,22 +161,16 @@ export function prepWandererZone() {
           use(1, place.potion);
         }
       });
-    }
-    if (property.getString("guzzlrQuestBooze") === "Guzzlr cocktail set") {
-      if (
-        !$items`buttery boy, steamboat, ghiaccio colada, nog-on-the-cob, sourfinger`.some((drink) =>
-          have(drink)
-        )
-      ) {
+      if (!Guzzlr.havePlatinumBooze()) {
         cliExecute("make buttery boy");
       }
     } else {
-      const guzzlrBooze = toItem(get("guzzlrQuestBooze"));
-      if (guzzlrBooze === $item`none`) {
+      const guzzlrBooze = Guzzlr.getBooze();
+      if (!guzzlrBooze) {
         return defaultLocation;
       } else if (!have(guzzlrBooze)) {
         print(`just picking up some booze before we roll`, "blue");
-        cliExecute("acquire " + get("guzzlrQuestBooze"));
+        cliExecute(`acquire ${guzzlrBooze}`);
       }
     }
     return guzzlZone;
@@ -220,7 +178,7 @@ export function prepWandererZone() {
 }
 
 function guzzlrCheck() {
-  const guzzlZone = get("guzzlrQuestLocation");
+  const guzzlZone = Guzzlr.getLocation();
   if (!guzzlZone) return false;
   const forbiddenZones: String[] = [""]; //can't stockpile these potions,
   if (!get("_spookyAirportToday") && !get("spookyAirportAlways")) {
@@ -259,15 +217,6 @@ function guzzlrCheck() {
   } else {
     return true;
   }
-}
-
-function dropGuzzlrQuest() {
-  print("We hate this guzzlr quest!", "blue");
-  withProperties([{ name: "choiceAdventure1412", value: "" }], () => {
-    visitUrl("inventory.php?tap=guzzlr", false);
-    runChoice(1);
-    runChoice(5);
-  });
 }
 
 export const physicalImmuneMacro = Macro.trySkill("curse of weaksauce")
