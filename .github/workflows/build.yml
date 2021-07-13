@@ -65,10 +65,16 @@ jobs:
           git fetch --all
           git switch release
           rm -r scripts/
+          rm -r data/ || true
+          rm -r relay/ || true
           mv KoLmafia/scripts scripts
+          mv mafia/data ./data
+          mv mafia/relay ./relay
           mv dependencies dependencies.txt
       - run: |
           git add scripts/
+          git add data/
+          git add relay/
           git add dependencies.txt
           {
             git commit -m "Build Mafia files for commit $GITHUB_SHA"
