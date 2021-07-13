@@ -623,7 +623,7 @@ const freeFightSources = [
   // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
   new FreeFight(
     () => {
-      const maxSeals = have($item`Claw of the Infernal Seal`) ? 10 : 5;
+      const maxSeals = retrieveItem(1, $item`Claw of the Infernal Seal`) ? 10 : 5;
       const maxSealsAvailable =
         get("lastGuildStoreOpen") === myAscensions()
           ? maxSeals
