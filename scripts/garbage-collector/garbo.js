@@ -31340,7 +31340,7 @@ function barfTurn() {
     })]);
     (0,dist.adventureMacroAuto)(prepWandererZone(), combat.Macro.step(physicalImmuneMacro).meatKill());
   } else {
-    (0,dist.adventureMacroAuto)(location, combat.Macro.externalIf(underwater, combat.Macro.if_("monsterid ".concat((0,dist.$monster)(src_templateObject27 || (src_templateObject27 = src_taggedTemplateLiteral(["knob goblin embezzler"]))).id), combat.Macro.item("pulled green taffy"))).meatKill(), combat.Macro.if_("(monsterid ".concat((0,dist.$monster)(src_templateObject28 || (src_templateObject28 = src_taggedTemplateLiteral(["knob goblin embezzler"]))).id, ") && !(pastround 1)"), combat.Macro.externalIf(underwater, combat.Macro.item("pulled green taffy")).meatKill()).abort());
+    (0,dist.adventureMacroAuto)(location, combat.Macro.externalIf(underwater, combat.Macro.if_("monsterid ".concat((0,dist.$monster)(src_templateObject27 || (src_templateObject27 = src_taggedTemplateLiteral(["knob goblin embezzler"]))).id), combat.Macro.item("pulled green taffy"))).meatKill(), combat.Macro.if_("(monsterid ".concat((0,dist.$monster)(src_templateObject28 || (src_templateObject28 = src_taggedTemplateLiteral(["knob goblin embezzler"]))).id, ") && !gotjump && !(pastround 2)"), combat.Macro.externalIf(underwater, combat.Macro.item("pulled green taffy")).meatKill()).abort());
   }
 
   if (Object.keys((0,external_kolmafia_.reverseNumberology)()).includes("69") && (0,dist.get)("_universeCalculated") < (0,dist.get)("skillLevel144")) {
