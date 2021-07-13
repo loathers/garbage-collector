@@ -1576,10 +1576,10 @@ core-js-compat@^3.14.0:
     browserslist "^4.16.6"
     semver "7.0.0"
 
-core-js@3.9.0:
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.9.0.tgz#790b1bb11553a2272b36e2625c7179db345492f8"
-  integrity sha512-PyFBJaLq93FlyYdsndE5VaueA9K5cNB7CGzeCj191YYLhkQM0gdZR2SKihM70oF0wdqKSKClv/tEBOpoRmdOVQ==
+core-js@3.15.2:
+  version "3.15.2"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.15.2.tgz#740660d2ff55ef34ce664d7e2455119c5bdd3d61"
+  integrity sha512-tKs41J7NJVuaya8DxIOCnl8QuPHx5/ZVbFo1oKgVl1qHFBBrDctzQGtuLjPpRdNTWmKPH6oEvgN/MUID+l485Q==
 
 core-js@^3.8.0:
   version "3.14.0"
@@ -2470,10 +2470,15 @@ klaw-sync@^6.0.0:
   dependencies:
     graceful-fs "^4.1.11"
 
-kolmafia@^1.0.11, kolmafia@^1.0.3:
+kolmafia@^1.0.11:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-1.0.11.tgz#9778ea2d77e382e736ef09ee4f5d19039c43bc3e"
   integrity sha512-+49aea1Y2oCVQmaCbrf6N/tPFbxn9LCnucK0A12/FGU5gWoN6nrY1y61QG4mEFoO+WtmkOJq9WPG/+Cb1bsD/Q==
+
+kolmafia@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-1.1.1.tgz#10beda4860ec7e7d140174832deb6e717b3569e7"
+  integrity sha512-JF3v3FBHr+y9C0quW3kfHI65eoOpD7NO8EEqIrhh9SxN6h+T44PBG6yvnVAZSYzzlATXW1+y6bVvuxkX0XWX2w==
 
 levn@^0.4.1:
   version "0.4.1"
@@ -2483,13 +2488,13 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.0.9.tgz#c811545a4b645e3414ffe87c17d729d8df014fad"
-  integrity sha512-BjN2Vj7sYIrkcy4FS28s7Q/G4K4FFlwnOpGyQNjDELBM3qzsAEKNvFB79SQgvPeLorPGBJG6xg3jkCHQtQCgIw==
+libram@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.1.0.tgz#169b2cdeee58541fe40f65ea6feab5a4bd51b202"
+  integrity sha512-wJEeqZfwvFX6zeDXqWbdRx9oYDZaQaJbCSJhZdNEhKW+Nsh3u0MckpiWqrfQktAbHFT/OeRCBWIq0ZPaO1n/Vg==
   dependencies:
-    core-js "3.9.0"
-    kolmafia "^1.0.3"
+    core-js "3.15.2"
+    kolmafia "^1.1.1"
     lodash-es "^4.17.21"
 
 loader-runner@^4.2.0:
@@ -3645,11 +3650,6 @@ yallist@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
-
-yarn@^1.22.10:
-  version "1.22.10"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.10.tgz#c99daa06257c80f8fa2c3f1490724e394c26b18c"
-  integrity sha512-IanQGI9RRPAN87VGTF7zs2uxkSyQSrSPsju0COgbsKQOOXr5LtcVPeyXWgwVa0ywG3d8dg6kSYKGBuYK021qeA==
 
 yocto-queue@^0.1.0:
   version "0.1.0"
