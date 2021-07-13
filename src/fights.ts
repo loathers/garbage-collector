@@ -80,6 +80,7 @@ import {
   ensureEffect,
   findRun,
   freeRun,
+  kramcoGuaranteed,
   mapMonster,
   prepWandererZone,
   questStep,
@@ -498,6 +499,7 @@ export function dailyFights() {
             }
           }
         });
+        if (kramcoGuaranteed()) doSausage();
         startDigitize();
         nextFight = getEmbezzlerFight();
       }
@@ -1143,4 +1145,12 @@ export function safeRestore(): void {
     }
     restoreMp(50);
   }
+}
+
+function doSausage() {
+  if (!kramcoGuaranteed()) return;
+  useFamiliar(freeFightFamiliar());
+  freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
+  adventureMacroAuto(prepWandererZone(), Macro.meatKill());
+  setAutoAttack(0);
 }

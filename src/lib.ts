@@ -18,6 +18,7 @@ import {
   retrieveItem,
   runChoice,
   toItem,
+  totalTurnsPlayed,
   toUrl,
   use,
   useFamiliar,
@@ -937,4 +938,12 @@ export function withProperties(properties: Property[], functionToRun: () => void
 
 export function getFoldGroupWithoutEntries(item: Item) {
   return Object.getOwnPropertyNames(getRelated(item, "fold")).map((item) => toItem(item));
+}
+
+export function kramcoGuaranteed() {
+  return (
+    have($item`Kramco Sausage-o-Matic™`) &&
+    totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1 >=
+      5 + 3 * get("_sausageFights") + Math.pow(Math.max(0, get("_sausageFights") - 5), 3)
+  );
 }
