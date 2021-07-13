@@ -59,17 +59,18 @@ jobs:
           git config user.email "<>"
       - run: |
           cp dependencies.txt dependencies
+          cp -R mafia mafiafiles
       - run: yarn install --frozen-lockfile
       - run: yarn run build
       - run: |
           git fetch --all
           git switch release
           rm -r scripts/
-          rm -r data/
-          rm -r relay/
+          rm -r data/ || true
+          rm -r relay/ || true
           mv KoLmafia/scripts scripts
-          mv mafia/data ./data
-          mv mafia/relay ./relay
+          mv mafiafiles/data ./data
+          mv mafiafiles/relay ./relay
           mv dependencies dependencies.txt
       - run: |
           git add scripts/
