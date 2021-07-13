@@ -30761,7 +30761,7 @@ new FreeFight(function () {
   (0,external_kolmafia_.runCombat)();
 }), // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
 new FreeFight(function () {
-  var maxSeals = (0,dist.have)((0,dist.$item)(fights_templateObject110 || (fights_templateObject110 = fights_taggedTemplateLiteral(["Claw of the Infernal Seal"])))) ? 10 : 5;
+  var maxSeals = (0,external_kolmafia_.retrieveItem)(1, (0,dist.$item)(fights_templateObject110 || (fights_templateObject110 = fights_taggedTemplateLiteral(["Claw of the Infernal Seal"])))) ? 10 : 5;
   var maxSealsAvailable = (0,dist.get)("lastGuildStoreOpen") === (0,external_kolmafia_.myAscensions)() ? maxSeals : Math.min(maxSeals, Math.floor((0,external_kolmafia_.availableAmount)((0,dist.$item)(fights_templateObject111 || (fights_templateObject111 = fights_taggedTemplateLiteral(["seal-blubber candle"])))) / 3));
   return (0,external_kolmafia_.myClass)() === (0,dist.$class)(fights_templateObject112 || (fights_templateObject112 = fights_taggedTemplateLiteral(["Seal Clubber"]))) ? Math.max(maxSealsAvailable - (0,dist.get)("_sealsSummoned"), 0) : 0;
 }, function () {
