@@ -4,25 +4,19 @@ import {
   buy,
   cliExecute,
   equip,
-  getClanId,
-  getRelated,
-  getWorkshed,
   haveSkill,
   mallPrice,
   maximize,
   myFamiliar,
-  myTurncount,
   numericModifier,
   print,
   restoreMp,
-  retrieveItem,
   runChoice,
   toItem,
   totalTurnsPlayed,
   toUrl,
   use,
   useFamiliar,
-  userConfirm,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -37,7 +31,6 @@ import {
   $slot,
   Bandersnatch,
   get,
-  getFoldGroup,
   getSongCount,
   getSongLimit,
   have,
@@ -45,7 +38,6 @@ import {
   property,
   set,
 } from "libram";
-import { fillAsdonMartinTo } from "./asdon";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
 
