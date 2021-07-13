@@ -855,28 +855,6 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE): BjornedFami
   throw new Error("Something went wrong while selecting a familiar to bjornify or crownulate");
 }
 
-type Property = {
-  name: string;
-  value: any;
-};
-
-export function withProperties(properties: Property[], functionToRun: () => void) {
-  const propertiesToSetBack = properties.map((property) => ({
-    name: property.name,
-    value: get(property.name),
-  }));
-  for (const property of properties) {
-    set(property.name, property.value);
-  }
-  try {
-    functionToRun();
-  } finally {
-    for (const property of propertiesToSetBack) {
-      set(property.name, property.value);
-    }
-  }
-}
-
 export function kramcoGuaranteed() {
   return (
     have($item`Kramco Sausage-o-Matic™`) &&

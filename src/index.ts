@@ -61,7 +61,7 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { questStep, prepWandererZone, physicalImmuneMacro, withProperties } from "./lib";
+import { questStep, prepWandererZone, physicalImmuneMacro } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -71,6 +71,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withVIPClan, withStash } from "./clan";
+import { withProperties } from "libram/dist/property";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -261,32 +262,14 @@ export function main(argString = "") {
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
     withProperties(
-      [
-        {
-          name: "battleAction",
-          value: "custom combat script",
-        },
-        {
-          name: "autoSatisfyWithMall",
-          value: true,
-        },
-        {
-          name: "autoSatisfyWithNPCs",
-          value: true,
-        },
-        {
-          name: "autoSatisfyWithCoinmasters",
-          value: true,
-        },
-        {
-          name: "dontStopForCounters",
-          value: true,
-        },
-        {
-          name: "maximizerFoldables",
-          value: true,
-        },
-      ],
+      {
+        battleAction: "custom combat script",
+        autoSatisfyWithMall: true,
+        autoSatisfyWithNPCs: true,
+        autoSatisfyWithCoinmasters: true,
+        dontStopForCounters: true,
+        maximizerFoldables: true,
+      },
       () => {
         cliExecute("mood apathetic");
         cliExecute("ccs garbo");
