@@ -30227,6 +30227,7 @@ function jellyfish() {
   while (findRun(false) && (0,dist.have)((0,dist.$skill)(dailies_templateObject85 || (dailies_templateObject85 = dailies_taggedTemplateLiteral(["meteor lore"])))) && (0,dist.get)("_macrometeoriteUses") < 10) {
     var runSource = findRun(false);
     if (!runSource) break;
+    runSource.prepare();
     var jellyMacro = dist.Macro.while_("!pastround 28 && hasskill macrometeorite", dist.Macro.skill("extract jelly").skill("macrometeorite")).step(runSource.macro);
     (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject86 || (dailies_templateObject86 = dailies_taggedTemplateLiteral(["barf mountain"]))), jellyMacro);
   }
