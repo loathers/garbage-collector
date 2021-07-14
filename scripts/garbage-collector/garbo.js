@@ -29863,7 +29863,7 @@ var haveSomeCheese = getFoldGroupWithoutEntries((0,dist.$item)(outfit_templateOb
 });
 
 function cheeses(embezzlerUp) {
-  return haveSomeCheese && !globalOptions.ascending && (0,dist.get)("_stinkyCheeseCount") < 100 && (0,external_kolmafia_.myAdventures)() >= 100 && !embezzlerUp ? new Map(getFoldGroupWithoutEntries((0,dist.$item)(outfit_templateObject62 || (outfit_templateObject62 = outfit_taggedTemplateLiteral(["stinky cheese diaper"])))).map(function (item) {
+  return haveSomeCheese && !globalOptions.ascending && (0,dist.get)("_stinkyCheeseCount") < 100 && (0,external_kolmafia_.myAdventures)() >= 100 - (0,dist.get)("_stinkyCheeseCount") && !embezzlerUp ? new Map(getFoldGroupWithoutEntries((0,dist.$item)(outfit_templateObject62 || (outfit_templateObject62 = outfit_taggedTemplateLiteral(["stinky cheese diaper"])))).map(function (item) {
     return [item, (0,dist.get)("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100)];
   })) : [];
 }
