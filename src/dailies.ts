@@ -324,6 +324,11 @@ export function volcanoDailies() {
 
   print("Getting my free volcoino!", "blue");
   if (!get("_infernoDiscoVisited")) {
+    $items` smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.forEach(
+      (discoEquip) => {
+        retrieveItem(discoEquip);
+      }
+    );
     maximize("disco style", false);
     visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
     runChoice(7);
