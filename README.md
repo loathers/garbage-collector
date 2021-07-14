@@ -40,4 +40,8 @@ Sometimes, this script will get you caught in a weird loop if your auto-recovery
 svn checkout https://svn.code.sf.net/p/kolmafiascripts/mafiarecovery/code/
 ```
 
+# Use the ascend flag if you plan to ascend
+
+Garbo operates under the assumption that you plan on staying in this run over rollover. It will, by default, avoid using borrowed time, charge stinky cheese equipment, and hopefully do other stuff that hinges on this assumption. If that assumption is incorrect, you can call `garbo ascend` instead of the classic `garbo`, and it will then operate under the assumption that you do plan to ascend. As time goes on, we expect more and more features to pay attention to the ascend flag, so it's good to get in the habit of doing so.
+
 If you have issues with this script, please post about them in the #mafia-and-scripting channel within the [Ascension Speed Society Discord](https://discord.gg/tbUCRT5), and someone will eventually (at some point) endeavor to solve them. Someday. Maybe.
