@@ -45,14 +45,14 @@ import {
   adventureMacro,
   Macro,
 } from "libram";
-import { songBoomSongs } from "libram/dist/resources/2018/SongBoom";
 import { globalOptions } from ".";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
-import { questStep, ensureEffect, tryFeast, findRun, trueValue, withProperties } from "./lib";
+import { questStep, ensureEffect, tryFeast, findRun, trueValue } from "./lib";
 import { baseMeat } from "./mood";
-import { freeFightOutfit, Requirement } from "./outfit";
+import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
+import { withChoices } from "libram/dist/property";
 
 export function voterSetup() {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -139,40 +139,28 @@ export function latte() {
       numericModifier(latte, "Meat Drop") !== 40
     ) {
       if (!get("latteUnlocks").includes("cajun") && findRun()) {
-        withProperties(
-          [
-            { name: "choiceAdventure923", value: 1 },
-            { name: "choiceAdventure924", value: 1 },
-          ],
-          () => {
-            while (!get("latteUnlocks").includes("cajun") && findRun()) {
-              const runSource = findRun();
-              if (!runSource) break;
-              runSource.prepare();
-              equip($slot`off-hand`, latte);
-              adventureMacro($location`the black forest`, runSource.macro);
-              horseradish();
-            }
+        withChoices({ 923: 1, 924: 1 }, () => {
+          while (!get("latteUnlocks").includes("cajun") && findRun()) {
+            const runSource = findRun();
+            if (!runSource) break;
+            runSource.prepare();
+            equip($slot`off-hand`, latte);
+            adventureMacro($location`the black forest`, runSource.macro);
+            horseradish();
           }
-        );
+        });
       }
       if (!get("latteUnlocks").includes("rawhide") && findRun()) {
-        withProperties(
-          [
-            { name: "choiceAdventure502", value: 2 },
-            { name: "choiceAdventure505", value: 2 },
-          ],
-          () => {
-            while (!get("latteUnlocks").includes("rawhide") && findRun()) {
-              const runSource = findRun();
-              if (!runSource) break;
-              runSource.prepare();
-              equip($slot`off-hand`, latte);
-              adventureMacro($location`the spooky forest`, runSource.macro);
-              horseradish();
-            }
+        withChoices({ 502: 2, 505: 2 }, () => {
+          while (!get("latteUnlocks").includes("rawhide") && findRun()) {
+            const runSource = findRun();
+            if (!runSource) break;
+            runSource.prepare();
+            equip($slot`off-hand`, latte);
+            adventureMacro($location`the spooky forest`, runSource.macro);
+            horseradish();
           }
-        );
+        });
       }
       if (!get("latteUnlocks").includes("carrot") && findRun()) {
         while (!get("latteUnlocks").includes("carrot") && findRun()) {

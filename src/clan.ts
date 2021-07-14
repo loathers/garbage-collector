@@ -11,8 +11,7 @@ import {
   takeStash,
   userConfirm,
 } from "kolmafia";
-import { $item, Clan, get, have, set } from "libram";
-import { getFoldGroupWithoutEntries } from "./lib";
+import { $item, Clan, get, getFoldGroup, have, set } from "libram";
 
 export function withStash<T>(itemsToTake: Item[], action: () => T) {
   const manager = new StashManager();
@@ -80,11 +79,11 @@ export class StashManager {
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
         if (have(item)) continue;
-        if (getFoldGroupWithoutEntries(item).some((item) => have(item))) {
+        if (getFoldGroup(item).some((fold) => have(fold))) {
           cliExecute(`fold ${item.name}`);
           continue;
         }
-        const foldArray = [item, ...getFoldGroupWithoutEntries(item)];
+        const foldArray = [item, ...getFoldGroup(item)];
 
         refreshStash();
         for (const fold of foldArray) {

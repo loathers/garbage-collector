@@ -86,7 +86,6 @@ import {
   questStep,
   setChoice,
   trueValue,
-  withProperties,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
@@ -97,6 +96,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash } from "./clan";
+import { withChoice, withChoices, withProperties } from "libram/dist/property";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
@@ -732,7 +732,9 @@ const freeFightSources = [
           get("_saberForceMonsterCount") === 1) &&
         get("_saberForceUses") < 5
       ) {
-        withProperties([{ name: "choiceAdventure1387", value: 2 }], () => {
+        //1387, 2
+
+        withChoice(1387, 2, () => {
           putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
           putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
           adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
@@ -865,7 +867,8 @@ const freeFightSources = [
   new FreeFight(
     () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
     () =>
-      withProperties([{ name: "choiceAdventure1310", value: 3 }], () => {
+      //
+      withChoice(1310, 3, () => {
         visitUrl("main.php?fightgodlobster=1");
         runCombat();
         visitUrl("choice.php");
@@ -879,9 +882,7 @@ const freeFightSources = [
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
     () => {
-      withProperties([{ name: "choiceAdventure1119", value: 6 }], () =>
-        adv1($location`The Deep Machine Tunnels`, -1, "")
-      );
+      withChoice(1119, 6, () => adv1($location`The Deep Machine Tunnels`, -1, ""));
     },
     {
       familiar: () => $familiar`Machine Elf`,
@@ -911,12 +912,12 @@ const freeFightSources = [
         ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
         : 0,
     () =>
-      withProperties(
-        [
-          { name: "choiceAdventure1324", value: 5 },
-          { name: "choiceAdventure1326", value: 3 },
-          { name: "choiceAdventure1327", value: 3 },
-        ],
+      withChoices(
+        {
+          1324: 5,
+          1326: 3,
+          1327: 3,
+        },
         () => {
           setChoice(1324, 5); // pick fight.
           if (get("_questPartyFair") === "unstarted") {
@@ -1102,11 +1103,11 @@ function deliverThesis(): void {
 
   //Set up NEP if we haven't yet
   if (thesisInNEP) {
-    withProperties(
-      [
-        { name: "choiceAdventure1322", value: 2 },
-        { name: "choiceAdventure1324", value: 5 },
-      ],
+    withChoices(
+      {
+        1322: 2,
+        1324: 5,
+      },
       () => {
         if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
       }
