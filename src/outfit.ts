@@ -96,12 +96,6 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
           [$item`pantsgiving`, pantsgivingBonus()],
-          [
-            $item`stinky cheese eye`,
-            get("_stinkyCheeseCount") < 100 && !globalOptions.ascending
-              ? (10 - bestAdventuresFromPants) * (1 / 100) * get("valueOfAdventure")
-              : 0,
-          ],
           ...cheeses(false),
         ]),
       }
