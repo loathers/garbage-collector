@@ -71,7 +71,7 @@ export class Macro extends LibramMacro {
       get("retroCapeWashingInstructions") === "kill" &&
       itemType(equippedItem($slot`weapon`)) === "pistol";
 
-    // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
+    // TODO: VYKEA couch issue. Probably other stuff.
     return this.tryHaveSkill("Sing Along")
       .externalIf(
         shouldRedigitize(),
@@ -91,6 +91,13 @@ export class Macro extends LibramMacro {
       .externalIf(
         myFamiliar() === $familiar`Stocking Mimic`,
         Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))
+      )
+      .externalIf(
+        myFamiliar() === $familiar`Hobo Monkey`,
+        Macro.while_(
+          `!match "shoulder, and hands you some Meat." && !pastround 20`,
+          Macro.item("seal tooth")
+        )
       )
       .externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop").attack())
       .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
