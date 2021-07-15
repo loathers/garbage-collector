@@ -497,9 +497,11 @@ export function jellyfish(): void {
     }
   }
 }
+
 function isIntrinsic(effect: Effect) {
   return haveEffect(effect) === 2147483547;
 }
+
 export function hybridizeFish(): boolean {
   if (
     getWorkshed() !== $item`Little Geneticist DNA-Splicing Lab` ||
@@ -508,10 +510,12 @@ export function hybridizeFish(): boolean {
   ) {
     return true;
   }
+
   if (get("dnaSyringe") !== "fish") {
     if (!have($effect`Fishy`) && get("_fishyPipeUsed") && have($item`fishy pipe`))
       use($item`fishy pipe`);
     if (!have($effect`Fishy`)) return false;
+
     const runSource =
       findRun(false) ||
       new FreeRun(
@@ -519,28 +523,34 @@ export function hybridizeFish(): boolean {
         () => retrieveItem($item`Louder Than Bomb`),
         Macro.item("louder than bomb")
       );
+
     setAutoAttack(0);
     freeFightOutfit();
+
     if (!booleanModifier("Adventure Underwater")) {
       const breathe = waterBreathingEquipment.find((gear) => have(gear));
       if (breathe) equip(breathe);
       else return false;
     }
+
     useFamiliar(freeFightFamiliar());
     if (!booleanModifier("Underwater Familiar")) {
       const familiarbreathe = familiarWaterBreathingEquipment.find((gear) => have(gear));
       if (familiarbreathe) equip(familiarbreathe);
       else useFamiliar($familiar`none`);
     }
+
     runSource.prepare();
     adventureMacro(
       $location`The Briny Deeps`,
       Macro.tryItem($item`DNA extraction syringe`).step(runSource.macro)
     );
+    if (isIntrinsic($effect`Human-Fish Hybrid`)) return false;
   }
   if (get("dnaSyringe") === "fish") cliExecute("camp dnainject");
   return isIntrinsic($effect`Human-Fish Hybrid`);
 }
+
 export function hybridizeConstellation(): boolean {
   if (
     getWorkshed() !== $item`Little Geneticist DNA-Splicing Lab` ||
@@ -549,7 +559,11 @@ export function hybridizeConstellation(): boolean {
   ) {
     return true;
   }
+
   if (get("dnaSyringe") !== "constellation") {
+    const constellationFamiliar = have($familiar`Robortender`)
+      ? $familiar`Robortender`
+      : freeFightFamiliar();
     if (have($item`steam-powered model rocketship`)) {
       const runSource =
         findRun(false) ||
@@ -558,9 +572,10 @@ export function hybridizeConstellation(): boolean {
           () => retrieveItem($item`Louder Than Bomb`),
           Macro.item("louder than bomb")
         );
-      setAutoAttack(0);
-      //const constellationFamiliar = have($familiar`robortender`) ? $familiar`robortender` : freeFightFamiliar();
+
+      //useFamiliar(constellationFamiliar); -- removed temporarily because we run, rather than killing
       useFamiliar(freeFightFamiliar());
+
       runSource.prepare();
       adventureMacro(
         $location`The Hole in the Sky`,
@@ -571,8 +586,9 @@ export function hybridizeConstellation(): boolean {
       !get("_cargoPocketEmptied") &&
       !(get("cargoPocketsEmptied").includes("317") && get("cargoPocketsEmptied").includes("383"))
     ) {
-      useFamiliar(have($familiar`Robortender`) ? $familiar`Robortender` : freeFightFamiliar());
+      useFamiliar(constellationFamiliar);
       freeFightOutfit();
+
       const pocketPick = get("cargoPocketsEmptied").includes("317") ? 383 : 317;
       withMacro(Macro.tryItem($item`DNA extraction syringe`).meatKill(), () => {
         cliExecute(`cargo pocket ${pocketPick}`);
@@ -591,12 +607,10 @@ export function dna(): void {
   )
     return;
   if (numericModifier(meatFamiliar(), "Leprechaun", 1, $item`none`) > 1.9) {
-    hybridizeFish();
-    if (isIntrinsic($effect`Human-Fish Hybrid`)) return;
+    if (hybridizeFish()) return;
     hybridizeConstellation();
   } else {
-    hybridizeConstellation();
-    if (isIntrinsic($effect`Human-Constellation Hybrid`)) return;
+    if (hybridizeConstellation()) return;
     hybridizeFish();
   }
 }
