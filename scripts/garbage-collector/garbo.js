@@ -31508,7 +31508,7 @@ function cheat() {
 function gin() {
   if ((0,dist.have)((0,dist.$item)(dailies_templateObject80 || (dailies_templateObject80 = dailies_taggedTemplateLiteral(["Time-Spinner"]))))) {
     if (!(0,dist.get)("_timeSpinnerReplicatorUsed") && (0,dist.get)("timeSpinnerMedals") >= 5 && (0,dist.get)("_timeSpinnerMinutesUsed") <= 8) {
-      (0,external_kolmafia_.cliExecute)("farfuture drink");
+      (0,external_kolmafia_.cliExecute)("FarFuture drink");
     }
   }
 }
