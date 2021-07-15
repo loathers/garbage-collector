@@ -165,9 +165,23 @@ const secondChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.externalIf(
       myFamiliar() === $familiar`pocket professor`,
-      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower")).trySkill(
-        "Lecture on Relativity"
-      )
+      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
+        .if_(
+          "!hasskill Lecture on Relativity",
+          Macro.externalIf(
+            get("spookyPuttyCopiesMade") < 5,
+            Macro.tryItem($item`Spooky Putty sheet`)
+          )
+            .externalIf(
+              !get("_cameraUsed") && !have($item`shaking 4-d camera`),
+              Macro.tryItem($item`4-d camera`)
+            )
+            .externalIf(
+              get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+              Macro.trySkill("Digitize")
+            )
+        )
+        .trySkill("Lecture on Relativity")
     ).meatKill()
   ).abort();
 
