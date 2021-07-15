@@ -31637,7 +31637,7 @@ function main(args) {
   fillAsdonMartinTo(args.trim().match(/^[0-9]+$/) ? parseInt(args, 10) : 37);
 }
 ;// CONCATENATED MODULE: ./src/fights.ts
-var fights_templateObject, fights_templateObject2, fights_templateObject3, fights_templateObject4, fights_templateObject5, fights_templateObject6, fights_templateObject7, fights_templateObject8, fights_templateObject9, fights_templateObject10, fights_templateObject11, fights_templateObject12, fights_templateObject13, fights_templateObject14, fights_templateObject15, fights_templateObject16, fights_templateObject17, fights_templateObject18, fights_templateObject19, fights_templateObject20, fights_templateObject21, fights_templateObject22, fights_templateObject23, fights_templateObject24, fights_templateObject25, fights_templateObject26, fights_templateObject27, fights_templateObject28, fights_templateObject29, fights_templateObject30, fights_templateObject31, fights_templateObject32, fights_templateObject33, fights_templateObject34, fights_templateObject35, fights_templateObject36, fights_templateObject37, fights_templateObject38, fights_templateObject39, fights_templateObject40, fights_templateObject41, fights_templateObject42, fights_templateObject43, fights_templateObject44, fights_templateObject45, fights_templateObject46, fights_templateObject47, fights_templateObject48, fights_templateObject49, fights_templateObject50, fights_templateObject51, fights_templateObject52, fights_templateObject53, fights_templateObject54, fights_templateObject55, fights_templateObject56, fights_templateObject57, fights_templateObject58, fights_templateObject59, fights_templateObject60, fights_templateObject61, fights_templateObject62, fights_templateObject63, fights_templateObject64, fights_templateObject65, fights_templateObject66, fights_templateObject67, fights_templateObject68, fights_templateObject69, fights_templateObject70, fights_templateObject71, fights_templateObject72, fights_templateObject73, fights_templateObject74, fights_templateObject75, fights_templateObject76, fights_templateObject77, fights_templateObject78, fights_templateObject79, fights_templateObject80, fights_templateObject81, fights_templateObject82, fights_templateObject83, fights_templateObject84, fights_templateObject85, fights_templateObject86, fights_templateObject87, fights_templateObject88, fights_templateObject89, fights_templateObject90, fights_templateObject91, fights_templateObject92, fights_templateObject93, fights_templateObject94, fights_templateObject95, fights_templateObject96, fights_templateObject97, fights_templateObject98, fights_templateObject99, fights_templateObject100, fights_templateObject101, fights_templateObject102, fights_templateObject103, fights_templateObject104, fights_templateObject105, fights_templateObject106, fights_templateObject107, fights_templateObject108, fights_templateObject109, fights_templateObject110, fights_templateObject111, fights_templateObject112, fights_templateObject113, fights_templateObject114, fights_templateObject115, fights_templateObject116, fights_templateObject117, fights_templateObject118, fights_templateObject119, fights_templateObject120, fights_templateObject121, fights_templateObject122, fights_templateObject123, fights_templateObject124, fights_templateObject125, fights_templateObject126, fights_templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183, _templateObject184, _templateObject185, _templateObject186, _templateObject187, _templateObject188, _templateObject189, _templateObject190, _templateObject191, _templateObject192, _templateObject193, _templateObject194, _templateObject195, _templateObject196, _templateObject197, _templateObject198, _templateObject199, _templateObject200, _templateObject201, _templateObject202, _templateObject203, _templateObject204, _templateObject205, _templateObject206, _templateObject207, _templateObject208, _templateObject209, _templateObject210, _templateObject211, _templateObject212, _templateObject213, _templateObject214, _templateObject215, _templateObject216, _templateObject217, _templateObject218, _templateObject219, _templateObject220, _templateObject221, _templateObject222, _templateObject223, _templateObject224, _templateObject225, _templateObject226, _templateObject227, _templateObject228, _templateObject229, _templateObject230, _templateObject231, _templateObject232, _templateObject233, _templateObject234, _templateObject235, _templateObject236, _templateObject237, _templateObject238, _templateObject239, _templateObject240, _templateObject241, _templateObject242, _templateObject243, _templateObject244, _templateObject245, _templateObject246, _templateObject247, _templateObject248, _templateObject249, _templateObject250, _templateObject251, _templateObject252, _templateObject253, _templateObject254;
+var fights_templateObject, fights_templateObject2, fights_templateObject3, fights_templateObject4, fights_templateObject5, fights_templateObject6, fights_templateObject7, fights_templateObject8, fights_templateObject9, fights_templateObject10, fights_templateObject11, fights_templateObject12, fights_templateObject13, fights_templateObject14, fights_templateObject15, fights_templateObject16, fights_templateObject17, fights_templateObject18, fights_templateObject19, fights_templateObject20, fights_templateObject21, fights_templateObject22, fights_templateObject23, fights_templateObject24, fights_templateObject25, fights_templateObject26, fights_templateObject27, fights_templateObject28, fights_templateObject29, fights_templateObject30, fights_templateObject31, fights_templateObject32, fights_templateObject33, fights_templateObject34, fights_templateObject35, fights_templateObject36, fights_templateObject37, fights_templateObject38, fights_templateObject39, fights_templateObject40, fights_templateObject41, fights_templateObject42, fights_templateObject43, fights_templateObject44, fights_templateObject45, fights_templateObject46, fights_templateObject47, fights_templateObject48, fights_templateObject49, fights_templateObject50, fights_templateObject51, fights_templateObject52, fights_templateObject53, fights_templateObject54, fights_templateObject55, fights_templateObject56, fights_templateObject57, fights_templateObject58, fights_templateObject59, fights_templateObject60, fights_templateObject61, fights_templateObject62, fights_templateObject63, fights_templateObject64, fights_templateObject65, fights_templateObject66, fights_templateObject67, fights_templateObject68, fights_templateObject69, fights_templateObject70, fights_templateObject71, fights_templateObject72, fights_templateObject73, fights_templateObject74, fights_templateObject75, fights_templateObject76, fights_templateObject77, fights_templateObject78, fights_templateObject79, fights_templateObject80, fights_templateObject81, fights_templateObject82, fights_templateObject83, fights_templateObject84, fights_templateObject85, fights_templateObject86, fights_templateObject87, fights_templateObject88, fights_templateObject89, fights_templateObject90, fights_templateObject91, fights_templateObject92, fights_templateObject93, fights_templateObject94, fights_templateObject95, fights_templateObject96, fights_templateObject97, fights_templateObject98, fights_templateObject99, fights_templateObject100, fights_templateObject101, fights_templateObject102, fights_templateObject103, fights_templateObject104, fights_templateObject105, fights_templateObject106, fights_templateObject107, fights_templateObject108, fights_templateObject109, fights_templateObject110, fights_templateObject111, fights_templateObject112, fights_templateObject113, fights_templateObject114, fights_templateObject115, fights_templateObject116, fights_templateObject117, fights_templateObject118, fights_templateObject119, fights_templateObject120, fights_templateObject121, fights_templateObject122, fights_templateObject123, fights_templateObject124, fights_templateObject125, fights_templateObject126, fights_templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183, _templateObject184, _templateObject185, _templateObject186, _templateObject187, _templateObject188, _templateObject189, _templateObject190, _templateObject191, _templateObject192, _templateObject193, _templateObject194, _templateObject195, _templateObject196, _templateObject197, _templateObject198, _templateObject199, _templateObject200, _templateObject201, _templateObject202, _templateObject203, _templateObject204, _templateObject205, _templateObject206, _templateObject207, _templateObject208, _templateObject209, _templateObject210, _templateObject211, _templateObject212, _templateObject213, _templateObject214, _templateObject215, _templateObject216, _templateObject217, _templateObject218, _templateObject219, _templateObject220, _templateObject221, _templateObject222, _templateObject223, _templateObject224, _templateObject225, _templateObject226, _templateObject227, _templateObject228, _templateObject229, _templateObject230, _templateObject231, _templateObject232, _templateObject233, _templateObject234, _templateObject235, _templateObject236, _templateObject237, _templateObject238, _templateObject239, _templateObject240, _templateObject241, _templateObject242, _templateObject243, _templateObject244, _templateObject245, _templateObject246, _templateObject247, _templateObject248, _templateObject249, _templateObject250, _templateObject251, _templateObject252, _templateObject253;
 
 function fights_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
@@ -32282,35 +32282,13 @@ new FreeFight(function () {
 }), new FreeFight(function () {
   return (0,dist.get)("neverendingPartyAlways") && questStep("_questPartyFair") < 999 ? clamp(10 - (0,dist.get)("_neverendingPartyFreeTurns"), 0, 10) : 0;
 }, function () {
-  return (0,property.withChoices)({
-    1324: 5,
-    1326: 3,
-    1327: 3
-  }, function () {
-    setChoice(1324, 5); // pick fight.
-
-    if ((0,dist.get)("_questPartyFair") === "unstarted") {
-      (0,external_kolmafia_.visitUrl)("adventure.php?snarfblat=528");
-
-      if ((0,dist.get)("_questPartyFairQuest") === "food") {
-        (0,external_kolmafia_.runChoice)(1);
-        setChoice(1324, 2);
-        setChoice(1326, 3);
-      } else if ((0,dist.get)("_questPartyFairQuest") === "booze") {
-        (0,external_kolmafia_.runChoice)(1);
-        setChoice(1324, 3);
-        setChoice(1327, 3);
-      } else {
-        (0,external_kolmafia_.runChoice)(2);
-        setChoice(1324, 5);
-      }
-    }
-
+  nepQuest();
+  (0,property.withChoices)(nepQuestChoices(), function () {
     (0,dist.adventureMacro)((0,dist.$location)(_templateObject199 || (_templateObject199 = fights_taggedTemplateLiteral(["The Neverending Party"]))), combat.Macro.trySkill("Feel Pride").meatKill());
 
     if ((0,dist.get)("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
       (0,external_kolmafia_.print)("Found Gerald/ine!", "blue");
-      (0,dist.set)("choiceAdventure1324", 5);
+      setChoice(1324, 5);
     }
   });
 }, {
@@ -32475,6 +32453,53 @@ function freeFights() {
   }
 }
 
+function nepQuest() {
+  setChoice(1324, 5); // pick fight.
+
+  if ((0,dist.get)("_questPartyFair") === "unstarted") {
+    (0,external_kolmafia_.visitUrl)("adventure.php?snarfblat=528");
+
+    if ((0,dist.get)("_questPartyFairQuest") === "food") {
+      (0,external_kolmafia_.runChoice)(1);
+      setChoice(1324, 2);
+      setChoice(1326, 3);
+    } else if ((0,dist.get)("_questPartyFairQuest") === "booze") {
+      (0,external_kolmafia_.runChoice)(1);
+      setChoice(1324, 3);
+      setChoice(1327, 3);
+    } else {
+      (0,external_kolmafia_.runChoice)(2);
+      setChoice(1324, 5);
+    }
+  }
+}
+
+function nepQuestChoices() {
+  if (questStep("_questPartyFair") <= 0) {
+    if ((0,dist.get)("_questPartyFairQuest") === "food") {
+      return {
+        1324: 2,
+        1326: 3,
+        1327: ""
+      };
+    }
+
+    if ((0,dist.get)("_questPartyFairQuest") === "booze") {
+      return {
+        1324: 3,
+        1326: "",
+        1327: 3
+      };
+    }
+  }
+
+  return {
+    1324: 5,
+    1326: "",
+    1327: ""
+  };
+}
+
 function thesisReady() {
   return !(0,dist.get)("_thesisDelivered") && (0,dist.have)((0,dist.$familiar)(_templateObject240 || (_templateObject240 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && (0,dist.$familiar)(_templateObject241 || (_templateObject241 = fights_taggedTemplateLiteral(["Pocket Professor"]))).experience >= 400;
 }
@@ -32482,29 +32507,23 @@ function thesisReady() {
 function deliverThesis() {
   var thesisInNEP = (0,dist.get)("neverendingPartyAlways") && (0,dist.get)("_neverendingPartyFreeTurns") < 10 && questStep("_questPartyFair") < 999; //Set up NEP if we haven't yet
 
-  if (thesisInNEP) {
-    (0,property.withChoices)({
-      1322: 2,
-      1324: 5
-    }, function () {
-      if ((0,dist.get)("_questPartyFair") === "unstarted") (0,external_kolmafia_.adv1)((0,dist.$location)(_templateObject242 || (_templateObject242 = fights_taggedTemplateLiteral(["The Neverending Party"]))), -1, "");
-    });
-  }
-
-  (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(_templateObject243 || (_templateObject243 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
+  if (thesisInNEP) nepQuest();
+  (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(_templateObject242 || (_templateObject242 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
   freeFightMood().execute();
   freeFightOutfit([new Requirement(["100 muscle"], {})]);
   safeRestore();
 
-  if ((0,dist.have)((0,dist.$item)(_templateObject244 || (_templateObject244 = fights_taggedTemplateLiteral(["Powerful Glove"])))) && !(0,dist.have)((0,dist.$effect)(_templateObject245 || (_templateObject245 = fights_taggedTemplateLiteral(["Triple-Sized"])))) && (0,dist.get)("_powerfulGloveBatteryPowerUsed") <= 95) {
+  if ((0,dist.have)((0,dist.$item)(_templateObject243 || (_templateObject243 = fights_taggedTemplateLiteral(["Powerful Glove"])))) && !(0,dist.have)((0,dist.$effect)(_templateObject244 || (_templateObject244 = fights_taggedTemplateLiteral(["Triple-Sized"])))) && (0,dist.get)("_powerfulGloveBatteryPowerUsed") <= 95) {
     (0,external_kolmafia_.cliExecute)("checkpoint");
-    (0,external_kolmafia_.equip)((0,dist.$slot)(_templateObject246 || (_templateObject246 = fights_taggedTemplateLiteral(["acc1"]))), (0,dist.$item)(_templateObject247 || (_templateObject247 = fights_taggedTemplateLiteral(["Powerful Glove"]))));
-    ensureEffect((0,dist.$effect)(_templateObject248 || (_templateObject248 = fights_taggedTemplateLiteral(["Triple-Sized"]))));
+    (0,external_kolmafia_.equip)((0,dist.$slot)(_templateObject245 || (_templateObject245 = fights_taggedTemplateLiteral(["acc1"]))), (0,dist.$item)(_templateObject246 || (_templateObject246 = fights_taggedTemplateLiteral(["Powerful Glove"]))));
+    ensureEffect((0,dist.$effect)(_templateObject247 || (_templateObject247 = fights_taggedTemplateLiteral(["Triple-Sized"]))));
     (0,external_kolmafia_.outfit)("checkpoint");
   }
 
   (0,external_kolmafia_.cliExecute)("gain 1800 muscle");
-  (0,dist.adventureMacro)(thesisInNEP ? (0,dist.$location)(_templateObject249 || (_templateObject249 = fights_taggedTemplateLiteral(["The Neverending Party"]))) : (0,dist.$location)(_templateObject250 || (_templateObject250 = fights_taggedTemplateLiteral(["Uncle Gator's Country Fun-Time Liquid Waste Sluice"]))), combat.Macro.skill("Deliver your Thesis"));
+  (0,property.withChoices)(nepQuestChoices(), function () {
+    (0,dist.adventureMacro)(thesisInNEP ? (0,dist.$location)(_templateObject248 || (_templateObject248 = fights_taggedTemplateLiteral(["The Neverending Party"]))) : (0,dist.$location)(_templateObject249 || (_templateObject249 = fights_taggedTemplateLiteral(["Uncle Gator's Country Fun-Time Liquid Waste Sluice"]))), combat.Macro.skill("Deliver your Thesis"));
+  });
 }
 
 function safeRestore() {
@@ -32513,8 +32532,8 @@ function safeRestore() {
   }
 
   if ((0,external_kolmafia_.myMp)() < 50 && (0,external_kolmafia_.myMaxmp)() > 50) {
-    if (((0,dist.have)((0,dist.$item)(_templateObject251 || (_templateObject251 = fights_taggedTemplateLiteral(["magical sausage"])))) || (0,dist.have)((0,dist.$item)(_templateObject252 || (_templateObject252 = fights_taggedTemplateLiteral(["sausage casing"]))))) && (0,dist.get)("_sausagesEaten") < 23) {
-      (0,external_kolmafia_.eat)((0,dist.$item)(_templateObject253 || (_templateObject253 = fights_taggedTemplateLiteral(["magical sausage"]))));
+    if (((0,dist.have)((0,dist.$item)(_templateObject250 || (_templateObject250 = fights_taggedTemplateLiteral(["magical sausage"])))) || (0,dist.have)((0,dist.$item)(_templateObject251 || (_templateObject251 = fights_taggedTemplateLiteral(["sausage casing"]))))) && (0,dist.get)("_sausagesEaten") < 23) {
+      (0,external_kolmafia_.eat)((0,dist.$item)(_templateObject252 || (_templateObject252 = fights_taggedTemplateLiteral(["magical sausage"]))));
     }
 
     (0,external_kolmafia_.restoreMp)(50);
@@ -32525,7 +32544,7 @@ function doSausage() {
   if (!kramcoGuaranteed()) return;
   (0,external_kolmafia_.useFamiliar)(freeFightFamiliar());
   freeFightOutfit([new Requirement([], {
-    forceEquip: (0,dist.$items)(_templateObject254 || (_templateObject254 = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
+    forceEquip: (0,dist.$items)(_templateObject253 || (_templateObject253 = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
   })]);
   (0,dist.adventureMacroAuto)(prepWandererZone(), combat.Macro.meatKill());
   (0,external_kolmafia_.setAutoAttack)(0);
