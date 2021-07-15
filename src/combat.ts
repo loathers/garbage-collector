@@ -5,7 +5,6 @@ import {
   haveSkill,
   inMultiFight,
   itemType,
-  monsterHp,
   myAdventures,
   myClass,
   myFamiliar,
