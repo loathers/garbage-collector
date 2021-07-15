@@ -911,37 +911,16 @@ const freeFightSources = [
       get("neverendingPartyAlways") && questStep("_questPartyFair") < 999
         ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
         : 0,
-    () =>
-      withChoices(
-        {
-          1324: 5,
-          1326: 3,
-          1327: 3,
-        },
-        () => {
-          setChoice(1324, 5); // pick fight.
-          if (get("_questPartyFair") === "unstarted") {
-            visitUrl("adventure.php?snarfblat=528");
-            if (get("_questPartyFairQuest") === "food") {
-              runChoice(1);
-              setChoice(1324, 2);
-              setChoice(1326, 3);
-            } else if (get("_questPartyFairQuest") === "booze") {
-              runChoice(1);
-              setChoice(1324, 3);
-              setChoice(1327, 3);
-            } else {
-              runChoice(2);
-              setChoice(1324, 5);
-            }
-          }
-          adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
-          if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
-            print("Found Gerald/ine!", "blue");
-            set("choiceAdventure1324", 5);
-          }
+    () => {
+      nepQuest();
+      withChoices(nepQuestChoices(), () => {
+        adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
+        if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
+          print("Found Gerald/ine!", "blue");
+          setChoice(1324, 5);
         }
-      ),
+      });
+    },
     {
       requirements: () => [
         new Requirement([], {
@@ -1087,6 +1066,37 @@ export function freeFights() {
   }
 }
 
+function nepQuest() {
+  setChoice(1324, 5); // pick fight.
+  if (get("_questPartyFair") === "unstarted") {
+    visitUrl("adventure.php?snarfblat=528");
+    if (get("_questPartyFairQuest") === "food") {
+      runChoice(1);
+      setChoice(1324, 2);
+      setChoice(1326, 3);
+    } else if (get("_questPartyFairQuest") === "booze") {
+      runChoice(1);
+      setChoice(1324, 3);
+      setChoice(1327, 3);
+    } else {
+      runChoice(2);
+      setChoice(1324, 5);
+    }
+  }
+}
+
+function nepQuestChoices() {
+  if (questStep("_questPartyFair") <= 0) {
+    if (get("_questPartyFairQuest") === "food") {
+      return { 1324: 2, 1326: 3, 1327: "" };
+    }
+    if (get("_questPartyFairQuest") === "booze") {
+      return { 1324: 3, 1326: "", 1327: 3 };
+    }
+  }
+  return { 1324: 5, 1326: "", 1327: "" };
+}
+
 function thesisReady(): boolean {
   return (
     !get("_thesisDelivered") &&
@@ -1102,17 +1112,7 @@ function deliverThesis(): void {
     questStep("_questPartyFair") < 999;
 
   //Set up NEP if we haven't yet
-  if (thesisInNEP) {
-    withChoices(
-      {
-        1322: 2,
-        1324: 5,
-      },
-      () => {
-        if (get("_questPartyFair") === "unstarted") adv1($location`The Neverending Party`, -1, "");
-      }
-    );
-  }
+  if (thesisInNEP) nepQuest();
 
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
@@ -1130,12 +1130,14 @@ function deliverThesis(): void {
     outfit("checkpoint");
   }
   cliExecute("gain 1800 muscle");
-  adventureMacro(
-    thesisInNEP
-      ? $location`The Neverending Party`
-      : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
-    Macro.skill("Deliver your Thesis")
-  );
+  withChoices(nepQuestChoices(), () => {
+    adventureMacro(
+      thesisInNEP
+        ? $location`The Neverending Party`
+        : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+      Macro.skill("Deliver your Thesis")
+    );
+  });
 }
 
 export function safeRestore(): void {
