@@ -431,7 +431,7 @@ export function gin() {
       get("timeSpinnerMedals") >= 5 &&
       get("_timeSpinnerMinutesUsed") <= 8
     ) {
-      cliExecute("farfuture drink");
+      cliExecute("FarFuture drink");
     }
   }
 }
