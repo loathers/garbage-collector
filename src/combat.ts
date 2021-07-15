@@ -5,6 +5,7 @@ import {
   haveSkill,
   inMultiFight,
   itemType,
+  monsterHp,
   myAdventures,
   myClass,
   myFamiliar,
@@ -70,6 +71,8 @@ export class Macro extends LibramMacro {
       get("retroCapeSuperhero") === "robot" &&
       get("retroCapeWashingInstructions") === "kill" &&
       itemType(equippedItem($slot`weapon`)) === "pistol";
+    const vykeaMaxDamage =
+      get("_VYKEACompanionLevel") > 0 ? 10 * get("_VYKEACompanionLevel") + 10 : 0;
 
     // TODO: VYKEA couch issue. Probably other stuff.
     return this.tryHaveSkill("Sing Along")
@@ -93,9 +96,10 @@ export class Macro extends LibramMacro {
         Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))
       )
       .externalIf(
-        myFamiliar() === $familiar`Hobo Monkey`,
+        myFamiliar() === $familiar`Hobo Monkey` && have($item`Monster Manuel`),
         Macro.while_(
-          `!match "shoulder, and hands you some Meat." && !pastround 20`,
+          `!match "shoulder, and hands you some Meat." && !pastround 20 && monsterhpabove ` +
+            (vykeaMaxDamage + 5),
           Macro.item("seal tooth")
         )
       )
