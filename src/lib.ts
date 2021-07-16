@@ -331,12 +331,16 @@ const freeRuns: freeRun[] = [
   ),
 
   new freeRun(
-    () => getFoldGroup($item`stinky cheese diaper`).some((item) => have(item)) && !get("_stinkyCheeseBanisherUsed"),
+    () =>
+      getFoldGroup($item`stinky cheese diaper`).some((item) => have(item)) &&
+      !get("_stinkyCheeseBanisherUsed"),
     () => {
       if (!have($item`stinky cheese eye`)) cliExecute(`fold stinky cheese eye`);
-      equip($slot`acc3`, $item`stinky cheese eye`)
+      equip($slot`acc3`, $item`stinky cheese eye`);
     },
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Give Your Opponent the Stinkeye")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill(
+      "Give Your Opponent the Stinkeye"
+    )
   ),
 
   new freeRun(
