@@ -326,7 +326,10 @@ const freeRuns: freeRun[] = [
 
   new freeRun(
     () => have($item`V for Vivala mask`) && !get("_vmaskBanisherUsed"),
-    () => equip($slot`acc3`, $item`V for Vivala mask`),
+    () => {
+      equip($slot`acc3`, $item`V for Vivala mask`);
+      restoreMp(30);
+    },
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Creepy Grin")
   ),
 
