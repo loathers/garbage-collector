@@ -366,6 +366,7 @@ export function runDiet(): void {
   while (myFullness() < fullnessLimit()) {
     if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
       eat(1, $item`fudge spork`);
+    mindMayo(Mayo.zapine, 1);
     eatSafe(1, $item`jumping horseradish`);
   }
   while (myInebriety() < inebrietyLimit()) {
