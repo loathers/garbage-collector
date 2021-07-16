@@ -30643,6 +30643,10 @@ function acquire(qty, item, maxPrice) {
   if (!(0,external_kolmafia_.takeCloset)(getCloset, item)) throw "failed to remove from closet";
   remaining -= getCloset;
   if (remaining <= 0) return;
+  var getStorage = Math.min(remaining, (0,external_kolmafia_.storageAmount)(item));
+  if (!(0,external_kolmafia_.takeStorage)(getStorage, item)) throw "failed to remove from storage";
+  remaining -= getStorage;
+  if (remaining <= 0) return;
   var getMall = Math.min(remaining, (0,external_kolmafia_.shopAmount)(item));
 
   if (!(0,external_kolmafia_.takeShop)(getMall, item)) {
