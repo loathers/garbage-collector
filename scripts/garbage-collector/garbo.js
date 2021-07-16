@@ -29834,13 +29834,7 @@ function prepWandererZone() {
   var defaultLocation = (0,dist.get)("_spookyAirportToday") || (0,dist.get)("spookyAirportAlways") ? (0,dist.$location)(lib_templateObject9 || (lib_templateObject9 = lib_taggedTemplateLiteral(["the deep dark jungle"]))) : (0,dist.$location)(lib_templateObject10 || (lib_templateObject10 = lib_taggedTemplateLiteral(["noob cave"])));
   if (!dist.Guzzlr.have()) return defaultLocation;
   acceptBestGuzzlrQuest();
-
-  if (!dist.Guzzlr.isQuestActive()) {
-    if (!guzzlrCheck()) {
-      dist.Guzzlr.abandon();
-    }
-  }
-
+  if (!guzzlrCheck()) dist.Guzzlr.abandon();
   acceptBestGuzzlrQuest();
   var guzzlZone = dist.Guzzlr.getLocation();
   if (!guzzlrCheck()) return defaultLocation;else if (!guzzlZone) return defaultLocation;else {
