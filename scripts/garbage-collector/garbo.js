@@ -31691,9 +31691,9 @@ function faxEmbezzler() {
   }
 }
 
-var EmbezzlerFight = function EmbezzlerFight(available, potential, run) {
-  var requirements = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-  var draggable = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+var EmbezzlerFight = function EmbezzlerFight(name, available, potential, run) {
+  var requirements = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : [];
+  var draggable = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
 
   fights_classCallCheck(this, EmbezzlerFight);
 
@@ -31707,6 +31707,9 @@ var EmbezzlerFight = function EmbezzlerFight(available, potential, run) {
 
   fights_defineProperty(this, "draggable", void 0);
 
+  fights_defineProperty(this, "name", void 0);
+
+  this.name = name;
   this.available = available;
   this.potential = potential;
   this.run = run;
@@ -31726,13 +31729,13 @@ var embezzlerMacro = function embezzlerMacro() {
   return combat.Macro.if_("monstername Knob Goblin Embezzler", combat.Macro.if_("snarfblat 186", combat.Macro.item((0,dist.$item)(fights_templateObject6 || (fights_templateObject6 = fights_taggedTemplateLiteral(["green taffy"]))))).trySkill("Wink At").trySkill("Fire a badly romantic arrow").externalIf((0,dist.get)("_sourceTerminalDigitizeMonster") !== (0,dist.$monster)(fights_templateObject7 || (fights_templateObject7 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), combat.Macro.trySkill("Digitize")).externalIf((0,dist.get)("spookyPuttyCopiesMade") < 5, combat.Macro.tryItem((0,dist.$item)(fights_templateObject8 || (fights_templateObject8 = fights_taggedTemplateLiteral(["Spooky Putty sheet"]))))).externalIf(!(0,dist.get)("_cameraUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject9 || (fights_templateObject9 = fights_taggedTemplateLiteral(["shaking 4-d camera"])))), combat.Macro.tryItem((0,dist.$item)(fights_templateObject10 || (fights_templateObject10 = fights_taggedTemplateLiteral(["4-d camera"]))))).meatKill()).abort();
 };
 
-var embezzlerSources = [new EmbezzlerFight(function () {
+var embezzlerSources = [new EmbezzlerFight("Digitize", function () {
   return (0,dist.get)("_sourceTerminalDigitizeMonster") === (0,dist.$monster)(fights_templateObject11 || (fights_templateObject11 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,external_kolmafia_.getCounters)("Digitize Monster", 0, 0).trim() !== "";
 }, function () {
   return dist.SourceTerminal.have() && (0,dist.get)("_sourceTerminalDigitizeUses") === 0 ? 1 : 0;
 }, function (options) {
   (0,external_kolmafia_.adv1)(options.location || (0,dist.$location)(fights_templateObject12 || (fights_templateObject12 = fights_taggedTemplateLiteral(["Noob Cave"]))));
-}, [], true), new EmbezzlerFight(function () {
+}, [], true), new EmbezzlerFight("Backup", function () {
   return (0,dist.get)("lastCopyableMonster") === (0,dist.$monster)(fights_templateObject13 || (fights_templateObject13 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,dist.have)((0,dist.$item)(fights_templateObject14 || (fights_templateObject14 = fights_taggedTemplateLiteral(["backup camera"])))) && (0,dist.get)("_backUpUses") < 11;
 }, function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject15 || (fights_templateObject15 = fights_taggedTemplateLiteral(["backup camera"])))) ? 11 - (0,dist.get)("_backUpUses") : 0;
@@ -31742,27 +31745,27 @@ var embezzlerSources = [new EmbezzlerFight(function () {
 }, [new Requirement([], {
   forceEquip: (0,dist.$items)(fights_templateObject17 || (fights_templateObject17 = fights_taggedTemplateLiteral(["backup camera"]))),
   bonusEquip: new Map([[(0,dist.$item)(fights_templateObject18 || (fights_templateObject18 = fights_taggedTemplateLiteral(["backup camera"]))), 5000]])
-})], true), new EmbezzlerFight(function () {
+})], true), new EmbezzlerFight("Fax", function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject19 || (fights_templateObject19 = fights_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,dist.get)("_photocopyUsed");
 }, function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject20 || (fights_templateObject20 = fights_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,dist.get)("_photocopyUsed") ? 1 : 0;
 }, function () {
   faxEmbezzler();
   (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject21 || (fights_templateObject21 = fights_taggedTemplateLiteral(["photocopied monster"]))));
-}), new EmbezzlerFight(function () {
+}), new EmbezzlerFight("Pillkeeper Semirare", function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject22 || (fights_templateObject22 = fights_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && (0,external_canadv_ash_namespaceObject.canAdv)((0,dist.$location)(fights_templateObject23 || (fights_templateObject23 = fights_taggedTemplateLiteral(["Knob Treasury"]))), true) && !(0,dist.get)("_freePillKeeperUsed");
 }, function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject24 || (fights_templateObject24 = fights_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && (0,external_canadv_ash_namespaceObject.canAdv)((0,dist.$location)(fights_templateObject25 || (fights_templateObject25 = fights_taggedTemplateLiteral(["Knob Treasury"]))), true) && !(0,dist.get)("_freePillKeeperUsed") ? 1 : 0;
 }, function () {
   (0,external_kolmafia_.cliExecute)("pillkeeper semirare");
   (0,external_kolmafia_.adv1)((0,dist.$location)(fights_templateObject26 || (fights_templateObject26 = fights_taggedTemplateLiteral(["Knob Treasury"]))));
-}), new EmbezzlerFight(function () {
+}), new EmbezzlerFight("Chateau Painting", function () {
   return dist.ChateauMantegna.have() && !dist.ChateauMantegna.paintingFought() && dist.ChateauMantegna.paintingMonster() === (0,dist.$monster)(fights_templateObject27 || (fights_templateObject27 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
 }, function () {
   return dist.ChateauMantegna.have() && !dist.ChateauMantegna.paintingFought() && dist.ChateauMantegna.paintingMonster() === (0,dist.$monster)(fights_templateObject28 || (fights_templateObject28 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) ? 1 : 0;
 }, function () {
   return dist.ChateauMantegna.fightPainting();
-}), new EmbezzlerFight(function () {
+}), new EmbezzlerFight("Spooky Putty", function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject29 || (fights_templateObject29 = fights_taggedTemplateLiteral(["Spooky putty monster"])))) && (0,dist.get)("spookyPuttyMonster") === (0,dist.$monster)(fights_templateObject30 || (fights_templateObject30 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
 }, function () {
   if ((0,dist.have)((0,dist.$item)(fights_templateObject31 || (fights_templateObject31 = fights_taggedTemplateLiteral(["Spooky putty sheet"]))))) {
@@ -31776,23 +31779,23 @@ var embezzlerSources = [new EmbezzlerFight(function () {
   return 0;
 }, function () {
   return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject34 || (fights_templateObject34 = fights_taggedTemplateLiteral(["Spooky putty monster"]))));
-}), new EmbezzlerFight(function () {
+}), new EmbezzlerFight("4-d Camera", function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject35 || (fights_templateObject35 = fights_taggedTemplateLiteral(["shaking 4-d camera"])))) && (0,dist.get)("cameraMonster") === (0,dist.$monster)(fights_templateObject36 || (fights_templateObject36 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,dist.get)("_cameraUsed");
 }, function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject37 || (fights_templateObject37 = fights_taggedTemplateLiteral(["shaking 4-d camera"])))) && (0,dist.get)("cameraMonster") === (0,dist.$monster)(fights_templateObject38 || (fights_templateObject38 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,dist.get)("_cameraUsed") ? 1 : 0;
 }, function () {
   return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject39 || (fights_templateObject39 = fights_taggedTemplateLiteral(["shaking 4-d camera"]))));
-}), new EmbezzlerFight(function () {
+}), new EmbezzlerFight("Green Taffy", function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject40 || (fights_templateObject40 = fights_taggedTemplateLiteral(["envyfish egg"])))) && (0,dist.get)("envyfishMonster") === (0,dist.$monster)(fights_templateObject41 || (fights_templateObject41 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,dist.get)("_envyfishEggUsed");
 }, function () {
   return (0,dist.have)((0,dist.$item)(fights_templateObject42 || (fights_templateObject42 = fights_taggedTemplateLiteral(["envyfish egg"])))) && (0,dist.get)("envyfishMonster") === (0,dist.$monster)(fights_templateObject43 || (fights_templateObject43 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,dist.get)("_envyfishEggUsed") ? 1 : 0;
 }, function () {
   return (0,external_kolmafia_.use)((0,dist.$item)(fights_templateObject44 || (fights_templateObject44 = fights_taggedTemplateLiteral(["envyfish egg"]))));
-}), new EmbezzlerFight(function () {
+}), new EmbezzlerFight("Professor MeatChain", function () {
   return false;
 }, function () {
   return (0,dist.have)((0,dist.$familiar)(fights_templateObject45 || (fights_templateObject45 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,dist.get)("_garbo_meatChain", false) ? 1 : 0;
-}, function () {}), new EmbezzlerFight(function () {
+}, function () {}), new EmbezzlerFight("Professor WeightChain", function () {
   return false;
 }, function () {
   return (0,dist.have)((0,dist.$familiar)(fights_templateObject46 || (fights_templateObject46 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,dist.get)("_garbo_weightChain", false) ? 1 : 0;
@@ -31841,7 +31844,7 @@ function getEmbezzlerFight() {
   }
 
   if (potentials && (0,dist.get)("_genieFightsUsed") < 3 && (0,external_kolmafia_.userConfirm)("Garbo has detected you have potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?")) {
-    return new EmbezzlerFight(function () {
+    return new EmbezzlerFight("Pocket Wish", function () {
       return false;
     }, function () {
       return 0;
@@ -31981,9 +31984,9 @@ function dailyFights() {
             }
           }
         });
-        if (kramcoGuaranteed()) doSausage();
         startDigitize();
         nextFight = getEmbezzlerFight();
+        if (kramcoGuaranteed() && (!nextFight || nextFight.name !== "Backup")) doSausage();
       }
     });
   }
