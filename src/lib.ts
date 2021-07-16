@@ -141,11 +141,7 @@ export function prepWandererZone() {
   if (!Guzzlr.have()) return defaultLocation;
 
   acceptBestGuzzlrQuest();
-  if (!Guzzlr.isQuestActive()) {
-    if (!guzzlrCheck()) {
-      Guzzlr.abandon();
-    }
-  }
+  if (!guzzlrCheck()) Guzzlr.abandon();
   acceptBestGuzzlrQuest();
 
   const guzzlZone = Guzzlr.getLocation();
