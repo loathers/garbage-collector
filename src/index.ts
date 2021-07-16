@@ -2,6 +2,7 @@ import {
   booleanModifier,
   buy,
   cliExecute,
+  eat,
   getCampground,
   getCounters,
   guildStoreAvailable,
@@ -198,6 +199,15 @@ function barfTurn() {
     get("_universeCalculated") < get("skillLevel144")
   ) {
     cliExecute("numberology 69");
+  }
+
+  if (myAdventures() === 1) {
+    if (
+      (have($item`magical sausage`) || have($item`sausage casing`)) &&
+      get<number>("_sausagesEaten") < 23
+    ) {
+      eat($item`magical sausage`);
+    }
   }
 }
 
