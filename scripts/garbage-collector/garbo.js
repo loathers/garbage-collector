@@ -29206,6 +29206,8 @@ var external_kolmafia_ = __webpack_require__(1664);
 var dist = __webpack_require__(9803);
 // EXTERNAL MODULE: ./src/combat.ts
 var combat = __webpack_require__(4223);
+// EXTERNAL MODULE: ./node_modules/libram/dist/property.js
+var property = __webpack_require__(1347);
 ;// CONCATENATED MODULE: external "canadv.ash"
 const external_canadv_ash_namespaceObject = require("canadv.ash");;
 ;// CONCATENATED MODULE: ./src/familiar.ts
@@ -30573,7 +30575,7 @@ function kramcoGuaranteed() {
   return (0,dist.have)((0,dist.$item)(_templateObject127 || (_templateObject127 = lib_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (0,external_kolmafia_.totalTurnsPlayed)() - (0,dist.get)("_lastSausageMonsterTurn") + 1 >= 5 + 3 * (0,dist.get)("_sausageFights") + Math.pow(Math.max(0, (0,dist.get)("_sausageFights") - 5), 3);
 }
 ;// CONCATENATED MODULE: ./src/diet.ts
-var diet_templateObject, diet_templateObject2, diet_templateObject3, diet_templateObject4, diet_templateObject5, diet_templateObject6, diet_templateObject7, diet_templateObject8, diet_templateObject9, diet_templateObject10, diet_templateObject11, diet_templateObject12, diet_templateObject13, diet_templateObject14, diet_templateObject15, diet_templateObject16, diet_templateObject17, diet_templateObject18, diet_templateObject19, diet_templateObject20, diet_templateObject21, diet_templateObject22, diet_templateObject23, diet_templateObject24, diet_templateObject25, diet_templateObject26, diet_templateObject27, diet_templateObject28, diet_templateObject29, diet_templateObject30, diet_templateObject31, diet_templateObject32, diet_templateObject33, diet_templateObject34, diet_templateObject35, diet_templateObject36, diet_templateObject37, diet_templateObject38, diet_templateObject39, diet_templateObject40, diet_templateObject41, diet_templateObject42, diet_templateObject43, diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68;
+var diet_templateObject, diet_templateObject2, diet_templateObject3, diet_templateObject4, diet_templateObject5, diet_templateObject6, diet_templateObject7, diet_templateObject8, diet_templateObject9, diet_templateObject10, diet_templateObject11, diet_templateObject12, diet_templateObject13, diet_templateObject14, diet_templateObject15, diet_templateObject16, diet_templateObject17, diet_templateObject18, diet_templateObject19, diet_templateObject20, diet_templateObject21, diet_templateObject22, diet_templateObject23, diet_templateObject24, diet_templateObject25, diet_templateObject26, diet_templateObject27, diet_templateObject28, diet_templateObject29, diet_templateObject30, diet_templateObject31, diet_templateObject32, diet_templateObject33, diet_templateObject34, diet_templateObject35, diet_templateObject36, diet_templateObject37, diet_templateObject38, diet_templateObject39, diet_templateObject40, diet_templateObject41, diet_templateObject42, diet_templateObject43, diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74, diet_templateObject75, diet_templateObject76;
 
 function diet_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = diet_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -30590,6 +30592,7 @@ function diet_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeo
 function diet_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function diet_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 
 
 
@@ -30832,6 +30835,7 @@ function fillStomach() {
     if ((0,external_kolmafia_.myMaxhp)() < 1000) (0,external_kolmafia_.maximize)("0.05hp, hot res", false);
     var count = Math.floor(Math.min(((0,external_kolmafia_.fullnessLimit)() - (0,external_kolmafia_.myFullness)()) / 5, (0,external_kolmafia_.mySpleenUse)() / 5));
     eatSpleen(count, (0,dist.$item)(diet_templateObject10 || (diet_templateObject10 = diet_taggedTemplateLiteral(["Ol' Scratch's salad fork"]))));
+    mindMayo(Mayo.flex, count);
     eatSpleen(count, (0,dist.$item)(diet_templateObject11 || (diet_templateObject11 = diet_taggedTemplateLiteral(["extra-greasy slider"]))));
     fillSomeSpleen();
   }
@@ -30934,6 +30938,7 @@ function runDiet() {
 
   while ((0,external_kolmafia_.myFullness)() < (0,external_kolmafia_.fullnessLimit)()) {
     if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(diet_templateObject62 || (diet_templateObject62 = diet_taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA && !(0,dist.get)("_fudgeSporkUsed")) (0,external_kolmafia_.eat)(1, (0,dist.$item)(diet_templateObject63 || (diet_templateObject63 = diet_taggedTemplateLiteral(["fudge spork"]))));
+    mindMayo(Mayo.zapine, 1);
     eatSafe(1, (0,dist.$item)(diet_templateObject64 || (diet_templateObject64 = diet_taggedTemplateLiteral(["jumping horseradish"]))));
   }
 
@@ -30944,7 +30949,28 @@ function runDiet() {
 function horseradish() {
   if ((0,external_kolmafia_.myFullness)() < (0,external_kolmafia_.fullnessLimit)()) {
     if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(diet_templateObject66 || (diet_templateObject66 = diet_taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA && !(0,dist.get)("_fudgeSporkUsed")) (0,external_kolmafia_.eat)(1, (0,dist.$item)(diet_templateObject67 || (diet_templateObject67 = diet_taggedTemplateLiteral(["fudge spork"]))));
+    mindMayo(Mayo.zapine, 1);
     eatSafe(1, (0,dist.$item)(diet_templateObject68 || (diet_templateObject68 = diet_taggedTemplateLiteral(["jumping horseradish"]))));
+  }
+}
+var Mayo = {
+  nex: (0,dist.$item)(diet_templateObject69 || (diet_templateObject69 = diet_taggedTemplateLiteral(["Mayonex"]))),
+  diol: (0,dist.$item)(diet_templateObject70 || (diet_templateObject70 = diet_taggedTemplateLiteral(["Mayodiol"]))),
+  zapine: (0,dist.$item)(diet_templateObject71 || (diet_templateObject71 = diet_taggedTemplateLiteral(["Mayozapine"]))),
+  flex: (0,dist.$item)(diet_templateObject72 || (diet_templateObject72 = diet_taggedTemplateLiteral(["Mayoflex"])))
+};
+
+function mindMayo(mayo, quantity) {
+  if ((0,external_kolmafia_.getWorkshed)() !== (0,dist.$item)(diet_templateObject73 || (diet_templateObject73 = diet_taggedTemplateLiteral(["Portable Mayo Clinic"])))) return;
+  if ((0,dist.get)("mayoInMouth") && (0,dist.get)("mayoInMouth") !== mayo.name) throw "You used a bad mayo, my friend!"; //Is this what we want?
+
+  (0,external_kolmafia_.retrieveItem)(quantity, mayo);
+  if (!(0,dist.have)((0,dist.$item)(diet_templateObject74 || (diet_templateObject74 = diet_taggedTemplateLiteral(["Mayo Minder"]))))) (0,external_kolmafia_.buy)((0,dist.$item)(diet_templateObject75 || (diet_templateObject75 = diet_taggedTemplateLiteral(["Mayo Minder"]))));
+
+  if ((0,dist.get)("mayoMinderSetting") !== mayo.name) {
+    (0,property.withChoice)(1076, (0,external_kolmafia_.toInt)(mayo) - 8260, function () {
+      return (0,external_kolmafia_.use)((0,dist.$item)(diet_templateObject76 || (diet_templateObject76 = diet_taggedTemplateLiteral(["mayo minder"]))));
+    });
   }
 }
 ;// CONCATENATED MODULE: ./src/outfit.ts
@@ -31180,8 +31206,6 @@ function cheeses(embezzlerUp) {
     return [item, (0,dist.get)("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100)];
   })) : [];
 }
-// EXTERNAL MODULE: ./node_modules/libram/dist/property.js
-var property = __webpack_require__(1347);
 ;// CONCATENATED MODULE: ./src/dailies.ts
 var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20, dailies_templateObject21, dailies_templateObject22, dailies_templateObject23, dailies_templateObject24, dailies_templateObject25, dailies_templateObject26, dailies_templateObject27, dailies_templateObject28, dailies_templateObject29, dailies_templateObject30, dailies_templateObject31, dailies_templateObject32, dailies_templateObject33, dailies_templateObject34, dailies_templateObject35, dailies_templateObject36, dailies_templateObject37, dailies_templateObject38, dailies_templateObject39, dailies_templateObject40, dailies_templateObject41, dailies_templateObject42, dailies_templateObject43, dailies_templateObject44, dailies_templateObject45, dailies_templateObject46, dailies_templateObject47, dailies_templateObject48, dailies_templateObject49, dailies_templateObject50, dailies_templateObject51, dailies_templateObject52, dailies_templateObject53, dailies_templateObject54, dailies_templateObject55, dailies_templateObject56, dailies_templateObject57, dailies_templateObject58, dailies_templateObject59, dailies_templateObject60, dailies_templateObject61, dailies_templateObject62, dailies_templateObject63, dailies_templateObject64, dailies_templateObject65, dailies_templateObject66, dailies_templateObject67, dailies_templateObject68, dailies_templateObject69, dailies_templateObject70, dailies_templateObject71, dailies_templateObject72, dailies_templateObject73, dailies_templateObject74, dailies_templateObject75, dailies_templateObject76, dailies_templateObject77, dailies_templateObject78, dailies_templateObject79, dailies_templateObject80, dailies_templateObject81, dailies_templateObject82, dailies_templateObject83, dailies_templateObject84, dailies_templateObject85, dailies_templateObject86, dailies_templateObject87, dailies_templateObject88, dailies_templateObject89, dailies_templateObject90, dailies_templateObject91;
 
