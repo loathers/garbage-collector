@@ -391,7 +391,8 @@ const Mayo = {
 
 function mindMayo(mayo: Item, quantity: number) {
   if (getWorkshed() !== $item`Portable Mayo Clinic`) return;
-  if (get("mayoInMouth") !== mayo.name) throw `You used a bad mayo, my friend!`; //Is this what we want?
+  if (get("mayoInMouth") && get("mayoInMouth") !== mayo.name)
+    throw `You used a bad mayo, my friend!`; //Is this what we want?
   retrieveItem(quantity, mayo);
   if (!have($item`Mayo Minder`)) buy($item`Mayo Minder`);
   if (get("mayoMinderSetting") !== mayo.name) {
