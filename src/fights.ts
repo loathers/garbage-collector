@@ -128,19 +128,22 @@ class EmbezzlerFight {
   run: (options: EmbezzlerFightOptions) => void;
   requirements: Requirement[];
   draggable: boolean;
+  name?: string;
 
   constructor(
     available: () => boolean,
     potential: () => number,
     run: (options: EmbezzlerFightOptions) => void,
     requirements: Requirement[] = [],
-    draggable = false
+    draggable = false,
+    name?: string
   ) {
     this.available = available;
     this.potential = potential;
     this.run = run;
     this.requirements = requirements;
     this.draggable = draggable;
+    this.name = name;
   }
 }
 
@@ -226,7 +229,8 @@ const embezzlerSources = [
         bonusEquip: new Map([[$item`backup camera`, 5000]]),
       }),
     ],
-    true
+    true,
+    "Backup"
   ),
   new EmbezzlerFight(
     () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
@@ -501,14 +505,7 @@ export function dailyFights() {
         });
         startDigitize();
         nextFight = getEmbezzlerFight();
-        if (
-          kramcoGuaranteed() &&
-          (!nextFight ||
-            !Requirement.merge(nextFight.requirements).maximizeOptions_.forceEquip?.includes(
-              $item`Backup Camera`
-            ))
-        )
-          doSausage();
+        if (kramcoGuaranteed() && (!nextFight || nextFight.name === "Backup")) doSausage();
       }
     });
   }
