@@ -258,7 +258,11 @@ const banderRun = new freeRun(
     Bandersnatch.getRemainingRunaways() > 0,
   () => {
     maximize("familiar weight", false);
-    if (have($familiar`frumious bandersnatch`)) useFamiliar($familiar`frumious bandersnatch`);
+    if (
+      have($familiar`frumious bandersnatch`) &&
+      (have($effect`ode to booze`) || getSongCount() < getSongLimit())
+    )
+      useFamiliar($familiar`frumious bandersnatch`);
     else useFamiliar($familiar`pair of stomping boots`);
     if (myFamiliar() === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
   },
