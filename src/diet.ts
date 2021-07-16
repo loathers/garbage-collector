@@ -33,10 +33,13 @@ import {
   userConfirm,
   myFamiliar,
   useFamiliar,
+  getWorkshed,
+  retrieveItem,
   takeStorage,
   storageAmount,
 } from "kolmafia";
 import { $class, $effect, $item, $items, $skill, get, have, $familiar, set } from "libram";
+import { withChoice } from "libram/dist/property";
 import { globalOptions } from ".";
 import { clamp, ensureEffect } from "./lib";
 
@@ -237,6 +240,7 @@ function fillStomach() {
     if (myMaxhp() < 1000) maximize("0.05hp, hot res", false);
     const count = Math.floor(Math.min((fullnessLimit() - myFullness()) / 5, mySpleenUse() / 5));
     eatSpleen(count, $item`Ol' Scratch's salad fork`);
+    mindMayo(Mayo.flex, count);
     eatSpleen(count, $item`extra-greasy slider`);
     fillSomeSpleen();
   }
@@ -369,6 +373,7 @@ export function runDiet(): void {
   while (myFullness() < fullnessLimit()) {
     if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
       eat(1, $item`fudge spork`);
+    mindMayo(Mayo.zapine, 1);
     eatSafe(1, $item`jumping horseradish`);
   }
   while (myInebriety() < inebrietyLimit()) {
@@ -380,6 +385,25 @@ export function horseradish() {
   if (myFullness() < fullnessLimit()) {
     if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
       eat(1, $item`fudge spork`);
+    mindMayo(Mayo.zapine, 1);
     eatSafe(1, $item`jumping horseradish`);
+  }
+}
+
+const Mayo = {
+  nex: $item`Mayonex`,
+  diol: $item`Mayodiol`,
+  zapine: $item`Mayozapine`,
+  flex: $item`Mayoflex`,
+};
+
+function mindMayo(mayo: Item, quantity: number) {
+  if (getWorkshed() !== $item`Portable Mayo Clinic`) return;
+  if (get("mayoInMouth") && get("mayoInMouth") !== mayo.name)
+    throw `You used a bad mayo, my friend!`; //Is this what we want?
+  retrieveItem(quantity, mayo);
+  if (!have($item`Mayo Minder`)) buy($item`Mayo Minder`);
+  if (get("mayoMinderSetting") !== mayo.name) {
+    withChoice(1076, toInt(mayo) - 8260, () => use($item`mayo minder`));
   }
 }
