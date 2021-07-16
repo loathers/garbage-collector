@@ -35,6 +35,8 @@ import {
   useFamiliar,
   getWorkshed,
   retrieveItem,
+  takeStorage,
+  storageAmount,
 } from "kolmafia";
 import { $class, $effect, $item, $items, $skill, get, have, $familiar, set } from "libram";
 import { withChoice } from "libram/dist/property";
@@ -85,6 +87,11 @@ function acquire(qty: number, item: Item, maxPrice?: number) {
   const getCloset = Math.min(remaining, closetAmount(item));
   if (!takeCloset(getCloset, item)) throw "failed to remove from closet";
   remaining -= getCloset;
+  if (remaining <= 0) return;
+
+  const getStorage = Math.min(remaining, storageAmount(item));
+  if (!takeStorage(getStorage, item)) throw "failed to remove from storage";
+  remaining -= getStorage;
   if (remaining <= 0) return;
 
   let getMall = Math.min(remaining, shopAmount(item));
