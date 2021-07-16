@@ -128,14 +128,17 @@ class EmbezzlerFight {
   run: (options: EmbezzlerFightOptions) => void;
   requirements: Requirement[];
   draggable: boolean;
+  name: string;
 
   constructor(
+    name: string,
     available: () => boolean,
     potential: () => number,
     run: (options: EmbezzlerFightOptions) => void,
     requirements: Requirement[] = [],
     draggable = false
   ) {
+    this.name = name;
     this.available = available;
     this.potential = potential;
     this.run = run;
@@ -191,6 +194,7 @@ const embezzlerMacro = () =>
 
 const embezzlerSources = [
   new EmbezzlerFight(
+    "Digitize",
     () =>
       get("_sourceTerminalDigitizeMonster") === $monster`Knob Goblin Embezzler` &&
       getCounters("Digitize Monster", 0, 0).trim() !== "",
@@ -202,6 +206,7 @@ const embezzlerSources = [
     true
   ),
   new EmbezzlerFight(
+    "Backup",
     () =>
       get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
       have($item`backup camera`) &&
@@ -229,6 +234,7 @@ const embezzlerSources = [
     true
   ),
   new EmbezzlerFight(
+    "Fax",
     () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
     () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
     () => {
@@ -237,6 +243,7 @@ const embezzlerSources = [
     }
   ),
   new EmbezzlerFight(
+    "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdv($location`Knob Treasury`, true) &&
@@ -253,6 +260,7 @@ const embezzlerSources = [
     }
   ),
   new EmbezzlerFight(
+    "Chateau Painting",
     () =>
       ChateauMantegna.have() &&
       !ChateauMantegna.paintingFought() &&
@@ -266,6 +274,7 @@ const embezzlerSources = [
     () => ChateauMantegna.fightPainting()
   ),
   new EmbezzlerFight(
+    "Spooky Putty",
     () =>
       have($item`Spooky putty monster`) &&
       get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`,
@@ -284,6 +293,7 @@ const embezzlerSources = [
     () => use($item`Spooky putty monster`)
   ),
   new EmbezzlerFight(
+    "4-d Camera",
     () =>
       have($item`shaking 4-d camera`) &&
       get("cameraMonster") === $monster`Knob Goblin Embezzler` &&
@@ -297,6 +307,7 @@ const embezzlerSources = [
     () => use($item`shaking 4-d camera`)
   ),
   new EmbezzlerFight(
+    "Green Taffy",
     () =>
       have($item`envyfish egg`) &&
       get("envyfishMonster") === $monster`Knob Goblin Embezzler` &&
@@ -310,11 +321,13 @@ const embezzlerSources = [
     () => use($item`envyfish egg`)
   ),
   new EmbezzlerFight(
+    "Professor MeatChain",
     () => false,
     () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 1 : 0),
     () => {}
   ),
   new EmbezzlerFight(
+    "Professor WeightChain",
     () => false,
     () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 1 : 0),
     () => {}
@@ -357,6 +370,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
     )
   ) {
     return new EmbezzlerFight(
+      "Pocket Wish",
       () => false,
       () => 0,
       () => {
@@ -499,9 +513,9 @@ export function dailyFights() {
             }
           }
         });
-        if (kramcoGuaranteed()) doSausage();
         startDigitize();
         nextFight = getEmbezzlerFight();
+        if (kramcoGuaranteed() && (!nextFight || nextFight.name !== "Backup")) doSausage();
       }
     });
   }
