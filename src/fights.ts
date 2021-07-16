@@ -499,9 +499,16 @@ export function dailyFights() {
             }
           }
         });
-        if (kramcoGuaranteed()) doSausage();
         startDigitize();
         nextFight = getEmbezzlerFight();
+        if (
+          kramcoGuaranteed() &&
+          (!nextFight ||
+            !Requirement.merge(nextFight.requirements).maximizeOptions_.forceEquip?.includes(
+              $item`Backup Camera`
+            ))
+        )
+          doSausage();
       }
     });
   }
