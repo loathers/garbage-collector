@@ -31,6 +31,7 @@ import {
   $slot,
   Bandersnatch,
   get,
+  getFoldGroup,
   getSongCount,
   getSongLimit,
   have,
@@ -321,6 +322,33 @@ const freeRuns: freeRun[] = [
     () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
     () => equip($slot`acc3`, $item`mafia middle finger ring`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show them your ring")
+  ),
+
+  new freeRun(
+    () => have($item`V for Vivala mask`) && !get("_vmaskBanisherUsed"),
+    () => equip($slot`acc3`, $item`V for Vivala mask`),
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Creepy Grin")
+  ),
+
+  new freeRun(
+    () => getFoldGroup($item`stinky cheese diaper`).some((item) => have(item)) && !get("_stinkyCheeseBanisherUsed"),
+    () => {
+      if (!have($item`stinky cheese eye`)) cliExecute(`fold stinky cheese eye`);
+      equip($slot`acc3`, $item`stinky cheese eye`)
+    },
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Give Your Opponent the Stinkeye")
+  ),
+
+  new freeRun(
+    () => have($item`navel ring of navel gazing`) && get("_navelRunaways") < 3,
+    () => equip($slot`acc3`, $item`navel ring of navel gazing`),
+    Macro.step("runaway")
+  ),
+
+  new freeRun(
+    () => have($item`Greatest American Pants`) && get("_navelRunaways") < 3,
+    () => equip($slot`pants`, $item`Greatest American Pants`),
+    Macro.step("runaway")
   ),
 ];
 
