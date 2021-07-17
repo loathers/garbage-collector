@@ -1,60 +1,60 @@
 import {
-  visitUrl,
-  myPrimestat,
-  useFamiliar,
-  use,
-  retrieveItem,
-  runChoice,
-  cliExecute,
-  numericModifier,
-  maximize,
-  buy,
-  itemAmount,
-  print,
-  toInt,
-  getClanLounge,
-  changeMcd,
-  haveSkill,
-  myClass,
-  myThrall,
-  useSkill,
   availableAmount,
+  buy,
+  changeMcd,
+  cliExecute,
   equip,
   getCampground,
-  myAdventures,
+  getClanLounge,
+  haveSkill,
+  itemAmount,
   mallPrice,
+  maximize,
+  myAdventures,
+  myClass,
+  myPrimestat,
+  myThrall,
+  numericModifier,
+  print,
+  retrieveItem,
+  runChoice,
   setAutoAttack,
+  toInt,
+  use,
+  useFamiliar,
+  useSkill,
+  visitUrl,
 } from "kolmafia";
 import {
-  have,
-  $item,
-  get,
-  $familiar,
-  $stat,
-  $effect,
-  $location,
-  $familiars,
-  $items,
-  SourceTerminal,
   $class,
+  $effect,
+  $familiar,
+  $familiars,
+  $item,
+  $items,
+  $location,
   $skill,
-  $thrall,
-  SongBoom,
-  property,
   $slot,
+  $stat,
+  $thrall,
   adventureMacro,
+  get,
+  have,
   Macro,
+  property,
+  SongBoom,
+  SourceTerminal,
 } from "libram";
 import { globalOptions } from ".";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
-import { questStep, ensureEffect, tryFeast, findRun, trueValue } from "./lib";
+import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
 import { baseMeat } from "./mood";
 import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
 import { withChoices } from "libram/dist/property";
 
-export function voterSetup() {
+export function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
   visitUrl("place.php?whichplace=town_right&action=townright_vote");
 
@@ -101,7 +101,7 @@ export function voterSetup() {
   );
 }
 
-export function configureGear() {
+export function configureGear(): void {
   if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
     useFamiliar($familiar`Cornbeefadon`);
     use($item`box of Familiar Jacks`);
@@ -131,7 +131,7 @@ export function configureGear() {
   }
 }
 
-export function latte() {
+export function latte(): void {
   const latte = $item`latte lovers member's mug`;
   if (have(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
     if (
@@ -177,22 +177,24 @@ export function latte() {
         get("latteUnlocks").includes("rawhide") &&
         get("_latteRefillsUsed") < 3
       ) {
-        const latteIngredients =
-          "cajun rawhide " +
-          (get("latteUnlocks").includes("carrot")
+        const latteIngredients = [
+          "cajun",
+          "rawhide",
+          get("latteUnlocks").includes("carrot")
             ? "carrot"
             : myPrimestat() === $stat`muscle`
             ? "vanilla"
             : myPrimestat() === $stat`mysticality`
             ? "pumpkin spice"
-            : "cinnamon");
+            : "cinnamon",
+        ].join(" ");
         cliExecute(`latte refill ${latteIngredients}`);
       }
     }
   }
 }
 
-export function prepFamiliars() {
+export function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
     for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, bloody nora`) {
       if (get("_roboDrinks").includes(drink.name)) continue;
@@ -228,14 +230,14 @@ export function prepFamiliars() {
   }
 }
 
-export function horse() {
+export function horse(): void {
   visitUrl("place.php?whichplace=town_right");
   if (get("horseryAvailable") && get("_horsery") !== "dark horse") {
     cliExecute("horsery dark");
   }
 }
 
-export function dailyBuffs() {
+export function dailyBuffs(): void {
   if (
     !get("_clanFortuneBuffUsed") &&
     have($item`Clan VIP lounge key`) &&
@@ -258,7 +260,7 @@ export function dailyBuffs() {
   }
 }
 
-export function configureMisc() {
+export function configureMisc(): void {
   if (SongBoom.songChangesLeft() > 0) SongBoom.setSong("Total Eclipse of Your Meat");
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
@@ -306,7 +308,7 @@ export function configureMisc() {
   changeMcd(10);
 }
 
-export function volcanoDailies() {
+export function volcanoDailies(): void {
   if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
@@ -415,7 +417,7 @@ function checkVolcanoQuest() {
   }
 }
 
-export function cheat() {
+export function cheat(): void {
   if (have($item`deck of every card`)) {
     ["1952 Mickey Mantle", "Island", "Ancestral Recall"].forEach((card) => {
       if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
@@ -424,7 +426,7 @@ export function cheat() {
   }
 }
 
-export function gin() {
+export function gin(): void {
   if (have($item`Time-Spinner`)) {
     if (
       !get("_timeSpinnerReplicatorUsed") &&
@@ -437,7 +439,7 @@ export function gin() {
 }
 
 const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi Tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, Cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
-export function pickTea() {
+export function pickTea(): void {
   if (!getCampground()["potted tea tree"] || get("_pottedTeaTreeUsed")) return;
   const bestTea = teas.sort((a, b) => trueValue(b) - trueValue(a))[0];
   const shakeVal = 3 * trueValue(...teas);
@@ -445,13 +447,13 @@ export function pickTea() {
   cliExecute(`teatree ${teaAction}`);
 }
 
-export function gaze() {
+export function gaze(): void {
   if (!get("getawayCampsiteUnlocked")) return;
   if (!get("_campAwayCloudBuffs")) visitUrl("place.php?whichplace=campaway&action=campaway_sky");
   while (get("_campAwaySmileBuffs") < 3)
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
 }
-export function jellyfish() {
+export function jellyfish(): void {
   if (
     !have($familiar`space jellyfish`) ||
     !(

@@ -49,7 +49,7 @@ export const baseMeat =
     ? 275
     : 250;
 
-export function meatMood(urKels = false) {
+export function meatMood(urKels = false): Mood {
   const mood = new Mood();
 
   // TODO: Check all potions and grab those that are worth.
@@ -100,7 +100,7 @@ export function meatMood(urKels = false) {
   return mood;
 }
 
-export function freeFightMood() {
+export function freeFightMood(): Mood {
   const mood = new Mood();
 
   if (!get<boolean>("_garbo_defectiveTokenAttempted", false)) {

@@ -1,39 +1,37 @@
 import {
-  myFullness,
-  fullnessLimit,
-  use,
-  print,
-  myInebriety,
-  inebrietyLimit,
-  itemAmount,
-  toInt,
-  myClass,
-  getProperty,
-  mallPrice,
-  cliExecute,
-  setProperty,
-  useSkill,
-  mySpleenUse,
-  spleenLimit,
-  chew,
-  equip,
   buy,
+  chew,
+  cliExecute,
   drink,
   eat,
-  shopAmount,
+  equip,
+  fullnessLimit,
+  getProperty,
+  getWorkshed,
+  haveEffect,
+  inebrietyLimit,
+  itemAmount,
+  mallPrice,
   maximize,
+  myAdventures,
+  myClass,
+  myFamiliar,
+  myFullness,
+  myInebriety,
   myLevel,
   myMaxhp,
-  haveEffect,
-  myAdventures,
-  userConfirm,
-  myFamiliar,
-  useFamiliar,
-  getWorkshed,
+  mySpleenUse,
+  print,
   retrieveItem,
-  sweetSynthesis,
+  setProperty,
+  spleenLimit,
+  toInt,
+  use,
+  useFamiliar,
+  userConfirm,
+  useSkill,
 } from "kolmafia";
-import { $class, $effect, $item, $items, $skill, get, have, $familiar, set } from "libram";
+import { $class, $effect, $familiar, $item, $items, $skill, get, have, set } from "libram";
 import { withChoice } from "libram/dist/property";
 import { globalOptions } from ".";
 import { acquire } from "./acquire";
@@ -41,10 +39,6 @@ import { clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
-
-function totalAmount(item: Item): number {
-  return shopAmount(item) + itemAmount(item);
-}
 
 function itemPriority(...items: Item[]) {
   for (const item of items) {
@@ -134,14 +128,6 @@ function fillSomeSpleen() {
   fillSpleenWith(bestSpleenItem);
 }
 
-function fillAllSpleen(): void {
-  const { potentialSpleenItems } = getBestSpleenItems();
-  for (const spleenItem of potentialSpleenItems) {
-    print(`Filling spleen with ${spleenItem}.`);
-    fillSpleenWith(spleenItem);
-  }
-}
-
 function fillSpleenWith(spleenItem: Item) {
   if (mySpleenUse() + spleenItem.spleen <= spleenLimit()) {
     // (adventureGain * spleenA + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
@@ -160,7 +146,7 @@ function fillSpleenWith(spleenItem: Item) {
     );
     if (have($skill`Sweet Synthesis`)) {
       for (let i = 0; i < clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()); i++) {
-        sweetSynthesis($effect`Synthesis: Greed`);
+        cliExecute("synthesize greed");
       }
     }
     const count = Math.floor((spleenLimit() - mySpleenUse()) / spleenItem.spleen);
@@ -325,7 +311,7 @@ export function runDiet(): void {
   }
 }
 
-export function horseradish() {
+export function horseradish(): void {
   if (myFullness() < fullnessLimit()) {
     if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
       eat(1, $item`fudge spork`);

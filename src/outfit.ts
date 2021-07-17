@@ -1,23 +1,23 @@
 import {
-  myInebriety,
-  inebrietyLimit,
-  myFamiliar,
-  myClass,
-  retrieveItem,
-  equippedAmount,
-  equip,
-  totalTurnsPlayed,
+  bjornifyFamiliar,
   booleanModifier,
   cliExecute,
-  haveEquipped,
-  bjornifyFamiliar,
   enthroneFamiliar,
-  toSlot,
-  myAdventures,
-  mallPrice,
+  equip,
+  equippedAmount,
   fullnessLimit,
+  haveEquipped,
+  inebrietyLimit,
+  mallPrice,
+  myAdventures,
+  myClass,
+  myFamiliar,
   myFullness,
+  myInebriety,
   numericModifier,
+  retrieveItem,
+  toSlot,
+  totalTurnsPlayed,
 } from "kolmafia";
 import {
   $class,
@@ -45,15 +45,15 @@ export class Requirement {
     this.maximizeOptions_ = maximizeOptions_;
   }
 
-  maximizeParameters() {
+  maximizeParameters(): string[] {
     return this.maximizeParameters_;
   }
 
-  maximizeOptions() {
+  maximizeOptions(): MaximizeOptions {
     return this.maximizeOptions_;
   }
 
-  merge(other: Requirement) {
+  merge(other: Requirement): Requirement {
     const optionsA = this.maximizeOptions();
     const optionsB = other.maximizeOptions();
     return new Requirement([...this.maximizeParameters(), ...other.maximizeParameters()], {
@@ -68,7 +68,7 @@ export class Requirement {
     });
   }
 
-  static merge(allRequirements: Requirement[]) {
+  static merge(allRequirements: Requirement[]): Requirement {
     return allRequirements.reduce((x, y) => x.merge(y));
   }
 }
@@ -82,7 +82,7 @@ const bestAdventuresFromPants =
     .map((pants) => numericModifier(pants, "Adventures"))
     .sort((a, b) => b - a)[0] || 0;
 
-export function freeFightOutfit(requirements: Requirement[] = []) {
+export function freeFightOutfit(requirements: Requirement[] = []): void {
   const bjornChoice = pickBjorn(PickBjornMode.FREE);
 
   const compiledRequirements = Requirement.merge([
@@ -131,7 +131,11 @@ export function freeFightOutfit(requirements: Requirement[] = []) {
   if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
 }
 
-export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [], sea?: boolean) {
+export function meatOutfit(
+  embezzlerUp: boolean,
+  requirements: Requirement[] = [],
+  sea?: boolean
+): void {
   const forceEquip = [];
   const additionalRequirements = [];
   const bjornChoice = pickBjorn(embezzlerUp ? PickBjornMode.EMBEZZLER : PickBjornMode.BARF);
@@ -143,7 +147,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
       forceEquip.push($item`Kramco Sausage-o-Matic™`);
     }
     // TODO: Fix pointer finger ring construction.
-    if (myClass() != $class`Seal Clubber`) {
+    if (myClass() !== $class`Seal Clubber`) {
       if (have($item`haiku katana`)) {
         forceEquip.push($item`haiku katana`);
       } else if (have($item`unwrapped retro superhero cape`)) {
@@ -215,7 +219,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
   if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
-      for (let airSource of waterBreathingEquipment) {
+      for (const airSource of waterBreathingEquipment) {
         if (have(airSource)) {
           if (airSource === $item`the crown of ed the undying`) cliExecute("edpiece fish");
           equip(airSource);
@@ -224,7 +228,7 @@ export function meatOutfit(embezzlerUp: boolean, requirements: Requirement[] = [
       }
     }
     if (!booleanModifier("Underwater Familiar")) {
-      for (let airSource of familiarWaterBreathingEquipment) {
+      for (const airSource of familiarWaterBreathingEquipment) {
         if (have(airSource)) {
           equip(airSource);
           break;

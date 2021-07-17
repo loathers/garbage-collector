@@ -6,7 +6,6 @@ import {
   getCampground,
   getCounters,
   guildStoreAvailable,
-  haveEquipped,
   inebrietyLimit,
   itemAmount,
   myAdventures,
@@ -20,7 +19,6 @@ import {
   reverseNumberology,
   runChoice,
   setAutoAttack,
-  setProperty,
   toItem,
   use,
   useFamiliar,
@@ -62,7 +60,7 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { questStep, prepWandererZone, physicalImmuneMacro } from "./lib";
+import { physicalImmuneMacro, prepWandererZone, questStep } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -71,7 +69,7 @@ import {
   Requirement,
   waterBreathingEquipment,
 } from "./outfit";
-import { withVIPClan, withStash } from "./clan";
+import { withStash, withVIPClan } from "./clan";
 import { withProperties } from "libram/dist/property";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -216,14 +214,14 @@ export const globalOptions: { ascending: boolean; stopTurncount: number | null }
   ascending: false,
 };
 
-export function canContinue() {
+export function canContinue(): boolean {
   return (
     myAdventures() > 0 &&
     (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
   );
 }
 
-export function main(argString = "") {
+export function main(argString = ""): void {
   sinceKolmafiaRevision(20767);
 
   if (get("valueOfAdventure") <= 3500) {

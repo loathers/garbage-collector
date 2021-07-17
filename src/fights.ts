@@ -77,7 +77,7 @@ import {
   clamp,
   ensureEffect,
   findRun,
-  freeRun,
+  FreeRun,
   kramcoGuaranteed,
   mapMonster,
   prepWandererZone,
@@ -337,17 +337,21 @@ const embezzlerSources = [
     "Professor MeatChain",
     () => false,
     () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 10 : 0),
-    () => {}
+    () => {
+      return;
+    }
   ),
   new EmbezzlerFight(
     "Professor WeightChain",
     () => false,
     () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 5 : 0),
-    () => {}
+    () => {
+      return;
+    }
   ),
 ];
 
-export function embezzlerCount() {
+export function embezzlerCount(): number {
   return sum(embezzlerSources.map((source) => source.potential()));
 }
 
@@ -375,7 +379,7 @@ function embezzlerSetup() {
 
 function getEmbezzlerFight(): EmbezzlerFight | null {
   let potentials = false;
-  for (let fight of embezzlerSources) {
+  for (const fight of embezzlerSources) {
     if (fight.available()) return fight;
     if (fight.potential()) potentials = true;
   }
@@ -392,7 +396,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
       () => 0,
       () => {
         retrieveItem($item`pocket wish`);
-        visitUrl("inv_use.php?pwd=" + myHash() + "&which=3&whichitem=9537", false, true);
+        visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
         visitUrl(
           "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
           true,
@@ -414,7 +418,7 @@ function startDigitize() {
     do {
       const run =
         findRun() ||
-        new freeRun(
+        new FreeRun(
           () => retrieveItem($item`louder than bomb`),
           () => retrieveItem($item`louder than bomb`),
           Macro.item("louder than bomb")
@@ -435,7 +439,7 @@ function bestWitchessPiece() {
   return witchessPieces.sort((a, b) => trueValue(b.drop) - trueValue(a.drop))[0].piece;
 }
 
-export function dailyFights() {
+export function dailyFights(): void {
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky putty sheet`, () => {
       embezzlerSetup();
@@ -775,7 +779,7 @@ const freeFightSources = [
         saberedMonster &&
         $monsters`pygmy orderlies, pygmy bowler, pygmy janitor`.includes(saberedMonster);
       const drunksCanAppear =
-        get("_drunkPygmyBanishes") == 10 ||
+        get("_drunkPygmyBanishes") === 10 ||
         (saberedMonster === $monster`drunk pygmy` && get("_saberForceMonsterCount"));
       const remainingSaberPygmies =
         (saberedMonster === $monster`drunk pygmy` ? get("_saberForceMonsterCount") : 0) +
@@ -1073,7 +1077,7 @@ const freeKillSources = [
   ),
 ];
 
-export function freeFights() {
+export function freeFights(): void {
   visitUrl("place.php?whichplace=town_wrong");
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
