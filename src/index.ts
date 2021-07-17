@@ -20,6 +20,7 @@ import {
   runChoice,
   setAutoAttack,
   toItem,
+  totalTurnsPlayed,
   use,
   useFamiliar,
   visitUrl,
@@ -75,6 +76,11 @@ import { withProperties } from "libram/dist/property";
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
 
+export const log = {
+  embezzlersFought: 0,
+  digitizedEmbezzlersFought: 0,
+};
+
 function ensureBarfAccess() {
   if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
     const ticket = $item`one-day ticket to Dinseylandfill`;
@@ -114,6 +120,7 @@ function dailySetup() {
 }
 
 function barfTurn() {
+  const startTurns = totalTurnsPlayed();
   horseradish();
   if (have($effect`beaten up`))
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
@@ -209,6 +216,12 @@ function barfTurn() {
       eat($item`magical sausage`);
     }
   }
+  if (
+    totalTurnsPlayed() - startTurns === 1 &&
+    get("lastEncounter") === "Knob Goblin Embezzler" &&
+    embezzlerUp
+  )
+    log.digitizedEmbezzlersFought++;
 }
 
 export const globalOptions: { ascending: boolean; stopTurncount: number | null } = {

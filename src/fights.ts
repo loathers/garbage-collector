@@ -39,6 +39,7 @@ import {
   spleenLimit,
   takeCloset,
   toInt,
+  totalTurnsPlayed,
   use,
   useFamiliar,
   userConfirm,
@@ -95,8 +96,9 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash } from "./clan";
-import { withChoice, withChoices } from "libram/dist/property";
 import { bathroomFinance } from "./potions";
+import { withChoice, withChoices } from "libram/dist/property";
+import { log } from ".";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
@@ -602,6 +604,7 @@ class FreeFight {
     // FIXME: make a better decision here.
     if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
     while (this.available()) {
+      const startTurns = totalTurnsPlayed();
       useFamiliar(
         this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
       );
@@ -610,6 +613,8 @@ class FreeFight {
       safeRestore();
       withMacro(Macro.meatKill(), this.run);
       horseradish();
+      if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
+        log.embezzlersFought++;
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
     }
