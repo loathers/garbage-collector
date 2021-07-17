@@ -29,9 +29,10 @@ import {
   SongBoom,
   Witchess,
 } from "libram";
-import { fillAsdonMartinTo } from "./asdon";
 import { questStep } from "./lib";
 import { withStash } from "./clan";
+import { potionSetup } from "./potions";
+import { synthesize } from "./synthesis";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -72,7 +73,7 @@ export function meatMood(urKels = false) {
 
   if (haveSkill($skill`Sweet Synthesis`)) {
     mood.effect($effect`Synthesis: Greed`, () => {
-      if (mySpleenUse() < spleenLimit()) cliExecute("synthesize greed");
+      if (mySpleenUse() < spleenLimit()) synthesize($effect`Synthesis: Greed`, 1);
     });
   }
 
@@ -93,6 +94,8 @@ export function meatMood(urKels = false) {
   if (!get("concertVisited") && get("sidequestArenaCompleted") === "fratboy") {
     cliExecute("concert winklered");
   }
+
+  potionSetup();
 
   return mood;
 }

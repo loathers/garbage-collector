@@ -13,9 +13,7 @@ import {
   getCampground,
   getCounters,
   handlingChoice,
-  haveFamiliar,
   itemAmount,
-  itemDrops,
   mallPrice,
   myAdventures,
   myAscensions,
@@ -53,7 +51,6 @@ import {
   $class,
   $effect,
   $familiar,
-  $familiars,
   $item,
   $items,
   $location,
@@ -86,6 +83,7 @@ import {
   prepWandererZone,
   questStep,
   setChoice,
+  sum,
   trueValue,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
@@ -97,7 +95,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash } from "./clan";
-import { withChoice, withChoices, withProperties } from "libram/dist/property";
+import { withChoice, withChoices } from "libram/dist/property";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
@@ -338,16 +336,20 @@ const embezzlerSources = [
   new EmbezzlerFight(
     "Professor MeatChain",
     () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 1 : 0),
+    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 10 : 0),
     () => {}
   ),
   new EmbezzlerFight(
     "Professor WeightChain",
     () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 1 : 0),
+    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 5 : 0),
     () => {}
   ),
 ];
+
+export function embezzlerCount() {
+  return sum(embezzlerSources.map((source) => source.potential()));
+}
 
 function embezzlerSetup() {
   meatMood(true).execute(myAdventures() * 1.04 + 50);
@@ -357,7 +359,7 @@ function embezzlerSetup() {
   if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
     ensureEffect($effect`Boxing Day Glow`);
   }
-  freeFightMood().execute(30);
+  freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card`, () => {
     if (have($item`Platinum Yendorian Express Card`)) {
       use($item`Platinum Yendorian Express Card`);

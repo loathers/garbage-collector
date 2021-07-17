@@ -55,6 +55,14 @@ export function clamp(n: number, min: number, max: number) {
   return Math.min(Math.max(n, min), max);
 }
 
+/**
+ * Sum an array of numbers.
+ * @param addends Addends to sum.
+ */
+export function sum(addends: number[]) {
+  return addends.reduce((s, n) => s + n, 0);
+}
+
 export function mapMonster(location: Location, monster: Monster) {
   if (
     haveSkill($skill`Map the Monsters`) &&

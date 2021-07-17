@@ -17,30 +17,25 @@ import {
   spleenLimit,
   chew,
   equip,
-  takeCloset,
-  closetAmount,
   buy,
   drink,
   eat,
   shopAmount,
-  takeShop,
   maximize,
   myLevel,
   myMaxhp,
   haveEffect,
   myAdventures,
-  sweetSynthesis,
   userConfirm,
   myFamiliar,
   useFamiliar,
   getWorkshed,
   retrieveItem,
-  takeStorage,
-  storageAmount,
 } from "kolmafia";
 import { $class, $effect, $item, $items, $skill, get, have, $familiar, set } from "libram";
 import { withChoice } from "libram/dist/property";
 import { globalOptions } from ".";
+import { acquire } from "./acquire";
 import { clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
@@ -55,58 +50,6 @@ function itemPriority(...items: Item[]) {
     if (have(item)) return item;
   }
   return items[items.length - 1];
-}
-
-const priceCaps: { [index: string]: number } = {
-  "jar of fermented pickle juice": 75000,
-  "Frosty's frosty mug": 45000,
-  "extra-greasy slider": 45000,
-  "Ol' Scratch's salad fork": 50000,
-  "transdermal smoke patch": 8000,
-  "voodoo snuff": 36000,
-  "antimatter wad": 24000,
-  "octolus oculus": 12000,
-  "blood-drive sticker": 210000,
-  "spice melange": 500000,
-  "splendid martini": 20000,
-  "Eye and a Twist": 20000,
-  "jumping horseradish": 20000,
-  "Ambitious Turkey": 20000,
-  "Special Seasoning": 20000,
-};
-
-function acquire(qty: number, item: Item, maxPrice?: number) {
-  if (maxPrice === undefined) maxPrice = priceCaps[item.name];
-  if (maxPrice === undefined) throw `No price cap for ${item.name}.`;
-
-  if (qty * mallPrice(item) > 1000000) throw "bad get!";
-
-  let remaining = qty - itemAmount(item);
-  if (remaining <= 0) return;
-
-  const getCloset = Math.min(remaining, closetAmount(item));
-  if (!takeCloset(getCloset, item)) throw "failed to remove from closet";
-  remaining -= getCloset;
-  if (remaining <= 0) return;
-
-  const getStorage = Math.min(remaining, storageAmount(item));
-  if (!takeStorage(getStorage, item)) throw "failed to remove from storage";
-  remaining -= getStorage;
-  if (remaining <= 0) return;
-
-  let getMall = Math.min(remaining, shopAmount(item));
-  if (!takeShop(getMall, item)) {
-    cliExecute("refresh shop");
-    cliExecute("refresh inventory");
-    remaining = qty - itemAmount(item);
-    getMall = Math.min(remaining, shopAmount(item));
-    if (!takeShop(getMall, item)) throw "failed to remove from shop";
-  }
-  remaining -= getMall;
-  if (remaining <= 0) return;
-
-  buy(remaining, item, maxPrice);
-  if (itemAmount(item) < qty) throw `Mall price too high for ${item.name}.`;
 }
 
 function eatSafe(qty: number, item: Item) {
