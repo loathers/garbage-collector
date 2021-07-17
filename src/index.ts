@@ -259,6 +259,9 @@ export function main(argString = "") {
       ? 1
       : 0;
 
+  retrieveItem($item`seal tooth`);
+  retrieveItem($item`the jokester's gun`);
+
   try {
     print("Collecting garbage!", "blue");
     if (globalOptions.stopTurncount !== null) {
