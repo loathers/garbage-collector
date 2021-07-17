@@ -389,6 +389,11 @@ function embezzlerSetup() {
   if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {
     retrieveItem($item`4-d camera`);
   }
+
+  // Fix invalid spooky putty monster (caused by ascending)
+  if (have($item`Spooky putty monster`) && get("spookyPuttyMonster") === $monster`none`) {
+    use($item`Spooky putty monster`);
+  }
 }
 
 function getEmbezzlerFight(): EmbezzlerFight | null {
