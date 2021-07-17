@@ -365,5 +365,9 @@ export function main(argString = ""): void {
         "blue"
       );
     }
+    print(
+      `You fought ${log.embezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+      "blue"
+    );
   }
 }
