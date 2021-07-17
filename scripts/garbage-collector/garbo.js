@@ -30753,7 +30753,7 @@ function useIfUnused(item, prop, maxPrice) {
 }
 
 var valuePerSpleen = function valuePerSpleen(item) {
-  return -(adventureGain(item) * MPA - (0,external_kolmafia_.mallPrice)(item)) / item.spleen;
+  return (adventureGain(item) * MPA - (0,external_kolmafia_.mallPrice)(item)) / item.spleen;
 };
 
 var savedBestSpleenItem = null;
@@ -30763,7 +30763,7 @@ function getBestSpleenItems() {
   if (savedBestSpleenItem === null || savedPotentialSpleenItems === null) {
     savedPotentialSpleenItems = (0,dist.$items)(diet_templateObject2 || (diet_templateObject2 = diet_taggedTemplateLiteral(["octolus oculus, transdermal smoke patch, antimatter wad, voodoo snuff, blood-drive sticker"])));
     savedPotentialSpleenItems.sort(function (x, y) {
-      return valuePerSpleen(x) - valuePerSpleen(y);
+      return valuePerSpleen(y) - valuePerSpleen(x);
     });
 
     var _iterator = diet_createForOfIteratorHelper(savedPotentialSpleenItems),
@@ -30772,7 +30772,7 @@ function getBestSpleenItems() {
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var spleenItem = _step.value;
-        (0,external_kolmafia_.print)("".concat(spleenItem, " value/spleen: ").concat(-valuePerSpleen(spleenItem)));
+        (0,external_kolmafia_.print)("".concat(spleenItem, " value/spleen: ").concat(valuePerSpleen(spleenItem)));
       }
     } catch (err) {
       _iterator.e(err);
