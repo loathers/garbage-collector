@@ -1,15 +1,15 @@
 import {
-  myInebriety,
-  inebrietyLimit,
-  haveFamiliar,
-  mallPrice,
   familiarWeight,
   haveEffect,
+  haveFamiliar,
+  inebrietyLimit,
+  mallPrice,
   myFamiliar,
-  weightAdjustment,
+  myInebriety,
   numericModifier,
+  weightAdjustment,
 } from "kolmafia";
-import { have, $familiar, $item, $familiars, get, $effect, $items } from "libram";
+import { $effect, $familiar, $familiars, $item, $items, get, have } from "libram";
 import { argmax, trueValue } from "./lib";
 
 let _meatFamiliar: Familiar;

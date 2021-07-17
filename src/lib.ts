@@ -11,8 +11,6 @@ import {
   numericModifier,
   print,
   restoreMp,
-  runChoice,
-  toItem,
   totalTurnsPlayed,
   toUrl,
   use,
@@ -34,28 +32,28 @@ import {
   getFoldGroup,
   getSongCount,
   getSongLimit,
+  Guzzlr,
   have,
   Macro,
   property,
   set,
-  Guzzlr,
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
 
-export function setChoice(adventure: number, value: number) {
+export function setChoice(adventure: number, value: number): void {
   set(`choiceAdventure${adventure}`, `${value}`);
 }
 
-export function ensureEffect(effect: Effect) {
+export function ensureEffect(effect: Effect): void {
   if (!have(effect)) cliExecute(effect.default);
 }
 
-export function clamp(n: number, min: number, max: number) {
+export function clamp(n: number, min: number, max: number): number {
   return Math.min(Math.max(n, min), max);
 }
 
-export function mapMonster(location: Location, monster: Monster) {
+export function mapMonster(location: Location, monster: Monster): void {
   if (
     haveSkill($skill`Map the Monsters`) &&
     !get("mappingMonsters") &&
@@ -75,13 +73,13 @@ export function mapMonster(location: Location, monster: Monster) {
   if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
 }
 
-export function argmax<T>(values: [T, number][]) {
+export function argmax<T>(values: [T, number][]): T {
   return values.reduce(([minValue, minScore], [value, score]) =>
     score > minScore ? [value, score] : [minValue, minScore]
   )[0];
 }
 
-export function questStep(questName: string) {
+export function questStep(questName: string): number {
   const stringStep = property.getString(questName);
   if (stringStep === "unstarted" || stringStep === "") return -1;
   else if (stringStep === "started") return 0;
@@ -94,13 +92,13 @@ export function questStep(questName: string) {
   }
 }
 
-interface zonePotion {
-  zone: String;
+interface ZonePotion {
+  zone: string;
   effect: Effect;
   potion: Item;
 }
 
-const zonePotions = [
+const zonePotions: ZonePotion[] = [
   {
     zone: "Spaaace",
     effect: $effect`Transpondent`,
@@ -134,7 +132,7 @@ function acceptBestGuzzlrQuest() {
   }
 }
 
-export function prepWandererZone() {
+export function prepWandererZone(): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`the deep dark jungle`
@@ -177,7 +175,7 @@ export function prepWandererZone() {
 function guzzlrCheck() {
   const guzzlZone = Guzzlr.getLocation();
   if (!guzzlZone) return false;
-  const forbiddenZones: String[] = [""]; //can't stockpile these potions,
+  const forbiddenZones: string[] = [""]; //can't stockpile these potions,
   if (!get("_spookyAirportToday") && !get("spookyAirportAlways")) {
     forbiddenZones.push("Conspiracy Island");
   }
@@ -225,14 +223,14 @@ export const physicalImmuneMacro = Macro.trySkill("curse of weaksauce")
   .externalIf(have($skill`Wave of Sauce`), Macro.skill("Wave of Sauce").repeat())
   .externalIf(have($skill`Saucecicle`), Macro.skill("Saucecicle").repeat()); //The Freezewoman is spooky-aligned, don't worry
 
-export function tryFeast(familiar: Familiar) {
+export function tryFeast(familiar: Familiar): void {
   if (have(familiar)) {
     useFamiliar(familiar);
     use($item`moveable feast`);
   }
 }
 
-export class freeRun {
+export class FreeRun {
   available: () => boolean;
   prepare: () => void;
   macro: Macro;
@@ -246,7 +244,7 @@ export class freeRun {
 
 const banishesToUse = questStep("questL11Worship") > 0 && get("_drunkPygmyBanishes") === 0 ? 2 : 3;
 
-const banderRun = new freeRun(
+const banderRun = new FreeRun(
   () =>
     ((have($familiar`frumious bandersnatch`) &&
       (have($effect`ode to booze`) || getSongCount() < getSongLimit())) ||
@@ -265,7 +263,7 @@ const banderRun = new freeRun(
   Macro.step("runaway")
 );
 
-const freeRuns: freeRun[] = [
+const freeRuns: FreeRun[] = [
   /*
   new freeRun(
      () => {
@@ -276,55 +274,57 @@ const freeRuns: freeRun[] = [
         .indexOf("spring-loaded front bumper");
       if (bumperIndex === -1) return true;
       return myTurncount() - parseInt(banishes[bumperIndex + 1]) > 30;
-    }, 
+    },
     () => {
       fillAsdonMartinTo(50);
       retrieveItem(1, $item`louder than bomb`);
     },
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("louder than bomb")
-  ), 
+  ),
   code removed because of boss monsters
   */
 
   banderRun,
 
-  new freeRun(
+  new FreeRun(
     () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
     () => restoreMp(50),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("snokebomb")
   ),
 
-  new freeRun(
+  new FreeRun(
     () => get("_feelHatredUsed") < banishesToUse && have($skill`emotionally chipped`),
-    () => {},
+    () => {
+      return;
+    },
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("feel hatred")
   ),
 
-  new freeRun(
+  new FreeRun(
     () => have($item`kremlin's greatest briefcase`) && get("_kgbTranquilizerDartUses") < 3,
     () => equip($slot`acc3`, $item`kremlin's greatest briefcase`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("KGB tranquilizer dart")
   ),
 
-  new freeRun(
+  new FreeRun(
     () => have($item`latte lovers member's mug`) && !get("_latteBanishUsed"),
     () => equip($slot`off-hand`, $item`latte lovers member's mug`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Throw Latte on Opponent")
   ),
 
-  new freeRun(
+  new FreeRun(
     () => have($item`Lil' Doctor™ bag`) && get("_reflexHammerUsed") < 3,
     () => equip($slot`acc3`, $item`Lil' Doctor™ bag`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("reflex hammer")
   ),
 
-  new freeRun(
+  new FreeRun(
     () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
     () => equip($slot`acc3`, $item`mafia middle finger ring`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show them your ring")
   ),
 
-  new freeRun(
+  new FreeRun(
     () => have($item`V for Vivala mask`) && !get("_vmaskBanisherUsed"),
     () => {
       equip($slot`acc3`, $item`V for Vivala mask`);
@@ -333,7 +333,7 @@ const freeRuns: freeRun[] = [
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Creepy Grin")
   ),
 
-  new freeRun(
+  new FreeRun(
     () =>
       getFoldGroup($item`stinky cheese diaper`).some((item) => have(item)) &&
       !get("_stinkyCheeseBanisherUsed"),
@@ -346,20 +346,20 @@ const freeRuns: freeRun[] = [
     )
   ),
 
-  new freeRun(
+  new FreeRun(
     () => have($item`navel ring of navel gazing`) && get("_navelRunaways") < 3,
     () => equip($slot`acc3`, $item`navel ring of navel gazing`),
     Macro.step("runaway")
   ),
 
-  new freeRun(
+  new FreeRun(
     () => have($item`Greatest American Pants`) && get("_navelRunaways") < 3,
     () => equip($slot`pants`, $item`Greatest American Pants`),
     Macro.step("runaway")
   ),
 ];
 
-export function findRun(useBander: boolean = true) {
+export function findRun(useBander = true): FreeRun | undefined {
   return freeRuns.find((run) => run.available() && (useBander || run !== banderRun));
 }
 
@@ -367,7 +367,7 @@ const valueMap: Map<Item, number> = new Map();
 
 const MALL_VALUE_MODIFIER = 0.9;
 
-export function trueValue(...items: Item[]) {
+export function trueValue(...items: Item[]): number {
   return (
     items
       .map((item) => {
@@ -890,7 +890,7 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE): BjornedFami
   throw new Error("Something went wrong while selecting a familiar to bjornify or crownulate");
 }
 
-export function kramcoGuaranteed() {
+export function kramcoGuaranteed(): boolean {
   return (
     have($item`Kramco Sausage-o-Matic™`) &&
     totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1 >=

@@ -12,7 +12,7 @@ import { $items } from "libram";
 
 const fuelBlacklist = $items`cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy, glass of "milk"`;
 
-function averageAdventures(it: Item) {
+function averageAdventures(it: Item): number {
   if (it.adventures.includes("-")) {
     const bounds = it.adventures.split("-");
     return (parseInt(bounds[0], 10) + parseInt(bounds[1], 10)) / 2.0;
@@ -25,7 +25,7 @@ function price(item: Item) {
   return historicalPrice(item) === 0 ? mallPrice(item) : historicalPrice(item);
 }
 
-export function calculateFuelEfficiency(it: Item, targetUnits: number) {
+export function calculateFuelEfficiency(it: Item, targetUnits: number): number {
   const units = averageAdventures(it);
   return price(it) / Math.min(targetUnits, units);
 }
@@ -59,7 +59,7 @@ function insertFuel(it: Item, quantity = 1) {
   return result.includes("The display updates with a");
 }
 
-export function fillAsdonMartinTo(targetUnits: number) {
+export function fillAsdonMartinTo(targetUnits: number): void {
   while (getFuel() < targetUnits) {
     const remaining = targetUnits - getFuel();
 
@@ -72,8 +72,4 @@ export function fillAsdonMartinTo(targetUnits: number) {
       abort("Fuelling failed");
     }
   }
-}
-
-export function main(args: string) {
-  fillAsdonMartinTo(args.trim().match(/^[0-9]+$/) ? parseInt(args, 10) : 37);
 }

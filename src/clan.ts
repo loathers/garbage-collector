@@ -13,7 +13,7 @@ import {
 } from "kolmafia";
 import { $item, Clan, get, getFoldGroup, have, set } from "libram";
 
-export function withStash<T>(itemsToTake: Item[], action: () => T) {
+export function withStash<T>(itemsToTake: Item[], action: () => T): T {
   const manager = new StashManager();
   try {
     manager.take(...itemsToTake);
@@ -23,7 +23,7 @@ export function withStash<T>(itemsToTake: Item[], action: () => T) {
   }
 }
 
-export function withVIPClan<T>(action: () => T) {
+export function withVIPClan<T>(action: () => T): T {
   let clanIdOrName: number | string | undefined = get("garbo_vipClan", undefined);
   if (!clanIdOrName && have($item`Clan VIP lounge key`)) {
     if (
@@ -40,7 +40,7 @@ export function withVIPClan<T>(action: () => T) {
   return withClan(clanIdOrName || getClanId(), action);
 }
 
-function withClan<T>(clanIdOrName: string | number, action: () => T) {
+function withClan<T>(clanIdOrName: string | number, action: () => T): T {
   const startingClanId = getClanId();
   Clan.join(clanIdOrName);
   try {
@@ -75,7 +75,7 @@ export class StashManager {
     this.clanIdOrName = clanIdOrName;
   }
 
-  take(...items: Item[]) {
+  take(...items: Item[]): void {
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
         if (have(item)) continue;
@@ -117,11 +117,11 @@ export class StashManager {
    * Ensure at least one of each of {items} in inventory.
    * @param items Items to take from the stash.
    */
-  ensure(...items: Item[]) {
+  ensure(...items: Item[]): void {
     this.take(...items.filter((item) => availableAmount(item) === 0));
   }
 
-  putBack(...items: Item[]) {
+  putBack(...items: Item[]): void {
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
         const count = this.taken.get(item) ?? 0;
@@ -141,7 +141,7 @@ export class StashManager {
   /**
    * Put all items back in the stash.
    */
-  putBackAll() {
+  putBackAll(): void {
     this.putBack(...this.taken.keys());
   }
 }
