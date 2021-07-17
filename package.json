@@ -10,7 +10,7 @@
     "build": "yarn run build:types && yarn run build:js",
     "build:types": "tsc",
     "build:js": "webpack",
-    "lint": "eslint . && prettier --check .",
+    "lint": "eslint src && prettier --check .",
     "watch": "webpack --watch --progress"
   },
   "author": "",
