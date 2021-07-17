@@ -34,9 +34,10 @@ import {
   Witchess,
 } from "libram";
 import { baseMeat, questStep, setChoice } from "./lib";
-import { withStash } from "./clan";
 import { potionSetup } from "./potions";
 import { estimatedTurns } from "./embezzler";
+import { withStash } from "./clan";
+import synthesize from "./synthesis";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -77,8 +78,12 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
 
   if (haveSkill($skill`Sweet Synthesis`)) {
     mood.effect($effect`Synthesis: Greed`, () => {
-      if (mySpleenUse() < spleenLimit() && haveEffect($effect`Synthesis: Greed`) < estimatedTurns())
-        cliExecute("synthesize greed");
+      if (
+        mySpleenUse() < spleenLimit() &&
+        haveEffect($effect`Synthesis: Greed`) < estimatedTurns()
+      ) {
+        synthesize($effect`Synthesis: Greed`, 1);
+      }
     });
   }
 
