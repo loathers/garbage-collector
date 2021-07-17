@@ -547,8 +547,8 @@ let bestNonCheerleaderFairy: Familiar;
 function bestFairy() {
   if (have($familiar`trick-or-treating tot`) && have($item`li'l ninja costume`))
     return $familiar`trick-or-treating tot`;
-  if (get("_cheerleaderSteam") > 100 && have($familiar`steam-powered model cheerleader`))
-    return $familiar`steam-powered model cheerleader`;
+  if (get("_cheerleaderSteam") > 100 && have($familiar`steam-powered cheerleader`))
+    return $familiar`steam-powered cheerleader`;
 
   if (!bestNonCheerleaderFairy) {
     setLocation($location`noob cave`);
