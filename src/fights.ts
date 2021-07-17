@@ -542,15 +542,20 @@ type FreeFightOptions = {
   requirements?: () => Requirement[];
 };
 
-const bestNonCheerleaderFairy = Familiar.all()
-  .filter((familiar) => have(familiar) && familiar !== $familiar`steam-powered cheerleader`)
-  .sort(
-    (a, b) =>
-      numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
-  )[0];
+let bestNonCheerleaderFairy: Familiar;
+
 const bestFairy = () => {
   if (have($familiar`trick-or-treating tot`) && have($item`li'l ninja costume`))
     return $familiar`trick-or-treating tot`;
+  if (!bestNonCheerleaderFairy) {
+    setLocation($location`none`);
+    bestNonCheerleaderFairy = Familiar.all()
+      .filter((familiar) => have(familiar) && familiar !== $familiar`steam-powered cheerleader`)
+      .sort(
+        (a, b) =>
+          numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
+      )[0];
+  }
   if (!have($familiar`steam-powered model cheerleader`)) return bestNonCheerleaderFairy;
   if (get("_cheerleaderSteam") > 100) return $familiar`steam-powered model cheerleader`;
   return bestNonCheerleaderFairy;
