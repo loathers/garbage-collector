@@ -27,6 +27,7 @@ import {
   myMaxmp,
   myMp,
   mySpleenUse,
+  numericModifier,
   outfit,
   print,
   putCloset,
@@ -541,6 +542,34 @@ type FreeFightOptions = {
   requirements?: () => Requirement[];
 };
 
+let bestNonCheerleaderFairy: Familiar;
+
+function bestFairy() {
+  if (have($familiar`trick-or-treating tot`) && have($item`li'l ninja costume`))
+    return $familiar`trick-or-treating tot`;
+  if (get("_cheerleaderSteam") > 100 && have($familiar`steam-powered model cheerleader`))
+    return $familiar`steam-powered model cheerleader`;
+
+  if (!bestNonCheerleaderFairy) {
+    setLocation($location`noob cave`);
+    const bestNonCheerleaderFairies = Familiar.all()
+      .filter((familiar) => have(familiar) && familiar !== $familiar`steam-powered cheerleader`)
+      .sort(
+        (a, b) =>
+          numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
+      );
+    const bestFairyMult = numericModifier(bestNonCheerleaderFairies[0], "Fairy", 1, $item`none`);
+    bestNonCheerleaderFairy = bestNonCheerleaderFairies
+      .filter((fairy) => numericModifier(fairy, "Fairy", 1, $item`none`) === bestFairyMult)
+      .sort(
+        (a, b) =>
+          numericModifier(b, "Leprechaun", 1, $item`none`) -
+          numericModifier(a, "Leprechaun", 1, $item`none`)
+      )[0];
+  }
+  return bestNonCheerleaderFairy;
+}
+
 class FreeFight {
   available: () => number | boolean;
   run: () => void;
@@ -967,8 +996,7 @@ const freeKillSources = [
         use($item`drum machine`)
       ),
     {
-      familiar: () =>
-        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      familiar: bestFairy,
       requirements: () => [new Requirement(["100 Item Drop"], {})],
     }
   ),
@@ -980,8 +1008,7 @@ const freeKillSources = [
         use($item`drum machine`)
       ),
     {
-      familiar: () =>
-        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      familiar: bestFairy,
       requirements: () => [new Requirement(["100 Item Drop"], {})],
     }
   ),
@@ -994,8 +1021,7 @@ const freeKillSources = [
         use($item`drum machine`)
       ),
     {
-      familiar: () =>
-        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      familiar: bestFairy,
       requirements: () => [
         new Requirement(["100 Item Drop"], { forceEquip: $items`The Jokester's Gun` }),
       ],
@@ -1008,8 +1034,7 @@ const freeKillSources = [
     () =>
       withMacro(Macro.skill("Sing Along").trySkill("Chest X-Ray"), () => use($item`drum machine`)),
     {
-      familiar: () =>
-        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      familiar: bestFairy,
       requirements: () => [
         new Requirement(["100 Item Drop"], { forceEquip: $items`Lil' Doctor™ bag` }),
       ],
@@ -1023,8 +1048,7 @@ const freeKillSources = [
         use($item`drum machine`)
       ),
     {
-      familiar: () =>
-        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      familiar: bestFairy,
       requirements: () => [new Requirement(["100 Item Drop"], {})],
     }
   ),
@@ -1038,8 +1062,7 @@ const freeKillSources = [
       );
     },
     {
-      familiar: () =>
-        have($familiar`Trick-or-Treating Tot`) ? $familiar`Trick-or-Treating Tot` : null,
+      familiar: bestFairy,
       requirements: () => [new Requirement(["100 Item Drop"], {})],
     }
   ),
@@ -1057,8 +1080,6 @@ export function freeFights() {
     !get("_firedJokestersGun") &&
     have($item`The Jokester's gun`)
   ) {
-    freeFightMood().execute();
-    freeFightOutfit([new Requirement([], { forceEquip: $items`The Jokester's gun` })]);
     useFamiliar(freeFightFamiliar());
     freeFightMood().execute();
     freeFightOutfit([new Requirement([], { forceEquip: $items`The Jokester's gun` })]);
@@ -1076,7 +1097,6 @@ export function freeFights() {
       }
     }
   }
-
   try {
     for (const freeKillSource of freeKillSources) {
       if (freeKillSource.available()) {
