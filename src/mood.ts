@@ -11,6 +11,7 @@ import {
   myEffects,
   mySpleenUse,
   spleenLimit,
+  sweetSynthesis,
   toSkill,
   use,
 } from "kolmafia";
@@ -32,7 +33,6 @@ import {
 import { questStep } from "./lib";
 import { withStash } from "./clan";
 import { potionSetup } from "./potions";
-import { synthesize } from "./synthesis";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -73,7 +73,7 @@ export function meatMood(urKels = false) {
 
   if (haveSkill($skill`Sweet Synthesis`)) {
     mood.effect($effect`Synthesis: Greed`, () => {
-      if (mySpleenUse() < spleenLimit()) synthesize($effect`Synthesis: Greed`, 1);
+      if (mySpleenUse() < spleenLimit()) sweetSynthesis($effect`Synthesis: Greed`);
     });
   }
 

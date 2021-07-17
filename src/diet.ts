@@ -31,6 +31,7 @@ import {
   useFamiliar,
   getWorkshed,
   retrieveItem,
+  sweetSynthesis,
 } from "kolmafia";
 import { $class, $effect, $item, $items, $skill, get, have, $familiar, set } from "libram";
 import { withChoice } from "libram/dist/property";
