@@ -168,15 +168,15 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   }
 }
 
-const valuePerSpleen = (item: Item) => -(adventureGain(item) * MPA - mallPrice(item)) / item.spleen;
+const valuePerSpleen = (item: Item) => (adventureGain(item) * MPA - mallPrice(item)) / item.spleen;
 let savedBestSpleenItem: Item | null = null;
 let savedPotentialSpleenItems: Item[] | null = null;
 function getBestSpleenItems() {
   if (savedBestSpleenItem === null || savedPotentialSpleenItems === null) {
     savedPotentialSpleenItems = $items`octolus oculus, transdermal smoke patch, antimatter wad, voodoo snuff, blood-drive sticker`;
-    savedPotentialSpleenItems.sort((x, y) => valuePerSpleen(x) - valuePerSpleen(y));
+    savedPotentialSpleenItems.sort((x, y) => valuePerSpleen(y) - valuePerSpleen(x));
     for (const spleenItem of savedPotentialSpleenItems) {
-      print(`${spleenItem} value/spleen: ${-valuePerSpleen(spleenItem)}`);
+      print(`${spleenItem} value/spleen: ${valuePerSpleen(spleenItem)}`);
     }
     savedBestSpleenItem = savedPotentialSpleenItems[0];
   }
