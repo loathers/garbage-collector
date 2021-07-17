@@ -551,7 +551,7 @@ function bestFairy() {
     return $familiar`steam-powered model cheerleader`;
 
   if (!bestNonCheerleaderFairy) {
-    setLocation($location`none`);
+    setLocation($location`noob cave`);
     bestNonCheerleaderFairy = Familiar.all()
       .filter((familiar) => have(familiar) && familiar !== $familiar`steam-powered cheerleader`)
       .sort(
