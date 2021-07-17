@@ -76,11 +76,6 @@ import { withProperties } from "libram/dist/property";
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
 
-export const log = {
-  embezzlersFought: 0,
-  digitizedEmbezzlersFought: 0,
-};
-
 function ensureBarfAccess() {
   if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
     const ticket = $item`one-day ticket to Dinseylandfill`;
@@ -229,7 +224,12 @@ export const globalOptions: { ascending: boolean; stopTurncount: number | null }
   ascending: false,
 };
 
-export function canContinue(): boolean {
+export const log = {
+  embezzlersFought: 0,
+  digitizedEmbezzlersFought: 0,
+};
+
+export function canContinue() {
   return (
     myAdventures() > 0 &&
     (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
