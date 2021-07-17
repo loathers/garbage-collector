@@ -1,5 +1,4 @@
 import {
-  eat,
   equippedAmount,
   equippedItem,
   haveSkill,
@@ -40,7 +39,7 @@ function shouldRedigitize() {
 }
 
 export class Macro extends LibramMacro {
-  submit() {
+  submit(): string {
     print(this.components.join("\n"));
     return super.submit();
   }
@@ -54,7 +53,7 @@ export class Macro extends LibramMacro {
     return new Macro().tryHaveSkill(skillOrName);
   }
 
-  meatKill() {
+  meatKill(): Macro {
     const sealClubberSetup =
       equippedAmount($item`mafia pointer finger ring`) > 0 &&
       myClass() === $class`Seal Clubber` &&
@@ -108,12 +107,12 @@ export class Macro extends LibramMacro {
       .repeat();
   }
 
-  static meatKill() {
+  static meatKill(): Macro {
     return new Macro().meatKill();
   }
 }
 
-export function withMacro<T>(macro: Macro, action: () => T) {
+export function withMacro<T>(macro: Macro, action: () => T): T {
   setAutoAttack(0);
   macro.save();
   try {

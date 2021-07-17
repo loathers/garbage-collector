@@ -1,5 +1,7 @@
 {
-  "extends": ["eslint:recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   "rules": {
     "block-scoped-var": "error",
     "eqeqeq": "error",
@@ -16,7 +18,9 @@
         "ignoreDeclarationSort": true
       }
     ],
-    "node/no-unpublished-import": "off"
+    "node/no-unpublished-import": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error"
   },
   "parserOptions": {
     "ecmaVersion": 2020,
