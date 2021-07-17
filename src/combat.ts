@@ -7,6 +7,7 @@ import {
   myAdventures,
   myClass,
   myFamiliar,
+  myLocation,
   print,
   runCombat,
   setAutoAttack,
@@ -19,6 +20,7 @@ import {
   $monster,
   $skill,
   $slot,
+  ChateauMantegna,
   get,
   have,
   Macro as LibramMacro,
@@ -51,6 +53,67 @@ export class Macro extends LibramMacro {
 
   static tryHaveSkill(skillOrName: Skill | string): Macro {
     return new Macro().tryHaveSkill(skillOrName);
+  }
+
+  tryCopier(itemOrSkill: Item | Skill, monster: Monster = $monster`none`): Macro {
+    switch (itemOrSkill) {
+      case $item`Spooky Putty sheet`:
+        return this.externalIf(
+          get("spookyPuttyCopiesMade") < 5 && !have($item`Spooky Putty monster`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`Rain-Doh black box`:
+        return this.externalIf(
+          get("_raindohCopiesMade") < 5 && !have($item`Rain-Doh box full of monster`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`4-d camera`:
+        return this.externalIf(
+          !get("_cameraUsed") && !have($item`shaking 4-d camera`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`crappy camera`:
+        return this.externalIf(
+          !get("_crappyCameraUsed") && !have($item`shaking crappy camera`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`unfinished ice sculpture`:
+        return this.externalIf(
+          !get("_iceSculptureUsed") && !have($item`ice sculpture`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`pulled green taffy`:
+        return this.externalIf(
+          myLocation().environment === "underwater" &&
+            !get("_envyfishEggUsed") &&
+            !have($item`envyfish egg`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`print screen button`:
+        return this.externalIf(!have($item`screencapped monster`), Macro.tryItem(itemOrSkill));
+      case $item`alpine watercolor set`:
+        return this.externalIf(
+          monster !== $monster`none` && ChateauMantegna.paintingMonster() !== monster,
+          Macro.if_(`monstername ${monster}`, Macro.tryItem(itemOrSkill))
+        );
+      case $item`LOV Enamorang`:
+        return this.externalIf(
+          get("_enamorangs") < 5 && get("enamorangMonster") === $monster`none`,
+          Macro.tryItem(itemOrSkill)
+        );
+      case $skill`Digitize`:
+        return this.externalIf(
+          monster !== $monster`none` && get("_sourceTerminalDigitizeMonster") !== monster,
+          Macro.trySkill(itemOrSkill)
+        );
+    }
+
+    // Unsupported item or skill
+    return this;
+  }
+
+  static tryCopier(itemOrSkill: Item | Skill, monster: Monster = $monster`none`): Macro {
+    return new Macro().tryCopier(itemOrSkill, monster);
   }
 
   meatKill(): Macro {
