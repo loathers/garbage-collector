@@ -25,6 +25,7 @@ import {
   retrieveItem,
   setProperty,
   spleenLimit,
+  sweetSynthesis,
   toInt,
   use,
   useFamiliar,
@@ -146,7 +147,7 @@ function fillSpleenWith(spleenItem: Item) {
     );
     if (have($skill`Sweet Synthesis`)) {
       for (let i = 0; i < clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()); i++) {
-        cliExecute("synthesize greed");
+        sweetSynthesis($effect`Synthesis: Greed`);
       }
     }
     const count = Math.floor((spleenLimit() - mySpleenUse()) / spleenItem.spleen);

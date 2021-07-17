@@ -11,7 +11,6 @@ import {
   myEffects,
   mySpleenUse,
   spleenLimit,
-  sweetSynthesis,
   toSkill,
   use,
 } from "kolmafia";
@@ -73,7 +72,7 @@ export function meatMood(urKels = false): Mood {
 
   if (haveSkill($skill`Sweet Synthesis`)) {
     mood.effect($effect`Synthesis: Greed`, () => {
-      if (mySpleenUse() < spleenLimit()) sweetSynthesis($effect`Synthesis: Greed`);
+      if (mySpleenUse() < spleenLimit()) cliExecute("synthesize greed");
     });
   }
 
