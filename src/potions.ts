@@ -12,10 +12,12 @@ import {
   myAdventures,
   use,
 } from "kolmafia";
-import { have, $familiar, get, $item } from "libram";
+import { have, $familiar, get, $item, $items } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount } from "./fights";
 import { baseMeat } from "./mood";
+
+const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
 
 class Potion {
   potion: Item;
@@ -53,7 +55,6 @@ class Potion {
     const marginalValue =
       2 * familiarMultiplier +
       Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight));
-    print(`Marginal value of familiar weight: ${marginalValue.toFixed(2)}`);
 
     return this.familiarWeight() * marginalValue + this.meatDrop();
   }
@@ -92,9 +93,10 @@ class Potion {
     const duration = this.effectDuration() * (doubleDuration ? 2 : 1);
 
     let quantityToUse = 0;
-    let embezzlersRemaining = embezzlers - haveEffect(this.effect());
+    let embezzlersRemaining = Math.max(embezzlers - haveEffect(this.effect()), 0);
     let keepGoing = true;
 
+    // Use however many will land entirely on embezzler turns.
     const embezzlerQuantity = Math.floor(embezzlersRemaining / duration);
     if (this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlerQuantity > 0) {
       acquire(
@@ -104,29 +106,43 @@ class Potion {
         false
       );
       quantityToUse = Math.max(embezzlerQuantity, itemAmount(this.potion));
+      print(
+        `Determined that ${quantityToUse} ${this.potion.plural} are profitable on embezzlers.`,
+        "blue"
+      );
       embezzlersRemaining -= quantityToUse * duration;
     }
-    if (quantityToUse < embezzlerQuantity || (doubleDuration && quantityToUse > 0))
+    if (quantityToUse < embezzlerQuantity || (doubleDuration && quantityToUse > 0)) {
       keepGoing = false;
+    }
 
     // Now, is there one with both embezzlers and non-embezzlers?
     if (keepGoing && this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlersRemaining > 0) {
       acquire(1, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
       const additional = Math.max(1, itemAmount(this.potion) - quantityToUse);
+      print(
+        `Determined that ${additional} ${this.potion.plural} are profitable on partial embezzlers.`,
+        "blue"
+      );
       quantityToUse += additional;
       embezzlersRemaining = Math.max(embezzlersRemaining - additional * duration, 0);
     }
     if (embezzlersRemaining > 0 || (doubleDuration && quantityToUse > 0)) keepGoing = false;
 
     // How many should we use with non-embezzlers?
-    if (keepGoing && this.net(0, doubleDuration)) {
+    if (keepGoing && this.net(0, doubleDuration) > 0) {
       const adventureCap = myAdventures() * 1.04 + 50;
-      const touristQuantity = Math.ceil(
-        adventureCap - haveEffect(this.effect()) - quantityToUse * duration
-      );
-      acquire(touristQuantity, this.potion, this.gross(0, doubleDuration), false);
-      const additional = Math.max(touristQuantity, itemAmount(this.potion) - quantityToUse);
-      quantityToUse += additional;
+      const tourists = adventureCap - haveEffect(this.effect()) - quantityToUse * duration;
+      if (tourists > 0) {
+        const touristQuantity = Math.ceil(tourists / duration);
+        acquire(touristQuantity, this.potion, this.gross(0, doubleDuration), false);
+        const additional = Math.max(touristQuantity, itemAmount(this.potion) - quantityToUse);
+        print(
+          `Determined that ${additional} ${this.potion.plural} are profitable on tourists.`,
+          "blue"
+        );
+        quantityToUse += additional;
+      }
     }
 
     if (quantityToUse > 0) {
@@ -138,8 +154,11 @@ class Potion {
 
 export function potionSetup(): void {
   // TODO: Count PYEC.
+  // TODO: Count free fights (25 meat each for most).
   const embezzlers = embezzlerCount();
-  const potions = Item.all().filter((item) => item.tradeable && itemType(item) === "potion");
+  const potions = Item.all().filter(
+    (item) => item.tradeable && !banned.includes(item) && itemType(item) === "potion"
+  );
   const meatPotions = potions
     .map((item) => new Potion(item))
     .filter((potion) => potion.bonusMeat() > 0);
@@ -149,9 +168,12 @@ export function potionSetup(): void {
       (potion) => potion.gross(embezzlers, true) / potion.price(true) > 0.5
     );
     testPotionsDoubled.sort((x, y) => -(x.doublingValue(embezzlers) - y.doublingValue(embezzlers)));
+    for (const potion of testPotionsDoubled) {
+      print(`DOUBLE ${potion.potion.name}: ${potion.doublingValue(embezzlers).toFixed(0)}`);
+    }
     if (testPotionsDoubled.length > 0) {
       const potion = testPotionsDoubled[0];
-      // Estimate that the opportunity cost of free PK useage is
+      // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
       if (potion.doublingValue(embezzlers) > 10000) {
         cliExecute("pillkeeper extend");
         potion.useAsValuable(embezzlers, true);
@@ -159,10 +181,14 @@ export function potionSetup(): void {
     }
   }
 
+  // Only test potions which are reasonably close to being profitable using historical price.
   const testPotions = meatPotions.filter(
     (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
   );
   testPotions.sort((x, y) => -(x.net(embezzlers) - y.net(embezzlers)));
+  for (const potion of testPotions) {
+    print(`SINGLE ${potion.potion.name}: ${potion.net(embezzlers).toFixed(0)}`);
+  }
 
   for (const potion of testPotions) {
     potion.useAsValuable(embezzlers);
