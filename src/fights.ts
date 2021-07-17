@@ -552,11 +552,19 @@ function bestFairy() {
 
   if (!bestNonCheerleaderFairy) {
     setLocation($location`noob cave`);
-    bestNonCheerleaderFairy = Familiar.all()
+    const bestNonCheerleaderFairies = Familiar.all()
       .filter((familiar) => have(familiar) && familiar !== $familiar`steam-powered cheerleader`)
       .sort(
         (a, b) =>
           numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
+      );
+    const bestFairyMult = numericModifier(bestNonCheerleaderFairies[0], "Fairy", 1, $item`none`);
+    bestNonCheerleaderFairy = bestNonCheerleaderFairies
+      .filter((fairy) => numericModifier(fairy, "Fairy", 1, $item`none`) === bestFairyMult)
+      .sort(
+        (a, b) =>
+          numericModifier(b, "Leprechaun", 1, $item`none`) -
+          numericModifier(a, "Leprechaun", 1, $item`none`)
       )[0];
   }
   return bestNonCheerleaderFairy;
