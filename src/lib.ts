@@ -800,31 +800,31 @@ const bjornFams: BjornedFamiliar[] = [
   {
     familiar: $familiar`Frozen Gravy Fairy`,
     // drops a cold nugget every combat, 5 of which can be used to make a cold wad
-    meatVal: () => 0.2 * trueValue($item`cold wad`),
+    meatVal: () => Math.max(0.2 * trueValue($item`cold wad`), trueValue($item`cold nuggets`)),
     probability: 1,
   },
   {
     familiar: $familiar`Stinky Gravy Fairy`,
     // drops a stench nugget every combat, 5 of which can be used to make a stench wad
-    meatVal: () => 0.2 * trueValue($item`stench wad`),
+    meatVal: () => Math.max(0.2 * trueValue($item`stench wad`), trueValue($item`stench nuggets`)),
     probability: 1,
   },
   {
     familiar: $familiar`Sleazy Gravy Fairy`,
     // drops a sleaze nugget every combat, 5 of which can be used to make a sleaze wad
-    meatVal: () => 0.2 * trueValue($item`sleaze wad`),
+    meatVal: () => Math.max(0.2 * trueValue($item`sleaze wad`), trueValue($item`sleaze nuggets`)),
     probability: 1,
   },
   {
     familiar: $familiar`Spooky Gravy Fairy`,
     // drops a spooky nugget every combat, 5 of which can be used to make a spooky wad
-    meatVal: () => 0.2 * trueValue($item`spooky wad`),
+    meatVal: () => Math.max(0.2 * trueValue($item`spooky wad`), trueValue($item`spooky nuggets`)),
     probability: 1,
   },
   {
     familiar: $familiar`Flaming Gravy Fairy`,
     // drops a hot nugget every combat, 5 of which can be used to make a hot wad
-    meatVal: () => 0.2 * trueValue($item`hot wad`),
+    meatVal: () => Math.max(0.2 * trueValue($item`hot wad`), trueValue($item`hot nuggets`)),
     probability: 1,
   },
 ].filter((bjornFam) => have(bjornFam.familiar));
