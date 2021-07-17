@@ -1,18 +1,18 @@
 import {
+  cliExecute,
   effectModifier,
-  numericModifier,
-  print,
+  haveEffect,
   historicalAge,
   historicalPrice,
-  mallPrice,
-  itemType,
-  haveEffect,
-  cliExecute,
   itemAmount,
+  itemType,
+  mallPrice,
   myAdventures,
+  numericModifier,
+  print,
   use,
 } from "kolmafia";
-import { have, $familiar, get, $item, $items } from "libram";
+import { $familiar, $item, $items, get, have } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount } from "./fights";
 import { baseMeat } from "./mood";

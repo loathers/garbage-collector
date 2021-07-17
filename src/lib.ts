@@ -57,7 +57,7 @@ export function clamp(n: number, min: number, max: number): number {
  * Sum an array of numbers.
  * @param addends Addends to sum.
  */
-export function sum(addends: number[]) {
+export function sum(addends: number[]): number {
   return addends.reduce((s, n) => s + n, 0);
 }
 

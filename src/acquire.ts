@@ -30,7 +30,7 @@ const priceCaps: { [index: string]: number } = {
   "Special Seasoning": 20000,
 };
 
-export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true) {
+export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): void {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (maxPrice === undefined) throw `No price cap for ${item.name}.`;
 
