@@ -154,12 +154,10 @@ const firstChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.if_(
       "!hasskill Lecture on Relativity",
-      Macro.trySkill("Digitize")
-        .externalIf(get("spookyPuttyCopiesMade") < 5, Macro.tryItem($item`Spooky Putty sheet`))
-        .externalIf(
-          !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-          Macro.tryItem($item`4-d camera`)
-        )
+      Macro.tryCopier($skill`Digitize`, $monster`Knob Goblin Embezzler`)
+        .tryCopier($item`Spooky Putty sheet`)
+        .tryCopier($item`Rain-Doh black box`)
+        .tryCopier($item`4-d camera`)
     )
       .trySkill("Lecture on Relativity")
       .meatKill()
@@ -179,18 +177,10 @@ const secondChainMacro = () =>
       ) //fix when libram is updated
         .if_(
           "!hasskill Lecture on Relativity",
-          Macro.externalIf(
-            get("spookyPuttyCopiesMade") < 5,
-            Macro.tryItem($item`Spooky Putty sheet`)
-          )
-            .externalIf(
-              !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-              Macro.tryItem($item`4-d camera`)
-            )
-            .externalIf(
-              get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
-              Macro.trySkill("Digitize")
-            )
+          Macro.tryCopier($skill`Digitize`, $monster`Knob Goblin Embezzler`)
+            .tryCopier($item`Spooky Putty sheet`)
+            .tryCopier($item`Rain-Doh black box`)
+            .tryCopier($item`4-d camera`)
         )
         .trySkill("Lecture on Relativity")
     ).meatKill()
@@ -199,18 +189,13 @@ const secondChainMacro = () =>
 const embezzlerMacro = () =>
   Macro.if_(
     "monstername Knob Goblin Embezzler",
-    Macro.if_("snarfblat 186", Macro.item($item`pulled green taffy`))
+    Macro.if_("snarfblat 186", Macro.tryCopier($item`pulled green taffy`))
       .trySkill("Wink At")
       .trySkill("Fire a badly romantic arrow")
-      .externalIf(
-        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
-        Macro.trySkill("Digitize")
-      )
-      .externalIf(get("spookyPuttyCopiesMade") < 5, Macro.tryItem($item`Spooky Putty sheet`))
-      .externalIf(
-        !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-        Macro.tryItem($item`4-d camera`)
-      )
+      .tryCopier($skill`Digitize`, $monster`Knob Goblin Embezzler`)
+      .tryCopier($item`Spooky Putty sheet`)
+      .tryCopier($item`Rain-Doh black box`)
+      .tryCopier($item`4-d camera`)
       .meatKill()
   ).abort();
 
@@ -313,6 +298,25 @@ const embezzlerSources = [
       return 0;
     },
     () => use($item`Spooky Putty monster`)
+  ),
+  new EmbezzlerFight(
+    "Rain-Doh",
+    () =>
+      have($item`Rain-Doh box full of monster`) &&
+      get("rainDohMonster") === $monster`Knob Goblin Embezzler`,
+    () => {
+      if (have($item`Rain-Doh black box`)) {
+        return 5 - get("_raindohCopiesMade");
+      }
+      if (
+        have($item`Rain-Doh box full of monster`) &&
+        get("rainDohMonster") === $monster`Knob Goblin Embezzler`
+      ) {
+        return 6 - get("_raindohCopiesMade");
+      }
+      return 0;
+    },
+    () => use($item`Rain-Doh box full of monster`)
   ),
   new EmbezzlerFight(
     "4-d Camera",
