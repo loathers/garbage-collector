@@ -546,8 +546,7 @@ const bestNonCheerleaderFairy = Familiar.all()
   .filter((familiar) => have(familiar) && familiar !== $familiar`steam-powered cheerleader`)
   .sort(
     (a, b) =>
-      numericModifier(b, "Leprechaun", 1, $item`none`) -
-      numericModifier(a, "Leprechaun", 1, $item`none`)
+      numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
   )[0];
 const bestFairy = () => {
   if (have($familiar`trick-or-treating tot`) && have($item`li'l ninja costume`))
