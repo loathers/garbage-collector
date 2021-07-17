@@ -96,6 +96,7 @@ import {
 } from "./outfit";
 import { withStash } from "./clan";
 import { withChoice, withChoices } from "libram/dist/property";
+import { bathroomFinance } from "./potions";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
@@ -358,7 +359,6 @@ export function embezzlerCount(): number {
 function embezzlerSetup() {
   meatMood(true).execute(myAdventures() * 1.04 + 50);
   safeRestore();
-  ensureEffect($effect`Peppermint Twisted`);
   if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
   if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
     ensureEffect($effect`Boxing Day Glow`);
@@ -370,6 +370,8 @@ function embezzlerSetup() {
     }
   });
   if (have($item`license to chill`) && !get("_licenseToChillUsed")) use($item`license to chill`);
+
+  bathroomFinance(embezzlerCount());
 
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {

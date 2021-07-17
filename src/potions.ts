@@ -12,7 +12,7 @@ import {
   print,
   use,
 } from "kolmafia";
-import { $familiar, $item, $items, get, have } from "libram";
+import { $effect, $familiar, $item, $items, get, have } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount } from "./fights";
 import { baseMeat } from "./mood";
@@ -192,5 +192,20 @@ export function potionSetup(): void {
 
   for (const potion of testPotions) {
     potion.useAsValuable(embezzlers);
+  }
+}
+
+export function bathroomFinance(embezzlers: number): void {
+  if (have($effect`Buy! Sell! Buy! Sell!`)) return;
+  // Average gross is 1000 * (embezzlers + 1) / 2 for embezzlers turns.
+  const averageEmbezzlerGross = (1000 * 2 * (embezzlers + 1)) / 2 / 100;
+  const embezzlerGross = averageEmbezzlerGross * embezzlers;
+  const tourists = 100 - embezzlers;
+  const averageTouristGross = (1000 * 2 * (100 + embezzlers + 2)) / 2 / 100;
+  const touristGross = averageTouristGross * tourists;
+  const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
+  if (touristGross + embezzlerGross > mallPrice(greenspan)) {
+    acquire(1, greenspan, touristGross + embezzlerGross);
+    if (itemAmount(greenspan) > 0) use(greenspan);
   }
 }
