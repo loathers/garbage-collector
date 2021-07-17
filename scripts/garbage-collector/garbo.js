@@ -32043,7 +32043,7 @@ var bestNonCheerleaderFairy;
 
 function bestFairy() {
   if ((0,dist.have)((0,dist.$familiar)(fights_templateObject102 || (fights_templateObject102 = fights_taggedTemplateLiteral(["trick-or-treating tot"])))) && (0,dist.have)((0,dist.$item)(fights_templateObject103 || (fights_templateObject103 = fights_taggedTemplateLiteral(["li'l ninja costume"]))))) return (0,dist.$familiar)(fights_templateObject104 || (fights_templateObject104 = fights_taggedTemplateLiteral(["trick-or-treating tot"])));
-  if ((0,dist.get)("_cheerleaderSteam") > 100 && (0,dist.have)((0,dist.$familiar)(fights_templateObject105 || (fights_templateObject105 = fights_taggedTemplateLiteral(["steam-powered model cheerleader"]))))) return (0,dist.$familiar)(fights_templateObject106 || (fights_templateObject106 = fights_taggedTemplateLiteral(["steam-powered model cheerleader"])));
+  if ((0,dist.get)("_cheerleaderSteam") > 100 && (0,dist.have)((0,dist.$familiar)(fights_templateObject105 || (fights_templateObject105 = fights_taggedTemplateLiteral(["steam-powered cheerleader"]))))) return (0,dist.$familiar)(fights_templateObject106 || (fights_templateObject106 = fights_taggedTemplateLiteral(["steam-powered cheerleader"])));
 
   if (!bestNonCheerleaderFairy) {
     (0,external_kolmafia_.setLocation)((0,dist.$location)(fights_templateObject107 || (fights_templateObject107 = fights_taggedTemplateLiteral(["noob cave"]))));
