@@ -544,9 +544,12 @@ type FreeFightOptions = {
 
 let bestNonCheerleaderFairy: Familiar;
 
-const bestFairy = () => {
+function bestFairy() {
   if (have($familiar`trick-or-treating tot`) && have($item`li'l ninja costume`))
     return $familiar`trick-or-treating tot`;
+  if (get("_cheerleaderSteam") > 100 && have($familiar`steam-powered model cheerleader`))
+    return $familiar`steam-powered model cheerleader`;
+
   if (!bestNonCheerleaderFairy) {
     setLocation($location`none`);
     bestNonCheerleaderFairy = Familiar.all()
@@ -556,10 +559,8 @@ const bestFairy = () => {
           numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
       )[0];
   }
-  if (!have($familiar`steam-powered model cheerleader`)) return bestNonCheerleaderFairy;
-  if (get("_cheerleaderSteam") > 100) return $familiar`steam-powered model cheerleader`;
   return bestNonCheerleaderFairy;
-};
+}
 
 class FreeFight {
   available: () => number | boolean;
