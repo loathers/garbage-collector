@@ -60,7 +60,7 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { physicalImmuneMacro, prepWandererZone, questStep } from "./lib";
+import { physicalImmuneMacro, prepWandererZone, questStep, turnsEstimate } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -151,7 +151,7 @@ function barfTurn() {
   meatOutfit(embezzlerUp, [], underwater);
 
   // c. set up mood stuff
-  meatMood().execute(myAdventures() * 1.04 + 50);
+  meatMood().execute(turnsEstimate());
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");

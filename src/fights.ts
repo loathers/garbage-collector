@@ -84,6 +84,7 @@ import {
   questStep,
   setChoice,
   trueValue,
+  turnsEstimate,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
@@ -351,7 +352,7 @@ const embezzlerSources = [
 ];
 
 function embezzlerSetup() {
-  meatMood(true).execute(myAdventures() * 1.04 + 50);
+  meatMood(true).execute(turnsEstimate());
   safeRestore();
   ensureEffect($effect`Peppermint Twisted`);
   if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
