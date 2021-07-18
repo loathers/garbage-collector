@@ -450,6 +450,7 @@ export function dailyFights(): void {
 
       // FIRST EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
+        const startLectures = get("_pocketProfessorLectures");
         const fightSource = getEmbezzlerFight();
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
@@ -464,6 +465,7 @@ export function dailyFights(): void {
           withMacro(firstChainMacro(), () =>
             fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
           );
+          log.embezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_meatChain", true);
       }
@@ -472,6 +474,7 @@ export function dailyFights(): void {
 
       // SECOND EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
+        const startLectures = get("_pocketProfessorLectures");
         const fightSource = getEmbezzlerFight();
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
@@ -489,6 +492,7 @@ export function dailyFights(): void {
           withMacro(secondChainMacro(), () =>
             fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
           );
+          log.embezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_weightChain", true);
       }
@@ -498,6 +502,7 @@ export function dailyFights(): void {
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getEmbezzlerFight();
       while (nextFight !== null) {
+        const startTurns = totalTurnsPlayed();
         if (have($skill`musk of the moose`) && !have($effect`musk of the moose`))
           useSkill($skill`musk of the moose`);
         withMacro(embezzlerMacro(), () => {
@@ -541,6 +546,12 @@ export function dailyFights(): void {
             }
           }
         });
+        if (
+          totalTurnsPlayed() - startTurns === 0 &&
+          get("lastCopyableMonster") === $monster`knob goblin embezzler` &&
+          (nextFight.name === "Backup" || get("lastEncounter") === "Knob Goblin Embezzler")
+        )
+          log.embezzlersFought++;
         startDigitize();
         nextFight = getEmbezzlerFight();
         if (
@@ -613,8 +624,6 @@ class FreeFight {
       safeRestore();
       withMacro(Macro.meatKill(), this.run);
       horseradish();
-      if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
-        log.embezzlersFought++;
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
     }
