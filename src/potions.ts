@@ -106,9 +106,11 @@ class Potion {
         this.gross(embezzlersRemaining, doubleDuration),
         false
       );
-      quantityToUse = Math.max(embezzlerQuantity, itemAmount(this.potion));
+      quantityToUse = Math.min(embezzlerQuantity, itemAmount(this.potion));
       print(
-        `Determined that ${quantityToUse} ${this.potion.plural} are profitable on embezzlers.`,
+        `Determined that ${quantityToUse} ${
+          this.potion.plural
+        } are profitable on embezzlers: net value ${this.net(0, doubleDuration).toFixed(0)}.`,
         "blue"
       );
       embezzlersRemaining -= quantityToUse * duration;
@@ -120,9 +122,13 @@ class Potion {
     // Now, is there one with both embezzlers and non-embezzlers?
     if (keepGoing && this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlersRemaining > 0) {
       acquire(1, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
-      const additional = Math.max(1, itemAmount(this.potion) - quantityToUse);
+      const additional = Math.min(1, itemAmount(this.potion) - quantityToUse);
       print(
-        `Determined that ${additional} ${this.potion.plural} are profitable on partial embezzlers.`,
+        `Determined that ${additional} ${
+          this.potion.plural
+        } are profitable on partial embezzlers: net value ${this.net(0, doubleDuration).toFixed(
+          0
+        )}.`,
         "blue"
       );
       quantityToUse += additional;
@@ -137,9 +143,11 @@ class Potion {
       if (tourists > 0) {
         const touristQuantity = Math.ceil(tourists / duration);
         acquire(touristQuantity, this.potion, this.gross(0, doubleDuration), false);
-        const additional = Math.max(touristQuantity, itemAmount(this.potion) - quantityToUse);
+        const additional = Math.min(touristQuantity, itemAmount(this.potion) - quantityToUse);
         print(
-          `Determined that ${additional} ${this.potion.plural} are profitable on tourists.`,
+          `Determined that ${additional} ${
+            this.potion.plural
+          } are profitable on tourists: net value ${this.net(0, doubleDuration).toFixed(0)}.`,
           "blue"
         );
         quantityToUse += additional;
@@ -169,9 +177,6 @@ export function potionSetup(): void {
       (potion) => potion.gross(embezzlers, true) / potion.price(true) > 0.5
     );
     testPotionsDoubled.sort((x, y) => -(x.doublingValue(embezzlers) - y.doublingValue(embezzlers)));
-    for (const potion of testPotionsDoubled) {
-      print(`DOUBLE ${potion.potion.name}: ${potion.doublingValue(embezzlers).toFixed(0)}`);
-    }
     if (testPotionsDoubled.length > 0) {
       const potion = testPotionsDoubled[0];
       // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
@@ -179,6 +184,11 @@ export function potionSetup(): void {
         potion.doublingValue(embezzlers) > (canAdv($location`Knob Treasury`, false) ? 15000 : 0)
       ) {
         cliExecute("pillkeeper extend");
+        print(
+          `Best doubling potion: ${potion.potion.name}, value ${potion
+            .doublingValue(embezzlers)
+            .toFixed(0)}`
+        );
         potion.useAsValuable(embezzlers, true);
       }
     }
@@ -189,9 +199,6 @@ export function potionSetup(): void {
     (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
   );
   testPotions.sort((x, y) => -(x.net(embezzlers) - y.net(embezzlers)));
-  for (const potion of testPotions) {
-    print(`SINGLE ${potion.potion.name}: ${potion.net(embezzlers).toFixed(0)}`);
-  }
 
   for (const potion of testPotions) {
     potion.useAsValuable(embezzlers);
@@ -212,6 +219,7 @@ export function bathroomFinance(embezzlers: number): void {
 
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
   if (touristGross + embezzlerGross > mallPrice(greenspan)) {
+    print(`Using Uncle Greenspan's guide!`, "blue");
     acquire(1, greenspan, touristGross + embezzlerGross);
     if (itemAmount(greenspan) > 0) use(greenspan);
   }

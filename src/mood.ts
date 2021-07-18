@@ -1,12 +1,10 @@
 import {
-  buy,
   cliExecute,
   getCampground,
   getClanLounge,
   getFuel,
   haveEffect,
   haveSkill,
-  mallPrice,
   myClass,
   myEffects,
   mySpleenUse,
@@ -51,7 +49,6 @@ export const baseMeat =
 export function meatMood(urKels = false): Mood {
   const mood = new Mood();
 
-  // TODO: Check all potions and grab those that are worth.
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
@@ -123,12 +120,6 @@ export function freeFightMood(): Mood {
   }
   mood.potion($item`white candy heart`, 30);
 
-  // FIXME: Figure out what's actually good!
-  if (!have($effect`Frosty`) && mallPrice($item`frost flower`) < 70000) {
-    if (!have($item`frost flower`)) buy($item`frost flower`);
-    use($item`frost flower`);
-  }
-
   const goodSongs = $skills`Chorale of Companionship, The Ballad of Richie Thingfinder, Ur-Kel's Aria of Annoyance, The Polka of Plenty`;
   for (const effectName of Object.keys(myEffects())) {
     const effect = Effect.get(effectName);
@@ -137,18 +128,6 @@ export function freeFightMood(): Mood {
       cliExecute(`shrug ${effectName}`);
     }
   }
-
-  mood.potion($item`recording of Chorale of Companionship`, 500);
-  mood.potion($item`recording of The Ballad of Richie Thingfinder`, 500);
-
-  mood.potion($item`pink candy heart`, 300);
-  mood.potion($item`resolution: be luckier`, 120);
-  mood.potion($item`Meat-inflating powder`, 500);
-  mood.potion($item`Polka Pop`, 500);
-  mood.potion($item`resolution: be happier`, 500);
-  mood.potion($item`blue snowcone`, 500);
-  mood.potion($item`eagle feather`, 500);
-  mood.potion($item`cyclops eyedrops`, 500);
 
   if ((get("daycareOpen") || get("_daycareToday")) && !get("_daycareSpa")) {
     cliExecute("daycare mysticality");

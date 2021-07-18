@@ -34,7 +34,7 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (maxPrice === undefined) throw `No price cap for ${item.name}.`;
 
-  print(`Trying to buy ${qty} ${item.plural}; max price ${maxPrice}.`, "green");
+  print(`Trying to acquire ${qty} ${item.plural}; max price ${maxPrice.toFixed(0)}.`, "green");
 
   if (qty * mallPrice(item) > 1000000) throw "bad get!";
 
