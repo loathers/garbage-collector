@@ -615,7 +615,6 @@ class FreeFight {
     // FIXME: make a better decision here.
     if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
     while (this.available()) {
-      const startTurns = totalTurnsPlayed();
       useFamiliar(
         this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
       );
