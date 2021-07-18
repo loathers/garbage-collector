@@ -531,7 +531,12 @@ export function dailyFights(): void {
         });
         startDigitize();
         nextFight = getEmbezzlerFight();
-        if (kramcoGuaranteed() && (!nextFight || nextFight.name !== "Backup")) doSausage();
+        if (
+          kramcoGuaranteed() &&
+          (!nextFight || (nextFight.name !== "Backup" && nextFight.name !== "Digitize"))
+        ) {
+          doSausage();
+        }
       }
     });
   }
