@@ -197,11 +197,11 @@ export function potionSetup(): void {
 
 export function bathroomFinance(embezzlers: number): void {
   if (have($effect`Buy! Sell! Buy! Sell!`)) return;
-  // Average gross is 1000 * (embezzlers + 1) / 2 for embezzlers turns.
-  const averageEmbezzlerGross = (1000 * 2 * (embezzlers + 1)) / 2 / 100;
+  // Average gross is 1025 * (embezzlers + 1) / 2 for embezzlers turns.
+  const averageEmbezzlerGross = ((baseMeat + 750) * 2 * (embezzlers + 1)) / 2 / 100;
   const embezzlerGross = averageEmbezzlerGross * embezzlers;
   const tourists = 100 - embezzlers;
-  const averageTouristGross = (1000 * 2 * (100 + embezzlers + 2)) / 2 / 100;
+  const averageTouristGross = (baseMeat * 2 * (100 + embezzlers + 1)) / 2 / 100;
   const touristGross = averageTouristGross * tourists;
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
   if (touristGross + embezzlerGross > mallPrice(greenspan)) {
