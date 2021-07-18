@@ -150,9 +150,10 @@ class Potion {
       print(
         `Determined that ${additional} ${
           this.potion.plural
-        } are profitable on partial embezzlers: net value ${this.net(0, doubleDuration).toFixed(
-          0
-        )}.`,
+        } are profitable on partial embezzlers: net value ${this.net(
+          embezzlersRemaining,
+          doubleDuration
+        ).toFixed(0)}.`,
         "blue"
       );
       quantityToUse += additional;
