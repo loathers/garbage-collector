@@ -211,12 +211,9 @@ function barfTurn() {
       eat($item`magical sausage`);
     }
   }
-  if (
-    totalTurnsPlayed() - startTurns === 1 &&
-    get("lastEncounter") === "Knob Goblin Embezzler" &&
-    embezzlerUp
-  )
-    log.digitizedEmbezzlersFought++;
+  if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
+    if (embezzlerUp) log.digitizedEmbezzlersFought++;
+    else log.embezzlersFought++;
 }
 
 export const globalOptions: { ascending: boolean; stopTurncount: number | null } = {
