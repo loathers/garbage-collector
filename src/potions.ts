@@ -1,3 +1,4 @@
+import "core-js/modules/es.object.from-entries";
 import { canAdv } from "canadv.ash";
 import {
   cliExecute,
@@ -13,12 +14,35 @@ import {
   print,
   use,
 } from "kolmafia";
-import { $effect, $familiar, $item, $items, $location, get, have } from "libram";
+import {
+  $effect,
+  $effects,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  get,
+  getActiveEffects,
+  have,
+} from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount } from "./fights";
 import { baseMeat } from "./mood";
 
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
+
+const mutuallyExclusiveList: Effect[][] = [
+  $effects`Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue`,
+];
+const mutuallyExclusive = new Map<Effect, Effect[]>();
+for (const effectGroup of mutuallyExclusiveList) {
+  for (const effect of effectGroup) {
+    mutuallyExclusive.set(effect, [
+      ...(mutuallyExclusive.get(effect) ?? []),
+      ...effectGroup.filter((other) => other !== effect),
+    ]);
+  }
+}
 
 class Potion {
   potion: Item;
@@ -187,7 +211,8 @@ export function potionSetup(): void {
         print(
           `Best doubling potion: ${potion.potion.name}, value ${potion
             .doublingValue(embezzlers)
-            .toFixed(0)}`
+            .toFixed(0)}`,
+          "blue"
         );
         potion.useAsValuable(embezzlers, true);
       }
@@ -200,8 +225,22 @@ export function potionSetup(): void {
   );
   testPotions.sort((x, y) => -(x.net(embezzlers) - y.net(embezzlers)));
 
+  const excludedEffects = new Set<Effect>();
+  for (const effect of getActiveEffects()) {
+    for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+      excludedEffects.add(excluded);
+    }
+  }
+
   for (const potion of testPotions) {
+    const effect = potion.effect();
+    if (excludedEffects.has(effect)) continue;
     potion.useAsValuable(embezzlers);
+    if (have(effect)) {
+      for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+        excludedEffects.add(excluded);
+      }
+    }
   }
 }
 
