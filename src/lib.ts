@@ -454,7 +454,7 @@ const bjornFams: BjornedFamiliar[] = [
     familiar: $familiar`machine elf`,
     meatVal: () =>
       trueValue(
-        ...$items`abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose`
+        ...$items`abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose`
       ),
     probability: 0.2,
     dropPredicate: () => get("_abstractionDropsCrown") < 25,
