@@ -260,7 +260,7 @@ export function main(argString = "") {
       : 0;
 
   retrieveItem($item`seal tooth`);
-  retrieveItem($item`the jokester's gun`);
+  retrieveItem($item`The Jokester's gun`);
 
   try {
     print("Collecting garbage!", "blue");
