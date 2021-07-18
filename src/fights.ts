@@ -533,8 +533,9 @@ export function dailyFights() {
         if (
           kramcoGuaranteed() &&
           (!nextFight || (nextFight.name !== "Backup" && nextFight.name !== "Digitize"))
-        )
+        ) {
           doSausage();
+        }
       }
     });
   }
