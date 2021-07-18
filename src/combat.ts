@@ -4,7 +4,6 @@ import {
   haveSkill,
   inMultiFight,
   itemType,
-  myAdventures,
   myClass,
   myFamiliar,
   print,
@@ -24,6 +23,7 @@ import {
   Macro as LibramMacro,
   SourceTerminal,
 } from "libram";
+import { turnsEstimate } from "./lib";
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(Math.max(n, min), max);
@@ -35,7 +35,7 @@ function shouldRedigitize() {
   // triangular number * 10 - 3
   const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
   // Redigitize if fewer adventures than this digitize usage.
-  return SourceTerminal.have() && myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
+  return SourceTerminal.have() && turnsEstimate() < digitizesLeft * digitizeAdventuresUsed;
 }
 
 export class Macro extends LibramMacro {

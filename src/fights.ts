@@ -15,7 +15,6 @@ import {
   handlingChoice,
   itemAmount,
   mallPrice,
-  myAdventures,
   myAscensions,
   myClass,
   myFamiliar,

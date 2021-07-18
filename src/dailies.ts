@@ -10,7 +10,6 @@ import {
   itemAmount,
   mallPrice,
   maximize,
-  myAdventures,
   myClass,
   myPrimestat,
   myThrall,
@@ -45,10 +44,9 @@ import {
   SongBoom,
   SourceTerminal,
 } from "libram";
-import { globalOptions } from ".";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
-import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
+import { ensureEffect, findRun, questStep, trueValue, tryFeast, turnsEstimate } from "./lib";
 import { baseMeat } from "./mood";
 import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
@@ -268,15 +266,13 @@ export function configureMisc(): void {
   }
 
   if (get("_VYKEACompanionLevel") === 0) {
-    const expectedTurns =
-      myAdventures() / 0.96 - (globalOptions.stopTurncount ? globalOptions.stopTurncount : 0);
     const vykeas: [number, number][] = [
       [1, 0],
       [2, 1],
       [3, 11],
     ]; //excluding 4 and 5 as per bean's suggestion
     const vykeaProfit = (level: number, cost: number) =>
-      expectedTurns * baseMeat * 0.1 * level -
+      turnsEstimate() * baseMeat * 0.1 * level -
       5 * mallPrice($item`vykea rail`) +
       cost * mallPrice($item`vykea dowel`) +
       5 * mallPrice($item`vykea plank`) +
