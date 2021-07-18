@@ -1,3 +1,4 @@
+import { canAdv } from "canadv.ash";
 import {
   cliExecute,
   effectModifier,
@@ -12,7 +13,7 @@ import {
   print,
   use,
 } from "kolmafia";
-import { $effect, $familiar, $item, $items, get, have } from "libram";
+import { $effect, $familiar, $item, $items, $location, get, have } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount } from "./fights";
 import { baseMeat } from "./mood";
@@ -174,7 +175,9 @@ export function potionSetup(): void {
     if (testPotionsDoubled.length > 0) {
       const potion = testPotionsDoubled[0];
       // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
-      if (potion.doublingValue(embezzlers) > 10000) {
+      if (
+        potion.doublingValue(embezzlers) > (canAdv($location`Knob Treasury`, false) ? 15000 : 0)
+      ) {
         cliExecute("pillkeeper extend");
         potion.useAsValuable(embezzlers, true);
       }
