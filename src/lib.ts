@@ -7,6 +7,7 @@ import {
   haveSkill,
   mallPrice,
   maximize,
+  myAdventures,
   myFamiliar,
   numericModifier,
   print,
@@ -38,6 +39,7 @@ import {
   property,
   set,
 } from "libram";
+import { globalOptions } from ".";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
 
@@ -895,5 +897,12 @@ export function kramcoGuaranteed(): boolean {
     have($item`Kramco Sausage-o-Matic™`) &&
     totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1 >=
       5 + 3 * get("_sausageFights") + Math.pow(Math.max(0, get("_sausageFights") - 5), 3)
+  );
+}
+
+export function turnsEstimate(): number {
+  return (
+    (myAdventures() + (globalOptions.ascending ? 50 : 0)) *
+    (have($item`mafia thumb ring`) ? 1 / 0.96 : 1)
   );
 }
