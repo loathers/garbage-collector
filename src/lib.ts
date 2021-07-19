@@ -172,7 +172,7 @@ export function prepWandererZone(type: draggableFight = draggableFight.WANDERER)
     (type === draggableFight.WANDERER &&
       !canBackup &&
       wandererBlacklist.includes(Guzzlr.getLocation() || $location`none`)) ||
-    (type === draggableFight.BACKUP && !(SourceTerminal.have() || have($item`"I Voted!" sticker`))) //expand when we get more wanderers that go in guzzlzones
+    (type === draggableFight.BACKUP && !canWander())
   ) {
     Guzzlr.abandon(); //Abandon if it's generically bad, or if it's bad for the only type of moveable fight you have left
   }
@@ -504,5 +504,12 @@ export function kramcoGuaranteed(): boolean {
     have($item`Kramco Sausage-o-Matic™`) &&
     totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1 >=
       5 + 3 * get("_sausageFights") + Math.pow(Math.max(0, get("_sausageFights") - 5), 3)
+  );
+}
+
+export function canWander(): boolean {
+  return (
+    SourceTerminal.have() ||
+    have($item`"I Voted!" Sticker`) /* || have($item`Kramco Sausage-o-Matic™`)*/
   );
 }
