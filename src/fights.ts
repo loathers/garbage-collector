@@ -83,6 +83,7 @@ import {
   prepWandererZone,
   questStep,
   setChoice,
+  sum,
   trueValue,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
@@ -95,6 +96,7 @@ import {
 } from "./outfit";
 import { withStash } from "./clan";
 import { withChoice, withChoices } from "libram/dist/property";
+import { bathroomFinance } from "./potions";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
@@ -335,7 +337,7 @@ const embezzlerSources = [
   new EmbezzlerFight(
     "Professor MeatChain",
     () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 1 : 0),
+    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 10 : 0),
     () => {
       return;
     }
@@ -343,28 +345,33 @@ const embezzlerSources = [
   new EmbezzlerFight(
     "Professor WeightChain",
     () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 1 : 0),
+    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 5 : 0),
     () => {
       return;
     }
   ),
 ];
 
+export function embezzlerCount(): number {
+  return sum(embezzlerSources.map((source) => source.potential()));
+}
+
 function embezzlerSetup() {
   meatMood(true).execute(myAdventures() * 1.04 + 50);
   safeRestore();
-  ensureEffect($effect`Peppermint Twisted`);
   if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
   if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
     ensureEffect($effect`Boxing Day Glow`);
   }
-  freeFightMood().execute(30);
+  freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card`, () => {
     if (have($item`Platinum Yendorian Express Card`)) {
       use($item`Platinum Yendorian Express Card`);
     }
   });
   if (have($item`license to chill`) && !get("_licenseToChillUsed")) use($item`license to chill`);
+
+  bathroomFinance(embezzlerCount());
 
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {
@@ -429,8 +436,11 @@ const witchessPieces = [
   { piece: $monster`witchess pawn`, drop: $item`armored prawn` },
   { piece: $monster`witchess rook`, drop: $item`greek fire` },
 ];
-const bestWitchessPiece = witchessPieces.sort((a, b) => trueValue(b.drop) - trueValue(a.drop))[0]
-  .piece;
+
+function bestWitchessPiece() {
+  return witchessPieces.sort((a, b) => trueValue(b.drop) - trueValue(a.drop))[0].piece;
+}
+
 export function dailyFights(): void {
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky putty sheet`, () => {
@@ -955,7 +965,7 @@ const freeFightSources = [
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
-    () => Witchess.fightPiece(bestWitchessPiece)
+    () => Witchess.fightPiece(bestWitchessPiece())
   ),
 
   new FreeFight(
@@ -1106,6 +1116,8 @@ export function freeFights(): void {
   try {
     for (const freeKillSource of freeKillSources) {
       if (freeKillSource.available()) {
+        // TODO: Add potions that are profitable for free kills.
+        // TODO: Don't run free kills at all if they're not profitable.
         ensureEffect($effect`Feeling Lost`);
         if (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed")) {
           useSkill($skill`Steely-Eyed Squint`);
