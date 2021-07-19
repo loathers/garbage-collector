@@ -547,7 +547,7 @@ export function dailyFights(): void {
           }
         });
         if (
-          totalTurnsPlayed() - startTurns === 0 &&
+          totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`knob goblin embezzler` &&
           (nextFight.name === "Backup" || get("lastEncounter") === "Knob Goblin Embezzler")
         )
