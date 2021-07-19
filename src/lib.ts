@@ -141,47 +141,67 @@ function acceptBestGuzzlrQuest() {
   }
 }
 
-export function prepWandererZone(): Location {
+export enum moveableFight {
+  BACKUP,
+  WANDERER,
+}
+
+export function prepWandererZone(type: moveableFight = moveableFight.WANDERER): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`The Deep Dark Jungle`
       : $location`Noob Cave`;
+  const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
+  const backupBlacklist = $locations`The Overgrown Lot, The Skeleton Store`;
+  const canBackup = have($item`backup camera`) && get("_backUpUses") < 11;
+
   if (!Guzzlr.have()) return defaultLocation;
 
   acceptBestGuzzlrQuest();
   if (!guzzlrCheck()) Guzzlr.abandon();
+  if (!canBackup && wandererBlacklist.includes(Guzzlr.getLocation() || $location`none`)) {
+    Guzzlr.abandon();
+  }
   acceptBestGuzzlrQuest();
 
   const guzzlZone = Guzzlr.getLocation();
   if (!guzzlrCheck()) return defaultLocation;
-  else if (!guzzlZone) return defaultLocation;
-  else {
-    if (Guzzlr.getTier() === "platinum") {
-      zonePotions.forEach((place) => {
-        if (guzzlZone.zone === place.zone && !have(place.effect)) {
-          if (!have(place.potion)) {
-            buy(1, place.potion, 10000);
-          }
-          use(1, place.potion);
-        }
-      });
-      if (!Guzzlr.havePlatinumBooze()) {
-        cliExecute("make buttery boy");
-      }
-    } else {
-      const guzzlrBooze = Guzzlr.getBooze();
-      if (!guzzlrBooze) {
-        return defaultLocation;
-      } else if (!have(guzzlrBooze)) {
-        print(`just picking up some booze before we roll`, "blue");
-        cliExecute(`acquire ${guzzlrBooze}`);
-      }
-    }
-    return guzzlZone;
+  if (!guzzlZone) return defaultLocation;
+
+  if (
+    type === moveableFight.BACKUP &&
+    (guzzlZone.combatPercent < 100 || backupBlacklist.includes(guzzlZone))
+  ) {
+    return defaultLocation;
   }
+  if (type === moveableFight.WANDERER && !canBackup && wandererBlacklist.includes(guzzlZone)) {
+    return defaultLocation;
+  }
+  if (Guzzlr.getTier() === "platinum") {
+    zonePotions.forEach((place) => {
+      if (guzzlZone.zone === place.zone && !have(place.effect)) {
+        if (!have(place.potion)) {
+          buy(1, place.potion, 10000);
+        }
+        use(1, place.potion);
+      }
+    });
+    if (!Guzzlr.havePlatinumBooze()) {
+      cliExecute("make buttery boy");
+    }
+  } else {
+    const guzzlrBooze = Guzzlr.getBooze();
+    if (!guzzlrBooze) {
+      return defaultLocation;
+    } else if (!have(guzzlrBooze)) {
+      print(`just picking up some booze before we roll`, "blue");
+      cliExecute(`acquire ${guzzlrBooze}`);
+    }
+  }
+  return guzzlZone;
 }
 
-function guzzlrCheck() {
+function guzzlrCheck(): boolean {
   const guzzlZone = Guzzlr.getLocation();
   if (!guzzlZone) return false;
   const forbiddenZones: string[] = [""]; //can't stockpile these potions,
@@ -209,7 +229,7 @@ function guzzlrCheck() {
       use(1, place.potion);
     }
   });
-  const blacklist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, Madness Bakery, The Secret Government Laboratory, The Overgrown Lot, The Skeleton Store`;
+  const blacklist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory`;
   if (
     forbiddenZones.includes(guzzlZone.zone) ||
     blacklist.includes(guzzlZone) ||
@@ -218,9 +238,8 @@ function guzzlrCheck() {
     !canAdv(guzzlZone, false)
   ) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 }
 
 export class Requirement {
