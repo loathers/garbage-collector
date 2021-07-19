@@ -34,6 +34,7 @@ import {
   property,
   set,
   SongBoom,
+  SourceTerminal,
 } from "libram";
 
 export const baseMeat =
@@ -151,17 +152,31 @@ export function prepWandererZone(type: moveableFight = moveableFight.WANDERER): 
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`The Deep Dark Jungle`
       : $location`Noob Cave`;
-  const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
-  const backupBlacklist = $locations`The Overgrown Lot, The Skeleton Store`;
+
+  const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`; //Screambats can be backed up over, but override wanderers
+
+  const backupBlacklist: Location[] = [];
+  if ($location`The Skeleton Store`.turnsSpent % 4 !== 0)
+    backupBlacklist.push($location`The Skeleton Store`);
+  if ($location`The Overgrown Lot`.turnsSpent % 6 !== 5)
+    backupBlacklist.push($location`The Overgrown Lot`);
+
   const canBackup = have($item`backup camera`) && get("_backUpUses") < 11;
 
   if (!Guzzlr.have()) return defaultLocation;
 
   acceptBestGuzzlrQuest();
-  if (!guzzlrCheck()) Guzzlr.abandon();
-  if (!canBackup && wandererBlacklist.includes(Guzzlr.getLocation() || $location`none`)) {
-    Guzzlr.abandon();
+
+  if (
+    !guzzlrCheck() ||
+    (type === moveableFight.WANDERER &&
+      !canBackup &&
+      wandererBlacklist.includes(Guzzlr.getLocation() || $location`none`)) ||
+    (type === moveableFight.BACKUP && !(SourceTerminal.have() || have($item`"I Voted!" sticker`))) //expand when we get more wanderers that go in guzzlzones
+  ) {
+    Guzzlr.abandon(); //Abandon if it's generically bad, or if it's bad for the only type of moveable fight you have left
   }
+
   acceptBestGuzzlrQuest();
 
   const guzzlZone = Guzzlr.getLocation();
@@ -172,9 +187,11 @@ export function prepWandererZone(type: moveableFight = moveableFight.WANDERER): 
     type === moveableFight.BACKUP &&
     (guzzlZone.combatPercent < 100 || backupBlacklist.includes(guzzlZone))
   ) {
+    print("We're backing up, and our guzzlr zone doesn't like that.", "red");
     return defaultLocation;
   }
-  if (type === moveableFight.WANDERER && !canBackup && wandererBlacklist.includes(guzzlZone)) {
+  if (type === moveableFight.WANDERER && wandererBlacklist.includes(guzzlZone)) {
+    print("We're dropping a wanderer, and our guzzlr zone doesn't like that.", "red");
     return defaultLocation;
   }
   if (Guzzlr.getTier() === "platinum") {
