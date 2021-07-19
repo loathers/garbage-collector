@@ -76,12 +76,12 @@ import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   clamp,
+  draggableFight,
   ensureEffect,
   findRun,
   FreeRun,
   kramcoGuaranteed,
   mapMonster,
-  moveableFight,
   prepWandererZone,
   questStep,
   Requirement,
@@ -229,7 +229,7 @@ const embezzlerSources = [
       get<number>("_backUpUses") < 11,
     () => (have($item`backup camera`) ? 11 - get<number>("_backUpUses") : 0),
     (options: EmbezzlerFightOptions) => {
-      const realLocation = prepWandererZone(moveableFight.BACKUP);
+      const realLocation = prepWandererZone(draggableFight.BACKUP);
       adventureMacro(
         realLocation,
         Macro.if_(
