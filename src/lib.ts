@@ -142,12 +142,12 @@ function acceptBestGuzzlrQuest() {
   }
 }
 
-export enum moveableFight {
+export enum draggableFight {
   BACKUP,
   WANDERER,
 }
 
-export function prepWandererZone(type: moveableFight = moveableFight.WANDERER): Location {
+export function prepWandererZone(type: draggableFight = draggableFight.WANDERER): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`The Deep Dark Jungle`
@@ -169,10 +169,10 @@ export function prepWandererZone(type: moveableFight = moveableFight.WANDERER): 
 
   if (
     !guzzlrCheck() ||
-    (type === moveableFight.WANDERER &&
+    (type === draggableFight.WANDERER &&
       !canBackup &&
       wandererBlacklist.includes(Guzzlr.getLocation() || $location`none`)) ||
-    (type === moveableFight.BACKUP && !(SourceTerminal.have() || have($item`"I Voted!" sticker`))) //expand when we get more wanderers that go in guzzlzones
+    (type === draggableFight.BACKUP && !(SourceTerminal.have() || have($item`"I Voted!" sticker`))) //expand when we get more wanderers that go in guzzlzones
   ) {
     Guzzlr.abandon(); //Abandon if it's generically bad, or if it's bad for the only type of moveable fight you have left
   }
@@ -184,13 +184,13 @@ export function prepWandererZone(type: moveableFight = moveableFight.WANDERER): 
   if (!guzzlZone) return defaultLocation;
 
   if (
-    type === moveableFight.BACKUP &&
+    type === draggableFight.BACKUP &&
     (guzzlZone.combatPercent < 100 || backupBlacklist.includes(guzzlZone))
   ) {
     print("We're backing up, and our guzzlr zone doesn't like that.", "red");
     return defaultLocation;
   }
-  if (type === moveableFight.WANDERER && wandererBlacklist.includes(guzzlZone)) {
+  if (type === draggableFight.WANDERER && wandererBlacklist.includes(guzzlZone)) {
     print("We're dropping a wanderer, and our guzzlr zone doesn't like that.", "red");
     return defaultLocation;
   }
