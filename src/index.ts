@@ -226,7 +226,7 @@ export const log = {
   digitizedEmbezzlersFought: 0,
 };
 
-export function canContinue() {
+export function canContinue(): boolean {
   return (
     myAdventures() > 0 &&
     (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
