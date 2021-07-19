@@ -134,7 +134,10 @@ class Potion {
       print(
         `Determined that ${quantityToUse} ${
           this.potion.plural
-        } are profitable on embezzlers: net value ${this.net(0, doubleDuration).toFixed(0)}.`,
+        } are profitable on embezzlers: net value ${this.net(
+          embezzlersRemaining,
+          doubleDuration
+        ).toFixed(0)}.`,
         "blue"
       );
       embezzlersRemaining -= quantityToUse * duration;
