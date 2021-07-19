@@ -5,10 +5,12 @@ import {
   cliExecute,
   equip,
   haveSkill,
+  inebrietyLimit,
   mallPrice,
   maximize,
   myAdventures,
   myFamiliar,
+  myInebriety,
   numericModifier,
   print,
   restoreMp,
@@ -902,7 +904,7 @@ export function kramcoGuaranteed(): boolean {
 
 export function turnsEstimate(): number {
   return (
-    (myAdventures() + (globalOptions.ascending ? 50 : 0)) *
+    (myAdventures() + (globalOptions.ascending && myInebriety() < inebrietyLimit() ? 50 : 0)) *
       (have($item`mafia thumb ring`) ? 1 / 0.96 : 1) -
     (globalOptions.stopTurncount ? globalOptions.stopTurncount : 0)
   );
