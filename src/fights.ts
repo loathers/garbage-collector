@@ -81,6 +81,7 @@ import {
   FreeRun,
   kramcoGuaranteed,
   mapMonster,
+  moveableFight,
   prepWandererZone,
   questStep,
   Requirement,
@@ -228,10 +229,7 @@ const embezzlerSources = [
       get<number>("_backUpUses") < 11,
     () => (have($item`backup camera`) ? 11 - get<number>("_backUpUses") : 0),
     (options: EmbezzlerFightOptions) => {
-      const realLocation =
-        options.location && options.location.combatPercent >= 100
-          ? options.location
-          : $location`Noob Cave`;
+      const realLocation = prepWandererZone(moveableFight.BACKUP);
       adventureMacro(
         realLocation,
         Macro.if_(
