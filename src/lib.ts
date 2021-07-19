@@ -172,7 +172,10 @@ export function prepWandererZone(type: draggableFight = draggableFight.WANDERER)
     (type === draggableFight.WANDERER &&
       !canBackup &&
       wandererBlacklist.includes(Guzzlr.getLocation() || $location`none`)) ||
-    (type === draggableFight.BACKUP && !canWander())
+    (type === draggableFight.BACKUP &&
+      !canWander() &&
+      backupBlacklist.includes(Guzzlr.getLocation() || $location`none`) &&
+      (Guzzlr.getLocation()?.combatPercent || 100) < 100) //expand when we get more wanderers that go in guzzlzones
   ) {
     Guzzlr.abandon(); //Abandon if it's generically bad, or if it's bad for the only type of moveable fight you have left
   }
