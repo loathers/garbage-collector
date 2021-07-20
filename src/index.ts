@@ -107,6 +107,8 @@ function dailySetup() {
   pickTea();
 
   retrieveItem($item`Half a Purse`);
+  retrieveItem($item`seal tooth`);
+  retrieveItem($item`The Jokester's gun`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
 }
