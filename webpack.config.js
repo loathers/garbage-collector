@@ -3,6 +3,7 @@
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { merge } = require("webpack-merge");
 
 const sharedConfig = {
   mode: "production",
@@ -37,7 +38,7 @@ const sharedConfig = {
   },
 };
 
-const scriptsConfig = Object.assign(
+const scriptsConfig = merge(
   {
     entry: {
       garbo: "./src/index.ts",
@@ -53,7 +54,7 @@ const scriptsConfig = Object.assign(
 );
 
 // handle the file creating the garbo UI html file
-const otherRelayConfig = Object.assign(
+const otherRelayConfig = merge(
   {
     entry: "./src/relay_garbo.ts",
     output: {
@@ -61,12 +62,22 @@ const otherRelayConfig = Object.assign(
       filename: "relay_garbo.js",
       libraryTarget: "commonjs",
     },
+    module: {
+      rules: [
+        {
+          // Include ts, tsx, js, and jsx files.
+          test: /\.(ts|js)x?$/,
+          // exclude: /node_modules/,
+          loader: "babel-loader",
+        },
+      ],
+    },
   },
   sharedConfig
 );
 
 // handle the react files used in the garbo html file
-const relayConfig = Object.assign(
+const relayConfig = merge(
   {
     entry: "./src/relay/index.tsx",
     output: {
@@ -74,7 +85,17 @@ const relayConfig = Object.assign(
       filename: "garbage-collector.js",
       libraryTarget: "commonjs",
     },
-    options: { presets: ["@babel/env", "@babel/preset-react"] },
+    module: {
+      rules: [
+        {
+          // Include ts, tsx, js, and jsx files.
+          test: /\.(ts|js)x?$/,
+          // exclude: /node_modules/,
+          loader: "babel-loader",
+          options: { presets: ["@babel/env", "@babel/preset-react"] },
+        },
+      ],
+    },
   },
   sharedConfig
 );
