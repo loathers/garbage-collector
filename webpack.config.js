@@ -23,7 +23,6 @@ const sharedConfig = {
         test: /\.(ts|js)x?$/,
         // exclude: /node_modules/,
         loader: "babel-loader",
-        options: { presets: ["@babel/env", "@babel/preset-react"] },
       },
       {
         test: /\.css$/,
@@ -75,6 +74,7 @@ const relayConfig = Object.assign(
       filename: "garbage-collector.js",
       libraryTarget: "commonjs",
     },
+    options: { presets: ["@babel/env", "@babel/preset-react"] },
   },
   sharedConfig
 );
