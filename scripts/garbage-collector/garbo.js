@@ -11795,16 +11795,17 @@ function acquire(qty, item, maxPrice) {
   if (maxPrice === undefined) throw "No price cap for ".concat(item.name, ".");
   (0,external_kolmafia_.print)("Trying to acquire ".concat(qty, " ").concat(item.plural, "; max price ").concat(maxPrice.toFixed(0), "."), "green");
   if (qty * (0,external_kolmafia_.mallPrice)(item) > 1000000) throw "bad get!";
-  var remaining = qty - (0,external_kolmafia_.itemAmount)(item);
-  if (remaining <= 0) return;
+  var startAmount = (0,external_kolmafia_.itemAmount)(item);
+  var remaining = qty - startAmount;
+  if (remaining <= 0) return qty;
   var getCloset = Math.min(remaining, (0,external_kolmafia_.closetAmount)(item));
   if (!(0,external_kolmafia_.takeCloset)(getCloset, item) && throwOnFail) throw "failed to remove from closet";
   remaining -= getCloset;
-  if (remaining <= 0) return;
+  if (remaining <= 0) return qty;
   var getStorage = Math.min(remaining, (0,external_kolmafia_.storageAmount)(item));
   if (!(0,external_kolmafia_.takeStorage)(getStorage, item) && throwOnFail) throw "failed to remove from storage";
   remaining -= getStorage;
-  if (remaining <= 0) return;
+  if (remaining <= 0) return qty;
   var getMall = Math.min(remaining, (0,external_kolmafia_.shopAmount)(item));
 
   if (!(0,external_kolmafia_.takeShop)(getMall, item)) {
@@ -11816,9 +11817,10 @@ function acquire(qty, item, maxPrice) {
   }
 
   remaining -= getMall;
-  if (remaining <= 0) return;
+  if (remaining <= 0) return qty;
   (0,external_kolmafia_.buy)(remaining, item, maxPrice);
   if ((0,external_kolmafia_.itemAmount)(item) < qty && throwOnFail) throw "Mall price too high for ".concat(item.name, ".");
+  return (0,external_kolmafia_.itemAmount)(item) - startAmount;
 }
 ;// CONCATENATED MODULE: external "canadv.ash"
 const external_canadv_ash_namespaceObject = require("canadv.ash");;
