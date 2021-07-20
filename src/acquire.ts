@@ -30,7 +30,7 @@ const priceCaps: { [index: string]: number } = {
   "Special Seasoning": 20000,
 };
 
-export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): void {
+export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (maxPrice === undefined) throw `No price cap for ${item.name}.`;
 
@@ -38,18 +38,20 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
 
   if (qty * mallPrice(item) > 1000000) throw "bad get!";
 
-  let remaining = qty - itemAmount(item);
-  if (remaining <= 0) return;
+  const startAmount = itemAmount(item);
+
+  let remaining = qty - startAmount;
+  if (remaining <= 0) return qty;
 
   const getCloset = Math.min(remaining, closetAmount(item));
   if (!takeCloset(getCloset, item) && throwOnFail) throw "failed to remove from closet";
   remaining -= getCloset;
-  if (remaining <= 0) return;
+  if (remaining <= 0) return qty;
 
   const getStorage = Math.min(remaining, storageAmount(item));
   if (!takeStorage(getStorage, item) && throwOnFail) throw "failed to remove from storage";
   remaining -= getStorage;
-  if (remaining <= 0) return;
+  if (remaining <= 0) return qty;
 
   let getMall = Math.min(remaining, shopAmount(item));
   if (!takeShop(getMall, item)) {
@@ -60,8 +62,9 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
     if (!takeShop(getMall, item) && throwOnFail) throw "failed to remove from shop";
   }
   remaining -= getMall;
-  if (remaining <= 0) return;
+  if (remaining <= 0) return qty;
 
   buy(remaining, item, maxPrice);
   if (itemAmount(item) < qty && throwOnFail) throw `Mall price too high for ${item.name}.`;
+  return itemAmount(item) - startAmount;
 }
