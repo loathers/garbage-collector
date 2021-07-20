@@ -14069,7 +14069,7 @@ function guzzlrCheck() {
       (0,external_kolmafia_.use)(1, place.potion);
     }
   });
-  var blacklist = (0,dist.$locations)(lib_templateObject11 || (lib_templateObject11 = lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, Madness Bakery, The Secret Government Laboratory"])));
+  var blacklist = (0,dist.$locations)(lib_templateObject11 || (lib_templateObject11 = lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, Madness Bakery, The Secret Government Laboratory, The Overgrown Lot, The Skeleton Store"])));
 
   if (forbiddenZones.includes(guzzlZone.zone) || blacklist.includes(guzzlZone) || !guzzlZone.wanderers || guzzlZone.environment === "underwater" || !(0,external_canadv_ash_namespaceObject.canAdv)(guzzlZone, false)) {
     return false;
