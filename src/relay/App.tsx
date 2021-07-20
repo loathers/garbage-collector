@@ -1,8 +1,26 @@
 import * as React from "react";
 import Setting from "./components/Setting";
 
-function App(props: Data) {
-  const elements = props.settings.map((setting) => (
+declare global {
+  function getData(callback: (data: Data) => void): void;
+  type SettingProp = {
+    name: string;
+    type: string;
+    description: string;
+    value: string | number;
+  };
+  type Data = {
+    settings: SettingProp[];
+    updatedSettings: UpdatedSetting[];
+  };
+  type UpdatedSetting = {
+    name: string;
+    value: string;
+  };
+}
+
+function App({ settings, updatedSettings }: Data) {
+  const preferences = settings.map((setting) => (
     <Setting
       value={setting.value}
       type={setting.type}
@@ -10,16 +28,21 @@ function App(props: Data) {
       description={setting.description}
     />
   ));
+
+  const updatedPreferences = updatedSettings.map((setting) => (
+    <div>
+      Changing setting {setting.name} to {setting.value}
+    </div>
+  ));
+
   return (
     <div id="garbageCollectorContainer">
       <h1> Garbage Collector Configuration </h1>
+      {updatedPreferences}
       <form action="" method="post">
-        <table>{elements}</table>
+        <table>{preferences}</table>
         <input type="submit" name="" value="Save Changes" />
       </form>
-      <h2>Info</h2>
-      garbo version: {props.rev}
-      <br />
     </div>
   );
 }

@@ -1,24 +1,22 @@
-import { fileToArray, formField, formFields, svnInfo, writeln } from "kolmafia";
+import { fileToArray, formField, formFields, writeln } from "kolmafia";
 import { get, set } from "libram";
 
 export function main(): void {
+  const updatedSettings: Array<{ name: String; value: String }> = [];
   // handle updating values
   const fields = formFields();
   Object.keys(fields).forEach((field) => {
     if (field.includes("_didchange")) return;
     if (field === "relay") return;
 
-    const oldSetting = formField(`${field} _didchange`);
-    if (oldSetting === fields[field]) {
-      if (get(field) !== fields[field]) {
-        writeln(
-          `You did not change setting ${field}. It changed since you last loaded the page, ignoring.<br>`
-        );
-      }
-      return;
-    }
+    const oldSetting = formField(`${field}_didchange`);
+    if (oldSetting === fields[field] && get(field) !== fields[field]) return;
+
     if (get(field) !== fields[field]) {
-      writeln(`Changing setting ${field} to ${fields[field]} <br>`);
+      updatedSettings.push({
+        name: field,
+        value: fields[field],
+      });
       set(field, fields[field]);
     }
   });
@@ -26,13 +24,13 @@ export function main(): void {
   // load user prefences into json object to pass to react
   const settings = [];
   const lines = fileToArray("garbo_settings.txt");
-  for (const i in lines) {
-    const data = lines[i].split("\t");
+  for (const i of Object.values(lines)) {
+    const [, , name, type, description] = i.split("\t");
     settings.push({
-      name: data[2],
-      value: get(data[2]),
-      type: data[3],
-      description: data[4],
+      name: name,
+      value: get(name),
+      type: type,
+      description: description,
     });
   }
 
@@ -43,8 +41,8 @@ export function main(): void {
   writeln("<script>");
   writeln(
     `let getData = function(callback) {callback(${JSON.stringify({
-      rev: svnInfo("garbage-collector").last_changed_rev,
       settings: settings,
+      updatedSettings: updatedSettings,
     })})}`
   );
   writeln("</script>");
