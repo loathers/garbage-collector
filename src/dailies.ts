@@ -199,7 +199,7 @@ export function prepFamiliars(): void {
     for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, bloody nora`) {
       if (get("_roboDrinks").includes(drink.name)) continue;
       useFamiliar($familiar`robortender`);
-      if (itemAmount(drink) === 0) buy(1, drink, 150000);
+      if (itemAmount(drink) === 0) retrieveItem(1, drink);
       print(`Feeding robortender ${drink}.`, "blue");
       visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
     }
