@@ -884,7 +884,7 @@ function generateBjornList(mode: PickBjornMode): BjornedFamiliar[] {
   const additionalValue = (familiar: BjornedFamiliar) => {
     if (!familiar.modifier) return 0;
     const meatVal =
-      mode === PickBjornMode.FREE ? 0 : baseMeat + mode === PickBjornMode.EMBEZZLER ? 750 : 0;
+      mode === PickBjornMode.FREE ? 0 : baseMeat + (mode === PickBjornMode.EMBEZZLER ? 750 : 0);
     const itemVal = mode === PickBjornMode.BARF ? 72 : 0;
     if (familiar.modifier.type === BjornModifierType.MEAT)
       return (familiar.modifier.modifier * meatVal) / 100;
