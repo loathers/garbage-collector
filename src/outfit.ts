@@ -32,7 +32,7 @@ import {
   maximizeCached,
   MaximizeOptions,
 } from "libram";
-import { globalOptions } from ".";
+import { globalOptions } from "./globalvars";
 import { pickBjorn, PickBjornMode } from "./lib";
 import { baseMeat } from "./mood";
 

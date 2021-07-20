@@ -45,7 +45,7 @@ import {
   SongBoom,
   SourceTerminal,
 } from "libram";
-import { globalOptions } from ".";
+import { globalOptions } from "./globalvars";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
 import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";

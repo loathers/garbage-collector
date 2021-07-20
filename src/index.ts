@@ -72,6 +72,7 @@ import {
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
 import { withProperties } from "libram/dist/property";
+import { globalOptions, log } from "./globalvars";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -213,18 +214,8 @@ function barfTurn() {
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
     if (embezzlerUp) log.digitizedEmbezzlersFought++;
-    else log.embezzlersFought++;
+    else log.initialEmbezzlersFought++;
 }
-
-export const globalOptions: { ascending: boolean; stopTurncount: number | null } = {
-  stopTurncount: null,
-  ascending: false,
-};
-
-export const log = {
-  embezzlersFought: 0,
-  digitizedEmbezzlersFought: 0,
-};
 
 export function canContinue(): boolean {
   return (
@@ -363,7 +354,7 @@ export function main(argString = ""): void {
       );
     }
     print(
-      `You fought ${log.embezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+      `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
       "blue"
     );
   }

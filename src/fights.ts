@@ -98,7 +98,8 @@ import {
 import { withStash } from "./clan";
 import { bathroomFinance } from "./potions";
 import { withChoice, withChoices } from "libram/dist/property";
-import { log } from ".";
+import { log } from "./globalvars";
+import { bathroomFinance } from "./potions";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
@@ -465,7 +466,7 @@ export function dailyFights(): void {
           withMacro(firstChainMacro(), () =>
             fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
           );
-          log.embezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
+          log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_meatChain", true);
       }
@@ -492,7 +493,7 @@ export function dailyFights(): void {
           withMacro(secondChainMacro(), () =>
             fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
           );
-          log.embezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
+          log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_weightChain", true);
       }
@@ -551,7 +552,7 @@ export function dailyFights(): void {
           get("lastCopyableMonster") === $monster`knob goblin embezzler` &&
           (nextFight.name === "Backup" || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
-          log.embezzlersFought++;
+          log.initialEmbezzlersFought++;
         }
         startDigitize();
         nextFight = getEmbezzlerFight();

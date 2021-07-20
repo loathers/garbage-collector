@@ -35,8 +35,8 @@ import {
 } from "kolmafia";
 import { $class, $effect, $familiar, $item, $items, $skill, get, have, set } from "libram";
 import { withChoice } from "libram/dist/property";
-import { globalOptions } from ".";
 import { acquire } from "./acquire";
+import { globalOptions } from "./globalvars";
 import { clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
