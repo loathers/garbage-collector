@@ -2644,14 +2644,14 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.1.2.tgz#977f9f1d65dad8bfa913fc32514784367afa04b2"
-  integrity sha512-mMWuuuqbMVnQI0w1vStZ39PEBADqToFeo/lx9IAMyTxLFvRQQ8Ebq6iqrBxdirz/xKlOr5jiIAg2NywjtmyuTg==
+libram@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.2.1.tgz#54e51e6d5381e038201c4ecbcc1183b7e09f4ae1"
+  integrity sha512-kBJH1UiTsWHC1ceKGl0st2qUWxNXsiBx82Otky+p+GhqcKoM43Yu/+Qo343b6N+joFGqerKomYGihNfvLQrS/Q==
   dependencies:
     core-js "3.15.2"
     kolmafia "^1.1.1"
-    lodash-es "^4.17.21"
+    lodash "^4.17.21"
 
 loader-runner@^4.2.0:
   version "4.2.0"
@@ -2674,11 +2674,6 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash-es@^4.17.21:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
-  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
-
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
@@ -2698,6 +2693,11 @@ lodash.truncate@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
+
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 lru-cache@^6.0.0:
   version "6.0.0"
