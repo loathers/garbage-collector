@@ -1,4 +1,5 @@
 import {
+  availableAmount,
   buy,
   chew,
   cliExecute,
@@ -297,9 +298,11 @@ export function runDiet(): void {
 
   const { bestSpleenItem } = getBestSpleenItems();
   const mojoFilterCount = 3 - get("currentMojoFilters");
-  acquire(mojoFilterCount, $item`mojo filter`, valuePerSpleen(bestSpleenItem));
-  use(mojoFilterCount, $item`mojo filter`);
-  fillSomeSpleen();
+  acquire(mojoFilterCount, $item`mojo filter`, valuePerSpleen(bestSpleenItem), false);
+  if (have($item`mojo filter`)) {
+    use(Math.min(mojoFilterCount, availableAmount($item`mojo filter`)), $item`mojo filter`);
+    fillSomeSpleen();
+  }
 
   while (myFullness() < fullnessLimit()) {
     if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
