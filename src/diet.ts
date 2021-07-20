@@ -300,7 +300,7 @@ export function runDiet(): void {
   const mojoFilterCount = 3 - get("currentMojoFilters");
   acquire(mojoFilterCount, $item`mojo filter`, valuePerSpleen(bestSpleenItem), false);
   if (have($item`mojo filter`)) {
-    use(Math.max(mojoFilterCount, availableAmount($item`mojo filter`)), $item`mojo filter`);
+    use(Math.min(mojoFilterCount, availableAmount($item`mojo filter`)), $item`mojo filter`);
     fillSomeSpleen();
   }
 
