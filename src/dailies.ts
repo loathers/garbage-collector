@@ -50,7 +50,7 @@ import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
 import { baseMeat } from "./mood";
 import { freeFightOutfit, Requirement } from "./outfit";
 import { withStash } from "./clan";
-import { withChoices } from "libram/dist/property";
+import { withChoice, withChoices } from "libram/dist/property";
 
 export function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -499,5 +499,26 @@ export function jellyfish(): void {
       ).step(runSource.macro);
       adventureMacro($location`Barf Mountain`, jellyMacro);
     }
+  }
+}
+
+export function gingerbreadPrepNoon(): void {
+  if (!get("gingerbreadCityAvailable") && !get("_gingerbreadCityToday")) return;
+  if (
+    get("gingerAdvanceClockUnlocked") &&
+    !get("_gingerbreadClockVisited") &&
+    get("_gingerbreadCityTurns") <= 3
+  ) {
+    withChoice(1215, 1, () => adventureMacro($location`Gingerbread Civic Center`, Macro.abort()));
+  }
+  while (
+    findRun() &&
+    get("_gingerbreadCityTurns") < 3 + (get("gingerAdvanceClockUnlocked") ? 0 : 5)
+  ) {
+    const run = findRun();
+    if (!run) break;
+    if (run.prepare) run.prepare();
+    freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
+    adventureMacro($location`Gingerbread Civic Center`, run.macro);
   }
 }
