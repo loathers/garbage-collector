@@ -34002,7 +34002,7 @@ function prepFamiliars() {
         var drink = _step.value;
         if ((0,dist.get)("_roboDrinks").includes(drink.name)) continue;
         (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(dailies_templateObject27 || (dailies_templateObject27 = dailies_taggedTemplateLiteral(["robortender"]))));
-        if ((0,external_kolmafia_.itemAmount)(drink) === 0) (0,external_kolmafia_.buy)(1, drink, 150000);
+        if ((0,external_kolmafia_.itemAmount)(drink) === 0) (0,external_kolmafia_.retrieveItem)(1, drink);
         (0,external_kolmafia_.print)("Feeding robortender ".concat(drink, "."), "blue");
         (0,external_kolmafia_.visitUrl)("inventory.php?action=robooze&which=1&whichitem=".concat((0,external_kolmafia_.toInt)(drink)));
       }
