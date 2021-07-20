@@ -3,10 +3,8 @@ import {
   autosellPrice,
   buy,
   cliExecute,
-  equip,
   haveSkill,
   mallPrice,
-  maximize,
   myFamiliar,
   numericModifier,
   print,
@@ -26,7 +24,6 @@ import {
   $location,
   $locations,
   $skill,
-  $slot,
   Bandersnatch,
   get,
   getFoldGroup,
@@ -40,6 +37,7 @@ import {
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
+import { Requirement } from "./outfit";
 
 export function setChoice(adventure: number, value: number): void {
   set(`choiceAdventure${adventure}`, `${value}`);
@@ -239,37 +237,28 @@ export function tryFeast(familiar: Familiar): void {
 }
 
 export class FreeRun {
+  name: string;
   available: () => boolean;
-  prepare: () => void;
   macro: Macro;
+  requirement?: Requirement;
+  prepare?: () => void;
 
-  constructor(available: () => boolean, prepare: () => void, macro: Macro) {
+  constructor(
+    name: string,
+    available: () => boolean,
+    macro: Macro,
+    requirement?: Requirement,
+    prepare?: () => void
+  ) {
+    this.name = name;
     this.available = available;
-    this.prepare = prepare;
     this.macro = macro;
+    this.requirement = requirement;
+    this.prepare = prepare;
   }
 }
 
 const banishesToUse = questStep("questL11Worship") > 0 && get("_drunkPygmyBanishes") === 0 ? 2 : 3;
-
-const banderRun = new FreeRun(
-  () =>
-    ((have($familiar`Frumious Bandersnatch`) &&
-      (have($effect`Ode to Booze`) || getSongCount() < getSongLimit())) ||
-      have($familiar`Pair of Stomping Boots`)) &&
-    Bandersnatch.getRemainingRunaways() > 0,
-  () => {
-    maximize("familiar weight", false);
-    if (
-      have($familiar`Frumious Bandersnatch`) &&
-      (have($effect`Ode to Booze`) || getSongCount() < getSongLimit())
-    )
-      useFamiliar($familiar`Frumious Bandersnatch`);
-    else useFamiliar($familiar`Pair of Stomping Boots`);
-    if (myFamiliar() === $familiar`Frumious Bandersnatch`) ensureEffect($effect`Ode to Booze`);
-  },
-  Macro.step("runaway")
-);
 
 const freeRuns: FreeRun[] = [
   /*
@@ -292,83 +281,112 @@ const freeRuns: FreeRun[] = [
   code removed because of boss monsters
   */
 
-  banderRun,
-
   new FreeRun(
-    () => get("_snokebombUsed") < banishesToUse && have($skill`Snokebomb`),
-    () => restoreMp(50),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("snokebomb")
+    "Bander",
+    () =>
+      have($familiar`Frumious Bandersnatch`) &&
+      (have($effect`Ode to Booze`) || getSongCount() < getSongLimit()) &&
+      Bandersnatch.getRemainingRunaways() > 0,
+    Macro.step("runaway"),
+    new Requirement(["Familiar Weight"], {}),
+    () => {
+      useFamiliar($familiar`Frumious Bandersnatch`);
+      ensureEffect($effect`Ode to Booze`);
+    }
   ),
 
   new FreeRun(
-    () => get("_feelHatredUsed") < banishesToUse && have($skill`Emotionally Chipped`),
-    () => {
-      return;
-    },
+    "Boots",
+    () => have($familiar`Pair of Stomping Boots`) && Bandersnatch.getRemainingRunaways() > 0,
+    Macro.step("runaway"),
+    new Requirement(["Familiar Weight"], {}),
+    () => useFamiliar($familiar`Pair of Stomping Boots`)
+  ),
+
+  new FreeRun(
+    "Snokebomb",
+    () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("snokebomb"),
+    undefined,
+    () => restoreMp(50)
+  ),
+
+  new FreeRun(
+    "Hatred",
+    () => get("_feelHatredUsed") < banishesToUse && have($skill`emotionally chipped`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("feel hatred")
   ),
 
   new FreeRun(
+    "KGB",
     () => have($item`Kremlin's Greatest Briefcase`) && get("_kgbTranquilizerDartUses") < 3,
-    () => equip($slot`acc3`, $item`Kremlin's Greatest Briefcase`),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("KGB tranquilizer dart")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("KGB tranquilizer dart"),
+    new Requirement([], { forceEquip: $items`Kremlin's Greatest Briefcase` })
   ),
 
   new FreeRun(
-    () => have($item`latte lovers member's mug`) && !get("_latteBanishUsed"),
-    () => equip($slot`off-hand`, $item`latte lovers member's mug`),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Throw Latte on Opponent")
+    "Latte",
+    () => have($item`Latte Lovers Member's Mug`) && !get("_latteBanishUsed"),
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Throw Latte on Opponent"),
+    new Requirement([], { forceEquip: $items`Latte Lovers Member's Mug` })
   ),
 
   new FreeRun(
+    "Docbag",
     () => have($item`Lil' Doctor™ bag`) && get("_reflexHammerUsed") < 3,
-    () => equip($slot`acc3`, $item`Lil' Doctor™ bag`),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("reflex hammer")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("reflex hammer"),
+    new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })
   ),
 
   new FreeRun(
+    "Middle Finger",
     () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
-    () => equip($slot`acc3`, $item`mafia middle finger ring`),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show them your ring")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show them your ring"),
+    new Requirement([], { forceEquip: $items`mafia middle finger ring` })
   ),
 
   new FreeRun(
+    "VMask",
     () => have($item`V for Vivala mask`) && !get("_vmaskBanisherUsed"),
-    () => {
-      equip($slot`acc3`, $item`V for Vivala mask`);
-      restoreMp(30);
-    },
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Creepy Grin")
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Creepy Grin"),
+    new Requirement([], { forceEquip: $items`V for Vivala mask` }),
+    () => restoreMp(30)
   ),
 
   new FreeRun(
+    "Stinkeye",
     () =>
       getFoldGroup($item`stinky cheese diaper`).some((item) => have(item)) &&
       !get("_stinkyCheeseBanisherUsed"),
-    () => {
-      if (!have($item`stinky cheese eye`)) cliExecute(`fold stinky cheese eye`);
-      equip($slot`acc3`, $item`stinky cheese eye`);
-    },
+
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill(
       "Give Your Opponent the Stinkeye"
-    )
+    ),
+    new Requirement([], { forceEquip: $items`stinky cheese eye` }),
+    () => {
+      if (!have($item`stinky cheese eye`)) cliExecute(`fold stinky cheese eye`);
+    }
   ),
 
   new FreeRun(
+    "Navel Ring",
     () => have($item`navel ring of navel gazing`) && get("_navelRunaways") < 3,
-    () => equip($slot`acc3`, $item`navel ring of navel gazing`),
-    Macro.step("runaway")
+    Macro.step("runaway"),
+    new Requirement([], { forceEquip: $items`navel ring of navel gazing` })
   ),
 
   new FreeRun(
+    "GAP",
     () => have($item`Greatest American Pants`) && get("_navelRunaways") < 3,
-    () => equip($slot`pants`, $item`Greatest American Pants`),
-    Macro.step("runaway")
+    Macro.step("runaway"),
+    new Requirement([], { forceEquip: $items`Greatest American Pants` })
   ),
 ];
 
-export function findRun(useBander = true): FreeRun | undefined {
-  return freeRuns.find((run) => run.available() && (useBander || run !== banderRun));
+export function findRun(useFamiliar = true): FreeRun | undefined {
+  return freeRuns.find(
+    (run) => run.available() && (useFamiliar || !["Bander", "Boots"].includes(run.name))
+  );
 }
 
 const valueMap: Map<Item, number> = new Map();

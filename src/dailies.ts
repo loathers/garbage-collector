@@ -3,7 +3,6 @@ import {
   buy,
   changeMcd,
   cliExecute,
-  equip,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -34,7 +33,6 @@ import {
   $items,
   $location,
   $skill,
-  $slot,
   $stat,
   $thrall,
   adventureMacro,
@@ -50,7 +48,7 @@ import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
 import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
 import { baseMeat } from "./mood";
-import { freeFightOutfit } from "./outfit";
+import { freeFightOutfit, Requirement } from "./outfit";
 import { withStash } from "./clan";
 import { withChoices } from "libram/dist/property";
 
@@ -143,8 +141,11 @@ export function latte(): void {
           while (!get("latteUnlocks").includes("cajun") && findRun()) {
             const runSource = findRun();
             if (!runSource) break;
-            runSource.prepare();
-            equip($slot`off-hand`, latte);
+            if (runSource.prepare) runSource.prepare();
+            freeFightOutfit([
+              new Requirement([], { forceEquip: $items`Latte Lovers Member's Mug` }),
+              ...(runSource.requirement ? [runSource.requirement] : []),
+            ]);
             adventureMacro($location`The Black Forest`, runSource.macro);
             horseradish();
           }
@@ -155,8 +156,11 @@ export function latte(): void {
           while (!get("latteUnlocks").includes("rawhide") && findRun()) {
             const runSource = findRun();
             if (!runSource) break;
-            runSource.prepare();
-            equip($slot`off-hand`, latte);
+            if (runSource.prepare) runSource.prepare();
+            freeFightOutfit([
+              new Requirement([], { forceEquip: $items`Latte Lovers Member's Mug` }),
+              ...(runSource.requirement ? [runSource.requirement] : []),
+            ]);
             adventureMacro($location`The Spooky Forest`, runSource.macro);
             horseradish();
           }
@@ -166,8 +170,11 @@ export function latte(): void {
         while (!get("latteUnlocks").includes("carrot") && findRun()) {
           const runSource = findRun();
           if (!runSource) break;
-          runSource.prepare();
-          equip($slot`off-hand`, latte);
+          if (runSource.prepare) runSource.prepare();
+          freeFightOutfit([
+            new Requirement([], { forceEquip: $items`Latte Lovers Member's Mug` }),
+            ...(runSource.requirement ? [runSource.requirement] : []),
+          ]);
           adventureMacro($location`The Dire Warren`, runSource.macro);
           horseradish();
         }
@@ -469,7 +476,8 @@ export function jellyfish(): void {
   while (findRun(false) && have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
     const runSource = findRun(false);
     if (!runSource) break;
-    runSource.prepare();
+    if (runSource.prepare) runSource.prepare();
+    freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
     const jellyMacro = Macro.while_(
       "!pastround 28 && hasskill macrometeorite",
       Macro.skill("extract jelly").skill("macrometeorite")
@@ -477,12 +485,14 @@ export function jellyfish(): void {
     adventureMacro($location`Barf Mountain`, jellyMacro);
   }
   if (have($item`Powerful Glove`)) {
-    freeFightOutfit();
-    equip($slot`acc2`, $item`Powerful Glove`);
     while (findRun(false) && get("_powerfulGloveBatteryPowerUsed") < 91) {
       const runSource = findRun(false);
       if (!runSource) break;
-      runSource.prepare();
+      if (runSource.prepare) runSource.prepare();
+      freeFightOutfit([
+        new Requirement([], { forceEquip: $items`powerful glove` }),
+        ...(runSource.requirement ? [runSource.requirement] : []),
+      ]);
       const jellyMacro = Macro.while_(
         "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
         Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")

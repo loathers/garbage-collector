@@ -421,11 +421,13 @@ function startDigitize() {
       const run =
         findRun() ||
         new FreeRun(
+          "LTB",
           () => retrieveItem($item`Louder Than Bomb`),
-          () => retrieveItem($item`Louder Than Bomb`),
-          Macro.item("louder than bomb")
+          Macro.item("Louder Than Bomb"),
+          new Requirement([], {}),
+          () => retrieveItem($item`Louder Than Bomb`)
         );
-      run.prepare();
+      if (run.prepare) run.prepare();
       adventureMacro($location`Noob Cave`, run.macro);
     } while (get("lastCopyableMonster") === $monster`Government agent`);
   }
