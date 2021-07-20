@@ -513,7 +513,7 @@ export function gingerbreadPrepNoon(): void {
   }
   while (
     findRun() &&
-    get("_gingerbreadCityTurns") < 4 + (get("gingerAdvanceClockUnlocked") ? 0 : 5)
+    get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 9
   ) {
     const run = findRun();
     if (!run) break;
