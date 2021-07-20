@@ -52,7 +52,7 @@ import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
 import { baseMeat } from "./mood";
 import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
-import { withChoices } from "libram/dist/property";
+import { withChoice, withChoices } from "libram/dist/property";
 
 export function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -134,8 +134,7 @@ export function configureGear(): void {
 export function latte(): void {
   const latte = $item`latte lovers member's mug`;
   if (have(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
-    visitUrl("main.php?latte=1");
-    runChoice(2);
+    withChoice(1329, 2, () => visitUrl("main.php?latte=1", false));
     if (
       numericModifier(latte, "Familiar Weight") !== 5 ||
       numericModifier(latte, "Meat Drop") !== 40
