@@ -50,7 +50,7 @@ import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
 import { baseMeat } from "./mood";
 import { freeFightOutfit, Requirement } from "./outfit";
 import { withStash } from "./clan";
-import { withChoice, withChoices } from "libram/dist/property";
+import { set, withChoice, withChoices } from "libram/dist/property";
 
 export function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -520,5 +520,15 @@ export function gingerbreadPrepNoon(): void {
     if (run.prepare) run.prepare();
     freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
     adventureMacro($location`Gingerbread Civic Center`, run.macro);
+    if (
+      [
+        "Even Tamer Than Usual",
+        "Never Break the Chain",
+        "Close, but Yes Cigar",
+        "Armchair Quarterback",
+      ].includes(get("lastEncounter"))
+    ) {
+      set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
+    }
   }
 }
