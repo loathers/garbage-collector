@@ -287,7 +287,7 @@ const freeRuns: FreeRun[] = [
       have($familiar`Frumious Bandersnatch`) &&
       (have($effect`Ode to Booze`) || getSongCount() < getSongLimit()) &&
       Bandersnatch.getRemainingRunaways() > 0,
-    Macro.step("runaway"),
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
     new Requirement(["Familiar Weight"], {}),
     () => {
       useFamiliar($familiar`Frumious Bandersnatch`);
@@ -298,7 +298,7 @@ const freeRuns: FreeRun[] = [
   new FreeRun(
     "Boots",
     () => have($familiar`Pair of Stomping Boots`) && Bandersnatch.getRemainingRunaways() > 0,
-    Macro.step("runaway"),
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
     new Requirement(["Familiar Weight"], {}),
     () => useFamiliar($familiar`Pair of Stomping Boots`)
   ),
@@ -371,14 +371,14 @@ const freeRuns: FreeRun[] = [
   new FreeRun(
     "Navel Ring",
     () => have($item`navel ring of navel gazing`) && get("_navelRunaways") < 3,
-    Macro.step("runaway"),
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
     new Requirement([], { forceEquip: $items`navel ring of navel gazing` })
   ),
 
   new FreeRun(
     "GAP",
     () => have($item`Greatest American Pants`) && get("_navelRunaways") < 3,
-    Macro.step("runaway"),
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
     new Requirement([], { forceEquip: $items`Greatest American Pants` })
   ),
 ];
