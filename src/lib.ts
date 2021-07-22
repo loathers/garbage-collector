@@ -143,8 +143,8 @@ function acceptBestGuzzlrQuest() {
 export function prepWandererZone(): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
-      ? $location`the deep dark jungle`
-      : $location`noob cave`;
+      ? $location`The Deep Dark Jungle`
+      : $location`Noob Cave`;
   if (!Guzzlr.have()) return defaultLocation;
 
   acceptBestGuzzlrQuest();
@@ -225,8 +225,8 @@ function guzzlrCheck() {
 export const physicalImmuneMacro = Macro.trySkill("curse of weaksauce")
   .trySkill("sing along")
   .trySkill("extract")
-  .externalIf(have($skill`saucestorm`), Macro.skill("Saucestorm").repeat())
-  .externalIf(have($skill`saucegeyser`), Macro.skill("Saucegeyser").repeat())
+  .externalIf(have($skill`Saucestorm`), Macro.skill("Saucestorm").repeat())
+  .externalIf(have($skill`Saucegeyser`), Macro.skill("Saucegeyser").repeat())
   .externalIf(have($skill`Cannelloni Cannon`), Macro.skill("Cannelloni Cannon").repeat())
   .externalIf(have($skill`Wave of Sauce`), Macro.skill("Wave of Sauce").repeat())
   .externalIf(have($skill`Saucecicle`), Macro.skill("Saucecicle").repeat()); //The Freezewoman is spooky-aligned, don't worry
@@ -295,13 +295,13 @@ const freeRuns: FreeRun[] = [
   banderRun,
 
   new FreeRun(
-    () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
+    () => get("_snokebombUsed") < banishesToUse && have($skill`Snokebomb`),
     () => restoreMp(50),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("snokebomb")
   ),
 
   new FreeRun(
-    () => get("_feelHatredUsed") < banishesToUse && have($skill`emotionally chipped`),
+    () => get("_feelHatredUsed") < banishesToUse && have($skill`Emotionally Chipped`),
     () => {
       return;
     },

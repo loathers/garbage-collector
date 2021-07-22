@@ -307,7 +307,7 @@ export function main(argString = ""): void {
         const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving`;
         if (
           myInebriety() <= inebrietyLimit() &&
-          (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))
+          (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
         )
           stashItems.push($item`haiku katana`);
         // FIXME: Dynamically figure out pointer ring approach.

@@ -260,17 +260,17 @@ const embezzlerSources = [
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Knob Treasury`, true) &&
+      canAdv($location`Cobb's Knob Treasury`, true) &&
       !get("_freePillKeeperUsed"),
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Knob Treasury`, true) &&
+      canAdv($location`Cobb's Knob Treasury`, true) &&
       !get("_freePillKeeperUsed")
         ? 1
         : 0,
     () => {
       cliExecute("pillkeeper semirare");
-      adv1($location`Knob Treasury`);
+      adv1($location`Cobb's Knob Treasury`);
     }
   ),
   new EmbezzlerFight(
@@ -496,8 +496,8 @@ export function dailyFights(): void {
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getEmbezzlerFight();
       while (nextFight !== null) {
-        if (have($skill`musk of the moose`) && !have($effect`Musk of the Moose`))
-          useSkill($skill`musk of the moose`);
+        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`))
+          useSkill($skill`Musk of the Moose`);
         withMacro(embezzlerMacro(), () => {
           if (nextFight) {
             useFamiliar(meatFamiliar());
@@ -567,7 +567,7 @@ function bestFairy() {
     return $familiar`Steam-Powered Cheerleader`;
 
   if (!bestNonCheerleaderFairy) {
-    setLocation($location`noob cave`);
+    setLocation($location`Noob Cave`);
     const bestNonCheerleaderFairies = Familiar.all()
       .filter((familiar) => have(familiar) && familiar !== $familiar`Steam-Powered Cheerleader`)
       .sort(
@@ -855,7 +855,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       have($item`Time-Spinner`) &&
-      $location`the hidden bowling alley`.combatQueue.includes("drunk pygmy") &&
+      $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
       get("_timeSpinnerMinutesUsed") < 8,
     () => {
       retrieveItem($item`Bowl of Scorpions`);

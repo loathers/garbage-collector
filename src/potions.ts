@@ -209,7 +209,8 @@ export function potionSetup(): void {
       const potion = testPotionsDoubled[0];
       // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
       if (
-        potion.doublingValue(embezzlers) > (canAdv($location`Knob Treasury`, false) ? 15000 : 0)
+        potion.doublingValue(embezzlers) >
+        (canAdv($location`Cobb's Knob Treasury`, false) ? 15000 : 0)
       ) {
         cliExecute("pillkeeper extend");
         print(

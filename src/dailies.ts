@@ -145,7 +145,7 @@ export function latte(): void {
             if (!runSource) break;
             runSource.prepare();
             equip($slot`off-hand`, latte);
-            adventureMacro($location`the black forest`, runSource.macro);
+            adventureMacro($location`The Black Forest`, runSource.macro);
             horseradish();
           }
         });
@@ -157,7 +157,7 @@ export function latte(): void {
             if (!runSource) break;
             runSource.prepare();
             equip($slot`off-hand`, latte);
-            adventureMacro($location`the spooky forest`, runSource.macro);
+            adventureMacro($location`The Spooky Forest`, runSource.macro);
             horseradish();
           }
         });
@@ -168,7 +168,7 @@ export function latte(): void {
           if (!runSource) break;
           runSource.prepare();
           equip($slot`off-hand`, latte);
-          adventureMacro($location`the dire warren`, runSource.macro);
+          adventureMacro($location`The Dire Warren`, runSource.macro);
           horseradish();
         }
       }
@@ -457,7 +457,7 @@ export function jellyfish(): void {
   if (
     !have($familiar`Space Jellyfish`) ||
     !(
-      (have($skill`meteor lore`) && get("_macrometeoriteUses") < 10) ||
+      (have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) ||
       (have($item`Powerful Glove`) && get("_powerfulGloveBatteryPowerUsed") < 91)
     )
   ) {
@@ -466,7 +466,7 @@ export function jellyfish(): void {
   useFamiliar($familiar`Space Jellyfish`);
   setAutoAttack(0);
   freeFightOutfit();
-  while (findRun(false) && have($skill`meteor lore`) && get("_macrometeoriteUses") < 10) {
+  while (findRun(false) && have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
     const runSource = findRun(false);
     if (!runSource) break;
     runSource.prepare();
@@ -474,7 +474,7 @@ export function jellyfish(): void {
       "!pastround 28 && hasskill macrometeorite",
       Macro.skill("extract jelly").skill("macrometeorite")
     ).step(runSource.macro);
-    adventureMacro($location`barf mountain`, jellyMacro);
+    adventureMacro($location`Barf Mountain`, jellyMacro);
   }
   if (have($item`Powerful Glove`)) {
     freeFightOutfit();
@@ -487,7 +487,7 @@ export function jellyfish(): void {
         "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
         Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
       ).step(runSource.macro);
-      adventureMacro($location`barf mountain`, jellyMacro);
+      adventureMacro($location`Barf Mountain`, jellyMacro);
     }
   }
 }
