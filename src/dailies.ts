@@ -300,7 +300,7 @@ export function configureMisc(): void {
   if (
     getClanLounge()["Olympic-sized Clan crate"] !== undefined &&
     !get("_olympicSwimmingPoolItemFound") &&
-    have($item` Clan VIP Lounge key`)
+    have($item`Clan VIP Lounge key`)
   ) {
     cliExecute("swim item");
   }
@@ -314,7 +314,7 @@ export function volcanoDailies(): void {
 
   print("Getting my free volcoino!", "blue");
   if (!get("_infernoDiscoVisited")) {
-    $items` smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.forEach(
+    $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.forEach(
       (discoEquip) => {
         retrieveItem(discoEquip);
       }

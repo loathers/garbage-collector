@@ -586,13 +586,13 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Reanimated Reanimator`,
-    meatVal: () => trueValue(...$items`hot wing,broken skull`),
+    meatVal: () => trueValue(...$items`hot wing, broken skull`),
     probability: 1,
   },
   {
     familiar: $familiar`Attention-Deficit Demon`,
     meatVal: () =>
-      trueValue(...$items`chorizo brownies,white chocolate and tomato pizza,carob chunk noodles`),
+      trueValue(...$items`chorizo brownies, white chocolate and tomato pizza, carob chunk noodles`),
     probability: 1,
     modifier: {
       type: BjornModifierType.MEAT,
@@ -601,7 +601,7 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Piano Cat`,
-    meatVal: () => trueValue(...$items`beertini,papaya slung,salty slug,tomato daiquiri`),
+    meatVal: () => trueValue(...$items`beertini, papaya slung, salty slug, tomato daiquiri`),
     probability: 1,
     modifier: {
       type: BjornModifierType.MEAT,
@@ -619,7 +619,7 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Robot Reindeer`,
-    meatVal: () => trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
+    meatVal: () => trueValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
     probability: 0.3,
   },
   {
@@ -642,7 +642,7 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Untamed Turtle`,
-    meatVal: () => trueValue(...$items`snailmail bits,turtlemail bits,turtle wax`),
+    meatVal: () => trueValue(...$items`snailmail bits, turtlemail bits, turtle wax`),
     probability: 0.35,
   },
   {
@@ -670,12 +670,12 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Ancient Yuletide Troll`,
-    meatVal: () => trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
+    meatVal: () => trueValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
     probability: 0.3,
   },
   {
     familiar: $familiar`Sweet Nutcracker`,
-    meatVal: () => trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
+    meatVal: () => trueValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
     probability: 0.3,
   },
   {
