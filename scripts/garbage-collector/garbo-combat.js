@@ -4447,7 +4447,7 @@ exports.getBronze = getBronze;
  */
 
 function acceptBronze() {
-  if (!canGold()) return false;
+  if (isQuestActive()) return false;
   useTabletWithChoice(2);
   return true;
 }
@@ -4458,7 +4458,7 @@ exports.acceptBronze = acceptBronze;
  */
 
 function haveFullBronzeBonus() {
-  return getGold() >= 196;
+  return getBronze() >= 196;
 }
 
 exports.haveFullBronzeBonus = haveFullBronzeBonus;
