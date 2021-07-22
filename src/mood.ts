@@ -79,7 +79,7 @@ export function meatMood(urKels = false): Mood {
   }
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
-    mood.effect($effect`A View To Some Meat`, () => {
+    mood.effect($effect`A View to Some Meat`, () => {
       if (get("_kgbClicksUsed") < 22) {
         const buffTries = Math.ceil((22 - get("_kgbClicksUsed")) / 3);
         cliExecute(`Briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
@@ -101,9 +101,9 @@ export function freeFightMood(): Mood {
 
   if (!get<boolean>("_garbo_defectiveTokenAttempted", false)) {
     set("_garbo_defectiveTokenAttempted", true);
-    withStash($items`defective game grid token`, () => {
-      if (!get("_defectiveTokenUsed") && have($item`defective game grid token`))
-        use($item`defective game grid token`);
+    withStash($items`defective Game Grid token`, () => {
+      if (!get("_defectiveTokenUsed") && have($item`defective Game Grid token`))
+        use($item`defective Game Grid token`);
     });
   }
 

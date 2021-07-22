@@ -41,7 +41,7 @@ function isFuelItem(it: Item) {
   );
 }
 
-const potentialFuel = $items``.filter(isFuelItem);
+const potentialFuel = Item.all().filter(isFuelItem);
 
 function getBestFuel(targetUnits: number) {
   const key1 = (item: Item) => -averageAdventures(item);

@@ -158,13 +158,9 @@ function fillSpleenWith(spleenItem: Item) {
 }
 
 function fillStomach() {
-  if (
-    myLevel() >= 15 &&
-    !get("_hungerSauceUsed") &&
-    mallPrice($item`Hunger&trade; sauce`) < 3 * MPA
-  ) {
-    acquire(1, $item`Hunger&trade; sauce`, 3 * MPA);
-    use(1, $item`Hunger&trade; sauce`);
+  if (myLevel() >= 15 && !get("_hungerSauceUsed") && mallPrice($item`Hunger™ Sauce`) < 3 * MPA) {
+    acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
+    use(1, $item`Hunger™ Sauce`);
   }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
 
@@ -311,7 +307,7 @@ export function runDiet(): void {
     eatSafe(1, $item`jumping horseradish`);
   }
   while (myInebriety() < inebrietyLimit()) {
-    drinkSafe(1, $item`ambitious turkey`);
+    drinkSafe(1, $item`Ambitious Turkey`);
   }
 }
 
@@ -332,12 +328,12 @@ const Mayo = {
 };
 
 function mindMayo(mayo: Item, quantity: number) {
-  if (getWorkshed() !== $item`Portable Mayo Clinic`) return;
+  if (getWorkshed() !== $item`portable Mayo Clinic`) return;
   if (get("mayoInMouth") && get("mayoInMouth") !== mayo.name)
     throw `You used a bad mayo, my friend!`; //Is this what we want?
   retrieveItem(quantity, mayo);
-  if (!have($item`Mayo Minder`)) buy($item`Mayo Minder`);
+  if (!have($item`Mayo Minder™`)) buy($item`Mayo Minder™`);
   if (get("mayoMinderSetting") !== mayo.name) {
-    withChoice(1076, toInt(mayo) - 8260, () => use($item`mayo minder`));
+    withChoice(1076, toInt(mayo) - 8260, () => use($item`Mayo Minder™`));
   }
 }

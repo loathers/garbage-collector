@@ -114,7 +114,7 @@ const zonePotions: ZonePotion[] = [
   },
   {
     zone: "Wormwood",
-    effect: $effect`absinthe-minded`,
+    effect: $effect`Absinthe-Minded`,
     potion: $item`tiny bottle of absinthe`,
   },
   {
@@ -254,19 +254,19 @@ const banishesToUse = questStep("questL11Worship") > 0 && get("_drunkPygmyBanish
 
 const banderRun = new FreeRun(
   () =>
-    ((have($familiar`frumious bandersnatch`) &&
-      (have($effect`ode to booze`) || getSongCount() < getSongLimit())) ||
-      have($familiar`pair of stomping boots`)) &&
+    ((have($familiar`Frumious Bandersnatch`) &&
+      (have($effect`Ode to Booze`) || getSongCount() < getSongLimit())) ||
+      have($familiar`Pair of Stomping Boots`)) &&
     Bandersnatch.getRemainingRunaways() > 0,
   () => {
     maximize("familiar weight", false);
     if (
-      have($familiar`frumious bandersnatch`) &&
-      (have($effect`ode to booze`) || getSongCount() < getSongLimit())
+      have($familiar`Frumious Bandersnatch`) &&
+      (have($effect`Ode to Booze`) || getSongCount() < getSongLimit())
     )
-      useFamiliar($familiar`frumious bandersnatch`);
-    else useFamiliar($familiar`pair of stomping boots`);
-    if (myFamiliar() === $familiar`frumious bandersnatch`) ensureEffect($effect`ode to booze`);
+      useFamiliar($familiar`Frumious Bandersnatch`);
+    else useFamiliar($familiar`Pair of Stomping Boots`);
+    if (myFamiliar() === $familiar`Frumious Bandersnatch`) ensureEffect($effect`Ode to Booze`);
   },
   Macro.step("runaway")
 );
@@ -309,8 +309,8 @@ const freeRuns: FreeRun[] = [
   ),
 
   new FreeRun(
-    () => have($item`kremlin's greatest briefcase`) && get("_kgbTranquilizerDartUses") < 3,
-    () => equip($slot`acc3`, $item`kremlin's greatest briefcase`),
+    () => have($item`Kremlin's Greatest Briefcase`) && get("_kgbTranquilizerDartUses") < 3,
+    () => equip($slot`acc3`, $item`Kremlin's Greatest Briefcase`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("KGB tranquilizer dart")
   ),
 
@@ -417,19 +417,19 @@ type BjornedFamiliar = {
 
 const bjornFams: BjornedFamiliar[] = [
   {
-    familiar: $familiar`puck man`,
+    familiar: $familiar`Puck Man`,
     meatVal: () => trueValue($item`yellow pixel`),
     probability: 0.25,
     dropPredicate: () => get("_yellowPixelDropsCrown") < 25,
   },
   {
-    familiar: $familiar`ms. puck man`,
+    familiar: $familiar`Ms. Puck Man`,
     meatVal: () => trueValue($item`yellow pixel`),
     probability: 0.25,
     dropPredicate: () => get("_yellowPixelDropsCrown") < 25,
   },
   {
-    familiar: $familiar`grimstone golem`,
+    familiar: $familiar`Grimstone Golem`,
     meatVal: () => trueValue($item`grimstone mask`),
     probability: 0.5,
     dropPredicate: () => get("_grimstoneMaskDropsCrown") < 1,
@@ -453,13 +453,13 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`garbage fire`,
+    familiar: $familiar`Garbage Fire`,
     meatVal: () => trueValue($item`burning newspaper`),
     probability: 0.5,
     dropPredicate: () => get("_garbageFireDropsCrown") < 3,
   },
   {
-    familiar: $familiar`machine elf`,
+    familiar: $familiar`Machine Elf`,
     meatVal: () =>
       trueValue(
         ...$items`abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose`
@@ -468,18 +468,18 @@ const bjornFams: BjornedFamiliar[] = [
     dropPredicate: () => get("_abstractionDropsCrown") < 25,
   },
   {
-    familiar: $familiar`trick-or-treating tot`,
+    familiar: $familiar`Trick-or-Treating Tot`,
     meatVal: () => trueValue($item`hoarded candy wad`),
     probability: 0.5,
     dropPredicate: () => get("_hoardedCandyDropsCrown") < 3,
   },
   {
-    familiar: $familiar`warbear drone`,
+    familiar: $familiar`Warbear Drone`,
     meatVal: () => trueValue($item`warbear whosit`),
     probability: 1 / 4.5,
   },
   {
-    familiar: $familiar`li'l xenomorph`,
+    familiar: $familiar`Li'l Xenomorph`,
     meatVal: () => trueValue($item`lunar isotope`),
     probability: 0.05,
     modifier: {
@@ -488,18 +488,18 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`pottery barn owl`,
+    familiar: $familiar`Pottery Barn Owl`,
     meatVal: () => trueValue($item`volcanic ash`),
     probability: 0.1,
   },
   {
-    familiar: $familiar`grim brother`,
+    familiar: $familiar`Grim Brother`,
     meatVal: () => trueValue($item`grim fairy tale`),
     probability: 1,
     dropPredicate: () => get("_grimFairyTaleDropsCrown") < 2,
   },
   {
-    familiar: $familiar`optimistic candle`,
+    familiar: $familiar`Optimistic Candle`,
     meatVal: () => trueValue($item`glob of melted wax`),
     probability: 1,
     dropPredicate: () => get("_optimisticCandleDropsCrown") < 3,
@@ -512,7 +512,7 @@ const bjornFams: BjornedFamiliar[] = [
     familiar: $familiar`Adventurous Spelunker`,
     meatVal: () =>
       trueValue(
-        ...$items`teflon ore, Velcro ore, Vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore`
+        ...$items`teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore`
       ),
     probability: 1,
     dropPredicate: () => get("_oreDropsCrown") < 6,
@@ -528,7 +528,7 @@ const bjornFams: BjornedFamiliar[] = [
     dropPredicate: () => get("_spaceFurDropsCrown") < 1,
   },
   {
-    familiar: $familiar`party mouse`,
+    familiar: $familiar`Party Mouse`,
     meatVal: () => 50,
     /*
     The below code is more accurate. However, party mouse is virtually never going to be worthwhile and this causes so many useless mall hits it isn't funny.
@@ -549,12 +549,12 @@ const bjornFams: BjornedFamiliar[] = [
     probability: 0.05,
   },
   {
-    familiar: $familiar`yule hound`,
+    familiar: $familiar`Yule Hound`,
     meatVal: () => trueValue($item`candy cane`),
     probability: 1,
   },
   {
-    familiar: $familiar`gluttonous green ghost`,
+    familiar: $familiar`Gluttonous Green Ghost`,
     meatVal: () => trueValue(...$items`bean burrito, enchanted bean burrito, jumping bean burrito`),
     probability: 1,
   },
@@ -578,16 +578,19 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Hunchbacked Minion`,
-    meatVal: () => trueValue(...$items`176,163,163,163,163`),
+    meatVal: () =>
+      trueValue(
+        ...$items`disembodied brain, skeleton bone, skeleton bone, skeleton bone, skeleton bone`
+      ),
     probability: 1,
   },
   {
-    familiar: $familiar`reanimated reanimator`,
+    familiar: $familiar`Reanimated Reanimator`,
     meatVal: () => trueValue(...$items`hot wing,broken skull`),
     probability: 1,
   },
   {
-    familiar: $familiar`attention-deficit demon`,
+    familiar: $familiar`Attention-Deficit Demon`,
     meatVal: () =>
       trueValue(...$items`chorizo brownies,white chocolate and tomato pizza,carob chunk noodles`),
     probability: 1,
@@ -597,7 +600,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`piano cat`,
+    familiar: $familiar`Piano Cat`,
     meatVal: () => trueValue(...$items`beertini,papaya slung,salty slug,tomato daiquiri`),
     probability: 1,
     modifier: {
@@ -606,7 +609,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`golden monkey`,
+    familiar: $familiar`Golden Monkey`,
     meatVal: () => 100,
     probability: 0.5,
     modifier: {
@@ -615,13 +618,16 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`robot reindeer`,
+    familiar: $familiar`Robot Reindeer`,
     meatVal: () => trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
     probability: 0.3,
   },
   {
-    familiar: $familiar`stocking mimic`,
-    meatVal: () => trueValue(...$items`540,617,906,908,909`),
+    familiar: $familiar`Stocking Mimic`,
+    meatVal: () =>
+      trueValue(
+        ...$items`Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint`
+      ),
     probability: 0.3,
   },
   {
@@ -635,42 +641,45 @@ const bjornFams: BjornedFamiliar[] = [
     probability: 1,
   },
   {
-    familiar: $familiar`untamed turtle`,
+    familiar: $familiar`Untamed Turtle`,
     meatVal: () => trueValue(...$items`snailmail bits,turtlemail bits,turtle wax`),
     probability: 0.35,
   },
   {
-    familiar: $familiar`astral badger`,
-    meatVal: () => 2 * trueValue(...$items`spooky mushroom, knob mushroom, knoll mushroom`),
+    familiar: $familiar`Astral Badger`,
+    meatVal: () => 2 * trueValue(...$items`spooky mushroom, Knob mushroom, Knoll mushroom`),
     probability: 1,
   },
   {
-    familiar: $familiar`green pixie`,
+    familiar: $familiar`Green Pixie`,
     meatVal: () => trueValue($item`bottle of tequila`),
     probability: 0.2,
   },
   {
-    familiar: $familiar`angry goat`,
+    familiar: $familiar`Angry Goat`,
     meatVal: () => trueValue($item`goat cheese pizza`),
     probability: 1,
   },
   {
-    familiar: $familiar`adorable seal larva`,
-    meatVal: () => trueValue(...$items`1445,1446,1447,1448,1449`),
+    familiar: $familiar`Adorable Seal Larva`,
+    meatVal: () =>
+      trueValue(
+        ...$items`stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets`
+      ),
     probability: 0.35,
   },
   {
-    familiar: $familiar`ancient yuletide troll`,
+    familiar: $familiar`Ancient Yuletide Troll`,
     meatVal: () => trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
     probability: 0.3,
   },
   {
-    familiar: $familiar`sweet nutcracker`,
+    familiar: $familiar`Sweet Nutcracker`,
     meatVal: () => trueValue(...$items`candy cane,eggnog,fruitcake,gingerbread bugbear`),
     probability: 0.3,
   },
   {
-    familiar: $familiar`casagnova gnome`,
+    familiar: $familiar`Casagnova Gnome`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -679,7 +688,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`coffee pixie`,
+    familiar: $familiar`Coffee Pixie`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -688,7 +697,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`dancing frog`,
+    familiar: $familiar`Dancing Frog`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -697,7 +706,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`grouper groupie`,
+    familiar: $familiar`Grouper Groupie`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -706,7 +715,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`hand turkey`,
+    familiar: $familiar`Hand Turkey`,
     meatVal: () => 30,
     probability: 1,
     modifier: {
@@ -715,7 +724,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`hippo ballerina`,
+    familiar: $familiar`Hippo Ballerina`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -724,7 +733,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`jitterbug`,
+    familiar: $familiar`Jitterbug`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -733,7 +742,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`leprechaun`,
+    familiar: $familiar`Leprechaun`,
     meatVal: () => 30,
     probability: 1,
     modifier: {
@@ -742,7 +751,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`obtuse angel`,
+    familiar: $familiar`Obtuse Angel`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -751,7 +760,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`psychedelic bear`,
+    familiar: $familiar`Psychedelic Bear`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -760,7 +769,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`robortender`,
+    familiar: $familiar`Robortender`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -769,7 +778,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`ghost of crimbo commerce`,
+    familiar: $familiar`Ghost of Crimbo Commerce`,
     meatVal: () => 30,
     probability: 1,
     modifier: {
@@ -778,7 +787,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`hobo monkey`,
+    familiar: $familiar`Hobo Monkey`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -787,7 +796,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`rockin' robin`,
+    familiar: $familiar`Rockin' Robin`,
     meatVal: () => 60,
     probability: 1,
     modifier: {
@@ -796,7 +805,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`feral kobold`,
+    familiar: $familiar`Feral Kobold`,
     meatVal: () => 30,
     probability: 1,
     modifier: {
@@ -805,7 +814,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`oily woim`,
+    familiar: $familiar`Oily Woim`,
     meatVal: () => 30,
     probability: 1,
     modifier: {
@@ -814,7 +823,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`cat burglar`,
+    familiar: $familiar`Cat Burglar`,
     meatVal: () => 0,
     probability: 0,
     modifier: {
@@ -823,7 +832,7 @@ const bjornFams: BjornedFamiliar[] = [
     },
   },
   {
-    familiar: $familiar`misshapen animal skeleton`,
+    familiar: $familiar`Misshapen Animal Skeleton`,
     meatVal: () => 30,
     probability: 1,
     modifier: {

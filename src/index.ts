@@ -115,13 +115,13 @@ function dailySetup() {
 
 function barfTurn() {
   horseradish();
-  if (have($effect`beaten up`))
+  if (have($effect`Beaten Up`))
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
   if (
-    have($item`unwrapped retro superhero cape`) &&
+    have($item`unwrapped knock-off retro superhero cape`) &&
     (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
   ) {
     cliExecute("retrocape robot kill");
@@ -170,12 +170,12 @@ function barfTurn() {
     freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
     adventureMacro(ghostLocation, physicalImmuneMacro);
   } else if (
-    have($item`I Voted!" sticker`) &&
+    have($item`"I Voted!" sticker`) &&
     getCounters("Vote", 0, 0) !== "" &&
     get("_voteFreeFights") < 3
   ) {
     useFamiliar(freeFightFamiliar());
-    freeFightOutfit([new Requirement([], { forceEquip: $items`I Voted!" sticker` })]);
+    freeFightOutfit([new Requirement([], { forceEquip: $items`"I Voted!" sticker` })]);
     adventureMacroAuto(prepWandererZone(), Macro.step(physicalImmuneMacro).meatKill());
   } else {
     adventureMacroAuto(
@@ -183,12 +183,12 @@ function barfTurn() {
       Macro.externalIf(
         underwater,
         Macro.if_(
-          `monsterid ${$monster`knob goblin embezzler`.id}`,
+          `monsterid ${$monster`Knob Goblin Embezzler`.id}`,
           Macro.item("pulled green taffy")
         )
       ).meatKill(),
       Macro.if_(
-        `(monsterid ${$monster`knob goblin embezzler`.id}) && !gotjump && !(pastround 2)`,
+        `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
         Macro.externalIf(underwater, Macro.item("pulled green taffy")).meatKill()
       ).abort()
     );
@@ -203,7 +203,7 @@ function barfTurn() {
 
   if (myAdventures() === 1) {
     if (
-      (have($item`magical sausage`) || have($item`sausage casing`)) &&
+      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
       get<number>("_sausagesEaten") < 23
     ) {
       eat($item`magical sausage`);
@@ -304,7 +304,7 @@ export function main(argString = ""): void {
         ) {
           visitUrl("guild.php?action=buyskill&skillid=32", true);
         }
-        const stashItems = $items`repaid diaper, buddy bjorn, crown of thrones, origami pasties, pantsgiving`;
+        const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving`;
         if (
           myInebriety() <= inebrietyLimit() &&
           (myClass() !== $class`seal clubber` || !have($skill`furious wallop`))

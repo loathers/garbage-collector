@@ -143,7 +143,7 @@ export function freeFightFamiliar(): Familiar {
     if (haveFamiliar(familiar)) familiarValue.push([familiar, 1]);
   }
 
-  familiarValue.push([$familiar`None`, 0]);
+  familiarValue.push([$familiar`none`, 0]);
 
   return argmax(familiarValue);
 }

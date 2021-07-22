@@ -196,9 +196,9 @@ export function latte(): void {
 
 export function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
-    for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, bloody nora`) {
+    for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, Bloody Nora`) {
       if (get("_roboDrinks").includes(drink.name)) continue;
-      useFamiliar($familiar`robortender`);
+      useFamiliar($familiar`Robortender`);
       if (itemAmount(drink) === 0) retrieveItem(1, drink);
       print(`Feeding robortender ${drink}.`, "blue");
       visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
@@ -240,7 +240,7 @@ export function horse(): void {
 export function dailyBuffs(): void {
   if (
     !get("_clanFortuneBuffUsed") &&
-    have($item`Clan VIP lounge key`) &&
+    have($item`Clan VIP Lounge key`) &&
     getClanLounge()["Clan Carnival Game"] !== undefined
   ) {
     cliExecute("fortune buff meat");
@@ -277,9 +277,9 @@ export function configureMisc(): void {
     ]; //excluding 4 and 5 as per bean's suggestion
     const vykeaProfit = (level: number, cost: number) =>
       expectedTurns * baseMeat * 0.1 * level -
-      5 * mallPrice($item`vykea rail`) +
-      cost * mallPrice($item`vykea dowel`) +
-      5 * mallPrice($item`vykea plank`) +
+      5 * mallPrice($item`VYKEA rail`) +
+      cost * mallPrice($item`VYKEA dowel`) +
+      5 * mallPrice($item`VYKEA plank`) +
       1 * mallPrice($item`VYKEA hex key`);
 
     if (vykeas.some(([level, cost]) => vykeaProfit(level, cost) > 0)) {
@@ -338,26 +338,26 @@ function checkVolcanoQuest() {
   ];
   const volcanoWhatToDo: Map<Item, () => boolean> = new Map<Item, () => boolean>([
     [
-      $item`new age healing crystal`,
+      $item`New Age healing crystal`,
       () => {
-        if (availableAmount($item`new age healing crystal`) >= 5) return true;
+        if (availableAmount($item`New Age healing crystal`) >= 5) return true;
         else {
           return (
             buy(
-              5 - availableAmount($item`new age healing crystal`),
-              $item`new age healing crystal`,
+              5 - availableAmount($item`New Age healing crystal`),
+              $item`New Age healing crystal`,
               1000
             ) ===
-            5 - availableAmount($item`new age healing crystal`)
+            5 - availableAmount($item`New Age healing crystal`)
           );
         }
       },
     ],
     [
-      $item`smooch bottlecap`,
+      $item`SMOOCH bottlecap`,
       () => {
-        if (availableAmount($item`smooch bottlecap`) > 0) return true;
-        else return buy(1, $item`smooch bottlecap`, 5000) === 1;
+        if (availableAmount($item`SMOOCH bottlecap`) > 0) return true;
+        else return buy(1, $item`SMOOCH bottlecap`, 5000) === 1;
       },
     ],
     [
@@ -374,7 +374,7 @@ function checkVolcanoQuest() {
     [
       $item`fused fuse`,
       () => {
-        return have($item`clara's bell`);
+        return have($item`Clara's bell`);
       },
     ],
     [
@@ -391,14 +391,14 @@ function checkVolcanoQuest() {
       },
     ],
     [
-      $item`smooch bracers`,
+      $item`SMOOCH bracers`,
       () => {
-        if (availableAmount($item`smooch bracers`) < 3) {
+        if (availableAmount($item`SMOOCH bracers`) < 3) {
           cliExecute(
-            `acquire ${(3 - availableAmount($item`smooch bracers`)).toString()} smooch bracers`
+            `acquire ${(3 - availableAmount($item`SMOOCH bracers`)).toString()} smooch bracers`
           );
         }
-        return availableAmount($item`smooch bracers`) >= 3;
+        return availableAmount($item`SMOOCH bracers`) >= 3;
       },
     ],
   ]);
@@ -418,7 +418,7 @@ function checkVolcanoQuest() {
 }
 
 export function cheat(): void {
-  if (have($item`deck of every card`)) {
+  if (have($item`Deck of Every Card`)) {
     ["1952 Mickey Mantle", "Island", "Ancestral Recall"].forEach((card) => {
       if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
         cliExecute(`cheat ${card}`);
@@ -438,7 +438,7 @@ export function gin(): void {
   }
 }
 
-const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi Tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, Cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
+const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
 export function pickTea(): void {
   if (!getCampground()["potted tea tree"] || get("_pottedTeaTreeUsed")) return;
   const bestTea = teas.sort((a, b) => trueValue(b) - trueValue(a))[0];
@@ -455,15 +455,15 @@ export function gaze(): void {
 }
 export function jellyfish(): void {
   if (
-    !have($familiar`space jellyfish`) ||
+    !have($familiar`Space Jellyfish`) ||
     !(
       (have($skill`meteor lore`) && get("_macrometeoriteUses") < 10) ||
-      (have($item`powerful glove`) && get("_powerfulGloveBatteryPowerUsed") < 91)
+      (have($item`Powerful Glove`) && get("_powerfulGloveBatteryPowerUsed") < 91)
     )
   ) {
     return;
   }
-  useFamiliar($familiar`space jellyfish`);
+  useFamiliar($familiar`Space Jellyfish`);
   setAutoAttack(0);
   freeFightOutfit();
   while (findRun(false) && have($skill`meteor lore`) && get("_macrometeoriteUses") < 10) {
@@ -476,9 +476,9 @@ export function jellyfish(): void {
     ).step(runSource.macro);
     adventureMacro($location`barf mountain`, jellyMacro);
   }
-  if (have($item`powerful glove`)) {
+  if (have($item`Powerful Glove`)) {
     freeFightOutfit();
-    equip($slot`acc2`, $item`powerful glove`);
+    equip($slot`acc2`, $item`Powerful Glove`);
     while (findRun(false) && get("_powerfulGloveBatteryPowerUsed") < 91) {
       const runSource = findRun(false);
       if (!runSource) break;

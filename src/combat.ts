@@ -80,7 +80,7 @@ export class Macro extends LibramMacro {
         )
       )
       .externalIf(
-        !have($effect`On The Trail`),
+        !have($effect`On the Trail`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))
       )
       .externalIf(
