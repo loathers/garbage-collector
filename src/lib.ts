@@ -175,9 +175,9 @@ export function prepWandererZone(type: draggableFight = draggableFight.WANDERER)
     (type === draggableFight.BACKUP &&
       !canWander() &&
       backupBlacklist.includes(Guzzlr.getLocation() || $location`none`) &&
-      (Guzzlr.getLocation()?.combatPercent || 100) < 100) //expand when we get more wanderers that go in guzzlzones
+      (Guzzlr.getLocation()?.combatPercent || 100) < 100)
   ) {
-    Guzzlr.abandon(); //Abandon if it's generically bad, or if it's bad for the only type of moveable fight you have left
+    Guzzlr.abandon(); //Abandon if it's generically bad, or if it's bad for the only type of draggable fight you have left
   }
 
   acceptBestGuzzlrQuest();
@@ -224,7 +224,7 @@ export function prepWandererZone(type: draggableFight = draggableFight.WANDERER)
 function guzzlrCheck(): boolean {
   const guzzlZone = Guzzlr.getLocation();
   if (!guzzlZone) return false;
-  const forbiddenZones: string[] = [""]; //can't stockpile these potions,
+  const forbiddenZones: string[] = [""];
   if (!get("_spookyAirportToday") && !get("spookyAirportAlways")) {
     forbiddenZones.push("Conspiracy Island");
   }
