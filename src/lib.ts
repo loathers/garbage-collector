@@ -305,7 +305,7 @@ const freeRuns: FreeRun[] = [
 
   new FreeRun(
     "Snokebomb",
-    () => get("_snokebombUsed") < banishesToUse && have($skill`snokebomb`),
+    () => get("_snokebombUsed") < banishesToUse && have($skill`Snokebomb`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("snokebomb"),
     undefined,
     () => restoreMp(50)
@@ -313,7 +313,7 @@ const freeRuns: FreeRun[] = [
 
   new FreeRun(
     "Hatred",
-    () => get("_feelHatredUsed") < banishesToUse && have($skill`emotionally chipped`),
+    () => get("_feelHatredUsed") < banishesToUse && have($skill`Emotionally Chipped`),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("feel hatred")
   ),
 
@@ -326,9 +326,9 @@ const freeRuns: FreeRun[] = [
 
   new FreeRun(
     "Latte",
-    () => have($item`Latte Lovers Member's Mug`) && !get("_latteBanishUsed"),
+    () => have($item`latte lovers member's mug`) && !get("_latteBanishUsed"),
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Throw Latte on Opponent"),
-    new Requirement([], { forceEquip: $items`Latte Lovers Member's Mug` })
+    new Requirement([], { forceEquip: $items`latte lovers member's mug` })
   ),
 
   new FreeRun(

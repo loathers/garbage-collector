@@ -143,7 +143,7 @@ export function latte(): void {
             if (!runSource) break;
             if (runSource.prepare) runSource.prepare();
             freeFightOutfit([
-              new Requirement([], { forceEquip: $items`Latte Lovers Member's Mug` }),
+              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
               ...(runSource.requirement ? [runSource.requirement] : []),
             ]);
             adventureMacro($location`The Black Forest`, runSource.macro);
@@ -158,7 +158,7 @@ export function latte(): void {
             if (!runSource) break;
             if (runSource.prepare) runSource.prepare();
             freeFightOutfit([
-              new Requirement([], { forceEquip: $items`Latte Lovers Member's Mug` }),
+              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
               ...(runSource.requirement ? [runSource.requirement] : []),
             ]);
             adventureMacro($location`The Spooky Forest`, runSource.macro);
@@ -172,7 +172,7 @@ export function latte(): void {
           if (!runSource) break;
           if (runSource.prepare) runSource.prepare();
           freeFightOutfit([
-            new Requirement([], { forceEquip: $items`Latte Lovers Member's Mug` }),
+            new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
             ...(runSource.requirement ? [runSource.requirement] : []),
           ]);
           adventureMacro($location`The Dire Warren`, runSource.macro);
@@ -490,7 +490,7 @@ export function jellyfish(): void {
       if (!runSource) break;
       if (runSource.prepare) runSource.prepare();
       freeFightOutfit([
-        new Requirement([], { forceEquip: $items`powerful glove` }),
+        new Requirement([], { forceEquip: $items`Powerful Glove` }),
         ...(runSource.requirement ? [runSource.requirement] : []),
       ]);
       const jellyMacro = Macro.while_(
