@@ -19,7 +19,7 @@ declare global {
   };
 }
 
-function App({ settings, updatedSettings }: Data) {
+function App({ settings, updatedSettings }: Data): React.ReactNode {
   const preferences = settings.map((setting) => (
     <Setting
       value={setting.value}

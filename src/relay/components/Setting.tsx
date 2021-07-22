@@ -1,6 +1,6 @@
 import * as React from "react";
 
-function Setting(props: SettingProp) {
+function Setting(props: SettingProp): React.ReactNode {
   return (
     <tr id="userPreference">
       <td>{props.name}</td>

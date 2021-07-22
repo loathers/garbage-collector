@@ -2,7 +2,7 @@ import { fileToArray, formField, formFields, writeln } from "kolmafia";
 import { get, set } from "libram";
 
 export function main(): void {
-  const updatedSettings: Array<{ name: String; value: String }> = [];
+  const updatedSettings: Array<{ name: string; value: string }> = [];
   // handle updating values
   const fields = formFields();
   Object.keys(fields).forEach((field) => {
