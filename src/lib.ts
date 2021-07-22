@@ -15,7 +15,6 @@ import {
   toUrl,
   use,
   useFamiliar,
-  userConfirm,
   useSkill,
   visitUrl,
 } from "kolmafia";
