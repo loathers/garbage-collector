@@ -132,6 +132,7 @@ export function configureGear(): void {
 export function latte(): void {
   const latte = $item`latte lovers member's mug`;
   if (have(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
+    withChoice(1329, 2, () => visitUrl("main.php?latte=1", false));
     if (
       numericModifier(latte, "Familiar Weight") !== 5 ||
       numericModifier(latte, "Meat Drop") !== 40
