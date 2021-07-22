@@ -80,12 +80,16 @@ export class Macro extends LibramMacro {
         )
       )
       .externalIf(
-        !have($effect`On The Trail`),
+        !have($effect`On the Trail`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))
       )
       .externalIf(
         get("_gallapagosMonster") !== $monster`garbage tourist`,
         Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))
+      )
+      .externalIf(
+        get("lastCopyableMonster") === $monster`garbage tourist`,
+        Macro.if_("!monstername garbage tourist", Macro.trySkill("Feel Nostalgic"))
       )
       .externalIf(
         myFamiliar() === $familiar`Stocking Mimic`,

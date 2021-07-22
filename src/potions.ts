@@ -209,7 +209,8 @@ export function potionSetup(): void {
       const potion = testPotionsDoubled[0];
       // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
       if (
-        potion.doublingValue(embezzlers) > (canAdv($location`Knob Treasury`, false) ? 15000 : 0)
+        potion.doublingValue(embezzlers) >
+        (canAdv($location`Cobb's Knob Treasury`, false) ? 15000 : 0)
       ) {
         cliExecute("pillkeeper extend");
         print(
@@ -249,7 +250,7 @@ export function potionSetup(): void {
 }
 
 export function bathroomFinance(embezzlers: number): void {
-  if (have($effect`Buy! Sell! Buy! Sell!`)) return;
+  if (have($effect`Buy!  Sell!  Buy!  Sell!`)) return;
 
   // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
   const averageEmbezzlerGross = ((baseMeat + 750) * 2 * (embezzlers + 1)) / 2 / 100;

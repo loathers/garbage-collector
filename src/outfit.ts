@@ -95,22 +95,22 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`pantsgiving`, pantsgivingBonus()],
+          [$item`Pantsgiving`, pantsgivingBonus()],
           ...cheeses(false),
         ]),
       }
     ),
   ]);
   const bjornAlike =
-    have($item`buddy bjorn`) &&
+    have($item`Buddy Bjorn`) &&
     !(
       compiledRequirements.maximizeOptions_.forceEquip &&
       compiledRequirements.maximizeOptions_.forceEquip.some(
         (equipment) => toSlot(equipment) === $slot`back`
       )
     )
-      ? $item`buddy bjorn`
-      : $item`crown of thrones`;
+      ? $item`Buddy Bjorn`
+      : $item`Crown of Thrones`;
   const finalRequirements = compiledRequirements.merge(
     new Requirement([], {
       bonusEquip: new Map([
@@ -122,13 +122,13 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
         ],
       ]),
       preventEquip:
-        bjornAlike === $item`buddy bjorn` ? $items`crown of thrones` : $items`buddy bjorn`,
+        bjornAlike === $item`Buddy Bjorn` ? $items`Crown of Thrones` : $items`Buddy Bjorn`,
     })
   );
 
   maximizeCached(finalRequirements.maximizeParameters(), finalRequirements.maximizeOptions());
-  if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
 }
 
 export function meatOutfit(
@@ -150,7 +150,7 @@ export function meatOutfit(
     if (myClass() !== $class`Seal Clubber`) {
       if (have($item`haiku katana`)) {
         forceEquip.push($item`haiku katana`);
-      } else if (have($item`unwrapped retro superhero cape`)) {
+      } else if (have($item`unwrapped knock-off retro superhero cape`)) {
         if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
         forceEquip.push($item`ice nine`);
       }
@@ -165,7 +165,7 @@ export function meatOutfit(
     }
     forceEquip.push($item`mafia pointer finger ring`);
   }
-  if (myFamiliar() === $familiar`obtuse angel`) {
+  if (myFamiliar() === $familiar`Obtuse Angel`) {
     forceEquip.push($item`quake of arrows`);
     if (!have($item`quake of arrows`)) retrieveItem($item`quake of arrows`);
   }
@@ -173,9 +173,9 @@ export function meatOutfit(
     additionalRequirements.push("sea");
   }
   const bjornAlike =
-    have($item`buddy bjorn`) && !forceEquip.some((item) => toSlot(item) === $slot`back`)
-      ? $item`buddy bjorn`
-      : $item`crown of thrones`;
+    have($item`Buddy Bjorn`) && !forceEquip.some((item) => toSlot(item) === $slot`back`)
+      ? $item`Buddy Bjorn`
+      : $item`Crown of Thrones`;
   const compiledRequirements = Requirement.merge([
     ...requirements,
     new Requirement(
@@ -187,9 +187,9 @@ export function meatOutfit(
       {
         forceEquip,
         preventEquip: [
-          ...$items`broken champagne bottle, unwrapped retro superhero cape`,
+          ...$items`broken champagne bottle, unwrapped knock-off retro superhero cape`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
-          bjornAlike === $item`buddy bjorn` ? $item`crown of thrones` : $item`buddy bjorn`,
+          bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
         bonusEquip: new Map([
           [$item`lucky gold ring`, 400],
@@ -197,7 +197,7 @@ export function meatOutfit(
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
+          [$item`Pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
           ...cheeses(embezzlerUp),
           [
             bjornAlike,
@@ -213,15 +213,15 @@ export function meatOutfit(
   maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
 
   if (equippedAmount($item`ice nine`) > 0) {
-    equip($item`unwrapped retro superhero cape`);
+    equip($item`unwrapped knock-off retro superhero cape`);
   }
-  if (haveEquipped($item`buddy bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item`crown of thrones`)) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (const airSource of waterBreathingEquipment) {
         if (have(airSource)) {
-          if (airSource === $item`the crown of ed the undying`) cliExecute("edpiece fish");
+          if (airSource === $item`The Crown of Ed the Undying`) cliExecute("edpiece fish");
           equip(airSource);
           break;
         }
@@ -238,11 +238,11 @@ export function meatOutfit(
   }
 }
 
-export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
+export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
 
 function pantsgivingBonus() {
-  if (!have($item`pantsgiving`)) return 0;
+  if (!have($item`Pantsgiving`)) return 0;
   const count = get("_pantsgivingCount");
   const turnArray = [5, 50, 500, 5000];
   const index =
@@ -255,7 +255,7 @@ function pantsgivingBonus() {
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
-    (mallPrice($item`jumping horseradish`) + mallPrice($item`special seasoning`));
+    (mallPrice($item`jumping horseradish`) + mallPrice($item`Special Seasoning`));
   return fullnessValue / (turns * 0.9);
 }
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
