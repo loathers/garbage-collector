@@ -88,7 +88,7 @@ export class Macro extends LibramMacro {
         Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))
       )
       .externalIf(
-        get("lastCopyableMonster") == $monster`garbage tourist`,
+        get("lastCopyableMonster") === $monster`garbage tourist`,
         Macro.if_("!monstername garbage tourist", Macro.trySkill("Feel Nostalgic"))
       )
       .externalIf(
