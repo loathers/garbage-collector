@@ -15210,6 +15210,10 @@ function latte() {
   var latte = (0,dist.$item)(dailies_templateObject16 || (dailies_templateObject16 = dailies_taggedTemplateLiteral(["latte lovers member's mug"])));
 
   if ((0,dist.have)(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
+    (0,property.withChoice)(1329, 2, function () {
+      return (0,external_kolmafia_.visitUrl)("main.php?latte=1", false);
+    });
+
     if ((0,external_kolmafia_.numericModifier)(latte, "Familiar Weight") !== 5 || (0,external_kolmafia_.numericModifier)(latte, "Meat Drop") !== 40) {
       if (!(0,dist.get)("latteUnlocks").includes("cajun") && findRun()) {
         (0,property.withChoices)({
