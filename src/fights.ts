@@ -99,7 +99,6 @@ import { withStash } from "./clan";
 import { bathroomFinance } from "./potions";
 import { withChoice, withChoices } from "libram/dist/property";
 import { log } from "./globalvars";
-import { bathroomFinance } from "./potions";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
