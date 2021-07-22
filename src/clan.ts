@@ -25,7 +25,7 @@ export function withStash<T>(itemsToTake: Item[], action: () => T): T {
 
 export function withVIPClan<T>(action: () => T): T {
   let clanIdOrName: number | string | undefined = get("garbo_vipClan", undefined);
-  if (!clanIdOrName && have($item`Clan VIP lounge key`)) {
+  if (!clanIdOrName && have($item`Clan VIP Lounge key`)) {
     if (
       userConfirm(
         "The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
