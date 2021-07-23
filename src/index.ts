@@ -251,6 +251,13 @@ export function main(argString = ""): void {
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
   );
+  if (
+    startingGarden &&
+    !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
+    getCampground()[startingGarden.name]
+  ) {
+    visitUrl("campground.php?action=garden&pwd");
+  }
 
   const aaBossFlag =
     xpath(
@@ -267,7 +274,11 @@ export function main(argString = ""): void {
     }
     print();
 
-    if (have($item`packet of tall grass seeds`) && myGardenType() !== "grass")
+    if (
+      have($item`packet of tall grass seeds`) &&
+      myGardenType() !== "grass" &&
+      myGardenType() !== "mushroom"
+    )
       use($item`packet of tall grass seeds`);
 
     setAutoAttack(0);
