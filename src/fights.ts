@@ -170,7 +170,7 @@ const secondChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.externalIf(
       myFamiliar() === $familiar`Pocket Professor`,
-      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
+      Macro.if_("!hasskill Lecture on Relativity", Macro.step("skill 7291")) //fix when libram is updated
         .if_(
           "!hasskill Lecture on Relativity",
           Macro.externalIf(
