@@ -171,6 +171,7 @@ function barfTurn() {
     freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
     adventureMacro(ghostLocation, physicalImmuneMacro);
   } else if (
+    myInebriety() < inebrietyLimit() &&
     have($item`"I Voted!" sticker`) &&
     getCounters("Vote", 0, 0) !== "" &&
     get("_voteFreeFights") < 3
