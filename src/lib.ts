@@ -215,7 +215,7 @@ export function prepWandererZone(type: draggableFight = draggableFight.WANDERER)
       return defaultLocation;
     } else if (!have(guzzlrBooze)) {
       print(`just picking up some booze before we roll`, "blue");
-      cliExecute(`acquire ${guzzlrBooze}`);
+      retrieveItem(guzzlrBooze);
     }
   }
   return guzzlZone;
