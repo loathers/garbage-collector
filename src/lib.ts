@@ -369,6 +369,15 @@ const freeRuns: FreeRun[] = [
   ),
 
   new FreeRun(
+    "Scrapbook",
+    () => have($item`familiar scrapbook`) && get("scrapbookCharges") >= 100,
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill(
+      "Show Your Boring Familiar Pictures"
+    ),
+    new Requirement([], { forceEquip: $items`familiar scrapbook` })
+  ),
+
+  new FreeRun(
     "Navel Ring",
     () => have($item`navel ring of navel gazing`) && get("_navelRunaways") < 3,
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
