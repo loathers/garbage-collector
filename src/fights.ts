@@ -39,6 +39,7 @@ import {
   spleenLimit,
   takeCloset,
   toInt,
+  totalTurnsPlayed,
   use,
   useFamiliar,
   userConfirm,
@@ -95,8 +96,9 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash } from "./clan";
-import { withChoice, withChoices } from "libram/dist/property";
 import { bathroomFinance } from "./potions";
+import { withChoice, withChoices } from "libram/dist/property";
+import { log } from "./globalvars";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
@@ -448,6 +450,7 @@ export function dailyFights(): void {
 
       // FIRST EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
+        const startLectures = get("_pocketProfessorLectures");
         const fightSource = getEmbezzlerFight();
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
@@ -462,6 +465,7 @@ export function dailyFights(): void {
           withMacro(firstChainMacro(), () =>
             fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
           );
+          log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_meatChain", true);
       }
@@ -470,6 +474,7 @@ export function dailyFights(): void {
 
       // SECOND EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
+        const startLectures = get("_pocketProfessorLectures");
         const fightSource = getEmbezzlerFight();
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
@@ -487,6 +492,7 @@ export function dailyFights(): void {
           withMacro(secondChainMacro(), () =>
             fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
           );
+          log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_weightChain", true);
       }
@@ -496,6 +502,7 @@ export function dailyFights(): void {
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getEmbezzlerFight();
       while (nextFight !== null) {
+        const startTurns = totalTurnsPlayed();
         if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`))
           useSkill($skill`Musk of the Moose`);
         withMacro(embezzlerMacro(), () => {
@@ -539,6 +546,13 @@ export function dailyFights(): void {
             }
           }
         });
+        if (
+          totalTurnsPlayed() - startTurns === 1 &&
+          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+          (nextFight.name === "Backup" || get("lastEncounter") === "Knob Goblin Embezzler")
+        ) {
+          log.initialEmbezzlersFought++;
+        }
         startDigitize();
         nextFight = getEmbezzlerFight();
         if (
