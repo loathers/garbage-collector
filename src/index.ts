@@ -162,7 +162,7 @@ function barfTurn() {
     meatOutfit(true);
     withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
   } else if (
-    myInebriety() < inebrietyLimit() &&
+    myInebriety() <= inebrietyLimit() &&
     have($item`protonic accelerator pack`) &&
     get("questPAGhost") !== "unstarted" &&
     ghostLocation
