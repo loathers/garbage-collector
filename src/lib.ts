@@ -207,7 +207,7 @@ export function prepWandererZone(type: draggableFight = draggableFight.WANDERER)
       }
     });
     if (!Guzzlr.havePlatinumBooze()) {
-      cliExecute("make buttery boy");
+      create($item`Buttery Boy`);
     }
   } else {
     const guzzlrBooze = Guzzlr.getBooze();
