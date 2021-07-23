@@ -97,9 +97,9 @@ function dailySetup() {
   gaze();
   configureGear();
   horse();
+  prepFamiliars();
   gingerbreadPrepNoon();
   latte();
-  prepFamiliars();
   jellyfish();
   dailyBuffs();
   configureMisc();
