@@ -312,25 +312,6 @@ const embezzlerSources = [
     }
   ),
   new EmbezzlerFight(
-    "Rain-Doh",
-    () =>
-      have($item`Rain-Doh box full of monster`) &&
-      get("rainDohMonster") === $monster`Knob Goblin Embezzler`,
-    () => {
-      if (have($item`Rain-Doh black box`)) {
-        return 5 - get("_raindohCopiesMade");
-      }
-      if (
-        have($item`Rain-Doh box full of monster`) &&
-        get("rainDohMonster") === $monster`Knob Goblin Embezzler`
-      ) {
-        return 6 - get("_raindohCopiesMade");
-      }
-      return 0;
-    },
-    () => use($item`Rain-Doh box full of monster`)
-  ),
-  new EmbezzlerFight(
     "4-d Camera",
     () =>
       have($item`shaking 4-d camera`) &&
