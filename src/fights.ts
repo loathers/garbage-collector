@@ -283,31 +283,31 @@ const embezzlerSources = [
   new EmbezzlerFight(
     "Spooky Putty & Rain-Doh",
     () =>
-      (have($item`Spooky putty monster`) &&
+      (have($item`Spooky Putty monster`) &&
         get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`) ||
       (have($item`Rain-Doh box full of monster`) &&
         get("rainDohMonster") === $monster`Knob Goblin Embezzler`),
     () => {
       if (
-        (have($item`Spooky putty sheet`) || have($item`Spooky putty monster`)) &&
+        (have($item`Spooky putty sheet`) || have($item`Spooky Putty monster`)) &&
         (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`))
       ) {
         return (
           6 -
           get("spookyPuttyCopiesMade") -
           get("_raindohCopiesMade") +
-          itemAmount($item`Spooky putty monster`) +
+          itemAmount($item`Spooky Putty monster`) +
           itemAmount($item`Rain-Doh box full of monster`)
         );
-      } else if (have($item`Spooky putty sheet`) || have($item`Spooky putty monster`)) {
-        return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky putty monster`);
+      } else if (have($item`Spooky putty sheet`) || have($item`Spooky Putty monster`)) {
+        return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky Putty monster`);
       } else if (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`)) {
         return 5 - get("_raindohCopiesMade") + itemAmount($item`Rain-Doh box full of monster`);
       }
       return 0;
     },
     () => {
-      if (have($item`Spooky putty monster`)) return use($item`Spooky putty monster`);
+      if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
       return use($item`Rain-Doh box full of monster`);
     }
   ),
@@ -403,12 +403,12 @@ function embezzlerSetup() {
   }
 
   // Fix invalid spooky putty monster (caused by ascending)
-  if (have($item`Spooky putty monster`) && get("spookyPuttyMonster") === $monster`none`) {
+  if (have($item`Spooky Putty monster`) && get("spookyPuttyMonster") === $monster`none`) {
     // Visit the description to update the monster as it may be valid but not tracked correctly
-    visitUrl(`desc_item.php?whichitem=${$item`spooky puttty monster`.descid}`, false, false);
+    visitUrl(`desc_item.php?whichitem=${$item`Spooky Putty monster`.descid}`, false, false);
     if (get("spookyPuttyMonster") === $monster`none`) {
       // Still invalid, use it to turn back into the spooky putty sheet
-      use($item`Spooky putty monster`);
+      use($item`Spooky Putty monster`);
     }
   }
 }
