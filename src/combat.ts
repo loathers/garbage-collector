@@ -59,14 +59,12 @@ export class Macro extends LibramMacro {
     switch (itemOrSkill) {
       case $item`Spooky Putty sheet`:
         return this.externalIf(
-          get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6 &&
-            !have($item`Spooky Putty monster`),
+          get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6,
           Macro.tryItem(itemOrSkill)
         );
       case $item`Rain-Doh black box`:
         return this.externalIf(
-          get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6 &&
-            !have($item`Rain-Doh box full of monster`),
+          get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6,
           Macro.tryItem(itemOrSkill)
         );
       case $item`4-d camera`:
@@ -92,7 +90,7 @@ export class Macro extends LibramMacro {
           Macro.tryItem(itemOrSkill)
         );
       case $item`print screen button`:
-        return this.externalIf(!have($item`screencapped monster`), Macro.tryItem(itemOrSkill));
+        return this.tryItem(itemOrSkill);
       case $item`alpine watercolor set`:
         return this.externalIf(
           monster !== $monster`none` && ChateauMantegna.paintingMonster() !== monster,
