@@ -59,12 +59,14 @@ export class Macro extends LibramMacro {
     switch (itemOrSkill) {
       case $item`Spooky Putty sheet`:
         return this.externalIf(
-          get("spookyPuttyCopiesMade") < 5 && !have($item`Spooky Putty monster`),
+          get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6 &&
+            !have($item`Spooky Putty monster`),
           Macro.tryItem(itemOrSkill)
         );
       case $item`Rain-Doh black box`:
         return this.externalIf(
-          get("_raindohCopiesMade") < 5 && !have($item`Rain-Doh box full of monster`),
+          get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6 &&
+            !have($item`Rain-Doh box full of monster`),
           Macro.tryItem(itemOrSkill)
         );
       case $item`4-d camera`:

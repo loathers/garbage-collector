@@ -281,23 +281,35 @@ const embezzlerSources = [
     () => ChateauMantegna.fightPainting()
   ),
   new EmbezzlerFight(
-    "Spooky Putty",
+    "Spooky Putty & Rain-Doh",
     () =>
-      have($item`Spooky Putty monster`) &&
-      get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`,
+      (have($item`Spooky putty monster`) &&
+        get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`) ||
+      (have($item`Rain-Doh box full of monster`) &&
+        get("rainDohMonster") === $monster`Knob Goblin Embezzler`),
     () => {
-      if (have($item`Spooky Putty sheet`)) {
-        return 5 - get("spookyPuttyCopiesMade");
-      }
       if (
-        have($item`Spooky Putty monster`) &&
-        get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`
+        (have($item`Spooky putty sheet`) || have($item`Spooky putty monster`)) &&
+        (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`))
       ) {
-        return 6 - get("spookyPuttyCopiesMade");
+        return (
+          6 -
+          get("spookyPuttyCopiesMade") -
+          get("_raindohCopiesMade") +
+          itemAmount($item`Spooky putty monster`) +
+          itemAmount($item`Rain-Doh box full of monster`)
+        );
+      } else if (have($item`Spooky putty sheet`) || have($item`Spooky putty monster`)) {
+        return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky putty monster`);
+      } else if (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`)) {
+        return 5 - get("_raindohCopiesMade") + itemAmount($item`Rain-Doh box full of monster`);
       }
       return 0;
     },
-    () => use($item`Spooky Putty monster`)
+    () => {
+      if (have($item`Spooky putty monster`)) return use($item`Spooky putty monster`);
+      return use($item`Rain-Doh box full of monster`);
+    }
   ),
   new EmbezzlerFight(
     "Rain-Doh",
