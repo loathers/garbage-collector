@@ -84,9 +84,7 @@ export class Macro extends LibramMacro {
         );
       case $item`pulled green taffy`:
         return this.externalIf(
-          myLocation().environment === "underwater" &&
-            !get("_envyfishEggUsed") &&
-            !have($item`envyfish egg`),
+          !get("_envyfishEggUsed") && !have($item`envyfish egg`),
           Macro.tryItem(itemOrSkill)
         );
       case $item`print screen button`:
