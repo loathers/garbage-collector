@@ -7,7 +7,6 @@ import {
   myAdventures,
   myClass,
   myFamiliar,
-  myLocation,
   print,
   runCombat,
   setAutoAttack,
