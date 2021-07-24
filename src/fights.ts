@@ -392,7 +392,12 @@ function embezzlerSetup() {
 
   // Fix invalid spooky putty monster (caused by ascending)
   if (have($item`Spooky putty monster`) && get("spookyPuttyMonster") === $monster`none`) {
-    use($item`Spooky putty monster`);
+    // Visit the description to update the monster as it may be valid but not tracked correctly
+    visitUrl(`desc_item.php?whichitem=${$item`spooky puttty monster`.descid}`, false, false);
+    if (get("spookyPuttyMonster") === $monster`none`) {
+      // Still invalid, use it to turn back into the spooky putty sheet
+      use($item`Spooky putty monster`);
+    }
   }
 }
 
