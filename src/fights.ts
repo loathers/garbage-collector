@@ -173,8 +173,8 @@ const secondChainMacro = () =>
       Macro.if_(
         "!hasskill Lecture on Relativity",
         Macro.if_(
-          `hasskill ${toInt($skill`meteor shower`)}`,
-          Macro.step(`skill ${toInt($skill`meteor shower`)}`)
+          `hasskill ${toInt($skill`Meteor Shower`)}`,
+          Macro.step(`skill ${toInt($skill`Meteor Shower`)}`)
         )
       ) //fix when libram is updated
         .if_(
