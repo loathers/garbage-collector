@@ -91,7 +91,7 @@ export class Macro extends LibramMacro {
         return this.tryItem(itemOrSkill);
       case $item`LOV Enamorang`:
         return this.externalIf(
-          get("_enamorangs") < 5 && get("enamorangMonster") === $monster`none`,
+          get("_enamorangs") < 5 && !get("enamorangMonster"),
           Macro.tryItem(itemOrSkill)
         );
       case $skill`Digitize`:

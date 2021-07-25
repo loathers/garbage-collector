@@ -392,14 +392,26 @@ function embezzlerSetup() {
     retrieveItem($item`4-d camera`);
   }
 
-  // Fix invalid spooky putty monster (caused by ascending)
-  if (have($item`Spooky Putty monster`) && get("spookyPuttyMonster") === $monster`none`) {
+  // Fix invalid copiers (caused by ascending or combat text-effects)
+  if (have($item`Spooky Putty monster`) && !get("spookyPuttyMonster")) {
     // Visit the description to update the monster as it may be valid but not tracked correctly
     visitUrl(`desc_item.php?whichitem=${$item`Spooky Putty monster`.descid}`, false, false);
-    if (get("spookyPuttyMonster") === $monster`none`) {
+    if (!get("spookyPuttyMonster")) {
       // Still invalid, use it to turn back into the spooky putty sheet
       use($item`Spooky Putty monster`);
     }
+  }
+
+  if (have($item`Rain-Doh box full of monster`) && !get("rainDohMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`Rain-Doh box full of monster`.descid}`, false, false);
+  }
+
+  if (have($item`shaking 4-d camera`) && !get("cameraMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`shaking 4-d camera`.descid}`, false, false);
+  }
+
+  if (have($item`envyfish egg`) && !get("envyfishMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`envyfish egg`.descid}`, false, false);
   }
 }
 
