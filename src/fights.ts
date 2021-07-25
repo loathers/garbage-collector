@@ -154,7 +154,10 @@ const firstChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.if_(
       "!hasskill Lecture on Relativity",
-      Macro.tryCopier($skill`Digitize`, $monster`Knob Goblin Embezzler`)
+      Macro.externalIf(
+        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        Macro.tryCopier($skill`Digitize`)
+      )
         .tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)
         .tryCopier($item`4-d camera`)
@@ -177,7 +180,10 @@ const secondChainMacro = () =>
       ) //fix when libram is updated
         .if_(
           "!hasskill Lecture on Relativity",
-          Macro.tryCopier($skill`Digitize`, $monster`Knob Goblin Embezzler`)
+          Macro.externalIf(
+            get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+            Macro.tryCopier($skill`Digitize`)
+          )
             .tryCopier($item`Spooky Putty sheet`)
             .tryCopier($item`Rain-Doh black box`)
             .tryCopier($item`4-d camera`)
@@ -192,7 +198,10 @@ const embezzlerMacro = () =>
     Macro.if_("snarfblat 186", Macro.tryCopier($item`pulled green taffy`))
       .trySkill("Wink At")
       .trySkill("Fire a badly romantic arrow")
-      .tryCopier($skill`Digitize`, $monster`Knob Goblin Embezzler`)
+      .externalIf(
+        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        Macro.tryCopier($skill`Digitize`)
+      )
       .tryCopier($item`Spooky Putty sheet`)
       .tryCopier($item`Rain-Doh black box`)
       .tryCopier($item`4-d camera`)

@@ -19,7 +19,6 @@ import {
   $monster,
   $skill,
   $slot,
-  ChateauMantegna,
   get,
   have,
   Macro as LibramMacro,
@@ -54,7 +53,7 @@ export class Macro extends LibramMacro {
     return new Macro().tryHaveSkill(skillOrName);
   }
 
-  tryCopier(itemOrSkill: Item | Skill, monster: Monster = $monster`none`): Macro {
+  tryCopier(itemOrSkill: Item | Skill): Macro {
     switch (itemOrSkill) {
       case $item`Spooky Putty sheet`:
         return this.externalIf(
@@ -89,10 +88,7 @@ export class Macro extends LibramMacro {
       case $item`print screen button`:
         return this.tryItem(itemOrSkill);
       case $item`alpine watercolor set`:
-        return this.externalIf(
-          monster !== $monster`none` && ChateauMantegna.paintingMonster() !== monster,
-          Macro.if_(`monstername ${monster}`, Macro.tryItem(itemOrSkill))
-        );
+        return this.tryItem(itemOrSkill);
       case $item`LOV Enamorang`:
         return this.externalIf(
           get("_enamorangs") < 5 && get("enamorangMonster") === $monster`none`,
@@ -100,7 +96,10 @@ export class Macro extends LibramMacro {
         );
       case $skill`Digitize`:
         return this.externalIf(
-          monster !== $monster`none` && get("_sourceTerminalDigitizeMonster") !== monster,
+          get("_sourceTerminalDigitizeUses") <
+            1 +
+              (get("sourceTerminalChips").includes("TRAM") ? 1 : 0) +
+              (get("sourceTerminalChips").includes("TRIGRAM") ? 1 : 0),
           Macro.trySkill(itemOrSkill)
         );
     }
@@ -109,8 +108,8 @@ export class Macro extends LibramMacro {
     return this;
   }
 
-  static tryCopier(itemOrSkill: Item | Skill, monster: Monster = $monster`none`): Macro {
-    return new Macro().tryCopier(itemOrSkill, monster);
+  static tryCopier(itemOrSkill: Item | Skill): Macro {
+    return new Macro().tryCopier(itemOrSkill);
   }
 
   meatKill(): Macro {
