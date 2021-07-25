@@ -7,8 +7,8 @@ import {
   eat,
   equip,
   fullnessLimit,
+  getCampground,
   getProperty,
-  getWorkshed,
   haveEffect,
   inebrietyLimit,
   itemAmount,
@@ -328,7 +328,7 @@ const Mayo = {
 };
 
 function mindMayo(mayo: Item, quantity: number) {
-  if (getWorkshed() !== $item`portable Mayo Clinic`) return;
+  if (!getCampground()["portable Mayo Clinic"]) return;
   if (get("mayoInMouth") && get("mayoInMouth") !== mayo.name)
     throw `You used a bad mayo, my friend!`; //Is this what we want?
   retrieveItem(quantity, mayo);
