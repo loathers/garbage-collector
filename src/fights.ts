@@ -359,7 +359,7 @@ export function embezzlerCount(): number {
 }
 
 function embezzlerSetup() {
-  meatMood(true).execute(myAdventures() * 1.04 + 50);
+  meatMood(true, true).execute(myAdventures() * 1.04 + 50);
   safeRestore();
   if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
   if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {

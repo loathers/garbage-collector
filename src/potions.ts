@@ -189,10 +189,10 @@ class Potion {
   }
 }
 
-export function potionSetup(): void {
+export function potionSetup(doEmbezzlers = false): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
-  const embezzlers = embezzlerCount();
+  const embezzlers = doEmbezzlers ? embezzlerCount() : 0;
   const potions = Item.all().filter(
     (item) => item.tradeable && !banned.includes(item) && itemType(item) === "potion"
   );
