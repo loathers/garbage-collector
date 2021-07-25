@@ -206,7 +206,11 @@ function fillLiver() {
 }
 
 export function runDiet(): void {
-  if (get("barrelShrineUnlocked") && $classes`Turtle Tamer, Accordion Thief`.includes(myClass())) {
+  if (
+    get("barrelShrineUnlocked") &&
+    !get("_barrelPrayer") &&
+    $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
+  ) {
     cliExecute("barrelprayer buff");
   }
   if (mySpleenUse() === 0) {
