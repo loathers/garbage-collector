@@ -885,6 +885,7 @@ export enum PickBjornMode {
   FREE,
   EMBEZZLER,
   BARF,
+  DMT,
 }
 
 const bjornLists: Map<PickBjornMode, BjornedFamiliar[]> = new Map();
@@ -912,7 +913,8 @@ function generateBjornList(mode: PickBjornMode): BjornedFamiliar[] {
   };
   return [...bjornFams].sort(
     (a, b) =>
-      (!b.dropPredicate || (b.dropPredicate() && mode !== PickBjornMode.EMBEZZLER)
+      (!b.dropPredicate ||
+      (b.dropPredicate() && ![PickBjornMode.EMBEZZLER, PickBjornMode.DMT].includes(mode))
         ? b.meatVal() * b.probability
         : 0) +
       additionalValue(b) -
