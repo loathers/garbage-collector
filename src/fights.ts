@@ -101,7 +101,7 @@ import { getString, withChoice, withChoices } from "libram/dist/property";
 import { log } from "./globalvars";
 
 function checkFax(): boolean {
-  cliExecute("fax receive");
+  if (!have($item`photocopied monster`)) cliExecute("fax receive");
   if (getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
   cliExecute("fax send");
   return false;
