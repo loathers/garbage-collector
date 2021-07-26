@@ -12561,8 +12561,8 @@ function fights_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.
 
 
 function checkFax() {
-  (0,external_kolmafia_.cliExecute)("fax receive");
-  if ((0,dist.get)("photocopyMonster") === (0,dist.$monster)(fights_templateObject || (fights_templateObject = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"])))) return true;
+  if (!(0,dist.have)((0,dist.$item)(fights_templateObject || (fights_templateObject = fights_taggedTemplateLiteral(["photocopied monster"]))))) (0,external_kolmafia_.cliExecute)("fax receive");
+  if ((0,property.getString)("photocopyMonster") === "Knob Goblin Embezzler") return true;
   (0,external_kolmafia_.cliExecute)("fax send");
   return false;
 }
