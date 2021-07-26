@@ -97,12 +97,12 @@ import {
 } from "./outfit";
 import { withStash } from "./clan";
 import { bathroomFinance } from "./potions";
-import { withChoice, withChoices } from "libram/dist/property";
+import { getString, withChoice, withChoices } from "libram/dist/property";
 import { log } from "./globalvars";
 
 function checkFax(): boolean {
   cliExecute("fax receive");
-  if (get("photocopyMonster") === $monster`Knob Goblin Embezzler`) return true;
+  if (getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
   cliExecute("fax send");
   return false;
 }
