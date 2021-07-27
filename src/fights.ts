@@ -428,6 +428,7 @@ function startDigitize() {
           () => retrieveItem($item`Louder Than Bomb`)
         );
       if (run.prepare) run.prepare();
+      freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
       adventureMacro($location`Noob Cave`, run.macro);
     } while (get("lastCopyableMonster") === $monster`Government agent`);
   }
