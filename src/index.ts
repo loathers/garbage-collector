@@ -166,25 +166,27 @@ function barfTurn() {
     }
     // a. set up familiar
     useFamiliar(meatFamiliar());
-    let location = embezzlerUp ? prepWandererZone() : $location`Barf Mountain`;
-    if (
-      !get("_envyfishEggUsed") &&
-      (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
-      (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
-      (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-      !have($item`envyfish egg`) &&
-      embezzlerUp
-    ) {
+    const location = embezzlerUp
+      ? !get("_envyfishEggUsed") &&
+        (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
+        (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
+        (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
+        !have($item`envyfish egg`)
+        ? $location`The Briny Deeps`
+        : prepWandererZone()
+      : $location`Barf Mountain`;
+
+    const underwater = location === $location`The Briny Deeps`;
+
+    if (underwater) {
       // now fight one underwater
       if (get("questS01OldGuy") === "unstarted") {
         visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
       }
       retrieveItem($item`pulled green taffy`);
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
-      location = $location`The Briny Deeps`;
     }
 
-    const underwater = location === $location`The Briny Deeps`;
     meatOutfit(embezzlerUp, [], underwater);
 
     adventureMacroAuto(
