@@ -33,7 +33,7 @@ import {
   MaximizeOptions,
 } from "libram";
 import { globalOptions } from "./globalvars";
-import { pickBjorn, PickBjornMode } from "./lib";
+import { pickBjorn, PickBjornMode, sum, trueValue } from "./lib";
 import { baseMeat } from "./mood";
 
 export class Requirement {
@@ -91,7 +91,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       myFamiliar() === $familiar`Pocket Professor` ? ["Familiar Experience"] : ["Familiar Weight"],
       {
         bonusEquip: new Map([
-          [$item`lucky gold ring`, 400],
+          [$item`lucky gold ring`, lgrBonus()],
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
@@ -192,7 +192,7 @@ export function meatOutfit(
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
         bonusEquip: new Map([
-          [$item`lucky gold ring`, 400],
+          [$item`lucky gold ring`, lgrBonus()],
           [$item`mafia thumb ring`, 300],
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
@@ -272,4 +272,28 @@ function cheeses(embezzlerUp: boolean) {
         ])
       )
     : [];
+}
+
+let lgrValue: number;
+function lgrBonus() {
+  if (!lgrValue) {
+    const priceArray = [
+      100,
+      (1 / 200) *
+        Math.max(trueValue($item`bottle of Bloodweiser`), trueValue($item`electric Kool-Aid`)),
+      (1 / 20) * trueValue($item`one-day ticket to Dinseylandfill`),
+      ...(get("_sleazeAirportToday") || get("sleazeAirportAlways")
+        ? [(1 / 100) * trueValue($item`one-day ticket to Spring Break Beach`)]
+        : []),
+      ...(get("_spookyAirportToday") || get("spookyAirportAlways")
+        ? [(1 / 7) * trueValue($item`karma shawarma`)]
+        : []),
+      ...(get("_coldAirportToday") || get("coldAirportAlways")
+        ? [(1 / 50) * trueValue($item`one-day ticket to The Glaciest`)]
+        : []),
+      ...(get("_frToday") || get("frAlways") ? [0] : []),
+    ];
+    lgrValue = sum(priceArray) / priceArray.length;
+  }
+  return lgrValue;
 }
