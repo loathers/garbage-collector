@@ -97,7 +97,7 @@ import {
 import { withStash } from "./clan";
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, log } from "./globalvars";
-import { getString, withChoice, withChoices } from "libram/dist/property";
+import { getString, withChoices } from "libram/dist/property";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
@@ -857,11 +857,9 @@ const freeFightSources = [
       ) {
         //1387, 2
 
-        withChoice(1387, 2, () => {
-          putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-          putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-          adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
-        });
+        putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
+        putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
+        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
       } else {
         if (closetAmount($item`Bowl of Scorpions`) > 0)
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
@@ -989,14 +987,12 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
-    () =>
-      //
-      withChoice(1310, 3, () => {
-        visitUrl("main.php?fightgodlobster=1");
-        runCombat();
-        visitUrl("choice.php");
-        if (handlingChoice()) runChoice(3);
-      }),
+    () => {
+      visitUrl("main.php?fightgodlobster=1");
+      runCombat();
+      visitUrl("choice.php");
+      if (handlingChoice()) runChoice(3);
+    },
     {
       familiar: () => $familiar`God Lobster`,
     }
@@ -1004,9 +1000,7 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
-    () => {
-      withChoice(1119, 6, () => adv1($location`The Deep Machine Tunnels`, -1, ""));
-    },
+    () => adv1($location`The Deep Machine Tunnels`, -1, ""),
     {
       familiar: () => $familiar`Machine Elf`,
     }
@@ -1134,7 +1128,7 @@ const freeKillSources = [
 
 export function freeFights(): void {
   visitUrl("place.php?whichplace=town_wrong");
-  withChoices({ 1324: 5, 1326: "", 1327: "" }, () => {
+  withChoices({ 1322: "", 1324: 5, 1326: "", 1327: "", 1387: 2, 1119: 6, 1310: 3 }, () => {
     for (const freeFightSource of freeFightSources) {
       freeFightSource.runAll();
     }
