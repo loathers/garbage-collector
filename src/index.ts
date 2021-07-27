@@ -153,7 +153,16 @@ function barfTurn() {
   }
 
   const underwater = location === $location`The Briny Deeps`;
-  meatOutfit(embezzlerUp, [], underwater);
+  meatOutfit(
+    embezzlerUp,
+    [
+      new Requirement([], {
+        preventEquip:
+          location === $location`The Icy Peak` ? $items`Great Wolf's beastly trousers` : [],
+      }),
+    ],
+    underwater
+  );
 
   // c. set up mood stuff
   meatMood().execute(myAdventures() * 1.04 + 50);
@@ -170,7 +179,13 @@ function barfTurn() {
     ghostLocation
   ) {
     useFamiliar(freeFightFamiliar());
-    freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
+    freeFightOutfit([
+      new Requirement([], {
+        forceEquip: $items`protonic accelerator pack`,
+        preventEquip:
+          ghostLocation === $location`The Icy Peak` ? $items`Great Wolf's beastly trousers` : [],
+      }),
+    ]);
     adventureMacro(ghostLocation, physicalImmuneMacro);
   } else if (
     have($item`"I Voted!" sticker`) &&
