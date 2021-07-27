@@ -126,12 +126,12 @@ function barfTurn() {
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
 
-  // c. set up mood stuff
+  // a. set up mood stuff
   meatMood().execute(myAdventures() * 1.04 + 50);
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");
-  // d. run adventure
+  // b. check for wanderers, and do them
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
     meatOutfit(true);
     withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
@@ -164,7 +164,7 @@ function barfTurn() {
     ) {
       cliExecute("retrocape robot kill");
     }
-    // a. set up familiar
+    // c. set up familiar
     useFamiliar(meatFamiliar());
     const location = embezzlerUp
       ? !get("_envyfishEggUsed") &&
@@ -187,6 +187,7 @@ function barfTurn() {
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
     }
 
+    // d. get dressed
     meatOutfit(embezzlerUp, [], underwater);
 
     adventureMacroAuto(
