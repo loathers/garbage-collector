@@ -6,6 +6,7 @@ import {
   equip,
   equippedAmount,
   fullnessLimit,
+  getWorkshed,
   haveEquipped,
   inebrietyLimit,
   mallPrice,
@@ -251,7 +252,10 @@ function pantsgivingBonus() {
       : turnArray.findIndex((x) => count < x);
   const turns = turnArray[index] || 50000;
   if (turns - count > myAdventures() * 1.04) return 0;
-  const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
+  const sinusVal =
+    Math.min(myAdventures(), getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50) *
+    1.0 *
+    baseMeat; //if we add mayozapine support, fiddle with this
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
