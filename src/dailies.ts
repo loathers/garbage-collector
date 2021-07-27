@@ -132,12 +132,12 @@ export function latte(): void {
   const latte = $item`latte lovers member's mug`;
   if (have(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
     withChoice(1329, 2, () => visitUrl("main.php?latte=1", false));
-    if (
-      numericModifier(latte, "Familiar Weight") !== 5 ||
-      numericModifier(latte, "Meat Drop") !== 40
-    ) {
-      if (!get("latteUnlocks").includes("cajun") && findRun()) {
-        withChoices({ 923: 1, 924: 1 }, () => {
+    withChoices({ 923: 1, 924: 1, 502: 2, 505: 2 }, () => {
+      if (
+        numericModifier(latte, "Familiar Weight") !== 5 ||
+        numericModifier(latte, "Meat Drop") !== 40
+      ) {
+        if (!get("latteUnlocks").includes("cajun") && findRun()) {
           while (!get("latteUnlocks").includes("cajun") && findRun()) {
             const runSource = findRun();
             if (!runSource) break;
@@ -149,10 +149,8 @@ export function latte(): void {
             adventureMacro($location`The Black Forest`, runSource.macro);
             horseradish();
           }
-        });
-      }
-      if (!get("latteUnlocks").includes("rawhide") && findRun()) {
-        withChoices({ 502: 2, 505: 2 }, () => {
+        }
+        if (!get("latteUnlocks").includes("rawhide") && findRun()) {
           while (!get("latteUnlocks").includes("rawhide") && findRun()) {
             const runSource = findRun();
             if (!runSource) break;
@@ -164,40 +162,40 @@ export function latte(): void {
             adventureMacro($location`The Spooky Forest`, runSource.macro);
             horseradish();
           }
-        });
-      }
-      if (!get("latteUnlocks").includes("carrot") && findRun()) {
-        while (!get("latteUnlocks").includes("carrot") && findRun()) {
-          const runSource = findRun();
-          if (!runSource) break;
-          if (runSource.prepare) runSource.prepare();
-          freeFightOutfit([
-            new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-            ...(runSource.requirement ? [runSource.requirement] : []),
-          ]);
-          adventureMacro($location`The Dire Warren`, runSource.macro);
-          horseradish();
+        }
+        if (!get("latteUnlocks").includes("carrot") && findRun()) {
+          while (!get("latteUnlocks").includes("carrot") && findRun()) {
+            const runSource = findRun();
+            if (!runSource) break;
+            if (runSource.prepare) runSource.prepare();
+            freeFightOutfit([
+              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+              ...(runSource.requirement ? [runSource.requirement] : []),
+            ]);
+            adventureMacro($location`The Dire Warren`, runSource.macro);
+            horseradish();
+          }
+        }
+        if (
+          get("latteUnlocks").includes("cajun") &&
+          get("latteUnlocks").includes("rawhide") &&
+          get("_latteRefillsUsed") < 3
+        ) {
+          const latteIngredients = [
+            "cajun",
+            "rawhide",
+            get("latteUnlocks").includes("carrot")
+              ? "carrot"
+              : myPrimestat() === $stat`muscle`
+              ? "vanilla"
+              : myPrimestat() === $stat`mysticality`
+              ? "pumpkin spice"
+              : "cinnamon",
+          ].join(" ");
+          cliExecute(`latte refill ${latteIngredients}`);
         }
       }
-      if (
-        get("latteUnlocks").includes("cajun") &&
-        get("latteUnlocks").includes("rawhide") &&
-        get("_latteRefillsUsed") < 3
-      ) {
-        const latteIngredients = [
-          "cajun",
-          "rawhide",
-          get("latteUnlocks").includes("carrot")
-            ? "carrot"
-            : myPrimestat() === $stat`muscle`
-            ? "vanilla"
-            : myPrimestat() === $stat`mysticality`
-            ? "pumpkin spice"
-            : "cinnamon",
-        ].join(" ");
-        cliExecute(`latte refill ${latteIngredients}`);
-      }
-    }
+    });
   }
 }
 
