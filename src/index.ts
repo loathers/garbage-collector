@@ -61,7 +61,7 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { physicalImmuneMacro, prepWandererZone, questStep } from "./lib";
+import { kramcoGuaranteed, physicalImmuneMacro, prepWandererZone, questStep } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -182,6 +182,10 @@ function barfTurn() {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`"I Voted!" sticker` })]);
     adventureMacroAuto(prepWandererZone(), Macro.step(physicalImmuneMacro).meatKill());
+  } else if (kramcoGuaranteed()) {
+    useFamiliar(freeFightFamiliar())
+    freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™`})]);
+    adventureMacroAuto(prepWandererZone(), Macro.meatKill());
   } else {
     adventureMacroAuto(
       location,

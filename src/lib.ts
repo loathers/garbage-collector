@@ -11,7 +11,6 @@ import {
   numericModifier,
   print,
   restoreMp,
-  totalTurnsPlayed,
   toUrl,
   use,
   useFamiliar,
@@ -30,6 +29,7 @@ import {
   Bandersnatch,
   get,
   getFoldGroup,
+  getKramcoWandererChance,
   getSongCount,
   getSongLimit,
   Guzzlr,
@@ -938,9 +938,5 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE): BjornedFami
 }
 
 export function kramcoGuaranteed(): boolean {
-  return (
-    have($item`Kramco Sausage-o-Matic™`) &&
-    totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1 >=
-      5 + 3 * get("_sausageFights") + Math.pow(Math.max(0, get("_sausageFights") - 5), 3)
-  );
+  return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() === 1;
 }

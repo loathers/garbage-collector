@@ -27,7 +27,6 @@ import {
   $slot,
   get,
   getFoldGroup,
-  getKramcoWandererChance,
   have,
   maximizeCached,
   MaximizeOptions,
@@ -143,9 +142,6 @@ export function meatOutfit(
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
-    if (getKramcoWandererChance() > 0.05 && have($item`Kramco Sausage-o-Matic™`)) {
-      forceEquip.push($item`Kramco Sausage-o-Matic™`);
-    }
     // TODO: Fix pointer finger ring construction.
     if (myClass() !== $class`Seal Clubber`) {
       if (have($item`haiku katana`)) {
