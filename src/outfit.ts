@@ -275,7 +275,7 @@ function cheeses(embezzlerUp: boolean) {
 }
 
 let lgrValue: number;
-function lgrBonus() {
+function lgrBonus(): number {
   if (!lgrValue) {
     const priceArray = [
       100,
