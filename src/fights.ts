@@ -1036,13 +1036,11 @@ const freeFightSources = [
         : 0,
     () => {
       nepQuest();
-      withChoices(nepQuestChoices(), () => {
-        adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
-        if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
-          print("Found Gerald/ine!", "blue");
-          setChoice(1324, 5);
-        }
-      });
+      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
+      if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
+        print("Found Gerald/ine!", "blue");
+        setChoice(1324, 5);
+      }
     },
     {
       requirements: () => [
@@ -1136,9 +1134,11 @@ const freeKillSources = [
 
 export function freeFights(): void {
   visitUrl("place.php?whichplace=town_wrong");
-  for (const freeFightSource of freeFightSources) {
-    freeFightSource.runAll();
-  }
+  withChoices({ 1324: 5, 1326: "", 1327: "" }, () => {
+    for (const freeFightSource of freeFightSources) {
+      freeFightSource.runAll();
+    }
+  });
 
   if (
     !have($item`li'l ninja costume`) &&
@@ -1201,18 +1201,6 @@ function nepQuest() {
   }
 }
 
-function nepQuestChoices() {
-  if (questStep("_questPartyFair") <= 0) {
-    if (get("_questPartyFairQuest") === "food") {
-      return { 1324: 2, 1326: 3, 1327: "" };
-    }
-    if (get("_questPartyFairQuest") === "booze") {
-      return { 1324: 3, 1326: "", 1327: 3 };
-    }
-  }
-  return { 1324: 5, 1326: "", 1327: "" };
-}
-
 function thesisReady(): boolean {
   return (
     !get("_thesisDelivered") &&
@@ -1246,14 +1234,12 @@ function deliverThesis(): void {
     outfit("checkpoint");
   }
   cliExecute("gain 1800 muscle");
-  withChoices(nepQuestChoices(), () => {
-    adventureMacro(
-      thesisInNEP
-        ? $location`The Neverending Party`
-        : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
-      Macro.skill("Deliver your Thesis")
-    );
-  });
+  adventureMacro(
+    thesisInNEP
+      ? $location`The Neverending Party`
+      : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+    Macro.skill("Deliver your Thesis")
+  );
 }
 
 export function safeRestore(): void {
