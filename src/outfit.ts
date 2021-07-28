@@ -16,11 +16,13 @@ import {
   myInebriety,
   numericModifier,
   retrieveItem,
+  sellPrice,
   toSlot,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
   $class,
+  $coinmaster,
   $familiar,
   $item,
   $items,
@@ -279,17 +281,30 @@ function lgrBonus(): number {
   if (!lgrValue) {
     const priceArray = [
       100,
-      (1 / 200) *
-        Math.max(trueValue($item`bottle of Bloodweiser`), trueValue($item`electric Kool-Aid`)),
-      (1 / 20) * trueValue($item`one-day ticket to Dinseylandfill`),
+      Math.max(trueValue($item`bottle of Bloodweiser`), trueValue($item`electric Kool-Aid`)) /
+        sellPrice($coinmaster`The Terrified Eagle Inn`, $item`bottle of Bloodweiser`),
+      trueValue($item`one-day ticket to Dinseylandfill`) /
+        sellPrice($coinmaster`The Dinsey Company Store`, $item`one-day ticket to Dinseylandfill`),
       ...(get("_sleazeAirportToday") || get("sleazeAirportAlways")
-        ? [(1 / 100) * trueValue($item`one-day ticket to Spring Break Beach`)]
+        ? [
+            trueValue($item`one-day ticket to Spring Break Beach`) /
+              sellPrice(
+                $coinmaster`Buff Jimmy's Souvenir Shop`,
+                $item`one-day ticket to Spring Break Beach`
+              ),
+          ]
         : []),
       ...(get("_spookyAirportToday") || get("spookyAirportAlways")
-        ? [(1 / 7) * trueValue($item`karma shawarma`)]
+        ? [
+            trueValue($item`karma shawarma`) /
+              sellPrice($coinmaster`The SHAWARMA Initiative`, $item`karma shawarma`),
+          ]
         : []),
       ...(get("_coldAirportToday") || get("coldAirportAlways")
-        ? [(1 / 50) * trueValue($item`one-day ticket to The Glaciest`)]
+        ? [
+            trueValue($item`one-day ticket to The Glaciest`) /
+              sellPrice($coinmaster`Wal-Mart`, $item`one-day ticket to The Glaciest`),
+          ]
         : []),
       ...(get("_frToday") || get("frAlways") ? [0] : []),
     ];
