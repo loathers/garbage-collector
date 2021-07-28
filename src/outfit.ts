@@ -276,6 +276,46 @@ function cheeses(embezzlerUp: boolean) {
     : [];
 }
 
+type LgrCoin = {
+  item: Item;
+  coinmaster: Coinmaster;
+  available: boolean;
+};
+
+function lgrCoinValue(currency: LgrCoin) {
+  return currency.available
+    ? [trueValue(currency.item) / sellPrice(currency.coinmaster, currency.item)]
+    : [];
+}
+
+const premiumZoneCurrencies: LgrCoin[] = [
+  {
+    item: $item`one-day ticket to Dinseylandfill`,
+    coinmaster: $coinmaster`The Dinsey Company Store`,
+    available: true,
+  },
+  {
+    item: $item`one-day ticket to Spring Break Beach`,
+    coinmaster: $coinmaster`Buff Jimmy's Souvenir Shop`,
+    available: get("_sleazeAirportToday") || get("sleazeAirportAlways"),
+  },
+  {
+    item: $item`karma shawarma`,
+    coinmaster: $coinmaster`The SHAWARMA Initiative`,
+    available: get("_spookyAirportToday") || get("spookyAirportAlways"),
+  },
+  {
+    item: $item`one-day ticket to The Glaciest`,
+    coinmaster: $coinmaster`Wal-Mart`,
+    available: get("_coldAirportToday") || get("coldAirportAlways"),
+  },
+  {
+    item: $item`LyleCo Contractor's Manual`,
+    coinmaster: $coinmaster`FantasyRealm Rubee™ Store`,
+    available: get("_frToday") || get("frAlways"),
+  },
+];
+
 let lgrValue: number;
 function lgrBonus(): number {
   if (!lgrValue) {
@@ -283,31 +323,7 @@ function lgrBonus(): number {
       100,
       Math.max(trueValue($item`bottle of Bloodweiser`), trueValue($item`electric Kool-Aid`)) /
         sellPrice($coinmaster`The Terrified Eagle Inn`, $item`bottle of Bloodweiser`),
-      trueValue($item`one-day ticket to Dinseylandfill`) /
-        sellPrice($coinmaster`The Dinsey Company Store`, $item`one-day ticket to Dinseylandfill`),
-      ...(get("_sleazeAirportToday") || get("sleazeAirportAlways")
-        ? [
-            trueValue($item`one-day ticket to Spring Break Beach`) /
-              sellPrice(
-                $coinmaster`Buff Jimmy's Souvenir Shop`,
-                $item`one-day ticket to Spring Break Beach`
-              ),
-          ]
-        : []),
-      ...(get("_spookyAirportToday") || get("spookyAirportAlways")
-        ? [
-            trueValue($item`karma shawarma`) /
-              sellPrice($coinmaster`The SHAWARMA Initiative`, $item`karma shawarma`),
-          ]
-        : []),
-      ...(get("_coldAirportToday") || get("coldAirportAlways")
-        ? [
-            trueValue($item`one-day ticket to The Glaciest`) /
-              sellPrice($coinmaster`Wal-Mart`, $item`one-day ticket to The Glaciest`),
-          ]
-        : []),
-      ...(get("_frToday") || get("frAlways") ? [0] : []),
-    ];
+    ].concat(...premiumZoneCurrencies.map((zoneCurrency) => lgrCoinValue(zoneCurrency)));
     lgrValue = sum(priceArray) / priceArray.length;
   }
   return lgrValue;
