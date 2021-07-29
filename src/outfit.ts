@@ -9,6 +9,7 @@ import {
   haveEquipped,
   inebrietyLimit,
   mallPrice,
+  myAdventures,
   myClass,
   myFamiliar,
   myFullness,
@@ -31,7 +32,7 @@ import {
   maximizeCached,
   MaximizeOptions,
 } from "libram";
-import { estimatedTurns, globalOptions } from "./globalvars";
+import { globalOptions } from "./globalvars";
 import { pickBjorn, PickBjornMode } from "./lib";
 import { baseMeat } from "./mood";
 
@@ -252,7 +253,7 @@ function pantsgivingBonus() {
       ? get("_pantsgivingFullness")
       : turnArray.findIndex((x) => count < x);
   const turns = turnArray[index] || 50000;
-  if (turns - count > estimatedTurns()) return 0;
+  if (turns - count > myAdventures() * 1.04) return 0;
   const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
   const fullnessValue =
     sinusVal +
@@ -265,7 +266,7 @@ function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&
     !globalOptions.ascending &&
     get("_stinkyCheeseCount") < 100 &&
-    estimatedTurns() >= 100 - get("_stinkyCheeseCount") &&
+    myAdventures() >= 100 - get("_stinkyCheeseCount") &&
     !embezzlerUp
     ? new Map<Item, number>(
         getFoldGroup($item`stinky cheese diaper`).map((item) => [

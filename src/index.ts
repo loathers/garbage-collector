@@ -72,7 +72,7 @@ import {
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
 import { withProperties } from "libram/dist/property";
-import { estimatedTurns, globalOptions, log } from "./globalvars";
+import { globalOptions, log } from "./globalvars";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -156,7 +156,7 @@ function barfTurn() {
   meatOutfit(embezzlerUp, [], underwater);
 
   // c. set up mood stuff
-  meatMood().execute(estimatedTurns());
+  meatMood().execute(myAdventures() * 1.04 + 50);
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");
