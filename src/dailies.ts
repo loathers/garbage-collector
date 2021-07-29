@@ -10,7 +10,6 @@ import {
   itemAmount,
   mallPrice,
   maximize,
-  myAdventures,
   myClass,
   myPrimestat,
   myThrall,
@@ -45,7 +44,6 @@ import {
   SongBoom,
   SourceTerminal,
 } from "libram";
-import { globalOptions } from "./globalvars";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
 import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
@@ -53,6 +51,7 @@ import { baseMeat } from "./mood";
 import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
 import { withChoice, withChoices } from "libram/dist/property";
+import { estimatedTurns } from "./globalvars";
 
 export function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -269,15 +268,13 @@ export function configureMisc(): void {
   }
 
   if (get("_VYKEACompanionLevel") === 0) {
-    const expectedTurns =
-      myAdventures() / 0.96 - (globalOptions.stopTurncount ? globalOptions.stopTurncount : 0);
     const vykeas: [number, number][] = [
       [1, 0],
       [2, 1],
       [3, 11],
     ]; //excluding 4 and 5 as per bean's suggestion
     const vykeaProfit = (level: number, cost: number) =>
-      expectedTurns * baseMeat * 0.1 * level -
+      estimatedTurns() * baseMeat * 0.1 * level -
       5 * mallPrice($item`VYKEA rail`) +
       cost * mallPrice($item`VYKEA dowel`) +
       5 * mallPrice($item`VYKEA plank`) +
