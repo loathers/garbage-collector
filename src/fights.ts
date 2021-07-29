@@ -96,12 +96,12 @@ import {
 } from "./outfit";
 import { withStash } from "./clan";
 import { bathroomFinance } from "./potions";
-import { withChoice, withChoices } from "libram/dist/property";
 import { estimatedTurns, log } from "./globalvars";
+import { getString, withChoice, withChoices } from "libram/dist/property";
 
 function checkFax(): boolean {
-  cliExecute("fax receive");
-  if (get("photocopyMonster") === $monster`Knob Goblin Embezzler`) return true;
+  if (!have($item`photocopied monster`)) cliExecute("fax receive");
+  if (getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
   cliExecute("fax send");
   return false;
 }
@@ -169,7 +169,13 @@ const secondChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.externalIf(
       myFamiliar() === $familiar`Pocket Professor`,
-      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
+      Macro.if_(
+        "!hasskill Lecture on Relativity",
+        Macro.if_(
+          `hasskill ${toInt($skill`Meteor Shower`)}`,
+          Macro.step(`skill ${toInt($skill`Meteor Shower`)}`)
+        )
+      ) //fix when libram is updated
         .if_(
           "!hasskill Lecture on Relativity",
           Macro.externalIf(
