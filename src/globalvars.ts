@@ -13,8 +13,9 @@ export const globalOptions: { ascending: boolean; stopTurncount: number | null }
 
 export function estimatedTurns(): number {
   return (
-    globalOptions.stopTurncount ??
-    (myAdventures() + (globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0)) *
-      (have($item`mafia thumb ring`) ? 1.04 : 1)
+    (myAdventures() +
+      (globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0) -
+      (globalOptions.stopTurncount ?? 0)) *
+    (have($item`mafia thumb ring`) ? 1.04 : 1)
   );
 }
