@@ -83,7 +83,10 @@ const bestAdventuresFromPants =
     .sort((a, b) => b - a)[0] || 0;
 
 export function freeFightOutfit(requirements: Requirement[] = []): void {
-  const bjornChoice = pickBjorn(PickBjornMode.FREE);
+  const bjornChoice =
+    myFamiliar() === $familiar`Machine Elf`
+      ? pickBjorn(PickBjornMode.DMT)
+      : pickBjorn(PickBjornMode.FREE);
 
   const compiledRequirements = Requirement.merge([
     ...requirements,
