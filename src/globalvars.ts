@@ -1,4 +1,4 @@
-import { inebrietyLimit, myAdventures, myInebriety } from "kolmafia";
+import { inebrietyLimit, myAdventures, myInebriety, myTurncount } from "kolmafia";
 import { $item, have } from "libram";
 
 export const log = {
@@ -12,10 +12,8 @@ export const globalOptions: { ascending: boolean; stopTurncount: number | null }
 };
 
 export function estimatedTurns(): number {
-  return (
-    (myAdventures() +
-      (globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0) -
-      (globalOptions.stopTurncount ?? 0)) *
-    (have($item`mafia thumb ring`) ? 1.04 : 1)
-  );
+  return globalOptions.stopTurncount
+    ? globalOptions.stopTurncount - myTurncount()
+    : (myAdventures() + (globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0)) *
+        (have($item`mafia thumb ring`) ? 1.04 : 1);
 }
