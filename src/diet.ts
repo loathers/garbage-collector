@@ -14,7 +14,6 @@ import {
   itemAmount,
   mallPrice,
   maximize,
-  myAdventures,
   myClass,
   myFamiliar,
   myFullness,
@@ -36,7 +35,7 @@ import {
 import { $class, $effect, $familiar, $item, $items, $skill, get, have, set } from "libram";
 import { withChoice } from "libram/dist/property";
 import { acquire } from "./acquire";
-import { globalOptions } from "./globalvars";
+import { estimatedTurns, globalOptions } from "./globalvars";
 import { clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
@@ -143,7 +142,7 @@ function fillSpleenWith(spleenItem: Item) {
     const spleenTotal = spleenLimit() - mySpleenUse();
     const adventuresPerItem = adventureGain(spleenItem);
     const spleenSynth = Math.ceil(
-      (1.04 * adventuresPerItem * spleenTotal + 1.04 * myAdventures() + 40 - synthTurns) /
+      (1.04 * adventuresPerItem * spleenTotal + estimatedTurns() - synthTurns) /
         (30 + 1.04 * adventuresPerItem)
     );
     if (have($skill`Sweet Synthesis`)) {
