@@ -15,6 +15,7 @@ import {
   handlingChoice,
   itemAmount,
   mallPrice,
+  myAdventures,
   myAscensions,
   myClass,
   myFamiliar,
@@ -96,8 +97,8 @@ import {
 } from "./outfit";
 import { withStash } from "./clan";
 import { bathroomFinance } from "./potions";
-import { estimatedTurns, log } from "./globalvars";
 import { getString, withChoice, withChoices } from "libram/dist/property";
+import { log } from "./globalvars";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
@@ -364,7 +365,7 @@ export function embezzlerCount(): number {
 }
 
 function embezzlerSetup() {
-  meatMood(true).execute(estimatedTurns());
+  meatMood(true).execute(myAdventures() * 1.04 + 50);
   safeRestore();
   if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
   if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
