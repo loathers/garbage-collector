@@ -886,7 +886,8 @@ const freeFightSources = [
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
-    }
+    },
+    { 1387: 2 }
   ),
 
   //Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
