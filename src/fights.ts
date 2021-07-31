@@ -153,12 +153,13 @@ const firstChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.if_(
       "!hasskill Lecture on Relativity",
-      Macro.trySkill("Digitize")
-        .externalIf(get("spookyPuttyCopiesMade") < 5, Macro.tryItem($item`Spooky Putty sheet`))
-        .externalIf(
-          !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-          Macro.tryItem($item`4-d camera`)
-        )
+      Macro.externalIf(
+        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        Macro.tryCopier($skill`Digitize`)
+      )
+        .tryCopier($item`Spooky Putty sheet`)
+        .tryCopier($item`Rain-Doh black box`)
+        .tryCopier($item`4-d camera`)
     )
       .trySkill("Lecture on Relativity")
       .meatKill()
@@ -179,17 +180,12 @@ const secondChainMacro = () =>
         .if_(
           "!hasskill Lecture on Relativity",
           Macro.externalIf(
-            get("spookyPuttyCopiesMade") < 5,
-            Macro.tryItem($item`Spooky Putty sheet`)
+            get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+            Macro.tryCopier($skill`Digitize`)
           )
-            .externalIf(
-              !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-              Macro.tryItem($item`4-d camera`)
-            )
-            .externalIf(
-              get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
-              Macro.trySkill("Digitize")
-            )
+            .tryCopier($item`Spooky Putty sheet`)
+            .tryCopier($item`Rain-Doh black box`)
+            .tryCopier($item`4-d camera`)
         )
         .trySkill("Lecture on Relativity")
     ).meatKill()
@@ -198,18 +194,16 @@ const secondChainMacro = () =>
 const embezzlerMacro = () =>
   Macro.if_(
     "monstername Knob Goblin Embezzler",
-    Macro.if_("snarfblat 186", Macro.item($item`pulled green taffy`))
+    Macro.if_("snarfblat 186", Macro.tryCopier($item`pulled green taffy`))
       .trySkill("Wink At")
       .trySkill("Fire a badly romantic arrow")
       .externalIf(
         get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
-        Macro.trySkill("Digitize")
+        Macro.tryCopier($skill`Digitize`)
       )
-      .externalIf(get("spookyPuttyCopiesMade") < 5, Macro.tryItem($item`Spooky Putty sheet`))
-      .externalIf(
-        !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-        Macro.tryItem($item`4-d camera`)
-      )
+      .tryCopier($item`Spooky Putty sheet`)
+      .tryCopier($item`Rain-Doh black box`)
+      .tryCopier($item`4-d camera`)
       .meatKill()
   ).abort();
 
@@ -295,23 +289,35 @@ const embezzlerSources = [
     () => ChateauMantegna.fightPainting()
   ),
   new EmbezzlerFight(
-    "Spooky Putty",
+    "Spooky Putty & Rain-Doh",
     () =>
-      have($item`Spooky Putty monster`) &&
-      get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`,
+      (have($item`Spooky Putty monster`) &&
+        get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`) ||
+      (have($item`Rain-Doh box full of monster`) &&
+        get("rainDohMonster") === $monster`Knob Goblin Embezzler`),
     () => {
-      if (have($item`Spooky Putty sheet`)) {
-        return 5 - get("spookyPuttyCopiesMade");
-      }
       if (
-        have($item`Spooky Putty monster`) &&
-        get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`
+        (have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`)) &&
+        (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`))
       ) {
-        return 6 - get("spookyPuttyCopiesMade");
+        return (
+          6 -
+          get("spookyPuttyCopiesMade") -
+          get("_raindohCopiesMade") +
+          itemAmount($item`Spooky Putty monster`) +
+          itemAmount($item`Rain-Doh box full of monster`)
+        );
+      } else if (have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`)) {
+        return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky Putty monster`);
+      } else if (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`)) {
+        return 5 - get("_raindohCopiesMade") + itemAmount($item`Rain-Doh box full of monster`);
       }
       return 0;
     },
-    () => use($item`Spooky Putty monster`)
+    () => {
+      if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
+      return use($item`Rain-Doh box full of monster`);
+    }
   ),
   new EmbezzlerFight(
     "4-d Camera",
@@ -383,6 +389,28 @@ function embezzlerSetup() {
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {
     retrieveItem($item`4-d camera`);
+  }
+
+  // Fix invalid copiers (caused by ascending or combat text-effects)
+  if (have($item`Spooky Putty monster`) && !get("spookyPuttyMonster")) {
+    // Visit the description to update the monster as it may be valid but not tracked correctly
+    visitUrl(`desc_item.php?whichitem=${$item`Spooky Putty monster`.descid}`, false, false);
+    if (!get("spookyPuttyMonster")) {
+      // Still invalid, use it to turn back into the spooky putty sheet
+      use($item`Spooky Putty monster`);
+    }
+  }
+
+  if (have($item`Rain-Doh box full of monster`) && !get("rainDohMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`Rain-Doh box full of monster`.descid}`, false, false);
+  }
+
+  if (have($item`shaking 4-d camera`) && !get("cameraMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`shaking 4-d camera`.descid}`, false, false);
+  }
+
+  if (have($item`envyfish egg`) && !get("envyfishMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`envyfish egg`.descid}`, false, false);
   }
 }
 
