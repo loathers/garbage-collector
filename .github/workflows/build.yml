@@ -69,8 +69,8 @@ jobs:
           rm -r data/
           rm -r relay/
           mv KoLmafia/scripts scripts
+          mv KoLmafia/relay relay
           mv mafiafiles/data ./data
-          mv mafiafiles/relay ./relay
           mv dependencies dependencies.txt
       - run: |
           git add scripts/

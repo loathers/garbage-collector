@@ -20,6 +20,7 @@ import {
   runChoice,
   setAutoAttack,
   toItem,
+  totalTurnsPlayed,
   use,
   useFamiliar,
   visitUrl,
@@ -72,6 +73,7 @@ import {
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
 import { withProperties } from "libram/dist/property";
+import { estimatedTurns, globalOptions, log } from "./globalvars";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -116,6 +118,7 @@ function dailySetup() {
 }
 
 function barfTurn() {
+  const startTurns = totalTurnsPlayed();
   horseradish();
   if (have($effect`Beaten Up`))
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
@@ -155,7 +158,7 @@ function barfTurn() {
   meatOutfit(embezzlerUp, [], underwater);
 
   // c. set up mood stuff
-  meatMood().execute(myAdventures() * 1.04 + 50);
+  meatMood().execute(estimatedTurns());
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");
@@ -164,6 +167,7 @@ function barfTurn() {
     meatOutfit(true);
     withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
   } else if (
+    myInebriety() <= inebrietyLimit() &&
     have($item`protonic accelerator pack`) &&
     get("questPAGhost") !== "unstarted" &&
     ghostLocation
@@ -172,6 +176,7 @@ function barfTurn() {
     freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
     adventureMacro(ghostLocation, physicalImmuneMacro);
   } else if (
+    myInebriety() <= inebrietyLimit() &&
     have($item`"I Voted!" sticker`) &&
     getCounters("Vote", 0, 0) !== "" &&
     get("_voteFreeFights") < 3
@@ -211,12 +216,10 @@ function barfTurn() {
       eat($item`magical sausage`);
     }
   }
+  if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
+    if (embezzlerUp) log.digitizedEmbezzlersFought++;
+    else log.initialEmbezzlersFought++;
 }
-
-export const globalOptions: { ascending: boolean; stopTurncount: number | null } = {
-  stopTurncount: null,
-  ascending: false,
-};
 
 export function canContinue(): boolean {
   return (
@@ -354,5 +357,9 @@ export function main(argString = ""): void {
         "blue"
       );
     }
+    print(
+      `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+      "blue"
+    );
   }
 }
