@@ -640,29 +640,40 @@ class FreeFight {
   available: () => number | boolean;
   run: () => void;
   options: FreeFightOptions;
+  choices: { [choice: number]: number | string };
 
-  constructor(available: () => number | boolean, run: () => void, options: FreeFightOptions = {}) {
+  constructor(
+    available: () => number | boolean,
+    run: () => void,
+    options: FreeFightOptions = {},
+    choices: { [choice: number]: number | string } = {}
+  ) {
     this.available = available;
     this.run = run;
     this.options = options;
+    this.choices = choices;
   }
 
   runAll() {
     if (!this.available()) return;
     // FIXME: make a better decision here.
     if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
-    while (this.available()) {
-      useFamiliar(
-        this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
-      );
-      freeFightMood().execute();
-      freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
-      safeRestore();
-      withMacro(Macro.meatKill(), this.run);
-      horseradish();
-      // Slot in our Professor Thesis if it's become available
-      if (thesisReady()) deliverThesis();
-    }
+    withChoices(this.choices, () => {
+      while (this.available()) {
+        useFamiliar(
+          this.options.familiar
+            ? this.options.familiar() ?? freeFightFamiliar()
+            : freeFightFamiliar()
+        );
+        freeFightMood().execute();
+        freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
+        safeRestore();
+        withMacro(Macro.meatKill(), this.run);
+        horseradish();
+        // Slot in our Professor Thesis if it's become available
+        if (thesisReady()) deliverThesis();
+      }
+    });
   }
 }
 
