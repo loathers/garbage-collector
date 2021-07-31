@@ -1007,6 +1007,9 @@ const freeFightSources = [
     },
     {
       familiar: () => $familiar`God Lobster`,
+    },
+    {
+      1310: 3,
     }
   ),
 
@@ -1015,7 +1018,8 @@ const freeFightSources = [
     () => adv1($location`The Deep Machine Tunnels`, -1, ""),
     {
       familiar: () => $familiar`Machine Elf`,
-    }
+    },
+    { 1119: 6 }
   ),
 
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
@@ -1141,11 +1145,10 @@ const freeKillSources = [
 
 export function freeFights(): void {
   visitUrl("place.php?whichplace=town_wrong");
-  withChoices({ 1322: "", 1324: 5, 1326: "", 1327: "", 1387: 2, 1119: 6, 1310: 3 }, () => {
-    for (const freeFightSource of freeFightSources) {
-      freeFightSource.runAll();
-    }
-  });
+
+  for (const freeFightSource of freeFightSources) {
+    freeFightSource.runAll();
+  }
 
   if (
     !have($item`li'l ninja costume`) &&
