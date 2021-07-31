@@ -50,6 +50,7 @@ import {
   dailyBuffs,
   gaze,
   gin,
+  gingerbreadPrepNoon,
   horse,
   jellyfish,
   latte,
@@ -72,7 +73,7 @@ import {
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
 import { withProperties } from "libram/dist/property";
-import { globalOptions, log } from "./globalvars";
+import { estimatedTurns, globalOptions, log } from "./globalvars";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -98,8 +99,9 @@ function dailySetup() {
   gaze();
   configureGear();
   horse();
-  latte();
   prepFamiliars();
+  gingerbreadPrepNoon();
+  latte();
   jellyfish();
   dailyBuffs();
   configureMisc();
@@ -127,7 +129,7 @@ function barfTurn() {
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
 
   // a. set up mood stuff
-  meatMood().execute(myAdventures() * 1.04 + 50);
+  meatMood().execute(estimatedTurns());
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");
@@ -260,6 +262,13 @@ export function main(argString = ""): void {
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
   );
+  if (
+    startingGarden &&
+    !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
+    getCampground()[startingGarden.name]
+  ) {
+    visitUrl("campground.php?action=garden&pwd");
+  }
 
   const aaBossFlag =
     xpath(
@@ -276,7 +285,11 @@ export function main(argString = ""): void {
     }
     print();
 
-    if (have($item`packet of tall grass seeds`) && myGardenType() !== "grass")
+    if (
+      have($item`packet of tall grass seeds`) &&
+      myGardenType() !== "grass" &&
+      myGardenType() !== "mushroom"
+    )
       use($item`packet of tall grass seeds`);
 
     setAutoAttack(0);
