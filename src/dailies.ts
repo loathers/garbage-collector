@@ -3,7 +3,6 @@ import {
   buy,
   changeMcd,
   cliExecute,
-  equip,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -33,7 +32,6 @@ import {
   $items,
   $location,
   $skill,
-  $slot,
   $stat,
   $thrall,
   adventureMacro,
@@ -48,9 +46,9 @@ import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
 import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
 import { baseMeat } from "./mood";
-import { freeFightOutfit } from "./outfit";
+import { freeFightOutfit, Requirement } from "./outfit";
 import { withStash } from "./clan";
-import { withChoice, withChoices } from "libram/dist/property";
+import { set, withChoice, withChoices } from "libram/dist/property";
 import { estimatedTurns } from "./globalvars";
 
 export function voterSetup(): void {
@@ -143,8 +141,11 @@ export function latte(): void {
           while (!get("latteUnlocks").includes("cajun") && findRun()) {
             const runSource = findRun();
             if (!runSource) break;
-            runSource.prepare();
-            equip($slot`off-hand`, latte);
+            if (runSource.prepare) runSource.prepare();
+            freeFightOutfit([
+              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+              ...(runSource.requirement ? [runSource.requirement] : []),
+            ]);
             adventureMacro($location`The Black Forest`, runSource.macro);
             horseradish();
           }
@@ -155,8 +156,11 @@ export function latte(): void {
           while (!get("latteUnlocks").includes("rawhide") && findRun()) {
             const runSource = findRun();
             if (!runSource) break;
-            runSource.prepare();
-            equip($slot`off-hand`, latte);
+            if (runSource.prepare) runSource.prepare();
+            freeFightOutfit([
+              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+              ...(runSource.requirement ? [runSource.requirement] : []),
+            ]);
             adventureMacro($location`The Spooky Forest`, runSource.macro);
             horseradish();
           }
@@ -166,8 +170,11 @@ export function latte(): void {
         while (!get("latteUnlocks").includes("carrot") && findRun()) {
           const runSource = findRun();
           if (!runSource) break;
-          runSource.prepare();
-          equip($slot`off-hand`, latte);
+          if (runSource.prepare) runSource.prepare();
+          freeFightOutfit([
+            new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+            ...(runSource.requirement ? [runSource.requirement] : []),
+          ]);
           adventureMacro($location`The Dire Warren`, runSource.macro);
           horseradish();
         }
@@ -467,7 +474,8 @@ export function jellyfish(): void {
   while (findRun(false) && have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
     const runSource = findRun(false);
     if (!runSource) break;
-    runSource.prepare();
+    if (runSource.prepare) runSource.prepare();
+    freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
     const jellyMacro = Macro.while_(
       "!pastround 28 && hasskill macrometeorite",
       Macro.skill("extract jelly").skill("macrometeorite")
@@ -475,17 +483,50 @@ export function jellyfish(): void {
     adventureMacro($location`Barf Mountain`, jellyMacro);
   }
   if (have($item`Powerful Glove`)) {
-    freeFightOutfit();
-    equip($slot`acc2`, $item`Powerful Glove`);
     while (findRun(false) && get("_powerfulGloveBatteryPowerUsed") < 91) {
       const runSource = findRun(false);
       if (!runSource) break;
-      runSource.prepare();
+      if (runSource.prepare) runSource.prepare();
+      freeFightOutfit([
+        new Requirement([], { forceEquip: $items`Powerful Glove` }),
+        ...(runSource.requirement ? [runSource.requirement] : []),
+      ]);
       const jellyMacro = Macro.while_(
         "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
         Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
       ).step(runSource.macro);
       adventureMacro($location`Barf Mountain`, jellyMacro);
+    }
+  }
+}
+
+export function gingerbreadPrepNoon(): void {
+  if (!get("gingerbreadCityAvailable") && !get("_gingerbreadCityToday")) return;
+  if (
+    get("gingerAdvanceClockUnlocked") &&
+    !get("_gingerbreadClockVisited") &&
+    get("_gingerbreadCityTurns") <= 3
+  ) {
+    withChoice(1215, 1, () => adventureMacro($location`Gingerbread Civic Center`, Macro.abort()));
+  }
+  while (
+    findRun() &&
+    get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 9
+  ) {
+    const run = findRun();
+    if (!run) break;
+    if (run.prepare) run.prepare();
+    freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
+    adventureMacro($location`Gingerbread Civic Center`, run.macro);
+    if (
+      [
+        "Even Tamer Than Usual",
+        "Never Break the Chain",
+        "Close, but Yes Cigar",
+        "Armchair Quarterback",
+      ].includes(get("lastEncounter"))
+    ) {
+      set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
     }
   }
 }

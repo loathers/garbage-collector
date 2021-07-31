@@ -50,6 +50,7 @@ import {
   dailyBuffs,
   gaze,
   gin,
+  gingerbreadPrepNoon,
   horse,
   jellyfish,
   latte,
@@ -98,8 +99,9 @@ function dailySetup() {
   gaze();
   configureGear();
   horse();
-  latte();
   prepFamiliars();
+  gingerbreadPrepNoon();
+  latte();
   jellyfish();
   dailyBuffs();
   configureMisc();
