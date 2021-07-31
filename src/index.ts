@@ -72,7 +72,7 @@ import {
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
 import { withProperties } from "libram/dist/property";
-import { globalOptions, log } from "./globalvars";
+import { estimatedTurns, globalOptions, log } from "./globalvars";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -156,7 +156,7 @@ function barfTurn() {
   meatOutfit(embezzlerUp, [], underwater);
 
   // c. set up mood stuff
-  meatMood().execute(myAdventures() * 1.04 + 50);
+  meatMood().execute(estimatedTurns());
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");
@@ -165,6 +165,7 @@ function barfTurn() {
     meatOutfit(true);
     withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
   } else if (
+    myInebriety() <= inebrietyLimit() &&
     have($item`protonic accelerator pack`) &&
     get("questPAGhost") !== "unstarted" &&
     ghostLocation
@@ -173,6 +174,7 @@ function barfTurn() {
     freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
     adventureMacro(ghostLocation, physicalImmuneMacro);
   } else if (
+    myInebriety() <= inebrietyLimit() &&
     have($item`"I Voted!" sticker`) &&
     getCounters("Vote", 0, 0) !== "" &&
     get("_voteFreeFights") < 3
