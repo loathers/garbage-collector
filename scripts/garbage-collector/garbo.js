@@ -12711,7 +12711,7 @@ function embezzlerCount() {
 }
 
 function embezzlerSetup() {
-  meatMood(true).execute(estimatedTurns());
+  meatMood(true, true).execute(estimatedTurns());
   safeRestore();
   if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) ensureEffect((0,dist.$effect)(fights_templateObject53 || (fights_templateObject53 = fights_taggedTemplateLiteral(["Eau d' Clochard"]))));
 
@@ -13674,9 +13674,10 @@ var Potion = /*#__PURE__*/function () {
 }();
 
 function potionSetup() {
+  var doEmbezzlers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
-  var embezzlers = embezzlerCount();
+  var embezzlers = doEmbezzlers ? embezzlerCount() : 0;
   var potions = Item.all().filter(function (item) {
     return item.tradeable && !banned.includes(item) && (0,external_kolmafia_.itemType)(item) === "potion";
   });
@@ -13813,6 +13814,7 @@ dist.Mood.setDefaultOptions({
 var baseMeat = dist.SongBoom.have() && (dist.SongBoom.songChangesLeft() > 0 || dist.SongBoom.song() === "Total Eclipse of Your Meat") ? 275 : 250;
 function meatMood() {
   var urKels = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var embezzlers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var mood = new dist.Mood();
   mood.potion((0,dist.$item)(mood_templateObject5 || (mood_templateObject5 = mood_taggedTemplateLiteral(["How to Avoid Scams"]))), 3 * baseMeat);
   mood.potion((0,dist.$item)(mood_templateObject6 || (mood_templateObject6 = mood_taggedTemplateLiteral(["resolution: be wealthier"]))), 0.3 * baseMeat);
@@ -13854,7 +13856,7 @@ function meatMood() {
     (0,external_kolmafia_.cliExecute)("concert winklered");
   }
 
-  potionSetup();
+  potionSetup(embezzlers);
   return mood;
 }
 function freeFightMood() {
