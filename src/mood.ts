@@ -46,7 +46,7 @@ export const baseMeat =
     ? 275
     : 250;
 
-export function meatMood(urKels = false): Mood {
+export function meatMood(urKels = false, embezzlers = false): Mood {
   const mood = new Mood();
 
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
@@ -91,7 +91,7 @@ export function meatMood(urKels = false): Mood {
     cliExecute("concert winklered");
   }
 
-  potionSetup();
+  potionSetup(embezzlers);
 
   return mood;
 }
