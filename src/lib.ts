@@ -920,10 +920,9 @@ const bjornLists: Map<PickBjornMode, BjornedFamiliar[]> = new Map();
 function generateBjornList(mode: PickBjornMode): BjornedFamiliar[] {
   const additionalValue = (familiar: BjornedFamiliar) => {
     if (!familiar.modifier) return 0;
-    const meatVal =
-      mode === PickBjornMode.FREE || PickBjornMode.DMT
-        ? 0
-        : baseMeat + (mode === PickBjornMode.EMBEZZLER ? 750 : 0);
+    const meatVal = [PickBjornMode.DMT, PickBjornMode.FREE].includes(mode)
+      ? 0
+      : baseMeat + (mode === PickBjornMode.EMBEZZLER ? 750 : 0);
     const itemVal = mode === PickBjornMode.BARF ? 72 : 0;
     if (familiar.modifier.type === BjornModifierType.MEAT)
       return (familiar.modifier.modifier * meatVal) / 100;
