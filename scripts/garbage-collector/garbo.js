@@ -14882,7 +14882,7 @@ function generateBjornList(mode) {
   };
 
   return lib_toConsumableArray(bjornFams).sort(function (a, b) {
-    return (!b.dropPredicate || b.dropPredicate() && ![PickBjornMode.EMBEZZLER, PickBjornMode.DMT].includes(mode) ? b.meatVal() * b.probability : 0) + additionalValue(b) - ((!a.dropPredicate || a.dropPredicate() && mode !== PickBjornMode.EMBEZZLER ? a.meatVal() * a.probability : 0) + additionalValue(a));
+    return (!b.dropPredicate || b.dropPredicate() && ![PickBjornMode.EMBEZZLER, PickBjornMode.DMT].includes(mode) ? b.meatVal() * b.probability : 0) + additionalValue(b) - ((!a.dropPredicate || a.dropPredicate() && ![PickBjornMode.EMBEZZLER, PickBjornMode.DMT].includes(mode) ? a.meatVal() * a.probability : 0) + additionalValue(a));
   });
 }
 
