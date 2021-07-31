@@ -1196,9 +1196,9 @@ function nepQuest() {
   setChoice(1324, 5); // pick fight.
   if (get("_questPartyFair") === "unstarted") {
     visitUrl("adventure.php?snarfblat=528");
-    if (get("_questPartyFairQuest") === "food") {
+    if (get("_questPartyFairQuest") === "food" && questStep("_questPartyFair") <= 0) {
       runChoice(1);
-    } else if (get("_questPartyFairQuest") === "booze") {
+    } else if (get("_questPartyFairQuest") === "booze" && questStep("_questPartyFair") <= 0) {
       runChoice(1);
     } else {
       runChoice(2);
