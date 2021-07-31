@@ -1053,7 +1053,8 @@ const freeFightSources = [
           forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
         }),
       ],
-    }
+    },
+    { 1322: "", 1324: 5, 1326: "", 1327: "" }
   ),
 ];
 
@@ -1193,16 +1194,20 @@ function nepQuest() {
     visitUrl("adventure.php?snarfblat=528");
     if (get("_questPartyFairQuest") === "food") {
       runChoice(1);
-      setChoice(1324, 2);
-      setChoice(1326, 3);
     } else if (get("_questPartyFairQuest") === "booze") {
       runChoice(1);
-      setChoice(1324, 3);
-      setChoice(1327, 3);
     } else {
       runChoice(2);
-      setChoice(1324, 5);
     }
+  }
+  if (get("_questPartyFairQuest") === "food") {
+    setChoice(1324, 2);
+    setChoice(1326, 3);
+  } else if (get("_questPartyFairQuest") === "booze") {
+    setChoice(1324, 3);
+    setChoice(1327, 3);
+  } else {
+    setChoice(1324, 5);
   }
 }
 
