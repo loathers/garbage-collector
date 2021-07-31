@@ -947,7 +947,8 @@ function generateBjornList(mode: PickBjornMode): BjornedFamiliar[] {
         ? b.meatVal() * b.probability
         : 0) +
       additionalValue(b) -
-      ((!a.dropPredicate || (a.dropPredicate() && mode !== PickBjornMode.EMBEZZLER)
+      ((!a.dropPredicate ||
+      (a.dropPredicate() && ![PickBjornMode.EMBEZZLER, PickBjornMode.DMT].includes(mode))
         ? a.meatVal() * a.probability
         : 0) +
         additionalValue(a))
