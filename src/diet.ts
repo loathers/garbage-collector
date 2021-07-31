@@ -33,7 +33,18 @@ import {
   userConfirm,
   useSkill,
 } from "kolmafia";
-import { $class, $effect, $familiar, $item, $items, $skill, get, have, set } from "libram";
+import {
+  $class,
+  $classes,
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $skill,
+  get,
+  have,
+  set,
+} from "libram";
 import { withChoice } from "libram/dist/property";
 import { acquire } from "./acquire";
 import { globalOptions } from "./globalvars";
@@ -195,6 +206,13 @@ function fillLiver() {
 }
 
 export function runDiet(): void {
+  if (
+    get("barrelShrineUnlocked") &&
+    !get("_barrelPrayer") &&
+    $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
+  ) {
+    cliExecute("barrelprayer buff");
+  }
   if (mySpleenUse() === 0) {
     ensureEffect($effect`Eau d' Clochard`);
     if (have($skill`Sweet Synthesis`)) ensureEffect($effect`Synthesis: Collection`);
