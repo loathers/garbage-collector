@@ -14867,7 +14867,7 @@ var bjornLists = new Map();
 function generateBjornList(mode) {
   var additionalValue = function additionalValue(familiar) {
     if (!familiar.modifier) return 0;
-    var meatVal = mode === PickBjornMode.FREE || PickBjornMode.DMT ? 0 : baseMeat + (mode === PickBjornMode.EMBEZZLER ? 750 : 0);
+    var meatVal = [PickBjornMode.DMT, PickBjornMode.FREE].includes(mode) ? 0 : baseMeat + (mode === PickBjornMode.EMBEZZLER ? 750 : 0);
     var itemVal = mode === PickBjornMode.BARF ? 72 : 0;
     if (familiar.modifier.type === BjornModifierType.MEAT) return familiar.modifier.modifier * meatVal / 100;
     if (familiar.modifier.type === BjornModifierType.ITEM) return familiar.modifier.modifier * itemVal / 100;
