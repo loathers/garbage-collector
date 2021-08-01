@@ -31,8 +31,8 @@ import {
   maximizeCached,
   MaximizeOptions,
 } from "libram";
-import { pickBjorn, PickBjornMode } from "./bjorn";
 import { estimatedTurns, globalOptions } from "./globalvars";
+import { pickBjorn, PickBjornMode } from "./lib";
 import { baseMeat } from "./mood";
 
 export class Requirement {
