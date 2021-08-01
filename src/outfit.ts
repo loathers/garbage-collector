@@ -258,10 +258,7 @@ function pantsgiving() {
   if (turns - count > estimatedTurns()) return new Map<Item, number>();
   const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
   const expectedUseableSinusTurns = globalOptions.ascending
-    ? Math.min(
-        estimatedTurns() - haveEffect($effect`Kicked in the Sinuses`),
-        expectedSinusTurns
-      )
+    ? Math.min(estimatedTurns() - haveEffect($effect`Kicked in the Sinuses`), expectedSinusTurns)
     : expectedSinusTurns;
   const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
   if (turns - count > estimatedTurns()) return new Map<Item, number>();
