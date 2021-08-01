@@ -9,7 +9,6 @@ import {
   haveEquipped,
   inebrietyLimit,
   mallPrice,
-  myAdventures,
   myClass,
   myFamiliar,
   myFullness,
@@ -34,8 +33,8 @@ import {
   maximizeCached,
   MaximizeOptions,
 } from "libram";
-import { globalOptions } from "./globalvars";
 import { pickBjorn, PickBjornMode, sum, trueValue } from "./lib";
+import { estimatedTurns, globalOptions } from "./globalvars";
 import { baseMeat } from "./mood";
 
 export class Requirement {
@@ -85,7 +84,10 @@ const bestAdventuresFromPants =
     .sort((a, b) => b - a)[0] || 0;
 
 export function freeFightOutfit(requirements: Requirement[] = []): void {
-  const bjornChoice = pickBjorn(PickBjornMode.FREE);
+  const bjornChoice =
+    myFamiliar() === $familiar`Machine Elf`
+      ? pickBjorn(PickBjornMode.DMT)
+      : pickBjorn(PickBjornMode.FREE);
 
   const compiledRequirements = Requirement.merge([
     ...requirements,
@@ -97,7 +99,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`Pantsgiving`, pantsgivingBonus()],
+          ...pantsgiving(),
           ...cheeses(false),
         ]),
       }
@@ -199,7 +201,7 @@ export function meatOutfit(
           [$item`Mr. Cheeng's spectacles`, 250],
           [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
           [$item`Mr. Screege's spectacles`, 180],
-          [$item`Pantsgiving`, embezzlerUp ? 0 : pantsgivingBonus()],
+          ...(embezzlerUp ? [] : pantsgiving()),
           ...cheeses(embezzlerUp),
           [
             bjornAlike,
@@ -243,8 +245,8 @@ export function meatOutfit(
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
 
-function pantsgivingBonus() {
-  if (!have($item`Pantsgiving`)) return 0;
+function pantsgiving() {
+  if (!have($item`Pantsgiving`)) return new Map<Item, number>();
   const count = get("_pantsgivingCount");
   const turnArray = [5, 50, 500, 5000];
   const index =
@@ -252,20 +254,20 @@ function pantsgivingBonus() {
       ? get("_pantsgivingFullness")
       : turnArray.findIndex((x) => count < x);
   const turns = turnArray[index] || 50000;
-  if (turns - count > myAdventures() * 1.04) return 0;
+  if (turns - count > estimatedTurns()) return new Map<Item, number>();
   const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`Special Seasoning`));
-  return fullnessValue / (turns * 0.9);
+  return new Map<Item, number>([[$item`Pantsgiving`, fullnessValue / (turns * 0.9)]]);
 }
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
 function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&
     !globalOptions.ascending &&
     get("_stinkyCheeseCount") < 100 &&
-    myAdventures() >= 100 - get("_stinkyCheeseCount") &&
+    estimatedTurns() >= 100 - get("_stinkyCheeseCount") &&
     !embezzlerUp
     ? new Map<Item, number>(
         getFoldGroup($item`stinky cheese diaper`).map((item) => [
