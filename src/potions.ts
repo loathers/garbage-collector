@@ -9,7 +9,6 @@ import {
   itemAmount,
   itemType,
   mallPrice,
-  myAdventures,
   numericModifier,
   print,
   use,
@@ -28,6 +27,7 @@ import {
 import { acquire } from "./acquire";
 import { embezzlerCount } from "./fights";
 import { baseMeat } from "./mood";
+import { estimatedTurns } from "./globalvars";
 
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
 
@@ -166,7 +166,7 @@ class Potion {
 
     // How many should we use with non-embezzlers?
     if (keepGoing && this.net(0, doubleDuration) > 0) {
-      const adventureCap = myAdventures() * 1.04 + 50;
+      const adventureCap = estimatedTurns();
       const tourists = adventureCap - haveEffect(this.effect()) - quantityToUse * duration;
       if (tourists > 0) {
         const touristQuantity = Math.ceil(tourists / duration);
@@ -189,10 +189,10 @@ class Potion {
   }
 }
 
-export function potionSetup(): void {
+export function potionSetup(doEmbezzlers = false): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
-  const embezzlers = embezzlerCount();
+  const embezzlers = doEmbezzlers ? embezzlerCount() : 0;
   const potions = Item.all().filter(
     (item) => item.tradeable && !banned.includes(item) && itemType(item) === "potion"
   );

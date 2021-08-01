@@ -53,6 +53,65 @@ export class Macro extends LibramMacro {
     return new Macro().tryHaveSkill(skillOrName);
   }
 
+  tryCopier(itemOrSkill: Item | Skill): Macro {
+    switch (itemOrSkill) {
+      case $item`Spooky Putty sheet`:
+        return this.externalIf(
+          get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6,
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`Rain-Doh black box`:
+        return this.externalIf(
+          get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6,
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`4-d camera`:
+        return this.externalIf(
+          !get("_cameraUsed") && !have($item`shaking 4-d camera`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`crappy camera`:
+        return this.externalIf(
+          !get("_crappyCameraUsed") && !have($item`shaking crappy camera`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`unfinished ice sculpture`:
+        return this.externalIf(
+          !get("_iceSculptureUsed") && !have($item`ice sculpture`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`pulled green taffy`:
+        return this.externalIf(
+          !get("_envyfishEggUsed") && !have($item`envyfish egg`),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $item`print screen button`:
+        return this.tryItem(itemOrSkill);
+      case $item`alpine watercolor set`:
+        return this.tryItem(itemOrSkill);
+      case $item`LOV Enamorang`:
+        return this.externalIf(
+          get("_enamorangs") < 5 && !get("enamorangMonster"),
+          Macro.tryItem(itemOrSkill)
+        );
+      case $skill`Digitize`:
+        return this.externalIf(
+          get("_sourceTerminalDigitizeUses") <
+            1 +
+              (get("sourceTerminalChips").includes("TRAM") ? 1 : 0) +
+              (get("sourceTerminalChips").includes("TRIGRAM") ? 1 : 0),
+          Macro.trySkill(itemOrSkill)
+        );
+    }
+
+    // Unsupported item or skill
+    return this;
+  }
+
+  static tryCopier(itemOrSkill: Item | Skill): Macro {
+    return new Macro().tryCopier(itemOrSkill);
+  }
+
   meatKill(): Macro {
     const sealClubberSetup =
       equippedAmount($item`mafia pointer finger ring`) > 0 &&
