@@ -1,5 +1,5 @@
 import { myFamiliar, numericModifier } from "kolmafia";
-import { $familiar, $item, $items, get, have } from "../../libram/dist";
+import { $familiar, $item, $items, get, have } from "libram";
 import { meatFamiliar } from "./familiar";
 import { trueValue } from "./lib";
 import { baseMeat } from "./mood";
