@@ -1196,18 +1196,18 @@ function nepQuest() {
   setChoice(1324, 5); // pick fight.
   if (get("_questPartyFair") === "unstarted") {
     visitUrl("adventure.php?snarfblat=528");
-    if (get("_questPartyFairQuest") === "food" && questStep("_questPartyFair") <= 0) {
+    if (get("_questPartyFairQuest") === "food") {
       runChoice(1);
-    } else if (get("_questPartyFairQuest") === "booze" && questStep("_questPartyFair") <= 0) {
+    } else if (get("_questPartyFairQuest") === "booze") {
       runChoice(1);
     } else {
       runChoice(2);
     }
   }
-  if (get("_questPartyFairQuest") === "food") {
+  if (get("_questPartyFairQuest") === "food" && questStep("_questPartyFair") <= 0) {
     setChoice(1324, 2);
     setChoice(1326, 3);
-  } else if (get("_questPartyFairQuest") === "booze") {
+  } else if (get("_questPartyFairQuest") === "booze" && questStep("_questPartyFair") <= 0) {
     setChoice(1324, 3);
     setChoice(1327, 3);
   } else {
