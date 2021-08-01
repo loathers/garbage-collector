@@ -265,7 +265,6 @@ function pantsgiving() {
     : expectedSinusTurns;
   const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
   if (turns - count > estimatedTurns()) return new Map<Item, number>();
-  const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
