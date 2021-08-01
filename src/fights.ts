@@ -70,6 +70,7 @@ import {
   Witchess,
 } from "libram";
 import { fillAsdonMartinTo } from "./asdon";
+import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
@@ -82,6 +83,7 @@ import {
   mapMonster,
   prepWandererZone,
   questStep,
+  Requirement,
   setChoice,
   sum,
   trueValue,
@@ -91,10 +93,8 @@ import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
-  Requirement,
   waterBreathingEquipment,
 } from "./outfit";
-import { withStash } from "./clan";
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, log } from "./globalvars";
 import { getString, withChoice, withChoices } from "libram/dist/property";

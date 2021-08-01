@@ -29,48 +29,10 @@ import {
   getKramcoWandererChance,
   have,
   maximizeCached,
-  MaximizeOptions,
 } from "libram";
 import { estimatedTurns, globalOptions } from "./globalvars";
-import { pickBjorn, PickBjornMode } from "./lib";
+import { pickBjorn, PickBjornMode, Requirement } from "./lib";
 import { baseMeat } from "./mood";
-
-export class Requirement {
-  maximizeParameters_: string[];
-  maximizeOptions_: MaximizeOptions;
-
-  constructor(maximizeParameters_: string[], maximizeOptions_: MaximizeOptions) {
-    this.maximizeParameters_ = maximizeParameters_;
-    this.maximizeOptions_ = maximizeOptions_;
-  }
-
-  maximizeParameters(): string[] {
-    return this.maximizeParameters_;
-  }
-
-  maximizeOptions(): MaximizeOptions {
-    return this.maximizeOptions_;
-  }
-
-  merge(other: Requirement): Requirement {
-    const optionsA = this.maximizeOptions();
-    const optionsB = other.maximizeOptions();
-    return new Requirement([...this.maximizeParameters(), ...other.maximizeParameters()], {
-      ...optionsA,
-      ...optionsB,
-      bonusEquip: new Map([
-        ...(optionsA.bonusEquip?.entries() ?? []),
-        ...(optionsB.bonusEquip?.entries() ?? []),
-      ]),
-      forceEquip: [...(optionsA.forceEquip ?? []), ...(optionsB.forceEquip ?? [])],
-      preventEquip: [...(optionsA.preventEquip ?? []), ...(optionsB.preventEquip ?? [])],
-    });
-  }
-
-  static merge(allRequirements: Requirement[]): Requirement {
-    return allRequirements.reduce((x, y) => x.merge(y));
-  }
-}
 
 const bestAdventuresFromPants =
   Item.all()

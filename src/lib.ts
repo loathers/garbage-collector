@@ -32,12 +32,12 @@ import {
   Guzzlr,
   have,
   Macro,
+  MaximizeOptions,
   property,
   set,
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./mood";
-import { Requirement } from "./outfit";
 
 export function setChoice(adventure: number, value: number): void {
   set(`choiceAdventure${adventure}`, `${value}`);
@@ -217,6 +217,43 @@ function guzzlrCheck() {
     return false;
   } else {
     return true;
+  }
+}
+
+export class Requirement {
+  maximizeParameters_: string[];
+  maximizeOptions_: MaximizeOptions;
+
+  constructor(maximizeParameters_: string[], maximizeOptions_: MaximizeOptions) {
+    this.maximizeParameters_ = maximizeParameters_;
+    this.maximizeOptions_ = maximizeOptions_;
+  }
+
+  maximizeParameters(): string[] {
+    return this.maximizeParameters_;
+  }
+
+  maximizeOptions(): MaximizeOptions {
+    return this.maximizeOptions_;
+  }
+
+  merge(other: Requirement): Requirement {
+    const optionsA = this.maximizeOptions();
+    const optionsB = other.maximizeOptions();
+    return new Requirement([...this.maximizeParameters(), ...other.maximizeParameters()], {
+      ...optionsA,
+      ...optionsB,
+      bonusEquip: new Map([
+        ...(optionsA.bonusEquip?.entries() ?? []),
+        ...(optionsB.bonusEquip?.entries() ?? []),
+      ]),
+      forceEquip: [...(optionsA.forceEquip ?? []), ...(optionsB.forceEquip ?? [])],
+      preventEquip: [...(optionsA.preventEquip ?? []), ...(optionsB.preventEquip ?? [])],
+    });
+  }
+
+  static merge(allRequirements: Requirement[]): Requirement {
+    return allRequirements.reduce((x, y) => x.merge(y));
   }
 }
 
