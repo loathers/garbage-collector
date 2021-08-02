@@ -11988,7 +11988,7 @@ var savedMimicDropValue = null;
 function mimicDropValue() {
   var _savedMimicDropValue;
 
-  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = trueValue.apply(void 0, _toConsumableArray((0,dist.$items)(_templateObject19 || (_templateObject19 = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
+  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = saleValue.apply(void 0, _toConsumableArray((0,dist.$items)(_templateObject19 || (_templateObject19 = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
 }
 
 function freeFightFamiliar() {
@@ -12867,7 +12867,7 @@ var witchessPieces = [{
 
 function bestWitchessPiece() {
   return witchessPieces.sort(function (a, b) {
-    return trueValue(b.drop) - trueValue(a.drop);
+    return saleValue(b.drop) - saleValue(a.drop);
   })[0].piece;
 }
 
@@ -14296,7 +14296,7 @@ function findRun() {
 }
 var valueMap = new Map();
 var MALL_VALUE_MODIFIER = 0.9;
-function trueValue() {
+function saleValue() {
   for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
     items[_key] = arguments[_key];
   }
@@ -14326,7 +14326,7 @@ var BjornModifierType;
 var bjornFams = [{
   familiar: (0,dist.$familiar)(lib_templateObject45 || (lib_templateObject45 = lib_taggedTemplateLiteral(["Puck Man"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject46 || (lib_templateObject46 = lib_taggedTemplateLiteral(["yellow pixel"]))));
+    return saleValue((0,dist.$item)(lib_templateObject46 || (lib_templateObject46 = lib_taggedTemplateLiteral(["yellow pixel"]))));
   },
   probability: 0.25,
   dropPredicate: function dropPredicate() {
@@ -14335,7 +14335,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject47 || (lib_templateObject47 = lib_taggedTemplateLiteral(["Ms. Puck Man"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject48 || (lib_templateObject48 = lib_taggedTemplateLiteral(["yellow pixel"]))));
+    return saleValue((0,dist.$item)(lib_templateObject48 || (lib_templateObject48 = lib_taggedTemplateLiteral(["yellow pixel"]))));
   },
   probability: 0.25,
   dropPredicate: function dropPredicate() {
@@ -14344,7 +14344,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject49 || (lib_templateObject49 = lib_taggedTemplateLiteral(["Grimstone Golem"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject50 || (lib_templateObject50 = lib_taggedTemplateLiteral(["grimstone mask"]))));
+    return saleValue((0,dist.$item)(lib_templateObject50 || (lib_templateObject50 = lib_taggedTemplateLiteral(["grimstone mask"]))));
   },
   probability: 0.5,
   dropPredicate: function dropPredicate() {
@@ -14373,7 +14373,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject53 || (lib_templateObject53 = lib_taggedTemplateLiteral(["Garbage Fire"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject54 || (lib_templateObject54 = lib_taggedTemplateLiteral(["burning newspaper"]))));
+    return saleValue((0,dist.$item)(lib_templateObject54 || (lib_templateObject54 = lib_taggedTemplateLiteral(["burning newspaper"]))));
   },
   probability: 0.5,
   dropPredicate: function dropPredicate() {
@@ -14382,7 +14382,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject55 || (lib_templateObject55 = lib_taggedTemplateLiteral(["Machine Elf"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject56 || (lib_templateObject56 = lib_taggedTemplateLiteral(["abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject56 || (lib_templateObject56 = lib_taggedTemplateLiteral(["abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"])))));
   },
   probability: 0.2,
   dropPredicate: function dropPredicate() {
@@ -14391,7 +14391,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject57 || (lib_templateObject57 = lib_taggedTemplateLiteral(["Trick-or-Treating Tot"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject58 || (lib_templateObject58 = lib_taggedTemplateLiteral(["hoarded candy wad"]))));
+    return saleValue((0,dist.$item)(lib_templateObject58 || (lib_templateObject58 = lib_taggedTemplateLiteral(["hoarded candy wad"]))));
   },
   probability: 0.5,
   dropPredicate: function dropPredicate() {
@@ -14400,13 +14400,13 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject59 || (lib_templateObject59 = lib_taggedTemplateLiteral(["Warbear Drone"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject60 || (lib_templateObject60 = lib_taggedTemplateLiteral(["warbear whosit"]))));
+    return saleValue((0,dist.$item)(lib_templateObject60 || (lib_templateObject60 = lib_taggedTemplateLiteral(["warbear whosit"]))));
   },
   probability: 1 / 4.5
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject61 || (lib_templateObject61 = lib_taggedTemplateLiteral(["Li'l Xenomorph"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject62 || (lib_templateObject62 = lib_taggedTemplateLiteral(["lunar isotope"]))));
+    return saleValue((0,dist.$item)(lib_templateObject62 || (lib_templateObject62 = lib_taggedTemplateLiteral(["lunar isotope"]))));
   },
   probability: 0.05,
   modifier: {
@@ -14416,13 +14416,13 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject63 || (lib_templateObject63 = lib_taggedTemplateLiteral(["Pottery Barn Owl"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject64 || (lib_templateObject64 = lib_taggedTemplateLiteral(["volcanic ash"]))));
+    return saleValue((0,dist.$item)(lib_templateObject64 || (lib_templateObject64 = lib_taggedTemplateLiteral(["volcanic ash"]))));
   },
   probability: 0.1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject65 || (lib_templateObject65 = lib_taggedTemplateLiteral(["Grim Brother"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject66 || (lib_templateObject66 = lib_taggedTemplateLiteral(["grim fairy tale"]))));
+    return saleValue((0,dist.$item)(lib_templateObject66 || (lib_templateObject66 = lib_taggedTemplateLiteral(["grim fairy tale"]))));
   },
   probability: 1,
   dropPredicate: function dropPredicate() {
@@ -14431,7 +14431,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject67 || (lib_templateObject67 = lib_taggedTemplateLiteral(["Optimistic Candle"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject68 || (lib_templateObject68 = lib_taggedTemplateLiteral(["glob of melted wax"]))));
+    return saleValue((0,dist.$item)(lib_templateObject68 || (lib_templateObject68 = lib_taggedTemplateLiteral(["glob of melted wax"]))));
   },
   probability: 1,
   dropPredicate: function dropPredicate() {
@@ -14444,7 +14444,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject69 || (lib_templateObject69 = lib_taggedTemplateLiteral(["Adventurous Spelunker"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject70 || (lib_templateObject70 = lib_taggedTemplateLiteral(["teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject70 || (lib_templateObject70 = lib_taggedTemplateLiteral(["teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"])))));
   },
   probability: 1,
   dropPredicate: function dropPredicate() {
@@ -14457,7 +14457,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject71 || (lib_templateObject71 = lib_taggedTemplateLiteral(["Twitching Space Critter"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject72 || (lib_templateObject72 = lib_taggedTemplateLiteral(["space beast fur"]))));
+    return saleValue((0,dist.$item)(lib_templateObject72 || (lib_templateObject72 = lib_taggedTemplateLiteral(["space beast fur"]))));
   },
   probability: 1,
   dropPredicate: function dropPredicate() {
@@ -14471,7 +14471,7 @@ var bjornFams = [{
 
   /*
   The below code is more accurate. However, party mouse is virtually never going to be worthwhile and this causes so many useless mall hits it isn't funny.
-     trueValue(
+     saleValue(
       ...Item.all().filter(
         (booze) =>
           ["decent", "good"].includes(booze.quality) &&
@@ -14488,19 +14488,19 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject74 || (lib_templateObject74 = lib_taggedTemplateLiteral(["Yule Hound"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject75 || (lib_templateObject75 = lib_taggedTemplateLiteral(["candy cane"]))));
+    return saleValue((0,dist.$item)(lib_templateObject75 || (lib_templateObject75 = lib_taggedTemplateLiteral(["candy cane"]))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject76 || (lib_templateObject76 = lib_taggedTemplateLiteral(["Gluttonous Green Ghost"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject77 || (lib_templateObject77 = lib_taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject77 || (lib_templateObject77 = lib_taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"])))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject78 || (lib_templateObject78 = lib_taggedTemplateLiteral(["Reassembled Blackbird"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject79 || (lib_templateObject79 = lib_taggedTemplateLiteral(["blackberry"]))));
+    return saleValue((0,dist.$item)(lib_templateObject79 || (lib_templateObject79 = lib_taggedTemplateLiteral(["blackberry"]))));
   },
   probability: 1,
   modifier: {
@@ -14510,7 +14510,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject80 || (lib_templateObject80 = lib_taggedTemplateLiteral(["Reconstituted Crow"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject81 || (lib_templateObject81 = lib_taggedTemplateLiteral(["blackberry"]))));
+    return saleValue((0,dist.$item)(lib_templateObject81 || (lib_templateObject81 = lib_taggedTemplateLiteral(["blackberry"]))));
   },
   probability: 1,
   modifier: {
@@ -14520,19 +14520,19 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject82 || (lib_templateObject82 = lib_taggedTemplateLiteral(["Hunchbacked Minion"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject83 || (lib_templateObject83 = lib_taggedTemplateLiteral(["disembodied brain, skeleton bone, skeleton bone, skeleton bone, skeleton bone"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject83 || (lib_templateObject83 = lib_taggedTemplateLiteral(["disembodied brain, skeleton bone, skeleton bone, skeleton bone, skeleton bone"])))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject84 || (lib_templateObject84 = lib_taggedTemplateLiteral(["Reanimated Reanimator"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject85 || (lib_templateObject85 = lib_taggedTemplateLiteral(["hot wing, broken skull"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject85 || (lib_templateObject85 = lib_taggedTemplateLiteral(["hot wing, broken skull"])))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject86 || (lib_templateObject86 = lib_taggedTemplateLiteral(["Attention-Deficit Demon"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject87 || (lib_templateObject87 = lib_taggedTemplateLiteral(["chorizo brownies, white chocolate and tomato pizza, carob chunk noodles"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject87 || (lib_templateObject87 = lib_taggedTemplateLiteral(["chorizo brownies, white chocolate and tomato pizza, carob chunk noodles"])))));
   },
   probability: 1,
   modifier: {
@@ -14542,7 +14542,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject88 || (lib_templateObject88 = lib_taggedTemplateLiteral(["Piano Cat"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject89 || (lib_templateObject89 = lib_taggedTemplateLiteral(["beertini, papaya slung, salty slug, tomato daiquiri"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject89 || (lib_templateObject89 = lib_taggedTemplateLiteral(["beertini, papaya slung, salty slug, tomato daiquiri"])))));
   },
   probability: 1,
   modifier: {
@@ -14562,67 +14562,67 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject91 || (lib_templateObject91 = lib_taggedTemplateLiteral(["Robot Reindeer"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject92 || (lib_templateObject92 = lib_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject92 || (lib_templateObject92 = lib_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
   },
   probability: 0.3
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject93 || (lib_templateObject93 = lib_taggedTemplateLiteral(["Stocking Mimic"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject94 || (lib_templateObject94 = lib_taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject94 || (lib_templateObject94 = lib_taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"])))));
   },
   probability: 0.3
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject95 || (lib_templateObject95 = lib_taggedTemplateLiteral(["BRICKO chick"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject96 || (lib_templateObject96 = lib_taggedTemplateLiteral(["BRICKO brick"]))));
+    return saleValue((0,dist.$item)(lib_templateObject96 || (lib_templateObject96 = lib_taggedTemplateLiteral(["BRICKO brick"]))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject97 || (lib_templateObject97 = lib_taggedTemplateLiteral(["Cotton Candy Carnie"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject98 || (lib_templateObject98 = lib_taggedTemplateLiteral(["cotton candy pinch"]))));
+    return saleValue((0,dist.$item)(lib_templateObject98 || (lib_templateObject98 = lib_taggedTemplateLiteral(["cotton candy pinch"]))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject99 || (lib_templateObject99 = lib_taggedTemplateLiteral(["Untamed Turtle"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject100 || (lib_templateObject100 = lib_taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject100 || (lib_templateObject100 = lib_taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"])))));
   },
   probability: 0.35
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject101 || (lib_templateObject101 = lib_taggedTemplateLiteral(["Astral Badger"]))),
   meatVal: function meatVal() {
-    return 2 * trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject102 || (lib_templateObject102 = lib_taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"])))));
+    return 2 * saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject102 || (lib_templateObject102 = lib_taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"])))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject103 || (lib_templateObject103 = lib_taggedTemplateLiteral(["Green Pixie"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject104 || (lib_templateObject104 = lib_taggedTemplateLiteral(["bottle of tequila"]))));
+    return saleValue((0,dist.$item)(lib_templateObject104 || (lib_templateObject104 = lib_taggedTemplateLiteral(["bottle of tequila"]))));
   },
   probability: 0.2
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject105 || (lib_templateObject105 = lib_taggedTemplateLiteral(["Angry Goat"]))),
   meatVal: function meatVal() {
-    return trueValue((0,dist.$item)(lib_templateObject106 || (lib_templateObject106 = lib_taggedTemplateLiteral(["goat cheese pizza"]))));
+    return saleValue((0,dist.$item)(lib_templateObject106 || (lib_templateObject106 = lib_taggedTemplateLiteral(["goat cheese pizza"]))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject107 || (lib_templateObject107 = lib_taggedTemplateLiteral(["Adorable Seal Larva"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject108 || (lib_templateObject108 = lib_taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject108 || (lib_templateObject108 = lib_taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"])))));
   },
   probability: 0.35
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject109 || (lib_templateObject109 = lib_taggedTemplateLiteral(["Ancient Yuletide Troll"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject110 || (lib_templateObject110 = lib_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject110 || (lib_templateObject110 = lib_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
   },
   probability: 0.3
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject111 || (lib_templateObject111 = lib_taggedTemplateLiteral(["Sweet Nutcracker"]))),
   meatVal: function meatVal() {
-    return trueValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject112 || (lib_templateObject112 = lib_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+    return saleValue.apply(void 0, lib_toConsumableArray((0,dist.$items)(lib_templateObject112 || (lib_templateObject112 = lib_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
   },
   probability: 0.3
 }, {
@@ -14819,35 +14819,35 @@ var bjornFams = [{
   familiar: (0,dist.$familiar)(lib_templateObject132 || (lib_templateObject132 = lib_taggedTemplateLiteral(["Frozen Gravy Fairy"]))),
   // drops a cold nugget every combat, 5 of which can be used to make a cold wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * trueValue((0,dist.$item)(lib_templateObject133 || (lib_templateObject133 = lib_taggedTemplateLiteral(["cold wad"])))), trueValue((0,dist.$item)(lib_templateObject134 || (lib_templateObject134 = lib_taggedTemplateLiteral(["cold nuggets"])))));
+    return Math.max(0.2 * saleValue((0,dist.$item)(lib_templateObject133 || (lib_templateObject133 = lib_taggedTemplateLiteral(["cold wad"])))), saleValue((0,dist.$item)(lib_templateObject134 || (lib_templateObject134 = lib_taggedTemplateLiteral(["cold nuggets"])))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject135 || (lib_templateObject135 = lib_taggedTemplateLiteral(["Stinky Gravy Fairy"]))),
   // drops a stench nugget every combat, 5 of which can be used to make a stench wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * trueValue((0,dist.$item)(lib_templateObject136 || (lib_templateObject136 = lib_taggedTemplateLiteral(["stench wad"])))), trueValue((0,dist.$item)(lib_templateObject137 || (lib_templateObject137 = lib_taggedTemplateLiteral(["stench nuggets"])))));
+    return Math.max(0.2 * saleValue((0,dist.$item)(lib_templateObject136 || (lib_templateObject136 = lib_taggedTemplateLiteral(["stench wad"])))), saleValue((0,dist.$item)(lib_templateObject137 || (lib_templateObject137 = lib_taggedTemplateLiteral(["stench nuggets"])))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject138 || (lib_templateObject138 = lib_taggedTemplateLiteral(["Sleazy Gravy Fairy"]))),
   // drops a sleaze nugget every combat, 5 of which can be used to make a sleaze wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * trueValue((0,dist.$item)(lib_templateObject139 || (lib_templateObject139 = lib_taggedTemplateLiteral(["sleaze wad"])))), trueValue((0,dist.$item)(lib_templateObject140 || (lib_templateObject140 = lib_taggedTemplateLiteral(["sleaze nuggets"])))));
+    return Math.max(0.2 * saleValue((0,dist.$item)(lib_templateObject139 || (lib_templateObject139 = lib_taggedTemplateLiteral(["sleaze wad"])))), saleValue((0,dist.$item)(lib_templateObject140 || (lib_templateObject140 = lib_taggedTemplateLiteral(["sleaze nuggets"])))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject141 || (lib_templateObject141 = lib_taggedTemplateLiteral(["Spooky Gravy Fairy"]))),
   // drops a spooky nugget every combat, 5 of which can be used to make a spooky wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * trueValue((0,dist.$item)(lib_templateObject142 || (lib_templateObject142 = lib_taggedTemplateLiteral(["spooky wad"])))), trueValue((0,dist.$item)(lib_templateObject143 || (lib_templateObject143 = lib_taggedTemplateLiteral(["spooky nuggets"])))));
+    return Math.max(0.2 * saleValue((0,dist.$item)(lib_templateObject142 || (lib_templateObject142 = lib_taggedTemplateLiteral(["spooky wad"])))), saleValue((0,dist.$item)(lib_templateObject143 || (lib_templateObject143 = lib_taggedTemplateLiteral(["spooky nuggets"])))));
   },
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(lib_templateObject144 || (lib_templateObject144 = lib_taggedTemplateLiteral(["Flaming Gravy Fairy"]))),
   // drops a hot nugget every combat, 5 of which can be used to make a hot wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * trueValue((0,dist.$item)(lib_templateObject145 || (lib_templateObject145 = lib_taggedTemplateLiteral(["hot wad"])))), trueValue((0,dist.$item)(lib_templateObject146 || (lib_templateObject146 = lib_taggedTemplateLiteral(["hot nuggets"])))));
+    return Math.max(0.2 * saleValue((0,dist.$item)(lib_templateObject145 || (lib_templateObject145 = lib_taggedTemplateLiteral(["hot wad"])))), saleValue((0,dist.$item)(lib_templateObject146 || (lib_templateObject146 = lib_taggedTemplateLiteral(["hot nuggets"])))));
   },
   probability: 1
 }].filter(function (bjornFam) {
@@ -15590,10 +15590,10 @@ var teas = (0,dist.$items)(dailies_templateObject81 || (dailies_templateObject81
 function pickTea() {
   if (!(0,external_kolmafia_.getCampground)()["potted tea tree"] || (0,dist.get)("_pottedTeaTreeUsed")) return;
   var bestTea = teas.sort(function (a, b) {
-    return trueValue(b) - trueValue(a);
+    return saleValue(b) - saleValue(a);
   })[0];
-  var shakeVal = 3 * trueValue.apply(void 0, dailies_toConsumableArray(teas));
-  var teaAction = shakeVal > trueValue(bestTea) ? "shake" : bestTea.name;
+  var shakeVal = 3 * saleValue.apply(void 0, dailies_toConsumableArray(teas));
+  var teaAction = shakeVal > saleValue(bestTea) ? "shake" : bestTea.name;
   (0,external_kolmafia_.cliExecute)("teatree ".concat(teaAction));
 }
 function gaze() {
