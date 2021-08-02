@@ -170,7 +170,7 @@ export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WA
   acceptBestGuzzlrQuest();
 
   if (
-    !guzzlrCheck() ||
+    !checkGuzzlrZone() ||
     (type === draggableFight.WANDERER &&
       !canBackup &&
       wandererBlacklist.includes(Guzzlr.getLocation() || $location`none`)) ||
@@ -185,7 +185,7 @@ export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WA
   acceptBestGuzzlrQuest();
 
   const guzzlZone = Guzzlr.getLocation();
-  if (!guzzlrCheck()) return defaultLocation;
+  if (!checkGuzzlrZone()) return defaultLocation;
   if (!guzzlZone) return defaultLocation;
 
   if (
@@ -223,7 +223,7 @@ export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WA
   return guzzlZone;
 }
 
-function guzzlrCheck(): boolean {
+function checkGuzzlrZone(): boolean {
   const guzzlZone = Guzzlr.getLocation();
   if (!guzzlZone) return false;
   const forbiddenZones: string[] = [""];
