@@ -32,9 +32,9 @@ import {
   have,
   maximizeCached,
 } from "libram";
-import { baseMeat, Requirement, sum, trueValue } from "./lib";
+import { baseMeat, Requirement, saleValue, sum } from "./lib";
 import { estimatedTurns, globalOptions } from "./globalvars";
-
+import { pickBjorn, PickBjornMode } from "./bjorn";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -248,7 +248,7 @@ type LgrCoin = {
 
 function lgrCoinValue(currency: LgrCoin) {
   return currency.available
-    ? [trueValue(currency.item) / sellPrice(currency.coinmaster, currency.item)]
+    ? [saleValue(currency.item) / sellPrice(currency.coinmaster, currency.item)]
     : [];
 }
 
@@ -285,7 +285,7 @@ function lgrBonus(): number {
   if (!lgrValue) {
     const priceArray = [
       100,
-      Math.max(trueValue($item`bottle of Bloodweiser`), trueValue($item`electric Kool-Aid`)) /
+      Math.max(saleValue($item`bottle of Bloodweiser`), saleValue($item`electric Kool-Aid`)) /
         sellPrice($coinmaster`The Terrified Eagle Inn`, $item`bottle of Bloodweiser`),
     ].concat(...premiumZoneCurrencies.map((zoneCurrency) => lgrCoinValue(zoneCurrency)));
     lgrValue = sum(priceArray) / priceArray.length;
