@@ -442,7 +442,7 @@ const valueMap: Map<Item, number> = new Map();
 
 const MALL_VALUE_MODIFIER = 0.9;
 
-export function trueValue(...items: Item[]): number {
+export function saleValue(...items: Item[]): number {
   return (
     items
       .map((item) => {
