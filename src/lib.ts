@@ -969,5 +969,5 @@ export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE): BjornedFami
 }
 
 export function kramcoGuaranteed(): boolean {
-  return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() === 1;
+  return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
 }
