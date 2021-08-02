@@ -26,7 +26,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount } from "./fights";
-import { baseMeat } from "./mood";
+import { baseMeat } from "./lib";
 import { estimatedTurns } from "./globalvars";
 
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;

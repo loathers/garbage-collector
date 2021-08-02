@@ -44,8 +44,15 @@ import {
 } from "libram";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
-import { ensureEffect, findRun, questStep, Requirement, trueValue, tryFeast } from "./lib";
-import { baseMeat } from "./mood";
+import {
+  baseMeat,
+  ensureEffect,
+  findRun,
+  questStep,
+  Requirement,
+  trueValue,
+  tryFeast,
+} from "./lib";
 import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
 import { set, withChoice, withChoices } from "libram/dist/property";

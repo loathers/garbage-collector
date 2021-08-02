@@ -24,10 +24,9 @@ import {
   have,
   Mood,
   set,
-  SongBoom,
   Witchess,
 } from "libram";
-import { questStep } from "./lib";
+import { baseMeat, questStep } from "./lib";
 import { withStash } from "./clan";
 import { potionSetup } from "./potions";
 
@@ -39,12 +38,6 @@ Mood.setDefaultOptions({
     $effects`The Ballad of Richie Thingfinder`,
   ],
 });
-
-export const baseMeat =
-  SongBoom.have() &&
-  (SongBoom.songChangesLeft() > 0 || SongBoom.song() === "Total Eclipse of Your Meat")
-    ? 275
-    : 250;
 
 export function meatMood(urKels = false, embezzlers = false): Mood {
   const mood = new Mood();

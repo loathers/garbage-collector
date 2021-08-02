@@ -30,9 +30,9 @@ import {
   have,
   maximizeCached,
 } from "libram";
+import { pickBjorn, PickBjornMode } from "./bjorn";
 import { estimatedTurns, globalOptions } from "./globalvars";
-import { pickBjorn, PickBjornMode, Requirement } from "./lib";
-import { baseMeat } from "./mood";
+import { baseMeat, Requirement } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
