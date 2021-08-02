@@ -16,7 +16,6 @@ import {
   print,
   retrieveItem,
   runChoice,
-  setAutoAttack,
   toInt,
   use,
   useFamiliar,
@@ -143,38 +142,8 @@ export function latte(): void {
       numericModifier(latte, "Familiar Weight") !== 5 ||
       numericModifier(latte, "Meat Drop") !== 40
     ) {
-      if (!get("latteUnlocks").includes("cajun") && findRun()) {
-        withChoices({ 923: 1, 924: 1 }, () => {
-          while (!get("latteUnlocks").includes("cajun") && findRun()) {
-            const runSource = findRun();
-            if (!runSource) break;
-            if (runSource.prepare) runSource.prepare();
-            freeFightOutfit([
-              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-              ...(runSource.requirement ? [runSource.requirement] : []),
-            ]);
-            adventureMacro($location`The Black Forest`, runSource.macro);
-            horseradish();
-          }
-        });
-      }
-      if (!get("latteUnlocks").includes("rawhide") && findRun()) {
-        withChoices({ 502: 2, 505: 2 }, () => {
-          while (!get("latteUnlocks").includes("rawhide") && findRun()) {
-            const runSource = findRun();
-            if (!runSource) break;
-            if (runSource.prepare) runSource.prepare();
-            freeFightOutfit([
-              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-              ...(runSource.requirement ? [runSource.requirement] : []),
-            ]);
-            adventureMacro($location`The Spooky Forest`, runSource.macro);
-            horseradish();
-          }
-        });
-      }
-      if (!get("latteUnlocks").includes("carrot") && findRun()) {
-        while (!get("latteUnlocks").includes("carrot") && findRun()) {
+      withChoices({ 923: 1, 924: 1 }, () => {
+        while (!get("latteUnlocks").includes("cajun") && findRun()) {
           const runSource = findRun();
           if (!runSource) break;
           if (runSource.prepare) runSource.prepare();
@@ -182,10 +151,37 @@ export function latte(): void {
             new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
             ...(runSource.requirement ? [runSource.requirement] : []),
           ]);
-          adventureMacro($location`The Dire Warren`, runSource.macro);
+          adventureMacro($location`The Black Forest`, runSource.macro);
           horseradish();
         }
+      });
+
+      withChoices({ 502: 2, 505: 2 }, () => {
+        while (!get("latteUnlocks").includes("rawhide") && findRun()) {
+          const runSource = findRun();
+          if (!runSource) break;
+          if (runSource.prepare) runSource.prepare();
+          freeFightOutfit([
+            new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+            ...(runSource.requirement ? [runSource.requirement] : []),
+          ]);
+          adventureMacro($location`The Spooky Forest`, runSource.macro);
+          horseradish();
+        }
+      });
+
+      while (!get("latteUnlocks").includes("carrot") && findRun()) {
+        const runSource = findRun();
+        if (!runSource) break;
+        if (runSource.prepare) runSource.prepare();
+        freeFightOutfit([
+          new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+          ...(runSource.requirement ? [runSource.requirement] : []),
+        ]);
+        adventureMacro($location`The Dire Warren`, runSource.macro);
+        horseradish();
       }
+
       if (
         get("latteUnlocks").includes("cajun") &&
         get("latteUnlocks").includes("rawhide") &&
@@ -217,6 +213,8 @@ export function prepFamiliars(): void {
       print(`Feeding robortender ${drink}.`, "blue");
       visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
     }
+    if (!get("_roboDrinks").includes("drive-by shooting"))
+      throw new Error("Failed to penguinify your robort!");
   }
 
   if (have($item`mumming trunk`) && !get("_mummeryMods").includes("Meat Drop")) {
@@ -255,7 +253,7 @@ export function dailyBuffs(): void {
   if (
     !get("_clanFortuneBuffUsed") &&
     have($item`Clan VIP Lounge key`) &&
-    getClanLounge()["Clan Carnival Game"] !== undefined
+    getClanLounge()["Clan Carnival Game"]
   ) {
     cliExecute("fortune buff meat");
   }
@@ -310,7 +308,16 @@ export function configureMisc(): void {
   }
 
   if (
-    getClanLounge()["Olympic-sized Clan crate"] !== undefined &&
+    myClass() === $class`Pastamancer` &&
+    have($item`experimental carbon fiber pasta additive`) &&
+    !get("_pastaAdditive") &&
+    myThrall().level < 10
+  ) {
+    use($item`experimental carbon fiber pasta additive`);
+  }
+
+  if (
+    getClanLounge()["Olympic-sized Clan crate"] &&
     !get("_olympicSwimmingPoolItemFound") &&
     have($item`Clan VIP Lounge key`)
   ) {
@@ -324,8 +331,8 @@ export function volcanoDailies(): void {
   if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
-  print("Getting my free volcoino!", "blue");
   if (!get("_infernoDiscoVisited")) {
+    print("Getting my free volcoino!", "blue");
     $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.forEach(
       (discoEquip) => {
         retrieveItem(discoEquip);
@@ -476,8 +483,6 @@ export function jellyfish(): void {
     return;
   }
   useFamiliar($familiar`Space Jellyfish`);
-  setAutoAttack(0);
-  freeFightOutfit();
   while (findRun(false) && have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
     const runSource = findRun(false);
     if (!runSource) break;
@@ -512,7 +517,7 @@ export function gingerbreadPrepNoon(): void {
   if (
     get("gingerAdvanceClockUnlocked") &&
     !get("_gingerbreadClockVisited") &&
-    get("_gingerbreadCityTurns") <= 3
+    get("_gingerbreadCityTurns") !== 9
   ) {
     withChoice(1215, 1, () => adventureMacro($location`Gingerbread Civic Center`, Macro.abort()));
   }
