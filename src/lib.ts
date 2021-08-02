@@ -149,7 +149,7 @@ export enum draggableFight {
   WANDERER,
 }
 
-export function prepWandererZone(type: draggableFight = draggableFight.WANDERER): Location {
+export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WANDERER): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`The Deep Dark Jungle`

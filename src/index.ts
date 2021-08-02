@@ -62,7 +62,7 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { physicalImmuneMacro, prepWandererZone, questStep, Requirement } from "./lib";
+import { physicalImmuneMacro, pickWandererZoneAndPrep, questStep, Requirement } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -135,7 +135,7 @@ function barfTurn() {
   useFamiliar(meatFamiliar());
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
-  let location = embezzlerUp ? prepWandererZone() : $location`Barf Mountain`;
+  let location = embezzlerUp ? pickWandererZoneAndPrep() : $location`Barf Mountain`;
   if (
     !get("_envyfishEggUsed") &&
     (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
@@ -182,7 +182,7 @@ function barfTurn() {
   ) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`"I Voted!" sticker` })]);
-    adventureMacroAuto(prepWandererZone(), Macro.step(physicalImmuneMacro).meatKill());
+    adventureMacroAuto(pickWandererZoneAndPrep(), Macro.step(physicalImmuneMacro).meatKill());
   } else {
     adventureMacroAuto(
       location,
