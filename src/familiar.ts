@@ -10,7 +10,7 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import { $effect, $familiar, $familiars, $item, $items, get, have } from "libram";
-import { argmax, trueValue } from "./lib";
+import { argmax, saleValue } from "./lib";
 
 let _meatFamiliar: Familiar;
 export function meatFamiliar(): Familiar {
@@ -103,7 +103,7 @@ function mimicDropValue() {
   return (
     savedMimicDropValue ??
     (savedMimicDropValue =
-      trueValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
+      saleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
   );
 }
 

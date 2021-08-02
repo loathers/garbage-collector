@@ -70,6 +70,7 @@ import {
   Witchess,
 } from "libram";
 import { fillAsdonMartinTo } from "./asdon";
+import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
@@ -82,19 +83,18 @@ import {
   mapMonster,
   prepWandererZone,
   questStep,
+  Requirement,
+  saleValue,
   setChoice,
   sum,
-  trueValue,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
-  Requirement,
   waterBreathingEquipment,
 } from "./outfit";
-import { withStash } from "./clan";
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, log } from "./globalvars";
 import { getString, withChoice, withChoices } from "libram/dist/property";
@@ -476,7 +476,7 @@ const witchessPieces = [
 ];
 
 function bestWitchessPiece() {
-  return witchessPieces.sort((a, b) => trueValue(b.drop) - trueValue(a.drop))[0].piece;
+  return witchessPieces.sort((a, b) => saleValue(b.drop) - saleValue(a.drop))[0].piece;
 }
 
 export function dailyFights(): void {

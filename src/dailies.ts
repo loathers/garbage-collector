@@ -44,9 +44,16 @@ import {
 } from "libram";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
-import { ensureEffect, findRun, questStep, trueValue, tryFeast } from "./lib";
-import { baseMeat } from "./mood";
-import { freeFightOutfit, Requirement } from "./outfit";
+import {
+  baseMeat,
+  ensureEffect,
+  findRun,
+  questStep,
+  Requirement,
+  saleValue,
+  tryFeast,
+} from "./lib";
+import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
 import { set, withChoice, withChoices } from "libram/dist/property";
 import { estimatedTurns } from "./globalvars";
@@ -446,9 +453,9 @@ export function gin(): void {
 const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
 export function pickTea(): void {
   if (!getCampground()["potted tea tree"] || get("_pottedTeaTreeUsed")) return;
-  const bestTea = teas.sort((a, b) => trueValue(b) - trueValue(a))[0];
-  const shakeVal = 3 * trueValue(...teas);
-  const teaAction = shakeVal > trueValue(bestTea) ? "shake" : bestTea.name;
+  const bestTea = teas.sort((a, b) => saleValue(b) - saleValue(a))[0];
+  const shakeVal = 3 * saleValue(...teas);
+  const teaAction = shakeVal > saleValue(bestTea) ? "shake" : bestTea.name;
   cliExecute(`teatree ${teaAction}`);
 }
 
