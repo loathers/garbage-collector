@@ -37,7 +37,6 @@ import {
   adventureMacro,
   get,
   have,
-  Macro,
   property,
   SongBoom,
   SourceTerminal,
@@ -48,6 +47,7 @@ import {
   baseMeat,
   ensureEffect,
   findRun,
+  prepWandererZone,
   questStep,
   Requirement,
   saleValue,
@@ -57,6 +57,7 @@ import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
 import { set, withChoice, withChoices } from "libram/dist/property";
 import { estimatedTurns } from "./globalvars";
+import { Macro } from "./combat";
 
 export function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -539,5 +540,29 @@ export function gingerbreadPrepNoon(): void {
     ) {
       set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
     }
+  }
+}
+
+export function hipsterFishing(): void {
+  if (have($familiar`Mini-Hipster`)) {
+    useFamiliar($familiar`Mini-Hipster`);
+  } else if (have($familiar`Artistic Goth Kid`)) {
+    useFamiliar($familiar`Artistic Goth Kid`);
+  } else return;
+
+  while (findRun(false)) {
+    const targetLocation =
+      prepWandererZone().combatPercent === 100 ? prepWandererZone() : $location`Noob Cave`;
+    const runSource = findRun(false);
+    if (!runSource) return;
+    if (runSource.prepare) runSource.prepare();
+    freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+    adventureMacro(
+      targetLocation,
+      Macro.if_(
+        `(monsterid 969) || (monsterid 970) || (monsterid 971) || (monsterid 972) || (monsterid 973) || (monstername Black Crayon *)`,
+        Macro.meatKill()
+      ).step(runSource.macro)
+    );
   }
 }

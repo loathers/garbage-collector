@@ -102,6 +102,7 @@ function dailySetup() {
   gingerbreadPrepNoon();
   latte();
   jellyfish();
+  hipsterFishing();
   dailyBuffs();
   configureMisc();
   volcanoDailies();
@@ -373,3 +374,7 @@ export function main(argString = ""): void {
     );
   }
 }
+function hipsterFishing() {
+  throw new Error("Function not implemented.");
+}
+
