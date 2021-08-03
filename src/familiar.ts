@@ -61,6 +61,11 @@ const rotatingFamiliars: { [index: string]: { expected: number[]; drop: Item; pr
     drop: $item`llama lama gong`,
     pref: "_gongDrops",
   },
+  "Astral Badger": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`astral mushroom`,
+    pref: "_astralDrops",
+  },
   "Li'l Xenomorph": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`transporter transponder`,
