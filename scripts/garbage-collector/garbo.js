@@ -14143,7 +14143,7 @@ function jellyfish() {
     if (!runSource) break;
     if (runSource.prepare) runSource.prepare();
     freeFightOutfit(dailies_toConsumableArray(runSource.requirement ? [runSource.requirement] : []));
-    var jellyMacro = dist.Macro.while_("!pastround 28 && hasskill macrometeorite", dist.Macro.skill("extract jelly").skill("macrometeorite")).step(runSource.macro);
+    var jellyMacro = dist.Macro.while_("!pastround 28 && hasskill macrometeorite", dist.Macro.skill("extract jelly").skill("macrometeorite")).trySkill("extract jelly").step(runSource.macro);
     (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject87 || (dailies_templateObject87 = dailies_taggedTemplateLiteral(["Barf Mountain"]))), jellyMacro);
   }
 
@@ -14157,7 +14157,7 @@ function jellyfish() {
         forceEquip: (0,dist.$items)(dailies_templateObject89 || (dailies_templateObject89 = dailies_taggedTemplateLiteral(["Powerful Glove"])))
       })].concat(dailies_toConsumableArray(_runSource.requirement ? [_runSource.requirement] : [])));
 
-      var _jellyMacro = dist.Macro.while_("!pastround 28 && hasskill CHEAT CODE: Replace Enemy", dist.Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")).step(_runSource.macro);
+      var _jellyMacro = dist.Macro.while_("!pastround 28 && hasskill CHEAT CODE: Replace Enemy", dist.Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")).trySkill("extract jelly").step(_runSource.macro);
 
       (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject90 || (dailies_templateObject90 = dailies_taggedTemplateLiteral(["Barf Mountain"]))), _jellyMacro);
     }
