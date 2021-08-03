@@ -51,6 +51,7 @@ import {
   gaze,
   gin,
   gingerbreadPrepNoon,
+  hipsterFishing,
   horse,
   jellyfish,
   latte,
@@ -374,7 +375,3 @@ export function main(argString = ""): void {
     );
   }
 }
-function hipsterFishing() {
-  throw new Error("Function not implemented.");
-}
-
