@@ -545,10 +545,17 @@ export function gingerbreadPrepNoon(): void {
 
 export function hipsterFishing(): void {
   if (get("_hipsterAdv") >= 7) return;
+  let bestHipsterEquip: Item;
   if (have($familiar`Mini-Hipster`)) {
     useFamiliar($familiar`Mini-Hipster`);
+    bestHipsterEquip = [
+      { equip: $item`ironic moustache`, drop: $item`mole skin notebook` },
+      { equip: $item`chiptune guitar`, drop: $item`ironic knit cap` },
+      { equip: $item`fixed-gear bicycle`, drop: $item`ironic oversized sunglasses` },
+    ].sort((a, b) => saleValue(b.drop) - saleValue(a.drop))[0].equip;
   } else if (have($familiar`Artistic Goth Kid`)) {
     useFamiliar($familiar`Artistic Goth Kid`);
+    bestHipsterEquip = $item`none`;
   } else return;
 
   while (findRun(false) && get("_hipsterAdv") < 7) {
@@ -557,7 +564,12 @@ export function hipsterFishing(): void {
     const runSource = findRun(false);
     if (!runSource) return;
     if (runSource.prepare) runSource.prepare();
-    freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+    freeFightOutfit([
+      ...(runSource.requirement ? [runSource.requirement] : []),
+      ...(have($familiar`Mini-Hipster`)
+        ? [new Requirement([], { forceEquip: [bestHipsterEquip] })]
+        : []),
+    ]);
     adventureMacro(
       targetLocation,
       Macro.if_(
