@@ -486,7 +486,9 @@ export function jellyfish(): void {
     const jellyMacro = Macro.while_(
       "!pastround 28 && hasskill macrometeorite",
       Macro.skill("extract jelly").skill("macrometeorite")
-    ).step(runSource.macro);
+    )
+      .trySkill("extract jelly")
+      .step(runSource.macro);
     adventureMacro($location`Barf Mountain`, jellyMacro);
   }
   if (have($item`Powerful Glove`)) {
@@ -501,7 +503,9 @@ export function jellyfish(): void {
       const jellyMacro = Macro.while_(
         "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
         Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
-      ).step(runSource.macro);
+      )
+        .trySkill("extract jelly")
+        .step(runSource.macro);
       adventureMacro($location`Barf Mountain`, jellyMacro);
     }
   }
