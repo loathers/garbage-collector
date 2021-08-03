@@ -515,6 +515,7 @@ export function kramcoGuaranteed(): boolean {
 export function canWander(): boolean {
   return (
     SourceTerminal.have() ||
-    have($item`"I Voted!" sticker`) /* || have($item`Kramco Sausage-o-Matic™`)*/
+    (have($item`"I Voted!" sticker`) &&
+      get("_voteFreeFights") < 3) /* || have($item`Kramco Sausage-o-Matic™`)*/
   );
 }
