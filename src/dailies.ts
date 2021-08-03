@@ -550,7 +550,7 @@ export function hipsterFishing(): void {
     useFamiliar($familiar`Artistic Goth Kid`);
   } else return;
 
-  while (findRun(false) && get("_gothKidFights") < 7) {
+  while (findRun(false) && get("_hipsterAdv") < 7) {
     const targetLocation =
       prepWandererZone().combatPercent === 100 ? prepWandererZone() : $location`Noob Cave`;
     const runSource = findRun(false);
