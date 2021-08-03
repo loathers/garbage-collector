@@ -544,6 +544,7 @@ export function gingerbreadPrepNoon(): void {
 }
 
 export function hipsterFishing(): void {
+  if (get("_hipsterAdv") >= 7) return;
   if (have($familiar`Mini-Hipster`)) {
     useFamiliar($familiar`Mini-Hipster`);
   } else if (have($familiar`Artistic Goth Kid`)) {
