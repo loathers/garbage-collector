@@ -21,6 +21,7 @@ import {
   myLevel,
   myMaxhp,
   mySpleenUse,
+  numericModifier,
   print,
   retrieveItem,
   setProperty,
@@ -46,8 +47,9 @@ import {
 } from "libram";
 import { withChoice } from "libram/dist/property";
 import { acquire } from "./acquire";
+import { embezzlerCount } from "./fights";
 import { estimatedTurns, globalOptions } from "./globalvars";
-import { clamp, ensureEffect } from "./lib";
+import { baseMeat, clamp, ensureEffect } from "./lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
@@ -212,8 +214,26 @@ export function runDiet(): void {
   ) {
     cliExecute("barrelprayer buff");
   }
+
+  const { bestSpleenItem } = getBestSpleenItems();
+
   if (mySpleenUse() === 0) {
-    ensureEffect($effect`Eau d' Clochard`);
+    if (!have($effect`Eau d' Clochard`)) {
+      if (!have($item`beggin' cologne`)) {
+        const equilibriumPrice =
+          (baseMeat *
+            numericModifier($effect`Eau d' Clochard`, "Meat") *
+            numericModifier($item`beggin' cologne`, "Effect Duration") +
+            Math.min(numericModifier($item`beggin' cologne`, "Effect Duration"), embezzlerCount()) *
+              750) /
+            100 -
+          valuePerSpleen(bestSpleenItem);
+        buy(1, $item`beggin' cologne`, equilibriumPrice);
+      }
+      if (have($item`beggin' cologne`)) {
+        chewSafe(1, $item`beggin' cologne`);
+      }
+    }
     if (have($skill`Sweet Synthesis`)) ensureEffect($effect`Synthesis: Collection`);
     if (have($item`body spradium`)) ensureEffect($effect`Boxing Day Glow`);
   }
@@ -309,7 +329,6 @@ export function runDiet(): void {
     }
   }
 
-  const { bestSpleenItem } = getBestSpleenItems();
   const mojoFilterCount = 3 - get("currentMojoFilters");
   acquire(mojoFilterCount, $item`mojo filter`, valuePerSpleen(bestSpleenItem), false);
   if (have($item`mojo filter`)) {
