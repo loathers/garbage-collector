@@ -541,3 +541,8 @@ export function gingerbreadPrepNoon(): void {
     }
   }
 }
+
+export function martini(): void {
+  if (!have($item`Kremlin's Greatest Briefcase`)) return;
+  cliExecute("briefcase collect");
+}
