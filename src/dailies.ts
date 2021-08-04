@@ -547,7 +547,8 @@ export function martini(): void {
     !have($item`Kremlin's Greatest Briefcase`) ||
     get("_kgbClicksUsed") > 17 ||
     get("_kgbDispenserUses") >= 3
-  )
+  ) {
     return;
+  }
   cliExecute("briefcase collect");
 }
