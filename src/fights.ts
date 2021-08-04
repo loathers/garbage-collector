@@ -417,16 +417,17 @@ function embezzlerSetup() {
 }
 
 function getEmbezzlerFight(): EmbezzlerFight | null {
-  let potentials = false;
   for (const fight of embezzlerSources) {
     if (fight.available()) return fight;
-    if (fight.potential()) potentials = true;
   }
+  const potential = embezzlerCount();
   if (
-    potentials &&
+    potential > 0 &&
     get("_genieFightsUsed") < 3 &&
     userConfirm(
-      "Garbo has detected you have potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"
+      `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler? (Defaulting to no in 30 seconds)`,
+      30000,
+      false
     )
   ) {
     return new EmbezzlerFight(
