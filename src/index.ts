@@ -134,7 +134,8 @@ function barfTurn() {
   }
   if (
     have($item`latte lovers member's mug`) &&
-    (get("_latteRefillsUsed") < 3 && get("_latteCopyUsed") === true)
+    get("_latteRefillsUsed") < 3 && 
+    get("_latteCopyUsed") === true
   ) {
     const latteIngredients = [
           get("latteUnlocks").includes("cajun")
