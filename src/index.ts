@@ -134,33 +134,23 @@ function barfTurn() {
   }
   if (
     have($item`latte lovers member's mug`) &&
-    get("_latteRefillsUsed") < 3 && 
-    get("_latteCopyUsed") === true
+    get("_latteRefillsUsed") < 3 &&
+    get("_latteCopyUsed") === true &&
+    get("latteUnlocks").includes("cajun") &&
+    get("latteUnlocks").includes("rawhide")
   ) {
     const latteIngredients = [
-          get("latteUnlocks").includes("cajun")
-            ? "cajun"
-            : myPrimestat() === $stat`muscle`
-            ? "cinnamon"
-            : myPrimestat() === $stat`mysticality`
-            ? "vanilla"
-            : "pumpkin spice",
-          get("latteUnlocks").includes("rawhide")
-            ? "rawhide"
-            : myPrimestat() === $stat`muscle`
-            ? "pumpkin spice"
-            : myPrimestat() === $stat`mysticality`
-            ? "cinnamon"
-            : "vanilla",
-          get("latteUnlocks").includes("carrot")
-            ? "carrot"
-            : myPrimestat() === $stat`muscle`
-            ? "vanilla"
-            : myPrimestat() === $stat`mysticality`
-            ? "pumpkin spice"
-            : "cinnamon",
-        ].join(" ");
-        cliExecute(`latte refill ${latteIngredients}`);
+      "cajun",
+      "rawhide",
+      get("latteUnlocks").includes("carrot")
+        ? "carrot"
+        : myPrimestat() === $stat`muscle`
+        ? "vanilla"
+        : myPrimestat() === $stat`mysticality`
+        ? "pumpkin spice"
+        : "cinnamon",
+    ].join(" ");
+    cliExecute(`latte refill ${latteIngredients}`);
   }
 
   // a. set up familiar
