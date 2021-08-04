@@ -35,6 +35,7 @@ import {
   $location,
   $monster,
   $skill,
+  $stat,
   adventureMacro,
   adventureMacroAuto,
   get,
