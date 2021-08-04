@@ -228,7 +228,7 @@ export function runDiet(): void {
               750) /
             100 -
           valuePerSpleen(bestSpleenItem);
-        buy(1, $item`beggin' cologne`, equilibriumPrice);
+        if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
       }
       if (have($item`beggin' cologne`)) {
         chewSafe(1, $item`beggin' cologne`);
