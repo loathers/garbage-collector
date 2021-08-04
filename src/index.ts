@@ -15,10 +15,12 @@ import {
   myTurncount,
   print,
   putCloset,
+  refreshStash,
   retrieveItem,
   reverseNumberology,
   runChoice,
   setAutoAttack,
+  stashAmount,
   toItem,
   totalTurnsPlayed,
   use,
@@ -99,9 +101,17 @@ function dailySetup() {
   configureGear();
   horse();
   prepFamiliars();
-  gingerbreadPrepNoon();
-  latte();
-  jellyfish();
+  refreshStash();
+  const stashRun = stashAmount($item`navel ring of navel gazing`)
+    ? $items`navel ring of navel gazing`
+    : stashAmount($item`Greatest American Pants`)
+    ? $items`Greatest American Pants`
+    : [];
+  withStash(stashRun, () => {
+    gingerbreadPrepNoon();
+    latte();
+    jellyfish();
+  });
   dailyBuffs();
   configureMisc();
   volcanoDailies();
