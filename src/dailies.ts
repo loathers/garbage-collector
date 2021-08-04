@@ -541,3 +541,14 @@ export function gingerbreadPrepNoon(): void {
     }
   }
 }
+
+export function martini(): void {
+  if (
+    !have($item`Kremlin's Greatest Briefcase`) ||
+    get("_kgbClicksUsed") > 17 ||
+    get("_kgbDispenserUses") >= 3
+  ) {
+    return;
+  }
+  cliExecute("briefcase collect");
+}

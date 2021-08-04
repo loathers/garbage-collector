@@ -54,6 +54,7 @@ import {
   horse,
   jellyfish,
   latte,
+  martini,
   pickTea,
   prepFamiliars,
   volcanoDailies,
@@ -95,6 +96,7 @@ function ensureBarfAccess() {
 
 function dailySetup() {
   voterSetup();
+  martini();
   gaze();
   configureGear();
   horse();
