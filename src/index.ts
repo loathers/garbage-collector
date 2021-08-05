@@ -12,13 +12,16 @@ import {
   myClass,
   myGardenType,
   myInebriety,
+  myPrimestat,
   myTurncount,
   print,
   putCloset,
+  refreshStash,
   retrieveItem,
   reverseNumberology,
   runChoice,
   setAutoAttack,
+  stashAmount,
   toItem,
   totalTurnsPlayed,
   use,
@@ -34,6 +37,7 @@ import {
   $location,
   $monster,
   $skill,
+  $stat,
   adventureMacro,
   adventureMacroAuto,
   get,
@@ -51,9 +55,11 @@ import {
   gaze,
   gin,
   gingerbreadPrepNoon,
+  hipsterFishing,
   horse,
   jellyfish,
   latte,
+  martini,
   pickTea,
   prepFamiliars,
   volcanoDailies,
@@ -101,19 +107,36 @@ function ensureBarfAccess() {
 
 function dailySetup() {
   voterSetup();
+  martini();
   gaze();
   configureGear();
   horse();
   prepFamiliars();
-  gingerbreadPrepNoon();
-  latte();
-  jellyfish();
   dailyBuffs();
   configureMisc();
   volcanoDailies();
   cheat();
   gin();
   pickTea();
+
+  refreshStash();
+  const stashRun = stashAmount($item`navel ring of navel gazing`)
+    ? $items`navel ring of navel gazing`
+    : stashAmount($item`Greatest American Pants`)
+    ? $items`Greatest American Pants`
+    : [];
+  withStash(stashRun, () => {
+    gingerbreadPrepNoon();
+    latte();
+    jellyfish();
+    hipsterFishing();
+  });
+
+  if (myInebriety() > inebrietyLimit()) return;
+  gingerbreadPrepNoon();
+  latte();
+  jellyfish();
+  dailyBuffs();
 
   retrieveItem($item`Half a Purse`);
   retrieveItem($item`seal tooth`);
@@ -129,6 +152,33 @@ function barfTurn() {
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+  }
+
+  if (
+    have($item`unwrapped knock-off retro superhero cape`) &&
+    (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
+  ) {
+    cliExecute("retrocape robot kill");
+  }
+  if (
+    have($item`latte lovers member's mug`) &&
+    get("_latteRefillsUsed") < 3 &&
+    get("_latteCopyUsed") &&
+    get("latteUnlocks").includes("cajun") &&
+    get("latteUnlocks").includes("rawhide")
+  ) {
+    const latteIngredients = [
+      "cajun",
+      "rawhide",
+      get("latteUnlocks").includes("carrot")
+        ? "carrot"
+        : myPrimestat() === $stat`muscle`
+        ? "vanilla"
+        : myPrimestat() === $stat`mysticality`
+        ? "pumpkin spice"
+        : "cinnamon",
+    ].join(" ");
+    cliExecute(`latte refill ${latteIngredients}`);
   }
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
@@ -270,7 +320,10 @@ export function main(argString = ""): void {
   if (
     startingGarden &&
     !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
-    getCampground()[startingGarden.name]
+    getCampground()[startingGarden.name] &&
+    $items`packet of tall grass seeds, packet of mushroom spores`.some((gardenSeed) =>
+      have(gardenSeed)
+    )
   ) {
     visitUrl("campground.php?action=garden&pwd");
   }
