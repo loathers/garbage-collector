@@ -12,6 +12,7 @@ import {
   myClass,
   myGardenType,
   myInebriety,
+  myPrimestat,
   myTurncount,
   print,
   putCloset,
@@ -36,6 +37,7 @@ import {
   $location,
   $monster,
   $skill,
+  $stat,
   adventureMacro,
   adventureMacroAuto,
   get,
@@ -53,9 +55,11 @@ import {
   gaze,
   gin,
   gingerbreadPrepNoon,
+  hipsterFishing,
   horse,
   jellyfish,
   latte,
+  martini,
   pickTea,
   prepFamiliars,
   volcanoDailies,
@@ -97,10 +101,12 @@ function ensureBarfAccess() {
 
 function dailySetup() {
   voterSetup();
+  martini();
   gaze();
   configureGear();
   horse();
   prepFamiliars();
+
   refreshStash();
   const stashRun = stashAmount($item`navel ring of navel gazing`)
     ? $items`navel ring of navel gazing`
@@ -111,7 +117,9 @@ function dailySetup() {
     gingerbreadPrepNoon();
     latte();
     jellyfish();
+    hipsterFishing();
   });
+
   dailyBuffs();
   configureMisc();
   volcanoDailies();
@@ -139,6 +147,26 @@ function barfTurn() {
     (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
   ) {
     cliExecute("retrocape robot kill");
+  }
+  if (
+    have($item`latte lovers member's mug`) &&
+    get("_latteRefillsUsed") < 3 &&
+    get("_latteCopyUsed") &&
+    get("latteUnlocks").includes("cajun") &&
+    get("latteUnlocks").includes("rawhide")
+  ) {
+    const latteIngredients = [
+      "cajun",
+      "rawhide",
+      get("latteUnlocks").includes("carrot")
+        ? "carrot"
+        : myPrimestat() === $stat`muscle`
+        ? "vanilla"
+        : myPrimestat() === $stat`mysticality`
+        ? "pumpkin spice"
+        : "cinnamon",
+    ].join(" ");
+    cliExecute(`latte refill ${latteIngredients}`);
   }
 
   // a. set up familiar
@@ -267,7 +295,10 @@ export function main(argString = ""): void {
   if (
     startingGarden &&
     !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
-    getCampground()[startingGarden.name]
+    getCampground()[startingGarden.name] &&
+    $items`packet of tall grass seeds, packet of mushroom spores`.some((gardenSeed) =>
+      have(gardenSeed)
+    )
   ) {
     visitUrl("campground.php?action=garden&pwd");
   }

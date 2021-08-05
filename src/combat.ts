@@ -130,14 +130,11 @@ export class Macro extends LibramMacro {
       itemType(equippedItem($slot`weapon`)) === "pistol";
 
     // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
-    return this.tryHaveSkill("Sing Along")
-      .externalIf(
-        shouldRedigitize(),
-        Macro.if_(
-          `monstername ${get("_sourceTerminalDigitizeMonster")}`,
-          Macro.trySkill("Digitize")
-        )
-      )
+    return this.externalIf(
+      shouldRedigitize(),
+      Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.trySkill("Digitize"))
+    )
+      .tryHaveSkill("Sing Along")
       .externalIf(
         !have($effect`On the Trail`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))
@@ -145,6 +142,10 @@ export class Macro extends LibramMacro {
       .externalIf(
         get("_gallapagosMonster") !== $monster`garbage tourist`,
         Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))
+      )
+      .externalIf(
+        get("_latteMonster") !== $monster`garbage tourist`,
+        Macro.if_("monstername garbage tourist", Macro.trySkill("Offer Latte to Opponent"))
       )
       .externalIf(
         get("lastCopyableMonster") === $monster`garbage tourist`,
