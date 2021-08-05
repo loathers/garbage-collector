@@ -14250,6 +14250,8 @@ function bestWitchessPiece() {
 }
 
 function dailyFights() {
+  if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) return;
+
   if (embezzlerSources.some(function (source) {
     return source.potential();
   })) {
@@ -14766,6 +14768,7 @@ new FreeFight(function () {
   }
 })];
 function freeFights() {
+  if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) return;
   (0,external_kolmafia_.visitUrl)("place.php?whichplace=town_wrong");
 
   var _iterator2 = fights_createForOfIteratorHelper(freeFightSources),
@@ -15762,6 +15765,12 @@ function dailySetup() {
   configureGear();
   horse();
   prepFamiliars();
+  dailyBuffs();
+  configureMisc();
+  volcanoDailies();
+  cheat();
+  gin();
+  pickTea();
   (0,external_kolmafia_.refreshStash)();
   var stashRun = (0,external_kolmafia_.stashAmount)((0,dist.$item)(src_templateObject3 || (src_templateObject3 = src_taggedTemplateLiteral(["navel ring of navel gazing"])))) ? (0,dist.$items)(src_templateObject4 || (src_templateObject4 = src_taggedTemplateLiteral(["navel ring of navel gazing"]))) : (0,external_kolmafia_.stashAmount)((0,dist.$item)(src_templateObject5 || (src_templateObject5 = src_taggedTemplateLiteral(["Greatest American Pants"])))) ? (0,dist.$items)(src_templateObject6 || (src_templateObject6 = src_taggedTemplateLiteral(["Greatest American Pants"]))) : [];
   withStash(stashRun, function () {
@@ -15770,12 +15779,11 @@ function dailySetup() {
     jellyfish();
     hipsterFishing();
   });
+  if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) return;
+  gingerbreadPrepNoon();
+  latte();
+  jellyfish();
   dailyBuffs();
-  configureMisc();
-  volcanoDailies();
-  cheat();
-  gin();
-  pickTea();
   (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject7 || (src_templateObject7 = src_taggedTemplateLiteral(["Half a Purse"]))));
   (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject8 || (src_templateObject8 = src_taggedTemplateLiteral(["seal tooth"]))));
   (0,external_kolmafia_.retrieveItem)((0,dist.$item)(src_templateObject9 || (src_templateObject9 = src_taggedTemplateLiteral(["The Jokester's gun"]))));
