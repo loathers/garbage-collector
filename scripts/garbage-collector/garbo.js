@@ -15275,7 +15275,7 @@ function mindMayo(mayo, quantity) {
   }
 }
 ;// CONCATENATED MODULE: ./src/dailies.ts
-var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20, dailies_templateObject21, dailies_templateObject22, dailies_templateObject23, dailies_templateObject24, dailies_templateObject25, dailies_templateObject26, dailies_templateObject27, dailies_templateObject28, dailies_templateObject29, dailies_templateObject30, dailies_templateObject31, dailies_templateObject32, dailies_templateObject33, dailies_templateObject34, dailies_templateObject35, dailies_templateObject36, dailies_templateObject37, dailies_templateObject38, dailies_templateObject39, dailies_templateObject40, dailies_templateObject41, dailies_templateObject42, dailies_templateObject43, dailies_templateObject44, dailies_templateObject45, dailies_templateObject46, dailies_templateObject47, dailies_templateObject48, dailies_templateObject49, dailies_templateObject50, dailies_templateObject51, dailies_templateObject52, dailies_templateObject53, dailies_templateObject54, dailies_templateObject55, dailies_templateObject56, dailies_templateObject57, dailies_templateObject58, dailies_templateObject59, dailies_templateObject60, dailies_templateObject61, dailies_templateObject62, dailies_templateObject63, dailies_templateObject64, dailies_templateObject65, dailies_templateObject66, dailies_templateObject67, dailies_templateObject68, dailies_templateObject69, dailies_templateObject70, dailies_templateObject71, dailies_templateObject72, dailies_templateObject73, dailies_templateObject74, dailies_templateObject75, dailies_templateObject76, dailies_templateObject77, dailies_templateObject78, dailies_templateObject79, dailies_templateObject80, dailies_templateObject81, dailies_templateObject82, dailies_templateObject83, dailies_templateObject84, dailies_templateObject85, dailies_templateObject86, dailies_templateObject87, dailies_templateObject88, dailies_templateObject89, dailies_templateObject90, dailies_templateObject91, dailies_templateObject92, dailies_templateObject93;
+var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20, dailies_templateObject21, dailies_templateObject22, dailies_templateObject23, dailies_templateObject24, dailies_templateObject25, dailies_templateObject26, dailies_templateObject27, dailies_templateObject28, dailies_templateObject29, dailies_templateObject30, dailies_templateObject31, dailies_templateObject32, dailies_templateObject33, dailies_templateObject34, dailies_templateObject35, dailies_templateObject36, dailies_templateObject37, dailies_templateObject38, dailies_templateObject39, dailies_templateObject40, dailies_templateObject41, dailies_templateObject42, dailies_templateObject43, dailies_templateObject44, dailies_templateObject45, dailies_templateObject46, dailies_templateObject47, dailies_templateObject48, dailies_templateObject49, dailies_templateObject50, dailies_templateObject51, dailies_templateObject52, dailies_templateObject53, dailies_templateObject54, dailies_templateObject55, dailies_templateObject56, dailies_templateObject57, dailies_templateObject58, dailies_templateObject59, dailies_templateObject60, dailies_templateObject61, dailies_templateObject62, dailies_templateObject63, dailies_templateObject64, dailies_templateObject65, dailies_templateObject66, dailies_templateObject67, dailies_templateObject68, dailies_templateObject69, dailies_templateObject70, dailies_templateObject71, dailies_templateObject72, dailies_templateObject73, dailies_templateObject74, dailies_templateObject75, dailies_templateObject76, dailies_templateObject77, dailies_templateObject78, dailies_templateObject79, dailies_templateObject80, dailies_templateObject81, dailies_templateObject82, dailies_templateObject83, dailies_templateObject84, dailies_templateObject85, dailies_templateObject86, dailies_templateObject87, dailies_templateObject88, dailies_templateObject89, dailies_templateObject90, dailies_templateObject91, dailies_templateObject92, dailies_templateObject93, dailies_templateObject94, dailies_templateObject95, dailies_templateObject96, dailies_templateObject97, dailies_templateObject98, dailies_templateObject99, dailies_templateObject100, dailies_templateObject101, dailies_templateObject102, dailies_templateObject103, dailies_templateObject104;
 
 function dailies_slicedToArray(arr, i) { return dailies_arrayWithHoles(arr) || dailies_iterableToArrayLimit(arr, i) || dailies_unsupportedIterableToArray(arr, i) || dailies_nonIterableRest(); }
 
@@ -15300,6 +15300,7 @@ function dailies_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return dailies
 function dailies_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function dailies_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 
 
 
@@ -15642,7 +15643,7 @@ function jellyfish() {
     if (!runSource) break;
     if (runSource.prepare) runSource.prepare();
     freeFightOutfit(dailies_toConsumableArray(runSource.requirement ? [runSource.requirement] : []));
-    var jellyMacro = dist.Macro.while_("!pastround 28 && hasskill macrometeorite", dist.Macro.skill("extract jelly").skill("macrometeorite")).trySkill("extract jelly").step(runSource.macro);
+    var jellyMacro = combat.Macro.while_("!pastround 28 && hasskill macrometeorite", combat.Macro.skill("extract jelly").skill("macrometeorite")).trySkill("extract jelly").step(runSource.macro);
     (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject87 || (dailies_templateObject87 = dailies_taggedTemplateLiteral(["Barf Mountain"]))), jellyMacro);
   }
 
@@ -15656,7 +15657,7 @@ function jellyfish() {
         forceEquip: (0,dist.$items)(dailies_templateObject89 || (dailies_templateObject89 = dailies_taggedTemplateLiteral(["Powerful Glove"])))
       })].concat(dailies_toConsumableArray(_runSource.requirement ? [_runSource.requirement] : [])));
 
-      var _jellyMacro = dist.Macro.while_("!pastround 28 && hasskill CHEAT CODE: Replace Enemy", dist.Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")).trySkill("extract jelly").step(_runSource.macro);
+      var _jellyMacro = combat.Macro.while_("!pastround 28 && hasskill CHEAT CODE: Replace Enemy", combat.Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")).trySkill("extract jelly").step(_runSource.macro);
 
       (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject90 || (dailies_templateObject90 = dailies_taggedTemplateLiteral(["Barf Mountain"]))), _jellyMacro);
     }
@@ -15667,7 +15668,7 @@ function gingerbreadPrepNoon() {
 
   if ((0,dist.get)("gingerAdvanceClockUnlocked") && !(0,dist.get)("_gingerbreadClockVisited") && (0,dist.get)("_gingerbreadCityTurns") <= 3) {
     (0,property.withChoice)(1215, 1, function () {
-      return (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject91 || (dailies_templateObject91 = dailies_taggedTemplateLiteral(["Gingerbread Civic Center"]))), dist.Macro.abort());
+      return (0,dist.adventureMacro)((0,dist.$location)(dailies_templateObject91 || (dailies_templateObject91 = dailies_taggedTemplateLiteral(["Gingerbread Civic Center"]))), combat.Macro.abort());
     });
   }
 
@@ -15683,8 +15684,28 @@ function gingerbreadPrepNoon() {
     }
   }
 }
+function hipsterFishing() {
+  if ((0,dist.get)("_hipsterAdv") >= 7) return;
+
+  if ((0,dist.have)((0,dist.$familiar)(dailies_templateObject93 || (dailies_templateObject93 = dailies_taggedTemplateLiteral(["Mini-Hipster"]))))) {
+    (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(dailies_templateObject94 || (dailies_templateObject94 = dailies_taggedTemplateLiteral(["Mini-Hipster"]))));
+  } else if ((0,dist.have)((0,dist.$familiar)(dailies_templateObject95 || (dailies_templateObject95 = dailies_taggedTemplateLiteral(["Artistic Goth Kid"]))))) {
+    (0,external_kolmafia_.useFamiliar)((0,dist.$familiar)(dailies_templateObject96 || (dailies_templateObject96 = dailies_taggedTemplateLiteral(["Artistic Goth Kid"]))));
+  } else return;
+
+  while (findRun(false) && (0,dist.get)("_hipsterAdv") < 7) {
+    var targetLocation = prepWandererZone().combatPercent === 100 ? prepWandererZone() : (0,dist.$location)(dailies_templateObject97 || (dailies_templateObject97 = dailies_taggedTemplateLiteral(["Noob Cave"])));
+    var runSource = findRun(false);
+    if (!runSource) return;
+    if (runSource.prepare) runSource.prepare();
+    freeFightOutfit([].concat(dailies_toConsumableArray(runSource.requirement ? [runSource.requirement] : []), [new Requirement([], {
+      bonusEquip: new Map([[(0,dist.$item)(dailies_templateObject98 || (dailies_templateObject98 = dailies_taggedTemplateLiteral(["ironic moustache"]))), saleValue((0,dist.$item)(dailies_templateObject99 || (dailies_templateObject99 = dailies_taggedTemplateLiteral(["mole skin notebook"]))))], [(0,dist.$item)(dailies_templateObject100 || (dailies_templateObject100 = dailies_taggedTemplateLiteral(["chiptune guitar"]))), saleValue((0,dist.$item)(dailies_templateObject101 || (dailies_templateObject101 = dailies_taggedTemplateLiteral(["ironic knit cap"]))))], [(0,dist.$item)(dailies_templateObject102 || (dailies_templateObject102 = dailies_taggedTemplateLiteral(["fixed-gear bicycle"]))), saleValue((0,dist.$item)(dailies_templateObject103 || (dailies_templateObject103 = dailies_taggedTemplateLiteral(["ironic oversized sunglasses"]))))]])
+    })]));
+    (0,dist.adventureMacro)(targetLocation, combat.Macro.if_("(monsterid 969) || (monsterid 970) || (monsterid 971) || (monsterid 972) || (monsterid 973) || (monstername Black Crayon *)", combat.Macro.meatKill()).step(runSource.macro));
+  }
+}
 function martini() {
-  if (!(0,dist.have)((0,dist.$item)(dailies_templateObject93 || (dailies_templateObject93 = dailies_taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))) || (0,dist.get)("_kgbClicksUsed") > 17 || (0,dist.get)("_kgbDispenserUses") >= 3) {
+  if (!(0,dist.have)((0,dist.$item)(dailies_templateObject104 || (dailies_templateObject104 = dailies_taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))) || (0,dist.get)("_kgbClicksUsed") > 17 || (0,dist.get)("_kgbDispenserUses") >= 3) {
     return;
   }
 
@@ -15744,6 +15765,7 @@ function dailySetup() {
   gingerbreadPrepNoon();
   latte();
   jellyfish();
+  hipsterFishing();
   dailyBuffs();
   configureMisc();
   volcanoDailies();
