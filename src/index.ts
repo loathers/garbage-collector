@@ -12,6 +12,7 @@ import {
   myClass,
   myGardenType,
   myInebriety,
+  myPrimestat,
   myTurncount,
   print,
   putCloset,
@@ -34,6 +35,7 @@ import {
   $location,
   $monster,
   $skill,
+  $stat,
   adventureMacro,
   adventureMacroAuto,
   get,
@@ -131,6 +133,26 @@ function barfTurn() {
     (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
   ) {
     cliExecute("retrocape robot kill");
+  }
+  if (
+    have($item`latte lovers member's mug`) &&
+    get("_latteRefillsUsed") < 3 &&
+    get("_latteCopyUsed") &&
+    get("latteUnlocks").includes("cajun") &&
+    get("latteUnlocks").includes("rawhide")
+  ) {
+    const latteIngredients = [
+      "cajun",
+      "rawhide",
+      get("latteUnlocks").includes("carrot")
+        ? "carrot"
+        : myPrimestat() === $stat`muscle`
+        ? "vanilla"
+        : myPrimestat() === $stat`mysticality`
+        ? "pumpkin spice"
+        : "cinnamon",
+    ].join(" ");
+    cliExecute(`latte refill ${latteIngredients}`);
   }
 
   // a. set up familiar
