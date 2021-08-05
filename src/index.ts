@@ -53,6 +53,7 @@ import {
   gaze,
   gin,
   gingerbreadPrepNoon,
+  hipsterFishing,
   horse,
   jellyfish,
   latte,
@@ -106,6 +107,7 @@ function dailySetup() {
   gingerbreadPrepNoon();
   latte();
   jellyfish();
+  hipsterFishing();
   dailyBuffs();
   configureMisc();
   volcanoDailies();
