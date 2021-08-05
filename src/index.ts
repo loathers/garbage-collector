@@ -259,7 +259,10 @@ export function main(argString = ""): void {
   if (
     startingGarden &&
     !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
-    getCampground()[startingGarden.name]
+    getCampground()[startingGarden.name] &&
+    $items`packet of tall grass seeds, packet of mushroom spores`.some((gardenSeed) =>
+      have(gardenSeed)
+    )
   ) {
     visitUrl("campground.php?action=garden&pwd");
   }
