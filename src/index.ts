@@ -135,7 +135,7 @@ function barfTurn() {
   if (
     have($item`latte lovers member's mug`) &&
     get("_latteRefillsUsed") < 3 &&
-    get("_latteCopyUsed") === true &&
+    get("_latteCopyUsed") &&
     get("latteUnlocks").includes("cajun") &&
     get("latteUnlocks").includes("rawhide")
   ) {
