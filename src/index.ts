@@ -101,15 +101,17 @@ function dailySetup() {
   configureGear();
   horse();
   prepFamiliars();
-  gingerbreadPrepNoon();
-  latte();
-  jellyfish();
-  dailyBuffs();
   configureMisc();
   volcanoDailies();
   cheat();
   gin();
   pickTea();
+
+  if (myInebriety() > inebrietyLimit()) return;
+  gingerbreadPrepNoon();
+  latte();
+  jellyfish();
+  dailyBuffs();
 
   retrieveItem($item`Half a Purse`);
   retrieveItem($item`seal tooth`);
