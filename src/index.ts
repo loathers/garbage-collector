@@ -106,6 +106,12 @@ function dailySetup() {
   configureGear();
   horse();
   prepFamiliars();
+  dailyBuffs();
+  configureMisc();
+  volcanoDailies();
+  cheat();
+  gin();
+  pickTea();
 
   refreshStash();
   const stashRun = stashAmount($item`navel ring of navel gazing`)
@@ -120,12 +126,11 @@ function dailySetup() {
     hipsterFishing();
   });
 
+  if (myInebriety() > inebrietyLimit()) return;
+  gingerbreadPrepNoon();
+  latte();
+  jellyfish();
   dailyBuffs();
-  configureMisc();
-  volcanoDailies();
-  cheat();
-  gin();
-  pickTea();
 
   retrieveItem($item`Half a Purse`);
   retrieveItem($item`seal tooth`);

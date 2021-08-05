@@ -13,6 +13,7 @@ import {
   getCampground,
   getCounters,
   handlingChoice,
+  inebrietyLimit,
   itemAmount,
   mallPrice,
   myAscensions,
@@ -20,6 +21,7 @@ import {
   myFamiliar,
   myHash,
   myHp,
+  myInebriety,
   myMaxhp,
   myMaxmp,
   myMp,
@@ -480,6 +482,7 @@ function bestWitchessPiece() {
 }
 
 export function dailyFights(): void {
+  if (myInebriety() > inebrietyLimit()) return;
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       embezzlerSetup();
@@ -1135,6 +1138,7 @@ const freeKillSources = [
 ];
 
 export function freeFights(): void {
+  if (myInebriety() > inebrietyLimit()) return;
   visitUrl("place.php?whichplace=town_wrong");
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
