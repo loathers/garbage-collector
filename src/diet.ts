@@ -231,7 +231,7 @@ export function runDiet(): void {
         if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
       }
       if (have($item`beggin' cologne`)) {
-        chewSafe(1, $item`beggin' cologne`);
+        chew(1, $item`beggin' cologne`);
       }
     }
     if (have($skill`Sweet Synthesis`)) ensureEffect($effect`Synthesis: Collection`);
