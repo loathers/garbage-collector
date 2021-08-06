@@ -113,6 +113,7 @@ function dailySetup() {
   gin();
   pickTea();
 
+  if (myInebriety() > inebrietyLimit()) return;
   refreshStash();
   const stashRun = stashAmount($item`navel ring of navel gazing`)
     ? $items`navel ring of navel gazing`
@@ -125,12 +126,6 @@ function dailySetup() {
     jellyfish();
     hipsterFishing();
   });
-
-  if (myInebriety() > inebrietyLimit()) return;
-  gingerbreadPrepNoon();
-  latte();
-  jellyfish();
-  dailyBuffs();
 
   retrieveItem($item`Half a Purse`);
   retrieveItem($item`seal tooth`);
