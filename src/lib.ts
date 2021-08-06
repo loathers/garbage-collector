@@ -32,9 +32,11 @@ import {
   Macro,
   MaximizeOptions,
   property,
-  set,
   SongBoom,
 } from "libram";
+import { PropertiesManager } from "libram/dist/property";
+
+export const PropertyManager = new PropertiesManager();
 
 export const baseMeat =
   SongBoom.have() &&
@@ -43,8 +45,9 @@ export const baseMeat =
     : 250;
 
 export function setChoice(adventure: number, value: number): void {
-  set(`choiceAdventure${adventure}`, `${value}`);
+  PropertyManager.setChoices({ [adventure]: value })
 }
+
 
 export function ensureEffect(effect: Effect): void {
   if (!have(effect)) cliExecute(effect.default);
