@@ -162,6 +162,7 @@ const firstChainMacro = () =>
         .tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)
         .tryCopier($item`4-d camera`)
+        .tryCopier($item`unfinished ice sculpture`)
     )
       .trySkill("Lecture on Relativity")
       .meatKill()
@@ -182,6 +183,7 @@ const secondChainMacro = () =>
             .tryCopier($item`Spooky Putty sheet`)
             .tryCopier($item`Rain-Doh black box`)
             .tryCopier($item`4-d camera`)
+            .tryCopier($item`unfinished ice sculpture`)
         )
         .trySkill("Lecture on Relativity")
     ).meatKill()
@@ -330,6 +332,20 @@ const embezzlerSources = [
     () => use($item`shaking 4-d camera`)
   ),
   new EmbezzlerFight(
+    "Ice Sculpture",
+    () =>
+      have($item`ice sculpture`) &&
+      get("iceSculptureMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_iceSculptureUsed"),
+    () =>
+      have($item`ice sculpture`) &&
+      get("iceSculptureMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_iceSculptureUsed")
+        ? 1
+        : 0,
+    () => use($item`ice sculpture`)
+  ),
+  new EmbezzlerFight(
     "Green Taffy",
     () =>
       have($item`envyfish egg`) &&
@@ -387,6 +403,10 @@ function embezzlerSetup() {
     retrieveItem($item`4-d camera`);
   }
 
+  if (!get("_iceSculptureUsed") && !have($item`ice sculpture`)) {
+    retrieveItem($item`unfinished ice sculpture`);
+  }
+
   // Fix invalid copiers (caused by ascending or combat text-effects)
   if (have($item`Spooky Putty monster`) && !get("spookyPuttyMonster")) {
     // Visit the description to update the monster as it may be valid but not tracked correctly
@@ -407,6 +427,10 @@ function embezzlerSetup() {
 
   if (have($item`envyfish egg`) && !get("envyfishMonster")) {
     visitUrl(`desc_item.php?whichitem=${$item`envyfish egg`.descid}`, false, false);
+  }
+
+  if (have($item`ice sculpture`) && !get("iceSculptureMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 }
 
