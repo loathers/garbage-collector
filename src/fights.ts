@@ -352,7 +352,15 @@ const embezzlerSources = [
   new EmbezzlerFight(
     "Professor MeatChain",
     () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 10 : 0),
+    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 8 : 0),
+    () => {
+      return;
+    }
+  ),
+  new EmbezzlerFight(
+    "Professor ChipChain",
+    () => false,
+    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_chipChain", false) ? 2 : 0),
     () => {
       return;
     }
