@@ -45,9 +45,8 @@ export const baseMeat =
     : 250;
 
 export function setChoice(adventure: number, value: number): void {
-  PropertyManager.setChoices({ [adventure]: value })
+  PropertyManager.setChoices({ [adventure]: value });
 }
-
 
 export function ensureEffect(effect: Effect): void {
   if (!have(effect)) cliExecute(effect.default);
