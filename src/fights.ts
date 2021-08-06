@@ -655,7 +655,7 @@ class FreeFight {
       freeFightMood().execute();
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
-      withMacro(Macro.meatKill(), this.run);
+      withMacro(Macro.basicCombat(), this.run);
       horseradish();
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
@@ -672,7 +672,7 @@ const pygmyMacro = Macro.if_(
     Macro.trySkill("Feel Hatred").item($item`divine champagne popper`)
   )
   .if_("monstername pygmy janitor", Macro.item($item`tennis ball`))
-  .if_("monstername time-spinner prank", Macro.meatKill())
+  .if_("monstername time-spinner prank", Macro.basicCombat())
   .abort();
 
 const freeFightSources = [
@@ -764,7 +764,16 @@ const freeFightSources = [
         get("lastGuildStoreOpen") === myAscensions() ? 1 : 3,
         $item`seal-blubber candle`
       );
-      use(figurine);
+      withMacro(
+        Macro.startCombat()
+          .trySkill("Furious Wallop")
+          .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+          .while_("hasskill Thrust-Smack", Macro.skill($skill`Thrust-Smack`))
+          .while_("hasskill Lunge Smack", Macro.skill($skill`Lunge Smack`))
+          .attack()
+          .repeat(),
+        () => use(figurine)
+      );
     },
     {
       requirements: () => [new Requirement(["Club"], {})],
@@ -948,7 +957,7 @@ const freeFightSources = [
       if (SourceTerminal.have()) {
         SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
-      adventureMacro($location`Your Mushroom Garden`, Macro.trySkill("Portscan").meatKill());
+      adventureMacro($location`Your Mushroom Garden`, Macro.trySkill("Portscan").basicCombat());
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
     {
@@ -973,7 +982,7 @@ const freeFightSources = [
         $location`Your Mushroom Garden`,
         Macro.if_("monstername government agent", Macro.skill("Macrometeorite")).if_(
           "monstername piranha plant",
-          Macro.trySkill("Portscan").meatKill()
+          Macro.trySkill("Portscan").basicCombat()
         )
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
@@ -1025,7 +1034,7 @@ const freeFightSources = [
         : 0,
     () => {
       nepQuest();
-      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
+      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").basicCombat());
       if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
         print("Found Gerald/ine!", "blue");
         setChoice(1324, 5);
@@ -1254,6 +1263,6 @@ function doSausage() {
   if (!kramcoGuaranteed()) return;
   useFamiliar(freeFightFamiliar());
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
-  adventureMacroAuto(prepWandererZone(), Macro.meatKill());
+  adventureMacroAuto(prepWandererZone(), Macro.basicCombat());
   setAutoAttack(0);
 }
