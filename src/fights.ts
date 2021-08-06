@@ -507,7 +507,7 @@ export function dailyFights(): void {
       }
 
       startDigitize();
-      
+
       // SECOND EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_chipChain", false)) {
         const startLectures = get("_pocketProfessorLectures");
@@ -529,7 +529,7 @@ export function dailyFights(): void {
         }
         set("_garbo_chipChain", true);
       }
-      
+
       startDigitize();
 
       // THIRD EMBEZZLER CHAIN
