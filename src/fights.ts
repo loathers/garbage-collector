@@ -507,8 +507,32 @@ export function dailyFights(): void {
       }
 
       startDigitize();
-
+      
       // SECOND EMBEZZLER CHAIN
+      if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_chipChain", false)) {
+        const startLectures = get("_pocketProfessorLectures");
+        const fightSource = getEmbezzlerFight();
+        if (!fightSource) return;
+        useFamiliar($familiar`Pocket Professor`);
+        meatOutfit(true, [
+          ...fightSource.requirements,
+          new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
+        ]);
+        if (
+          get("_pocketProfessorLectures") <
+          2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
+        ) {
+          withMacro(firstChainMacro(), () =>
+            fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
+          );
+          log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
+        }
+        set("_garbo_chipChain", true);
+      }
+      
+      startDigitize();
+
+      // THIRD EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
         const startLectures = get("_pocketProfessorLectures");
         const fightSource = getEmbezzlerFight();
