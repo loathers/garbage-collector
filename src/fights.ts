@@ -493,9 +493,7 @@ export function dailyFights(): void {
         const fightSource = getEmbezzlerFight();
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
-        meatOutfit(true, [
-          ...fightSource.requirements,
-        ]);
+        meatOutfit(true, [...fightSource.requirements]);
         if (
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
