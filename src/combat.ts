@@ -146,7 +146,7 @@ export class Macro extends LibramMacro {
       )
       .externalIf(
         get("_latteMonster") !== $monster`garbage tourist` ||
-        getCounters("Latte Monster", 0, 30).trim() === "",
+          getCounters("Latte Monster", 0, 30).trim() === "",
         Macro.if_("monstername garbage tourist", Macro.trySkill("Offer Latte to Opponent"))
       )
       .externalIf(
