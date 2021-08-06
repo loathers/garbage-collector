@@ -13095,6 +13095,8 @@ function meatMood() {
 
   if (!(0,dist.get)("concertVisited") && (0,dist.get)("sidequestArenaCompleted") === "fratboy") {
     (0,external_kolmafia_.cliExecute)("concert winklered");
+  } else if (!(0,dist.get)("concertVisited") && (0,dist.get)("sidequestArenaCompleted") === "hippy") {
+    (0,external_kolmafia_.cliExecute)("concert optimist primal");
   }
 
   potionSetup(embezzlers);
