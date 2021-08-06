@@ -192,10 +192,10 @@ function fillLiver() {
   }
   if (!get("_mimeArmyShotglassUsed") && itemAmount($item`mime army shotglass`) > 0) {
     equip($item`tuxedo shirt`);
-    drink(itemPriority($item`astral pilsner`, $item`splendid martini`));
+    drinkSafe(1, itemPriority($item`astral pilsner`, $item`splendid martini`));
   }
   while (myInebriety() + 1 <= inebrietyLimit() && itemAmount($item`astral pilsner`) > 0) {
-    drink(1, $item`astral pilsner`);
+    drinkSafe(1, $item`astral pilsner`);
   }
   while (myInebriety() + 5 <= inebrietyLimit()) {
     if (myMaxhp() < 1000) maximize("0.05hp, cold res", false);
