@@ -495,7 +495,6 @@ export function dailyFights(): void {
         useFamiliar($familiar`Pocket Professor`);
         meatOutfit(true, [
           ...fightSource.requirements,
-          new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
         ]);
         if (
           get("_pocketProfessorLectures") <
