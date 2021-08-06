@@ -2531,10 +2531,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.2.4.tgz#aaec21be822f54505acf12a4253cec8e95c78e6f"
-  integrity sha512-mF9SBRtzwpmRtPdxHFks8jlySBzFTLqgHBDpmFdfFtqLa0WskQ2Q7ZlgOgsE8De3jEYj8lzCWipI38BeLodg5A==
+libram@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.2.5.tgz#48ccc545ff1648ca3cd9397d6bc3970330da2d9e"
+  integrity sha512-1SUEuW0uAzfVz8gyScaH7a2tX/GXlGz4Rl6OdIN98UEjVCiQ8/D4ff582HAgre6RotBn7Txlp1ihcJVyO95csQ==
   dependencies:
     core-js "3.15.2"
     kolmafia "^1.1.2"
