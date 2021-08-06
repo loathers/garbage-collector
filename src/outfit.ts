@@ -32,7 +32,7 @@ import {
 } from "libram";
 import { pickBjorn, PickBjornMode } from "./bjorn";
 import { estimatedTurns, globalOptions } from "./globalvars";
-import { baseMeat, Requirement } from "./lib";
+import { baseMeat, Requirement, saleValue } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -54,14 +54,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     new Requirement(
       myFamiliar() === $familiar`Pocket Professor` ? ["Familiar Experience"] : ["Familiar Weight"],
       {
-        bonusEquip: new Map([
-          [$item`lucky gold ring`, 400],
-          [$item`Mr. Cheeng's spectacles`, 250],
-          [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
-          [$item`Mr. Screege's spectacles`, 180],
-          ...pantsgiving(),
-          ...cheeses(false),
-        ]),
+        bonusEquip: new Map([...dropsItems(), ...pantsgiving(), ...cheeses(false)]),
       }
     ),
   ]);
@@ -156,11 +149,8 @@ export function meatOutfit(
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
         bonusEquip: new Map([
-          [$item`lucky gold ring`, 400],
           [$item`mafia thumb ring`, 300],
-          [$item`Mr. Cheeng's spectacles`, 250],
-          [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
-          [$item`Mr. Screege's spectacles`, 180],
+          ...dropsItems(),
           ...(embezzlerUp ? [] : pantsgiving()),
           ...cheeses(embezzlerUp),
           [
@@ -236,4 +226,18 @@ function cheeses(embezzlerUp: boolean) {
         ])
       )
     : [];
+}
+function dropsItems() {
+  return new Map<Item, number>([
+    [$item`lucky gold ring`, 400],
+    [$item`Mr. Cheeng's spectacles`, 250],
+    [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
+    [$item`Mr. Screege's spectacles`, 180],
+    [
+      $item`Snow Suit`,
+      get("snowsuit") === "nose" && get("_carrotNoseDrops") < 3
+        ? saleValue($item`carrot nose`) / 100 / 10
+        : 0,
+    ],
+  ]);
 }
