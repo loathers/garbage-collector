@@ -99,7 +99,7 @@ import {
 } from "./outfit";
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, log } from "./globalvars";
-import { getString, } from "libram/dist/property";
+import { getString } from "libram/dist/property";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
@@ -172,13 +172,7 @@ const secondChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.externalIf(
       myFamiliar() === $familiar`Pocket Professor`,
-      Macro.if_(
-        "!hasskill Lecture on Relativity",
-        Macro.if_(
-          `hasskill ${toInt($skill`Meteor Shower`)}`,
-          Macro.step(`skill ${toInt($skill`Meteor Shower`)}`)
-        )
-      ) //fix when libram is updated
+      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
         .if_(
           "!hasskill Lecture on Relativity",
           Macro.externalIf(
@@ -858,10 +852,9 @@ const freeFightSources = [
           get("_saberForceMonsterCount") === 1) &&
         get("_saberForceUses") < 5
       ) {
-
-          putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-          putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-          adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
+        putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
+        putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
+        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
       } else {
         if (closetAmount($item`Bowl of Scorpions`) > 0)
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
@@ -989,12 +982,12 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
-    () =>{
-        visitUrl("main.php?fightgodlobster=1");
-        runCombat();
-        visitUrl("choice.php");
-        if (handlingChoice()) runChoice(3);
-      },
+    () => {
+      visitUrl("main.php?fightgodlobster=1");
+      runCombat();
+      visitUrl("choice.php");
+      if (handlingChoice()) runChoice(3);
+    },
     {
       familiar: () => $familiar`God Lobster`,
     }
@@ -1002,7 +995,7 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
-    () =>  adv1($location`The Deep Machine Tunnels`, -1, ""),
+    () => adv1($location`The Deep Machine Tunnels`, -1, ""),
     {
       familiar: () => $familiar`Machine Elf`,
     }
@@ -1032,11 +1025,11 @@ const freeFightSources = [
         : 0,
     () => {
       nepQuest();
-        adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
-        if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
-          print("Found Gerald/ine!", "blue");
-          setChoice(1324, 5);
-        }
+      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
+      if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
+        print("Found Gerald/ine!", "blue");
+        setChoice(1324, 5);
+      }
     },
     {
       requirements: () => [
@@ -1196,7 +1189,6 @@ function nepQuest() {
   }
 }
 
-
 function thesisReady(): boolean {
   return (
     !get("_thesisDelivered") &&
@@ -1230,12 +1222,12 @@ function deliverThesis(): void {
     outfit("checkpoint");
   }
   cliExecute("gain 1800 muscle");
-    adventureMacro(
-      thesisInNEP
-        ? $location`The Neverending Party`
-        : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
-      Macro.skill("Deliver your Thesis")
-    );
+  adventureMacro(
+    thesisInNEP
+      ? $location`The Neverending Party`
+      : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+    Macro.skill("Deliver your Thesis")
+  );
 }
 
 export function safeRestore(): void {
