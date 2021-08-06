@@ -82,6 +82,8 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
 
   if (!get("concertVisited") && get("sidequestArenaCompleted") === "fratboy") {
     cliExecute("concert winklered");
+  } else if (!get("concertVisited") && get("sidequestArenaCompleted") === "hippy") {
+    cliExecute("concert optimist primal");
   }
 
   potionSetup(embezzlers);
