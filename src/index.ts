@@ -57,6 +57,7 @@ import {
   gingerbreadPrepNoon,
   hipsterFishing,
   horse,
+  internetMemeShop,
   jellyfish,
   latte,
   martini,
@@ -117,6 +118,7 @@ function dailySetup() {
   volcanoDailies();
   cheat();
   gin();
+  internetMemeShop();
   pickTea();
 
   if (myInebriety() > inebrietyLimit()) return;
