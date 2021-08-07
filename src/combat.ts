@@ -51,13 +51,13 @@ export class Macro extends LibramMacro {
     return super.submit();
   }
 
-  tryHaveSkill(skillOrName: Skill | string | null): Macro {
+  tryHaveSkill(skillOrName: Skill | null): Macro {
     if (!skillOrName) return this;
     const skill = typeof skillOrName === "string" ? Skill.get(skillOrName) : skillOrName;
     return this.externalIf(haveSkill(skill), Macro.skill(skill));
   }
 
-  static tryHaveSkill(skillOrName: Skill | string): Macro {
+  static tryHaveSkill(skillOrName: Skill | null): Macro {
     return new Macro().tryHaveSkill(skillOrName);
   }
 
@@ -238,7 +238,7 @@ export class Macro extends LibramMacro {
 
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
-      .tryHaveSkill("Curse of Weaksauce")
+      .tryHaveSkill($skill`Curse of Weaksauce`)
       .trySkill($skill`Pocket Crumbs`)
       .trySkill($skill`Extract`)
       .tryItem($item`porquoise-handled sixgun`)
