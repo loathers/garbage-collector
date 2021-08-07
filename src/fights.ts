@@ -84,6 +84,7 @@ import {
   kramcoGuaranteed,
   mapMonster,
   prepWandererZone,
+  PropertyManager,
   questStep,
   Requirement,
   saleValue,
@@ -1124,6 +1125,11 @@ const freeKillSources = [
 export function freeFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
   visitUrl("place.php?whichplace=town_wrong");
+  PropertyManager.setChoices({
+    1310: 3, //god lob stats
+    1119: 5, //escape DMT
+    1387: 2, //"You will go find two friends and meet me here."
+  });
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
   }
