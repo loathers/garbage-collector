@@ -51,14 +51,22 @@ export class Macro extends LibramMacro {
     return super.submit();
   }
 
-  tryHaveSkill(skillOrName: Skill | null): Macro {
-    if (!skillOrName) return this;
-    const skill = typeof skillOrName === "string" ? Skill.get(skillOrName) : skillOrName;
-    return this.externalIf(haveSkill(skill), Macro.skill(skill));
+  tryHaveSkill(skill: Skill | null): Macro {
+    if (!skill) return this;
+    return this.externalIf(haveSkill(skill), Macro.trySkill(skill));
   }
 
-  static tryHaveSkill(skillOrName: Skill | null): Macro {
-    return new Macro().tryHaveSkill(skillOrName);
+  static tryHaveSkill(skill: Skill | null): Macro {
+    return new Macro().tryHaveSkill(skill);
+  }
+
+  tryHaveItem(item: Item | null): Macro {
+    if (!item) return this;
+    return this.externalIf(have(item), Macro.tryItem(item));
+  }
+
+  static tryHaveItem(item: Item | null): Macro {
+    return new Macro().tryHaveItem(item);
   }
 
   tryCopier(itemOrSkill: Item | Skill): Macro {
@@ -233,7 +241,10 @@ export class Macro extends LibramMacro {
             Macro.item("seal tooth")
           )
         )
-        .if_(`monsterhpabove ${passiveDamage + 40}`, Macro.tryItem($item`porquoise-handled sixgun`))
+        .if_(
+          `monsterhpabove ${passiveDamage + 40}`,
+          Macro.tryHaveItem($item`porquoise-handled sixgun`)
+        )
     );
   }
 
@@ -246,11 +257,11 @@ export class Macro extends LibramMacro {
       .tryHaveSkill($skill`Curse of Weaksauce`)
       .trySkill($skill`Pocket Crumbs`)
       .trySkill($skill`Extract`)
-      .tryItem($item`porquoise-handled sixgun`)
-      .trySkill($skill`Micrometeorite`)
-      .tryItem($item`Time-Spinner`)
-      .tryItem($item`Rain-Doh indigo cup`)
-      .tryItem($item`Rain-Doh blue balls`)
+      .tryHaveItem($item`porquoise-handled sixgun`)
+      .externalIf(have($skill`Meteor Lore`), Macro.trySkill($skill`Micrometeorite`))
+      .tryHaveItem($item`Time-Spinner`)
+      .tryHaveItem($item`Rain-Doh indigo cup`)
+      .tryHaveItem($item`Rain-Doh blue balls`)
       .externalIf(
         haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
         Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item("seal tooth"))
@@ -367,7 +378,7 @@ export class Macro extends LibramMacro {
     }
 
     return this.tryHaveSkill($skill`Sing Along`)
-      .tryItem($item`Rain-Doh blue balls`)
+      .tryHaveItem($item`Rain-Doh blue balls`)
       .externalIf(get("lovebugsUnlocked"), Macro.trySkill($skill`Summon Love Gnats`))
       .tryHaveSkill(classStun)
       .tryHaveSkill(extraStun)
