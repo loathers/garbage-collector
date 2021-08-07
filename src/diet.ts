@@ -186,17 +186,38 @@ function fillStomach() {
   }
 }
 
+function fillLiverAstralPilsner() {
+  if (availableAmount($item`astral pilsner`) === 0) {
+    return;
+  }
+  try {
+    if (
+      !get("_mimeArmyShotglassUsed") &&
+      itemAmount($item`mime army shotglass`) > 0 &&
+      availableAmount($item`astral pilsner`) > 0
+    ) {
+      drinkSafe(1, $item`astral pilsner`);
+    }
+    if (
+      globalOptions.ascending &&
+      myInebriety() + 1 <= inebrietyLimit() &&
+      availableAmount($item`astral pilsner`) > 0
+    ) {
+      const count = Math.floor(
+        Math.min(inebrietyLimit() - myInebriety(), availableAmount($item`astral pilsner`))
+      );
+      drinkSafe(count, $item`astral pilsner`);
+    }
+  } catch {
+    print(`Failed to drink astral pilsner.`, "red");
+  }
+}
+
 function fillLiver() {
   if (myFamiliar() === $familiar`Stooper`) {
     useFamiliar($familiar`none`);
   }
-  try {
-    while (myInebriety() + 1 <= inebrietyLimit() && availableAmount($item`astral pilsner`) > 0) {
-      drinkSafe(1, $item`astral pilsner`);
-    }
-  } catch {
-    print(`Failed to drink leftover astral pilsners.`, "red");
-  }
+  fillLiverAstralPilsner();
   if (!get("_mimeArmyShotglassUsed") && itemAmount($item`mime army shotglass`) > 0) {
     equip($item`tuxedo shirt`);
     drinkSafe(1, $item`splendid martini`);
