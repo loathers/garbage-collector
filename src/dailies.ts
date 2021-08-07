@@ -38,8 +38,10 @@ import {
   get,
   have,
   property,
+  set,
   SongBoom,
   SourceTerminal,
+  withChoice,
 } from "libram";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
@@ -57,7 +59,6 @@ import {
 } from "./lib";
 import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
-import { set, withChoice } from "libram/dist/property";
 import { estimatedTurns } from "./globalvars";
 import { Macro } from "./combat";
 

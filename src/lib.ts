@@ -31,10 +31,10 @@ import {
   have,
   Macro,
   MaximizeOptions,
+  PropertiesManager,
   property,
   SongBoom,
 } from "libram";
-import { PropertiesManager } from "libram/dist/property";
 
 export const PropertyManager = new PropertiesManager();
 
