@@ -68,7 +68,13 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { physicalImmuneMacro, prepWandererZone, questStep, Requirement } from "./lib";
+import {
+  kramcoGuaranteed,
+  physicalImmuneMacro,
+  prepWandererZone,
+  questStep,
+  Requirement,
+} from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -142,6 +148,7 @@ function barfTurn() {
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
+
   if (
     have($item`unwrapped knock-off retro superhero cape`) &&
     (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
@@ -169,37 +176,14 @@ function barfTurn() {
     cliExecute(`latte refill ${latteIngredients}`);
   }
 
-  // a. set up familiar
-  useFamiliar(meatFamiliar());
-
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
-  let location = embezzlerUp ? prepWandererZone() : $location`Barf Mountain`;
-  if (
-    !get("_envyfishEggUsed") &&
-    (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
-    (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
-    (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-    !have($item`envyfish egg`) &&
-    embezzlerUp
-  ) {
-    // now fight one underwater
-    if (get("questS01OldGuy") === "unstarted") {
-      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-    }
-    retrieveItem($item`pulled green taffy`);
-    if (!have($effect`Fishy`)) use($item`fishy pipe`);
-    location = $location`The Briny Deeps`;
-  }
 
-  const underwater = location === $location`The Briny Deeps`;
-  meatOutfit(embezzlerUp, [], underwater);
-
-  // c. set up mood stuff
+  // a. set up mood stuff
   meatMood().execute(estimatedTurns());
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");
-  // d. run adventure
+  // b. check for wanderers, and do them
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
     meatOutfit(true);
     withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
@@ -221,7 +205,43 @@ function barfTurn() {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`"I Voted!" sticker` })]);
     adventureMacroAuto(prepWandererZone(), Macro.step(physicalImmuneMacro).meatKill());
+  } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
+    useFamiliar(freeFightFamiliar());
+    freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
+    adventureMacroAuto(prepWandererZone(), Macro.meatKill());
   } else {
+    if (
+      have($item`unwrapped knock-off retro superhero cape`) &&
+      (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
+    ) {
+      cliExecute("retrocape robot kill");
+    }
+    // c. set up familiar
+    useFamiliar(meatFamiliar());
+    const location = embezzlerUp
+      ? !get("_envyfishEggUsed") &&
+        (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
+        (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
+        (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
+        !have($item`envyfish egg`)
+        ? $location`The Briny Deeps`
+        : prepWandererZone()
+      : $location`Barf Mountain`;
+
+    const underwater = location === $location`The Briny Deeps`;
+
+    if (underwater) {
+      // now fight one underwater
+      if (get("questS01OldGuy") === "unstarted") {
+        visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+      }
+      retrieveItem($item`pulled green taffy`);
+      if (!have($effect`Fishy`)) use($item`fishy pipe`);
+    }
+
+    // d. get dressed
+    meatOutfit(embezzlerUp, [], underwater);
+
     adventureMacroAuto(
       location,
       Macro.externalIf(
