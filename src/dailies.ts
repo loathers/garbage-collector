@@ -147,10 +147,10 @@ export function latte(): void {
       numericModifier(latte, "Meat Drop") !== 40
     ) {
       PropertyManager.setChoices({
-        [923]: 1,
-        [924]: 1,
-        [502]: 2,
-        [505]: 2,
+        [923]: 1, //go to the blackberries in All Around the Map
+        [924]: 1, //fight a blackberry bush, so that we can freerun
+        [502]: 2, //go towards the stream in Arboreal Respite, so we can skip adventure
+        [505]: 2, //skip adventure
       });
       while (!get("latteUnlocks").includes("cajun") && findRun()) {
         const runSource = findRun();
