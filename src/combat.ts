@@ -30,6 +30,7 @@ import {
   Macro as LibramMacro,
   SourceTerminal,
 } from "libram";
+import { maxPassiveDamage, monsterManuelAvailable } from "./lib";
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(Math.max(n, min), max);
@@ -136,7 +137,8 @@ export class Macro extends LibramMacro {
       get("retroCapeWashingInstructions") === "kill" &&
       itemType(equippedItem($slot`weapon`)) === "pistol";
 
-    // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
+    const willCrit = sealClubberSetup || opsSetup || katanaSetup || capeSetup;
+
     return this.externalIf(
       shouldRedigitize(),
       Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.trySkill("Digitize"))
@@ -159,15 +161,11 @@ export class Macro extends LibramMacro {
         get("lastCopyableMonster") === $monster`garbage tourist`,
         Macro.if_("!monstername garbage tourist", Macro.trySkill("Feel Nostalgic"))
       )
-      .externalIf(
-        myFamiliar() === $familiar`Stocking Mimic` && have($item`seal tooth`),
-        Macro.trySkill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))
-      )
+      .meatStasis(willCrit)
       .externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop"))
       .externalIf(opsSetup, Macro.trySkill("Throw Shield").attack())
       .externalIf(katanaSetup, Macro.trySkill("Summer Siesta"))
       .externalIf(capeSetup, Macro.trySkill("Precision Shot"))
-      .trySkill($skill`Pocket Crumbs`)
       .externalIf(
         myClass() === $class`Disco Bandit`,
         Macro.trySkill("Disco Dance of Doom")
@@ -181,23 +179,87 @@ export class Macro extends LibramMacro {
     return new Macro().meatKill();
   }
 
+  meatStasis(checkPassive: boolean): Macro {
+    // If we don't care about killing the monster don't bother checking passave damage
+    if (!checkPassive) {
+      return this.trySkill($skill`Pocket Crumbs`)
+        .trySkill($skill`Extract`)
+        .externalIf(
+          haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
+          Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item("seal tooth"))
+        )
+        .externalIf(
+          myFamiliar() === $familiar`Stocking Mimic`,
+          Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item("seal tooth"))
+        )
+        .externalIf(
+          myFamiliar() === $familiar`Hobo Monkey`,
+          Macro.while_(
+            `!match "shoulder, and hands you some Meat." && !pastround 20 && !hppercentbelow 25`,
+            Macro.item("seal tooth")
+          )
+        )
+        .tryItem($item`porquoise-handled sixgun`);
+    }
+
+    // Only stasis if the monster manuel is available and we have access to monsterhpabove
+    if (!monsterManuelAvailable()) {
+      return this;
+    }
+    const passiveDamage = maxPassiveDamage() + 5;
+
+    // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
+    return this.if_(
+      "monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername Knob Goblin Embezzler || monstername sausage goblin",
+      Macro.if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill("Pocket Crumbs"))
+        .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill("Extract"))
+        .externalIf(
+          haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
+          Macro.while_(`!pastround 3 && monsterhpabove ${passiveDamage}`, Macro.item("seal tooth"))
+        )
+        .externalIf(
+          myFamiliar() === $familiar`Stocking Mimic`,
+          Macro.while_(`!pastround 10 && monsterhpabove ${passiveDamage}`, Macro.item("seal tooth"))
+        )
+        .externalIf(
+          myFamiliar() === $familiar`Hobo Monkey`,
+          Macro.while_(
+            `!match "shoulder, and hands you some Meat." && !pastround 20 && monsterhpabove ${passiveDamage}`,
+            Macro.item("seal tooth")
+          )
+        )
+        .if_(`monsterhpabove ${passiveDamage + 40}`, Macro.tryItem($item`porquoise-handled sixgun`))
+    );
+  }
+
+  static meatStasis(checkPassive: boolean): Macro {
+    return new Macro().meatStasis(checkPassive);
+  }
+
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill("Curse of Weaksauce")
       .trySkill($skill`Pocket Crumbs`)
       .trySkill($skill`Extract`)
+      .tryItem($item`porquoise-handled sixgun`)
       .trySkill($skill`Micrometeorite`)
       .tryItem($item`Time-Spinner`)
-      .tryItem($item`porquoise-handled sixgun`)
       .tryItem($item`Rain-Doh indigo cup`)
       .tryItem($item`Rain-Doh blue balls`)
       .externalIf(
         haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
-        Macro.while_("!pastround 4 && !hppercentbelow 25", Macro.item("seal tooth"))
+        Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item("seal tooth"))
       )
       .externalIf(
         myFamiliar() === $familiar`Stocking Mimic`,
         Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item("seal tooth"))
+      )
+      .externalIf(
+        myFamiliar() === $familiar`Hobo Monkey`,
+        Macro.while_(
+          `!match "shoulder, and hands you some Meat." && !pastround 20 && !hppercentbelow 25`,
+          Macro.item("seal tooth")
+        )
       );
   }
 
