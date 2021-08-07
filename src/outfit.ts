@@ -229,6 +229,27 @@ function cheeses(embezzlerUp: boolean) {
       )
     : [];
 }
+function mayflowerBouquet() {
+  // +40% meat drop 12.5% of the time (effectively 5%)
+  // Drops flowers 50% of the time, wiki says 5-10 a day.
+  // Theorized that flower drop rate drops off but no info on wiki.
+  // During testing I got 4 drops then the 5th took like 40 more adventures
+  // so let's just assume rate drops by 11% with a min of 1% ¯\_(ツ)_/¯
+  const sporaticMeatBonus = 40 * 0.125;
+  const averageFlowerValue =
+    (saleValue($item`tin magnolia`) +
+      saleValue($item`upsy daisy`) +
+      saleValue($item`lesser grodulated violet`) +
+      saleValue($item`half-orchid`) +
+      saleValue($item`begpwnia`) / 5) *
+    Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
+  return new Map<Item, number>([
+    [
+      $item`Mayflower bouquet`,
+      (get("_mayflowerDrops") < 5 ? averageFlowerValue : 0) + sporaticMeatBonus,
+    ],
+  ]);
+}
 function dropsItems() {
   return new Map<Item, number>([
     [$item`lucky gold ring`, 400],
@@ -236,5 +257,6 @@ function dropsItems() {
     [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
     [$item`Mr. Screege's spectacles`, 180],
     [$item`Snow Suit`, get("_carrotNoseDrops") < 3 ? saleValue($item`carrot nose`) / 10 : 0],
+    ...mayflowerBouquet(),
   ]);
 }
