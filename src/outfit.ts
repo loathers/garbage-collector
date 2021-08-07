@@ -86,7 +86,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
   maximizeCached(finalRequirements.maximizeParameters(), finalRequirements.maximizeOptions());
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item`Snow Suit`)) cliExecute("snowsuit nose");
+  if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
 }
 
 export function meatOutfit(
@@ -172,7 +172,7 @@ export function meatOutfit(
   }
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item`Snow Suit`)) cliExecute("snowsuit nose");
+  if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (const airSource of waterBreathingEquipment) {
