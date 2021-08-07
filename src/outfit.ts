@@ -246,7 +246,7 @@ function mayflowerBouquet() {
   return new Map<Item, number>([
     [
       $item`Mayflower bouquet`,
-      (get("_mayflowerDrops") < 5 ? averageFlowerValue : 0) + sporadicMeatBonus,
+      (get("_mayflowerDrops") < 10 ? averageFlowerValue : 0) + sporadicMeatBonus,
     ],
   ]);
 }
