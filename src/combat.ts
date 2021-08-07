@@ -145,20 +145,25 @@ export class Macro extends LibramMacro {
     )
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
-        !have($effect`On the Trail`),
+        !have($effect`On the Trail`) && have($skill`Transcendent Olfaction`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))
       )
       .externalIf(
-        get("_gallapagosMonster") !== $monster`garbage tourist`,
+        get("_gallapagosMonster") !== $monster`garbage tourist` &&
+          have($skill`Gallapagosian Mating Call`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))
       )
       .externalIf(
-        get("_latteMonster") !== $monster`garbage tourist` ||
-          getCounters("Latte Monster", 0, 30).trim() === "",
+        !get("_latteCopyUsed") &&
+          (get("_latteMonster") !== $monster`garbage tourist` ||
+            getCounters("Latte Monster", 0, 30).trim() === "") &&
+          have($item`latte lovers member's mug`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Offer Latte to Opponent"))
       )
       .externalIf(
-        get("lastCopyableMonster") === $monster`garbage tourist`,
+        get("_feelNostalgicUsed") < 3 &&
+          get("lastCopyableMonster") === $monster`garbage tourist` &&
+          have($skill`Feel Nostalgic`),
         Macro.if_("!monstername garbage tourist", Macro.trySkill("Feel Nostalgic"))
       )
       .meatStasis(willCrit)
