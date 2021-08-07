@@ -86,6 +86,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
   maximizeCached(finalRequirements.maximizeParameters(), finalRequirements.maximizeOptions());
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`Snow Suit`)) cliExecute("snowsuit nose");
 }
 
 export function meatOutfit(
@@ -171,6 +172,7 @@ export function meatOutfit(
   }
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`Snow Suit`)) cliExecute("snowsuit nose");
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (const airSource of waterBreathingEquipment) {
@@ -233,11 +235,6 @@ function dropsItems() {
     [$item`Mr. Cheeng's spectacles`, 250],
     [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
     [$item`Mr. Screege's spectacles`, 180],
-    [
-      $item`Snow Suit`,
-      get("snowsuit") === "nose" && get("_carrotNoseDrops") < 3
-        ? saleValue($item`carrot nose`) / 100 / 10
-        : 0,
-    ],
+    [$item`Snow Suit`, get("_carrotNoseDrops") < 3 ? saleValue($item`carrot nose`) / 100 / 10 : 0],
   ]);
 }
