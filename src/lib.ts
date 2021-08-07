@@ -36,7 +36,7 @@ import {
   SongBoom,
 } from "libram";
 
-export const PropertyManager = new PropertiesManager();
+export const propertyManager = new PropertiesManager();
 
 export const baseMeat =
   SongBoom.have() &&
@@ -45,7 +45,7 @@ export const baseMeat =
     : 250;
 
 export function setChoice(adventure: number, value: number): void {
-  PropertyManager.setChoices({ [adventure]: value });
+  propertyManager.setChoices({ [adventure]: value });
 }
 
 export function ensureEffect(effect: Effect): void {

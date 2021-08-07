@@ -72,7 +72,7 @@ import {
   kramcoGuaranteed,
   physicalImmuneMacro,
   prepWandererZone,
-  PropertyManager,
+  propertyManager,
   questStep,
   Requirement,
 } from "./lib";
@@ -347,7 +347,7 @@ export function main(argString = ""): void {
 
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
-    PropertyManager.set({
+    propertyManager.set({
       battleAction: "custom combat script",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
@@ -415,7 +415,7 @@ export function main(argString = ""): void {
       });
     });
   } finally {
-    PropertyManager.resetAll();
+    propertyManager.resetAll();
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     if (questStep("_questPartyFair") > 0) {

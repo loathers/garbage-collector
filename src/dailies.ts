@@ -50,7 +50,7 @@ import {
   ensureEffect,
   findRun,
   prepWandererZone,
-  PropertyManager,
+  propertyManager,
   questStep,
   Requirement,
   saleValue,
@@ -147,7 +147,7 @@ export function latte(): void {
       numericModifier(latte, "Familiar Weight") !== 5 ||
       numericModifier(latte, "Meat Drop") !== 40
     ) {
-      PropertyManager.setChoices({
+      propertyManager.setChoices({
         [923]: 1, //go to the blackberries in All Around the Map
         [924]: 1, //fight a blackberry bush, so that we can freerun
         [502]: 2, //go towards the stream in Arboreal Respite, so we can skip adventure
