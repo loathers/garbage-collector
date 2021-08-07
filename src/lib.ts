@@ -3,8 +3,13 @@ import {
   autosellPrice,
   buy,
   cliExecute,
+  haveEquipped,
   haveSkill,
   mallPrice,
+  myBjornedFamiliar,
+  myEnthronedFamiliar,
+  myLocation,
+  numericModifier,
   print,
   restoreMp,
   toUrl,
@@ -478,4 +483,62 @@ export function saleValue(...items: Item[]): number {
 
 export function kramcoGuaranteed(): boolean {
   return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
+}
+
+let monsterManuelCached: boolean | undefined = undefined;
+export function monsterManuelAvailable(): boolean {
+  if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
+  monsterManuelCached = visitUrl("questlog.php?which=6").includes("Monster Manuel");
+  return Boolean(monsterManuelCached);
+}
+
+function maxCarriedFamiliarDamage(familiar: Familiar): number {
+  // Only considering familiars we reasonably may carry
+  switch (familiar) {
+    // +5 to Familiar Weight
+    case $familiar`Animated Macaroni Duck`:
+      return 50;
+    case $familiar`Barrrnacle`:
+    case $familiar`Gelatinous Cubeling`:
+    case $familiar`Penguin Goodfella`:
+      return 30;
+    case $familiar`Misshapen Animal Skeleton`:
+      return 40 + numericModifier("Spooky Damage");
+
+    // +25% Meat from Monsters
+    case $familiar`Hobo Monkey`:
+      return 25;
+
+    // +20% Meat from Monsters
+    case $familiar`Grouper Groupie`:
+      // Double sleaze damage at Barf Mountain
+      return (
+        25 + numericModifier("Sleaze Damage") * (myLocation() === $location`Barf Mountain` ? 2 : 1)
+      );
+    case $familiar`Jitterbug`:
+      return 20;
+    case $familiar`Mutant Cactus Bud`:
+      // 25 poison damage (25+12+6+3+1)
+      return 47;
+    case $familiar`Robortender`:
+      return 20;
+  }
+
+  return 0;
+}
+
+export function maxPassiveDamage(): number {
+  // Only considering passive damage sources we reasonably may have
+  const vykeaMaxDamage =
+    get("_VYKEACompanionLevel") > 0 ? 10 * get("_VYKEACompanionLevel") + 10 : 0;
+
+  const crownMaxDamage = haveEquipped($item`Crown of Thrones`)
+    ? maxCarriedFamiliarDamage(myEnthronedFamiliar())
+    : 0;
+
+  const bjornMaxDamage = haveEquipped($item`Buddy Bjorn`)
+    ? maxCarriedFamiliarDamage(myBjornedFamiliar())
+    : 0;
+
+  return vykeaMaxDamage + crownMaxDamage + bjornMaxDamage;
 }
