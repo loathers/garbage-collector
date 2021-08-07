@@ -16,7 +16,6 @@ import {
   inebrietyLimit,
   itemAmount,
   mallPrice,
-  meatDrop,
   meatDropModifier,
   myAscensions,
   myClass,
