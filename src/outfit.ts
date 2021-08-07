@@ -260,7 +260,7 @@ function pantsgiving() {
   const expectedUseableSinusTurns = globalOptions.ascending
     ? Math.min(estimatedTurns() - haveEffect($effect`Kicked in the Sinuses`), expectedSinusTurns)
     : expectedSinusTurns;
-  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
+  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
   if (turns - count > estimatedTurns()) return new Map<Item, number>();
   const fullnessValue =
     sinusVal +
