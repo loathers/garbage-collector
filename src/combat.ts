@@ -327,6 +327,10 @@ export function withMacro<T>(macro: Macro, action: () => T): T {
 }
 
 export function main(): void {
-  Macro.load().submit();
+  if (have($effect`Eldritch Attunement`)) {
+    Macro.if_("monstername eldritch tentacle", Macro.basicCombat()).step(Macro.load()).submit();
+  } else {
+    Macro.load().submit();
+  }
   while (inMultiFight()) runCombat();
 }
