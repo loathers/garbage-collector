@@ -185,24 +185,24 @@ export function latte(): void {
       ]);
       adventureMacro($location`The Dire Warren`, runSource.macro);
       horseradish();
-      if (
-        get("latteUnlocks").includes("cajun") &&
-        get("latteUnlocks").includes("rawhide") &&
-        get("_latteRefillsUsed") < 3
-      ) {
-        const latteIngredients = [
-          "cajun",
-          "rawhide",
-          get("latteUnlocks").includes("carrot")
-            ? "carrot"
-            : myPrimestat() === $stat`muscle`
-            ? "vanilla"
-            : myPrimestat() === $stat`mysticality`
-            ? "pumpkin spice"
-            : "cinnamon",
-        ].join(" ");
-        cliExecute(`latte refill ${latteIngredients}`);
-      }
+    }
+    if (
+      get("latteUnlocks").includes("cajun") &&
+      get("latteUnlocks").includes("rawhide") &&
+      get("_latteRefillsUsed") < 3
+    ) {
+      const latteIngredients = [
+        "cajun",
+        "rawhide",
+        get("latteUnlocks").includes("carrot")
+          ? "carrot"
+          : myPrimestat() === $stat`muscle`
+          ? "vanilla"
+          : myPrimestat() === $stat`mysticality`
+          ? "pumpkin spice"
+          : "cinnamon",
+      ].join(" ");
+      cliExecute(`latte refill ${latteIngredients}`);
     }
   }
 }
