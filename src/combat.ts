@@ -286,11 +286,11 @@ export class Macro extends LibramMacro {
   kill(): Macro {
     return (
       this.externalIf(
-        myClass() === $class`Sauceror`,
-        Macro.tryHaveSkill($skill`Curse of Weaksauce`)
+        myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
+        Macro.trySkill($skill`Curse of Weaksauce`)
       )
         .externalIf(
-          myClass() !== $class`Sauceror`,
+          !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
           Macro.while_("!pastround 20 && !hppercentbelow 25 && !missed 1", Macro.attack())
         )
         // Using while_ here in case you run out of mp
