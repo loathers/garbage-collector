@@ -190,12 +190,16 @@ function fillLiver() {
   if (myFamiliar() === $familiar`Stooper`) {
     useFamiliar($familiar`none`);
   }
+  try {
+    while (myInebriety() + 1 <= inebrietyLimit() && availableAmount($item`astral pilsner`) > 0) {
+      drinkSafe(1, $item`astral pilsner`);
+    }
+  } catch {
+    print(`Failed to drink leftover astral pilsners.`, "red");
+  }
   if (!get("_mimeArmyShotglassUsed") && itemAmount($item`mime army shotglass`) > 0) {
     equip($item`tuxedo shirt`);
-    drinkSafe(1, itemPriority($item`astral pilsner`, $item`splendid martini`));
-  }
-  while (myInebriety() + 1 <= inebrietyLimit() && itemAmount($item`astral pilsner`) > 0) {
-    drinkSafe(1, $item`astral pilsner`);
+    drinkSafe(1, $item`splendid martini`);
   }
   while (myInebriety() + 5 <= inebrietyLimit()) {
     if (myMaxhp() < 1000) maximize("0.05hp, cold res", false);
