@@ -3,11 +3,13 @@ import {
   autosellPrice,
   buy,
   cliExecute,
+  familiarWeight,
   haveEquipped,
   haveSkill,
   mallPrice,
   myBjornedFamiliar,
   myEnthronedFamiliar,
+  myFamiliar,
   myLocation,
   numericModifier,
   print,
@@ -527,6 +529,16 @@ function maxCarriedFamiliarDamage(familiar: Familiar): number {
   return 0;
 }
 
+function maxFamiliarDamage(familiar: Familiar): number {
+  switch (familiar) {
+    case $familiar`Cocoabo`:
+      return familiarWeight(familiar) + 3;
+    case $familiar`Ninja Pirate Zombie Robot`:
+      return Math.floor((familiarWeight(familiar) + 3) * 1.5);
+  }
+  return 0;
+}
+
 export function maxPassiveDamage(): number {
   // Only considering passive damage sources we reasonably may have
   const vykeaMaxDamage =
@@ -540,5 +552,7 @@ export function maxPassiveDamage(): number {
     ? maxCarriedFamiliarDamage(myBjornedFamiliar())
     : 0;
 
-  return vykeaMaxDamage + crownMaxDamage + bjornMaxDamage;
+  const familiarMaxDamage = maxFamiliarDamage(myFamiliar());
+
+  return vykeaMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
 }
