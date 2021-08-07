@@ -54,13 +54,6 @@ import { baseMeat, clamp, ensureEffect } from "./lib";
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
 
-function itemPriority(...items: Item[]) {
-  for (const item of items) {
-    if (have(item)) return item;
-  }
-  return items[items.length - 1];
-}
-
 function eatSafe(qty: number, item: Item) {
   acquire(qty, $item`Special Seasoning`);
   acquire(qty, item);
