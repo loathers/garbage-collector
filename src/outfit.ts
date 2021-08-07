@@ -235,7 +235,7 @@ function mayflowerBouquet() {
   // Theorized that flower drop rate drops off but no info on wiki.
   // During testing I got 4 drops then the 5th took like 40 more adventures
   // so let's just assume rate drops by 11% with a min of 1% ¯\_(ツ)_/¯
-  const sporaticMeatBonus = 40 * 0.125;
+  const sporadicMeatBonus = 40 * 0.125;
   const averageFlowerValue =
     (saleValue($item`tin magnolia`) +
       saleValue($item`upsy daisy`) +
@@ -246,7 +246,7 @@ function mayflowerBouquet() {
   return new Map<Item, number>([
     [
       $item`Mayflower bouquet`,
-      (get("_mayflowerDrops") < 5 ? averageFlowerValue : 0) + sporaticMeatBonus,
+      (get("_mayflowerDrops") < 5 ? averageFlowerValue : 0) + sporadicMeatBonus,
     ],
   ]);
 }
