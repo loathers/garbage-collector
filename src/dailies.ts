@@ -242,10 +242,6 @@ export function prepFamiliars(): void {
         ].forEach(tryFeast);
     });
   }
-
-  if (availableAmount($item`Snow Suit`) && get("snowsuit") !== "nose") {
-    cliExecute("snowsuit nose");
-  }
 }
 
 export function horse(): void {
