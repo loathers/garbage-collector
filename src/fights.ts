@@ -1004,7 +1004,15 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
-    () => adv1($location`The Deep Machine Tunnels`, -1, ""),
+    () => {
+      withMacro(
+        Macro.if_("monstername Perceiver of Sensations", Macro.tryItem($item`abstraction: thought`))
+          .if_("monstername Perceiver of Thoughts", Macro.tryItem($item`abstraction: action`))
+          .if_("monstername Perceiver of Actions", Macro.tryItem($item`abstraction: sensation`))
+          .basicCombat(),
+        () => adv1($location`The Deep Machine Tunnels`, -1, "")
+      );
+    },
     {
       familiar: () => $familiar`Machine Elf`,
     }
