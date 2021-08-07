@@ -1073,20 +1073,29 @@ const freeFightSources = [
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
     () => {
+      if (saleValue($item`abstraction: certainty`) >= saleValue($item`abstraction: thought`)) {
+        acquire(1, $item`abstraction: thought`, saleValue($item`abstraction: certainty`), false);
+      }
+      if (saleValue($item`abstraction: joy`) >= saleValue($item`abstraction: action`)) {
+        acquire(1, $item`abstraction: action`, saleValue($item`abstraction: joy`), false);
+      }
+      if (saleValue($item`abstraction: motion`) >= saleValue($item`abstraction: sensation`)) {
+        acquire(1, $item`abstraction: sensation`, saleValue($item`abstraction: motion`), false);
+      }
       withMacro(
         Macro.externalIf(
-          saleValue($item`abstraction: certainty`) > saleValue($item`abstraction: thought`),
+          saleValue($item`abstraction: certainty`) >= saleValue($item`abstraction: thought`),
           Macro.if_(
             "monstername Perceiver of Sensations",
             Macro.tryItem($item`abstraction: thought`)
           )
         )
           .externalIf(
-            saleValue($item`abstraction: joy`) > saleValue($item`abstraction: action`),
+            saleValue($item`abstraction: joy`) >= saleValue($item`abstraction: action`),
             Macro.if_("monstername Thinker of Thoughts", Macro.tryItem($item`abstraction: action`))
           )
           .externalIf(
-            saleValue($item`abstraction: motion`) > saleValue($item`abstraction: sensation`),
+            saleValue($item`abstraction: motion`) >= saleValue($item`abstraction: sensation`),
             Macro.if_(
               "monstername Performer of Actions",
               Macro.tryItem($item`abstraction: sensation`)
