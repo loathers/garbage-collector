@@ -71,6 +71,7 @@ import {
   TunnelOfLove,
   Witchess,
 } from "libram";
+import { acquire } from "./acquire";
 import { fillAsdonMartinTo } from "./asdon";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
@@ -388,7 +389,8 @@ function embezzlerSetup() {
   if (
     globalOptions.ascending &&
     questStep("questM16Temple") > 0 &&
-    get("lastTempleAdventures") < myAscensions()
+    get("lastTempleAdventures") < myAscensions() &&
+    acquire(1, $item`Stone Wool`, 3 * get("valueOfAdventure") + 100, false) > 0
   ) {
     ensureEffect($effect`Stone-Faced`);
     setChoice(582, 1);
