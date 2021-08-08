@@ -7,6 +7,7 @@ import {
   haveSkill,
   myClass,
   myEffects,
+  myPath,
   mySpleenUse,
   spleenLimit,
   toSkill,
@@ -46,6 +47,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
   mood.potion($item`Flaskfull of Hollow`, 5);
+  if (myPath() === "Heavy Rains") mood.potion($item`catfish whiskers`, 20); // 1/10th of a bag of park garbage
 
   mood.skill($skill`Blood Bond`);
   mood.skill($skill`Leash of Linguini`);
@@ -140,6 +142,9 @@ export function freeFightMood(): Mood {
   if (questStep("questL06Friar") === 999 && !get("friarsBlessingReceived")) {
     cliExecute("friars familiar");
   }
+
+  // value higher than for meat farming because more valuable stuff could wash away? I dunno
+  if (myPath() === "Heavy Rains") mood.potion($item`catfish whiskers`, 50);
 
   return mood;
 }

@@ -67,7 +67,7 @@ import {
 } from "./dailies";
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, freeFights, safeRestore } from "./fights";
+import { dailyFights, freeFights, getEmbezzlerFight, safeRestore } from "./fights";
 import {
   kramcoGuaranteed,
   physicalImmuneMacro,
@@ -178,7 +178,8 @@ function barfTurn() {
     cliExecute(`latte refill ${latteIngredients}`);
   }
 
-  const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
+  const embezzlerFight = getEmbezzlerFight();
+  const digitizeEmbezzlerUp = embezzlerFight?.name === "Digitize";
 
   // a. set up mood stuff
   meatMood().execute(estimatedTurns());
@@ -207,10 +208,14 @@ function barfTurn() {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`"I Voted!" sticker` })]);
     adventureMacroAuto(prepWandererZone(), Macro.step(physicalImmuneMacro).meatKill());
-  } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
+  } else if (myInebriety() <= inebrietyLimit() && !digitizeEmbezzlerUp && kramcoGuaranteed()) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
     adventureMacroAuto(prepWandererZone(), Macro.meatKill());
+  } else if (embezzlerFight && !digitizeEmbezzlerUp) {
+    useFamiliar(meatFamiliar());
+    meatOutfit(true, [], false);
+    embezzlerFight.run({});
   } else {
     if (
       have($item`unwrapped knock-off retro superhero cape`) &&
@@ -220,7 +225,7 @@ function barfTurn() {
     }
     // c. set up familiar
     useFamiliar(meatFamiliar());
-    const location = embezzlerUp
+    const location = digitizeEmbezzlerUp
       ? !get("_envyfishEggUsed") &&
         (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
         (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
@@ -242,7 +247,7 @@ function barfTurn() {
     }
 
     // d. get dressed
-    meatOutfit(embezzlerUp, [], underwater);
+    meatOutfit(digitizeEmbezzlerUp, [], underwater);
 
     adventureMacroAuto(
       location,
@@ -276,8 +281,7 @@ function barfTurn() {
     }
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
-    if (embezzlerUp) log.digitizedEmbezzlersFought++;
-    else log.initialEmbezzlersFought++;
+    log.middayEmbezzlersFought++;
 }
 
 export function canContinue(): boolean {
@@ -428,7 +432,7 @@ export function main(argString = ""): void {
       );
     }
     print(
-      `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+      `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.middayEmbezzlersFought} KGEs throughout the day. Good work, probably!`,
       "blue"
     );
   }

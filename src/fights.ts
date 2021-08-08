@@ -22,10 +22,13 @@ import {
   myFamiliar,
   myHash,
   myHp,
+  myId,
   myInebriety,
+  myLightning,
   myMaxhp,
   myMaxmp,
   myMp,
+  myRain,
   mySpleenUse,
   numericModifier,
   outfit,
@@ -222,6 +225,18 @@ const embezzlerSources = [
     },
     [],
     true
+  ),
+  // We want to fight Rain Man embezzlers early to make room for more rain
+  // But we can't put off a digitize embezzler, so we do it second
+  new EmbezzlerFight(
+    "Rain Man",
+    () => myRain() >= 50 && have($skill`Rain Man`),
+    () => Math.floor(myRain() / 50),
+    (options: EmbezzlerFightOptions) => {
+      visitUrl("runskillz.php?action=Skillz&whichskill=16011&targetplayer=" + myId() + "&pwd=&quantity=1");
+      visitUrl("choice.php?pwd=&whichchoice=970&option=1&whichmonster=" + $monster`Knob Goblin Embezzler`.id);
+      runCombat(options.macro ? options.macro.toString() : embezzlerMacro().toString());
+    }
   ),
   new EmbezzlerFight(
     "Backup",
@@ -479,7 +494,7 @@ function embezzlerSetup() {
   }
 }
 
-function getEmbezzlerFight(): EmbezzlerFight | null {
+export function getEmbezzlerFight(): EmbezzlerFight | null {
   for (const fight of embezzlerSources) {
     if (fight.available()) return fight;
   }
@@ -1113,6 +1128,18 @@ const freeFightSources = [
 ];
 
 const freeKillSources = [
+  new FreeFight(
+    () => myLightning() >= 20 && have($skill`Lightning Strike`),
+    () =>
+      withMacro(Macro.skill("Sing Along").trySkill("Lightning Strike"), () =>
+        use($item`drum machine`)
+      ),
+    {
+      familiar: bestFairy,
+      requirements: () => [new Requirement(["100 Item Drop"], {})],
+    }
+  ),
+
   new FreeFight(
     () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
     () =>
