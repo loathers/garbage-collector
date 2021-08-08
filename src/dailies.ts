@@ -38,8 +38,10 @@ import {
   get,
   have,
   property,
+  set,
   SongBoom,
   SourceTerminal,
+  withChoice,
 } from "libram";
 import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
@@ -48,14 +50,15 @@ import {
   ensureEffect,
   findRun,
   prepWandererZone,
+  propertyManager,
   questStep,
   Requirement,
   saleValue,
+  setChoice,
   tryFeast,
 } from "./lib";
 import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
-import { set, withChoice, withChoices } from "libram/dist/property";
 import { estimatedTurns } from "./globalvars";
 import { Macro } from "./combat";
 
@@ -144,67 +147,63 @@ export function latte(): void {
       numericModifier(latte, "Familiar Weight") !== 5 ||
       numericModifier(latte, "Meat Drop") !== 40
     ) {
-      if (!get("latteUnlocks").includes("cajun") && findRun()) {
-        withChoices({ 923: 1, 924: 1 }, () => {
-          while (!get("latteUnlocks").includes("cajun") && findRun()) {
-            const runSource = findRun();
-            if (!runSource) break;
-            if (runSource.prepare) runSource.prepare();
-            freeFightOutfit([
-              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-              ...(runSource.requirement ? [runSource.requirement] : []),
-            ]);
-            adventureMacro($location`The Black Forest`, runSource.macro);
-            horseradish();
-          }
-        });
+      propertyManager.setChoices({
+        [923]: 1, //go to the blackberries in All Around the Map
+        [924]: 1, //fight a blackberry bush, so that we can freerun
+        [502]: 2, //go towards the stream in Arboreal Respite, so we can skip adventure
+        [505]: 2, //skip adventure
+      });
+      while (!get("latteUnlocks").includes("cajun") && findRun()) {
+        const runSource = findRun();
+        if (!runSource) break;
+        if (runSource.prepare) runSource.prepare();
+        freeFightOutfit([
+          new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+          ...(runSource.requirement ? [runSource.requirement] : []),
+        ]);
+        adventureMacro($location`The Black Forest`, runSource.macro);
+        horseradish();
       }
-      if (!get("latteUnlocks").includes("rawhide") && findRun()) {
-        withChoices({ 502: 2, 505: 2 }, () => {
-          while (!get("latteUnlocks").includes("rawhide") && findRun()) {
-            const runSource = findRun();
-            if (!runSource) break;
-            if (runSource.prepare) runSource.prepare();
-            freeFightOutfit([
-              new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-              ...(runSource.requirement ? [runSource.requirement] : []),
-            ]);
-            adventureMacro($location`The Spooky Forest`, runSource.macro);
-            horseradish();
-          }
-        });
+      while (!get("latteUnlocks").includes("rawhide") && findRun()) {
+        const runSource = findRun();
+        if (!runSource) break;
+        if (runSource.prepare) runSource.prepare();
+        freeFightOutfit([
+          new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+          ...(runSource.requirement ? [runSource.requirement] : []),
+        ]);
+        adventureMacro($location`The Spooky Forest`, runSource.macro);
+        horseradish();
       }
-      if (!get("latteUnlocks").includes("carrot") && findRun()) {
-        while (!get("latteUnlocks").includes("carrot") && findRun()) {
-          const runSource = findRun();
-          if (!runSource) break;
-          if (runSource.prepare) runSource.prepare();
-          freeFightOutfit([
-            new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-            ...(runSource.requirement ? [runSource.requirement] : []),
-          ]);
-          adventureMacro($location`The Dire Warren`, runSource.macro);
-          horseradish();
-        }
-      }
-      if (
-        get("latteUnlocks").includes("cajun") &&
-        get("latteUnlocks").includes("rawhide") &&
-        get("_latteRefillsUsed") < 3
-      ) {
-        const latteIngredients = [
-          "cajun",
-          "rawhide",
-          get("latteUnlocks").includes("carrot")
-            ? "carrot"
-            : myPrimestat() === $stat`muscle`
-            ? "vanilla"
-            : myPrimestat() === $stat`mysticality`
-            ? "pumpkin spice"
-            : "cinnamon",
-        ].join(" ");
-        cliExecute(`latte refill ${latteIngredients}`);
-      }
+    }
+    while (!get("latteUnlocks").includes("carrot") && findRun()) {
+      const runSource = findRun();
+      if (!runSource) break;
+      if (runSource.prepare) runSource.prepare();
+      freeFightOutfit([
+        new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
+        ...(runSource.requirement ? [runSource.requirement] : []),
+      ]);
+      adventureMacro($location`The Dire Warren`, runSource.macro);
+      horseradish();
+    }
+    if (
+      get("latteUnlocks").includes("cajun") &&
+      get("latteUnlocks").includes("rawhide") &&
+      get("_latteRefillsUsed") < 3
+    ) {
+      const latteIngredients = [
+        "cajun",
+        "rawhide",
+        get("latteUnlocks").includes("carrot")
+          ? "carrot"
+          : myPrimestat() === $stat`muscle`
+          ? "vanilla"
+          : myPrimestat() === $stat`mysticality`
+          ? "pumpkin spice"
+          : "cinnamon",
+      ].join(" ");
+      cliExecute(`latte refill ${latteIngredients}`);
     }
   }
 }
@@ -519,7 +518,8 @@ export function gingerbreadPrepNoon(): void {
     !get("_gingerbreadClockVisited") &&
     get("_gingerbreadCityTurns") <= 3
   ) {
-    withChoice(1215, 1, () => adventureMacro($location`Gingerbread Civic Center`, Macro.abort()));
+    setChoice(1215, 1);
+    adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
   }
   while (
     findRun() &&
