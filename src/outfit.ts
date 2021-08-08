@@ -24,6 +24,7 @@ import {
   $item,
   $items,
   $slot,
+  $slots,
   get,
   getFoldGroup,
   getKramcoWandererChance,
@@ -80,6 +81,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       ]),
       preventEquip:
         bjornAlike === $item`Buddy Bjorn` ? $items`Crown of Thrones` : $items`Buddy Bjorn`,
+      preventSlot: $slots`crown-of-thrones, buddy-bjorn`,
     })
   );
 
@@ -161,6 +163,7 @@ export function meatOutfit(
               : 0,
           ],
         ]),
+        preventSlot: $slots`crown-of-thrones, buddy-bjorn`,
       }
     ),
   ]);
