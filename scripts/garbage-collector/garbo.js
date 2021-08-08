@@ -15050,8 +15050,6 @@ function embezzlerSetup() {
 }
 
 function getEmbezzlerFight() {
-  var potentials = false;
-
   var _iterator = fights_createForOfIteratorHelper(embezzlerSources),
       _step;
 
@@ -15059,7 +15057,6 @@ function getEmbezzlerFight() {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
       var fight = _step.value;
       if (fight.available()) return fight;
-      if (fight.potential()) potentials = true;
     }
   } catch (err) {
     _iterator.e(err);
@@ -15067,7 +15064,9 @@ function getEmbezzlerFight() {
     _iterator.f();
   }
 
-  if (potentials && (0,dist.get)("_genieFightsUsed") < 3 && (0,external_kolmafia_.userConfirm)("Garbo has detected you have potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?")) {
+  var potential = embezzlerCount();
+
+  if (potential > 0 && (0,dist.get)("_genieFightsUsed") < 3 && (0,external_kolmafia_.userConfirm)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"))) {
     return new EmbezzlerFight("Pocket Wish", function () {
       return false;
     }, function () {
