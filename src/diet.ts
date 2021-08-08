@@ -45,11 +45,10 @@ import {
   have,
   set,
 } from "libram";
-import { withChoice } from "libram/dist/property";
 import { acquire } from "./acquire";
 import { embezzlerCount } from "./fights";
 import { estimatedTurns, globalOptions } from "./globalvars";
-import { baseMeat, clamp, ensureEffect } from "./lib";
+import { baseMeat, clamp, ensureEffect, setChoice } from "./lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
@@ -370,6 +369,7 @@ function mindMayo(mayo: Item, quantity: number) {
   retrieveItem(quantity, mayo);
   if (!have($item`Mayo Minder™`)) buy($item`Mayo Minder™`);
   if (get("mayoMinderSetting") !== mayo.name) {
-    withChoice(1076, toInt(mayo) - 8260, () => use($item`Mayo Minder™`));
+    setChoice(1076, toInt(mayo) - 8260);
+    use($item`Mayo Minder™`);
   }
 }

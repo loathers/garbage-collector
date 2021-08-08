@@ -72,6 +72,7 @@ import {
   kramcoGuaranteed,
   physicalImmuneMacro,
   prepWandererZone,
+  propertyManager,
   questStep,
   Requirement,
 } from "./lib";
@@ -83,7 +84,6 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
-import { withProperties } from "libram/dist/property";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -347,78 +347,75 @@ export function main(argString = ""): void {
 
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
-    withProperties(
-      {
-        battleAction: "custom combat script",
-        autoSatisfyWithMall: true,
-        autoSatisfyWithNPCs: true,
-        autoSatisfyWithCoinmasters: true,
-        dontStopForCounters: true,
-        maximizerFoldables: true,
-      },
-      () => {
-        cliExecute("mood apathetic");
-        cliExecute("ccs garbo");
-        safeRestore();
+    propertyManager.set({
+      battleAction: "custom combat script",
+      autoSatisfyWithMall: true,
+      autoSatisfyWithNPCs: true,
+      autoSatisfyWithCoinmasters: true,
+      dontStopForCounters: true,
+      maximizerFoldables: true,
+    });
+    cliExecute("mood apathetic");
+    cliExecute("ccs garbo");
+    safeRestore();
 
-        if (questStep("questM23Meatsmith") === -1) {
-          visitUrl("shop.php?whichshop=meatsmith&action=talk");
-          runChoice(1);
-        }
-        if (questStep("questM24Doc") === -1) {
-          visitUrl("shop.php?whichshop=doc&action=talk");
-          runChoice(1);
-        }
-        if (questStep("questM25Armorer") === -1) {
-          visitUrl("shop.php?whichshop=armory&action=talk");
-          runChoice(1);
-        }
-        if (
-          myClass() === $class`Seal Clubber` &&
-          !have($skill`Furious Wallop`) &&
-          guildStoreAvailable()
-        ) {
-          visitUrl("guild.php?action=buyskill&skillid=32", true);
-        }
-        const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving`;
-        if (
-          myInebriety() <= inebrietyLimit() &&
-          (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
-        )
-          stashItems.push($item`haiku katana`);
-        // FIXME: Dynamically figure out pointer ring approach.
-        withStash(stashItems, () => {
-          withVIPClan(() => {
-            // 0. diet stuff.
-            runDiet();
+    if (questStep("questM23Meatsmith") === -1) {
+      visitUrl("shop.php?whichshop=meatsmith&action=talk");
+      runChoice(1);
+    }
+    if (questStep("questM24Doc") === -1) {
+      visitUrl("shop.php?whichshop=doc&action=talk");
+      runChoice(1);
+    }
+    if (questStep("questM25Armorer") === -1) {
+      visitUrl("shop.php?whichshop=armory&action=talk");
+      runChoice(1);
+    }
+    if (
+      myClass() === $class`Seal Clubber` &&
+      !have($skill`Furious Wallop`) &&
+      guildStoreAvailable()
+    ) {
+      visitUrl("guild.php?action=buyskill&skillid=32", true);
+    }
+    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving`;
+    if (
+      myInebriety() <= inebrietyLimit() &&
+      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
+    )
+      stashItems.push($item`haiku katana`);
+    // FIXME: Dynamically figure out pointer ring approach.
+    withStash(stashItems, () => {
+      withVIPClan(() => {
+        // 0. diet stuff.
+        runDiet();
 
-            // 1. get a ticket
-            ensureBarfAccess();
+        // 1. get a ticket
+        ensureBarfAccess();
 
-            // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
-            dailySetup();
+        // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+        dailySetup();
 
-            setDefaultMaximizeOptions({
-              preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre`,
-            });
-
-            // 4. do some embezzler stuff
-            freeFights();
-            dailyFights();
-
-            // 5. burn turns at barf
-            try {
-              while (canContinue()) {
-                barfTurn();
-              }
-            } finally {
-              setAutoAttack(0);
-            }
-          });
+        setDefaultMaximizeOptions({
+          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre`,
         });
-      }
-    );
+
+        // 4. do some embezzler stuff
+        freeFights();
+        dailyFights();
+
+        // 5. burn turns at barf
+        try {
+          while (canContinue()) {
+            barfTurn();
+          }
+        } finally {
+          setAutoAttack(0);
+        }
+      });
+    });
   } finally {
+    propertyManager.resetAll();
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     if (questStep("_questPartyFair") > 0) {
