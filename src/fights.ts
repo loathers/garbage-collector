@@ -389,7 +389,8 @@ function embezzlerSetup() {
     ensureEffect($effect`Stone-Faced`);
     setChoice(582, 1);
     setChoice(579, 3);
-    adventureMacro($location`The Hidden Temple`, Macro.abort());
+    const runSource = findRun();
+    adventureMacro($location`The Hidden Temple`, runSource.macro);
   }
 
   bathroomFinance(embezzlerCount());
