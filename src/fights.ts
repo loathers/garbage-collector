@@ -390,7 +390,15 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const runSource = findRun();
+      const runSource =
+        findRun() ||
+        new FreeRun(
+          "LTB",
+          () => retrieveItem($item`Louder Than Bomb`),
+          Macro.item("Louder Than Bomb"),
+          new Requirement([], {}),
+          () => retrieveItem($item`Louder Than Bomb`)
+        );
       if (runSource) {
         if (runSource.prepare) runSource.prepare();
         freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
