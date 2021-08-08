@@ -390,7 +390,7 @@ function embezzlerSetup() {
     globalOptions.ascending &&
     questStep("questM16Temple") > 0 &&
     get("lastTempleAdventures") < myAscensions() &&
-    acquire(1, $item`Stone Wool`, 3 * get("valueOfAdventure") + 100, false) > 0
+    acquire(1, $item`stone wool`, 3 * get("valueOfAdventure") + 100, false) > 0
   ) {
     ensureEffect($effect`Stone-Faced`);
     setChoice(582, 1);
