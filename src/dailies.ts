@@ -310,6 +310,15 @@ export function configureMisc(): void {
   }
 
   if (
+    myClass() === $class`Pastamancer` &&
+    have($item`experimental carbon fiber pasta additive`) &&
+    !get("_pastaAdditive") &&
+    myThrall().level < 10
+  ) {
+    use($item`experimental carbon fiber pasta additive`);
+  }
+
+  if (
     getClanLounge()["Olympic-sized Clan crate"] !== undefined &&
     !get("_olympicSwimmingPoolItemFound") &&
     have($item`Clan VIP Lounge key`)
