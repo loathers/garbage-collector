@@ -233,8 +233,8 @@ const embezzlerSources = [
     () => myRain() >= 50 && have($skill`Rain Man`),
     () => have($skill`Rain Man`) ? Math.floor(myRain() / 50) : 0,
     (options: EmbezzlerFightOptions) => {
-      visitUrl("runskillz.php?action=Skillz&whichskill=16011&targetplayer=" + myId() + "&pwd=&quantity=1");
-      visitUrl("choice.php?pwd=&whichchoice=970&option=1&whichmonster=" + $monster`Knob Goblin Embezzler`.id);
+      visitUrl(`runskillz.php?action=Skillz&whichskill=16011&targetplayer=${myId()}&pwd=&quantity=1`);
+      visitUrl(`choice.php?pwd=&whichchoice=970&option=1&whichmonster=${$monster`Knob Goblin Embezzler`.id}`);
       runCombat(options.macro ? options.macro.toString() : embezzlerMacro().toString());
     }
   ),
