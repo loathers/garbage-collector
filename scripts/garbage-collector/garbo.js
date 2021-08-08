@@ -13018,8 +13018,26 @@ var StashManager = /*#__PURE__*/function () {
 
   return StashManager;
 }();
+;// CONCATENATED MODULE: ./src/globalvars.ts
+var globalvars_templateObject;
+
+function globalvars_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+var log = {
+  initialEmbezzlersFought: 0,
+  digitizedEmbezzlersFought: 0
+};
+var globalOptions = {
+  stopTurncount: null,
+  ascending: false
+};
+function estimatedTurns() {
+  return globalOptions.stopTurncount ? globalOptions.stopTurncount - (0,external_kolmafia_.myTurncount)() : ((0,external_kolmafia_.myAdventures)() + (globalOptions.ascending && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() ? 60 : 0)) * ((0,dist.have)((0,dist.$item)(globalvars_templateObject || (globalvars_templateObject = globalvars_taggedTemplateLiteral(["mafia thumb ring"])))) ? 1.04 : 1);
+}
 ;// CONCATENATED MODULE: ./src/lib.ts
-var lib_templateObject, lib_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45;
+var lib_templateObject, lib_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46;
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -13054,6 +13072,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function lib_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 function lib_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -13370,7 +13389,9 @@ new FreeRun("Bander", function () {
   return (0,dist.have)((0,dist.$item)(_templateObject43 || (_templateObject43 = lib_taggedTemplateLiteral(["Greatest American Pants"])))) && (0,dist.get)("_navelRunaways") < 3;
 }, dist.Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"), new Requirement([], {
   forceEquip: (0,dist.$items)(_templateObject44 || (_templateObject44 = lib_taggedTemplateLiteral(["Greatest American Pants"])))
-}))];
+})), new FreeRun("Parasol", function () {
+  return (0,dist.have)((0,dist.$item)(_templateObject45 || (_templateObject45 = lib_taggedTemplateLiteral(["peppermint parasol"])))) && globalOptions.ascending && (0,dist.get)("parasolUsed") < 9 && (0,dist.get)("_navelRunaways") < 3;
+}, dist.Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("peppermint parasol"))];
 function findRun() {
   var useFamiliar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
   return freeRuns.find(function (run) {
@@ -13399,7 +13420,7 @@ function saleValue() {
   }, 0) / items.length;
 }
 function kramcoGuaranteed() {
-  return (0,dist.have)((0,dist.$item)(_templateObject45 || (_templateObject45 = lib_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (0,dist.getKramcoWandererChance)() >= 1;
+  return (0,dist.have)((0,dist.$item)(_templateObject46 || (_templateObject46 = lib_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (0,dist.getKramcoWandererChance)() >= 1;
 }
 ;// CONCATENATED MODULE: ./src/familiar.ts
 var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11, familiar_templateObject12, familiar_templateObject13, familiar_templateObject14, familiar_templateObject15, familiar_templateObject16, familiar_templateObject17, familiar_templateObject18, familiar_templateObject19, familiar_templateObject20, familiar_templateObject21, familiar_templateObject22, familiar_templateObject23, familiar_templateObject24, familiar_templateObject25, familiar_templateObject26, familiar_templateObject27, familiar_templateObject28, familiar_templateObject29, familiar_templateObject30, familiar_templateObject31;
@@ -13565,24 +13586,6 @@ function freeFightFamiliar() {
 }
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.from-entries.js
 var es_object_from_entries = __webpack_require__(5809);
-;// CONCATENATED MODULE: ./src/globalvars.ts
-var globalvars_templateObject;
-
-function globalvars_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-
-
-var log = {
-  initialEmbezzlersFought: 0,
-  digitizedEmbezzlersFought: 0
-};
-var globalOptions = {
-  stopTurncount: null,
-  ascending: false
-};
-function estimatedTurns() {
-  return globalOptions.stopTurncount ? globalOptions.stopTurncount - (0,external_kolmafia_.myTurncount)() : ((0,external_kolmafia_.myAdventures)() + (globalOptions.ascending && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() ? 60 : 0)) * ((0,dist.have)((0,dist.$item)(globalvars_templateObject || (globalvars_templateObject = globalvars_taggedTemplateLiteral(["mafia thumb ring"])))) ? 1.04 : 1);
-}
 ;// CONCATENATED MODULE: ./src/potions.ts
 var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8;
 
@@ -14023,7 +14026,7 @@ function freeFightMood() {
   return mood;
 }
 ;// CONCATENATED MODULE: ./src/bjorn.ts
-var bjorn_templateObject, bjorn_templateObject2, bjorn_templateObject3, bjorn_templateObject4, bjorn_templateObject5, bjorn_templateObject6, bjorn_templateObject7, bjorn_templateObject8, bjorn_templateObject9, bjorn_templateObject10, bjorn_templateObject11, bjorn_templateObject12, bjorn_templateObject13, bjorn_templateObject14, bjorn_templateObject15, bjorn_templateObject16, bjorn_templateObject17, bjorn_templateObject18, bjorn_templateObject19, bjorn_templateObject20, bjorn_templateObject21, bjorn_templateObject22, bjorn_templateObject23, bjorn_templateObject24, bjorn_templateObject25, bjorn_templateObject26, bjorn_templateObject27, bjorn_templateObject28, bjorn_templateObject29, bjorn_templateObject30, bjorn_templateObject31, bjorn_templateObject32, bjorn_templateObject33, bjorn_templateObject34, bjorn_templateObject35, bjorn_templateObject36, bjorn_templateObject37, bjorn_templateObject38, bjorn_templateObject39, bjorn_templateObject40, bjorn_templateObject41, bjorn_templateObject42, bjorn_templateObject43, bjorn_templateObject44, bjorn_templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102;
+var bjorn_templateObject, bjorn_templateObject2, bjorn_templateObject3, bjorn_templateObject4, bjorn_templateObject5, bjorn_templateObject6, bjorn_templateObject7, bjorn_templateObject8, bjorn_templateObject9, bjorn_templateObject10, bjorn_templateObject11, bjorn_templateObject12, bjorn_templateObject13, bjorn_templateObject14, bjorn_templateObject15, bjorn_templateObject16, bjorn_templateObject17, bjorn_templateObject18, bjorn_templateObject19, bjorn_templateObject20, bjorn_templateObject21, bjorn_templateObject22, bjorn_templateObject23, bjorn_templateObject24, bjorn_templateObject25, bjorn_templateObject26, bjorn_templateObject27, bjorn_templateObject28, bjorn_templateObject29, bjorn_templateObject30, bjorn_templateObject31, bjorn_templateObject32, bjorn_templateObject33, bjorn_templateObject34, bjorn_templateObject35, bjorn_templateObject36, bjorn_templateObject37, bjorn_templateObject38, bjorn_templateObject39, bjorn_templateObject40, bjorn_templateObject41, bjorn_templateObject42, bjorn_templateObject43, bjorn_templateObject44, bjorn_templateObject45, bjorn_templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102;
 
 function bjorn_toConsumableArray(arr) { return bjorn_arrayWithoutHoles(arr) || bjorn_iterableToArray(arr) || bjorn_unsupportedIterableToArray(arr) || bjorn_nonIterableSpread(); }
 
@@ -14278,7 +14281,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject46 || (_templateObject46 = bjorn_taggedTemplateLiteral(["Golden Monkey"]))),
+  familiar: (0,dist.$familiar)(bjorn_templateObject46 || (bjorn_templateObject46 = bjorn_taggedTemplateLiteral(["Golden Monkey"]))),
   meatVal: function meatVal() {
     return 100;
   },
