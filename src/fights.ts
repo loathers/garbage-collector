@@ -385,6 +385,12 @@ function embezzlerSetup() {
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) use($item`License to Chill`);
+  if (globalOptions.ascending && get("questM16Temple") === "finished" && get("lastTempleAdventures") < get("knownAscensions")) {
+    ensureEffect($effect`Stone-Faced`);
+    setChoice(582, 1);
+    setChoice(579, 3);
+    adventureMacro($location`The Hidden Temple`, Macro.abort());
+  }
 
   bathroomFinance(embezzlerCount());
 
