@@ -1128,6 +1128,7 @@ export function freeFights(): void {
     1310: 3, //god lob stats
     1119: 5, //escape DMT
     1387: 2, //"You will go find two friends and meet me here."
+    1324: 5, //Fight a random partier
   });
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
@@ -1176,7 +1177,6 @@ export function freeFights(): void {
 }
 
 function nepQuest() {
-  setChoice(1324, 5); // pick fight.
   if (get("_questPartyFair") === "unstarted") {
     visitUrl("adventure.php?snarfblat=528");
     if (get("_questPartyFairQuest") === "food") {
