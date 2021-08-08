@@ -204,6 +204,7 @@ export class Macro extends LibramMacro {
         .externalIf(
           [
             $familiar`Cocoabo`,
+            $familiar`Feather Boa Constrictor`,
             $familiar`Ninja Pirate Zombie Robot`,
             $familiar`Stocking Mimic`,
           ].some((familiar) => myFamiliar() === familiar),
@@ -237,6 +238,7 @@ export class Macro extends LibramMacro {
         .externalIf(
           [
             $familiar`Cocoabo`,
+            $familiar`Feather Boa Constrictor`,
             $familiar`Ninja Pirate Zombie Robot`,
             $familiar`Stocking Mimic`,
           ].some((familiar) => myFamiliar() === familiar),
@@ -275,9 +277,12 @@ export class Macro extends LibramMacro {
         Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item("seal tooth"))
       )
       .externalIf(
-        [$familiar`Cocoabo`, $familiar`Ninja Pirate Zombie Robot`, $familiar`Stocking Mimic`].some(
-          (familiar) => myFamiliar() === familiar
-        ),
+        [
+          $familiar`Cocoabo`,
+          $familiar`Feather Boa Constrictor`,
+          $familiar`Ninja Pirate Zombie Robot`,
+          $familiar`Stocking Mimic`,
+        ].some((familiar) => myFamiliar() === familiar),
         Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item("seal tooth"))
       )
       .externalIf(

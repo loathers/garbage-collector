@@ -533,6 +533,13 @@ function maxFamiliarDamage(familiar: Familiar): number {
   switch (familiar) {
     case $familiar`Cocoabo`:
       return familiarWeight(familiar) + 3;
+    case $familiar`Feather Boa Constrictor`:
+      // Double sleaze damage at Barf Mountain
+      return (
+        familiarWeight(familiar) +
+        3 +
+        numericModifier("Sleaze Damage") * (myLocation() === $location`Barf Mountain` ? 2 : 1)
+      );
     case $familiar`Ninja Pirate Zombie Robot`:
       return Math.floor((familiarWeight(familiar) + 3) * 1.5);
   }
