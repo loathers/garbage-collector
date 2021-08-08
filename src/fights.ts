@@ -98,7 +98,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { bathroomFinance } from "./potions";
-import { estimatedTurns, log } from "./globalvars";
+import { estimatedTurns, globalOptions, log } from "./globalvars";
 import { getString, withChoice, withChoices } from "libram/dist/property";
 
 function checkFax(): boolean {
