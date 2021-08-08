@@ -254,6 +254,8 @@ export class Requirement {
       ]),
       forceEquip: [...(optionsA.forceEquip ?? []), ...(optionsB.forceEquip ?? [])],
       preventEquip: [...(optionsA.preventEquip ?? []), ...(optionsB.preventEquip ?? [])],
+      onlySlot: [...(optionsA.onlySlot ?? []), ...(optionsB.onlySlot ?? [])],
+      preventSlot: [...(optionsA.preventSlot ?? []), ...(optionsB.preventSlot ?? [])],
     });
   }
 
