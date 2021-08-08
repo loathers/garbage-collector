@@ -35,6 +35,7 @@ import {
   set,
   SongBoom,
 } from "libram";
+import { globalOptions } from "./globalvars";
 
 export const baseMeat =
   SongBoom.have() &&
@@ -429,6 +430,16 @@ const freeRuns: FreeRun[] = [
     () => have($item`Greatest American Pants`) && get("_navelRunaways") < 3,
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
     new Requirement([], { forceEquip: $items`Greatest American Pants` })
+  ),
+
+  new FreeRun(
+    "Parasol",
+    () =>
+      have($item`peppermint parasol`) &&
+      globalOptions.ascending &&
+      get("parasolUsed") < 9 &&
+      get("_navelRunaways") < 3,
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("peppermint parasol")
   ),
 ];
 
