@@ -85,6 +85,7 @@ import {
   kramcoGuaranteed,
   mapMonster,
   prepWandererZone,
+  propertyManager,
   questStep,
   Requirement,
   saleValue,
@@ -100,11 +101,10 @@ import {
 } from "./outfit";
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
-import { getString, withChoice, withChoices } from "libram/dist/property";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
-  if (getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
+  if (get<string>("photocopyMonster") === "Knob Goblin Embezzler") return true;
   cliExecute("fax send");
   return false;
 }
@@ -173,13 +173,7 @@ const secondChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.externalIf(
       myFamiliar() === $familiar`Pocket Professor`,
-      Macro.if_(
-        "!hasskill Lecture on Relativity",
-        Macro.if_(
-          `hasskill ${toInt($skill`Meteor Shower`)}`,
-          Macro.step(`skill ${toInt($skill`Meteor Shower`)}`)
-        )
-      ) //fix when libram is updated
+      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
         .if_(
           "!hasskill Lecture on Relativity",
           Macro.externalIf(
@@ -436,16 +430,15 @@ function embezzlerSetup() {
 }
 
 function getEmbezzlerFight(): EmbezzlerFight | null {
-  let potentials = false;
   for (const fight of embezzlerSources) {
     if (fight.available()) return fight;
-    if (fight.potential()) potentials = true;
   }
+  const potential = embezzlerCount();
   if (
-    potentials &&
+    potential > 0 &&
     get("_genieFightsUsed") < 3 &&
     userConfirm(
-      "Garbo has detected you have potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"
+      `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?`
     )
   ) {
     return new EmbezzlerFight(
@@ -877,13 +870,9 @@ const freeFightSources = [
           get("_saberForceMonsterCount") === 1) &&
         get("_saberForceUses") < 5
       ) {
-        //1387, 2
-
-        withChoice(1387, 2, () => {
-          putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
-          putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-          adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
-        });
+        putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
+        putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
+        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
       } else {
         if (closetAmount($item`Bowl of Scorpions`) > 0)
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
@@ -1011,14 +1000,12 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
-    () =>
-      //
-      withChoice(1310, 3, () => {
-        visitUrl("main.php?fightgodlobster=1");
-        runCombat();
-        visitUrl("choice.php");
-        if (handlingChoice()) runChoice(3);
-      }),
+    () => {
+      visitUrl("main.php?fightgodlobster=1");
+      runCombat();
+      visitUrl("choice.php");
+      if (handlingChoice()) runChoice(3);
+    },
     {
       familiar: () => $familiar`God Lobster`,
     }
@@ -1026,9 +1013,7 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
-    () => {
-      withChoice(1119, 6, () => adv1($location`The Deep Machine Tunnels`, -1, ""));
-    },
+    () => adv1($location`The Deep Machine Tunnels`, -1, ""),
     {
       familiar: () => $familiar`Machine Elf`,
     }
@@ -1058,13 +1043,11 @@ const freeFightSources = [
         : 0,
     () => {
       nepQuest();
-      withChoices(nepQuestChoices(), () => {
-        adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
-        if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
-          print("Found Gerald/ine!", "blue");
-          setChoice(1324, 5);
-        }
-      });
+      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
+      if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
+        print("Found Gerald/ine!", "blue");
+        setChoice(1324, 5);
+      }
     },
     {
       requirements: () => [
@@ -1159,6 +1142,12 @@ const freeKillSources = [
 export function freeFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
   visitUrl("place.php?whichplace=town_wrong");
+  propertyManager.setChoices({
+    1310: 3, //god lob stats
+    1119: 5, //escape DMT
+    1387: 2, //"You will go find two friends and meet me here."
+    1324: 5, //Fight a random partier
+  });
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
   }
@@ -1206,7 +1195,6 @@ export function freeFights(): void {
 }
 
 function nepQuest() {
-  setChoice(1324, 5); // pick fight.
   if (get("_questPartyFair") === "unstarted") {
     visitUrl("adventure.php?snarfblat=528");
     if (get("_questPartyFairQuest") === "food") {
@@ -1222,18 +1210,6 @@ function nepQuest() {
       setChoice(1324, 5);
     }
   }
-}
-
-function nepQuestChoices() {
-  if (questStep("_questPartyFair") <= 0) {
-    if (get("_questPartyFairQuest") === "food") {
-      return { 1324: 2, 1326: 3, 1327: "" };
-    }
-    if (get("_questPartyFairQuest") === "booze") {
-      return { 1324: 3, 1326: "", 1327: 3 };
-    }
-  }
-  return { 1324: 5, 1326: "", 1327: "" };
 }
 
 function thesisReady(): boolean {
@@ -1269,14 +1245,12 @@ function deliverThesis(): void {
     outfit("checkpoint");
   }
   cliExecute("gain 1800 muscle");
-  withChoices(nepQuestChoices(), () => {
-    adventureMacro(
-      thesisInNEP
-        ? $location`The Neverending Party`
-        : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
-      Macro.skill("Deliver your Thesis")
-    );
-  });
+  adventureMacro(
+    thesisInNEP
+      ? $location`The Neverending Party`
+      : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+    Macro.skill("Deliver your Thesis")
+  );
 }
 
 export function safeRestore(): void {
