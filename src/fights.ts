@@ -101,10 +101,11 @@ import {
 } from "./outfit";
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
+import { getString } from "libram/dist/property";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
-  if (get<string>("photocopyMonster") === "Knob Goblin Embezzler") return true;
+  if (getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
   cliExecute("fax send");
   return false;
 }
