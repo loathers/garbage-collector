@@ -403,6 +403,8 @@ function embezzlerSetup() {
         if (runSource.prepare) runSource.prepare();
         freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
         adventureMacro($location`The Hidden Temple`, runSource.macro);
+      } else {
+        break;
       }
     }
   }
