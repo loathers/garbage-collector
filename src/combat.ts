@@ -2,12 +2,17 @@ import {
   equippedAmount,
   equippedItem,
   getCounters,
+  haveEquipped,
   haveSkill,
   inMultiFight,
   itemType,
+  mpCost,
   myAdventures,
   myClass,
   myFamiliar,
+  myFury,
+  myMp,
+  mySoulsauce,
   print,
   runCombat,
   setAutoAttack,
@@ -25,6 +30,7 @@ import {
   Macro as LibramMacro,
   SourceTerminal,
 } from "libram";
+import { maxPassiveDamage, monsterManuelAvailable } from "./lib";
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(Math.max(n, min), max);
@@ -45,13 +51,22 @@ export class Macro extends LibramMacro {
     return super.submit();
   }
 
-  tryHaveSkill(skillOrName: Skill | string): Macro {
-    const skill = typeof skillOrName === "string" ? Skill.get(skillOrName) : skillOrName;
-    return this.externalIf(haveSkill(skill), Macro.skill(skill));
+  tryHaveSkill(skill: Skill | null): Macro {
+    if (!skill) return this;
+    return this.externalIf(haveSkill(skill), Macro.trySkill(skill));
   }
 
-  static tryHaveSkill(skillOrName: Skill | string): Macro {
-    return new Macro().tryHaveSkill(skillOrName);
+  static tryHaveSkill(skill: Skill | null): Macro {
+    return new Macro().tryHaveSkill(skill);
+  }
+
+  tryHaveItem(item: Item | null): Macro {
+    if (!item) return this;
+    return this.externalIf(have(item), Macro.tryItem(item));
+  }
+
+  static tryHaveItem(item: Item | null): Macro {
+    return new Macro().tryHaveItem(item);
   }
 
   tryCopier(itemOrSkill: Item | Skill): Macro {
@@ -130,51 +145,271 @@ export class Macro extends LibramMacro {
       get("retroCapeWashingInstructions") === "kill" &&
       itemType(equippedItem($slot`weapon`)) === "pistol";
 
-    // TODO: Hobo monkey stasis. VYKEA couch issue. Probably other stuff.
+    const willCrit = sealClubberSetup || opsSetup || katanaSetup || capeSetup;
+
     return this.externalIf(
       shouldRedigitize(),
       Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.trySkill("Digitize"))
     )
-      .tryHaveSkill("Sing Along")
+      .tryHaveSkill($skill`Sing Along`)
       .externalIf(
-        !have($effect`On the Trail`),
+        !have($effect`On the Trail`) && have($skill`Transcendent Olfaction`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Transcendent Olfaction"))
       )
       .externalIf(
-        get("_gallapagosMonster") !== $monster`garbage tourist`,
+        get("_gallapagosMonster") !== $monster`garbage tourist` &&
+          have($skill`Gallapagosian Mating Call`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Gallapagosian Mating Call"))
       )
       .externalIf(
-        get("_latteMonster") !== $monster`garbage tourist` ||
-          getCounters("Latte Monster", 0, 30).trim() === "",
+        !get("_latteCopyUsed") &&
+          (get("_latteMonster") !== $monster`garbage tourist` ||
+            getCounters("Latte Monster", 0, 30).trim() === "") &&
+          have($item`latte lovers member's mug`),
         Macro.if_("monstername garbage tourist", Macro.trySkill("Offer Latte to Opponent"))
       )
       .externalIf(
-        get("lastCopyableMonster") === $monster`garbage tourist`,
+        get("_feelNostalgicUsed") < 3 &&
+          get("lastCopyableMonster") === $monster`garbage tourist` &&
+          have($skill`Feel Nostalgic`),
         Macro.if_("!monstername garbage tourist", Macro.trySkill("Feel Nostalgic"))
       )
+      .meatStasis(willCrit)
+      .externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop"))
+      .externalIf(opsSetup, Macro.trySkill("Throw Shield").attack())
+      .externalIf(katanaSetup, Macro.trySkill("Summer Siesta"))
+      .externalIf(capeSetup, Macro.trySkill("Precision Shot"))
       .externalIf(
-        myFamiliar() === $familiar`Stocking Mimic`,
-        Macro.skill("Curse of Weaksauce").while_("!pastround 10", Macro.item("seal tooth"))
-      )
-      .externalIf(sealClubberSetup, Macro.trySkill("Furious Wallop").attack())
-      .externalIf(opsSetup, Macro.skill("Throw Shield").attack())
-      .externalIf(katanaSetup, Macro.skill("Summer Siesta").attack())
-      .externalIf(capeSetup, Macro.skill("Precision Shot"))
-      .trySkill("Pocket Crumbs")
-      .if_(
-        "discobandit",
+        myClass() === $class`Disco Bandit`,
         Macro.trySkill("Disco Dance of Doom")
           .trySkill("Disco Dance II: Electric Boogaloo")
           .trySkill("Disco Dance 3: Back in the Habit")
       )
-      .trySkill("Curse of Weaksauce")
-      .attack()
-      .repeat();
+      .kill();
   }
 
   static meatKill(): Macro {
     return new Macro().meatKill();
+  }
+
+  meatStasis(checkPassive: boolean): Macro {
+    // If we don't care about killing the monster don't bother checking passave damage
+    if (!checkPassive) {
+      return this.trySkill($skill`Pocket Crumbs`)
+        .trySkill($skill`Extract`)
+        .externalIf(
+          haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
+          Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item("seal tooth"))
+        )
+        .externalIf(
+          [
+            $familiar`Cocoabo`,
+            $familiar`Ninja Pirate Zombie Robot`,
+            $familiar`Stocking Mimic`,
+          ].some((familiar) => myFamiliar() === familiar),
+          Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item("seal tooth"))
+        )
+        .externalIf(
+          myFamiliar() === $familiar`Hobo Monkey`,
+          Macro.while_(
+            `!match "shoulder, and hands you some Meat." && !pastround 20 && !hppercentbelow 25`,
+            Macro.item("seal tooth")
+          )
+        )
+        .tryItem($item`porquoise-handled sixgun`);
+    }
+
+    // Only stasis if the monster manuel is available and we have access to monsterhpabove
+    if (!monsterManuelAvailable()) {
+      return this;
+    }
+    const passiveDamage = maxPassiveDamage() + 5;
+
+    // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
+    return this.if_(
+      "monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername Knob Goblin Embezzler || monstername sausage goblin",
+      Macro.if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill("Pocket Crumbs"))
+        .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill("Extract"))
+        .externalIf(
+          haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
+          Macro.while_(`!pastround 3 && monsterhpabove ${passiveDamage}`, Macro.item("seal tooth"))
+        )
+        .externalIf(
+          [
+            $familiar`Cocoabo`,
+            $familiar`Ninja Pirate Zombie Robot`,
+            $familiar`Stocking Mimic`,
+          ].some((familiar) => myFamiliar() === familiar),
+          Macro.while_(`!pastround 10 && monsterhpabove ${passiveDamage}`, Macro.item("seal tooth"))
+        )
+        .externalIf(
+          myFamiliar() === $familiar`Hobo Monkey`,
+          Macro.while_(
+            `!match "shoulder, and hands you some Meat." && !pastround 20 && monsterhpabove ${passiveDamage}`,
+            Macro.item("seal tooth")
+          )
+        )
+        .if_(
+          `monsterhpabove ${passiveDamage + 40}`,
+          Macro.tryHaveItem($item`porquoise-handled sixgun`)
+        )
+    );
+  }
+
+  static meatStasis(checkPassive: boolean): Macro {
+    return new Macro().meatStasis(checkPassive);
+  }
+
+  startCombat(): Macro {
+    return this.tryHaveSkill($skill`Sing Along`)
+      .tryHaveSkill($skill`Curse of Weaksauce`)
+      .trySkill($skill`Pocket Crumbs`)
+      .trySkill($skill`Extract`)
+      .tryHaveItem($item`porquoise-handled sixgun`)
+      .externalIf(have($skill`Meteor Lore`), Macro.trySkill($skill`Micrometeorite`))
+      .tryHaveItem($item`Time-Spinner`)
+      .tryHaveItem($item`Rain-Doh indigo cup`)
+      .tryHaveItem($item`Rain-Doh blue balls`)
+      .externalIf(
+        haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
+        Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item("seal tooth"))
+      )
+      .externalIf(
+        [$familiar`Cocoabo`, $familiar`Ninja Pirate Zombie Robot`, $familiar`Stocking Mimic`].some(
+          (familiar) => myFamiliar() === familiar
+        ),
+        Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item("seal tooth"))
+      )
+      .externalIf(
+        myFamiliar() === $familiar`Hobo Monkey`,
+        Macro.while_(
+          `!match "shoulder, and hands you some Meat." && !pastround 20 && !hppercentbelow 25`,
+          Macro.item("seal tooth")
+        )
+      );
+  }
+
+  static startCombat(): Macro {
+    return new Macro().startCombat();
+  }
+
+  kill(): Macro {
+    return (
+      this.externalIf(
+        myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
+        Macro.trySkill($skill`Curse of Weaksauce`)
+      )
+        .externalIf(
+          !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
+          Macro.while_("!pastround 20 && !hppercentbelow 25 && !missed 1", Macro.attack())
+        )
+        // Using while_ here in case you run out of mp
+        .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
+        .while_("hasskill Weapon of the Pastalord", Macro.skill($skill`Weapon of the Pastalord`))
+        .while_("hasskill Cannelloni Cannon", Macro.skill($skill`Cannelloni Cannon`))
+        .while_("hasskill Wave of Sauce", Macro.skill($skill`Wave of Sauce`))
+        .while_("hasskill Saucestorm", Macro.skill($skill`Saucestorm`))
+        .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+        .attack()
+        .repeat()
+    );
+  }
+
+  static kill(): Macro {
+    return new Macro().kill();
+  }
+
+  basicCombat(): Macro {
+    return this.startCombat().kill();
+  }
+
+  static basicCombat(): Macro {
+    return new Macro().basicCombat();
+  }
+
+  ghostBustin(): Macro {
+    // Only bust ghosts if you have enough stunners to prevent getting hit
+    let stunRounds = 0;
+    let classStun: Skill | null = null;
+    let extraStun: Skill | null = null;
+    if (have($item`Rain-Doh blue balls`)) stunRounds++;
+    if (get("lovebugsUnlocked")) stunRounds++;
+    if (
+      myClass() === $class`Seal Clubber` &&
+      have($skill`Club Foot`) &&
+      myMp() >= mpCost($skill`Club Foot`)
+    ) {
+      const clubRounds =
+        Math.min(myFury(), 3) + (itemType(equippedItem($slot`weapon`)) === "club" ? 1 : 0) - 1;
+      if (stunRounds > 0) {
+        classStun = $skill`Club Foot`;
+        stunRounds += clubRounds;
+      }
+    } else if (
+      myClass() === $class`Turtle Tamer` &&
+      have($skill`Shell Up`) &&
+      myMp() >= mpCost($skill`Shell Up`)
+    ) {
+      const shellRounds =
+        (have($effect`Blessing of the Storm Tortoise`) ? 2 : 0) +
+        (have($effect`Grand Blessing of the Storm Tortoise`) ? 3 : 0) +
+        (have($effect`Glorious Blessing of the Storm Tortoise`) ? 4 : 0);
+      if (shellRounds > 0) {
+        classStun = $skill`Shell Up`;
+        stunRounds += shellRounds;
+      }
+    } else if (
+      myClass() === $class`Pastamancer` &&
+      have($skill`Entangling Noodles`) &&
+      myMp() >= mpCost($skill`Entangling Noodles`)
+    ) {
+      classStun = $skill`Entangling Noodles`;
+      stunRounds += 2;
+    } else if (myClass() === $class`Sauceror` && have($skill`Soul Bubble`) && mySoulsauce() >= 5) {
+      classStun = $skill`Soul Bubble`;
+      stunRounds += 2;
+    } else if (
+      myClass() === $class`Accordion Thief` &&
+      have($skill`Accordion Bash`) &&
+      itemType(equippedItem($slot`weapon`)) === "accordion" &&
+      myMp() >= mpCost($skill`Accordion Bash`)
+    ) {
+      classStun = $skill`Accordion Bash`;
+      stunRounds += 2;
+    } else if (myClass() === $class`Disco Bandit`) {
+      // Rave Knockout seems like a pain
+    }
+
+    // Don't use shadow noodles unless we really need it.
+    if (
+      stunRounds < 3 &&
+      classStun !== $skill`Entangling Noodles` &&
+      have($skill`Shadow Noodles`) &&
+      myMp() >= mpCost(classStun ?? $skill`none`) + mpCost($skill`Shadow Noodles`)
+    ) {
+      extraStun = $skill`Shadow Noodles`;
+      stunRounds += 2;
+    }
+
+    // Lacking multi-round stuns
+    if (stunRounds < 3) {
+      return this.basicCombat();
+    }
+
+    return this.tryHaveSkill($skill`Sing Along`)
+      .tryHaveItem($item`Rain-Doh blue balls`)
+      .externalIf(get("lovebugsUnlocked"), Macro.trySkill($skill`Summon Love Gnats`))
+      .tryHaveSkill(classStun)
+      .tryHaveSkill(extraStun)
+      .trySkill($skill`Shoot Ghost`)
+      .trySkill($skill`Shoot Ghost`)
+      .trySkill($skill`Shoot Ghost`)
+      .trySkill($skill`Trap Ghost`)
+      .kill();
+  }
+
+  static ghostBustin(): Macro {
+    return new Macro().ghostBustin();
   }
 }
 
@@ -189,6 +424,10 @@ export function withMacro<T>(macro: Macro, action: () => T): T {
 }
 
 export function main(): void {
-  Macro.load().submit();
+  if (have($effect`Eldritch Attunement`)) {
+    Macro.if_("monstername eldritch tentacle", Macro.basicCombat()).step(Macro.load()).submit();
+  } else {
+    Macro.load().submit();
+  }
   while (inMultiFight()) runCombat();
 }
