@@ -395,11 +395,11 @@ function embezzlerSetup() {
     ensureEffect($effect`Stone-Faced`);
     setChoice(582, 1);
     setChoice(579, 3);
-    const runSource = findRun();
-    if (runSource) {
-      if (runSource.prepare) runSource.prepare();
-      freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
-      while (get("lastTempleAdventures") < myAscensions()) {
+    while (get("lastTempleAdventures") < myAscensions()) {
+      const runSource = findRun();
+      if (runSource) {
+        if (runSource.prepare) runSource.prepare();
+        freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
         adventureMacro($location`The Hidden Temple`, runSource.macro);
       }
     }
