@@ -385,12 +385,22 @@ function embezzlerSetup() {
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) use($item`License to Chill`);
-  if (globalOptions.ascending && get("questM16Temple") === "finished" && get("lastTempleAdventures") < get("knownAscensions")) {
+  if (
+    globalOptions.ascending &&
+    questStep("questM16Temple") > 0 &&
+    get("lastTempleAdventures") < myAscensions()
+  ) {
     ensureEffect($effect`Stone-Faced`);
     setChoice(582, 1);
     setChoice(579, 3);
     const runSource = findRun();
-    adventureMacro($location`The Hidden Temple`, runSource.macro);
+    if (runSource) {
+      if (runSource.prepare) runSource.prepare();
+      freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+      while (get("lastTempleAdventures") < myAscensions()) {
+        adventureMacro($location`The Hidden Temple`, runSource.macro);
+      }
+    }
   }
 
   bathroomFinance(embezzlerCount());
