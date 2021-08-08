@@ -101,10 +101,11 @@ import {
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, log } from "./globalvars";
 import { acquire } from "./acquire";
+import { getString } from "libram/dist/property";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
-  if (get<string>("photocopyMonster") === "Knob Goblin Embezzler") return true;
+  if (getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
   cliExecute("fax send");
   return false;
 }
@@ -412,16 +413,15 @@ function embezzlerSetup() {
 }
 
 function getEmbezzlerFight(): EmbezzlerFight | null {
-  let potentials = false;
   for (const fight of embezzlerSources) {
     if (fight.available()) return fight;
-    if (fight.potential()) potentials = true;
   }
+  const potential = embezzlerCount();
   if (
-    potentials &&
+    potential > 0 &&
     get("_genieFightsUsed") < 3 &&
     userConfirm(
-      "Garbo has detected you have potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"
+      `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?`
     )
   ) {
     return new EmbezzlerFight(
