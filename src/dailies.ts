@@ -49,7 +49,7 @@ import {
   baseMeat,
   ensureEffect,
   findRun,
-  prepWandererZone,
+  pickWandererZoneAndPrep,
   propertyManager,
   questStep,
   Requirement,
@@ -562,7 +562,9 @@ export function hipsterFishing(): void {
 
   while (findRun(false) && get("_hipsterAdv") < 7) {
     const targetLocation =
-      prepWandererZone().combatPercent === 100 ? prepWandererZone() : $location`Noob Cave`;
+      pickWandererZoneAndPrep().combatPercent === 100
+        ? pickWandererZoneAndPrep()
+        : $location`Noob Cave`;
     const runSource = findRun(false);
     if (!runSource) return;
     if (runSource.prepare) runSource.prepare();
