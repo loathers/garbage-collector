@@ -44,6 +44,13 @@ import {
 } from "libram";
 import { globalOptions } from "./globalvars";
 
+export enum BonusEquipMode {
+  FREE,
+  EMBEZZLER,
+  BARF,
+  DMT,
+}
+
 export const propertyManager = new PropertiesManager();
 
 export const baseMeat =
@@ -262,6 +269,8 @@ export class Requirement {
       ]),
       forceEquip: [...(optionsA.forceEquip ?? []), ...(optionsB.forceEquip ?? [])],
       preventEquip: [...(optionsA.preventEquip ?? []), ...(optionsB.preventEquip ?? [])],
+      onlySlot: [...(optionsA.onlySlot ?? []), ...(optionsB.onlySlot ?? [])],
+      preventSlot: [...(optionsA.preventSlot ?? []), ...(optionsB.preventSlot ?? [])],
     });
   }
 
