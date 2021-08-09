@@ -138,6 +138,8 @@ function dailySetup() {
   retrieveItem($item`The Jokester's gun`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
+  putCloset(itemAmount($item`4-d camera`), $item`4-d camera`);
+  putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
 }
 
 function barfTurn() {

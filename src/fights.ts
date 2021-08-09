@@ -16,6 +16,7 @@ import {
   inebrietyLimit,
   itemAmount,
   mallPrice,
+  meatDropModifier,
   myAscensions,
   myClass,
   myFamiliar,
@@ -77,6 +78,7 @@ import { Macro, withMacro } from "./combat";
 import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
+  baseMeat,
   clamp,
   ensureEffect,
   findRun,
@@ -163,6 +165,7 @@ const firstChainMacro = () =>
         .tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)
         .tryCopier($item`4-d camera`)
+        .tryCopier($item`unfinished ice sculpture`)
     )
       .trySkill("Lecture on Relativity")
       .meatKill()
@@ -183,6 +186,7 @@ const secondChainMacro = () =>
             .tryCopier($item`Spooky Putty sheet`)
             .tryCopier($item`Rain-Doh black box`)
             .tryCopier($item`4-d camera`)
+            .tryCopier($item`unfinished ice sculpture`)
         )
         .trySkill("Lecture on Relativity")
     ).meatKill()
@@ -201,6 +205,7 @@ const embezzlerMacro = () =>
       .tryCopier($item`Spooky Putty sheet`)
       .tryCopier($item`Rain-Doh black box`)
       .tryCopier($item`4-d camera`)
+      .tryCopier($item`unfinished ice sculpture`)
       .meatKill()
   ).abort();
 
@@ -331,6 +336,20 @@ const embezzlerSources = [
     () => use($item`shaking 4-d camera`)
   ),
   new EmbezzlerFight(
+    "Ice Sculpture",
+    () =>
+      have($item`ice sculpture`) &&
+      get("iceSculptureMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_iceSculptureUsed"),
+    () =>
+      have($item`ice sculpture`) &&
+      get("iceSculptureMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_iceSculptureUsed")
+        ? 1
+        : 0,
+    () => use($item`ice sculpture`)
+  ),
+  new EmbezzlerFight(
     "Green Taffy",
     () =>
       have($item`envyfish egg`) &&
@@ -383,9 +402,25 @@ function embezzlerSetup() {
 
   bathroomFinance(embezzlerCount());
 
+  const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
+  const averageTouristNet = (baseMeat * meatDropModifier()) / 100;
+
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
-  if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {
+  if (
+    !get("_cameraUsed") &&
+    !have($item`shaking 4-d camera`) &&
+    averageEmbezzlerNet - averageTouristNet > mallPrice($item`4-d camera`)
+  ) {
     retrieveItem($item`4-d camera`);
+  }
+
+  if (
+    !get("_iceSculptureUsed") &&
+    !have($item`ice sculpture`) &&
+    averageEmbezzlerNet - averageTouristNet >
+      mallPrice($item`snow berries`) + mallPrice($item`ice harvest`) * 3
+  ) {
+    retrieveItem($item`unfinished ice sculpture`);
   }
 
   // Fix invalid copiers (caused by ascending or combat text-effects)
@@ -408,6 +443,10 @@ function embezzlerSetup() {
 
   if (have($item`envyfish egg`) && !get("envyfishMonster")) {
     visitUrl(`desc_item.php?whichitem=${$item`envyfish egg`.descid}`, false, false);
+  }
+
+  if (have($item`ice sculpture`) && !get("iceSculptureMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 }
 
