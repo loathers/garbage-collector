@@ -10,10 +10,12 @@ import {
   mallPrice,
   maximize,
   myClass,
+  myMaxhp,
   myPrimestat,
   myThrall,
   numericModifier,
   print,
+  restoreHp,
   retrieveItem,
   runChoice,
   setAutoAttack,
@@ -333,8 +335,8 @@ export function volcanoDailies(): void {
   if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
-  print("Getting my free volcoino!", "blue");
   if (!get("_infernoDiscoVisited")) {
+    print("Getting my free volcoino!", "blue");
     $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.forEach(
       (discoEquip) => {
         retrieveItem(discoEquip);
@@ -345,8 +347,9 @@ export function volcanoDailies(): void {
     runChoice(7);
   }
 
-  if (have($skill`Unaccompanied Miner`) && get("_unaccompaniedMinerUsed") < 5) {
+  while (have($skill`Unaccompanied Miner`) && get("_unaccompaniedMinerUsed") < 5) {
     cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`);
+    restoreHp(myMaxhp());
   }
 }
 function checkVolcanoQuest() {
@@ -378,7 +381,7 @@ function checkVolcanoQuest() {
       $item`SMOOCH bottlecap`,
       () => {
         if (availableAmount($item`SMOOCH bottlecap`) > 0) return true;
-        else return buy(1, $item`SMOOCH bottlecap`, 5000) === 1;
+        else return buy(1, $item`SMOOCH bottlecap`, 10000) === 1;
       },
     ],
     [
@@ -402,11 +405,7 @@ function checkVolcanoQuest() {
       $item`smooth velvet bra`,
       () => {
         if (availableAmount($item`smooth velvet bra`) < 3) {
-          cliExecute(
-            `acquire ${(
-              3 - availableAmount($item`smooth velvet bra`)
-            ).toString()} smooth velvet bra`
-          );
+          retrieveItem(3 - availableAmount($item`smooth velvet bra`), $item`smooth velvet bra`);
         }
         return availableAmount($item`smooth velvet bra`) >= 3;
       },
@@ -415,9 +414,7 @@ function checkVolcanoQuest() {
       $item`SMOOCH bracers`,
       () => {
         if (availableAmount($item`SMOOCH bracers`) < 3) {
-          cliExecute(
-            `acquire ${(3 - availableAmount($item`SMOOCH bracers`)).toString()} smooch bracers`
-          );
+          retrieveItem(3 - availableAmount($item`SMOOCH bracers`), $item`SMOOCH bracers`);
         }
         return availableAmount($item`SMOOCH bracers`) >= 3;
       },
