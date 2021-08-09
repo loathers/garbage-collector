@@ -16889,7 +16889,7 @@ function main() {
 
         dailySetup();
         (0,dist.setDefaultMaximizeOptions)({
-          preventEquip: (0,dist.$items)(src_templateObject58 || (src_templateObject58 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre"])))
+          preventEquip: (0,dist.$items)(src_templateObject58 || (src_templateObject58 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball"])))
         }); // 4. do some embezzler stuff
 
         freeFights();
