@@ -53,13 +53,6 @@ import { baseMeat, clamp, ensureEffect, setChoice } from "./lib";
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
 
-function itemPriority(...items: Item[]) {
-  for (const item of items) {
-    if (have(item)) return item;
-  }
-  return items[items.length - 1];
-}
-
 function eatSafe(qty: number, item: Item) {
   acquire(qty, $item`Special Seasoning`);
   acquire(qty, item);
@@ -185,16 +178,41 @@ function fillStomach() {
   }
 }
 
+function fillLiverAstralPilsner() {
+  if (availableAmount($item`astral pilsner`) === 0) {
+    return;
+  }
+  try {
+    if (
+      !get("_mimeArmyShotglassUsed") &&
+      itemAmount($item`mime army shotglass`) > 0 &&
+      availableAmount($item`astral pilsner`) > 0
+    ) {
+      drinkSafe(1, $item`astral pilsner`);
+    }
+    if (
+      globalOptions.ascending &&
+      myInebriety() + 1 <= inebrietyLimit() &&
+      availableAmount($item`astral pilsner`) > 0
+    ) {
+      const count = Math.floor(
+        Math.min(inebrietyLimit() - myInebriety(), availableAmount($item`astral pilsner`))
+      );
+      drinkSafe(count, $item`astral pilsner`);
+    }
+  } catch {
+    print(`Failed to drink astral pilsner.`, "red");
+  }
+}
+
 function fillLiver() {
   if (myFamiliar() === $familiar`Stooper`) {
     useFamiliar($familiar`none`);
   }
+  fillLiverAstralPilsner();
   if (!get("_mimeArmyShotglassUsed") && itemAmount($item`mime army shotglass`) > 0) {
     equip($item`tuxedo shirt`);
-    drink(itemPriority($item`astral pilsner`, $item`splendid martini`));
-  }
-  while (myInebriety() + 1 <= inebrietyLimit() && itemAmount($item`astral pilsner`) > 0) {
-    drink(1, $item`astral pilsner`);
+    drinkSafe(1, $item`splendid martini`);
   }
   while (myInebriety() + 5 <= inebrietyLimit()) {
     if (myMaxhp() < 1000) maximize("0.05hp, cold res", false);
