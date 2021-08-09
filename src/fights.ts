@@ -72,6 +72,7 @@ import {
   TunnelOfLove,
   Witchess,
 } from "libram";
+import { acquire } from "./acquire";
 import { fillAsdonMartinTo } from "./asdon";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
@@ -101,7 +102,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { bathroomFinance } from "./potions";
-import { estimatedTurns, log } from "./globalvars";
+import { estimatedTurns, globalOptions, log } from "./globalvars";
 import { getString } from "libram/dist/property";
 
 function checkFax(): boolean {
@@ -399,6 +400,34 @@ function embezzlerSetup() {
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) use($item`License to Chill`);
+  if (
+    globalOptions.ascending &&
+    questStep("questM16Temple") > 0 &&
+    get("lastTempleAdventures") < myAscensions() &&
+    acquire(1, $item`stone wool`, 3 * get("valueOfAdventure") + 100, false) > 0
+  ) {
+    ensureEffect($effect`Stone-Faced`);
+    setChoice(582, 1);
+    setChoice(579, 3);
+    while (get("lastTempleAdventures") < myAscensions()) {
+      const runSource =
+        findRun() ||
+        new FreeRun(
+          "LTB",
+          () => retrieveItem($item`Louder Than Bomb`),
+          Macro.item("Louder Than Bomb"),
+          new Requirement([], {}),
+          () => retrieveItem($item`Louder Than Bomb`)
+        );
+      if (runSource) {
+        if (runSource.prepare) runSource.prepare();
+        freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+        adventureMacro($location`The Hidden Temple`, runSource.macro);
+      } else {
+        break;
+      }
+    }
+  }
 
   bathroomFinance(embezzlerCount());
 
