@@ -948,7 +948,13 @@ const freeFightSources = [
       if (SourceTerminal.have()) {
         SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
-      adventureMacro($location`Your Mushroom Garden`, Macro.trySkill("Portscan").meatKill());
+      adventureMacro(
+        $location`Your Mushroom Garden`,
+        Macro.externalIf(
+          get("_macrometeoriteUses") < 10 && have($skill`Meteor Lore`),
+          Macro.trySkill("Portscan")
+        ).meatKill()
+      );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
     {
@@ -973,7 +979,10 @@ const freeFightSources = [
         $location`Your Mushroom Garden`,
         Macro.if_("monstername government agent", Macro.skill("Macrometeorite")).if_(
           "monstername piranha plant",
-          Macro.trySkill("Portscan").meatKill()
+          Macro.externalIf(
+            get("_macrometeoriteUses") < 9 && have($skill`Meteor Lore`), //use 9 here because externalif initializes BEFORE we use macro this combat
+            Macro.trySkill("Portscan")
+          ).meatKill()
         )
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
