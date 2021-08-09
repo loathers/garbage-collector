@@ -12,13 +12,16 @@ import {
   myClass,
   myGardenType,
   myInebriety,
+  myPrimestat,
   myTurncount,
   print,
   putCloset,
+  refreshStash,
   retrieveItem,
   reverseNumberology,
   runChoice,
   setAutoAttack,
+  stashAmount,
   toItem,
   totalTurnsPlayed,
   use,
@@ -34,6 +37,7 @@ import {
   $location,
   $monster,
   $skill,
+  $stat,
   adventureMacro,
   adventureMacroAuto,
   get,
@@ -51,9 +55,11 @@ import {
   gaze,
   gin,
   gingerbreadPrepNoon,
+  hipsterFishing,
   horse,
   jellyfish,
   latte,
+  martini,
   pickTea,
   prepFamiliars,
   volcanoDailies,
@@ -62,7 +68,14 @@ import {
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { physicalImmuneMacro, pickWandererZoneAndPrep, questStep, Requirement } from "./lib";
+import {
+  kramcoGuaranteed,
+  physicalImmuneMacro,
+  pickWandererZoneAndPrep,
+  propertyManager,
+  questStep,
+  Requirement,
+} from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -71,7 +84,6 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
-import { withProperties } from "libram/dist/property";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -95,13 +107,11 @@ function ensureBarfAccess() {
 
 function dailySetup() {
   voterSetup();
+  martini();
   gaze();
   configureGear();
   horse();
   prepFamiliars();
-  gingerbreadPrepNoon();
-  latte();
-  jellyfish();
   dailyBuffs();
   configureMisc();
   volcanoDailies();
@@ -109,11 +119,27 @@ function dailySetup() {
   gin();
   pickTea();
 
+  if (myInebriety() > inebrietyLimit()) return;
+  refreshStash();
+  const stashRun = stashAmount($item`navel ring of navel gazing`)
+    ? $items`navel ring of navel gazing`
+    : stashAmount($item`Greatest American Pants`)
+    ? $items`Greatest American Pants`
+    : [];
+  withStash(stashRun, () => {
+    gingerbreadPrepNoon();
+    latte();
+    jellyfish();
+    hipsterFishing();
+  });
+
   retrieveItem($item`Half a Purse`);
   retrieveItem($item`seal tooth`);
   retrieveItem($item`The Jokester's gun`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
+  putCloset(itemAmount($item`4-d camera`), $item`4-d camera`);
+  putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
 }
 
 function barfTurn() {
@@ -124,6 +150,7 @@ function barfTurn() {
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
+
   if (
     have($item`unwrapped knock-off retro superhero cape`) &&
     (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
@@ -131,37 +158,35 @@ function barfTurn() {
     cliExecute("retrocape robot kill");
   }
 
-  // a. set up familiar
-  useFamiliar(meatFamiliar());
-
-  const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
-  let location = embezzlerUp ? pickWandererZoneAndPrep() : $location`Barf Mountain`;
   if (
-    !get("_envyfishEggUsed") &&
-    (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
-    (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
-    (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-    !have($item`envyfish egg`) &&
-    embezzlerUp
+    have($item`latte lovers member's mug`) &&
+    get("_latteRefillsUsed") < 3 &&
+    get("_latteCopyUsed") &&
+    get("latteUnlocks").includes("cajun") &&
+    get("latteUnlocks").includes("rawhide")
   ) {
-    // now fight one underwater
-    if (get("questS01OldGuy") === "unstarted") {
-      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-    }
-    retrieveItem($item`pulled green taffy`);
-    if (!have($effect`Fishy`)) use($item`fishy pipe`);
-    location = $location`The Briny Deeps`;
+    const latteIngredients = [
+      "cajun",
+      "rawhide",
+      get("latteUnlocks").includes("carrot")
+        ? "carrot"
+        : myPrimestat() === $stat`muscle`
+        ? "vanilla"
+        : myPrimestat() === $stat`mysticality`
+        ? "pumpkin spice"
+        : "cinnamon",
+    ].join(" ");
+    cliExecute(`latte refill ${latteIngredients}`);
   }
 
-  const underwater = location === $location`The Briny Deeps`;
-  meatOutfit(embezzlerUp, [], underwater);
+  const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
 
-  // c. set up mood stuff
+  // a. set up mood stuff
   meatMood().execute(estimatedTurns());
 
   safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");
-  // d. run adventure
+  // b. check for wanderers, and do them
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
     meatOutfit(true);
     withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
@@ -183,7 +208,43 @@ function barfTurn() {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`"I Voted!" sticker` })]);
     adventureMacroAuto(pickWandererZoneAndPrep(), Macro.step(physicalImmuneMacro).meatKill());
+  } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
+    useFamiliar(freeFightFamiliar());
+    freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
+    adventureMacroAuto(pickWandererZoneAndPrep(), Macro.meatKill());
   } else {
+    if (
+      have($item`unwrapped knock-off retro superhero cape`) &&
+      (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
+    ) {
+      cliExecute("retrocape robot kill");
+    }
+    // c. set up familiar
+    useFamiliar(meatFamiliar());
+    const location = embezzlerUp
+      ? !get("_envyfishEggUsed") &&
+        (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
+        (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
+        (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
+        !have($item`envyfish egg`)
+        ? $location`The Briny Deeps`
+        : pickWandererZoneAndPrep()
+      : $location`Barf Mountain`;
+
+    const underwater = location === $location`The Briny Deeps`;
+
+    if (underwater) {
+      // now fight one underwater
+      if (get("questS01OldGuy") === "unstarted") {
+        visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+      }
+      retrieveItem($item`pulled green taffy`);
+      if (!have($effect`Fishy`)) use($item`fishy pipe`);
+    }
+
+    // d. get dressed
+    meatOutfit(embezzlerUp, [], underwater);
+
     adventureMacroAuto(
       location,
       Macro.externalIf(
@@ -257,7 +318,10 @@ export function main(argString = ""): void {
   if (
     startingGarden &&
     !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
-    getCampground()[startingGarden.name]
+    getCampground()[startingGarden.name] &&
+    $items`packet of tall grass seeds, packet of mushroom spores`.some((gardenSeed) =>
+      have(gardenSeed)
+    )
   ) {
     visitUrl("campground.php?action=garden&pwd");
   }
@@ -286,78 +350,75 @@ export function main(argString = ""): void {
 
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
-    withProperties(
-      {
-        battleAction: "custom combat script",
-        autoSatisfyWithMall: true,
-        autoSatisfyWithNPCs: true,
-        autoSatisfyWithCoinmasters: true,
-        dontStopForCounters: true,
-        maximizerFoldables: true,
-      },
-      () => {
-        cliExecute("mood apathetic");
-        cliExecute("ccs garbo");
-        safeRestore();
+    propertyManager.set({
+      battleAction: "custom combat script",
+      autoSatisfyWithMall: true,
+      autoSatisfyWithNPCs: true,
+      autoSatisfyWithCoinmasters: true,
+      dontStopForCounters: true,
+      maximizerFoldables: true,
+    });
+    cliExecute("mood apathetic");
+    cliExecute("ccs garbo");
+    safeRestore();
 
-        if (questStep("questM23Meatsmith") === -1) {
-          visitUrl("shop.php?whichshop=meatsmith&action=talk");
-          runChoice(1);
-        }
-        if (questStep("questM24Doc") === -1) {
-          visitUrl("shop.php?whichshop=doc&action=talk");
-          runChoice(1);
-        }
-        if (questStep("questM25Armorer") === -1) {
-          visitUrl("shop.php?whichshop=armory&action=talk");
-          runChoice(1);
-        }
-        if (
-          myClass() === $class`Seal Clubber` &&
-          !have($skill`Furious Wallop`) &&
-          guildStoreAvailable()
-        ) {
-          visitUrl("guild.php?action=buyskill&skillid=32", true);
-        }
-        const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving`;
-        if (
-          myInebriety() <= inebrietyLimit() &&
-          (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
-        )
-          stashItems.push($item`haiku katana`);
-        // FIXME: Dynamically figure out pointer ring approach.
-        withStash(stashItems, () => {
-          withVIPClan(() => {
-            // 0. diet stuff.
-            runDiet();
+    if (questStep("questM23Meatsmith") === -1) {
+      visitUrl("shop.php?whichshop=meatsmith&action=talk");
+      runChoice(1);
+    }
+    if (questStep("questM24Doc") === -1) {
+      visitUrl("shop.php?whichshop=doc&action=talk");
+      runChoice(1);
+    }
+    if (questStep("questM25Armorer") === -1) {
+      visitUrl("shop.php?whichshop=armory&action=talk");
+      runChoice(1);
+    }
+    if (
+      myClass() === $class`Seal Clubber` &&
+      !have($skill`Furious Wallop`) &&
+      guildStoreAvailable()
+    ) {
+      visitUrl("guild.php?action=buyskill&skillid=32", true);
+    }
+    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving`;
+    if (
+      myInebriety() <= inebrietyLimit() &&
+      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
+    )
+      stashItems.push($item`haiku katana`);
+    // FIXME: Dynamically figure out pointer ring approach.
+    withStash(stashItems, () => {
+      withVIPClan(() => {
+        // 0. diet stuff.
+        runDiet();
 
-            // 1. get a ticket
-            ensureBarfAccess();
+        // 1. get a ticket
+        ensureBarfAccess();
 
-            // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
-            dailySetup();
+        // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+        dailySetup();
 
-            setDefaultMaximizeOptions({
-              preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre`,
-            });
-
-            // 4. do some embezzler stuff
-            freeFights();
-            dailyFights();
-
-            // 5. burn turns at barf
-            try {
-              while (canContinue()) {
-                barfTurn();
-              }
-            } finally {
-              setAutoAttack(0);
-            }
-          });
+        setDefaultMaximizeOptions({
+          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
         });
-      }
-    );
+
+        // 4. do some embezzler stuff
+        freeFights();
+        dailyFights();
+
+        // 5. burn turns at barf
+        try {
+          while (canContinue()) {
+            barfTurn();
+          }
+        } finally {
+          setAutoAttack(0);
+        }
+      });
+    });
   } finally {
+    propertyManager.resetAll();
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     if (questStep("_questPartyFair") > 0) {

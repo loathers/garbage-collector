@@ -27,17 +27,28 @@ import {
   Bandersnatch,
   get,
   getFoldGroup,
+  getKramcoWandererChance,
   getSongCount,
   getSongLimit,
   Guzzlr,
   have,
   Macro,
   MaximizeOptions,
+  PropertiesManager,
   property,
-  set,
   SongBoom,
   SourceTerminal,
 } from "libram";
+import { globalOptions } from "./globalvars";
+
+export enum BonusEquipMode {
+  FREE,
+  EMBEZZLER,
+  BARF,
+  DMT,
+}
+
+export const propertyManager = new PropertiesManager();
 
 export const baseMeat =
   SongBoom.have() &&
@@ -46,7 +57,7 @@ export const baseMeat =
     : 250;
 
 export function setChoice(adventure: number, value: number): void {
-  set(`choiceAdventure${adventure}`, `${value}`);
+  propertyManager.setChoices({ [adventure]: value });
 }
 
 export function ensureEffect(effect: Effect): void {
@@ -293,6 +304,8 @@ export class Requirement {
       ]),
       forceEquip: [...(optionsA.forceEquip ?? []), ...(optionsB.forceEquip ?? [])],
       preventEquip: [...(optionsA.preventEquip ?? []), ...(optionsB.preventEquip ?? [])],
+      onlySlot: [...(optionsA.onlySlot ?? []), ...(optionsB.onlySlot ?? [])],
+      preventSlot: [...(optionsA.preventSlot ?? []), ...(optionsB.preventSlot ?? [])],
     });
   }
 
@@ -471,6 +484,16 @@ const freeRuns: FreeRun[] = [
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
     new Requirement([], { forceEquip: $items`Greatest American Pants` })
   ),
+
+  new FreeRun(
+    "Parasol",
+    () =>
+      have($item`peppermint parasol`) &&
+      globalOptions.ascending &&
+      get("parasolUsed") < 9 &&
+      get("_navelRunaways") < 3,
+    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("peppermint parasol")
+  ),
 ];
 
 export function findRun(useFamiliar = true): FreeRun | undefined {
@@ -505,11 +528,7 @@ export function saleValue(...items: Item[]): number {
 }
 
 export function kramcoGuaranteed(): boolean {
-  return (
-    have($item`Kramco Sausage-o-Matic™`) &&
-    totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1 >=
-      5 + 3 * get("_sausageFights") + Math.pow(Math.max(0, get("_sausageFights") - 5), 3)
-  );
+  return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
 }
 
 export function canWander(): boolean {

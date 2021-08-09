@@ -1,7 +1,7 @@
 import { myFamiliar, numericModifier } from "kolmafia";
 import { $familiar, $item, $items, get, have } from "libram";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, saleValue } from "./lib";
+import { baseMeat, BonusEquipMode, saleValue } from "./lib";
 
 enum BjornModifierType {
   MEAT,
@@ -488,22 +488,15 @@ const bjornFams: BjornedFamiliar[] = [
   },
 ].filter((bjornFam) => have(bjornFam.familiar));
 
-export enum PickBjornMode {
-  FREE,
-  EMBEZZLER,
-  BARF,
-  DMT,
-}
+const bjornLists: Map<BonusEquipMode, BjornedFamiliar[]> = new Map();
 
-const bjornLists: Map<PickBjornMode, BjornedFamiliar[]> = new Map();
-
-function generateBjornList(mode: PickBjornMode): BjornedFamiliar[] {
+function generateBjornList(mode: BonusEquipMode): BjornedFamiliar[] {
   const additionalValue = (familiar: BjornedFamiliar) => {
     if (!familiar.modifier) return 0;
-    const meatVal = [PickBjornMode.DMT, PickBjornMode.FREE].includes(mode)
+    const meatVal = [BonusEquipMode.DMT, BonusEquipMode.FREE].includes(mode)
       ? 0
-      : baseMeat + (mode === PickBjornMode.EMBEZZLER ? 750 : 0);
-    const itemVal = mode === PickBjornMode.BARF ? 72 : 0;
+      : baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0);
+    const itemVal = mode === BonusEquipMode.BARF ? 72 : 0;
     if (familiar.modifier.type === BjornModifierType.MEAT)
       return (familiar.modifier.modifier * meatVal) / 100;
     if (familiar.modifier.type === BjornModifierType.ITEM)
@@ -522,19 +515,19 @@ function generateBjornList(mode: PickBjornMode): BjornedFamiliar[] {
   return [...bjornFams].sort(
     (a, b) =>
       (!b.dropPredicate ||
-      (b.dropPredicate() && ![PickBjornMode.EMBEZZLER, PickBjornMode.DMT].includes(mode))
+      (b.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode))
         ? b.meatVal() * b.probability
         : 0) +
       additionalValue(b) -
       ((!a.dropPredicate ||
-      (a.dropPredicate() && ![PickBjornMode.EMBEZZLER, PickBjornMode.DMT].includes(mode))
+      (a.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode))
         ? a.meatVal() * a.probability
         : 0) +
         additionalValue(a))
   );
 }
 
-export function pickBjorn(mode: PickBjornMode = PickBjornMode.FREE): BjornedFamiliar {
+export function pickBjorn(mode: BonusEquipMode = BonusEquipMode.FREE): BjornedFamiliar {
   if (!bjornLists.has(mode)) {
     bjornLists.set(mode, generateBjornList(mode));
   }

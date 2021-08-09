@@ -24,15 +24,16 @@ import {
   $item,
   $items,
   $slot,
+  $slots,
   get,
   getFoldGroup,
   getKramcoWandererChance,
   have,
   maximizeCached,
 } from "libram";
-import { pickBjorn, PickBjornMode } from "./bjorn";
+import { pickBjorn } from "./bjorn";
 import { estimatedTurns, globalOptions } from "./globalvars";
-import { baseMeat, Requirement } from "./lib";
+import { baseMeat, BonusEquipMode, Requirement, saleValue } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -44,24 +45,16 @@ const bestAdventuresFromPants =
     .sort((a, b) => b - a)[0] || 0;
 
 export function freeFightOutfit(requirements: Requirement[] = []): void {
-  const bjornChoice =
-    myFamiliar() === $familiar`Machine Elf`
-      ? pickBjorn(PickBjornMode.DMT)
-      : pickBjorn(PickBjornMode.FREE);
+  const equipMode =
+    myFamiliar() === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
+  const bjornChoice = pickBjorn(equipMode);
 
   const compiledRequirements = Requirement.merge([
     ...requirements,
     new Requirement(
       myFamiliar() === $familiar`Pocket Professor` ? ["Familiar Experience"] : ["Familiar Weight"],
       {
-        bonusEquip: new Map([
-          [$item`lucky gold ring`, 400],
-          [$item`Mr. Cheeng's spectacles`, 250],
-          [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
-          [$item`Mr. Screege's spectacles`, 180],
-          ...pantsgiving(),
-          ...cheeses(false),
-        ]),
+        bonusEquip: new Map([...dropsItems(equipMode), ...pantsgiving(), ...cheeses(false)]),
       }
     ),
   ]);
@@ -87,12 +80,14 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       ]),
       preventEquip:
         bjornAlike === $item`Buddy Bjorn` ? $items`Crown of Thrones` : $items`Buddy Bjorn`,
+      preventSlot: $slots`crown-of-thrones, buddy-bjorn`,
     })
   );
 
   maximizeCached(finalRequirements.maximizeParameters(), finalRequirements.maximizeOptions());
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
 }
 
 export function meatOutfit(
@@ -102,7 +97,8 @@ export function meatOutfit(
 ): void {
   const forceEquip = [];
   const additionalRequirements = [];
-  const bjornChoice = pickBjorn(embezzlerUp ? PickBjornMode.EMBEZZLER : PickBjornMode.BARF);
+  const equipMode = embezzlerUp ? BonusEquipMode.EMBEZZLER : BonusEquipMode.BARF;
+  const bjornChoice = pickBjorn(equipMode);
 
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
@@ -156,11 +152,7 @@ export function meatOutfit(
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
         bonusEquip: new Map([
-          [$item`lucky gold ring`, 400],
-          [$item`mafia thumb ring`, 300],
-          [$item`Mr. Cheeng's spectacles`, 250],
-          [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
-          [$item`Mr. Screege's spectacles`, 180],
+          ...dropsItems(equipMode),
           ...(embezzlerUp ? [] : pantsgiving()),
           ...cheeses(embezzlerUp),
           [
@@ -170,6 +162,7 @@ export function meatOutfit(
               : 0,
           ],
         ]),
+        preventSlot: $slots`crown-of-thrones, buddy-bjorn`,
       }
     ),
   ]);
@@ -181,6 +174,7 @@ export function meatOutfit(
   }
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (const airSource of waterBreathingEquipment) {
@@ -236,4 +230,58 @@ function cheeses(embezzlerUp: boolean) {
         ])
       )
     : [];
+}
+function snowSuit(equipMode: BonusEquipMode) {
+  // Ignore for EMBEZZLER
+  // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
+  if (
+    !have($item`Snow Suit`) ||
+    get("_carrotNoseDrops") >= 3 ||
+    [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some((mode) => mode === equipMode)
+  )
+    return new Map<Item, number>([]);
+
+  return new Map<Item, number>([[$item`Snow Suit`, saleValue($item`carrot nose`) / 10]]);
+}
+function mayflowerBouquet(equipMode: BonusEquipMode) {
+  // +40% meat drop 12.5% of the time (effectively 5%)
+  // Drops flowers 50% of the time, wiki says 5-10 a day.
+  // Theorized that flower drop rate drops off but no info on wiki.
+  // During testing I got 4 drops then the 5th took like 40 more adventures
+  // so let's just assume rate drops by 11% with a min of 1% ¯\_(ツ)_/¯
+
+  // Ignore for EMBEZZLER
+  // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
+  if (
+    !have($item`Mayflower bouquet`) ||
+    [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some((mode) => mode === equipMode)
+  )
+    return new Map<Item, number>([]);
+
+  const sporadicMeatBonus = (40 * 0.125 * (equipMode === BonusEquipMode.BARF ? baseMeat : 0)) / 100;
+  const averageFlowerValue =
+    (saleValue($item`tin magnolia`) +
+      saleValue($item`upsy daisy`) +
+      saleValue($item`lesser grodulated violet`) +
+      saleValue($item`half-orchid`) +
+      saleValue($item`begpwnia`) / 5) *
+    Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
+  return new Map<Item, number>([
+    [
+      $item`Mayflower bouquet`,
+      (get("_mayflowerDrops") < 10 ? averageFlowerValue : 0) + sporadicMeatBonus,
+    ],
+  ]);
+}
+function dropsItems(equipMode: BonusEquipMode) {
+  const isFree = [BonusEquipMode.FREE, BonusEquipMode.DMT].some((mode) => mode === equipMode);
+  return new Map<Item, number>([
+    [$item`mafia thumb ring`, !isFree ? 300 : 0],
+    [$item`lucky gold ring`, 400],
+    [$item`Mr. Cheeng's spectacles`, 250],
+    [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
+    [$item`Mr. Screege's spectacles`, 180],
+    ...snowSuit(equipMode),
+    ...mayflowerBouquet(equipMode),
+  ]);
 }
