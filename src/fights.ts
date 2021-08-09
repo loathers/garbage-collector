@@ -103,7 +103,6 @@ import {
 } from "./outfit";
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
-import { acquire } from "./acquire";
 import { getString } from "libram/dist/property";
 
 function checkFax(): boolean {
