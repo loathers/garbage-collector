@@ -15489,7 +15489,7 @@ new FreeFight(function () {
     dist.SourceTerminal.educate([(0,dist.$skill)(_templateObject220 || (_templateObject220 = fights_taggedTemplateLiteral(["Extract"]))), (0,dist.$skill)(_templateObject221 || (_templateObject221 = fights_taggedTemplateLiteral(["Portscan"])))]);
   }
 
-  (0,dist.adventureMacro)((0,dist.$location)(_templateObject222 || (_templateObject222 = fights_taggedTemplateLiteral(["Your Mushroom Garden"]))), combat.Macro.trySkill("Portscan").meatKill());
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject222 || (_templateObject222 = fights_taggedTemplateLiteral(["Your Mushroom Garden"]))), combat.Macro.if_("hasskill macrometeorite", combat.Macro.trySkill("Portscan")).meatKill());
   if ((0,dist.have)((0,dist.$item)(_templateObject223 || (_templateObject223 = fights_taggedTemplateLiteral(["packet of tall grass seeds"]))))) (0,external_kolmafia_.use)((0,dist.$item)(_templateObject224 || (_templateObject224 = fights_taggedTemplateLiteral(["packet of tall grass seeds"]))));
 }, {
   familiar: function familiar() {
@@ -15505,7 +15505,7 @@ new FreeFight(function () {
     dist.SourceTerminal.educate([(0,dist.$skill)(_templateObject231 || (_templateObject231 = fights_taggedTemplateLiteral(["Extract"]))), (0,dist.$skill)(_templateObject232 || (_templateObject232 = fights_taggedTemplateLiteral(["Portscan"])))]);
   }
 
-  (0,dist.adventureMacro)((0,dist.$location)(_templateObject233 || (_templateObject233 = fights_taggedTemplateLiteral(["Your Mushroom Garden"]))), combat.Macro.if_("monstername government agent", combat.Macro.skill("Macrometeorite")).if_("monstername piranha plant", combat.Macro.trySkill("Portscan").meatKill()));
+  (0,dist.adventureMacro)((0,dist.$location)(_templateObject233 || (_templateObject233 = fights_taggedTemplateLiteral(["Your Mushroom Garden"]))), combat.Macro.if_("monstername government agent", combat.Macro.skill("Macrometeorite")).if_("monstername piranha plant", combat.Macro.if_("hasskill macrometeorite", combat.Macro.trySkill("Portscan")).meatKill()));
   if ((0,dist.have)((0,dist.$item)(_templateObject234 || (_templateObject234 = fights_taggedTemplateLiteral(["packet of tall grass seeds"]))))) (0,external_kolmafia_.use)((0,dist.$item)(_templateObject235 || (_templateObject235 = fights_taggedTemplateLiteral(["packet of tall grass seeds"]))));
 }), new FreeFight(function () {
   return (0,dist.have)((0,dist.$familiar)(_templateObject236 || (_templateObject236 = fights_taggedTemplateLiteral(["God Lobster"])))) ? clamp(3 - (0,dist.get)("_godLobsterFights"), 0, 3) : 0;
