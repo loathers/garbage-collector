@@ -37,6 +37,13 @@ import {
 } from "libram";
 import { globalOptions } from "./globalvars";
 
+export enum BonusEquipMode {
+  FREE,
+  EMBEZZLER,
+  BARF,
+  DMT,
+}
+
 export const propertyManager = new PropertiesManager();
 
 export const baseMeat =
