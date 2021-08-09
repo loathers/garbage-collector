@@ -216,7 +216,8 @@ export function runDiet(): void {
 
   const { bestSpleenItem } = getBestSpleenItems();
 
-  if (mySpleenUse() < spleenLimit() && embezzlerCount()) {
+if (embezzlerCount()) {
+  if (mySpleenUse() < spleenLimit()) {
     if (!have($effect`Eau d' Clochard`)) {
       if (!have($item`beggin' cologne`)) {
         const equilibriumPrice =
@@ -234,11 +235,11 @@ export function runDiet(): void {
       }
     }
   }
-  if (have($skill`Sweet Synthesis`) && mySpleenUse() < spleenLimit() && embezzlerCount())
+  if (have($skill`Sweet Synthesis`) && mySpleenUse() < spleenLimit())
     ensureEffect($effect`Synthesis: Collection`);
-  if (have($item`body spradium`) && mySpleenUse() < spleenLimit() && embezzlerCount())
+  if (have($item`body spradium`) && mySpleenUse() < spleenLimit())
     ensureEffect($effect`Boxing Day Glow`);
-
+}
   useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
 
   const loveChocolateCount = Math.max(3 - Math.floor(20000 / MPA) - get("_loveChocolatesUsed"), 0);
