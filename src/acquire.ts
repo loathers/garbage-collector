@@ -14,9 +14,7 @@ import {
 
 const priceCaps: { [index: string]: number } = {
   "jar of fermented pickle juice": 75000,
-  "Frosty's frosty mug": 50000,
   "extra-greasy slider": 45000,
-  "Ol' Scratch's salad fork": 50000,
   "transdermal smoke patch": 8000,
   "voodoo snuff": 36000,
   "antimatter wad": 24000,

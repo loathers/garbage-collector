@@ -53,6 +53,9 @@ import { baseMeat, clamp, ensureEffect, setChoice } from "./lib";
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
 
+const saladFork = $item`Ol' Scratch's salad fork`;
+const frostyMug = $item`Frosty's frosty mug`;
+
 function eatSafe(qty: number, item: Item) {
   acquire(qty, $item`Special Seasoning`);
   acquire(qty, item);
@@ -171,7 +174,10 @@ function fillStomach() {
   while (myFullness() + 5 <= fullnessLimit()) {
     if (myMaxhp() < 1000) maximize("0.05hp, hot res", false);
     const count = Math.floor(Math.min((fullnessLimit() - myFullness()) / 5, mySpleenUse() / 5));
-    eatSpleen(count, $item`Ol' Scratch's salad fork`);
+    if (mallPrice(saladFork) < (55 * MPA) / 6) {
+      acquire(count, saladFork, (55 * MPA) / 6, false);
+      drink(Math.min(count, itemAmount(saladFork)), saladFork);
+    }
     mindMayo(Mayo.flex, count);
     eatSpleen(count, $item`extra-greasy slider`);
     fillSomeSpleen();
@@ -217,7 +223,10 @@ function fillLiver() {
   while (myInebriety() + 5 <= inebrietyLimit()) {
     if (myMaxhp() < 1000) maximize("0.05hp, cold res", false);
     const count = Math.floor(Math.min((inebrietyLimit() - myInebriety()) / 5, mySpleenUse() / 5));
-    drinkSpleen(count, $item`Frosty's frosty mug`);
+    if (mallPrice(frostyMug) < (55 * MPA) / 6) {
+      acquire(count, frostyMug, (55 * MPA) / 6, false);
+      drink(Math.min(count, itemAmount(frostyMug)), frostyMug);
+    }
     drinkSpleen(count, $item`jar of fermented pickle juice`);
     fillSomeSpleen();
   }
