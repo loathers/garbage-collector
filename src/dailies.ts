@@ -159,7 +159,7 @@ export function latte(): void {
         if (runSource.prepare) runSource.prepare();
         freeFightOutfit([
           new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-          ...(runSource.requirement ? [runSource.requirement] : []),
+          runSource.requirement ? runSource.requirement : Requirement.none(),
         ]);
         adventureMacro($location`The Black Forest`, runSource.macro);
         horseradish();
@@ -170,7 +170,7 @@ export function latte(): void {
         if (runSource.prepare) runSource.prepare();
         freeFightOutfit([
           new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-          ...(runSource.requirement ? [runSource.requirement] : []),
+          runSource.requirement ? runSource.requirement : Requirement.none(),
         ]);
         adventureMacro($location`The Spooky Forest`, runSource.macro);
         horseradish();
@@ -182,7 +182,7 @@ export function latte(): void {
       if (runSource.prepare) runSource.prepare();
       freeFightOutfit([
         new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-        ...(runSource.requirement ? [runSource.requirement] : []),
+        runSource.requirement ? runSource.requirement : Requirement.none(),
       ]);
       adventureMacro($location`The Dire Warren`, runSource.macro);
       horseradish();
@@ -491,7 +491,7 @@ export function jellyfish(): void {
     const runSource = findRun(false);
     if (!runSource) break;
     if (runSource.prepare) runSource.prepare();
-    freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+    freeFightOutfit(runSource.requirement ? [runSource.requirement] : []);
     const jellyMacro = Macro.while_(
       "!pastround 28 && hasskill macrometeorite",
       Macro.skill("extract jelly").skill("macrometeorite")
@@ -507,7 +507,7 @@ export function jellyfish(): void {
       if (runSource.prepare) runSource.prepare();
       freeFightOutfit([
         new Requirement([], { forceEquip: $items`Powerful Glove` }),
-        ...(runSource.requirement ? [runSource.requirement] : []),
+        runSource.requirement ? runSource.requirement : Requirement.none(),
       ]);
       const jellyMacro = Macro.while_(
         "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
@@ -537,7 +537,7 @@ export function gingerbreadPrepNoon(): void {
     const run = findRun();
     if (!run) break;
     if (run.prepare) run.prepare();
-    freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
+    freeFightOutfit(run.requirement ? [run.requirement] : []);
     adventureMacro($location`Gingerbread Civic Center`, run.macro);
     if (
       [
@@ -567,7 +567,7 @@ export function hipsterFishing(): void {
     if (!runSource) return;
     if (runSource.prepare) runSource.prepare();
     freeFightOutfit([
-      ...(runSource.requirement ? [runSource.requirement] : []),
+      runSource.requirement ? runSource.requirement : Requirement.none(),
       new Requirement([], {
         bonusEquip: new Map<Item, number>([
           [$item`ironic moustache`, saleValue($item`mole skin notebook`)],

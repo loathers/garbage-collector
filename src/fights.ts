@@ -421,7 +421,7 @@ function embezzlerSetup() {
         );
       if (runSource) {
         if (runSource.prepare) runSource.prepare();
-        freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+        freeFightOutfit(runSource.requirement ? [runSource.requirement] : []);
         adventureMacro($location`The Hidden Temple`, runSource.macro);
       } else {
         break;
@@ -527,7 +527,7 @@ function startDigitize() {
           () => retrieveItem($item`Louder Than Bomb`)
         );
       if (run.prepare) run.prepare();
-      freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
+      freeFightOutfit(run.requirement ? [run.requirement] : []);
       adventureMacro($location`Noob Cave`, run.macro);
     } while (get("lastCopyableMonster") === $monster`Government agent`);
   }
