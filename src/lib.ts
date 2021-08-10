@@ -270,6 +270,10 @@ export class Requirement {
   static merge(allRequirements: Requirement[]): Requirement {
     return allRequirements.reduce((x, y) => x.merge(y));
   }
+
+  static none(): Requirement {
+    return new Requirement([], {});
+  }
 }
 
 export const physicalImmuneMacro = Macro.trySkill("curse of weaksauce")
