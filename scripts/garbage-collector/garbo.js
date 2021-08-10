@@ -13466,13 +13466,13 @@ function meatFamiliar() {
       _meatFamiliar = (0,dist.$familiar)(familiar_templateObject3 || (familiar_templateObject3 = familiar_taggedTemplateLiteral(["Trick-or-Treating Tot"])));
     } else {
       var bestLeps = Familiar.all().filter(dist.have).sort(function (a, b) {
-        return (0,external_kolmafia_.numericModifier)(b, "Leprechaun", 1, (0,dist.$item)(familiar_templateObject4 || (familiar_templateObject4 = familiar_taggedTemplateLiteral(["none"])))) - (0,external_kolmafia_.numericModifier)(a, "Leprechaun", 1, (0,dist.$item)(familiar_templateObject5 || (familiar_templateObject5 = familiar_taggedTemplateLiteral(["none"]))));
+        return (0,external_kolmafia_.numericModifier)(b, "Meat Drop", 1, (0,dist.$item)(familiar_templateObject4 || (familiar_templateObject4 = familiar_taggedTemplateLiteral(["none"])))) - (0,external_kolmafia_.numericModifier)(a, "Meat Drop", 1, (0,dist.$item)(familiar_templateObject5 || (familiar_templateObject5 = familiar_taggedTemplateLiteral(["none"]))));
       });
-      var bestLepMult = (0,external_kolmafia_.numericModifier)(bestLeps[0], "Leprechaun", 1, (0,dist.$item)(familiar_templateObject6 || (familiar_templateObject6 = familiar_taggedTemplateLiteral(["none"]))));
+      var bestLepMult = (0,external_kolmafia_.numericModifier)(bestLeps[0], "Meat Drop", 1, (0,dist.$item)(familiar_templateObject6 || (familiar_templateObject6 = familiar_taggedTemplateLiteral(["none"]))));
       _meatFamiliar = bestLeps.filter(function (familiar) {
-        return (0,external_kolmafia_.numericModifier)(familiar, "Leprechaun", 1, (0,dist.$item)(familiar_templateObject7 || (familiar_templateObject7 = familiar_taggedTemplateLiteral(["none"])))) === bestLepMult;
+        return (0,external_kolmafia_.numericModifier)(familiar, "Meat Drop", 1, (0,dist.$item)(familiar_templateObject7 || (familiar_templateObject7 = familiar_taggedTemplateLiteral(["none"])))) === bestLepMult;
       }).sort(function (a, b) {
-        return (0,external_kolmafia_.numericModifier)(b, "Fairy", 1, (0,dist.$item)(familiar_templateObject8 || (familiar_templateObject8 = familiar_taggedTemplateLiteral(["none"])))) - (0,external_kolmafia_.numericModifier)(a, "Fairy", 1, (0,dist.$item)(familiar_templateObject9 || (familiar_templateObject9 = familiar_taggedTemplateLiteral(["none"]))));
+        return (0,external_kolmafia_.numericModifier)(b, "Item Drop", 1, (0,dist.$item)(familiar_templateObject8 || (familiar_templateObject8 = familiar_taggedTemplateLiteral(["none"])))) - (0,external_kolmafia_.numericModifier)(a, "Item Drop", 1, (0,dist.$item)(familiar_templateObject9 || (familiar_templateObject9 = familiar_taggedTemplateLiteral(["none"]))));
       })[0];
     }
   }
@@ -16628,7 +16628,7 @@ function martini() {
     return;
   }
 
-  (0,external_kolmafia_.cliExecute)("briefcase collect");
+  (0,external_kolmafia_.cliExecute)("Briefcase collect");
 }
 ;// CONCATENATED MODULE: ./src/index.ts
 var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35, src_templateObject36, src_templateObject37, src_templateObject38, src_templateObject39, src_templateObject40, src_templateObject41, src_templateObject42, src_templateObject43, src_templateObject44, src_templateObject45, src_templateObject46, src_templateObject47, src_templateObject48, src_templateObject49, src_templateObject50, src_templateObject51, src_templateObject52, src_templateObject53, src_templateObject54, src_templateObject55, src_templateObject56, src_templateObject57, src_templateObject58;
