@@ -32,7 +32,7 @@ export function meatFamiliar(): Familiar {
       const bestLepMult = numericModifier(bestLeps[0], "Meat Drop", 1, $item`none`);
       _meatFamiliar = bestLeps
         .filter(
-          (familiar) => numericModifier(familiar, "Meat Dros", 1, $item`none`) === bestLepMult
+          (familiar) => numericModifier(familiar, "Meat Drop", 1, $item`none`) === bestLepMult
         )
         .sort(
           (a, b) =>
