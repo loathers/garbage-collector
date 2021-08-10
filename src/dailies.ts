@@ -47,6 +47,7 @@ import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
+  draggableFight,
   ensureEffect,
   findRun,
   pickWandererZoneAndPrep,
@@ -562,9 +563,7 @@ export function hipsterFishing(): void {
 
   while (findRun(false) && get("_hipsterAdv") < 7) {
     const targetLocation =
-      pickWandererZoneAndPrep().combatPercent === 100
-        ? pickWandererZoneAndPrep()
-        : $location`Noob Cave`;
+      pickWandererZoneAndPrep(draggableFight.BACKUP);
     const runSource = findRun(false);
     if (!runSource) return;
     if (runSource.prepare) runSource.prepare();

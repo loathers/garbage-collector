@@ -167,7 +167,7 @@ export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WA
 
   const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`; //Screambats can be backed up over, but override wanderers
 
-  const backupBlacklist: Location[] = [];
+  const backupBlacklist: Location[] = $locations`The Mansion of Dr. Weirdeaux`;
   if ($location`The Skeleton Store`.turnsSpent >= 3)
     backupBlacklist.push($location`The Skeleton Store`);
   if ($location`The Overgrown Lot`.turnsSpent >= 5)
