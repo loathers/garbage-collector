@@ -16,12 +16,10 @@ import {
   myTurncount,
   print,
   putCloset,
-  refreshStash,
   retrieveItem,
   reverseNumberology,
   runChoice,
   setAutoAttack,
-  stashAmount,
   toItem,
   totalTurnsPlayed,
   use,
@@ -55,11 +53,7 @@ import {
   dailyBuffs,
   gaze,
   gin,
-  gingerbreadPrepNoon,
-  hipsterFishing,
   horse,
-  jellyfish,
-  latte,
   martini,
   pickTea,
   prepFamiliars,
@@ -115,19 +109,6 @@ function dailySetup() {
   pickTea();
 
   if (myInebriety() > inebrietyLimit()) return;
-  refreshStash();
-  const stashRun = stashAmount($item`navel ring of navel gazing`)
-    ? $items`navel ring of navel gazing`
-    : stashAmount($item`Greatest American Pants`)
-    ? $items`Greatest American Pants`
-    : [];
-  withStash(stashRun, () => {
-    gingerbreadPrepNoon();
-    latte();
-    jellyfish();
-    hipsterFishing();
-  });
-
   retrieveItem($item`Half a Purse`);
   retrieveItem($item`seal tooth`);
   retrieveItem($item`The Jokester's gun`);

@@ -12,11 +12,9 @@ import {
   myClass,
   myPrimestat,
   myThrall,
-  numericModifier,
   print,
   retrieveItem,
   runChoice,
-  setAutoAttack,
   toInt,
   use,
   useFamiliar,
@@ -30,38 +28,20 @@ import {
   $familiars,
   $item,
   $items,
-  $location,
   $skill,
   $stat,
   $thrall,
-  adventureMacro,
   ChateauMantegna,
   get,
   have,
   property,
-  set,
   SongBoom,
   SourceTerminal,
-  withChoice,
 } from "libram";
-import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
-import {
-  baseMeat,
-  ensureEffect,
-  findRun,
-  prepWandererZone,
-  propertyManager,
-  questStep,
-  Requirement,
-  saleValue,
-  setChoice,
-  tryFeast,
-} from "./lib";
-import { freeFightOutfit } from "./outfit";
+import { baseMeat, ensureEffect, saleValue, tryFeast } from "./lib";
 import { withStash } from "./clan";
 import { estimatedTurns } from "./globalvars";
-import { Macro } from "./combat";
 
 export function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -137,75 +117,6 @@ export function configureGear(): void {
 
   if (have($item`Bastille Battalion control rig`) && get("_bastilleGames") === 0) {
     cliExecute("bastille myst brutalist gesture");
-  }
-}
-
-export function latte(): void {
-  const latte = $item`latte lovers member's mug`;
-  if (have(latte) && questStep("questL02Larva") > -1 && questStep("questL11MacGuffin") > -1) {
-    withChoice(1329, 2, () => visitUrl("main.php?latte=1", false));
-    if (
-      numericModifier(latte, "Familiar Weight") !== 5 ||
-      numericModifier(latte, "Meat Drop") !== 40
-    ) {
-      propertyManager.setChoices({
-        [923]: 1, //go to the blackberries in All Around the Map
-        [924]: 1, //fight a blackberry bush, so that we can freerun
-        [502]: 2, //go towards the stream in Arboreal Respite, so we can skip adventure
-        [505]: 2, //skip adventure
-      });
-      while (!get("latteUnlocks").includes("cajun") && findRun()) {
-        const runSource = findRun();
-        if (!runSource) break;
-        if (runSource.prepare) runSource.prepare();
-        freeFightOutfit([
-          new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-          ...(runSource.requirement ? [runSource.requirement] : []),
-        ]);
-        adventureMacro($location`The Black Forest`, runSource.macro);
-        horseradish();
-      }
-      while (!get("latteUnlocks").includes("rawhide") && findRun()) {
-        const runSource = findRun();
-        if (!runSource) break;
-        if (runSource.prepare) runSource.prepare();
-        freeFightOutfit([
-          new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-          ...(runSource.requirement ? [runSource.requirement] : []),
-        ]);
-        adventureMacro($location`The Spooky Forest`, runSource.macro);
-        horseradish();
-      }
-    }
-    while (!get("latteUnlocks").includes("carrot") && findRun()) {
-      const runSource = findRun();
-      if (!runSource) break;
-      if (runSource.prepare) runSource.prepare();
-      freeFightOutfit([
-        new Requirement([], { forceEquip: $items`latte lovers member's mug` }),
-        ...(runSource.requirement ? [runSource.requirement] : []),
-      ]);
-      adventureMacro($location`The Dire Warren`, runSource.macro);
-      horseradish();
-    }
-    if (
-      get("latteUnlocks").includes("cajun") &&
-      get("latteUnlocks").includes("rawhide") &&
-      get("_latteRefillsUsed") < 3
-    ) {
-      const latteIngredients = [
-        "cajun",
-        "rawhide",
-        get("latteUnlocks").includes("carrot")
-          ? "carrot"
-          : myPrimestat() === $stat`muscle`
-          ? "vanilla"
-          : myPrimestat() === $stat`mysticality`
-          ? "pumpkin spice"
-          : "cinnamon",
-      ].join(" ");
-      cliExecute(`latte refill ${latteIngredients}`);
-    }
   }
 }
 
@@ -478,117 +389,6 @@ export function gaze(): void {
   if (!get("_campAwayCloudBuffs")) visitUrl("place.php?whichplace=campaway&action=campaway_sky");
   while (get("_campAwaySmileBuffs") < 3)
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
-}
-export function jellyfish(): void {
-  if (
-    !have($familiar`Space Jellyfish`) ||
-    !(
-      (have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) ||
-      (have($item`Powerful Glove`) && get("_powerfulGloveBatteryPowerUsed") < 91)
-    )
-  ) {
-    return;
-  }
-  useFamiliar($familiar`Space Jellyfish`);
-  setAutoAttack(0);
-  freeFightOutfit();
-  while (findRun(false) && have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
-    const runSource = findRun(false);
-    if (!runSource) break;
-    if (runSource.prepare) runSource.prepare();
-    freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
-    const jellyMacro = Macro.while_(
-      "!pastround 28 && hasskill macrometeorite",
-      Macro.skill("extract jelly").skill("macrometeorite")
-    )
-      .trySkill("extract jelly")
-      .step(runSource.macro);
-    adventureMacro($location`Barf Mountain`, jellyMacro);
-  }
-  if (have($item`Powerful Glove`)) {
-    while (findRun(false) && get("_powerfulGloveBatteryPowerUsed") < 91) {
-      const runSource = findRun(false);
-      if (!runSource) break;
-      if (runSource.prepare) runSource.prepare();
-      freeFightOutfit([
-        new Requirement([], { forceEquip: $items`Powerful Glove` }),
-        ...(runSource.requirement ? [runSource.requirement] : []),
-      ]);
-      const jellyMacro = Macro.while_(
-        "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
-        Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
-      )
-        .trySkill("extract jelly")
-        .step(runSource.macro);
-      adventureMacro($location`Barf Mountain`, jellyMacro);
-    }
-  }
-}
-
-export function gingerbreadPrepNoon(): void {
-  if (!get("gingerbreadCityAvailable") && !get("_gingerbreadCityToday")) return;
-  if (
-    get("gingerAdvanceClockUnlocked") &&
-    !get("_gingerbreadClockVisited") &&
-    get("_gingerbreadCityTurns") <= 3
-  ) {
-    setChoice(1215, 1);
-    adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
-  }
-  while (
-    findRun() &&
-    get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 9
-  ) {
-    const run = findRun();
-    if (!run) break;
-    if (run.prepare) run.prepare();
-    freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
-    adventureMacro($location`Gingerbread Civic Center`, run.macro);
-    if (
-      [
-        "Even Tamer Than Usual",
-        "Never Break the Chain",
-        "Close, but Yes Cigar",
-        "Armchair Quarterback",
-      ].includes(get("lastEncounter"))
-    ) {
-      set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
-    }
-  }
-}
-
-export function hipsterFishing(): void {
-  if (get("_hipsterAdv") >= 7) return;
-  if (have($familiar`Mini-Hipster`)) {
-    useFamiliar($familiar`Mini-Hipster`);
-  } else if (have($familiar`Artistic Goth Kid`)) {
-    useFamiliar($familiar`Artistic Goth Kid`);
-  } else return;
-
-  while (findRun(false) && get("_hipsterAdv") < 7) {
-    const targetLocation =
-      prepWandererZone().combatPercent === 100 ? prepWandererZone() : $location`Noob Cave`;
-    const runSource = findRun(false);
-    if (!runSource) return;
-    if (runSource.prepare) runSource.prepare();
-    freeFightOutfit([
-      ...(runSource.requirement ? [runSource.requirement] : []),
-      new Requirement([], {
-        bonusEquip: new Map<Item, number>([
-          [$item`ironic moustache`, saleValue($item`mole skin notebook`)],
-          [$item`chiptune guitar`, saleValue($item`ironic knit cap`)],
-          [$item`fixed-gear bicycle`, saleValue($item`ironic oversized sunglasses`)],
-        ]),
-      }),
-    ]);
-    adventureMacro(
-      targetLocation,
-      Macro.if_(
-        `(monsterid 969) || (monsterid 970) || (monsterid 971) || (monsterid 972) || (monsterid 973) || (monstername Black Crayon *)`,
-        Macro.basicCombat()
-      ).step(runSource.macro)
-    );
-  }
 }
 
 export function martini(): void {
