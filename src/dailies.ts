@@ -594,5 +594,5 @@ export function martini(): void {
   ) {
     return;
   }
-  cliExecute("briefcase collect");
+  cliExecute("Briefcase collect");
 }
