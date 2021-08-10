@@ -1,5 +1,6 @@
 import { cliExecute, restoreMp, retrieveItem, useFamiliar } from "kolmafia";
 import { $effect, $familiar, $item, $items, $skill, adventureMacro, Bandersnatch, get, getFoldGroup, getSongCount, getSongLimit, have, Macro } from "libram";
+import { horseradish } from "./diet";
 import { freeFightFamiliar } from "./familiar";
 import { globalOptions } from "./globalvars";
 import { ensureEffect, questStep, Requirement } from "./lib";
@@ -177,13 +178,14 @@ export function findRun(useFamiliar = true): FreeRun | undefined {
   );
 }
 
-export function withRun(
+export function runUntil(
   location: Location,
   goal: () => boolean,
   requirement = Requirement.none(),
   macro = new Macro(),
   useLTB = false,
-  familiar?: Familiar
+  familiar?: Familiar,
+  postCombatAction?: () => void
 ): boolean {
   const canBander = familiar !== undefined;
   while (findRun(canBander) && !goal()) {
@@ -206,6 +208,8 @@ export function withRun(
     if (runSource.prepare) runSource.prepare();
     const combinedMacro = macro.step(runSource.macro);
     adventureMacro(location, combinedMacro);
+    horseradish();
+    if (postCombatAction) postCombatAction();
   }
   return goal();
 }

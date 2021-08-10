@@ -82,8 +82,6 @@ import {
   baseMeat,
   clamp,
   ensureEffect,
-  findRun,
-  FreeRun,
   kramcoGuaranteed,
   mapMonster,
   prepWandererZone,
@@ -104,6 +102,7 @@ import {
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
 import { getString } from "libram/dist/property";
+import { runUntil } from "./runs";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
@@ -409,24 +408,13 @@ function embezzlerSetup() {
     ensureEffect($effect`Stone-Faced`);
     setChoice(582, 1);
     setChoice(579, 3);
-    while (get("lastTempleAdventures") < myAscensions()) {
-      const runSource =
-        findRun() ||
-        new FreeRun(
-          "LTB",
-          () => retrieveItem($item`Louder Than Bomb`),
-          Macro.item("Louder Than Bomb"),
-          new Requirement([], {}),
-          () => retrieveItem($item`Louder Than Bomb`)
-        );
-      if (runSource) {
-        if (runSource.prepare) runSource.prepare();
-        freeFightOutfit(runSource.requirement ? [runSource.requirement] : []);
-        adventureMacro($location`The Hidden Temple`, runSource.macro);
-      } else {
-        break;
-      }
-    }
+    runUntil(
+      $location`The Hidden Temple`,
+      () => get("lastTempleAdventures") >= myAscensions(),
+      Requirement.none(),
+      new Macro(),
+      true
+    );
   }
 
   bathroomFinance(embezzlerCount());
@@ -516,22 +504,18 @@ function startDigitize() {
     getCounters("Digitize Monster", 0, 100).trim() === "" &&
     get("_sourceTerminalDigitizeUses") !== 0
   ) {
-    do {
-      const run =
-        findRun() ||
-        new FreeRun(
-          "LTB",
-          () => retrieveItem($item`Louder Than Bomb`),
-          Macro.item("Louder Than Bomb"),
-          new Requirement([], {}),
-          () => retrieveItem($item`Louder Than Bomb`)
-        );
-      if (run.prepare) run.prepare();
-      freeFightOutfit(run.requirement ? [run.requirement] : []);
-      adventureMacro($location`Noob Cave`, run.macro);
-    } while (get("lastCopyableMonster") === $monster`Government agent`);
+    runUntil(
+      $location`Noob Cave`,
+      () =>
+        get("lastCopyableMonster") !== $monster`Government agent` &&
+        getCounters("Digitize Monster", 0, 100).trim() !== "",
+      Requirement.none(),
+      new Macro(),
+      true
+    );
   }
 }
+
 const witchessPieces = [
   { piece: $monster`Witchess Bishop`, drop: $item`Sacramento wine` },
   { piece: $monster`Witchess Knight`, drop: $item`jumping horseradish` },
