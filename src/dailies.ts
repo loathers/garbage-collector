@@ -562,8 +562,7 @@ export function hipsterFishing(): void {
   } else return;
 
   while (findRun(false) && get("_hipsterAdv") < 7) {
-    const targetLocation =
-      pickWandererZoneAndPrep(draggableFight.BACKUP);
+    const targetLocation = pickWandererZoneAndPrep(draggableFight.BACKUP);
     const runSource = findRun(false);
     if (!runSource) return;
     if (runSource.prepare) runSource.prepare();
