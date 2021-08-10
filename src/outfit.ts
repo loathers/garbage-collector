@@ -15,10 +15,13 @@ import {
   myFamiliar,
   myFullness,
   myInebriety,
+  myPrimestat,
   numericModifier,
   retrieveItem,
+  runChoice,
   toSlot,
   totalTurnsPlayed,
+  visitUrl,
 } from "kolmafia";
 import {
   $class,
@@ -28,6 +31,7 @@ import {
   $items,
   $slot,
   $slots,
+  $stat,
   get,
   getFoldGroup,
   getKramcoWandererChance,
@@ -91,6 +95,45 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+}
+
+export function checkLatte(): boolean {
+  // Check latte ingredients
+  if (have($item`latte lovers member's mug`)) {
+    visitUrl("main.php?latte=1", false);
+    runChoice(2);
+  }
+
+  return have($item`latte lovers member's mug`);
+}
+
+export function tryFillLatte(): boolean {
+  if (
+    have($item`latte lovers member's mug`) &&
+    (numericModifier($item`latte lovers member's mug`, "Familiar Weight") !== 5 ||
+      numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40) &&
+    get("latteUnlocks").includes("cajun") &&
+    get("latteUnlocks").includes("rawhide") &&
+    get("_latteRefillsUsed") < 3
+  ) {
+    const latteIngredients = [
+      "cajun",
+      "rawhide",
+      get("latteUnlocks").includes("carrot")
+        ? "carrot"
+        : myPrimestat() === $stat`muscle`
+        ? "vanilla"
+        : myPrimestat() === $stat`mysticality`
+        ? "pumpkin spice"
+        : "cinnamon",
+    ].join(" ");
+    cliExecute(`latte refill ${latteIngredients}`);
+  }
+
+  return (
+    numericModifier($item`latte lovers member's mug`, "Familiar Weight") === 5 &&
+    numericModifier($item`latte lovers member's mug`, "Meat Drop") === 40
+  );
 }
 
 export function meatOutfit(
