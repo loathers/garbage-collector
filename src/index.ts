@@ -12,16 +12,13 @@ import {
   myClass,
   myGardenType,
   myInebriety,
-  myPrimestat,
   myTurncount,
   print,
   putCloset,
-  refreshStash,
   retrieveItem,
   reverseNumberology,
   runChoice,
   setAutoAttack,
-  stashAmount,
   toItem,
   totalTurnsPlayed,
   use,
@@ -37,7 +34,6 @@ import {
   $location,
   $monster,
   $skill,
-  $stat,
   adventureMacro,
   adventureMacroAuto,
   get,
@@ -55,11 +51,7 @@ import {
   dailyBuffs,
   gaze,
   gin,
-  gingerbreadPrepNoon,
-  hipsterFishing,
   horse,
-  jellyfish,
-  latte,
   martini,
   pickTea,
   prepFamiliars,
@@ -72,9 +64,11 @@ import { dailyFights, freeFights, safeRestore } from "./fights";
 import { kramcoGuaranteed, prepWandererZone, propertyManager, questStep, Requirement } from "./lib";
 import { meatMood } from "./mood";
 import {
+  checkLatte,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
+  tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
@@ -113,21 +107,9 @@ function dailySetup() {
   cheat();
   gin();
   pickTea();
+  checkLatte();
 
   if (myInebriety() > inebrietyLimit()) return;
-  refreshStash();
-  const stashRun = stashAmount($item`navel ring of navel gazing`)
-    ? $items`navel ring of navel gazing`
-    : stashAmount($item`Greatest American Pants`)
-    ? $items`Greatest American Pants`
-    : [];
-  withStash(stashRun, () => {
-    gingerbreadPrepNoon();
-    latte();
-    jellyfish();
-    hipsterFishing();
-  });
-
   retrieveItem($item`Half a Purse`);
   retrieveItem($item`seal tooth`);
   retrieveItem($item`The Jokester's gun`);
@@ -152,26 +134,7 @@ function barfTurn() {
   ) {
     cliExecute("retrocape robot kill");
   }
-  if (
-    have($item`latte lovers member's mug`) &&
-    get("_latteRefillsUsed") < 3 &&
-    get("_latteCopyUsed") &&
-    get("latteUnlocks").includes("cajun") &&
-    get("latteUnlocks").includes("rawhide")
-  ) {
-    const latteIngredients = [
-      "cajun",
-      "rawhide",
-      get("latteUnlocks").includes("carrot")
-        ? "carrot"
-        : myPrimestat() === $stat`muscle`
-        ? "vanilla"
-        : myPrimestat() === $stat`mysticality`
-        ? "pumpkin spice"
-        : "cinnamon",
-    ].join(" ");
-    cliExecute(`latte refill ${latteIngredients}`);
-  }
+  tryFillLatte();
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
 
