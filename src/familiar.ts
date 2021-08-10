@@ -26,18 +26,18 @@ export function meatFamiliar(): Familiar {
         .filter(have)
         .sort(
           (a, b) =>
-            numericModifier(b, "Leprechaun", 1, $item`none`) -
-            numericModifier(a, "Leprechaun", 1, $item`none`)
+            numericModifier(b, "Meat Drop", 1, $item`none`) -
+            numericModifier(a, "Meat Drop", 1, $item`none`)
         );
-      const bestLepMult = numericModifier(bestLeps[0], "Leprechaun", 1, $item`none`);
+      const bestLepMult = numericModifier(bestLeps[0], "Meat Drop", 1, $item`none`);
       _meatFamiliar = bestLeps
         .filter(
-          (familiar) => numericModifier(familiar, "Leprechaun", 1, $item`none`) === bestLepMult
+          (familiar) => numericModifier(familiar, "Meat Drop", 1, $item`none`) === bestLepMult
         )
         .sort(
           (a, b) =>
-            numericModifier(b, "Fairy", 1, $item`none`) -
-            numericModifier(a, "Fairy", 1, $item`none`)
+            numericModifier(b, "Item Drop", 1, $item`none`) -
+            numericModifier(a, "Item Drop", 1, $item`none`)
         )[0];
     }
   }
