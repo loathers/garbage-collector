@@ -6,9 +6,10 @@ export const log = {
   digitizedEmbezzlersFought: 0,
 };
 
-export const globalOptions: { ascending: boolean; stopTurncount: number | null } = {
+export const globalOptions: { ascending: boolean; stopTurncount: number | null; messages: string[] } = {
   stopTurncount: null,
   ascending: false,
+  messages: []
 };
 
 export function estimatedTurns(): number {
