@@ -1190,6 +1190,17 @@ const freeKillSources = [
       requirements: () => [new Requirement(["100 Item Drop"], {})],
     }
   ),
+
+  new FreeFight(
+    () => get("shockingLickCharges") > 0 && globalOptions.ascending,
+    () => {
+      withMacro(Macro.skill("Sing Along").skill("Shocking Lick"), () => use($item`drum machine`));
+    },
+    {
+      familiar: bestFairy,
+      requirements: () => [new Requirement(["100 Item Drop"], {})],
+    }
+  ),
 ];
 
 export function freeFights(): void {
