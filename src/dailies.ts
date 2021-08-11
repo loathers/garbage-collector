@@ -301,12 +301,12 @@ function checkVolcanoQuest() {
   print("Checking volcano quest", "blue");
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
   const volcoinoValue = (1 / 3) * saleValue($item`one-day ticket to That 70s Volcano`);
-  const volcanoItems = new Map<Item, number>([
+  const volcanoProperties = new Map<Item, number>([
     [property.getItem("_volcanoItem1") || $item`none`, get("_volcanoItemCount1")],
     [property.getItem("_volcanoItem2") || $item`none`, get("_volcanoItemCount2")],
     [property.getItem("_volcanoItem3") || $item`none`, get("_volcanoItemCount3")],
   ]);
-  const volcanoPrices = [
+  const volcanoItems = [
     {
       item: $item`New Age healing crystal`,
       price: 5 * mallPrice($item`New Age healing crystal`),
@@ -339,21 +339,22 @@ function checkVolcanoQuest() {
       : []),
   ]
     .filter(
-      (entry) => Array.from(volcanoItems.keys()).includes(entry.item) && entry.price < volcoinoValue
+      (entry) =>
+        Array.from(volcanoProperties.keys()).includes(entry.item) && entry.price < volcoinoValue
     )
     .sort((a, b) => b.price - a.price);
 
-  for (const entry of volcanoPrices) {
+  for (const entry of volcanoItems) {
     if (entry.item === $item`fused fuse`) {
       globalOptions.messages.push("Remember to nab a fused fuse with your stooper!");
       break;
     } else {
       const choice =
-        Array.from(volcanoItems.keys()).indexOf(entry.item) === -1
+        Array.from(volcanoProperties.keys()).indexOf(entry.item) === -1
           ? 4
-          : 1 + Array.from(volcanoItems.keys()).indexOf(entry.item);
+          : 1 + Array.from(volcanoProperties.keys()).indexOf(entry.item);
       withProperty("autoBuyPriceLimit", Math.round(volcoinoValue / entry.numberNeeded), () =>
-        retrieveItem(entry.item, volcanoItems.get(entry.item) ?? 0)
+        retrieveItem(entry.item, volcanoProperties.get(entry.item) ?? 0)
       );
       visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
       print(`Alright buddy, turning in ${entry.item.plural} for a volcoino!`, "red");
