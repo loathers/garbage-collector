@@ -82,6 +82,7 @@ import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
   clamp,
+  draggableFight,
   draggableFightZone,
   ensureEffect,
   findRun,
@@ -234,7 +235,7 @@ const embezzlerSources = [
       const realLocation =
         options.location && options.location.combatPercent >= 100
           ? options.location
-          : $location`Noob Cave`;
+          : draggableFightZone(draggableFight.BACKUP);
       adventureMacro(
         realLocation,
         Macro.if_(

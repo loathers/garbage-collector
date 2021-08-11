@@ -50,6 +50,7 @@ import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
   coinmasterPrice,
+  draggableFight,
   draggableFightZone,
   ensureEffect,
   findRun,
@@ -587,8 +588,7 @@ export function hipsterFishing(): void {
   } else return;
 
   while (findRun(false) && get("_hipsterAdv") < 7) {
-    const targetLocation =
-      draggableFightZone().combatPercent === 100 ? draggableFightZone() : $location`Noob Cave`;
+    const targetLocation = draggableFightZone(draggableFight.BACKUP);
     const runSource = findRun(false);
     if (!runSource) return;
     if (runSource.prepare) runSource.prepare();
