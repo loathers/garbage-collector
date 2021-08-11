@@ -13600,7 +13600,7 @@ function freeFightFamiliar() {
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.from-entries.js
 var es_object_from_entries = __webpack_require__(5809);
 ;// CONCATENATED MODULE: ./src/potions.ts
-var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8;
+var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8, potions_templateObject9;
 
 function potions_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -13635,7 +13635,7 @@ function potions_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings
 
 
 var banned = (0,dist.$items)(potions_templateObject || (potions_templateObject = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
-var mutuallyExclusiveList = [(0,dist.$effects)(potions_templateObject2 || (potions_templateObject2 = potions_taggedTemplateLiteral(["Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue"])))];
+var mutuallyExclusiveList = [(0,dist.$effects)(potions_templateObject2 || (potions_templateObject2 = potions_taggedTemplateLiteral(["Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue"]))), (0,dist.$effects)(potions_templateObject3 || (potions_templateObject3 = potions_taggedTemplateLiteral(["Cupcake of Choice, The Cupcake of Wrath, Shiny Happy Cupcake, Your Cupcake Senses Are Tingling, Tiny Bubbles in the Cupcake"])))];
 var mutuallyExclusive = new Map();
 
 for (var _i = 0, _mutuallyExclusiveLis = mutuallyExclusiveList; _i < _mutuallyExclusiveLis.length; _i++) {
@@ -13696,7 +13696,7 @@ var Potion = /*#__PURE__*/function () {
   }, {
     key: "bonusMeat",
     value: function bonusMeat() {
-      var familiarMultiplier = (0,dist.have)((0,dist.$familiar)(potions_templateObject3 || (potions_templateObject3 = potions_taggedTemplateLiteral(["Robortender"])))) ? 2 : (0,dist.have)((0,dist.$familiar)(potions_templateObject4 || (potions_templateObject4 = potions_taggedTemplateLiteral(["Hobo Monkey"])))) ? 1.25 : 1; // Assume base weight of 100 pounds. This is off but close enough.
+      var familiarMultiplier = (0,dist.have)((0,dist.$familiar)(potions_templateObject4 || (potions_templateObject4 = potions_taggedTemplateLiteral(["Robortender"])))) ? 2 : (0,dist.have)((0,dist.$familiar)(potions_templateObject5 || (potions_templateObject5 = potions_taggedTemplateLiteral(["Hobo Monkey"])))) ? 1.25 : 1; // Assume base weight of 100 pounds. This is off but close enough.
 
       var assumedBaseWeight = 100; // Marginal value of familiar weight in % meat drop.
 
@@ -13804,7 +13804,7 @@ function potionSetup() {
     return potion.bonusMeat() > 0;
   });
 
-  if ((0,dist.have)((0,dist.$item)(potions_templateObject5 || (potions_templateObject5 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,dist.get)("_freePillKeeperUsed")) {
+  if ((0,dist.have)((0,dist.$item)(potions_templateObject6 || (potions_templateObject6 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,dist.get)("_freePillKeeperUsed")) {
     var testPotionsDoubled = meatPotions.filter(function (potion) {
       return potion.gross(embezzlers, true) / potion.price(true) > 0.5;
     });
@@ -13815,7 +13815,7 @@ function potionSetup() {
     if (testPotionsDoubled.length > 0) {
       var potion = testPotionsDoubled[0]; // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
 
-      if (potion.doublingValue(embezzlers) > ((0,external_canadv_ash_namespaceObject.canAdv)((0,dist.$location)(potions_templateObject6 || (potions_templateObject6 = potions_taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false) ? 15000 : 0)) {
+      if (potion.doublingValue(embezzlers) > ((0,external_canadv_ash_namespaceObject.canAdv)((0,dist.$location)(potions_templateObject7 || (potions_templateObject7 = potions_taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false) ? 15000 : 0)) {
         (0,external_kolmafia_.cliExecute)("pillkeeper extend");
         (0,external_kolmafia_.print)("Best doubling potion: ".concat(potion.potion.name, ", value ").concat(potion.doublingValue(embezzlers).toFixed(0)), "blue");
         potion.useAsValuable(embezzlers, true);
@@ -13899,7 +13899,7 @@ function potionSetup() {
   }
 }
 function bathroomFinance(embezzlers) {
-  if ((0,dist.have)((0,dist.$effect)(potions_templateObject7 || (potions_templateObject7 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
+  if ((0,dist.have)((0,dist.$effect)(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
 
   var averageEmbezzlerGross = (baseMeat + 750) * 2 * (embezzlers + 1) / 2 / 100;
   var embezzlerGross = averageEmbezzlerGross * embezzlers;
@@ -13907,7 +13907,7 @@ function bathroomFinance(embezzlers) {
 
   var averageTouristGross = baseMeat * 2 * (100 + embezzlers + 1) / 2 / 100;
   var touristGross = averageTouristGross * tourists;
-  var greenspan = (0,dist.$item)(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
+  var greenspan = (0,dist.$item)(potions_templateObject9 || (potions_templateObject9 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
 
   if (touristGross + embezzlerGross > (0,external_kolmafia_.mallPrice)(greenspan)) {
     (0,external_kolmafia_.print)("Using Uncle Greenspan's guide!", "blue");
