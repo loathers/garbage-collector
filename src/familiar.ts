@@ -6,11 +6,10 @@ import {
   mallPrice,
   myFamiliar,
   myInebriety,
-  numericModifier,
   weightAdjustment,
 } from "kolmafia";
 import { $effect, $familiar, $familiars, $item, $items, get, have } from "libram";
-import { argmax, saleValue } from "./lib";
+import { argmax, fairyMultiplier, leprechaunMultiplier, saleValue } from "./lib";
 
 let _meatFamiliar: Familiar;
 export function meatFamiliar(): Familiar {
@@ -24,21 +23,11 @@ export function meatFamiliar(): Familiar {
     } else {
       const bestLeps = Familiar.all()
         .filter(have)
-        .sort(
-          (a, b) =>
-            numericModifier(b, "Leprechaun", 1, $item`none`) -
-            numericModifier(a, "Leprechaun", 1, $item`none`)
-        );
-      const bestLepMult = numericModifier(bestLeps[0], "Leprechaun", 1, $item`none`);
+        .sort((a, b) => leprechaunMultiplier(b) - leprechaunMultiplier(a));
+      const bestLepMult = leprechaunMultiplier(bestLeps[0]);
       _meatFamiliar = bestLeps
-        .filter(
-          (familiar) => numericModifier(familiar, "Leprechaun", 1, $item`none`) === bestLepMult
-        )
-        .sort(
-          (a, b) =>
-            numericModifier(b, "Fairy", 1, $item`none`) -
-            numericModifier(a, "Fairy", 1, $item`none`)
-        )[0];
+        .filter((familiar) => leprechaunMultiplier(familiar) === bestLepMult)
+        .sort((a, b) => fairyMultiplier(b) - fairyMultiplier(a))[0];
     }
   }
   return _meatFamiliar;
