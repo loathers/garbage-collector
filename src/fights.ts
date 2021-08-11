@@ -1203,7 +1203,9 @@ const freeFightSources = [
         print("Found Gerald/ine!", "blue");
         setChoice(1324, 5);
         const partyFairInfo = get("_questPartyFairProgress").split(" ");
-        globalOptions.messages.push(`Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
+        globalOptions.messages.push(
+          `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`
+        );
       }
     },
     {
