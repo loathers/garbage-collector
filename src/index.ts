@@ -48,6 +48,7 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import {
+  chateauDesk,
   cheat,
   configureGear,
   configureMisc,
@@ -101,6 +102,7 @@ function ensureBarfAccess() {
 function dailySetup() {
   voterSetup();
   martini();
+  chateauDesk();
   gaze();
   configureGear();
   horse();

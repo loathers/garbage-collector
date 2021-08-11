@@ -33,6 +33,7 @@ const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
 
 const mutuallyExclusiveList: Effect[][] = [
   $effects`Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue`,
+  $effects`Cupcake of Choice, The Cupcake of Wrath, Shiny Happy Cupcake, Your Cupcake Senses Are Tingling, Tiny Bubbles in the Cupcake`,
 ];
 const mutuallyExclusive = new Map<Effect, Effect[]>();
 for (const effectGroup of mutuallyExclusiveList) {
