@@ -6,6 +6,7 @@ import {
   create,
   haveSkill,
   mallPrice,
+  myTurncount,
   print,
   restoreMp,
   retrieveItem,
@@ -38,7 +39,7 @@ import {
   SongBoom,
   SourceTerminal,
 } from "libram";
-import { globalOptions } from "./globalvars";
+import { estimatedTurns, globalOptions } from "./globalvars";
 
 export enum BonusEquipMode {
   FREE,
@@ -159,56 +160,93 @@ export enum draggableFight {
   WANDERER,
 }
 
+function untangleDigitizes(turnCount: number, chunks: number): number {
+  const turnsPerChunk = turnCount / chunks;
+  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
+  return Math.floor(chunks * monstersPerChunk);
+}
+
+function digitizedMonstersRemaining(): number {
+  if (!SourceTerminal.have()) return 0;
+
+  const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
+  if (digitizesLeft === 3) return untangleDigitizes(estimatedTurns(), 3);
+
+  const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
+
+  const relayArray = get("relayCounters").match(/(d+):Digitize Monster/);
+  const nextDigitizeEncounter = relayArray ? parseInt(relayArray[1]) : myTurncount();
+
+  const turnsLeftAtNextMonster = estimatedTurns() - (nextDigitizeEncounter - myTurncount());
+  const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
+  return untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1);
+}
+
 export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WANDERER): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`The Deep Dark Jungle`
       : $location`Noob Cave`;
 
-  const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`; //Screambats can be backed up over, but override wanderers
-
-  const backupBlacklist: Location[] = $locations`The Mansion of Dr. Weirdeaux`;
-  if ($location`The Skeleton Store`.turnsSpent >= 3)
-    backupBlacklist.push($location`The Skeleton Store`);
-  if ($location`The Overgrown Lot`.turnsSpent >= 5)
-    backupBlacklist.push($location`The Overgrown Lot`);
-
-  const canBackup = have($item`backup camera`) && get("_backUpUses") < 11;
-
   if (!Guzzlr.have()) return defaultLocation;
 
-  acceptBestGuzzlrQuest();
+  const guzzlrTurnsLeft = Math.ceil(
+    get("guzzlrDeliveryProgress") / (10 - get("_guzzlrDeliveries"))
+  );
 
-  if (
-    !checkGuzzlrZone() ||
-    (type === draggableFight.WANDERER &&
-      !canBackup &&
-      wandererBlacklist.includes(Guzzlr.getLocation() || $location`none`)) ||
-    (type === draggableFight.BACKUP &&
-      !canWander() &&
-      backupBlacklist.includes(Guzzlr.getLocation() || $location`none`) &&
-      (Guzzlr.getLocation()?.combatPercent || 100) < 100)
-  ) {
+  const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`; //Screambats can be backed up over, but override wanderers
+  const digitizeMonstersRemaining = digitizedMonstersRemaining();
+
+  const backupBlacklist = $locations`The Mansion of Dr. Weirdeaux`;
+
+  const backupsRemaining = have($item`backup camera`) ? 11 - get("_backUpUses") : 0;
+
+  const currentGuzzlrZone = Guzzlr.getLocation() || $location`none`;
+
+  const reasonsToReject = [
+    !doWeLikeThisGuzzlrQuest(),
+    type === draggableFight.WANDERER &&
+      backupsRemaining < guzzlrTurnsLeft &&
+      wandererBlacklist.includes(currentGuzzlrZone),
+    type === draggableFight.BACKUP &&
+      digitizeMonstersRemaining === 0 &&
+      (currentGuzzlrZone.combatPercent < 100 || backupBlacklist.includes(currentGuzzlrZone)),
+    currentGuzzlrZone === $location`The Overgrown Lot` &&
+      guzzlrTurnsLeft < backupsRemaining &&
+      Math.min(backupsRemaining, clamp(5 - $location`The Overgrown Lot`.turnsSpent, 0, 5)) +
+        digitizeMonstersRemaining <
+        guzzlrTurnsLeft,
+    currentGuzzlrZone === $location`The Skeleton Store` &&
+      guzzlrTurnsLeft < backupsRemaining &&
+      Math.min(backupsRemaining, clamp(3 - $location`The Skeleton Store`.turnsSpent, 0, 3)) +
+        digitizeMonstersRemaining <
+        guzzlrTurnsLeft,
+  ];
+  if (reasonsToReject.includes(true)) {
     Guzzlr.abandon(); //Abandon if it's generically bad, or if it's bad for the only type of draggable fight you have left
   }
 
   acceptBestGuzzlrQuest();
 
   const guzzlZone = Guzzlr.getLocation();
-  if (!checkGuzzlrZone()) return defaultLocation;
-  if (!guzzlZone) return defaultLocation;
+  if (!guzzlZone || !doWeLikeThisGuzzlrQuest()) return defaultLocation;
 
   if (
     type === draggableFight.BACKUP &&
-    (guzzlZone.combatPercent < 100 || backupBlacklist.includes(guzzlZone))
+    (guzzlZone.combatPercent < 100 ||
+      backupBlacklist.includes(guzzlZone) ||
+      (guzzlZone === $location`The Overgrown Lot` && guzzlZone.turnsSpent >= 5) ||
+      (guzzlZone === $location`The Skeleton Store` && guzzlZone.turnsSpent >= 3))
   ) {
     print("We're backing up, and our guzzlr zone doesn't like that.", "red");
     return defaultLocation;
   }
+
   if (type === draggableFight.WANDERER && wandererBlacklist.includes(guzzlZone)) {
     print("We're dropping a wanderer, and our guzzlr zone doesn't like that.", "red");
     return defaultLocation;
   }
+
   if (Guzzlr.getTier() === "platinum") {
     zonePotions.forEach((place) => {
       if (guzzlZone.zone === place.zone && !have(place.effect)) {
@@ -233,7 +271,7 @@ export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WA
   return guzzlZone;
 }
 
-function checkGuzzlrZone(): boolean {
+function doWeLikeThisGuzzlrQuest(): boolean {
   const guzzlZone = Guzzlr.getLocation();
   if (!guzzlZone) return false;
   const forbiddenZones: string[] = [""];
