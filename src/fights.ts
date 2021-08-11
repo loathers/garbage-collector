@@ -82,12 +82,12 @@ import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
   clamp,
+  draggableFightZone,
   ensureEffect,
   findRun,
   FreeRun,
   kramcoGuaranteed,
   mapMonster,
-  prepWandererZone,
   propertyManager,
   questStep,
   Requirement,
@@ -566,7 +566,7 @@ export function dailyFights(): void {
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
           withMacro(firstChainMacro(), () =>
-            fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
+            fightSource.run({ location: draggableFightZone(), macro: firstChainMacro() })
           );
           log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
@@ -593,7 +593,7 @@ export function dailyFights(): void {
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
           withMacro(secondChainMacro(), () =>
-            fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
+            fightSource.run({ location: draggableFightZone(), macro: secondChainMacro() })
           );
           log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
@@ -638,7 +638,7 @@ export function dailyFights(): void {
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
               nextFight.run({ location: $location`The Briny Deeps` });
             } else if (nextFight.draggable) {
-              const location = prepWandererZone();
+              const location = draggableFightZone();
               setLocation(location);
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location });
@@ -1002,7 +1002,7 @@ const freeFightSources = [
 
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => adv1(prepWandererZone(), -1, ""),
+    () => adv1(draggableFightZone(), -1, ""),
     {
       requirements: () => [
         new Requirement([], {
@@ -1390,6 +1390,6 @@ function doSausage() {
   if (!kramcoGuaranteed()) return;
   useFamiliar(freeFightFamiliar());
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
-  adventureMacroAuto(prepWandererZone(), Macro.basicCombat());
+  adventureMacroAuto(draggableFightZone(), Macro.basicCombat());
   setAutoAttack(0);
 }

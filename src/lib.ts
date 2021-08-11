@@ -158,7 +158,7 @@ function acceptBestGuzzlrQuest() {
   }
 }
 
-export function prepWandererZone(): Location {
+export function draggableFightZone(): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`The Deep Dark Jungle`
