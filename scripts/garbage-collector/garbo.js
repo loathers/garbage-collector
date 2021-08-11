@@ -14647,7 +14647,7 @@ function pickBjorn() {
   throw new Error("Something went wrong while selecting a familiar to bjornify or crownulate");
 }
 ;// CONCATENATED MODULE: ./src/outfit.ts
-var outfit_templateObject, outfit_templateObject2, outfit_templateObject3, outfit_templateObject4, outfit_templateObject5, outfit_templateObject6, outfit_templateObject7, outfit_templateObject8, outfit_templateObject9, outfit_templateObject10, outfit_templateObject11, outfit_templateObject12, outfit_templateObject13, outfit_templateObject14, outfit_templateObject15, outfit_templateObject16, outfit_templateObject17, outfit_templateObject18, outfit_templateObject19, outfit_templateObject20, outfit_templateObject21, outfit_templateObject22, outfit_templateObject23, outfit_templateObject24, outfit_templateObject25, outfit_templateObject26, outfit_templateObject27, outfit_templateObject28, outfit_templateObject29, outfit_templateObject30, outfit_templateObject31, outfit_templateObject32, outfit_templateObject33, outfit_templateObject34, outfit_templateObject35, outfit_templateObject36, outfit_templateObject37, outfit_templateObject38, outfit_templateObject39, outfit_templateObject40, outfit_templateObject41, outfit_templateObject42, outfit_templateObject43, outfit_templateObject44, outfit_templateObject45, outfit_templateObject46, outfit_templateObject47, outfit_templateObject48, outfit_templateObject49, outfit_templateObject50, outfit_templateObject51, outfit_templateObject52, outfit_templateObject53, outfit_templateObject54, outfit_templateObject55, outfit_templateObject56, outfit_templateObject57, outfit_templateObject58, outfit_templateObject59, outfit_templateObject60, outfit_templateObject61, outfit_templateObject62, outfit_templateObject63, outfit_templateObject64, outfit_templateObject65, outfit_templateObject66, outfit_templateObject67, outfit_templateObject68, outfit_templateObject69, outfit_templateObject70, outfit_templateObject71;
+var outfit_templateObject, outfit_templateObject2, outfit_templateObject3, outfit_templateObject4, outfit_templateObject5, outfit_templateObject6, outfit_templateObject7, outfit_templateObject8, outfit_templateObject9, outfit_templateObject10, outfit_templateObject11, outfit_templateObject12, outfit_templateObject13, outfit_templateObject14, outfit_templateObject15, outfit_templateObject16, outfit_templateObject17, outfit_templateObject18, outfit_templateObject19, outfit_templateObject20, outfit_templateObject21, outfit_templateObject22, outfit_templateObject23, outfit_templateObject24, outfit_templateObject25, outfit_templateObject26, outfit_templateObject27, outfit_templateObject28, outfit_templateObject29, outfit_templateObject30, outfit_templateObject31, outfit_templateObject32, outfit_templateObject33, outfit_templateObject34, outfit_templateObject35, outfit_templateObject36, outfit_templateObject37, outfit_templateObject38, outfit_templateObject39, outfit_templateObject40, outfit_templateObject41, outfit_templateObject42, outfit_templateObject43, outfit_templateObject44, outfit_templateObject45, outfit_templateObject46, outfit_templateObject47, outfit_templateObject48, outfit_templateObject49, outfit_templateObject50, outfit_templateObject51, outfit_templateObject52, outfit_templateObject53, outfit_templateObject54, outfit_templateObject55, outfit_templateObject56, outfit_templateObject57, outfit_templateObject58, outfit_templateObject59, outfit_templateObject60, outfit_templateObject61, outfit_templateObject62, outfit_templateObject63, outfit_templateObject64, outfit_templateObject65, outfit_templateObject66, outfit_templateObject67, outfit_templateObject68, outfit_templateObject69, outfit_templateObject70, outfit_templateObject71, outfit_templateObject72, outfit_templateObject73;
 
 function outfit_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = outfit_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -14812,18 +14812,20 @@ function pantsgiving() {
   });
   var turns = turnArray[index] || 50000;
   if (turns - count > estimatedTurns()) return new Map();
-  var sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
-
-  var fullnessValue = sinusVal + (0,dist.get)("valueOfAdventure") * 6.5 - ((0,external_kolmafia_.mallPrice)((0,dist.$item)(outfit_templateObject52 || (outfit_templateObject52 = outfit_taggedTemplateLiteral(["jumping horseradish"])))) + (0,external_kolmafia_.mallPrice)((0,dist.$item)(outfit_templateObject53 || (outfit_templateObject53 = outfit_taggedTemplateLiteral(["Special Seasoning"])))));
-  return new Map([[(0,dist.$item)(outfit_templateObject54 || (outfit_templateObject54 = outfit_taggedTemplateLiteral(["Pantsgiving"]))), fullnessValue / (turns * 0.9)]]);
+  var expectedSinusTurns = (0,external_kolmafia_.getWorkshed)() === (0,dist.$item)(outfit_templateObject52 || (outfit_templateObject52 = outfit_taggedTemplateLiteral(["portable Mayo Clinic"]))) ? 100 : 50;
+  var expectedUseableSinusTurns = globalOptions.ascending ? Math.min(estimatedTurns() - (0,external_kolmafia_.haveEffect)((0,dist.$effect)(outfit_templateObject53 || (outfit_templateObject53 = outfit_taggedTemplateLiteral(["Kicked in the Sinuses"])))), expectedSinusTurns) : expectedSinusTurns;
+  var sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
+  if (turns - count > estimatedTurns()) return new Map();
+  var fullnessValue = sinusVal + (0,dist.get)("valueOfAdventure") * 6.5 - ((0,external_kolmafia_.mallPrice)((0,dist.$item)(outfit_templateObject54 || (outfit_templateObject54 = outfit_taggedTemplateLiteral(["jumping horseradish"])))) + (0,external_kolmafia_.mallPrice)((0,dist.$item)(outfit_templateObject55 || (outfit_templateObject55 = outfit_taggedTemplateLiteral(["Special Seasoning"])))));
+  return new Map([[(0,dist.$item)(outfit_templateObject56 || (outfit_templateObject56 = outfit_taggedTemplateLiteral(["Pantsgiving"]))), fullnessValue / (turns * 0.9)]]);
 }
 
-var haveSomeCheese = (0,dist.getFoldGroup)((0,dist.$item)(outfit_templateObject55 || (outfit_templateObject55 = outfit_taggedTemplateLiteral(["stinky cheese diaper"])))).some(function (item) {
+var haveSomeCheese = (0,dist.getFoldGroup)((0,dist.$item)(outfit_templateObject57 || (outfit_templateObject57 = outfit_taggedTemplateLiteral(["stinky cheese diaper"])))).some(function (item) {
   return (0,dist.have)(item);
 });
 
 function cheeses(embezzlerUp) {
-  return haveSomeCheese && !globalOptions.ascending && (0,dist.get)("_stinkyCheeseCount") < 100 && estimatedTurns() >= 100 - (0,dist.get)("_stinkyCheeseCount") && !embezzlerUp ? new Map((0,dist.getFoldGroup)((0,dist.$item)(outfit_templateObject56 || (outfit_templateObject56 = outfit_taggedTemplateLiteral(["stinky cheese diaper"])))).map(function (item) {
+  return haveSomeCheese && !globalOptions.ascending && (0,dist.get)("_stinkyCheeseCount") < 100 && estimatedTurns() >= 100 - (0,dist.get)("_stinkyCheeseCount") && !embezzlerUp ? new Map((0,dist.getFoldGroup)((0,dist.$item)(outfit_templateObject58 || (outfit_templateObject58 = outfit_taggedTemplateLiteral(["stinky cheese diaper"])))).map(function (item) {
     return [item, (0,dist.get)("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100)];
   })) : [];
 }
@@ -14831,10 +14833,10 @@ function cheeses(embezzlerUp) {
 function snowSuit(equipMode) {
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!(0,dist.have)((0,dist.$item)(outfit_templateObject57 || (outfit_templateObject57 = outfit_taggedTemplateLiteral(["Snow Suit"])))) || (0,dist.get)("_carrotNoseDrops") >= 3 || [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some(function (mode) {
+  if (!(0,dist.have)((0,dist.$item)(outfit_templateObject59 || (outfit_templateObject59 = outfit_taggedTemplateLiteral(["Snow Suit"])))) || (0,dist.get)("_carrotNoseDrops") >= 3 || [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some(function (mode) {
     return mode === equipMode;
   })) return new Map([]);
-  return new Map([[(0,dist.$item)(outfit_templateObject58 || (outfit_templateObject58 = outfit_taggedTemplateLiteral(["Snow Suit"]))), saleValue((0,dist.$item)(outfit_templateObject59 || (outfit_templateObject59 = outfit_taggedTemplateLiteral(["carrot nose"])))) / 10]]);
+  return new Map([[(0,dist.$item)(outfit_templateObject60 || (outfit_templateObject60 = outfit_taggedTemplateLiteral(["Snow Suit"]))), saleValue((0,dist.$item)(outfit_templateObject61 || (outfit_templateObject61 = outfit_taggedTemplateLiteral(["carrot nose"])))) / 10]]);
 }
 
 function mayflowerBouquet(equipMode) {
@@ -14845,19 +14847,19 @@ function mayflowerBouquet(equipMode) {
   // so let's just assume rate drops by 11% with a min of 1% ¯\_(ツ)_/¯
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!(0,dist.have)((0,dist.$item)(outfit_templateObject60 || (outfit_templateObject60 = outfit_taggedTemplateLiteral(["Mayflower bouquet"])))) || [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some(function (mode) {
+  if (!(0,dist.have)((0,dist.$item)(outfit_templateObject62 || (outfit_templateObject62 = outfit_taggedTemplateLiteral(["Mayflower bouquet"])))) || [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some(function (mode) {
     return mode === equipMode;
   })) return new Map([]);
   var sporadicMeatBonus = 40 * 0.125 * (equipMode === BonusEquipMode.BARF ? baseMeat : 0) / 100;
-  var averageFlowerValue = (saleValue((0,dist.$item)(outfit_templateObject61 || (outfit_templateObject61 = outfit_taggedTemplateLiteral(["tin magnolia"])))) + saleValue((0,dist.$item)(outfit_templateObject62 || (outfit_templateObject62 = outfit_taggedTemplateLiteral(["upsy daisy"])))) + saleValue((0,dist.$item)(outfit_templateObject63 || (outfit_templateObject63 = outfit_taggedTemplateLiteral(["lesser grodulated violet"])))) + saleValue((0,dist.$item)(outfit_templateObject64 || (outfit_templateObject64 = outfit_taggedTemplateLiteral(["half-orchid"])))) + saleValue((0,dist.$item)(outfit_templateObject65 || (outfit_templateObject65 = outfit_taggedTemplateLiteral(["begpwnia"])))) / 5) * Math.max(0.01, 0.5 - (0,dist.get)("_mayflowerDrops") * 0.11);
-  return new Map([[(0,dist.$item)(outfit_templateObject66 || (outfit_templateObject66 = outfit_taggedTemplateLiteral(["Mayflower bouquet"]))), ((0,dist.get)("_mayflowerDrops") < 10 ? averageFlowerValue : 0) + sporadicMeatBonus]]);
+  var averageFlowerValue = (saleValue((0,dist.$item)(outfit_templateObject63 || (outfit_templateObject63 = outfit_taggedTemplateLiteral(["tin magnolia"])))) + saleValue((0,dist.$item)(outfit_templateObject64 || (outfit_templateObject64 = outfit_taggedTemplateLiteral(["upsy daisy"])))) + saleValue((0,dist.$item)(outfit_templateObject65 || (outfit_templateObject65 = outfit_taggedTemplateLiteral(["lesser grodulated violet"])))) + saleValue((0,dist.$item)(outfit_templateObject66 || (outfit_templateObject66 = outfit_taggedTemplateLiteral(["half-orchid"])))) + saleValue((0,dist.$item)(outfit_templateObject67 || (outfit_templateObject67 = outfit_taggedTemplateLiteral(["begpwnia"])))) / 5) * Math.max(0.01, 0.5 - (0,dist.get)("_mayflowerDrops") * 0.11);
+  return new Map([[(0,dist.$item)(outfit_templateObject68 || (outfit_templateObject68 = outfit_taggedTemplateLiteral(["Mayflower bouquet"]))), ((0,dist.get)("_mayflowerDrops") < 10 ? averageFlowerValue : 0) + sporadicMeatBonus]]);
 }
 
 function dropsItems(equipMode) {
   var isFree = [BonusEquipMode.FREE, BonusEquipMode.DMT].some(function (mode) {
     return mode === equipMode;
   });
-  return new Map([[(0,dist.$item)(outfit_templateObject67 || (outfit_templateObject67 = outfit_taggedTemplateLiteral(["mafia thumb ring"]))), !isFree ? 300 : 0], [(0,dist.$item)(outfit_templateObject68 || (outfit_templateObject68 = outfit_taggedTemplateLiteral(["lucky gold ring"]))), 400], [(0,dist.$item)(outfit_templateObject69 || (outfit_templateObject69 = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 250], [(0,dist.$item)(outfit_templateObject70 || (outfit_templateObject70 = outfit_taggedTemplateLiteral(["pantogram pants"]))), (0,dist.get)("_pantogramModifier").includes("Drops Items") ? 100 : 0], [(0,dist.$item)(outfit_templateObject71 || (outfit_templateObject71 = outfit_taggedTemplateLiteral(["Mr. Screege's spectacles"]))), 180]].concat(outfit_toConsumableArray(snowSuit(equipMode)), outfit_toConsumableArray(mayflowerBouquet(equipMode))));
+  return new Map([[(0,dist.$item)(outfit_templateObject69 || (outfit_templateObject69 = outfit_taggedTemplateLiteral(["mafia thumb ring"]))), !isFree ? 300 : 0], [(0,dist.$item)(outfit_templateObject70 || (outfit_templateObject70 = outfit_taggedTemplateLiteral(["lucky gold ring"]))), 400], [(0,dist.$item)(outfit_templateObject71 || (outfit_templateObject71 = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 250], [(0,dist.$item)(outfit_templateObject72 || (outfit_templateObject72 = outfit_taggedTemplateLiteral(["pantogram pants"]))), (0,dist.get)("_pantogramModifier").includes("Drops Items") ? 100 : 0], [(0,dist.$item)(outfit_templateObject73 || (outfit_templateObject73 = outfit_taggedTemplateLiteral(["Mr. Screege's spectacles"]))), 180]].concat(outfit_toConsumableArray(snowSuit(equipMode)), outfit_toConsumableArray(mayflowerBouquet(equipMode))));
 }
 // EXTERNAL MODULE: ./node_modules/libram/dist/property.js
 var property = __webpack_require__(1347);
