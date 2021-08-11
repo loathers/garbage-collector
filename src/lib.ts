@@ -195,7 +195,8 @@ export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WA
   );
 
   const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`; //Screambats can be backed up over, but override wanderers
-  const digitizeMonstersRemaining = digitizedMonstersRemaining();
+  const wanderingMonstersRemaining =
+    digitizedMonstersRemaining() + (get("voteAlways") ? clamp(get("_voteFreeFights"), 0, 3) : 0);
 
   const backupBlacklist = $locations`The Mansion of Dr. Weirdeaux`;
 
@@ -209,17 +210,17 @@ export function pickWandererZoneAndPrep(type: draggableFight = draggableFight.WA
       backupsRemaining < guzzlrTurnsLeft &&
       wandererBlacklist.includes(currentGuzzlrZone),
     type === draggableFight.BACKUP &&
-      digitizeMonstersRemaining === 0 &&
+      wanderingMonstersRemaining === 0 &&
       (currentGuzzlrZone.combatPercent < 100 || backupBlacklist.includes(currentGuzzlrZone)),
     currentGuzzlrZone === $location`The Overgrown Lot` &&
       guzzlrTurnsLeft < backupsRemaining &&
       Math.min(backupsRemaining, clamp(5 - $location`The Overgrown Lot`.turnsSpent, 0, 5)) +
-        digitizeMonstersRemaining <
+        wanderingMonstersRemaining <
         guzzlrTurnsLeft,
     currentGuzzlrZone === $location`The Skeleton Store` &&
       guzzlrTurnsLeft < backupsRemaining &&
       Math.min(backupsRemaining, clamp(3 - $location`The Skeleton Store`.turnsSpent, 0, 3)) +
-        digitizeMonstersRemaining <
+        wanderingMonstersRemaining <
         guzzlrTurnsLeft,
   ];
   if (reasonsToReject.includes(true)) {
