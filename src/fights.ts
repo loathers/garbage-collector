@@ -1192,7 +1192,8 @@ const freeKillSources = [
   ),
 
   new FreeFight(
-    () => get("shockingLickCharges") > 0 && globalOptions.ascending,
+    () =>
+      get("shockingLickCharges") > 0 && globalOptions.ascending ? get("shockingLickCharges") : 0,
     () => {
       withMacro(Macro.skill("Sing Along").skill("Shocking Lick"), () => use($item`drum machine`));
     },
