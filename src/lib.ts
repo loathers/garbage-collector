@@ -11,6 +11,7 @@ import {
   myEnthronedFamiliar,
   myFamiliar,
   myLocation,
+  myTurncount,
   numericModifier,
   print,
   restoreMp,
@@ -41,8 +42,9 @@ import {
   PropertiesManager,
   property,
   SongBoom,
+  SourceTerminal,
 } from "libram";
-import { globalOptions } from "./globalvars";
+import { estimatedTurns, globalOptions } from "./globalvars";
 
 export enum BonusEquipMode {
   FREE,
@@ -158,47 +160,98 @@ function acceptBestGuzzlrQuest() {
   }
 }
 
-export function draggableFightZone(): Location {
+export enum draggableFight {
+  BACKUP,
+  WANDERER,
+}
+
+function untangleDigitizes(turnCount: number, chunks: number): number {
+  const turnsPerChunk = turnCount / chunks;
+  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
+  return Math.floor(chunks * monstersPerChunk);
+}
+
+function digitizedMonstersRemaining(): number {
+  if (!SourceTerminal.have()) return 0;
+
+  const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
+  if (digitizesLeft === 3) return untangleDigitizes(estimatedTurns(), 3);
+
+  const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
+
+  const relayArray = get("relayCounters").match(/(d+):Digitize Monster/);
+  const nextDigitizeEncounter = relayArray ? parseInt(relayArray[1]) : myTurncount();
+
+  const turnsLeftAtNextMonster = estimatedTurns() - (nextDigitizeEncounter - myTurncount());
+  const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
+  return untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1);
+}
+
+export function draggableFightZone(type: draggableFight = draggableFight.WANDERER): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`The Deep Dark Jungle`
       : $location`Noob Cave`;
   if (!Guzzlr.have()) return defaultLocation;
 
+  const predictedWanderers =
+    digitizedMonstersRemaining() +
+    (have($item`"I Voted!" sticker`) ? clamp(get("_voteFreeFights"), 0, 3) : 0);
+  const predictedBackups = have($item`backup camera`) ? clamp(11 - get("_backUpUses"), 0, 11) : 0;
+  const turnsLeftOnThisQuest = Math.ceil(
+    (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
+  );
+
   acceptBestGuzzlrQuest();
-  if (!guzzlrCheck()) Guzzlr.abandon();
+
+  const currentGuzzlrZone = Guzzlr.getLocation() || $location`none`;
+  if (
+    !testZoneAndUsePotionToAccess() ||
+    (!testZoneForWanderers(currentGuzzlrZone) &&
+      predictedWanderers > predictedBackups &&
+      predictedBackups < turnsLeftOnThisQuest) ||
+    (!testZoneForBackups(currentGuzzlrZone) && predictedBackups >= predictedWanderers)
+  ) {
+    Guzzlr.abandon();
+  }
   acceptBestGuzzlrQuest();
 
   const guzzlZone = Guzzlr.getLocation();
-  if (!guzzlrCheck()) return defaultLocation;
-  else if (!guzzlZone) return defaultLocation;
-  else {
-    if (Guzzlr.getTier() === "platinum") {
-      zonePotions.forEach((place) => {
-        if (guzzlZone.zone === place.zone && !have(place.effect)) {
-          if (!have(place.potion)) {
-            buy(1, place.potion, 10000);
-          }
-          use(1, place.potion);
-        }
-      });
-      if (!Guzzlr.havePlatinumBooze()) {
-        cliExecute("make buttery boy");
-      }
-    } else {
-      const guzzlrBooze = Guzzlr.getBooze();
-      if (!guzzlrBooze) {
-        return defaultLocation;
-      } else if (!have(guzzlrBooze)) {
-        print(`just picking up some booze before we roll`, "blue");
-        cliExecute(`acquire ${guzzlrBooze}`);
-      }
-    }
-    return guzzlZone;
+  if (!testZoneAndUsePotionToAccess()) return defaultLocation;
+  if (
+    !guzzlZone ||
+    (type === draggableFight.WANDERER && !testZoneForWanderers(guzzlZone)) ||
+    (type === draggableFight.BACKUP && !testZoneForBackups(guzzlZone))
+  ) {
+    return defaultLocation;
   }
+
+  if (Guzzlr.getTier() === "platinum") {
+    zonePotions.forEach((place) => {
+      if (guzzlZone.zone === place.zone && !have(place.effect)) {
+        if (!have(place.potion)) {
+          buy(1, place.potion, 10000);
+        }
+        use(1, place.potion);
+      }
+    });
+    if (!Guzzlr.havePlatinumBooze()) {
+      print("It's time to get buttery", "purple");
+      cliExecute("make buttery boy");
+    }
+  } else {
+    const guzzlrBooze = Guzzlr.getBooze();
+    if (!guzzlrBooze) {
+      return defaultLocation;
+    } else if (!have(guzzlrBooze)) {
+      print("just picking up some booze before we roll", "blue");
+      Guzzlr.getBooze();
+    }
+  }
+  return guzzlZone;
 }
 
-function guzzlrCheck() {
+function testZoneAndUsePotionToAccess() {
   const guzzlZone = Guzzlr.getLocation();
   if (!guzzlZone) return false;
   const forbiddenZones: string[] = [""]; //can't stockpile these potions,
@@ -226,11 +279,10 @@ function guzzlrCheck() {
       use(1, place.potion);
     }
   });
-  const blacklist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, Madness Bakery, The Secret Government Laboratory, The Overgrown Lot, The Skeleton Store`;
+  const blacklist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory`;
   if (
     forbiddenZones.includes(guzzlZone.zone) ||
     blacklist.includes(guzzlZone) ||
-    !guzzlZone.wanderers ||
     guzzlZone.environment === "underwater" ||
     !canAdv(guzzlZone, false)
   ) {
@@ -238,6 +290,16 @@ function guzzlrCheck() {
   } else {
     return true;
   }
+}
+
+function testZoneForBackups(location: Location): boolean {
+  const backupBlacklist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
+  return !backupBlacklist.includes(location) && location.combatPercent >= 100;
+}
+
+function testZoneForWanderers(location: Location): boolean {
+  const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
+  return !wandererBlacklist.includes(location) && location.wanderers;
 }
 
 export class Requirement {
