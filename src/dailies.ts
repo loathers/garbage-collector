@@ -594,7 +594,7 @@ export function martini(): void {
 }
 
 export function chateauDesk(): void {
-  if (ChateauMantegna.have() && get("_chateauDeskHarvested")) {
+  if (ChateauMantegna.have() && !get("_chateauDeskHarvested")) {
     visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false);
   }
 }
