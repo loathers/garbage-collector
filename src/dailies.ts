@@ -36,6 +36,7 @@ import {
   $stat,
   $thrall,
   adventureMacro,
+  ChateauMantegna,
   get,
   have,
   property,
@@ -283,6 +284,10 @@ export function configureMisc(): void {
     SourceTerminal.enquiry($effect`familiar.enq`);
   }
 
+  if (have($item`BittyCar MeatCar`) && get("_bittycar") !== "meatcar") {
+    use(1, $item`BittyCar MeatCar`);
+  }
+
   if (get("_VYKEACompanionLevel") === 0) {
     const vykeas: [number, number][] = [
       [1, 0],
@@ -309,6 +314,15 @@ export function configureMisc(): void {
     haveSkill($skill`Bind Lasagmbie`)
   ) {
     useSkill($skill`Bind Lasagmbie`);
+  }
+
+  if (
+    myClass() === $class`Pastamancer` &&
+    have($item`experimental carbon fiber pasta additive`) &&
+    !get("_pastaAdditive") &&
+    myThrall().level < 10
+  ) {
+    use($item`experimental carbon fiber pasta additive`);
   }
 
   if (
@@ -605,5 +619,11 @@ export function martini(): void {
   ) {
     return;
   }
-  cliExecute("briefcase collect");
+  cliExecute("Briefcase collect");
+}
+
+export function chateauDesk(): void {
+  if (ChateauMantegna.have() && !get("_chateauDeskHarvested")) {
+    visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false);
+  }
 }

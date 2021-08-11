@@ -48,6 +48,7 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import {
+  chateauDesk,
   cheat,
   configureGear,
   configureMisc,
@@ -109,6 +110,7 @@ function ensureBarfAccess() {
 function dailySetup() {
   voterSetup();
   martini();
+  chateauDesk();
   gaze();
   configureGear();
   horse();
@@ -140,6 +142,8 @@ function dailySetup() {
   retrieveItem($item`The Jokester's gun`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
+  putCloset(itemAmount($item`4-d camera`), $item`4-d camera`);
+  putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
 }
 
 function barfTurn() {
@@ -399,7 +403,7 @@ export function main(argString = ""): void {
         dailySetup();
 
         setDefaultMaximizeOptions({
-          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre`,
+          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
         });
 
         // 4. do some embezzler stuff

@@ -28,6 +28,7 @@ const priceCaps: { [index: string]: number } = {
   "jumping horseradish": 20000,
   "Ambitious Turkey": 20000,
   "Special Seasoning": 20000,
+  "astral pilsner": 0,
 };
 
 export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
@@ -63,6 +64,8 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   }
   remaining -= getMall;
   if (remaining <= 0) return qty;
+
+  if (maxPrice <= 0) throw `buying disabled for ${item.name}.`;
 
   buy(remaining, item, maxPrice);
   if (itemAmount(item) < qty && throwOnFail) throw `Mall price too high for ${item.name}.`;

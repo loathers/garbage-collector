@@ -16,6 +16,7 @@ import {
   inebrietyLimit,
   itemAmount,
   mallPrice,
+  meatDropModifier,
   myAscensions,
   myClass,
   myFamiliar,
@@ -71,12 +72,14 @@ import {
   TunnelOfLove,
   Witchess,
 } from "libram";
+import { acquire } from "./acquire";
 import { fillAsdonMartinTo } from "./asdon";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
+  baseMeat,
   clamp,
   ensureEffect,
   findRun,
@@ -99,11 +102,12 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { bathroomFinance } from "./potions";
-import { estimatedTurns, log } from "./globalvars";
+import { estimatedTurns, globalOptions, log } from "./globalvars";
+import { getString } from "libram/dist/property";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
-  if (get<string>("photocopyMonster") === "Knob Goblin Embezzler") return true;
+  if (getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
   cliExecute("fax send");
   return false;
 }
@@ -162,6 +166,7 @@ const firstChainMacro = () =>
         .tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)
         .tryCopier($item`4-d camera`)
+        .tryCopier($item`unfinished ice sculpture`)
     )
       .trySkill("Lecture on Relativity")
       .meatKill()
@@ -182,6 +187,7 @@ const secondChainMacro = () =>
             .tryCopier($item`Spooky Putty sheet`)
             .tryCopier($item`Rain-Doh black box`)
             .tryCopier($item`4-d camera`)
+            .tryCopier($item`unfinished ice sculpture`)
         )
         .trySkill("Lecture on Relativity")
     ).meatKill()
@@ -200,6 +206,7 @@ const embezzlerMacro = () =>
       .tryCopier($item`Spooky Putty sheet`)
       .tryCopier($item`Rain-Doh black box`)
       .tryCopier($item`4-d camera`)
+      .tryCopier($item`unfinished ice sculpture`)
       .meatKill()
   ).abort();
 
@@ -330,6 +337,20 @@ const embezzlerSources = [
     () => use($item`shaking 4-d camera`)
   ),
   new EmbezzlerFight(
+    "Ice Sculpture",
+    () =>
+      have($item`ice sculpture`) &&
+      get("iceSculptureMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_iceSculptureUsed"),
+    () =>
+      have($item`ice sculpture`) &&
+      get("iceSculptureMonster") === $monster`Knob Goblin Embezzler` &&
+      !get("_iceSculptureUsed")
+        ? 1
+        : 0,
+    () => use($item`ice sculpture`)
+  ),
+  new EmbezzlerFight(
     "Green Taffy",
     () =>
       have($item`envyfish egg`) &&
@@ -379,12 +400,56 @@ function embezzlerSetup() {
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) use($item`License to Chill`);
+  if (
+    globalOptions.ascending &&
+    questStep("questM16Temple") > 0 &&
+    get("lastTempleAdventures") < myAscensions() &&
+    acquire(1, $item`stone wool`, 3 * get("valueOfAdventure") + 100, false) > 0
+  ) {
+    ensureEffect($effect`Stone-Faced`);
+    setChoice(582, 1);
+    setChoice(579, 3);
+    while (get("lastTempleAdventures") < myAscensions()) {
+      const runSource =
+        findRun() ||
+        new FreeRun(
+          "LTB",
+          () => retrieveItem($item`Louder Than Bomb`),
+          Macro.item("Louder Than Bomb"),
+          new Requirement([], {}),
+          () => retrieveItem($item`Louder Than Bomb`)
+        );
+      if (runSource) {
+        if (runSource.prepare) runSource.prepare();
+        freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+        adventureMacro($location`The Hidden Temple`, runSource.macro);
+      } else {
+        break;
+      }
+    }
+  }
 
   bathroomFinance(embezzlerCount());
 
+  const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
+  const averageTouristNet = (baseMeat * meatDropModifier()) / 100;
+
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
-  if (!get("_cameraUsed") && !have($item`shaking 4-d camera`)) {
+  if (
+    !get("_cameraUsed") &&
+    !have($item`shaking 4-d camera`) &&
+    averageEmbezzlerNet - averageTouristNet > mallPrice($item`4-d camera`)
+  ) {
     retrieveItem($item`4-d camera`);
+  }
+
+  if (
+    !get("_iceSculptureUsed") &&
+    !have($item`ice sculpture`) &&
+    averageEmbezzlerNet - averageTouristNet >
+      mallPrice($item`snow berries`) + mallPrice($item`ice harvest`) * 3
+  ) {
+    retrieveItem($item`unfinished ice sculpture`);
   }
 
   // Fix invalid copiers (caused by ascending or combat text-effects)
@@ -408,19 +473,22 @@ function embezzlerSetup() {
   if (have($item`envyfish egg`) && !get("envyfishMonster")) {
     visitUrl(`desc_item.php?whichitem=${$item`envyfish egg`.descid}`, false, false);
   }
+
+  if (have($item`ice sculpture`) && !get("iceSculptureMonster")) {
+    visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
+  }
 }
 
 function getEmbezzlerFight(): EmbezzlerFight | null {
-  let potentials = false;
   for (const fight of embezzlerSources) {
     if (fight.available()) return fight;
-    if (fight.potential()) potentials = true;
   }
+  const potential = embezzlerCount();
   if (
-    potentials &&
+    potential > 0 &&
     get("_genieFightsUsed") < 3 &&
     userConfirm(
-      "Garbo has detected you have potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"
+      `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?`
     )
   ) {
     return new EmbezzlerFight(
@@ -948,7 +1016,10 @@ const freeFightSources = [
       if (SourceTerminal.have()) {
         SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
-      adventureMacro($location`Your Mushroom Garden`, Macro.trySkill("Portscan").meatKill());
+      adventureMacro(
+        $location`Your Mushroom Garden`,
+        Macro.if_("hasskill macrometeorite", Macro.trySkill("Portscan")).meatKill()
+      );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
     {
@@ -973,7 +1044,7 @@ const freeFightSources = [
         $location`Your Mushroom Garden`,
         Macro.if_("monstername government agent", Macro.skill("Macrometeorite")).if_(
           "monstername piranha plant",
-          Macro.trySkill("Portscan").meatKill()
+          Macro.if_("hasskill macrometeorite", Macro.trySkill("Portscan")).meatKill()
         )
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
