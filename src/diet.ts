@@ -46,7 +46,7 @@ import {
   set,
 } from "libram";
 import { acquire } from "./acquire";
-import { embezzlerCount } from "./fights";
+import { embezzlerCount } from "./embezzlers";
 import { estimatedTurns, globalOptions } from "./globalvars";
 import { baseMeat, clamp, ensureEffect, setChoice } from "./lib";
 
