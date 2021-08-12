@@ -242,28 +242,31 @@ export function runDiet(): void {
   }
 
   const { bestSpleenItem } = getBestSpleenItems();
-
-  if (mySpleenUse() === 0) {
-    if (!have($effect`Eau d' Clochard`)) {
-      if (!have($item`beggin' cologne`)) {
-        const equilibriumPrice =
-          (baseMeat *
-            numericModifier($effect`Eau d' Clochard`, "Meat") *
-            numericModifier($item`beggin' cologne`, "Effect Duration") +
-            Math.min(numericModifier($item`beggin' cologne`, "Effect Duration"), embezzlerCount()) *
-              750) /
-            100 -
-          valuePerSpleen(bestSpleenItem);
-        if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
-      }
-      if (have($item`beggin' cologne`)) {
-        chew(1, $item`beggin' cologne`);
+  const embezzlers = embezzlerCount();
+  if (embezzlers) {
+    if (mySpleenUse() < spleenLimit()) {
+      if (!have($effect`Eau d' Clochard`)) {
+        if (!have($item`beggin' cologne`)) {
+          const equilibriumPrice =
+            (baseMeat *
+              numericModifier($effect`Eau d' Clochard`, "Meat") *
+              numericModifier($item`beggin' cologne`, "Effect Duration") +
+              Math.min(numericModifier($item`beggin' cologne`, "Effect Duration"), embezzlers) *
+                750) /
+              100 -
+            valuePerSpleen(bestSpleenItem);
+          if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
+        }
+        if (have($item`beggin' cologne`)) {
+          chew(1, $item`beggin' cologne`);
+        }
       }
     }
-    if (have($skill`Sweet Synthesis`)) ensureEffect($effect`Synthesis: Collection`);
-    if (have($item`body spradium`)) ensureEffect($effect`Boxing Day Glow`);
+    if (have($skill`Sweet Synthesis`) && mySpleenUse() < spleenLimit())
+      ensureEffect($effect`Synthesis: Collection`);
+    if (have($item`body spradium`) && mySpleenUse() < spleenLimit())
+      ensureEffect($effect`Boxing Day Glow`);
   }
-
   useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
 
   const loveChocolateCount = Math.max(3 - Math.floor(20000 / MPA) - get("_loveChocolatesUsed"), 0);
