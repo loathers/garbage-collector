@@ -11932,7 +11932,7 @@ function kramcoGuaranteed() {
 var monsterManuelCached = undefined;
 function monsterManuelAvailable() {
   if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
-  monsterManuelCached = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)("questlog.php?which=6").includes("Monster Manuel");
+  monsterManuelCached = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)("questlog.php?which=3").includes("Monster Manuel");
   return Boolean(monsterManuelCached);
 }
 
