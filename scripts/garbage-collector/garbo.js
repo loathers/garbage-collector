@@ -16577,7 +16577,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  (0,dist.sinceKolmafiaRevision)(20767);
+  (0,dist.sinceKolmafiaRevision)(20815);
 
   if ((0,dist.get)("valueOfAdventure") <= 3500) {
     throw "Your valueOfAdventure is set to ".concat((0,dist.get)("valueOfAdventure"), ", which is too low for barf farming to be worthwhile. If you forgot to set it, use \"set valueOfAdventure = XXXX\" to set it to your marginal turn meat value.");
