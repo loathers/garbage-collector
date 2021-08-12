@@ -28,6 +28,7 @@ import {
   $familiar,
   $item,
   $items,
+  $skill,
   $slot,
   $slots,
   $stat,
@@ -151,12 +152,18 @@ export function meatOutfit(
       forceEquip.push($item`Kramco Sausage-o-Matic™`);
     }
     // TODO: Fix pointer finger ring construction.
-    if (myClass() !== $class`Seal Clubber`) {
+    forceEquip.push($item`mafia pointer finger ring`);
+    if (myClass() !== $class`Seal Clubber` && have($skill`Furious Wallop`)) {
       if (have($item`haiku katana`)) {
         forceEquip.push($item`haiku katana`);
       } else if (have($item`unwrapped knock-off retro superhero cape`)) {
         if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
         forceEquip.push($item`ice nine`);
+        forceEquip.push($item`unwrapped knock-off retro superhero cape`);
+      } else if (have($item`Operation Patriot Shield`)) {
+        forceEquip.push($item`Operation Patriot Shield`)
+      } else {
+        forceEquip.splice(forceEquip.indexOf($item`mafia pointer finger ring`));
       }
     }
     if (
@@ -167,7 +174,6 @@ export function meatOutfit(
     ) {
       forceEquip.push($item`protonic accelerator pack`);
     }
-    forceEquip.push($item`mafia pointer finger ring`);
   }
   if (myFamiliar() === $familiar`Obtuse Angel`) {
     forceEquip.push($item`quake of arrows`);
