@@ -6,6 +6,8 @@ import {
   equip,
   equippedAmount,
   fullnessLimit,
+  getWorkshed,
+  haveEffect,
   haveEquipped,
   inebrietyLimit,
   mallPrice,
@@ -20,6 +22,7 @@ import {
 } from "kolmafia";
 import {
   $class,
+  $effect,
   $familiar,
   $item,
   $items,
@@ -209,7 +212,16 @@ function pantsgiving() {
       : turnArray.findIndex((x) => count < x);
   const turns = turnArray[index] || 50000;
   if (turns - count > estimatedTurns()) return new Map<Item, number>();
-  const sinusVal = 50 * 1.0 * baseMeat; //if we add mayozapine support, fiddle with this
+  const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
+  const expectedUseableSinusTurns = globalOptions.ascending
+    ? Math.min(
+        estimatedTurns() - haveEffect($effect`Kicked in the Sinuses`),
+        expectedSinusTurns,
+        estimatedTurns() - (turns - count)
+      )
+    : expectedSinusTurns;
+  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
+  if (turns - count > estimatedTurns()) return new Map<Item, number>();
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -

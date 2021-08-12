@@ -53,6 +53,9 @@ import { baseMeat, clamp, ensureEffect, setChoice } from "./lib";
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
 
+const saladFork = $item`Ol' Scratch's salad fork`;
+const frostyMug = $item`Frosty's frosty mug`;
+
 function eatSafe(qty: number, item: Item) {
   acquire(qty, $item`Special Seasoning`);
   acquire(qty, item);
@@ -171,7 +174,10 @@ function fillStomach() {
   while (myFullness() + 5 <= fullnessLimit()) {
     if (myMaxhp() < 1000) maximize("0.05hp, hot res", false);
     const count = Math.floor(Math.min((fullnessLimit() - myFullness()) / 5, mySpleenUse() / 5));
-    eatSpleen(count, $item`Ol' Scratch's salad fork`);
+    if (mallPrice(saladFork) < (55 * MPA) / 6) {
+      acquire(count, saladFork, (55 * MPA) / 6, false);
+      drink(Math.min(count, itemAmount(saladFork)), saladFork);
+    }
     mindMayo(Mayo.flex, count);
     eatSpleen(count, $item`extra-greasy slider`);
     fillSomeSpleen();
@@ -217,7 +223,10 @@ function fillLiver() {
   while (myInebriety() + 5 <= inebrietyLimit()) {
     if (myMaxhp() < 1000) maximize("0.05hp, cold res", false);
     const count = Math.floor(Math.min((inebrietyLimit() - myInebriety()) / 5, mySpleenUse() / 5));
-    drinkSpleen(count, $item`Frosty's frosty mug`);
+    if (mallPrice(frostyMug) < (55 * MPA) / 6) {
+      acquire(count, frostyMug, (55 * MPA) / 6, false);
+      drink(Math.min(count, itemAmount(frostyMug)), frostyMug);
+    }
     drinkSpleen(count, $item`jar of fermented pickle juice`);
     fillSomeSpleen();
   }
@@ -233,28 +242,31 @@ export function runDiet(): void {
   }
 
   const { bestSpleenItem } = getBestSpleenItems();
-
-  if (mySpleenUse() === 0) {
-    if (!have($effect`Eau d' Clochard`)) {
-      if (!have($item`beggin' cologne`)) {
-        const equilibriumPrice =
-          (baseMeat *
-            numericModifier($effect`Eau d' Clochard`, "Meat") *
-            numericModifier($item`beggin' cologne`, "Effect Duration") +
-            Math.min(numericModifier($item`beggin' cologne`, "Effect Duration"), embezzlerCount()) *
-              750) /
-            100 -
-          valuePerSpleen(bestSpleenItem);
-        if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
-      }
-      if (have($item`beggin' cologne`)) {
-        chew(1, $item`beggin' cologne`);
+  const embezzlers = embezzlerCount();
+  if (embezzlers) {
+    if (mySpleenUse() < spleenLimit()) {
+      if (!have($effect`Eau d' Clochard`)) {
+        if (!have($item`beggin' cologne`)) {
+          const equilibriumPrice =
+            (baseMeat *
+              numericModifier($effect`Eau d' Clochard`, "Meat") *
+              numericModifier($item`beggin' cologne`, "Effect Duration") +
+              Math.min(numericModifier($item`beggin' cologne`, "Effect Duration"), embezzlers) *
+                750) /
+              100 -
+            valuePerSpleen(bestSpleenItem);
+          if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
+        }
+        if (have($item`beggin' cologne`)) {
+          chew(1, $item`beggin' cologne`);
+        }
       }
     }
-    if (have($skill`Sweet Synthesis`)) ensureEffect($effect`Synthesis: Collection`);
-    if (have($item`body spradium`)) ensureEffect($effect`Boxing Day Glow`);
+    if (have($skill`Sweet Synthesis`) && mySpleenUse() < spleenLimit())
+      ensureEffect($effect`Synthesis: Collection`);
+    if (have($item`body spradium`) && mySpleenUse() < spleenLimit())
+      ensureEffect($effect`Boxing Day Glow`);
   }
-
   useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
 
   const loveChocolateCount = Math.max(3 - Math.floor(20000 / MPA) - get("_loveChocolatesUsed"), 0);

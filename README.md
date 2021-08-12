@@ -12,10 +12,10 @@ Before running Garbage Collector, there are a few tasks you must do.
 
 # Set the value of a marginal adventure
 
-You need to let Garbo know how much it can expect your turns to be worth near the end of the day. One easy way to do this is to set it at 3000 meat manually, then examine your session logs to see how much meat you were actually generating in the last 10-15 turns of the day. To set this, run the following command in the KoLMafia CLI:
+You need to let Garbo know how much it can expect your turns to be worth near the end of the day. One easy way to do this is to set it at 3501 meat manually, then examine your session logs to see how much meat you were actually generating in the last 10-15 turns of the day. To set this, run the following command in the KoLMafia CLI:
 
 ```
-set valueOfAdventure = 3000;
+set valueOfAdventure = 3501;
 ```
 
 # Set your Stash and VIP clans

@@ -35,6 +35,7 @@ import {
   $stat,
   $thrall,
   adventureMacro,
+  ChateauMantegna,
   get,
   have,
   property,
@@ -279,6 +280,10 @@ export function configureMisc(): void {
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
     SourceTerminal.enquiry($effect`familiar.enq`);
+  }
+
+  if (have($item`BittyCar MeatCar`) && get("_bittycar") !== "meatcar") {
+    use(1, $item`BittyCar MeatCar`);
   }
 
   if (get("_VYKEACompanionLevel") === 0) {
@@ -580,7 +585,7 @@ export function hipsterFishing(): void {
       targetLocation,
       Macro.if_(
         `(monsterid 969) || (monsterid 970) || (monsterid 971) || (monsterid 972) || (monsterid 973) || (monstername Black Crayon *)`,
-        Macro.meatKill()
+        Macro.basicCombat()
       ).step(runSource.macro)
     );
   }
@@ -595,4 +600,10 @@ export function martini(): void {
     return;
   }
   cliExecute("Briefcase collect");
+}
+
+export function chateauDesk(): void {
+  if (ChateauMantegna.have() && !get("_chateauDeskHarvested")) {
+    visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false);
+  }
 }

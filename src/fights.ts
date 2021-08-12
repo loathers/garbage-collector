@@ -723,7 +723,7 @@ class FreeFight {
       freeFightMood().execute();
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
-      withMacro(Macro.meatKill(), this.run);
+      withMacro(Macro.basicCombat(), this.run);
       horseradish();
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
@@ -740,7 +740,7 @@ const pygmyMacro = Macro.if_(
     Macro.trySkill("Feel Hatred").item($item`divine champagne popper`)
   )
   .if_("monstername pygmy janitor", Macro.item($item`tennis ball`))
-  .if_("monstername time-spinner prank", Macro.meatKill())
+  .if_("monstername time-spinner prank", Macro.basicCombat())
   .abort();
 
 const freeFightSources = [
@@ -805,6 +805,7 @@ const freeFightSources = [
   new FreeFight(
     () => have($item`[glitch season reward name]`) && !get("_glitchMonsterFights"),
     () => {
+      retrieveItem($item`[glitch season reward name]`);
       visitUrl("inv_eat.php?pwd&whichitem=10207");
       runCombat();
     }
@@ -832,7 +833,16 @@ const freeFightSources = [
         get("lastGuildStoreOpen") === myAscensions() ? 1 : 3,
         $item`seal-blubber candle`
       );
-      use(figurine);
+      withMacro(
+        Macro.startCombat()
+          .trySkill("Furious Wallop")
+          .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+          .while_("hasskill Thrust-Smack", Macro.skill($skill`Thrust-Smack`))
+          .while_("hasskill Lunge Smack", Macro.skill($skill`Lunge Smack`))
+          .attack()
+          .repeat(),
+        () => use(figurine)
+      );
     },
     {
       requirements: () => [new Requirement(["Club"], {})],
@@ -1018,7 +1028,7 @@ const freeFightSources = [
       }
       adventureMacro(
         $location`Your Mushroom Garden`,
-        Macro.if_("hasskill macrometeorite", Macro.trySkill("Portscan")).meatKill()
+        Macro.if_("hasskill macrometeorite", Macro.trySkill("Portscan")).basicCombat()
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
@@ -1044,7 +1054,7 @@ const freeFightSources = [
         $location`Your Mushroom Garden`,
         Macro.if_("monstername government agent", Macro.skill("Macrometeorite")).if_(
           "monstername piranha plant",
-          Macro.if_("hasskill macrometeorite", Macro.trySkill("Portscan")).meatKill()
+          Macro.if_("hasskill macrometeorite", Macro.trySkill("Portscan")).basicCombat()
         )
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
@@ -1066,7 +1076,39 @@ const freeFightSources = [
 
   new FreeFight(
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
-    () => adv1($location`The Deep Machine Tunnels`, -1, ""),
+    () => {
+      if (saleValue($item`abstraction: certainty`) >= saleValue($item`abstraction: thought`)) {
+        acquire(1, $item`abstraction: thought`, saleValue($item`abstraction: certainty`), false);
+      }
+      if (saleValue($item`abstraction: joy`) >= saleValue($item`abstraction: action`)) {
+        acquire(1, $item`abstraction: action`, saleValue($item`abstraction: joy`), false);
+      }
+      if (saleValue($item`abstraction: motion`) >= saleValue($item`abstraction: sensation`)) {
+        acquire(1, $item`abstraction: sensation`, saleValue($item`abstraction: motion`), false);
+      }
+      withMacro(
+        Macro.externalIf(
+          saleValue($item`abstraction: certainty`) >= saleValue($item`abstraction: thought`),
+          Macro.if_(
+            "monstername Perceiver of Sensations",
+            Macro.tryItem($item`abstraction: thought`)
+          )
+        )
+          .externalIf(
+            saleValue($item`abstraction: joy`) >= saleValue($item`abstraction: action`),
+            Macro.if_("monstername Thinker of Thoughts", Macro.tryItem($item`abstraction: action`))
+          )
+          .externalIf(
+            saleValue($item`abstraction: motion`) >= saleValue($item`abstraction: sensation`),
+            Macro.if_(
+              "monstername Performer of Actions",
+              Macro.tryItem($item`abstraction: sensation`)
+            )
+          )
+          .basicCombat(),
+        () => adv1($location`The Deep Machine Tunnels`, -1, "")
+      );
+    },
     {
       familiar: () => $familiar`Machine Elf`,
     }
@@ -1096,7 +1138,7 @@ const freeFightSources = [
         : 0,
     () => {
       nepQuest();
-      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").meatKill());
+      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").basicCombat());
       if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
         print("Found Gerald/ine!", "blue");
         setChoice(1324, 5);
@@ -1184,6 +1226,17 @@ const freeKillSources = [
       withMacro(Macro.skill("Sing Along").skill("Asdon Martin: Missile Launcher"), () =>
         use($item`drum machine`)
       );
+    },
+    {
+      familiar: bestFairy,
+      requirements: () => [new Requirement(["100 Item Drop"], {})],
+    }
+  ),
+
+  new FreeFight(
+    () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
+    () => {
+      withMacro(Macro.skill("Sing Along").skill("Shocking Lick"), () => use($item`drum machine`));
     },
     {
       familiar: bestFairy,
@@ -1325,6 +1378,6 @@ function doSausage() {
   if (!kramcoGuaranteed()) return;
   useFamiliar(freeFightFamiliar());
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
-  adventureMacroAuto(prepWandererZone(), Macro.meatKill());
+  adventureMacroAuto(prepWandererZone(), Macro.basicCombat());
   setAutoAttack(0);
 }
