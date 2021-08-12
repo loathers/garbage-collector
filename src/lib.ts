@@ -420,7 +420,10 @@ const freeRuns: FreeRun[] = [
 
   new FreeRun(
     "Scrapbook",
-    () => have($item`familiar scrapbook`) && get("scrapbookCharges") >= 100,
+    () => {
+      visitUrl("desc_item.php?whichitem=463063785");
+      return have($item`familiar scrapbook`) && get("scrapbookCharges") >= 100;
+    },
     Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill(
       "Show Your Boring Familiar Pictures"
     ),
