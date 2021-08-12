@@ -585,7 +585,7 @@ export function hipsterFishing(): void {
       targetLocation,
       Macro.if_(
         `(monsterid 969) || (monsterid 970) || (monsterid 971) || (monsterid 972) || (monsterid 973) || (monstername Black Crayon *)`,
-        Macro.meatKill()
+        Macro.basicCombat()
       ).step(runSource.macro)
     );
   }
