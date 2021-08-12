@@ -161,7 +161,7 @@ export function meatOutfit(
         forceEquip.push($item`ice nine`);
         forceEquip.push($item`unwrapped knock-off retro superhero cape`);
       } else if (have($item`Operation Patriot Shield`)) {
-        forceEquip.push($item`Operation Patriot Shield`)
+        forceEquip.push($item`Operation Patriot Shield`);
       } else {
         forceEquip.splice(forceEquip.indexOf($item`mafia pointer finger ring`));
       }
@@ -169,8 +169,7 @@ export function meatOutfit(
     if (
       have($item`protonic accelerator pack`) &&
       get("questPAGhost") === "unstarted" &&
-      get("nextParanormalActivity") <= totalTurnsPlayed() &&
-      !forceEquip.includes($item`ice nine`)
+      get("nextParanormalActivity") <= totalTurnsPlayed()
     ) {
       forceEquip.push($item`protonic accelerator pack`);
     }
