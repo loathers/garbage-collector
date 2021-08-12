@@ -15,6 +15,7 @@ import {
   numericModifier,
   print,
   restoreMp,
+  retrieveItem,
   toUrl,
   use,
   useFamiliar,
@@ -247,7 +248,7 @@ export function determineDraggableZoneAndEnsureAccess(
       return defaultLocation;
     } else if (!have(guzzlrBooze)) {
       print("just picking up some booze before we roll", "blue");
-      Guzzlr.getBooze();
+      retrieveItem(guzzlrBooze);
     }
   }
   return guzzlZone;
