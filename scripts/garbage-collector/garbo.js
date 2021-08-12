@@ -15814,7 +15814,7 @@ function fillStomach() {
 
     if ((0,external_kolmafia_.mallPrice)(saladFork) < 55 * MPA / 6) {
       acquire(count, saladFork, 55 * MPA / 6, false);
-      (0,external_kolmafia_.drink)(Math.min(count, (0,external_kolmafia_.itemAmount)(saladFork)), saladFork);
+      (0,external_kolmafia_.eat)(Math.min(count, (0,external_kolmafia_.itemAmount)(saladFork)), saladFork);
     }
 
     mindMayo(Mayo.flex, count);
