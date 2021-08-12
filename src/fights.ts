@@ -67,6 +67,7 @@ import {
   get,
   have,
   maximizeCached,
+  property,
   set,
   SourceTerminal,
   TunnelOfLove,
@@ -103,11 +104,10 @@ import {
 } from "./outfit";
 import { bathroomFinance } from "./potions";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
-import { getString } from "libram/dist/property";
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
-  if (getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
+  if (property.getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
   cliExecute("fax send");
   return false;
 }
@@ -440,7 +440,7 @@ function embezzlerSetup() {
     !have($item`shaking 4-d camera`) &&
     averageEmbezzlerNet - averageTouristNet > mallPrice($item`4-d camera`)
   ) {
-    retrieveItem($item`4-d camera`);
+    property.withProperty("autoSatisfyWithCloset", true, () => retrieveItem($item`4-d camera`));
   }
 
   if (
@@ -449,7 +449,9 @@ function embezzlerSetup() {
     averageEmbezzlerNet - averageTouristNet >
       mallPrice($item`snow berries`) + mallPrice($item`ice harvest`) * 3
   ) {
-    retrieveItem($item`unfinished ice sculpture`);
+    property.withProperty("autoSatisfyWithCloset", true, () =>
+      retrieveItem($item`unfinished ice sculpture`)
+    );
   }
 
   // Fix invalid copiers (caused by ascending or combat text-effects)
