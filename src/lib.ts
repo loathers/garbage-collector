@@ -498,7 +498,7 @@ export function fairyMultiplier(familiar: Familiar): number {
   if (familiar === $familiar`Mutant Fire Ant`)
     return numericModifier(familiar, "Fairy Effectiveness", 1, $item`none`);
   const itemBonus = numericModifier(familiar, "Item Drop", 1, $item`none`);
-  return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2;
+  return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
 
 let monsterManuelCached: boolean | undefined = undefined;
