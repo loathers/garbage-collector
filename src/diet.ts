@@ -215,8 +215,8 @@ export function runDiet(): void {
   }
 
   const { bestSpleenItem } = getBestSpleenItems();
-
-  if (embezzlerCount()) {
+  const embezzlers = embezzlerCount();
+  if (embezzlers) {
     if (mySpleenUse() < spleenLimit()) {
       if (!have($effect`Eau d' Clochard`)) {
         if (!have($item`beggin' cologne`)) {
@@ -224,10 +224,7 @@ export function runDiet(): void {
             (baseMeat *
               numericModifier($effect`Eau d' Clochard`, "Meat") *
               numericModifier($item`beggin' cologne`, "Effect Duration") +
-              Math.min(
-                numericModifier($item`beggin' cologne`, "Effect Duration"),
-                embezzlerCount()
-              ) *
+              Math.min(numericModifier($item`beggin' cologne`, "Effect Duration"), embezzlers) *
                 750) /
               100 -
             valuePerSpleen(bestSpleenItem);
