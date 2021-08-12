@@ -805,6 +805,7 @@ const freeFightSources = [
   new FreeFight(
     () => have($item`[glitch season reward name]`) && !get("_glitchMonsterFights"),
     () => {
+      retrieveItem($item`[glitch season reward name]`);
       visitUrl("inv_eat.php?pwd&whichitem=10207");
       runCombat();
     }
