@@ -440,7 +440,7 @@ function embezzlerSetup() {
     !have($item`shaking 4-d camera`) &&
     averageEmbezzlerNet - averageTouristNet > mallPrice($item`4-d camera`)
   ) {
-    retrieveItem($item`4-d camera`);
+    property.withProperty("autoSatisfyWithCloset", true, () => retrieveItem($item`4-d camera`));
   }
 
   if (
