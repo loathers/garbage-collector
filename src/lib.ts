@@ -187,7 +187,9 @@ function digitizedMonstersRemaining(): number {
   return untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1);
 }
 
-export function draggableFightZone(type: draggableFight = draggableFight.WANDERER): Location {
+export function determineDraggableZoneAndEnsureAccess(
+  type: draggableFight = draggableFight.WANDERER
+): Location {
   const defaultLocation =
     get("_spookyAirportToday") || get("spookyAirportAlways")
       ? $location`The Deep Dark Jungle`

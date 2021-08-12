@@ -50,8 +50,8 @@ import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
   coinmasterPrice,
+  determineDraggableZoneAndEnsureAccess,
   draggableFight,
-  draggableFightZone,
   ensureEffect,
   findRun,
   propertyManager,
@@ -588,7 +588,7 @@ export function hipsterFishing(): void {
   } else return;
 
   while (findRun(false) && get("_hipsterAdv") < 7) {
-    const targetLocation = draggableFightZone(draggableFight.BACKUP);
+    const targetLocation = determineDraggableZoneAndEnsureAccess(draggableFight.BACKUP);
     const runSource = findRun(false);
     if (!runSource) return;
     if (runSource.prepare) runSource.prepare();

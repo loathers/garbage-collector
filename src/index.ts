@@ -71,7 +71,7 @@ import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import {
-  draggableFightZone,
+  determineDraggableZoneAndEnsureAccess,
   kramcoGuaranteed,
   propertyManager,
   questStep,
@@ -209,11 +209,11 @@ function barfTurn() {
   ) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`"I Voted!" sticker` })]);
-    adventureMacroAuto(draggableFightZone(), Macro.basicCombat());
+    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
-    adventureMacroAuto(draggableFightZone(), Macro.basicCombat());
+    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
     if (
       have($item`unwrapped knock-off retro superhero cape`) &&
@@ -230,7 +230,7 @@ function barfTurn() {
         (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
         !have($item`envyfish egg`)
         ? $location`The Briny Deeps`
-        : draggableFightZone()
+        : determineDraggableZoneAndEnsureAccess()
       : $location`Barf Mountain`;
 
     const underwater = location === $location`The Briny Deeps`;
