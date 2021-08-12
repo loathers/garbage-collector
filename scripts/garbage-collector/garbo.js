@@ -14565,7 +14565,7 @@ function pantsgiving() {
   var turns = turnArray[index] || 50000;
   if (turns - count > (0,globalvars/* estimatedTurns */.AN)()) return new Map();
   var expectedSinusTurns = (0,external_kolmafia_.getWorkshed)() === (0,dist.$item)(outfit_templateObject52 || (outfit_templateObject52 = outfit_taggedTemplateLiteral(["portable Mayo Clinic"]))) ? 100 : 50;
-  var expectedUseableSinusTurns = globalvars/* globalOptions.ascending */.Xe.ascending ? Math.min((0,globalvars/* estimatedTurns */.AN)() - (0,external_kolmafia_.haveEffect)((0,dist.$effect)(outfit_templateObject53 || (outfit_templateObject53 = outfit_taggedTemplateLiteral(["Kicked in the Sinuses"])))), expectedSinusTurns) : expectedSinusTurns;
+  var expectedUseableSinusTurns = globalvars/* globalOptions.ascending */.Xe.ascending ? Math.min((0,globalvars/* estimatedTurns */.AN)() - (0,external_kolmafia_.haveEffect)((0,dist.$effect)(outfit_templateObject53 || (outfit_templateObject53 = outfit_taggedTemplateLiteral(["Kicked in the Sinuses"])))), expectedSinusTurns, (0,globalvars/* estimatedTurns */.AN)() - (turns - count)) : expectedSinusTurns;
   var sinusVal = expectedUseableSinusTurns * 1.0 * lib/* baseMeat */.Vq;
   if (turns - count > (0,globalvars/* estimatedTurns */.AN)()) return new Map();
   var fullnessValue = sinusVal + (0,dist.get)("valueOfAdventure") * 6.5 - ((0,external_kolmafia_.mallPrice)((0,dist.$item)(outfit_templateObject54 || (outfit_templateObject54 = outfit_taggedTemplateLiteral(["jumping horseradish"])))) + (0,external_kolmafia_.mallPrice)((0,dist.$item)(outfit_templateObject55 || (outfit_templateObject55 = outfit_taggedTemplateLiteral(["Special Seasoning"])))));
