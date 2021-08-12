@@ -283,7 +283,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(20767);
+  sinceKolmafiaRevision(20815);
 
   if (get("valueOfAdventure") <= 3500) {
     throw `Your valueOfAdventure is set to ${get(
