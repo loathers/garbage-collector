@@ -176,7 +176,7 @@ function fillStomach() {
     const count = Math.floor(Math.min((fullnessLimit() - myFullness()) / 5, mySpleenUse() / 5));
     if (mallPrice(saladFork) < (55 * MPA) / 6) {
       acquire(count, saladFork, (55 * MPA) / 6, false);
-      drink(Math.min(count, itemAmount(saladFork)), saladFork);
+      eat(Math.min(count, itemAmount(saladFork)), saladFork);
     }
     mindMayo(Mayo.flex, count);
     eatSpleen(count, $item`extra-greasy slider`);
