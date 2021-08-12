@@ -15865,20 +15865,24 @@ function runDiet() {
   var _getBestSpleenItems2 = getBestSpleenItems(),
       bestSpleenItem = _getBestSpleenItems2.bestSpleenItem;
 
-  if ((0,external_kolmafia_.mySpleenUse)() === 0) {
-    if (!(0,dist.have)((0,dist.$effect)(diet_templateObject27 || (diet_templateObject27 = diet_taggedTemplateLiteral(["Eau d' Clochard"]))))) {
-      if (!(0,dist.have)((0,dist.$item)(diet_templateObject28 || (diet_templateObject28 = diet_taggedTemplateLiteral(["beggin' cologne"]))))) {
-        var equilibriumPrice = (lib/* baseMeat */.Vq * (0,external_kolmafia_.numericModifier)((0,dist.$effect)(diet_templateObject29 || (diet_templateObject29 = diet_taggedTemplateLiteral(["Eau d' Clochard"]))), "Meat") * (0,external_kolmafia_.numericModifier)((0,dist.$item)(diet_templateObject30 || (diet_templateObject30 = diet_taggedTemplateLiteral(["beggin' cologne"]))), "Effect Duration") + Math.min((0,external_kolmafia_.numericModifier)((0,dist.$item)(diet_templateObject31 || (diet_templateObject31 = diet_taggedTemplateLiteral(["beggin' cologne"]))), "Effect Duration"), embezzlerCount()) * 750) / 100 - valuePerSpleen(bestSpleenItem);
-        if (equilibriumPrice > 0) (0,external_kolmafia_.buy)(1, (0,dist.$item)(diet_templateObject32 || (diet_templateObject32 = diet_taggedTemplateLiteral(["beggin' cologne"]))), equilibriumPrice);
-      }
+  var embezzlers = embezzlerCount();
 
-      if ((0,dist.have)((0,dist.$item)(diet_templateObject33 || (diet_templateObject33 = diet_taggedTemplateLiteral(["beggin' cologne"]))))) {
-        (0,external_kolmafia_.chew)(1, (0,dist.$item)(diet_templateObject34 || (diet_templateObject34 = diet_taggedTemplateLiteral(["beggin' cologne"]))));
+  if (embezzlers) {
+    if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) {
+      if (!(0,dist.have)((0,dist.$effect)(diet_templateObject27 || (diet_templateObject27 = diet_taggedTemplateLiteral(["Eau d' Clochard"]))))) {
+        if (!(0,dist.have)((0,dist.$item)(diet_templateObject28 || (diet_templateObject28 = diet_taggedTemplateLiteral(["beggin' cologne"]))))) {
+          var equilibriumPrice = (lib/* baseMeat */.Vq * (0,external_kolmafia_.numericModifier)((0,dist.$effect)(diet_templateObject29 || (diet_templateObject29 = diet_taggedTemplateLiteral(["Eau d' Clochard"]))), "Meat") * (0,external_kolmafia_.numericModifier)((0,dist.$item)(diet_templateObject30 || (diet_templateObject30 = diet_taggedTemplateLiteral(["beggin' cologne"]))), "Effect Duration") + Math.min((0,external_kolmafia_.numericModifier)((0,dist.$item)(diet_templateObject31 || (diet_templateObject31 = diet_taggedTemplateLiteral(["beggin' cologne"]))), "Effect Duration"), embezzlers) * 750) / 100 - valuePerSpleen(bestSpleenItem);
+          if (equilibriumPrice > 0) (0,external_kolmafia_.buy)(1, (0,dist.$item)(diet_templateObject32 || (diet_templateObject32 = diet_taggedTemplateLiteral(["beggin' cologne"]))), equilibriumPrice);
+        }
+
+        if ((0,dist.have)((0,dist.$item)(diet_templateObject33 || (diet_templateObject33 = diet_taggedTemplateLiteral(["beggin' cologne"]))))) {
+          (0,external_kolmafia_.chew)(1, (0,dist.$item)(diet_templateObject34 || (diet_templateObject34 = diet_taggedTemplateLiteral(["beggin' cologne"]))));
+        }
       }
     }
 
-    if ((0,dist.have)((0,dist.$skill)(diet_templateObject35 || (diet_templateObject35 = diet_taggedTemplateLiteral(["Sweet Synthesis"]))))) (0,lib/* ensureEffect */.pq)((0,dist.$effect)(diet_templateObject36 || (diet_templateObject36 = diet_taggedTemplateLiteral(["Synthesis: Collection"]))));
-    if ((0,dist.have)((0,dist.$item)(diet_templateObject37 || (diet_templateObject37 = diet_taggedTemplateLiteral(["body spradium"]))))) (0,lib/* ensureEffect */.pq)((0,dist.$effect)(diet_templateObject38 || (diet_templateObject38 = diet_taggedTemplateLiteral(["Boxing Day Glow"]))));
+    if ((0,dist.have)((0,dist.$skill)(diet_templateObject35 || (diet_templateObject35 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) && (0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) (0,lib/* ensureEffect */.pq)((0,dist.$effect)(diet_templateObject36 || (diet_templateObject36 = diet_taggedTemplateLiteral(["Synthesis: Collection"]))));
+    if ((0,dist.have)((0,dist.$item)(diet_templateObject37 || (diet_templateObject37 = diet_taggedTemplateLiteral(["body spradium"])))) && (0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) (0,lib/* ensureEffect */.pq)((0,dist.$effect)(diet_templateObject38 || (diet_templateObject38 = diet_taggedTemplateLiteral(["Boxing Day Glow"]))));
   }
 
   useIfUnused((0,dist.$item)(diet_templateObject39 || (diet_templateObject39 = diet_taggedTemplateLiteral(["fancy chocolate car"]))), (0,dist.get)("_chocolatesUsed") === 0, 2 * MPA);
