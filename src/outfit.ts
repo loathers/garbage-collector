@@ -221,13 +221,13 @@ function pantsgiving() {
       )
     : expectedSinusTurns;
   const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
-  if (turns - count > estimatedTurns()) return new Map<Item, number>();
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`Special Seasoning`));
   return new Map<Item, number>([[$item`Pantsgiving`, fullnessValue / (turns * 0.9)]]);
 }
+
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
 function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&
@@ -243,6 +243,7 @@ function cheeses(embezzlerUp: boolean) {
       )
     : [];
 }
+
 function snowSuit(equipMode: BonusEquipMode) {
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
@@ -287,13 +288,19 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 }
 function dropsItems(equipMode: BonusEquipMode) {
   const isFree = [BonusEquipMode.FREE, BonusEquipMode.DMT].some((mode) => mode === equipMode);
-  return new Map<Item, number>([
-    [$item`mafia thumb ring`, !isFree ? 300 : 0],
-    [$item`lucky gold ring`, 400],
-    [$item`Mr. Cheeng's spectacles`, 250],
-    [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
-    [$item`Mr. Screege's spectacles`, 180],
-    ...snowSuit(equipMode),
-    ...mayflowerBouquet(equipMode),
+  const itemMap = new Map<Item, number>([
+    ...(have($item`Snow Suit`) ? snowSuit(equipMode) : []),
+    ...(have($item`Mayflower bouquet`) ? mayflowerBouquet(equipMode) : [])
   ]);
+  if (have($item`mafia thumb ring`) && !isFree)
+    itemMap.set($item`mafia thumb ring`, 300);
+  if (have($item`lucky gold ring`))
+    itemMap.set($item`lucky gold ring`, 400);
+  if (have($item`Mr. Cheeng's spectacles`))
+    itemMap.set($item`Mr. Cheeng's spectacles`, 250);
+  if (get("_pantogramModifier").includes("Drops Items"))
+    itemMap.set($item`pantogram pants`, 100);
+  if (have($item`Mr. Screege's spectacles`))
+    itemMap.set($item`Mr. Screege's spectacles`, 180);
+  return itemMap;
 }
