@@ -490,7 +490,7 @@ export function kramcoGuaranteed(): boolean {
 let monsterManuelCached: boolean | undefined = undefined;
 export function monsterManuelAvailable(): boolean {
   if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
-  monsterManuelCached = visitUrl("questlog.php?which=6").includes("Monster Manuel");
+  monsterManuelCached = visitUrl("questlog.php?which=3").includes("Monster Manuel");
   return Boolean(monsterManuelCached);
 }
 
