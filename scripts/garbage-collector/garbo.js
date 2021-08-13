@@ -15496,7 +15496,7 @@ function freeFights() {
   lib/* propertyManager.setChoices */.kr.setChoices({
     1310: 3,
     //god lob stats
-    1119: 5,
+    1119: 6,
     //escape DMT
     1387: 2,
     //"You will go find two friends and meet me here."
