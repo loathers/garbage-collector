@@ -151,7 +151,7 @@ export function meatOutfit(
     // TODO: Fix pointer finger ring construction.
     if (have($item`mafia pointer finger ring`)) {
       forceEquip.push($item`mafia pointer finger ring`);
-      if (myClass() !== $class`Seal Clubber` && have($skill`Furious Wallop`)) {
+      if (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`)) {
         if (have($item`haiku katana`)) {
           forceEquip.push($item`haiku katana`);
         } else if (have($item`unwrapped knock-off retro superhero cape`)) {

@@ -6,6 +6,7 @@ import {
   getCampground,
   getCounters,
   guildStoreAvailable,
+  haveEquipped,
   inebrietyLimit,
   itemAmount,
   myAdventures,
@@ -198,7 +199,7 @@ function barfTurn() {
     // d. get dressed
     meatOutfit(embezzlerUp, [], underwater);
     if (
-      have($item`unwrapped knock-off retro superhero cape`) &&
+      haveEquipped($item`unwrapped knock-off retro superhero cape`) &&
       (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
     ) {
       cliExecute("retrocape robot kill");
