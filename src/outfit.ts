@@ -205,7 +205,7 @@ export function meatOutfit(
       {
         forceEquip,
         preventEquip: [
-          ...$items`broken champagne bottle, unwrapped knock-off retro superhero cape`,
+          ...$items`broken champagne bottle`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
@@ -233,6 +233,12 @@ export function meatOutfit(
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  if (
+    haveEquipped($item`unwrapped knock-off retro superhero cape`) &&
+    (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
+  ) {
+    cliExecute("retrocape robot kill");
+  }
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (const airSource of waterBreathingEquipment) {

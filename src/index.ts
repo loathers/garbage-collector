@@ -136,12 +136,6 @@ function barfTurn() {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
 
-  if (
-    have($item`unwrapped knock-off retro superhero cape`) &&
-    (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
-  ) {
-    cliExecute("retrocape robot kill");
-  }
   tryFillLatte();
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
