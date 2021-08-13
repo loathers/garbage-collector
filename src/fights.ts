@@ -1252,7 +1252,7 @@ export function freeFights(): void {
   visitUrl("place.php?whichplace=town_wrong");
   propertyManager.setChoices({
     1310: 3, //god lob stats
-    1119: 5, //escape DMT
+    1119: 6, //escape DMT
     1387: 2, //"You will go find two friends and meet me here."
     1324: 5, //Fight a random partier
   });
