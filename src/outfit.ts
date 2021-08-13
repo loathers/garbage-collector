@@ -276,7 +276,7 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
       saleValue($item`upsy daisy`) +
       saleValue($item`lesser grodulated violet`) +
       saleValue($item`half-orchid`) +
-      saleValue($item`begpwnia`) / 5) *
+      saleValue($item`begpwnia`)) / 5 *
     Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
   return new Map<Item, number>([
     [
