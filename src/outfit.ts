@@ -202,6 +202,8 @@ export function meatOutfit(
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
 
+const pantsgivingBonuses = new Map<number, number>();
+
 function pantsgiving() {
   if (!have($item`Pantsgiving`)) return new Map<Item, number>();
   const count = get("_pantsgivingCount");
@@ -212,6 +214,8 @@ function pantsgiving() {
       : turnArray.findIndex((x) => count < x);
   const turns = turnArray[index] || 50000;
   if (turns - count > estimatedTurns()) return new Map<Item, number>();
+  const cachedBonus = pantsgivingBonuses.get(turns);
+  if (cachedBonus) return new Map([[$item`Pantsgiving`, cachedBonus]]);
   const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
   const expectedUseableSinusTurns = globalOptions.ascending
     ? Math.min(
@@ -226,6 +230,7 @@ function pantsgiving() {
     sinusVal +
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`Special Seasoning`));
+  pantsgivingBonuses.set(turns, fullnessValue / (turns * 0.9));
   return new Map<Item, number>([[$item`Pantsgiving`, fullnessValue / (turns * 0.9)]]);
 }
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
