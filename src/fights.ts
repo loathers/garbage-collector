@@ -1265,7 +1265,6 @@ const freeFightSources = [
   ),
 ];
 
-// TODO: Make FreeFight aware of findRun() so the run function doesn't need to prepare and apply the requirements
 const freeRunFightSources = [
   // Unlock Latte ingredients
   new FreeRunFight(
