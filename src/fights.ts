@@ -1137,7 +1137,7 @@ const freeFightSources = [
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
     () => {
       propertyManager.setChoices({
-        1119: 5, //escape DMT
+        1119: 6, //escape DMT
       });
       const thought =
         saleValue($item`abstraction: certainty`) >= saleValue($item`abstraction: thought`);
