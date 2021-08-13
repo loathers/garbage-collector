@@ -140,7 +140,7 @@ export function meatOutfit(
   requirements: Requirement[] = [],
   sea?: boolean
 ): void {
-  const forceEquip = [];
+  const forceEquip: Item[] = [];
   const additionalRequirements = [];
   const equipMode = embezzlerUp ? BonusEquipMode.EMBEZZLER : BonusEquipMode.BARF;
   const bjornChoice = pickBjorn(equipMode);
@@ -148,13 +148,22 @@ export function meatOutfit(
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
-    // TODO: Fix pointer finger ring construction.
+    if (
+      have($item`protonic accelerator pack`) &&
+      get("questPAGhost") === "unstarted" &&
+      get("nextParanormalActivity") <= totalTurnsPlayed()
+    ) {
+      forceEquip.push($item`protonic accelerator pack`);
+    }
     if (have($item`mafia pointer finger ring`)) {
       forceEquip.push($item`mafia pointer finger ring`);
       if (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`)) {
         if (have($item`haiku katana`)) {
           forceEquip.push($item`haiku katana`);
-        } else if (have($item`unwrapped knock-off retro superhero cape`)) {
+        } else if (
+          have($item`unwrapped knock-off retro superhero cape`) &&
+          forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
+        ) {
           if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
           forceEquip.push($item`ice nine`);
           forceEquip.push($item`unwrapped knock-off retro superhero cape`);
@@ -172,15 +181,6 @@ export function meatOutfit(
       forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`)
     ) {
       forceEquip.push($item`Kramco Sausage-o-Matic™`);
-    }
-
-    if (
-      have($item`protonic accelerator pack`) &&
-      get("questPAGhost") === "unstarted" &&
-      get("nextParanormalActivity") <= totalTurnsPlayed() &&
-      forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
-    ) {
-      forceEquip.push($item`protonic accelerator pack`);
     }
   }
   if (myFamiliar() === $familiar`Obtuse Angel`) {
