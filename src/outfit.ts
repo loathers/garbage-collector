@@ -203,7 +203,6 @@ export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerat
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
 
 const pantsgivingBonuses = new Map<number, number>();
-
 function pantsgiving() {
   if (!have($item`Pantsgiving`)) return new Map<Item, number>();
   const count = get("_pantsgivingCount");
@@ -213,9 +212,12 @@ function pantsgiving() {
       ? get("_pantsgivingFullness")
       : turnArray.findIndex((x) => count < x);
   const turns = turnArray[index] || 50000;
+
   if (turns - count > estimatedTurns()) return new Map<Item, number>();
+
   const cachedBonus = pantsgivingBonuses.get(turns);
   if (cachedBonus) return new Map([[$item`Pantsgiving`, cachedBonus]]);
+
   const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
   const expectedUseableSinusTurns = globalOptions.ascending
     ? Math.min(
@@ -225,13 +227,13 @@ function pantsgiving() {
       )
     : expectedSinusTurns;
   const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
-  if (turns - count > estimatedTurns()) return new Map<Item, number>();
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
     (mallPrice($item`jumping horseradish`) + mallPrice($item`Special Seasoning`));
-  pantsgivingBonuses.set(turns, fullnessValue / (turns * 0.9));
-  return new Map<Item, number>([[$item`Pantsgiving`, fullnessValue / (turns * 0.9)]]);
+  const pantsgivingBonus = fullnessValue / (turns * 0.9);
+  pantsgivingBonuses.set(turns, pantsgivingBonus);
+  return new Map<Item, number>([[$item`Pantsgiving`, pantsgivingBonus]]);
 }
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
 function cheeses(embezzlerUp: boolean) {
