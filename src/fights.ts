@@ -645,7 +645,9 @@ export function dailyFights(): void {
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
               nextFight.run({ location: $location`The Briny Deeps` });
             } else if (nextFight.draggable) {
-              const location = determineDraggableZoneAndEnsureAccess();
+              const type =
+                nextFight.name === "Backup" ? draggableFight.BACKUP : draggableFight.WANDERER;
+              const location = determineDraggableZoneAndEnsureAccess(type);
               setLocation(location);
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location });
