@@ -18,7 +18,6 @@ import {
   myPrimestat,
   numericModifier,
   retrieveItem,
-  runChoice,
   toSlot,
   totalTurnsPlayed,
   visitUrl,
@@ -101,7 +100,6 @@ export function checkLatte(): boolean {
   // Check latte ingredients
   if (have($item`latte lovers member's mug`)) {
     visitUrl("main.php?latte=1", false);
-    runChoice(2);
   }
 
   return have($item`latte lovers member's mug`);
