@@ -272,12 +272,9 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
   const sporadicMeatBonus = (40 * 0.125 * (equipMode === BonusEquipMode.BARF ? baseMeat : 0)) / 100;
   const averageFlowerValue =
-    (saleValue($item`tin magnolia`) +
-      saleValue($item`upsy daisy`) +
-      saleValue($item`lesser grodulated violet`) +
-      saleValue($item`half-orchid`) +
-      saleValue($item`begpwnia`)) / 5 *
-    Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
+    saleValue(
+      ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`
+    ) * Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
   return new Map<Item, number>([
     [
       $item`Mayflower bouquet`,
