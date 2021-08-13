@@ -78,6 +78,7 @@ import {
   baseMeat,
   clamp,
   ensureEffect,
+  estimatedTurns,
   findRun,
   FreeRun,
   kramcoGuaranteed,
@@ -97,7 +98,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { bathroomFinance } from "./potions";
-import { estimatedTurns, globalOptions, log } from "./globalvars";
+import { globalOptions, log } from "./globalvars";
 import { embezzlerCount, EmbezzlerFight, embezzlerMacro, embezzlerSources } from "./embezzlers";
 
 const firstChainMacro = () =>

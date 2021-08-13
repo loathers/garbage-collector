@@ -69,6 +69,7 @@ import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import {
+    estimatedTurns,
   kramcoGuaranteed,
   physicalImmuneMacro,
   prepWandererZone,
@@ -84,7 +85,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
-import { estimatedTurns, globalOptions, log } from "./globalvars";
+import { globalOptions, log } from "./globalvars";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;

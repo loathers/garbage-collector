@@ -48,6 +48,7 @@ import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
   ensureEffect,
+  estimatedTurns,
   findRun,
   prepWandererZone,
   propertyManager,
@@ -59,7 +60,6 @@ import {
 } from "./lib";
 import { freeFightOutfit } from "./outfit";
 import { withStash } from "./clan";
-import { estimatedTurns } from "./globalvars";
 import { Macro } from "./combat";
 
 export function voterSetup(): void {

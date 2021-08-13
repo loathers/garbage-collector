@@ -4,7 +4,11 @@ import {
   buy,
   cliExecute,
   haveSkill,
+  inebrietyLimit,
   mallPrice,
+  myAdventures,
+  myInebriety,
+  myTurncount,
   print,
   restoreMp,
   toUrl,
@@ -35,6 +39,7 @@ import {
   property,
   SongBoom,
 } from "libram";
+import { embezzlerCount } from "./embezzlers";
 import { globalOptions } from "./globalvars";
 
 export enum BonusEquipMode {
@@ -487,4 +492,16 @@ export function saleValue(...items: Item[]): number {
 
 export function kramcoGuaranteed(): boolean {
   return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
+}
+
+export function estimatedTurns(): number {
+  let turns;
+  if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
+  else if (globalOptions.noBarf) turns = embezzlerCount();
+  else
+    turns =
+      (myAdventures() + (globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0)) *
+      (have($item`mafia thumb ring`) ? 1.04 : 1);
+
+  return turns;
 }

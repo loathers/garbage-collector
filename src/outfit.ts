@@ -32,8 +32,8 @@ import {
   maximizeCached,
 } from "libram";
 import { pickBjorn } from "./bjorn";
-import { estimatedTurns, globalOptions } from "./globalvars";
-import { baseMeat, BonusEquipMode, Requirement, saleValue } from "./lib";
+import { globalOptions } from "./globalvars";
+import { baseMeat, BonusEquipMode, estimatedTurns, Requirement, saleValue } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
