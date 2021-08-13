@@ -148,9 +148,6 @@ export function meatOutfit(
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
-    if (getKramcoWandererChance() > 0.05 && have($item`Kramco Sausage-o-Matic™`)) {
-      forceEquip.push($item`Kramco Sausage-o-Matic™`);
-    }
     // TODO: Fix pointer finger ring construction.
     if (have($item`mafia pointer finger ring`)) {
       forceEquip.push($item`mafia pointer finger ring`);
@@ -170,9 +167,18 @@ export function meatOutfit(
     }
 
     if (
+      getKramcoWandererChance() > 0.05 &&
+      have($item`Kramco Sausage-o-Matic™`) &&
+      forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`)
+    ) {
+      forceEquip.push($item`Kramco Sausage-o-Matic™`);
+    }
+
+    if (
       have($item`protonic accelerator pack`) &&
       get("questPAGhost") === "unstarted" &&
-      get("nextParanormalActivity") <= totalTurnsPlayed()
+      get("nextParanormalActivity") <= totalTurnsPlayed() &&
+      forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
     ) {
       forceEquip.push($item`protonic accelerator pack`);
     }
