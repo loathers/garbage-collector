@@ -172,12 +172,6 @@ function barfTurn() {
     freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
-    if (
-      have($item`unwrapped knock-off retro superhero cape`) &&
-      (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
-    ) {
-      cliExecute("retrocape robot kill");
-    }
     // c. set up familiar
     useFamiliar(meatFamiliar());
     const location = embezzlerUp
@@ -203,6 +197,12 @@ function barfTurn() {
 
     // d. get dressed
     meatOutfit(embezzlerUp, [], underwater);
+    if (
+      have($item`unwrapped knock-off retro superhero cape`) &&
+      (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
+    ) {
+      cliExecute("retrocape robot kill");
+    }
 
     adventureMacroAuto(
       location,
