@@ -467,7 +467,7 @@ export function gin(): void {
 }
 
 export function internetMemeShop(): void {
-  const baconValue = saleValue($item`BACON`);
+  const baconValue = mallPrice($item`BACON`);
 
   const internetMemeShopProperties = {
     _internetViralVideoBought: $item`viral video`,
