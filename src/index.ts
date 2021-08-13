@@ -6,7 +6,6 @@ import {
   getCampground,
   getCounters,
   guildStoreAvailable,
-  haveEquipped,
   inebrietyLimit,
   itemAmount,
   myAdventures,
@@ -198,12 +197,6 @@ function barfTurn() {
 
     // d. get dressed
     meatOutfit(embezzlerUp, [], underwater);
-    if (
-      haveEquipped($item`unwrapped knock-off retro superhero cape`) &&
-      (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
-    ) {
-      cliExecute("retrocape robot kill");
-    }
 
     adventureMacroAuto(
       location,
