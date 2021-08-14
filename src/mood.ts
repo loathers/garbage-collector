@@ -140,6 +140,9 @@ export function freeFightMood(): Mood {
   if (questStep("questL06Friar") === 999 && !get("friarsBlessingReceived")) {
     cliExecute("friars familiar");
   }
+  if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
+    use($item`The Legendary Beat`);
+  }
 
   return mood;
 }
