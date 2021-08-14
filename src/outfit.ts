@@ -156,22 +156,22 @@ export function meatOutfit(
       forceEquip.push($item`protonic accelerator pack`);
     }
     if (have($item`mafia pointer finger ring`)) {
-      forceEquip.push($item`mafia pointer finger ring`);
-      if (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`)) {
-        if (have($item`haiku katana`)) {
-          forceEquip.push($item`haiku katana`);
-        } else if (
-          have($item`unwrapped knock-off retro superhero cape`) &&
-          forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
-        ) {
-          if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
-          forceEquip.push($item`ice nine`);
-          forceEquip.push($item`unwrapped knock-off retro superhero cape`);
-        } else if (have($item`Operation Patriot Shield`)) {
-          forceEquip.push($item`Operation Patriot Shield`);
-        } else {
-          forceEquip.splice(forceEquip.indexOf($item`mafia pointer finger ring`));
-        }
+      if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
+        forceEquip.push($item`mafia pointer finger ring`);
+      } else if (have($item`Operation Patriot Shield`) && myClass() === $class`Turtle Tamer`) {
+        forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+      } else if (have($item`haiku katana`)) {
+        forceEquip.push(...$items`haiku katana, mafia pointer finger ring`);
+      } else if (
+        have($item`unwrapped knock-off retro superhero cape`) &&
+        forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
+      ) {
+        if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
+        forceEquip.push(
+          ...$items`unwrapped knock-off retro superhero cape, ice nine, mafia pointer finger ring`
+        );
+      } else if (have($item`Operation Patriot Shield`)) {
+        forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
       }
     }
 

@@ -339,7 +339,7 @@ export function main(argString = ""): void {
       myInebriety() <= inebrietyLimit() &&
       (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
     )
-      stashItems.push($item`haiku katana`);
+      stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {
