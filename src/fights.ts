@@ -666,7 +666,7 @@ export function dailyFights(): void {
         }
       }
 
-      // Check in case our prof gained enough exp during the embezzlers
+      // Check in case our prof gained enough exp during the profchains
       if (thesisReady()) deliverThesis();
     });
   }
