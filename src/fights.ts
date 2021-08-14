@@ -765,8 +765,7 @@ class FreeRunFight extends FreeFight {
         ...(runSource.requirement ? [runSource.requirement] : []),
       ]);
       safeRestore();
-      // Set the default macro to abort, forcing the run function to use the correct macro
-      withMacro(Macro.abort(), () => this.freeRun(runSource));
+      withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
     }
   }
 }
