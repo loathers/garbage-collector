@@ -64,7 +64,7 @@ import { dailyFights, freeFights, safeRestore } from "./fights";
 import { kramcoGuaranteed, prepWandererZone, propertyManager, questStep, Requirement } from "./lib";
 import { meatMood } from "./mood";
 import {
-  checkLatte,
+  refreshLatte,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
@@ -107,7 +107,7 @@ function dailySetup() {
   cheat();
   gin();
   pickTea();
-  checkLatte();
+  refreshLatte();
 
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`Half a Purse`);

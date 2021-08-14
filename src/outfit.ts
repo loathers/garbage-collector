@@ -96,8 +96,8 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
 }
 
-export function checkLatte(): boolean {
-  // Check latte ingredients
+export function refreshLatte(): boolean {
+  // Refresh unlocked latte ingredients
   if (have($item`latte lovers member's mug`)) {
     visitUrl("main.php?latte=1", false);
   }
