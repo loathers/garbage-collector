@@ -665,6 +665,9 @@ export function dailyFights(): void {
           doSausage();
         }
       }
+
+      // Check in case our prof gained enough exp during the embezzlers
+      if (thesisReady()) deliverThesis();
     });
   }
 }
