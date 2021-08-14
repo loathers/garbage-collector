@@ -143,6 +143,6 @@ export function freeFightMood(): Mood {
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
   }
-  
+
   return mood;
 }
