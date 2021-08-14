@@ -770,8 +770,8 @@ class FreeRunFight extends FreeFight {
       useFamiliar(
         this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
       );
-      if (runSource.prepare) runSource.prepare();
       freeFightMood().execute();
+      if (runSource.prepare) runSource.prepare();
       freeFightOutfit([
         ...(this.options.requirements ? this.options.requirements() : []),
         ...(runSource.requirement ? [runSource.requirement] : []),
