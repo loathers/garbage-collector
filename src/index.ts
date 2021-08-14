@@ -71,10 +71,10 @@ import {
 } from "./lib";
 import { meatMood } from "./mood";
 import {
-  refreshLatte,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
+  refreshLatte,
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
