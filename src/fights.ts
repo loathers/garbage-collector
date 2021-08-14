@@ -1417,11 +1417,15 @@ const freeRunFightSources = [
         have($familiar`Mini-Hipster`) ? $familiar`Mini-Hipster` : $familiar`Artistic Goth Kid`,
       requirements: () => [
         new Requirement([], {
-          bonusEquip: new Map<Item, number>([
-            [$item`ironic moustache`, saleValue($item`mole skin notebook`)],
-            [$item`chiptune guitar`, saleValue($item`ironic knit cap`)],
-            [$item`fixed-gear bicycle`, saleValue($item`ironic oversized sunglasses`)],
-          ]),
+          bonusEquip: new Map<Item, number>(
+            have($familiar`Mini-Hipster`)
+              ? [
+                  [$item`ironic moustache`, saleValue($item`mole skin notebook`)],
+                  [$item`chiptune guitar`, saleValue($item`ironic knit cap`)],
+                  [$item`fixed-gear bicycle`, saleValue($item`ironic oversized sunglasses`)],
+                ]
+              : []
+          ),
         }),
       ],
     }
