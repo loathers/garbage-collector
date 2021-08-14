@@ -61,6 +61,7 @@ import {
   $location,
   $monster,
   $monsters,
+  $phyla,
   $skill,
   $slot,
   adventureMacro,
@@ -815,7 +816,16 @@ const freeFightSources = [
       ChateauMantegna.have() &&
       !ChateauMantegna.paintingFought() &&
       (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ?? false),
-    () => ChateauMantegna.fightPainting()
+    () => ChateauMantegna.fightPainting(),
+    {
+      familiar: () =>
+        have($familiar`Robortender`) &&
+        $phyla`elf, fish, hobo, penguin, constellation`.some(
+          (phylum) => phylum === ChateauMantegna.paintingMonster()?.phylum
+        )
+          ? $familiar`Robortender`
+          : null,
+    }
   ),
 
   new FreeFight(
