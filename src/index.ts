@@ -71,7 +71,7 @@ import {
 } from "./lib";
 import { meatMood } from "./mood";
 import {
-  checkLatte,
+  refreshLatte,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
@@ -115,7 +115,7 @@ function dailySetup() {
   gin();
   internetMemeShop();
   pickTea();
-  checkLatte();
+  refreshLatte();
 
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`Half a Purse`);
