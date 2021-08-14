@@ -199,7 +199,7 @@ export function determineDraggableZoneAndEnsureAccess(
 
   const predictedWanderers =
     digitizedMonstersRemaining() +
-    (have($item`"I Voted!" sticker`) ? clamp(get("_voteFreeFights"), 0, 3) : 0);
+    (have($item`"I Voted!" sticker`) ? clamp(3 - get("_voteFreeFights"), 0, 3) : 0);
   const predictedBackups = have($item`backup camera`) ? clamp(11 - get("_backUpUses"), 0, 11) : 0;
   const turnsLeftOnThisQuest = Math.ceil(
     (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
