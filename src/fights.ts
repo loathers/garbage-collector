@@ -1328,6 +1328,7 @@ const freeRunFightSources = [
     },
     {
       familiar: () => $familiar`Space Jellyfish`,
+      requirements: () => new Requirement([], { forceEquip = $items`Powerful Glove` });
     }
   ),
   new FreeFight(
