@@ -11884,18 +11884,19 @@ new FreeRun("Bander", function () {
   forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_3__.$items)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["stinky cheese eye"])))
 }), function () {
   if (!(0,libram__WEBPACK_IMPORTED_MODULE_3__.have)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["stinky cheese eye"]))))) (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.cliExecute)("fold stinky cheese eye");
-}), new FreeRun("Scrapbook", function () {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_3__.have)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["familiar scrapbook"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("scrapbookCharges") >= 100;
-}, libram__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show Your Boring Familiar Pictures"), new Requirement([], {
-  forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_3__.$items)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["familiar scrapbook"])))
-})), new FreeRun("Navel Ring", function () {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_3__.have)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["navel ring of navel gazing"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("_navelRunaways") < 3;
+}), new FreeRun("Navel Ring", function () {
+  return (0,libram__WEBPACK_IMPORTED_MODULE_3__.have)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["navel ring of navel gazing"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("_navelRunaways") < 3;
 }, libram__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"), new Requirement([], {
-  forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_3__.$items)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["navel ring of navel gazing"])))
+  forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_3__.$items)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["navel ring of navel gazing"])))
 })), new FreeRun("GAP", function () {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_3__.have)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Greatest American Pants"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("_navelRunaways") < 3;
+  return (0,libram__WEBPACK_IMPORTED_MODULE_3__.have)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Greatest American Pants"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("_navelRunaways") < 3;
 }, libram__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"), new Requirement([], {
-  forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_3__.$items)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Greatest American Pants"])))
+  forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_3__.$items)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["Greatest American Pants"])))
+})), new FreeRun("Scrapbook", function () {
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)("desc_item.php?whichitem=463063785");
+  return (0,libram__WEBPACK_IMPORTED_MODULE_3__.have)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["familiar scrapbook"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("scrapbookCharges") >= 100;
+}, libram__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show Your Boring Familiar Pictures"), new Requirement([], {
+  forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_3__.$items)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["familiar scrapbook"])))
 })), new FreeRun("Parasol", function () {
   return (0,libram__WEBPACK_IMPORTED_MODULE_3__.have)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["peppermint parasol"])))) && _globalvars__WEBPACK_IMPORTED_MODULE_2__/* .globalOptions.ascending */ .Xe.ascending && (0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("parasolUsed") < 9 && (0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("_navelRunaways") < 3;
 }, libram__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("peppermint parasol"))];
