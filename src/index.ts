@@ -64,10 +64,10 @@ import { dailyFights, freeFights, safeRestore } from "./fights";
 import { kramcoGuaranteed, prepWandererZone, propertyManager, questStep, Requirement } from "./lib";
 import { meatMood } from "./mood";
 import {
-  refreshLatte,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
+  refreshLatte,
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
