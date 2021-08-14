@@ -748,19 +748,16 @@ class FreeFight {
   }
 }
 
-class FreeRunFight {
-  available: () => number | boolean;
-  run: (runSource: FreeRun) => void;
-  options: FreeFightOptions;
+class FreeRunFight extends FreeFight {
+  freeRun: (runSource: FreeRun) => void;
 
   constructor(
     available: () => number | boolean,
     run: (runSource: FreeRun) => void,
     options: FreeFightOptions = {}
   ) {
-    this.available = available;
-    this.run = run;
-    this.options = options;
+    super(available, () => null, options);
+    this.freeRun = run;
   }
 
   runAll() {
@@ -780,8 +777,8 @@ class FreeRunFight {
         ...(runSource.requirement ? [runSource.requirement] : []),
       ]);
       safeRestore();
-      // Abort and force the run function to use the correct macro
-      withMacro(Macro.abort(), () => this.run(runSource));
+      // Set the default macro to abort, forcing the run function to use the correct macro
+      withMacro(Macro.abort(), () => this.freeRun(runSource));
     }
   }
 }
