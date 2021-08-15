@@ -47,11 +47,11 @@ const bestAdventuresFromPants =
     .map((pants) => numericModifier(pants, "Adventures"))
     .sort((a, b) => b - a)[0] || 0;
 
-export function freeFightOutfit(requirements: Requirement[] = [new Requirement([], {})]): void {
+export function freeFightOutfit(requirements: Requirement[] = []): void {
   const equipMode =
     myFamiliar() === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   const bjornChoice = pickBjorn(equipMode);
-  const compiledRequirements = Requirement.merge(requirements) ;
+  const compiledRequirements = Requirement.merge([new Requirement([], {}), ...requirements]);
   const compiledOptions = compiledRequirements.maximizeOptions();
   const compiledParameters = compiledRequirements.maximizeParameters();
 
