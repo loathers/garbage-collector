@@ -326,7 +326,7 @@ const freeRuns: FreeRun[] = [
       fillAsdonMartinTo(50);
       retrieveItem(1, $item`louder than bomb`);
     },
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("louder than bomb")
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).item($item`Louder Than Bomb`)
   ),
   code removed because of boss monsters
   */
@@ -337,7 +337,7 @@ const freeRuns: FreeRun[] = [
       have($familiar`Frumious Bandersnatch`) &&
       (have($effect`Ode to Booze`) || getSongCount() < getSongLimit()) &&
       Bandersnatch.getRemainingRunaways() > 0,
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).step("runaway"),
     new Requirement(["Familiar Weight"], {}),
     () => {
       useFamiliar($familiar`Frumious Bandersnatch`);
@@ -348,7 +348,7 @@ const freeRuns: FreeRun[] = [
   new FreeRun(
     "Boots",
     () => have($familiar`Pair of Stomping Boots`) && Bandersnatch.getRemainingRunaways() > 0,
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).step("runaway"),
     new Requirement(["Familiar Weight"], {}),
     () => useFamiliar($familiar`Pair of Stomping Boots`)
   ),
@@ -356,7 +356,7 @@ const freeRuns: FreeRun[] = [
   new FreeRun(
     "Snokebomb",
     () => get("_snokebombUsed") < banishesToUse && have($skill`Snokebomb`),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("snokebomb"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill($skill`Snokebomb`),
     undefined,
     () => restoreMp(50)
   ),
@@ -364,41 +364,43 @@ const freeRuns: FreeRun[] = [
   new FreeRun(
     "Hatred",
     () => get("_feelHatredUsed") < banishesToUse && have($skill`Emotionally Chipped`),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("feel hatred")
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill($skill`Feel Hatred`)
   ),
 
   new FreeRun(
     "KGB",
     () => have($item`Kremlin's Greatest Briefcase`) && get("_kgbTranquilizerDartUses") < 3,
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("KGB tranquilizer dart"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill($skill`KGB tranquilizer dart`),
     new Requirement([], { forceEquip: $items`Kremlin's Greatest Briefcase` })
   ),
 
   new FreeRun(
     "Latte",
     () => have($item`latte lovers member's mug`) && !get("_latteBanishUsed"),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Throw Latte on Opponent"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill(
+      "Throw Latte on Opponent"
+    ),
     new Requirement([], { forceEquip: $items`latte lovers member's mug` })
   ),
 
   new FreeRun(
     "Docbag",
     () => have($item`Lil' Doctor™ bag`) && get("_reflexHammerUsed") < 3,
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("reflex hammer"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill($skill`Reflex Hammer`),
     new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })
   ),
 
   new FreeRun(
     "Middle Finger",
     () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Show them your ring"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill($skill`Show them your ring`),
     new Requirement([], { forceEquip: $items`mafia middle finger ring` })
   ),
 
   new FreeRun(
     "VMask",
     () => have($item`V for Vivala mask`) && !get("_vmaskBanisherUsed"),
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill("Creepy Grin"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill($skill`Creepy Grin`),
     new Requirement([], { forceEquip: $items`V for Vivala mask` }),
     () => restoreMp(30)
   ),
@@ -409,7 +411,7 @@ const freeRuns: FreeRun[] = [
       getFoldGroup($item`stinky cheese diaper`).some((item) => have(item)) &&
       !get("_stinkyCheeseBanisherUsed"),
 
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill(
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill(
       "Give Your Opponent the Stinkeye"
     ),
     new Requirement([], { forceEquip: $items`stinky cheese eye` }),
@@ -421,14 +423,14 @@ const freeRuns: FreeRun[] = [
   new FreeRun(
     "Navel Ring",
     () => have($item`navel ring of navel gazing`) && get("_navelRunaways") < 3,
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).step("runaway"),
     new Requirement([], { forceEquip: $items`navel ring of navel gazing` })
   ),
 
   new FreeRun(
     "GAP",
     () => have($item`Greatest American Pants`) && get("_navelRunaways") < 3,
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").step("runaway"),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).step("runaway"),
     new Requirement([], { forceEquip: $items`Greatest American Pants` })
   ),
 
@@ -438,7 +440,7 @@ const freeRuns: FreeRun[] = [
       visitUrl("desc_item.php?whichitem=463063785");
       return have($item`familiar scrapbook`) && get("scrapbookCharges") >= 100;
     },
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").skill(
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill(
       "Show Your Boring Familiar Pictures"
     ),
     new Requirement([], { forceEquip: $items`familiar scrapbook` })
@@ -451,7 +453,7 @@ const freeRuns: FreeRun[] = [
       globalOptions.ascending &&
       get("parasolUsed") < 9 &&
       get("_navelRunaways") < 3,
-    Macro.trySkill("Asdon Martin: Spring-Loaded Front Bumper").item("peppermint parasol")
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).item($item`peppermint parasol`)
   ),
 ];
 
