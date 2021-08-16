@@ -419,7 +419,7 @@ function embezzlerSetup() {
       const runSource = findRun() || ltbRun;
       if (!runSource) break;
       if (runSource.prepare) runSource.prepare();
-      freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+      freeFightOutfit(runSource.requirement ? [runSource.requirement] : []);
       adventureMacro($location`The Hidden Temple`, runSource.macro);
     }
   }
@@ -516,7 +516,7 @@ function startDigitize() {
     do {
       const run = findRun() || ltbRun;
       if (run.prepare) run.prepare();
-      freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
+      freeFightOutfit(run.requirement ? [run.requirement] : []);
       adventureMacro($location`Noob Cave`, run.macro);
     } while (get("lastCopyableMonster") === $monster`Government agent`);
   }
