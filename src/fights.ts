@@ -1241,7 +1241,7 @@ const freeFightSources = [
     () =>
       adventureMacro(
         $location`Lair of the Ninja Snowmen`,
-        Macro.skill("Fire the Jokester's Gun").abort()
+        Macro.skill($skill`Fire the Jokester's Gun`).abort()
       ),
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
@@ -1259,7 +1259,7 @@ const freeFightSources = [
       get("_monstersMapped") < 3,
     () => {
       try {
-        Macro.skill("Fire the Jokester's Gun").abort().setAutoAttack();
+        Macro.skill($skill`Fire the Jokester's Gun`).abort().setAutoAttack();
         mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
       } finally {
         setAutoAttack(0);
@@ -1325,9 +1325,9 @@ const freeRunFightSources = [
         $location`Barf Mountain`,
         Macro.while_(
           "!pastround 28 && hasskill macrometeorite",
-          Macro.skill("extract jelly").skill("macrometeorite")
+          Macro.skill($skill`Extract Jelly`).skill($skill`Macrometeorite`)
         )
-          .trySkill("extract jelly")
+          .trySkill($skill`Extract Jelly`)
           .step(runSource.macro)
       );
     },
@@ -1345,9 +1345,9 @@ const freeRunFightSources = [
         $location`Barf Mountain`,
         Macro.while_(
           "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
-          Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
+          Macro.skill($skill`Extract Jelly`).skill($skill`CHEAT CODE: Replace Enemy`)
         )
-          .trySkill("extract jelly")
+          .trySkill($skill`Extract Jelly`)
           .step(runSource.macro)
       );
     },
