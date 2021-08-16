@@ -14987,17 +14987,17 @@ function fights_defineProperties(target, props) { for (var i = 0; i < props.leng
 
 function fights_createClass(Constructor, protoProps, staticProps) { if (protoProps) fights_defineProperties(Constructor.prototype, protoProps); if (staticProps) fights_defineProperties(Constructor, staticProps); return Constructor; }
 
-function fights_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = fights_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
 function fights_toConsumableArray(arr) { return fights_arrayWithoutHoles(arr) || fights_iterableToArray(arr) || fights_unsupportedIterableToArray(arr) || fights_nonIterableSpread(); }
 
 function fights_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function fights_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return fights_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return fights_arrayLikeToArray(o, minLen); }
-
 function fights_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function fights_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return fights_arrayLikeToArray(arr); }
+
+function fights_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = fights_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function fights_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return fights_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return fights_arrayLikeToArray(o, minLen); }
 
 function fights_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -15196,7 +15196,7 @@ function embezzlerSetup() {
 
       if (!_runSource) break;
       if (_runSource.prepare) _runSource.prepare();
-      freeFightOutfit(fights_toConsumableArray(_runSource.requirement ? [_runSource.requirement] : []));
+      freeFightOutfit(_runSource.requirement ? [_runSource.requirement] : []);
       (0,dist.adventureMacro)((0,dist.$location)(fights_templateObject91 || (fights_templateObject91 = fights_taggedTemplateLiteral(["The Hidden Temple"]))), _runSource.macro);
     }
   }
@@ -15285,7 +15285,7 @@ function startDigitize() {
     do {
       var run = (0,lib/* findRun */.tN)() || lib/* ltbRun */.Pw;
       if (run.prepare) run.prepare();
-      freeFightOutfit(fights_toConsumableArray(run.requirement ? [run.requirement] : []));
+      freeFightOutfit(run.requirement ? [run.requirement] : []);
       (0,dist.adventureMacro)((0,dist.$location)(_templateObject114 || (_templateObject114 = fights_taggedTemplateLiteral(["Noob Cave"]))), run.macro);
     } while ((0,dist.get)("lastCopyableMonster") === (0,dist.$monster)(_templateObject113 || (_templateObject113 = fights_taggedTemplateLiteral(["Government agent"]))));
   }
