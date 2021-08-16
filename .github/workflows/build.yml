@@ -66,6 +66,7 @@ jobs:
           git switch release
           rm -r scripts/
           rm -r data/
+          rm -r ccs/
           rm -r relay/
           mv KoLmafia/scripts scripts
           mv KoLmafia/relay relay
