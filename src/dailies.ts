@@ -499,9 +499,9 @@ export function jellyfish(): void {
     freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
     const jellyMacro = Macro.while_(
       "!pastround 28 && hasskill macrometeorite",
-      Macro.skill("extract jelly").skill("macrometeorite")
+      Macro.skill($skill`Extract Jelly`).skill($skill`Macrometeorite`)
     )
-      .trySkill("extract jelly")
+      .trySkill($skill`Extract Jelly`)
       .step(runSource.macro);
     adventureMacro($location`Barf Mountain`, jellyMacro);
   }
@@ -516,9 +516,9 @@ export function jellyfish(): void {
       ]);
       const jellyMacro = Macro.while_(
         "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
-        Macro.skill("extract jelly").skill("CHEAT CODE: Replace Enemy")
+        Macro.skill($skill`Extract Jelly`).skill($skill`CHEAT CODE: Replace Enemy`)
       )
-        .trySkill("extract jelly")
+        .trySkill($skill`Extract Jelly`)
         .step(runSource.macro);
       adventureMacro($location`Barf Mountain`, jellyMacro);
     }

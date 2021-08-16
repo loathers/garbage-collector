@@ -168,7 +168,7 @@ const firstChainMacro = () =>
         .tryCopier($item`4-d camera`)
         .tryCopier($item`unfinished ice sculpture`)
     )
-      .trySkill("Lecture on Relativity")
+      .trySkill($skill`lecture on relativity`)
       .meatKill()
   ).abort();
 
@@ -177,7 +177,7 @@ const secondChainMacro = () =>
     "monstername Knob Goblin Embezzler",
     Macro.externalIf(
       myFamiliar() === $familiar`Pocket Professor`,
-      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill("Meteor Shower"))
+      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill($skill`Meteor Shower`))
         .if_(
           "!hasskill Lecture on Relativity",
           Macro.externalIf(
@@ -189,7 +189,7 @@ const secondChainMacro = () =>
             .tryCopier($item`4-d camera`)
             .tryCopier($item`unfinished ice sculpture`)
         )
-        .trySkill("Lecture on Relativity")
+        .trySkill($skill`lecture on relativity`)
     ).meatKill()
   ).abort();
 
@@ -197,8 +197,8 @@ const embezzlerMacro = () =>
   Macro.if_(
     "monstername Knob Goblin Embezzler",
     Macro.if_("snarfblat 186", Macro.tryCopier($item`pulled green taffy`))
-      .trySkill("Wink At")
-      .trySkill("Fire a badly romantic arrow")
+      .trySkill($skill`Wink at`)
+      .trySkill($skill`Fire a badly romantic arrow`)
       .externalIf(
         get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
         Macro.tryCopier($skill`Digitize`)
@@ -239,7 +239,7 @@ const embezzlerSources = [
         realLocation,
         Macro.if_(
           "!monstername Knob Goblin Embezzler",
-          Macro.skill("Back-Up to Your Last Enemy")
+          Macro.skill($skill`Back-Up to your Last Enemy`)
         ).step(options.macro || embezzlerMacro())
       );
     },
@@ -415,7 +415,7 @@ function embezzlerSetup() {
         new FreeRun(
           "LTB",
           () => retrieveItem($item`Louder Than Bomb`),
-          Macro.item("Louder Than Bomb"),
+          Macro.item($item`Louder Than Bomb`),
           new Requirement([], {}),
           () => retrieveItem($item`Louder Than Bomb`)
         );
@@ -524,7 +524,7 @@ function startDigitize() {
         new FreeRun(
           "LTB",
           () => retrieveItem($item`Louder Than Bomb`),
-          Macro.item("Louder Than Bomb"),
+          Macro.item($item`Louder Than Bomb`),
           new Requirement([], {}),
           () => retrieveItem($item`Louder Than Bomb`)
         );
@@ -735,11 +735,11 @@ class FreeFight {
 
 const pygmyMacro = Macro.if_(
   "monstername pygmy bowler",
-  Macro.trySkill("Snokebomb").item($item`Louder Than Bomb`)
+  Macro.trySkill($skill`Snokebomb`).item($item`Louder Than Bomb`)
 )
   .if_(
     "monstername pygmy orderlies",
-    Macro.trySkill("Feel Hatred").item($item`divine champagne popper`)
+    Macro.trySkill($skill`Feel Hatred`).item($item`divine champagne popper`)
   )
   .if_("monstername pygmy janitor", Macro.item($item`tennis ball`))
   .if_("monstername time-spinner prank", Macro.basicCombat())
@@ -837,7 +837,7 @@ const freeFightSources = [
       );
       withMacro(
         Macro.startCombat()
-          .trySkill("Furious Wallop")
+          .trySkill($skill`Furious Wallop`)
           .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
           .while_("hasskill Thrust-Smack", Macro.skill($skill`Thrust-Smack`))
           .while_("hasskill Lunge Smack", Macro.skill($skill`Lunge Smack`))
@@ -934,7 +934,7 @@ const freeFightSources = [
       ) {
         putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
         putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill("Use the Force"));
+        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill($skill`Use the Force`));
       } else {
         if (closetAmount($item`Bowl of Scorpions`) > 0)
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
@@ -982,7 +982,7 @@ const freeFightSources = [
       get("_timeSpinnerMinutesUsed") < 8,
     () => {
       retrieveItem($item`Bowl of Scorpions`);
-      Macro.trySkill("Extract").trySkill("Sing Along").setAutoAttack;
+      Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`).setAutoAttack;
       visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
       runChoice(1);
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
@@ -1030,7 +1030,7 @@ const freeFightSources = [
       }
       adventureMacro(
         $location`Your Mushroom Garden`,
-        Macro.if_("hasskill macrometeorite", Macro.trySkill("Portscan")).basicCombat()
+        Macro.if_("hasskill macrometeorite", Macro.trySkill($skill`Portscan`)).basicCombat()
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
@@ -1054,9 +1054,9 @@ const freeFightSources = [
       }
       adventureMacro(
         $location`Your Mushroom Garden`,
-        Macro.if_("monstername government agent", Macro.skill("Macrometeorite")).if_(
+        Macro.if_("monstername government agent", Macro.skill($skill`Macrometeorite`)).if_(
           "monstername piranha plant",
-          Macro.if_("hasskill macrometeorite", Macro.trySkill("Portscan")).basicCombat()
+          Macro.if_("hasskill macrometeorite", Macro.trySkill($skill`Portscan`)).basicCombat()
         )
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
@@ -1140,7 +1140,10 @@ const freeFightSources = [
         : 0,
     () => {
       nepQuest();
-      adventureMacro($location`The Neverending Party`, Macro.trySkill("Feel Pride").basicCombat());
+      adventureMacro(
+        $location`The Neverending Party`,
+        Macro.trySkill($skill`Feel Pride`).basicCombat()
+      );
       if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
         print("Found Gerald/ine!", "blue");
         setChoice(1324, 5);
@@ -1160,7 +1163,7 @@ const freeKillSources = [
   new FreeFight(
     () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
     () =>
-      withMacro(Macro.skill("Sing Along").trySkill("Gingerbread Mob Hit"), () =>
+      withMacro(Macro.skill($skill`Sing Along`).trySkill($skill`Gingerbread Mob Hit`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1172,7 +1175,7 @@ const freeKillSources = [
   new FreeFight(
     () => (have($skill`Shattering Punch`) ? clamp(3 - get("_shatteringPunchUsed"), 0, 3) : 0),
     () =>
-      withMacro(Macro.skill("Sing Along").trySkill("Shattering Punch"), () =>
+      withMacro(Macro.skill($skill`Sing Along`).trySkill($skill`Shattering Punch`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1185,7 +1188,7 @@ const freeKillSources = [
   new FreeFight(
     () => !get("_firedJokestersGun") && have($item`The Jokester's gun`),
     () =>
-      withMacro(Macro.skill("Sing Along").trySkill("Fire the Jokester's Gun"), () =>
+      withMacro(Macro.skill($skill`Sing Along`).trySkill($skill`Fire the Jokester's Gun`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1200,7 +1203,9 @@ const freeKillSources = [
   new FreeFight(
     () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
     () =>
-      withMacro(Macro.skill("Sing Along").trySkill("Chest X-Ray"), () => use($item`drum machine`)),
+      withMacro(Macro.skill($skill`Sing Along`).trySkill($skill`Chest X-Ray`), () =>
+        use($item`drum machine`)
+      ),
     {
       familiar: bestFairy,
       requirements: () => [
@@ -1212,7 +1217,7 @@ const freeKillSources = [
   new FreeFight(
     () => (have($item`replica bat-oomerang`) ? clamp(3 - get("_usedReplicaBatoomerang"), 0, 3) : 0),
     () =>
-      withMacro(Macro.skill("Sing Along").item("replica bat-oomerang"), () =>
+      withMacro(Macro.skill($skill`Sing Along`).item($item`replica bat-oomerang`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1225,7 +1230,7 @@ const freeKillSources = [
     () => !get("_missileLauncherUsed") && getCampground()["Asdon Martin keyfob"] !== undefined,
     () => {
       fillAsdonMartinTo(100);
-      withMacro(Macro.skill("Sing Along").skill("Asdon Martin: Missile Launcher"), () =>
+      withMacro(Macro.skill($skill`Sing Along`).skill($skill`Asdon Martin: Missile Launcher`), () =>
         use($item`drum machine`)
       );
     },
@@ -1238,7 +1243,9 @@ const freeKillSources = [
   new FreeFight(
     () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
     () => {
-      withMacro(Macro.skill("Sing Along").skill("Shocking Lick"), () => use($item`drum machine`));
+      withMacro(Macro.skill($skill`Sing Along`).skill($skill`Shocking Lick`), () =>
+        use($item`drum machine`)
+      );
     },
     {
       familiar: bestFairy,
@@ -1272,11 +1279,11 @@ export function freeFights(): void {
     if (questStep("questL08Trapper") >= 2) {
       adventureMacroAuto(
         $location`Lair of the Ninja Snowmen`,
-        Macro.skill("Fire the Jokester's Gun")
+        Macro.skill($skill`Fire the Jokester's Gun`)
       );
     } else if (have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) {
       try {
-        Macro.skill("Fire the Jokester's Gun").setAutoAttack();
+        Macro.skill($skill`Fire the Jokester's Gun`).setAutoAttack();
         mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
       } finally {
         setAutoAttack(0);
@@ -1357,7 +1364,7 @@ function deliverThesis(): void {
     thesisInNEP
       ? $location`The Neverending Party`
       : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
-    Macro.skill("Deliver your Thesis")
+    Macro.skill($skill`deliver your thesis!`)
   );
 }
 
