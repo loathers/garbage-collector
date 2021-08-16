@@ -55,6 +55,7 @@ import {
   gaze,
   gin,
   horse,
+  implement,
   internetMemeShop,
   martini,
   pickTea,
@@ -107,6 +108,7 @@ function dailySetup() {
   voterSetup();
   martini();
   chateauDesk();
+  implement();
   gaze();
   configureGear();
   horse();
