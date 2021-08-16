@@ -91,6 +91,7 @@ import {
   findRun,
   FreeRun,
   kramcoGuaranteed,
+  ltbRun,
   mapMonster,
   propertyManager,
   questStep,
@@ -415,22 +416,11 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const runSource =
-        findRun() ||
-        new FreeRun(
-          "LTB",
-          () => retrieveItem($item`Louder Than Bomb`),
-          Macro.item($item`Louder Than Bomb`),
-          new Requirement([], {}),
-          () => retrieveItem($item`Louder Than Bomb`)
-        );
-      if (runSource) {
-        if (runSource.prepare) runSource.prepare();
-        freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
-        adventureMacro($location`The Hidden Temple`, runSource.macro);
-      } else {
-        break;
-      }
+      const runSource = findRun() || ltbRun;
+      if (!runSource) break;
+      if (runSource.prepare) runSource.prepare();
+      freeFightOutfit([...(runSource.requirement ? [runSource.requirement] : [])]);
+      adventureMacro($location`The Hidden Temple`, runSource.macro);
     }
   }
 
@@ -524,15 +514,7 @@ function startDigitize() {
     get("_sourceTerminalDigitizeUses") !== 0
   ) {
     do {
-      const run =
-        findRun() ||
-        new FreeRun(
-          "LTB",
-          () => retrieveItem($item`Louder Than Bomb`),
-          Macro.item($item`Louder Than Bomb`),
-          new Requirement([], {}),
-          () => retrieveItem($item`Louder Than Bomb`)
-        );
+      const run = findRun() || ltbRun;
       if (run.prepare) run.prepare();
       freeFightOutfit([...(run.requirement ? [run.requirement] : [])]);
       adventureMacro($location`Noob Cave`, run.macro);
@@ -1259,7 +1241,9 @@ const freeFightSources = [
       get("_monstersMapped") < 3,
     () => {
       try {
-        Macro.skill($skill`Fire the Jokester's Gun`).abort().setAutoAttack();
+        Macro.skill($skill`Fire the Jokester's Gun`)
+          .abort()
+          .setAutoAttack();
         mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
       } finally {
         setAutoAttack(0);

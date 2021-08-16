@@ -532,6 +532,14 @@ export function findRun(useFamiliar = true): FreeRun | undefined {
   );
 }
 
+export const ltbRun = new FreeRun(
+  "LTB",
+  () => retrieveItem($item`Louder Than Bomb`),
+  Macro.item($item`Louder Than Bomb`),
+  new Requirement([], {}),
+  () => retrieveItem($item`Louder Than Bomb`)
+);
+
 const valueMap: Map<Item, number> = new Map();
 
 const MALL_VALUE_MODIFIER = 0.9;
