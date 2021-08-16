@@ -269,7 +269,7 @@ export function runDiet(): void {
   }
   useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
 
-  const loveChocolateCount = Math.max(3 - Math.floor(20000 / MPA) - get("_loveChocolatesUsed"), 0);
+  const loveChocolateCount = Math.max(3 - Math.floor(15000 / MPA) - get("_loveChocolatesUsed"), 0);
   const loveChocolateEat = Math.min(
     loveChocolateCount,
     itemAmount($item`LOV Extraterrestrial Chocolate`)
