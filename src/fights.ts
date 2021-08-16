@@ -82,12 +82,13 @@ import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
   clamp,
+  determineDraggableZoneAndEnsureAccess,
+  draggableFight,
   ensureEffect,
   findRun,
   FreeRun,
   kramcoGuaranteed,
   mapMonster,
-  prepWandererZone,
   propertyManager,
   questStep,
   Requirement,
@@ -234,7 +235,7 @@ const embezzlerSources = [
       const realLocation =
         options.location && options.location.combatPercent >= 100
           ? options.location
-          : $location`Noob Cave`;
+          : determineDraggableZoneAndEnsureAccess(draggableFight.BACKUP);
       adventureMacro(
         realLocation,
         Macro.if_(
@@ -566,7 +567,10 @@ export function dailyFights(): void {
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
           withMacro(firstChainMacro(), () =>
-            fightSource.run({ location: prepWandererZone(), macro: firstChainMacro() })
+            fightSource.run({
+              location: determineDraggableZoneAndEnsureAccess(),
+              macro: firstChainMacro(),
+            })
           );
           log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
@@ -593,7 +597,10 @@ export function dailyFights(): void {
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
           withMacro(secondChainMacro(), () =>
-            fightSource.run({ location: prepWandererZone(), macro: secondChainMacro() })
+            fightSource.run({
+              location: determineDraggableZoneAndEnsureAccess(),
+              macro: secondChainMacro(),
+            })
           );
           log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
@@ -638,7 +645,9 @@ export function dailyFights(): void {
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
               nextFight.run({ location: $location`The Briny Deeps` });
             } else if (nextFight.draggable) {
-              const location = prepWandererZone();
+              const type =
+                nextFight.name === "Backup" ? draggableFight.BACKUP : draggableFight.WANDERER;
+              const location = determineDraggableZoneAndEnsureAccess(type);
               setLocation(location);
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location });
@@ -1002,7 +1011,7 @@ const freeFightSources = [
 
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => adv1(prepWandererZone(), -1, ""),
+    () => adv1(determineDraggableZoneAndEnsureAccess(), -1, ""),
     {
       requirements: () => [
         new Requirement([], {
@@ -1390,6 +1399,6 @@ function doSausage() {
   if (!kramcoGuaranteed()) return;
   useFamiliar(freeFightFamiliar());
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
-  adventureMacroAuto(prepWandererZone(), Macro.basicCombat());
+  adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   setAutoAttack(0);
 }
