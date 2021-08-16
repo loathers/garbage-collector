@@ -267,7 +267,7 @@ export class Macro extends LibramMacro {
       .tryHaveSkill($skill`Curse of Weaksauce`)
       .externalIf(
         haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
-        Macro.trySkill($skill`Wolf Form`)
+        Macro.trySkill($skill`Become a Wolf`)
       )
       .trySkill($skill`Pocket Crumbs`)
       .trySkill($skill`Extract`)
