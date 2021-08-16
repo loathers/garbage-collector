@@ -25,6 +25,7 @@ import {
 } from "kolmafia";
 import {
   $class,
+  $coinmaster,
   $effect,
   $familiar,
   $familiars,
@@ -48,6 +49,7 @@ import { horseradish } from "./diet";
 import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
+  coinmasterPrice,
   ensureEffect,
   findRun,
   prepWandererZone,
@@ -460,6 +462,25 @@ export function gin(): void {
       get("_timeSpinnerMinutesUsed") <= 8
     ) {
       cliExecute("FarFuture drink");
+    }
+  }
+}
+
+export function internetMemeShop(): void {
+  const baconValue = mallPrice($item`BACON`);
+
+  const internetMemeShopProperties = {
+    _internetViralVideoBought: $item`viral video`,
+    _internetPlusOneBought: $item`plus one`,
+    _internetGallonOfMilkBought: $item`gallon of milk`,
+    _internetPrintScreenButtonBought: $item`print screen button`,
+    _internetDailyDungeonMalwareBought: $item`daily dungeon malware`,
+  };
+
+  for (const [property, item] of Object.entries(internetMemeShopProperties)) {
+    if (!get<boolean>(property) && baconValue * coinmasterPrice(item) < saleValue(item)) {
+      retrieveItem($item`BACON`, coinmasterPrice(item));
+      buy($coinmaster`Internet Meme Shop`, 1, item);
     }
   }
 }

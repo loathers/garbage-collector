@@ -492,6 +492,24 @@ export function saleValue(...items: Item[]): number {
   );
 }
 
+export function coinmasterPrice(item: Item): number {
+  // TODO: Get this from coinmasters.txt if more are needed
+  switch (item) {
+    case $item`viral video`:
+      return 20;
+    case $item`plus one`:
+      return 74;
+    case $item`gallon of milk`:
+      return 100;
+    case $item`print screen button`:
+      return 111;
+    case $item`daily dungeon malware`:
+      return 150;
+  }
+
+  return 0;
+}
+
 export function kramcoGuaranteed(): boolean {
   return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
 }
