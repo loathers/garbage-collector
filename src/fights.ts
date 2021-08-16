@@ -1290,7 +1290,11 @@ const freeRunFightSources = [
     }
   ),
   new FreeRunFight(
-    () => have($item`latte lovers member's mug`) && !get("latteUnlocks").includes("carrot"),
+    () =>
+      have($item`latte lovers member's mug`) &&
+      !get("latteUnlocks").includes("carrot") &&
+      get("latteUnlocks").includes("cajun") &&
+      get("latteUnlocks").includes("rawhide"),
     (runSource: FreeRun) => {
       adventureMacro($location`The Dire Warren`, runSource.macro);
     },
