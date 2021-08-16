@@ -149,7 +149,10 @@ export class Macro extends LibramMacro {
 
     return this.externalIf(
       shouldRedigitize(),
-      Macro.if_(`monstername ${get("_sourceTerminalDigitizeMonster")}`, Macro.trySkill($skill`Digitize`))
+      Macro.if_(
+        `monstername ${get("_sourceTerminalDigitizeMonster")}`,
+        Macro.trySkill($skill`Digitize`)
+      )
     )
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
@@ -233,7 +236,10 @@ export class Macro extends LibramMacro {
         .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Extract`))
         .externalIf(
           haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
-          Macro.while_(`!pastround 3 && monsterhpabove ${passiveDamage}`, Macro.item($item`seal tooth`))
+          Macro.while_(
+            `!pastround 3 && monsterhpabove ${passiveDamage}`,
+            Macro.item($item`seal tooth`)
+          )
         )
         .externalIf(
           [
@@ -242,7 +248,10 @@ export class Macro extends LibramMacro {
             $familiar`Ninja Pirate Zombie Robot`,
             $familiar`Stocking Mimic`,
           ].some((familiar) => myFamiliar() === familiar),
-          Macro.while_(`!pastround 10 && monsterhpabove ${passiveDamage}`, Macro.item($item`seal tooth`))
+          Macro.while_(
+            `!pastround 10 && monsterhpabove ${passiveDamage}`,
+            Macro.item($item`seal tooth`)
+          )
         )
         .externalIf(
           myFamiliar() === $familiar`Hobo Monkey`,

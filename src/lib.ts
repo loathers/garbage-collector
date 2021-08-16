@@ -370,7 +370,9 @@ const freeRuns: FreeRun[] = [
   new FreeRun(
     "KGB",
     () => have($item`Kremlin's Greatest Briefcase`) && get("_kgbTranquilizerDartUses") < 3,
-    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill($skill`KGB tranquilizer dart`),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill(
+      $skill`KGB tranquilizer dart`
+    ),
     new Requirement([], { forceEquip: $items`Kremlin's Greatest Briefcase` })
   ),
 
@@ -393,7 +395,9 @@ const freeRuns: FreeRun[] = [
   new FreeRun(
     "Middle Finger",
     () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
-    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill($skill`Show them your ring`),
+    Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).skill(
+      $skill`Show them your ring`
+    ),
     new Requirement([], { forceEquip: $items`mafia middle finger ring` })
   ),
 

@@ -1140,7 +1140,10 @@ const freeFightSources = [
         : 0,
     () => {
       nepQuest();
-      adventureMacro($location`The Neverending Party`, Macro.trySkill($skill`Feel Pride`).basicCombat());
+      adventureMacro(
+        $location`The Neverending Party`,
+        Macro.trySkill($skill`Feel Pride`).basicCombat()
+      );
       if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
         print("Found Gerald/ine!", "blue");
         setChoice(1324, 5);
