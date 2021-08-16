@@ -846,13 +846,29 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => have($item`[glitch season reward name]`) && !get("_glitchMonsterFights"),
-    () => {
-      restoreHp(myMaxhp());
-      retrieveItem($item`[glitch season reward name]`);
-      visitUrl("inv_eat.php?pwd&whichitem=10207");
-      runCombat();
-    }
+    () =>
+      have($item`[glitch season reward name]`) &&
+      !get("_glitchMonsterFights") &&
+      get("garbo_fightGlitch", false),
+    () =>
+      withMacro(
+        Macro.skill($skill`Curse of Marinara`)
+          .skill($skill`Conspiratorial Whispers`)
+          .skill($skill`Shadow Noodles`)
+          .item([$item`gas can`, $item`gas can`])
+          .externalIf(
+            get("lovebugsUnlocked"),
+            Macro.trySkill($skill`Summon Love Gnats`).trySkill($skill`Summon Love Mosquito`)
+          )
+          .trySkill($skill`Micrometeorite`)
+          .kill(),
+        () => {
+          restoreHp(myMaxhp());
+          retrieveItem($item`[glitch season reward name]`);
+          visitUrl("inv_eat.php?pwd&whichitem=10207");
+          runCombat();
+        }
+      )
   ),
 
   // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
