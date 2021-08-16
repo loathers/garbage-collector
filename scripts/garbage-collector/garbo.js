@@ -15072,7 +15072,10 @@ function dailyFights() {
         if ((0,lib/* kramcoGuaranteed */.DR)() && (!nextFight || nextFight.name !== "Backup" && nextFight.name !== "Digitize")) {
           doSausage();
         }
-      }
+      } // Check in case our prof gained enough exp during the profchains
+
+
+      if (thesisReady()) deliverThesis();
     });
   }
 }
