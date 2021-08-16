@@ -344,6 +344,7 @@ export function main(argString = ""): void {
 
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
+
     propertyManager.set({
       battleAction: "custom combat script",
       autoSatisfyWithMall: true,
@@ -351,7 +352,12 @@ export function main(argString = ""): void {
       autoSatisfyWithCoinmasters: true,
       dontStopForCounters: true,
       maximizerFoldables: true,
+      hpAutoRecoveryTarget: 1.0,
     });
+    if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
+    if (get("mpAutoRecovery") < 0.15) propertyManager.set({ mpAutoRecovery: 0.25 });
+    if (get("mpAutoRecoveryTarget") < 0.65) propertyManager.set({ mpAutoRecoveryTarget: 0.65 });
+
     cliExecute("mood apathetic");
     cliExecute("ccs garbo");
     safeRestore();
