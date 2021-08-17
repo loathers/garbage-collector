@@ -22956,12 +22956,15 @@ function runDiet() {
 
   var _loop = function _loop(i) {
     var chocoVals = Array.from(chocos.values()).map(function (choc) {
-      return [choc, chocExpVal(i, choc)];
+      return {
+        choco: choc,
+        value: chocExpVal(i, choc)
+      };
     });
     var best = chocoVals.sort(function (a, b) {
-      return b[1] - a[1];
+      return b.value - a.value;
     })[0];
-    if (best[1] > 0) (0,external_kolmafia_.use)(1, best[0]);else return "break";
+    if (best.value > 0) (0,external_kolmafia_.use)(1, best.choco);else return "break";
   };
 
   for (var i = chocosRemaining; i > 0; i--) {
