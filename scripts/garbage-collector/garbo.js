@@ -15896,7 +15896,7 @@ new FreeRunFight(function () {
     })];
   }
 }), new FreeRunFight(function () {
-  return (0,dist.have)((0,dist.$item)(_templateObject318 || (_templateObject318 = fights_taggedTemplateLiteral(["latte lovers member's mug"])))) && !(0,dist.get)("latteUnlocks").includes("carrot");
+  return (0,dist.have)((0,dist.$item)(_templateObject318 || (_templateObject318 = fights_taggedTemplateLiteral(["latte lovers member's mug"])))) && !(0,dist.get)("latteUnlocks").includes("carrot") && (0,dist.get)("latteUnlocks").includes("cajun") && (0,dist.get)("latteUnlocks").includes("rawhide");
 }, function (runSource) {
   (0,dist.adventureMacro)((0,dist.$location)(_templateObject319 || (_templateObject319 = fights_taggedTemplateLiteral(["The Dire Warren"]))), runSource.macro);
 }, {
