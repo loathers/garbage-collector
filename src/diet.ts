@@ -291,7 +291,7 @@ export function runDiet(): void {
   };
   const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
   for (let i = chocosRemaining; i > 0; i--) {
-    const chocoVals = Object.values(chocos).map((choc): [Item, number] => [
+    const chocoVals = Array.from(choco.values()).map((choc): [Item, number] => [
       choc,
       chocExpVal(i, choc),
     ]);
