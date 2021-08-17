@@ -864,9 +864,17 @@ const freeFightSources = [
             Macro.trySkill($skill`Summon Love Gnats`).trySkill($skill`Summon Love Mosquito`)
           )
           .trySkill($skill`Micrometeorite`)
+          .tryItem($item`Time-Spinner`)
+          .tryItem($item`little red book`)
+          .tryItem($item`Rain-Doh blue balls`)
+          .tryItem($item`Rain-Doh indigo cup`)
+          .trySkill($skill`Entangling Noodles`)
           .kill(),
         () => {
           restoreHp(myMaxhp());
+          if (have($skill`Ruthless Efficiency`)) ensureEffect($effect`Ruthlessly Efficient`);
+          if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
+          if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
           retrieveItem($item`[glitch season reward name]`);
           if (get("glitchItemImplementationCount") >= 1000) retrieveItem($item`gas can`, 2);
           visitUrl("inv_eat.php?pwd&whichitem=10207");
