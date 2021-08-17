@@ -1,4 +1,5 @@
 import {
+  abort,
   booleanModifier,
   buy,
   cliExecute,
@@ -12,6 +13,7 @@ import {
   myClass,
   myGardenType,
   myInebriety,
+  myLevel,
   myTurncount,
   print,
   putCloset,
@@ -23,6 +25,7 @@ import {
   totalTurnsPlayed,
   use,
   useFamiliar,
+  userConfirm,
   visitUrl,
   xpath,
 } from "kolmafia";
@@ -255,6 +258,12 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(20815);
+  if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
+    const proceedRegardless = userConfirm(
+      "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
+    );
+    if (!proceedRegardless) abort();
+  }
 
   if (get("valueOfAdventure") <= 3500) {
     throw `Your valueOfAdventure is set to ${get(
