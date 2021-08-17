@@ -276,19 +276,28 @@ export function runDiet(): void {
   );
   use(loveChocolateEat, $item`LOV Extraterrestrial Chocolate`);
 
-  const choco = new Map([
-    [toInt($class`Seal Clubber`), $item`chocolate seal-clubbing club`],
-    [toInt($class`Turtle Tamer`), $item`chocolate turtle totem`],
-    [toInt($class`Pastamancer`), $item`chocolate pasta spoon`],
-    [toInt($class`Sauceror`), $item`chocolate saucepan`],
-    [toInt($class`Accordion Thief`), $item`chocolate stolen accordion`],
-    [toInt($class`Disco Bandit`), $item`chocolate disco ball`],
+  const chocos = new Map([
+    [$class`Seal Clubber`, $item`chocolate seal-clubbing club`],
+    [$class`Turtle Tamer`, $item`chocolate turtle totem`],
+    [$class`Pastamancer`, $item`chocolate pasta spoon`],
+    [$class`Sauceror`, $item`chocolate saucepan`],
+    [$class`Accordion Thief`, $item`chocolate stolen accordion`],
+    [$class`Disco Bandit`, $item`chocolate disco ball`],
   ]);
-  if (choco.has(toInt(myClass())) && get("_chocolatesUsed") < 3) {
-    const used = get("_chocolatesUsed");
-    const item = choco.get(toInt(myClass())) || $item`none`;
-    const count = clamp(3 - used, 0, 3);
-    use(count, item);
+  const classChoco = chocos.get(myClass());
+  const chocExpVal = (remaining: number, item: Item): number => {
+    const advs = [0, 0, 1, 2, 3][remaining + (item === classChoco ? 1 : 0)];
+    return advs * MPA - mallPrice(item);
+  };
+  const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
+  for (let i = chocosRemaining; i > 0; i--) {
+    const chocoVals = Array.from(chocos.values()).map((choc): [Item, number] => [
+      choc,
+      chocExpVal(i, choc),
+    ]);
+    const best = chocoVals.sort((a, b) => b[1] - a[1])[0];
+    if (best[1] > 0) use(1, best[0]);
+    else break;
   }
 
   useIfUnused(
