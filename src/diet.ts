@@ -295,7 +295,7 @@ export function runDiet(): void {
       choc,
       chocExpVal(i, choc),
     ]);
-    const best = chocoVals.sort((a, b) => a[1] - b[1])[0];
+    const best = chocoVals.sort((a, b) => b[1] - a[1])[0];
     if (best[1] > 0) use(1, best[0]);
     else break;
   }
