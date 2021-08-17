@@ -16773,7 +16773,17 @@ function main() {
       autoSatisfyWithNPCs: true,
       autoSatisfyWithCoinmasters: true,
       dontStopForCounters: true,
-      maximizerFoldables: true
+      maximizerFoldables: true,
+      hpAutoRecoveryTarget: 1.0
+    });
+    if ((0,dist.get)("hpAutoRecovery") < 0.35) lib/* propertyManager.set */.kr.set({
+      hpAutoRecovery: 0.35
+    });
+    if ((0,dist.get)("mpAutoRecovery") < 0.15) lib/* propertyManager.set */.kr.set({
+      mpAutoRecovery: 0.25
+    });
+    if ((0,dist.get)("mpAutoRecoveryTarget") < 0.65) lib/* propertyManager.set */.kr.set({
+      mpAutoRecoveryTarget: 0.65
     });
     (0,external_kolmafia_.cliExecute)("mood apathetic");
     (0,external_kolmafia_.cliExecute)("ccs garbo");
