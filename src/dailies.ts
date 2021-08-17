@@ -349,10 +349,7 @@ function checkVolcanoQuest() {
     if (chosenItem.item === $item`fused fuse`) {
       globalOptions.messages.push("Remember to nab a fused fuse with your stooper!");
     } else {
-      const choice =
-        Array.from(volcanoProperties.keys()).indexOf(chosenItem.item) === -1
-          ? 4
-          : 1 + Array.from(volcanoProperties.keys()).indexOf(chosenItem.item);
+      const choice = 1 + Array.from(volcanoProperties.keys()).indexOf(chosenItem.item);
       withProperty("autoBuyPriceLimit", Math.round(volcoinoValue / chosenItem.numberNeeded), () =>
         retrieveItem(chosenItem.item, volcanoProperties.get(chosenItem.item) ?? 0)
       );
