@@ -256,9 +256,15 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(20815);
-  if ((questStep("questL13Final") < 999) && !get("csServicesPerformed") && questStep("questL13Warehouse") < 999) {
-    const proceedRegardless = userConfirm("Looks like your ascension may not be done yet. Are you sure you want to garbo?");
-    if (!proceedRegardless) throw new Error("Ascension incomplete!")
+  if (
+    questStep("questL13Final") < 999 &&
+    !get("csServicesPerformed") &&
+    questStep("questL13Warehouse") < 999
+  ) {
+    const proceedRegardless = userConfirm(
+      "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
+    );
+    if (!proceedRegardless) throw new Error("Ascension incomplete!");
   }
 
   if (get("valueOfAdventure") <= 3500) {
