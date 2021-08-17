@@ -344,22 +344,21 @@ function checkVolcanoQuest() {
     )
     .sort((a, b) => b.price - a.price);
 
-  for (const entry of volcanoItems) {
-    if (entry.item === $item`fused fuse`) {
+  if (volcanoItems) {
+    const chosenItem = volcanoItems[0];
+    if (chosenItem.item === $item`fused fuse`) {
       globalOptions.messages.push("Remember to nab a fused fuse with your stooper!");
-      break;
     } else {
       const choice =
-        Array.from(volcanoProperties.keys()).indexOf(entry.item) === -1
+        Array.from(volcanoProperties.keys()).indexOf(chosenItem.item) === -1
           ? 4
-          : 1 + Array.from(volcanoProperties.keys()).indexOf(entry.item);
-      withProperty("autoBuyPriceLimit", Math.round(volcoinoValue / entry.numberNeeded), () =>
-        retrieveItem(entry.item, volcanoProperties.get(entry.item) ?? 0)
+          : 1 + Array.from(volcanoProperties.keys()).indexOf(chosenItem.item);
+      withProperty("autoBuyPriceLimit", Math.round(volcoinoValue / chosenItem.numberNeeded), () =>
+        retrieveItem(chosenItem.item, volcanoProperties.get(chosenItem.item) ?? 0)
       );
       visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-      print(`Alright buddy, turning in ${entry.item.plural} for a volcoino!`, "red");
+      print(`Alright buddy, turning in ${chosenItem.item.plural} for a volcoino!`, "red");
       runChoice(choice);
-      break;
     }
   }
 }
