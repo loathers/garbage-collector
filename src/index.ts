@@ -1,4 +1,5 @@
 import {
+  abort,
   booleanModifier,
   buy,
   cliExecute,
@@ -264,7 +265,7 @@ export function main(argString = ""): void {
     const proceedRegardless = userConfirm(
       "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
     );
-    if (!proceedRegardless) throw new Error("Ascension incomplete!");
+    if (!proceedRegardless) abort();
   }
 
   if (get("valueOfAdventure") <= 3500) {
