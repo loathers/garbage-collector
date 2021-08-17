@@ -868,7 +868,7 @@ const freeFightSources = [
         () => {
           restoreHp(myMaxhp());
           retrieveItem($item`[glitch season reward name]`);
-          retrieveItem($item`gas can`, 2);
+          if (get("glitchItemImplementationCount") >= 1000) retrieveItem($item`gas can`, 2);
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
         }
