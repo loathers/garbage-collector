@@ -853,9 +853,12 @@ const freeFightSources = [
     () =>
       withMacro(
         Macro.skill($skill`Curse of Marinara`)
-          .skill($skill`Conspiratorial Whispers`)
-          .skill($skill`Shadow Noodles`)
-          .item([$item`gas can`, $item`gas can`])
+          .trySkill($skill`Conspiratorial Whispers`)
+          .trySkill($skill`Shadow Noodles`)
+          .externalIf(
+            get("glitchItemImplementationCount") >= 1000,
+            Macro.item([$item`gas can`, $item`gas can`])
+          )
           .externalIf(
             get("lovebugsUnlocked"),
             Macro.trySkill($skill`Summon Love Gnats`).trySkill($skill`Summon Love Mosquito`)
@@ -869,7 +872,10 @@ const freeFightSources = [
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
         }
-      )
+      ),
+    {
+      requirements: () => [new Requirement(["1000 mainstat"], {})],
+    }
   ),
 
   // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
