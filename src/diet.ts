@@ -291,12 +291,14 @@ export function runDiet(): void {
   };
   const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
   for (let i = chocosRemaining; i > 0; i--) {
-    const chocoVals = Array.from(chocos.values()).map((choc): [Item, number] => [
-      choc,
-      chocExpVal(i, choc),
-    ]);
-    const best = chocoVals.sort((a, b) => b[1] - a[1])[0];
-    if (best[1] > 0) use(1, best[0]);
+    const chocoVals = Array.from(chocos.values()).map((choc) => {
+      return {
+        choco: choc,
+        value: chocExpVal(i, choc),
+      };
+    });
+    const best = chocoVals.sort((a, b) => b.value - a.value)[0];
+    if (best.value > 0) use(1, best.choco);
     else break;
   }
 
