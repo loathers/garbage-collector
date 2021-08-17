@@ -276,19 +276,29 @@ export function runDiet(): void {
   );
   use(loveChocolateEat, $item`LOV Extraterrestrial Chocolate`);
 
-  const choco = new Map([
-    [toInt($class`Seal Clubber`), $item`chocolate seal-clubbing club`],
-    [toInt($class`Turtle Tamer`), $item`chocolate turtle totem`],
-    [toInt($class`Pastamancer`), $item`chocolate pasta spoon`],
-    [toInt($class`Sauceror`), $item`chocolate saucepan`],
-    [toInt($class`Accordion Thief`), $item`chocolate stolen accordion`],
-    [toInt($class`Disco Bandit`), $item`chocolate disco ball`],
+  const chocos = new Map([
+    [$class`Seal Clubber`, $item`chocolate seal-clubbing club`],
+    [$class`Turtle Tamer`, $item`chocolate turtle totem`],
+    [$class`Pastamancer`, $item`chocolate pasta spoon`],
+    [$class`Sauceror`, $item`chocolate saucepan`],
+    [$class`Accordion Thief`, $item`chocolate stolen accordion`],
+    [$class`Disco Bandit`, $item`chocolate disco ball`],
   ]);
-  if (choco.has(toInt(myClass())) && get("_chocolatesUsed") < 3) {
-    const used = get("_chocolatesUsed");
-    const item = choco.get(toInt(myClass())) || $item`none`;
-    const count = clamp(3 - used, 0, 3);
-    use(count, item);
+  const classChoco = chocos.get(myClass()) ?? $item`none`;
+  const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
+  const chocoExpectedValue = (remaining: number, item: Item, price: number): number => {
+    if (item === $item`none`) return -9999;
+    const advs = [0, 0, 1, 2, 3][remaining + (item === classChoco ? 1 : 0)];
+    return advs * MPA - price;
+  };
+  for (let i = chocosRemaining; i > 0; i--) {
+    const prices = Object.values(chocos).map((choc): [Item, number] => [choc, mallPrice(choc)]);
+    const cheap = prices.sort((a, b) => a[1] - b[1])[0];
+    const classVal = chocoExpectedValue(i, classChoco, mallPrice(classChoco));
+    const cheapVal = chocoExpectedValue(i, cheap[0], cheap[1]);
+    if (classVal > cheapVal && classVal > 0) use(1, classChoco);
+    else if (cheapVal > 0) use(1, cheap[0]);
+    else break;
   }
 
   useIfUnused(
