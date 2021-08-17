@@ -13,6 +13,7 @@ import {
   myClass,
   myGardenType,
   myInebriety,
+  myLevel,
   myTurncount,
   print,
   putCloset,
@@ -257,10 +258,10 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(20815);
-  if (
-    questStep("questL13Final") < 999 &&
+  if ( !get("garbo_skipAscensionCheck", false) &&
+    ((questStep("questL13Final") < 999 &&
     !get("csServicesPerformed") &&
-    questStep("questL13Warehouse") < 999
+    questStep("questL13Warehouse") < 999) || (myLevel() < 13))
   ) {
     const proceedRegardless = userConfirm(
       "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
