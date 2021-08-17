@@ -284,20 +284,19 @@ export function runDiet(): void {
     [$class`Accordion Thief`, $item`chocolate stolen accordion`],
     [$class`Disco Bandit`, $item`chocolate disco ball`],
   ]);
-  const classChoco = chocos.get(myClass()) ?? $item`none`;
-  const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
-  const chocoExpectedValue = (remaining: number, item: Item, price: number): number => {
-    if (item === $item`none`) return -9999;
+  const classChoco = chocos.get(myClass());
+  const chocExpVal = (remaining: number, item: Item): number => {
     const advs = [0, 0, 1, 2, 3][remaining + (item === classChoco ? 1 : 0)];
-    return advs * MPA - price;
+    return advs * MPA - mallPrice(item);
   };
+  const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
   for (let i = chocosRemaining; i > 0; i--) {
-    const prices = Object.values(chocos).map((choc): [Item, number] => [choc, mallPrice(choc)]);
-    const cheap = prices.sort((a, b) => a[1] - b[1])[0];
-    const classVal = chocoExpectedValue(i, classChoco, mallPrice(classChoco));
-    const cheapVal = chocoExpectedValue(i, cheap[0], cheap[1]);
-    if (classVal > cheapVal && classVal > 0) use(1, classChoco);
-    else if (cheapVal > 0) use(1, cheap[0]);
+    const chocoVals = Object.values(chocos).map((choc): [Item, number] => [
+      choc,
+      chocExpVal(i, choc),
+    ]);
+    const best = chocoVals.sort((a, b) => a[1] - b[1])[0];
+    if (best[1] > 0) use(1, best[0]);
     else break;
   }
 
