@@ -346,6 +346,7 @@ function checkVolcanoQuest() {
 
   if (volcanoItems !== []) {
     const chosenItem = volcanoItems[0];
+    if (!chosenItem) return;
     if (chosenItem.item === $item`fused fuse`) {
       globalOptions.messages.push("Remember to nab a fused fuse with your stooper!");
     } else {
