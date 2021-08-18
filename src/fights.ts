@@ -869,6 +869,7 @@ const freeFightSources = [
           .tryItem($item`Rain-Doh blue balls`)
           .tryItem($item`Rain-Doh indigo cup`)
           .trySkill($skill`Entangling Noodles`)
+          .trySkill($skill`Frost Bite`)
           .kill(),
         () => {
           restoreHp(myMaxhp());
