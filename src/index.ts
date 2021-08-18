@@ -8,7 +8,6 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
-  itemAmount,
   myAdventures,
   myClass,
   myGardenType,
@@ -16,7 +15,6 @@ import {
   myLevel,
   myTurncount,
   print,
-  putCloset,
   retrieveItem,
   reverseNumberology,
   runChoice,
@@ -46,22 +44,6 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro, withMacro } from "./combat";
-import {
-  chateauDesk,
-  cheat,
-  configureGear,
-  configureMisc,
-  dailyBuffs,
-  gaze,
-  gin,
-  horse,
-  internetMemeShop,
-  martini,
-  pickTea,
-  prepFamiliars,
-  volcanoDailies,
-  voterSetup,
-} from "./dailies";
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
@@ -77,12 +59,12 @@ import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
-  refreshLatte,
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
+import { dailySetup } from "./dailies";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -101,33 +83,6 @@ function ensureBarfAccess() {
     runChoice(6);
     cliExecute("refresh inv");
   }
-}
-
-function dailySetup() {
-  voterSetup();
-  martini();
-  chateauDesk();
-  gaze();
-  configureGear();
-  horse();
-  prepFamiliars();
-  dailyBuffs();
-  configureMisc();
-  volcanoDailies();
-  cheat();
-  gin();
-  internetMemeShop();
-  pickTea();
-  refreshLatte();
-
-  if (myInebriety() > inebrietyLimit()) return;
-  retrieveItem($item`Half a Purse`);
-  retrieveItem($item`seal tooth`);
-  retrieveItem($item`The Jokester's gun`);
-  putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
-  putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
-  putCloset(itemAmount($item`4-d camera`), $item`4-d camera`);
-  putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
 }
 
 function barfTurn() {

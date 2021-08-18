@@ -6,13 +6,16 @@ import {
   getCampground,
   getClanLounge,
   haveSkill,
+  inebrietyLimit,
   itemAmount,
   mallPrice,
   maximize,
   myClass,
+  myInebriety,
   myPrimestat,
   myThrall,
   print,
+  putCloset,
   retrieveItem,
   runChoice,
   toInt,
@@ -43,8 +46,36 @@ import { meatFamiliar } from "./familiar";
 import { baseMeat, coinmasterPrice, ensureEffect, saleValue, tryFeast } from "./lib";
 import { withStash } from "./clan";
 import { estimatedTurns } from "./globalvars";
+import { refreshLatte } from "./outfit";
 
-export function voterSetup(): void {
+export function dailySetup(): void {
+  voterSetup();
+  martini();
+  chateauDesk();
+  gaze();
+  configureGear();
+  horse();
+  prepFamiliars();
+  dailyBuffs();
+  configureMisc();
+  volcanoDailies();
+  cheat();
+  gin();
+  internetMemeShop();
+  pickTea();
+  refreshLatte();
+
+  if (myInebriety() > inebrietyLimit()) return;
+  retrieveItem($item`Half a Purse`);
+  retrieveItem($item`seal tooth`);
+  retrieveItem($item`The Jokester's gun`);
+  putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
+  putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
+  putCloset(itemAmount($item`4-d camera`), $item`4-d camera`);
+  putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
+}
+
+function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
   visitUrl("place.php?whichplace=town_right&action=townright_vote");
 
@@ -91,7 +122,7 @@ export function voterSetup(): void {
   );
 }
 
-export function configureGear(): void {
+function configureGear(): void {
   if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
     useFamiliar($familiar`Cornbeefadon`);
     use($item`box of Familiar Jacks`);
@@ -121,7 +152,7 @@ export function configureGear(): void {
   }
 }
 
-export function prepFamiliars(): void {
+function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
     for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, Bloody Nora`) {
       if (get("_roboDrinks").includes(drink.name)) continue;
@@ -157,14 +188,14 @@ export function prepFamiliars(): void {
   }
 }
 
-export function horse(): void {
+function horse(): void {
   visitUrl("place.php?whichplace=town_right");
   if (get("horseryAvailable") && get("_horsery") !== "dark horse") {
     cliExecute("horsery dark");
   }
 }
 
-export function dailyBuffs(): void {
+function dailyBuffs(): void {
   if (
     !get("_clanFortuneBuffUsed") &&
     have($item`Clan VIP Lounge key`) &&
@@ -187,7 +218,7 @@ export function dailyBuffs(): void {
   }
 }
 
-export function configureMisc(): void {
+function configureMisc(): void {
   if (SongBoom.songChangesLeft() > 0) SongBoom.setSong("Total Eclipse of Your Meat");
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
@@ -246,7 +277,7 @@ export function configureMisc(): void {
   changeMcd(10);
 }
 
-export function volcanoDailies(): void {
+function volcanoDailies(): void {
   if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
@@ -355,7 +386,7 @@ function checkVolcanoQuest() {
   }
 }
 
-export function cheat(): void {
+function cheat(): void {
   if (have($item`Deck of Every Card`)) {
     ["1952 Mickey Mantle", "Island", "Ancestral Recall"].forEach((card) => {
       if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
@@ -364,7 +395,7 @@ export function cheat(): void {
   }
 }
 
-export function gin(): void {
+function gin(): void {
   if (have($item`Time-Spinner`)) {
     if (
       !get("_timeSpinnerReplicatorUsed") &&
@@ -376,7 +407,7 @@ export function gin(): void {
   }
 }
 
-export function internetMemeShop(): void {
+function internetMemeShop(): void {
   const baconValue = mallPrice($item`BACON`);
 
   const internetMemeShopProperties = {
@@ -396,7 +427,7 @@ export function internetMemeShop(): void {
 }
 
 const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
-export function pickTea(): void {
+function pickTea(): void {
   if (!getCampground()["potted tea tree"] || get("_pottedTeaTreeUsed")) return;
   const bestTea = teas.sort((a, b) => saleValue(b) - saleValue(a))[0];
   const shakeVal = 3 * saleValue(...teas);
@@ -404,14 +435,14 @@ export function pickTea(): void {
   cliExecute(`teatree ${teaAction}`);
 }
 
-export function gaze(): void {
+function gaze(): void {
   if (!get("getawayCampsiteUnlocked")) return;
   if (!get("_campAwayCloudBuffs")) visitUrl("place.php?whichplace=campaway&action=campaway_sky");
   while (get("_campAwaySmileBuffs") < 3)
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
 }
 
-export function martini(): void {
+function martini(): void {
   if (
     !have($item`Kremlin's Greatest Briefcase`) ||
     get("_kgbClicksUsed") > 17 ||
@@ -422,7 +453,7 @@ export function martini(): void {
   cliExecute("Briefcase collect");
 }
 
-export function chateauDesk(): void {
+function chateauDesk(): void {
   if (ChateauMantegna.have() && !get("_chateauDeskHarvested")) {
     visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false);
   }
