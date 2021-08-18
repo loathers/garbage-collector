@@ -109,13 +109,13 @@ export function tryFillLatte(): boolean {
   if (
     have($item`latte lovers member's mug`) &&
     get("_latteRefillsUsed") < 3 &&
-    ((get("latteUnlocks").includes("cajun") &&
-      get("latteUnlocks").includes("rawhide") &&
-      (numericModifier($item`latte lovers member's mug`, "Familiar Weight") !== 5 ||
-        numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40 ||
-        (get("latteUnlocks").includes("carrot") &&
-          numericModifier($item`latte lovers member's mug`, "Item Drop") !== 20))) ||
-      get("_latteCopyUsed"))
+    (get("_latteCopyUsed") ||
+      (get("latteUnlocks").includes("cajun") &&
+        get("latteUnlocks").includes("rawhide") &&
+        (numericModifier($item`latte lovers member's mug`, "Familiar Weight") !== 5 ||
+          numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40 ||
+          (get("latteUnlocks").includes("carrot") &&
+            numericModifier($item`latte lovers member's mug`, "Item Drop") !== 20))))
   ) {
     const latteIngredients = [
       "cajun",
