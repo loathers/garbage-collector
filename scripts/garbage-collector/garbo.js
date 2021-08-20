@@ -21636,9 +21636,8 @@ var FreeFight = /*#__PURE__*/function () {
   fights_createClass(FreeFight, [{
     key: "runAll",
     value: function runAll() {
-      if (!this.available()) return; // FIXME: make a better decision here.
-
-      if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
+      if (!this.available()) return;
+      if ((this.options.cost ? this.options.cost() : 0) > (0,dist.get)("garbo_valueOfFreeFight", 2000)) return;
 
       while (this.available()) {
         var _this$options$familia;
@@ -21685,9 +21684,8 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
     value: function runAll() {
       var _this2 = this;
 
-      if (!this.available()) return; // FIXME: make a better decision here.
-
-      if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
+      if (!this.available()) return;
+      if ((this.options.cost ? this.options.cost() : 0) > (0,dist.get)("garbo_valueOfFreeFight", 2000)) return;
 
       var _loop = function _loop() {
         var _this2$options$famili;
