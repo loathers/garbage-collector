@@ -404,7 +404,7 @@ function embezzlerSetup() {
     if (have($item`Platinum Yendorian Express Card`)) {
       use($item`Platinum Yendorian Express Card`);
     }
-  })
+  });
   withStash($items`Bag o' Tricks`, () => {
     if (have($item`Bag o' Tricks`)) {
       use($item`Bag o' Tricks`);
