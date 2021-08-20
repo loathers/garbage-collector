@@ -714,8 +714,7 @@ class FreeFight {
 
   runAll() {
     if (!this.available()) return;
-    // FIXME: make a better decision here.
-    if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
+    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
       useFamiliar(
         this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
@@ -745,8 +744,7 @@ class FreeRunFight extends FreeFight {
 
   runAll() {
     if (!this.available()) return;
-    // FIXME: make a better decision here.
-    if ((this.options.cost ? this.options.cost() : 0) > 2000) return;
+    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
       const runSource = findRun(this.options.familiar ? false : true);
       if (!runSource) break;
