@@ -1379,11 +1379,43 @@ const freeRunFightSources = [
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) === 9,
     () => {
       propertyManager.setChoices({
-        1204: 1, //Gingerbread Train Station Noon random candy
+        1204: 1, // Gingerbread Train Station Noon random candy
       });
       adventureMacro($location`Gingerbread Train Station`, Macro.abort());
     }
   ),
+  new FreeRunFight(
+    () =>
+      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
+      get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 &&
+      availableAmount($item`sprinkles`) > 5,
+    (runSource: FreeRun) => {
+      adventureMacro($location`Gingerbread Civic Center`, runSource.macro);
+      if (
+        [
+          "Even Tamer Than Usual",
+          "Never Break the Chain",
+          "Close, but Yes Cigar",
+          "Armchair Quarterback",
+        ].includes(get("lastEncounter"))
+      ) {
+        set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
+      }
+    }
+  ),
+  new FreeFight(
+    () =>
+      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
+      get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) === 19 &&
+      availableAmount($item`sprinkles`) > 5,
+    () => {
+      propertyManager.setChoices({
+        1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
+      });
+      adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+    }
+  ),
+  // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
   new FreeRunFight(
     () =>
       get("_hipsterAdv") < 7 &&
