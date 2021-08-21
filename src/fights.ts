@@ -1387,6 +1387,7 @@ const freeRunFightSources = [
   new FreeRunFight(
     () =>
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
+      get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) >= 10 &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 &&
       availableAmount($item`sprinkles`) > 5,
     (runSource: FreeRun) => {
