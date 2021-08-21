@@ -156,6 +156,13 @@ export class Macro extends LibramMacro {
     )
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
+        myAdventures() < 150 && have($skill`Meteor Lore`) && get("_meteorShowerUses") < 5,
+        Macro.if_(
+          `monstername ${$monster`Knob Goblin Embezzler`}`,
+          Macro.trySkill($skill`Meteor Shower`)
+        )
+      )
+      .externalIf(
         !have($effect`On the Trail`) && have($skill`Transcendent Olfaction`),
         Macro.if_("monstername garbage tourist", Macro.trySkill($skill`Transcendent Olfaction`))
       )
