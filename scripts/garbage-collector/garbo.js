@@ -21693,7 +21693,6 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
         var runSource = (0,lib/* findRun */.tN)(_this2.options.familiar ? false : true);
         if (!runSource) return "break";
         (0,external_kolmafia_.useFamiliar)(_this2.options.familiar ? (_this2$options$famili = _this2.options.familiar()) !== null && _this2$options$famili !== void 0 ? _this2$options$famili : freeFightFamiliar() : freeFightFamiliar());
-        freeFightMood().execute();
         if (runSource.prepare) runSource.prepare();
         freeFightOutfit([].concat(fights_toConsumableArray(_this2.options.requirements ? _this2.options.requirements() : []), fights_toConsumableArray(runSource.requirement ? [runSource.requirement] : [])));
         safeRestore();
