@@ -51,7 +51,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
   const equipMode =
     myFamiliar() === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   const bjornChoice = pickBjorn(equipMode);
-  const compiledRequirements = Requirement.merge([new Requirement([], {}), ...requirements]);
+  const compiledRequirements = Requirement.merge(requirements);
   const compiledOptions = compiledRequirements.maximizeOptions();
   const compiledParameters = compiledRequirements.maximizeParameters();
 
