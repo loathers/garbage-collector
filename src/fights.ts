@@ -400,13 +400,11 @@ function embezzlerSetup() {
     ensureEffect($effect`Boxing Day Glow`);
   }
   freeFightMood().execute(50);
-  withStash($items`Platinum Yendorian Express Card`, () => {
-    if (have($item`Platinum Yendorian Express Card`)) {
+  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
+    if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
       use($item`Platinum Yendorian Express Card`);
     }
-  });
-  withStash($items`Bag o' Tricks`, () => {
-    if (have($item`Bag o' Tricks`)) {
+    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
       use($item`Bag o' Tricks`);
     }
   });
