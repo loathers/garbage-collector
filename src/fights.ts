@@ -96,6 +96,7 @@ import {
   propertyManager,
   questStep,
   Requirement,
+  safeInterrupt,
   saleValue,
   setChoice,
   sum,
@@ -564,6 +565,7 @@ export function dailyFights(): void {
           log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_meatChain", true);
+        safeInterrupt();
       }
 
       startDigitize();
@@ -594,6 +596,7 @@ export function dailyFights(): void {
           log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_weightChain", true);
+        safeInterrupt();
       }
 
       startDigitize();
@@ -662,6 +665,7 @@ export function dailyFights(): void {
         ) {
           doSausage();
         }
+        safeInterrupt();
       }
 
       // Check in case our prof gained enough exp during the profchains
@@ -729,6 +733,7 @@ class FreeFight {
       horseradish();
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
+      safeInterrupt();
     }
   }
 }
@@ -761,6 +766,7 @@ class FreeRunFight extends FreeFight {
       ]);
       safeRestore();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
+      safeInterrupt();
     }
   }
 }

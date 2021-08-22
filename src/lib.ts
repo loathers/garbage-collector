@@ -1,5 +1,6 @@
 import { canAdv } from "canadv.ash";
 import {
+  abort,
   autosellPrice,
   buy,
   cliExecute,
@@ -42,6 +43,7 @@ import {
   MaximizeOptions,
   PropertiesManager,
   property,
+  set,
   SongBoom,
   SourceTerminal,
 } from "libram";
@@ -61,6 +63,13 @@ export const baseMeat =
   (SongBoom.songChangesLeft() > 0 || SongBoom.song() === "Total Eclipse of Your Meat")
     ? 275
     : 250;
+
+export function safeInterrupt(): void {
+  if (get<boolean>("garbo_interrupt", false)) {
+    set("garbo_interrupt", false);
+    abort("User interrupt requested. Stopping Garbage Collector.");
+  }
+}
 
 export function setChoice(adventure: number, value: number): void {
   propertyManager.setChoices({ [adventure]: value });
