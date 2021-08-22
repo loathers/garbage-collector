@@ -23319,11 +23319,12 @@ function main() {
     if ((0,dist.get)("hpAutoRecovery") < 0.35) lib/* propertyManager.set */.kr.set({
       hpAutoRecovery: 0.35
     });
-    if ((0,dist.get)("mpAutoRecovery") < 0.15) lib/* propertyManager.set */.kr.set({
+    if ((0,dist.get)("mpAutoRecovery") < 0.25) lib/* propertyManager.set */.kr.set({
       mpAutoRecovery: 0.25
     });
-    if ((0,dist.get)("mpAutoRecoveryTarget") < 0.65) lib/* propertyManager.set */.kr.set({
-      mpAutoRecoveryTarget: 0.65
+    var mpTarget = (0,external_kolmafia_.myLevel)() < 18 ? 0.5 : 0.3;
+    if ((0,dist.get)("mpAutoRecoveryTarget") < mpTarget) lib/* propertyManager.set */.kr.set({
+      mpAutoRecoveryTarget: mpTarget
     });
     (0,external_kolmafia_.cliExecute)("mood apathetic");
     (0,external_kolmafia_.cliExecute)("ccs garbo");
