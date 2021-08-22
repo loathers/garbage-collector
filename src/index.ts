@@ -291,7 +291,7 @@ export function main(argString = ""): void {
     });
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
     if (get("mpAutoRecovery") < 0.15) propertyManager.set({ mpAutoRecovery: 0.25 });
-    if (get("mpAutoRecoveryTarget") < 0.65) propertyManager.set({ mpAutoRecoveryTarget: 0.65 });
+    if (get("mpAutoRecoveryTarget") < 0.35) propertyManager.set({ mpAutoRecoveryTarget: 0.35 });
 
     cliExecute("mood apathetic");
     cliExecute("ccs garbo");
