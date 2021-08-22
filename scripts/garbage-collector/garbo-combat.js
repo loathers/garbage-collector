@@ -18014,7 +18014,7 @@ function estimatedTurns() {
 /* harmony export */   "nf": () => (/* binding */ monsterManuelAvailable),
 /* harmony export */   "Bx": () => (/* binding */ maxPassiveDamage)
 /* harmony export */ });
-/* unused harmony exports BonusEquipMode, propertyManager, baseMeat, setChoice, ensureEffect, clamp, sum, mapMonster, argmax, questStep, draggableFight, determineDraggableZoneAndEnsureAccess, Requirement, tryFeast, FreeRun, findRun, ltbRun, saleValue, coinmasterPrice, kramcoGuaranteed, leprechaunMultiplier, fairyMultiplier */
+/* unused harmony exports BonusEquipMode, propertyManager, baseMeat, safeInterrupt, setChoice, ensureEffect, clamp, sum, mapMonster, argmax, questStep, draggableFight, determineDraggableZoneAndEnsureAccess, Requirement, tryFeast, FreeRun, findRun, ltbRun, saleValue, coinmasterPrice, kramcoGuaranteed, leprechaunMultiplier, fairyMultiplier */
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8958);
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(canadv_ash__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
@@ -18073,6 +18073,12 @@ var BonusEquipMode;
 
 var propertyManager = new libram__WEBPACK_IMPORTED_MODULE_3__.PropertiesManager();
 var baseMeat = libram__WEBPACK_IMPORTED_MODULE_3__.SongBoom.have() && (libram__WEBPACK_IMPORTED_MODULE_3__.SongBoom.songChangesLeft() > 0 || libram__WEBPACK_IMPORTED_MODULE_3__.SongBoom.song() === "Total Eclipse of Your Meat") ? 275 : 250;
+function safeInterrupt() {
+  if (get("garbo_interrupt", false)) {
+    set("garbo_interrupt", false);
+    abort("User interrupt requested. Stopping Garbage Collector.");
+  }
+}
 function setChoice(adventure, value) {
   propertyManager.setChoices(_defineProperty({}, adventure, value));
 }

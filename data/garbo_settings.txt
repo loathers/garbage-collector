@@ -1,9 +1,10 @@
 # variable timing, number, variable name, variable type, description
 # each separated by a tab
 
-setting	0	valueOfAdventure	int	What is a marginal barf turn worth to you?
-setting	1	garbo_stashClan	string	What is your stash clan? Set to current clan if you don't have access to one.
-setting	2	garbo_vipClan	string	What is your vip clan? Set to current clan if you don't have access to one (And then get whitelisted to BAFH. It's free!).
-setting	3	garbo_skipAscensionCheck	boolean	Should skip verifying that your account has broken the prism? Set to true if you want to proceed regardless, and false if you'd like to be warned.
-setting	4	garbo_valueOfFreeFight	int	What is a free fight\run worth to you? (Default 2000).
-# setting	5	useCarpe	boolean	Use carpe? Disabled by default because it's probably rude to use up fish. Don't be rude!
+setting	0	garbo_interrupt	boolean	Set this to true to safely stop the script if it is running.
+setting	1	valueOfAdventure	int	What is a marginal barf turn worth to you?
+setting	2	garbo_stashClan	string	What is your stash clan? Set to current clan if you don't have access to one.
+setting	3	garbo_vipClan	string	What is your vip clan? Set to current clan if you don't have access to one (And then get whitelisted to BAFH. It's free!).
+setting	4	garbo_skipAscensionCheck	boolean	Should skip verifying that your account has broken the prism? Set to true if you want to proceed regardless, and false if you'd like to be warned.
+setting	5	garbo_valueOfFreeFight	int	What is a free fight\run worth to you? (Default 2000).
+# setting	6	useCarpe	boolean	Use carpe? Disabled by default because it's probably rude to use up fish. Don't be rude!

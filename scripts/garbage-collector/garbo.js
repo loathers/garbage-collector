@@ -21560,6 +21560,7 @@ function dailyFights() {
         }
 
         (0,dist.set)("_garbo_meatChain", true);
+        (0,lib/* safeInterrupt */.pl)();
       }
 
       startDigitize(); // SECOND EMBEZZLER CHAIN
@@ -21587,6 +21588,7 @@ function dailyFights() {
         }
 
         (0,dist.set)("_garbo_weightChain", true);
+        (0,lib/* safeInterrupt */.pl)();
       }
 
       startDigitize(); // REMAINING EMBEZZLER FIGHTS
@@ -21645,6 +21647,8 @@ function dailyFights() {
         if ((0,lib/* kramcoGuaranteed */.DR)() && (!nextFight || nextFight.name !== "Backup" && nextFight.name !== "Digitize")) {
           doSausage();
         }
+
+        (0,lib/* safeInterrupt */.pl)();
       } // Check in case our prof gained enough exp during the profchains
 
 
@@ -21710,6 +21714,7 @@ var FreeFight = /*#__PURE__*/function () {
         horseradish(); // Slot in our Professor Thesis if it's become available
 
         if (thesisReady()) deliverThesis();
+        (0,lib/* safeInterrupt */.pl)();
       }
     }
   }]);
@@ -21759,6 +21764,7 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
         (0,combat.withMacro)(combat.Macro.step(runSource.macro), function () {
           return _this2.freeRun(runSource);
         });
+        (0,lib/* safeInterrupt */.pl)();
       };
 
       while (this.available()) {
@@ -23456,6 +23462,7 @@ function main() {
         try {
           while (canContinue()) {
             barfTurn();
+            (0,lib/* safeInterrupt */.pl)();
           }
         } finally {
           (0,external_kolmafia_.setAutoAttack)(0);
@@ -23486,6 +23493,7 @@ function main() {
 /* harmony export */   "Zj": () => (/* binding */ BonusEquipMode),
 /* harmony export */   "kr": () => (/* binding */ propertyManager),
 /* harmony export */   "Vq": () => (/* binding */ baseMeat),
+/* harmony export */   "pl": () => (/* binding */ safeInterrupt),
 /* harmony export */   "Y7": () => (/* binding */ setChoice),
 /* harmony export */   "pq": () => (/* binding */ ensureEffect),
 /* harmony export */   "uZ": () => (/* binding */ clamp),
@@ -23566,6 +23574,12 @@ var BonusEquipMode;
 
 var propertyManager = new libram__WEBPACK_IMPORTED_MODULE_3__.PropertiesManager();
 var baseMeat = libram__WEBPACK_IMPORTED_MODULE_3__.SongBoom.have() && (libram__WEBPACK_IMPORTED_MODULE_3__.SongBoom.songChangesLeft() > 0 || libram__WEBPACK_IMPORTED_MODULE_3__.SongBoom.song() === "Total Eclipse of Your Meat") ? 275 : 250;
+function safeInterrupt() {
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_3__.get)("garbo_interrupt", false)) {
+    (0,libram__WEBPACK_IMPORTED_MODULE_3__.set)("garbo_interrupt", false);
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.abort)("User interrupt requested. Stopping Garbage Collector.");
+  }
+}
 function setChoice(adventure, value) {
   propertyManager.setChoices(_defineProperty({}, adventure, value));
 }
