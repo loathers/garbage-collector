@@ -290,8 +290,10 @@ export function main(argString = ""): void {
       hpAutoRecoveryTarget: 1.0,
     });
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
-    if (get("mpAutoRecovery") < 0.15) propertyManager.set({ mpAutoRecovery: 0.25 });
-    if (get("mpAutoRecoveryTarget") < 0.35) propertyManager.set({ mpAutoRecoveryTarget: 0.35 });
+    if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
+    const mpTarget = myLevel() < 18 ? 0.5 : 0.3;
+    if (get("mpAutoRecoveryTarget") < mpTarget)
+      propertyManager.set({ mpAutoRecoveryTarget: mpTarget });
 
     cliExecute("mood apathetic");
     cliExecute("ccs garbo");
