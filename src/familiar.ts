@@ -1,9 +1,7 @@
 import {
   familiarWeight,
   haveEffect,
-  haveFamiliar,
   inebrietyLimit,
-  mallPrice,
   myFamiliar,
   myInebriety,
   weightAdjustment,
@@ -90,6 +88,46 @@ const rotatingFamiliars: { [index: string]: { expected: number[]; drop: Item; pr
     drop: $item`hot ashes`,
     pref: "_hotAshesDrops",
   },
+  "Grim Brother": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`grim fairy tale`,
+    pref: "_grimFairyTaleDrops",
+  },
+  "Golden Monkey": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`powdered gold`,
+    pref: "_powderedGoldDrops",
+  },
+  "Unconscious Collective": {
+    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    drop: $item`Unconscious Collective Dream Jar`,
+    pref: "_dreamJarDrops",
+  },
+  "Ms. Puck Man": {
+    expected: Array($familiar`Ms. Puck Man`.dropsLimit).fill(12.85),
+    drop: $item`power pill`,
+    pref: "_powerPillDrops",
+  },
+  "Puck Man": {
+    expected: Array($familiar`Puck Man`.dropsLimit).fill(12.85),
+    drop: $item`power pill`,
+    pref: "_powerPillDrops",
+  },
+  "Adventurous Spelunker": {
+    expected: [7.0],
+    drop: $item`Tales of Spelunking`,
+    pref: "_spelunkingTalesDrops",
+  },
+  "Angry Jung Man": {
+    expected: [30.0],
+    drop: $item`psychoanalytic jar`,
+    pref: "_jungDrops",
+  },
+  "Grimstone Golem": {
+    expected: [45.0],
+    drop: $item`grimstone mask`,
+    pref: "_grimstoneMaskDrops",
+  },
 };
 
 let savedMimicDropValue: number | null = null;
@@ -119,7 +157,7 @@ export function freeFightFamiliar(): Familiar {
       const { expected, drop, pref } = rotatingFamiliars[familiarName];
       const dropsAlready = get<number>(pref);
       if (dropsAlready >= expected.length) continue;
-      const value = mallPrice(drop) / expected[dropsAlready];
+      const value = saleValue(drop) / expected[dropsAlready];
       familiarValue.push([familiar, value]);
     }
   }
@@ -131,10 +169,10 @@ export function freeFightFamiliar(): Familiar {
     familiarValue.push([$familiar`Stocking Mimic`, mimicValue]);
   }
 
-  if (haveFamiliar($familiar`Robortender`)) familiarValue.push([$familiar`Robortender`, 200]);
+  if (have($familiar`Robortender`)) familiarValue.push([$familiar`Robortender`, 200]);
 
   for (const familiar of $familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`) {
-    if (haveFamiliar(familiar)) familiarValue.push([familiar, 1]);
+    if (have(familiar)) familiarValue.push([familiar, 1]);
   }
 
   familiarValue.push([$familiar`none`, 0]);
