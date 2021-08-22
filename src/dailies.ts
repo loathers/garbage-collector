@@ -33,6 +33,7 @@ import {
   $item,
   $items,
   $skill,
+  $skills,
   $stat,
   $thrall,
   ChateauMantegna,
@@ -60,6 +61,7 @@ export function dailySetup(): void {
   configureMisc();
   volcanoDailies();
   cheat();
+  tomeSummons();
   gin();
   internetMemeShop();
   pickTea();
@@ -388,10 +390,38 @@ function checkVolcanoQuest() {
 
 function cheat(): void {
   if (have($item`Deck of Every Card`)) {
-    ["1952 Mickey Mantle", "Island", "Ancestral Recall"].forEach((card) => {
+    [
+      saleValue($item`gift card`) >= saleValue($item`1952 Mickey Mantle card`)
+        ? "Gift Card"
+        : "1952 Mickey Mantle",
+      "Island",
+      "Ancestral Recall",
+    ].forEach((card) => {
       if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
         cliExecute(`cheat ${card}`);
     });
+  }
+}
+
+function tomeSummons(): void {
+  const tomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
+  tomes.forEach((skill) => {
+    if (have(skill) && skill.dailylimit > 0) {
+      useSkill(skill, skill.dailylimit);
+    }
+  });
+
+  if (have($skill`Summon Clip Art`) && $skill`Summon Clip Art`.dailylimit > 0) {
+    let best = $item`none`;
+    for (let itemId = 5224; itemId <= 5283; itemId++) {
+      const current = Item.get(`[${itemId}]`);
+      if (saleValue(current) > saleValue(best)) {
+        best = current;
+      }
+    }
+    if (best !== $item`none`) {
+      cliExecute(`try; create ${$skill`Summon Clip Art`.dailylimit} ${best}`);
+    }
   }
 }
 

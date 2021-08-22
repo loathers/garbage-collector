@@ -5,12 +5,15 @@ import {
   getFuel,
   haveEffect,
   haveSkill,
+  itemAmount,
   myClass,
   myEffects,
   mySpleenUse,
+  numericModifier,
   spleenLimit,
   toSkill,
   use,
+  useSkill,
 } from "kolmafia";
 import {
   $class,
@@ -26,7 +29,7 @@ import {
   set,
   Witchess,
 } from "libram";
-import { baseMeat, questStep } from "./lib";
+import { baseMeat, questStep, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { potionSetup } from "./potions";
 
@@ -84,6 +87,32 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     cliExecute("concert winklered");
   } else if (!get("concertVisited") && get("sidequestArenaCompleted") === "hippy") {
     cliExecute("concert optimist primal");
+  }
+
+  if (itemAmount($item`Bird-a-Day calendar`) > 0) {
+    if (!have($skill`Seek out a Bird`)) {
+      use(1, $item`Bird-a-Day calendar`);
+    }
+
+    if (
+      have($skill`Visit your Favorite Bird`) &&
+      !get("_favoriteBirdVisited") &&
+      (numericModifier($effect`Blessing of your favorite Bird`, "Meat Drop") > 0 ||
+        numericModifier($effect`Blessing of your favorite Bird`, "Item Drop") > 0)
+    ) {
+      useSkill($skill`Visit your Favorite Bird`);
+    }
+
+    if (
+      have($skill`Seek out a Bird`) &&
+      get("_birdsSoughtToday") < 6 &&
+      (numericModifier($effect`Blessing of the Bird`, "Meat Drop") > 0 ||
+        numericModifier($effect`Blessing of the Bird`, "Item Drop") > 0)
+    ) {
+      // Ensure we don't get stuck in the choice if the count is wrong
+      setChoice(1399, 2);
+      useSkill($skill`Seek out a Bird`, 6 - get("_birdsSoughtToday"));
+    }
   }
 
   potionSetup(embezzlers);
