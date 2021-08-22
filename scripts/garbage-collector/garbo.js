@@ -20224,10 +20224,7 @@ function meatMood() {
 
     if ((0,dist.have)((0,dist.$skill)(_templateObject34 || (_templateObject34 = mood_taggedTemplateLiteral(["Seek out a Bird"])))) && (0,dist.get)("_birdsSoughtToday") < 6 && ((0,external_kolmafia_.numericModifier)((0,dist.$effect)(_templateObject35 || (_templateObject35 = mood_taggedTemplateLiteral(["Blessing of the Bird"]))), "Meat Drop") > 0 || (0,external_kolmafia_.numericModifier)((0,dist.$effect)(_templateObject36 || (_templateObject36 = mood_taggedTemplateLiteral(["Blessing of the Bird"]))), "Item Drop") > 0)) {
       // Ensure we don't get stuck in the choice if the count is wrong
-      lib/* propertyManager.setChoices */.kr.setChoices({
-        1399: 2 //New Favorite Bird? On Second Thought...
-
-      });
+      (0,lib/* setChoice */.Y7)(1399, 2);
       (0,external_kolmafia_.useSkill)((0,dist.$skill)(_templateObject37 || (_templateObject37 = mood_taggedTemplateLiteral(["Seek out a Bird"]))), 6 - (0,dist.get)("_birdsSoughtToday"));
     }
   }
