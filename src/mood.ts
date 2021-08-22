@@ -29,7 +29,7 @@ import {
   set,
   Witchess,
 } from "libram";
-import { baseMeat, propertyManager, questStep } from "./lib";
+import { baseMeat, questStep, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { potionSetup } from "./potions";
 
@@ -110,9 +110,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
         numericModifier($effect`Blessing of the Bird`, "Item Drop") > 0)
     ) {
       // Ensure we don't get stuck in the choice if the count is wrong
-      propertyManager.setChoices({
-        1399: 2, //New Favorite Bird? On Second Thought...
-      });
+      setChoice(1399, 2);
       useSkill($skill`Seek out a Bird`, 6 - get("_birdsSoughtToday"));
     }
   }
