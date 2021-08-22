@@ -53,6 +53,7 @@ import {
   propertyManager,
   questStep,
   Requirement,
+  safeInterrupt,
 } from "./lib";
 import { meatMood } from "./mood";
 import {
@@ -348,6 +349,7 @@ export function main(argString = ""): void {
         try {
           while (canContinue()) {
             barfTurn();
+            safeInterrupt();
           }
         } finally {
           setAutoAttack(0);
