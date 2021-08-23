@@ -1269,12 +1269,18 @@ const freeFightSources = [
     },
     {
       requirements: () => [
-        new Requirement([], {
-          forceEquip: [
-            ...(have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : []),
-            ...(get("_questPartyFairQuest") === "woots" ? $items`cosmetic football` : []),
+        new Requirement(
+          [
+            ...(get("_questPartyFairQuest") === "trash" ? ["100 Item Drop"] : []),
+            ...(get("_questPartyFairQuest") === "dj" ? ["100 Meat Drop"] : []),
           ],
-        }),
+          {
+            forceEquip: [
+              ...(have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : []),
+              ...(get("_questPartyFairQuest") === "woots" ? $items`cosmetic football` : []),
+            ],
+          }
+        ),
       ],
     }
   ),
