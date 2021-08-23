@@ -338,6 +338,10 @@ function dropsItems(equipMode: BonusEquipMode) {
     [$item`Mr. Cheeng's spectacles`, 250],
     [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
     [$item`Mr. Screege's spectacles`, 180],
+    [
+      $item`bag of many confections`,
+      saleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
+    ],
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
   ]);
