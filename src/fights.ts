@@ -15,6 +15,7 @@ import {
   handlingChoice,
   inebrietyLimit,
   itemAmount,
+  lastDecision,
   mallPrice,
   meatDropModifier,
   myAscensions,
@@ -45,6 +46,7 @@ import {
   toInt,
   toItem,
   totalTurnsPlayed,
+  toUrl,
   use,
   useFamiliar,
   userConfirm,
@@ -1259,25 +1261,19 @@ const freeFightSources = [
         ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
         : 0,
     () => {
-      nepQuest();
+      setNepQuestChoicesAndPrepItems();
       adventureMacro(
         $location`The Neverending Party`,
         Macro.trySkill($skill`Feel Pride`).basicCombat()
       );
-      if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
-        print("Found Gerald/ine!", "blue");
-        setChoice(1324, 5);
-        // Format of this property is count, space, item ID.
-        const partyFairInfo = get("_questPartyFairProgress").split(" ");
-        logMessage(
-          `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`
-        );
-      }
     },
     {
       requirements: () => [
         new Requirement([], {
-          forceEquip: have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : [],
+          forceEquip: [
+            ...(have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : []),
+            ...(get("_questPartyFairQuest") === "woots" ? $items`cosmetic football` : []),
+          ],
         }),
       ],
     }
@@ -1666,21 +1662,63 @@ export function freeFights(): void {
   }
 }
 
-function nepQuest() {
+function setNepQuestChoicesAndPrepItems() {
+  let quest = get("_questPartyFairQuest");
   if (get("_questPartyFair") === "unstarted") {
-    visitUrl("adventure.php?snarfblat=528");
-    if (get("_questPartyFairQuest") === "food") {
-      runChoice(1);
-      setChoice(1324, 2);
-      setChoice(1326, 3);
-    } else if (get("_questPartyFairQuest") === "booze") {
-      runChoice(1);
-      setChoice(1324, 3);
-      setChoice(1327, 3);
-    } else {
-      runChoice(2);
-      setChoice(1324, 5);
+    visitUrl(toUrl($location`The Neverending Party`));
+    quest = get("_questPartyFairQuest");
+    if (["food", "booze"].includes(quest)) {
+      print("Gerald/ine quest!", "blue");
     }
+    if (["food", "booze", "woots", "trash", "dj"].includes(quest)) {
+      runChoice(1); // Accept quest
+    } else {
+      runChoice(2); // Decline quest
+    }
+  }
+
+  if (get("lastEncounter") === "A Room With a View... Of a Bed" && lastDecision() === 5) {
+    set("_garbo_nepUsedRedDress", true);
+  }
+  if (get("lastEncounter") === "Basement Urges" && lastDecision() === 4) {
+    set("_garbo_nepUsedElectronicsKit", true);
+  }
+  if (get("lastEncounter") === "Gone Kitchin'" && lastDecision() === 3) {
+    print("Found Geraldine!", "blue");
+    // Format of this property is count, space, item ID.
+    const partyFairInfo = get("_questPartyFairProgress").split(" ");
+    logMessage(`Geraldine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
+  }
+  if (get("lastEncounter") === "Forward to the Back" && lastDecision() === 3) {
+    print("Found Gerald!", "blue");
+    const partyFairInfo = get("_questPartyFairProgress").split(" ");
+    logMessage(`Gerald wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
+  }
+
+  if (quest === "food") {
+    setChoice(1324, 2); // Check out the kitchen
+    setChoice(1326, 3); // Talk to the woman
+  } else if (quest === "booze") {
+    setChoice(1324, 3); // Go to the back yard
+    setChoice(1327, 3); // Find Gerald
+  } else if (quest === "woots") {
+    retrieveItem($item`cosmetic football`);
+
+    if (!get<boolean>("_garbo_nepUsedElectronicsKit", false)) {
+      retrieveItem($item`electronics kit`);
+      setChoice(1324, 4); // Investigate the basement
+      setChoice(1328, 4); // Modify the living room lights
+    } else if (!get<boolean>("_garbo_nepUsedRedDress", false)) {
+      retrieveItem($item`very small red dress`);
+      setChoice(1324, 1); // Head upstairs
+      setChoice(1325, 5); // Toss the red dress on the lamp
+      if (have($item`Clara's bell`) && !get("_claraBellUsed")) {
+        // We've used one item, ready to use the other - skip to next NC.
+        use($item`Clara's bell`);
+      }
+    }
+  } else {
+    setChoice(1324, 5); // Pick a fight
   }
 }
 
@@ -1699,7 +1737,7 @@ function deliverThesis(): void {
     questStep("_questPartyFair") < 999;
 
   //Set up NEP if we haven't yet
-  if (thesisInNEP) nepQuest();
+  if (thesisInNEP) setNepQuestChoicesAndPrepItems();
 
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
