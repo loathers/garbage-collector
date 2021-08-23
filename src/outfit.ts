@@ -54,43 +54,55 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
   const equipMode =
     myFamiliar() === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   const bjornChoice = pickBjorn(equipMode);
+  const compiledRequirements = Requirement.merge(requirements);
+  const compiledOptions = compiledRequirements.maximizeOptions();
+  const compiledParameters = compiledRequirements.maximizeParameters();
 
-  const compiledRequirements = Requirement.merge([
-    ...requirements,
-    new Requirement(
-      myFamiliar() === $familiar`Pocket Professor` ? ["Familiar Experience"] : ["Familiar Weight"],
-      {
-        bonusEquip: new Map([...dropsItems(equipMode), ...pantsgiving(), ...cheeses(false)]),
-      }
-    ),
-  ]);
-  const bjornAlike =
-    have($item`Buddy Bjorn`) &&
-    !(
-      compiledRequirements.maximizeOptions_.forceEquip &&
-      compiledRequirements.maximizeOptions_.forceEquip.some(
-        (equipment) => toSlot(equipment) === $slot`back`
-      )
-    )
-      ? $item`Buddy Bjorn`
-      : $item`Crown of Thrones`;
-  const finalRequirements = compiledRequirements.merge(
-    new Requirement([], {
-      bonusEquip: new Map([
-        [
-          bjornAlike,
-          !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
-            ? bjornChoice.meatVal() * bjornChoice.probability
-            : 0,
-        ],
-      ]),
-      preventEquip:
-        bjornAlike === $item`Buddy Bjorn` ? $items`Crown of Thrones` : $items`Buddy Bjorn`,
-      preventSlot: $slots`crown-of-thrones, buddy-bjorn`,
-    })
+  const forceEquip = compiledOptions.forceEquip ?? [];
+  const bonusEquip = compiledOptions.bonusEquip ?? new Map<Item, number>();
+  const preventEquip = compiledOptions.preventEquip ?? [];
+  const preventSlot = compiledOptions.preventSlot ?? [];
+  const parameters = compiledParameters;
+
+  parameters.push(
+    myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
   );
 
-  maximizeCached(finalRequirements.maximizeParameters(), finalRequirements.maximizeOptions());
+  if (
+    have($item`vampyric cloake`) &&
+    get("_vampyreCloakeFormUses") < 10 &&
+    forceEquip.every((equip) => toSlot(equip) !== $slot`back`)
+  ) {
+    forceEquip.push($item`vampyric cloake`);
+  }
+
+  const bjornAlike =
+    have($item`Buddy Bjorn`) && forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
+      ? $item`Buddy Bjorn`
+      : $item`Crown of Thrones`;
+  preventEquip.push(
+    bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
+  );
+
+  const finalRequirement = new Requirement(parameters, {
+    forceEquip: forceEquip,
+    preventEquip: preventEquip,
+    bonusEquip: new Map<Item, number>([
+      ...bonusEquip,
+      ...dropsItems(equipMode),
+      ...pantsgiving(),
+      ...cheeses(false),
+      [
+        bjornAlike,
+        !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+          ? bjornChoice.meatVal() * bjornChoice.probability
+          : 0,
+      ],
+    ]),
+    preventSlot: [...preventSlot, ...$slots`crown-of-thrones, buddy-bjorn`],
+  });
+  maximizeCached(finalRequirement.maximizeParameters(), finalRequirement.maximizeOptions());
+
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");

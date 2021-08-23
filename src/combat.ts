@@ -281,6 +281,7 @@ export class Macro extends LibramMacro {
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
+      .tryHaveSkill($skill`Become a Wolf`)
       .trySkill($skill`Pocket Crumbs`)
       .trySkill($skill`Extract`)
       .tryHaveItem($item`porquoise-handled sixgun`)
