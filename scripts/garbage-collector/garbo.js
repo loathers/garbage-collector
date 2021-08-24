@@ -22225,7 +22225,7 @@ new FreeRunFight(function () {
 var freeKillSources = [new FreeFight(function () {
   return !(0,dist.get)("_gingerbreadMobHitUsed") && (0,dist.have)((0,dist.$skill)(_templateObject357 || (_templateObject357 = fights_taggedTemplateLiteral(["Gingerbread Mob Hit"]))));
 }, function () {
-  return (0,combat.withMacro)(combat.Macro.skill((0,dist.$skill)(_templateObject358 || (_templateObject358 = fights_taggedTemplateLiteral(["Sing Along"])))).trySkill((0,dist.$skill)(_templateObject359 || (_templateObject359 = fights_taggedTemplateLiteral(["Gingerbread Mob Hit"])))), function () {
+  return (0,combat.withMacro)(combat.Macro.trySkill((0,dist.$skill)(_templateObject358 || (_templateObject358 = fights_taggedTemplateLiteral(["Sing Along"])))).trySkill((0,dist.$skill)(_templateObject359 || (_templateObject359 = fights_taggedTemplateLiteral(["Gingerbread Mob Hit"])))), function () {
     return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject360 || (_templateObject360 = fights_taggedTemplateLiteral(["drum machine"]))));
   });
 }, {
@@ -22236,7 +22236,7 @@ var freeKillSources = [new FreeFight(function () {
 }), new FreeFight(function () {
   return (0,dist.have)((0,dist.$skill)(_templateObject361 || (_templateObject361 = fights_taggedTemplateLiteral(["Shattering Punch"])))) ? (0,lib/* clamp */.uZ)(3 - (0,dist.get)("_shatteringPunchUsed"), 0, 3) : 0;
 }, function () {
-  return (0,combat.withMacro)(combat.Macro.skill((0,dist.$skill)(_templateObject362 || (_templateObject362 = fights_taggedTemplateLiteral(["Sing Along"])))).trySkill((0,dist.$skill)(_templateObject363 || (_templateObject363 = fights_taggedTemplateLiteral(["Shattering Punch"])))), function () {
+  return (0,combat.withMacro)(combat.Macro.trySkill((0,dist.$skill)(_templateObject362 || (_templateObject362 = fights_taggedTemplateLiteral(["Sing Along"])))).trySkill((0,dist.$skill)(_templateObject363 || (_templateObject363 = fights_taggedTemplateLiteral(["Shattering Punch"])))), function () {
     return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject364 || (_templateObject364 = fights_taggedTemplateLiteral(["drum machine"]))));
   });
 }, {
@@ -22248,7 +22248,7 @@ var freeKillSources = [new FreeFight(function () {
 new FreeFight(function () {
   return !(0,dist.get)("_firedJokestersGun") && (0,dist.have)((0,dist.$item)(_templateObject365 || (_templateObject365 = fights_taggedTemplateLiteral(["The Jokester's gun"]))));
 }, function () {
-  return (0,combat.withMacro)(combat.Macro.skill((0,dist.$skill)(_templateObject366 || (_templateObject366 = fights_taggedTemplateLiteral(["Sing Along"])))).trySkill((0,dist.$skill)(_templateObject367 || (_templateObject367 = fights_taggedTemplateLiteral(["Fire the Jokester's Gun"])))), function () {
+  return (0,combat.withMacro)(combat.Macro.trySkill((0,dist.$skill)(_templateObject366 || (_templateObject366 = fights_taggedTemplateLiteral(["Sing Along"])))).trySkill((0,dist.$skill)(_templateObject367 || (_templateObject367 = fights_taggedTemplateLiteral(["Fire the Jokester's Gun"])))), function () {
     return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject368 || (_templateObject368 = fights_taggedTemplateLiteral(["drum machine"]))));
   });
 }, {
@@ -22262,7 +22262,7 @@ new FreeFight(function () {
 new FreeFight(function () {
   return (0,dist.have)((0,dist.$item)(_templateObject370 || (_templateObject370 = fights_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))) ? (0,lib/* clamp */.uZ)(3 - (0,dist.get)("_chestXRayUsed"), 0, 3) : 0;
 }, function () {
-  return (0,combat.withMacro)(combat.Macro.skill((0,dist.$skill)(_templateObject371 || (_templateObject371 = fights_taggedTemplateLiteral(["Sing Along"])))).trySkill((0,dist.$skill)(_templateObject372 || (_templateObject372 = fights_taggedTemplateLiteral(["Chest X-Ray"])))), function () {
+  return (0,combat.withMacro)(combat.Macro.trySkill((0,dist.$skill)(_templateObject371 || (_templateObject371 = fights_taggedTemplateLiteral(["Sing Along"])))).trySkill((0,dist.$skill)(_templateObject372 || (_templateObject372 = fights_taggedTemplateLiteral(["Chest X-Ray"])))), function () {
     return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject373 || (_templateObject373 = fights_taggedTemplateLiteral(["drum machine"]))));
   });
 }, {
@@ -22275,7 +22275,7 @@ new FreeFight(function () {
 }), new FreeFight(function () {
   return (0,dist.have)((0,dist.$item)(_templateObject375 || (_templateObject375 = fights_taggedTemplateLiteral(["replica bat-oomerang"])))) ? (0,lib/* clamp */.uZ)(3 - (0,dist.get)("_usedReplicaBatoomerang"), 0, 3) : 0;
 }, function () {
-  return (0,combat.withMacro)(combat.Macro.skill((0,dist.$skill)(_templateObject376 || (_templateObject376 = fights_taggedTemplateLiteral(["Sing Along"])))).item((0,dist.$item)(_templateObject377 || (_templateObject377 = fights_taggedTemplateLiteral(["replica bat-oomerang"])))), function () {
+  return (0,combat.withMacro)(combat.Macro.trySkill((0,dist.$skill)(_templateObject376 || (_templateObject376 = fights_taggedTemplateLiteral(["Sing Along"])))).item((0,dist.$item)(_templateObject377 || (_templateObject377 = fights_taggedTemplateLiteral(["replica bat-oomerang"])))), function () {
     return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject378 || (_templateObject378 = fights_taggedTemplateLiteral(["drum machine"]))));
   });
 }, {
@@ -22287,7 +22287,7 @@ new FreeFight(function () {
   return !(0,dist.get)("_missileLauncherUsed") && (0,external_kolmafia_.getCampground)()["Asdon Martin keyfob"] !== undefined;
 }, function () {
   fillAsdonMartinTo(100);
-  (0,combat.withMacro)(combat.Macro.skill((0,dist.$skill)(_templateObject379 || (_templateObject379 = fights_taggedTemplateLiteral(["Sing Along"])))).skill((0,dist.$skill)(_templateObject380 || (_templateObject380 = fights_taggedTemplateLiteral(["Asdon Martin: Missile Launcher"])))), function () {
+  (0,combat.withMacro)(combat.Macro.trySkill((0,dist.$skill)(_templateObject379 || (_templateObject379 = fights_taggedTemplateLiteral(["Sing Along"])))).skill((0,dist.$skill)(_templateObject380 || (_templateObject380 = fights_taggedTemplateLiteral(["Asdon Martin: Missile Launcher"])))), function () {
     return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject381 || (_templateObject381 = fights_taggedTemplateLiteral(["drum machine"]))));
   });
 }, {
@@ -22298,7 +22298,7 @@ new FreeFight(function () {
 }), new FreeFight(function () {
   return globalvars/* globalOptions.ascending */.Xe.ascending ? (0,dist.get)("shockingLickCharges") : 0;
 }, function () {
-  (0,combat.withMacro)(combat.Macro.skill((0,dist.$skill)(_templateObject382 || (_templateObject382 = fights_taggedTemplateLiteral(["Sing Along"])))).skill((0,dist.$skill)(_templateObject383 || (_templateObject383 = fights_taggedTemplateLiteral(["Shocking Lick"])))), function () {
+  (0,combat.withMacro)(combat.Macro.trySkill((0,dist.$skill)(_templateObject382 || (_templateObject382 = fights_taggedTemplateLiteral(["Sing Along"])))).skill((0,dist.$skill)(_templateObject383 || (_templateObject383 = fights_taggedTemplateLiteral(["Shocking Lick"])))), function () {
     return (0,external_kolmafia_.use)((0,dist.$item)(_templateObject384 || (_templateObject384 = fights_taggedTemplateLiteral(["drum machine"]))));
   });
 }, {
