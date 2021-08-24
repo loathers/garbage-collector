@@ -1463,7 +1463,7 @@ const freeKillSources = [
   new FreeFight(
     () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
     () =>
-      withMacro(Macro.skill($skill`Sing Along`).trySkill($skill`Gingerbread Mob Hit`), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Gingerbread Mob Hit`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1475,7 +1475,7 @@ const freeKillSources = [
   new FreeFight(
     () => (have($skill`Shattering Punch`) ? clamp(3 - get("_shatteringPunchUsed"), 0, 3) : 0),
     () =>
-      withMacro(Macro.skill($skill`Sing Along`).trySkill($skill`Shattering Punch`), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Shattering Punch`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1488,7 +1488,7 @@ const freeKillSources = [
   new FreeFight(
     () => !get("_firedJokestersGun") && have($item`The Jokester's gun`),
     () =>
-      withMacro(Macro.skill($skill`Sing Along`).trySkill($skill`Fire the Jokester's Gun`), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Fire the Jokester's Gun`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1503,7 +1503,7 @@ const freeKillSources = [
   new FreeFight(
     () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
     () =>
-      withMacro(Macro.skill($skill`Sing Along`).trySkill($skill`Chest X-Ray`), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Chest X-Ray`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1517,7 +1517,7 @@ const freeKillSources = [
   new FreeFight(
     () => (have($item`replica bat-oomerang`) ? clamp(3 - get("_usedReplicaBatoomerang"), 0, 3) : 0),
     () =>
-      withMacro(Macro.skill($skill`Sing Along`).item($item`replica bat-oomerang`), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).item($item`replica bat-oomerang`), () =>
         use($item`drum machine`)
       ),
     {
@@ -1530,8 +1530,9 @@ const freeKillSources = [
     () => !get("_missileLauncherUsed") && getCampground()["Asdon Martin keyfob"] !== undefined,
     () => {
       fillAsdonMartinTo(100);
-      withMacro(Macro.skill($skill`Sing Along`).skill($skill`Asdon Martin: Missile Launcher`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`).skill($skill`Asdon Martin: Missile Launcher`),
+        () => use($item`drum machine`)
       );
     },
     {
@@ -1543,7 +1544,7 @@ const freeKillSources = [
   new FreeFight(
     () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
     () => {
-      withMacro(Macro.skill($skill`Sing Along`).skill($skill`Shocking Lick`), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).skill($skill`Shocking Lick`), () =>
         use($item`drum machine`)
       );
     },
