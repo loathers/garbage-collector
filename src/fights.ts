@@ -174,6 +174,7 @@ const firstChainMacro = () =>
         .tryCopier($item`Rain-Doh black box`)
         .tryCopier($item`4-d camera`)
         .tryCopier($item`unfinished ice sculpture`)
+        .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
     )
       .trySkill($skill`lecture on relativity`)
       .meatKill()
@@ -195,6 +196,7 @@ const secondChainMacro = () =>
             .tryCopier($item`Rain-Doh black box`)
             .tryCopier($item`4-d camera`)
             .tryCopier($item`unfinished ice sculpture`)
+            .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
         )
         .trySkill($skill`lecture on relativity`)
     ).meatKill()
@@ -214,6 +216,7 @@ const embezzlerMacro = () =>
       .tryCopier($item`Rain-Doh black box`)
       .tryCopier($item`4-d camera`)
       .tryCopier($item`unfinished ice sculpture`)
+      .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
       .meatKill()
   ).abort();
 
@@ -225,7 +228,29 @@ const embezzlerSources = [
       getCounters("Digitize Monster", 0, 0).trim() !== "",
     () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
     (options: EmbezzlerFightOptions) => {
-      adv1(options.location || $location`Noob Cave`);
+      adventureMacro(
+        options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
+        embezzlerMacro()
+      );
+    },
+    [],
+    true
+  ),
+  new EmbezzlerFight(
+    "Enamorang",
+    () =>
+      getCounters("LOV Enamorang", 0, 0).trim() !== "" &&
+      get("enamorangMonster") === $monster`Knob Goblin Embezzler`,
+    () =>
+      get("enamorangMonster") === $monster`Knob Goblin Embezzler` ||
+      (have($item`LOV Enamorang`) && !get("_enamorangs"))
+        ? 1
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      adventureMacro(
+        options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
+        embezzlerMacro()
+      );
     },
     [],
     true
@@ -661,7 +686,7 @@ export function dailyFights(): void {
         nextFight = getEmbezzlerFight();
         if (
           kramcoGuaranteed() &&
-          (!nextFight || (nextFight.name !== "Backup" && nextFight.name !== "Digitize"))
+          (!nextFight || !["Backup", "Digitize", "Enamorang"].includes(nextFight.name))
         ) {
           doSausage();
         }
@@ -800,11 +825,7 @@ const freeFightSources = [
   new FreeFight(
     () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
     () => {
-      TunnelOfLove.fightAll(
-        "LOV Epaulettes",
-        "Open Heart Surgery",
-        "LOV Extraterrestrial Chocolate"
-      );
+      TunnelOfLove.fightAll("LOV Epaulettes", "Open Heart Surgery", "LOV Enamorang");
 
       visitUrl("choice.php");
       if (handlingChoice()) throw "Did not get all the way through LOV.";
