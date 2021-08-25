@@ -539,8 +539,9 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
 
 function startDigitize() {
   if (
-    getCounters("Digitize Monster", 0, 100).trim() === "" &&
-    get("_sourceTerminalDigitizeUses") !== 0
+    (getCounters("Digitize Monster", 0, 100).trim() === "" &&
+      get("_sourceTerminalDigitizeUses") !== 0) ||
+    (!getCounters("Lov Enamorang", 0, 100).trim() && get("enamorangMonster"))
   ) {
     do {
       const run = findRun() || ltbRun;
