@@ -686,7 +686,7 @@ export function dailyFights(): void {
         nextFight = getEmbezzlerFight();
         if (
           kramcoGuaranteed() &&
-          (!nextFight || !["Backup", "Digitize", "Enamorang"].includes(nextFight.name))
+          !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name))
         ) {
           doSausage();
         }
