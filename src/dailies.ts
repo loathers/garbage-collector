@@ -43,9 +43,9 @@ import {
   withProperty,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, coinmasterPrice, ensureEffect, saleValue, tryFeast } from "./lib";
+import { baseMeat, coinmasterPrice, ensureEffect, logMessage, saleValue, tryFeast } from "./lib";
 import { withStash } from "./clan";
-import { estimatedTurns, globalOptions } from "./globalvars";
+import { estimatedTurns } from "./globalvars";
 import { refreshLatte } from "./outfit";
 
 export function dailySetup(): void {
@@ -347,7 +347,7 @@ function checkVolcanoQuest() {
   if (volcanoItems.length) {
     const chosenItem = volcanoItems[0];
     if (chosenItem.item === $item`fused fuse`) {
-      globalOptions.messages.push("Remember to nab a fused fuse with your stooper!");
+      logMessage("Remember to nab a fused fuse with your stooper!");
     } else {
       const choice = 1 + Array.from(volcanoProperties.keys()).indexOf(chosenItem.item);
       withProperty("autoBuyPriceLimit", Math.round(volcoinoValue / chosenItem.numberNeeded), () =>
