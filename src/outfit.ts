@@ -296,10 +296,12 @@ function cheeses(embezzlerUp: boolean) {
     estimatedTurns() >= 100 - get("_stinkyCheeseCount") &&
     !embezzlerUp
     ? new Map<Item, number>(
-        getFoldGroup($item`stinky cheese diaper`).map((item) => [
-          item,
-          get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100),
-        ])
+        getFoldGroup($item`stinky cheese diaper`)
+          .filter((item) => toSlot(item) !== $slot`weapon`)
+          .map((item) => [
+            item,
+            get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100),
+          ])
       )
     : [];
 }
