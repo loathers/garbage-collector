@@ -918,6 +918,14 @@ const freeFightSources = [
       retrieveItem($item`tennis ball`);
       retrieveItem($item`divine champagne popper`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
+          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+        }),
+      ],
     }
   ),
 
@@ -933,6 +941,8 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
+          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
         }),
       ],
     }
@@ -948,6 +958,11 @@ const freeFightSources = [
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+    },
+    {
+      requirements: () => [
+        new Requirement([], { preventEquip: $items`Staff of Queso Escusado, stinky cheese sword` }),
+      ],
     }
   ),
 
