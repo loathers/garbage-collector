@@ -19,7 +19,6 @@ import {
   reverseNumberology,
   runChoice,
   setAutoAttack,
-  toItem,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -50,6 +49,7 @@ import { dailyFights, freeFights, safeRestore } from "./fights";
 import {
   determineDraggableZoneAndEnsureAccess,
   kramcoGuaranteed,
+  printLog,
   propertyManager,
   questStep,
   Requirement,
@@ -360,16 +360,10 @@ export function main(argString = ""): void {
     propertyManager.resetAll();
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
-    if (questStep("_questPartyFair") > 0) {
-      const partyFairInfo = get("_questPartyFairProgress").split(" ");
-      print(
-        `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`,
-        "blue"
-      );
-    }
     print(
       `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
       "blue"
     );
+    printLog("blue");
   }
 }

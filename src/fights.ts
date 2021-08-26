@@ -43,6 +43,7 @@ import {
   stashAmount,
   takeCloset,
   toInt,
+  toItem,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -91,6 +92,7 @@ import {
   findRun,
   FreeRun,
   kramcoGuaranteed,
+  logMessage,
   ltbRun,
   mapMonster,
   propertyManager,
@@ -1222,6 +1224,11 @@ const freeFightSources = [
       if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
         print("Found Gerald/ine!", "blue");
         setChoice(1324, 5);
+        // Format of this property is count, space, item ID.
+        const partyFairInfo = get("_questPartyFairProgress").split(" ");
+        logMessage(
+          `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`
+        );
       }
     },
     {
