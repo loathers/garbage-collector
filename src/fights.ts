@@ -1202,6 +1202,7 @@ const freeFightSources = [
       if (get("choiceAdventure1324") !== 5 && questStep("_questPartyFair") > 0) {
         print("Found Gerald/ine!", "blue");
         setChoice(1324, 5);
+        // Format of this property is count, space, item ID.
         const partyFairInfo = get("_questPartyFairProgress").split(" ");
         globalOptions.messages.push(
           `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`
