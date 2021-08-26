@@ -109,7 +109,8 @@ export function tryFillLatte(): boolean {
   if (
     have($item`latte lovers member's mug`) &&
     (numericModifier($item`latte lovers member's mug`, "Familiar Weight") !== 5 ||
-      numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40 || get("_latteCopyUsed")) &&
+      numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40 ||
+      get("_latteCopyUsed")) &&
     get("latteUnlocks").includes("cajun") &&
     get("latteUnlocks").includes("rawhide") &&
     get("_latteRefillsUsed") < 3
