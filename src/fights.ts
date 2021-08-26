@@ -92,6 +92,7 @@ import {
   findRun,
   FreeRun,
   kramcoGuaranteed,
+  logMessage,
   ltbRun,
   mapMonster,
   propertyManager,
@@ -1204,7 +1205,7 @@ const freeFightSources = [
         setChoice(1324, 5);
         // Format of this property is count, space, item ID.
         const partyFairInfo = get("_questPartyFairProgress").split(" ");
-        globalOptions.messages.push(
+       logMessage(
           `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`
         );
       }

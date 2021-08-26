@@ -9,11 +9,9 @@ export const log = {
 export const globalOptions: {
   ascending: boolean;
   stopTurncount: number | null;
-  messages: string[];
 } = {
   stopTurncount: null,
   ascending: false,
-  messages: [],
 };
 
 export function estimatedTurns(): number {

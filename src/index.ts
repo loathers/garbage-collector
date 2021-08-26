@@ -49,6 +49,7 @@ import { dailyFights, freeFights, safeRestore } from "./fights";
 import {
   determineDraggableZoneAndEnsureAccess,
   kramcoGuaranteed,
+  printLog,
   propertyManager,
   questStep,
   Requirement,
@@ -359,6 +360,6 @@ export function main(argString = ""): void {
       `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
       "blue"
     );
-    globalOptions.messages.forEach((message) => print(message, "red"));
+    printLog("blue");
   }
 }

@@ -677,3 +677,14 @@ export function maxPassiveDamage(): number {
 
   return vykeaMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
 }
+const log: string[] = [];
+
+export function logMessage(message: string): void {
+  log.push(message);
+}
+
+export function printLog(color: string): void {
+  for (const message in log) {
+    print(message, color);
+  }
+}
