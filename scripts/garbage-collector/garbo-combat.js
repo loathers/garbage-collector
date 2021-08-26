@@ -18014,7 +18014,7 @@ function estimatedTurns() {
 /* harmony export */   "nf": () => (/* binding */ monsterManuelAvailable),
 /* harmony export */   "Bx": () => (/* binding */ maxPassiveDamage)
 /* harmony export */ });
-/* unused harmony exports BonusEquipMode, propertyManager, baseMeat, safeInterrupt, setChoice, ensureEffect, clamp, sum, mapMonster, argmax, questStep, draggableFight, determineDraggableZoneAndEnsureAccess, Requirement, tryFeast, FreeRun, findRun, ltbRun, saleValue, coinmasterPrice, kramcoGuaranteed, leprechaunMultiplier, fairyMultiplier */
+/* unused harmony exports BonusEquipMode, propertyManager, baseMeat, safeInterrupt, setChoice, ensureEffect, clamp, sum, mapMonster, argmax, questStep, draggableFight, determineDraggableZoneAndEnsureAccess, Requirement, tryFeast, FreeRun, findRun, ltbRun, saleValue, coinmasterPrice, kramcoGuaranteed, leprechaunMultiplier, fairyMultiplier, logMessage, printLog */
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8958);
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(canadv_ash__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
@@ -18576,6 +18576,15 @@ function maxPassiveDamage() {
   var bjornMaxDamage = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__.$item)(_templateObject98 || (_templateObject98 = _taggedTemplateLiteral(["Buddy Bjorn"])))) ? maxCarriedFamiliarDamage((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myBjornedFamiliar)()) : 0;
   var familiarMaxDamage = maxFamiliarDamage((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myFamiliar)());
   return vykeaMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
+}
+var log = (/* unused pure expression or super */ null && ([]));
+function logMessage(message) {
+  log.push(message);
+}
+function printLog(color) {
+  for (var message in log) {
+    print(message, color);
+  }
 }
 
 /***/ }),
