@@ -478,6 +478,10 @@ function embezzlerSetup() {
     );
   }
 
+  if (!get("_enamorangs") && !itemAmount($item`LOV Enamorang`) && averageEmbezzlerNet > 20000) {
+    retrieveItem($item`LOV Enamorang`);
+  }
+
   // Fix invalid copiers (caused by ascending or combat text-effects)
   if (have($item`Spooky Putty monster`) && !get("spookyPuttyMonster")) {
     // Visit the description to update the monster as it may be valid but not tracked correctly
