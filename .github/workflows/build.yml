@@ -68,7 +68,6 @@ jobs:
           rm -r data/
           rm -r ccs/
           rm -r relay/
-          rm -r images/
           mv KoLmafia/scripts scripts
           mv KoLmafia/relay relay
           mv mafiafiles/ccs ./ccs
