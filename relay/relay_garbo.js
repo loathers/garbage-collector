@@ -18116,7 +18116,7 @@ function main() {
     var oldSetting = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.formField)("".concat(field, "_didchange"));
     if (oldSetting === fields[field] && (0,libram__WEBPACK_IMPORTED_MODULE_1__.get)(field) !== fields[field]) return;
 
-    if ((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)(field) !== fields[field]) {
+    if ((0,libram__WEBPACK_IMPORTED_MODULE_1__.get)(field).toString() !== fields[field]) {
       updatedSettings.push({
         name: field,
         value: fields[field]
@@ -18132,10 +18132,10 @@ function main() {
     var i = _Object$values[_i];
 
     var _i$split = i.split("\t"),
-        _i$split2 = _slicedToArray(_i$split, 5),
-        name = _i$split2[2],
-        type = _i$split2[3],
-        description = _i$split2[4];
+        _i$split2 = _slicedToArray(_i$split, 3),
+        name = _i$split2[0],
+        type = _i$split2[1],
+        description = _i$split2[2];
 
     settings.push({
       name: name,
@@ -18146,13 +18146,15 @@ function main() {
   }
 
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)('<head><link rel="stylesheet" href="/garbage-collector/main.css"></head>');
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)('<div id="root"></div>'); // add script that react calls when loaded to get kol data
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)('<div id="root"></div>');
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)("<script>"); // add script that react calls when loaded to get kol data
 
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)("<script>");
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)("let getData = function(callback) {callback(".concat(JSON.stringify({
     settings: settings,
     updatedSettings: updatedSettings
-  }), ")}"));
+  }), ")}")); // close notifications when they are clicked on
+
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)("document.onclick = (e) => {\n    if(e.target.classList.contains('notification')) e.target.remove();\n  }");
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)("</script>"); // include react scripts
 
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)('<script src="./garbage-collector/garbage-collector.js"></script>');

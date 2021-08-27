@@ -8786,17 +8786,41 @@ function App(_ref) {
       description: setting.description
     });
   });
+
+  var onInterruptClicked = function onInterruptClicked() {
+    var interruptInput = document.getElementById("garboInterrupt");
+    interruptInput.value = "false";
+    var form = document.getElementById("garboForm");
+    form.submit();
+  };
+
   var updatedPreferences = updatedSettings.map(function (setting) {
-    return /*#__PURE__*/react.createElement("div", null, "Changing setting ", setting.name, " to ", setting.value);
+    return /*#__PURE__*/react.createElement("div", {
+      className: "notification"
+    }, setting.name, " changed to ", setting.value);
   });
   return /*#__PURE__*/react.createElement("div", {
     id: "garbageCollectorContainer"
-  }, /*#__PURE__*/react.createElement("h1", null, " Garbage Collector Configuration "), updatedPreferences, /*#__PURE__*/react.createElement("form", {
+  }, /*#__PURE__*/react.createElement("div", {
+    id: "notificationsContainer"
+  }, updatedPreferences), /*#__PURE__*/react.createElement("img", {
+    src: "/images/relayimages/garbo/garbo.gif"
+  }), /*#__PURE__*/react.createElement("form", {
+    id: "garboForm",
     action: "",
     method: "post"
-  }, /*#__PURE__*/react.createElement("table", null, preferences), /*#__PURE__*/react.createElement("input", {
+  }, /*#__PURE__*/react.createElement("input", {
+    className: "interrupt",
     type: "submit",
-    name: "",
+    value: "Interrupt Garbo",
+    onClick: onInterruptClicked
+  }), /*#__PURE__*/react.createElement("input", {
+    id: "garboInterrupt",
+    type: "hidden",
+    name: "garbo_interrupt"
+  }), /*#__PURE__*/react.createElement("table", null, preferences), /*#__PURE__*/react.createElement("input", {
+    className: "save",
+    type: "submit",
     value: "Save Changes"
   })));
 }
