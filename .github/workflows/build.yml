@@ -73,6 +73,7 @@ jobs:
           mv mafiafiles/ccs ./ccs
           mv mafiafiles/data ./data
           mv mafiafiles/dependencies.txt dependencies.txt
+          mv mafiafiles/images ./images
       - run: |
           git add scripts/
           git add ccs/
