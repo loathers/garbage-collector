@@ -8789,7 +8789,7 @@ function App(_ref) {
 
   var onInterruptClicked = function onInterruptClicked() {
     var interruptInput = document.getElementById("garboInterrupt");
-    interruptInput.value = "false";
+    interruptInput.value = "true";
     var form = document.getElementById("garboForm");
     form.submit();
   };
