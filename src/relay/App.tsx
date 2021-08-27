@@ -19,7 +19,7 @@ declare global {
   };
 }
 
-function App({ settings, updatedSettings }: Data): React.ReactNode {
+function App({ settings, updatedSettings }: Data): JSX.Element {
   const preferences = settings.map((setting) => (
     <Setting
       value={setting.value}
@@ -29,19 +29,33 @@ function App({ settings, updatedSettings }: Data): React.ReactNode {
     />
   ));
 
+  const onInterruptClicked = (): void => {
+    const interruptInput = document.getElementById("garboInterrupt") as HTMLInputElement;
+    interruptInput.value = "false";
+    const form = document.getElementById("garboForm") as HTMLFormElement;
+    form.submit();
+  };
+
   const updatedPreferences = updatedSettings.map((setting) => (
-    <div>
-      Changing setting {setting.name} to {setting.value}
+    <div className="notification">
+      {setting.name} changed to {setting.value}
     </div>
   ));
 
   return (
     <div id="garbageCollectorContainer">
-      <h1> Garbage Collector Configuration </h1>
-      {updatedPreferences}
-      <form action="" method="post">
+      <div id="notificationsContainer">{updatedPreferences}</div>
+      <img src="/images/relayimages/garbo/garbo.gif" />
+      <form id="garboForm" action="" method="post">
+        <input
+          className="interrupt"
+          type="submit"
+          value="Interrupt Garbo"
+          onClick={onInterruptClicked}
+        />
+        <input id="garboInterrupt" type="hidden" name="garbo_interrupt" />
         <table>{preferences}</table>
-        <input type="submit" name="" value="Save Changes" />
+        <input className="save" type="submit" value="Save Changes" />
       </form>
     </div>
   );
