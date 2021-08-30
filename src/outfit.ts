@@ -170,6 +170,7 @@ export function meatOutfit(
     ) {
       forceEquip.push($item`protonic accelerator pack`);
     }
+
     if (have($item`mafia pointer finger ring`)) {
       if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
         forceEquip.push($item`mafia pointer finger ring`);
@@ -181,7 +182,10 @@ export function meatOutfit(
         have($item`unwrapped knock-off retro superhero cape`) &&
         forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
       ) {
-        if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
+        if (!have($item`ice nine`)) {
+          cliExecute("refresh inventory");
+          retrieveItem($item`ice nine`);
+        }
         forceEquip.push(
           ...$items`unwrapped knock-off retro superhero cape, ice nine, mafia pointer finger ring`
         );
