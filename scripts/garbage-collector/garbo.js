@@ -21107,7 +21107,11 @@ function meatOutfit(embezzlerUp) {
       } else if ((0,dist.have)((0,dist.$item)(outfit_templateObject40 || (outfit_templateObject40 = outfit_taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && forceEquip.every(function (equipment) {
         return (0,external_kolmafia_.toSlot)(equipment) !== (0,dist.$slot)(outfit_templateObject41 || (outfit_templateObject41 = outfit_taggedTemplateLiteral(["back"])));
       })) {
-        if (!(0,dist.have)((0,dist.$item)(outfit_templateObject42 || (outfit_templateObject42 = outfit_taggedTemplateLiteral(["ice nine"]))))) (0,external_kolmafia_.retrieveItem)((0,dist.$item)(outfit_templateObject43 || (outfit_templateObject43 = outfit_taggedTemplateLiteral(["ice nine"]))));
+        if (!(0,dist.have)((0,dist.$item)(outfit_templateObject42 || (outfit_templateObject42 = outfit_taggedTemplateLiteral(["ice nine"]))))) {
+          (0,external_kolmafia_.cliExecute)("refresh inventory");
+          (0,external_kolmafia_.retrieveItem)((0,dist.$item)(outfit_templateObject43 || (outfit_templateObject43 = outfit_taggedTemplateLiteral(["ice nine"]))));
+        }
+
         forceEquip.push.apply(forceEquip, outfit_toConsumableArray((0,dist.$items)(outfit_templateObject44 || (outfit_templateObject44 = outfit_taggedTemplateLiteral(["unwrapped knock-off retro superhero cape, ice nine, mafia pointer finger ring"])))));
       } else if ((0,dist.have)((0,dist.$item)(outfit_templateObject45 || (outfit_templateObject45 = outfit_taggedTemplateLiteral(["Operation Patriot Shield"]))))) {
         forceEquip.push.apply(forceEquip, outfit_toConsumableArray((0,dist.$items)(outfit_templateObject46 || (outfit_templateObject46 = outfit_taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))));
@@ -21517,7 +21521,8 @@ function embezzlerSetup() {
 
   if (!(0,dist.get)("_iceSculptureUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject99 || (fights_templateObject99 = fights_taggedTemplateLiteral(["ice sculpture"])))) && averageEmbezzlerNet - averageTouristNet > (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject100 || (fights_templateObject100 = fights_taggedTemplateLiteral(["snow berries"])))) + (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject101 || (fights_templateObject101 = fights_taggedTemplateLiteral(["ice harvest"])))) * 3) {
     dist.property.withProperty("autoSatisfyWithCloset", true, function () {
-      return (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject102 || (fights_templateObject102 = fights_taggedTemplateLiteral(["unfinished ice sculpture"]))));
+      (0,external_kolmafia_.cliExecute)("refresh inventory");
+      (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject102 || (fights_templateObject102 = fights_taggedTemplateLiteral(["unfinished ice sculpture"]))));
     });
   } // Fix invalid copiers (caused by ascending or combat text-effects)
 
