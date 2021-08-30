@@ -31,7 +31,7 @@ function App({ settings, updatedSettings }: Data): JSX.Element {
 
   const onInterruptClicked = (): void => {
     const interruptInput = document.getElementById("garboInterrupt") as HTMLInputElement;
-    interruptInput.value = "false";
+    interruptInput.value = "true";
     const form = document.getElementById("garboForm") as HTMLFormElement;
     form.submit();
   };
