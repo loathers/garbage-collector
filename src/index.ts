@@ -95,12 +95,6 @@ function barfTurn() {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
 
-  if (
-    have($item`unwrapped knock-off retro superhero cape`) &&
-    (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
-  ) {
-    cliExecute("retrocape robot kill");
-  }
   tryFillLatte();
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
@@ -137,12 +131,6 @@ function barfTurn() {
     freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
-    if (
-      have($item`unwrapped knock-off retro superhero cape`) &&
-      (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
-    ) {
-      cliExecute("retrocape robot kill");
-    }
     // c. set up familiar
     useFamiliar(meatFamiliar());
     const location = embezzlerUp
@@ -325,7 +313,7 @@ export function main(argString = ""): void {
       myInebriety() <= inebrietyLimit() &&
       (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
     )
-      stashItems.push($item`haiku katana`);
+      stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {

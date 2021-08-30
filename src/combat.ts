@@ -234,7 +234,8 @@ export class Macro extends LibramMacro {
     if (!monsterManuelAvailable()) {
       return this;
     }
-    const passiveDamage = maxPassiveDamage() + 5;
+    const passiveDamage =
+      (maxPassiveDamage() + 5) * (haveEquipped($item`Operation Patriot Shield`) ? 2 : 1);
 
     // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
     return this.if_(

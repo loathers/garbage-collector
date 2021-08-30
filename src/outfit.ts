@@ -28,6 +28,7 @@ import {
   $familiar,
   $item,
   $items,
+  $skill,
   $slot,
   $slots,
   $stat,
@@ -154,7 +155,7 @@ export function meatOutfit(
   requirements: Requirement[] = [],
   sea?: boolean
 ): void {
-  const forceEquip = [];
+  const forceEquip: Item[] = [];
   const additionalRequirements = [];
   const equipMode = embezzlerUp ? BonusEquipMode.EMBEZZLER : BonusEquipMode.BARF;
   const bjornChoice = pickBjorn(equipMode);
@@ -162,27 +163,40 @@ export function meatOutfit(
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
-    if (getKramcoWandererChance() > 0.05 && have($item`Kramco Sausage-o-Matic™`)) {
-      forceEquip.push($item`Kramco Sausage-o-Matic™`);
-    }
-    // TODO: Fix pointer finger ring construction.
-    if (myClass() !== $class`Seal Clubber`) {
-      if (have($item`haiku katana`)) {
-        forceEquip.push($item`haiku katana`);
-      } else if (have($item`unwrapped knock-off retro superhero cape`)) {
-        if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
-        forceEquip.push($item`ice nine`);
-      }
-    }
     if (
       have($item`protonic accelerator pack`) &&
       get("questPAGhost") === "unstarted" &&
-      get("nextParanormalActivity") <= totalTurnsPlayed() &&
-      !forceEquip.includes($item`ice nine`)
+      get("nextParanormalActivity") <= totalTurnsPlayed()
     ) {
       forceEquip.push($item`protonic accelerator pack`);
     }
-    forceEquip.push($item`mafia pointer finger ring`);
+    if (have($item`mafia pointer finger ring`)) {
+      if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
+        forceEquip.push($item`mafia pointer finger ring`);
+      } else if (have($item`Operation Patriot Shield`) && myClass() === $class`Turtle Tamer`) {
+        forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+      } else if (have($item`haiku katana`)) {
+        forceEquip.push(...$items`haiku katana, mafia pointer finger ring`);
+      } else if (
+        have($item`unwrapped knock-off retro superhero cape`) &&
+        forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
+      ) {
+        if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
+        forceEquip.push(
+          ...$items`unwrapped knock-off retro superhero cape, ice nine, mafia pointer finger ring`
+        );
+      } else if (have($item`Operation Patriot Shield`)) {
+        forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+      }
+    }
+
+    if (
+      getKramcoWandererChance() > 0.05 &&
+      have($item`Kramco Sausage-o-Matic™`) &&
+      forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`)
+    ) {
+      forceEquip.push($item`Kramco Sausage-o-Matic™`);
+    }
   }
   if (myFamiliar() === $familiar`Obtuse Angel`) {
     forceEquip.push($item`quake of arrows`);
@@ -206,7 +220,7 @@ export function meatOutfit(
       {
         forceEquip,
         preventEquip: [
-          ...$items`broken champagne bottle, unwrapped knock-off retro superhero cape`,
+          ...$items`broken champagne bottle`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
@@ -234,6 +248,12 @@ export function meatOutfit(
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  if (
+    haveEquipped($item`unwrapped knock-off retro superhero cape`) &&
+    (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
+  ) {
+    cliExecute("retrocape robot kill");
+  }
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (const airSource of waterBreathingEquipment) {
