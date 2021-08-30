@@ -1081,6 +1081,16 @@ function _defineProperty(obj, key, value) {
 }
 
 var Dungeon = /*#__PURE__*/function () {
+  /**
+   * Creates dungeon object for managing clan dungeons
+   * @param name Name of the dungeon in question
+   * @param loot Distributable loot dropped by bosses in dungeon
+   * @param openAction String action used in form submission to open dungeon
+   * @param closeAction String action used in form submission to close dungeon
+   * @param openCost Meat cost of opening dungeon
+   * @param openImage Image text to search clan_basement.php for to check if dungeon is open
+   * @param closedImage Image text to search clan_basement.php for to check if dungeon is closed
+   */
   function Dungeon(name, loot, openAction, closeAction, openCost, openImage, closedImage) {
     _classCallCheck(this, Dungeon);
 
@@ -1106,6 +1116,13 @@ var Dungeon = /*#__PURE__*/function () {
     this.openImage = openImage;
     this.closedImage = closedImage;
   }
+  /**
+   * Distributes loot from given dungeon
+   * @param idOrName The player you're trying to distribute to, either as a username or a player ID. Defaults to self.
+   * @param loot The loot you're looking to distribute, specific to this dungeon
+   * @param distributeAllOfAGivenItem For items that you can get multiple of in a dungeon. When true, this will give everything of that ilk to your chosen player.
+   */
+
 
   _createClass(Dungeon, [{
     key: "distribute",
@@ -1147,6 +1164,11 @@ var Dungeon = /*#__PURE__*/function () {
       var pageText = (0, _kolmafia.visitUrl)("clan_basement.php");
       return pageText.includes(this.closedImage);
     }
+    /**
+     * Opens clan dungeon and, if relevant, pays meat to do so
+     * @param paymentPolicy "None", "All", or "Difference". Difference pays into the stash the exact amount needed to open the dungeon.
+     */
+
   }, {
     key: "open",
     value: function open() {
@@ -1681,6 +1703,19 @@ function _defineProperty(obj, key, value) {
 
 var Path = //here, we define avatar-ness around being its own class
 //Defined as the lowest inebriety that makes you unable to drink more, just to make it fifteens across the board
+
+/**
+ *
+ * @param name Name of path
+ * @param id Path ID
+ * @param hasAllPerms Does the player have immediate access to all permed skills>
+ * @param hasCampground Does the player have access to the campground?
+ * @param hasTerrarium Does the player have access to terrarium.php
+ * @param stomachSize Maximum fullness achievable at turn 0
+ * @param liverSize The lowest inebriety that makes you unable to drink more
+ * @param spleenSize Maximum spleen achievable at turn 0
+ * @param classes Classes available in this path
+ */
 function Path(name, id) {
   var hasAllPerms = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
   var hasCampground = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
@@ -1897,13 +1932,22 @@ function toMoonId(moon, playerClass) {
       return -1;
   }
 }
+/**
+ * Hops the gash, perming no skills
+ * @param path path of choice, as a Path object--these exist as properties of Paths
+ * @param playerClass Your class of choice for this ascension
+ * @param lifestyle 1 for casual, 2 for softcore, 3 for hardcore. Alternately, use the Lifestyle enum
+ * @param moon Your moon sign as a string, or the zone you're looking for as a string
+ * @param consumable From the astral deli. Pick the container item, not the product.
+ * @param pet From the astral pet store.
+ */
+
 
 function ascend(path, playerClass, lifestyle, moon) {
   var consumable = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : (0, _templateString.$item)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["astral six-pack"])));
   var pet = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : undefined;
 
   if (!(0, _kolmafia.containsText)((0, _kolmafia.visitUrl)("charpane.php"), "Astral Spirit")) {
-    (0, _kolmafia.print)("It'd really be better if you were already through the gash. Oh well!", "blue");
     (0, _kolmafia.visitUrl)("ascend.php?action=ascend&confirm=on&confirm2=on");
   }
 
@@ -1927,6 +1971,12 @@ var eudorae = (0, _templateString.$items)(_templateObject9 || (_templateObject9 
 var desks = (0, _templateString.$items)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["fancy stationery set, Swiss piggy bank, continental juice bar"])));
 var ceilings = (0, _templateString.$items)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["antler chandelier, ceiling fan, artificial skylight"])));
 var nightstands = (0, _templateString.$items)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["foreign language tapes, bowl of potpourri, electric muscle stimulator"])));
+/**
+ * Sets up various iotms you may want to use in the coming ascension
+ * @param ascensionItems An object potentially containing your workshed, garden, and eudora, all as items
+ * @param chateauItems An object potentially containing your chateau desk, ceiling, and nightstand, all as items
+ * @param throwOnFail If true, this will throw an error when it fails to switch something
+ */
 
 function prepareAscension(ascensionItems, chateauItems) {
   var throwOnFail = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -4532,6 +4582,11 @@ var _maximizeParameters = /*#__PURE__*/new WeakMap();
 var _maximizeOptions = /*#__PURE__*/new WeakMap();
 
 var Requirement = /*#__PURE__*/function () {
+  /**
+   * A convenient way of combining maximization parameters and options
+   * @param maximizeParameters Parameters you're attempting to maximize
+   * @param maximizeOptions Object potentially containing forceEquips, bonusEquips, preventEquips, and preventSlots
+   */
   function Requirement(maximizeParameters, maximizeOptions) {
     _classCallCheck(this, Requirement);
 
@@ -4634,8 +4689,6 @@ __webpack_require__(4347);
 __webpack_require__(2726);
 
 __webpack_require__(7316);
-
-__webpack_require__(2054);
 
 var _kolmafia = __webpack_require__(1664);
 
@@ -5269,11 +5322,9 @@ var Mood = /*#__PURE__*/function () {
   _createClass(Mood, [{
     key: "availableMp",
     value: function availableMp() {
-      return this.options.mpSources.map(function (mpSource) {
+      return (0, _utils.sum)(this.options.mpSources, function (mpSource) {
         return mpSource.availableMpMin();
-      }).reduce(function (x, y) {
-        return x + y;
-      }, 0);
+      }) + Math.max((0, _kolmafia.myMp)() - this.options.reserveMp, 0);
     }
   }, {
     key: "moreMp",
@@ -5361,11 +5412,9 @@ var Mood = /*#__PURE__*/function () {
     value: function execute() {
       var ensureTurns = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var availableMp = this.availableMp();
-      var totalMpPerTurn = this.elements.map(function (element) {
+      var totalMpPerTurn = (0, _utils.sum)(this.elements, function (element) {
         return element.mpCostPerTurn();
-      }).reduce(function (x, y) {
-        return x + y;
-      }, 0);
+      });
       var potentialTurns = Math.floor(availableMp / totalMpPerTurn);
       var completeSuccess = true;
 
@@ -5382,7 +5431,7 @@ var Mood = /*#__PURE__*/function () {
             elementTurns = Math.min(ensureTurns, elementPotentialTurns);
           }
 
-          completeSuccess = element.execute(this, elementTurns) || completeSuccess;
+          completeSuccess = element.execute(this, elementTurns) && completeSuccess;
         }
       } catch (err) {
         _iterator3.e(err);
@@ -5411,7 +5460,8 @@ exports.Mood = Mood;
 
 _defineProperty(Mood, "defaultOptions", {
   songSlots: [],
-  mpSources: [MagicalSausages.instance, OscusSoda.instance]
+  mpSources: [MagicalSausages.instance, OscusSoda.instance],
+  reserveMp: 0
 });
 
 /***/ }),
@@ -5793,9 +5843,11 @@ function isNumericProperty(property, value) {
   return !isNaN(Number(value)) && !isNaN(parseFloat(value));
 }
 
+var numericOrStringProperties = ["statusEngineering", "statusGalley", "statusMedbay", "statusMorgue", "statusNavigation", "statusScienceLab", "statusSonar", "statusSpecialOps", "statusWasteProcessing"];
 var choiceAdventurePattern = /^choiceAdventure\d+$/;
 
 function isNumericOrStringProperty(property) {
+  if (numericOrStringProperties.includes(property)) return true;
   return choiceAdventurePattern.test(property);
 }
 
@@ -5813,10 +5865,11 @@ function isLocationProperty(property) {
 }
 
 var otherMonsters = ["romanticTarget", "yearbookCameraTarget"];
+var fakeMonsters = ["trackVoteMonster"];
 
 function isMonsterProperty(property) {
   if (otherMonsters.includes(property)) return true;
-  return property.endsWith("Monster");
+  return property.endsWith("Monster") && !fakeMonsters.includes(property);
 }
 
 function isFamiliarProperty(property) {
@@ -6510,13 +6563,9 @@ function changeNightstand(nightstand) {
 "use strict";
 
 
-__webpack_require__(3905);
-
 __webpack_require__(2725);
 
 __webpack_require__(4567);
-
-__webpack_require__(2888);
 
 Object.defineProperty(exports, "__esModule", ({
   value: true
@@ -6553,6 +6602,10 @@ __webpack_require__(7222);
 __webpack_require__(2054);
 
 __webpack_require__(7781);
+
+__webpack_require__(2888);
+
+__webpack_require__(3905);
 
 __webpack_require__(5917);
 
@@ -6821,25 +6874,7 @@ function isCurrentSkill(skills) {
  */
 
 
-var Items = {
-  /** 4 fullness EPIC food */
-  BrowserCookie: (0, _templateString.$item)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["browser cookie"]))),
-
-  /** 4 potency EPIC booze */
-  HackedGibson: (0, _templateString.$item)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["hacked gibson"]))),
-
-  /** +10% item drop, improved yield from extraction skill */
-  Shades: (0, _templateString.$item)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Source shades"]))),
-  GRAM: (0, _templateString.$item)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Source terminal GRAM chip"]))),
-  PRAM: (0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Source terminal PRAM chip"]))),
-  SPAM: (0, _templateString.$item)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Source terminal SPAM chip"]))),
-  CRAM: (0, _templateString.$item)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Source terminal CRAM chip"]))),
-  DRAM: (0, _templateString.$item)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Source terminal DRAM chip"]))),
-
-  /** Increase maximum daily casts of Digitze by one, usable once per player */
-  TRAM: (0, _templateString.$item)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Source terminal TRAM chip"]))),
-  SoftwareBug: (0, _templateString.$item)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["software bug"])))
-};
+var Items = new Map([[(0, _templateString.$item)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["browser cookie"]))), "food.ext"], [(0, _templateString.$item)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["hacked gibson"]))), "booze.ext"], [(0, _templateString.$item)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Source shades"]))), "goggles.ext"], [(0, _templateString.$item)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Source terminal GRAM chip"]))), "gram.ext"], [(0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Source terminal PRAM chip"]))), "pram.ext"], [(0, _templateString.$item)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Source terminal SPAM chip"]))), "spam.ext"], [(0, _templateString.$item)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Source terminal CRAM chip"]))), "cram.ext"], [(0, _templateString.$item)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Source terminal DRAM chip"]))), "dram.ext"], [(0, _templateString.$item)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Source terminal TRAM chip"]))), "tram.ext"], [(0, _templateString.$item)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["software bug"]))), "familiar.ext"]]);
 /**
  * Collect an item from the Source Terminal (up to three times a day)
  * @param item Item to collect
@@ -6849,11 +6884,9 @@ var Items = {
 exports.Items = Items;
 
 function extrude(item) {
-  if (!Object.values(Items).includes(item)) {
-    return false;
-  }
-
-  return (0, _kolmafia.cliExecute)("terminal extrude ".concat(item.name));
+  var fileName = Items.get(item);
+  if (!fileName) return false;
+  return (0, _kolmafia.cliExecute)("terminal extrude ".concat(fileName));
 }
 /**
  * Return chips currently installed to player's Source Terminal
@@ -8420,6 +8453,8 @@ exports.chunk = chunk;
 exports.arrayToCountedMap = arrayToCountedMap;
 exports.countedMapToArray = countedMapToArray;
 exports.countedMapToString = countedMapToString;
+exports.sum = sum;
+exports.sumNumbers = sumNumbers;
 
 __webpack_require__(4939);
 
@@ -8584,6 +8619,24 @@ function countedMapToString(map) {
 
     return "".concat(quantity, " x ").concat(item);
   }).join(", ");
+}
+/**
+ * Sum an array of numbers.
+ * @param addends Addends to sum.
+ * @param mappingFunction function to turn elements into numbers
+ */
+
+
+function sum(addends, mappingFunction) {
+  return addends.reduce(function (subtotal, element) {
+    return subtotal + mappingFunction(element);
+  }, 0);
+}
+
+function sumNumbers(addends) {
+  return sum(addends, function (x) {
+    return x;
+  });
 }
 
 /***/ }),
