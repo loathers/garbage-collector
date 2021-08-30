@@ -450,9 +450,10 @@ function embezzlerSetup() {
     averageEmbezzlerNet - averageTouristNet >
       mallPrice($item`snow berries`) + mallPrice($item`ice harvest`) * 3
   ) {
-    property.withProperty("autoSatisfyWithCloset", true, () =>
-      retrieveItem($item`unfinished ice sculpture`)
-    );
+    property.withProperty("autoSatisfyWithCloset", true, () => {
+      cliExecute("refresh inventory");
+      retrieveItem($item`unfinished ice sculpture`);
+    });
   }
 
   // Fix invalid copiers (caused by ascending or combat text-effects)

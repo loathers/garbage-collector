@@ -170,7 +170,10 @@ export function meatOutfit(
       if (have($item`haiku katana`)) {
         forceEquip.push($item`haiku katana`);
       } else if (have($item`unwrapped knock-off retro superhero cape`)) {
-        if (!have($item`ice nine`)) retrieveItem($item`ice nine`);
+        if (!have($item`ice nine`)) {
+          cliExecute("refresh inventory");
+          retrieveItem($item`ice nine`);
+        }
         forceEquip.push($item`ice nine`);
       }
     }
