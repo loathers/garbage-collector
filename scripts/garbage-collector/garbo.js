@@ -23500,6 +23500,10 @@ function main() {
     (0,external_kolmafia_.setAutoAttack)(0);
     (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true);
     lib/* propertyManager.set */.kr.set({
+      logPreferenceChange: true,
+      logPreferenceChangeFilter: src_toConsumableArray(new Set([].concat(src_toConsumableArray((0,dist.get)("logPreferenceChangeFilter").split(",")), ["libram_savedMacro", "maximizerMRUList", "testudinalTeachings"]))).sort().filter(function (a) {
+        return a;
+      }).join(","),
       battleAction: "custom combat script",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
@@ -23507,8 +23511,7 @@ function main() {
       dontStopForCounters: true,
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
-      trackVoteMonster: "free",
-      logPreferenceChange: true
+      trackVoteMonster: "free"
     });
     if ((0,dist.get)("hpAutoRecovery") < 0.35) lib/* propertyManager.set */.kr.set({
       hpAutoRecovery: 0.35
