@@ -1669,19 +1669,18 @@ export function freeFights(): void {
 }
 
 function setNepQuestChoicesAndPrepItems() {
-  let quest = get("_questPartyFairQuest");
   if (get("_questPartyFair") === "unstarted") {
     visitUrl(toUrl($location`The Neverending Party`));
-    quest = get("_questPartyFairQuest");
-    if (["food", "booze"].includes(quest)) {
+    if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
       print("Gerald/ine quest!", "blue");
     }
-    if (["food", "booze", "woots", "trash", "dj"].includes(quest)) {
+    if (["food", "booze", "woots", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
       runChoice(1); // Accept quest
     } else {
       runChoice(2); // Decline quest
     }
   }
+  const quest = get("_questPartyFairQuest");
 
   if (get("lastEncounter") === "A Room With a View... Of a Bed" && lastDecision() === 5) {
     set("_garbo_nepUsedRedDress", true);
@@ -1689,24 +1688,28 @@ function setNepQuestChoicesAndPrepItems() {
   if (get("lastEncounter") === "Basement Urges" && lastDecision() === 4) {
     set("_garbo_nepUsedElectronicsKit", true);
   }
-  if (get("lastEncounter") === "Gone Kitchin'" && lastDecision() === 3) {
-    print("Found Geraldine!", "blue");
-    // Format of this property is count, space, item ID.
-    const partyFairInfo = get("_questPartyFairProgress").split(" ");
-    logMessage(`Geraldine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
-  }
-  if (get("lastEncounter") === "Forward to the Back" && lastDecision() === 3) {
-    print("Found Gerald!", "blue");
-    const partyFairInfo = get("_questPartyFairProgress").split(" ");
-    logMessage(`Gerald wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
-  }
 
   if (quest === "food") {
-    setChoice(1324, 2); // Check out the kitchen
-    setChoice(1326, 3); // Talk to the woman
+    if (!questStep("_questPartyFair")) {
+      setChoice(1324, 2); // Check out the kitchen
+      setChoice(1326, 3); // Talk to the woman
+    } else {
+      setChoice(1324, 5);
+      print("Found Geraldine!", "blue");
+      // Format of this property is count, space, item ID.
+      const partyFairInfo = get("_questPartyFairProgress").split(" ");
+      logMessage(`Geraldine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
+    }
   } else if (quest === "booze") {
-    setChoice(1324, 3); // Go to the back yard
-    setChoice(1327, 3); // Find Gerald
+    if (!questStep("_questPartyFair")) {
+      setChoice(1324, 3); // Go to the back yard
+      setChoice(1327, 3); // Find Gerald
+    } else {
+      setChoice(1324, 5);
+      print("Found Gerald!", "blue");
+      const partyFairInfo = get("_questPartyFairProgress").split(" ");
+      logMessage(`Gerald wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
+    }
   } else if (quest === "woots") {
     retrieveItem($item`cosmetic football`);
 
