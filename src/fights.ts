@@ -1133,15 +1133,27 @@ const freeFightSources = [
     () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
     () => {
       propertyManager.setChoices({
-        1310: 3, //god lob stats
+        1310: !have($item`God Lobster's Crown`) ? 1 : 2, // god lob equipment, then stats
       });
+      restoreHp(myMaxhp());
       visitUrl("main.php?fightgodlobster=1");
       runCombat();
       visitUrl("choice.php");
-      if (handlingChoice()) runChoice(3);
+      if (handlingChoice()) runChoice(-1);
     },
     {
       familiar: () => $familiar`God Lobster`,
+      requirements: () => [
+        new Requirement([], {
+          bonusEquip: new Map<Item, number>([
+            [$item`God Lobster's Scepter`, 1000],
+            [$item`God Lobster's Ring`, 2000],
+            [$item`God Lobster's Rod`, 3000],
+            [$item`God Lobster's Robe`, 4000],
+            [$item`God Lobster's Crown`, 5000],
+          ]),
+        }),
+      ],
     }
   ),
 
