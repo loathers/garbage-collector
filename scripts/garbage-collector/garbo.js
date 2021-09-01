@@ -20404,9 +20404,10 @@ function freeFightMood() {
   shrugPassiveDamage();
   return mood;
 }
+var stings = [].concat(mood_toConsumableArray((0,dist.$effects)(_templateObject56 || (_templateObject56 = mood_taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [(0,dist.$effect)(_templateObject57 || (_templateObject57 = mood_taggedTemplateLiteral(["Burning, Man"]))), (0,dist.$effect)(_templateObject58 || (_templateObject58 = mood_taggedTemplateLiteral(["Yes, Can Haz"])))]);
 
 function shrugPassiveDamage() {
-  [].concat(mood_toConsumableArray((0,dist.$effects)(_templateObject56 || (_templateObject56 = mood_taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [(0,dist.$effect)(_templateObject57 || (_templateObject57 = mood_taggedTemplateLiteral(["Burning, Man"]))), (0,dist.$effect)(_templateObject58 || (_templateObject58 = mood_taggedTemplateLiteral(["Yes, Can Haz"])))]).forEach(function (effect) {
+  stings.forEach(function (effect) {
     if ((0,dist.have)(effect)) {
       (0,dist.uneffect)(effect);
     }
