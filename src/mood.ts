@@ -134,13 +134,6 @@ export function freeFightMood(): Mood {
 
   if (!get("_glennGoldenDiceUsed")) {
     if (have($item`Glenn's golden dice`)) use($item`Glenn's golden dice`);
-    $effects`Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Burning\, Man, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jabañero Saucesphere, Jalapeño Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Yes\, Can Haz, Feeling Nervous`.forEach(
-      (effect) => {
-        if (have(effect)) {
-          uneffect(effect);
-        }
-      }
-    );
   }
 
   if (getClanLounge()["Clan pool table"] !== undefined) {
@@ -179,6 +172,17 @@ export function freeFightMood(): Mood {
   }
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
+  }
+
+  if (!get<boolean>("garbo_stasisEffectsChecked")) {
+    $effects`Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Burning\, Man, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jabañero Saucesphere, Jalapeño Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Yes\, Can Haz, Feeling Nervous`.forEach(
+      (effect) => {
+        if (have(effect)) {
+          uneffect(effect);
+        }
+      }
+    );
+    set("garbo_stasisEffectsChecked", true);
   }
 
   return mood;
