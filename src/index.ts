@@ -270,6 +270,18 @@ export function main(argString = ""): void {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
     propertyManager.set({
+      logPreferenceChange: true,
+      logPreferenceChangeFilter: [
+        ...new Set([
+          ...get("logPreferenceChangeFilter").split(","),
+          "libram_savedMacro",
+          "maximizerMRUList",
+          "testudinalTeachings",
+        ]),
+      ]
+        .sort()
+        .filter((a) => a)
+        .join(","),
       battleAction: "custom combat script",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
