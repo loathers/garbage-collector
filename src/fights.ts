@@ -1139,7 +1139,7 @@ const freeFightSources = [
       visitUrl("main.php?fightgodlobster=1");
       runCombat();
       visitUrl("choice.php");
-      if (handlingChoice()) runChoice(3);
+      if (handlingChoice()) runChoice(get<number>("choiceAdventure1310"));
     },
     {
       familiar: () => $familiar`God Lobster`,
