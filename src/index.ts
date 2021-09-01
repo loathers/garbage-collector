@@ -270,6 +270,18 @@ export function main(argString = ""): void {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
     propertyManager.set({
+      logPreferenceChange: true,
+      logPreferenceChangeFilter: [
+        ...new Set([
+          ...get("logPreferenceChangeFilter").split(","),
+          "libram_savedMacro",
+          "maximizerMRUList",
+          "testudinalTeachings",
+        ]),
+      ]
+        .sort()
+        .filter((a) => a)
+        .join(","),
       battleAction: "custom combat script",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
@@ -278,7 +290,6 @@ export function main(argString = ""): void {
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
       trackVoteMonster: "free",
-      logPreferenceChange: true,
     });
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
     if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
