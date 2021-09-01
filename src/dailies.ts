@@ -10,11 +10,14 @@ import {
   mallPrice,
   maximize,
   myClass,
+  myHp,
   myInebriety,
+  myMaxhp,
   myPrimestat,
   myThrall,
   print,
   putCloset,
+  restoreHp,
   retrieveItem,
   runChoice,
   toInt,
@@ -41,6 +44,7 @@ import {
   property,
   SongBoom,
   SourceTerminal,
+  uneffect,
   withProperty,
 } from "libram";
 import { meatFamiliar } from "./familiar";
@@ -296,7 +300,14 @@ function volcanoDailies(): void {
   }
 
   if (have($skill`Unaccompanied Miner`) && get("_unaccompaniedMinerUsed") < 5) {
+    restoreHp(myMaxhp() * 0.9);
     cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`);
+    if (have($effect`Beaten Up`)) {
+      uneffect($effect`Beaten Up`);
+    }
+    if (myHp() < myMaxhp() * 0.5) {
+      restoreHp(myMaxhp() * 0.9);
+    }
   }
 }
 function checkVolcanoQuest() {
