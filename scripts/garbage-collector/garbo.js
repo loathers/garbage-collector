@@ -23511,7 +23511,8 @@ function main() {
       dontStopForCounters: true,
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
-      trackVoteMonster: "free"
+      trackVoteMonster: "free",
+      choiceAdventureScript: ""
     });
     if ((0,dist.get)("hpAutoRecovery") < 0.35) lib/* propertyManager.set */.kr.set({
       hpAutoRecovery: 0.35
