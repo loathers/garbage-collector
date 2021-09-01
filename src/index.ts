@@ -278,6 +278,15 @@ export function main(argString = ""): void {
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
       trackVoteMonster: "free",
+      logPreferenceChangeFilter: [
+        ...new Set(
+          ...get("logPreferenceChangeFilter").split(","),
+          "maximizerMRUList",
+          "testudinalTeachings"
+        ),
+      ]
+        .sort()
+        .join(","),
       logPreferenceChange: true,
     });
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
