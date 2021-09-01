@@ -1133,7 +1133,7 @@ const freeFightSources = [
     () => (have($familiar`God Lobster`) ? clamp(3 - get("_godLobsterFights"), 0, 3) : 0),
     () => {
       propertyManager.setChoices({
-        1310: !have($item`God Lobster's Crown`) ? 1 : 3, // god lob equipment, then stats
+        1310: !have($item`God Lobster's Crown`) ? 1 : 2, // god lob equipment, then stats
       });
       restoreHp(myMaxhp());
       visitUrl("main.php?fightgodlobster=1");
