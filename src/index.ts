@@ -290,6 +290,8 @@ export function main(argString = ""): void {
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
       trackVoteMonster: "free",
+      choiceAdventureScript: "",
+      logPreferenceChange: true,
     });
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
     if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
