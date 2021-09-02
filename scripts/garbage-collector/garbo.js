@@ -21681,6 +21681,7 @@ function dailyFights() {
               macro: firstChainMacro()
             });
           });
+          horseradish();
           globalvars/* log.initialEmbezzlersFought */.cM.initialEmbezzlersFought += 1 + (0,dist.get)("_pocketProfessorLectures") - startLectures;
         }
 
@@ -21709,6 +21710,7 @@ function dailyFights() {
               macro: secondChainMacro()
             });
           });
+          horseradish();
           globalvars/* log.initialEmbezzlersFought */.cM.initialEmbezzlersFought += 1 + (0,dist.get)("_pocketProfessorLectures") - _startLectures;
         }
 
@@ -21744,6 +21746,7 @@ function dailyFights() {
               nextFight.run({
                 location: (0,dist.$location)(_templateObject154 || (_templateObject154 = fights_taggedTemplateLiteral(["The Briny Deeps"])))
               });
+              horseradish();
             } else if (nextFight.draggable) {
               var type = nextFight.name === "Backup" ? lib/* draggableFight.BACKUP */.Te.BACKUP : lib/* draggableFight.WANDERER */.Te.WANDERER;
               var location = (0,lib/* determineDraggableZoneAndEnsureAccess */.xd)(type);
@@ -21752,12 +21755,14 @@ function dailyFights() {
               nextFight.run({
                 location: location
               });
+              horseradish();
             } else {
               (0,external_kolmafia_.setLocation)((0,dist.$location)(_templateObject155 || (_templateObject155 = fights_taggedTemplateLiteral(["Noob Cave"]))));
               meatOutfit(true, nextFight.requirements);
               nextFight.run({
                 location: (0,dist.$location)(_templateObject156 || (_templateObject156 = fights_taggedTemplateLiteral(["Noob Cave"])))
               });
+              horseradish();
             }
           }
         });
@@ -22625,6 +22630,7 @@ function doSausage() {
   })]);
   (0,dist.adventureMacroAuto)((0,lib/* determineDraggableZoneAndEnsureAccess */.xd)(), combat.Macro.basicCombat());
   (0,external_kolmafia_.setAutoAttack)(0);
+  horseradish();
 }
 ;// CONCATENATED MODULE: ./src/diet.ts
 var diet_templateObject, diet_templateObject2, diet_templateObject3, diet_templateObject4, diet_templateObject5, diet_templateObject6, diet_templateObject7, diet_templateObject8, diet_templateObject9, diet_templateObject10, diet_templateObject11, diet_templateObject12, diet_templateObject13, diet_templateObject14, diet_templateObject15, diet_templateObject16, diet_templateObject17, diet_templateObject18, diet_templateObject19, diet_templateObject20, diet_templateObject21, diet_templateObject22, diet_templateObject23, diet_templateObject24, diet_templateObject25, diet_templateObject26, diet_templateObject27, diet_templateObject28, diet_templateObject29, diet_templateObject30, diet_templateObject31, diet_templateObject32, diet_templateObject33, diet_templateObject34, diet_templateObject35, diet_templateObject36, diet_templateObject37, diet_templateObject38, diet_templateObject39, diet_templateObject40, diet_templateObject41, diet_templateObject42, diet_templateObject43, diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74, diet_templateObject75, diet_templateObject76, diet_templateObject77, diet_templateObject78, diet_templateObject79, diet_templateObject80, diet_templateObject81, diet_templateObject82, diet_templateObject83, diet_templateObject84, diet_templateObject85, diet_templateObject86, diet_templateObject87, diet_templateObject88, diet_templateObject89, diet_templateObject90, diet_templateObject91;
