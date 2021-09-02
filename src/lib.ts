@@ -693,7 +693,7 @@ export function logMessage(message: string): void {
 }
 
 export function printLog(color: string): void {
-  for (const message in log) {
+  for (const message of log) {
     print(message, color);
   }
 }
