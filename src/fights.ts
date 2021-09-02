@@ -595,6 +595,7 @@ export function dailyFights(): void {
               macro: firstChainMacro(),
             })
           );
+          horseradish();
           log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_meatChain", true);
@@ -626,6 +627,7 @@ export function dailyFights(): void {
               macro: secondChainMacro(),
             })
           );
+          horseradish();
           log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_weightChain", true);
@@ -669,6 +671,7 @@ export function dailyFights(): void {
               retrieveItem($item`pulled green taffy`);
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
               nextFight.run({ location: $location`The Briny Deeps` });
+              horseradish();
             } else if (nextFight.draggable) {
               const type =
                 nextFight.name === "Backup" ? draggableFight.BACKUP : draggableFight.WANDERER;
@@ -676,10 +679,12 @@ export function dailyFights(): void {
               setLocation(location);
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location });
+              horseradish();
             } else {
               setLocation($location`Noob Cave`);
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location: $location`Noob Cave` });
+              horseradish();
             }
           }
         });
@@ -1746,4 +1751,5 @@ function doSausage() {
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
   adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   setAutoAttack(0);
+  horseradish();
 }
