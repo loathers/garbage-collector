@@ -1693,7 +1693,7 @@ function setNepQuestChoicesAndPrepItems() {
     if (!questStep("_questPartyFair")) {
       setChoice(1324, 2); // Check out the kitchen
       setChoice(1326, 3); // Talk to the woman
-    } else {
+    } else if (get("choiceAdventure1324") !== 5) {
       setChoice(1324, 5);
       print("Found Geraldine!", "blue");
       // Format of this property is count, space, item ID.
@@ -1704,7 +1704,7 @@ function setNepQuestChoicesAndPrepItems() {
     if (!questStep("_questPartyFair")) {
       setChoice(1324, 3); // Go to the back yard
       setChoice(1327, 3); // Find Gerald
-    } else {
+    } else if (get("choiceAdventure1324") !== 5) {
       setChoice(1324, 5);
       print("Found Gerald!", "blue");
       const partyFairInfo = get("_questPartyFairProgress").split(" ");
