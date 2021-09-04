@@ -1248,12 +1248,8 @@ const freeFightSources = [
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
     () => {
-      if (
-        // eslint-disable-next-line libram/verify-constants
-        have($item`industrial fire extinguisher`) &&
-        get("_fireExtinguisherCharge") >= 10 &&
-        shouldFireExtinguisherWitchess()
-      ) {
+      // eslint-disable-next-line libram/verify-constants
+      if (have($item`industrial fire extinguisher`) && get("_fireExtinguisherCharge") >= 10) {
         try {
           // eslint-disable-next-line libram/verify-constants
           const vortex = $skill`Fire Extinguisher: Polar Vortex`;
@@ -1269,9 +1265,7 @@ const freeFightSources = [
     {
       requirements: () => {
         // eslint-disable-next-line libram/verify-constants
-        return have($item`industrial fire extinguisher`) &&
-          get("_fireExtinguisherCharge") >= 10 &&
-          shouldFireExtinguisherWitchess()
+        return have($item`industrial fire extinguisher`) && get("_fireExtinguisherCharge") >= 10
           ? // eslint-disable-next-line libram/verify-constants
             [new Requirement([], { forceEquip: $items`industrial fire extinguisher` })]
           : [new Requirement([], {})];
@@ -1614,23 +1608,6 @@ const fireExtinguishZones = [
     open: () => have($item`[7302]Spookyraven library key`),
   },
 ] as { item: Item; location: Location; monster: Monster; open: () => boolean }[];
-
-function shouldFireExtinguisherWitchess(): boolean {
-  const items: { item: Item; witchess: boolean }[] = [
-    ...witchessPieces
-      .filter(() => Witchess.have())
-      .map((witchess) => {
-        return { item: witchess.drop, witchess: true };
-      }),
-    ...fireExtinguishZones
-      .filter((zone) => zone.open() && !isBanished(zone.monster))
-      .map((zone) => {
-        return { item: zone.item, witchess: false };
-      }),
-  ];
-  items.sort((a, b) => saleValue(b.item) - saleValue(a.item));
-  return items[0].witchess;
-}
 
 const freeKillSources = [
   new FreeFight(
