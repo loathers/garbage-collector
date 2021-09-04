@@ -1540,20 +1540,30 @@ const freeRunFightSources = [
       get("_monstersMapped") < 3 &&
       Array.from(fireExtinguishZones.values()).some((fez) => fez()),
     (runSource: FreeRun) => {
-      const targets = new Map<Item, [Location, Monster]>();
+      const targets = new Map<Item, { location: Location; monster: Monster }>();
       (
         [
-          [
-            $item`transdermal smoke patch`,
-            [$location`The Deep Dark Jungle`, $monster`smoke monster`],
-          ],
-          [$item`perfect ice cube`, [$location`The Ice Hotel`, $monster`ice bartender`]],
-          [$item`tattered scrap of paper`, [$location`The Haunted Library`, $monster`bookbat`]],
-        ] as [Item, [Location, Monster]][]
+          {
+            location: $location`The Deep Dark Jungle`,
+            monster: $monster`smoke monster`,
+            item: $item`transdermal smoke patch`,
+          },
+          {
+            location: $location`The Ice Hotel`,
+            monster: $monster`ice bartender`,
+            item: $item`perfect ice cube`,
+          },
+
+          {
+            location: $location`The Haunted Library`,
+            monster: $monster`bookbat`,
+            item: $item`tattered scrap of paper`,
+          },
+        ] as { item: Item; location: Location; monster: Monster }[]
       ).forEach((check) => {
-        const open = fireExtinguishZones.get(check[1][0]);
-        if (open && open() && !isBanished(check[1][1])) {
-          targets.set(check[0], check[1]);
+        const open = fireExtinguishZones.get(check.location);
+        if (open && open() && !isBanished(check.monster)) {
+          targets.set(check.item, { location: check.location, monster: check.monster });
         }
       });
       if (targets.size > 0) {
@@ -1566,7 +1576,7 @@ const freeRunFightSources = [
           Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
             .step(runSource.macro)
             .setAutoAttack();
-          mapMonster(best[0], best[1]);
+          mapMonster(best.location, best.monster);
         } finally {
           setAutoAttack(0);
         }
