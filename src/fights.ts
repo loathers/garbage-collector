@@ -1248,7 +1248,30 @@ const freeFightSources = [
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
-    () => Witchess.fightPiece(bestWitchessPiece())
+    () => {
+      // eslint-disable-next-line libram/verify-constants
+      if (have($item`industrial fire extinguisher`) && get("_fireExtinguisherCharge") >= 10) {
+        try {
+          // eslint-disable-next-line libram/verify-constants
+          const vortex = $skill`Fire Extinguisher: Polar Vortex`;
+          Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
+            .basicCombat()
+            .setAutoAttack();
+          Witchess.fightPiece(bestWitchessPiece());
+        } finally {
+          setAutoAttack(0);
+        }
+      } else Witchess.fightPiece(bestWitchessPiece());
+    },
+    {
+      requirements: () => {
+        // eslint-disable-next-line libram/verify-constants
+        return have($item`industrial fire extinguisher`) && get("_fireExtinguisherCharge") >= 10
+          ? // eslint-disable-next-line libram/verify-constants
+            [new Requirement([], { forceEquip: $items`industrial fire extinguisher` })]
+          : [new Requirement([], {})];
+      },
+    }
   ),
 
   new FreeFight(
