@@ -14,6 +14,7 @@ import {
   getCounters,
   handlingChoice,
   inebrietyLimit,
+  isBanished,
   itemAmount,
   lastDecision,
   mallPrice,
@@ -1529,7 +1530,62 @@ const freeRunFightSources = [
       ],
     }
   ),
+  new FreeRunFight(
+    () =>
+      // eslint-disable-next-line libram/verify-constants
+      have($item`industrial fire extinguisher`) &&
+      get("_fireExtinguisherCharge") >= 10 &&
+      have($skill`Comprehensive Cartography`) &&
+      get("_monstersMapped") < 3 &&
+      Array.from(fireExtinguishZones.values()).some((fez) => fez()),
+    (runSource: FreeRun) => {
+      const targets = new Map<Item, [Location, Monster]>();
+      (
+        [
+          [
+            $item`transdermal smoke patch`,
+            [$location`The Deep Dark Jungle`, $monster`smoke monster`],
+          ],
+          [$item`perfect ice cube`, [$location`The Ice Hotel`, $monster`ice bartender`]],
+          [$item`tattered scrap of paper`, [$location`The Haunted Library`, $monster`bookbat`]],
+        ] as [Item, [Location, Monster]][]
+      ).forEach((check) => {
+        const open = fireExtinguishZones.get(check[1][0]);
+        if (open && open() && !isBanished(check[1][1])) {
+          targets.set(check[0], check[1]);
+        }
+      });
+      if (targets.size > 0) {
+        const choice = Array.from(targets.keys()).sort((a, b) => mallPrice(b) - mallPrice(a))[0];
+        const best = targets.get(choice);
+        if (!best) throw `Somehow failed to generate a best value target for polar vortex?`;
+        try {
+          // eslint-disable-next-line libram/verify-constants
+          const vortex = $skill`Fire Extinguisher: Polar Vortex`;
+          Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
+            .step(runSource.macro)
+            .setAutoAttack();
+          mapMonster(best[0], best[1]);
+        } finally {
+          setAutoAttack(0);
+        }
+      } else throw `Couldn't find any valid targets to fire extinguish, maybe you banished them?`;
+    },
+    {
+      requirements: () => [
+        // eslint-disable-next-line libram/verify-constants
+        new Requirement([], { forceEquip: $items`industrial fire extinguisher` }),
+      ],
+    }
+  ),
 ];
+
+// Need to define this outside the freeRunFightSources to not duplicate a bunch of logic
+const fireExtinguishZones = new Map<Location, () => boolean>([
+  [$location`The Deep Dark Jungle`, () => get("_spookyAirportToday") || get("spookyAirportAlways")],
+  [$location`The Ice Hotel`, () => get("_coldAirportToday") || get("coldAirportAlways")],
+  [$location`The Haunted Library`, () => canAdv($location`The Haunted Library`, false)],
+]);
 
 const freeKillSources = [
   new FreeFight(
