@@ -1539,6 +1539,13 @@ const freeRunFightSources = [
       get("_monstersMapped") < 3 &&
       fireExtinguishZones.some((zone) => zone.open() && !isBanished(zone.monster)),
     (runSource: FreeRun) => {
+      // Haunted Library is full of free noncombats
+      propertyManager.set({ lightsOutAutomation: 2 });
+      propertyManager.setChoices({
+        888: 4, // Reading is for losers. I'm outta here.
+        889: 5, // Reading is for losers. I'm outta here.
+        163: 4, // Leave without taking anything
+      });
       const targets = fireExtinguishZones.filter(
         (zone) => zone.open() && !isBanished(zone.monster)
       );
