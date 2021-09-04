@@ -1542,7 +1542,7 @@ const freeRunFightSources = [
       const targets = fireExtinguishZones.filter(
         (zone) => zone.open() && !isBanished(zone.monster)
       );
-      const best = targets.sort((a, b) => mallPrice(b.item) - mallPrice(a.item))[0];
+      const best = targets.sort((a, b) => saleValue(b.item) - saleValue(a.item))[0];
       try {
         // eslint-disable-next-line libram/verify-constants
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
@@ -1581,7 +1581,8 @@ const fireExtinguishZones = [
     location: $location`The Haunted Library`,
     monster: $monster`bookbat`,
     item: $item`tattered scrap of paper`,
-    open: () => () => have($item`[7302]Spookyraven library key`),
+    // eslint-disable-next-line libram/verify-constants
+    open: () => have($item`[7302]Spookyraven library key`),
   },
 ] as { item: Item; location: Location; monster: Monster; open: () => boolean }[];
 
