@@ -1538,49 +1538,22 @@ const freeRunFightSources = [
       get("_fireExtinguisherCharge") >= 10 &&
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
-      Array.from(fireExtinguishZones.values()).some((fez) => fez()),
+      fireExtinguishZones.some((zone) => zone.open() && !isBanished(zone.monster)),
     (runSource: FreeRun) => {
-      const targets = new Map<Item, { location: Location; monster: Monster }>();
-      (
-        [
-          {
-            location: $location`The Deep Dark Jungle`,
-            monster: $monster`smoke monster`,
-            item: $item`transdermal smoke patch`,
-          },
-          {
-            location: $location`The Ice Hotel`,
-            monster: $monster`ice bartender`,
-            item: $item`perfect ice cube`,
-          },
-
-          {
-            location: $location`The Haunted Library`,
-            monster: $monster`bookbat`,
-            item: $item`tattered scrap of paper`,
-          },
-        ] as { item: Item; location: Location; monster: Monster }[]
-      ).forEach((check) => {
-        const open = fireExtinguishZones.get(check.location);
-        if (open && open() && !isBanished(check.monster)) {
-          targets.set(check.item, { location: check.location, monster: check.monster });
-        }
-      });
-      if (targets.size > 0) {
-        const choice = Array.from(targets.keys()).sort((a, b) => mallPrice(b) - mallPrice(a))[0];
-        const best = targets.get(choice);
-        if (!best) throw `Somehow failed to generate a best value target for polar vortex?`;
-        try {
-          // eslint-disable-next-line libram/verify-constants
-          const vortex = $skill`Fire Extinguisher: Polar Vortex`;
-          Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
-            .step(runSource.macro)
-            .setAutoAttack();
-          mapMonster(best.location, best.monster);
-        } finally {
-          setAutoAttack(0);
-        }
-      } else throw `Couldn't find any valid targets to fire extinguish, maybe you banished them?`;
+      const targets = fireExtinguishZones.filter(
+        (zone) => zone.open() && !isBanished(zone.monster)
+      );
+      const best = targets.sort((a, b) => mallPrice(b.item) - mallPrice(a.item))[0];
+      try {
+        // eslint-disable-next-line libram/verify-constants
+        const vortex = $skill`Fire Extinguisher: Polar Vortex`;
+        Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
+          .step(runSource.macro)
+          .setAutoAttack();
+        mapMonster(best.location, best.monster);
+      } finally {
+        setAutoAttack(0);
+      }
     },
     {
       requirements: () => [
@@ -1591,12 +1564,27 @@ const freeRunFightSources = [
   ),
 ];
 
-// Need to define this outside the freeRunFightSources to not duplicate a bunch of logic
-const fireExtinguishZones = new Map<Location, () => boolean>([
-  [$location`The Deep Dark Jungle`, () => get("_spookyAirportToday") || get("spookyAirportAlways")],
-  [$location`The Ice Hotel`, () => get("_coldAirportToday") || get("coldAirportAlways")],
-  [$location`The Haunted Library`, () => canAdv($location`The Haunted Library`, false)],
-]);
+const fireExtinguishZones = [
+  {
+    location: $location`The Deep Dark Jungle`,
+    monster: $monster`smoke monster`,
+    item: $item`transdermal smoke patch`,
+    open: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
+  },
+  {
+    location: $location`The Ice Hotel`,
+    monster: $monster`ice bartender`,
+    item: $item`perfect ice cube`,
+    open: () => get("_coldAirportToday") || get("coldAirportAlways"),
+  },
+
+  {
+    location: $location`The Haunted Library`,
+    monster: $monster`bookbat`,
+    item: $item`tattered scrap of paper`,
+    open: () => () => have($item`[7302]Spookyraven library key`),
+  },
+] as { item: Item; location: Location; monster: Monster; open: () => boolean }[];
 
 const freeKillSources = [
   new FreeFight(
