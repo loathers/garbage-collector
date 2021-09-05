@@ -286,6 +286,7 @@ export function main(argString = ""): void {
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
       autoSatisfyWithCoinmasters: true,
+      autoSatisfyWithStash: false,
       dontStopForCounters: true,
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
