@@ -292,6 +292,7 @@ export function main(argString = ""): void {
       trackVoteMonster: "free",
       choiceAdventureScript: "",
     });
+    propertyManager.setChoices({ 1341: 1 }); // Cure her poison
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
     if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
     const mpTarget = myLevel() < 18 ? 0.5 : 0.3;
