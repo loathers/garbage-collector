@@ -20414,7 +20414,7 @@ function shrugPassiveDamage() {
   });
 }
 ;// CONCATENATED MODULE: ./src/bjorn.ts
-var bjorn_templateObject, bjorn_templateObject2, bjorn_templateObject3, bjorn_templateObject4, bjorn_templateObject5, bjorn_templateObject6, bjorn_templateObject7, bjorn_templateObject8, bjorn_templateObject9, bjorn_templateObject10, bjorn_templateObject11, bjorn_templateObject12, bjorn_templateObject13, bjorn_templateObject14, bjorn_templateObject15, bjorn_templateObject16, bjorn_templateObject17, bjorn_templateObject18, bjorn_templateObject19, bjorn_templateObject20, bjorn_templateObject21, bjorn_templateObject22, bjorn_templateObject23, bjorn_templateObject24, bjorn_templateObject25, bjorn_templateObject26, bjorn_templateObject27, bjorn_templateObject28, bjorn_templateObject29, bjorn_templateObject30, bjorn_templateObject31, bjorn_templateObject32, bjorn_templateObject33, bjorn_templateObject34, bjorn_templateObject35, bjorn_templateObject36, bjorn_templateObject37, bjorn_templateObject38, bjorn_templateObject39, bjorn_templateObject40, bjorn_templateObject41, bjorn_templateObject42, bjorn_templateObject43, bjorn_templateObject44, bjorn_templateObject45, bjorn_templateObject46, bjorn_templateObject47, bjorn_templateObject48, bjorn_templateObject49, bjorn_templateObject50, bjorn_templateObject51, bjorn_templateObject52, bjorn_templateObject53, bjorn_templateObject54, bjorn_templateObject55, bjorn_templateObject56, bjorn_templateObject57, bjorn_templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102;
+var bjorn_templateObject, bjorn_templateObject2, bjorn_templateObject3, bjorn_templateObject4, bjorn_templateObject5, bjorn_templateObject6, bjorn_templateObject7, bjorn_templateObject8, bjorn_templateObject9, bjorn_templateObject10, bjorn_templateObject11, bjorn_templateObject12, bjorn_templateObject13, bjorn_templateObject14, bjorn_templateObject15, bjorn_templateObject16, bjorn_templateObject17, bjorn_templateObject18, bjorn_templateObject19, bjorn_templateObject20, bjorn_templateObject21, bjorn_templateObject22, bjorn_templateObject23, bjorn_templateObject24, bjorn_templateObject25, bjorn_templateObject26, bjorn_templateObject27, bjorn_templateObject28, bjorn_templateObject29, bjorn_templateObject30, bjorn_templateObject31, bjorn_templateObject32, bjorn_templateObject33, bjorn_templateObject34, bjorn_templateObject35, bjorn_templateObject36, bjorn_templateObject37, bjorn_templateObject38, bjorn_templateObject39, bjorn_templateObject40, bjorn_templateObject41, bjorn_templateObject42, bjorn_templateObject43, bjorn_templateObject44, bjorn_templateObject45, bjorn_templateObject46, bjorn_templateObject47, bjorn_templateObject48, bjorn_templateObject49, bjorn_templateObject50, bjorn_templateObject51, bjorn_templateObject52, bjorn_templateObject53, bjorn_templateObject54, bjorn_templateObject55, bjorn_templateObject56, bjorn_templateObject57, bjorn_templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103;
 
 function bjorn_toConsumableArray(arr) { return bjorn_arrayWithoutHoles(arr) || bjorn_iterableToArray(arr) || bjorn_unsupportedIterableToArray(arr) || bjorn_nonIterableSpread(); }
 
@@ -20671,7 +20671,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(bjorn_templateObject46 || (bjorn_templateObject46 = bjorn_taggedTemplateLiteral(["Golden Monkey"]))),
   meatVal: function meatVal() {
-    return 100;
+    return (0,lib/* saleValue */.L0)((0,dist.$item)(bjorn_templateObject47 || (bjorn_templateObject47 = bjorn_taggedTemplateLiteral(["gold nuggets"]))));
   },
   probability: 0.5,
   modifier: {
@@ -20679,73 +20679,73 @@ var bjornFams = [{
     modifier: 25
   }
 }, {
-  familiar: (0,dist.$familiar)(bjorn_templateObject47 || (bjorn_templateObject47 = bjorn_taggedTemplateLiteral(["Robot Reindeer"]))),
+  familiar: (0,dist.$familiar)(bjorn_templateObject48 || (bjorn_templateObject48 = bjorn_taggedTemplateLiteral(["Robot Reindeer"]))),
   meatVal: function meatVal() {
-    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(bjorn_templateObject48 || (bjorn_templateObject48 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(bjorn_templateObject49 || (bjorn_templateObject49 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
   },
   probability: 0.3
 }, {
-  familiar: (0,dist.$familiar)(bjorn_templateObject49 || (bjorn_templateObject49 = bjorn_taggedTemplateLiteral(["Stocking Mimic"]))),
+  familiar: (0,dist.$familiar)(bjorn_templateObject50 || (bjorn_templateObject50 = bjorn_taggedTemplateLiteral(["Stocking Mimic"]))),
   meatVal: function meatVal() {
-    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(bjorn_templateObject50 || (bjorn_templateObject50 = bjorn_taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"])))));
+    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(bjorn_templateObject51 || (bjorn_templateObject51 = bjorn_taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"])))));
   },
   probability: 0.3
 }, {
-  familiar: (0,dist.$familiar)(bjorn_templateObject51 || (bjorn_templateObject51 = bjorn_taggedTemplateLiteral(["BRICKO chick"]))),
+  familiar: (0,dist.$familiar)(bjorn_templateObject52 || (bjorn_templateObject52 = bjorn_taggedTemplateLiteral(["BRICKO chick"]))),
   meatVal: function meatVal() {
-    return (0,lib/* saleValue */.L0)((0,dist.$item)(bjorn_templateObject52 || (bjorn_templateObject52 = bjorn_taggedTemplateLiteral(["BRICKO brick"]))));
+    return (0,lib/* saleValue */.L0)((0,dist.$item)(bjorn_templateObject53 || (bjorn_templateObject53 = bjorn_taggedTemplateLiteral(["BRICKO brick"]))));
   },
   probability: 1
 }, {
-  familiar: (0,dist.$familiar)(bjorn_templateObject53 || (bjorn_templateObject53 = bjorn_taggedTemplateLiteral(["Cotton Candy Carnie"]))),
+  familiar: (0,dist.$familiar)(bjorn_templateObject54 || (bjorn_templateObject54 = bjorn_taggedTemplateLiteral(["Cotton Candy Carnie"]))),
   meatVal: function meatVal() {
-    return (0,lib/* saleValue */.L0)((0,dist.$item)(bjorn_templateObject54 || (bjorn_templateObject54 = bjorn_taggedTemplateLiteral(["cotton candy pinch"]))));
+    return (0,lib/* saleValue */.L0)((0,dist.$item)(bjorn_templateObject55 || (bjorn_templateObject55 = bjorn_taggedTemplateLiteral(["cotton candy pinch"]))));
   },
   probability: 1
 }, {
-  familiar: (0,dist.$familiar)(bjorn_templateObject55 || (bjorn_templateObject55 = bjorn_taggedTemplateLiteral(["Untamed Turtle"]))),
+  familiar: (0,dist.$familiar)(bjorn_templateObject56 || (bjorn_templateObject56 = bjorn_taggedTemplateLiteral(["Untamed Turtle"]))),
   meatVal: function meatVal() {
-    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(bjorn_templateObject56 || (bjorn_templateObject56 = bjorn_taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"])))));
+    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(bjorn_templateObject57 || (bjorn_templateObject57 = bjorn_taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"])))));
   },
   probability: 0.35
 }, {
-  familiar: (0,dist.$familiar)(bjorn_templateObject57 || (bjorn_templateObject57 = bjorn_taggedTemplateLiteral(["Astral Badger"]))),
+  familiar: (0,dist.$familiar)(bjorn_templateObject58 || (bjorn_templateObject58 = bjorn_taggedTemplateLiteral(["Astral Badger"]))),
   meatVal: function meatVal() {
-    return 2 * lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(bjorn_templateObject58 || (bjorn_templateObject58 = bjorn_taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"])))));
+    return 2 * lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(_templateObject59 || (_templateObject59 = bjorn_taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"])))));
   },
   probability: 1
 }, {
-  familiar: (0,dist.$familiar)(_templateObject59 || (_templateObject59 = bjorn_taggedTemplateLiteral(["Green Pixie"]))),
+  familiar: (0,dist.$familiar)(_templateObject60 || (_templateObject60 = bjorn_taggedTemplateLiteral(["Green Pixie"]))),
   meatVal: function meatVal() {
-    return (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject60 || (_templateObject60 = bjorn_taggedTemplateLiteral(["bottle of tequila"]))));
+    return (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject61 || (_templateObject61 = bjorn_taggedTemplateLiteral(["bottle of tequila"]))));
   },
   probability: 0.2
 }, {
-  familiar: (0,dist.$familiar)(_templateObject61 || (_templateObject61 = bjorn_taggedTemplateLiteral(["Angry Goat"]))),
+  familiar: (0,dist.$familiar)(_templateObject62 || (_templateObject62 = bjorn_taggedTemplateLiteral(["Angry Goat"]))),
   meatVal: function meatVal() {
-    return (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject62 || (_templateObject62 = bjorn_taggedTemplateLiteral(["goat cheese pizza"]))));
+    return (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject63 || (_templateObject63 = bjorn_taggedTemplateLiteral(["goat cheese pizza"]))));
   },
   probability: 1
 }, {
-  familiar: (0,dist.$familiar)(_templateObject63 || (_templateObject63 = bjorn_taggedTemplateLiteral(["Adorable Seal Larva"]))),
+  familiar: (0,dist.$familiar)(_templateObject64 || (_templateObject64 = bjorn_taggedTemplateLiteral(["Adorable Seal Larva"]))),
   meatVal: function meatVal() {
-    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(_templateObject64 || (_templateObject64 = bjorn_taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"])))));
+    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(_templateObject65 || (_templateObject65 = bjorn_taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"])))));
   },
   probability: 0.35
 }, {
-  familiar: (0,dist.$familiar)(_templateObject65 || (_templateObject65 = bjorn_taggedTemplateLiteral(["Ancient Yuletide Troll"]))),
+  familiar: (0,dist.$familiar)(_templateObject66 || (_templateObject66 = bjorn_taggedTemplateLiteral(["Ancient Yuletide Troll"]))),
   meatVal: function meatVal() {
-    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(_templateObject66 || (_templateObject66 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(_templateObject67 || (_templateObject67 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
   },
   probability: 0.3
 }, {
-  familiar: (0,dist.$familiar)(_templateObject67 || (_templateObject67 = bjorn_taggedTemplateLiteral(["Sweet Nutcracker"]))),
+  familiar: (0,dist.$familiar)(_templateObject68 || (_templateObject68 = bjorn_taggedTemplateLiteral(["Sweet Nutcracker"]))),
   meatVal: function meatVal() {
-    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(_templateObject68 || (_templateObject68 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+    return lib/* saleValue.apply */.L0.apply(void 0, bjorn_toConsumableArray((0,dist.$items)(_templateObject69 || (_templateObject69 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
   },
   probability: 0.3
 }, {
-  familiar: (0,dist.$familiar)(_templateObject69 || (_templateObject69 = bjorn_taggedTemplateLiteral(["Casagnova Gnome"]))),
+  familiar: (0,dist.$familiar)(_templateObject70 || (_templateObject70 = bjorn_taggedTemplateLiteral(["Casagnova Gnome"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20755,7 +20755,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject70 || (_templateObject70 = bjorn_taggedTemplateLiteral(["Coffee Pixie"]))),
+  familiar: (0,dist.$familiar)(_templateObject71 || (_templateObject71 = bjorn_taggedTemplateLiteral(["Coffee Pixie"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20765,7 +20765,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject71 || (_templateObject71 = bjorn_taggedTemplateLiteral(["Dancing Frog"]))),
+  familiar: (0,dist.$familiar)(_templateObject72 || (_templateObject72 = bjorn_taggedTemplateLiteral(["Dancing Frog"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20775,7 +20775,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject72 || (_templateObject72 = bjorn_taggedTemplateLiteral(["Grouper Groupie"]))),
+  familiar: (0,dist.$familiar)(_templateObject73 || (_templateObject73 = bjorn_taggedTemplateLiteral(["Grouper Groupie"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20785,7 +20785,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject73 || (_templateObject73 = bjorn_taggedTemplateLiteral(["Hand Turkey"]))),
+  familiar: (0,dist.$familiar)(_templateObject74 || (_templateObject74 = bjorn_taggedTemplateLiteral(["Hand Turkey"]))),
   meatVal: function meatVal() {
     return 30;
   },
@@ -20795,7 +20795,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject74 || (_templateObject74 = bjorn_taggedTemplateLiteral(["Hippo Ballerina"]))),
+  familiar: (0,dist.$familiar)(_templateObject75 || (_templateObject75 = bjorn_taggedTemplateLiteral(["Hippo Ballerina"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20805,7 +20805,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject75 || (_templateObject75 = bjorn_taggedTemplateLiteral(["Jitterbug"]))),
+  familiar: (0,dist.$familiar)(_templateObject76 || (_templateObject76 = bjorn_taggedTemplateLiteral(["Jitterbug"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20815,7 +20815,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject76 || (_templateObject76 = bjorn_taggedTemplateLiteral(["Leprechaun"]))),
+  familiar: (0,dist.$familiar)(_templateObject77 || (_templateObject77 = bjorn_taggedTemplateLiteral(["Leprechaun"]))),
   meatVal: function meatVal() {
     return 30;
   },
@@ -20825,7 +20825,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject77 || (_templateObject77 = bjorn_taggedTemplateLiteral(["Obtuse Angel"]))),
+  familiar: (0,dist.$familiar)(_templateObject78 || (_templateObject78 = bjorn_taggedTemplateLiteral(["Obtuse Angel"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20835,7 +20835,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject78 || (_templateObject78 = bjorn_taggedTemplateLiteral(["Psychedelic Bear"]))),
+  familiar: (0,dist.$familiar)(_templateObject79 || (_templateObject79 = bjorn_taggedTemplateLiteral(["Psychedelic Bear"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20845,7 +20845,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject79 || (_templateObject79 = bjorn_taggedTemplateLiteral(["Robortender"]))),
+  familiar: (0,dist.$familiar)(_templateObject80 || (_templateObject80 = bjorn_taggedTemplateLiteral(["Robortender"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20855,7 +20855,7 @@ var bjornFams = [{
     modifier: 20
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject80 || (_templateObject80 = bjorn_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))),
+  familiar: (0,dist.$familiar)(_templateObject81 || (_templateObject81 = bjorn_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))),
   meatVal: function meatVal() {
     return 30;
   },
@@ -20865,7 +20865,7 @@ var bjornFams = [{
     modifier: 25
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject81 || (_templateObject81 = bjorn_taggedTemplateLiteral(["Hobo Monkey"]))),
+  familiar: (0,dist.$familiar)(_templateObject82 || (_templateObject82 = bjorn_taggedTemplateLiteral(["Hobo Monkey"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20875,7 +20875,7 @@ var bjornFams = [{
     modifier: 25
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject82 || (_templateObject82 = bjorn_taggedTemplateLiteral(["Rockin' Robin"]))),
+  familiar: (0,dist.$familiar)(_templateObject83 || (_templateObject83 = bjorn_taggedTemplateLiteral(["Rockin' Robin"]))),
   meatVal: function meatVal() {
     return 60;
   },
@@ -20885,7 +20885,7 @@ var bjornFams = [{
     modifier: 15
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject83 || (_templateObject83 = bjorn_taggedTemplateLiteral(["Feral Kobold"]))),
+  familiar: (0,dist.$familiar)(_templateObject84 || (_templateObject84 = bjorn_taggedTemplateLiteral(["Feral Kobold"]))),
   meatVal: function meatVal() {
     return 30;
   },
@@ -20895,7 +20895,7 @@ var bjornFams = [{
     modifier: 15
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject84 || (_templateObject84 = bjorn_taggedTemplateLiteral(["Oily Woim"]))),
+  familiar: (0,dist.$familiar)(_templateObject85 || (_templateObject85 = bjorn_taggedTemplateLiteral(["Oily Woim"]))),
   meatVal: function meatVal() {
     return 30;
   },
@@ -20905,7 +20905,7 @@ var bjornFams = [{
     modifier: 10
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject85 || (_templateObject85 = bjorn_taggedTemplateLiteral(["Cat Burglar"]))),
+  familiar: (0,dist.$familiar)(_templateObject86 || (_templateObject86 = bjorn_taggedTemplateLiteral(["Cat Burglar"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20915,7 +20915,7 @@ var bjornFams = [{
     modifier: 10
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject86 || (_templateObject86 = bjorn_taggedTemplateLiteral(["Misshapen Animal Skeleton"]))),
+  familiar: (0,dist.$familiar)(_templateObject87 || (_templateObject87 = bjorn_taggedTemplateLiteral(["Misshapen Animal Skeleton"]))),
   meatVal: function meatVal() {
     return 30;
   },
@@ -20925,7 +20925,7 @@ var bjornFams = [{
     modifier: 5
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject87 || (_templateObject87 = bjorn_taggedTemplateLiteral(["Gelatinous Cubeling"]))),
+  familiar: (0,dist.$familiar)(_templateObject88 || (_templateObject88 = bjorn_taggedTemplateLiteral(["Gelatinous Cubeling"]))),
   meatVal: function meatVal() {
     return 0;
   },
@@ -20935,38 +20935,38 @@ var bjornFams = [{
     modifier: 5
   }
 }, {
-  familiar: (0,dist.$familiar)(_templateObject88 || (_templateObject88 = bjorn_taggedTemplateLiteral(["Frozen Gravy Fairy"]))),
+  familiar: (0,dist.$familiar)(_templateObject89 || (_templateObject89 = bjorn_taggedTemplateLiteral(["Frozen Gravy Fairy"]))),
   // drops a cold nugget every combat, 5 of which can be used to make a cold wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject89 || (_templateObject89 = bjorn_taggedTemplateLiteral(["cold wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject90 || (_templateObject90 = bjorn_taggedTemplateLiteral(["cold nuggets"])))));
+    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject90 || (_templateObject90 = bjorn_taggedTemplateLiteral(["cold wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject91 || (_templateObject91 = bjorn_taggedTemplateLiteral(["cold nuggets"])))));
   },
   probability: 1
 }, {
-  familiar: (0,dist.$familiar)(_templateObject91 || (_templateObject91 = bjorn_taggedTemplateLiteral(["Stinky Gravy Fairy"]))),
+  familiar: (0,dist.$familiar)(_templateObject92 || (_templateObject92 = bjorn_taggedTemplateLiteral(["Stinky Gravy Fairy"]))),
   // drops a stench nugget every combat, 5 of which can be used to make a stench wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject92 || (_templateObject92 = bjorn_taggedTemplateLiteral(["stench wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject93 || (_templateObject93 = bjorn_taggedTemplateLiteral(["stench nuggets"])))));
+    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject93 || (_templateObject93 = bjorn_taggedTemplateLiteral(["stench wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject94 || (_templateObject94 = bjorn_taggedTemplateLiteral(["stench nuggets"])))));
   },
   probability: 1
 }, {
-  familiar: (0,dist.$familiar)(_templateObject94 || (_templateObject94 = bjorn_taggedTemplateLiteral(["Sleazy Gravy Fairy"]))),
+  familiar: (0,dist.$familiar)(_templateObject95 || (_templateObject95 = bjorn_taggedTemplateLiteral(["Sleazy Gravy Fairy"]))),
   // drops a sleaze nugget every combat, 5 of which can be used to make a sleaze wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject95 || (_templateObject95 = bjorn_taggedTemplateLiteral(["sleaze wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject96 || (_templateObject96 = bjorn_taggedTemplateLiteral(["sleaze nuggets"])))));
+    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject96 || (_templateObject96 = bjorn_taggedTemplateLiteral(["sleaze wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject97 || (_templateObject97 = bjorn_taggedTemplateLiteral(["sleaze nuggets"])))));
   },
   probability: 1
 }, {
-  familiar: (0,dist.$familiar)(_templateObject97 || (_templateObject97 = bjorn_taggedTemplateLiteral(["Spooky Gravy Fairy"]))),
+  familiar: (0,dist.$familiar)(_templateObject98 || (_templateObject98 = bjorn_taggedTemplateLiteral(["Spooky Gravy Fairy"]))),
   // drops a spooky nugget every combat, 5 of which can be used to make a spooky wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject98 || (_templateObject98 = bjorn_taggedTemplateLiteral(["spooky wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject99 || (_templateObject99 = bjorn_taggedTemplateLiteral(["spooky nuggets"])))));
+    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject99 || (_templateObject99 = bjorn_taggedTemplateLiteral(["spooky wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject100 || (_templateObject100 = bjorn_taggedTemplateLiteral(["spooky nuggets"])))));
   },
   probability: 1
 }, {
-  familiar: (0,dist.$familiar)(_templateObject100 || (_templateObject100 = bjorn_taggedTemplateLiteral(["Flaming Gravy Fairy"]))),
+  familiar: (0,dist.$familiar)(_templateObject101 || (_templateObject101 = bjorn_taggedTemplateLiteral(["Flaming Gravy Fairy"]))),
   // drops a hot nugget every combat, 5 of which can be used to make a hot wad
   meatVal: function meatVal() {
-    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject101 || (_templateObject101 = bjorn_taggedTemplateLiteral(["hot wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject102 || (_templateObject102 = bjorn_taggedTemplateLiteral(["hot nuggets"])))));
+    return Math.max(0.2 * (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject102 || (_templateObject102 = bjorn_taggedTemplateLiteral(["hot wad"])))), (0,lib/* saleValue */.L0)((0,dist.$item)(_templateObject103 || (_templateObject103 = bjorn_taggedTemplateLiteral(["hot nuggets"])))));
   },
   probability: 1
 }].filter(function (bjornFam) {
@@ -21293,7 +21293,7 @@ function dropsItems(equipMode) {
 ;// CONCATENATED MODULE: ./src/fights.ts
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var fights_templateObject, fights_templateObject2, fights_templateObject3, fights_templateObject4, fights_templateObject5, fights_templateObject6, fights_templateObject7, fights_templateObject8, fights_templateObject9, fights_templateObject10, fights_templateObject11, fights_templateObject12, fights_templateObject13, fights_templateObject14, fights_templateObject15, fights_templateObject16, fights_templateObject17, fights_templateObject18, fights_templateObject19, fights_templateObject20, fights_templateObject21, fights_templateObject22, fights_templateObject23, fights_templateObject24, fights_templateObject25, fights_templateObject26, fights_templateObject27, fights_templateObject28, fights_templateObject29, fights_templateObject30, fights_templateObject31, fights_templateObject32, fights_templateObject33, fights_templateObject34, fights_templateObject35, fights_templateObject36, fights_templateObject37, fights_templateObject38, fights_templateObject39, fights_templateObject40, fights_templateObject41, fights_templateObject42, fights_templateObject43, fights_templateObject44, fights_templateObject45, fights_templateObject46, fights_templateObject47, fights_templateObject48, fights_templateObject49, fights_templateObject50, fights_templateObject51, fights_templateObject52, fights_templateObject53, fights_templateObject54, fights_templateObject55, fights_templateObject56, fights_templateObject57, fights_templateObject58, fights_templateObject59, fights_templateObject60, fights_templateObject61, fights_templateObject62, fights_templateObject63, fights_templateObject64, fights_templateObject65, fights_templateObject66, fights_templateObject67, fights_templateObject68, fights_templateObject69, fights_templateObject70, fights_templateObject71, fights_templateObject72, fights_templateObject73, fights_templateObject74, fights_templateObject75, fights_templateObject76, fights_templateObject77, fights_templateObject78, fights_templateObject79, fights_templateObject80, fights_templateObject81, fights_templateObject82, fights_templateObject83, fights_templateObject84, fights_templateObject85, fights_templateObject86, fights_templateObject87, fights_templateObject88, fights_templateObject89, fights_templateObject90, fights_templateObject91, fights_templateObject92, fights_templateObject93, fights_templateObject94, fights_templateObject95, fights_templateObject96, fights_templateObject97, fights_templateObject98, fights_templateObject99, fights_templateObject100, fights_templateObject101, fights_templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183, _templateObject184, _templateObject185, _templateObject186, _templateObject187, _templateObject188, _templateObject189, _templateObject190, _templateObject191, _templateObject192, _templateObject193, _templateObject194, _templateObject195, _templateObject196, _templateObject197, _templateObject198, _templateObject199, _templateObject200, _templateObject201, _templateObject202, _templateObject203, _templateObject204, _templateObject205, _templateObject206, _templateObject207, _templateObject208, _templateObject209, _templateObject210, _templateObject211, _templateObject212, _templateObject213, _templateObject214, _templateObject215, _templateObject216, _templateObject217, _templateObject218, _templateObject219, _templateObject220, _templateObject221, _templateObject222, _templateObject223, _templateObject224, _templateObject225, _templateObject226, _templateObject227, _templateObject228, _templateObject229, _templateObject230, _templateObject231, _templateObject232, _templateObject233, _templateObject234, _templateObject235, _templateObject236, _templateObject237, _templateObject238, _templateObject239, _templateObject240, _templateObject241, _templateObject242, _templateObject243, _templateObject244, _templateObject245, _templateObject246, _templateObject247, _templateObject248, _templateObject249, _templateObject250, _templateObject251, _templateObject252, _templateObject253, _templateObject254, _templateObject255, _templateObject256, _templateObject257, _templateObject258, _templateObject259, _templateObject260, _templateObject261, _templateObject262, _templateObject263, _templateObject264, _templateObject265, _templateObject266, _templateObject267, _templateObject268, _templateObject269, _templateObject270, _templateObject271, _templateObject272, _templateObject273, _templateObject274, _templateObject275, _templateObject276, _templateObject277, _templateObject278, _templateObject279, _templateObject280, _templateObject281, _templateObject282, _templateObject283, _templateObject284, _templateObject285, _templateObject286, _templateObject287, _templateObject288, _templateObject289, _templateObject290, _templateObject291, _templateObject292, _templateObject293, _templateObject294, _templateObject295, _templateObject296, _templateObject297, _templateObject298, _templateObject299, _templateObject300, _templateObject301, _templateObject302, _templateObject303, _templateObject304, _templateObject305, _templateObject306, _templateObject307, _templateObject308, _templateObject309, _templateObject310, _templateObject311, _templateObject312, _templateObject313, _templateObject314, _templateObject315, _templateObject316, _templateObject317, _templateObject318, _templateObject319, _templateObject320, _templateObject321, _templateObject322, _templateObject323, _templateObject324, _templateObject325, _templateObject326, _templateObject327, _templateObject328, _templateObject329, _templateObject330, _templateObject331, _templateObject332, _templateObject333, _templateObject334, _templateObject335, _templateObject336, _templateObject337, _templateObject338, _templateObject339, _templateObject340, _templateObject341, _templateObject342, _templateObject343, _templateObject344, _templateObject345, _templateObject346, _templateObject347, _templateObject348, _templateObject349, _templateObject350, _templateObject351, _templateObject352, _templateObject353, _templateObject354, _templateObject355, _templateObject356, _templateObject357, _templateObject358, _templateObject359, _templateObject360, _templateObject361, _templateObject362, _templateObject363, _templateObject364, _templateObject365, _templateObject366, _templateObject367, _templateObject368, _templateObject369, _templateObject370, _templateObject371, _templateObject372, _templateObject373, _templateObject374, _templateObject375, _templateObject376, _templateObject377, _templateObject378, _templateObject379, _templateObject380, _templateObject381, _templateObject382, _templateObject383, _templateObject384, _templateObject385, _templateObject386, _templateObject387, _templateObject388, _templateObject389, _templateObject390, _templateObject391, _templateObject392, _templateObject393, _templateObject394, _templateObject395, _templateObject396, _templateObject397, _templateObject398, _templateObject399, _templateObject400, _templateObject401, _templateObject402, _templateObject403, _templateObject404, _templateObject405, _templateObject406, _templateObject407, _templateObject408, _templateObject409, _templateObject410, _templateObject411, _templateObject412, _templateObject413, _templateObject414, _templateObject415, _templateObject416, _templateObject417, _templateObject418, _templateObject419, _templateObject420, _templateObject421, _templateObject422, _templateObject423, _templateObject424, _templateObject425, _templateObject426, _templateObject427, _templateObject428, _templateObject429, _templateObject430, _templateObject431, _templateObject432;
+var fights_templateObject, fights_templateObject2, fights_templateObject3, fights_templateObject4, fights_templateObject5, fights_templateObject6, fights_templateObject7, fights_templateObject8, fights_templateObject9, fights_templateObject10, fights_templateObject11, fights_templateObject12, fights_templateObject13, fights_templateObject14, fights_templateObject15, fights_templateObject16, fights_templateObject17, fights_templateObject18, fights_templateObject19, fights_templateObject20, fights_templateObject21, fights_templateObject22, fights_templateObject23, fights_templateObject24, fights_templateObject25, fights_templateObject26, fights_templateObject27, fights_templateObject28, fights_templateObject29, fights_templateObject30, fights_templateObject31, fights_templateObject32, fights_templateObject33, fights_templateObject34, fights_templateObject35, fights_templateObject36, fights_templateObject37, fights_templateObject38, fights_templateObject39, fights_templateObject40, fights_templateObject41, fights_templateObject42, fights_templateObject43, fights_templateObject44, fights_templateObject45, fights_templateObject46, fights_templateObject47, fights_templateObject48, fights_templateObject49, fights_templateObject50, fights_templateObject51, fights_templateObject52, fights_templateObject53, fights_templateObject54, fights_templateObject55, fights_templateObject56, fights_templateObject57, fights_templateObject58, fights_templateObject59, fights_templateObject60, fights_templateObject61, fights_templateObject62, fights_templateObject63, fights_templateObject64, fights_templateObject65, fights_templateObject66, fights_templateObject67, fights_templateObject68, fights_templateObject69, fights_templateObject70, fights_templateObject71, fights_templateObject72, fights_templateObject73, fights_templateObject74, fights_templateObject75, fights_templateObject76, fights_templateObject77, fights_templateObject78, fights_templateObject79, fights_templateObject80, fights_templateObject81, fights_templateObject82, fights_templateObject83, fights_templateObject84, fights_templateObject85, fights_templateObject86, fights_templateObject87, fights_templateObject88, fights_templateObject89, fights_templateObject90, fights_templateObject91, fights_templateObject92, fights_templateObject93, fights_templateObject94, fights_templateObject95, fights_templateObject96, fights_templateObject97, fights_templateObject98, fights_templateObject99, fights_templateObject100, fights_templateObject101, fights_templateObject102, fights_templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183, _templateObject184, _templateObject185, _templateObject186, _templateObject187, _templateObject188, _templateObject189, _templateObject190, _templateObject191, _templateObject192, _templateObject193, _templateObject194, _templateObject195, _templateObject196, _templateObject197, _templateObject198, _templateObject199, _templateObject200, _templateObject201, _templateObject202, _templateObject203, _templateObject204, _templateObject205, _templateObject206, _templateObject207, _templateObject208, _templateObject209, _templateObject210, _templateObject211, _templateObject212, _templateObject213, _templateObject214, _templateObject215, _templateObject216, _templateObject217, _templateObject218, _templateObject219, _templateObject220, _templateObject221, _templateObject222, _templateObject223, _templateObject224, _templateObject225, _templateObject226, _templateObject227, _templateObject228, _templateObject229, _templateObject230, _templateObject231, _templateObject232, _templateObject233, _templateObject234, _templateObject235, _templateObject236, _templateObject237, _templateObject238, _templateObject239, _templateObject240, _templateObject241, _templateObject242, _templateObject243, _templateObject244, _templateObject245, _templateObject246, _templateObject247, _templateObject248, _templateObject249, _templateObject250, _templateObject251, _templateObject252, _templateObject253, _templateObject254, _templateObject255, _templateObject256, _templateObject257, _templateObject258, _templateObject259, _templateObject260, _templateObject261, _templateObject262, _templateObject263, _templateObject264, _templateObject265, _templateObject266, _templateObject267, _templateObject268, _templateObject269, _templateObject270, _templateObject271, _templateObject272, _templateObject273, _templateObject274, _templateObject275, _templateObject276, _templateObject277, _templateObject278, _templateObject279, _templateObject280, _templateObject281, _templateObject282, _templateObject283, _templateObject284, _templateObject285, _templateObject286, _templateObject287, _templateObject288, _templateObject289, _templateObject290, _templateObject291, _templateObject292, _templateObject293, _templateObject294, _templateObject295, _templateObject296, _templateObject297, _templateObject298, _templateObject299, _templateObject300, _templateObject301, _templateObject302, _templateObject303, _templateObject304, _templateObject305, _templateObject306, _templateObject307, _templateObject308, _templateObject309, _templateObject310, _templateObject311, _templateObject312, _templateObject313, _templateObject314, _templateObject315, _templateObject316, _templateObject317, _templateObject318, _templateObject319, _templateObject320, _templateObject321, _templateObject322, _templateObject323, _templateObject324, _templateObject325, _templateObject326, _templateObject327, _templateObject328, _templateObject329, _templateObject330, _templateObject331, _templateObject332, _templateObject333, _templateObject334, _templateObject335, _templateObject336, _templateObject337, _templateObject338, _templateObject339, _templateObject340, _templateObject341, _templateObject342, _templateObject343, _templateObject344, _templateObject345, _templateObject346, _templateObject347, _templateObject348, _templateObject349, _templateObject350, _templateObject351, _templateObject352, _templateObject353, _templateObject354, _templateObject355, _templateObject356, _templateObject357, _templateObject358, _templateObject359, _templateObject360, _templateObject361, _templateObject362, _templateObject363, _templateObject364, _templateObject365, _templateObject366, _templateObject367, _templateObject368, _templateObject369, _templateObject370, _templateObject371, _templateObject372, _templateObject373, _templateObject374, _templateObject375, _templateObject376, _templateObject377, _templateObject378, _templateObject379, _templateObject380, _templateObject381, _templateObject382, _templateObject383, _templateObject384, _templateObject385, _templateObject386, _templateObject387, _templateObject388, _templateObject389, _templateObject390, _templateObject391, _templateObject392, _templateObject393, _templateObject394, _templateObject395, _templateObject396, _templateObject397, _templateObject398, _templateObject399, _templateObject400, _templateObject401, _templateObject402, _templateObject403, _templateObject404, _templateObject405, _templateObject406, _templateObject407, _templateObject408, _templateObject409, _templateObject410, _templateObject411, _templateObject412, _templateObject413, _templateObject414, _templateObject415, _templateObject416, _templateObject417, _templateObject418, _templateObject419, _templateObject420, _templateObject421, _templateObject422, _templateObject423, _templateObject424, _templateObject425, _templateObject426, _templateObject427, _templateObject428, _templateObject429, _templateObject430, _templateObject431, _templateObject432;
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -21548,7 +21548,7 @@ function embezzlerSetup() {
 
   if (!(0,dist.get)("_cameraUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject101 || (fights_templateObject101 = fights_taggedTemplateLiteral(["shaking 4-d camera"])))) && averageEmbezzlerNet - averageTouristNet > (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject102 || (fights_templateObject102 = fights_taggedTemplateLiteral(["4-d camera"]))))) {
     dist.property.withProperty("autoSatisfyWithCloset", true, function () {
-      return (0,external_kolmafia_.retrieveItem)((0,dist.$item)(_templateObject103 || (_templateObject103 = fights_taggedTemplateLiteral(["4-d camera"]))));
+      return (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject103 || (fights_templateObject103 = fights_taggedTemplateLiteral(["4-d camera"]))));
     });
   }
 
