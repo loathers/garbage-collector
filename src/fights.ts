@@ -1498,6 +1498,45 @@ const freeRunFightSources = [
       adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
     }
   ),
+  // Must run before fishing for hipster/goth fights otherwise the targets may be banished
+  new FreeRunFight(
+    () =>
+      // eslint-disable-next-line libram/verify-constants
+      have($item`industrial fire extinguisher`) &&
+      get("_fireExtinguisherCharge") >= 10 &&
+      have($skill`Comprehensive Cartography`) &&
+      get("_monstersMapped") < 3 &&
+      fireExtinguishZones.some((zone) => zone.open() && !isBanished(zone.monster)),
+    (runSource: FreeRun) => {
+      // Haunted Library is full of free noncombats
+      propertyManager.set({ lightsOutAutomation: 2 });
+      propertyManager.setChoices({
+        163: 4, // Leave without taking anything
+        888: 4, // Reading is for losers. I'm outta here.
+        889: 5, // Reading is for losers. I'm outta here.
+      });
+      const targets = fireExtinguishZones.filter(
+        (zone) => zone.open() && !isBanished(zone.monster)
+      );
+      const best = targets.sort((a, b) => saleValue(b.item) - saleValue(a.item))[0];
+      try {
+        // eslint-disable-next-line libram/verify-constants
+        const vortex = $skill`Fire Extinguisher: Polar Vortex`;
+        Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
+          .step(runSource.macro)
+          .setAutoAttack();
+        mapMonster(best.location, best.monster);
+      } finally {
+        setAutoAttack(0);
+      }
+    },
+    {
+      requirements: () => [
+        // eslint-disable-next-line libram/verify-constants
+        new Requirement([], { forceEquip: $items`industrial fire extinguisher` }),
+      ],
+    }
+  ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
   new FreeRunFight(
     () =>
@@ -1528,44 +1567,6 @@ const freeRunFightSources = [
               : []
           ),
         }),
-      ],
-    }
-  ),
-  new FreeRunFight(
-    () =>
-      // eslint-disable-next-line libram/verify-constants
-      have($item`industrial fire extinguisher`) &&
-      get("_fireExtinguisherCharge") >= 10 &&
-      have($skill`Comprehensive Cartography`) &&
-      get("_monstersMapped") < 3 &&
-      fireExtinguishZones.some((zone) => zone.open() && !isBanished(zone.monster)),
-    (runSource: FreeRun) => {
-      // Haunted Library is full of free noncombats
-      propertyManager.set({ lightsOutAutomation: 2 });
-      propertyManager.setChoices({
-        888: 4, // Reading is for losers. I'm outta here.
-        889: 5, // Reading is for losers. I'm outta here.
-        163: 4, // Leave without taking anything
-      });
-      const targets = fireExtinguishZones.filter(
-        (zone) => zone.open() && !isBanished(zone.monster)
-      );
-      const best = targets.sort((a, b) => saleValue(b.item) - saleValue(a.item))[0];
-      try {
-        // eslint-disable-next-line libram/verify-constants
-        const vortex = $skill`Fire Extinguisher: Polar Vortex`;
-        Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
-          .step(runSource.macro)
-          .setAutoAttack();
-        mapMonster(best.location, best.monster);
-      } finally {
-        setAutoAttack(0);
-      }
-    },
-    {
-      requirements: () => [
-        // eslint-disable-next-line libram/verify-constants
-        new Requirement([], { forceEquip: $items`industrial fire extinguisher` }),
       ],
     }
   ),
