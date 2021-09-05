@@ -1506,7 +1506,7 @@ const freeRunFightSources = [
       get("_fireExtinguisherCharge") >= 10 &&
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
-      fireExtinguishZones.some((zone) => zone.open() && !isBanished(zone.monster)),
+      getBestFireExtinguisherZone() !== undefined,
     (runSource: FreeRun) => {
       // Haunted Library is full of free noncombats
       propertyManager.set({ lightsOutAutomation: 2 });
@@ -1515,10 +1515,8 @@ const freeRunFightSources = [
         888: 4, // Reading is for losers. I'm outta here.
         889: 5, // Reading is for losers. I'm outta here.
       });
-      const targets = fireExtinguishZones.filter(
-        (zone) => zone.open() && !isBanished(zone.monster)
-      );
-      const best = targets.sort((a, b) => saleValue(b.item) - saleValue(a.item))[0];
+      const best = getBestFireExtinguisherZone();
+      if (!best) throw `Unable to find fire extinguisher zone?`;
       try {
         // eslint-disable-next-line libram/verify-constants
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
@@ -1531,10 +1529,17 @@ const freeRunFightSources = [
       }
     },
     {
-      requirements: () => [
-        // eslint-disable-next-line libram/verify-constants
-        new Requirement([], { forceEquip: $items`industrial fire extinguisher` }),
-      ],
+      requirements: () => {
+        const zone = getBestFireExtinguisherZone();
+        return [
+          new Requirement(
+            // Bookbats need up to +100 ML to survive the polar vortices
+            zone?.location === $location`The Haunted Library` ? ["99 monster level 100 max"] : [],
+            // eslint-disable-next-line libram/verify-constants
+            { forceEquip: $items`industrial fire extinguisher` }
+          ),
+        ];
+      },
     }
   ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
@@ -1571,29 +1576,6 @@ const freeRunFightSources = [
     }
   ),
 ];
-
-const fireExtinguishZones = [
-  {
-    location: $location`The Deep Dark Jungle`,
-    monster: $monster`smoke monster`,
-    item: $item`transdermal smoke patch`,
-    open: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
-  },
-  {
-    location: $location`The Ice Hotel`,
-    monster: $monster`ice bartender`,
-    item: $item`perfect ice cube`,
-    open: () => get("_coldAirportToday") || get("coldAirportAlways"),
-  },
-
-  {
-    location: $location`The Haunted Library`,
-    monster: $monster`bookbat`,
-    item: $item`tattered scrap of paper`,
-    // eslint-disable-next-line libram/verify-constants
-    open: () => have($item`[7302]Spookyraven library key`),
-  },
-] as { item: Item; location: Location; monster: Monster; open: () => boolean }[];
 
 const freeKillSources = [
   new FreeFight(
@@ -1883,4 +1865,37 @@ function ensureBeachAccess() {
   if (get("lastDesertUnlock") !== myAscensions() && myPathId() !== 23 /*Actually Ed the Undying*/) {
     cliExecute(`create ${$item`bitchin' meatcar`}`);
   }
+}
+
+type fireExtinguisherZone = {
+  item: Item;
+  location: Location;
+  monster: Monster;
+  open: () => boolean;
+};
+const fireExtinguishZones = [
+  {
+    location: $location`The Deep Dark Jungle`,
+    monster: $monster`smoke monster`,
+    item: $item`transdermal smoke patch`,
+    open: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
+  },
+  {
+    location: $location`The Ice Hotel`,
+    monster: $monster`ice bartender`,
+    item: $item`perfect ice cube`,
+    open: () => get("_coldAirportToday") || get("coldAirportAlways"),
+  },
+  {
+    location: $location`The Haunted Library`,
+    monster: $monster`bookbat`,
+    item: $item`tattered scrap of paper`,
+    // eslint-disable-next-line libram/verify-constants
+    open: () => have($item`[7302]Spookyraven library key`),
+  },
+] as fireExtinguisherZone[];
+
+function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
+  const targets = fireExtinguishZones.filter((zone) => zone.open() && !isBanished(zone.monster));
+  return targets.sort((a, b) => saleValue(b.item) - saleValue(a.item))[0];
 }
