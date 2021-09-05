@@ -1874,7 +1874,10 @@ const fireExtinguishZones = [
   },
 ] as fireExtinguisherZone[];
 
+let bestFireExtinguisherZoneCached: fireExtinguisherZone | undefined = undefined;
 function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
+  if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
   const targets = fireExtinguishZones.filter((zone) => zone.open() && !isBanished(zone.monster));
-  return targets.sort((a, b) => saleValue(b.item) - saleValue(a.item))[0];
+  bestFireExtinguisherZoneCached = targets.sort((a, b) => saleValue(b.item) - saleValue(a.item))[0];
+  return bestFireExtinguisherZoneCached;
 }
