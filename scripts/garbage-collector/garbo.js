@@ -19397,6 +19397,7 @@ function acquire(qty, item, maxPrice) {
   var throwOnFail = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (maxPrice === undefined) throw "No price cap for ".concat(item.name, ".");
+  if (maxPrice <= 0) return 0;
   (0,external_kolmafia_.print)("Trying to acquire ".concat(qty, " ").concat(item.plural, "; max price ").concat(maxPrice.toFixed(0), "."), "green");
   if (qty * (0,external_kolmafia_.mallPrice)(item) > 1000000) throw "bad get!";
   var startAmount = (0,external_kolmafia_.itemAmount)(item);
