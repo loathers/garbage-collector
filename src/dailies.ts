@@ -70,6 +70,7 @@ export function dailySetup(): void {
   internetMemeShop();
   pickTea();
   refreshLatte();
+  implement();
 
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`Half a Purse`);
