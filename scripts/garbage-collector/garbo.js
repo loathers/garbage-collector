@@ -23624,6 +23624,10 @@ function main() {
       trackVoteMonster: "free",
       choiceAdventureScript: ""
     });
+    lib/* propertyManager.setChoices */.kr.setChoices({
+      1341: 1
+    }); // Cure her poison
+
     if ((0,dist.get)("hpAutoRecovery") < 0.35) lib/* propertyManager.set */.kr.set({
       hpAutoRecovery: 0.35
     });
