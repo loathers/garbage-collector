@@ -22923,6 +22923,7 @@ function runDiet() {
     var best = chocoVals.sort(function (a, b) {
       return b.value - a.value;
     })[0];
+    acquire(1, best.choco, best.value, false);
     if (best.value > 0) (0,external_kolmafia_.use)(1, best.choco);else return "break";
   };
 
