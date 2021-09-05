@@ -19499,7 +19499,7 @@ function fillAsdonMartinTo(targetUnits) {
   }
 }
 ;// CONCATENATED MODULE: ./src/clan.ts
-var clan_templateObject;
+var clan_templateObject, clan_templateObject2;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -19524,6 +19524,7 @@ function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symb
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 
 
 
@@ -19678,6 +19679,13 @@ var StashManager = /*#__PURE__*/function () {
 
       for (var _len3 = arguments.length, items = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
         items[_key3] = arguments[_key3];
+      }
+
+      if (items.length === 0) return;
+
+      if ((0,external_kolmafia_.visitUrl)("fight.php").includes("You're fighting")) {
+        (0,external_kolmafia_.print)("In fight, trying to get away to return items to stash...", "blue");
+        combat.Macro.tryItem.apply(combat.Macro, _toConsumableArray((0,dist.$items)(clan_templateObject2 || (clan_templateObject2 = clan_taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper"]))))).step("runaway").submit();
       }
 
       withClan(this.clanIdOrName, function () {
