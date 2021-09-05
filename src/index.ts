@@ -8,7 +8,6 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
-  itemAmount,
   myAdventures,
   myClass,
   myGardenType,
@@ -16,12 +15,10 @@ import {
   myLevel,
   myTurncount,
   print,
-  putCloset,
   retrieveItem,
   reverseNumberology,
   runChoice,
   setAutoAttack,
-  toItem,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -46,44 +43,29 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro, withMacro } from "./combat";
-import {
-  chateauDesk,
-  cheat,
-  configureGear,
-  configureMisc,
-  dailyBuffs,
-  gaze,
-  gin,
-  horse,
-  implement,
-  internetMemeShop,
-  martini,
-  pickTea,
-  prepFamiliars,
-  volcanoDailies,
-  voterSetup,
-} from "./dailies";
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import {
   determineDraggableZoneAndEnsureAccess,
   kramcoGuaranteed,
+  printLog,
   propertyManager,
   questStep,
   Requirement,
+  safeInterrupt,
 } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
-  refreshLatte,
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
+import { dailySetup } from "./dailies";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -104,34 +86,6 @@ function ensureBarfAccess() {
   }
 }
 
-function dailySetup() {
-  voterSetup();
-  martini();
-  chateauDesk();
-  implement();
-  gaze();
-  configureGear();
-  horse();
-  prepFamiliars();
-  dailyBuffs();
-  configureMisc();
-  volcanoDailies();
-  cheat();
-  gin();
-  internetMemeShop();
-  pickTea();
-  refreshLatte();
-
-  if (myInebriety() > inebrietyLimit()) return;
-  retrieveItem($item`Half a Purse`);
-  retrieveItem($item`seal tooth`);
-  retrieveItem($item`The Jokester's gun`);
-  putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
-  putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
-  putCloset(itemAmount($item`4-d camera`), $item`4-d camera`);
-  putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
-}
-
 function barfTurn() {
   const startTurns = totalTurnsPlayed();
   horseradish();
@@ -141,12 +95,6 @@ function barfTurn() {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
 
-  if (
-    have($item`unwrapped knock-off retro superhero cape`) &&
-    (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
-  ) {
-    cliExecute("retrocape robot kill");
-  }
   tryFillLatte();
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
@@ -183,12 +131,6 @@ function barfTurn() {
     freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
-    if (
-      have($item`unwrapped knock-off retro superhero cape`) &&
-      (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
-    ) {
-      cliExecute("retrocape robot kill");
-    }
     // c. set up familiar
     useFamiliar(meatFamiliar());
     const location = embezzlerUp
@@ -328,17 +270,35 @@ export function main(argString = ""): void {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
     propertyManager.set({
+      logPreferenceChange: true,
+      logPreferenceChangeFilter: [
+        ...new Set([
+          ...get("logPreferenceChangeFilter").split(","),
+          "libram_savedMacro",
+          "maximizerMRUList",
+          "testudinalTeachings",
+        ]),
+      ]
+        .sort()
+        .filter((a) => a)
+        .join(","),
       battleAction: "custom combat script",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
       autoSatisfyWithCoinmasters: true,
+      autoSatisfyWithStash: false,
       dontStopForCounters: true,
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
+      trackVoteMonster: "free",
+      choiceAdventureScript: "",
     });
+    propertyManager.setChoices({ 1341: 1 }); // Cure her poison
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
-    if (get("mpAutoRecovery") < 0.15) propertyManager.set({ mpAutoRecovery: 0.25 });
-    if (get("mpAutoRecoveryTarget") < 0.65) propertyManager.set({ mpAutoRecoveryTarget: 0.65 });
+    if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
+    const mpTarget = myLevel() < 18 ? 0.5 : 0.3;
+    if (get("mpAutoRecoveryTarget") < mpTarget)
+      propertyManager.set({ mpAutoRecoveryTarget: mpTarget });
 
     cliExecute("mood apathetic");
     cliExecute("ccs garbo");
@@ -368,7 +328,7 @@ export function main(argString = ""): void {
       myInebriety() <= inebrietyLimit() &&
       (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
     )
-      stashItems.push($item`haiku katana`);
+      stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {
@@ -393,6 +353,7 @@ export function main(argString = ""): void {
         try {
           while (canContinue()) {
             barfTurn();
+            safeInterrupt();
           }
         } finally {
           setAutoAttack(0);
@@ -403,16 +364,10 @@ export function main(argString = ""): void {
     propertyManager.resetAll();
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
-    if (questStep("_questPartyFair") > 0) {
-      const partyFairInfo = get("_questPartyFairProgress").split(" ");
-      print(
-        `Gerald/ine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`,
-        "blue"
-      );
-    }
     print(
       `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
       "blue"
     );
+    printLog("blue");
   }
 }

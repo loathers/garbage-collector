@@ -5,12 +5,15 @@ import {
   getFuel,
   haveEffect,
   haveSkill,
+  itemAmount,
   myClass,
   myEffects,
   mySpleenUse,
+  numericModifier,
   spleenLimit,
   toSkill,
   use,
+  useSkill,
 } from "kolmafia";
 import {
   $class,
@@ -24,9 +27,10 @@ import {
   have,
   Mood,
   set,
+  uneffect,
   Witchess,
 } from "libram";
-import { baseMeat, questStep } from "./lib";
+import { baseMeat, questStep, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { potionSetup } from "./potions";
 
@@ -86,7 +90,34 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     cliExecute("concert optimist primal");
   }
 
+  if (itemAmount($item`Bird-a-Day calendar`) > 0) {
+    if (!have($skill`Seek out a Bird`)) {
+      use(1, $item`Bird-a-Day calendar`);
+    }
+
+    if (
+      have($skill`Visit your Favorite Bird`) &&
+      !get("_favoriteBirdVisited") &&
+      (numericModifier($effect`Blessing of your favorite Bird`, "Meat Drop") > 0 ||
+        numericModifier($effect`Blessing of your favorite Bird`, "Item Drop") > 0)
+    ) {
+      useSkill($skill`Visit your Favorite Bird`);
+    }
+
+    if (
+      have($skill`Seek out a Bird`) &&
+      get("_birdsSoughtToday") < 6 &&
+      (numericModifier($effect`Blessing of the Bird`, "Meat Drop") > 0 ||
+        numericModifier($effect`Blessing of the Bird`, "Item Drop") > 0)
+    ) {
+      // Ensure we don't get stuck in the choice if the count is wrong
+      setChoice(1399, 2);
+      useSkill($skill`Seek out a Bird`, 6 - get("_birdsSoughtToday"));
+    }
+  }
+
   potionSetup(embezzlers);
+  shrugPassiveDamage();
 
   return mood;
 }
@@ -143,6 +174,20 @@ export function freeFightMood(): Mood {
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
   }
+  shrugPassiveDamage();
 
   return mood;
+}
+
+const stings = [
+  ...$effects`Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jabañero Saucesphere, Jalapeño Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous`,
+  $effect`Burning, Man`,
+  $effect`Yes, Can Haz`,
+];
+function shrugPassiveDamage() {
+  stings.forEach((effect) => {
+    if (have(effect)) {
+      uneffect(effect);
+    }
+  });
 }

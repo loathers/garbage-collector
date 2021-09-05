@@ -10,8 +10,10 @@ import {
   stashAmount,
   takeStash,
   userConfirm,
+  visitUrl,
 } from "kolmafia";
-import { $item, Clan, get, getFoldGroup, have, set } from "libram";
+import { $item, $items, Clan, get, getFoldGroup, have, set } from "libram";
+import { Macro } from "./combat";
 
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
   const manager = new StashManager();
@@ -122,6 +124,13 @@ export class StashManager {
   }
 
   putBack(...items: Item[]): void {
+    if (items.length === 0) return;
+    if (visitUrl("fight.php").includes("You're fighting")) {
+      print("In fight, trying to get away to return items to stash...", "blue");
+      Macro.tryItem(...$items`Louder Than Bomb, divine champagne popper`)
+        .step("runaway")
+        .submit();
+    }
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
         const count = this.taken.get(item) ?? 0;

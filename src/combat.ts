@@ -156,6 +156,13 @@ export class Macro extends LibramMacro {
     )
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
+        myAdventures() < 150 && have($skill`Meteor Lore`) && get("_meteorShowerUses") < 5,
+        Macro.if_(
+          `monstername ${$monster`Knob Goblin Embezzler`}`,
+          Macro.trySkill($skill`Meteor Shower`)
+        )
+      )
+      .externalIf(
         !have($effect`On the Trail`) && have($skill`Transcendent Olfaction`),
         Macro.if_("monstername garbage tourist", Macro.trySkill($skill`Transcendent Olfaction`))
       )
@@ -227,7 +234,8 @@ export class Macro extends LibramMacro {
     if (!monsterManuelAvailable()) {
       return this;
     }
-    const passiveDamage = maxPassiveDamage() + 5;
+    const passiveDamage =
+      (maxPassiveDamage() + 5) * (haveEquipped($item`Operation Patriot Shield`) ? 2 : 1);
 
     // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
     return this.if_(
@@ -274,6 +282,7 @@ export class Macro extends LibramMacro {
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
+      .tryHaveSkill($skill`Become a Wolf`)
       .trySkill($skill`Pocket Crumbs`)
       .trySkill($skill`Extract`)
       .tryHaveItem($item`porquoise-handled sixgun`)

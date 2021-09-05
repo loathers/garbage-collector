@@ -172,6 +172,9 @@ function fillStomach() {
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
 
   while (myFullness() + 5 <= fullnessLimit()) {
+    if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
+      use($item`Universal Seasoning`);
+    }
     if (myMaxhp() < 1000) maximize("0.05hp, hot res", false);
     const count = Math.floor(Math.min((fullnessLimit() - myFullness()) / 5, mySpleenUse() / 5));
     if (mallPrice(saladFork) < (55 * MPA) / 6) {
@@ -298,6 +301,7 @@ export function runDiet(): void {
       };
     });
     const best = chocoVals.sort((a, b) => b.value - a.value)[0];
+    acquire(1, best.choco, best.value, false);
     if (best.value > 0) use(1, best.choco);
     else break;
   }

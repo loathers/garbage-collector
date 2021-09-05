@@ -1,18 +1,23 @@
 import {
-  availableAmount,
   buy,
   changeMcd,
   cliExecute,
   getCampground,
   getClanLounge,
   haveSkill,
+  inebrietyLimit,
   itemAmount,
   mallPrice,
   maximize,
   myClass,
+  myHp,
+  myInebriety,
+  myMaxhp,
   myPrimestat,
   myThrall,
   print,
+  putCloset,
+  restoreHp,
   retrieveItem,
   runChoice,
   toInt,
@@ -30,6 +35,7 @@ import {
   $item,
   $items,
   $skill,
+  $skills,
   $stat,
   $thrall,
   ChateauMantegna,
@@ -38,13 +44,44 @@ import {
   property,
   SongBoom,
   SourceTerminal,
+  uneffect,
+  withProperty,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, coinmasterPrice, ensureEffect, saleValue, tryFeast } from "./lib";
+import { baseMeat, coinmasterPrice, ensureEffect, logMessage, saleValue, tryFeast } from "./lib";
 import { withStash } from "./clan";
 import { estimatedTurns } from "./globalvars";
+import { refreshLatte } from "./outfit";
 
-export function voterSetup(): void {
+export function dailySetup(): void {
+  voterSetup();
+  martini();
+  chateauDesk();
+  gaze();
+  configureGear();
+  horse();
+  prepFamiliars();
+  dailyBuffs();
+  configureMisc();
+  volcanoDailies();
+  cheat();
+  tomeSummons();
+  gin();
+  internetMemeShop();
+  pickTea();
+  refreshLatte();
+
+  if (myInebriety() > inebrietyLimit()) return;
+  retrieveItem($item`Half a Purse`);
+  retrieveItem($item`seal tooth`);
+  retrieveItem($item`The Jokester's gun`);
+  putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
+  putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
+  putCloset(itemAmount($item`4-d camera`), $item`4-d camera`);
+  putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
+}
+
+function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
   visitUrl("place.php?whichplace=town_right&action=townright_vote");
 
@@ -91,7 +128,7 @@ export function voterSetup(): void {
   );
 }
 
-export function configureGear(): void {
+function configureGear(): void {
   if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
     useFamiliar($familiar`Cornbeefadon`);
     use($item`box of Familiar Jacks`);
@@ -121,7 +158,7 @@ export function configureGear(): void {
   }
 }
 
-export function prepFamiliars(): void {
+function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
     for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, Bloody Nora`) {
       if (get("_roboDrinks").includes(drink.name)) continue;
@@ -157,14 +194,14 @@ export function prepFamiliars(): void {
   }
 }
 
-export function horse(): void {
+function horse(): void {
   visitUrl("place.php?whichplace=town_right");
   if (get("horseryAvailable") && get("_horsery") !== "dark horse") {
     cliExecute("horsery dark");
   }
 }
 
-export function dailyBuffs(): void {
+function dailyBuffs(): void {
   if (
     !get("_clanFortuneBuffUsed") &&
     have($item`Clan VIP Lounge key`) &&
@@ -187,7 +224,7 @@ export function dailyBuffs(): void {
   }
 }
 
-export function configureMisc(): void {
+function configureMisc(): void {
   if (SongBoom.songChangesLeft() > 0) SongBoom.setSong("Total Eclipse of Your Meat");
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
@@ -246,7 +283,7 @@ export function configureMisc(): void {
   changeMcd(10);
 }
 
-export function volcanoDailies(): void {
+function volcanoDailies(): void {
   if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
@@ -263,108 +300,117 @@ export function volcanoDailies(): void {
   }
 
   if (have($skill`Unaccompanied Miner`) && get("_unaccompaniedMinerUsed") < 5) {
+    restoreHp(myMaxhp() * 0.9);
     cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`);
+    if (have($effect`Beaten Up`)) {
+      uneffect($effect`Beaten Up`);
+    }
+    if (myHp() < myMaxhp() * 0.5) {
+      restoreHp(myMaxhp() * 0.9);
+    }
   }
 }
 function checkVolcanoQuest() {
   print("Checking volcano quest", "blue");
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-  const volcanoItems = [
-    property.getItem("_volcanoItem1") || $item`none`,
-    property.getItem("_volcanoItem2") || $item`none`,
-    property.getItem("_volcanoItem3") || $item`none`,
-  ];
-  const volcanoWhatToDo: Map<Item, () => boolean> = new Map<Item, () => boolean>([
-    [
-      $item`New Age healing crystal`,
-      () => {
-        if (availableAmount($item`New Age healing crystal`) >= 5) return true;
-        else {
-          return (
-            buy(
-              5 - availableAmount($item`New Age healing crystal`),
-              $item`New Age healing crystal`,
-              1000
-            ) ===
-            5 - availableAmount($item`New Age healing crystal`)
-          );
-        }
-      },
-    ],
-    [
-      $item`SMOOCH bottlecap`,
-      () => {
-        if (availableAmount($item`SMOOCH bottlecap`) > 0) return true;
-        else return buy(1, $item`SMOOCH bottlecap`, 5000) === 1;
-      },
-    ],
-    [
-      $item`gooey lava globs`,
-      () => {
-        if (availableAmount($item`gooey lava globs`) >= 5) {
-          return true;
-        } else {
-          const toBuy = 5 - availableAmount($item`gooey lava globs`);
-          return buy(toBuy, $item`gooey lava globs`, 5000) === toBuy;
-        }
-      },
-    ],
-    [
-      $item`fused fuse`,
-      () => {
-        return have($item`Clara's bell`);
-      },
-    ],
-    [
-      $item`smooth velvet bra`,
-      () => {
-        if (availableAmount($item`smooth velvet bra`) < 3) {
-          cliExecute(
-            `acquire ${(
-              3 - availableAmount($item`smooth velvet bra`)
-            ).toString()} smooth velvet bra`
-          );
-        }
-        return availableAmount($item`smooth velvet bra`) >= 3;
-      },
-    ],
-    [
-      $item`SMOOCH bracers`,
-      () => {
-        if (availableAmount($item`SMOOCH bracers`) < 3) {
-          cliExecute(
-            `acquire ${(3 - availableAmount($item`SMOOCH bracers`)).toString()} smooch bracers`
-          );
-        }
-        return availableAmount($item`SMOOCH bracers`) >= 3;
-      },
-    ],
+  const volcoinoValue = (1 / 3) * saleValue($item`one-day ticket to That 70s Volcano`);
+  const volcanoProperties = new Map<Item, number>([
+    [property.getItem("_volcanoItem1") || $item`none`, get("_volcanoItemCount1")],
+    [property.getItem("_volcanoItem2") || $item`none`, get("_volcanoItemCount2")],
+    [property.getItem("_volcanoItem3") || $item`none`, get("_volcanoItemCount3")],
   ]);
-  for (const [volcanoItem, tryToGetIt] of volcanoWhatToDo.entries()) {
-    if (volcanoItems.includes(volcanoItem)) {
-      if (tryToGetIt()) {
-        if (volcanoItem !== $item`fused fuse`) {
-          visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-          print(`Alright buddy, turning in ${volcanoItem.plural} for a volcoino!`, "red");
-          const choice =
-            volcanoItems.indexOf(volcanoItem) === -1 ? 4 : 1 + volcanoItems.indexOf(volcanoItem);
-          runChoice(choice);
-        }
-      }
+  const volcanoItems = [
+    {
+      item: $item`New Age healing crystal`,
+      price: 5 * mallPrice($item`New Age healing crystal`),
+      numberNeeded: 5,
+    },
+    {
+      item: $item`SMOOCH bottlecap`,
+      price: 1 * mallPrice($item`SMOOCH bottlecap`),
+      numberNeeded: 1,
+    },
+    {
+      item: $item`gooey lava globs`,
+      price: 5 * mallPrice($item`gooey lava globs`),
+      numberNeeded: 5,
+    },
+    {
+      item: $item`smooth velvet bra`,
+      price:
+        3 * Math.min(mallPrice($item`smooth velvet bra`), 3 * mallPrice($item`unsmoothed velvet`)),
+      numberNeeded:
+        3 * (mallPrice($item`smooth velvet bra`) > 3 * mallPrice($item`unsmoothed velvet`) ? 3 : 1),
+    },
+    {
+      item: $item`SMOOCH bracers`,
+      price: 5 * mallPrice($item`superheated metal`),
+      numberNeeded: 25,
+    },
+    ...(have($item`Clara's bell`) && !get("_claraBellUsed")
+      ? [{ item: $item`fused fuse`, price: get("valueOfAdventure"), numberNeeded: 1 }]
+      : []),
+  ]
+    .filter(
+      (entry) =>
+        Array.from(volcanoProperties.keys()).includes(entry.item) && entry.price < volcoinoValue
+    )
+    .sort((a, b) => b.price - a.price);
+
+  if (volcanoItems.length) {
+    const chosenItem = volcanoItems[0];
+    if (chosenItem.item === $item`fused fuse`) {
+      logMessage("Remember to nab a fused fuse with your stooper!");
+    } else {
+      const choice = 1 + Array.from(volcanoProperties.keys()).indexOf(chosenItem.item);
+      withProperty("autoBuyPriceLimit", Math.round(volcoinoValue / chosenItem.numberNeeded), () =>
+        retrieveItem(chosenItem.item, volcanoProperties.get(chosenItem.item) ?? 0)
+      );
+      visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+      print(`Alright buddy, turning in ${chosenItem.item.plural} for a volcoino!`, "red");
+      runChoice(choice);
     }
   }
 }
 
-export function cheat(): void {
+function cheat(): void {
   if (have($item`Deck of Every Card`)) {
-    ["1952 Mickey Mantle", "Island", "Ancestral Recall"].forEach((card) => {
+    [
+      saleValue($item`gift card`) >= saleValue($item`1952 Mickey Mantle card`)
+        ? "Gift Card"
+        : "1952 Mickey Mantle",
+      "Island",
+      "Ancestral Recall",
+    ].forEach((card) => {
       if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
         cliExecute(`cheat ${card}`);
     });
   }
 }
 
-export function gin(): void {
+function tomeSummons(): void {
+  const tomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
+  tomes.forEach((skill) => {
+    if (have(skill) && skill.dailylimit > 0) {
+      useSkill(skill, skill.dailylimit);
+    }
+  });
+
+  if (have($skill`Summon Clip Art`) && $skill`Summon Clip Art`.dailylimit > 0) {
+    let best = $item`none`;
+    for (let itemId = 5224; itemId <= 5283; itemId++) {
+      const current = Item.get(`[${itemId}]`);
+      if (saleValue(current) > saleValue(best)) {
+        best = current;
+      }
+    }
+    if (best !== $item`none`) {
+      cliExecute(`try; create ${$skill`Summon Clip Art`.dailylimit} ${best}`);
+    }
+  }
+}
+
+function gin(): void {
   if (have($item`Time-Spinner`)) {
     if (
       !get("_timeSpinnerReplicatorUsed") &&
@@ -376,7 +422,7 @@ export function gin(): void {
   }
 }
 
-export function internetMemeShop(): void {
+function internetMemeShop(): void {
   const baconValue = mallPrice($item`BACON`);
 
   const internetMemeShopProperties = {
@@ -396,7 +442,7 @@ export function internetMemeShop(): void {
 }
 
 const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
-export function pickTea(): void {
+function pickTea(): void {
   if (!getCampground()["potted tea tree"] || get("_pottedTeaTreeUsed")) return;
   const bestTea = teas.sort((a, b) => saleValue(b) - saleValue(a))[0];
   const shakeVal = 3 * saleValue(...teas);
@@ -404,14 +450,14 @@ export function pickTea(): void {
   cliExecute(`teatree ${teaAction}`);
 }
 
-export function gaze(): void {
+function gaze(): void {
   if (!get("getawayCampsiteUnlocked")) return;
   if (!get("_campAwayCloudBuffs")) visitUrl("place.php?whichplace=campaway&action=campaway_sky");
   while (get("_campAwaySmileBuffs") < 3)
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
 }
 
-export function martini(): void {
+function martini(): void {
   if (
     !have($item`Kremlin's Greatest Briefcase`) ||
     get("_kgbClicksUsed") > 17 ||
@@ -422,7 +468,7 @@ export function martini(): void {
   cliExecute("Briefcase collect");
 }
 
-export function chateauDesk(): void {
+function chateauDesk(): void {
   if (ChateauMantegna.have() && !get("_chateauDeskHarvested")) {
     visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false);
   }

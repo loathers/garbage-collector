@@ -1,5 +1,6 @@
 import { canAdv } from "canadv.ash";
 import {
+  abort,
   autosellPrice,
   buy,
   cliExecute,
@@ -42,6 +43,7 @@ import {
   MaximizeOptions,
   PropertiesManager,
   property,
+  set,
   SongBoom,
   SourceTerminal,
 } from "libram";
@@ -61,6 +63,13 @@ export const baseMeat =
   (SongBoom.songChangesLeft() > 0 || SongBoom.song() === "Total Eclipse of Your Meat")
     ? 275
     : 250;
+
+export function safeInterrupt(): void {
+  if (get<boolean>("garbo_interrupt", false)) {
+    set("garbo_interrupt", false);
+    abort("User interrupt requested. Stopping Garbage Collector.");
+  }
+}
 
 export function setChoice(adventure: number, value: number): void {
   propertyManager.setChoices({ [adventure]: value });
@@ -340,7 +349,7 @@ export class Requirement {
   }
 
   static merge(allRequirements: Requirement[]): Requirement {
-    return allRequirements.reduce((x, y) => x.merge(y));
+    return allRequirements.reduce((x, y) => x.merge(y), new Requirement([], {}));
   }
 }
 
@@ -676,4 +685,15 @@ export function maxPassiveDamage(): number {
   const familiarMaxDamage = maxFamiliarDamage(myFamiliar());
 
   return vykeaMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
+}
+const log: string[] = [];
+
+export function logMessage(message: string): void {
+  log.push(message);
+}
+
+export function printLog(color: string): void {
+  for (const message of log) {
+    print(message, color);
+  }
 }
