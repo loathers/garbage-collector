@@ -19500,7 +19500,7 @@ function fillAsdonMartinTo(targetUnits) {
   }
 }
 ;// CONCATENATED MODULE: ./src/clan.ts
-var clan_templateObject, clan_templateObject2;
+var clan_templateObject, clan_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -19702,6 +19702,8 @@ var StashManager = /*#__PURE__*/function () {
 
             if (count > 0) {
               (0,external_kolmafia_.retrieveItem)(count, item);
+              if (item === (0,dist.$item)(_templateObject3 || (_templateObject3 = clan_taggedTemplateLiteral(["Buddy Bjorn"])))) (0,external_kolmafia_.bjornifyFamiliar)((0,dist.$familiar)(_templateObject4 || (_templateObject4 = clan_taggedTemplateLiteral(["none"]))));
+              if (item === (0,dist.$item)(_templateObject5 || (_templateObject5 = clan_taggedTemplateLiteral(["Crown of Thrones"])))) (0,external_kolmafia_.enthroneFamiliar)((0,dist.$familiar)(_templateObject6 || (_templateObject6 = clan_taggedTemplateLiteral(["none"]))));
 
               if ((0,external_kolmafia_.putStash)(count, item)) {
                 (0,external_kolmafia_.print)("Returned ".concat(item.name, " to stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
@@ -19735,7 +19737,7 @@ var StashManager = /*#__PURE__*/function () {
 // EXTERNAL MODULE: ./src/lib.ts
 var lib = __webpack_require__(7442);
 ;// CONCATENATED MODULE: ./src/familiar.ts
-var familiar_templateObject, familiar_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35;
+var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35;
 
 function familiar_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = familiar_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -19762,7 +19764,7 @@ var _meatFamiliar;
 function meatFamiliar() {
   if (!_meatFamiliar) {
     if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() && (0,dist.have)((0,dist.$familiar)(familiar_templateObject || (familiar_templateObject = familiar_taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && (0,dist.have)((0,dist.$item)(familiar_templateObject2 || (familiar_templateObject2 = familiar_taggedTemplateLiteral(["li'l pirate costume"]))))) {
-      _meatFamiliar = (0,dist.$familiar)(_templateObject3 || (_templateObject3 = familiar_taggedTemplateLiteral(["Trick-or-Treating Tot"])));
+      _meatFamiliar = (0,dist.$familiar)(familiar_templateObject3 || (familiar_templateObject3 = familiar_taggedTemplateLiteral(["Trick-or-Treating Tot"])));
     } else {
       var bestLeps = Familiar.all().filter(dist.have).sort(function (a, b) {
         return (0,lib/* leprechaunMultiplier */.jB)(b) - (0,lib/* leprechaunMultiplier */.jB)(a);
@@ -19789,17 +19791,17 @@ function myFamiliarWeight() {
 var rotatingFamiliars = {
   "Fist Turkey": {
     expected: [3.91, 4.52, 4.52, 5.29, 5.29],
-    drop: (0,dist.$item)(_templateObject4 || (_templateObject4 = familiar_taggedTemplateLiteral(["Ambitious Turkey"]))),
+    drop: (0,dist.$item)(familiar_templateObject4 || (familiar_templateObject4 = familiar_taggedTemplateLiteral(["Ambitious Turkey"]))),
     pref: "_turkeyBooze"
   },
   "Llama Lama": {
     expected: [3.42, 3.91, 4.52, 5.29, 5.29],
-    drop: (0,dist.$item)(_templateObject5 || (_templateObject5 = familiar_taggedTemplateLiteral(["llama lama gong"]))),
+    drop: (0,dist.$item)(familiar_templateObject5 || (familiar_templateObject5 = familiar_taggedTemplateLiteral(["llama lama gong"]))),
     pref: "_gongDrops"
   },
   "Astral Badger": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,dist.$item)(_templateObject6 || (_templateObject6 = familiar_taggedTemplateLiteral(["astral mushroom"]))),
+    drop: (0,dist.$item)(familiar_templateObject6 || (familiar_templateObject6 = familiar_taggedTemplateLiteral(["astral mushroom"]))),
     pref: "_astralDrops"
   },
   "Li'l Xenomorph": {
