@@ -898,7 +898,7 @@ const freeFightSources = [
       get("garbo_fightGlitch", false),
     () =>
       withMacro(
-        Macro.skill($skill`Curse of Marinara`)
+        Macro.trySkill($skill`Curse of Marinara`)
           .trySkill($skill`Conspiratorial Whispers`)
           .trySkill($skill`Shadow Noodles`)
           .externalIf(
