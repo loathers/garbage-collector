@@ -1,6 +1,8 @@
 import {
   availableAmount,
+  bjornifyFamiliar,
   cliExecute,
+  enthroneFamiliar,
   getClanId,
   getClanName,
   print,
@@ -12,7 +14,7 @@ import {
   userConfirm,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, Clan, get, getFoldGroup, have, set } from "libram";
+import { $familiar, $item, $items, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
 
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
@@ -136,6 +138,8 @@ export class StashManager {
         const count = this.taken.get(item) ?? 0;
         if (count > 0) {
           retrieveItem(count, item);
+          if (item === $item`Buddy Bjorn`) bjornifyFamiliar($familiar`none`);
+          if (item === $item`Crown of Thrones`) enthroneFamiliar($familiar`none`);
           if (putStash(count, item)) {
             print(`Returned ${item.name} to stash in ${getClanName()}.`, "blue");
             this.taken.delete(item);
