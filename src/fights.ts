@@ -1773,7 +1773,9 @@ function deliverThesis(): void {
     thesisInNEP
       ? $location`The Neverending Party`
       : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
-    Macro.skill($skill`deliver your thesis!`)
+    Macro.if_(`monsterid ${toInt($monster`time-spinner prank`)}`, Macro.basicCombat()).skill(
+      $skill`deliver your thesis!`
+    )
   );
 }
 
