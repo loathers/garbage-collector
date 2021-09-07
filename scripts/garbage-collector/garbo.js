@@ -23573,7 +23573,14 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  (0,dist.sinceKolmafiaRevision)(20815);
+  (0,dist.sinceKolmafiaRevision)(20901);
+  var forbiddenStores = dist.property.getString("forbiddenStores").split(",");
+
+  if (!forbiddenStores.includes("3408540")) {
+    //Van & Duffel's Baleet Shop
+    forbiddenStores.push("3408540");
+    (0,dist.set)("forbiddenStores", forbiddenStores.join(","));
+  }
 
   if (!(0,dist.get)("garbo_skipAscensionCheck", false) && (!(0,dist.get)("kingLiberated") || (0,external_kolmafia_.myLevel)() < 13)) {
     var proceedRegardless = (0,external_kolmafia_.userConfirm)("Looks like your ascension may not be done yet. Are you sure you want to garbo?");
