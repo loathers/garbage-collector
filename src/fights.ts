@@ -1506,6 +1506,7 @@ const freeRunFightSources = [
       get("_fireExtinguisherCharge") >= 10 &&
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
+      get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
       getBestFireExtinguisherZone() !== undefined,
     (runSource: FreeRun) => {
       // Haunted Library is full of free noncombats
