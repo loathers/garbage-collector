@@ -38,6 +38,8 @@ import {
   adventureMacroAuto,
   get,
   have,
+  property,
+  set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
   SourceTerminal,
@@ -201,7 +203,13 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(20815);
+  sinceKolmafiaRevision(20901);
+  const forbiddenStores = property.getString("forbiddenStores").split(",");
+  if (!forbiddenStores.includes("3408540")) {
+    //Van & Duffel's Baleet Shop
+    forbiddenStores.push("3408540");
+    set("forbiddenStores", forbiddenStores.join(","));
+  }
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
     const proceedRegardless = userConfirm(
       "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
