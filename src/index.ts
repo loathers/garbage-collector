@@ -206,6 +206,7 @@ export function main(argString = ""): void {
   sinceKolmafiaRevision(20901);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
+    //Van & Duffel's Baleet Shop
     forbiddenStores.push("3408540");
     set("forbiddenStores", forbiddenStores.join(","));
   }
