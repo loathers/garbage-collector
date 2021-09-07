@@ -102,8 +102,13 @@ export function mapMonster(location: Location, monster: Monster): void {
 
   if (!get("mappingMonsters")) throw "Failed to setup Map the Monsters.";
 
-  const mapPage = visitUrl(toUrl(location), false, true);
-  if (!mapPage.includes("Leading Yourself Right to Them")) throw "Something went wrong mapping.";
+  const myTurns = myTurncount();
+  let mapPage = "";
+  // Handle zone intros and holiday wanderers
+  while (!mapPage.includes("Leading Yourself Right to Them")) {
+    mapPage = visitUrl(toUrl(location), false, true);
+    if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
+  }
 
   const fightPage = visitUrl(
     `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`
