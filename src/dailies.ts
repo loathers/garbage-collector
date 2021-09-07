@@ -83,6 +83,7 @@ export function dailySetup(): void {
 
 export function postFreeFightDailySetup(): void {
   configureVykea();
+  configureThrall();
 }
 
 function voterSetup(): void {
@@ -246,6 +247,18 @@ function configureMisc(): void {
   }
 
   if (
+    getClanLounge()["Olympic-sized Clan crate"] !== undefined &&
+    !get("_olympicSwimmingPoolItemFound") &&
+    have($item`Clan VIP Lounge key`)
+  ) {
+    cliExecute("swim item");
+  }
+
+  changeMcd(10);
+}
+
+function configureThrall() {
+  if (
     myClass() === $class`Pastamancer` &&
     myThrall() !== $thrall`Lasagmbie` &&
     haveSkill($skill`Bind Lasagmbie`)
@@ -261,16 +274,6 @@ function configureMisc(): void {
   ) {
     use($item`experimental carbon fiber pasta additive`);
   }
-
-  if (
-    getClanLounge()["Olympic-sized Clan crate"] !== undefined &&
-    !get("_olympicSwimmingPoolItemFound") &&
-    have($item`Clan VIP Lounge key`)
-  ) {
-    cliExecute("swim item");
-  }
-
-  changeMcd(10);
 }
 
 function configureVykea() {
