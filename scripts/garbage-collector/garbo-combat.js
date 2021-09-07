@@ -18159,8 +18159,14 @@ function mapMonster(location, monster) {
   }
 
   if (!get("mappingMonsters")) throw "Failed to setup Map the Monsters.";
-  var mapPage = visitUrl(toUrl(location), false, true);
-  if (!mapPage.includes("Leading Yourself Right to Them")) throw "Something went wrong mapping.";
+  var myTurns = myTurncount();
+  var mapPage = ""; // Handle zone intros and holiday wanderers
+
+  while (!mapPage.includes("Leading Yourself Right to Them")) {
+    mapPage = visitUrl(toUrl(location), false, true);
+    if (myTurncount() > myTurns + 1) throw "Map the monsters unsuccessful?";
+  }
+
   var fightPage = visitUrl("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
   if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
 }
