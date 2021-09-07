@@ -6,7 +6,6 @@ import {
   eat,
   getCampground,
   getCounters,
-  getPlayerId,
   guildStoreAvailable,
   inebrietyLimit,
   myAdventures,
@@ -206,8 +205,8 @@ export function canContinue(): boolean {
 export function main(argString = ""): void {
   sinceKolmafiaRevision(20901);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
-  if (!forbiddenStores.includes(getPlayerId("Dance Police"))) {
-    forbiddenStores.push(getPlayerId("Dance Police"));
+  if (!forbiddenStores.includes("3408540")) {
+    forbiddenStores.push("3408540");
     set("forbiddenStores", forbiddenStores.join(","));
   }
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
