@@ -241,7 +241,7 @@ function configureMisc(): void {
   ] as [Item, string][]) {
     if (have(car) && get("_bittycar") !== active) {
       use(1, car);
-      return;
+      break;
     }
   }
 
