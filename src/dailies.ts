@@ -81,6 +81,10 @@ export function dailySetup(): void {
   putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
 }
 
+export function postFreeFightDailySetup(): void {
+  configureVykea();
+}
+
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
   visitUrl("place.php?whichplace=town_right&action=townright_vote");
@@ -235,26 +239,6 @@ function configureMisc(): void {
     use(1, $item`BittyCar MeatCar`);
   }
 
-  if (get("_VYKEACompanionLevel") === 0) {
-    const vykeas: [number, number][] = [
-      [1, 0],
-      [2, 1],
-      [3, 11],
-    ]; //excluding 4 and 5 as per bean's suggestion
-    const vykeaProfit = (level: number, cost: number) =>
-      estimatedTurns() * baseMeat * 0.1 * level -
-      5 * mallPrice($item`VYKEA rail`) +
-      cost * mallPrice($item`VYKEA dowel`) +
-      5 * mallPrice($item`VYKEA plank`) +
-      1 * mallPrice($item`VYKEA hex key`);
-
-    if (vykeas.some(([level, cost]) => vykeaProfit(level, cost) > 0)) {
-      const level = vykeas.sort((a, b) => vykeaProfit(...b) - vykeaProfit(...a))[0][0];
-      retrieveItem($item`VYKEA hex key`);
-      cliExecute(`create level ${level} couch`);
-    }
-  }
-
   if (
     myClass() === $class`Pastamancer` &&
     myThrall() !== $thrall`Lasagmbie` &&
@@ -281,6 +265,28 @@ function configureMisc(): void {
   }
 
   changeMcd(10);
+}
+
+function configureVykea() {
+  if (get("_VYKEACompanionLevel") === 0) {
+    const vykeas: [number, number][] = [
+      [1, 0],
+      [2, 1],
+      [3, 11],
+    ]; //excluding 4 and 5 as per bean's suggestion
+    const vykeaProfit = (level: number, cost: number) =>
+      estimatedTurns() * baseMeat * 0.1 * level -
+      5 * mallPrice($item`VYKEA rail`) +
+      cost * mallPrice($item`VYKEA dowel`) +
+      5 * mallPrice($item`VYKEA plank`) +
+      1 * mallPrice($item`VYKEA hex key`);
+
+    if (vykeas.some(([level, cost]) => vykeaProfit(level, cost) > 0)) {
+      const level = vykeas.sort((a, b) => vykeaProfit(...b) - vykeaProfit(...a))[0][0];
+      retrieveItem($item`VYKEA hex key`);
+      cliExecute(`create level ${level} couch`);
+    }
+  }
 }
 
 function volcanoDailies(): void {

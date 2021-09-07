@@ -65,7 +65,7 @@ import {
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
 import { estimatedTurns, globalOptions, log } from "./globalvars";
-import { dailySetup } from "./dailies";
+import { dailySetup, postFreeFightDailySetup } from "./dailies";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -336,7 +336,7 @@ export function main(argString = ""): void {
         // 1. get a ticket
         ensureBarfAccess();
 
-        // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+        // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (songboom, robortender drinks)
         dailySetup();
 
         setDefaultMaximizeOptions({
@@ -345,6 +345,7 @@ export function main(argString = ""): void {
 
         // 4. do some embezzler stuff
         freeFights();
+        postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         dailyFights();
 
         // 5. burn turns at barf
