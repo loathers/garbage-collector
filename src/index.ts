@@ -6,6 +6,7 @@ import {
   eat,
   getCampground,
   getCounters,
+  getPlayerId,
   guildStoreAvailable,
   inebrietyLimit,
   myAdventures,
@@ -38,6 +39,8 @@ import {
   adventureMacroAuto,
   get,
   have,
+  property,
+  set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
   SourceTerminal,
@@ -201,7 +204,12 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(20815);
+  sinceKolmafiaRevision(20901);
+  const forbiddenStores = property.getString("forbiddenStores").split(",");
+  if (!forbiddenStores.includes(getPlayerId("Dance Police"))) {
+    forbiddenStores.push(getPlayerId("Dance Police"));
+    set("forbiddenStores", forbiddenStores.join(","));
+  }
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
     const proceedRegardless = userConfirm(
       "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
