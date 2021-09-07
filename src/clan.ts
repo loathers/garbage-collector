@@ -138,8 +138,14 @@ export class StashManager {
         const count = this.taken.get(item) ?? 0;
         if (count > 0) {
           retrieveItem(count, item);
-          if (item === $item`Buddy Bjorn`) bjornifyFamiliar($familiar`none`);
-          if (item === $item`Crown of Thrones`) enthroneFamiliar($familiar`none`);
+          if (item === $item`Buddy Bjorn`) {
+            visitUrl(`desc_item.php?whichitem=${$item`Buddy Bjorn`.descid}`);
+            bjornifyFamiliar($familiar`none`);
+          }
+          if (item === $item`Crown of Thrones`) {
+            visitUrl(`desc_item.php?whichitem=${$item`Crown of Thrones`.descid}`);
+            enthroneFamiliar($familiar`none`);
+          }
           if (putStash(count, item)) {
             print(`Returned ${item.name} to stash in ${getClanName()}.`, "blue");
             this.taken.delete(item);
