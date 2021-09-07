@@ -188,6 +188,9 @@ function fillStomach() {
 }
 
 function fillLiverAstralPilsner() {
+  if (have($item`astral six-pack`)) {
+    use($item`astral six-pack`);
+  }
   if (availableAmount($item`astral pilsner`) === 0) {
     return;
   }
