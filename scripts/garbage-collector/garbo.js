@@ -22356,8 +22356,10 @@ new FreeRunFight(function () {
   (0,dist.adventureMacro)((0,dist.$location)(_templateObject363 || (_templateObject363 = fights_taggedTemplateLiteral(["Gingerbread Civic Center"]))), combat.Macro.abort());
 }), // Must run before fishing for hipster/goth fights otherwise the targets may be banished
 new FreeRunFight(function () {
-  return (0,dist.have)((0,dist.$item)(_templateObject364 || (_templateObject364 = fights_taggedTemplateLiteral(["industrial fire extinguisher"])))) && (0,dist.get)("_fireExtinguisherCharge") >= 10 && (0,dist.have)((0,dist.$skill)(_templateObject365 || (_templateObject365 = fights_taggedTemplateLiteral(["Comprehensive Cartography"])))) && (0,dist.get)("_monstersMapped") < 3 && (0,dist.get)("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-  getBestFireExtinguisherZone() !== undefined;
+  return (// eslint-disable-next-line libram/verify-constants
+    (0,dist.have)((0,dist.$item)(_templateObject364 || (_templateObject364 = fights_taggedTemplateLiteral(["industrial fire extinguisher"])))) && (0,dist.get)("_fireExtinguisherCharge") >= 10 && (0,dist.have)((0,dist.$skill)(_templateObject365 || (_templateObject365 = fights_taggedTemplateLiteral(["Comprehensive Cartography"])))) && (0,dist.get)("_monstersMapped") < 3 && (0,dist.get)("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
+    getBestFireExtinguisherZone() !== undefined
+  );
 }, function (runSource) {
   // Haunted Library is full of free noncombats
   lib/* propertyManager.set */.kr.set({
@@ -22375,6 +22377,7 @@ new FreeRunFight(function () {
   if (!best) throw "Unable to find fire extinguisher zone?";
 
   try {
+    // eslint-disable-next-line libram/verify-constants
     var vortex = (0,dist.$skill)(_templateObject366 || (_templateObject366 = fights_taggedTemplateLiteral(["Fire Extinguisher: Polar Vortex"])));
     combat.Macro.while_("hasskill ".concat((0,external_kolmafia_.toInt)(vortex)), combat.Macro.skill(vortex)).step(runSource.macro).setAutoAttack();
     (0,lib/* mapMonster */.dU)(best.location, best.monster);
@@ -22385,7 +22388,8 @@ new FreeRunFight(function () {
   requirements: function requirements() {
     var zone = getBestFireExtinguisherZone();
     return [new lib/* Requirement */.nb( // Bookbats need up to +100 ML to survive the polar vortices
-    (zone === null || zone === void 0 ? void 0 : zone.location) === (0,dist.$location)(_templateObject367 || (_templateObject367 = fights_taggedTemplateLiteral(["The Haunted Library"]))) ? ["99 monster level 100 max"] : [], {
+    (zone === null || zone === void 0 ? void 0 : zone.location) === (0,dist.$location)(_templateObject367 || (_templateObject367 = fights_taggedTemplateLiteral(["The Haunted Library"]))) ? ["99 monster level 100 max"] : [], // eslint-disable-next-line libram/verify-constants
+    {
       forceEquip: (0,dist.$items)(_templateObject368 || (_templateObject368 = fights_taggedTemplateLiteral(["industrial fire extinguisher"])))
     })];
   }
@@ -22720,6 +22724,7 @@ var fireExtinguishZones = [{
   location: (0,dist.$location)(_templateObject446 || (_templateObject446 = fights_taggedTemplateLiteral(["The Haunted Library"]))),
   monster: (0,dist.$monster)(_templateObject447 || (_templateObject447 = fights_taggedTemplateLiteral(["bookbat"]))),
   item: (0,dist.$item)(_templateObject448 || (_templateObject448 = fights_taggedTemplateLiteral(["tattered scrap of paper"]))),
+  // eslint-disable-next-line libram/verify-constants
   open: function open() {
     return (0,dist.have)((0,dist.$item)(_templateObject449 || (_templateObject449 = fights_taggedTemplateLiteral(["[7302]Spookyraven library key"]))));
   }
