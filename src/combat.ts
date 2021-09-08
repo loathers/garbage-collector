@@ -104,9 +104,9 @@ export function maxPassiveDamage(): number {
   const vykeaMaxDamage =
     get("_VYKEACompanionLevel") > 0 ? 10 * get("_VYKEACompanionLevel") + 10 : 0;
 
-  // Lasambie does max 2*level damage while Vermincelli does max level + (1/2 * level) + (1/2 * 1/2 * level) + ...
+  // Lasagmbie does max 2*level damage while Vermincelli does max level + (1/2 * level) + (1/2 * 1/2 * level) + ...
   const thrallMaxDamage =
-    myThrall().level >= 5 && $thralls`Lasambie,Vermincelli`.includes(myThrall())
+    myThrall().level >= 5 && $thralls`Lasagmbie,Vermincelli`.includes(myThrall())
       ? myThrall().level * 2
       : 0;
 
