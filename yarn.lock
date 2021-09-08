@@ -829,9 +829,8 @@
     "@babel/plugin-transform-typescript" "^7.14.5"
 
 "@babel/runtime-corejs3@^7.14.9":
-  version "7.15.3"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.15.3.tgz#28754263988198f2a928c09733ade2fb4d28089d"
-  integrity sha512-30A3lP+sRL6ml8uhoJSs+8jwpKzbw8CqBvDc1laeptxPm5FahumJxirigcbD2qTs71Sonvj1cyZB0OKGAmxQ+A==
+  version "7.15.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.15.4.tgz#403139af262b9a6e8f9ba04a6fdcebf8de692bf1"
   dependencies:
     core-js-pure "^3.16.0"
     regenerator-runtime "^0.13.4"
@@ -1667,9 +1666,8 @@ core-js-compat@^3.14.0:
     semver "7.0.0"
 
 core-js-pure@^3.16.0:
-  version "3.16.2"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.16.2.tgz#0ef4b79cabafb251ea86eb7d139b42bd98c533e8"
-  integrity sha512-oxKe64UH049mJqrKkynWp6Vu0Rlm/BTXO/bJZuN2mmR3RtOFNepLlSWDd1eo16PzHpQAoNG97rLU1V/YxesJjw==
+  version "3.17.2"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.17.2.tgz#ba6311b6aa1e2f2adeba4ac6ec51a9ff40bdc1af"
 
 core-js@3.15.2:
   version "3.15.2"
@@ -1841,7 +1839,6 @@ eslint-config-prettier@^8.3.0:
 eslint-plugin-libram@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-libram/-/eslint-plugin-libram-0.2.0.tgz#df60aa4aaeac42038c3b1f6a9448618bcff9d964"
-  integrity sha512-2mnbeasmRyfaxhUYwaDJtmzqcouFKynexnKRJ7oxD1LqURIEVEMnWtOkeiGoYNUy3rKxKvoeiEBbRmVCyplhnw==
   dependencies:
     html-entities "^2.3.2"
     requireindex "~1.1.0"
@@ -2246,7 +2243,6 @@ has@^1.0.3:
 html-entities@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-2.3.2.tgz#760b404685cb1d794e4f4b744332e3b00dcfe488"
-  integrity sha512-c3Ab/url5ksaT0WyleslpBEthOzWhrjQbg75y7XUsfSzi3Dgzt0l8w5e7DylRn15MTlMMD58dTfzddNS2kcAjQ==
 
 human-signals@^2.1.0:
   version "2.1.0"
@@ -2528,15 +2524,9 @@ klaw-sync@^6.0.0:
   dependencies:
     graceful-fs "^4.1.11"
 
-kolmafia@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-1.2.0.tgz#ab5519ae66082319021e7936acb3afc36710a32a"
-  integrity sha512-hGfVxzwS2rqD0rhrhnJhvQuewe7wggUUNwvcbuQNNNCfRxmp0eJCfs5gdEJC1UpGZvXdRc6qm8460D//R2sABA==
-
-kolmafia@^1.2.1:
+kolmafia@^1.2.0, kolmafia@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-1.2.1.tgz#6fe59488d4365baee4e3cbbe9225bb181b044134"
-  integrity sha512-C0T1ZPJRtTb34F6UEafW7upB+FCm25Uiz3YH51zuvxpqrxJaBRM+MSnWL9kdrjntWD0xYKd/RFodyzi1gcUB+Q==
 
 levn@^0.4.1:
   version "0.4.1"
@@ -2546,9 +2536,8 @@ levn@^0.4.1:
     type-check "~0.4.0"
 
 libram@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.3.2.tgz#ada89b7b1d4db646a7997fc5dca5394f16922ca0"
-  integrity sha512-O5ctKqVJZsTWGvn+1fWgPM3YipMC6Q2roMzEYnyZWZZo1tT53m+Jb56yls6S7MqiF7XiwF21y0zX3bCn5hBetg==
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.3.3.tgz#828d019e4cd4342d1ef877baa508008b32864e66"
   dependencies:
     "@babel/runtime-corejs3" "^7.14.9"
     core-js "3.15.2"
@@ -2592,7 +2581,6 @@ lodash.truncate@^4.4.2:
 lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
-  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 loose-envify@^1.1.0:
   version "1.4.0"
@@ -3053,8 +3041,8 @@ regenerate@^1.4.0:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.2.tgz#b9346d8827e8f5a32f7ba29637d398b69014848a"
 
 regenerator-runtime@^0.13.4:
-  version "0.13.7"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
+  version "0.13.9"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
 
 regenerator-transform@^0.14.2:
   version "0.14.5"
@@ -3113,7 +3101,6 @@ require-from-string@^2.0.2:
 requireindex@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.1.0.tgz#e5404b81557ef75db6e49c5a72004893fe03e162"
-  integrity sha1-5UBLgVV+91225JxacgBIk/4D4WI=
 
 resolve-cwd@^3.0.0:
   version "3.0.0"

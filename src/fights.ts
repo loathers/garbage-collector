@@ -1,10 +1,7 @@
-import { canAdv } from "canadv.ash";
 import {
-  abort,
   adv1,
   availableAmount,
   booleanModifier,
-  chatPrivate,
   cliExecute,
   closetAmount,
   eat,
@@ -54,7 +51,6 @@ import {
   userConfirm,
   useSkill,
   visitUrl,
-  wait,
   weightAdjustment,
 } from "kolmafia";
 import {
@@ -72,10 +68,12 @@ import {
   adventureMacro,
   adventureMacroAuto,
   ChateauMantegna,
+  clamp,
   get,
   have,
   maximizeCached,
   property,
+  Requirement,
   set,
   SourceTerminal,
   TunnelOfLove,
@@ -89,9 +87,6 @@ import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
-  clamp,
-  determineDraggableZoneAndEnsureAccess,
-  draggableFight,
   ensureEffect,
   findRun,
   FreeRun,
@@ -101,11 +96,9 @@ import {
   mapMonster,
   propertyManager,
   questStep,
-  Requirement,
   safeInterrupt,
   saleValue,
   setChoice,
-  sum,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
@@ -116,56 +109,16 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { bathroomFinance } from "./potions";
-import { estimatedTurns, globalOptions, log } from "./globalvars";
-
-function checkFax(): boolean {
-  if (!have($item`photocopied monster`)) cliExecute("fax receive");
-  if (property.getString("photocopyMonster") === "Knob Goblin Embezzler") return true;
-  cliExecute("fax send");
-  return false;
-}
-
-function faxEmbezzler(): void {
-  if (!get("_photocopyUsed")) {
-    if (checkFax()) return;
-    chatPrivate("cheesefax", "Knob Goblin Embezzler");
-    for (let i = 0; i < 3; i++) {
-      wait(10);
-      if (checkFax()) return;
-    }
-    abort("Failed to acquire photocopied Knob Goblin Embezzler.");
-  }
-}
-
-type EmbezzlerFightOptions = {
-  location?: Location;
-  macro?: Macro;
-};
-
-class EmbezzlerFight {
-  available: () => boolean;
-  potential: () => number;
-  run: (options: EmbezzlerFightOptions) => void;
-  requirements: Requirement[];
-  draggable: boolean;
-  name: string;
-
-  constructor(
-    name: string,
-    available: () => boolean,
-    potential: () => number,
-    run: (options: EmbezzlerFightOptions) => void,
-    requirements: Requirement[] = [],
-    draggable = false
-  ) {
-    this.name = name;
-    this.available = available;
-    this.potential = potential;
-    this.run = run;
-    this.requirements = requirements;
-    this.draggable = draggable;
-  }
-}
+import { globalOptions, log } from "./globalvars";
+import {
+  determineDraggableZoneAndEnsureAccess,
+  draggableFight,
+  embezzlerCount,
+  EmbezzlerFight,
+  embezzlerMacro,
+  embezzlerSources,
+  estimatedTurns,
+} from "./embezzler";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -207,222 +160,6 @@ const secondChainMacro = () =>
         .trySkill($skill`lecture on relativity`)
     ).meatKill()
   ).abort();
-
-const embezzlerMacro = () =>
-  Macro.if_(
-    "monstername Knob Goblin Embezzler",
-    Macro.if_("snarfblat 186", Macro.tryCopier($item`pulled green taffy`))
-      .trySkill($skill`Wink at`)
-      .trySkill($skill`Fire a badly romantic arrow`)
-      .externalIf(
-        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
-        Macro.tryCopier($skill`Digitize`)
-      )
-      .tryCopier($item`Spooky Putty sheet`)
-      .tryCopier($item`Rain-Doh black box`)
-      .tryCopier($item`4-d camera`)
-      .tryCopier($item`unfinished ice sculpture`)
-      .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
-      .meatKill()
-  ).abort();
-
-const embezzlerSources = [
-  new EmbezzlerFight(
-    "Digitize",
-    () =>
-      get("_sourceTerminalDigitizeMonster") === $monster`Knob Goblin Embezzler` &&
-      getCounters("Digitize Monster", 0, 0).trim() !== "",
-    () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
-    (options: EmbezzlerFightOptions) => {
-      adventureMacro(
-        options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
-        embezzlerMacro()
-      );
-    },
-    [],
-    true
-  ),
-  new EmbezzlerFight(
-    "Enamorang",
-    () =>
-      getCounters("LOV Enamorang", 0, 0).trim() !== "" &&
-      get("enamorangMonster") === $monster`Knob Goblin Embezzler`,
-    () =>
-      get("enamorangMonster") === $monster`Knob Goblin Embezzler` ||
-      (have($item`LOV Enamorang`) && !get("_enamorangs"))
-        ? 1
-        : 0,
-    (options: EmbezzlerFightOptions) => {
-      adventureMacro(
-        options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
-        embezzlerMacro()
-      );
-    },
-    [],
-    true
-  ),
-  new EmbezzlerFight(
-    "Backup",
-    () =>
-      get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-      have($item`backup camera`) &&
-      get<number>("_backUpUses") < 11,
-    () => (have($item`backup camera`) ? 11 - get<number>("_backUpUses") : 0),
-    (options: EmbezzlerFightOptions) => {
-      const realLocation =
-        options.location && options.location.combatPercent >= 100
-          ? options.location
-          : determineDraggableZoneAndEnsureAccess(draggableFight.BACKUP);
-      adventureMacro(
-        realLocation,
-        Macro.if_(
-          "!monstername Knob Goblin Embezzler",
-          Macro.skill($skill`Back-Up to your Last Enemy`)
-        ).step(options.macro || embezzlerMacro())
-      );
-    },
-    [
-      new Requirement([], {
-        forceEquip: $items`backup camera`,
-        bonusEquip: new Map([[$item`backup camera`, 5000]]),
-      }),
-    ],
-    true
-  ),
-  new EmbezzlerFight(
-    "Fax",
-    () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
-    () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
-    () => {
-      faxEmbezzler();
-      use($item`photocopied monster`);
-    }
-  ),
-  new EmbezzlerFight(
-    "Pillkeeper Semirare",
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed"),
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed")
-        ? 1
-        : 0,
-    () => {
-      cliExecute("pillkeeper semirare");
-      adv1($location`Cobb's Knob Treasury`);
-    }
-  ),
-  new EmbezzlerFight(
-    "Chateau Painting",
-    () =>
-      ChateauMantegna.have() &&
-      !ChateauMantegna.paintingFought() &&
-      ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`,
-    () =>
-      ChateauMantegna.have() &&
-      !ChateauMantegna.paintingFought() &&
-      ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`
-        ? 1
-        : 0,
-    () => ChateauMantegna.fightPainting()
-  ),
-  new EmbezzlerFight(
-    "Spooky Putty & Rain-Doh",
-    () =>
-      (have($item`Spooky Putty monster`) &&
-        get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`) ||
-      (have($item`Rain-Doh box full of monster`) &&
-        get("rainDohMonster") === $monster`Knob Goblin Embezzler`),
-    () => {
-      if (
-        (have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`)) &&
-        (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`))
-      ) {
-        return (
-          6 -
-          get("spookyPuttyCopiesMade") -
-          get("_raindohCopiesMade") +
-          itemAmount($item`Spooky Putty monster`) +
-          itemAmount($item`Rain-Doh box full of monster`)
-        );
-      } else if (have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`)) {
-        return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky Putty monster`);
-      } else if (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`)) {
-        return 5 - get("_raindohCopiesMade") + itemAmount($item`Rain-Doh box full of monster`);
-      }
-      return 0;
-    },
-    () => {
-      if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
-      return use($item`Rain-Doh box full of monster`);
-    }
-  ),
-  new EmbezzlerFight(
-    "4-d Camera",
-    () =>
-      have($item`shaking 4-d camera`) &&
-      get("cameraMonster") === $monster`Knob Goblin Embezzler` &&
-      !get("_cameraUsed"),
-    () =>
-      have($item`shaking 4-d camera`) &&
-      get("cameraMonster") === $monster`Knob Goblin Embezzler` &&
-      !get("_cameraUsed")
-        ? 1
-        : 0,
-    () => use($item`shaking 4-d camera`)
-  ),
-  new EmbezzlerFight(
-    "Ice Sculpture",
-    () =>
-      have($item`ice sculpture`) &&
-      get("iceSculptureMonster") === $monster`Knob Goblin Embezzler` &&
-      !get("_iceSculptureUsed"),
-    () =>
-      have($item`ice sculpture`) &&
-      get("iceSculptureMonster") === $monster`Knob Goblin Embezzler` &&
-      !get("_iceSculptureUsed")
-        ? 1
-        : 0,
-    () => use($item`ice sculpture`)
-  ),
-  new EmbezzlerFight(
-    "Green Taffy",
-    () =>
-      have($item`envyfish egg`) &&
-      get("envyfishMonster") === $monster`Knob Goblin Embezzler` &&
-      !get("_envyfishEggUsed"),
-    () =>
-      have($item`envyfish egg`) &&
-      get("envyfishMonster") === $monster`Knob Goblin Embezzler` &&
-      !get("_envyfishEggUsed")
-        ? 1
-        : 0,
-    () => use($item`envyfish egg`)
-  ),
-  new EmbezzlerFight(
-    "Professor MeatChain",
-    () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 10 : 0),
-    () => {
-      return;
-    }
-  ),
-  new EmbezzlerFight(
-    "Professor WeightChain",
-    () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 5 : 0),
-    () => {
-      return;
-    }
-  ),
-];
-
-export function embezzlerCount(): number {
-  return sum(embezzlerSources.map((source) => source.potential()));
-}
 
 function embezzlerSetup() {
   meatMood(true, true).execute(estimatedTurns());
@@ -620,7 +357,7 @@ export function dailyFights(): void {
           }),
           ...fightSource.requirements,
         ]);
-        maximizeCached(requirements.maximizeParameters(), requirements.maximizeOptions());
+        maximizeCached(requirements.maximizeParameters, requirements.maximizeOptions);
         if (
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
@@ -1802,12 +1539,8 @@ function thesisReady(): boolean {
 
 function deliverThesis(): void {
   const thesisInNEP =
-    get("neverendingPartyAlways") &&
-    get("_neverendingPartyFreeTurns") < 10 &&
+    (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
     questStep("_questPartyFair") < 999;
-
-  //Set up NEP if we haven't yet
-  if (thesisInNEP) setNepQuestChoicesAndPrepItems();
 
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
@@ -1825,10 +1558,24 @@ function deliverThesis(): void {
     outfit("checkpoint");
   }
   cliExecute("gain 1800 muscle");
+
+  let thesisLocation = $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`;
+  if (thesisInNEP) {
+    //Set up NEP if we haven't yet
+    setNepQuestChoicesAndPrepItems();
+    thesisLocation = $location`The Neverending Party`;
+  }
+  // if running nobarf, might not have access to Uncle Gator's. Space is cheaper.
+  else if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
+    if (!have($item`transporter transponder`)) {
+      acquire(1, $item`transporter transponder`, 10000);
+    }
+    use($item`transporter transponder`);
+    thesisLocation = $location`Hamburglaris Shield Generator`;
+  }
+
   adventureMacro(
-    thesisInNEP
-      ? $location`The Neverending Party`
-      : $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+    thesisLocation,
     Macro.if_(`monsterid ${toInt($monster`time-spinner prank`)}`, Macro.basicCombat()).skill(
       $skill`deliver your thesis!`
     )
