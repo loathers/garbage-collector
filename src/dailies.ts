@@ -235,8 +235,14 @@ function configureMisc(): void {
     SourceTerminal.enquiry($effect`familiar.enq`);
   }
 
-  if (have($item`BittyCar MeatCar`) && get("_bittycar") !== "meatcar") {
-    use(1, $item`BittyCar MeatCar`);
+  for (const [car, active] of [
+    [$item`BittyCar MeatCar`, "meatcar"],
+    [$item`BittyCar SoulCar`, "soulcar"],
+  ] as [Item, string][]) {
+    if (have(car) && get("_bittycar") !== active) {
+      use(1, car);
+      break;
+    }
   }
 
   if (
