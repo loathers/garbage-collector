@@ -17,6 +17,7 @@ import {
   myLocation,
   myMp,
   mySoulsauce,
+  myThrall,
   numericModifier,
   print,
   runCombat,
@@ -32,6 +33,7 @@ import {
   $monster,
   $skill,
   $slot,
+  $thralls,
   get,
   have,
   Macro as LibramMacro,
@@ -102,6 +104,12 @@ export function maxPassiveDamage(): number {
   const vykeaMaxDamage =
     get("_VYKEACompanionLevel") > 0 ? 10 * get("_VYKEACompanionLevel") + 10 : 0;
 
+  // Lasambie does max 2*level damage while Vermincelli does max level + (1/2 * level) + (1/2 * 1/2 * level) + ...
+  const thrallMaxDamage =
+    myThrall().level >= 5 && $thralls`Lasambie,Vermincelli`.includes(myThrall())
+      ? myThrall().level * 2
+      : 0;
+
   const crownMaxDamage = haveEquipped($item`Crown of Thrones`)
     ? maxCarriedFamiliarDamage(myEnthronedFamiliar())
     : 0;
@@ -112,7 +120,7 @@ export function maxPassiveDamage(): number {
 
   const familiarMaxDamage = maxFamiliarDamage(myFamiliar());
 
-  return vykeaMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
+  return vykeaMaxDamage + thrallMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
 }
 
 function clamp(n: number, min: number, max: number) {
