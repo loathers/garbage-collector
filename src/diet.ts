@@ -41,13 +41,14 @@ import {
   $item,
   $items,
   $skill,
+  clamp,
   get,
   have,
   set,
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
-import { clamp, globalOptions } from "./globalvars";
+import { globalOptions } from "./globalvars";
 import { baseMeat, ensureEffect, setChoice } from "./lib";
 
 const MPA = get("valueOfAdventure");

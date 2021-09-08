@@ -27,6 +27,7 @@ import {
   $skill,
   adventureMacro,
   ChateauMantegna,
+  clamp,
   get,
   Guzzlr,
   have,
@@ -35,7 +36,7 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro } from "./combat";
-import { clamp, globalOptions } from "./globalvars";
+import { globalOptions } from "./globalvars";
 
 type EmbezzlerFightOptions = {
   location?: Location;

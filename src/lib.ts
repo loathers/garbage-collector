@@ -26,6 +26,7 @@ import {
   $locations,
   $skill,
   Bandersnatch,
+  clamp,
   get,
   getFoldGroup,
   getKramcoWandererChance,
@@ -42,7 +43,7 @@ import {
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
-import { clamp, globalOptions } from "./globalvars";
+import { globalOptions } from "./globalvars";
 
 export enum BonusEquipMode {
   FREE,

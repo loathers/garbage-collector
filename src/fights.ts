@@ -68,6 +68,7 @@ import {
   adventureMacro,
   adventureMacroAuto,
   ChateauMantegna,
+  clamp,
   get,
   have,
   maximizeCached,
@@ -108,7 +109,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { bathroomFinance } from "./potions";
-import { clamp, globalOptions, log } from "./globalvars";
+import { globalOptions, log } from "./globalvars";
 import {
   determineDraggableZoneAndEnsureAccess,
   draggableFight,
@@ -1541,12 +1542,8 @@ function thesisReady(): boolean {
 
 function deliverThesis(): void {
   const thesisInNEP =
-    get("neverendingPartyAlways") &&
-    get("_neverendingPartyFreeTurns") < 10 &&
+    (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
     questStep("_questPartyFair") < 999;
-
-  //Set up NEP if we haven't yet
-  if (thesisInNEP) setNepQuestChoicesAndPrepItems();
 
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
@@ -1567,14 +1564,16 @@ function deliverThesis(): void {
 
   let thesisLocation = $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`;
   if (thesisInNEP) {
+    //Set up NEP if we haven't yet
+    setNepQuestChoicesAndPrepItems();
     thesisLocation = $location`The Neverending Party`;
   }
   // if running nobarf, might not have access to Uncle Gator's. Space is cheaper.
   else if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
     if (!have($item`transporter transponder`)) {
       acquire(1, $item`transporter transponder`, 10000);
-      use($item`transporter transponder`);
     }
+    use($item`transporter transponder`);
     thesisLocation = $location`Hamburglaris Shield Generator`;
   }
 

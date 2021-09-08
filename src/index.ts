@@ -347,15 +347,18 @@ export function main(argString = ""): void {
           preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
         });
 
-        // 2. do some embezzler stuff
+        // 2. get a ticket (done before free fights so we can deliver thesis in
+        // Uncle Gator's Country Fun-Time Liquid Waste Sluice)
+        if (!globalOptions.noBarf) {
+          ensureBarfAccess();
+        }
+
+        // 3. do some embezzler stuff
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         dailyFights();
 
         if (!globalOptions.noBarf) {
-          // 3. get a ticket
-          ensureBarfAccess();
-
           // 4. burn turns at barf
           try {
             while (canContinue()) {
