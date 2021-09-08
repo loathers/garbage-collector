@@ -1501,7 +1501,6 @@ const freeRunFightSources = [
   // Must run before fishing for hipster/goth fights otherwise the targets may be banished
   new FreeRunFight(
     () =>
-      // eslint-disable-next-line libram/verify-constants
       have($item`industrial fire extinguisher`) &&
       get("_fireExtinguisherCharge") >= 10 &&
       have($skill`Comprehensive Cartography`) &&
@@ -1519,7 +1518,6 @@ const freeRunFightSources = [
       const best = getBestFireExtinguisherZone();
       if (!best) throw `Unable to find fire extinguisher zone?`;
       try {
-        // eslint-disable-next-line libram/verify-constants
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
         Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
@@ -1536,7 +1534,6 @@ const freeRunFightSources = [
           new Requirement(
             // Bookbats need up to +100 ML to survive the polar vortices
             zone?.location === $location`The Haunted Library` ? ["99 monster level 100 max"] : [],
-            // eslint-disable-next-line libram/verify-constants
             { forceEquip: $items`industrial fire extinguisher` }
           ),
         ];
@@ -1891,7 +1888,6 @@ const fireExtinguishZones = [
     location: $location`The Haunted Library`,
     monster: $monster`bookbat`,
     item: $item`tattered scrap of paper`,
-    // eslint-disable-next-line libram/verify-constants
     open: () => have($item`[7302]Spookyraven library key`),
   },
 ] as fireExtinguisherZone[];
