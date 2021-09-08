@@ -50,7 +50,7 @@ import {
 import { meatFamiliar } from "./familiar";
 import { baseMeat, coinmasterPrice, ensureEffect, logMessage, saleValue, tryFeast } from "./lib";
 import { withStash } from "./clan";
-import { estimatedTurns } from "./globalvars";
+import { estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
 
 export function dailySetup(): void {

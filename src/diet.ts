@@ -46,9 +46,9 @@ import {
   set,
 } from "libram";
 import { acquire } from "./acquire";
-import { embezzlerCount } from "./fights";
-import { estimatedTurns, globalOptions } from "./globalvars";
-import { baseMeat, clamp, ensureEffect, setChoice } from "./lib";
+import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { clamp, globalOptions } from "./globalvars";
+import { baseMeat, ensureEffect, setChoice } from "./lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");

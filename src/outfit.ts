@@ -37,10 +37,12 @@ import {
   getKramcoWandererChance,
   have,
   maximizeCached,
+  Requirement,
 } from "libram";
 import { pickBjorn } from "./bjorn";
-import { estimatedTurns, globalOptions } from "./globalvars";
-import { baseMeat, BonusEquipMode, Requirement, saleValue } from "./lib";
+import { estimatedTurns } from "./embezzler";
+import { globalOptions } from "./globalvars";
+import { baseMeat, BonusEquipMode, saleValue } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -56,8 +58,8 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     myFamiliar() === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   const bjornChoice = pickBjorn(equipMode);
   const compiledRequirements = Requirement.merge(requirements);
-  const compiledOptions = compiledRequirements.maximizeOptions();
-  const compiledParameters = compiledRequirements.maximizeParameters();
+  const compiledOptions = compiledRequirements.maximizeOptions;
+  const compiledParameters = compiledRequirements.maximizeParameters;
 
   const forceEquip = compiledOptions.forceEquip ?? [];
   const bonusEquip = compiledOptions.bonusEquip ?? new Map<Item, number>();
@@ -102,7 +104,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     ]),
     preventSlot: [...preventSlot, ...$slots`crown-of-thrones, buddy-bjorn`],
   });
-  maximizeCached(finalRequirement.maximizeParameters(), finalRequirement.maximizeOptions());
+  maximizeCached(finalRequirement.maximizeParameters, finalRequirement.maximizeOptions);
 
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
@@ -244,7 +246,7 @@ export function meatOutfit(
     ),
   ]);
 
-  maximizeCached(compiledRequirements.maximizeParameters(), compiledRequirements.maximizeOptions());
+  maximizeCached(compiledRequirements.maximizeParameters, compiledRequirements.maximizeOptions);
 
   if (equippedAmount($item`ice nine`) > 0) {
     equip($item`unwrapped knock-off retro superhero cape`);

@@ -39,6 +39,7 @@ import {
   get,
   have,
   property,
+  Requirement,
   set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
@@ -48,15 +49,7 @@ import { Macro, withMacro } from "./combat";
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import {
-  determineDraggableZoneAndEnsureAccess,
-  kramcoGuaranteed,
-  printLog,
-  propertyManager,
-  questStep,
-  Requirement,
-  safeInterrupt,
-} from "./lib";
+import { kramcoGuaranteed, printLog, propertyManager, questStep, safeInterrupt } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -66,8 +59,9 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
-import { estimatedTurns, globalOptions, log } from "./globalvars";
+import { globalOptions, log } from "./globalvars";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
+import { determineDraggableZoneAndEnsureAccess, estimatedTurns } from "./embezzler";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -236,6 +230,9 @@ export function main(argString = ""): void {
     if (arg.match(/ascend/)) {
       globalOptions.ascending = true;
     }
+    if (arg.match(/nobarf/)) {
+      globalOptions.noBarf = true;
+    }
   }
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
   const startingGarden = gardens.find((garden) =>
@@ -343,30 +340,32 @@ export function main(argString = ""): void {
         // 0. diet stuff.
         runDiet();
 
-        // 1. get a ticket
-        ensureBarfAccess();
-
-        // 2. make an outfit (amulet coin, pantogram, etc), misc other stuff (songboom, robortender drinks)
+        // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
 
         setDefaultMaximizeOptions({
           preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
         });
 
-        // 4. do some embezzler stuff
+        // 2. do some embezzler stuff
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         dailyFights();
 
-        // 5. burn turns at barf
-        try {
-          while (canContinue()) {
-            barfTurn();
-            safeInterrupt();
+        if (!globalOptions.noBarf) {
+          // 3. get a ticket
+          ensureBarfAccess();
+
+          // 4. burn turns at barf
+          try {
+            while (canContinue()) {
+              barfTurn();
+              safeInterrupt();
+            }
+          } finally {
+            setAutoAttack(0);
           }
-        } finally {
-          setAutoAttack(0);
-        }
+        } else setAutoAttack(0);
       });
     });
   } finally {

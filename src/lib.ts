@@ -36,11 +36,13 @@ import {
   Macro,
   PropertiesManager,
   property,
+  Requirement,
   set,
   SongBoom,
   SourceTerminal,
 } from "libram";
-import { estimatedTurns, globalOptions } from "./globalvars";
+import { estimatedTurns } from "./embezzler";
+import { clamp, globalOptions } from "./globalvars";
 
 export enum BonusEquipMode {
   FREE,
@@ -70,18 +72,6 @@ export function setChoice(adventure: number, value: number): void {
 
 export function ensureEffect(effect: Effect): void {
   if (!have(effect)) cliExecute(effect.default);
-}
-
-export function clamp(n: number, min: number, max: number): number {
-  return Math.min(Math.max(n, min), max);
-}
-
-/**
- * Sum an array of numbers.
- * @param addends Addends to sum.
- */
-export function sum(addends: number[]): number {
-  return addends.reduce((s, n) => s + n, 0);
 }
 
 export function mapMonster(location: Location, monster: Monster): void {
@@ -310,45 +300,6 @@ function testZoneForBackups(location: Location): boolean {
 function testZoneForWanderers(location: Location): boolean {
   const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
   return !wandererBlacklist.includes(location) && location.wanderers;
-}
-
-export class Requirement {
-  maximizeParameters_: string[];
-  maximizeOptions_: MaximizeOptions;
-
-  constructor(maximizeParameters_: string[], maximizeOptions_: MaximizeOptions) {
-    this.maximizeParameters_ = maximizeParameters_;
-    this.maximizeOptions_ = maximizeOptions_;
-  }
-
-  maximizeParameters(): string[] {
-    return this.maximizeParameters_;
-  }
-
-  maximizeOptions(): MaximizeOptions {
-    return this.maximizeOptions_;
-  }
-
-  merge(other: Requirement): Requirement {
-    const optionsA = this.maximizeOptions();
-    const optionsB = other.maximizeOptions();
-    return new Requirement([...this.maximizeParameters(), ...other.maximizeParameters()], {
-      ...optionsA,
-      ...optionsB,
-      bonusEquip: new Map([
-        ...(optionsA.bonusEquip?.entries() ?? []),
-        ...(optionsB.bonusEquip?.entries() ?? []),
-      ]),
-      forceEquip: [...(optionsA.forceEquip ?? []), ...(optionsB.forceEquip ?? [])],
-      preventEquip: [...(optionsA.preventEquip ?? []), ...(optionsB.preventEquip ?? [])],
-      onlySlot: [...(optionsA.onlySlot ?? []), ...(optionsB.onlySlot ?? [])],
-      preventSlot: [...(optionsA.preventSlot ?? []), ...(optionsB.preventSlot ?? [])],
-    });
-  }
-
-  static merge(allRequirements: Requirement[]): Requirement {
-    return allRequirements.reduce((x, y) => x.merge(y), new Requirement([], {}));
-  }
 }
 
 export function tryFeast(familiar: Familiar): void {
