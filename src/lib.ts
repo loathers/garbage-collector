@@ -4,14 +4,8 @@ import {
   autosellPrice,
   buy,
   cliExecute,
-  familiarWeight,
-  haveEquipped,
   haveSkill,
   mallPrice,
-  myBjornedFamiliar,
-  myEnthronedFamiliar,
-  myFamiliar,
-  myLocation,
   myTurncount,
   numericModifier,
   print,
@@ -40,7 +34,6 @@ import {
   Guzzlr,
   have,
   Macro,
-  MaximizeOptions,
   PropertiesManager,
   property,
   set,
@@ -615,82 +608,6 @@ export function fairyMultiplier(familiar: Familiar): number {
   return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
 
-let monsterManuelCached: boolean | undefined = undefined;
-export function monsterManuelAvailable(): boolean {
-  if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
-  monsterManuelCached = visitUrl("questlog.php?which=3").includes("Monster Manuel");
-  return Boolean(monsterManuelCached);
-}
-
-function maxCarriedFamiliarDamage(familiar: Familiar): number {
-  // Only considering familiars we reasonably may carry
-  switch (familiar) {
-    // +5 to Familiar Weight
-    case $familiar`Animated Macaroni Duck`:
-      return 50;
-    case $familiar`Barrrnacle`:
-    case $familiar`Gelatinous Cubeling`:
-    case $familiar`Penguin Goodfella`:
-      return 30;
-    case $familiar`Misshapen Animal Skeleton`:
-      return 40 + numericModifier("Spooky Damage");
-
-    // +25% Meat from Monsters
-    case $familiar`Hobo Monkey`:
-      return 25;
-
-    // +20% Meat from Monsters
-    case $familiar`Grouper Groupie`:
-      // Double sleaze damage at Barf Mountain
-      return (
-        25 + numericModifier("Sleaze Damage") * (myLocation() === $location`Barf Mountain` ? 2 : 1)
-      );
-    case $familiar`Jitterbug`:
-      return 20;
-    case $familiar`Mutant Cactus Bud`:
-      // 25 poison damage (25+12+6+3+1)
-      return 47;
-    case $familiar`Robortender`:
-      return 20;
-  }
-
-  return 0;
-}
-
-function maxFamiliarDamage(familiar: Familiar): number {
-  switch (familiar) {
-    case $familiar`Cocoabo`:
-      return familiarWeight(familiar) + 3;
-    case $familiar`Feather Boa Constrictor`:
-      // Double sleaze damage at Barf Mountain
-      return (
-        familiarWeight(familiar) +
-        3 +
-        numericModifier("Sleaze Damage") * (myLocation() === $location`Barf Mountain` ? 2 : 1)
-      );
-    case $familiar`Ninja Pirate Zombie Robot`:
-      return Math.floor((familiarWeight(familiar) + 3) * 1.5);
-  }
-  return 0;
-}
-
-export function maxPassiveDamage(): number {
-  // Only considering passive damage sources we reasonably may have
-  const vykeaMaxDamage =
-    get("_VYKEACompanionLevel") > 0 ? 10 * get("_VYKEACompanionLevel") + 10 : 0;
-
-  const crownMaxDamage = haveEquipped($item`Crown of Thrones`)
-    ? maxCarriedFamiliarDamage(myEnthronedFamiliar())
-    : 0;
-
-  const bjornMaxDamage = haveEquipped($item`Buddy Bjorn`)
-    ? maxCarriedFamiliarDamage(myBjornedFamiliar())
-    : 0;
-
-  const familiarMaxDamage = maxFamiliarDamage(myFamiliar());
-
-  return vykeaMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
-}
 const log: string[] = [];
 
 export function logMessage(message: string): void {
