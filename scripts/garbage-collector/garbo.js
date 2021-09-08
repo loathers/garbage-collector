@@ -22356,10 +22356,8 @@ new FreeRunFight(function () {
   (0,dist.adventureMacro)((0,dist.$location)(_templateObject363 || (_templateObject363 = fights_taggedTemplateLiteral(["Gingerbread Civic Center"]))), combat.Macro.abort());
 }), // Must run before fishing for hipster/goth fights otherwise the targets may be banished
 new FreeRunFight(function () {
-  return (// eslint-disable-next-line libram/verify-constants
-    (0,dist.have)((0,dist.$item)(_templateObject364 || (_templateObject364 = fights_taggedTemplateLiteral(["industrial fire extinguisher"])))) && (0,dist.get)("_fireExtinguisherCharge") >= 10 && (0,dist.have)((0,dist.$skill)(_templateObject365 || (_templateObject365 = fights_taggedTemplateLiteral(["Comprehensive Cartography"])))) && (0,dist.get)("_monstersMapped") < 3 && (0,dist.get)("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-    getBestFireExtinguisherZone() !== undefined
-  );
+  return (0,dist.have)((0,dist.$item)(_templateObject364 || (_templateObject364 = fights_taggedTemplateLiteral(["industrial fire extinguisher"])))) && (0,dist.get)("_fireExtinguisherCharge") >= 10 && (0,dist.have)((0,dist.$skill)(_templateObject365 || (_templateObject365 = fights_taggedTemplateLiteral(["Comprehensive Cartography"])))) && (0,dist.get)("_monstersMapped") < 3 && (0,dist.get)("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
+  getBestFireExtinguisherZone() !== undefined;
 }, function (runSource) {
   // Haunted Library is full of free noncombats
   lib/* propertyManager.set */.kr.set({
@@ -22377,7 +22375,6 @@ new FreeRunFight(function () {
   if (!best) throw "Unable to find fire extinguisher zone?";
 
   try {
-    // eslint-disable-next-line libram/verify-constants
     var vortex = (0,dist.$skill)(_templateObject366 || (_templateObject366 = fights_taggedTemplateLiteral(["Fire Extinguisher: Polar Vortex"])));
     combat.Macro.while_("hasskill ".concat((0,external_kolmafia_.toInt)(vortex)), combat.Macro.skill(vortex)).step(runSource.macro).setAutoAttack();
     (0,lib/* mapMonster */.dU)(best.location, best.monster);
@@ -22388,8 +22385,7 @@ new FreeRunFight(function () {
   requirements: function requirements() {
     var zone = getBestFireExtinguisherZone();
     return [new lib/* Requirement */.nb( // Bookbats need up to +100 ML to survive the polar vortices
-    (zone === null || zone === void 0 ? void 0 : zone.location) === (0,dist.$location)(_templateObject367 || (_templateObject367 = fights_taggedTemplateLiteral(["The Haunted Library"]))) ? ["99 monster level 100 max"] : [], // eslint-disable-next-line libram/verify-constants
-    {
+    (zone === null || zone === void 0 ? void 0 : zone.location) === (0,dist.$location)(_templateObject367 || (_templateObject367 = fights_taggedTemplateLiteral(["The Haunted Library"]))) ? ["99 monster level 100 max"] : [], {
       forceEquip: (0,dist.$items)(_templateObject368 || (_templateObject368 = fights_taggedTemplateLiteral(["industrial fire extinguisher"])))
     })];
   }
@@ -22724,7 +22720,6 @@ var fireExtinguishZones = [{
   location: (0,dist.$location)(_templateObject446 || (_templateObject446 = fights_taggedTemplateLiteral(["The Haunted Library"]))),
   monster: (0,dist.$monster)(_templateObject447 || (_templateObject447 = fights_taggedTemplateLiteral(["bookbat"]))),
   item: (0,dist.$item)(_templateObject448 || (_templateObject448 = fights_taggedTemplateLiteral(["tattered scrap of paper"]))),
-  // eslint-disable-next-line libram/verify-constants
   open: function open() {
     return (0,dist.have)((0,dist.$item)(_templateObject449 || (_templateObject449 = fights_taggedTemplateLiteral(["[7302]Spookyraven library key"]))));
   }
@@ -23313,19 +23308,35 @@ function configureMisc() {
     dist.SourceTerminal.enquiry((0,dist.$effect)(dailies_templateObject42 || (dailies_templateObject42 = dailies_taggedTemplateLiteral(["familiar.enq"]))));
   }
 
-  if ((0,dist.have)((0,dist.$item)(dailies_templateObject43 || (dailies_templateObject43 = dailies_taggedTemplateLiteral(["BittyCar MeatCar"])))) && (0,dist.get)("_bittycar") !== "meatcar") {
-    (0,external_kolmafia_.use)(1, (0,dist.$item)(dailies_templateObject44 || (dailies_templateObject44 = dailies_taggedTemplateLiteral(["BittyCar MeatCar"]))));
+  var _iterator2 = dailies_createForOfIteratorHelper([[(0,dist.$item)(dailies_templateObject51 || (dailies_templateObject51 = dailies_taggedTemplateLiteral(["BittyCar MeatCar"]))), "meatcar"], [(0,dist.$item)(dailies_templateObject52 || (dailies_templateObject52 = dailies_taggedTemplateLiteral(["BittyCar SoulCar"]))), "soulcar"]]),
+      _step2;
+
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var _step2$value = dailies_slicedToArray(_step2.value, 2),
+          car = _step2$value[0],
+          active = _step2$value[1];
+
+      if ((0,dist.have)(car) && (0,dist.get)("_bittycar") !== active) {
+        (0,external_kolmafia_.use)(1, car);
+        break;
+      }
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
   }
 
-  if ((0,external_kolmafia_.myClass)() === (0,dist.$class)(dailies_templateObject45 || (dailies_templateObject45 = dailies_taggedTemplateLiteral(["Pastamancer"]))) && (0,external_kolmafia_.myThrall)() !== (0,dist.$thrall)(dailies_templateObject46 || (dailies_templateObject46 = dailies_taggedTemplateLiteral(["Lasagmbie"]))) && (0,external_kolmafia_.haveSkill)((0,dist.$skill)(dailies_templateObject47 || (dailies_templateObject47 = dailies_taggedTemplateLiteral(["Bind Lasagmbie"]))))) {
-    (0,external_kolmafia_.useSkill)((0,dist.$skill)(dailies_templateObject48 || (dailies_templateObject48 = dailies_taggedTemplateLiteral(["Bind Lasagmbie"]))));
+  if ((0,external_kolmafia_.myClass)() === (0,dist.$class)(dailies_templateObject43 || (dailies_templateObject43 = dailies_taggedTemplateLiteral(["Pastamancer"]))) && (0,external_kolmafia_.myThrall)() !== (0,dist.$thrall)(dailies_templateObject44 || (dailies_templateObject44 = dailies_taggedTemplateLiteral(["Lasagmbie"]))) && (0,external_kolmafia_.haveSkill)((0,dist.$skill)(dailies_templateObject45 || (dailies_templateObject45 = dailies_taggedTemplateLiteral(["Bind Lasagmbie"]))))) {
+    (0,external_kolmafia_.useSkill)((0,dist.$skill)(dailies_templateObject46 || (dailies_templateObject46 = dailies_taggedTemplateLiteral(["Bind Lasagmbie"]))));
   }
 
-  if ((0,external_kolmafia_.myClass)() === (0,dist.$class)(dailies_templateObject49 || (dailies_templateObject49 = dailies_taggedTemplateLiteral(["Pastamancer"]))) && (0,dist.have)((0,dist.$item)(dailies_templateObject50 || (dailies_templateObject50 = dailies_taggedTemplateLiteral(["experimental carbon fiber pasta additive"])))) && !(0,dist.get)("_pastaAdditive") && (0,external_kolmafia_.myThrall)().level < 10) {
-    (0,external_kolmafia_.use)((0,dist.$item)(dailies_templateObject51 || (dailies_templateObject51 = dailies_taggedTemplateLiteral(["experimental carbon fiber pasta additive"]))));
+  if ((0,external_kolmafia_.myClass)() === (0,dist.$class)(dailies_templateObject47 || (dailies_templateObject47 = dailies_taggedTemplateLiteral(["Pastamancer"]))) && (0,dist.have)((0,dist.$item)(dailies_templateObject48 || (dailies_templateObject48 = dailies_taggedTemplateLiteral(["experimental carbon fiber pasta additive"])))) && !(0,dist.get)("_pastaAdditive") && (0,external_kolmafia_.myThrall)().level < 10) {
+    (0,external_kolmafia_.use)((0,dist.$item)(dailies_templateObject49 || (dailies_templateObject49 = dailies_taggedTemplateLiteral(["experimental carbon fiber pasta additive"]))));
   }
 
-  if ((0,external_kolmafia_.getClanLounge)()["Olympic-sized Clan crate"] !== undefined && !(0,dist.get)("_olympicSwimmingPoolItemFound") && (0,dist.have)((0,dist.$item)(dailies_templateObject52 || (dailies_templateObject52 = dailies_taggedTemplateLiteral(["Clan VIP Lounge key"]))))) {
+  if ((0,external_kolmafia_.getClanLounge)()["Olympic-sized Clan crate"] !== undefined && !(0,dist.get)("_olympicSwimmingPoolItemFound") && (0,dist.have)((0,dist.$item)(dailies_templateObject50 || (dailies_templateObject50 = dailies_taggedTemplateLiteral(["Clan VIP Lounge key"]))))) {
     (0,external_kolmafia_.cliExecute)("swim item");
   }
 
