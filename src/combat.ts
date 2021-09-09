@@ -34,6 +34,7 @@ import {
   $skill,
   $slot,
   $thralls,
+  clamp,
   get,
   have,
   Macro as LibramMacro,
@@ -121,10 +122,6 @@ export function maxPassiveDamage(): number {
   const familiarMaxDamage = maxFamiliarDamage(myFamiliar());
 
   return vykeaMaxDamage + thrallMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
-}
-
-function clamp(n: number, min: number, max: number) {
-  return Math.min(Math.max(n, min), max);
 }
 
 function shouldRedigitize() {

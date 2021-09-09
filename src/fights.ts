@@ -119,6 +119,7 @@ import {
   embezzlerSources,
   estimatedTurns,
 } from "./embezzler";
+import { canAdv } from "canadv.ash";
 
 const firstChainMacro = () =>
   Macro.if_(
