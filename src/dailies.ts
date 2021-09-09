@@ -453,8 +453,10 @@ function internetMemeShop(): void {
 
   for (const [property, item] of Object.entries(internetMemeShopProperties)) {
     if (!get<boolean>(property) && baconValue * coinmasterPrice(item) < getSaleValue(item)) {
-      retrieveItem($item`BACON`, coinmasterPrice(item));
-      buy($coinmaster`Internet Meme Shop`, 1, item);
+      if (!have(item)) {
+        retrieveItem($item`BACON`, coinmasterPrice(item));
+        buy($coinmaster`Internet Meme Shop`, 1, item);
+      }
     }
   }
 }
