@@ -903,7 +903,7 @@ const freeFightSources = [
           .trySkill($skill`Shadow Noodles`)
           .externalIf(
             get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
-              1000,
+              2000,
             Macro.item([$item`gas can`, $item`gas can`])
           )
           .externalIf(
