@@ -35,6 +35,7 @@ import {
   get,
   getFoldGroup,
   getKramcoWandererChance,
+  getSaleValue,
   have,
   maximizeCached,
   Requirement,
@@ -42,7 +43,7 @@ import {
 import { pickBjorn } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions } from "./globalvars";
-import { baseMeat, BonusEquipMode, getSaleValue } from "./lib";
+import { baseMeat, BonusEquipMode } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
