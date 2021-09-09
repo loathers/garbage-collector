@@ -4,6 +4,8 @@ import {
   buy,
   cliExecute,
   haveSkill,
+  inebrietyLimit,
+  myInebriety,
   myTurncount,
   numericModifier,
   print,
@@ -55,7 +57,8 @@ export const propertyManager = new PropertiesManager();
 
 export const baseMeat =
   SongBoom.have() &&
-  (SongBoom.songChangesLeft() > 0 || SongBoom.song() === "Total Eclipse of Your Meat")
+  (SongBoom.songChangesLeft() > 0 ||
+    (SongBoom.song() === "Total Eclipse of Your Meat" && myInebriety() <= inebrietyLimit()))
     ? 275
     : 250;
 
