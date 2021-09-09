@@ -40,6 +40,7 @@ import {
   $thrall,
   ChateauMantegna,
   get,
+  getSaleValue,
   have,
   property,
   SongBoom,
@@ -48,7 +49,7 @@ import {
   withProperty,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, coinmasterPrice, ensureEffect, logMessage, saleValue, tryFeast } from "./lib";
+import { baseMeat, coinmasterPrice, ensureEffect, logMessage, tryFeast } from "./lib";
 import { withStash } from "./clan";
 import { estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
@@ -329,7 +330,7 @@ function volcanoDailies(): void {
 function checkVolcanoQuest() {
   print("Checking volcano quest", "blue");
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-  const volcoinoValue = (1 / 3) * saleValue($item`one-day ticket to That 70s Volcano`);
+  const volcoinoValue = (1 / 3) * getSaleValue($item`one-day ticket to That 70s Volcano`);
   const volcanoProperties = new Map<Item, number>([
     [property.getItem("_volcanoItem1") || $item`none`, get("_volcanoItemCount1")],
     [property.getItem("_volcanoItem2") || $item`none`, get("_volcanoItemCount2")],
@@ -392,7 +393,7 @@ function checkVolcanoQuest() {
 function cheat(): void {
   if (have($item`Deck of Every Card`)) {
     [
-      saleValue($item`gift card`) >= saleValue($item`1952 Mickey Mantle card`)
+      getSaleValue($item`gift card`) >= getSaleValue($item`1952 Mickey Mantle card`)
         ? "Gift Card"
         : "1952 Mickey Mantle",
       "Island",
@@ -416,7 +417,7 @@ function tomeSummons(): void {
     let best = $item`none`;
     for (let itemId = 5224; itemId <= 5283; itemId++) {
       const current = Item.get(`[${itemId}]`);
-      if (saleValue(current) > saleValue(best)) {
+      if (getSaleValue(current) > getSaleValue(best)) {
         best = current;
       }
     }
@@ -450,7 +451,7 @@ function internetMemeShop(): void {
   };
 
   for (const [property, item] of Object.entries(internetMemeShopProperties)) {
-    if (!get<boolean>(property) && baconValue * coinmasterPrice(item) < saleValue(item)) {
+    if (!get<boolean>(property) && baconValue * coinmasterPrice(item) < getSaleValue(item)) {
       retrieveItem($item`BACON`, coinmasterPrice(item));
       buy($coinmaster`Internet Meme Shop`, 1, item);
     }
@@ -460,9 +461,9 @@ function internetMemeShop(): void {
 const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
 function pickTea(): void {
   if (!getCampground()["potted tea tree"] || get("_pottedTeaTreeUsed")) return;
-  const bestTea = teas.sort((a, b) => saleValue(b) - saleValue(a))[0];
-  const shakeVal = 3 * saleValue(...teas);
-  const teaAction = shakeVal > saleValue(bestTea) ? "shake" : bestTea.name;
+  const bestTea = teas.sort((a, b) => getSaleValue(b) - getSaleValue(a))[0];
+  const shakeVal = 3 * getSaleValue(...teas);
+  const teaAction = shakeVal > getSaleValue(bestTea) ? "shake" : bestTea.name;
   cliExecute(`teatree ${teaAction}`);
 }
 

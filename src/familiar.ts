@@ -6,8 +6,8 @@ import {
   myInebriety,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $familiars, $item, $items, get, have } from "libram";
-import { argmax, fairyMultiplier, leprechaunMultiplier, saleValue } from "./lib";
+import { $effect, $familiar, $familiars, $item, $items, get, getSaleValue, have } from "libram";
+import { argmax, fairyMultiplier, leprechaunMultiplier } from "./lib";
 
 let _meatFamiliar: Familiar;
 export function meatFamiliar(): Familiar {
@@ -135,7 +135,7 @@ function mimicDropValue() {
   return (
     savedMimicDropValue ??
     (savedMimicDropValue =
-      saleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
+      getSaleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
   );
 }
 
@@ -157,7 +157,7 @@ export function freeFightFamiliar(): Familiar {
       const { expected, drop, pref } = rotatingFamiliars[familiarName];
       const dropsAlready = get<number>(pref);
       if (dropsAlready >= expected.length) continue;
-      const value = saleValue(drop) / expected[dropsAlready];
+      const value = getSaleValue(drop) / expected[dropsAlready];
       familiarValue.push([familiar, value]);
     }
   }

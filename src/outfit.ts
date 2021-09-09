@@ -42,7 +42,7 @@ import {
 import { pickBjorn } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions } from "./globalvars";
-import { baseMeat, BonusEquipMode, saleValue } from "./lib";
+import { baseMeat, BonusEquipMode, getSaleValue } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -344,7 +344,7 @@ function snowSuit(equipMode: BonusEquipMode) {
   )
     return new Map<Item, number>([]);
 
-  return new Map<Item, number>([[$item`Snow Suit`, saleValue($item`carrot nose`) / 10]]);
+  return new Map<Item, number>([[$item`Snow Suit`, getSaleValue($item`carrot nose`) / 10]]);
 }
 function mayflowerBouquet(equipMode: BonusEquipMode) {
   // +40% meat drop 12.5% of the time (effectively 5%)
@@ -363,7 +363,7 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
   const sporadicMeatBonus = (40 * 0.125 * (equipMode === BonusEquipMode.BARF ? baseMeat : 0)) / 100;
   const averageFlowerValue =
-    saleValue(
+    getSaleValue(
       ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`
     ) * Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
   return new Map<Item, number>([
@@ -383,7 +383,7 @@ function dropsItems(equipMode: BonusEquipMode) {
     [$item`Mr. Screege's spectacles`, 180],
     [
       $item`bag of many confections`,
-      saleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
+      getSaleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
     ],
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
