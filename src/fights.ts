@@ -1343,6 +1343,27 @@ const freeRunFightSources = [
       ],
     }
   ),
+  // Try for an ultra-rare with mayfly runs ;)
+  new FreeRunFight(
+    () =>
+      have($item`mayfly bait necklace`) &&
+      canAdv($location`Cobb's Knob Menagerie, Level 1`, false) &&
+      get("_mayflySummons") < 30,
+    (runSource: FreeRun) => {
+      adventureMacro(
+        $location`Cobb's Knob Menagerie, Level 1`,
+        Macro.if_(`monstername ${$monster`QuickBASIC Elemental`}`, Macro.basicCombat())
+          .if_(
+            `monstername ${$monster`BASIC Elemental`}`,
+            Macro.trySkill($skill`Summon Mayfly Swarm`)
+          )
+          .step(runSource.macro)
+      );
+    },
+    {
+      requirements: () => [new Requirement([], { forceEquip: $items`mayfly bait necklace` })],
+    }
+  ),
 ];
 
 const freeKillSources = [
