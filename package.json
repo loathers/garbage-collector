@@ -10,8 +10,11 @@
     "build": "yarn run build:types && yarn run build:js",
     "build:types": "tsc",
     "build:js": "webpack",
+    "deploy": "copyfiles --up 1 --exclude \"**/dependencies.txt\" \"KoLmafia/**/*\" \"mafia/**/*\"",
     "lint": "eslint src && prettier --check .",
-    "watch": "webpack --watch --progress"
+    "lint:fix": "eslint src --fix && prettier --check --write .",
+    "watch": "yarn run build:types && yarn run watch:js",
+    "watch:js": "webpack --watch --progress"
   },
   "author": "",
   "license": "MIT",
@@ -37,6 +40,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "babel-loader": "^8.2.2",
+    "copyfiles": "^2.4.1",
     "css-loader": "^6.2.0",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
