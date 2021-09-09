@@ -25,6 +25,7 @@ import {
   $skill,
   Bandersnatch,
   clamp,
+  ensureEffect,
   get,
   getFoldGroup,
   getKramcoWandererChance,
@@ -67,10 +68,6 @@ export function safeInterrupt(): void {
 
 export function setChoice(adventure: number, value: number): void {
   propertyManager.setChoices({ [adventure]: value });
-}
-
-export function ensureEffect(effect: Effect): void {
-  if (!have(effect)) cliExecute(effect.default);
 }
 
 export function mapMonster(location: Location, monster: Monster): void {
