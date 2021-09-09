@@ -19747,7 +19747,7 @@ var BonusEquipMode;
 })(BonusEquipMode || (BonusEquipMode = {}));
 
 var propertyManager = new dist.PropertiesManager();
-var baseMeat = dist.SongBoom.have() && (dist.SongBoom.songChangesLeft() > 0 || dist.SongBoom.song() === "Total Eclipse of Your Meat") ? 275 : 250;
+var baseMeat = dist.SongBoom.have() && (dist.SongBoom.songChangesLeft() > 0 || dist.SongBoom.song() === "Total Eclipse of Your Meat" && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)()) ? 275 : 250;
 function safeInterrupt() {
   if ((0,dist.get)("garbo_interrupt", false)) {
     (0,dist.set)("garbo_interrupt", false);
