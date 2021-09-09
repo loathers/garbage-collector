@@ -1508,7 +1508,9 @@ export function freeFights(): void {
       if (freeKillSource.available()) {
         // TODO: Add potions that are profitable for free kills.
         // TODO: Don't run free kills at all if they're not profitable.
-        ensureEffect($effect`Feeling Lost`);
+        if (have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3) {
+          ensureEffect($effect`Feeling Lost`);
+        }
         if (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed")) {
           useSkill($skill`Steely-Eyed Squint`);
         }
