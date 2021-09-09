@@ -69,6 +69,7 @@ import {
   adventureMacroAuto,
   ChateauMantegna,
   clamp,
+  ensureEffect,
   get,
   getSaleValue,
   have,
@@ -88,7 +89,6 @@ import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
-  ensureEffect,
   findRun,
   FreeRun,
   kramcoGuaranteed,

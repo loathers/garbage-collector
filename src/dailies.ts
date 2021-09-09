@@ -39,6 +39,7 @@ import {
   $stat,
   $thrall,
   ChateauMantegna,
+  ensureEffect,
   get,
   getSaleValue,
   have,
@@ -49,7 +50,7 @@ import {
   withProperty,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, coinmasterPrice, ensureEffect, logMessage, tryFeast } from "./lib";
+import { baseMeat, coinmasterPrice, logMessage, tryFeast } from "./lib";
 import { withStash } from "./clan";
 import { estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";

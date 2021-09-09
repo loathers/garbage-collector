@@ -42,6 +42,7 @@ import {
   $items,
   $skill,
   clamp,
+  ensureEffect,
   get,
   have,
   set,
@@ -49,7 +50,7 @@ import {
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { globalOptions } from "./globalvars";
-import { baseMeat, ensureEffect, setChoice } from "./lib";
+import { baseMeat, setChoice } from "./lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
