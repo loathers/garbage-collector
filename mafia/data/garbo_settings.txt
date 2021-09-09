@@ -5,4 +5,5 @@ garbo_stashClan	string	What is your stash clan? Set to current clan if you don't
 garbo_vipClan	string	What is your vip clan? Set to current clan if you don't have access to one (And then get whitelisted to BAFH. It's free!).
 garbo_skipAscensionCheck	boolean	Should skip verifying that your account has broken the prism? Set to true if you want to proceed regardless, and false if you'd like to be warned.
 garbo_valueOfFreeFight	int	What is a free fight\run worth to you? (Default 2000).
+garbo_fightGlitch	boolean	Should we fight the glitch season reward? This assumes you have access to many skills--Curse of Marinara, Conspiratorial Whispers, Shadow Noodles, and more.
 # useCarpe	boolean	Use carpe? Disabled by default because it's probably rude to use up fish. Don't be rude!

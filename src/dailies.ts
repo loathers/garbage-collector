@@ -70,6 +70,7 @@ export function dailySetup(): void {
   internetMemeShop();
   pickTea();
   refreshLatte();
+  implement();
 
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`Half a Purse`);
@@ -487,4 +488,10 @@ function chateauDesk(): void {
   if (ChateauMantegna.have() && !get("_chateauDeskHarvested")) {
     visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false);
   }
+}
+
+export function implement(): void {
+  if (!have($item`[glitch season reward name]`) || get("_glitchItemImplemented")) return;
+  retrieveItem($item`[glitch season reward name]`);
+  use($item`[glitch season reward name]`);
 }

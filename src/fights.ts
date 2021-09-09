@@ -631,12 +631,45 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => have($item`[glitch season reward name]`) && !get("_glitchMonsterFights"),
-    () => {
-      restoreHp(myMaxhp());
-      retrieveItem($item`[glitch season reward name]`);
-      visitUrl("inv_eat.php?pwd&whichitem=10207");
-      runCombat();
+    () =>
+      have($item`[glitch season reward name]`) &&
+      !get("_glitchMonsterFights") &&
+      get("garbo_fightGlitch", false),
+    () =>
+      withMacro(
+        Macro.trySkill($skill`Curse of Marinara`)
+          .trySkill($skill`Conspiratorial Whispers`)
+          .trySkill($skill`Shadow Noodles`)
+          .externalIf(
+            get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
+              2000,
+            Macro.item([$item`gas can`, $item`gas can`])
+          )
+          .externalIf(
+            get("lovebugsUnlocked"),
+            Macro.trySkill($skill`Summon Love Gnats`).trySkill($skill`Summon Love Mosquito`)
+          )
+          .trySkill($skill`Micrometeorite`)
+          .tryItem($item`Time-Spinner`)
+          .tryItem($item`little red book`)
+          .tryItem($item`Rain-Doh blue balls`)
+          .tryItem($item`Rain-Doh indigo cup`)
+          .trySkill($skill`Entangling Noodles`)
+          .trySkill($skill`Frost Bite`)
+          .kill(),
+        () => {
+          restoreHp(myMaxhp());
+          if (have($skill`Ruthless Efficiency`)) ensureEffect($effect`Ruthlessly Efficient`);
+          if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
+          if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+          retrieveItem($item`[glitch season reward name]`);
+          if (get("glitchItemImplementationCount") >= 1000) retrieveItem($item`gas can`, 2);
+          visitUrl("inv_eat.php?pwd&whichitem=10207");
+          runCombat();
+        }
+      ),
+    {
+      requirements: () => [new Requirement(["1000 mainstat"], {})],
     }
   ),
 
