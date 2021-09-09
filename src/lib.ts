@@ -1,11 +1,9 @@
 import { canAdv } from "canadv.ash";
 import {
   abort,
-  autosellPrice,
   buy,
   cliExecute,
   haveSkill,
-  mallPrice,
   myTurncount,
   numericModifier,
   print,
@@ -27,6 +25,7 @@ import {
   $skill,
   Bandersnatch,
   clamp,
+  ensureEffect,
   get,
   getFoldGroup,
   getKramcoWandererChance,
@@ -69,10 +68,6 @@ export function safeInterrupt(): void {
 
 export function setChoice(adventure: number, value: number): void {
   propertyManager.setChoices({ [adventure]: value });
-}
-
-export function ensureEffect(effect: Effect): void {
-  if (!have(effect)) cliExecute(effect.default);
 }
 
 export function mapMonster(location: Location, monster: Monster): void {
@@ -498,31 +493,6 @@ export const ltbRun = new FreeRun(
   new Requirement([], {}),
   () => retrieveItem($item`Louder Than Bomb`)
 );
-
-const valueMap: Map<Item, number> = new Map();
-
-const MALL_VALUE_MODIFIER = 0.9;
-
-export function saleValue(...items: Item[]): number {
-  return (
-    items
-      .map((item) => {
-        if (valueMap.has(item)) return valueMap.get(item) || 0;
-        if (item.discardable) {
-          valueMap.set(
-            item,
-            mallPrice(item) > Math.max(2 * autosellPrice(item), 100)
-              ? MALL_VALUE_MODIFIER * mallPrice(item)
-              : autosellPrice(item)
-          );
-        } else {
-          valueMap.set(item, mallPrice(item) > 100 ? MALL_VALUE_MODIFIER * mallPrice(item) : 0);
-        }
-        return valueMap.get(item) || 0;
-      })
-      .reduce((s, price) => s + price, 0) / items.length
-  );
-}
 
 export function coinmasterPrice(item: Item): number {
   // TODO: Get this from coinmasters.txt if more are needed

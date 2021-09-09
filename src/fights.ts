@@ -69,7 +69,9 @@ import {
   adventureMacroAuto,
   ChateauMantegna,
   clamp,
+  ensureEffect,
   get,
+  getSaleValue,
   have,
   maximizeCached,
   property,
@@ -87,7 +89,6 @@ import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
-  ensureEffect,
   findRun,
   FreeRun,
   kramcoGuaranteed,
@@ -97,7 +98,6 @@ import {
   propertyManager,
   questStep,
   safeInterrupt,
-  saleValue,
   setChoice,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
@@ -308,7 +308,7 @@ const witchessPieces = [
 ];
 
 function bestWitchessPiece() {
-  return witchessPieces.sort((a, b) => saleValue(b.drop) - saleValue(a.drop))[0].piece;
+  return witchessPieces.sort((a, b) => getSaleValue(b.drop) - getSaleValue(a.drop))[0].piece;
 }
 
 export function dailyFights(): void {
@@ -974,19 +974,20 @@ const freeFightSources = [
         1119: 6, //escape DMT
       });
       const thought =
-        saleValue($item`abstraction: certainty`) >= saleValue($item`abstraction: thought`);
-      const action = saleValue($item`abstraction: joy`) >= saleValue($item`abstraction: action`);
+        getSaleValue($item`abstraction: certainty`) >= getSaleValue($item`abstraction: thought`);
+      const action =
+        getSaleValue($item`abstraction: joy`) >= getSaleValue($item`abstraction: action`);
       const sensation =
-        saleValue($item`abstraction: motion`) >= saleValue($item`abstraction: sensation`);
+        getSaleValue($item`abstraction: motion`) >= getSaleValue($item`abstraction: sensation`);
 
       if (thought) {
-        acquire(1, $item`abstraction: thought`, saleValue($item`abstraction: certainty`), false);
+        acquire(1, $item`abstraction: thought`, getSaleValue($item`abstraction: certainty`), false);
       }
       if (action) {
-        acquire(1, $item`abstraction: action`, saleValue($item`abstraction: joy`), false);
+        acquire(1, $item`abstraction: action`, getSaleValue($item`abstraction: joy`), false);
       }
       if (sensation) {
-        acquire(1, $item`abstraction: sensation`, saleValue($item`abstraction: motion`), false);
+        acquire(1, $item`abstraction: sensation`, getSaleValue($item`abstraction: motion`), false);
       }
       adventureMacro(
         $location`The Deep Machine Tunnels`,
@@ -1334,9 +1335,9 @@ const freeRunFightSources = [
           bonusEquip: new Map<Item, number>(
             have($familiar`Mini-Hipster`)
               ? [
-                  [$item`ironic moustache`, saleValue($item`mole skin notebook`)],
-                  [$item`chiptune guitar`, saleValue($item`ironic knit cap`)],
-                  [$item`fixed-gear bicycle`, saleValue($item`ironic oversized sunglasses`)],
+                  [$item`ironic moustache`, getSaleValue($item`mole skin notebook`)],
+                  [$item`chiptune guitar`, getSaleValue($item`ironic knit cap`)],
+                  [$item`fixed-gear bicycle`, getSaleValue($item`ironic oversized sunglasses`)],
                 ]
               : []
           ),
@@ -1698,6 +1699,8 @@ let bestFireExtinguisherZoneCached: fireExtinguisherZone | undefined = undefined
 function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
   if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
   const targets = fireExtinguishZones.filter((zone) => zone.open() && !isBanished(zone.monster));
-  bestFireExtinguisherZoneCached = targets.sort((a, b) => saleValue(b.item) - saleValue(a.item))[0];
+  bestFireExtinguisherZoneCached = targets.sort(
+    (a, b) => getSaleValue(b.item) - getSaleValue(a.item)
+  )[0];
   return bestFireExtinguisherZoneCached;
 }

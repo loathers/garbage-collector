@@ -1,7 +1,7 @@
 import { myFamiliar } from "kolmafia";
-import { $familiar, $item, $items, get, have } from "libram";
+import { $familiar, $item, $items, get, getSaleValue, have } from "libram";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, BonusEquipMode, fairyMultiplier, leprechaunMultiplier, saleValue } from "./lib";
+import { baseMeat, BonusEquipMode, fairyMultiplier, leprechaunMultiplier } from "./lib";
 
 enum BjornModifierType {
   MEAT,
@@ -25,19 +25,19 @@ type BjornedFamiliar = {
 const bjornFams: BjornedFamiliar[] = [
   {
     familiar: $familiar`Puck Man`,
-    meatVal: () => saleValue($item`yellow pixel`),
+    meatVal: () => getSaleValue($item`yellow pixel`),
     probability: 0.25,
     dropPredicate: () => get("_yellowPixelDropsCrown") < 25,
   },
   {
     familiar: $familiar`Ms. Puck Man`,
-    meatVal: () => saleValue($item`yellow pixel`),
+    meatVal: () => getSaleValue($item`yellow pixel`),
     probability: 0.25,
     dropPredicate: () => get("_yellowPixelDropsCrown") < 25,
   },
   {
     familiar: $familiar`Grimstone Golem`,
-    meatVal: () => saleValue($item`grimstone mask`),
+    meatVal: () => getSaleValue($item`grimstone mask`),
     probability: 0.5,
     dropPredicate: () => get("_grimstoneMaskDropsCrown") < 1,
   },
@@ -61,14 +61,14 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Garbage Fire`,
-    meatVal: () => saleValue($item`burning newspaper`),
+    meatVal: () => getSaleValue($item`burning newspaper`),
     probability: 0.5,
     dropPredicate: () => get("_garbageFireDropsCrown") < 3,
   },
   {
     familiar: $familiar`Machine Elf`,
     meatVal: () =>
-      saleValue(
+      getSaleValue(
         ...$items`abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose`
       ),
     probability: 0.2,
@@ -76,18 +76,18 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Trick-or-Treating Tot`,
-    meatVal: () => saleValue($item`hoarded candy wad`),
+    meatVal: () => getSaleValue($item`hoarded candy wad`),
     probability: 0.5,
     dropPredicate: () => get("_hoardedCandyDropsCrown") < 3,
   },
   {
     familiar: $familiar`Warbear Drone`,
-    meatVal: () => saleValue($item`warbear whosit`),
+    meatVal: () => getSaleValue($item`warbear whosit`),
     probability: 1 / 4.5,
   },
   {
     familiar: $familiar`Li'l Xenomorph`,
-    meatVal: () => saleValue($item`lunar isotope`),
+    meatVal: () => getSaleValue($item`lunar isotope`),
     probability: 0.05,
     modifier: {
       type: BjornModifierType.ITEM,
@@ -96,18 +96,18 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Pottery Barn Owl`,
-    meatVal: () => saleValue($item`volcanic ash`),
+    meatVal: () => getSaleValue($item`volcanic ash`),
     probability: 0.1,
   },
   {
     familiar: $familiar`Grim Brother`,
-    meatVal: () => saleValue($item`grim fairy tale`),
+    meatVal: () => getSaleValue($item`grim fairy tale`),
     probability: 1,
     dropPredicate: () => get("_grimFairyTaleDropsCrown") < 2,
   },
   {
     familiar: $familiar`Optimistic Candle`,
-    meatVal: () => saleValue($item`glob of melted wax`),
+    meatVal: () => getSaleValue($item`glob of melted wax`),
     probability: 1,
     dropPredicate: () => get("_optimisticCandleDropsCrown") < 3,
     modifier: {
@@ -118,7 +118,7 @@ const bjornFams: BjornedFamiliar[] = [
   {
     familiar: $familiar`Adventurous Spelunker`,
     meatVal: () =>
-      saleValue(
+      getSaleValue(
         ...$items`teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore`
       ),
     probability: 1,
@@ -130,7 +130,7 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Twitching Space Critter`,
-    meatVal: () => saleValue($item`space beast fur`),
+    meatVal: () => getSaleValue($item`space beast fur`),
     probability: 1,
     dropPredicate: () => get("_spaceFurDropsCrown") < 1,
   },
@@ -140,7 +140,7 @@ const bjornFams: BjornedFamiliar[] = [
     /*
     The below code is more accurate. However, party mouse is virtually never going to be worthwhile and this causes so many useless mall hits it isn't funny.
 
-      saleValue(
+      getSaleValue(
         ...Item.all().filter(
           (booze) =>
             ["decent", "good"].includes(booze.quality) &&
@@ -157,17 +157,18 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Yule Hound`,
-    meatVal: () => saleValue($item`candy cane`),
+    meatVal: () => getSaleValue($item`candy cane`),
     probability: 1,
   },
   {
     familiar: $familiar`Gluttonous Green Ghost`,
-    meatVal: () => saleValue(...$items`bean burrito, enchanted bean burrito, jumping bean burrito`),
+    meatVal: () =>
+      getSaleValue(...$items`bean burrito, enchanted bean burrito, jumping bean burrito`),
     probability: 1,
   },
   {
     familiar: $familiar`Reassembled Blackbird`,
-    meatVal: () => saleValue($item`blackberry`),
+    meatVal: () => getSaleValue($item`blackberry`),
     probability: 1,
     modifier: {
       type: BjornModifierType.ITEM,
@@ -176,7 +177,7 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Reconstituted Crow`,
-    meatVal: () => saleValue($item`blackberry`),
+    meatVal: () => getSaleValue($item`blackberry`),
     probability: 1,
     modifier: {
       type: BjornModifierType.ITEM,
@@ -186,20 +187,22 @@ const bjornFams: BjornedFamiliar[] = [
   {
     familiar: $familiar`Hunchbacked Minion`,
     meatVal: () =>
-      saleValue(
+      getSaleValue(
         ...$items`disembodied brain, skeleton bone, skeleton bone, skeleton bone, skeleton bone`
       ),
     probability: 1,
   },
   {
     familiar: $familiar`Reanimated Reanimator`,
-    meatVal: () => saleValue(...$items`hot wing, broken skull`),
+    meatVal: () => getSaleValue(...$items`hot wing, broken skull`),
     probability: 1,
   },
   {
     familiar: $familiar`Attention-Deficit Demon`,
     meatVal: () =>
-      saleValue(...$items`chorizo brownies, white chocolate and tomato pizza, carob chunk noodles`),
+      getSaleValue(
+        ...$items`chorizo brownies, white chocolate and tomato pizza, carob chunk noodles`
+      ),
     probability: 1,
     modifier: {
       type: BjornModifierType.MEAT,
@@ -208,7 +211,7 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Piano Cat`,
-    meatVal: () => saleValue(...$items`beertini, papaya slung, salty slug, tomato daiquiri`),
+    meatVal: () => getSaleValue(...$items`beertini, papaya slung, salty slug, tomato daiquiri`),
     probability: 1,
     modifier: {
       type: BjornModifierType.MEAT,
@@ -217,7 +220,7 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Golden Monkey`,
-    meatVal: () => saleValue($item`gold nuggets`),
+    meatVal: () => getSaleValue($item`gold nuggets`),
     probability: 0.5,
     modifier: {
       type: BjornModifierType.MEAT,
@@ -226,63 +229,63 @@ const bjornFams: BjornedFamiliar[] = [
   },
   {
     familiar: $familiar`Robot Reindeer`,
-    meatVal: () => saleValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
+    meatVal: () => getSaleValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
     probability: 0.3,
   },
   {
     familiar: $familiar`Stocking Mimic`,
     meatVal: () =>
-      saleValue(
+      getSaleValue(
         ...$items`Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint`
       ),
     probability: 0.3,
   },
   {
     familiar: $familiar`BRICKO chick`,
-    meatVal: () => saleValue($item`BRICKO brick`),
+    meatVal: () => getSaleValue($item`BRICKO brick`),
     probability: 1,
   },
   {
     familiar: $familiar`Cotton Candy Carnie`,
-    meatVal: () => saleValue($item`cotton candy pinch`),
+    meatVal: () => getSaleValue($item`cotton candy pinch`),
     probability: 1,
   },
   {
     familiar: $familiar`Untamed Turtle`,
-    meatVal: () => saleValue(...$items`snailmail bits, turtlemail bits, turtle wax`),
+    meatVal: () => getSaleValue(...$items`snailmail bits, turtlemail bits, turtle wax`),
     probability: 0.35,
   },
   {
     familiar: $familiar`Astral Badger`,
-    meatVal: () => 2 * saleValue(...$items`spooky mushroom, Knob mushroom, Knoll mushroom`),
+    meatVal: () => 2 * getSaleValue(...$items`spooky mushroom, Knob mushroom, Knoll mushroom`),
     probability: 1,
   },
   {
     familiar: $familiar`Green Pixie`,
-    meatVal: () => saleValue($item`bottle of tequila`),
+    meatVal: () => getSaleValue($item`bottle of tequila`),
     probability: 0.2,
   },
   {
     familiar: $familiar`Angry Goat`,
-    meatVal: () => saleValue($item`goat cheese pizza`),
+    meatVal: () => getSaleValue($item`goat cheese pizza`),
     probability: 1,
   },
   {
     familiar: $familiar`Adorable Seal Larva`,
     meatVal: () =>
-      saleValue(
+      getSaleValue(
         ...$items`stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets`
       ),
     probability: 0.35,
   },
   {
     familiar: $familiar`Ancient Yuletide Troll`,
-    meatVal: () => saleValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
+    meatVal: () => getSaleValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
     probability: 0.3,
   },
   {
     familiar: $familiar`Sweet Nutcracker`,
-    meatVal: () => saleValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
+    meatVal: () => getSaleValue(...$items`candy cane, eggnog, fruitcake, gingerbread bugbear`),
     probability: 0.3,
   },
   {
@@ -459,31 +462,34 @@ const bjornFams: BjornedFamiliar[] = [
   {
     familiar: $familiar`Frozen Gravy Fairy`,
     // drops a cold nugget every combat, 5 of which can be used to make a cold wad
-    meatVal: () => Math.max(0.2 * saleValue($item`cold wad`), saleValue($item`cold nuggets`)),
+    meatVal: () => Math.max(0.2 * getSaleValue($item`cold wad`), getSaleValue($item`cold nuggets`)),
     probability: 1,
   },
   {
     familiar: $familiar`Stinky Gravy Fairy`,
     // drops a stench nugget every combat, 5 of which can be used to make a stench wad
-    meatVal: () => Math.max(0.2 * saleValue($item`stench wad`), saleValue($item`stench nuggets`)),
+    meatVal: () =>
+      Math.max(0.2 * getSaleValue($item`stench wad`), getSaleValue($item`stench nuggets`)),
     probability: 1,
   },
   {
     familiar: $familiar`Sleazy Gravy Fairy`,
     // drops a sleaze nugget every combat, 5 of which can be used to make a sleaze wad
-    meatVal: () => Math.max(0.2 * saleValue($item`sleaze wad`), saleValue($item`sleaze nuggets`)),
+    meatVal: () =>
+      Math.max(0.2 * getSaleValue($item`sleaze wad`), getSaleValue($item`sleaze nuggets`)),
     probability: 1,
   },
   {
     familiar: $familiar`Spooky Gravy Fairy`,
     // drops a spooky nugget every combat, 5 of which can be used to make a spooky wad
-    meatVal: () => Math.max(0.2 * saleValue($item`spooky wad`), saleValue($item`spooky nuggets`)),
+    meatVal: () =>
+      Math.max(0.2 * getSaleValue($item`spooky wad`), getSaleValue($item`spooky nuggets`)),
     probability: 1,
   },
   {
     familiar: $familiar`Flaming Gravy Fairy`,
     // drops a hot nugget every combat, 5 of which can be used to make a hot wad
-    meatVal: () => Math.max(0.2 * saleValue($item`hot wad`), saleValue($item`hot nuggets`)),
+    meatVal: () => Math.max(0.2 * getSaleValue($item`hot wad`), getSaleValue($item`hot nuggets`)),
     probability: 1,
   },
 ].filter((bjornFam) => have(bjornFam.familiar));
