@@ -109,7 +109,8 @@ function propTrue(prop: string | boolean) {
 function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   if (!propTrue(prop)) {
     if (mallPrice(item) <= maxPrice) {
-      acquire(1, item, maxPrice);
+      acquire(1, item, maxPrice, false);
+      if (!have(item)) return;
       use(1, item);
     } else {
       print(`Skipping ${item.name}; too expensive (${mallPrice(item)} > ${maxPrice}).`);
