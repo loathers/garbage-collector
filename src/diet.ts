@@ -48,7 +48,6 @@ import {
   have,
   Kmail,
   set,
-  TunnelOfLove,
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
@@ -292,16 +291,6 @@ export function runDiet(): void {
     }
     use($item`LOV Extraterrestrial Chocolate`);
   }
-  const lovPrice = TunnelOfLove.have() ? 15000 : 20000;
-  const loveChocolateCount = Math.max(
-    3 - Math.floor(lovPrice / MPA) - get("_loveChocolatesUsed"),
-    0
-  );
-  const loveChocolateEat = Math.min(
-    loveChocolateCount,
-    itemAmount($item`LOV Extraterrestrial Chocolate`)
-  );
-  use(loveChocolateEat, $item`LOV Extraterrestrial Chocolate`);
 
   const chocos = new Map([
     [$class`Seal Clubber`, $item`chocolate seal-clubbing club`],
