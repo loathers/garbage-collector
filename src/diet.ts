@@ -284,7 +284,6 @@ export function runDiet(): void {
     const value = clamp(3 - get("_loveChocolatesUsed"), 0, 3) * get("valueOfAdventure");
     if (value < price) break;
     if (!have($item`LOV Extraterrestrial Chocolate`)) {
-      //get one, sucka
       Kmail.send("sellbot", `${$item`LOV Extraterrestrial Chocolate`.name} (1)`, undefined, 20000);
       wait(11);
       cliExecute("refresh inventory");
