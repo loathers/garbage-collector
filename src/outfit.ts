@@ -42,8 +42,9 @@ import {
 } from "libram";
 import { pickBjorn } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
+import { meatFamiliar } from "./familiar";
 import { globalOptions } from "./globalvars";
-import { baseMeat, BonusEquipMode } from "./lib";
+import { baseMeat, BonusEquipMode, leprechaunMultiplier } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -80,12 +81,12 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     forceEquip.push($item`vampyric cloake`);
   }
 
-  const bjornAlike =
+  const bjornalike =
     have($item`Buddy Bjorn`) && forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
-      ? $item`Buddy Bjorn`
+      ? bestBjornalike()
       : $item`Crown of Thrones`;
   preventEquip.push(
-    bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
+    bjornalike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
   );
 
   const finalRequirement = new Requirement(parameters, {
@@ -97,7 +98,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       ...pantsgiving(),
       ...cheeses(false),
       [
-        bjornAlike,
+        bjornalike,
         !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
           ? bjornChoice.meatVal() * bjornChoice.probability
           : 0,
@@ -389,4 +390,20 @@ function dropsItems(equipMode: BonusEquipMode) {
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
   ]);
+}
+
+let bjornalikeToUse: Item;
+function bestBjornalike(): Item {
+  if (!bjornalikeToUse) {
+    const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`;
+    if (bjornalikes.some((thing) => !have(thing))) {
+      bjornalikeToUse = bjornalikes.find((thing) => have(thing)) ?? $item`Buddy Bjorn`;
+    }
+    const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
+    if (have($item`carpe`) && (!hasStrongLep || !have($item`crumpled felt fedora`))) {
+      bjornalikeToUse = $item`Crown of Thrones`;
+    }
+    bjornalikeToUse = $item`Buddy Bjorn`;
+  }
+  return bjornalikeToUse;
 }
