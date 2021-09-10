@@ -400,9 +400,16 @@ function bestBjornalike(): Item {
       bjornalikeToUse = bjornalikes.find((thing) => have(thing)) ?? $item`Buddy Bjorn`;
     }
     const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
-    if (have($item`carpe`) && (!hasStrongLep || !have($item`crumpled felt fedora`))) {
+    const goodRobortHats = [
+      ...$items`warbear foil hat, crumpled felt fedora`,
+      ...(numericModifier($item`shining star cap`, "Familiar Weight") === 10
+        ? $items`shining star cap`
+        : []),
+    ];
+    if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
       bjornalikeToUse = $item`Crown of Thrones`;
     }
+
     bjornalikeToUse = $item`Buddy Bjorn`;
   }
   return bjornalikeToUse;
