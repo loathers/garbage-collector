@@ -32,6 +32,7 @@ import {
   useFamiliar,
   userConfirm,
   useSkill,
+  wait,
 } from "kolmafia";
 import {
   $class,
@@ -45,6 +46,7 @@ import {
   ensureEffect,
   get,
   have,
+  Kmail,
   set,
 } from "libram";
 import { acquire } from "./acquire";
@@ -278,12 +280,21 @@ export function runDiet(): void {
   }
   useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
 
-  const loveChocolateCount = Math.max(3 - Math.floor(20000 / MPA) - get("_loveChocolatesUsed"), 0);
-  const loveChocolateEat = Math.min(
-    loveChocolateCount,
-    itemAmount($item`LOV Extraterrestrial Chocolate`)
-  );
-  use(loveChocolateEat, $item`LOV Extraterrestrial Chocolate`);
+  while (get("_loveChocolatesUsed") < 3) {
+    const price = have($item`LOV Extraterrestrial Chocolate`) ? 15000 : 20000;
+    const value = clamp(3 - get("_loveChocolatesUsed"), 0, 3) * get("valueOfAdventure");
+    if (value < price) break;
+    if (!have($item`LOV Extraterrestrial Chocolate`)) {
+      Kmail.send("sellbot", `${$item`LOV Extraterrestrial Chocolate`.name} (1)`, undefined, 20000);
+      wait(11);
+      cliExecute("refresh inventory");
+      if (!have($item`LOV Extraterrestrial Chocolate`)) {
+        print("I'm tired of waiting for sellbot to send me some chocolate", "red");
+        break;
+      }
+    }
+    use($item`LOV Extraterrestrial Chocolate`);
+  }
 
   const chocos = new Map([
     [$class`Seal Clubber`, $item`chocolate seal-clubbing club`],
