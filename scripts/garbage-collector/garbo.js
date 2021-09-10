@@ -20211,7 +20211,8 @@ function propTrue(prop) {
 function useIfUnused(item, prop, maxPrice) {
   if (!propTrue(prop)) {
     if ((0,external_kolmafia_.mallPrice)(item) <= maxPrice) {
-      acquire(1, item, maxPrice);
+      acquire(1, item, maxPrice, false);
+      if (!(0,dist.have)(item)) return;
       (0,external_kolmafia_.use)(1, item);
     } else {
       (0,external_kolmafia_.print)("Skipping ".concat(item.name, "; too expensive (").concat((0,external_kolmafia_.mallPrice)(item), " > ").concat(maxPrice, ")."));
