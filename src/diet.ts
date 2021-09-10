@@ -32,6 +32,7 @@ import {
   useFamiliar,
   userConfirm,
   useSkill,
+  wait,
 } from "kolmafia";
 import {
   $class,
@@ -45,7 +46,9 @@ import {
   ensureEffect,
   get,
   have,
+  Kmail,
   set,
+  TunnelOfLove,
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
@@ -277,7 +280,22 @@ export function runDiet(): void {
   }
   useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
 
-  const loveChocolateCount = Math.max(3 - Math.floor(20000 / MPA) - get("_loveChocolatesUsed"), 0);
+  while (get("_loveChocolatesUsed") < 3) {
+    const price = have($item`LOV Extraterrestrial Chocolate`) ? 15000 : 20000;
+    const value = clamp(3 - get("_loveChocolatesUsed"), 0, 3) * get("valueOfAdventure");
+    if (value < price) break;
+    if (!have($item`LOV Extraterrestrial Chocolate`)) {
+      //get one, sucka
+      Kmail.send("sellbot", "FILL ME IN", undefined, 20000);
+      wait(69);
+    }
+    use($item`LOV Extraterrestrial Chocolate`);
+  }
+  const lovPrice = TunnelOfLove.have() ? 15000 : 20000;
+  const loveChocolateCount = Math.max(
+    3 - Math.floor(lovPrice / MPA) - get("_loveChocolatesUsed"),
+    0
+  );
   const loveChocolateEat = Math.min(
     loveChocolateCount,
     itemAmount($item`LOV Extraterrestrial Chocolate`)
