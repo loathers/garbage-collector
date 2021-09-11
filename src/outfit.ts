@@ -81,10 +81,10 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     forceEquip.push($item`vampyric cloake`);
   }
 
-  const bjornalike =
-    have($item`Buddy Bjorn`) && forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
-      ? bestBjornalike()
-      : $item`Crown of Thrones`;
+  const bjornalike = bestBjornalike(
+    $slots`hat, back`.filter((slot) => !forceEquip.some((equipment) => toSlot(equipment) === slot))
+  );
+
   preventEquip.push(
     bjornalike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
   );
@@ -97,12 +97,16 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       ...dropsItems(equipMode),
       ...pantsgiving(),
       ...cheeses(false),
-      [
-        bjornalike,
-        !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
-          ? bjornChoice.meatVal() * bjornChoice.probability
-          : 0,
-      ],
+      ...(bjornalike
+        ? new Map<Item, number>([
+            [
+              bjornalike,
+              !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+                ? bjornChoice.meatVal() * bjornChoice.probability
+                : 0,
+            ],
+          ])
+        : []),
     ]),
     preventSlot: [...preventSlot, ...$slots`crown-of-thrones, buddy-bjorn`],
   });
@@ -392,26 +396,22 @@ function dropsItems(equipMode: BonusEquipMode) {
   ]);
 }
 
-let bjornalikeToUse: Item;
-function bestBjornalike(): Item {
-  if (!bjornalikeToUse) {
-    const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`;
-    if (bjornalikes.some((thing) => !have(thing))) {
-      bjornalikeToUse = bjornalikes.find((thing) => have(thing)) ?? $item`Buddy Bjorn`;
-    }
-    const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
-    const goodRobortHats = [
-      $item`crumpled felt fedora`,
-      ...(myClass() === $class`Turtle Tamer` ? $items`warbear foil hat` : []),
-      ...(numericModifier($item`shining star cap`, "Familiar Weight") === 10
-        ? $items`shining star cap`
-        : []),
-    ];
-    if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
-      bjornalikeToUse = $item`Crown of Thrones`;
-    }
-
-    bjornalikeToUse = $item`Buddy Bjorn`;
+function bestBjornalike(slots: Slot[]): Item | undefined {
+  const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`;
+  if (slots.length < 2 || bjornalikes.some((thing) => !have(thing))) {
+    return bjornalikes.find((thing) => have(thing) && slots.includes(toSlot(thing)));
   }
-  return bjornalikeToUse;
+
+  const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
+  const goodRobortHats = [
+    $item`crumpled felt fedora`,
+    ...(myClass() === $class`Turtle Tamer` ? $items`warbear foil hat` : []),
+    ...(numericModifier($item`shining star cap`, "Familiar Weight") === 10
+      ? $items`shining star cap`
+      : []),
+  ];
+  if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
+    return $item`Crown of Thrones`;
+  }
+  return $item`Buddy Bjorn`;
 }
