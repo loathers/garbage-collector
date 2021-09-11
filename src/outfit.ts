@@ -401,7 +401,8 @@ function bestBjornalike(): Item {
     }
     const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
     const goodRobortHats = [
-      ...$items`warbear foil hat, crumpled felt fedora`,
+      $item`crumpled felt fedora`,
+      ...(myClass() === $class`Turtle Tamer` ? $items`warbear foil hat` : []),
       ...(numericModifier($item`shining star cap`, "Familiar Weight") === 10
         ? $items`shining star cap`
         : []),
