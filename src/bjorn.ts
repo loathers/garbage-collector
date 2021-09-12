@@ -187,9 +187,7 @@ const bjornFams: BjornedFamiliar[] = [
   {
     familiar: $familiar`Hunchbacked Minion`,
     meatVal: () =>
-      getSaleValue(
-        ...$items`disembodied brain, skeleton bone, skeleton bone, skeleton bone, skeleton bone`
-      ),
+      0.02 * getSaleValue($item`disembodied brain`) + 0.98 * getSaleValue($item`skeleton bone`),
     probability: 1,
   },
   {
