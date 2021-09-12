@@ -42,8 +42,9 @@ import {
 } from "libram";
 import { pickBjorn } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
+import { meatFamiliar } from "./familiar";
 import { globalOptions } from "./globalvars";
-import { baseMeat, BonusEquipMode } from "./lib";
+import { baseMeat, BonusEquipMode, leprechaunMultiplier } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -80,12 +81,10 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     forceEquip.push($item`vampyric cloake`);
   }
 
-  const bjornAlike =
-    have($item`Buddy Bjorn`) && forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
-      ? $item`Buddy Bjorn`
-      : $item`Crown of Thrones`;
+  const bjornalike = bestBjornalike(forceEquip);
+
   preventEquip.push(
-    bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
+    bjornalike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
   );
 
   const finalRequirement = new Requirement(parameters, {
@@ -96,12 +95,16 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       ...dropsItems(equipMode),
       ...pantsgiving(),
       ...cheeses(false),
-      [
-        bjornAlike,
-        !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
-          ? bjornChoice.meatVal() * bjornChoice.probability
-          : 0,
-      ],
+      ...(bjornalike
+        ? new Map<Item, number>([
+            [
+              bjornalike,
+              !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+                ? bjornChoice.meatVal() * bjornChoice.probability
+                : 0,
+            ],
+          ])
+        : []),
     ]),
     preventSlot: [...preventSlot, ...$slots`crown-of-thrones, buddy-bjorn`],
   });
@@ -389,4 +392,25 @@ function dropsItems(equipMode: BonusEquipMode) {
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
   ]);
+}
+
+function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
+  const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`;
+  const slots = bjornalikes
+    .map((bjornalike) => toSlot(bjornalike))
+    .filter((slot) => !existingForceEquips.some((equipment) => toSlot(equipment) === slot));
+  if (!slots.length) return undefined;
+  if (slots.length < 2 || bjornalikes.some((thing) => !have(thing))) {
+    return bjornalikes.find((thing) => have(thing) && slots.includes(toSlot(thing)));
+  }
+
+  const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
+  const goodRobortHats = $items`crumpled felt fedora`;
+  if (myClass() === $class`Turtle Tamer`) goodRobortHats.push($item`warbear foil hat`);
+  if (numericModifier($item`shining star cap`, "Familiar Weight") === 10)
+    goodRobortHats.push($item`shining star cap`);
+  if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
+    return $item`Crown of Thrones`;
+  }
+  return $item`Buddy Bjorn`;
 }
