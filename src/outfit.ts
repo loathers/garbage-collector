@@ -404,13 +404,10 @@ function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
   }
 
   const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
-  const goodRobortHats = [
-    $item`crumpled felt fedora`,
-    ...(myClass() === $class`Turtle Tamer` ? $items`warbear foil hat` : []),
-    ...(numericModifier($item`shining star cap`, "Familiar Weight") === 10
-      ? $items`shining star cap`
-      : []),
-  ];
+  const goodRobortHats = $items`crumpled felt fedora`;
+  if (myClass() === $class`Turtle Tamer`) goodRobortHats.push($item`warbear foil hat`);
+  if (numericModifier($item`shining star cap`, "Familiar Weight") === 10)
+    goodRobortHats.push($item`shining star cap`);
   if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
     return $item`Crown of Thrones`;
   }
