@@ -81,9 +81,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     forceEquip.push($item`vampyric cloake`);
   }
 
-  const bjornalike = bestBjornalike(
-    $slots`hat, back`.filter((slot) => !forceEquip.some((equipment) => toSlot(equipment) === slot))
-  );
+  const bjornalike = bestBjornalike(forceEquip);
 
   preventEquip.push(
     bjornalike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
@@ -396,8 +394,11 @@ function dropsItems(equipMode: BonusEquipMode) {
   ]);
 }
 
-function bestBjornalike(slots: Slot[]): Item | undefined {
+function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`;
+  const slots = bjornalikes
+    .map((bjornalike) => toSlot(bjornalike))
+    .filter((slot) => !existingForceEquips.some((equipment) => toSlot(equipment) === slot));
   if (slots.length < 2 || bjornalikes.some((thing) => !have(thing))) {
     return bjornalikes.find((thing) => have(thing) && slots.includes(toSlot(thing)));
   }
