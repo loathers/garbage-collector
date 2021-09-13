@@ -565,10 +565,12 @@ const pygmyMacro = Macro.if_(
   .abort();
 
 function getStenchLocation() {
-  return $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), Hippy Camp`
-    .find(l => canAdv(l, false)) || $location`none`;
+  return (
+    $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), Hippy Camp`.find((l) =>
+      canAdv(l, false)
+    ) || $location`none`
+  );
 }
-
 
 const freeFightSources = [
   // Get a Fish Head from our robortender if available
