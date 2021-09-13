@@ -60,6 +60,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $monsters,
   $phyla,
@@ -562,6 +563,12 @@ const pygmyMacro = Macro.if_(
   .if_("monstername pygmy janitor", Macro.item($item`tennis ball`))
   .if_("monstername time-spinner prank", Macro.basicCombat())
   .abort();
+
+function getStenchLocation() {
+  return $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), Hippy Camp`
+    .find(l => canAdv(l, false)) || $location`none`;
+}
+
 
 const freeFightSources = [
   // Get a Fish Head from our robortender if available
@@ -1162,7 +1169,7 @@ const freeRunFightSources = [
       get("_macrometeoriteUses") < 10,
     (runSource: FreeRun) => {
       adventureMacro(
-        $location`Barf Mountain`,
+        getStenchLocation(),
         Macro.while_(
           "!pastround 28 && hasskill macrometeorite",
           Macro.skill($skill`Extract Jelly`).skill($skill`Macrometeorite`)
@@ -1182,7 +1189,7 @@ const freeRunFightSources = [
       get("_powerfulGloveBatteryPowerUsed") < 91,
     (runSource: FreeRun) => {
       adventureMacro(
-        $location`Barf Mountain`,
+        getStenchLocation(),
         Macro.while_(
           "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
           Macro.skill($skill`Extract Jelly`).skill($skill`CHEAT CODE: Replace Enemy`)
@@ -1624,7 +1631,7 @@ function deliverThesis(): void {
     thesisLocation = $location`The Neverending Party`;
   }
   // if running nobarf, might not have access to Uncle Gator's. Space is cheaper.
-  else if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
+  else if (!canAdv(thesisLocation, false)) {
     if (!have($item`transporter transponder`)) {
       acquire(1, $item`transporter transponder`, 10000);
     }
