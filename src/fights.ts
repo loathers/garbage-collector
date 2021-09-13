@@ -566,8 +566,8 @@ const pygmyMacro = Macro.if_(
 
 function getStenchLocation() {
   return (
-    $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find((l) =>
-      canAdv(l, false)
+    $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
+      (l) => canAdv(l, false)
     ) || $location`none`
   );
 }
