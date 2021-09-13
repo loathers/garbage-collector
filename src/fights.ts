@@ -2,6 +2,7 @@ import {
   adv1,
   availableAmount,
   booleanModifier,
+  buy,
   cliExecute,
   closetAmount,
   eat,
@@ -886,9 +887,11 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => (get("questL11Ron") === "finished" ? 5 - get("_glarkCableUses") : 0),
+    () =>
+      get("questL11Ron") === "finished"
+        ? 5 - get("_glarkCableUses")
+        : 0 && have($item`glark cable`),
     () => {
-      retrieveItem(5 - get("_glarkCableUses"), $item`glark cable`);
       adventureMacro($location`The Red Zeppelin`, Macro.item($item`glark cable`));
     }
   ),
@@ -1487,6 +1490,17 @@ export function freeFights(): void {
 
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
+  }
+
+  if (
+    canAdv($location`The Red Zeppelin`, false) &&
+    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
+  ) {
+    buy(
+      clamp(5 - get("_glarkCableUses"), 0, 5),
+      $item`glark cable`,
+      get("garbo_valueOfFreeFight", 2000)
+    );
   }
 
   const stashRun = stashAmount($item`navel ring of navel gazing`)
