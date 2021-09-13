@@ -566,7 +566,7 @@ const pygmyMacro = Macro.if_(
 
 function getStenchLocation() {
   return (
-    $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), Hippy Camp`.find((l) =>
+    $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find((l) =>
       canAdv(l, false)
     ) || $location`none`
   );
@@ -1168,7 +1168,8 @@ const freeRunFightSources = [
     () =>
       have($familiar`Space Jellyfish`) &&
       have($skill`Meteor Lore`) &&
-      get("_macrometeoriteUses") < 10,
+      get("_macrometeoriteUses") < 10 &&
+      getStenchLocation() !== $location`none`,
     (runSource: FreeRun) => {
       adventureMacro(
         getStenchLocation(),
@@ -1188,7 +1189,8 @@ const freeRunFightSources = [
     () =>
       have($familiar`Space Jellyfish`) &&
       have($item`Powerful Glove`) &&
-      get("_powerfulGloveBatteryPowerUsed") < 91,
+      get("_powerfulGloveBatteryPowerUsed") < 91 &&
+      getStenchLocation() !== $location`none`,
     (runSource: FreeRun) => {
       adventureMacro(
         getStenchLocation(),
