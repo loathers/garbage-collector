@@ -889,7 +889,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       get("questL11Ron") === "finished"
-        ? clamp(5 - get("_glarkCableUses"), 0, itemAmont($item`glark cable`))
+        ? clamp(5 - get("_glarkCableUses"), 0, itemAmount($item`glark cable`))
         : 0,
     () => {
       adventureMacro($location`The Red Zeppelin`, Macro.item($item`glark cable`));
