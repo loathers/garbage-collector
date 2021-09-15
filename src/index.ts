@@ -1,5 +1,6 @@
 import {
   abort,
+  availableAmount,
   booleanModifier,
   buy,
   cliExecute,
@@ -28,6 +29,7 @@ import {
 } from "kolmafia";
 import {
   $class,
+  $coinmaster,
   $effect,
   $item,
   $items,
@@ -364,6 +366,16 @@ export function main(argString = ""): void {
             while (canContinue()) {
               barfTurn();
               safeInterrupt();
+            }
+
+            // buy one-day tickets with FunFunds if user desires
+            if (get<boolean>("garbo_buyPass", false) && availableAmount($item`FunFunds™`) >= 20) {
+              print("Buying a one-day tickets", "blue");
+              buy(
+                $coinmaster`The Dinsey Company Store`,
+                1,
+                $item`one-day ticket to Dinseylandfill`
+              );
             }
           } finally {
             setAutoAttack(0);
