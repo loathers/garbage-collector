@@ -318,7 +318,7 @@ export function runDiet(): void {
       };
     });
     const best = chocoVals.sort((a, b) => b.value - a.value)[0];
-    acquire(1, best.choco, best.value, false);
+    acquire(1, best.choco, best.value + mallPrice(best.choco), false);
     if (best.value > 0) use(1, best.choco);
     else break;
   }
