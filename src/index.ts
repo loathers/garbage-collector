@@ -369,12 +369,11 @@ export function main(argString = ""): void {
             }
 
             // buy one-day tickets with FunFunds if user desires
-            if (get("garbo_buyPasses") && availableAmount($item`FunFunds™`) >= 20) {
-              const numPasses = Math.floor(availableAmount($item`FunFunds™`) / 20);
-              print(`Buying ${numPasses} one-day tickets`, "blue");
+            if (get<boolean>("garbo_buyPass", false) && availableAmount($item`FunFunds™`) >= 20) {
+              print("Buying a one-day tickets", "blue");
               buy(
                 $coinmaster`The Dinsey Company Store`,
-                numPasses,
+                1,
                 $item`one-day ticket to Dinseylandfill`
               );
             }
