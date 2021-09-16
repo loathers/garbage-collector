@@ -8,7 +8,7 @@ $dark: #121943;
 $track-border: $mid;
 $track-background: $light;
 $focus-ring: 0px 0px 0px 2px $dark;
-$speed: .4s;
+$speed: 0.4s;
 
 #garbageCollectorContainer {
   margin: 1rem;
@@ -26,10 +26,10 @@ img {
 }
 
 input.stringPreference {
-    background-color: $light;
-    border-radius: 5px;
-    border: 1px solid $dark;
-    height: 24px;
+  background-color: $light;
+  border-radius: 5px;
+  border: 1px solid $dark;
+  height: 24px;
 }
 
 input.interrupt {
@@ -80,88 +80,88 @@ td {
 
 // Toggle specific styles
 .toggle {
-	align-items: center;
-	border-radius: 100px;
-	display: flex;
-	font-weight: 700;
-	margin-bottom: 16px;
+  align-items: center;
+  border-radius: 100px;
+  display: flex;
+  font-weight: 700;
+  margin-bottom: 16px;
 
-	&:last-of-type {
-		margin: 0;
-	}
+  &:last-of-type {
+    margin: 0;
+  }
 }
 
 // Since we can't style the checkbox directly, we "hide" it so we can draw the toggle.
 .toggle__input {
-	clip: rect(0 0 0 0);
-	clip-path: inset(50%);
-	height: 1px;
-	overflow: hidden;
-	position: absolute;
-	white-space: nowrap;
-	width: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 
-	// This style sets the focus ring. The ":not([disabled])" prevents the focus ring from creating a flash when the element is clicked.
-	&:not([disabled]):active + .toggle-track,
-	&:not([disabled]):focus + .toggle-track {
-		border: 1px solid transparent;
-		box-shadow: $focus-ring;
-	}
+  // This style sets the focus ring. The ":not([disabled])" prevents the focus ring from creating a flash when the element is clicked.
+  &:not([disabled]):active + .toggle-track,
+  &:not([disabled]):focus + .toggle-track {
+    border: 1px solid transparent;
+    box-shadow: $focus-ring;
+  }
 
-	&:disabled + .toggle-track {
-		cursor: not-allowed;
-		opacity: 0.7;
-	}
+  &:disabled + .toggle-track {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
 }
 
 .toggle-track {
-	background: $track-background;
-	border: 1px solid $track-border;
-	border-radius: 100px;
-	cursor: pointer;
-	display: flex;
-	height: $track-height;
-	margin: auto;
-	position: relative;
-	width: $track-width;
+  background: $track-background;
+  border: 1px solid $track-border;
+  border-radius: 100px;
+  cursor: pointer;
+  display: flex;
+  height: $track-height;
+  margin: auto;
+  position: relative;
+  width: $track-width;
 }
 
 .toggle-indicator {
-	align-items: center;
-	background: $dark;
-	border-radius: $toggle-indicator-size;
-	bottom: 2px;
-	display: flex;
-	height: $toggle-indicator-size;
-	justify-content: center;
-	left: 2px;
-	outline: $highContrastModeSupport;
-	position: absolute;
-	transition: $speed;
-	width: $toggle-indicator-size;
+  align-items: center;
+  background: $dark;
+  border-radius: $toggle-indicator-size;
+  bottom: 2px;
+  display: flex;
+  height: $toggle-indicator-size;
+  justify-content: center;
+  left: 2px;
+  outline: $highContrastModeSupport;
+  position: absolute;
+  transition: $speed;
+  width: $toggle-indicator-size;
 }
 
 // The check mark is optional
 .checkMark {
-	fill: #fff;
-	height: $toggle-indicator-size - 4;
-	width: $toggle-indicator-size - 4;
-	opacity: 0;
-	transition: opacity $speed ease-in-out;
+  fill: #fff;
+  height: $toggle-indicator-size - 4;
+  width: $toggle-indicator-size - 4;
+  opacity: 0;
+  transition: opacity $speed ease-in-out;
 }
 
 input[value="true"] + .toggle-track .toggle-indicator {
-	background: $dark;
-	transform: translateX($track-width - $track-height);
+  background: $dark;
+  transform: translateX($track-width - $track-height);
 
-	.checkMark {
-		opacity: 1;
-		transition: opacity $speed ease-in-out;
-	}
+  .checkMark {
+    opacity: 1;
+    transition: opacity $speed ease-in-out;
+  }
 }
 
 @media screen and (-ms-high-contrast: active) {
-	.toggle-track {
-		border-radius: 0;
-	}
+  .toggle-track {
+    border-radius: 0;
+  }
 }
