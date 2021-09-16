@@ -261,34 +261,35 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
     if (fight.available()) return fight;
   }
   const potential = embezzlerCount();
-  if (potential > 0 && get("_genieFightsUsed") < 3) {
-    const listToPrint = embezzlerSources
-      .filter((source) => !source.available() && source.potential() > 0)
-      .map((source) => `${source.potential()} from ${source.name}`)
-      .join(", ");
-    print(`You have the following embezzler-sources untapped right now: ${listToPrint}.`, "blue");
-    if (
-      userConfirm(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?`
-      )
-    ) {
-      return new EmbezzlerFight(
-        "Pocket Wish",
-        () => false,
-        () => 0,
-        () => {
-          retrieveItem($item`pocket wish`);
-          visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
-          visitUrl(
-            "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
-            true,
-            true
-          );
-          visitUrl("main.php", false);
-          runCombat();
-        }
-      );
-    }
+
+  const listToPrint = embezzlerSources
+    .filter((source) => !source.available() && source.potential() > 0)
+    .map((source) => `${source.potential()} from ${source.name}`)
+    .join(", ");
+  print(`You have the following embezzler-sources untapped right now: ${listToPrint}.`, "blue");
+  if (
+    potential > 0 &&
+    get("_genieFightsUsed") < 3 &&
+    userConfirm(
+      `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?`
+    )
+  ) {
+    return new EmbezzlerFight(
+      "Pocket Wish",
+      () => false,
+      () => 0,
+      () => {
+        retrieveItem($item`pocket wish`);
+        visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
+        visitUrl(
+          "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
+          true,
+          true
+        );
+        visitUrl("main.php", false);
+        runCombat();
+      }
+    );
   }
   return null;
 }
