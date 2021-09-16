@@ -39,7 +39,9 @@ import {
   adventureMacro,
   adventureMacroAuto,
   get,
+  getSaleValue,
   have,
+  haveInCampground,
   property,
   Requirement,
   set,
@@ -300,7 +302,25 @@ export function main(argString = ""): void {
       trackVoteMonster: "free",
       choiceAdventureScript: "",
     });
-    propertyManager.setChoices({ 1341: 1 }); // Cure her poison
+    let bestHalloweiner = 0;
+    if (haveInCampground($item`haunted doghouse`)) {
+      const halloweinerOptions: { price: number; choiceId: number }[] = (
+        [
+          [$items`bowl of eyeballs, bowl of mummy guts, bowl of maggots`, 1],
+          [$items`blood and blood, Jack-O-Lantern beer, zombie`, 2],
+          [$items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`, 3],
+        ] as [Item[], number][]
+      ).map(([halloweinerOption, choiceId]) => {
+        return { price: getSaleValue(...halloweinerOption), choiceId: choiceId };
+      });
+      bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
+    }
+    propertyManager.setChoices({
+      1106: 3, // Ghost Dog Chow
+      1107: 1, // tennis ball
+      1108: bestHalloweiner,
+      1341: 1, // Cure her poison
+    });
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
     if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
     const mpTarget = myLevel() < 18 ? 0.5 : 0.3;
