@@ -8758,13 +8758,121 @@ __webpack_require__.r(__webpack_exports__);
 var react_dom = __webpack_require__(699);
 // EXTERNAL MODULE: ./node_modules/react/index.js
 var react = __webpack_require__(481);
+;// CONCATENATED MODULE: ./src/relay/components/BooleanInput.tsx
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+function _iterableToArrayLimit(arr, i) {
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+  if (_i == null) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+
+  var _s, _e;
+
+  try {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+
+
+
+function BooleanInput(props) {
+  var _useState = (0,react.useState)(props.value === true),
+      _useState2 = _slicedToArray(_useState, 2),
+      value = _useState2[0],
+      setValue = _useState2[1];
+
+  return /*#__PURE__*/react.createElement("label", {
+    className: "checkcontainer"
+  }, /*#__PURE__*/react.createElement("input", {
+    type: "hidden",
+    name: props.name,
+    value: value
+  }), /*#__PURE__*/react.createElement("div", {
+    className: "toggle-track",
+    onClick: function onClick() {
+      setValue(!value);
+    }
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "toggle-indicator"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "checkMark"
+  }, /*#__PURE__*/react.createElement("svg", {
+    viewBox: "0 0 24 24",
+    id: "ghq-svg-check",
+    role: "presentation",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/react.createElement("path", {
+    d: "M9.86 18a1 1 0 01-.73-.32l-4.86-5.17a1.001 1.001 0 011.46-1.37l4.12 4.39 8.41-9.2a1 1 0 111.48 1.34l-9.14 10a1 1 0 01-.73.33h-.01z"
+  }))))));
+}
+/*
+<div
+  class="checkmark"
+  onClick={() => {
+    setValue(!value);
+  }}
+/>
+ */
+
+
+/* harmony default export */ const components_BooleanInput = (BooleanInput);
 ;// CONCATENATED MODULE: ./src/relay/components/Setting.tsx
+
 
 
 function Setting(props) {
   return /*#__PURE__*/react.createElement("tr", {
     id: "userPreference"
-  }, /*#__PURE__*/react.createElement("td", null, props.name), /*#__PURE__*/react.createElement("td", null, /*#__PURE__*/react.createElement("input", {
+  }, /*#__PURE__*/react.createElement("td", null, props.name), /*#__PURE__*/react.createElement("td", null, props.type === "boolean" ? /*#__PURE__*/react.createElement(components_BooleanInput, props) : /*#__PURE__*/react.createElement("input", {
+    className: "stringPreference",
     name: props.name,
     defaultValue: props.value
   })), /*#__PURE__*/react.createElement("td", null, props.description));
