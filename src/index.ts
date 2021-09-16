@@ -9,6 +9,7 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
+  mallPrice,
   myAdventures,
   myClass,
   myGardenType,
@@ -300,7 +301,27 @@ export function main(argString = ""): void {
       trackVoteMonster: "free",
       choiceAdventureScript: "",
     });
-    propertyManager.setChoices({ 1341: 1 }); // Cure her poison
+    const average = (items: Item[]) => {
+      return items.reduce((sum, item): number => {
+        return sum + mallPrice(item) / items.length;
+      }, 0);
+    };
+    const halloweinerOptions: { price: number; choiceId: number }[] = (
+      [
+        [$items`bowl of eyeballs, bowl of mummy guts, bowl of maggots`, 1],
+        [$items`blood and blood, Jack-O-Lantern beer, zombie`, 2],
+        [$items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`, 3],
+      ] as [Item[], number][]
+    ).map(([halloweinerOption, choiceId]) => {
+      return { price: average(halloweinerOption), choiceId: choiceId };
+    });
+    const bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
+    propertyManager.setChoices({
+      1106: 3 /* Wooof! Wooooooof! */,
+      1107: 1 /* Playing Fetch* */,
+      1108: bestHalloweiner /* Your Dog Found Something Again */,
+      1341: 1 /* Cure her poison */,
+    });
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
     if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
     const mpTarget = myLevel() < 18 ? 0.5 : 0.3;
