@@ -316,10 +316,10 @@ export function main(argString = ""): void {
       bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
     }
     propertyManager.setChoices({
-      1106: 3 /* Wooof! Wooooooof! */,
-      1107: 1 /* Playing Fetch* */,
-      1108: bestHalloweiner /* Your Dog Found Something Again */,
-      1341: 1 /* Cure her poison */,
+      1106: 3, // Ghost Dog Chow
+      1107: 1, // tennis ball
+      1108: bestHalloweiner,
+      1341: 1, // Cure her poison
     });
     if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
     if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
