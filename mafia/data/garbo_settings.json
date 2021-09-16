@@ -8,6 +8,10 @@
     "description": "What is your vip clan? Set to current clan if you don't have access to one (And then get whitelisted to BAFH. It's free!)."
   },
   {
+    "name": "garbo_stashClan",
+    "description": "What is your stash clan? Set to current clan if you don't have access to one."
+  },
+  {
     "name": "garbo_skipAscensionCheck",
     "type": "boolean",
     "description": "Should skip verifying that your account has broken the prism? Set to true if you want to proceed regardless, and false if you'd like to be warned."
