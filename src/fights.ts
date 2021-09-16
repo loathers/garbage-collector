@@ -113,8 +113,6 @@ import {
 import { bathroomFinance } from "./potions";
 import { globalOptions, log } from "./globalvars";
 import {
-  determineDraggableZoneAndEnsureAccess,
-  draggableFight,
   embezzlerCount,
   EmbezzlerFight,
   embezzlerMacro,
@@ -122,6 +120,7 @@ import {
   estimatedTurns,
 } from "./embezzler";
 import { canAdv } from "canadv.ash";
+import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
 const firstChainMacro = () =>
   Macro.if_(

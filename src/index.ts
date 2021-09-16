@@ -63,7 +63,8 @@ import {
 import { withStash, withVIPClan } from "./clan";
 import { globalOptions, log } from "./globalvars";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
-import { determineDraggableZoneAndEnsureAccess, estimatedTurns } from "./embezzler";
+import { estimatedTurns } from "./embezzler";
+import { determineDraggableZoneAndEnsureAccess } from "./wanderer";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
