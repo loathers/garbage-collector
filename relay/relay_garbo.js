@@ -17989,12 +17989,61 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1769);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(libram__WEBPACK_IMPORTED_MODULE_1__);
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-}
+function _createForOfIteratorHelper(o, allowArrayLike) {
+  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
 
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  if (!it) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it) o = it;
+      var i = 0;
+
+      var F = function F() {};
+
+      return {
+        s: F,
+        n: function n() {
+          if (i >= o.length) return {
+            done: true
+          };
+          return {
+            done: false,
+            value: o[i++]
+          };
+        },
+        e: function e(_e) {
+          throw _e;
+        },
+        f: F
+      };
+    }
+
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var normalCompletion = true,
+      didErr = false,
+      err;
+  return {
+    s: function s() {
+      it = it.call(o);
+    },
+    n: function n() {
+      var step = it.next();
+      normalCompletion = step.done;
+      return step;
+    },
+    e: function e(_e2) {
+      didErr = true;
+      err = _e2;
+    },
+    f: function f() {
+      try {
+        if (!normalCompletion && it["return"] != null) it["return"]();
+      } finally {
+        if (didErr) throw err;
+      }
+    }
+  };
 }
 
 function _unsupportedIterableToArray(o, minLen) {
@@ -18016,40 +18065,6 @@ function _arrayLikeToArray(arr, len) {
   return arr2;
 }
 
-function _iterableToArrayLimit(arr, i) {
-  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-
-  if (_i == null) return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-
-  var _s, _e;
-
-  try {
-    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
 
 
 function main() {
@@ -18069,26 +18084,22 @@ function main() {
       });
       (0,libram__WEBPACK_IMPORTED_MODULE_1__.set)(field, fields[field]);
     }
-  }); // load user prefences into json object to pass to react
+  }); // load user perferences into json object to pass to react
 
-  var settings = [];
-  var lines = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fileToArray)("garbo_settings.txt");
+  var settings = JSON.parse((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fileToBuffer)("garbo_settings.json"));
 
-  for (var _i = 0, _Object$values = Object.values(lines); _i < _Object$values.length; _i++) {
-    var i = _Object$values[_i];
+  var _iterator = _createForOfIteratorHelper(settings),
+      _step;
 
-    var _i$split = i.split("\t"),
-        _i$split2 = _slicedToArray(_i$split, 3),
-        name = _i$split2[0],
-        type = _i$split2[1],
-        description = _i$split2[2];
-
-    settings.push({
-      name: name,
-      value: (0,libram__WEBPACK_IMPORTED_MODULE_1__.get)(name),
-      type: type,
-      description: description
-    });
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var setting = _step.value;
+      setting.value = (0,libram__WEBPACK_IMPORTED_MODULE_1__.get)(setting.name);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
   }
 
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.writeln)('<head><link rel="stylesheet" href="/garbage-collector/main.css"></head>');
