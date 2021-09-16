@@ -1,6 +1,16 @@
 import { canAdv } from "canadv.ash";
 import { buy, cliExecute, myTurncount, print, retrieveItem, use } from "kolmafia";
-import { $effect, $item, $location, $locations, clamp, get, Guzzlr, have, SourceTerminal } from "libram";
+import {
+  $effect,
+  $item,
+  $location,
+  $locations,
+  clamp,
+  get,
+  Guzzlr,
+  have,
+  SourceTerminal,
+} from "libram";
 import { estimatedTurns } from "./embezzler";
 
 export enum draggableFight {
