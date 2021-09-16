@@ -1,0 +1,30 @@
+[
+  {
+    "name": "valueOfAdventure",
+    "description": "What is a marginal barf turn worth to you?"
+  },
+  {
+    "name": "garbo_vipClan",
+    "description": "What is your vip clan? Set to current clan if you don't have access to one (And then get whitelisted to BAFH. It's free!)."
+  },
+  {
+    "name": "garbo_skipAscensionCheck",
+    "type": "boolean",
+    "description": "Should skip verifying that your account has broken the prism? Set to true if you want to proceed regardless, and false if you'd like to be warned."
+  },
+  {
+    "name": "garbo_valueOfFreeFight",
+    "defaultValue": 2000,
+    "description": "What is a free fight\run worth to you? (Default 2000)."
+  },
+  {
+    "name": "garbo_fightGlitch",
+    "type": "boolean",
+    "description": "Should we fight the glitch season reward? This assumes you have access to many skills--Curse of Marinara, Conspiratorial Whispers, Shadow Noodles, and more."
+  },
+  {
+    "name": "garbo_buyPass",
+    "type": "boolean",
+    "description": "Should a dinsey day pass be bought with FunFunds (if possible) at the end of the script?"
+  }
+]

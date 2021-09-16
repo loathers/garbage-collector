@@ -1,4 +1,4 @@
-import { fileToArray, formField, formFields, writeln } from "kolmafia";
+import { fileToBuffer, formField, formFields, writeln } from "kolmafia";
 import { get, set } from "libram";
 
 export function main(): void {
@@ -21,17 +21,10 @@ export function main(): void {
     }
   });
 
-  // load user prefences into json object to pass to react
-  const settings = [];
-  const lines = fileToArray("garbo_settings.txt");
-  for (const i of Object.values(lines)) {
-    const [name, type, description] = i.split("\t");
-    settings.push({
-      name: name,
-      value: get(name),
-      type: type,
-      description: description,
-    });
+  // load user perferences into json object to pass to react
+  const settings = JSON.parse(fileToBuffer("garbo_settings.json"));
+  for (const setting of settings) {
+    setting.value = get(setting.name);
   }
 
   writeln('<head><link rel="stylesheet" href="/garbage-collector/main.css"></head>');
