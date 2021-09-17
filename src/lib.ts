@@ -11,6 +11,7 @@ import {
   print,
   restoreMp,
   retrieveItem,
+  runChoice,
   toUrl,
   use,
   useFamiliar,
@@ -89,6 +90,21 @@ export function mapMonster(location: Location, monster: Monster): void {
   // Handle zone intros and holiday wanderers
   while (!mapPage.includes("Leading Yourself Right to Them")) {
     mapPage = visitUrl(toUrl(location), false, true);
+    const turtleAdvs = [
+      "Even Tamer Than Usual",
+      "Never Break the Chain",
+      "Close, but Yes Cigar",
+      "Armchair Quarterback",
+      "This Turtle Rocks!",
+      "Really Sticking Her Neck Out",
+      "It Came from Beneath the Sewer? Great!",
+      "Don't Be Alarmed, Now",
+      "Puttin' it on Wax",
+      "More Like... Hurtle",
+      "Musk! Musk! Musk!",
+      "Silent Strolling",
+    ];
+    if (turtleAdvs.some((advName) => mapPage.includes(advName))) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
   }
 
