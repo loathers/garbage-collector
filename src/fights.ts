@@ -261,7 +261,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
     if (fight.available()) return fight;
   }
   const potential = embezzlerCount();
-
+  const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
   if (potential > 0) {
     print(`You have the following embezzler-sources untapped right now:`, "blue");
     embezzlerSources
@@ -269,6 +269,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
       .map((source) => `${source.potential()} from ${source.name}`)
       .forEach((text) => print(text, "blue"));
     if (
+      Math.floor((potential * averageEmbezzlerNet) / 50000) > 0 &&
       get("_genieFightsUsed") < 3 &&
       userConfirm(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?`
