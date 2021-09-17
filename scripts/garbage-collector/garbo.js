@@ -22726,18 +22726,29 @@ function getEmbezzlerFight() {
 
   var potential = embezzlerCount();
 
-  if (potential > 0 && (0,dist.get)("_genieFightsUsed") < 3 && (0,external_kolmafia_.userConfirm)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"))) {
-    return new EmbezzlerFight("Pocket Wish", function () {
-      return false;
-    }, function () {
-      return 0;
-    }, function () {
-      (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject54 || (fights_templateObject54 = fights_taggedTemplateLiteral(["pocket wish"]))));
-      (0,external_kolmafia_.visitUrl)("inv_use.php?pwd=".concat((0,external_kolmafia_.myHash)(), "&which=3&whichitem=9537"), false, true);
-      (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ", true, true);
-      (0,external_kolmafia_.visitUrl)("main.php", false);
-      (0,external_kolmafia_.runCombat)();
+  if (potential > 0) {
+    (0,external_kolmafia_.print)("You have the following embezzler-sources untapped right now:", "blue");
+    embezzlerSources.filter(function (source) {
+      return !source.available() && source.potential() > 0;
+    }).map(function (source) {
+      return "".concat(source.potential(), " from ").concat(source.name);
+    }).forEach(function (text) {
+      return (0,external_kolmafia_.print)(text, "blue");
     });
+
+    if ((0,dist.get)("_genieFightsUsed") < 3 && (0,external_kolmafia_.userConfirm)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"))) {
+      return new EmbezzlerFight("Pocket Wish", function () {
+        return false;
+      }, function () {
+        return 0;
+      }, function () {
+        (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject54 || (fights_templateObject54 = fights_taggedTemplateLiteral(["pocket wish"]))));
+        (0,external_kolmafia_.visitUrl)("inv_use.php?pwd=".concat((0,external_kolmafia_.myHash)(), "&which=3&whichitem=9537"), false, true);
+        (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ", true, true);
+        (0,external_kolmafia_.visitUrl)("main.php", false);
+        (0,external_kolmafia_.runCombat)();
+      });
+    }
   }
 
   return null;
