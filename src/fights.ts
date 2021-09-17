@@ -299,7 +299,7 @@ function startDigitize() {
   if (
     (getCounters("Digitize Monster", 0, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
-    (!getCounters("Enamorang monster", 0, 100).trim() && get("enamorangMonster"))
+    (getCounters("Enamorang monster", 0, 100).trim() === "" && get("enamorangMonster"))
   ) {
     do {
       const run = findRun() || ltbRun;
