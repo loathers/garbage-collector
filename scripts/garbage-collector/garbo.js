@@ -20990,6 +20990,8 @@ var StashManager = /*#__PURE__*/function () {
 
     clan_defineProperty(this, "clanIdOrName", void 0);
 
+    clan_defineProperty(this, "enabled", void 0);
+
     clan_defineProperty(this, "taken", new Map());
 
     if (clanIdOrName === undefined) {
@@ -21006,6 +21008,7 @@ var StashManager = /*#__PURE__*/function () {
     }
 
     this.clanIdOrName = clanIdOrName;
+    this.enabled = 0 !== clanIdOrName && "none" !== clanIdOrName;
   }
 
   _createClass(StashManager, [{
@@ -21015,6 +21018,17 @@ var StashManager = /*#__PURE__*/function () {
 
       for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
         items[_key] = arguments[_key];
+      }
+
+      if (items.length === 0) {
+        return;
+      }
+
+      if (!this.enabled) {
+        (0,external_kolmafia_.print)("Stash access is disabled. Ignoring request to borrow \"".concat(items.map(function (value) {
+          return value.name;
+        }).join(", "), "\" from clan stash."), "yellow");
+        return;
       }
 
       withClan(this.clanIdOrName, function () {
