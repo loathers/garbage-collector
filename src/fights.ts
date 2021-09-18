@@ -297,8 +297,8 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
 
 function startDigitize() {
   if (
-    getCounters("Digitize Monster", 0, 0) === "" &&
-    getCounters("Enamorang Monster", 0, 0) === "" &&
+    getCounters("Digitize Monster", 0, 0).trim() === "" &&
+    getCounters("Enamorang Monster", 0, 0).trim() === "" &&
     ((getCounters("Digitize Monster", 0, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
       (getCounters("Enamorang Monster", 0, 100).trim() === "" && get("enamorangMonster")))
