@@ -269,7 +269,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
       .map((source) => `${source.potential()} from ${source.name}`)
       .forEach((text) => print(text, "blue"));
     if (
-      potential * averageEmbezzlerNet > 50000 &&
+      (1 + potential) * (averageEmbezzlerNet - get("valueOfAdventure")) > 50000 &&
       get("_genieFightsUsed") < 3 &&
       userConfirm(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?`
