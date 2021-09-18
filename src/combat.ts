@@ -296,8 +296,11 @@ export class Macro extends LibramMacro {
       return this.trySkill($skill`Pocket Crumbs`)
         .trySkill($skill`Extract`)
         .externalIf(
-          haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
-          Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item($item`seal tooth`))
+          myFamiliar() === $familiar`Hobo Monkey`,
+          Macro.while_(
+            `!match "shoulder, and hands you some Meat." && !pastround 20 && !hppercentbelow 25`,
+            Macro.item($item`seal tooth`)
+          )
         )
         .externalIf(
           [
@@ -309,11 +312,8 @@ export class Macro extends LibramMacro {
           Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item($item`seal tooth`))
         )
         .externalIf(
-          myFamiliar() === $familiar`Hobo Monkey`,
-          Macro.while_(
-            `!match "shoulder, and hands you some Meat." && !pastround 20 && !hppercentbelow 25`,
-            Macro.item($item`seal tooth`)
-          )
+          haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
+          Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item($item`seal tooth`))
         )
         .tryItem($item`porquoise-handled sixgun`);
     }
