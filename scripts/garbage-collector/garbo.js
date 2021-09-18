@@ -19883,6 +19883,10 @@ function mapMonster(location, monster) {
 
   while (!mapPage.includes("Leading Yourself Right to Them")) {
     mapPage = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(location), false, true);
+    var turtleAdvs = ["Even Tamer Than Usual", "Never Break the Chain", "Close, but Yes Cigar", "Armchair Quarterback", "This Turtle Rocks!", "Really Sticking Her Neck Out", "It Came from Beneath the Sewer? Great!", "Don't Be Alarmed, Now", "Puttin' it on Wax", "More Like... Hurtle", "Musk! Musk! Musk!", "Silent Strolling"];
+    if (turtleAdvs.some(function (advName) {
+      return mapPage.includes(advName);
+    })) (0,external_kolmafia_.runChoice)(-1);
     if ((0,external_kolmafia_.myTurncount)() > myTurns + 1) throw "Map the monsters unsuccessful?";
   }
 
