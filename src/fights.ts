@@ -295,7 +295,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
   return null;
 }
 
-function startDigitize() {
+function startWandererCounters() {
   if (
     getCounters("Digitize Monster", 0, 0).trim() === "" &&
     getCounters("Enamorang Monster", 0, 0).trim() === "" &&
@@ -355,7 +355,7 @@ export function dailyFights(): void {
         safeInterrupt();
       }
 
-      startDigitize();
+      startWandererCounters();
 
       // SECOND EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
@@ -387,7 +387,7 @@ export function dailyFights(): void {
         safeInterrupt();
       }
 
-      startDigitize();
+      startWandererCounters();
 
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getEmbezzlerFight();
@@ -448,7 +448,7 @@ export function dailyFights(): void {
         ) {
           log.initialEmbezzlersFought++;
         }
-        startDigitize();
+        startWandererCounters();
         nextFight = getEmbezzlerFight();
         if (
           kramcoGuaranteed() &&
