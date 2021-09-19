@@ -22587,6 +22587,7 @@ function getEmbezzlerFight() {
   }
 
   var potential = embezzlerCount();
+  var averageEmbezzlerNet = (baseMeat + 750) * (0,external_kolmafia_.meatDropModifier)() / 100;
 
   if (potential > 0) {
     (0,external_kolmafia_.print)("You have the following embezzler-sources untapped right now:", "blue");
@@ -22598,7 +22599,7 @@ function getEmbezzlerFight() {
       return (0,external_kolmafia_.print)(text, "blue");
     });
 
-    if ((0,dist.get)("_genieFightsUsed") < 3 && (0,external_kolmafia_.userConfirm)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"))) {
+    if ((1 + potential) * (averageEmbezzlerNet - (0,dist.get)("valueOfAdventure")) > 50000 && (0,dist.get)("_genieFightsUsed") < 3 && (0,external_kolmafia_.userConfirm)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?"))) {
       return new EmbezzlerFight("Pocket Wish", function () {
         return false;
       }, function () {
