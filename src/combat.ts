@@ -308,7 +308,7 @@ export class Macro extends LibramMacro {
             $familiar`Feather Boa Constrictor`,
             $familiar`Ninja Pirate Zombie Robot`,
             $familiar`Stocking Mimic`,
-          ].some((familiar) => myFamiliar() === familiar),
+          ].includes(myFamiliar()),
           Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item($item`seal tooth`))
         )
         .externalIf(
