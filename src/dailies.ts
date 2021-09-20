@@ -291,7 +291,7 @@ function configureVykea() {
       (5 * mallPrice($item`VYKEA rail`) +
         cost * mallPrice($item`VYKEA dowel`) +
         5 * mallPrice($item`VYKEA plank`) +
-        1 * mallPrice($item`VYKEA hex key`));
+        1 * mallPrice($item`VYKEA instructions`));
 
     if (vykeas.some(([level, cost]) => vykeaProfit(level, cost) > 0)) {
       const level = vykeas.sort((a, b) => vykeaProfit(...b) - vykeaProfit(...a))[0][0];
