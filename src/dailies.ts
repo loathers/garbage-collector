@@ -288,10 +288,10 @@ function configureVykea() {
     ]; //excluding 4 and 5 as per bean's suggestion
     const vykeaProfit = (level: number, cost: number) =>
       estimatedTurns() * baseMeat * 0.1 * level -
-      5 * mallPrice($item`VYKEA rail`) +
+      (5 * mallPrice($item`VYKEA rail`) +
       cost * mallPrice($item`VYKEA dowel`) +
       5 * mallPrice($item`VYKEA plank`) +
-      1 * mallPrice($item`VYKEA hex key`);
+      1 * mallPrice($item`VYKEA hex key`));
 
     if (vykeas.some(([level, cost]) => vykeaProfit(level, cost) > 0)) {
       const level = vykeas.sort((a, b) => vykeaProfit(...b) - vykeaProfit(...a))[0][0];
