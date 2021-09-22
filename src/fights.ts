@@ -296,6 +296,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
 }
 
 function startWandererCounters() {
+  let n = 0;
   if (
     getCounters("Digitize Monster", 0, 0).trim() === "" &&
     getCounters("Enamorang Monster", 0, 0).trim() === "" &&
@@ -308,7 +309,8 @@ function startWandererCounters() {
       if (run.prepare) run.prepare();
       freeFightOutfit(run.requirement ? [run.requirement] : []);
       adventureMacro($location`Noob Cave`, run.macro);
-    } while (get("lastCopyableMonster") !== $monster`crate`);
+      n++;
+    } while (get("lastCopyableMonster") !== $monster`crate` && n < 3);
   }
 }
 const witchessPieces = [
