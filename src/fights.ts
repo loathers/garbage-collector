@@ -308,7 +308,7 @@ function startWandererCounters() {
       if (run.prepare) run.prepare();
       freeFightOutfit(run.requirement ? [run.requirement] : []);
       adventureMacro($location`Noob Cave`, run.macro);
-    } while (get("lastCopyableMonster") === $monster`Government agent`);
+    } while (get("lastCopyableMonster") !== $monster`crate`);
   }
 }
 const witchessPieces = [
