@@ -10,6 +10,7 @@
     - [`nobarf` flag](#nobarf-flag)
     - [`ascend` flag](#ascend-flag)
     - [`help` flag](#help-flag)
+  - [Frequent Questions](#frequent-questions)
 
 ## Introduction
 
@@ -72,3 +73,21 @@ Garbo operates under the assumption that you plan on staying in this run over ro
 Running Garbo `help` will print out simple help documentation and not run any turns.
 
 If you have issues with this script, please post about them in the #garbage-collector channel within the [Ascension Speed Society Discord](https://discord.gg/tbUCRT5), and someone will eventually (at some point) endeavor to solve them. Someday. Maybe.
+
+## Frequent Questions
+
+> Why is Garbo adventuring outside of Barf Mountain?
+
+Garbo will use your resources to earn meat everywhere possible such as the Hidden Bowling Alley, The Haunted Library, The Deep Dark Jungle, or The Ice Hotel. These generally won't cost a turn to do.
+
+> Garbo buys a one-day pass to Dinseylandfill even though I own the charter?
+
+Ensure that ☑️ Have Dinseylandfill is checked in IotM tracking in KolMafia's preferences.
+
+> Garbo is failing to buy items from the mall?
+
+Increase autoBuyPriceLimit by typing `set autoBuyPriceLimit = 1234` where 1234 is the new value you need.
+
+> Garbo crashed with error Mall price too high for item?
+
+Try rerunning it once. These checks are emergency stops in case the mall prices go beyond expectations.
