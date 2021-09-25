@@ -1740,8 +1740,7 @@ const fireExtinguishZones = [
     item: $item`rusty hedge trimmers`,
     dropRate: 0.5,
     maximize: ["10 monster level 100 max"], // Topiary animals need an extra 10 HP to survive polar vortices
-    open: () =>
-      myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") === 15,
+    open: () => myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
   },
 ] as fireExtinguisherZone[];
 
