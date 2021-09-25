@@ -19,6 +19,7 @@ import {
   $class,
   $effect,
   $effects,
+  $familiar,
   $item,
   $items,
   $skill,
@@ -49,7 +50,14 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
-  mood.potion($item`Flaskfull of Hollow`, 5);
+
+  const flaskValue =
+    get("latteUnlocks").includes("cajun") &&
+    get("latteUnlocks").includes("rawhide") &&
+    have($familiar`Robortender`)
+      ? 5
+      : 0.3 * baseMeat;
+  mood.potion($item`Flaskfull of Hollow`, flaskValue);
 
   mood.skill($skill`Blood Bond`);
   mood.skill($skill`Leash of Linguini`);
