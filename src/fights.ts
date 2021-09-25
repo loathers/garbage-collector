@@ -23,6 +23,7 @@ import {
   myHash,
   myHp,
   myInebriety,
+  myLevel,
   myMaxhp,
   myMaxmp,
   myMp,
@@ -1324,11 +1325,9 @@ const freeRunFightSources = [
       requirements: () => {
         const zone = getBestFireExtinguisherZone();
         return [
-          new Requirement(
-            // Bookbats need up to +100 ML to survive the polar vortices
-            zone?.location === $location`The Haunted Library` ? ["99 monster level 100 max"] : [],
-            { forceEquip: $items`industrial fire extinguisher` }
-          ),
+          new Requirement(zone?.maximize ?? [], {
+            forceEquip: $items`industrial fire extinguisher`,
+          }),
         ];
       },
     }
@@ -1706,26 +1705,43 @@ type fireExtinguisherZone = {
   item: Item;
   location: Location;
   monster: Monster;
+  dropRate: number;
   open: () => boolean;
+  maximize: string[];
 };
 const fireExtinguishZones = [
   {
     location: $location`The Deep Dark Jungle`,
     monster: $monster`smoke monster`,
     item: $item`transdermal smoke patch`,
+    dropRate: 1,
+    maximize: [],
     open: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
   },
   {
     location: $location`The Ice Hotel`,
     monster: $monster`ice bartender`,
     item: $item`perfect ice cube`,
+    dropRate: 1,
+    maximize: [],
     open: () => get("_coldAirportToday") || get("coldAirportAlways"),
   },
   {
     location: $location`The Haunted Library`,
     monster: $monster`bookbat`,
     item: $item`tattered scrap of paper`,
+    dropRate: 1,
+    maximize: ["99 monster level 100 max"], // Bookbats need up to +100 ML to survive the polar vortices
     open: () => have($item`[7302]Spookyraven library key`),
+  },
+  {
+    location: $location`Twin Peak`,
+    monster: $monster`bearpig topiary animal`,
+    item: $item`rusty hedge trimmers`,
+    dropRate: 0.5,
+    maximize: ["10 monster level 100 max"], // Topiary animals need an extra 10 HP to survive polar vortices
+    open: () =>
+      myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") === 15,
   },
 ] as fireExtinguisherZone[];
 
@@ -1734,7 +1750,7 @@ function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
   if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
   const targets = fireExtinguishZones.filter((zone) => zone.open() && !isBanished(zone.monster));
   bestFireExtinguisherZoneCached = targets.sort(
-    (a, b) => getSaleValue(b.item) - getSaleValue(a.item)
+    (a, b) => b.dropRate * getSaleValue(b.item) - a.dropRate * getSaleValue(a.item)
   )[0];
   return bestFireExtinguisherZoneCached;
 }
