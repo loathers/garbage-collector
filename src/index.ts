@@ -53,7 +53,14 @@ import { Macro, withMacro } from "./combat";
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { kramcoGuaranteed, printLog, propertyManager, questStep, safeInterrupt } from "./lib";
+import {
+  kramcoGuaranteed,
+  printHelpMenu,
+  printLog,
+  propertyManager,
+  questStep,
+  safeInterrupt,
+} from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -203,6 +210,11 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(20901);
+  if (argString.toLowerCase().includes("help")) {
+    printHelpMenu();
+    return;
+  }
+
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
     //Van & Duffel's Baleet Shop
