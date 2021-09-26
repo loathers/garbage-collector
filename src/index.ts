@@ -128,7 +128,7 @@ function barfTurn() {
   } else if (
     myInebriety() <= inebrietyLimit() &&
     have($item`"I Voted!" sticker`) &&
-    totalTurnsPlayed() % 11 === 1 &&
+    getCounters("Vote", 0, 0) !== "" &&
     get("_voteFreeFights") < 3
   ) {
     useFamiliar(freeFightFamiliar());
@@ -312,6 +312,7 @@ export function main(argString = ""): void {
       dontStopForCounters: true,
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
+      trackVoteMonster: "free",
       choiceAdventureScript: "",
     });
     let bestHalloweiner = 0;
