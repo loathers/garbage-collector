@@ -137,7 +137,7 @@ function voterSetup(): void {
 
   const monsterVote =
     votingMonsterPriority.indexOf(get("_voteMonster1")) <
-    votingMonsterPriority.indexOf(toMonster(get("_voteMonster2")))
+    votingMonsterPriority.indexOf(get("_voteMonster2"))
       ? 1
       : 2;
 
