@@ -36,7 +36,6 @@ import {
   $location,
   $monster,
   $skill,
-  $slots,
   adventureMacro,
   adventureMacroAuto,
   get,
