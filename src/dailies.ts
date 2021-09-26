@@ -21,7 +21,6 @@ import {
   retrieveItem,
   runChoice,
   toInt,
-  toMonster,
   use,
   useFamiliar,
   useSkill,
