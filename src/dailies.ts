@@ -120,7 +120,7 @@ function voterSetup(): void {
 
   const votingMonsterPriority = voterValueTable
     .sort((a, b) => b.value - a.value)
-    .map((element) => element.monster);
+    .map((element) => element.monster.name);
 
   const initPriority = new Map<string, number>([
     ["Meat Drop: +30", 10],
