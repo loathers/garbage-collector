@@ -1,6 +1,7 @@
 import {
   abort,
   cliExecute,
+  handlingChoice,
   haveSkill,
   inebrietyLimit,
   myInebriety,
@@ -81,24 +82,10 @@ export function mapMonster(location: Location, monster: Monster): void {
   const myTurns = myTurncount();
   let mapPage = "";
   // Handle zone intros and holiday wanderers
-  while (!mapPage.includes("Leading Yourself Right to Them")) {
+  for (let tries = 0; tries < 10; tries++) {
     mapPage = visitUrl(toUrl(location), false, true);
-    const turtleAdvs = [
-      "Even Tamer Than Usual",
-      "Never Break the Chain",
-      "Close, but Yes Cigar",
-      "Armchair Quarterback",
-      "This Turtle Rocks!",
-      "Really Sticking Her Neck Out",
-      "It Came from Beneath the Sewer? Great!",
-      "Don't Be Alarmed, Now",
-      "Puttin' it on Wax",
-      "More Like... Hurtle",
-      "Musk! Musk! Musk!",
-      "Silent Strolling",
-    ];
-    const zoneIntros = ["Welcome to the Great Overlook Lodge"];
-    if ([...turtleAdvs, ...zoneIntros].some((advName) => mapPage.includes(advName))) runChoice(-1);
+    if (mapPage.includes("Leading Yourself Right to Them")) break;
+    if (handlingChoice()) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
   }
 
