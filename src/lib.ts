@@ -87,6 +87,7 @@ export function mapMonster(location: Location, monster: Monster): void {
     if (mapPage.includes("Leading Yourself Right to Them")) break;
     if (handlingChoice()) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
+    if (tries === 9) throw `Stuck trying to Map the monsters.`;
   }
 
   const fightPage = visitUrl(
