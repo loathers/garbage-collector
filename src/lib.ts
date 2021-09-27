@@ -97,7 +97,8 @@ export function mapMonster(location: Location, monster: Monster): void {
       "Musk! Musk! Musk!",
       "Silent Strolling",
     ];
-    if (turtleAdvs.some((advName) => mapPage.includes(advName))) runChoice(-1);
+    const zoneIntros = ["Welcome to the Great Overlook Lodge"];
+    if ([...turtleAdvs, ...zoneIntros].some((advName) => mapPage.includes(advName))) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
   }
 
