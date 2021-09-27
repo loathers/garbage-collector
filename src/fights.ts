@@ -1601,10 +1601,12 @@ function setNepQuestChoicesAndPrepItems() {
     retrieveItem($item`cosmetic football`);
 
     if (!get<boolean>("_garbo_nepUsedElectronicsKit", false)) {
+      cliExecute("refresh inventory");
       retrieveItem($item`electronics kit`);
       setChoice(1324, 4); // Investigate the basement
       setChoice(1328, 4); // Modify the living room lights
     } else if (!get<boolean>("_garbo_nepUsedRedDress", false)) {
+      cliExecute("refresh inventory");
       retrieveItem($item`very small red dress`);
       setChoice(1324, 1); // Head upstairs
       setChoice(1325, 5); // Toss the red dress on the lamp
