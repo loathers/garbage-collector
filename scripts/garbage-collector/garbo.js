@@ -22534,7 +22534,7 @@ function embezzlerSetup() {
     });
   }
 
-  if (!(0,dist.get)("_iceSculptureUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject37 || (fights_templateObject37 = fights_taggedTemplateLiteral(["ice sculpture"])))) && averageEmbezzlerNet - averageTouristNet > (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject38 || (fights_templateObject38 = fights_taggedTemplateLiteral(["snow berries"])))) + (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject39 || (fights_templateObject39 = fights_taggedTemplateLiteral(["ice harvest"])))) * 3) {
+  if (!(0,dist.get)("_iceSculptureUsed") && !(0,dist.have)((0,dist.$item)(fights_templateObject37 || (fights_templateObject37 = fights_taggedTemplateLiteral(["ice sculpture"])))) && averageEmbezzlerNet - averageTouristNet > ((0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject38 || (fights_templateObject38 = fights_taggedTemplateLiteral(["snow berries"])))) + (0,external_kolmafia_.mallPrice)((0,dist.$item)(fights_templateObject39 || (fights_templateObject39 = fights_taggedTemplateLiteral(["ice harvest"]))))) * 3) {
     dist.property.withProperty("autoSatisfyWithCloset", true, function () {
       (0,external_kolmafia_.cliExecute)("refresh inventory");
       (0,external_kolmafia_.retrieveItem)((0,dist.$item)(fights_templateObject40 || (fights_templateObject40 = fights_taggedTemplateLiteral(["unfinished ice sculpture"]))));
