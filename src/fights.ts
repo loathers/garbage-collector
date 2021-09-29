@@ -217,7 +217,7 @@ function embezzlerSetup() {
     !get("_iceSculptureUsed") &&
     !have($item`ice sculpture`) &&
     averageEmbezzlerNet - averageTouristNet >
-      mallPrice($item`snow berries`) + mallPrice($item`ice harvest`) * 3
+      (mallPrice($item`snow berries`) + mallPrice($item`ice harvest`)) * 3
   ) {
     property.withProperty("autoSatisfyWithCloset", true, () => {
       cliExecute("refresh inventory");
