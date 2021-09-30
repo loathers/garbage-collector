@@ -36,6 +36,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slots,
   adventureMacro,
   adventureMacroAuto,
   get,
@@ -380,6 +381,7 @@ export function main(argString = ""): void {
 
         setDefaultMaximizeOptions({
           preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
+          preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
         // 2. get a ticket (done before free fights so we can deliver thesis in
