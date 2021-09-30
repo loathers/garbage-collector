@@ -492,7 +492,7 @@ const bjornFams: BjornedFamiliar[] = [
   },
 ].filter((bjornFam) => have(bjornFam.familiar));
 
-export function  additionalValue (familiar: BjornedFamiliar, mode: BonusEquipMode): number {
+export function additionalValue(familiar: BjornedFamiliar, mode: BonusEquipMode): number {
   if (!familiar.modifier) return 0;
   const meatVal = [BonusEquipMode.DMT, BonusEquipMode.FREE].includes(mode)
     ? 0
@@ -509,14 +509,14 @@ export function  additionalValue (familiar: BjornedFamiliar, mode: BonusEquipMod
       (meatVal * (10 * lepMult + 5 * Math.sqrt(lepMult)) +
         itemVal * (5 * fairyMult + 2.5 * Math.sqrt(fairyMult))) /
       100
-    );    }
-    return 0;
-  };
+    );
+  }
+  return 0;
+}
 
 const bjornLists: Map<BonusEquipMode, BjornedFamiliar[]> = new Map();
 
 function generateBjornList(mode: BonusEquipMode): BjornedFamiliar[] {
-
   return [...bjornFams].sort(
     (a, b) =>
       (!b.dropPredicate ||
