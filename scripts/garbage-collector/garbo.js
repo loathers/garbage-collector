@@ -3655,10 +3655,11 @@ var Macro = /*#__PURE__*/function () {
      * Conditionally add a step to a macro based on a condition evaluated at the time of building the macro.
      * @param condition The JS condition.
      * @param ifTrue Continuation to add if the condition is true.
+     * @param ifFalse Optional input to turn this into an if...else statement.
      * @returns {Macro} This object itself.
      */
-    function externalIf(condition, ifTrue) {
-      return condition ? this.step(ifTrue) : this;
+    function externalIf(condition, ifTrue, ifFalse) {
+      if (condition) return this.step(ifTrue);else if (ifFalse) return this.step(ifFalse);else return this;
     }
     /**
      * Create a new macro with a condition evaluated at the time of building the macro.
@@ -4599,8 +4600,11 @@ exports.getAverage = getAverage;
 exports.getAverageAdventures = getAverageAdventures;
 exports.uneffect = uneffect;
 exports.getPlayerFromIdOrName = getPlayerFromIdOrName;
+exports.questStep = questStep;
 exports.ensureEffect = ensureEffect;
 exports.getSaleValue = getSaleValue;
+exports.findLeprechaunMultiplier = findLeprechaunMultiplier;
+exports.findFairyMultiplier = findFairyMultiplier;
 exports.Environment = exports.EnsureError = exports.Wanderer = void 0;
 
 __webpack_require__(7434);
@@ -4639,7 +4643,7 @@ var _property = __webpack_require__(1347);
 
 var _utils = __webpack_require__(8588);
 
-var _templateObject, _templateObject2;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8;
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -5442,6 +5446,23 @@ function getPlayerFromIdOrName(idOrName) {
     id: idOrName
   };
 }
+/**
+ * Return the step as a number for a given quest property.
+ *
+ * @param questName Name of quest property to check.
+ */
+
+
+function questStep(questName) {
+  var stringStep = (0, _property.get)(questName);
+  if (stringStep === "unstarted") return -1;else if (stringStep === "started") return 0;else if (stringStep === "finished" || stringStep === "") return 999;else {
+    if (stringStep.substring(0, 4) !== "step") {
+      throw new Error("Quest state parsing error.");
+    }
+
+    return parseInt(stringStep.substring(4), 10);
+  }
+}
 
 var EnsureError = /*#__PURE__*/function (_Error) {
   _inherits(EnsureError, _Error);
@@ -5513,6 +5534,33 @@ var Environment = {
   Underwater: "underwater"
 };
 exports.Environment = Environment;
+/**
+ * Returns the weight-coefficient of any leprechaunning that this familiar may find itself doing
+ * Assumes the familiar is nude and thus fails for hatrack & pantsrack
+ * For the Mutant Cactus Bud, returns the efficacy-multiplier instead
+ * @param familiar The familiar whose leprechaun multiplier you're interested in
+ */
+
+function findLeprechaunMultiplier(familiar) {
+  if (familiar === (0, _templateString.$familiar)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Mutant Cactus Bud"])))) return (0, _kolmafia.numericModifier)(familiar, "Leprechaun Effectiveness", 1, (0, _templateString.$item)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["none"]))));
+  var meatBonus = (0, _kolmafia.numericModifier)(familiar, "Meat Drop", 1, (0, _templateString.$item)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["none"]))));
+  if (meatBonus === 0) return 0;
+  return Math.pow(Math.sqrt(meatBonus / 2 + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
+}
+/**
+ * Returns the weight-coefficient of any baby gravy fairying that this familiar may find itself doing
+ * Assumes the familiar is nude and thus fails for hatrack & pantsrack
+ * For the Mutant Fire Ant, returns the efficacy-multiplier instead
+ * @param familiar The familiar whose fairy multiplier you're interested in
+ */
+
+
+function findFairyMultiplier(familiar) {
+  if (familiar === (0, _templateString.$familiar)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Mutant Fire Ant"])))) return (0, _kolmafia.numericModifier)(familiar, "Fairy Effectiveness", 1, (0, _templateString.$item)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["none"]))));
+  var itemBonus = (0, _kolmafia.numericModifier)(familiar, "Item Drop", 1, (0, _templateString.$item)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["none"]))));
+  if (itemBonus === 0) return 0;
+  return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
+}
 
 /***/ }),
 
@@ -5674,7 +5722,9 @@ var _templateString = __webpack_require__(678);
 
 var _logger = _interopRequireDefault(__webpack_require__(8685));
 
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38;
+var _utils = __webpack_require__(8588);
+
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44;
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
@@ -6163,7 +6213,6 @@ function applyCached(entry, options) {
 
     var familiarEquip = entry.equipment.get((0, _templateString.$slot)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["familiar"]))));
     if (familiarEquip) (0, _kolmafia.equip)(familiarEquip);
-    verifyCached(entry);
   } else {
     var _iterator = _createForOfIteratorHelper(entry.equipment),
         _step;
@@ -6201,27 +6250,34 @@ function applyCached(entry, options) {
     (0, _kolmafia.bjornifyFamiliar)(entry.rider.get((0, _templateString.$item)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Buddy Bjorn"])))) || (0, _templateString.$familiar)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["none"]))));
   }
 }
+
+var slotStructure = [(0, _templateString.$slots)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["hat"]))), (0, _templateString.$slots)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["back"]))), (0, _templateString.$slots)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["shirt"]))), (0, _templateString.$slots)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["weapon, off-hand"]))), (0, _templateString.$slots)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["pants"]))), (0, _templateString.$slots)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["acc1, acc2, acc3"]))), (0, _templateString.$slots)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["familiar"])))];
 /**
  * Verifies that a CacheEntry was applied successfully.
  * @param entry The CacheEntry to verify
  * @returns If all desired equipment was appliedn in the correct slots.
  */
 
-
 function verifyCached(entry) {
   var success = true;
 
-  var _iterator2 = _createForOfIteratorHelper(entry.equipment),
+  var _iterator2 = _createForOfIteratorHelper(slotStructure),
       _step2;
 
   try {
     for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var _step2$value = _slicedToArray(_step2.value, 2),
-          slot = _step2$value[0],
-          item = _step2$value[1];
+      var slotGroup = _step2.value;
+      var desiredSet = slotGroup.map(function (slot) {
+        var _entry$equipment$get;
 
-      if ((0, _kolmafia.equippedItem)(slot) !== item) {
-        _logger["default"].warning("Failed to apply cached ".concat(item, " in ").concat(slot, "."));
+        return (_entry$equipment$get = entry.equipment.get(slot)) !== null && _entry$equipment$get !== void 0 ? _entry$equipment$get : (0, _templateString.$item)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["none"])));
+      });
+      var equippedSet = slotGroup.map(function (slot) {
+        return (0, _kolmafia.equippedItem)(slot);
+      });
+
+      if (!(0, _utils.setEqual)(desiredSet, equippedSet)) {
+        _logger["default"].warning("Failed to apply cached ".concat(desiredSet.join(", "), " in ").concat(slotGroup.join(", "), "."));
 
         success = false;
       }
@@ -6232,17 +6288,17 @@ function verifyCached(entry) {
     _iterator2.f();
   }
 
-  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Crown of Thrones"])))) > 0 && entry.rider.get((0, _templateString.$item)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Crown of Thrones"]))))) {
-    if (entry.rider.get((0, _templateString.$item)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Crown of Thrones"])))) !== (0, _kolmafia.myEnthronedFamiliar)()) {
-      _logger["default"].warning("Failed to apply ".concat(entry.rider.get((0, _templateString.$item)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Crown of Thrones"])))), " in ").concat((0, _templateString.$item)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Crown of Thrones"]))), "."));
+  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Crown of Thrones"])))) > 0 && entry.rider.get((0, _templateString.$item)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Crown of Thrones"]))))) {
+    if (entry.rider.get((0, _templateString.$item)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Crown of Thrones"])))) !== (0, _kolmafia.myEnthronedFamiliar)()) {
+      _logger["default"].warning("Failed to apply ".concat(entry.rider.get((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Crown of Thrones"])))), " in ").concat((0, _templateString.$item)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Crown of Thrones"]))), "."));
 
       success = false;
     }
   }
 
-  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Buddy Bjorn"])))) > 0 && entry.rider.get((0, _templateString.$item)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) {
-    if (entry.rider.get((0, _templateString.$item)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Buddy Bjorn"])))) !== (0, _kolmafia.myBjornedFamiliar)()) {
-      _logger["default"].warning("Failed to apply".concat(entry.rider.get((0, _templateString.$item)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Buddy Bjorn"])))), " in ").concat((0, _templateString.$item)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Buddy Bjorn"]))), "."));
+  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Buddy Bjorn"])))) > 0 && entry.rider.get((0, _templateString.$item)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) {
+    if (entry.rider.get((0, _templateString.$item)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Buddy Bjorn"])))) !== (0, _kolmafia.myBjornedFamiliar)()) {
+      _logger["default"].warning("Failed to apply".concat(entry.rider.get((0, _templateString.$item)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Buddy Bjorn"])))), " in ").concat((0, _templateString.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Buddy Bjorn"]))), "."));
 
       success = false;
     }
@@ -6274,16 +6330,16 @@ function saveCached(cacheKey, options) {
     _iterator3.f();
   }
 
-  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["card sleeve"])))) > 0) {
-    equipment.set((0, _templateString.$slot)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["card-sleeve"]))), (0, _kolmafia.equippedItem)((0, _templateString.$slot)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["card-sleeve"])))));
+  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["card sleeve"])))) > 0) {
+    equipment.set((0, _templateString.$slot)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["card-sleeve"]))), (0, _kolmafia.equippedItem)((0, _templateString.$slot)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["card-sleeve"])))));
   }
 
-  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Crown of Thrones"])))) > 0) {
-    rider.set((0, _templateString.$item)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Crown of Thrones"]))), (0, _kolmafia.myEnthronedFamiliar)());
+  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Crown of Thrones"])))) > 0) {
+    rider.set((0, _templateString.$item)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Crown of Thrones"]))), (0, _kolmafia.myEnthronedFamiliar)());
   }
 
-  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Buddy Bjorn"])))) > 0) {
-    rider.set((0, _templateString.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Buddy Bjorn"]))), (0, _kolmafia.myBjornedFamiliar)());
+  if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Buddy Bjorn"])))) > 0) {
+    rider.set((0, _templateString.$item)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Buddy Bjorn"]))), (0, _kolmafia.myBjornedFamiliar)());
   }
 
   if (options.preventSlot && options.preventSlot.length > 0) {
@@ -6301,12 +6357,12 @@ function saveCached(cacheKey, options) {
       _iterator4.f();
     }
 
-    if (options.preventSlot.includes((0, _templateString.$slot)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["buddy-bjorn"]))))) {
-      rider["delete"]((0, _templateString.$item)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
+    if (options.preventSlot.includes((0, _templateString.$slot)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["buddy-bjorn"]))))) {
+      rider["delete"]((0, _templateString.$item)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
     }
 
-    if (options.preventSlot.includes((0, _templateString.$slot)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["crown-of-thrones"]))))) {
-      rider["delete"]((0, _templateString.$item)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Crown of Thrones"]))));
+    if (options.preventSlot.includes((0, _templateString.$slot)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["crown-of-thrones"]))))) {
+      rider["delete"]((0, _templateString.$item)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["Crown of Thrones"]))));
     }
   }
 
@@ -6328,12 +6384,12 @@ function saveCached(cacheKey, options) {
       _iterator5.f();
     }
 
-    if (!options.onlySlot.includes((0, _templateString.$slot)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["buddy-bjorn"]))))) {
-      rider["delete"]((0, _templateString.$item)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
+    if (!options.onlySlot.includes((0, _templateString.$slot)(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["buddy-bjorn"]))))) {
+      rider["delete"]((0, _templateString.$item)(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
     }
 
-    if (!options.onlySlot.includes((0, _templateString.$slot)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["crown-of-thrones"]))))) {
-      rider["delete"]((0, _templateString.$item)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Crown of Thrones"]))));
+    if (!options.onlySlot.includes((0, _templateString.$slot)(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["crown-of-thrones"]))))) {
+      rider["delete"]((0, _templateString.$item)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["Crown of Thrones"]))));
     }
   }
 
@@ -6375,13 +6431,9 @@ function maximizeCached(objectives) {
     return "equip ".concat(item);
   }).sort()), _toConsumableArray(preventEquip.map(function (item) {
     return "-equip ".concat(item);
-  }).sort()), _toConsumableArray(onlySlot.filter(function (slot) {
-    return !(0, _templateString.$slots)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["buddy-bjorn, crown-of-thrones"]))).includes(slot);
-  }).map(function (slot) {
+  }).sort()), _toConsumableArray(onlySlot.map(function (slot) {
     return "".concat(slot);
-  }).sort()), _toConsumableArray(preventSlot.filter(function (slot) {
-    return !(0, _templateString.$slots)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["buddy-bjorn, crown-of-thrones"]))).includes(slot);
-  }).map(function (slot) {
+  }).sort()), _toConsumableArray(preventSlot.map(function (slot) {
     return "-".concat(slot);
   }).sort()), _toConsumableArray(Array.from(bonusEquip.entries()).filter(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2),
@@ -8142,6 +8194,573 @@ function getSpookyPuttySheetMonster() {
 function useSpookyPuttySheet() {
   return (0, _kolmafia.use)(sheet);
 }
+
+/***/ }),
+
+/***/ 9892:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+__webpack_require__(2352);
+
+__webpack_require__(5594);
+
+__webpack_require__(5198);
+
+__webpack_require__(6467);
+
+__webpack_require__(893);
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.ridingFamiliars = void 0;
+
+var _lib = __webpack_require__(3311);
+
+var _property = __webpack_require__(1347);
+
+var _templateString = __webpack_require__(678);
+
+var _templateObject, _templateObject2, _modifier, _templateObject3, _templateObject4, _modifier2, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _modifier7, _templateObject13, _templateObject14, _modifier8, _templateObject15, _templateObject16, _modifier9, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _modifier15, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _modifier26, _templateObject51, _templateObject52, _modifier27, _templateObject53, _templateObject54, _modifier28, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _modifier31, _templateObject61, _templateObject62, _modifier32, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _modifier34, _templateObject67, _templateObject68, _modifier35, _templateObject69, _templateObject70, _modifier36, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104;
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _taggedTemplateLiteral(strings, raw) {
+  if (!raw) {
+    raw = strings.slice(0);
+  }
+
+  return Object.freeze(Object.defineProperties(strings, {
+    raw: {
+      value: Object.freeze(raw)
+    }
+  }));
+}
+
+var ridingFamiliars = [{
+  familiar: (0, _templateString.$familiar)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Puck Man"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["yellow pixel"]))));
+  },
+  probability: 0.25,
+  modifier: (_modifier = {}, _defineProperty(_modifier, "Muscle", 10), _defineProperty(_modifier, "Mysticality", 10), _defineProperty(_modifier, "Moxie", 10), _modifier),
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_yellowPixelDropsCrown") < 25;
+  }
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Ms. Puck Man"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["yellow pixel"]))));
+  },
+  probability: 0.25,
+  modifier: (_modifier2 = {}, _defineProperty(_modifier2, "Muscle", 10), _defineProperty(_modifier2, "Mysticality", 10), _defineProperty(_modifier2, "Moxie", 10), _modifier2),
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_yellowPixelDropsCrown") < 25;
+  }
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Grimstone Golem"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["grimstone mask"]))));
+  },
+  probability: 0.5,
+  modifier: _defineProperty({}, "Combat Rate", -5),
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_grimstoneMaskDropsCrown") < 1;
+  }
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Knob Goblin Organ Grinder"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Meat Drop", 25)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Happy Medium"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Meat Drop", 25)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Garbage Fire"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["burning newspaper"]))));
+  },
+  probability: 0.5,
+  modifier: _defineProperty({}, "Hot Spell Damage", 25),
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_garbageFireDropsCrown") < 3;
+  }
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Machine Elf"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"])))));
+  },
+  probability: 0.2,
+  modifier: (_modifier7 = {}, _defineProperty(_modifier7, "Muscle", 7), _defineProperty(_modifier7, "Mysticality", 7), _defineProperty(_modifier7, "Moxie", 7), _modifier7),
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_abstractionDropsCrown") < 25;
+  }
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Trick-or-Treating Tot"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["hoarded candy wad"]))));
+  },
+  probability: 0.5,
+  modifier: (_modifier8 = {}, _defineProperty(_modifier8, "Muscle", 10), _defineProperty(_modifier8, "Mysticality", 10), _defineProperty(_modifier8, "Moxie", 10), _modifier8),
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_hoardedCandyDropsCrown") < 3;
+  }
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Warbear Drone"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["warbear whosit"]))));
+  },
+  probability: 1 / 4.5,
+  modifier: (_modifier9 = {}, _defineProperty(_modifier9, "Maximum HP", 15), _defineProperty(_modifier9, "Maximum MP", 15), _modifier9)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Li'l Xenomorph"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["lunar isotope"]))));
+  },
+  probability: 0.05,
+  modifier: _defineProperty({}, "Item Drop", 15)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Pottery Barn Owl"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["volcanic ash"]))));
+  },
+  probability: 0.1,
+  modifier: _defineProperty({}, "Hot Damage", 10)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Grim Brother"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["grim fairy tale"]))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Combat Rate", 5),
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_grimFairyTaleDropsCrown") < 2;
+  }
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Optimistic Candle"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["glob of melted wax"]))));
+  },
+  probability: 1,
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_optimisticCandleDropsCrown") < 3;
+  },
+  modifier: _defineProperty({}, "Item Drop", 15)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Adventurous Spelunker"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"])))));
+  },
+  probability: 1,
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_oreDropsCrown") < 6;
+  },
+  modifier: _defineProperty({}, "Item Drop", 15)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Twitching Space Critter"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["space beast fur"]))));
+  },
+  probability: 1,
+  modifier: (_modifier15 = {}, _defineProperty(_modifier15, "Hot Resistance", 2), _defineProperty(_modifier15, "Cold Resistance", 2), _defineProperty(_modifier15, "Spooky Resistance", 2), _defineProperty(_modifier15, "Sleaze Resistance", 2), _defineProperty(_modifier15, "Stench Resistance", 2), _modifier15),
+  dropPredicate: function dropPredicate() {
+    return (0, _property.get)("_spaceFurDropsCrown") < 1;
+  }
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Party Mouse"]))),
+  meatVal: function meatVal() {
+    return 50;
+  },
+
+  /*
+  The below code is more accurate. However, party mouse is virtually never going to be worthwhile and this causes so many useless mall hits it isn't funny.
+     getSaleValue(
+      ...Item.all().filter(
+        (booze) =>
+          ["decent", "good"].includes(booze.quality) &&
+          booze.inebriety > 0 &&
+          booze.tradeable &&
+          booze.discardable &&
+          !$items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`.includes(
+            booze
+          )
+      )
+    ),
+    */
+  probability: 0.05,
+  modifier: _defineProperty({}, "Booze Drop", 25)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Yule Hound"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["candy cane"]))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Candy Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Gluttonous Green Ghost"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Food Drop", 15)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Reassembled Blackbird"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["blackberry"]))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Item Drop", 10)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Reconstituted Crow"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["blackberry"]))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Item Drop", 10)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Hunchbacked Minion"]))),
+  meatVal: function meatVal() {
+    return 0.02 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["disembodied brain"])))) + 0.98 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["skeleton bone"]))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Muscle Experience", 2)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["Reanimated Reanimator"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["hot wing, broken skull"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Mysticality Experience", 2)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["Attention-Deficit Demon"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["chorizo brownies, white chocolate and tomato pizza, carob chunk noodles"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["Piano Cat"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["beertini, papaya slung, salty slug, tomato daiquiri"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Golden Monkey"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["gold nuggets"]))));
+  },
+  probability: 0.5,
+  modifier: _defineProperty({}, "Meat Drop", 25)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["Robot Reindeer"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+  },
+  probability: 0.3,
+  modifier: (_modifier26 = {}, _defineProperty(_modifier26, "Muscle", 10), _defineProperty(_modifier26, "Mysticality", 10), _defineProperty(_modifier26, "Moxie", 10), _modifier26)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Stocking Mimic"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"])))));
+  },
+  probability: 0.3,
+  modifier: (_modifier27 = {}, _defineProperty(_modifier27, "Muscle", 10), _defineProperty(_modifier27, "Mysticality", 10), _defineProperty(_modifier27, "Moxie", 10), _modifier27)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["BRICKO chick"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["BRICKO brick"]))));
+  },
+  probability: 1,
+  modifier: (_modifier28 = {}, _defineProperty(_modifier28, "Muscle Percent", 10), _defineProperty(_modifier28, "Mysticality Percent", 10), _defineProperty(_modifier28, "Moxie Percent", 10), _modifier28)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["Cotton Candy Carnie"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["cotton candy pinch"]))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Initiative", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["Untamed Turtle"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"])))));
+  },
+  probability: 0.35,
+  modifier: _defineProperty({}, "Initiative", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["Astral Badger"]))),
+  meatVal: function meatVal() {
+    return 2 * _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"])))));
+  },
+  probability: 1,
+  modifier: (_modifier31 = {}, _defineProperty(_modifier31, "Maximum HP", 10), _defineProperty(_modifier31, "Maximum MP", 10), _modifier31)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["Green Pixie"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["bottle of tequila"]))));
+  },
+  probability: 0.2,
+  modifier: (_modifier32 = {}, _defineProperty(_modifier32, "Maximum HP", 10), _defineProperty(_modifier32, "Maximum MP", 10), _modifier32)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["Angry Goat"]))),
+  meatVal: function meatVal() {
+    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["goat cheese pizza"]))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Muscle Percent", 15)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["Adorable Seal Larva"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"])))));
+  },
+  probability: 0.35,
+  modifier: (_modifier34 = {}, _defineProperty(_modifier34, "HP Regen Min", 2), _defineProperty(_modifier34, "MP Regen Min", 2), _defineProperty(_modifier34, "HP Regen Max", 8), _defineProperty(_modifier34, "MP Regen Max", 8), _modifier34)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["Ancient Yuletide Troll"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+  },
+  probability: 0.3,
+  modifier: (_modifier35 = {}, _defineProperty(_modifier35, "HP Regen Min", 2), _defineProperty(_modifier35, "MP Regen Min", 2), _defineProperty(_modifier35, "HP Regen Max", 8), _defineProperty(_modifier35, "MP Regen Max", 8), _modifier35)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["Sweet Nutcracker"]))),
+  meatVal: function meatVal() {
+    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
+  },
+  probability: 0.3,
+  modifier: (_modifier36 = {}, _defineProperty(_modifier36, "HP Regen Min", 2), _defineProperty(_modifier36, "MP Regen Min", 2), _defineProperty(_modifier36, "HP Regen Max", 8), _defineProperty(_modifier36, "MP Regen Max", 8), _modifier36)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["Casagnova Gnome"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject72 || (_templateObject72 = _taggedTemplateLiteral(["Coffee Pixie"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject73 || (_templateObject73 = _taggedTemplateLiteral(["Dancing Frog"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject74 || (_templateObject74 = _taggedTemplateLiteral(["Grouper Groupie"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["Hand Turkey"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["Hippo Ballerina"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["Jitterbug"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject78 || (_templateObject78 = _taggedTemplateLiteral(["Leprechaun"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject79 || (_templateObject79 = _taggedTemplateLiteral(["Obtuse Angel"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject80 || (_templateObject80 = _taggedTemplateLiteral(["Psychedelic Bear"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject81 || (_templateObject81 = _taggedTemplateLiteral(["Robortender"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject82 || (_templateObject82 = _taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Meat Drop", 25)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject83 || (_templateObject83 = _taggedTemplateLiteral(["Hobo Monkey"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Meat Drop", 25)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject84 || (_templateObject84 = _taggedTemplateLiteral(["Rockin' Robin"]))),
+  meatVal: function meatVal() {
+    return 60;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Item Drop", 15)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject85 || (_templateObject85 = _taggedTemplateLiteral(["Feral Kobold"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Item Drop", 15)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject86 || (_templateObject86 = _taggedTemplateLiteral(["Oily Woim"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Item Drop", 10)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject87 || (_templateObject87 = _taggedTemplateLiteral(["Cat Burglar"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Item Drop", 10)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject88 || (_templateObject88 = _taggedTemplateLiteral(["Misshapen Animal Skeleton"]))),
+  meatVal: function meatVal() {
+    return 30;
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Familiar Weight", 5)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject89 || (_templateObject89 = _taggedTemplateLiteral(["Gelatinous Cubeling"]))),
+  meatVal: function meatVal() {
+    return 0;
+  },
+  probability: 0,
+  modifier: _defineProperty({}, "Familiar Weight", 5)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject90 || (_templateObject90 = _taggedTemplateLiteral(["Frozen Gravy Fairy"]))),
+  // drops a cold nugget every combat, 5 of which can be used to make a cold wad
+  meatVal: function meatVal() {
+    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject91 || (_templateObject91 = _taggedTemplateLiteral(["cold wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject92 || (_templateObject92 = _taggedTemplateLiteral(["cold nuggets"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Cold Damage", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject93 || (_templateObject93 = _taggedTemplateLiteral(["Stinky Gravy Fairy"]))),
+  // drops a stench nugget every combat, 5 of which can be used to make a stench wad
+  meatVal: function meatVal() {
+    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject94 || (_templateObject94 = _taggedTemplateLiteral(["stench wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject95 || (_templateObject95 = _taggedTemplateLiteral(["stench nuggets"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Stench Damage", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject96 || (_templateObject96 = _taggedTemplateLiteral(["Sleazy Gravy Fairy"]))),
+  // drops a sleaze nugget every combat, 5 of which can be used to make a sleaze wad
+  meatVal: function meatVal() {
+    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject97 || (_templateObject97 = _taggedTemplateLiteral(["sleaze wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject98 || (_templateObject98 = _taggedTemplateLiteral(["sleaze nuggets"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Sleaze Damage", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject99 || (_templateObject99 = _taggedTemplateLiteral(["Spooky Gravy Fairy"]))),
+  // drops a spooky nugget every combat, 5 of which can be used to make a spooky wad
+  meatVal: function meatVal() {
+    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject100 || (_templateObject100 = _taggedTemplateLiteral(["spooky wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject101 || (_templateObject101 = _taggedTemplateLiteral(["spooky nuggets"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Spooky Damage", 20)
+}, {
+  familiar: (0, _templateString.$familiar)(_templateObject102 || (_templateObject102 = _taggedTemplateLiteral(["Flaming Gravy Fairy"]))),
+  // drops a hot nugget every combat, 5 of which can be used to make a hot wad
+  meatVal: function meatVal() {
+    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject103 || (_templateObject103 = _taggedTemplateLiteral(["hot wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral(["hot nuggets"])))));
+  },
+  probability: 1,
+  modifier: _defineProperty({}, "Hot Damage", 20)
+}];
+exports.ridingFamiliars = ridingFamiliars;
 
 /***/ }),
 
@@ -9987,7 +10606,12 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 var _exportNames = {
   Bandersnatch: true,
+  BeachComb: true,
   ChateauMantegna: true,
+  CrownOfThrones: true,
+  FloristFriar: true,
+  Guzzlr: true,
+  MayoClinic: true,
   ObtuseAngel: true,
   RainDoh: true,
   SongBoom: true,
@@ -9995,69 +10619,69 @@ var _exportNames = {
   SpookyPutty: true,
   TunnelOfLove: true,
   WinterGarden: true,
-  Witchess: true,
-  Guzzlr: true,
-  BeachComb: true,
-  FloristFriar: true,
-  MayoClinic: true
+  Witchess: true
 };
-exports.MayoClinic = exports.FloristFriar = exports.BeachComb = exports.Guzzlr = exports.Witchess = exports.WinterGarden = exports.TunnelOfLove = exports.SpookyPutty = exports.SourceTerminal = exports.SongBoom = exports.RainDoh = exports.ObtuseAngel = exports.ChateauMantegna = exports.Bandersnatch = void 0;
+exports.Witchess = exports.WinterGarden = exports.TunnelOfLove = exports.SpookyPutty = exports.SourceTerminal = exports.SongBoom = exports.RainDoh = exports.ObtuseAngel = exports.MayoClinic = exports.Guzzlr = exports.FloristFriar = exports.CrownOfThrones = exports.ChateauMantegna = exports.BeachComb = exports.Bandersnatch = void 0;
 
-var _Bandersnatch = _interopRequireWildcard(__webpack_require__(5661));
+var Bandersnatch = _interopRequireWildcard(__webpack_require__(5661));
 
-exports.Bandersnatch = _Bandersnatch;
+exports.Bandersnatch = Bandersnatch;
 
-var _ChateauMantegna = _interopRequireWildcard(__webpack_require__(7975));
+var BeachComb = _interopRequireWildcard(__webpack_require__(1144));
 
-exports.ChateauMantegna = _ChateauMantegna;
+exports.BeachComb = BeachComb;
 
-var _ObtuseAngel = _interopRequireWildcard(__webpack_require__(3758));
+var ChateauMantegna = _interopRequireWildcard(__webpack_require__(7975));
 
-exports.ObtuseAngel = _ObtuseAngel;
+exports.ChateauMantegna = ChateauMantegna;
 
-var _RainDoh = _interopRequireWildcard(__webpack_require__(4945));
+var CrownOfThrones = _interopRequireWildcard(__webpack_require__(9892));
 
-exports.RainDoh = _RainDoh;
+exports.CrownOfThrones = CrownOfThrones;
 
-var _SongBoom = _interopRequireWildcard(__webpack_require__(2211));
+var FloristFriar = _interopRequireWildcard(__webpack_require__(1576));
 
-exports.SongBoom = _SongBoom;
+exports.FloristFriar = FloristFriar;
 
-var _SourceTerminal = _interopRequireWildcard(__webpack_require__(1577));
+var Guzzlr = _interopRequireWildcard(__webpack_require__(5352));
 
-exports.SourceTerminal = _SourceTerminal;
+exports.Guzzlr = Guzzlr;
 
-var _SpookyPutty = _interopRequireWildcard(__webpack_require__(7235));
+var MayoClinic = _interopRequireWildcard(__webpack_require__(9574));
 
-exports.SpookyPutty = _SpookyPutty;
+exports.MayoClinic = MayoClinic;
 
-var _TunnelOfLove = _interopRequireWildcard(__webpack_require__(6255));
+var ObtuseAngel = _interopRequireWildcard(__webpack_require__(3758));
 
-exports.TunnelOfLove = _TunnelOfLove;
+exports.ObtuseAngel = ObtuseAngel;
 
-var _WinterGarden = _interopRequireWildcard(__webpack_require__(5915));
+var RainDoh = _interopRequireWildcard(__webpack_require__(4945));
 
-exports.WinterGarden = _WinterGarden;
+exports.RainDoh = RainDoh;
 
-var _Witchess = _interopRequireWildcard(__webpack_require__(7271));
+var SongBoom = _interopRequireWildcard(__webpack_require__(2211));
 
-exports.Witchess = _Witchess;
+exports.SongBoom = SongBoom;
 
-var _Guzzlr = _interopRequireWildcard(__webpack_require__(5352));
+var SourceTerminal = _interopRequireWildcard(__webpack_require__(1577));
 
-exports.Guzzlr = _Guzzlr;
+exports.SourceTerminal = SourceTerminal;
 
-var _BeachComb = _interopRequireWildcard(__webpack_require__(1144));
+var SpookyPutty = _interopRequireWildcard(__webpack_require__(7235));
 
-exports.BeachComb = _BeachComb;
+exports.SpookyPutty = SpookyPutty;
 
-var _FloristFriar = _interopRequireWildcard(__webpack_require__(1576));
+var TunnelOfLove = _interopRequireWildcard(__webpack_require__(6255));
 
-exports.FloristFriar = _FloristFriar;
+exports.TunnelOfLove = TunnelOfLove;
 
-var _MayoClinic = _interopRequireWildcard(__webpack_require__(9574));
+var WinterGarden = _interopRequireWildcard(__webpack_require__(5915));
 
-exports.MayoClinic = _MayoClinic;
+exports.WinterGarden = WinterGarden;
+
+var Witchess = _interopRequireWildcard(__webpack_require__(7271));
+
+exports.Witchess = Witchess;
 
 var _puttyLikes = __webpack_require__(5231);
 
@@ -10808,6 +11432,7 @@ exports.countedMapToString = countedMapToString;
 exports.sum = sum;
 exports.sumNumbers = sumNumbers;
 exports.arrayContains = arrayContains;
+exports.setEqual = setEqual;
 
 __webpack_require__(7807);
 
@@ -10834,6 +11459,8 @@ __webpack_require__(5899);
 __webpack_require__(778);
 
 __webpack_require__(3239);
+
+__webpack_require__(517);
 
 function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
@@ -11005,6 +11632,23 @@ function sumNumbers(addends) {
 
 function arrayContains(item, array) {
   return array.includes(item);
+}
+/**
+ * Checks if two arrays contain the same elements in the same quantity.
+ * @param a First array for comparison
+ * @param b Second array for comparison
+ * @returns Whether the two arrays are equal, irrespective of order.
+ */
+
+
+function setEqual(a, b) {
+  var sortedA = _toConsumableArray(a).sort();
+
+  var sortedB = _toConsumableArray(b).sort();
+
+  return a.length === b.length && sortedA.every(function (item, index) {
+    return item === sortedB[index];
+  });
 }
 
 /***/ }),
@@ -24224,7 +24868,7 @@ function implement() {
   (0,external_kolmafia_.use)((0,dist.$item)(dailies_templateObject112 || (dailies_templateObject112 = dailies_taggedTemplateLiteral(["[glitch season reward name]"]))));
 }
 ;// CONCATENATED MODULE: ./src/index.ts
-var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35, src_templateObject36, src_templateObject37, src_templateObject38, src_templateObject39, src_templateObject40, src_templateObject41, src_templateObject42, src_templateObject43, src_templateObject44, src_templateObject45, src_templateObject46, src_templateObject47;
+var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35, src_templateObject36, src_templateObject37, src_templateObject38, src_templateObject39, src_templateObject40, src_templateObject41, src_templateObject42, src_templateObject43, src_templateObject44, src_templateObject45, src_templateObject46, src_templateObject47, src_templateObject48;
 
 function src_slicedToArray(arr, i) { return src_arrayWithHoles(arr) || src_iterableToArrayLimit(arr, i) || src_unsupportedIterableToArray(arr, i) || src_nonIterableRest(); }
 
@@ -24527,7 +25171,8 @@ function main() {
 
         dailySetup();
         (0,dist.setDefaultMaximizeOptions)({
-          preventEquip: (0,dist.$items)(src_templateObject44 || (src_templateObject44 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball"])))
+          preventEquip: (0,dist.$items)(src_templateObject44 || (src_templateObject44 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball"]))),
+          preventSlot: (0,dist.$slots)(src_templateObject45 || (src_templateObject45 = src_taggedTemplateLiteral(["buddy-bjorn, crown-of-thrones"])))
         }); // 2. get a ticket (done before free fights so we can deliver thesis in
         // Uncle Gator's Country Fun-Time Liquid Waste Sluice)
 
@@ -24550,9 +25195,9 @@ function main() {
             } // buy one-day tickets with FunFunds if user desires
 
 
-            if ((0,dist.get)("garbo_buyPass", false) && (0,external_kolmafia_.availableAmount)((0,dist.$item)(src_templateObject45 || (src_templateObject45 = src_taggedTemplateLiteral(["FunFunds\u2122"])))) >= 20) {
+            if ((0,dist.get)("garbo_buyPass", false) && (0,external_kolmafia_.availableAmount)((0,dist.$item)(src_templateObject46 || (src_templateObject46 = src_taggedTemplateLiteral(["FunFunds\u2122"])))) >= 20) {
               (0,external_kolmafia_.print)("Buying a one-day tickets", "blue");
-              (0,external_kolmafia_.buy)((0,dist.$coinmaster)(src_templateObject46 || (src_templateObject46 = src_taggedTemplateLiteral(["The Dinsey Company Store"]))), 1, (0,dist.$item)(src_templateObject47 || (src_templateObject47 = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]))));
+              (0,external_kolmafia_.buy)((0,dist.$coinmaster)(src_templateObject47 || (src_templateObject47 = src_taggedTemplateLiteral(["The Dinsey Company Store"]))), 1, (0,dist.$item)(src_templateObject48 || (src_templateObject48 = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]))));
             }
           } finally {
             (0,external_kolmafia_.setAutoAttack)(0);
