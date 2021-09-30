@@ -492,42 +492,43 @@ const bjornFams: BjornedFamiliar[] = [
   },
 ].filter((bjornFam) => have(bjornFam.familiar));
 
+export function  additionalValue (familiar: BjornedFamiliar, mode: BonusEquipMode): number {
+  if (!familiar.modifier) return 0;
+  const meatVal = [BonusEquipMode.DMT, BonusEquipMode.FREE].includes(mode)
+    ? 0
+    : baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0);
+  const itemVal = mode === BonusEquipMode.BARF ? 72 : 0;
+  if (familiar.modifier.type === BjornModifierType.MEAT)
+    return (familiar.modifier.modifier * meatVal) / 100;
+  if (familiar.modifier.type === BjornModifierType.ITEM)
+    return (familiar.modifier.modifier * itemVal) / 100;
+  if (familiar.modifier.type === BjornModifierType.FMWT) {
+    const lepMult = leprechaunMultiplier(meatFamiliar());
+    const fairyMult = fairyMultiplier(meatFamiliar());
+    return (
+      (meatVal * (10 * lepMult + 5 * Math.sqrt(lepMult)) +
+        itemVal * (5 * fairyMult + 2.5 * Math.sqrt(fairyMult))) /
+      100
+    );    }
+    return 0;
+  };
+
 const bjornLists: Map<BonusEquipMode, BjornedFamiliar[]> = new Map();
 
 function generateBjornList(mode: BonusEquipMode): BjornedFamiliar[] {
-  const additionalValue = (familiar: BjornedFamiliar) => {
-    if (!familiar.modifier) return 0;
-    const meatVal = [BonusEquipMode.DMT, BonusEquipMode.FREE].includes(mode)
-      ? 0
-      : baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0);
-    const itemVal = mode === BonusEquipMode.BARF ? 72 : 0;
-    if (familiar.modifier.type === BjornModifierType.MEAT)
-      return (familiar.modifier.modifier * meatVal) / 100;
-    if (familiar.modifier.type === BjornModifierType.ITEM)
-      return (familiar.modifier.modifier * itemVal) / 100;
-    if (familiar.modifier.type === BjornModifierType.FMWT) {
-      const lepMult = leprechaunMultiplier(meatFamiliar());
-      const fairyMult = fairyMultiplier(meatFamiliar());
-      return (
-        (meatVal * (10 * lepMult + 5 * Math.sqrt(lepMult)) +
-          itemVal * (5 * fairyMult + 2.5 * Math.sqrt(fairyMult))) /
-        100
-      );
-    }
-    return 0;
-  };
+
   return [...bjornFams].sort(
     (a, b) =>
       (!b.dropPredicate ||
       (b.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode))
         ? b.meatVal() * b.probability
         : 0) +
-      additionalValue(b) -
+      additionalValue(b, mode) -
       ((!a.dropPredicate ||
       (a.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode))
         ? a.meatVal() * a.probability
         : 0) +
-        additionalValue(a))
+        additionalValue(a, mode))
   );
 }
 
