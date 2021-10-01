@@ -40,7 +40,7 @@ import {
   maximizeCached,
   Requirement,
 } from "libram";
-import { pickBjorn } from "./bjorn";
+import { additionalValue, pickBjorn } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import { globalOptions } from "./globalvars";
@@ -99,9 +99,9 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
         ? new Map<Item, number>([
             [
               bjornAlike,
-              !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+              (!bjornChoice.dropPredicate || bjornChoice.dropPredicate()
                 ? bjornChoice.meatVal() * bjornChoice.probability
-                : 0,
+                : 0) + additionalValue(bjornChoice, equipMode),
             ],
           ])
         : []),
@@ -242,9 +242,9 @@ export function meatOutfit(
             ? new Map<Item, number>([
                 [
                   bjornAlike,
-                  !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+                  (!bjornChoice.dropPredicate || bjornChoice.dropPredicate()
                     ? bjornChoice.meatVal() * bjornChoice.probability
-                    : 0,
+                    : 0) + additionalValue(bjornChoice, equipMode),
                 ],
               ])
             : []),
