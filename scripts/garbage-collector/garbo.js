@@ -22712,27 +22712,26 @@ var bjornFams = [{
 }].filter(function (bjornFam) {
   return (0,dist.have)(bjornFam.familiar);
 });
+function additionalValue(familiar, mode) {
+  if (!familiar.modifier) return 0;
+  var meatVal = [BonusEquipMode.DMT, BonusEquipMode.FREE].includes(mode) ? 0 : baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0);
+  var itemVal = mode === BonusEquipMode.BARF ? 72 : 0;
+  if (familiar.modifier.type === BjornModifierType.MEAT) return familiar.modifier.modifier * meatVal / 100;
+  if (familiar.modifier.type === BjornModifierType.ITEM) return familiar.modifier.modifier * itemVal / 100;
+
+  if (familiar.modifier.type === BjornModifierType.FMWT) {
+    var lepMult = leprechaunMultiplier(meatFamiliar());
+    var fairyMult = fairyMultiplier(meatFamiliar());
+    return (meatVal * (10 * lepMult + 5 * Math.sqrt(lepMult)) + itemVal * (5 * fairyMult + 2.5 * Math.sqrt(fairyMult))) / 100;
+  }
+
+  return 0;
+}
 var bjornLists = new Map();
 
 function generateBjornList(mode) {
-  var additionalValue = function additionalValue(familiar) {
-    if (!familiar.modifier) return 0;
-    var meatVal = [BonusEquipMode.DMT, BonusEquipMode.FREE].includes(mode) ? 0 : baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0);
-    var itemVal = mode === BonusEquipMode.BARF ? 72 : 0;
-    if (familiar.modifier.type === BjornModifierType.MEAT) return familiar.modifier.modifier * meatVal / 100;
-    if (familiar.modifier.type === BjornModifierType.ITEM) return familiar.modifier.modifier * itemVal / 100;
-
-    if (familiar.modifier.type === BjornModifierType.FMWT) {
-      var lepMult = leprechaunMultiplier(meatFamiliar());
-      var fairyMult = fairyMultiplier(meatFamiliar());
-      return (meatVal * (10 * lepMult + 5 * Math.sqrt(lepMult)) + itemVal * (5 * fairyMult + 2.5 * Math.sqrt(fairyMult))) / 100;
-    }
-
-    return 0;
-  };
-
   return bjorn_toConsumableArray(bjornFams).sort(function (a, b) {
-    return (!b.dropPredicate || b.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode) ? b.meatVal() * b.probability : 0) + additionalValue(b) - ((!a.dropPredicate || a.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode) ? a.meatVal() * a.probability : 0) + additionalValue(a));
+    return (!b.dropPredicate || b.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode) ? b.meatVal() * b.probability : 0) + additionalValue(b, mode) - ((!a.dropPredicate || a.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode) ? a.meatVal() * a.probability : 0) + additionalValue(a, mode));
   });
 }
 
@@ -22821,7 +22820,7 @@ function freeFightOutfit() {
   var finalRequirement = new dist.Requirement(parameters, {
     forceEquip: forceEquip,
     preventEquip: preventEquip,
-    bonusEquip: new Map([].concat(outfit_toConsumableArray(bonusEquip), outfit_toConsumableArray(dropsItems(equipMode)), outfit_toConsumableArray(pantsgiving()), outfit_toConsumableArray(cheeses(false)), outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, !bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0]]) : []))),
+    bonusEquip: new Map([].concat(outfit_toConsumableArray(bonusEquip), outfit_toConsumableArray(dropsItems(equipMode)), outfit_toConsumableArray(pantsgiving()), outfit_toConsumableArray(cheeses(false)), outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + additionalValue(bjornChoice, equipMode)]]) : []))),
     preventSlot: [].concat(outfit_toConsumableArray(preventSlot), outfit_toConsumableArray((0,dist.$slots)(outfit_templateObject10 || (outfit_templateObject10 = outfit_taggedTemplateLiteral(["crown-of-thrones, buddy-bjorn"])))))
   });
   (0,dist.maximizeCached)(finalRequirement.maximizeParameters, finalRequirement.maximizeOptions);
@@ -22902,7 +22901,7 @@ function meatOutfit(embezzlerUp) {
   var compiledRequirements = dist.Requirement.merge([].concat(outfit_toConsumableArray(requirements), [new dist.Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(additionalRequirements), {
     forceEquip: forceEquip,
     preventEquip: [].concat(outfit_toConsumableArray((0,dist.$items)(outfit_templateObject51 || (outfit_templateObject51 = outfit_taggedTemplateLiteral(["broken champagne bottle"])))), outfit_toConsumableArray(embezzlerUp ? (0,dist.$items)(outfit_templateObject52 || (outfit_templateObject52 = outfit_taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === (0,dist.$item)(outfit_templateObject53 || (outfit_templateObject53 = outfit_taggedTemplateLiteral(["Buddy Bjorn"]))) ? (0,dist.$item)(outfit_templateObject54 || (outfit_templateObject54 = outfit_taggedTemplateLiteral(["Crown of Thrones"]))) : (0,dist.$item)(outfit_templateObject55 || (outfit_templateObject55 = outfit_taggedTemplateLiteral(["Buddy Bjorn"])))]),
-    bonusEquip: new Map([].concat(outfit_toConsumableArray(dropsItems(equipMode)), outfit_toConsumableArray(embezzlerUp ? [] : pantsgiving()), outfit_toConsumableArray(cheeses(embezzlerUp)), outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, !bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0]]) : []))),
+    bonusEquip: new Map([].concat(outfit_toConsumableArray(dropsItems(equipMode)), outfit_toConsumableArray(embezzlerUp ? [] : pantsgiving()), outfit_toConsumableArray(cheeses(embezzlerUp)), outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + additionalValue(bjornChoice, equipMode)]]) : []))),
     preventSlot: (0,dist.$slots)(outfit_templateObject56 || (outfit_templateObject56 = outfit_taggedTemplateLiteral(["crown-of-thrones, buddy-bjorn"])))
   })]));
   (0,dist.maximizeCached)(compiledRequirements.maximizeParameters, compiledRequirements.maximizeOptions);
