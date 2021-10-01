@@ -98,9 +98,8 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       ...(bjornAlike
         ? new Map<Item, number>([
             [
-
               bjornAlike,
-              !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+              (!bjornChoice.dropPredicate || bjornChoice.dropPredicate()
                 ? bjornChoice.meatVal() * bjornChoice.probability
                 : 0) + additionalValue(bjornChoice, equipMode),
             ],
@@ -249,7 +248,6 @@ export function meatOutfit(
                 ],
               ])
             : []),
-
         ]),
         preventSlot: $slots`crown-of-thrones, buddy-bjorn`,
       }
