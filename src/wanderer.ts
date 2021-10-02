@@ -24,7 +24,7 @@ function untangleDigitizes(turnCount: number, chunks: number): number {
   return Math.floor(chunks * monstersPerChunk);
 }
 
-function digitizedMonstersRemaining(): number {
+export function digitizedMonstersRemaining(): number {
   if (!SourceTerminal.have()) return 0;
 
   const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
