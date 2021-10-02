@@ -727,6 +727,36 @@ const freeFightSources = [
     }
   ),
 
+  new FreeFight(
+    () =>
+      have($item`Fourth of May Cosplay Saber`) &&
+      (clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
+        clamp(availableAmount($item`distention pill`), 0, 100) +
+        availableAmount($item`Map to Safety Shelter Grimace Prime`) <
+        200 ||
+        get("questL11Worship") === "unstarted") &&
+      ((have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) ||
+        numericModifier($item`Grimacite guayabera`, "Monster Level") >= 40)
+        ? clamp(5 - get("_saberForceUses"), 0, 3 - get("_monstersMapped"))
+        : 0,
+    () => {
+      ensureEffect($effect`Transpondent`);
+      setChoice(1387, 3);
+      if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
+        withMacro(Macro.skill($skill`Use the Force`), () =>
+          mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`)
+        );
+      } else {
+        adventureMacro($location`Domed City of Grimacia`, Macro.skill($skill`Use the Force`));
+      }
+    },
+    {
+      requirements: () => [
+        new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
+      ],
+    }
+  ),
+
   //Initial 9 Pygmy fights
   new FreeFight(
     () =>
@@ -767,7 +797,6 @@ const freeFightSources = [
       ],
     }
   ),
-
   //11th pygmy fight if we lack a saber
   new FreeFight(
     () =>
@@ -1321,6 +1350,7 @@ const freeRunFightSources = [
       },
     }
   ),
+  //Saber pills if we can
   new FreeRunFight(
     () =>
       have($item`Fourth of May Cosplay Saber`) &&
