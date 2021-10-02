@@ -750,18 +750,18 @@ const freeFightSources = [
         }
         adventureMacro(
           $location`Domed City of Grimacia`,
-          Macro.if_(
-            `monsterid ${toInt($monster`alielf`)}`,
+          Macro.ifMonster(
+            $monster`alielf`,
             Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).tryItem(
               $item`Louder Than Bomb`
             )
           )
-            .if_(
-              `monsterid ${toInt($monster`cat-alien`)}`,
+            .ifMonster(
+              $monster`cat-alien`,
               Macro.trySkill($skill`Snokebomb`).tryItem($item`tennis ball`)
             )
-            .if_(
-              `monsterid ${toInt($monster`dog-alien`)}`,
+            .ifMonster(
+              $monster`dog-alien`,
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
             )
             .skill($skill`Use the Force`)

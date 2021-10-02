@@ -216,6 +216,14 @@ export class Macro extends LibramMacro {
     return new Macro().tryCopier(itemOrSkill);
   }
 
+  ifMonster(monster: Monster, macro: Macro): Macro {
+    return this.if_(`monsterid ${monster.id}`, macro);
+  }
+
+  static ifMonster(monster: Monster, macro: Macro): Macro {
+    return new Macro().ifMonster(monster, macro);
+  }
+
   meatKill(): Macro {
     const sealClubberSetup =
       equippedAmount($item`mafia pointer finger ring`) > 0 &&
