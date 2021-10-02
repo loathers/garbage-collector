@@ -729,12 +729,7 @@ const freeFightSources = [
 
   new FreeFight(
     () =>
-      have($item`Fourth of May Cosplay Saber`) &&
-      (clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
-        clamp(availableAmount($item`distention pill`), 0, 100) +
-        availableAmount($item`Map to Safety Shelter Grimace Prime`) <
-        200 ||
-        get("questL11Worship") === "unstarted") &&
+      wantPills() &&
       ((have($skill`Comprehensive Cartography`) &&
         get("_monstersMapped") <
           (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3)) ||
@@ -1354,15 +1349,7 @@ const freeRunFightSources = [
   ),
   //Saber pills if we can
   new FreeRunFight(
-    () =>
-      have($item`Fourth of May Cosplay Saber`) &&
-      (clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
-        clamp(availableAmount($item`distention pill`), 0, 100) +
-        availableAmount($item`Map to Safety Shelter Grimace Prime`) <
-        200 ||
-        get("questL11Worship") === "unstarted")
-        ? clamp(5 - get("_saberForceUses"), 0, 5)
-        : 0,
+    () => (wantPills() ? clamp(5 - get("_saberForceUses"), 0, 5) : 0),
     (runSource: FreeRun) => {
       ensureEffect($effect`Transpondent`);
       setChoice(1387, 3);
@@ -1799,4 +1786,16 @@ function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
     (a, b) => b.dropRate * getSaleValue(b.item) - a.dropRate * getSaleValue(a.item)
   )[0];
   return bestFireExtinguisherZoneCached;
+}
+
+function wantPills(): boolean {
+  return (
+    have($item`Fourth of May Cosplay Saber`) &&
+    ((clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
+      clamp(availableAmount($item`distention pill`), 0, 100) +
+      availableAmount($item`Map to Safety Shelter Grimace Prime`) <
+      200 &&
+      availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60) ||
+      get("questL11Worship") === "unstarted")
+  );
 }
