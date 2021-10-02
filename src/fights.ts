@@ -66,6 +66,7 @@ import {
   $monster,
   $monsters,
   $phyla,
+  $phylum,
   $skill,
   $slot,
   adventureMacro,
@@ -728,29 +729,50 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () =>
-      wantPills() &&
-      ((have($skill`Comprehensive Cartography`) &&
-        get("_monstersMapped") <
-          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3)) ||
-        numericModifier($item`Grimacite guayabera`, "Monster Level") >= 40)
-        ? clamp(5 - get("_saberForceUses"), 0, 3 - get("_monstersMapped"))
-        : 0,
+    () => (wantPills() ? clamp(5 - get("_saberForceUses"), 0, 3 - get("_monstersMapped")) : 0),
     () => {
       ensureEffect($effect`Transpondent`);
+      if (have($familiar`Red-Nosed Snapper`)) cliExecute(`snapper ${$phylum`dude`}`);
       setChoice(1387, 3);
-      if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
+      if (
+        have($skill`Comprehensive Cartography`) &&
+        get("_monstersMapped") <
+          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3)
+      ) {
         withMacro(Macro.skill($skill`Use the Force`), () =>
           mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`)
         );
       } else {
-        adventureMacro($location`Domed City of Grimacia`, Macro.skill($skill`Use the Force`));
+        if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
+          retrieveItem(1, $item`tennis ball`);
+          retrieveItem(1, $item`Louder Than Bomb`);
+          retrieveItem(1, $item`divine champagne popper`);
+        }
+        adventureMacro(
+          $location`Domed City of Grimacia`,
+          Macro.if_(
+            `monsterid ${toInt($monster`alielf`)}`,
+            Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).tryItem(
+              $item`Louder Than Bomb`
+            )
+          )
+            .if_(
+              `monsterid ${toInt($monster`cat-alien`)}`,
+              Macro.trySkill($skill`Snokebomb`).tryItem($item`tennis ball`)
+            )
+            .if_(
+              `monsterid ${toInt($monster`dog-alien`)}`,
+              Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
+            )
+            .skill($skill`Use the Force`)
+        );
       }
     },
     {
       requirements: () => [
         new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
       ],
+      familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
     }
   ),
 
@@ -1351,6 +1373,7 @@ const freeRunFightSources = [
   new FreeRunFight(
     () => (wantPills() ? clamp(5 - get("_saberForceUses"), 0, 5) : 0),
     (runSource: FreeRun) => {
+      if (have($familiar`Red-Nosed Snapper`)) cliExecute(`snapper ${$phylum`dude`}`);
       ensureEffect($effect`Transpondent`);
       setChoice(1387, 3);
       adventureMacro(
@@ -1364,6 +1387,7 @@ const freeRunFightSources = [
       requirements: () => [
         new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
       ],
+      familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
     }
   ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
