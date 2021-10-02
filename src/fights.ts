@@ -735,7 +735,9 @@ const freeFightSources = [
         availableAmount($item`Map to Safety Shelter Grimace Prime`) <
         200 ||
         get("questL11Worship") === "unstarted") &&
-      ((have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) ||
+      ((have($skill`Comprehensive Cartography`) &&
+        get("_monstersMapped") <
+          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3)) ||
         numericModifier($item`Grimacite guayabera`, "Monster Level") >= 40)
         ? clamp(5 - get("_saberForceUses"), 0, 3 - get("_monstersMapped"))
         : 0,
