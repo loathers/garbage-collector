@@ -1321,6 +1321,32 @@ const freeRunFightSources = [
       },
     }
   ),
+  new FreeRunFight(
+    () =>
+      have($item`Fourth of May Cosplay Saber`) &&
+      (clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
+        clamp(availableAmount($item`distention pill`), 0, 100) +
+        availableAmount($item`Map to Safety Shelter Grimace Prime`) <
+        200 ||
+        get("questL11Worship") === "unstarted")
+        ? clamp(5 - get("_saberForceUses"), 0, 5)
+        : 0,
+    (runSource: FreeRun) => {
+      ensureEffect($effect`Transpondent`);
+      setChoice(1387, 3);
+      adventureMacro(
+        $location`Domed City of Grimacia`,
+        Macro.if_("monstername * survivor", Macro.skill($skill`Use the Force`)).step(
+          runSource.macro
+        )
+      );
+    },
+    {
+      requirements: () => [
+        new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
+      ],
+    }
+  ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
   new FreeRunFight(
     () =>
