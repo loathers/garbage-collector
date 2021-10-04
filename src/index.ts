@@ -212,10 +212,6 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(20901);
-  if (argString.toLowerCase().includes("help")) {
-    printHelpMenu();
-    return;
-  }
 
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
@@ -245,12 +241,16 @@ export function main(argString = ""): void {
   for (const arg of args) {
     if (arg.match(/\d+/)) {
       globalOptions.stopTurncount = myTurncount() + parseInt(arg, 10);
-    }
-    if (arg.match(/ascend/)) {
+    } else if (arg.match(/ascend/)) {
       globalOptions.ascending = true;
-    }
-    if (arg.match(/nobarf/)) {
+    } else if (arg.match(/nobarf/)) {
       globalOptions.noBarf = true;
+    } else if (arg.match(/help/i)) {
+      printHelpMenu();
+      return;
+    } else if (arg) {
+      print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
+      return;
     }
   }
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
