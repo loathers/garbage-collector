@@ -248,7 +248,7 @@ export function main(argString = ""): void {
     } else if (arg.match(/help/i)) {
       printHelpMenu();
       return;
-    } else {
+    } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
       return;
     }
