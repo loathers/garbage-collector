@@ -737,7 +737,7 @@ const freeFightSources = [
       if (
         have($skill`Comprehensive Cartography`) &&
         get("_monstersMapped") <
-          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3)
+          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) //Save a map to use for polar vortex
       ) {
         withMacro(Macro.skill($skill`Use the Force`), () =>
           mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`)
