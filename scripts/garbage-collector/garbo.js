@@ -20883,8 +20883,10 @@ function fillSpleenWith(spleenItem) {
     // (1.04 * adventureGain * spleenTotal + 1.04 * adventures + 40 - synthTurns) / (30 + 1.04 * adventureGain) = spleenB
     var synthTurns = (0,external_kolmafia_.haveEffect)((0,dist.$effect)(diet_templateObject5 || (diet_templateObject5 = diet_taggedTemplateLiteral(["Synthesis: Greed"]))));
     var spleenTotal = (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)();
-    var adventuresPerItem = adventureGain(spleenItem);
-    var spleenSynth = Math.ceil((1.04 * adventuresPerItem * spleenTotal + estimatedTurns() - synthTurns) / (30 + 1.04 * adventuresPerItem));
+    var adventuresPerItem = adventureGain(spleenItem); // when not barfing, only get synth for estimatedTurns() turns (ignore adv gain)
+
+    var spleenAdvsGained = globalOptions.noBarf ? 0 : 1.04 * adventuresPerItem * spleenTotal;
+    var spleenSynth = Math.ceil((spleenAdvsGained + estimatedTurns() - synthTurns) / (30 + 1.04 * adventuresPerItem));
 
     if ((0,dist.have)((0,dist.$skill)(diet_templateObject6 || (diet_templateObject6 = diet_taggedTemplateLiteral(["Sweet Synthesis"]))))) {
       for (var i = 0; i < (0,dist.clamp)(spleenSynth, 0, (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()); i++) {
