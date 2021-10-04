@@ -25002,12 +25002,6 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   (0,dist.sinceKolmafiaRevision)(20901);
-
-  if (argString.toLowerCase().includes("help")) {
-    printHelpMenu();
-    return;
-  }
-
   var forbiddenStores = dist.property.getString("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25040,14 +25034,16 @@ function main() {
 
       if (arg.match(/\d+/)) {
         globalOptions.stopTurncount = (0,external_kolmafia_.myTurncount)() + parseInt(arg, 10);
-      }
-
-      if (arg.match(/ascend/)) {
+      } else if (arg.match(/ascend/)) {
         globalOptions.ascending = true;
-      }
-
-      if (arg.match(/nobarf/)) {
+      } else if (arg.match(/nobarf/)) {
         globalOptions.noBarf = true;
+      } else if (arg.match(/help/i)) {
+        printHelpMenu();
+        return;
+      } else if (arg) {
+        (0,external_kolmafia_.print)("Invalid argument ".concat(arg, " passed. Run garbo help to see valid arguments."), "red");
+        return;
       }
     }
   } catch (err) {
