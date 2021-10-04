@@ -154,9 +154,10 @@ function fillSpleenWith(spleenItem: Item) {
     const synthTurns = haveEffect($effect`Synthesis: Greed`);
     const spleenTotal = spleenLimit() - mySpleenUse();
     const adventuresPerItem = adventureGain(spleenItem);
+    // when not barfing, only get synth for estimatedTurns() turns (ignore adv gain)
+    const spleenAdvsGained = globalOptions.noBarf ? 0 : 1.04 * adventuresPerItem * spleenTotal;
     const spleenSynth = Math.ceil(
-      (1.04 * adventuresPerItem * spleenTotal + estimatedTurns() - synthTurns) /
-        (30 + 1.04 * adventuresPerItem)
+      (spleenAdvsGained + estimatedTurns() - synthTurns) / (30 + 1.04 * adventuresPerItem)
     );
     if (have($skill`Sweet Synthesis`)) {
       for (let i = 0; i < clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()); i++) {
