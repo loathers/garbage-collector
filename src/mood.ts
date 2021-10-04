@@ -3,11 +3,13 @@ import {
   getCampground,
   getClanLounge,
   getFuel,
+  getWorkshed,
   haveEffect,
   haveSkill,
   itemAmount,
   myClass,
   myEffects,
+  myLevel,
   mySpleenUse,
   numericModifier,
   spleenLimit,
@@ -124,6 +126,19 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
       setChoice(1399, 2);
       useSkill($skill`Seek out a Bird`, 6 - get("_birdsSoughtToday"));
     }
+  }
+
+  if (
+    myClass() === $class`Accordion Thief` &&
+    myLevel() >= 15 &&
+    !(
+      getWorkshed() === $item`warbear LP-ROM burner` ||
+      have($item`warbear LP-ROM burner` || get("questG04Nemesis") === "finished")
+    )
+  ) {
+    if (have($skill`The Ballad of Richie Thingfinder`))
+      useSkill($skill`The Ballad of Richie Thingfinder`);
+    if (have($skill`Chorale of Companionship`)) useSkill($skill`Chorale of Companionship`);
   }
 
   potionSetup(embezzlers);
