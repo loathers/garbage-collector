@@ -136,11 +136,11 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     if (have($skill`The Ballad of Richie Thingfinder`)) {
       useSkill(
         $skill`The Ballad of Richie Thingfinder`,
-        10 - $skill`The Ballad of Richie Thingfinder`.timescast
+        10 - get("_thingfinderCasts")
       );
     }
     if (have($skill`Chorale of Companionship`)) {
-      useSkill($skill`Chorale of Companionship`, 10 - $skill`Chorale of Companionship`.timescast);
+      useSkill($skill`Chorale of Companionship`, 10 - get("_companionshipCasts"));
     }
   }
 
