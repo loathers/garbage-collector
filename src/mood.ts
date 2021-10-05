@@ -134,10 +134,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
 
   if (myClass() === $class`Accordion Thief` && myLevel() >= 15 && !canRecord) {
     if (have($skill`The Ballad of Richie Thingfinder`)) {
-      useSkill(
-        $skill`The Ballad of Richie Thingfinder`,
-        10 - get("_thingfinderCasts")
-      );
+      useSkill($skill`The Ballad of Richie Thingfinder`, 10 - get("_thingfinderCasts"));
     }
     if (have($skill`Chorale of Companionship`)) {
       useSkill($skill`Chorale of Companionship`, 10 - get("_companionshipCasts"));
