@@ -133,9 +133,15 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     have($item`warbear LP-ROM burner` || get("questG04Nemesis") === "finished");
 
   if (myClass() === $class`Accordion Thief` && myLevel() >= 15 && !canRecord) {
-    if (have($skill`The Ballad of Richie Thingfinder`))
-      useSkill($skill`The Ballad of Richie Thingfinder`);
-    if (have($skill`Chorale of Companionship`)) useSkill($skill`Chorale of Companionship`);
+    if (have($skill`The Ballad of Richie Thingfinder`)) {
+      useSkill(
+        $skill`The Ballad of Richie Thingfinder`,
+        10 - $skill`The Ballad of Richie Thingfinder`.timescast
+      );
+    }
+    if (have($skill`Chorale of Companionship`)) {
+      useSkill($skill`Chorale of Companionship`, 10 - $skill`Chorale of Companionship`.timescast);
+    }
   }
 
   potionSetup(embezzlers);
