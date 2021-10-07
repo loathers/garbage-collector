@@ -32,7 +32,7 @@ export function digitizedMonstersRemaining(): number {
 
   const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
 
-  const relayArray = get("relayCounters").match(/(d+):Digitize Monster/);
+  const relayArray = get("relayCounters").match(/(\d+):Digitize Monster/);
   const nextDigitizeEncounter = relayArray ? parseInt(relayArray[1]) : myTurncount();
 
   const turnsLeftAtNextMonster = estimatedTurns() - (nextDigitizeEncounter - myTurncount());
