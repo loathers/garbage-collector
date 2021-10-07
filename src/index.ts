@@ -39,6 +39,7 @@ import {
   $slots,
   adventureMacro,
   adventureMacroAuto,
+  clamp,
   ensureEffect,
   get,
   getSaleValue,
@@ -173,7 +174,7 @@ function barfTurn() {
       !embezzlerUp &&
       myInebriety() > inebrietyLimit() &&
       globalOptions.ascending &&
-      estimatedTurns() - digitizedMonstersRemaining() <=
+      clamp(estimatedTurns() - digitizedMonstersRemaining(), 1, estimatedTurns()) <=
         availableAmount($item`Map to Safety Shelter Grimace Prime`)
     ) {
       const choiceToSet =
