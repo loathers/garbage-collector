@@ -739,9 +739,10 @@ const freeFightSources = [
         get("_monstersMapped") <
           (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) //Save a map to use for polar vortex
       ) {
-        withMacro(Macro.skill($skill`Use the Force`), () =>
-          mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`)
-        );
+        withMacro(Macro.skill($skill`Use the Force`), () => {
+          mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
+          runCombat();
+        });
       } else {
         if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
           retrieveItem(1, $item`tennis ball`);
