@@ -315,6 +315,7 @@ function startWandererCounters() {
     }
   }
 }
+
 const witchessPieces = [
   { piece: $monster`Witchess Bishop`, drop: $item`Sacramento wine` },
   { piece: $monster`Witchess Knight`, drop: $item`jumping horseradish` },
