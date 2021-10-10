@@ -23283,6 +23283,10 @@ function getEmbezzlerFight() {
 }
 
 function startDigitize() {
+  var _getEmbezzlerFight;
+
+  if (((_getEmbezzlerFight = getEmbezzlerFight()) === null || _getEmbezzlerFight === void 0 ? void 0 : _getEmbezzlerFight.name) === "Backup") return;
+
   if ((0,external_kolmafia_.getCounters)("Digitize Monster", 0, 100).trim() === "" && (0,dist.get)("_sourceTerminalDigitizeUses") !== 0 || !(0,external_kolmafia_.getCounters)("Enamorang monster", 0, 100).trim() && (0,dist.get)("enamorangMonster")) {
     do {
       var run = findRun() || ltbRun;
