@@ -21,7 +21,7 @@ export enum draggableFight {
 function untangleDigitizes(turnCount: number, chunks: number): number {
   const turnsPerChunk = turnCount / chunks;
   const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
-  return chunks * monstersPerChunk;
+  return Math.round(chunks * monstersPerChunk);
 }
 
 export function digitizedMonstersRemaining(): number {
@@ -39,8 +39,7 @@ export function digitizedMonstersRemaining(): number {
   if (turnsLeftAtNextMonster <= 0) return 0;
   const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
   return (
-    Math.round(untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) * (1 + digitizesLeft)) /
-      3 -
+    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
     get("_sourceTerminalDigitizeMonsterCount")
   );
 }
