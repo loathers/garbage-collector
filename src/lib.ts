@@ -4,7 +4,6 @@ import {
   handlingChoice,
   haveSkill,
   inebrietyLimit,
-  myClass,
   myInebriety,
   myTurncount,
   numericModifier,
@@ -20,7 +19,6 @@ import {
   visitUrl,
 } from "kolmafia";
 import {
-  $class,
   $effect,
   $familiar,
   $item,
@@ -31,7 +29,6 @@ import {
   get,
   getFoldGroup,
   getKramcoWandererChance,
-  getModifier,
   getSongCount,
   getSongLimit,
   have,
@@ -401,20 +398,4 @@ export function printHelpMenu(): void {
     +--------------------------+-----------------------------------------------------------------------------------------------+
     |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |
     +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
-}
-
-const accordions = [
-  ...(myClass() === $class`Accordion Thief`
-    ? $items`The Trickster's Trikitixa, zombie accordion, alarm accordion, peace accordion, accordionoid rocca, ghost accordion, autocalliope, Shakespeare's Sister's Accordion, Squeezebox of the Ages, autocalliope, non-Euclidean non-accordion, Accordion of Jordion, pentatonic accordion, bone bandoneon, accord ion, accordion file, Rock and Roll Legend, Bal-musette accordion, Cajun accordion, quirky accordion, Skipper's accordion, warbear exhaust manifold, guancertina, mama's squeezebox, baritone accordion, calavera concertina, beer-battered accordion, stolen accordion`
-    : []),
-  ...$items`antique accordion, aerogel accordion, paraffin pseudoaccordion, toy accordion`,
-].sort((a, b) => getModifier("Song Duration", b) - getModifier("Song Duration", a));
-
-export function accordionThiefSongDuration(): number {
-  const bestAccord = accordions.find((accordion) => have(accordion));
-  if (!bestAccord) {
-    retrieveItem(1, $item`antique accordion`);
-    return 10;
-  }
-  return getModifier("Song Duration", bestAccord);
 }
