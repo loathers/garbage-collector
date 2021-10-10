@@ -297,6 +297,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
 }
 
 function startDigitize() {
+  if (getEmbezzlerFight()?.name === "Backup") return;
   if (
     (getCounters("Digitize Monster", 0, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
