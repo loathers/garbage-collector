@@ -582,19 +582,6 @@ function getStenchLocation() {
 }
 
 const freeFightSources = [
-  // Get a Fish Head from our robortender if available
-  new FreeFight(
-    () =>
-      have($item`Cargo Cultist Shorts`) &&
-      have($familiar`Robortender`) &&
-      !get("_cargoPocketEmptied") &&
-      String(get("cargoPocketsEmptied", "")).indexOf("428") === -1,
-    () => cliExecute("cargo monster Mob Penguin Thug"),
-    {
-      familiar: () => $familiar`Robortender`,
-    }
-  ),
-
   new FreeFight(
     () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
     () => {
