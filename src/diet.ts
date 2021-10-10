@@ -52,7 +52,7 @@ import {
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { globalOptions } from "./globalvars";
-import { baseMeat, setChoice } from "./lib";
+import { accordionThiefSongDuration, baseMeat, setChoice } from "./lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
@@ -73,7 +73,7 @@ function drinkSafe(qty: number, item: Item) {
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
-      useSkill($skill`The Ode to Booze`, Math.ceil(castTurns / 10));
+      useSkill($skill`The Ode to Booze`, Math.ceil(castTurns / accordionThiefSongDuration()));
     }
   }
   if (!drink(qty, item)) throw "Failed to drink safely";
