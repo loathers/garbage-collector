@@ -413,14 +413,15 @@ export function dailyFights(): void {
               (booleanModifier("Underwater Familiar") ||
                 familiarWaterBreathingEquipment.some(have)) &&
               (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-              !have($item`envyfish egg`)
+              !have($item`envyfish egg`) &&
+              mallPrice($item`pulled green taffy`) < 10000 &&
+              retrieveItem($item`pulled green taffy`)
             ) {
               setLocation($location`The Briny Deeps`);
               meatOutfit(true, nextFight.requirements, true);
               if (get("questS01OldGuy") === "unstarted") {
                 visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
               }
-              retrieveItem($item`pulled green taffy`);
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
               nextFight.run({ location: $location`The Briny Deeps` });
               horseradish();
