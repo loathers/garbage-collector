@@ -28,6 +28,7 @@ import {
   spleenLimit,
   sweetSynthesis,
   toInt,
+  turnsPerCast,
   use,
   useFamiliar,
   userConfirm,
@@ -69,6 +70,16 @@ function eatSafe(qty: number, item: Item) {
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
   acquire(qty, item);
+  if (have($skill`The Ode to Booze`)) {
+    const odeTurns = qty * item.inebriety;
+    const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
+    if (castTurns > 0) {
+      useSkill(
+        $skill`The Ode to Booze`,
+        Math.ceil(castTurns / turnsPerCast($skill`The Ode to Booze`))
+      );
+    }
+  }
   if (!drink(qty, item)) throw "Failed to drink safely";
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
     // sometimes mafia does not track the mime army shot glass property
@@ -154,9 +165,10 @@ function fillSpleenWith(spleenItem: Item) {
     const synthTurns = haveEffect($effect`Synthesis: Greed`);
     const spleenTotal = spleenLimit() - mySpleenUse();
     const adventuresPerItem = adventureGain(spleenItem);
+    // when not barfing, only get synth for estimatedTurns() turns (ignore adv gain)
+    const spleenAdvsGained = globalOptions.noBarf ? 0 : 1.04 * adventuresPerItem * spleenTotal;
     const spleenSynth = Math.ceil(
-      (1.04 * adventuresPerItem * spleenTotal + estimatedTurns() - synthTurns) /
-        (30 + 1.04 * adventuresPerItem)
+      (spleenAdvsGained + estimatedTurns() - synthTurns) / (30 + 1.04 * adventuresPerItem)
     );
     if (have($skill`Sweet Synthesis`)) {
       for (let i = 0; i < clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()); i++) {

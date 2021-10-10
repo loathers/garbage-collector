@@ -3,11 +3,13 @@ import {
   getCampground,
   getClanLounge,
   getFuel,
+  getWorkshed,
   haveEffect,
   haveSkill,
   itemAmount,
   myClass,
   myEffects,
+  myLevel,
   mySpleenUse,
   numericModifier,
   spleenLimit,
@@ -19,6 +21,7 @@ import {
   $class,
   $effect,
   $effects,
+  $familiar,
   $item,
   $items,
   $skill,
@@ -33,6 +36,7 @@ import {
 import { baseMeat, questStep, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { potionSetup } from "./potions";
+import { estimatedTurns } from "./embezzler";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -49,7 +53,14 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
-  mood.potion($item`Flaskfull of Hollow`, 5);
+
+  const flaskValue =
+    get("latteUnlocks").includes("cajun") &&
+    get("latteUnlocks").includes("rawhide") &&
+    have($familiar`Robortender`)
+      ? 5
+      : 0.3 * baseMeat;
+  mood.potion($item`Flaskfull of Hollow`, flaskValue);
 
   mood.skill($skill`Blood Bond`);
   mood.skill($skill`Leash of Linguini`);
@@ -66,7 +77,8 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
 
   if (haveSkill($skill`Sweet Synthesis`)) {
     mood.effect($effect`Synthesis: Greed`, () => {
-      if (mySpleenUse() < spleenLimit()) cliExecute("synthesize greed");
+      if (mySpleenUse() < spleenLimit() && haveEffect($effect`Synthesis: Greed`) < estimatedTurns())
+        cliExecute("synthesize greed");
     });
   }
 
@@ -113,6 +125,19 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
       // Ensure we don't get stuck in the choice if the count is wrong
       setChoice(1399, 2);
       useSkill($skill`Seek out a Bird`, 6 - get("_birdsSoughtToday"));
+    }
+  }
+
+  const canRecord =
+    getWorkshed() === $item`warbear LP-ROM burner` ||
+    have($item`warbear LP-ROM burner` || get("questG04Nemesis") === "finished");
+
+  if (myClass() === $class`Accordion Thief` && myLevel() >= 15 && !canRecord) {
+    if (have($skill`The Ballad of Richie Thingfinder`)) {
+      useSkill($skill`The Ballad of Richie Thingfinder`, 10 - get("_thingfinderCasts"));
+    }
+    if (have($skill`Chorale of Companionship`)) {
+      useSkill($skill`Chorale of Companionship`, 10 - get("_companionshipCasts"));
     }
   }
 

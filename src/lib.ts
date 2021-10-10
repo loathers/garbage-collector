@@ -1,12 +1,14 @@
 import {
   abort,
   cliExecute,
+  handlingChoice,
   haveSkill,
   inebrietyLimit,
   myInebriety,
   myTurncount,
   numericModifier,
   print,
+  printHtml,
   restoreMp,
   retrieveItem,
   runChoice,
@@ -80,24 +82,12 @@ export function mapMonster(location: Location, monster: Monster): void {
   const myTurns = myTurncount();
   let mapPage = "";
   // Handle zone intros and holiday wanderers
-  while (!mapPage.includes("Leading Yourself Right to Them")) {
+  for (let tries = 0; tries < 10; tries++) {
     mapPage = visitUrl(toUrl(location), false, true);
-    const turtleAdvs = [
-      "Even Tamer Than Usual",
-      "Never Break the Chain",
-      "Close, but Yes Cigar",
-      "Armchair Quarterback",
-      "This Turtle Rocks!",
-      "Really Sticking Her Neck Out",
-      "It Came from Beneath the Sewer? Great!",
-      "Don't Be Alarmed, Now",
-      "Puttin' it on Wax",
-      "More Like... Hurtle",
-      "Musk! Musk! Musk!",
-      "Silent Strolling",
-    ];
-    if (turtleAdvs.some((advName) => mapPage.includes(advName))) runChoice(-1);
+    if (mapPage.includes("Leading Yourself Right to Them")) break;
+    if (handlingChoice()) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
+    if (tries === 9) throw `Stuck trying to Map the monsters.`;
   }
 
   const fightPage = visitUrl(
@@ -367,4 +357,45 @@ export function printLog(color: string): void {
   for (const message of log) {
     print(message, color);
   }
+}
+
+export function printHelpMenu(): void {
+  printHtml(`<pre style="font-family:consolas;">
+    +==============+===================================================================================================+
+    |   Argument   |                                            Description                                            |
+    +==============+===================================================================================================+
+    |    nobarf    | garbo will do beginning of the day setup, embezzlers, and various daily flags, but will           |
+    |              |  terminate before normal Barf Mountain turns.                                                     |
+    +--------------+---------------------------------------------------------------------------------------------------+
+    |    ascend    | garbo will operate under the assumption that you're ascending after running it, rather than       |
+    |              |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |
+    +--------------+---------------------------------------------------------------------------------------------------+
+    | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
+    |              |  200 turns are spent.                                                                             |
+    +--------------+---------------------------------------------------------------------------------------------------+
+    |     Note:    | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
+    +--------------+---------------------------------------------------------------------------------------------------+</pre>`);
+  printHtml(`<pre style="font-family:consolas;">
+    +==========================+===============================================================================================+
+    |         Property         |                                          Description                                          |
+    +==========================+===============================================================================================+
+    |     valueOfAdventure     | This is a native mafia property, garbo will make purchasing decisions based on this value.    |
+    |                          | Recommended to be at least 3501.                                                              |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
+    |      garbo_stashClan     | If set, garbo will attempt to switch to this clan to take and return useful clan stash items, |
+    |                          |  i.e. a Haiku Katana or Repaid Diaper.                                                        |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
+    |       garbo_vipClan      | If set, garbo will attempt to switch to this clan to utilize VIP furniture if you have a key. |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
+    | garbo_skipAscensionCheck | Set to true to skip verifying that your account has broken the prism, otherwise you will be   |
+    |                          |  warned upon starting the script.                                                             |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
+    |  garbo_valueOfFreeFight  | Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)      |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
+    |     garbo_fightGlitch    | Set to true to fight the glitch season reward. You need certain skills, see relay for info.   |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
+    |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
+    |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |
+    +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
 }

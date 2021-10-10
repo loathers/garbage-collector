@@ -36,6 +36,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slots,
   adventureMacro,
   adventureMacroAuto,
   get,
@@ -53,7 +54,14 @@ import { Macro, withMacro } from "./combat";
 import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
-import { kramcoGuaranteed, printLog, propertyManager, questStep, safeInterrupt } from "./lib";
+import {
+  kramcoGuaranteed,
+  printHelpMenu,
+  printLog,
+  propertyManager,
+  questStep,
+  safeInterrupt,
+} from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -121,7 +129,8 @@ function barfTurn() {
   } else if (
     myInebriety() <= inebrietyLimit() &&
     have($item`"I Voted!" sticker`) &&
-    getCounters("Vote", 0, 0) !== "" &&
+    totalTurnsPlayed() % 11 === 1 &&
+    get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
     get("_voteFreeFights") < 3
   ) {
     useFamiliar(freeFightFamiliar());
@@ -203,6 +212,7 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(20901);
+
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
     //Van & Duffel's Baleet Shop
@@ -231,12 +241,16 @@ export function main(argString = ""): void {
   for (const arg of args) {
     if (arg.match(/\d+/)) {
       globalOptions.stopTurncount = myTurncount() + parseInt(arg, 10);
-    }
-    if (arg.match(/ascend/)) {
+    } else if (arg.match(/ascend/)) {
       globalOptions.ascending = true;
-    }
-    if (arg.match(/nobarf/)) {
+    } else if (arg.match(/nobarf/)) {
       globalOptions.noBarf = true;
+    } else if (arg.match(/help/i)) {
+      printHelpMenu();
+      return;
+    } else if (arg) {
+      print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
+      return;
     }
   }
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
@@ -300,7 +314,6 @@ export function main(argString = ""): void {
       dontStopForCounters: true,
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
-      trackVoteMonster: "free",
       choiceAdventureScript: "",
     });
     let bestHalloweiner = 0;
@@ -368,6 +381,7 @@ export function main(argString = ""): void {
 
         setDefaultMaximizeOptions({
           preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
+          preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
         // 2. get a ticket (done before free fights so we can deliver thesis in

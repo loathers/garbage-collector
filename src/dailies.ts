@@ -34,6 +34,7 @@ import {
   $familiars,
   $item,
   $items,
+  $monster,
   $skill,
   $skills,
   $stat,
@@ -93,13 +94,32 @@ function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
   visitUrl("place.php?whichplace=town_right&action=townright_vote");
 
-  const votingMonsterPriority = [
-    "terrible mutant",
-    "angry ghost",
-    "government bureaucrat",
-    "annoyed snake",
-    "slime blob",
+  const voterValueTable = [
+    {
+      monster: $monster`terrible mutant`,
+      value: getSaleValue($item`glob of undifferentiated tissue`) + 10,
+    },
+    {
+      monster: $monster`angry ghost`,
+      value: getSaleValue($item`ghostly ectoplasm`) * 1.11,
+    },
+    {
+      monster: $monster`government bureaucrat`,
+      value: getSaleValue($item`absentee voter ballot`) * 0.05 + 75 * 0.25 + 50,
+    },
+    {
+      monster: $monster`annoyed snake`,
+      value: 25 * 0.5 + 25,
+    },
+    {
+      monster: $monster`slime blob`,
+      value: 20 * 0.4 + 50 * 0.2 + 250 * 0.01,
+    },
   ];
+
+  const votingMonsterPriority = voterValueTable
+    .sort((a, b) => b.value - a.value)
+    .map((element) => element.monster.name);
 
   const initPriority = new Map<string, number>([
     ["Meat Drop: +30", 10],
