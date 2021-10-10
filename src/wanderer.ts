@@ -36,8 +36,12 @@ export function digitizedMonstersRemaining(): number {
   const nextDigitizeEncounter = relayArray ? parseInt(relayArray[1]) : myTurncount();
 
   const turnsLeftAtNextMonster = estimatedTurns() - (nextDigitizeEncounter - myTurncount());
+  if (turnsLeftAtNextMonster <= 0) return 0;
   const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
-  return untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1);
+  return (
+    (untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) * (1 + digitizesLeft)) / 3 -
+    monsterCount
+  );
 }
 
 interface ZonePotion {
