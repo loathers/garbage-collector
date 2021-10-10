@@ -298,7 +298,7 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
 
 function startWandererCounters() {
   if (getEmbezzlerFight()?.name === "Backup") return;
-    let n = 0;
+  let n = 0;
   if (
     getCounters("Digitize Monster", 0, 0).trim() === "" &&
     getCounters("Enamorang Monster", 0, 0).trim() === "" &&
@@ -306,13 +306,13 @@ function startWandererCounters() {
       get("_sourceTerminalDigitizeUses") !== 0) ||
       (getCounters("Enamorang Monster", 0, 100).trim() === "" && get("enamorangMonster")))
   ) {
-    do {
+    while (get("lastCopyableMonster") !== $monster`crate` && n < 3) {
       const run = findRun() || ltbRun;
       if (run.prepare) run.prepare();
       freeFightOutfit(run.requirement ? [run.requirement] : []);
       adventureMacro($location`Noob Cave`, run.macro);
       n++;
-    } while (get("lastCopyableMonster") !== $monster`crate` && n < 3);
+    }
   }
 }
 const witchessPieces = [
