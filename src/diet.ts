@@ -69,6 +69,13 @@ function eatSafe(qty: number, item: Item) {
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
   acquire(qty, item);
+  if (have($skill`The Ode to Booze`)) {
+    const odeTurns = qty * item.inebriety;
+    const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
+    if (castTurns > 0) {
+      useSkill($skill`The Ode to Booze`, Math.ceil(castTurns / 10));
+    }
+  }
   if (!drink(qty, item)) throw "Failed to drink safely";
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
     // sometimes mafia does not track the mime army shot glass property
