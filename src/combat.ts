@@ -1,4 +1,5 @@
 import {
+  choiceFollowsFight,
   equippedAmount,
   equippedItem,
   familiarWeight,
@@ -549,4 +550,5 @@ export function main(): void {
     Macro.load().submit();
   }
   while (inMultiFight()) runCombat();
+  if (choiceFollowsFight()) visitUrl("choice.php");
 }
