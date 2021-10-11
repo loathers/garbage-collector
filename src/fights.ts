@@ -739,11 +739,14 @@ const freeFightSources = [
         get("_monstersMapped") <
           (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) //Save a map to use for polar vortex
       ) {
-        withMacro(Macro.ifMonster($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`), () => {
-          mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
-          runCombat();
-          runChoice(-1);
-        });
+        withMacro(
+          Macro.ifMonster($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`),
+          () => {
+            mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
+            runCombat();
+            runChoice(-1);
+          }
+        );
       } else {
         if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
           retrieveItem(1, $item`tennis ball`);
@@ -765,7 +768,8 @@ const freeFightSources = [
             .ifMonster(
               $monster`dog-alien`,
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
-            ).ifMonster($monster`time-spinner prank`, Macro.kill())
+            )
+            .ifMonster($monster`time-spinner prank`, Macro.kill())
             .skill($skill`Use the Force`)
         );
       }
