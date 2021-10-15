@@ -119,7 +119,7 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Enamorang",
     () =>
-      getCounters("LOV Enamorang", 0, 0).trim() !== "" &&
+      getCounters("Enamorang", 0, 0).trim() !== "" &&
       get("enamorangMonster") === $monster`Knob Goblin Embezzler`,
     () =>
       get("enamorangMonster") === $monster`Knob Goblin Embezzler` ||
