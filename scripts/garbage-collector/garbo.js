@@ -20373,7 +20373,7 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", function () {
 
   (0,dist.adventureMacro)((_options$location = options.location) !== null && _options$location !== void 0 ? _options$location : determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER), embezzlerMacro());
 }, [], true), new EmbezzlerFight("Enamorang", function () {
-  return (0,external_kolmafia_.getCounters)("LOV Enamorang", 0, 0).trim() !== "" && (0,dist.get)("enamorangMonster") === (0,dist.$monster)(embezzler_templateObject13 || (embezzler_templateObject13 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
+  return (0,external_kolmafia_.getCounters)("Enamorang", 0, 0).trim() !== "" && (0,dist.get)("enamorangMonster") === (0,dist.$monster)(embezzler_templateObject13 || (embezzler_templateObject13 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
 }, function () {
   return (0,dist.get)("enamorangMonster") === (0,dist.$monster)(embezzler_templateObject14 || (embezzler_templateObject14 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) || (0,dist.have)((0,dist.$item)(_templateObject15 || (_templateObject15 = embezzler_taggedTemplateLiteral(["LOV Enamorang"])))) && !(0,dist.get)("_enamorangs") ? 1 : 0;
 }, function (options) {
@@ -21425,7 +21425,7 @@ function fillAsdonMartinTo(targetUnits) {
   }
 }
 ;// CONCATENATED MODULE: ./src/clan.ts
-var clan_templateObject, clan_templateObject2, clan_templateObject3, clan_templateObject4, clan_templateObject5, clan_templateObject6, clan_templateObject7, clan_templateObject8;
+var clan_templateObject, clan_templateObject2, clan_templateObject3, clan_templateObject4, clan_templateObject5, clan_templateObject6, clan_templateObject7, clan_templateObject8, clan_templateObject9;
 
 function clan_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = clan_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -21624,8 +21624,11 @@ var StashManager = /*#__PURE__*/function () {
       if (items.length === 0) return;
 
       if ((0,external_kolmafia_.visitUrl)("fight.php").includes("You're fighting")) {
+        var _Macro$if_;
+
         (0,external_kolmafia_.print)("In fight, trying to get away to return items to stash...", "blue");
-        combat.Macro.tryItem.apply(combat.Macro, clan_toConsumableArray((0,dist.$items)(clan_templateObject2 || (clan_templateObject2 = clan_taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper"]))))).step("runaway").submit();
+
+        (_Macro$if_ = combat.Macro.if_("monsterid ".concat((0,dist.$monster)(clan_templateObject2 || (clan_templateObject2 = clan_taggedTemplateLiteral(["Knob Goblin Embezzler"]))).id), combat.Macro.attack().repeat())).tryItem.apply(_Macro$if_, clan_toConsumableArray((0,dist.$items)(clan_templateObject3 || (clan_templateObject3 = clan_taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper"]))))).step("runaway").submit();
       }
 
       withClan(this.clanIdOrName, function () {
@@ -21642,14 +21645,14 @@ var StashManager = /*#__PURE__*/function () {
             if (count > 0) {
               (0,external_kolmafia_.retrieveItem)(count, item);
 
-              if (item === (0,dist.$item)(clan_templateObject3 || (clan_templateObject3 = clan_taggedTemplateLiteral(["Buddy Bjorn"])))) {
-                (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,dist.$item)(clan_templateObject4 || (clan_templateObject4 = clan_taggedTemplateLiteral(["Buddy Bjorn"]))).descid));
-                (0,external_kolmafia_.bjornifyFamiliar)((0,dist.$familiar)(clan_templateObject5 || (clan_templateObject5 = clan_taggedTemplateLiteral(["none"]))));
+              if (item === (0,dist.$item)(clan_templateObject4 || (clan_templateObject4 = clan_taggedTemplateLiteral(["Buddy Bjorn"])))) {
+                (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,dist.$item)(clan_templateObject5 || (clan_templateObject5 = clan_taggedTemplateLiteral(["Buddy Bjorn"]))).descid));
+                (0,external_kolmafia_.bjornifyFamiliar)((0,dist.$familiar)(clan_templateObject6 || (clan_templateObject6 = clan_taggedTemplateLiteral(["none"]))));
               }
 
-              if (item === (0,dist.$item)(clan_templateObject6 || (clan_templateObject6 = clan_taggedTemplateLiteral(["Crown of Thrones"])))) {
-                (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,dist.$item)(clan_templateObject7 || (clan_templateObject7 = clan_taggedTemplateLiteral(["Crown of Thrones"]))).descid));
-                (0,external_kolmafia_.enthroneFamiliar)((0,dist.$familiar)(clan_templateObject8 || (clan_templateObject8 = clan_taggedTemplateLiteral(["none"]))));
+              if (item === (0,dist.$item)(clan_templateObject7 || (clan_templateObject7 = clan_taggedTemplateLiteral(["Crown of Thrones"])))) {
+                (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,dist.$item)(clan_templateObject8 || (clan_templateObject8 = clan_taggedTemplateLiteral(["Crown of Thrones"]))).descid));
+                (0,external_kolmafia_.enthroneFamiliar)((0,dist.$familiar)(clan_templateObject9 || (clan_templateObject9 = clan_taggedTemplateLiteral(["none"]))));
               }
 
               if ((0,external_kolmafia_.putStash)(count, item)) {
