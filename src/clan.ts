@@ -14,7 +14,7 @@ import {
   userConfirm,
   visitUrl,
 } from "kolmafia";
-import { $familiar, $item, $items, Clan, get, getFoldGroup, have, set } from "libram";
+import { $familiar, $item, $items, $monster, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
 
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
@@ -143,7 +143,8 @@ export class StashManager {
     if (items.length === 0) return;
     if (visitUrl("fight.php").includes("You're fighting")) {
       print("In fight, trying to get away to return items to stash...", "blue");
-      Macro.tryItem(...$items`Louder Than Bomb, divine champagne popper`)
+      Macro.if_(`monsterid ${$monster`Knob Goblin Embezzler`.id}`, Macro.attack().repeat())
+        .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
         .step("runaway")
         .submit();
     }
