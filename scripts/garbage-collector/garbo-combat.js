@@ -18590,6 +18590,11 @@ var Macro = /*#__PURE__*/function (_LibramMacro) {
       return this;
     }
   }, {
+    key: "ifMonster",
+    value: function ifMonster(monster, macro) {
+      return this.if_("monsterid ".concat(monster.id), macro);
+    }
+  }, {
     key: "meatKill",
     value: function meatKill() {
       var sealClubberSetup = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedAmount)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$item)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["mafia pointer finger ring"])))) > 0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myClass)() === (0,libram__WEBPACK_IMPORTED_MODULE_1__.$class)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Seal Clubber"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_1__.have)((0,libram__WEBPACK_IMPORTED_MODULE_1__.$skill)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Furious Wallop"]))));
@@ -18703,6 +18708,11 @@ var Macro = /*#__PURE__*/function (_LibramMacro) {
       return new Macro().tryCopier(itemOrSkill);
     }
   }, {
+    key: "ifMonster",
+    value: function ifMonster(monster, macro) {
+      return new Macro().ifMonster(monster, macro);
+    }
+  }, {
     key: "meatKill",
     value: function meatKill() {
       return new Macro().meatKill();
@@ -18756,6 +18766,8 @@ function main() {
   while ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inMultiFight)()) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.runCombat)();
   }
+
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.choiceFollowsFight)()) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("choice.php");
 }
 
 /***/ }),
