@@ -729,7 +729,7 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => (wantPills() ? clamp(5 - get("_saberForceUses"), 0, 3 - get("_monstersMapped")) : 0),
+    () => (wantPills() ? 5 - get("_saberForceUses") : 0),
     () => {
       ensureEffect($effect`Transpondent`);
       if (have($familiar`Red-Nosed Snapper`)) cliExecute(`snapper ${$phylum`dude`}`);
