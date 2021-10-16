@@ -297,12 +297,12 @@ function getEmbezzlerFight(): EmbezzlerFight | null {
   return null;
 }
 
-function startDigitize() {
+function startWandererCounter() {
   if (getEmbezzlerFight()?.name === "Backup") return;
   if (
     (getCounters("Digitize Monster", 0, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
-    (!getCounters("Enamorang monster", 0, 100).trim() && get("enamorangMonster"))
+    (getCounters("Enamorang Monster", 0, 100).trim() === "" && get("enamorangMonster"))
   ) {
     do {
       const run = findRun() || ltbRun;
@@ -312,6 +312,7 @@ function startDigitize() {
     } while (get("lastCopyableMonster") === $monster`Government agent`);
   }
 }
+
 const witchessPieces = [
   { piece: $monster`Witchess Bishop`, drop: $item`Sacramento wine` },
   { piece: $monster`Witchess Knight`, drop: $item`jumping horseradish` },
@@ -356,7 +357,7 @@ export function dailyFights(): void {
         safeInterrupt();
       }
 
-      startDigitize();
+      startWandererCounter();
 
       // SECOND EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
@@ -388,7 +389,7 @@ export function dailyFights(): void {
         safeInterrupt();
       }
 
-      startDigitize();
+      startWandererCounter();
 
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getEmbezzlerFight();
@@ -450,7 +451,7 @@ export function dailyFights(): void {
         ) {
           log.initialEmbezzlersFought++;
         }
-        startDigitize();
+        startWandererCounter();
         nextFight = getEmbezzlerFight();
         if (
           kramcoGuaranteed() &&
