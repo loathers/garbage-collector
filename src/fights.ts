@@ -1729,7 +1729,7 @@ function deliverThesis(): void {
 
   adventureMacro(
     thesisLocation,
-    Macro.if_(`monsterid ${toInt($monster`time-spinner prank`)}`, Macro.basicCombat()).skill(
+    Macro.ifMonster($monster`time-spinner prank`, Macro.basicCombat()).skill(
       $skill`deliver your thesis!`
     )
   );
