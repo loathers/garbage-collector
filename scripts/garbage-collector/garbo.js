@@ -23297,12 +23297,12 @@ function getEmbezzlerFight() {
   return null;
 }
 
-function startDigitize() {
+function startWandererCounter() {
   var _getEmbezzlerFight;
 
   if (((_getEmbezzlerFight = getEmbezzlerFight()) === null || _getEmbezzlerFight === void 0 ? void 0 : _getEmbezzlerFight.name) === "Backup") return;
 
-  if ((0,external_kolmafia_.getCounters)("Digitize Monster", 0, 100).trim() === "" && (0,dist.get)("_sourceTerminalDigitizeUses") !== 0 || !(0,external_kolmafia_.getCounters)("Enamorang monster", 0, 100).trim() && (0,dist.get)("enamorangMonster")) {
+  if ((0,external_kolmafia_.getCounters)("Digitize Monster", 0, 100).trim() === "" && (0,dist.get)("_sourceTerminalDigitizeUses") !== 0 || (0,external_kolmafia_.getCounters)("Enamorang Monster", 0, 100).trim() === "" && (0,dist.get)("enamorangMonster")) {
     do {
       var run = findRun() || ltbRun;
       if (run.prepare) run.prepare();
@@ -23365,7 +23365,7 @@ function dailyFights() {
         safeInterrupt();
       }
 
-      startDigitize(); // SECOND EMBEZZLER CHAIN
+      startWandererCounter(); // SECOND EMBEZZLER CHAIN
 
       if ((0,dist.have)((0,dist.$familiar)(fights_templateObject69 || (fights_templateObject69 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,dist.get)("_garbo_weightChain", false)) {
         var _startLectures = (0,dist.get)("_pocketProfessorLectures");
@@ -23394,7 +23394,7 @@ function dailyFights() {
         safeInterrupt();
       }
 
-      startDigitize(); // REMAINING EMBEZZLER FIGHTS
+      startWandererCounter(); // REMAINING EMBEZZLER FIGHTS
 
       var nextFight = getEmbezzlerFight();
 
@@ -23446,7 +23446,7 @@ function dailyFights() {
           log.initialEmbezzlersFought++;
         }
 
-        startDigitize();
+        startWandererCounter();
         nextFight = getEmbezzlerFight();
 
         if (kramcoGuaranteed() && !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name))) {
