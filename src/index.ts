@@ -39,6 +39,8 @@ import {
   $slots,
   adventureMacro,
   adventureMacroAuto,
+  clamp,
+  ensureEffect,
   get,
   getSaleValue,
   have,
@@ -61,6 +63,7 @@ import {
   propertyManager,
   questStep,
   safeInterrupt,
+  setChoice,
 } from "./lib";
 import { meatMood } from "./mood";
 import {
@@ -74,7 +77,7 @@ import { withStash, withVIPClan } from "./clan";
 import { globalOptions, log } from "./globalvars";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
-import { determineDraggableZoneAndEnsureAccess } from "./wanderer";
+import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -167,20 +170,35 @@ function barfTurn() {
     // d. get dressed
     meatOutfit(embezzlerUp, [], underwater);
 
-    adventureMacroAuto(
-      location,
-      Macro.externalIf(
-        underwater,
+    if (
+      !embezzlerUp &&
+      myInebriety() > inebrietyLimit() &&
+      globalOptions.ascending &&
+      clamp(Math.floor(estimatedTurns()) - digitizedMonstersRemaining(), 1, estimatedTurns()) <=
+        availableAmount($item`Map to Safety Shelter Grimace Prime`)
+    ) {
+      const choiceToSet =
+        availableAmount($item`distention pill`) <
+        availableAmount($item`synthetic dog hair pill`) +
+          availableAmount($item`Map to Safety Shelter Grimace Prime`)
+          ? 1
+          : 2;
+      setChoice(536, choiceToSet);
+      ensureEffect($effect`Transpondent`);
+      use($item`Map to Safety Shelter Grimace Prime`);
+    } else {
+      adventureMacroAuto(
+        location,
+        Macro.externalIf(
+          underwater,
+          Macro.ifMonster($monster`Knob Goblin Embezzler`, Macro.item($item`pulled green taffy`))
+        ).meatKill(),
         Macro.if_(
-          `monsterid ${$monster`Knob Goblin Embezzler`.id}`,
-          Macro.item($item`pulled green taffy`)
-        )
-      ).meatKill(),
-      Macro.if_(
-        `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
-        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
-      ).abort()
-    );
+          `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
+          Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
+        ).abort()
+      );
+    }
   }
 
   if (

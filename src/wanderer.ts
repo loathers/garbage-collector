@@ -21,10 +21,10 @@ export enum draggableFight {
 function untangleDigitizes(turnCount: number, chunks: number): number {
   const turnsPerChunk = turnCount / chunks;
   const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
-  return Math.floor(chunks * monstersPerChunk);
+  return Math.round(chunks * monstersPerChunk);
 }
 
-function digitizedMonstersRemaining(): number {
+export function digitizedMonstersRemaining(): number {
   if (!SourceTerminal.have()) return 0;
 
   const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
@@ -32,12 +32,16 @@ function digitizedMonstersRemaining(): number {
 
   const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
 
-  const relayArray = get("relayCounters").match(/(d+):Digitize Monster/);
+  const relayArray = get("relayCounters").match(/(\d+):Digitize Monster/);
   const nextDigitizeEncounter = relayArray ? parseInt(relayArray[1]) : myTurncount();
 
   const turnsLeftAtNextMonster = estimatedTurns() - (nextDigitizeEncounter - myTurncount());
+  if (turnsLeftAtNextMonster <= 0) return 0;
   const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
-  return untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1);
+  return (
+    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
+    get("_sourceTerminalDigitizeMonsterCount")
+  );
 }
 
 interface ZonePotion {

@@ -66,6 +66,7 @@ import {
   $monster,
   $monsters,
   $phyla,
+  $phylum,
   $skill,
   $slot,
   adventureMacro,
@@ -727,6 +728,60 @@ const freeFightSources = [
     }
   ),
 
+  new FreeFight(
+    () => (wantPills() ? 5 - get("_saberForceUses") : 0),
+    () => {
+      ensureEffect($effect`Transpondent`);
+      if (have($familiar`Red-Nosed Snapper`)) cliExecute(`snapper ${$phylum`dude`}`);
+      setChoice(1387, 3);
+      if (
+        have($skill`Comprehensive Cartography`) &&
+        get("_monstersMapped") <
+          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) //Save a map to use for polar vortex
+      ) {
+        withMacro(
+          Macro.ifMonster($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`),
+          () => {
+            mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
+            runCombat();
+            runChoice(-1);
+          }
+        );
+      } else {
+        if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
+          retrieveItem(1, $item`tennis ball`);
+          retrieveItem(1, $item`Louder Than Bomb`);
+          retrieveItem(1, $item`divine champagne popper`);
+        }
+        adventureMacro(
+          $location`Domed City of Grimacia`,
+          Macro.ifMonster(
+            $monster`alielf`,
+            Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).tryItem(
+              $item`Louder Than Bomb`
+            )
+          )
+            .ifMonster(
+              $monster`cat-alien`,
+              Macro.trySkill($skill`Snokebomb`).tryItem($item`tennis ball`)
+            )
+            .ifMonster(
+              $monster`dog-alien`,
+              Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
+            )
+            .ifMonster($monster`time-spinner prank`, Macro.kill())
+            .skill($skill`Use the Force`)
+        );
+      }
+    },
+    {
+      requirements: () => [
+        new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
+      ],
+      familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
+    }
+  ),
+
   //Initial 9 Pygmy fights
   new FreeFight(
     () =>
@@ -767,7 +822,6 @@ const freeFightSources = [
       ],
     }
   ),
-
   //11th pygmy fight if we lack a saber
   new FreeFight(
     () =>
@@ -1321,6 +1375,27 @@ const freeRunFightSources = [
       },
     }
   ),
+  //Saber pills if we can
+  new FreeRunFight(
+    () => (wantPills() ? clamp(5 - get("_saberForceUses"), 0, 5) : 0),
+    (runSource: FreeRun) => {
+      if (have($familiar`Red-Nosed Snapper`)) cliExecute(`snapper ${$phylum`dude`}`);
+      ensureEffect($effect`Transpondent`);
+      setChoice(1387, 3);
+      adventureMacro(
+        $location`Domed City of Grimacia`,
+        Macro.if_("monstername * survivor", Macro.skill($skill`Use the Force`)).step(
+          runSource.macro
+        )
+      );
+    },
+    {
+      requirements: () => [
+        new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
+      ],
+      familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
+    }
+  ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
   new FreeRunFight(
     () =>
@@ -1654,7 +1729,7 @@ function deliverThesis(): void {
 
   adventureMacro(
     thesisLocation,
-    Macro.if_(`monsterid ${toInt($monster`time-spinner prank`)}`, Macro.basicCombat()).skill(
+    Macro.ifMonster($monster`time-spinner prank`, Macro.basicCombat()).skill(
       $skill`deliver your thesis!`
     )
   );
@@ -1741,4 +1816,16 @@ function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
     (a, b) => b.dropRate * getSaleValue(b.item) - a.dropRate * getSaleValue(a.item)
   )[0];
   return bestFireExtinguisherZoneCached;
+}
+
+function wantPills(): boolean {
+  return (
+    have($item`Fourth of May Cosplay Saber`) &&
+    ((clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
+      clamp(availableAmount($item`distention pill`), 0, 100) +
+      availableAmount($item`Map to Safety Shelter Grimace Prime`) <
+      200 &&
+      availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60) ||
+      get("questL11Worship") === "unstarted")
+  );
 }

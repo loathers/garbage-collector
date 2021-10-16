@@ -1,4 +1,5 @@
 import {
+  choiceFollowsFight,
   equippedAmount,
   equippedItem,
   familiarWeight,
@@ -214,6 +215,14 @@ export class Macro extends LibramMacro {
 
   static tryCopier(itemOrSkill: Item | Skill): Macro {
     return new Macro().tryCopier(itemOrSkill);
+  }
+
+  ifMonster(monster: Monster, macro: Macro): Macro {
+    return this.if_(`monsterid ${monster.id}`, macro);
+  }
+
+  static ifMonster(monster: Monster, macro: Macro): Macro {
+    return new Macro().ifMonster(monster, macro);
   }
 
   meatKill(): Macro {
@@ -541,4 +550,5 @@ export function main(): void {
     Macro.load().submit();
   }
   while (inMultiFight()) runCombat();
+  if (choiceFollowsFight()) visitUrl("choice.php");
 }

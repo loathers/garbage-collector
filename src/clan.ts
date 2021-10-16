@@ -143,7 +143,7 @@ export class StashManager {
     if (items.length === 0) return;
     if (visitUrl("fight.php").includes("You're fighting")) {
       print("In fight, trying to get away to return items to stash...", "blue");
-      Macro.if_(`monsterid ${$monster`Knob Goblin Embezzler`.id}`, Macro.attack().repeat())
+      Macro.ifMonster($monster`Knob Goblin Embezzler`, Macro.attack().repeat())
         .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
         .step("runaway")
         .submit();
