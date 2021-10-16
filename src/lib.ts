@@ -87,7 +87,7 @@ export function mapMonster(location: Location, monster: Monster): void {
     mapPage = visitUrl(toUrl(location), false, true);
     if (mapPage.includes("Leading Yourself Right to Them")) break;
     // Time-pranks can show up here, annoyingly
-    if (mapPage.includes("<!--MONSTERID: 1965-->")) runCombat(Macro.attack().repeat().toString());
+    if (mapPage.includes("<!-- MONSTERID: 1965 -->")) runCombat(Macro.attack().repeat().toString());
     if (handlingChoice()) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
     if (tries === 9) throw `Stuck trying to Map the monsters.`;
