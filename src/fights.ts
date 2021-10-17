@@ -1376,27 +1376,6 @@ const freeRunFightSources = [
       },
     }
   ),
-  //Saber pills if we can
-  new FreeRunFight(
-    () => (wantPills() ? clamp(5 - get("_saberForceUses"), 0, 5) : 0),
-    (runSource: FreeRun) => {
-      if (have($familiar`Red-Nosed Snapper`)) cliExecute(`snapper ${$phylum`dude`}`);
-      ensureEffect($effect`Transpondent`);
-      setChoice(1387, 3);
-      adventureMacro(
-        $location`Domed City of Grimacia`,
-        Macro.if_("monstername * survivor", Macro.skill($skill`Use the Force`)).step(
-          runSource.macro
-        )
-      );
-    },
-    {
-      requirements: () => [
-        new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
-      ],
-      familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
-    }
-  ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
   new FreeRunFight(
     () =>
