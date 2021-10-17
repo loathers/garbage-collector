@@ -174,7 +174,7 @@ function barfTurn() {
       !embezzlerUp &&
       myInebriety() > inebrietyLimit() &&
       globalOptions.ascending &&
-      clamp(Math.floor(estimatedTurns()) - digitizedMonstersRemaining(), 1, estimatedTurns()) <=
+      clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
         availableAmount($item`Map to Safety Shelter Grimace Prime`)
     ) {
       const choiceToSet =
