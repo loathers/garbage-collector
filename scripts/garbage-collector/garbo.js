@@ -20535,7 +20535,9 @@ function mapMonster(location, monster) {
 
   for (var tries = 0; tries < 10; tries++) {
     mapPage = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(location), false, true);
-    if (mapPage.includes("Leading Yourself Right to Them")) break;
+    if (mapPage.includes("Leading Yourself Right to Them")) break; // Time-pranks can show up here, annoyingly
+
+    if (mapPage.includes("<!-- MONSTERID: 1965 -->")) (0,external_kolmafia_.runCombat)(dist.Macro.attack().repeat().toString());
     if ((0,external_kolmafia_.handlingChoice)()) (0,external_kolmafia_.runChoice)(-1);
     if ((0,external_kolmafia_.myTurncount)() > myTurns + 1) throw "Map the monsters unsuccessful?";
     if (tries === 9) throw "Stuck trying to Map the monsters.";
