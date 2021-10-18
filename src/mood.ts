@@ -8,6 +8,7 @@ import {
   haveEffect,
   haveSkill,
   itemAmount,
+  mallPrice,
   mpCost,
   myClass,
   myEffects,
@@ -78,13 +79,14 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
   if (myClass() !== $class`Pastamancer`) {
-    const mmjMp = 1.5 * myLevel() + 5;
-    const mmjPrice = 80; //sleaze jelly + 5 fingie discount + travoltian trousers
     const isWorthIt =
       (baseMeat * getModifier("Meat Drop", $effect`Pasta Eyeball`)) /
         100 /
         mpCost($skill`Bind Lasagmbie`) >
-      mmjPrice / mmjMp;
+      Math.min(
+        (1.5 * myLevel() + 5) / 80,
+        (2.5 * myLevel()) / mallPrice($item`generic mana potion`)
+      );
     if (
       isWorthIt ||
       have($item`porquoise-handled sixgun`) ||
