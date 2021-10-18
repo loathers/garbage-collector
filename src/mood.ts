@@ -7,6 +7,7 @@ import {
   haveEffect,
   haveSkill,
   itemAmount,
+  mpCost,
   myClass,
   myEffects,
   myLevel,
@@ -27,6 +28,7 @@ import {
   $skill,
   $skills,
   get,
+  getModifier,
   have,
   Mood,
   set,
@@ -73,8 +75,16 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
-  if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
-
+  if (myClass() !== $class`Pastamancer`) {
+    const mmjMp = 1.5 * myLevel() + 5;
+    const mmjPrice = 80; //sleaze jelly + 5 fingie discount + travoltian trousers
+    if (
+      (baseMeat * getModifier("Meat Drop", $effect`Pasta Eyeball`)) /
+        mpCost($skill`Bind Lasagmbie`) >
+      mmjPrice / mmjMp
+    )
+      mood.skill($skill`Bind Lasagmbie`);
+  }
   if (haveSkill($skill`Sweet Synthesis`)) {
     mood.effect($effect`Synthesis: Greed`, () => {
       if (mySpleenUse() < spleenLimit() && haveEffect($effect`Synthesis: Greed`) < estimatedTurns())
