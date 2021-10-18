@@ -12,6 +12,7 @@ import {
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
+import { propertyManager } from "./lib";
 
 export enum draggableFight {
   BACKUP,
@@ -176,6 +177,9 @@ export function determineDraggableZoneAndEnsureAccess(
     return defaultLocation;
   }
 
+  const choicesToSet = unsupportedChoices.get(guzzlZone);
+  if (choicesToSet) propertyManager.setChoices(choicesToSet);
+
   if (Guzzlr.getTier() === "platinum") {
     zonePotions.forEach((place) => {
       if (guzzlZone.zone === place.zone && !have(place.effect)) {
@@ -200,3 +204,8 @@ export function determineDraggableZoneAndEnsureAccess(
   }
   return guzzlZone;
 }
+
+const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
+  [$location`Guano Junction`, { [1427]: 1 }],
+  [$location`The Hidden Apartment Building`, { [780]: 4 }],
+]);
