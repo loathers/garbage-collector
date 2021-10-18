@@ -88,7 +88,8 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     if (
       isWorthIt ||
       have($item`porquoise-handled sixgun`) ||
-      getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant")
+      getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant") ||
+      get("_bittycar") === "soulcar"
     )
       mood.skill($skill`Bind Lasagmbie`);
   }
