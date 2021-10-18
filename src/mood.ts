@@ -83,7 +83,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
       (baseMeat * getModifier("Meat Drop", $effect`Pasta Eyeball`)) /
         100 /
         mpCost($skill`Bind Lasagmbie`) >
-      Math.min(
+      Math.max(
         (1.5 * myLevel() + 5) / 80,
         (2.5 * myLevel()) / mallPrice($item`generic mana potion`)
       );
