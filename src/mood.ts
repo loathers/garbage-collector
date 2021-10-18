@@ -80,6 +80,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     const mmjPrice = 80; //sleaze jelly + 5 fingie discount + travoltian trousers
     if (
       (baseMeat * getModifier("Meat Drop", $effect`Pasta Eyeball`)) /
+        100 /
         mpCost($skill`Bind Lasagmbie`) >
       mmjPrice / mmjMp
     )
