@@ -2,6 +2,7 @@ import {
   cliExecute,
   getCampground,
   getClanLounge,
+  getFloristPlants,
   getFuel,
   getWorkshed,
   haveEffect,
@@ -25,6 +26,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $skill,
   $skills,
   get,
@@ -78,11 +80,15 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   if (myClass() !== $class`Pastamancer`) {
     const mmjMp = 1.5 * myLevel() + 5;
     const mmjPrice = 80; //sleaze jelly + 5 fingie discount + travoltian trousers
-    if (
+    const isWorthIt =
       (baseMeat * getModifier("Meat Drop", $effect`Pasta Eyeball`)) /
         100 /
         mpCost($skill`Bind Lasagmbie`) >
-      mmjPrice / mmjMp
+      mmjPrice / mmjMp;
+    if (
+      isWorthIt ||
+      have($item`porquoise-handled sixgun`) ||
+      getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant")
     )
       mood.skill($skill`Bind Lasagmbie`);
   }
