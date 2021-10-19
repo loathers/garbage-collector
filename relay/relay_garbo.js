@@ -7,22 +7,6 @@
 "use strict";
 
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 __webpack_require__(3905);
 
 __webpack_require__(5342);
@@ -78,7 +62,7 @@ var _class;
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
-    "default": obj
+    default: obj
   };
 }
 
@@ -147,7 +131,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function f() {
       try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
+        if (!normalCompletion && it.return != null) it.return();
       } finally {
         if (didErr) throw err;
       }
@@ -300,7 +284,7 @@ function _wrapRegExp() {
       return _super[Symbol.replace].call(this, str, function () {
         var args = arguments;
 
-        if (_typeof(args[args.length - 1]) !== "object") {
+        if (typeof args[args.length - 1] !== "object") {
           args = [].slice.call(args);
           args.push(buildGroups(args, _this));
         }
@@ -365,7 +349,7 @@ function _createSuper(Derived) {
 }
 
 function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
     return call;
   }
 
@@ -530,9 +514,7 @@ function validate(target, propertyName, descriptor) {
 
 var clanIdCache = {};
 
-var toPlayerId = function toPlayerId(player) {
-  return typeof player === "string" ? (0, _kolmafia.getPlayerId)(player) : player;
-};
+var toPlayerId = player => typeof player === "string" ? (0, _kolmafia.getPlayerId)(player) : player;
 
 var LOG_FAX_PATTERN = /*#__PURE__*/_wrapRegExp(/([0-9]{2}\/[0-9]{2}\/[0-9]{2}, [0-9]{2}:[0-9]{2}(?:AM|PM): )<a (?:(?!>)[\s\S])+>((?:(?!<)[\s\S])+)<\/a>(?: faxed in a (.*?))<br>/, {
   monster: 3
@@ -594,7 +576,7 @@ var Clan = (_class = /*#__PURE__*/function () {
     key: "getRanks",
     value: function getRanks() {
       var page = (0, _kolmafia.visitUrl)("clan_whitelist.php");
-      return (0, _kolmafia.xpath)(page, '//select[@name="level"]//option').map(function (option) {
+      return (0, _kolmafia.xpath)(page, '//select[@name="level"]//option').map(option => {
         var validHtml = "<select>".concat(option, "</select>");
         var match = (0, _kolmafia.xpath)(validHtml, "//text()")[0].match(WHITELIST_DEGREE_PATTERN);
         var id = (0, _kolmafia.xpath)(validHtml, "//@value")[0];
@@ -625,11 +607,7 @@ var Clan = (_class = /*#__PURE__*/function () {
       var title = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
       var playerId = toPlayerId(player);
       var ranks = this.getRanks();
-      var rank = rankName ? ranks.find(function (r) {
-        return r.name === rankName;
-      }) : ranks.sort(function (a, b) {
-        return a.degree - b.degree;
-      })[0];
+      var rank = rankName ? ranks.find(r => r.name === rankName) : ranks.sort((a, b) => a.degree - b.degree)[0];
       if (!rank) return false;
       var result = (0, _kolmafia.visitUrl)("clan_whitelist.php?action=add&pwd&addwho=".concat(playerId, "&level=").concat(rank.id, "&title=").concat(title));
       return result.includes("added to whitelist.") || result.includes("That player is already on the whitelist");
@@ -685,7 +663,7 @@ var Clan = (_class = /*#__PURE__*/function () {
     key: "take",
     value: function take(items) {
       var map = (0, _utils.arrayToCountedMap)(items);
-      map.forEach(function (quantity, item) {
+      map.forEach((quantity, item) => {
         var needed = Math.max(0, quantity - (0, _kolmafia.availableAmount)(item));
 
         if (needed === 0) {
@@ -747,7 +725,7 @@ var Clan = (_class = /*#__PURE__*/function () {
     value: function put(items) {
       var map = (0, _utils.arrayToCountedMap)(items);
       if (!this.check()) throw new Error("Wanted to return ".concat((0, _utils.countedMapToString)(map), " to ").concat(this.name, " but KoLmafia's clan data is out of sync"));
-      map.forEach(function (quantity, item) {
+      map.forEach((quantity, item) => {
         (0, _kolmafia.retrieveItem)(quantity, item);
         var returned = Math.min(quantity, (0, _kolmafia.availableAmount)(item));
         (0, _kolmafia.putStash)(returned, item);
@@ -762,14 +740,8 @@ var Clan = (_class = /*#__PURE__*/function () {
   }, {
     key: "withStash",
     value: function withStash(items, callback) {
-      var _this2 = this;
-
       var map = (0, _utils.arrayToCountedMap)(items);
-      return Clan._withStash(function () {
-        return _this2.take(map);
-      }, function (borrowed) {
-        return _this2.put(borrowed);
-      }, callback);
+      return Clan._withStash(() => this.take(map), borrowed => this.put(borrowed), callback);
     }
   }], [{
     key: "_join",
@@ -795,18 +767,18 @@ var Clan = (_class = /*#__PURE__*/function () {
       } finally {
         if (map.size > 0) {
           var returned = (0, _utils.arrayToCountedMap)(returnFn(borrowed));
-          map.forEach(function (quantity, item) {
+          map.forEach((quantity, item) => {
             var remaining = quantity - (returned.get(item) || 0);
 
             if (remaining > 0) {
               map.set(item, remaining);
             } else {
-              map["delete"](item);
+              map.delete(item);
             }
           });
 
           if (map.size > 0) {
-            _logger["default"].error("Failed to return <b>".concat((0, _utils.countedMapToString)(map), "</b> to <b>").concat(this.name, "</b> stash"));
+            _logger.default.error("Failed to return <b>".concat((0, _utils.countedMapToString)(map), "</b> to <b>").concat(this.name, "</b> stash"));
           }
         }
       }
@@ -829,9 +801,7 @@ var Clan = (_class = /*#__PURE__*/function () {
         }
 
         if (!(_clanName in clanIdCache)) {
-          var clan = Clan.getWhitelisted().find(function (c) {
-            return c.name.toLowerCase() === _clanName;
-          });
+          var clan = Clan.getWhitelisted().find(c => c.name.toLowerCase() === _clanName);
 
           if (!clan) {
             throw new Error("Player is not whitelisted to clan");
@@ -882,15 +852,7 @@ var Clan = (_class = /*#__PURE__*/function () {
     key: "withStash",
     value: function withStash(clanIdOrName, items, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
     callback) {
-      return Clan._withStash(function () {
-        return Clan["with"](clanIdOrName, function (clan) {
-          return clan.take(items);
-        });
-      }, function (borrowed) {
-        return Clan["with"](clanIdOrName, function (clan) {
-          return clan.put(borrowed);
-        });
-      }, callback);
+      return Clan._withStash(() => Clan.with(clanIdOrName, clan => clan.take(items)), borrowed => Clan.with(clanIdOrName, clan => clan.put(borrowed)), callback);
     }
     /**
      * Return player's current Clan
@@ -909,7 +871,7 @@ var Clan = (_class = /*#__PURE__*/function () {
     key: "getWhitelisted",
     value: function getWhitelisted() {
       var page = (0, _kolmafia.visitUrl)("clan_signup.php");
-      return (0, _kolmafia.xpath)(page, '//select[@name="whichclan"]//option').map(function (option) {
+      return (0, _kolmafia.xpath)(page, '//select[@name="whichclan"]//option').map(option => {
         var validHtml = "<select>".concat(option, "</select>");
         var id = Number.parseInt((0, _kolmafia.xpath)(validHtml, "//@value")[0]);
         var name = (0, _kolmafia.xpath)(validHtml, "//text()")[0];
@@ -1127,16 +1089,12 @@ var Dungeon = /*#__PURE__*/function () {
   _createClass(Dungeon, [{
     key: "distribute",
     value: function distribute() {
-      var _this = this;
-
       var idOrName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : (0, _kolmafia.myId)();
       var loot = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.loot;
       var distributeAllOfAGivenItem = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
       var player = (0, _lib.getPlayerFromIdOrName)(idOrName);
       var lootList = Array.isArray(loot) ? loot : [loot];
-      var badLoot = lootList.find(function (lootItem) {
-        return !_this.loot.includes(lootItem);
-      });
+      var badLoot = lootList.find(lootItem => !this.loot.includes(lootItem));
 
       if (badLoot) {
         throw new Error("".concat(badLoot, " is not a valid piece of dungeon loot"));
@@ -1150,7 +1108,7 @@ var Dungeon = /*#__PURE__*/function () {
 
       var itemNames = (0, _kolmafia.xpath)(pageText, "//tr/td[2]/b/text()");
       var whichLoots = (0, _kolmafia.xpath)(pageText, '//form[@action="clan_basement.php"]//input[@type="hidden"][@name="whichloot"]/@value');
-      itemNames.forEach(function (itemName, index) {
+      itemNames.forEach((itemName, index) => {
         if (lootList.includes((0, _kolmafia.toItem)(itemName))) {
           (0, _kolmafia.visitUrl)("clan_basement.php?whichloot=".concat(whichLoots[index], "&recipient=").concat(player.id));
           if (!distributeAllOfAGivenItem) lootList.slice(lootList.indexOf((0, _kolmafia.toItem)(itemName)));
@@ -1303,7 +1261,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function f() {
       try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
+        if (!normalCompletion && it.return != null) it.return();
       } finally {
         if (didErr) throw err;
       }
@@ -1458,7 +1416,7 @@ var Kmail = /*#__PURE__*/function () {
   _createClass(Kmail, [{
     key: "delete",
     value: function _delete() {
-      return Kmail["delete"]([this]) === 1;
+      return Kmail.delete([this]) === 1;
     }
     /**
      * Message contents without any HTML from items or meat
@@ -1479,7 +1437,7 @@ var Kmail = /*#__PURE__*/function () {
   }, {
     key: "items",
     value: function items() {
-      return new Map(Object.entries((0, _kolmafia.extractItems)(this.message)).map(function (_ref) {
+      return new Map(Object.entries((0, _kolmafia.extractItems)(this.message)).map(_ref => {
         var _ref2 = _slicedToArray(_ref, 2),
             itemName = _ref2[0],
             quantity = _ref2[1];
@@ -1549,9 +1507,7 @@ var Kmail = /*#__PURE__*/function () {
     value: function _delete(kmails) {
       var _results$match$, _results$match;
 
-      var results = (0, _kolmafia.visitUrl)("messages.php?the_action=delete&box=Inbox&pwd&".concat(kmails.map(function (k) {
-        return "sel".concat(k.id, "=on");
-      }).join("&")));
+      var results = (0, _kolmafia.visitUrl)("messages.php?the_action=delete&box=Inbox&pwd&".concat(kmails.map(k => "sel".concat(k.id, "=on")).join("&")));
       return Number((_results$match$ = (_results$match = results.match(/<td>(\d) messages? deleted.<\/td>/)) === null || _results$match === void 0 ? void 0 : _results$match[1]) !== null && _results$match$ !== void 0 ? _results$match$ : 0);
     }
   }, {
@@ -1559,7 +1515,7 @@ var Kmail = /*#__PURE__*/function () {
     value: function _genericSend(to, message, items, meat, chunkSize, constructUrl, successString) {
       var m = meat;
 
-      var sendableItems = _toConsumableArray((0, _utils.arrayToCountedMap)(items).entries()).filter(function (_ref3) {
+      var sendableItems = _toConsumableArray((0, _utils.arrayToCountedMap)(items).entries()).filter(_ref3 => {
         var _ref4 = _slicedToArray(_ref3, 1),
             item = _ref4[0];
 
@@ -1576,7 +1532,7 @@ var Kmail = /*#__PURE__*/function () {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var c = _step.value;
 
-          var _itemsQuery = c === null ? [] : c.map(function (_ref5, index) {
+          var _itemsQuery = c === null ? [] : c.map((_ref5, index) => {
             var _ref6 = _slicedToArray(_ref5, 2),
                 item = _ref6[0],
                 quantity = _ref6[1];
@@ -1622,9 +1578,7 @@ var Kmail = /*#__PURE__*/function () {
       var message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
       var items = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
       var meat = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-      return Kmail._genericSend(to, message, items, meat, 11, function (meat, itemsQuery) {
-        return "sendmessage.php?action=send&pwd&towho=".concat(to, "&message=").concat(message).concat(itemsQuery ? "&".concat(itemsQuery) : "", "&sendmeat=").concat(meat);
-      }, ">Message sent.</");
+      return Kmail._genericSend(to, message, items, meat, 11, (meat, itemsQuery) => "sendmessage.php?action=send&pwd&towho=".concat(to, "&message=").concat(message).concat(itemsQuery ? "&".concat(itemsQuery) : "", "&sendmeat=").concat(meat), ">Message sent.</");
     }
     /**
      * Sends a gift to a player
@@ -1648,9 +1602,7 @@ var Kmail = /*#__PURE__*/function () {
       var meat = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
       var insideNote = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "";
       var baseUrl = "town_sendgift.php?action=Yep.&pwd&fromwhere=0&note=".concat(message, "&insidenote=").concat(insideNote, "&towho=").concat(to);
-      return Kmail._genericSend(to, message, items, meat, 3, function (m, itemsQuery, chunkSize) {
-        return "".concat(baseUrl, "&whichpackage=").concat(chunkSize).concat(itemsQuery ? "&".concat(itemsQuery) : "", "&sendmeat=").concat(m);
-      }, ">Package sent.</");
+      return Kmail._genericSend(to, message, items, meat, 3, (m, itemsQuery, chunkSize) => "".concat(baseUrl, "&whichpackage=").concat(chunkSize).concat(itemsQuery ? "&".concat(itemsQuery) : "", "&sendmeat=").concat(m), ">Package sent.</");
     }
   }]);
 
@@ -1878,7 +1830,7 @@ exports.Lifestyle = Lifestyle;
 function toMoonId(moon, playerClass) {
   if (typeof moon === "number") return moon;
 
-  var offset = function offset() {
+  var offset = () => {
     switch (playerClass.primestat) {
       case (0, _templateString.$stat)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Muscle"]))):
         return 0;
@@ -2270,13 +2222,9 @@ var Macro = /*#__PURE__*/function () {
         nextSteps[_key] = arguments[_key];
       }
 
-      var nextStepsStrings = (_ref = []).concat.apply(_ref, _toConsumableArray(nextSteps.map(function (x) {
-        return x instanceof Macro ? x.components : [x];
-      })));
+      var nextStepsStrings = (_ref = []).concat.apply(_ref, _toConsumableArray(nextSteps.map(x => x instanceof Macro ? x.components : [x])));
 
-      this.components = [].concat(_toConsumableArray(this.components), _toConsumableArray(nextStepsStrings.filter(function (s) {
-        return s.length > 0;
-      })));
+      this.components = [].concat(_toConsumableArray(this.components), _toConsumableArray(nextStepsStrings.filter(s => s.length > 0)));
       return this;
     }
     /**
@@ -2292,9 +2240,8 @@ var Macro = /*#__PURE__*/function () {
      * Submit the built macro to KoL. Only works inside combat.
      */
     function submit() {
-      var _final = this.toString();
-
-      return (0, _kolmafia.visitUrl)("fight.php?action=macro&macrotext=".concat((0, _kolmafia.urlEncode)(_final)), true, true);
+      var final = this.toString();
+      return (0, _kolmafia.visitUrl)("fight.php?action=macro&macrotext=".concat((0, _kolmafia.urlEncode)(final)), true, true);
     }
     /**
      * Set this macro as a KoL native autoattack.
@@ -2410,7 +2357,7 @@ var Macro = /*#__PURE__*/function () {
         skills[_key2] = arguments[_key2];
       }
 
-      return this.step.apply(this, _toConsumableArray(skills.map(function (skill) {
+      return this.step.apply(this, _toConsumableArray(skills.map(skill => {
         return "skill ".concat(skillBallsMacroName(skill));
       })));
     }
@@ -2433,7 +2380,7 @@ var Macro = /*#__PURE__*/function () {
         skills[_key3] = arguments[_key3];
       }
 
-      return this.step.apply(this, _toConsumableArray(skills.map(function (skill) {
+      return this.step.apply(this, _toConsumableArray(skills.map(skill => {
         return Macro.if_("hasskill ".concat(skillBallsMacroName(skill)), Macro.skill(skill));
       })));
     }
@@ -2456,7 +2403,7 @@ var Macro = /*#__PURE__*/function () {
         skills[_key4] = arguments[_key4];
       }
 
-      return this.step.apply(this, _toConsumableArray(skills.map(function (skill) {
+      return this.step.apply(this, _toConsumableArray(skills.map(skill => {
         return Macro.if_("hasskill ".concat(skillBallsMacroName(skill)), Macro.skill(skill).repeat());
       })));
     }
@@ -2479,7 +2426,7 @@ var Macro = /*#__PURE__*/function () {
         items[_key5] = arguments[_key5];
       }
 
-      return this.step.apply(this, _toConsumableArray(items.map(function (itemOrItems) {
+      return this.step.apply(this, _toConsumableArray(items.map(itemOrItems => {
         return "use ".concat(itemOrItemsBallsMacroName(itemOrItems));
       })));
     }
@@ -2502,7 +2449,7 @@ var Macro = /*#__PURE__*/function () {
         items[_key6] = arguments[_key6];
       }
 
-      return this.step.apply(this, _toConsumableArray(items.map(function (item) {
+      return this.step.apply(this, _toConsumableArray(items.map(item => {
         return Macro.if_(itemOrItemsBallsMacroPredicate(item), "use ".concat(itemOrItemsBallsMacroName(item)));
       })));
     }
@@ -2704,22 +2651,18 @@ __webpack_require__(5342);
 var _kolmafia = __webpack_require__(1664); // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 
-var logColor = function logColor(color) {
-  return function () {
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+var logColor = color => function () {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
 
-    var output = args.map(function (x) {
-      return x.toString();
-    }).join(" ");
+  var output = args.map(x => x.toString()).join(" ");
 
-    if (color) {
-      (0, _kolmafia.print)(output, color);
-    } else {
-      (0, _kolmafia.print)(output);
-    }
-  };
+  if (color) {
+    (0, _kolmafia.print)(output, color);
+  } else {
+    (0, _kolmafia.print)(output);
+  }
 };
 
 var log = logColor();
@@ -2823,81 +2766,41 @@ var FreeRun = function FreeRun(name, available, macro, requirement, prepare) {
 };
 
 exports.FreeRun = FreeRun;
-var freeRuns = [new FreeRun("Bander", function () {
-  return (0, _lib.have)((0, _templateString.$familiar)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Frumious Bandersnatch"])))) && ((0, _lib.have)((0, _templateString.$effect)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Ode to Booze"])))) || (0, _lib.getSongCount)() < (0, _lib.getSongLimit)()) && _resources.Bandersnatch.getRemainingRunaways() > 0;
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).step("runaway"), new _maximize.Requirement(["Familiar Weight"], {}), function () {
+var freeRuns = [new FreeRun("Bander", () => (0, _lib.have)((0, _templateString.$familiar)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Frumious Bandersnatch"])))) && ((0, _lib.have)((0, _templateString.$effect)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Ode to Booze"])))) || (0, _lib.getSongCount)() < (0, _lib.getSongLimit)()) && _resources.Bandersnatch.getRemainingRunaways() > 0, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).step("runaway"), new _maximize.Requirement(["Familiar Weight"], {}), () => {
   (0, _kolmafia.useFamiliar)((0, _templateString.$familiar)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Frumious Bandersnatch"]))));
   (0, _lib.ensureEffect)((0, _templateString.$effect)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Ode to Booze"]))));
-}), new FreeRun("Boots", function () {
-  return (0, _lib.have)((0, _templateString.$familiar)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Pair of Stomping Boots"])))) && _resources.Bandersnatch.getRemainingRunaways() > 0;
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).step("runaway"), new _maximize.Requirement(["Familiar Weight"], {}), function () {
-  return (0, _kolmafia.useFamiliar)((0, _templateString.$familiar)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Pair of Stomping Boots"]))));
-}), new FreeRun("Snokebomb", function () {
-  return (0, _property.get)("_snokebombUsed") < 3 && (0, _lib.have)((0, _templateString.$skill)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Snokebomb"]))));
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Snokebomb"])))), undefined, function () {
-  return (0, _kolmafia.restoreMp)(50);
-}), new FreeRun("Hatred", function () {
-  return (0, _property.get)("_feelHatredUsed") < 3 && (0, _lib.have)((0, _templateString.$skill)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Emotionally Chipped"]))));
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Feel Hatred"]))))), new FreeRun("KGB", function () {
-  return (0, _lib.have)((0, _templateString.$item)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))) && (0, _property.get)("_kgbTranquilizerDartUses") < 3;
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["KGB tranquilizer dart"])))), new _maximize.Requirement([], {
+}), new FreeRun("Boots", () => (0, _lib.have)((0, _templateString.$familiar)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Pair of Stomping Boots"])))) && _resources.Bandersnatch.getRemainingRunaways() > 0, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).step("runaway"), new _maximize.Requirement(["Familiar Weight"], {}), () => (0, _kolmafia.useFamiliar)((0, _templateString.$familiar)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Pair of Stomping Boots"]))))), new FreeRun("Snokebomb", () => (0, _property.get)("_snokebombUsed") < 3 && (0, _lib.have)((0, _templateString.$skill)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Snokebomb"])))), _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Snokebomb"])))), undefined, () => (0, _kolmafia.restoreMp)(50)), new FreeRun("Hatred", () => (0, _property.get)("_feelHatredUsed") < 3 && (0, _lib.have)((0, _templateString.$skill)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Emotionally Chipped"])))), _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Feel Hatred"]))))), new FreeRun("KGB", () => (0, _lib.have)((0, _templateString.$item)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))) && (0, _property.get)("_kgbTranquilizerDartUses") < 3, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["KGB tranquilizer dart"])))), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))
-})), new FreeRun("Latte", function () {
-  return (0, _lib.have)((0, _templateString.$item)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && !(0, _property.get)("_latteBanishUsed");
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill("Throw Latte on Opponent"), new _maximize.Requirement([], {
+})), new FreeRun("Latte", () => (0, _lib.have)((0, _templateString.$item)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && !(0, _property.get)("_latteBanishUsed"), _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill("Throw Latte on Opponent"), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["latte lovers member's mug"])))
-})), new FreeRun("Docbag", function () {
-  return (0, _lib.have)((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))) && (0, _property.get)("_reflexHammerUsed") < 3;
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Reflex Hammer"])))), new _maximize.Requirement([], {
+})), new FreeRun("Docbag", () => (0, _lib.have)((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))) && (0, _property.get)("_reflexHammerUsed") < 3, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Reflex Hammer"])))), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))
-})), new FreeRun("Middle Finger", function () {
-  return (0, _lib.have)((0, _templateString.$item)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["mafia middle finger ring"])))) && !(0, _property.get)("_mafiaMiddleFingerRingUsed");
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Show them your ring"])))), new _maximize.Requirement([], {
+})), new FreeRun("Middle Finger", () => (0, _lib.have)((0, _templateString.$item)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["mafia middle finger ring"])))) && !(0, _property.get)("_mafiaMiddleFingerRingUsed"), _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Show them your ring"])))), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["mafia middle finger ring"])))
-})), new FreeRun("VMask", function () {
-  return (0, _lib.have)((0, _templateString.$item)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["V for Vivala mask"])))) && !(0, _property.get)("_vmaskBanisherUsed");
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Creepy Grin"])))), new _maximize.Requirement([], {
+})), new FreeRun("VMask", () => (0, _lib.have)((0, _templateString.$item)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["V for Vivala mask"])))) && !(0, _property.get)("_vmaskBanisherUsed"), _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill((0, _templateString.$skill)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Creepy Grin"])))), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["V for Vivala mask"])))
-}), function () {
-  return (0, _kolmafia.restoreMp)(30);
-}), new FreeRun("Stinkeye", function () {
-  return (0, _lib.getFoldGroup)((0, _templateString.$item)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["stinky cheese diaper"])))).some(function (item) {
-    return (0, _lib.have)(item);
-  }) && !(0, _property.get)("_stinkyCheeseBanisherUsed");
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill("Give Your Opponent the Stinkeye"), new _maximize.Requirement([], {
+}), () => (0, _kolmafia.restoreMp)(30)), new FreeRun("Stinkeye", () => (0, _lib.getFoldGroup)((0, _templateString.$item)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["stinky cheese diaper"])))).some(item => (0, _lib.have)(item)) && !(0, _property.get)("_stinkyCheeseBanisherUsed"), _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill("Give Your Opponent the Stinkeye"), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["stinky cheese eye"])))
-}), function () {
+}), () => {
   if (!(0, _lib.have)((0, _templateString.$item)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["stinky cheese eye"]))))) (0, _kolmafia.cliExecute)("fold stinky cheese eye");
-}), new FreeRun("Navel Ring", function () {
-  return (0, _lib.have)((0, _templateString.$item)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["navel ring of navel gazing"])))) && (0, _property.get)("_navelRunaways") < 3;
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).step("runaway"), new _maximize.Requirement([], {
+}), new FreeRun("Navel Ring", () => (0, _lib.have)((0, _templateString.$item)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["navel ring of navel gazing"])))) && (0, _property.get)("_navelRunaways") < 3, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).step("runaway"), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["navel ring of navel gazing"])))
-})), new FreeRun("GAP", function () {
-  return (0, _lib.have)((0, _templateString.$item)(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["Greatest American Pants"])))) && (0, _property.get)("_navelRunaways") < 3;
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).step("runaway"), new _maximize.Requirement([], {
+})), new FreeRun("GAP", () => (0, _lib.have)((0, _templateString.$item)(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["Greatest American Pants"])))) && (0, _property.get)("_navelRunaways") < 3, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).step("runaway"), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["Greatest American Pants"])))
-})), new FreeRun("Scrapbook", function () {
+})), new FreeRun("Scrapbook", () => {
   (0, _kolmafia.visitUrl)("desc_item.php?whichitem=463063785");
   return (0, _lib.have)((0, _templateString.$item)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["familiar scrapbook"])))) && (0, _property.get)("scrapbookCharges") >= 100;
 }, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).skill("Show Your Boring Familiar Pictures"), new _maximize.Requirement([], {
   forceEquip: (0, _templateString.$items)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["familiar scrapbook"])))
-})), new FreeRun("Parasol", function () {
-  return (0, _lib.have)((0, _templateString.$item)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["peppermint parasol"])))) && (0, _property.get)("parasolUsed") < 9 && (0, _property.get)("_navelRunaways") < 3;
-}, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).item((0, _templateString.$item)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["peppermint parasol"])))))];
+})), new FreeRun("Parasol", () => (0, _lib.have)((0, _templateString.$item)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["peppermint parasol"])))) && (0, _property.get)("parasolUsed") < 9 && (0, _property.get)("_navelRunaways") < 3, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).item((0, _templateString.$item)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["peppermint parasol"])))))];
 
 function cheapestRunSource() {
-  return (0, _templateString.$items)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper, tennis ball"]))).sort(function (a, b) {
-    return (0, _kolmafia.mallPrice)(a) - (0, _kolmafia.mallPrice)(b);
-  })[0];
+  return (0, _templateString.$items)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper, tennis ball"]))).sort((a, b) => (0, _kolmafia.mallPrice)(a) - (0, _kolmafia.mallPrice)(b))[0];
 }
 
 function cheapestItemRun() {
   var cheapestRun = cheapestRunSource();
-  return new FreeRun("Cheap Combat Item", function () {
-    return (0, _kolmafia.retrieveItem)(cheapestRun);
-  }, _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).item(cheapestRunSource()), undefined, function () {
-    return (0, _kolmafia.retrieveItem)(cheapestRun);
-  });
+  return new FreeRun("Cheap Combat Item", () => (0, _kolmafia.retrieveItem)(cheapestRun), _combat.Macro.trySkill((0, _templateString.$skill)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Asdon Martin: Spring-Loaded Front Bumper"])))).item(cheapestRunSource()), undefined, () => (0, _kolmafia.retrieveItem)(cheapestRun));
 }
 
 function findFreeRun() {
@@ -2905,9 +2808,7 @@ function findFreeRun() {
 
   var useFamiliar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
   var buyStuff = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  return (_freeRuns$find = freeRuns.find(function (run) {
-    return run.available() && (useFamiliar || !["Bander", "Boots"].includes(run.name));
-  })) !== null && _freeRuns$find !== void 0 ? _freeRuns$find : buyStuff ? cheapestItemRun() : undefined;
+  return (_freeRuns$find = freeRuns.find(run => run.available() && (useFamiliar || !["Bander", "Boots"].includes(run.name)))) !== null && _freeRuns$find !== void 0 ? _freeRuns$find : buyStuff ? cheapestItemRun() : undefined;
 }
 
 /***/ }),
@@ -2917,22 +2818,6 @@ function findFreeRun() {
 
 "use strict";
 
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 
 __webpack_require__(2888);
 
@@ -2960,13 +2845,13 @@ var _exportNames = {
 Object.defineProperty(exports, "Kmail", ({
   enumerable: true,
   get: function get() {
-    return _Kmail["default"];
+    return _Kmail.default;
   }
 }));
 Object.defineProperty(exports, "logger", ({
   enumerable: true,
   get: function get() {
-    return _logger["default"];
+    return _logger.default;
   }
 }));
 Object.defineProperty(exports, "LogLevel", ({
@@ -3241,9 +3126,9 @@ function _interopRequireWildcard(obj, nodeInterop) {
     return obj;
   }
 
-  if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") {
+  if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
     return {
-      "default": obj
+      default: obj
     };
   }
 
@@ -3268,7 +3153,7 @@ function _interopRequireWildcard(obj, nodeInterop) {
     }
   }
 
-  newObj["default"] = obj;
+  newObj.default = obj;
 
   if (cache) {
     cache.set(obj, newObj);
@@ -3279,7 +3164,7 @@ function _interopRequireWildcard(obj, nodeInterop) {
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
-    "default": obj
+    default: obj
   };
 }
 
@@ -3290,22 +3175,6 @@ function _interopRequireDefault(obj) {
 
 "use strict";
 
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 
 __webpack_require__(7222);
 
@@ -3433,7 +3302,7 @@ function _createSuper(Derived) {
 }
 
 function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
     return call;
   }
 
@@ -3581,7 +3450,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function f() {
       try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
+        if (!normalCompletion && it.return != null) it.return();
       } finally {
         if (didErr) throw err;
       }
@@ -3681,7 +3550,7 @@ function getSongLimit() {
 
 function isSong(skillOrEffect) {
   var skill = skillOrEffect instanceof Effect ? (0, _kolmafia.toSkill)(skillOrEffect) : skillOrEffect;
-  return skill["class"] === (0, _templateString.$class)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Accordion Thief"]))) && skill.buff;
+  return skill.class === (0, _templateString.$class)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Accordion Thief"]))) && skill.buff;
 }
 /**
  * List all active Effects
@@ -3691,9 +3560,7 @@ function isSong(skillOrEffect) {
 
 
 function getActiveEffects() {
-  return Object.keys((0, _kolmafia.myEffects)()).map(function (e) {
-    return Effect.get(e);
-  });
+  return Object.keys((0, _kolmafia.myEffects)()).map(e => Effect.get(e));
 }
 /**
  * List currently active Accordion Thief songs
@@ -3736,9 +3603,7 @@ function canRememberSong() {
 
 
 function getMonsterLocations(monster) {
-  return Location.all().filter(function (location) {
-    return monster.name in (0, _kolmafia.appearanceRates)(location);
-  });
+  return Location.all().filter(location => monster.name in (0, _kolmafia.appearanceRates)(location));
 }
 /**
  * Return the player's remaining liver space
@@ -3818,9 +3683,7 @@ function have(thing) {
 
 
 function haveInCampground(item) {
-  return Object.keys((0, _kolmafia.getCampground)()).map(function (i) {
-    return Item.get(i);
-  }).includes(item);
+  return Object.keys((0, _kolmafia.getCampground)()).map(i => Item.get(i)).includes(item);
 }
 
 var Wanderer;
@@ -4022,7 +3885,7 @@ function isCurrentFamiliar(familiar) {
 
 
 function getFoldGroup(item) {
-  return Object.entries((0, _kolmafia.getRelated)(item, "fold")).sort(function (_ref, _ref2) {
+  return Object.entries((0, _kolmafia.getRelated)(item, "fold")).sort((_ref, _ref2) => {
     var _ref3 = _slicedToArray(_ref, 2),
         a = _ref3[1];
 
@@ -4030,7 +3893,7 @@ function getFoldGroup(item) {
         b = _ref4[1];
 
     return a - b;
-  }).map(function (_ref5) {
+  }).map(_ref5 => {
     var _ref6 = _slicedToArray(_ref5, 1),
         i = _ref6[0];
 
@@ -4046,9 +3909,7 @@ function getFoldGroup(item) {
 
 
 function getZapGroup(item) {
-  return Object.keys((0, _kolmafia.getRelated)(item, "zap")).map(function (i) {
-    return Item.get(i);
-  });
+  return Object.keys((0, _kolmafia.getRelated)(item, "zap")).map(i => Item.get(i));
 }
 /**
  * Get a map of banished monsters keyed by what banished them
@@ -4241,7 +4102,7 @@ function ensureEffect(ef) {
   var turns = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
   if ((0, _kolmafia.haveEffect)(ef) < turns) {
-    if (!(0, _kolmafia.cliExecute)(ef["default"]) || (0, _kolmafia.haveEffect)(ef) === 0) {
+    if (!(0, _kolmafia.cliExecute)(ef.default) || (0, _kolmafia.haveEffect)(ef) === 0) {
       throw new EnsureError(ef);
     }
   }
@@ -4259,7 +4120,7 @@ function getSaleValue() {
     items[_key] = arguments[_key];
   }
 
-  return items.map(function (item) {
+  return items.map(item => {
     if (valueMap.has(item)) return valueMap.get(item) || 0;
 
     if (item.discardable) {
@@ -4269,9 +4130,7 @@ function getSaleValue() {
     }
 
     return valueMap.get(item) || 0;
-  }).reduce(function (s, price) {
-    return s + price;
-  }, 0) / items.length;
+  }).reduce((s, price) => s + price, 0) / items.length;
 }
 
 var Environment = {
@@ -4366,15 +4225,9 @@ function _defineProperty(obj, key, value) {
 }
 
 var defaultHandlers = {
-  info: function info(message) {
-    return (0, _kolmafia.printHtml)("<b>[Libram]</b> ".concat(message));
-  },
-  warning: function warning(message) {
-    return (0, _kolmafia.printHtml)("<span style=\"background: orange; color: white;\"><b>[Libram]</b> ".concat(message, "</span>"));
-  },
-  error: function error(_error) {
-    return (0, _kolmafia.printHtml)("<span style=\"background: red; color: white;\"><b>[Libram]</b> ".concat(_error.toString(), "</span>"));
-  }
+  info: message => (0, _kolmafia.printHtml)("<b>[Libram]</b> ".concat(message)),
+  warning: message => (0, _kolmafia.printHtml)("<span style=\"background: orange; color: white;\"><b>[Libram]</b> ".concat(message, "</span>")),
+  error: _error => (0, _kolmafia.printHtml)("<span style=\"background: red; color: white;\"><b>[Libram]</b> ".concat(_error.toString(), "</span>"))
 };
 
 var Logger = /*#__PURE__*/function () {
@@ -4475,7 +4328,7 @@ var _templateObject, _templateObject2, _templateObject3, _templateObject4, _temp
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
-    "default": obj
+    default: obj
   };
 }
 
@@ -4608,7 +4461,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function f() {
       try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
+        if (!normalCompletion && it.return != null) it.return();
       } finally {
         if (didErr) throw err;
       }
@@ -4819,18 +4672,14 @@ var OutfitLRUCache = /*#__PURE__*/function () {
   _createClass(OutfitLRUCache, [{
     key: "checkConsistent",
     value: function checkConsistent() {
-      if (_classPrivateFieldGet(this, _useHistory).length !== _classPrivateFieldGet(this, _outfitSlots).length || !_toConsumableArray(_classPrivateFieldGet(this, _useHistory)).sort().every(function (value, index) {
-        return value === index;
-      })) {
+      if (_classPrivateFieldGet(this, _useHistory).length !== _classPrivateFieldGet(this, _outfitSlots).length || !_toConsumableArray(_classPrivateFieldGet(this, _useHistory)).sort().every((value, index) => value === index)) {
         throw new Error("Outfit cache consistency failed.");
       }
     }
   }, {
     key: "promote",
     value: function promote(index) {
-      _classPrivateFieldSet(this, _useHistory, [index].concat(_toConsumableArray(_classPrivateFieldGet(this, _useHistory).filter(function (i) {
-        return i !== index;
-      }))));
+      _classPrivateFieldSet(this, _useHistory, [index].concat(_toConsumableArray(_classPrivateFieldGet(this, _useHistory).filter(i => i !== index))));
 
       this.checkConsistent();
     }
@@ -4898,20 +4747,14 @@ var cachedCanEquipItemCount = 0;
  */
 
 function canEquipItemCount() {
-  var stats = (0, _templateString.$stats)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Muscle, Mysticality, Moxie"]))).map(function (stat) {
-    return Math.min((0, _kolmafia.myBasestat)(stat), 300);
-  });
+  var stats = (0, _templateString.$stats)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Muscle, Mysticality, Moxie"]))).map(stat => Math.min((0, _kolmafia.myBasestat)(stat), 300));
 
-  if (stats.every(function (value, index) {
-    return value === cachedStats[index];
-  })) {
+  if (stats.every((value, index) => value === cachedStats[index])) {
     return cachedCanEquipItemCount;
   }
 
   cachedStats = stats;
-  cachedCanEquipItemCount = Item.all().filter(function (item) {
-    return (0, _kolmafia.canEquip)(item);
-  }).length;
+  cachedCanEquipItemCount = Item.all().filter(item => (0, _kolmafia.canEquip)(item)).length;
   return cachedCanEquipItemCount;
 }
 /**
@@ -4931,13 +4774,13 @@ function checkCache(cacheKey, options) {
   }
 
   if (options.updateOnFamiliarChange && (0, _kolmafia.myFamiliar)() !== entry.familiar) {
-    _logger["default"].warning("Equipment found in maximize cache but familiar is different.");
+    _logger.default.warning("Equipment found in maximize cache but familiar is different.");
 
     return null;
   }
 
   if (options.updateOnCanEquipChanged && entry.canEquipItemCount !== canEquipItemCount()) {
-    _logger["default"].warning("Equipment found in maximize cache but equippable item list is out of date.");
+    _logger.default.warning("Equipment found in maximize cache but equippable item list is out of date.");
 
     return null;
   }
@@ -4983,7 +4826,7 @@ function applyCached(entry, options) {
     if (verifyCached(entry) && options.useOutfitCaching) {
       var _outfitName = outfitCache.insert(entry);
 
-      _logger["default"].info("Saving equipment to outfit ".concat(_outfitName, "."));
+      _logger.default.info("Saving equipment to outfit ".concat(_outfitName, "."));
 
       saveOutfit(_outfitName);
     }
@@ -5014,17 +4857,15 @@ function verifyCached(entry) {
   try {
     for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
       var slotGroup = _step2.value;
-      var desiredSet = slotGroup.map(function (slot) {
+      var desiredSet = slotGroup.map(slot => {
         var _entry$equipment$get;
 
         return (_entry$equipment$get = entry.equipment.get(slot)) !== null && _entry$equipment$get !== void 0 ? _entry$equipment$get : (0, _templateString.$item)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["none"])));
       });
-      var equippedSet = slotGroup.map(function (slot) {
-        return (0, _kolmafia.equippedItem)(slot);
-      });
+      var equippedSet = slotGroup.map(slot => (0, _kolmafia.equippedItem)(slot));
 
       if (!(0, _utils.setEqual)(desiredSet, equippedSet)) {
-        _logger["default"].warning("Failed to apply cached ".concat(desiredSet.join(", "), " in ").concat(slotGroup.join(", "), "."));
+        _logger.default.warning("Failed to apply cached ".concat(desiredSet.join(", "), " in ").concat(slotGroup.join(", "), "."));
 
         success = false;
       }
@@ -5037,7 +4878,7 @@ function verifyCached(entry) {
 
   if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Crown of Thrones"])))) > 0 && entry.rider.get((0, _templateString.$item)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Crown of Thrones"]))))) {
     if (entry.rider.get((0, _templateString.$item)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Crown of Thrones"])))) !== (0, _kolmafia.myEnthronedFamiliar)()) {
-      _logger["default"].warning("Failed to apply ".concat(entry.rider.get((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Crown of Thrones"])))), " in ").concat((0, _templateString.$item)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Crown of Thrones"]))), "."));
+      _logger.default.warning("Failed to apply ".concat(entry.rider.get((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Crown of Thrones"])))), " in ").concat((0, _templateString.$item)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Crown of Thrones"]))), "."));
 
       success = false;
     }
@@ -5045,7 +4886,7 @@ function verifyCached(entry) {
 
   if ((0, _kolmafia.equippedAmount)((0, _templateString.$item)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Buddy Bjorn"])))) > 0 && entry.rider.get((0, _templateString.$item)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) {
     if (entry.rider.get((0, _templateString.$item)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Buddy Bjorn"])))) !== (0, _kolmafia.myBjornedFamiliar)()) {
-      _logger["default"].warning("Failed to apply".concat(entry.rider.get((0, _templateString.$item)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Buddy Bjorn"])))), " in ").concat((0, _templateString.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Buddy Bjorn"]))), "."));
+      _logger.default.warning("Failed to apply".concat(entry.rider.get((0, _templateString.$item)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Buddy Bjorn"])))), " in ").concat((0, _templateString.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Buddy Bjorn"]))), "."));
 
       success = false;
     }
@@ -5096,7 +4937,7 @@ function saveCached(cacheKey, options) {
     try {
       for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
         var slot = _step4.value;
-        equipment["delete"](slot);
+        equipment.delete(slot);
       }
     } catch (err) {
       _iterator4.e(err);
@@ -5105,11 +4946,11 @@ function saveCached(cacheKey, options) {
     }
 
     if (options.preventSlot.includes((0, _templateString.$slot)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["buddy-bjorn"]))))) {
-      rider["delete"]((0, _templateString.$item)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
+      rider.delete((0, _templateString.$item)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
     }
 
     if (options.preventSlot.includes((0, _templateString.$slot)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["crown-of-thrones"]))))) {
-      rider["delete"]((0, _templateString.$item)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["Crown of Thrones"]))));
+      rider.delete((0, _templateString.$item)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["Crown of Thrones"]))));
     }
   }
 
@@ -5122,7 +4963,7 @@ function saveCached(cacheKey, options) {
         var _slot = _step5.value;
 
         if (!options.onlySlot.includes(_slot)) {
-          equipment["delete"](_slot);
+          equipment.delete(_slot);
         }
       }
     } catch (err) {
@@ -5132,11 +4973,11 @@ function saveCached(cacheKey, options) {
     }
 
     if (!options.onlySlot.includes((0, _templateString.$slot)(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["buddy-bjorn"]))))) {
-      rider["delete"]((0, _templateString.$item)(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
+      rider.delete((0, _templateString.$item)(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
     }
 
     if (!options.onlySlot.includes((0, _templateString.$slot)(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["crown-of-thrones"]))))) {
-      rider["delete"]((0, _templateString.$item)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["Crown of Thrones"]))));
+      rider.delete((0, _templateString.$item)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["Crown of Thrones"]))));
     }
   }
 
@@ -5146,7 +4987,7 @@ function saveCached(cacheKey, options) {
   if (options.useOutfitCaching) {
     var outfitName = outfitCache.insert(entry);
 
-    _logger["default"].info("Saving equipment to outfit ".concat(outfitName, "."));
+    _logger.default.info("Saving equipment to outfit ".concat(outfitName, "."));
 
     saveOutfit(outfitName);
   }
@@ -5174,20 +5015,12 @@ function maximizeCached(objectives) {
       onlySlot = fullOptions.onlySlot,
       preventSlot = fullOptions.preventSlot; // Sort each group in objective to ensure consistent ordering in string
 
-  var objective = [].concat(_toConsumableArray(objectives.sort()), _toConsumableArray(forceEquip.map(function (item) {
-    return "equip ".concat(item);
-  }).sort()), _toConsumableArray(preventEquip.map(function (item) {
-    return "-equip ".concat(item);
-  }).sort()), _toConsumableArray(onlySlot.map(function (slot) {
-    return "".concat(slot);
-  }).sort()), _toConsumableArray(preventSlot.map(function (slot) {
-    return "-".concat(slot);
-  }).sort()), _toConsumableArray(Array.from(bonusEquip.entries()).filter(function (_ref) {
+  var objective = [].concat(_toConsumableArray(objectives.sort()), _toConsumableArray(forceEquip.map(item => "equip ".concat(item)).sort()), _toConsumableArray(preventEquip.map(item => "-equip ".concat(item)).sort()), _toConsumableArray(onlySlot.map(slot => "".concat(slot)).sort()), _toConsumableArray(preventSlot.map(slot => "-".concat(slot)).sort()), _toConsumableArray(Array.from(bonusEquip.entries()).filter(_ref => {
     var _ref2 = _slicedToArray(_ref, 2),
         bonus = _ref2[1];
 
     return bonus !== 0;
-  }).map(function (_ref3) {
+  }).map(_ref3 => {
     var _ref4 = _slicedToArray(_ref3, 2),
         item = _ref4[0],
         bonus = _ref4[1];
@@ -5197,17 +5030,17 @@ function maximizeCached(objectives) {
   var cacheEntry = checkCache(objective, fullOptions);
 
   if (cacheEntry) {
-    _logger["default"].info("Equipment found in maximize cache, equipping...");
+    _logger.default.info("Equipment found in maximize cache, equipping...");
 
     applyCached(cacheEntry, fullOptions);
 
     if (verifyCached(cacheEntry)) {
-      _logger["default"].info("Equipped cached ".concat(objective));
+      _logger.default.info("Equipped cached ".concat(objective));
 
       return;
     }
 
-    _logger["default"].warning("Maximize cache application failed, maximizing...");
+    _logger.default.warning("Maximize cache application failed, maximizing...");
   }
 
   (0, _kolmafia.maximize)(objective, false);
@@ -5296,9 +5129,7 @@ var Requirement = /*#__PURE__*/function () {
   }], [{
     key: "merge",
     value: function merge(allRequirements) {
-      return allRequirements.reduce(function (x, y) {
-        return x.merge(y);
-      }, new Requirement([], {}));
+      return allRequirements.reduce((x, y) => x.merge(y), new Requirement([], {}));
     }
   }, {
     key: "maximize",
@@ -5406,22 +5237,6 @@ exports.stringModifiers = stringModifiers;
 
 "use strict";
 
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 
 __webpack_require__(7865);
 
@@ -5549,7 +5364,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function f() {
       try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
+        if (!normalCompletion && it.return != null) it.return();
       } finally {
         if (didErr) throw err;
       }
@@ -5632,7 +5447,7 @@ function _createSuper(Derived) {
 }
 
 function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
     return call;
   }
 
@@ -5877,9 +5692,7 @@ var SkillMoodElement = /*#__PURE__*/function (_MoodElement) {
         try {
           var _loop = function _loop() {
             var song = _step.value;
-            var slot = mood.options.songSlots.find(function (slot) {
-              return slot.includes(song);
-            });
+            var slot = mood.options.songSlots.find(slot => slot.includes(song));
             if (!slot || slot.includes(effect)) (0, _kolmafia.cliExecute)("shrug ".concat(song));
           };
 
@@ -6029,9 +5842,7 @@ var CustomMoodElement = /*#__PURE__*/function (_MoodElement4) {
     _defineProperty(_assertThisInitialized(_this4), "gainEffect", void 0);
 
     _this4.effect = effect;
-    _this4.gainEffect = gainEffect !== null && gainEffect !== void 0 ? gainEffect : function () {
-      return (0, _kolmafia.cliExecute)(effect["default"]);
-    };
+    _this4.gainEffect = gainEffect !== null && gainEffect !== void 0 ? gainEffect : () => (0, _kolmafia.cliExecute)(effect.default);
     return _this4;
   }
 
@@ -6082,9 +5893,7 @@ var Mood = /*#__PURE__*/function () {
   _createClass(Mood, [{
     key: "availableMp",
     value: function availableMp() {
-      return (0, _utils.sum)(this.options.mpSources, function (mpSource) {
-        return mpSource.availableMpMin();
-      }) + Math.max((0, _kolmafia.myMp)() - this.options.reserveMp, 0);
+      return (0, _utils.sum)(this.options.mpSources, mpSource => mpSource.availableMpMin()) + Math.max((0, _kolmafia.myMp)() - this.options.reserveMp, 0);
     }
   }, {
     key: "moreMp",
@@ -6172,9 +5981,7 @@ var Mood = /*#__PURE__*/function () {
     value: function execute() {
       var ensureTurns = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var availableMp = this.availableMp();
-      var totalMpPerTurn = (0, _utils.sum)(this.elements, function (element) {
-        return element.mpCostPerTurn();
-      });
+      var totalMpPerTurn = (0, _utils.sum)(this.elements, element => element.mpCostPerTurn());
       var potentialTurns = Math.floor(availableMp / totalMpPerTurn);
       var completeSuccess = true;
 
@@ -6368,41 +6175,29 @@ function _arrayWithHoles(arr) {
   if (Array.isArray(arr)) return arr;
 }
 
-var createPropertyGetter = function createPropertyGetter(transform) {
-  return function (property, default_) {
-    var value = (0, _kolmafia.getProperty)(property);
+var createPropertyGetter = transform => (property, default_) => {
+  var value = (0, _kolmafia.getProperty)(property);
 
-    if (default_ !== undefined && value === "") {
-      return default_;
-    }
+  if (default_ !== undefined && value === "") {
+    return default_;
+  }
 
-    return transform(value, property);
-  };
+  return transform(value, property);
 };
 
-var createMafiaClassPropertyGetter = function createMafiaClassPropertyGetter(Type) {
-  return createPropertyGetter(function (value) {
-    if (value === "") return null;
-    var v = Type.get(value);
-    return v === Type.get("none") ? null : v;
-  });
-};
-
-var getString = createPropertyGetter(function (value) {
-  return value;
+var createMafiaClassPropertyGetter = Type => createPropertyGetter(value => {
+  if (value === "") return null;
+  var v = Type.get(value);
+  return v === Type.get("none") ? null : v;
 });
+
+var getString = createPropertyGetter(value => value);
 exports.getString = getString;
-var getCommaSeparated = createPropertyGetter(function (value) {
-  return value.split(/, ?/);
-});
+var getCommaSeparated = createPropertyGetter(value => value.split(/, ?/));
 exports.getCommaSeparated = getCommaSeparated;
-var getBoolean = createPropertyGetter(function (value) {
-  return value === "true";
-});
+var getBoolean = createPropertyGetter(value => value === "true");
 exports.getBoolean = getBoolean;
-var getNumber = createPropertyGetter(function (value) {
-  return Number(value);
-});
+var getNumber = createPropertyGetter(value => Number(value));
 exports.getNumber = getNumber;
 var getBounty = createMafiaClassPropertyGetter(Bounty);
 exports.getBounty = getBounty;
@@ -6489,7 +6284,7 @@ function setProperties(properties) {
 }
 
 function withProperties(properties, callback) {
-  var propertiesBackup = Object.fromEntries(Object.entries(properties).map(function (_ref) {
+  var propertiesBackup = Object.fromEntries(Object.entries(properties).map(_ref => {
     var _ref2 = _slicedToArray(_ref, 1),
         prop = _ref2[0];
 
@@ -6509,7 +6304,7 @@ function withProperty(property, value, callback) {
 }
 
 function withChoices(choices, callback) {
-  var properties = Object.fromEntries(Object.entries(choices).map(function (_ref3) {
+  var properties = Object.fromEntries(Object.entries(choices).map(_ref3 => {
     var _ref4 = _slicedToArray(_ref3, 2),
         choice = _ref4[0],
         option = _ref4[1];
@@ -6550,7 +6345,7 @@ var PropertiesManager = /*#__PURE__*/function () {
   }, {
     key: "setChoices",
     value: function setChoices(choicesToSet) {
-      this.set(Object.fromEntries(Object.entries(choicesToSet).map(function (_ref5) {
+      this.set(Object.fromEntries(Object.entries(choicesToSet).map(_ref5 => {
         var _ref6 = _slicedToArray(_ref5, 2),
             choiceNumber = _ref6[0],
             choiceValue = _ref6[1];
@@ -6561,7 +6356,7 @@ var PropertiesManager = /*#__PURE__*/function () {
   }, {
     key: "resetAll",
     value: function resetAll() {
-      Object.entries(this.properties).forEach(function (_ref7) {
+      Object.entries(this.properties).forEach(_ref7 => {
         var _ref8 = _slicedToArray(_ref7, 2),
             propertyName = _ref8[0],
             propertyValue = _ref8[1];
@@ -6735,7 +6530,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function f() {
       try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
+        if (!normalCompletion && it.return != null) it.return();
       } finally {
         if (didErr) throw err;
       }
@@ -6933,9 +6728,7 @@ var sheet = (0, _templateString.$item)(_templateObject || (_templateObject = _ta
 exports.sheet = sheet;
 
 function have() {
-  return (0, _lib.getFoldGroup)(sheet).some(function (item) {
-    return (0, _lib.have)(item);
-  });
+  return (0, _lib.getFoldGroup)(sheet).some(item => (0, _lib.have)(item));
 }
 
 function getSpookyPuttySheetCopiesMade() {
@@ -7051,144 +6844,92 @@ function _taggedTemplateLiteral(strings, raw) {
 
 var ridingFamiliars = [{
   familiar: (0, _templateString.$familiar)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Puck Man"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["yellow pixel"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["yellow pixel"])))),
   probability: 0.25,
   modifier: (_modifier = {}, _defineProperty(_modifier, "Muscle", 10), _defineProperty(_modifier, "Mysticality", 10), _defineProperty(_modifier, "Moxie", 10), _modifier),
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_yellowPixelDropsCrown") < 25;
-  }
+  dropPredicate: () => (0, _property.get)("_yellowPixelDropsCrown") < 25
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Ms. Puck Man"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["yellow pixel"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["yellow pixel"])))),
   probability: 0.25,
   modifier: (_modifier2 = {}, _defineProperty(_modifier2, "Muscle", 10), _defineProperty(_modifier2, "Mysticality", 10), _defineProperty(_modifier2, "Moxie", 10), _modifier2),
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_yellowPixelDropsCrown") < 25;
-  }
+  dropPredicate: () => (0, _property.get)("_yellowPixelDropsCrown") < 25
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Grimstone Golem"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["grimstone mask"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["grimstone mask"])))),
   probability: 0.5,
   modifier: _defineProperty({}, "Combat Rate", -5),
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_grimstoneMaskDropsCrown") < 1;
-  }
+  dropPredicate: () => (0, _property.get)("_grimstoneMaskDropsCrown") < 1
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Knob Goblin Organ Grinder"]))),
-  meatVal: function meatVal() {
-    return 30;
-  },
+  meatVal: () => 30,
   probability: 1,
   modifier: _defineProperty({}, "Meat Drop", 25)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Happy Medium"]))),
-  meatVal: function meatVal() {
-    return 30;
-  },
+  meatVal: () => 30,
   probability: 1,
   modifier: _defineProperty({}, "Meat Drop", 25)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Garbage Fire"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["burning newspaper"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["burning newspaper"])))),
   probability: 0.5,
   modifier: _defineProperty({}, "Hot Spell Damage", 25),
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_garbageFireDropsCrown") < 3;
-  }
+  dropPredicate: () => (0, _property.get)("_garbageFireDropsCrown") < 3
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Machine Elf"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"]))))),
   probability: 0.2,
   modifier: (_modifier7 = {}, _defineProperty(_modifier7, "Muscle", 7), _defineProperty(_modifier7, "Mysticality", 7), _defineProperty(_modifier7, "Moxie", 7), _modifier7),
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_abstractionDropsCrown") < 25;
-  }
+  dropPredicate: () => (0, _property.get)("_abstractionDropsCrown") < 25
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Trick-or-Treating Tot"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["hoarded candy wad"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["hoarded candy wad"])))),
   probability: 0.5,
   modifier: (_modifier8 = {}, _defineProperty(_modifier8, "Muscle", 10), _defineProperty(_modifier8, "Mysticality", 10), _defineProperty(_modifier8, "Moxie", 10), _modifier8),
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_hoardedCandyDropsCrown") < 3;
-  }
+  dropPredicate: () => (0, _property.get)("_hoardedCandyDropsCrown") < 3
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Warbear Drone"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["warbear whosit"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["warbear whosit"])))),
   probability: 1 / 4.5,
   modifier: (_modifier9 = {}, _defineProperty(_modifier9, "Maximum HP", 15), _defineProperty(_modifier9, "Maximum MP", 15), _modifier9)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Li'l Xenomorph"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["lunar isotope"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["lunar isotope"])))),
   probability: 0.05,
   modifier: _defineProperty({}, "Item Drop", 15)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Pottery Barn Owl"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["volcanic ash"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["volcanic ash"])))),
   probability: 0.1,
   modifier: _defineProperty({}, "Hot Damage", 10)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Grim Brother"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["grim fairy tale"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["grim fairy tale"])))),
   probability: 1,
   modifier: _defineProperty({}, "Combat Rate", 5),
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_grimFairyTaleDropsCrown") < 2;
-  }
+  dropPredicate: () => (0, _property.get)("_grimFairyTaleDropsCrown") < 2
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Optimistic Candle"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["glob of melted wax"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["glob of melted wax"])))),
   probability: 1,
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_optimisticCandleDropsCrown") < 3;
-  },
+  dropPredicate: () => (0, _property.get)("_optimisticCandleDropsCrown") < 3,
   modifier: _defineProperty({}, "Item Drop", 15)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Adventurous Spelunker"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"]))))),
   probability: 1,
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_oreDropsCrown") < 6;
-  },
+  dropPredicate: () => (0, _property.get)("_oreDropsCrown") < 6,
   modifier: _defineProperty({}, "Item Drop", 15)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Twitching Space Critter"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["space beast fur"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["space beast fur"])))),
   probability: 1,
   modifier: (_modifier15 = {}, _defineProperty(_modifier15, "Hot Resistance", 2), _defineProperty(_modifier15, "Cold Resistance", 2), _defineProperty(_modifier15, "Spooky Resistance", 2), _defineProperty(_modifier15, "Sleaze Resistance", 2), _defineProperty(_modifier15, "Stench Resistance", 2), _modifier15),
-  dropPredicate: function dropPredicate() {
-    return (0, _property.get)("_spaceFurDropsCrown") < 1;
-  }
+  dropPredicate: () => (0, _property.get)("_spaceFurDropsCrown") < 1
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Party Mouse"]))),
-  meatVal: function meatVal() {
-    return 50;
-  },
+  meatVal: () => 50,
 
   /*
   The below code is more accurate. However, party mouse is virtually never going to be worthwhile and this causes so many useless mall hits it isn't funny.
@@ -7209,315 +6950,227 @@ var ridingFamiliars = [{
   modifier: _defineProperty({}, "Booze Drop", 25)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Yule Hound"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["candy cane"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["candy cane"])))),
   probability: 1,
   modifier: _defineProperty({}, "Candy Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Gluttonous Green Ghost"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Food Drop", 15)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Reassembled Blackbird"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["blackberry"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["blackberry"])))),
   probability: 1,
   modifier: _defineProperty({}, "Item Drop", 10)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Reconstituted Crow"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["blackberry"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["blackberry"])))),
   probability: 1,
   modifier: _defineProperty({}, "Item Drop", 10)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Hunchbacked Minion"]))),
-  meatVal: function meatVal() {
-    return 0.02 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["disembodied brain"])))) + 0.98 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["skeleton bone"]))));
-  },
+  meatVal: () => 0.02 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["disembodied brain"])))) + 0.98 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["skeleton bone"])))),
   probability: 1,
   modifier: _defineProperty({}, "Muscle Experience", 2)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["Reanimated Reanimator"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["hot wing, broken skull"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["hot wing, broken skull"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Mysticality Experience", 2)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["Attention-Deficit Demon"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["chorizo brownies, white chocolate and tomato pizza, carob chunk noodles"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["chorizo brownies, white chocolate and tomato pizza, carob chunk noodles"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["Piano Cat"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["beertini, papaya slung, salty slug, tomato daiquiri"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["beertini, papaya slung, salty slug, tomato daiquiri"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Golden Monkey"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["gold nuggets"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["gold nuggets"])))),
   probability: 0.5,
   modifier: _defineProperty({}, "Meat Drop", 25)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["Robot Reindeer"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
   probability: 0.3,
   modifier: (_modifier26 = {}, _defineProperty(_modifier26, "Muscle", 10), _defineProperty(_modifier26, "Mysticality", 10), _defineProperty(_modifier26, "Moxie", 10), _modifier26)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Stocking Mimic"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"]))))),
   probability: 0.3,
   modifier: (_modifier27 = {}, _defineProperty(_modifier27, "Muscle", 10), _defineProperty(_modifier27, "Mysticality", 10), _defineProperty(_modifier27, "Moxie", 10), _modifier27)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["BRICKO chick"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["BRICKO brick"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["BRICKO brick"])))),
   probability: 1,
   modifier: (_modifier28 = {}, _defineProperty(_modifier28, "Muscle Percent", 10), _defineProperty(_modifier28, "Mysticality Percent", 10), _defineProperty(_modifier28, "Moxie Percent", 10), _modifier28)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["Cotton Candy Carnie"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["cotton candy pinch"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["cotton candy pinch"])))),
   probability: 1,
   modifier: _defineProperty({}, "Initiative", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["Untamed Turtle"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"]))))),
   probability: 0.35,
   modifier: _defineProperty({}, "Initiative", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["Astral Badger"]))),
-  meatVal: function meatVal() {
-    return 2 * _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"])))));
-  },
+  meatVal: () => 2 * _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"]))))),
   probability: 1,
   modifier: (_modifier31 = {}, _defineProperty(_modifier31, "Maximum HP", 10), _defineProperty(_modifier31, "Maximum MP", 10), _modifier31)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["Green Pixie"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["bottle of tequila"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["bottle of tequila"])))),
   probability: 0.2,
   modifier: (_modifier32 = {}, _defineProperty(_modifier32, "Maximum HP", 10), _defineProperty(_modifier32, "Maximum MP", 10), _modifier32)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["Angry Goat"]))),
-  meatVal: function meatVal() {
-    return (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["goat cheese pizza"]))));
-  },
+  meatVal: () => (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["goat cheese pizza"])))),
   probability: 1,
   modifier: _defineProperty({}, "Muscle Percent", 15)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["Adorable Seal Larva"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"]))))),
   probability: 0.35,
   modifier: (_modifier34 = {}, _defineProperty(_modifier34, "HP Regen Min", 2), _defineProperty(_modifier34, "MP Regen Min", 2), _defineProperty(_modifier34, "HP Regen Max", 8), _defineProperty(_modifier34, "MP Regen Max", 8), _modifier34)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["Ancient Yuletide Troll"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
   probability: 0.3,
   modifier: (_modifier35 = {}, _defineProperty(_modifier35, "HP Regen Min", 2), _defineProperty(_modifier35, "MP Regen Min", 2), _defineProperty(_modifier35, "HP Regen Max", 8), _defineProperty(_modifier35, "MP Regen Max", 8), _modifier35)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["Sweet Nutcracker"]))),
-  meatVal: function meatVal() {
-    return _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"])))));
-  },
+  meatVal: () => _lib.getSaleValue.apply(void 0, _toConsumableArray((0, _templateString.$items)(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
   probability: 0.3,
   modifier: (_modifier36 = {}, _defineProperty(_modifier36, "HP Regen Min", 2), _defineProperty(_modifier36, "MP Regen Min", 2), _defineProperty(_modifier36, "HP Regen Max", 8), _defineProperty(_modifier36, "MP Regen Max", 8), _modifier36)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["Casagnova Gnome"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject72 || (_templateObject72 = _taggedTemplateLiteral(["Coffee Pixie"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject73 || (_templateObject73 = _taggedTemplateLiteral(["Dancing Frog"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject74 || (_templateObject74 = _taggedTemplateLiteral(["Grouper Groupie"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["Hand Turkey"]))),
-  meatVal: function meatVal() {
-    return 30;
-  },
+  meatVal: () => 30,
   probability: 1,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["Hippo Ballerina"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["Jitterbug"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject78 || (_templateObject78 = _taggedTemplateLiteral(["Leprechaun"]))),
-  meatVal: function meatVal() {
-    return 30;
-  },
+  meatVal: () => 30,
   probability: 1,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject79 || (_templateObject79 = _taggedTemplateLiteral(["Obtuse Angel"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject80 || (_templateObject80 = _taggedTemplateLiteral(["Psychedelic Bear"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject81 || (_templateObject81 = _taggedTemplateLiteral(["Robortender"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject82 || (_templateObject82 = _taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))),
-  meatVal: function meatVal() {
-    return 30;
-  },
+  meatVal: () => 30,
   probability: 1,
   modifier: _defineProperty({}, "Meat Drop", 25)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject83 || (_templateObject83 = _taggedTemplateLiteral(["Hobo Monkey"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Meat Drop", 25)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject84 || (_templateObject84 = _taggedTemplateLiteral(["Rockin' Robin"]))),
-  meatVal: function meatVal() {
-    return 60;
-  },
+  meatVal: () => 60,
   probability: 1,
   modifier: _defineProperty({}, "Item Drop", 15)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject85 || (_templateObject85 = _taggedTemplateLiteral(["Feral Kobold"]))),
-  meatVal: function meatVal() {
-    return 30;
-  },
+  meatVal: () => 30,
   probability: 1,
   modifier: _defineProperty({}, "Item Drop", 15)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject86 || (_templateObject86 = _taggedTemplateLiteral(["Oily Woim"]))),
-  meatVal: function meatVal() {
-    return 30;
-  },
+  meatVal: () => 30,
   probability: 1,
   modifier: _defineProperty({}, "Item Drop", 10)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject87 || (_templateObject87 = _taggedTemplateLiteral(["Cat Burglar"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Item Drop", 10)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject88 || (_templateObject88 = _taggedTemplateLiteral(["Misshapen Animal Skeleton"]))),
-  meatVal: function meatVal() {
-    return 30;
-  },
+  meatVal: () => 30,
   probability: 1,
   modifier: _defineProperty({}, "Familiar Weight", 5)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject89 || (_templateObject89 = _taggedTemplateLiteral(["Gelatinous Cubeling"]))),
-  meatVal: function meatVal() {
-    return 0;
-  },
+  meatVal: () => 0,
   probability: 0,
   modifier: _defineProperty({}, "Familiar Weight", 5)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject90 || (_templateObject90 = _taggedTemplateLiteral(["Frozen Gravy Fairy"]))),
   // drops a cold nugget every combat, 5 of which can be used to make a cold wad
-  meatVal: function meatVal() {
-    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject91 || (_templateObject91 = _taggedTemplateLiteral(["cold wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject92 || (_templateObject92 = _taggedTemplateLiteral(["cold nuggets"])))));
-  },
+  meatVal: () => Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject91 || (_templateObject91 = _taggedTemplateLiteral(["cold wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject92 || (_templateObject92 = _taggedTemplateLiteral(["cold nuggets"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Cold Damage", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject93 || (_templateObject93 = _taggedTemplateLiteral(["Stinky Gravy Fairy"]))),
   // drops a stench nugget every combat, 5 of which can be used to make a stench wad
-  meatVal: function meatVal() {
-    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject94 || (_templateObject94 = _taggedTemplateLiteral(["stench wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject95 || (_templateObject95 = _taggedTemplateLiteral(["stench nuggets"])))));
-  },
+  meatVal: () => Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject94 || (_templateObject94 = _taggedTemplateLiteral(["stench wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject95 || (_templateObject95 = _taggedTemplateLiteral(["stench nuggets"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Stench Damage", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject96 || (_templateObject96 = _taggedTemplateLiteral(["Sleazy Gravy Fairy"]))),
   // drops a sleaze nugget every combat, 5 of which can be used to make a sleaze wad
-  meatVal: function meatVal() {
-    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject97 || (_templateObject97 = _taggedTemplateLiteral(["sleaze wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject98 || (_templateObject98 = _taggedTemplateLiteral(["sleaze nuggets"])))));
-  },
+  meatVal: () => Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject97 || (_templateObject97 = _taggedTemplateLiteral(["sleaze wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject98 || (_templateObject98 = _taggedTemplateLiteral(["sleaze nuggets"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Sleaze Damage", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject99 || (_templateObject99 = _taggedTemplateLiteral(["Spooky Gravy Fairy"]))),
   // drops a spooky nugget every combat, 5 of which can be used to make a spooky wad
-  meatVal: function meatVal() {
-    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject100 || (_templateObject100 = _taggedTemplateLiteral(["spooky wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject101 || (_templateObject101 = _taggedTemplateLiteral(["spooky nuggets"])))));
-  },
+  meatVal: () => Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject100 || (_templateObject100 = _taggedTemplateLiteral(["spooky wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject101 || (_templateObject101 = _taggedTemplateLiteral(["spooky nuggets"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Spooky Damage", 20)
 }, {
   familiar: (0, _templateString.$familiar)(_templateObject102 || (_templateObject102 = _taggedTemplateLiteral(["Flaming Gravy Fairy"]))),
   // drops a hot nugget every combat, 5 of which can be used to make a hot wad
-  meatVal: function meatVal() {
-    return Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject103 || (_templateObject103 = _taggedTemplateLiteral(["hot wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral(["hot nuggets"])))));
-  },
+  meatVal: () => Math.max(0.2 * (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject103 || (_templateObject103 = _taggedTemplateLiteral(["hot wad"])))), (0, _lib.getSaleValue)((0, _templateString.$item)(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral(["hot nuggets"]))))),
   probability: 1,
   modifier: _defineProperty({}, "Hot Damage", 20)
 }];
@@ -7628,15 +7281,7 @@ function getBadlyRomanticArrowMonster() {
   return (0, _property.get)("romanticTarget");
 }
 
-var BadlyRomanticArrow = new _Copier.Copier(function () {
-  return couldUseBadlyRomanticArrow();
-}, function () {
-  return prepareBadlyRomanticArrow();
-}, function () {
-  return canUseBadlyRomanticArrow();
-}, function () {
-  return getBadlyRomanticArrowMonster();
-});
+var BadlyRomanticArrow = new _Copier.Copier(() => couldUseBadlyRomanticArrow(), () => prepareBadlyRomanticArrow(), () => canUseBadlyRomanticArrow(), () => getBadlyRomanticArrowMonster());
 exports.BadlyRomanticArrow = BadlyRomanticArrow;
 
 /***/ }),
@@ -7684,9 +7329,7 @@ var box = (0, _templateString.$item)(_templateObject || (_templateObject = _tagg
 exports.box = box;
 
 function have() {
-  return (0, _lib.getFoldGroup)(box).some(function (item) {
-    return (0, _lib.have)(item);
-  });
+  return (0, _lib.getFoldGroup)(box).some(item => (0, _lib.have)(item));
 }
 
 function getRainDohBlackBoxCopiesMade() {
@@ -7807,11 +7450,7 @@ var Flower = /*#__PURE__*/function () {
       var _this$plantNamesInZon;
 
       var location = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : (0, _kolmafia.myLocation)();
-      return (_this$plantNamesInZon = this.plantNamesInZone(location)) === null || _this$plantNamesInZon === void 0 ? void 0 : _this$plantNamesInZon.map(function (flowerName) {
-        return toFlower(flowerName);
-      }).filter(function (flower) {
-        return flower !== undefined;
-      });
+      return (_this$plantNamesInZon = this.plantNamesInZone(location)) === null || _this$plantNamesInZon === void 0 ? void 0 : _this$plantNamesInZon.map(flowerName => toFlower(flowerName)).filter(flower => flower !== undefined);
     }
   }, {
     key: "isPlantedHere",
@@ -7856,14 +7495,12 @@ function have() {
 }
 
 function toFlower(name) {
-  return all.find(function (flower) {
-    return name === flower.name;
-  });
+  return all.find(flower => name === flower.name);
 }
 
 function flowersIn(location) {
   var returnValue = [];
-  (0, _kolmafia.getFloristPlants)()[location.toString()].map(toFlower).forEach(function (flower) {
+  (0, _kolmafia.getFloristPlants)()[location.toString()].map(toFlower).forEach(flower => {
     if (flower) returnValue.push(flower);
   });
   return returnValue;
@@ -7871,9 +7508,7 @@ function flowersIn(location) {
 
 function flowersAvailableFor() {
   var location = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : (0, _kolmafia.myLocation)();
-  return all.filter(function (flower) {
-    return flower.available(location);
-  });
+  return all.filter(flower => flower.available(location));
 }
 
 function isFull() {
@@ -8026,13 +7661,7 @@ function getUnfinishedIceSculptureMonster() {
   return (0, _property.get)("iceSculptureMonster");
 }
 
-var UnfinishedIceSculpture = new _Copier.Copier(function () {
-  return couldUseUnfinishedIceSculpture();
-}, null, function () {
-  return couldUseUnfinishedIceSculpture();
-}, function () {
-  return getUnfinishedIceSculptureMonster();
-});
+var UnfinishedIceSculpture = new _Copier.Copier(() => couldUseUnfinishedIceSculpture(), null, () => couldUseUnfinishedIceSculpture(), () => getUnfinishedIceSculptureMonster());
 exports.UnfinishedIceSculpture = UnfinishedIceSculpture;
 
 /***/ }),
@@ -8107,21 +7736,15 @@ var ceilings = (0, _templateString.$items)(_templateObject2 || (_templateObject2
 var nightstands = (0, _templateString.$items)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["foreign language tapes, bowl of potpourri, electric muscle stimulator"])));
 
 function getDesk() {
-  return desks.find(function (desk) {
-    return Object.keys((0, _kolmafia.getChateau)()).includes(desk.name);
-  }) || (0, _templateString.$item)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["none"])));
+  return desks.find(desk => Object.keys((0, _kolmafia.getChateau)()).includes(desk.name)) || (0, _templateString.$item)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["none"])));
 }
 
 function getCeiling() {
-  return ceilings.find(function (ceiling) {
-    return Object.keys((0, _kolmafia.getChateau)()).includes(ceiling.name);
-  }) || (0, _templateString.$item)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["none"])));
+  return ceilings.find(ceiling => Object.keys((0, _kolmafia.getChateau)()).includes(ceiling.name)) || (0, _templateString.$item)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["none"])));
 }
 
 function getNightstand() {
-  return nightstands.find(function (nightstand) {
-    return Object.keys((0, _kolmafia.getChateau)()).includes(nightstand.name);
-  }) || (0, _templateString.$item)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["none"])));
+  return nightstands.find(nightstand => Object.keys((0, _kolmafia.getChateau)()).includes(nightstand.name)) || (0, _templateString.$item)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["none"])));
 }
 
 function changeDesk(desk) {
@@ -8181,7 +7804,7 @@ var _templateObject, _templateObject2, _templateObject3, _templateObject4, _temp
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
-    "default": obj
+    default: obj
   };
 }
 
@@ -8216,13 +7839,13 @@ function setMayoMinder(mayo) {
   if ((0, _kolmafia.getWorkshed)() !== (0, _templateString.$item)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["portable Mayo Clinic"])))) return false;
 
   if (!Object.values(Mayo).includes(mayo)) {
-    _logger["default"].error("Invalid mayo selected");
+    _logger.default.error("Invalid mayo selected");
 
     return false;
   }
 
   if ((0, _property.get)("mayoInMouth") && (0, _property.get)("mayoInMouth") !== mayo.name) {
-    _logger["default"].error("Currently have incorrect mayo in mouth");
+    _logger.default.error("Currently have incorrect mayo in mouth");
 
     return false;
   }
@@ -8231,9 +7854,7 @@ function setMayoMinder(mayo) {
   if (!(0, _lib.have)((0, _templateString.$item)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Mayo Minder\u2122"]))))) (0, _kolmafia.buy)((0, _templateString.$item)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Mayo Minder\u2122"]))));
 
   if ((0, _property.get)("mayoMinderSetting") !== mayo.name) {
-    (0, _property.withChoice)(1076, (0, _kolmafia.toInt)(mayo) - 8260, function () {
-      return (0, _kolmafia.use)((0, _templateString.$item)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Mayo Minder\u2122"]))));
-    });
+    (0, _property.withChoice)(1076, (0, _kolmafia.toInt)(mayo) - 8260, () => (0, _kolmafia.use)((0, _templateString.$item)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Mayo Minder\u2122"])))));
   }
 
   return (0, _property.get)("mayoMinderSetting") === mayo.name;
@@ -8311,7 +7932,7 @@ var _templateObject, _templateObject2, _templateObject3, _templateObject4, _temp
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
-    "default": obj
+    default: obj
   };
 }
 
@@ -8364,7 +7985,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function f() {
       try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
+        if (!normalCompletion && it.return != null) it.return();
       } finally {
         if (didErr) throw err;
       }
@@ -8512,7 +8133,7 @@ exports.Skills = Skills;
 
 function educate(skills) {
   var skillsArray = Array.isArray(skills) ? skills.slice(0, 2) : [skills];
-  if ((0, _isEqual["default"])(skillsArray, getSkills())) return true;
+  if ((0, _isEqual.default)(skillsArray, getSkills())) return true;
 
   var _iterator = _createForOfIteratorHelper(skillsArray),
       _step;
@@ -8537,21 +8158,13 @@ function educate(skills) {
 
 
 function getSkills() {
-  return ["sourceTerminalEducate1", "sourceTerminalEducate2"].map(function (p) {
-    return (0, _property.get)(p);
-  }).filter(function (s) {
-    return s !== "";
-  }).map(function (s) {
-    return Skill.get(s.slice(0, -4));
-  });
+  return ["sourceTerminalEducate1", "sourceTerminalEducate2"].map(p => (0, _property.get)(p)).filter(s => s !== "").map(s => Skill.get(s.slice(0, -4)));
 }
 
 function isCurrentSkill(skills) {
   var currentSkills = getSkills();
   var skillsArray = Array.isArray(skills) ? skills.slice(0, 2) : [skills];
-  return skillsArray.every(function (skill) {
-    return currentSkills.includes(skill);
-  });
+  return skillsArray.every(skill => currentSkills.includes(skill));
 }
 /**
  * Items that can be generated by the Source Terminal
@@ -8648,15 +8261,7 @@ function canDigitize() {
   return couldDigitize() && getSkills().includes(Skills.Digitize);
 }
 
-var Digitize = new _Copier.Copier(function () {
-  return couldDigitize();
-}, function () {
-  return prepareDigitize();
-}, function () {
-  return canDigitize();
-}, function () {
-  return getDigitizeMonster();
-});
+var Digitize = new _Copier.Copier(() => couldDigitize(), () => prepareDigitize(), () => canDigitize(), () => getDigitizeMonster());
 /**
  * Return number of times duplicate was cast today
  */
@@ -8831,13 +8436,7 @@ function getLovEnamorangMonster() {
   return (0, _property.get)("enamorangMonster");
 }
 
-var LovEnamorang = new _Copier.Copier(function () {
-  return couldUseLoveEnamorang();
-}, null, function () {
-  return couldUseLoveEnamorang();
-}, function () {
-  return getLovEnamorangMonster();
-});
+var LovEnamorang = new _Copier.Copier(() => couldUseLoveEnamorang(), null, () => couldUseLoveEnamorang(), () => getLovEnamorangMonster());
 exports.LovEnamorang = LovEnamorang;
 
 function equipmentChoice(equipment) {
@@ -9073,7 +8672,7 @@ function tryHead(effect) {
   if (!headBuffs.includes(effect)) return false;
   var headNumber = 1 + headBuffs.indexOf(effect);
   if ((0, _property.getString)("_beachHeadsUsed").split(",").includes(headNumber.toString())) return false;
-  (0, _kolmafia.cliExecute)(effect["default"]);
+  (0, _kolmafia.cliExecute)(effect.default);
   return (0, _lib.have)(effect);
 }
 
@@ -9144,9 +8743,7 @@ function have() {
 }
 
 function useTabletWithChoice(option) {
-  (0, _property.withChoice)(1412, option, function () {
-    return (0, _kolmafia.use)(1, item);
-  });
+  (0, _property.withChoice)(1412, option, () => (0, _kolmafia.use)(1, item));
 }
 
 function isQuestActive() {
@@ -9322,9 +8919,7 @@ var Cocktails = (0, _templateString.$items)(_templateObject2 || (_templateObject
 exports.Cocktails = Cocktails;
 
 function havePlatinumBooze() {
-  return Cocktails.some(function (cock) {
-    return (0, _lib.have)(cock);
-  });
+  return Cocktails.some(cock => (0, _lib.have)(cock));
 }
 /**
  * Returns true if the user has the cocktail that they need for their current quest
@@ -9355,22 +8950,6 @@ function haveBooze() {
 
 "use strict";
 
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 
 __webpack_require__(2888);
 
@@ -9486,9 +9065,9 @@ function _interopRequireWildcard(obj, nodeInterop) {
     return obj;
   }
 
-  if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") {
+  if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
     return {
-      "default": obj
+      default: obj
     };
   }
 
@@ -9513,7 +9092,7 @@ function _interopRequireWildcard(obj, nodeInterop) {
     }
   }
 
-  newObj["default"] = obj;
+  newObj.default = obj;
 
   if (cache) {
     cache.set(obj, newObj);
@@ -9552,32 +9131,14 @@ function couldUseRainDohBlackBox() {
   return (0, _RainDoh.have)() && (0, _RainDoh.getRainDohBlackBoxCopiesMade)() < 5 && getTotalPuttyLikeCopiesMade() < 6;
 }
 
-var RainDohBlackBox = new _Copier.Copier(function () {
-  return couldUseRainDohBlackBox();
-}, null, function () {
-  return couldUseRainDohBlackBox();
-}, function () {
-  return (0, _RainDoh.getRainDohBlackBoxMonster)();
-}, function () {
-  return (0, _RainDoh.useRainDohBlackBox)();
-});
+var RainDohBlackBox = new _Copier.Copier(() => couldUseRainDohBlackBox(), null, () => couldUseRainDohBlackBox(), () => (0, _RainDoh.getRainDohBlackBoxMonster)(), () => (0, _RainDoh.useRainDohBlackBox)());
 exports.RainDohBlackBox = RainDohBlackBox;
 
 function couldUseSpookyPuttySheet() {
   return (0, _SpookyPutty.have)() && (0, _SpookyPutty.getSpookyPuttySheetCopiesMade)() < 5 && getTotalPuttyLikeCopiesMade() < 6;
 }
 
-var SpookyPuttySheet = new _Copier.Copier(function () {
-  return couldUseSpookyPuttySheet();
-}, function () {
-  return (0, _SpookyPutty.prepareSpookyPuttySheet)();
-}, function () {
-  return couldUseSpookyPuttySheet();
-}, function () {
-  return (0, _SpookyPutty.getSpookyPuttySheetMonster)();
-}, function () {
-  return (0, _SpookyPutty.useSpookyPuttySheet)();
-});
+var SpookyPuttySheet = new _Copier.Copier(() => couldUseSpookyPuttySheet(), () => (0, _SpookyPutty.prepareSpookyPuttySheet)(), () => couldUseSpookyPuttySheet(), () => (0, _SpookyPutty.getSpookyPuttySheetMonster)(), () => (0, _SpookyPutty.useSpookyPuttySheet)());
 exports.SpookyPuttySheet = SpookyPuttySheet;
 
 /***/ }),
@@ -9587,22 +9148,6 @@ exports.SpookyPuttySheet = SpookyPuttySheet;
 
 "use strict";
 
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 
 __webpack_require__(3905);
 
@@ -9666,7 +9211,7 @@ function _createSuper(Derived) {
 }
 
 function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
     return call;
   }
 
@@ -9908,36 +9453,30 @@ var concatTemplateString = function concatTemplateString(literals) {
     placeholders[_key - 1] = arguments[_key];
   }
 
-  return literals.reduce(function (acc, literal, i) {
-    return acc + literal + (placeholders[i] || "");
-  }, "");
+  return literals.reduce((acc, literal, i) => acc + literal + (placeholders[i] || ""), "");
 };
 
-var createSingleConstant = function createSingleConstant(Type) {
-  return function (literals) {
-    for (var _len2 = arguments.length, placeholders = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-      placeholders[_key2 - 1] = arguments[_key2];
-    }
+var createSingleConstant = Type => function (literals) {
+  for (var _len2 = arguments.length, placeholders = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    placeholders[_key2 - 1] = arguments[_key2];
+  }
 
-    var input = concatTemplateString.apply(void 0, [literals].concat(placeholders));
-    return Type.get(input);
-  };
+  var input = concatTemplateString.apply(void 0, [literals].concat(placeholders));
+  return Type.get(input);
 };
 
-var createPluralConstant = function createPluralConstant(Type) {
-  return function (literals) {
-    for (var _len3 = arguments.length, placeholders = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-      placeholders[_key3 - 1] = arguments[_key3];
-    }
+var createPluralConstant = Type => function (literals) {
+  for (var _len3 = arguments.length, placeholders = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+    placeholders[_key3 - 1] = arguments[_key3];
+  }
 
-    var input = concatTemplateString.apply(void 0, [literals].concat(placeholders));
+  var input = concatTemplateString.apply(void 0, [literals].concat(placeholders));
 
-    if (input === "") {
-      return Type.all();
-    }
+  if (input === "") {
+    return Type.all();
+  }
 
-    return Type.get(input.split(/\s*,\s*/));
-  };
+  return Type.get(input.split(/\s*,\s*/));
 };
 /**
  * A Bounty specified by name.
@@ -10368,14 +9907,14 @@ function chunk(array, chunkSize) {
 function arrayToCountedMap(array) {
   if (!Array.isArray(array)) return array;
   var map = new Map();
-  array.forEach(function (item) {
+  array.forEach(item => {
     map.set(item, (map.get(item) || 0) + 1);
   });
   return map;
 }
 
 function countedMapToArray(map) {
-  return _toConsumableArray(map).flatMap(function (_ref) {
+  return _toConsumableArray(map).flatMap(_ref => {
     var _ref2 = _slicedToArray(_ref, 2),
         item = _ref2[0],
         quantity = _ref2[1];
@@ -10385,7 +9924,7 @@ function countedMapToArray(map) {
 }
 
 function countedMapToString(map) {
-  return _toConsumableArray(map).map(function (_ref3) {
+  return _toConsumableArray(map).map(_ref3 => {
     var _ref4 = _slicedToArray(_ref3, 2),
         item = _ref4[0],
         quantity = _ref4[1];
@@ -10401,15 +9940,11 @@ function countedMapToString(map) {
 
 
 function sum(addends, mappingFunction) {
-  return addends.reduce(function (subtotal, element) {
-    return subtotal + mappingFunction(element);
-  }, 0);
+  return addends.reduce((subtotal, element) => subtotal + mappingFunction(element), 0);
 }
 
 function sumNumbers(addends) {
-  return sum(addends, function (x) {
-    return x;
-  });
+  return sum(addends, x => x);
 }
 /**
  * Checks if a given item is in a readonly array, acting as a typeguard.
@@ -10435,9 +9970,7 @@ function setEqual(a, b) {
 
   var sortedB = _toConsumableArray(b).sort();
 
-  return a.length === b.length && sortedA.every(function (item, index) {
-    return item === sortedB[index];
-  });
+  return a.length === b.length && sortedA.every((item, index) => item === sortedB[index]);
 }
 
 /***/ }),
@@ -10642,30 +10175,30 @@ var createMethod = function createMethod(TYPE) {
         if (TYPE) {
           if (IS_MAP) target[index] = result; // map
           else if (result) switch (TYPE) {
-              case 3:
-                return true;
-              // some
+            case 3:
+              return true;
+            // some
 
-              case 5:
-                return value;
-              // find
+            case 5:
+              return value;
+            // find
 
-              case 6:
-                return index;
-              // findIndex
+            case 6:
+              return index;
+            // findIndex
 
-              case 2:
-                push.call(target, value);
-              // filter
-            } else switch (TYPE) {
-              case 4:
-                return false;
-              // every
+            case 2:
+              push.call(target, value);
+            // filter
+          } else switch (TYPE) {
+            case 4:
+              return false;
+            // every
 
-              case 7:
-                push.call(target, value);
-              // filterOut
-            }
+            case 7:
+              push.call(target, value);
+            // filterOut
+          }
         }
       }
     }
@@ -11175,9 +10708,8 @@ var wrappedWellKnownSymbolModule = __webpack_require__(8393);
 var defineProperty = __webpack_require__(6284).f;
 
 module.exports = function (NAME) {
-  var _Symbol = path.Symbol || (path.Symbol = {});
-
-  if (!has(_Symbol, NAME)) defineProperty(_Symbol, NAME, {
+  var Symbol = path.Symbol || (path.Symbol = {});
+  if (!has(Symbol, NAME)) defineProperty(Symbol, NAME, {
     value: wrappedWellKnownSymbolModule.f(NAME)
   });
 };
@@ -11295,22 +10827,6 @@ module.exports = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsE
 /***/ 5987:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 var global = __webpack_require__(1463);
 
 var getOwnPropertyDescriptor = __webpack_require__(738).f;
@@ -11365,7 +10881,7 @@ module.exports = function (options, source) {
     FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced); // contained in target
 
     if (!FORCED && targetProperty !== undefined) {
-      if (_typeof(sourceProperty) === _typeof(targetProperty)) continue;
+      if (typeof sourceProperty === typeof targetProperty) continue;
       copyConstructorProperties(sourceProperty, targetProperty);
     } // add a flag to not completely full polyfills
 
@@ -11569,9 +11085,7 @@ module.exports = function (fn, that, length) {
       };
   }
 
-  return function ()
-  /* ...args */
-  {
+  return function () {
     return fn.apply(that, arguments);
   };
 };
@@ -11612,9 +11126,7 @@ module.exports = Function.bind || function bind(that
   var fn = aFunction(this);
   var partArgs = slice.call(arguments, 1);
 
-  var boundFunction = function bound()
-  /* args... */
-  {
+  var boundFunction = function bound() {
     var args = partArgs.concat(slice.call(arguments));
     return this instanceof boundFunction ? construct(fn, args.length, args) : fn.apply(that, args);
   };
@@ -11724,30 +11236,14 @@ module.exports = function (matched, str, position, captures, namedCaptures, repl
 /***/ 1463:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 var check = function check(it) {
   return it && it.Math == Math && it;
 }; // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 
 
 module.exports = // eslint-disable-next-line es/no-global-this -- safe
-check((typeof globalThis === "undefined" ? "undefined" : _typeof(globalThis)) == 'object' && globalThis) || check((typeof window === "undefined" ? "undefined" : _typeof(window)) == 'object' && window) || // eslint-disable-next-line no-restricted-globals -- safe
-check((typeof self === "undefined" ? "undefined" : _typeof(self)) == 'object' && self) || check((typeof __webpack_require__.g === "undefined" ? "undefined" : _typeof(__webpack_require__.g)) == 'object' && __webpack_require__.g) || // eslint-disable-next-line no-new-func -- fallback
+check(typeof globalThis == 'object' && globalThis) || check(typeof window == 'object' && window) || // eslint-disable-next-line no-restricted-globals -- safe
+check(typeof self == 'object' && self) || check(typeof __webpack_require__.g == 'object' && __webpack_require__.g) || // eslint-disable-next-line no-new-func -- fallback
 function () {
   return this;
 }() || Function('return this')();
@@ -12003,24 +11499,8 @@ module.exports = isForced;
 /***/ 464:
 /***/ ((module) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 module.exports = function (it) {
-  return _typeof(it) === 'object' ? it !== null : typeof it === 'function';
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
 };
 
 /***/ }),
@@ -12053,22 +11533,6 @@ module.exports = function (it) {
 
 /***/ 2874:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 
 var anObject = __webpack_require__(1310);
 
@@ -12137,7 +11601,7 @@ module.exports = function (iterable, unboundFunction, options) {
       throw error;
     }
 
-    if (_typeof(result) == 'object' && result && result instanceof Result) return result;
+    if (typeof result == 'object' && result && result instanceof Result) return result;
   }
 
   return new Result(false);
@@ -12570,30 +12034,13 @@ exports.f = DESCRIPTORS ? $getOwnPropertyDescriptor : function getOwnPropertyDes
 /***/ 9598:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 /* eslint-disable es/no-object-getownpropertynames -- safe */
-
-
 var toIndexedObject = __webpack_require__(402);
 
 var $getOwnPropertyNames = __webpack_require__(2114).f;
 
 var toString = {}.toString;
-var windowNames = (typeof window === "undefined" ? "undefined" : _typeof(window)) == 'object' && window && Object.getOwnPropertyNames ? Object.getOwnPropertyNames(window) : [];
+var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames ? Object.getOwnPropertyNames(window) : [];
 
 var getWindowNames = function getWindowNames(it) {
   try {
@@ -12917,22 +12364,6 @@ var TEMPLATE = String(String).split('String');
 /***/ 5052:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 var classof = __webpack_require__(2339);
 
 var regexpExec = __webpack_require__(2434); // `RegExpExec` abstract operation
@@ -12945,7 +12376,7 @@ module.exports = function (R, S) {
   if (typeof exec === 'function') {
     var result = exec.call(R, S);
 
-    if (_typeof(result) !== 'object') {
+    if (typeof result !== 'object') {
       throw TypeError('RegExp exec method returned something other than an Object or null');
     }
 
@@ -13139,27 +12570,11 @@ exports.BROKEN_CARET = fails(function () {
 /***/ 7461:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 var fails = __webpack_require__(5071);
 
 module.exports = fails(function () {
   // babel-minify transpiles RegExp('.', 's') -> /./s and it causes SyntaxError
-  var re = RegExp('.', _typeof('').charAt(0));
+  var re = RegExp('.', (typeof '').charAt(0));
   return !(re.dotAll && re.exec('\n') && re.flags === 's');
 });
 
@@ -13168,27 +12583,11 @@ module.exports = fails(function () {
 /***/ 4085:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 var fails = __webpack_require__(5071);
 
 module.exports = fails(function () {
   // babel-minify transpiles RegExp('.', 'g') -> /./g and it causes SyntaxError
-  var re = RegExp('(?<a>b)', _typeof('').charAt(5));
+  var re = RegExp('(?<a>b)', (typeof '').charAt(5));
   return re.exec('b').groups.a !== 'b' || 'b'.replace(re, '$<a>c') !== 'bc';
 });
 
@@ -13527,27 +12926,10 @@ module.exports = function (key) {
 /***/ 9581:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 /* eslint-disable es/no-symbol -- required for testing */
-
-
 var NATIVE_SYMBOL = __webpack_require__(4342);
 
-module.exports = NATIVE_SYMBOL && !Symbol.sham && _typeof(Symbol.iterator) == 'symbol';
+module.exports = NATIVE_SYMBOL && !Symbol.sham && typeof Symbol.iterator == 'symbol';
 
 /***/ }),
 
@@ -13576,13 +12958,13 @@ var NATIVE_SYMBOL = __webpack_require__(4342);
 var USE_SYMBOL_AS_UID = __webpack_require__(9581);
 
 var WellKnownSymbolsStore = shared('wks');
-var _Symbol = global.Symbol;
-var createWellKnownSymbol = USE_SYMBOL_AS_UID ? _Symbol : _Symbol && _Symbol.withoutSetter || uid;
+var Symbol = global.Symbol;
+var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol : Symbol && Symbol.withoutSetter || uid;
 
 module.exports = function (name) {
   if (!has(WellKnownSymbolsStore, name) || !(NATIVE_SYMBOL || typeof WellKnownSymbolsStore[name] == 'string')) {
-    if (NATIVE_SYMBOL && has(_Symbol, name)) {
-      WellKnownSymbolsStore[name] = _Symbol[name];
+    if (NATIVE_SYMBOL && has(Symbol, name)) {
+      WellKnownSymbolsStore[name] = Symbol[name];
     } else {
       WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
     }
@@ -15272,7 +14654,7 @@ if (DESCRIPTORS && typeof NativeSymbol == 'function' && (!('description' in Nati
 NativeSymbol().description !== undefined)) {
   var EmptyStringDescriptionStore = {}; // wrap Symbol constructor for correct work with undefined description
 
-  var SymbolWrapper = function _Symbol() {
+  var SymbolWrapper = function Symbol() {
     var description = arguments.length < 1 || arguments[0] === undefined ? undefined : String(arguments[0]);
     var result = this instanceof SymbolWrapper ? new NativeSymbol(description) // in Edge 13, String(Symbol(undefined)) === 'Symbol(undefined)'
     : description === undefined ? NativeSymbol() : NativeSymbol(description);
@@ -15284,9 +14666,7 @@ NativeSymbol().description !== undefined)) {
   var symbolPrototype = SymbolWrapper.prototype = NativeSymbol.prototype;
   symbolPrototype.constructor = SymbolWrapper;
   var symbolToString = symbolPrototype.toString;
-
-  var _native = String(NativeSymbol('test')) == 'Symbol(test)';
-
+  var native = String(NativeSymbol('test')) == 'Symbol(test)';
   var regexp = /^Symbol\((.*)\)[^)]+$/;
   defineProperty(symbolPrototype, 'description', {
     configurable: true,
@@ -15294,7 +14674,7 @@ NativeSymbol().description !== undefined)) {
       var symbol = isObject(this) ? this.valueOf() : this;
       var string = symbolToString.call(symbol);
       if (has(EmptyStringDescriptionStore, symbol)) return '';
-      var desc = _native ? string.slice(7, -1) : string.replace(regexp, '$1');
+      var desc = native ? string.slice(7, -1) : string.replace(regexp, '$1');
       return desc === '' ? undefined : desc;
     }
   });
@@ -15313,22 +14693,6 @@ NativeSymbol().description !== undefined)) {
 
 "use strict";
 
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 
 var $ = __webpack_require__(5987);
 
@@ -15454,7 +14818,7 @@ var wrap = function wrap(tag, description) {
 };
 
 var isSymbol = USE_SYMBOL_AS_UID ? function (it) {
-  return _typeof(it) == 'symbol';
+  return typeof it == 'symbol';
 } : function (it) {
   return Object(it) instanceof $Symbol;
 };
@@ -15540,7 +14904,7 @@ var $getOwnPropertySymbols = function getOwnPropertySymbols(O) {
 
 
 if (!NATIVE_SYMBOL) {
-  $Symbol = function _Symbol() {
+  $Symbol = function Symbol() {
     if (this instanceof $Symbol) throw TypeError('Symbol is not a constructor');
     var description = !arguments.length || arguments[0] === undefined ? undefined : String(arguments[0]);
     var tag = uid(description);
@@ -15966,8 +15330,8 @@ var root = __webpack_require__(6083);
 /** Built-in value references. */
 
 
-var _Symbol = root.Symbol;
-module.exports = _Symbol;
+var Symbol = root.Symbol;
+module.exports = Symbol;
 
 /***/ }),
 
@@ -16197,7 +15561,7 @@ module.exports = baseGetAllKeys;
 /***/ 4593:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var _Symbol = __webpack_require__(9884),
+var Symbol = __webpack_require__(9884),
     getRawTag = __webpack_require__(7882),
     objectToString = __webpack_require__(8086);
 /** `Object#toString` result references. */
@@ -16207,7 +15571,7 @@ var nullTag = '[object Null]',
     undefinedTag = '[object Undefined]';
 /** Built-in value references. */
 
-var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
 /**
  * The base implementation of `getTag` without fallbacks for buggy environments.
  *
@@ -16697,7 +16061,7 @@ module.exports = equalArrays;
 /***/ 120:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var _Symbol = __webpack_require__(9884),
+var Symbol = __webpack_require__(9884),
     Uint8Array = __webpack_require__(5925),
     eq = __webpack_require__(6025),
     equalArrays = __webpack_require__(3233),
@@ -16723,7 +16087,7 @@ var arrayBufferTag = '[object ArrayBuffer]',
     dataViewTag = '[object DataView]';
 /** Used to convert symbols to primitives and strings. */
 
-var symbolProto = _Symbol ? _Symbol.prototype : undefined,
+var symbolProto = Symbol ? Symbol.prototype : undefined,
     symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
 /**
  * A specialized version of `baseIsEqualDeep` for comparing objects of
@@ -16917,25 +16281,8 @@ module.exports = equalObjects;
 /***/ 9492:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 /** Detect free variable `global` from Node.js. */
-
-
-var freeGlobal = (typeof __webpack_require__.g === "undefined" ? "undefined" : _typeof(__webpack_require__.g)) == 'object' && __webpack_require__.g && __webpack_require__.g.Object === Object && __webpack_require__.g;
+var freeGlobal = typeof __webpack_require__.g == 'object' && __webpack_require__.g && __webpack_require__.g.Object === Object && __webpack_require__.g;
 module.exports = freeGlobal;
 
 /***/ }),
@@ -17013,7 +16360,7 @@ module.exports = getNative;
 /***/ 7882:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var _Symbol = __webpack_require__(9884);
+var Symbol = __webpack_require__(9884);
 /** Used for built-in method references. */
 
 
@@ -17030,7 +16377,7 @@ var hasOwnProperty = objectProto.hasOwnProperty;
 var nativeObjectToString = objectProto.toString;
 /** Built-in value references. */
 
-var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
 /**
  * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
  *
@@ -17337,24 +16684,7 @@ module.exports = hashSet;
 /***/ 2083:
 /***/ ((module) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 /** Used as references for various `Number` constants. */
-
-
 var MAX_SAFE_INTEGER = 9007199254740991;
 /** Used to detect unsigned integer values. */
 
@@ -17369,8 +16699,7 @@ var reIsUint = /^(?:0|[1-9]\d*)$/;
  */
 
 function isIndex(value, length) {
-  var type = _typeof(value);
-
+  var type = typeof value;
   length = length == null ? MAX_SAFE_INTEGER : length;
   return !!length && (type == 'number' || type != 'symbol' && reIsUint.test(value)) && value > -1 && value % 1 == 0 && value < length;
 }
@@ -17382,21 +16711,6 @@ module.exports = isIndex;
 /***/ 463:
 /***/ ((module) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 /**
  * Checks if `value` is suitable for use as unique object key.
  *
@@ -17404,11 +16718,8 @@ function _typeof(obj) {
  * @param {*} value The value to check.
  * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
  */
-
-
 function isKeyable(value) {
-  var type = _typeof(value);
-
+  var type = typeof value;
   return type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean' ? value !== '__proto__' : value === null;
 }
 
@@ -17791,30 +17102,14 @@ module.exports = nativeKeys;
 /***/ ((module, exports, __webpack_require__) => {
 
 /* module decorator */ module = __webpack_require__.nmd(module);
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 var freeGlobal = __webpack_require__(9492);
 /** Detect free variable `exports`. */
 
 
-var freeExports = ( false ? 0 : _typeof(exports)) == 'object' && exports && !exports.nodeType && exports;
+var freeExports =  true && exports && !exports.nodeType && exports;
 /** Detect free variable `module`. */
 
-var freeModule = freeExports && ( false ? 0 : _typeof(module)) == 'object' && module && !module.nodeType && module;
+var freeModule = freeExports && "object" == 'object' && module && !module.nodeType && module;
 /** Detect the popular CommonJS extension `module.exports`. */
 
 var moduleExports = freeModule && freeModule.exports === freeExports;
@@ -17893,27 +17188,11 @@ module.exports = overArg;
 /***/ 6083:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 var freeGlobal = __webpack_require__(9492);
 /** Detect free variable `self`. */
 
 
-var freeSelf = (typeof self === "undefined" ? "undefined" : _typeof(self)) == 'object' && self && self.Object === Object && self;
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
 /** Used as a reference to the global object. */
 
 var root = freeGlobal || freeSelf || Function('return this')();
@@ -18315,31 +17594,15 @@ module.exports = isArrayLike;
 /***/ ((module, exports, __webpack_require__) => {
 
 /* module decorator */ module = __webpack_require__.nmd(module);
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 var root = __webpack_require__(6083),
     stubFalse = __webpack_require__(8725);
 /** Detect free variable `exports`. */
 
 
-var freeExports = ( false ? 0 : _typeof(exports)) == 'object' && exports && !exports.nodeType && exports;
+var freeExports =  true && exports && !exports.nodeType && exports;
 /** Detect free variable `module`. */
 
-var freeModule = freeExports && ( false ? 0 : _typeof(module)) == 'object' && module && !module.nodeType && module;
+var freeModule = freeExports && "object" == 'object' && module && !module.nodeType && module;
 /** Detect the popular CommonJS extension `module.exports`. */
 
 var moduleExports = freeModule && freeModule.exports === freeExports;
@@ -18502,21 +17765,6 @@ module.exports = isLength;
 /***/ 6526:
 /***/ ((module) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 /**
  * Checks if `value` is the
  * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
@@ -18542,11 +17790,8 @@ function _typeof(obj) {
  * _.isObject(null);
  * // => false
  */
-
-
 function isObject(value) {
-  var type = _typeof(value);
-
+  var type = typeof value;
   return value != null && (type == 'object' || type == 'function');
 }
 
@@ -18557,21 +17802,6 @@ module.exports = isObject;
 /***/ 5133:
 /***/ ((module) => {
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -18596,10 +17826,8 @@ function _typeof(obj) {
  * _.isObjectLike(null);
  * // => false
  */
-
-
 function isObjectLike(value) {
-  return value != null && _typeof(value) == 'object';
+  return value != null && typeof value == 'object';
 }
 
 module.exports = isObjectLike;
@@ -18797,7 +18025,7 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function f() {
       try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
+        if (!normalCompletion && it.return != null) it.return();
       } finally {
         if (didErr) throw err;
       }
@@ -18830,7 +18058,7 @@ function main() {
   var updatedSettings = []; // handle updating values
 
   var fields = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.formFields)();
-  Object.keys(fields).forEach(function (field) {
+  Object.keys(fields).forEach(field => {
     if (field.includes("_didchange")) return;
     if (field === "relay") return;
     var oldSetting = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.formField)("".concat(field, "_didchange"));
