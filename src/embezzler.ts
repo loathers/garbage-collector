@@ -112,7 +112,9 @@ export const embezzlerSources = [
       adventureMacro(
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
         Macro.externalIf(
-          haveEquipped($item`backup camera`) && get("_backUpUses") < 11,
+          haveEquipped($item`backup camera`) &&
+            get("_backUpUses") < 11 &&
+            get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
           Macro.if_(
             `!(monsterid ${$monster`Knob Goblin Embezzler`.id})`,
             Macro.skill($skill`Back-Up to your Last Enemy`)
@@ -137,7 +139,9 @@ export const embezzlerSources = [
       adventureMacro(
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
         Macro.externalIf(
-          haveEquipped($item`backup camera`) && get("_backUpUses") < 11,
+          haveEquipped($item`backup camera`) &&
+            get("_backUpUses") < 11 &&
+            get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
           Macro.if_(
             `!(monsterid ${$monster`Knob Goblin Embezzler`.id})`,
             Macro.skill($skill`Back-Up to your Last Enemy`)
