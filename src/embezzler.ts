@@ -5,6 +5,7 @@ import {
   chatPrivate,
   cliExecute,
   getCounters,
+  haveEquipped,
   inebrietyLimit,
   itemAmount,
   myAdventures,
@@ -110,7 +111,13 @@ export const embezzlerSources = [
     (options: EmbezzlerFightOptions) => {
       adventureMacro(
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
-        embezzlerMacro()
+        Macro.externalIf(
+          haveEquipped($item`backup camera`) && get("_backUpUses") < 11,
+          Macro.if_(
+            `!(monsterid ${$monster`Knob Goblin Embezzler`.id})`,
+            Macro.skill($skill`Back-Up to your Last Enemy`)
+          )
+        ).step(embezzlerMacro())
       );
     },
     [],
@@ -129,7 +136,13 @@ export const embezzlerSources = [
     (options: EmbezzlerFightOptions) => {
       adventureMacro(
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
-        embezzlerMacro()
+        Macro.externalIf(
+          haveEquipped($item`backup camera`) && get("_backUpUses") < 11,
+          Macro.if_(
+            `!(monsterid ${$monster`Knob Goblin Embezzler`.id})`,
+            Macro.skill($skill`Back-Up to your Last Enemy`)
+          )
+        ).step(embezzlerMacro())
       );
     },
     [],
