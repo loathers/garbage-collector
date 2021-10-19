@@ -254,26 +254,26 @@ export class Macro extends LibramMacro {
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
         myAdventures() < 150 && have($skill`Meteor Lore`) && get("_meteorShowerUses") < 5,
-        Macro.if_(
-          `monstername ${$monster`Knob Goblin Embezzler`}`,
-          Macro.trySkill($skill`Meteor Shower`)
-        )
+        Macro.ifMonster($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
       )
       .externalIf(
         !have($effect`On the Trail`) && have($skill`Transcendent Olfaction`),
-        Macro.if_("monstername garbage tourist", Macro.trySkill($skill`Transcendent Olfaction`))
+        Macro.ifMonster($monster`garbage tourist`, Macro.trySkill($skill`Transcendent Olfaction`))
       )
       .externalIf(
         get("_gallapagosMonster") !== $monster`garbage tourist` &&
           have($skill`Gallapagosian Mating Call`),
-        Macro.if_("monstername garbage tourist", Macro.trySkill($skill`Gallapagosian Mating Call`))
+        Macro.ifMonster(
+          $monster`garbage tourist`,
+          Macro.trySkill($skill`Gallapagosian Mating Call`)
+        )
       )
       .externalIf(
         !get("_latteCopyUsed") &&
           (get("_latteMonster") !== $monster`garbage tourist` ||
             getCounters("Latte Monster", 0, 30).trim() === "") &&
           have($item`latte lovers member's mug`),
-        Macro.if_("monstername garbage tourist", Macro.trySkill($skill`Offer Latte to Opponent`))
+        Macro.ifMonster($monster`garbage tourist`, Macro.trySkill($skill`Offer Latte to Opponent`))
       )
       .externalIf(
         get("_feelNostalgicUsed") < 3 &&
