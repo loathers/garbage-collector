@@ -116,7 +116,7 @@ export const embezzlerSources = [
             get("_backUpUses") < 11 &&
             get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
           Macro.if_(
-            `!(monsterid ${$monster`Knob Goblin Embezzler`.id})`,
+            `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
             Macro.skill($skill`Back-Up to your Last Enemy`)
           )
         ).step(embezzlerMacro())
@@ -143,7 +143,7 @@ export const embezzlerSources = [
             get("_backUpUses") < 11 &&
             get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
           Macro.if_(
-            `!(monsterid ${$monster`Knob Goblin Embezzler`.id})`,
+            `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
             Macro.skill($skill`Back-Up to your Last Enemy`)
           )
         ).step(embezzlerMacro())
