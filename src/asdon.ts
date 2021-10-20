@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 import { $items } from "libram";
 
-const fuelBlacklist = $items`cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy, glass of "milk"`;
+const fuelSkiplist = $items`cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy, glass of "milk"`;
 
 function averageAdventures(it: Item): number {
   if (it.adventures.includes("-")) {
@@ -37,7 +37,7 @@ function isFuelItem(it: Item) {
     averageAdventures(it) > 0 &&
     it.tradeable &&
     it.discardable &&
-    !fuelBlacklist.includes(it)
+    !fuelSkiplist.includes(it)
   );
 }
 

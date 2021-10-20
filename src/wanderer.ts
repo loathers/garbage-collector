@@ -113,10 +113,10 @@ function testZoneAndUsePotionToAccess() {
       use(1, place.potion);
     }
   });
-  const blacklist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory`;
+  const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory`;
   if (
     forbiddenZones.includes(guzzlZone.zone) ||
-    blacklist.includes(guzzlZone) ||
+    skiplist.includes(guzzlZone) ||
     guzzlZone.environment === "underwater" ||
     !canAdv(guzzlZone, false)
   ) {
@@ -127,13 +127,13 @@ function testZoneAndUsePotionToAccess() {
 }
 
 function testZoneForBackups(location: Location): boolean {
-  const backupBlacklist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
-  return !backupBlacklist.includes(location) && location.combatPercent >= 100;
+  const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
+  return !backupSkiplist.includes(location) && location.combatPercent >= 100;
 }
 
 function testZoneForWanderers(location: Location): boolean {
-  const wandererBlacklist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
-  return !wandererBlacklist.includes(location) && location.wanderers;
+  const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
+  return !wandererSkiplist.includes(location) && location.wanderers;
 }
 
 export function determineDraggableZoneAndEnsureAccess(
