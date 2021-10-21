@@ -42,6 +42,7 @@ import { baseMeat, questStep, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { potionSetup } from "./potions";
 import { estimatedTurns } from "./embezzler";
+import { monsterManuelAvailable } from "./combat";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -89,7 +90,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
       );
     if (
       isWorthIt ||
-      have($item`porquoise-handled sixgun`) ||
+      (have($item`porquoise-handled sixgun`) && monsterManuelAvailable()) ||
       getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant") ||
       get("_bittycar") === "soulcar"
     )
