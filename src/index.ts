@@ -333,6 +333,8 @@ export function main(argString = ""): void {
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
       choiceAdventureScript: "",
+      customCombatScript: "garbo",
+      currentMood: "apathetic",
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -359,8 +361,6 @@ export function main(argString = ""): void {
     if (get("mpAutoRecoveryTarget") < mpTarget)
       propertyManager.set({ mpAutoRecoveryTarget: mpTarget });
 
-    cliExecute("mood apathetic");
-    cliExecute("ccs garbo");
     safeRestore();
 
     if (questStep("questM23Meatsmith") === -1) {
