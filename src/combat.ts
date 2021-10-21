@@ -134,10 +134,47 @@ function shouldRedigitize() {
   return SourceTerminal.have() && myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
 }
 
+type Constructor<T> = { new (): T };
+
 export class Macro extends LibramMacro {
   submit(): string {
     print(this.components.join("\n"));
     return super.submit();
+  }
+
+  skill(...skills: Skill[]): this {
+    return super.skill(...skills);
+  }
+
+  static skill<T extends LibramMacro>(this: Constructor<T>, ...skills: Skill[]): T {
+    return new this().skill(...skills);
+  }
+
+  item(...items: (Item | [Item, Item])[]): this {
+    return super.item(...items);
+  }
+
+  static item<T extends LibramMacro>(this: Constructor<T>, ...items: (Item | [Item, Item])[]): T {
+    return new this().item(...items);
+  }
+
+  trySkill(...skills: Skill[]): this {
+    return super.trySkill(...skills);
+  }
+
+  static trySkill<T extends LibramMacro>(this: Constructor<T>, ...skills: Skill[]): T {
+    return new this().trySkill(...skills);
+  }
+
+  tryItem(...items: (Item | [Item, Item])[]): this {
+    return super.tryItem(...items);
+  }
+
+  static tryItem<T extends LibramMacro>(
+    this: Constructor<T>,
+    ...items: (Item | [Item, Item])[]
+  ): T {
+    return new this().tryItem(...items);
   }
 
   tryHaveSkill(skill: Skill | null): Macro {
