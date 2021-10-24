@@ -118,7 +118,8 @@ function testZoneAndUsePotionToAccess() {
     forbiddenZones.includes(guzzlZone.zone) ||
     skiplist.includes(guzzlZone) ||
     guzzlZone.environment === "underwater" ||
-    !canAdv(guzzlZone, false)
+    !canAdv(guzzlZone, false) ||
+    (guzzlZone === $location`The Upper Chamber` && get("csServicesPerformed") !== "") // (hopefully) temporary fix for canadv bug that results in infinite loop
   ) {
     return false;
   } else {
