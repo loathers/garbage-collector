@@ -45,13 +45,14 @@ import {
   getSaleValue,
   have,
   property,
+  set,
   SongBoom,
   SourceTerminal,
   uneffect,
   withProperty,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, coinmasterPrice, logMessage, tryFeast } from "./lib";
+import { baseMeat, coinmasterPrice, logMessage, propertyManager, tryFeast } from "./lib";
 import { withStash } from "./clan";
 import { estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
@@ -74,6 +75,7 @@ export function dailySetup(): void {
   pickTea();
   refreshLatte();
   implement();
+  tonic_djinn();
 
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`Half a Purse`);
@@ -516,4 +518,21 @@ export function implement(): void {
   if (!have($item`[glitch season reward name]`) || get("_glitchItemImplemented")) return;
   retrieveItem($item`[glitch season reward name]`);
   use($item`[glitch season reward name]`);
+}
+
+function tonic_djinn(): void {
+  if (
+    !get("_tonicDjinn") &&
+    mallPrice($item`tonic djinn`) < 400 &&
+    retrieveItem($item`tonic djinn`, 1)
+  ) {
+    propertyManager.setChoices({
+      [778]: 1, //If You Could Only See gain 400-500 meat
+    });
+    use($item`tonic djinn`);
+    // Bug: Mafia doesn't always set _tonicDjinn correctly
+    if (!get("_tonicDjinn")) {
+      set("_tonicDjinn", true);
+    }
+  }
 }
