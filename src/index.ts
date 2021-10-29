@@ -422,7 +422,7 @@ export function main(argString = ""): void {
             }
 
             // buy one-day tickets with FunFunds if user desires
-            if (get<boolean>("garbo_buyPass", false) && availableAmount($item`FunFunds™`) >= 20) {
+            if (get<boolean>("garbo_buyPass", false) && availableAmount($item`FunFunds™`) >= 20 && !have($item`one-day ticket to Dinseylandfill`)) {
               print("Buying a one-day tickets", "blue");
               buy(
                 $coinmaster`The Dinsey Company Store`,
