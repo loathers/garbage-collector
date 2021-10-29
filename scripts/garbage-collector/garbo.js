@@ -21315,6 +21315,11 @@ var Potion = /*#__PURE__*/function () {
 
   return Potion;
 }();
+/**
+ * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
+ * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
+ */
+
 
 function potionSetup() {
   var doEmbezzlers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
@@ -21410,6 +21415,11 @@ function potionSetup() {
     _iterator3.f();
   }
 }
+/**
+ * Uses a Greenspan iff profitable; does not account for PYEC/LTC, or running out of adventures with the ascend flag.
+ * @param embezzlers Do we want to account for embezzlers when calculating the value of bathroom finance?
+ */
+
 function bathroomFinance(embezzlers) {
   if ((0,dist.have)((0,dist.$effect)(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
 
