@@ -189,6 +189,10 @@ class Potion {
   }
 }
 
+/**
+ * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
+ * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
+ */
 export function potionSetup(doEmbezzlers = false): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
@@ -249,6 +253,10 @@ export function potionSetup(doEmbezzlers = false): void {
   }
 }
 
+/**
+ * Uses a Greenspan iff profitable; does not account for PYEC/LTC, or running out of adventures with the ascend flag.
+ * @param embezzlers Do we want to account for embezzlers when calculating the value of bathroom finance?
+ */
 export function bathroomFinance(embezzlers: number): void {
   if (have($effect`Buy!  Sell!  Buy!  Sell!`)) return;
 
