@@ -20,6 +20,7 @@ import {
   $item,
   $items,
   $location,
+  ChateauMantegna,
   get,
   getActiveEffects,
   have,
@@ -210,7 +211,12 @@ export function potionSetup(doEmbezzlers = false): void {
       // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
       if (
         potion.doublingValue(embezzlers) >
-        (canAdv($location`Cobb's Knob Treasury`, false) ? 15000 : 0)
+        (canAdv($location`Cobb's Knob Treasury`, false)
+          ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
+            (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
+            ? 15000
+            : 50000
+          : 0)
       ) {
         cliExecute("pillkeeper extend");
         print(
