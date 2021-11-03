@@ -24137,7 +24137,9 @@ function main() {
       dontStopForCounters: true,
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
-      choiceAdventureScript: ""
+      choiceAdventureScript: "",
+      customCombatScript: "garbo",
+      currentMood: "apathetic"
     });
     var bestHalloweiner = 0;
 
@@ -24174,8 +24176,6 @@ function main() {
     if ((0,dist.get)("mpAutoRecoveryTarget") < mpTarget) propertyManager.set({
       mpAutoRecoveryTarget: mpTarget
     });
-    (0,external_kolmafia_.cliExecute)("mood apathetic");
-    (0,external_kolmafia_.cliExecute)("ccs garbo");
     safeRestore();
 
     if (questStep("questM23Meatsmith") === -1) {
