@@ -1,5 +1,4 @@
 import "core-js/modules/es.object.from-entries";
-import { canAdv } from "canadv.ash";
 import {
   cliExecute,
   effectModifier,
@@ -19,14 +18,12 @@ import {
   $familiar,
   $item,
   $items,
-  $location,
-  ChateauMantegna,
   get,
   getActiveEffects,
   have,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat } from "./lib";
+import { baseMeat, pillkeeperOpportunityCost } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -209,15 +206,7 @@ export function potionSetup(doEmbezzlers = false): void {
     if (testPotionsDoubled.length > 0) {
       const potion = testPotionsDoubled[0];
       // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
-      if (
-        potion.doublingValue(embezzlers) >
-        (canAdv($location`Cobb's Knob Treasury`, false)
-          ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
-            (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
-            ? 15000
-            : 50000
-          : 0)
-      ) {
+      if (potion.doublingValue(embezzlers) > pillkeeperOpportunityCost()) {
         cliExecute("pillkeeper extend");
         print(
           `Best doubling potion: ${potion.potion.name}, value ${potion

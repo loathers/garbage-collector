@@ -1,3 +1,4 @@
+import { canAdv } from "canadv.ash";
 import {
   abort,
   cliExecute,
@@ -24,8 +25,10 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $skill,
   Bandersnatch,
+  ChateauMantegna,
   ensureEffect,
   get,
   getFoldGroup,
@@ -401,4 +404,13 @@ export function printHelpMenu(): void {
     +--------------------------+-----------------------------------------------------------------------------------------------+
     |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |
     +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
+}
+
+export function pillkeeperOpportunityCost(): number {
+  return canAdv($location`Cobb's Knob Treasury`, false)
+    ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
+      (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
+      ? 15000
+      : 50000
+    : 0;
 }
