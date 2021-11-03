@@ -406,7 +406,13 @@ export function printHelpMenu(): void {
     +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
 }
 
+/**
+ * Determines the opportunity cost of not using the Pillkeeper to fight an embezzler
+ * @returns The expected value of using a pillkeeper charge to fight an embezzler
+ */
 export function pillkeeperOpportunityCost(): number {
+  //Can't fight an embezzler without treasury access
+  //If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
   return canAdv($location`Cobb's Knob Treasury`, false)
     ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
       (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
