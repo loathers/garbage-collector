@@ -12,16 +12,7 @@ import {
   print,
   use,
 } from "kolmafia";
-import {
-  $effect,
-  $effects,
-  $familiar,
-  $item,
-  $items,
-  get,
-  getActiveEffects,
-  have,
-} from "libram";
+import { $effect, $effects, $familiar, $item, $items, get, getActiveEffects, have } from "libram";
 import { acquire } from "./acquire";
 import { baseMeat, pillkeeperOpportunityCost } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
