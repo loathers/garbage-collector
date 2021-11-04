@@ -20216,8 +20216,317 @@ function estimatedTurns() {
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - (0,external_kolmafia_.myTurncount)();else if (globalOptions.noBarf) turns = embezzlerCount();else turns = ((0,external_kolmafia_.myAdventures)() + (globalOptions.ascending && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() ? 60 : 0)) * ((0,dist.have)((0,dist.$item)(_templateObject76 || (_templateObject76 = embezzler_taggedTemplateLiteral(["mafia thumb ring"])))) ? 1.04 : 1);
   return turns;
 }
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.from-entries.js
+var es_object_from_entries = __webpack_require__(5809);
+;// CONCATENATED MODULE: ./src/potions.ts
+var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8;
+
+function potions_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function potions_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || potions_unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return potions_arrayLikeToArray(arr); }
+
+function potions_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = potions_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function potions_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return potions_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return potions_arrayLikeToArray(o, minLen); }
+
+function potions_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function potions_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+
+
+
+var banned = (0,dist.$items)(potions_templateObject || (potions_templateObject = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
+var mutuallyExclusiveList = [(0,dist.$effects)(potions_templateObject2 || (potions_templateObject2 = potions_taggedTemplateLiteral(["Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue"]))), (0,dist.$effects)(potions_templateObject3 || (potions_templateObject3 = potions_taggedTemplateLiteral(["Cupcake of Choice, The Cupcake of Wrath, Shiny Happy Cupcake, Your Cupcake Senses Are Tingling, Tiny Bubbles in the Cupcake"])))];
+var mutuallyExclusive = new Map();
+
+for (var _i = 0, _mutuallyExclusiveLis = mutuallyExclusiveList; _i < _mutuallyExclusiveLis.length; _i++) {
+  var effectGroup = _mutuallyExclusiveLis[_i];
+
+  var _iterator = potions_createForOfIteratorHelper(effectGroup),
+      _step;
+
+  try {
+    var _loop = function _loop() {
+      var _mutuallyExclusive$ge;
+
+      var effect = _step.value;
+      mutuallyExclusive.set(effect, [].concat(_toConsumableArray((_mutuallyExclusive$ge = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge !== void 0 ? _mutuallyExclusive$ge : []), _toConsumableArray(effectGroup.filter(other => other !== effect))));
+    };
+
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      _loop();
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+}
+
+var Potion = /*#__PURE__*/function () {
+  function Potion(potion) {
+    potions_classCallCheck(this, Potion);
+
+    potions_defineProperty(this, "potion", void 0);
+
+    this.potion = potion;
+  }
+
+  _createClass(Potion, [{
+    key: "effect",
+    value: function effect() {
+      return (0,external_kolmafia_.effectModifier)(this.potion, "Effect");
+    }
+  }, {
+    key: "effectDuration",
+    value: function effectDuration() {
+      return (0,external_kolmafia_.numericModifier)(this.potion, "Effect Duration");
+    }
+  }, {
+    key: "meatDrop",
+    value: function meatDrop() {
+      return (0,external_kolmafia_.numericModifier)(this.effect(), "Meat Drop");
+    }
+  }, {
+    key: "familiarWeight",
+    value: function familiarWeight() {
+      return (0,external_kolmafia_.numericModifier)(this.effect(), "Familiar Weight");
+    }
+  }, {
+    key: "bonusMeat",
+    value: function bonusMeat() {
+      var familiarMultiplier = (0,dist.have)((0,dist.$familiar)(potions_templateObject4 || (potions_templateObject4 = potions_taggedTemplateLiteral(["Robortender"])))) ? 2 : (0,dist.have)((0,dist.$familiar)(potions_templateObject5 || (potions_templateObject5 = potions_taggedTemplateLiteral(["Hobo Monkey"])))) ? 1.25 : 1; // Assume base weight of 100 pounds. This is off but close enough.
+
+      var assumedBaseWeight = 100; // Marginal value of familiar weight in % meat drop.
+
+      var marginalValue = 2 * familiarMultiplier + Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight));
+      return this.familiarWeight() * marginalValue + this.meatDrop();
+    }
+  }, {
+    key: "gross",
+    value: function gross(embezzlers) {
+      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var bonusMeat = this.bonusMeat();
+      var duration = this.effectDuration() * (doubleDuration ? 2 : 1); // Number of embezzlers this will actually be in effect for.
+
+      var embezzlersApplied = Math.max(Math.min(duration, embezzlers) - (0,external_kolmafia_.haveEffect)(this.effect()), 0);
+      return bonusMeat / 100 * (baseMeat * duration + 750 * embezzlersApplied);
+    }
+  }, {
+    key: "price",
+    value: function price(historical) {
+      // If asked for historical, and age < 14 days, use historical.
+      return historical && (0,external_kolmafia_.historicalAge)(this.potion) < 14 ? (0,external_kolmafia_.historicalPrice)(this.potion) : (0,external_kolmafia_.mallPrice)(this.potion);
+    }
+  }, {
+    key: "net",
+    value: function net(embezzlers) {
+      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var historical = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      return this.gross(embezzlers, doubleDuration) - this.price(historical);
+    }
+  }, {
+    key: "doublingValue",
+    value: function doublingValue(embezzlers) {
+      var historical = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      return Math.max(this.net(embezzlers, true, historical), 0) - Math.max(this.net(embezzlers, false, historical), 0);
+    }
+  }, {
+    key: "useAsValuable",
+    value: function useAsValuable(embezzlers) {
+      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var duration = this.effectDuration() * (doubleDuration ? 2 : 1);
+      var quantityToUse = 0;
+      var embezzlersRemaining = Math.max(embezzlers - (0,external_kolmafia_.haveEffect)(this.effect()), 0);
+      var keepGoing = true; // Use however many will land entirely on embezzler turns.
+
+      var embezzlerQuantity = Math.floor(embezzlersRemaining / duration);
+
+      if (this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlerQuantity > 0) {
+        acquire(embezzlerQuantity, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
+        quantityToUse = Math.min(embezzlerQuantity, (0,external_kolmafia_.itemAmount)(this.potion));
+        (0,external_kolmafia_.print)("Determined that ".concat(quantityToUse, " ").concat(this.potion.plural, " are profitable on embezzlers: net value ").concat(this.net(embezzlersRemaining, doubleDuration).toFixed(0), "."), "blue");
+        embezzlersRemaining -= quantityToUse * duration;
+      }
+
+      if (quantityToUse < embezzlerQuantity || doubleDuration && quantityToUse > 0) {
+        keepGoing = false;
+      } // Now, is there one with both embezzlers and non-embezzlers?
+
+
+      if (keepGoing && this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlersRemaining > 0) {
+        acquire(1, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
+        var additional = Math.min(1, (0,external_kolmafia_.itemAmount)(this.potion) - quantityToUse);
+        (0,external_kolmafia_.print)("Determined that ".concat(additional, " ").concat(this.potion.plural, " are profitable on partial embezzlers: net value ").concat(this.net(embezzlersRemaining, doubleDuration).toFixed(0), "."), "blue");
+        quantityToUse += additional;
+        embezzlersRemaining = Math.max(embezzlersRemaining - additional * duration, 0);
+      }
+
+      if (embezzlersRemaining > 0 || doubleDuration && quantityToUse > 0) keepGoing = false; // How many should we use with non-embezzlers?
+
+      if (keepGoing && this.net(0, doubleDuration) > 0) {
+        var adventureCap = estimatedTurns();
+        var tourists = adventureCap - (0,external_kolmafia_.haveEffect)(this.effect()) - quantityToUse * duration;
+
+        if (tourists > 0) {
+          var touristQuantity = Math.ceil(tourists / duration);
+          acquire(touristQuantity, this.potion, this.gross(0, doubleDuration), false);
+
+          var _additional = Math.min(touristQuantity, (0,external_kolmafia_.itemAmount)(this.potion) - quantityToUse);
+
+          (0,external_kolmafia_.print)("Determined that ".concat(_additional, " ").concat(this.potion.plural, " are profitable on tourists: net value ").concat(this.net(0, doubleDuration).toFixed(0), "."), "blue");
+          quantityToUse += _additional;
+        }
+      }
+
+      if (quantityToUse > 0) {
+        if (doubleDuration) quantityToUse = 1;
+        (0,external_kolmafia_.use)(quantityToUse, this.potion);
+      }
+    }
+  }]);
+
+  return Potion;
+}();
+/**
+ * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
+ * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
+ */
+
+function potionSetup() {
+  var doEmbezzlers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  // TODO: Count PYEC.
+  // TODO: Count free fights (25 meat each for most).
+  var embezzlers = doEmbezzlers ? embezzlerCount() : 0;
+  var potions = Item.all().filter(item => item.tradeable && !banned.includes(item) && (0,external_kolmafia_.itemType)(item) === "potion");
+  var meatPotions = potions.map(item => new Potion(item)).filter(potion => potion.bonusMeat() > 0);
+
+  if ((0,dist.have)((0,dist.$item)(potions_templateObject6 || (potions_templateObject6 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,dist.get)("_freePillKeeperUsed")) {
+    var testPotionsDoubled = meatPotions.filter(potion => potion.gross(embezzlers, true) / potion.price(true) > 0.5);
+    testPotionsDoubled.sort((x, y) => -(x.doublingValue(embezzlers) - y.doublingValue(embezzlers)));
+
+    if (testPotionsDoubled.length > 0) {
+      var potion = testPotionsDoubled[0]; // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
+
+      if (potion.doublingValue(embezzlers) > pillkeeperOpportunityCost()) {
+        (0,external_kolmafia_.cliExecute)("pillkeeper extend");
+        (0,external_kolmafia_.print)("Best doubling potion: ".concat(potion.potion.name, ", value ").concat(potion.doublingValue(embezzlers).toFixed(0)), "blue");
+        potion.useAsValuable(embezzlers, true);
+      }
+    }
+  } // Only test potions which are reasonably close to being profitable using historical price.
+
+
+  var testPotions = meatPotions.filter(potion => potion.gross(embezzlers) / potion.price(true) > 0.5);
+  testPotions.sort((x, y) => -(x.net(embezzlers) - y.net(embezzlers)));
+  var excludedEffects = new Set();
+
+  var _iterator2 = potions_createForOfIteratorHelper((0,dist.getActiveEffects)()),
+      _step2;
+
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var _mutuallyExclusive$ge2;
+
+      var effect = _step2.value;
+
+      var _iterator4 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
+          _step4;
+
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var excluded = _step4.value;
+          excludedEffects.add(excluded);
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+
+  var _iterator3 = potions_createForOfIteratorHelper(testPotions),
+      _step3;
+
+  try {
+    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+      var _potion = _step3.value;
+
+      var _effect = _potion.effect();
+
+      if (excludedEffects.has(_effect)) continue;
+
+      _potion.useAsValuable(embezzlers);
+
+      if ((0,dist.have)(_effect)) {
+        var _mutuallyExclusive$ge3;
+
+        var _iterator5 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
+            _step5;
+
+        try {
+          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+            var _excluded = _step5.value;
+            excludedEffects.add(_excluded);
+          }
+        } catch (err) {
+          _iterator5.e(err);
+        } finally {
+          _iterator5.f();
+        }
+      }
+    }
+  } catch (err) {
+    _iterator3.e(err);
+  } finally {
+    _iterator3.f();
+  }
+}
+/**
+ * Uses a Greenspan iff profitable; does not account for PYEC/LTC, or running out of adventures with the ascend flag.
+ * @param embezzlers Do we want to account for embezzlers when calculating the value of bathroom finance?
+ */
+
+function bathroomFinance(embezzlers) {
+  if ((0,dist.have)((0,dist.$effect)(potions_templateObject7 || (potions_templateObject7 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
+
+  var averageEmbezzlerGross = (baseMeat + 750) * 2 * (embezzlers + 1) / 2 / 100;
+  var embezzlerGross = averageEmbezzlerGross * embezzlers;
+  var tourists = 100 - embezzlers; // Average meat % for tourists is sum of arithmetic series, 2 * sum(embezzlers + 1 -> 100)
+
+  var averageTouristGross = baseMeat * 2 * (100 + embezzlers + 1) / 2 / 100;
+  var touristGross = averageTouristGross * tourists;
+  var greenspan = (0,dist.$item)(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
+
+  if (touristGross + embezzlerGross > (0,external_kolmafia_.mallPrice)(greenspan)) {
+    (0,external_kolmafia_.print)("Using Uncle Greenspan's guide!", "blue");
+    acquire(1, greenspan, touristGross + embezzlerGross);
+    if ((0,external_kolmafia_.itemAmount)(greenspan) > 0) (0,external_kolmafia_.use)(greenspan);
+  }
+}
 ;// CONCATENATED MODULE: ./src/diet.ts
-var diet_templateObject, diet_templateObject2, diet_templateObject3, diet_templateObject4, diet_templateObject5, diet_templateObject6, diet_templateObject7, diet_templateObject8, diet_templateObject9, diet_templateObject10, diet_templateObject11, diet_templateObject12, diet_templateObject13, diet_templateObject14, diet_templateObject15, diet_templateObject16, diet_templateObject17, diet_templateObject18, diet_templateObject19, diet_templateObject20, diet_templateObject21, diet_templateObject22, diet_templateObject23, diet_templateObject24, diet_templateObject25, diet_templateObject26, diet_templateObject27, diet_templateObject28, diet_templateObject29, diet_templateObject30, diet_templateObject31, diet_templateObject32, diet_templateObject33, diet_templateObject34, diet_templateObject35, diet_templateObject36, diet_templateObject37, diet_templateObject38, diet_templateObject39, diet_templateObject40, diet_templateObject41, diet_templateObject42, diet_templateObject43, diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74, diet_templateObject75, diet_templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92;
+var diet_templateObject, diet_templateObject2, diet_templateObject3, diet_templateObject4, diet_templateObject5, diet_templateObject6, diet_templateObject7, diet_templateObject8, diet_templateObject9, diet_templateObject10, diet_templateObject11, diet_templateObject12, diet_templateObject13, diet_templateObject14, diet_templateObject15, diet_templateObject16, diet_templateObject17, diet_templateObject18, diet_templateObject19, diet_templateObject20, diet_templateObject21, diet_templateObject22, diet_templateObject23, diet_templateObject24, diet_templateObject25, diet_templateObject26, diet_templateObject27, diet_templateObject28, diet_templateObject29, diet_templateObject30, diet_templateObject31, diet_templateObject32, diet_templateObject33, diet_templateObject34, diet_templateObject35, diet_templateObject36, diet_templateObject37, diet_templateObject38, diet_templateObject39, diet_templateObject40, diet_templateObject41, diet_templateObject42, diet_templateObject43, diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74, diet_templateObject75, diet_templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90;
 
 function diet_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = diet_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -20234,6 +20543,7 @@ function diet_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeo
 function diet_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function diet_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 
 
 
@@ -20479,42 +20789,43 @@ function runDiet() {
     if ((0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) {
       if (!(0,dist.have)((0,dist.$effect)(diet_templateObject35 || (diet_templateObject35 = diet_taggedTemplateLiteral(["Eau d' Clochard"]))))) {
         if (!(0,dist.have)((0,dist.$item)(diet_templateObject36 || (diet_templateObject36 = diet_taggedTemplateLiteral(["beggin' cologne"]))))) {
-          var equilibriumPrice = (baseMeat * (0,external_kolmafia_.numericModifier)((0,dist.$effect)(diet_templateObject37 || (diet_templateObject37 = diet_taggedTemplateLiteral(["Eau d' Clochard"]))), "Meat") * (0,external_kolmafia_.numericModifier)((0,dist.$item)(diet_templateObject38 || (diet_templateObject38 = diet_taggedTemplateLiteral(["beggin' cologne"]))), "Effect Duration") + Math.min((0,external_kolmafia_.numericModifier)((0,dist.$item)(diet_templateObject39 || (diet_templateObject39 = diet_taggedTemplateLiteral(["beggin' cologne"]))), "Effect Duration"), embezzlers) * 750) / 100 - valuePerSpleen(bestSpleenItem);
-          if (equilibriumPrice > 0) (0,external_kolmafia_.buy)(1, (0,dist.$item)(diet_templateObject40 || (diet_templateObject40 = diet_taggedTemplateLiteral(["beggin' cologne"]))), equilibriumPrice);
+          var cologne = new Potion((0,dist.$item)(diet_templateObject37 || (diet_templateObject37 = diet_taggedTemplateLiteral(["beggin' cologne"]))));
+          var equilibriumPrice = cologne.gross(embezzlers) - valuePerSpleen(bestSpleenItem);
+          if (equilibriumPrice > 0) (0,external_kolmafia_.buy)(1, (0,dist.$item)(diet_templateObject38 || (diet_templateObject38 = diet_taggedTemplateLiteral(["beggin' cologne"]))), equilibriumPrice);
         }
 
-        if ((0,dist.have)((0,dist.$item)(diet_templateObject41 || (diet_templateObject41 = diet_taggedTemplateLiteral(["beggin' cologne"]))))) {
-          (0,external_kolmafia_.chew)(1, (0,dist.$item)(diet_templateObject42 || (diet_templateObject42 = diet_taggedTemplateLiteral(["beggin' cologne"]))));
+        if ((0,dist.have)((0,dist.$item)(diet_templateObject39 || (diet_templateObject39 = diet_taggedTemplateLiteral(["beggin' cologne"]))))) {
+          (0,external_kolmafia_.chew)(1, (0,dist.$item)(diet_templateObject40 || (diet_templateObject40 = diet_taggedTemplateLiteral(["beggin' cologne"]))));
         }
       }
     }
 
-    if ((0,dist.have)((0,dist.$skill)(diet_templateObject43 || (diet_templateObject43 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) && (0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) (0,dist.ensureEffect)((0,dist.$effect)(diet_templateObject44 || (diet_templateObject44 = diet_taggedTemplateLiteral(["Synthesis: Collection"]))));
-    if ((0,dist.have)((0,dist.$item)(diet_templateObject45 || (diet_templateObject45 = diet_taggedTemplateLiteral(["body spradium"])))) && (0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) (0,dist.ensureEffect)((0,dist.$effect)(diet_templateObject46 || (diet_templateObject46 = diet_taggedTemplateLiteral(["Boxing Day Glow"]))));
+    if ((0,dist.have)((0,dist.$skill)(diet_templateObject41 || (diet_templateObject41 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) && (0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) (0,dist.ensureEffect)((0,dist.$effect)(diet_templateObject42 || (diet_templateObject42 = diet_taggedTemplateLiteral(["Synthesis: Collection"]))));
+    if ((0,dist.have)((0,dist.$item)(diet_templateObject43 || (diet_templateObject43 = diet_taggedTemplateLiteral(["body spradium"])))) && (0,external_kolmafia_.mySpleenUse)() < (0,external_kolmafia_.spleenLimit)()) (0,dist.ensureEffect)((0,dist.$effect)(diet_templateObject44 || (diet_templateObject44 = diet_taggedTemplateLiteral(["Boxing Day Glow"]))));
   }
 
-  useIfUnused((0,dist.$item)(diet_templateObject47 || (diet_templateObject47 = diet_taggedTemplateLiteral(["fancy chocolate car"]))), (0,dist.get)("_chocolatesUsed") === 0, 2 * MPA);
+  useIfUnused((0,dist.$item)(diet_templateObject45 || (diet_templateObject45 = diet_taggedTemplateLiteral(["fancy chocolate car"]))), (0,dist.get)("_chocolatesUsed") === 0, 2 * MPA);
 
   while ((0,dist.get)("_loveChocolatesUsed") < 3) {
-    var price = (0,dist.have)((0,dist.$item)(diet_templateObject48 || (diet_templateObject48 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"])))) ? 15000 : 20000;
+    var price = (0,dist.have)((0,dist.$item)(diet_templateObject46 || (diet_templateObject46 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"])))) ? 15000 : 20000;
     var value = (0,dist.clamp)(3 - (0,dist.get)("_loveChocolatesUsed"), 0, 3) * (0,dist.get)("valueOfAdventure");
     if (value < price) break;
 
-    if (!(0,dist.have)((0,dist.$item)(diet_templateObject49 || (diet_templateObject49 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]))))) {
-      dist.Kmail.send("sellbot", "".concat((0,dist.$item)(diet_templateObject50 || (diet_templateObject50 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]))).name, " (1)"), undefined, 20000);
+    if (!(0,dist.have)((0,dist.$item)(diet_templateObject47 || (diet_templateObject47 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]))))) {
+      dist.Kmail.send("sellbot", "".concat((0,dist.$item)(diet_templateObject48 || (diet_templateObject48 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]))).name, " (1)"), undefined, 20000);
       (0,external_kolmafia_.wait)(11);
       (0,external_kolmafia_.cliExecute)("refresh inventory");
 
-      if (!(0,dist.have)((0,dist.$item)(diet_templateObject51 || (diet_templateObject51 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]))))) {
+      if (!(0,dist.have)((0,dist.$item)(diet_templateObject49 || (diet_templateObject49 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]))))) {
         (0,external_kolmafia_.print)("I'm tired of waiting for sellbot to send me some chocolate", "red");
         break;
       }
     }
 
-    (0,external_kolmafia_.use)((0,dist.$item)(diet_templateObject52 || (diet_templateObject52 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]))));
+    (0,external_kolmafia_.use)((0,dist.$item)(diet_templateObject50 || (diet_templateObject50 = diet_taggedTemplateLiteral(["LOV Extraterrestrial Chocolate"]))));
   }
 
-  var chocos = new Map([[(0,dist.$class)(diet_templateObject53 || (diet_templateObject53 = diet_taggedTemplateLiteral(["Seal Clubber"]))), (0,dist.$item)(diet_templateObject54 || (diet_templateObject54 = diet_taggedTemplateLiteral(["chocolate seal-clubbing club"])))], [(0,dist.$class)(diet_templateObject55 || (diet_templateObject55 = diet_taggedTemplateLiteral(["Turtle Tamer"]))), (0,dist.$item)(diet_templateObject56 || (diet_templateObject56 = diet_taggedTemplateLiteral(["chocolate turtle totem"])))], [(0,dist.$class)(diet_templateObject57 || (diet_templateObject57 = diet_taggedTemplateLiteral(["Pastamancer"]))), (0,dist.$item)(diet_templateObject58 || (diet_templateObject58 = diet_taggedTemplateLiteral(["chocolate pasta spoon"])))], [(0,dist.$class)(diet_templateObject59 || (diet_templateObject59 = diet_taggedTemplateLiteral(["Sauceror"]))), (0,dist.$item)(diet_templateObject60 || (diet_templateObject60 = diet_taggedTemplateLiteral(["chocolate saucepan"])))], [(0,dist.$class)(diet_templateObject61 || (diet_templateObject61 = diet_taggedTemplateLiteral(["Accordion Thief"]))), (0,dist.$item)(diet_templateObject62 || (diet_templateObject62 = diet_taggedTemplateLiteral(["chocolate stolen accordion"])))], [(0,dist.$class)(diet_templateObject63 || (diet_templateObject63 = diet_taggedTemplateLiteral(["Disco Bandit"]))), (0,dist.$item)(diet_templateObject64 || (diet_templateObject64 = diet_taggedTemplateLiteral(["chocolate disco ball"])))]]);
+  var chocos = new Map([[(0,dist.$class)(diet_templateObject51 || (diet_templateObject51 = diet_taggedTemplateLiteral(["Seal Clubber"]))), (0,dist.$item)(diet_templateObject52 || (diet_templateObject52 = diet_taggedTemplateLiteral(["chocolate seal-clubbing club"])))], [(0,dist.$class)(diet_templateObject53 || (diet_templateObject53 = diet_taggedTemplateLiteral(["Turtle Tamer"]))), (0,dist.$item)(diet_templateObject54 || (diet_templateObject54 = diet_taggedTemplateLiteral(["chocolate turtle totem"])))], [(0,dist.$class)(diet_templateObject55 || (diet_templateObject55 = diet_taggedTemplateLiteral(["Pastamancer"]))), (0,dist.$item)(diet_templateObject56 || (diet_templateObject56 = diet_taggedTemplateLiteral(["chocolate pasta spoon"])))], [(0,dist.$class)(diet_templateObject57 || (diet_templateObject57 = diet_taggedTemplateLiteral(["Sauceror"]))), (0,dist.$item)(diet_templateObject58 || (diet_templateObject58 = diet_taggedTemplateLiteral(["chocolate saucepan"])))], [(0,dist.$class)(diet_templateObject59 || (diet_templateObject59 = diet_taggedTemplateLiteral(["Accordion Thief"]))), (0,dist.$item)(diet_templateObject60 || (diet_templateObject60 = diet_taggedTemplateLiteral(["chocolate stolen accordion"])))], [(0,dist.$class)(diet_templateObject61 || (diet_templateObject61 = diet_taggedTemplateLiteral(["Disco Bandit"]))), (0,dist.$item)(diet_templateObject62 || (diet_templateObject62 = diet_taggedTemplateLiteral(["chocolate disco ball"])))]]);
   var classChoco = chocos.get((0,external_kolmafia_.myClass)());
 
   var chocExpVal = (remaining, item) => {
@@ -20542,73 +20853,73 @@ function runDiet() {
     if (_ret === "break") break;
   }
 
-  useIfUnused((0,dist.$item)(diet_templateObject65 || (diet_templateObject65 = diet_taggedTemplateLiteral(["fancy chocolate sculpture"]))), (0,dist.get)("_chocolateSculpturesUsed") < 1, 5 * MPA + 5000);
-  useIfUnused((0,dist.$item)(diet_templateObject66 || (diet_templateObject66 = diet_taggedTemplateLiteral(["essential tofu"]))), "_essentialTofuUsed", 5 * MPA);
+  useIfUnused((0,dist.$item)(diet_templateObject63 || (diet_templateObject63 = diet_taggedTemplateLiteral(["fancy chocolate sculpture"]))), (0,dist.get)("_chocolateSculpturesUsed") < 1, 5 * MPA + 5000);
+  useIfUnused((0,dist.$item)(diet_templateObject64 || (diet_templateObject64 = diet_taggedTemplateLiteral(["essential tofu"]))), "_essentialTofuUsed", 5 * MPA);
 
-  if (!(0,dist.get)("_etchedHourglassUsed") && (0,dist.have)((0,dist.$item)(diet_templateObject67 || (diet_templateObject67 = diet_taggedTemplateLiteral(["etched hourglass"]))))) {
-    (0,external_kolmafia_.use)(1, (0,dist.$item)(diet_templateObject68 || (diet_templateObject68 = diet_taggedTemplateLiteral(["etched hourglass"]))));
+  if (!(0,dist.get)("_etchedHourglassUsed") && (0,dist.have)((0,dist.$item)(diet_templateObject65 || (diet_templateObject65 = diet_taggedTemplateLiteral(["etched hourglass"]))))) {
+    (0,external_kolmafia_.use)(1, (0,dist.$item)(diet_templateObject66 || (diet_templateObject66 = diet_taggedTemplateLiteral(["etched hourglass"]))));
   }
 
-  if ((0,external_kolmafia_.getProperty)("_timesArrowUsed") !== "true" && (0,external_kolmafia_.mallPrice)((0,dist.$item)(diet_templateObject69 || (diet_templateObject69 = diet_taggedTemplateLiteral(["time's arrow"])))) < 5 * MPA) {
-    acquire(1, (0,dist.$item)(diet_templateObject70 || (diet_templateObject70 = diet_taggedTemplateLiteral(["time's arrow"]))), 5 * MPA);
+  if ((0,external_kolmafia_.getProperty)("_timesArrowUsed") !== "true" && (0,external_kolmafia_.mallPrice)((0,dist.$item)(diet_templateObject67 || (diet_templateObject67 = diet_taggedTemplateLiteral(["time's arrow"])))) < 5 * MPA) {
+    acquire(1, (0,dist.$item)(diet_templateObject68 || (diet_templateObject68 = diet_taggedTemplateLiteral(["time's arrow"]))), 5 * MPA);
     (0,external_kolmafia_.cliExecute)("csend 1 time's arrow to botticelli");
     (0,external_kolmafia_.setProperty)("_timesArrowUsed", "true");
   }
 
-  if ((0,dist.have)((0,dist.$skill)(diet_templateObject71 || (diet_templateObject71 = diet_taggedTemplateLiteral(["Ancestral Recall"])))) && (0,external_kolmafia_.mallPrice)((0,dist.$item)(diet_templateObject72 || (diet_templateObject72 = diet_taggedTemplateLiteral(["blue mana"])))) < 3 * MPA) {
+  if ((0,dist.have)((0,dist.$skill)(diet_templateObject69 || (diet_templateObject69 = diet_taggedTemplateLiteral(["Ancestral Recall"])))) && (0,external_kolmafia_.mallPrice)((0,dist.$item)(diet_templateObject70 || (diet_templateObject70 = diet_taggedTemplateLiteral(["blue mana"])))) < 3 * MPA) {
     var casts = Math.max(10 - (0,dist.get)("_ancestralRecallCasts"), 0);
-    acquire(casts, (0,dist.$item)(diet_templateObject73 || (diet_templateObject73 = diet_taggedTemplateLiteral(["blue mana"]))), 3 * MPA);
-    (0,external_kolmafia_.useSkill)(casts, (0,dist.$skill)(diet_templateObject74 || (diet_templateObject74 = diet_taggedTemplateLiteral(["Ancestral Recall"]))));
+    acquire(casts, (0,dist.$item)(diet_templateObject71 || (diet_templateObject71 = diet_taggedTemplateLiteral(["blue mana"]))), 3 * MPA);
+    (0,external_kolmafia_.useSkill)(casts, (0,dist.$skill)(diet_templateObject72 || (diet_templateObject72 = diet_taggedTemplateLiteral(["Ancestral Recall"]))));
   }
 
-  if (globalOptions.ascending) useIfUnused((0,dist.$item)(diet_templateObject75 || (diet_templateObject75 = diet_taggedTemplateLiteral(["borrowed time"]))), "_borrowedTimeUsed", 5 * MPA);
+  if (globalOptions.ascending) useIfUnused((0,dist.$item)(diet_templateObject73 || (diet_templateObject73 = diet_taggedTemplateLiteral(["borrowed time"]))), "_borrowedTimeUsed", 5 * MPA);
   fillSomeSpleen();
   fillStomach();
   fillLiver();
 
   if (!(0,dist.get)("_distentionPillUsed") && 1 <= (0,external_kolmafia_.myInebriety)()) {
-    if (!(0,dist.get)("garbo_skipPillCheck", false) && !(0,dist.have)((0,dist.$item)(diet_templateObject76 || (diet_templateObject76 = diet_taggedTemplateLiteral(["distention pill"]))), 1)) {
+    if (!(0,dist.get)("garbo_skipPillCheck", false) && !(0,dist.have)((0,dist.$item)(diet_templateObject74 || (diet_templateObject74 = diet_taggedTemplateLiteral(["distention pill"]))), 1)) {
       (0,dist.set)("garbo_skipPillCheck", (0,external_kolmafia_.userConfirm)("You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)", 15000, false));
     }
 
-    if (((0,dist.have)((0,dist.$item)(_templateObject77 || (_templateObject77 = diet_taggedTemplateLiteral(["distention pill"]))), 1) || !(0,dist.get)("garbo_skipPillCheck", false)) && !(0,external_kolmafia_.use)((0,dist.$item)(_templateObject78 || (_templateObject78 = diet_taggedTemplateLiteral(["distention pill"]))))) {
+    if (((0,dist.have)((0,dist.$item)(diet_templateObject75 || (diet_templateObject75 = diet_taggedTemplateLiteral(["distention pill"]))), 1) || !(0,dist.get)("garbo_skipPillCheck", false)) && !(0,external_kolmafia_.use)((0,dist.$item)(diet_templateObject76 || (diet_templateObject76 = diet_taggedTemplateLiteral(["distention pill"]))))) {
       (0,external_kolmafia_.print)("WARNING: Out of distention pills.", "red");
     }
   }
 
   if (!(0,dist.get)("_syntheticDogHairPillUsed") && 1 <= (0,external_kolmafia_.myInebriety)()) {
-    if (!(0,dist.get)("garbo_skipPillCheck", false) && !(0,dist.have)((0,dist.$item)(_templateObject79 || (_templateObject79 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))), 1)) {
+    if (!(0,dist.get)("garbo_skipPillCheck", false) && !(0,dist.have)((0,dist.$item)(_templateObject77 || (_templateObject77 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))), 1)) {
       (0,dist.set)("garbo_skipPillCheck", (0,external_kolmafia_.userConfirm)("You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)", 15000, false));
     }
 
-    if (((0,dist.have)((0,dist.$item)(_templateObject80 || (_templateObject80 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))), 1) || !(0,dist.get)("garbo_skipPillCheck", false)) && !(0,external_kolmafia_.use)((0,dist.$item)(_templateObject81 || (_templateObject81 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))))) {
+    if (((0,dist.have)((0,dist.$item)(_templateObject78 || (_templateObject78 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))), 1) || !(0,dist.get)("garbo_skipPillCheck", false)) && !(0,external_kolmafia_.use)((0,dist.$item)(_templateObject79 || (_templateObject79 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))))) {
       (0,external_kolmafia_.print)("WARNING: Out of synthetic dog hair pills.", "red");
     }
   }
 
   var mojoFilterCount = 3 - (0,dist.get)("currentMojoFilters");
-  acquire(mojoFilterCount, (0,dist.$item)(_templateObject82 || (_templateObject82 = diet_taggedTemplateLiteral(["mojo filter"]))), valuePerSpleen(bestSpleenItem), false);
+  acquire(mojoFilterCount, (0,dist.$item)(_templateObject80 || (_templateObject80 = diet_taggedTemplateLiteral(["mojo filter"]))), valuePerSpleen(bestSpleenItem), false);
 
-  if ((0,dist.have)((0,dist.$item)(_templateObject83 || (_templateObject83 = diet_taggedTemplateLiteral(["mojo filter"]))))) {
-    (0,external_kolmafia_.use)(Math.min(mojoFilterCount, (0,external_kolmafia_.availableAmount)((0,dist.$item)(_templateObject84 || (_templateObject84 = diet_taggedTemplateLiteral(["mojo filter"]))))), (0,dist.$item)(_templateObject85 || (_templateObject85 = diet_taggedTemplateLiteral(["mojo filter"]))));
+  if ((0,dist.have)((0,dist.$item)(_templateObject81 || (_templateObject81 = diet_taggedTemplateLiteral(["mojo filter"]))))) {
+    (0,external_kolmafia_.use)(Math.min(mojoFilterCount, (0,external_kolmafia_.availableAmount)((0,dist.$item)(_templateObject82 || (_templateObject82 = diet_taggedTemplateLiteral(["mojo filter"]))))), (0,dist.$item)(_templateObject83 || (_templateObject83 = diet_taggedTemplateLiteral(["mojo filter"]))));
     fillSomeSpleen();
   }
 
   while ((0,external_kolmafia_.myFullness)() < (0,external_kolmafia_.fullnessLimit)()) {
-    if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject86 || (_templateObject86 = diet_taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA && !(0,dist.get)("_fudgeSporkUsed")) (0,external_kolmafia_.eat)(1, (0,dist.$item)(_templateObject87 || (_templateObject87 = diet_taggedTemplateLiteral(["fudge spork"]))));
+    if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject84 || (_templateObject84 = diet_taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA && !(0,dist.get)("_fudgeSporkUsed")) (0,external_kolmafia_.eat)(1, (0,dist.$item)(_templateObject85 || (_templateObject85 = diet_taggedTemplateLiteral(["fudge spork"]))));
     dist.MayoClinic.setMayoMinder(dist.MayoClinic.Mayo.zapine, 1);
-    eatSafe(1, (0,dist.$item)(_templateObject88 || (_templateObject88 = diet_taggedTemplateLiteral(["jumping horseradish"]))));
+    eatSafe(1, (0,dist.$item)(_templateObject86 || (_templateObject86 = diet_taggedTemplateLiteral(["jumping horseradish"]))));
   }
 
   while ((0,external_kolmafia_.myInebriety)() < (0,external_kolmafia_.inebrietyLimit)()) {
-    drinkSafe(1, (0,dist.$item)(_templateObject89 || (_templateObject89 = diet_taggedTemplateLiteral(["Ambitious Turkey"]))));
+    drinkSafe(1, (0,dist.$item)(_templateObject87 || (_templateObject87 = diet_taggedTemplateLiteral(["Ambitious Turkey"]))));
   }
 }
 function horseradish() {
   if ((0,external_kolmafia_.myFullness)() < (0,external_kolmafia_.fullnessLimit)()) {
-    if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject90 || (_templateObject90 = diet_taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA && !(0,dist.get)("_fudgeSporkUsed")) (0,external_kolmafia_.eat)(1, (0,dist.$item)(_templateObject91 || (_templateObject91 = diet_taggedTemplateLiteral(["fudge spork"]))));
+    if ((0,external_kolmafia_.mallPrice)((0,dist.$item)(_templateObject88 || (_templateObject88 = diet_taggedTemplateLiteral(["fudge spork"])))) < 3 * MPA && !(0,dist.get)("_fudgeSporkUsed")) (0,external_kolmafia_.eat)(1, (0,dist.$item)(_templateObject89 || (_templateObject89 = diet_taggedTemplateLiteral(["fudge spork"]))));
     dist.MayoClinic.setMayoMinder(dist.MayoClinic.Mayo.zapine, 1);
-    eatSafe(1, (0,dist.$item)(_templateObject92 || (_templateObject92 = diet_taggedTemplateLiteral(["jumping horseradish"]))));
+    eatSafe(1, (0,dist.$item)(_templateObject90 || (_templateObject90 = diet_taggedTemplateLiteral(["jumping horseradish"]))));
   }
 }
 ;// CONCATENATED MODULE: ./src/familiar.ts
@@ -20616,15 +20927,15 @@ var familiar_templateObject, familiar_templateObject2, familiar_templateObject3,
 
 function familiar_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = familiar_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || familiar_unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function familiar_toConsumableArray(arr) { return familiar_arrayWithoutHoles(arr) || familiar_iterableToArray(arr) || familiar_unsupportedIterableToArray(arr) || familiar_nonIterableSpread(); }
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function familiar_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
 function familiar_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return familiar_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return familiar_arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function familiar_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return familiar_arrayLikeToArray(arr); }
+function familiar_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return familiar_arrayLikeToArray(arr); }
 
 function familiar_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -20754,7 +21065,7 @@ var savedMimicDropValue = null;
 function mimicDropValue() {
   var _savedMimicDropValue;
 
-  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = dist.getSaleValue.apply(void 0, _toConsumableArray((0,dist.$items)(familiar_templateObject24 || (familiar_templateObject24 = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
+  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = dist.getSaleValue.apply(void 0, familiar_toConsumableArray((0,dist.$items)(familiar_templateObject24 || (familiar_templateObject24 = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
 }
 
 function freeFightFamiliar() {
@@ -20875,9 +21186,9 @@ function clan_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Sym
 
 function clan_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+function clan_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function clan_createClass(Constructor, protoProps, staticProps) { if (protoProps) clan_defineProperties(Constructor.prototype, protoProps); if (staticProps) clan_defineProperties(Constructor, staticProps); return Constructor; }
 
 function clan_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -20959,7 +21270,7 @@ var StashManager = /*#__PURE__*/function () {
     this.enabled = 0 !== clanIdOrName && "none" !== clanIdOrName;
   }
 
-  _createClass(StashManager, [{
+  clan_createClass(StashManager, [{
     key: "take",
     value: function take() {
       for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -21115,316 +21426,6 @@ var StashManager = /*#__PURE__*/function () {
 
   return StashManager;
 }();
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.from-entries.js
-var es_object_from_entries = __webpack_require__(5809);
-;// CONCATENATED MODULE: ./src/potions.ts
-var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8;
-
-function potions_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function potions_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function potions_createClass(Constructor, protoProps, staticProps) { if (protoProps) potions_defineProperties(Constructor.prototype, protoProps); if (staticProps) potions_defineProperties(Constructor, staticProps); return Constructor; }
-
-function potions_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function potions_toConsumableArray(arr) { return potions_arrayWithoutHoles(arr) || potions_iterableToArray(arr) || potions_unsupportedIterableToArray(arr) || potions_nonIterableSpread(); }
-
-function potions_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function potions_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function potions_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return potions_arrayLikeToArray(arr); }
-
-function potions_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = potions_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function potions_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return potions_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return potions_arrayLikeToArray(o, minLen); }
-
-function potions_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function potions_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-
-
-
-
-
-
-var banned = (0,dist.$items)(potions_templateObject || (potions_templateObject = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
-var mutuallyExclusiveList = [(0,dist.$effects)(potions_templateObject2 || (potions_templateObject2 = potions_taggedTemplateLiteral(["Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue"]))), (0,dist.$effects)(potions_templateObject3 || (potions_templateObject3 = potions_taggedTemplateLiteral(["Cupcake of Choice, The Cupcake of Wrath, Shiny Happy Cupcake, Your Cupcake Senses Are Tingling, Tiny Bubbles in the Cupcake"])))];
-var mutuallyExclusive = new Map();
-
-for (var _i = 0, _mutuallyExclusiveLis = mutuallyExclusiveList; _i < _mutuallyExclusiveLis.length; _i++) {
-  var effectGroup = _mutuallyExclusiveLis[_i];
-
-  var _iterator = potions_createForOfIteratorHelper(effectGroup),
-      _step;
-
-  try {
-    var _loop = function _loop() {
-      var _mutuallyExclusive$ge;
-
-      var effect = _step.value;
-      mutuallyExclusive.set(effect, [].concat(potions_toConsumableArray((_mutuallyExclusive$ge = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge !== void 0 ? _mutuallyExclusive$ge : []), potions_toConsumableArray(effectGroup.filter(other => other !== effect))));
-    };
-
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      _loop();
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-}
-
-var Potion = /*#__PURE__*/function () {
-  function Potion(potion) {
-    potions_classCallCheck(this, Potion);
-
-    potions_defineProperty(this, "potion", void 0);
-
-    this.potion = potion;
-  }
-
-  potions_createClass(Potion, [{
-    key: "effect",
-    value: function effect() {
-      return (0,external_kolmafia_.effectModifier)(this.potion, "Effect");
-    }
-  }, {
-    key: "effectDuration",
-    value: function effectDuration() {
-      return (0,external_kolmafia_.numericModifier)(this.potion, "Effect Duration");
-    }
-  }, {
-    key: "meatDrop",
-    value: function meatDrop() {
-      return (0,external_kolmafia_.numericModifier)(this.effect(), "Meat Drop");
-    }
-  }, {
-    key: "familiarWeight",
-    value: function familiarWeight() {
-      return (0,external_kolmafia_.numericModifier)(this.effect(), "Familiar Weight");
-    }
-  }, {
-    key: "bonusMeat",
-    value: function bonusMeat() {
-      var familiarMultiplier = (0,dist.have)((0,dist.$familiar)(potions_templateObject4 || (potions_templateObject4 = potions_taggedTemplateLiteral(["Robortender"])))) ? 2 : (0,dist.have)((0,dist.$familiar)(potions_templateObject5 || (potions_templateObject5 = potions_taggedTemplateLiteral(["Hobo Monkey"])))) ? 1.25 : 1; // Assume base weight of 100 pounds. This is off but close enough.
-
-      var assumedBaseWeight = 100; // Marginal value of familiar weight in % meat drop.
-
-      var marginalValue = 2 * familiarMultiplier + Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight));
-      return this.familiarWeight() * marginalValue + this.meatDrop();
-    }
-  }, {
-    key: "gross",
-    value: function gross(embezzlers) {
-      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var bonusMeat = this.bonusMeat();
-      var duration = this.effectDuration() * (doubleDuration ? 2 : 1); // Number of embezzlers this will actually be in effect for.
-
-      var embezzlersApplied = Math.max(Math.min(duration, embezzlers) - (0,external_kolmafia_.haveEffect)(this.effect()), 0);
-      return bonusMeat / 100 * (baseMeat * duration + 750 * embezzlersApplied);
-    }
-  }, {
-    key: "price",
-    value: function price(historical) {
-      // If asked for historical, and age < 14 days, use historical.
-      return historical && (0,external_kolmafia_.historicalAge)(this.potion) < 14 ? (0,external_kolmafia_.historicalPrice)(this.potion) : (0,external_kolmafia_.mallPrice)(this.potion);
-    }
-  }, {
-    key: "net",
-    value: function net(embezzlers) {
-      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var historical = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      return this.gross(embezzlers, doubleDuration) - this.price(historical);
-    }
-  }, {
-    key: "doublingValue",
-    value: function doublingValue(embezzlers) {
-      var historical = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      return Math.max(this.net(embezzlers, true, historical), 0) - Math.max(this.net(embezzlers, false, historical), 0);
-    }
-  }, {
-    key: "useAsValuable",
-    value: function useAsValuable(embezzlers) {
-      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var duration = this.effectDuration() * (doubleDuration ? 2 : 1);
-      var quantityToUse = 0;
-      var embezzlersRemaining = Math.max(embezzlers - (0,external_kolmafia_.haveEffect)(this.effect()), 0);
-      var keepGoing = true; // Use however many will land entirely on embezzler turns.
-
-      var embezzlerQuantity = Math.floor(embezzlersRemaining / duration);
-
-      if (this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlerQuantity > 0) {
-        acquire(embezzlerQuantity, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
-        quantityToUse = Math.min(embezzlerQuantity, (0,external_kolmafia_.itemAmount)(this.potion));
-        (0,external_kolmafia_.print)("Determined that ".concat(quantityToUse, " ").concat(this.potion.plural, " are profitable on embezzlers: net value ").concat(this.net(embezzlersRemaining, doubleDuration).toFixed(0), "."), "blue");
-        embezzlersRemaining -= quantityToUse * duration;
-      }
-
-      if (quantityToUse < embezzlerQuantity || doubleDuration && quantityToUse > 0) {
-        keepGoing = false;
-      } // Now, is there one with both embezzlers and non-embezzlers?
-
-
-      if (keepGoing && this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlersRemaining > 0) {
-        acquire(1, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
-        var additional = Math.min(1, (0,external_kolmafia_.itemAmount)(this.potion) - quantityToUse);
-        (0,external_kolmafia_.print)("Determined that ".concat(additional, " ").concat(this.potion.plural, " are profitable on partial embezzlers: net value ").concat(this.net(embezzlersRemaining, doubleDuration).toFixed(0), "."), "blue");
-        quantityToUse += additional;
-        embezzlersRemaining = Math.max(embezzlersRemaining - additional * duration, 0);
-      }
-
-      if (embezzlersRemaining > 0 || doubleDuration && quantityToUse > 0) keepGoing = false; // How many should we use with non-embezzlers?
-
-      if (keepGoing && this.net(0, doubleDuration) > 0) {
-        var adventureCap = estimatedTurns();
-        var tourists = adventureCap - (0,external_kolmafia_.haveEffect)(this.effect()) - quantityToUse * duration;
-
-        if (tourists > 0) {
-          var touristQuantity = Math.ceil(tourists / duration);
-          acquire(touristQuantity, this.potion, this.gross(0, doubleDuration), false);
-
-          var _additional = Math.min(touristQuantity, (0,external_kolmafia_.itemAmount)(this.potion) - quantityToUse);
-
-          (0,external_kolmafia_.print)("Determined that ".concat(_additional, " ").concat(this.potion.plural, " are profitable on tourists: net value ").concat(this.net(0, doubleDuration).toFixed(0), "."), "blue");
-          quantityToUse += _additional;
-        }
-      }
-
-      if (quantityToUse > 0) {
-        if (doubleDuration) quantityToUse = 1;
-        (0,external_kolmafia_.use)(quantityToUse, this.potion);
-      }
-    }
-  }]);
-
-  return Potion;
-}();
-/**
- * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
- * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
- */
-
-
-function potionSetup() {
-  var doEmbezzlers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  // TODO: Count PYEC.
-  // TODO: Count free fights (25 meat each for most).
-  var embezzlers = doEmbezzlers ? embezzlerCount() : 0;
-  var potions = Item.all().filter(item => item.tradeable && !banned.includes(item) && (0,external_kolmafia_.itemType)(item) === "potion");
-  var meatPotions = potions.map(item => new Potion(item)).filter(potion => potion.bonusMeat() > 0);
-
-  if ((0,dist.have)((0,dist.$item)(potions_templateObject6 || (potions_templateObject6 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,dist.get)("_freePillKeeperUsed")) {
-    var testPotionsDoubled = meatPotions.filter(potion => potion.gross(embezzlers, true) / potion.price(true) > 0.5);
-    testPotionsDoubled.sort((x, y) => -(x.doublingValue(embezzlers) - y.doublingValue(embezzlers)));
-
-    if (testPotionsDoubled.length > 0) {
-      var potion = testPotionsDoubled[0]; // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
-
-      if (potion.doublingValue(embezzlers) > pillkeeperOpportunityCost()) {
-        (0,external_kolmafia_.cliExecute)("pillkeeper extend");
-        (0,external_kolmafia_.print)("Best doubling potion: ".concat(potion.potion.name, ", value ").concat(potion.doublingValue(embezzlers).toFixed(0)), "blue");
-        potion.useAsValuable(embezzlers, true);
-      }
-    }
-  } // Only test potions which are reasonably close to being profitable using historical price.
-
-
-  var testPotions = meatPotions.filter(potion => potion.gross(embezzlers) / potion.price(true) > 0.5);
-  testPotions.sort((x, y) => -(x.net(embezzlers) - y.net(embezzlers)));
-  var excludedEffects = new Set();
-
-  var _iterator2 = potions_createForOfIteratorHelper((0,dist.getActiveEffects)()),
-      _step2;
-
-  try {
-    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var _mutuallyExclusive$ge2;
-
-      var effect = _step2.value;
-
-      var _iterator4 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
-          _step4;
-
-      try {
-        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-          var excluded = _step4.value;
-          excludedEffects.add(excluded);
-        }
-      } catch (err) {
-        _iterator4.e(err);
-      } finally {
-        _iterator4.f();
-      }
-    }
-  } catch (err) {
-    _iterator2.e(err);
-  } finally {
-    _iterator2.f();
-  }
-
-  var _iterator3 = potions_createForOfIteratorHelper(testPotions),
-      _step3;
-
-  try {
-    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-      var _potion = _step3.value;
-
-      var _effect = _potion.effect();
-
-      if (excludedEffects.has(_effect)) continue;
-
-      _potion.useAsValuable(embezzlers);
-
-      if ((0,dist.have)(_effect)) {
-        var _mutuallyExclusive$ge3;
-
-        var _iterator5 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
-            _step5;
-
-        try {
-          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-            var _excluded = _step5.value;
-            excludedEffects.add(_excluded);
-          }
-        } catch (err) {
-          _iterator5.e(err);
-        } finally {
-          _iterator5.f();
-        }
-      }
-    }
-  } catch (err) {
-    _iterator3.e(err);
-  } finally {
-    _iterator3.f();
-  }
-}
-/**
- * Uses a Greenspan iff profitable; does not account for PYEC/LTC, or running out of adventures with the ascend flag.
- * @param embezzlers Do we want to account for embezzlers when calculating the value of bathroom finance?
- */
-
-function bathroomFinance(embezzlers) {
-  if ((0,dist.have)((0,dist.$effect)(potions_templateObject7 || (potions_templateObject7 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
-
-  var averageEmbezzlerGross = (baseMeat + 750) * 2 * (embezzlers + 1) / 2 / 100;
-  var embezzlerGross = averageEmbezzlerGross * embezzlers;
-  var tourists = 100 - embezzlers; // Average meat % for tourists is sum of arithmetic series, 2 * sum(embezzlers + 1 -> 100)
-
-  var averageTouristGross = baseMeat * 2 * (100 + embezzlers + 1) / 2 / 100;
-  var touristGross = averageTouristGross * tourists;
-  var greenspan = (0,dist.$item)(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
-
-  if (touristGross + embezzlerGross > (0,external_kolmafia_.mallPrice)(greenspan)) {
-    (0,external_kolmafia_.print)("Using Uncle Greenspan's guide!", "blue");
-    acquire(1, greenspan, touristGross + embezzlerGross);
-    if ((0,external_kolmafia_.itemAmount)(greenspan) > 0) (0,external_kolmafia_.use)(greenspan);
-  }
-}
 ;// CONCATENATED MODULE: ./src/mood.ts
 var mood_templateObject, mood_templateObject2, mood_templateObject3, mood_templateObject4, mood_templateObject5, mood_templateObject6, mood_templateObject7, mood_templateObject8, mood_templateObject9, mood_templateObject10, mood_templateObject11, mood_templateObject12, mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67;
 
@@ -21606,7 +21607,7 @@ function shrugPassiveDamage() {
   });
 }
 ;// CONCATENATED MODULE: ./src/bjorn.ts
-var bjorn_templateObject, bjorn_templateObject2, bjorn_templateObject3, bjorn_templateObject4, bjorn_templateObject5, bjorn_templateObject6, bjorn_templateObject7, bjorn_templateObject8, bjorn_templateObject9, bjorn_templateObject10, bjorn_templateObject11, bjorn_templateObject12, bjorn_templateObject13, bjorn_templateObject14, bjorn_templateObject15, bjorn_templateObject16, bjorn_templateObject17, bjorn_templateObject18, bjorn_templateObject19, bjorn_templateObject20, bjorn_templateObject21, bjorn_templateObject22, bjorn_templateObject23, bjorn_templateObject24, bjorn_templateObject25, bjorn_templateObject26, bjorn_templateObject27, bjorn_templateObject28, bjorn_templateObject29, bjorn_templateObject30, bjorn_templateObject31, bjorn_templateObject32, bjorn_templateObject33, bjorn_templateObject34, bjorn_templateObject35, bjorn_templateObject36, bjorn_templateObject37, bjorn_templateObject38, bjorn_templateObject39, bjorn_templateObject40, bjorn_templateObject41, bjorn_templateObject42, bjorn_templateObject43, bjorn_templateObject44, bjorn_templateObject45, bjorn_templateObject46, bjorn_templateObject47, bjorn_templateObject48, bjorn_templateObject49, bjorn_templateObject50, bjorn_templateObject51, bjorn_templateObject52, bjorn_templateObject53, bjorn_templateObject54, bjorn_templateObject55, bjorn_templateObject56, bjorn_templateObject57, bjorn_templateObject58, bjorn_templateObject59, bjorn_templateObject60, bjorn_templateObject61, bjorn_templateObject62, bjorn_templateObject63, bjorn_templateObject64, bjorn_templateObject65, bjorn_templateObject66, bjorn_templateObject67, bjorn_templateObject68, bjorn_templateObject69, bjorn_templateObject70, bjorn_templateObject71, bjorn_templateObject72, bjorn_templateObject73, bjorn_templateObject74, bjorn_templateObject75, bjorn_templateObject76, bjorn_templateObject77, bjorn_templateObject78, bjorn_templateObject79, bjorn_templateObject80, bjorn_templateObject81, bjorn_templateObject82, bjorn_templateObject83, bjorn_templateObject84, bjorn_templateObject85, bjorn_templateObject86, bjorn_templateObject87, bjorn_templateObject88, bjorn_templateObject89, bjorn_templateObject90, bjorn_templateObject91, bjorn_templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104;
+var bjorn_templateObject, bjorn_templateObject2, bjorn_templateObject3, bjorn_templateObject4, bjorn_templateObject5, bjorn_templateObject6, bjorn_templateObject7, bjorn_templateObject8, bjorn_templateObject9, bjorn_templateObject10, bjorn_templateObject11, bjorn_templateObject12, bjorn_templateObject13, bjorn_templateObject14, bjorn_templateObject15, bjorn_templateObject16, bjorn_templateObject17, bjorn_templateObject18, bjorn_templateObject19, bjorn_templateObject20, bjorn_templateObject21, bjorn_templateObject22, bjorn_templateObject23, bjorn_templateObject24, bjorn_templateObject25, bjorn_templateObject26, bjorn_templateObject27, bjorn_templateObject28, bjorn_templateObject29, bjorn_templateObject30, bjorn_templateObject31, bjorn_templateObject32, bjorn_templateObject33, bjorn_templateObject34, bjorn_templateObject35, bjorn_templateObject36, bjorn_templateObject37, bjorn_templateObject38, bjorn_templateObject39, bjorn_templateObject40, bjorn_templateObject41, bjorn_templateObject42, bjorn_templateObject43, bjorn_templateObject44, bjorn_templateObject45, bjorn_templateObject46, bjorn_templateObject47, bjorn_templateObject48, bjorn_templateObject49, bjorn_templateObject50, bjorn_templateObject51, bjorn_templateObject52, bjorn_templateObject53, bjorn_templateObject54, bjorn_templateObject55, bjorn_templateObject56, bjorn_templateObject57, bjorn_templateObject58, bjorn_templateObject59, bjorn_templateObject60, bjorn_templateObject61, bjorn_templateObject62, bjorn_templateObject63, bjorn_templateObject64, bjorn_templateObject65, bjorn_templateObject66, bjorn_templateObject67, bjorn_templateObject68, bjorn_templateObject69, bjorn_templateObject70, bjorn_templateObject71, bjorn_templateObject72, bjorn_templateObject73, bjorn_templateObject74, bjorn_templateObject75, bjorn_templateObject76, bjorn_templateObject77, bjorn_templateObject78, bjorn_templateObject79, bjorn_templateObject80, bjorn_templateObject81, bjorn_templateObject82, bjorn_templateObject83, bjorn_templateObject84, bjorn_templateObject85, bjorn_templateObject86, bjorn_templateObject87, bjorn_templateObject88, bjorn_templateObject89, bjorn_templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104;
 
 function bjorn_toConsumableArray(arr) { return bjorn_arrayWithoutHoles(arr) || bjorn_iterableToArray(arr) || bjorn_unsupportedIterableToArray(arr) || bjorn_nonIterableSpread(); }
 
@@ -21999,7 +22000,7 @@ var bjornFams = [{
 }, {
   familiar: (0,dist.$familiar)(bjorn_templateObject90 || (bjorn_templateObject90 = bjorn_taggedTemplateLiteral(["Frozen Gravy Fairy"]))),
   // drops a cold nugget every combat, 5 of which can be used to make a cold wad
-  meatVal: () => Math.max(0.2 * (0,dist.getSaleValue)((0,dist.$item)(bjorn_templateObject91 || (bjorn_templateObject91 = bjorn_taggedTemplateLiteral(["cold wad"])))), (0,dist.getSaleValue)((0,dist.$item)(bjorn_templateObject92 || (bjorn_templateObject92 = bjorn_taggedTemplateLiteral(["cold nuggets"]))))),
+  meatVal: () => Math.max(0.2 * (0,dist.getSaleValue)((0,dist.$item)(_templateObject91 || (_templateObject91 = bjorn_taggedTemplateLiteral(["cold wad"])))), (0,dist.getSaleValue)((0,dist.$item)(_templateObject92 || (_templateObject92 = bjorn_taggedTemplateLiteral(["cold nuggets"]))))),
   probability: 1
 }, {
   familiar: (0,dist.$familiar)(_templateObject93 || (_templateObject93 = bjorn_taggedTemplateLiteral(["Stinky Gravy Fairy"]))),
