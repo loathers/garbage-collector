@@ -93,8 +93,10 @@ import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
+  embezzlerLog,
   findRun,
   FreeRun,
+  globalOptions,
   kramcoGuaranteed,
   logMessage,
   ltbRun,
@@ -113,7 +115,6 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { bathroomFinance } from "./potions";
-import { globalOptions, log } from "./globalvars";
 import {
   embezzlerCount,
   EmbezzlerFight,
@@ -351,7 +352,8 @@ export function dailyFights(): void {
             })
           );
           horseradish();
-          log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
+          embezzlerLog.initialEmbezzlersFought +=
+            1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_meatChain", true);
         safeInterrupt();
@@ -383,7 +385,8 @@ export function dailyFights(): void {
             })
           );
           horseradish();
-          log.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
+          embezzlerLog.initialEmbezzlersFought +=
+            1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_weightChain", true);
         safeInterrupt();
@@ -449,7 +452,7 @@ export function dailyFights(): void {
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           (nextFight.name === "Backup" || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
-          log.initialEmbezzlersFought++;
+          embezzlerLog.initialEmbezzlersFought++;
         }
         startWandererCounter();
         nextFight = getEmbezzlerFight();
