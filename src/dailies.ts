@@ -2,6 +2,8 @@ import {
   buy,
   changeMcd,
   cliExecute,
+  equip,
+  familiarEquippedEquipment,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -37,6 +39,7 @@ import {
   $monster,
   $skill,
   $skills,
+  $slot,
   $stat,
   $thrall,
   ChateauMantegna,
@@ -160,6 +163,15 @@ function configureGear(): void {
   if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
     useFamiliar($familiar`Cornbeefadon`);
     use($item`box of Familiar Jacks`);
+  }
+
+  if (
+    have($familiar`Shorter-Order Cook`) &&
+    familiarEquippedEquipment($familiar`Shorter-Order Cook`) !== $item`blue plate`
+  ) {
+    retrieveItem($item`blue plate`);
+    useFamiliar($familiar`Shorter-Order Cook`);
+    equip($slot`familiar`, $item`blue plate`);
   }
 
   if (have($item`portable pantogram`) && !have($item`pantogram pants`)) {
