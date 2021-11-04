@@ -8,7 +8,6 @@ import {
   equip,
   fullnessLimit,
   getProperty,
-  getWorkshed,
   haveEffect,
   inebrietyLimit,
   itemAmount,
@@ -23,11 +22,9 @@ import {
   mySpleenUse,
   numericModifier,
   print,
-  retrieveItem,
   setProperty,
   spleenLimit,
   sweetSynthesis,
-  toInt,
   turnsPerCast,
   use,
   useFamiliar,
@@ -48,12 +45,12 @@ import {
   get,
   have,
   Kmail,
+  MayoClinic,
   set,
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
-import { globalOptions } from "./globalvars";
-import { baseMeat, setChoice } from "./lib";
+import { baseMeat, globalOptions } from "./lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
@@ -198,7 +195,7 @@ function fillStomach() {
       acquire(count, saladFork, (55 * MPA) / 6, false);
       eat(Math.min(count, itemAmount(saladFork)), saladFork);
     }
-    mindMayo(Mayo.flex, count);
+    MayoClinic.setMayoMinder(MayoClinic.Mayo.flex, count);
     eatSpleen(count, $item`extra-greasy slider`);
     fillSomeSpleen();
   }
@@ -412,7 +409,7 @@ export function runDiet(): void {
   while (myFullness() < fullnessLimit()) {
     if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
       eat(1, $item`fudge spork`);
-    mindMayo(Mayo.zapine, 1);
+    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
     eatSafe(1, $item`jumping horseradish`);
   }
   while (myInebriety() < inebrietyLimit()) {
@@ -424,26 +421,7 @@ export function horseradish(): void {
   if (myFullness() < fullnessLimit()) {
     if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
       eat(1, $item`fudge spork`);
-    mindMayo(Mayo.zapine, 1);
+    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
     eatSafe(1, $item`jumping horseradish`);
-  }
-}
-
-const Mayo = {
-  nex: $item`Mayonex`,
-  diol: $item`Mayodiol`,
-  zapine: $item`Mayozapine`,
-  flex: $item`Mayoflex`,
-};
-
-function mindMayo(mayo: Item, quantity: number) {
-  if (getWorkshed() !== $item`portable Mayo Clinic`) return;
-  if (get("mayoInMouth") && get("mayoInMouth") !== mayo.name)
-    throw `You used a bad mayo, my friend!`; //Is this what we want?
-  retrieveItem(quantity, mayo);
-  if (!have($item`Mayo Minder™`)) buy($item`Mayo Minder™`);
-  if (get("mayoMinderSetting") !== mayo.name) {
-    setChoice(1076, toInt(mayo) - 8260);
-    use($item`Mayo Minder™`);
   }
 }

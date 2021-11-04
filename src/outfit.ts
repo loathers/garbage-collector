@@ -43,8 +43,7 @@ import {
 import { additionalValue, pickBjorn } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
-import { globalOptions } from "./globalvars";
-import { baseMeat, BonusEquipMode, leprechaunMultiplier } from "./lib";
+import { baseMeat, BonusEquipMode, globalOptions, leprechaunMultiplier } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
