@@ -31,8 +31,8 @@ import {
   sum,
 } from "libram";
 import { Macro } from "./combat";
-import { globalOptions } from "./globalvars";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
+import { globalOptions } from "./lib";
 
 type EmbezzlerFightOptions = {
   location?: Location;

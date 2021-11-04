@@ -57,6 +57,8 @@ import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import {
+  embezzlerLog,
+  globalOptions,
   kramcoGuaranteed,
   printHelpMenu,
   printLog,
@@ -74,7 +76,6 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
-import { globalOptions, log } from "./globalvars";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
@@ -217,8 +218,8 @@ function barfTurn() {
     }
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
-    if (embezzlerUp) log.digitizedEmbezzlersFought++;
-    else log.initialEmbezzlersFought++;
+    if (embezzlerUp) embezzlerLog.digitizedEmbezzlersFought++;
+    else embezzlerLog.initialEmbezzlersFought++;
 }
 
 export function canContinue(): boolean {
@@ -445,7 +446,7 @@ export function main(argString = ""): void {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     print(
-      `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+      `You fought ${embezzlerLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${embezzlerLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
       "blue"
     );
     printLog("blue");
