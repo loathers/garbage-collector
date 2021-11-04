@@ -20,7 +20,6 @@ import {
   myLevel,
   myMaxhp,
   mySpleenUse,
-  numericModifier,
   print,
   setProperty,
   spleenLimit,
@@ -50,7 +49,8 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
-import { baseMeat, globalOptions } from "./lib";
+import { globalOptions } from "./lib";
+import { Potion } from "./potions";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
@@ -267,14 +267,8 @@ export function runDiet(): void {
     if (mySpleenUse() < spleenLimit()) {
       if (!have($effect`Eau d' Clochard`)) {
         if (!have($item`beggin' cologne`)) {
-          const equilibriumPrice =
-            (baseMeat *
-              numericModifier($effect`Eau d' Clochard`, "Meat") *
-              numericModifier($item`beggin' cologne`, "Effect Duration") +
-              Math.min(numericModifier($item`beggin' cologne`, "Effect Duration"), embezzlers) *
-                750) /
-              100 -
-            valuePerSpleen(bestSpleenItem);
+          const cologne = new Potion($item`beggin' cologne`);
+          const equilibriumPrice = cologne.gross(embezzlers) - valuePerSpleen(bestSpleenItem);
           if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
         }
         if (have($item`beggin' cologne`)) {
