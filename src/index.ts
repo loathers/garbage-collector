@@ -224,7 +224,7 @@ function barfTurn() {
 
 export function canContinue(): boolean {
   return (
-    myAdventures() > 0 &&
+    myAdventures() > globalOptions.saveTurns &&
     (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
   );
 }
@@ -259,7 +259,12 @@ export function main(argString = ""): void {
   const args = argString.split(" ");
   for (const arg of args) {
     if (arg.match(/\d+/)) {
-      globalOptions.stopTurncount = myTurncount() + parseInt(arg, 10);
+      const adventureCount = parseInt(arg, 10);
+      if (adventureCount >= 0) {
+        globalOptions.stopTurncount = myTurncount() + adventureCount;
+      } else {
+        globalOptions.saveTurns = -adventureCount;
+      }
     } else if (arg.match(/ascend/)) {
       globalOptions.ascending = true;
     } else if (arg.match(/nobarf/)) {

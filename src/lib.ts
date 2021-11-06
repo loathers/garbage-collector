@@ -49,12 +49,17 @@ export const embezzlerLog = {
   digitizedEmbezzlersFought: 0,
 };
 
-export const globalOptions: { ascending: boolean; stopTurncount: number | null; noBarf: boolean } =
-  {
-    stopTurncount: null,
-    ascending: false,
-    noBarf: false,
-  };
+export const globalOptions: {
+  ascending: boolean;
+  stopTurncount: number | null;
+  saveTurns: number;
+  noBarf: boolean;
+} = {
+  stopTurncount: null,
+  ascending: false,
+  saveTurns: 0,
+  noBarf: false,
+};
 
 export enum BonusEquipMode {
   FREE,
