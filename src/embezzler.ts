@@ -316,13 +316,18 @@ export function embezzlerCount(): number {
 }
 
 export function estimatedTurns(): number {
+  // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
+  const pantsgivingAdventures = have($item`Pantsgiving`)
+    ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
+    : 0;
+  const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
+  const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1.04 : 1;
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
   else if (globalOptions.noBarf) turns = embezzlerCount();
-  else
-    turns =
-      (myAdventures() + (globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0)) *
-      (have($item`mafia thumb ring`) ? 1.04 : 1);
+  else {
+    turns = (myAdventures() + pantsgivingAdventures + nightcapAdventures) * thumbRingMultiplier;
+  }
 
   return turns;
 }
