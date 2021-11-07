@@ -76,26 +76,40 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   mood.skill($skill`Disco Leer`);
   mood.skill(urKels ? $skill`Ur-Kel's Aria of Annoyance` : $skill`Fat Leon's Phat Loot Lyric`);
   mood.skill($skill`Singer's Faithful Ocelot`);
-  mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
+
+  const genericManaPotionMpPerMeat = (2.5 * myLevel()) / mallPrice($item`generic mana potion`);
+  const mmjMpPerMeat = (1.5 * myLevel() + 5) / 80;
+  const bestMpPerMeat = Math.max(genericManaPotionMpPerMeat, mmjMpPerMeat);
+
   if (myClass() !== $class`Pastamancer`) {
-    const isWorthIt =
-      (baseMeat * getModifier("Meat Drop", $effect`Pasta Eyeball`)) /
-        100 /
-        mpCost($skill`Bind Lasagmbie`) >
-      Math.max(
-        (1.5 * myLevel() + 5) / 80,
-        (2.5 * myLevel()) / mallPrice($item`generic mana potion`)
-      );
+    const pastaEyeballMpPerMeat =
+      mpCost($skill`Bind Lasagmbie`) /
+      ((baseMeat * getModifier("Meat Drop", $effect`Pasta Eyeball`) * 10) / 100);
+    const isWorthIt = pastaEyeballMpPerMeat < bestMpPerMeat;
     if (
       isWorthIt ||
       (have($item`porquoise-handled sixgun`) && monsterManuelAvailable()) ||
       getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant") ||
       get("_bittycar") === "soulcar"
-    )
+    ) {
       mood.skill($skill`Bind Lasagmbie`);
+    }
   }
+
+  const spiritOfTakingMpPerMeat =
+    mpCost($skill`The Spirit of Taking`) /
+    (0.72 * getModifier("Item Drop", $effect`The Spirit of Taking`));
+  if (
+    spiritOfTakingMpPerMeat < bestMpPerMeat ||
+    (have($item`porquoise-handled sixgun`) && monsterManuelAvailable()) ||
+    getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant") ||
+    get("_bittycar") === "soulcar"
+  ) {
+    mood.skill($skill`The Spirit of Taking`);
+  }
+
   if (haveSkill($skill`Sweet Synthesis`)) {
     mood.effect($effect`Synthesis: Greed`, () => {
       if (mySpleenUse() < spleenLimit() && haveEffect($effect`Synthesis: Greed`) < estimatedTurns())
