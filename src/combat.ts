@@ -38,8 +38,8 @@ import {
   clamp,
   get,
   have,
-  Macro as LibramMacro,
   SourceTerminal,
+  StrictMacro,
 } from "libram";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -134,7 +134,7 @@ function shouldRedigitize() {
   return SourceTerminal.have() && myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
 }
 
-export class Macro extends LibramMacro {
+export class Macro extends StrictMacro {
   submit(): string {
     print(this.components.join("\n"));
     return super.submit();
