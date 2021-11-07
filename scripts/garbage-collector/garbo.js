@@ -19724,6 +19724,7 @@ var embezzlerLog = {
 var globalOptions = {
   stopTurncount: null,
   ascending: false,
+  saveTurns: 0,
   noBarf: false
 };
 var BonusEquipMode;
@@ -24043,7 +24044,7 @@ function barfTurn() {
 }
 
 function canContinue() {
-  return (0,external_kolmafia_.myAdventures)() > 0 && (globalOptions.stopTurncount === null || (0,external_kolmafia_.myTurncount)() < globalOptions.stopTurncount);
+  return (0,external_kolmafia_.myAdventures)() > globalOptions.saveTurns && (globalOptions.stopTurncount === null || (0,external_kolmafia_.myTurncount)() < globalOptions.stopTurncount);
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
@@ -24079,7 +24080,13 @@ function main() {
       var arg = _step.value;
 
       if (arg.match(/\d+/)) {
-        globalOptions.stopTurncount = (0,external_kolmafia_.myTurncount)() + parseInt(arg, 10);
+        var adventureCount = parseInt(arg, 10);
+
+        if (adventureCount >= 0) {
+          globalOptions.stopTurncount = (0,external_kolmafia_.myTurncount)() + adventureCount;
+        } else {
+          globalOptions.saveTurns = -adventureCount;
+        }
       } else if (arg.match(/ascend/)) {
         globalOptions.ascending = true;
       } else if (arg.match(/nobarf/)) {
