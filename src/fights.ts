@@ -72,7 +72,6 @@ import {
   $slot,
   adventureMacro,
   adventureMacroAuto,
-  bestLibramToCast,
   ChateauMantegna,
   clamp,
   ensureEffect,
@@ -95,6 +94,7 @@ import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
+  burnLibrams,
   embezzlerLog,
   findRun,
   FreeRun,
@@ -179,12 +179,7 @@ function embezzlerSetup() {
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
     maximize("MP", false);
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
-      const libramCastNumber = 1 + get("libramSummons");
-      while (myMp() >= 1 + (libramCastNumber * (1 + libramCastNumber)) / 2) {
-        const libramToCast = bestLibramToCast();
-        if (!libramToCast) break;
-        useSkill(libramToCast);
-      }
+      burnLibrams();
       use($item`Platinum Yendorian Express Card`);
     }
     if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
@@ -192,12 +187,7 @@ function embezzlerSetup() {
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
-    const libramCastNumber = 1 + get("libramSummons");
-    while (myMp() >= 1 + (libramCastNumber * (1 + libramCastNumber)) / 2) {
-      const libramToCast = bestLibramToCast();
-      if (!libramToCast) break;
-      useSkill(libramToCast);
-    }
+    burnLibrams();
     use($item`License to Chill`);
   }
   if (
