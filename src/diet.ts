@@ -393,21 +393,22 @@ export function runDiet(): void {
     }
   }
 
-  const mojoFilterCount = 3 - get("currentMojoFilters");
-  acquire(mojoFilterCount, $item`mojo filter`, valuePerSpleen(bestSpleenItem), false);
-  if (have($item`mojo filter`)) {
-    use(Math.min(mojoFilterCount, availableAmount($item`mojo filter`)), $item`mojo filter`);
-    fillSomeSpleen();
-  }
-
   while (myFullness() < fullnessLimit()) {
-    if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
+    if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
       eat(1, $item`fudge spork`);
+    }
     MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
     eatSafe(1, $item`jumping horseradish`);
   }
   while (myInebriety() < inebrietyLimit()) {
     drinkSafe(1, $item`Ambitious Turkey`);
+  }
+
+  const mojoFilterCount = 3 - get("currentMojoFilters");
+  acquire(mojoFilterCount, $item`mojo filter`, valuePerSpleen(bestSpleenItem), false);
+  if (have($item`mojo filter`)) {
+    use(Math.min(mojoFilterCount, availableAmount($item`mojo filter`)), $item`mojo filter`);
+    fillSomeSpleen();
   }
 }
 
