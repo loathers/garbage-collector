@@ -83,17 +83,17 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   const mmjMpPerMeat = (1.5 * myLevel() + 5) / 80;
   const bestMpPerMeat = Math.max(genericManaPotionMpPerMeat, mmjMpPerMeat);
 
+  const hasNighUnlimitedMp =
+    (have($item`porquoise-handled sixgun`) && monsterManuelAvailable()) ||
+    getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant") ||
+    get("_bittycar") === "soulcar";
+
   if (myClass() !== $class`Pastamancer`) {
     const pastaEyeballMpPerMeat =
       mpCost($skill`Bind Lasagmbie`) /
       ((baseMeat * getModifier("Meat Drop", $effect`Pasta Eyeball`) * 10) / 100);
     const isWorthIt = pastaEyeballMpPerMeat < bestMpPerMeat;
-    if (
-      isWorthIt ||
-      (have($item`porquoise-handled sixgun`) && monsterManuelAvailable()) ||
-      getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant") ||
-      get("_bittycar") === "soulcar"
-    ) {
+    if (isWorthIt || hasNighUnlimitedMp) {
       mood.skill($skill`Bind Lasagmbie`);
     }
   }
@@ -101,12 +101,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   const spiritOfTakingMpPerMeat =
     mpCost($skill`The Spirit of Taking`) /
     (0.72 * getModifier("Item Drop", $effect`The Spirit of Taking`));
-  if (
-    spiritOfTakingMpPerMeat < bestMpPerMeat ||
-    (have($item`porquoise-handled sixgun`) && monsterManuelAvailable()) ||
-    getFloristPlants()[$location`Barf Mountain`.toString()]?.includes("Pitcher Plant") ||
-    get("_bittycar") === "soulcar"
-  ) {
+  if (spiritOfTakingMpPerMeat < bestMpPerMeat || hasNighUnlimitedMp) {
     mood.skill($skill`The Spirit of Taking`);
   }
 
