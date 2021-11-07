@@ -16,6 +16,7 @@ import {
   itemAmount,
   lastDecision,
   mallPrice,
+  maximize,
   meatDropModifier,
   myAscensions,
   myClass,
@@ -71,6 +72,7 @@ import {
   $slot,
   adventureMacro,
   adventureMacroAuto,
+  bestLibramToCast,
   ChateauMantegna,
   clamp,
   ensureEffect,
@@ -175,14 +177,29 @@ function embezzlerSetup() {
   }
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
+    maximize("MP", false);
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
+      const libramCastNumber = 1 + get("libramSummons");
+      while (myMp() >= 1 + (libramCastNumber * (1 + libramCastNumber)) / 2) {
+        const libramToCast = bestLibramToCast();
+        if (!libramToCast) break;
+        useSkill(libramToCast);
+      }
       use($item`Platinum Yendorian Express Card`);
     }
     if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
       use($item`Bag o' Tricks`);
     }
   });
-  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) use($item`License to Chill`);
+  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    const libramCastNumber = 1 + get("libramSummons");
+    while (myMp() >= 1 + (libramCastNumber * (1 + libramCastNumber)) / 2) {
+      const libramToCast = bestLibramToCast();
+      if (!libramToCast) break;
+      useSkill(libramToCast);
+    }
+    use($item`License to Chill`);
+  }
   if (
     globalOptions.ascending &&
     questStep("questM16Temple") > 0 &&
