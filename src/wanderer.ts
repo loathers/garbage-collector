@@ -120,7 +120,7 @@ function testZoneAndUsePotionToAccess() {
     skiplist.includes(guzzlZone) ||
     guzzlZone.environment === "underwater" ||
     !canAdv(guzzlZone, false) ||
-    (guzzlZone === $location`The Upper Chamber` && questStep("questL11Pyramid") === 0) // (hopefully) temporary fix for canadv bug that results in infinite loop
+    (guzzlZone === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1) // (hopefully) temporary fix for canadv bug that results in infinite loop
   ) {
     return false;
   } else {
