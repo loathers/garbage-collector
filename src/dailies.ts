@@ -95,7 +95,6 @@ export function postFreeFightDailySetup(): void {
 
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
-  visitUrl("place.php?whichplace=town_right&action=townright_vote");
 
   const voterValueTable = [
     {
@@ -119,6 +118,8 @@ function voterSetup(): void {
       value: 20 * 0.4 + 50 * 0.2 + 250 * 0.01,
     },
   ];
+
+  visitUrl("place.php?whichplace=town_right&action=townright_vote");
 
   const votingMonsterPriority = voterValueTable
     .sort((a, b) => b.value - a.value)
