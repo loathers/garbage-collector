@@ -23,7 +23,7 @@ export function valueBjornModifiers(mode: BonusEquipMode, modifiers: Modifiers):
   const itemValue = mode === "barf" ? 0.72 : 0;
 
   const lepMult = leprechaunMultiplier(meatFamiliar());
-  const lepBonus = (weight * (2 * lepMult + Math.sqrt(lepMult))) / 100;
+  const lepBonus = weight * (2 * lepMult + Math.sqrt(lepMult));
   const fairyMult = fairyMultiplier(meatFamiliar());
   const fairyBonus = weight * (fairyMult + Math.sqrt(fairyMult) / 2);
 
