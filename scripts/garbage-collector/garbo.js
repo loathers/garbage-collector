@@ -14900,7 +14900,6 @@ function postFreeFightDailySetup() {
 
 function voterSetup() {
   if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailies_templateObject12 || (dailies_templateObject12 = dailies_taggedTemplateLiteral(["\"I Voted!\" sticker"])))) || !((0,property/* get */.U2)("voteAlways") || (0,property/* get */.U2)("_voteToday"))) return;
-  (0,external_kolmafia_.visitUrl)("place.php?whichplace=town_right&action=townright_vote");
   var voterValueTable = [{
     monster: (0,template_string/* $monster */.O4)(dailies_templateObject13 || (dailies_templateObject13 = dailies_taggedTemplateLiteral(["terrible mutant"]))),
     value: (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(dailies_templateObject14 || (dailies_templateObject14 = dailies_taggedTemplateLiteral(["glob of undifferentiated tissue"])))) + 10
@@ -14917,6 +14916,7 @@ function voterSetup() {
     monster: (0,template_string/* $monster */.O4)(dailies_templateObject20 || (dailies_templateObject20 = dailies_taggedTemplateLiteral(["slime blob"]))),
     value: 20 * 0.4 + 50 * 0.2 + 250 * 0.01
   }];
+  (0,external_kolmafia_.visitUrl)("place.php?whichplace=town_right&action=townright_vote");
   var votingMonsterPriority = voterValueTable.sort((a, b) => b.value - a.value).map(element => element.monster.name);
   var initPriority = new Map([["Meat Drop: +30", 10], ["Item Drop: +15", 9], ["Familiar Experience: +2", 8], ["Adventures: +1", 7], ["Monster Level: +10", 5], ["".concat((0,external_kolmafia_.myPrimestat)(), " Percent: +25"), 3], ["Experience (".concat((0,external_kolmafia_.myPrimestat)(), "): +4"), 2], ["Meat Drop: -30", -2], ["Item Drop: -15", -2], ["Familiar Experience: -2", -2]]);
   var monsterVote = votingMonsterPriority.indexOf((0,property/* get */.U2)("_voteMonster1")) < votingMonsterPriority.indexOf((0,property/* get */.U2)("_voteMonster2")) ? 1 : 2;
