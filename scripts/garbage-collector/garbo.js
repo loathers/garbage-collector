@@ -10266,7 +10266,7 @@ function testZoneAndUsePotionToAccess() {
   });
   var skiplist = (0,template_string/* $locations */.xw)(wanderer_templateObject7 || (wanderer_templateObject7 = wanderer_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory"])));
 
-  if (forbiddenZones.includes(guzzlZone.zone) || skiplist.includes(guzzlZone) || guzzlZone.environment === "underwater" || !(0,external_canadv_ash_namespaceObject.canAdv)(guzzlZone, false) || guzzlZone === (0,template_string/* $location */.PG)(wanderer_templateObject8 || (wanderer_templateObject8 = wanderer_taggedTemplateLiteral(["The Upper Chamber"]))) && (0,lib/* questStep */.cL)("questL11Pyramid") === 0 // (hopefully) temporary fix for canadv bug that results in infinite loop
+  if (forbiddenZones.includes(guzzlZone.zone) || skiplist.includes(guzzlZone) || guzzlZone.environment === "underwater" || !(0,external_canadv_ash_namespaceObject.canAdv)(guzzlZone, false) || guzzlZone === (0,template_string/* $location */.PG)(wanderer_templateObject8 || (wanderer_templateObject8 = wanderer_taggedTemplateLiteral(["The Upper Chamber"]))) && (0,lib/* questStep */.cL)("questL11Pyramid") === -1 // (hopefully) temporary fix for canadv bug that results in infinite loop
   ) {
     return false;
   } else {
