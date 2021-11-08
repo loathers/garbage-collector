@@ -46,7 +46,7 @@ export function pickBjorn(mode: BonusEquipMode = "free"): FamiliarRider {
   createRiderMode(
     mode,
     (modifiers: Modifiers) => valueBjornModifiers(mode, modifiers),
-    !["free", "dmt"].includes(mode),
+    ["embezzler", "dmt"].includes(mode),
     true
   );
 
