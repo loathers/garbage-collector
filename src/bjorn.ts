@@ -19,7 +19,7 @@ export function valueBjornModifiers(mode: BonusEquipMode, modifiers: Modifiers):
   const item = modifiers["Item Drop"] ?? 0;
 
   const meatValue =
-    (["dmt", "free"].includes(mode) ? 0 : baseMeat + mode === "embezzler" ? 750 : 0) / 100;
+    (!["dmt", "free"].includes(mode) ? (baseMeat + mode === "embezzler" ? 750 : 0) : 0) / 100;
   const itemValue = mode === "barf" ? 0.72 : 0;
 
   const lepMult = leprechaunMultiplier(meatFamiliar());
