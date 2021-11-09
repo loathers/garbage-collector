@@ -5,7 +5,9 @@ import {
   handlingChoice,
   haveSkill,
   inebrietyLimit,
+  mpCost,
   myInebriety,
+  myMp,
   myTurncount,
   numericModifier,
   print,
@@ -28,6 +30,7 @@ import {
   $location,
   $skill,
   Bandersnatch,
+  bestLibramToCast,
   ChateauMantegna,
   ensureEffect,
   get,
@@ -435,4 +438,15 @@ export function pillkeeperOpportunityCost(): number {
       ? 15000
       : 50000
     : 0;
+}
+
+/**
+ * Burns existing MP on the mall-optimal libram skill until unable to cast any more.
+ */
+export function burnLibrams(): void {
+  let libramToCast = bestLibramToCast();
+  while (libramToCast && mpCost(libramToCast) <= myMp()) {
+    useSkill(libramToCast);
+    libramToCast = bestLibramToCast();
+  }
 }
