@@ -417,7 +417,10 @@ export class Macro extends LibramMacro {
     return (
       this.externalIf(
         monsterManuelAvailable(),
-        Macro.if_("monsterhpbelow 20", Macro.trySkill($skill`Feel Superior`))
+        Macro.if_(
+          `monsterhpbelow ${Math.floor((100 + numericModifier("Monster Level")) / 5)}`,
+          Macro.trySkill($skill`Feel Superior`)
+        )
       )
         .externalIf(
           myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
