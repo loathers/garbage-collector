@@ -5427,6 +5427,34 @@ module.exports = arrayLikeKeys;
 
 /***/ }),
 
+/***/ 9258:
+/***/ ((module) => {
+
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+
+  return result;
+}
+
+module.exports = arrayMap;
+
+/***/ }),
+
 /***/ 8421:
 /***/ ((module) => {
 
@@ -5514,6 +5542,74 @@ module.exports = assocIndexOf;
 
 /***/ }),
 
+/***/ 2478:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isSymbol = __webpack_require__(4655);
+/**
+ * The base implementation of methods like `_.max` and `_.min` which accepts a
+ * `comparator` to determine the extremum value.
+ *
+ * @private
+ * @param {Array} array The array to iterate over.
+ * @param {Function} iteratee The iteratee invoked per iteration.
+ * @param {Function} comparator The comparator used to compare values.
+ * @returns {*} Returns the extremum value.
+ */
+
+
+function baseExtremum(array, iteratee, comparator) {
+  var index = -1,
+      length = array.length;
+
+  while (++index < length) {
+    var value = array[index],
+        current = iteratee(value);
+
+    if (current != null && (computed === undefined ? current === current && !isSymbol(current) : comparator(current, computed))) {
+      var computed = current,
+          result = value;
+    }
+  }
+
+  return result;
+}
+
+module.exports = baseExtremum;
+
+/***/ }),
+
+/***/ 5974:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var castPath = __webpack_require__(6883),
+    toKey = __webpack_require__(7102);
+/**
+ * The base implementation of `_.get` without support for default values.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @returns {*} Returns the resolved value.
+ */
+
+
+function baseGet(object, path) {
+  path = castPath(path, object);
+  var index = 0,
+      length = path.length;
+
+  while (object != null && index < length) {
+    object = object[toKey(path[index++])];
+  }
+
+  return index && index == length ? object : undefined;
+}
+
+module.exports = baseGet;
+
+/***/ }),
+
 /***/ 891:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -5572,6 +5668,45 @@ function baseGetTag(value) {
 }
 
 module.exports = baseGetTag;
+
+/***/ }),
+
+/***/ 582:
+/***/ ((module) => {
+
+/**
+ * The base implementation of `_.gt` which doesn't coerce arguments.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if `value` is greater than `other`,
+ *  else `false`.
+ */
+function baseGt(value, other) {
+  return value > other;
+}
+
+module.exports = baseGt;
+
+/***/ }),
+
+/***/ 5529:
+/***/ ((module) => {
+
+/**
+ * The base implementation of `_.hasIn` without support for deep paths.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHasIn(object, key) {
+  return object != null && key in Object(object);
+}
+
+module.exports = baseHasIn;
 
 /***/ }),
 
@@ -5727,6 +5862,76 @@ module.exports = baseIsEqualDeep;
 
 /***/ }),
 
+/***/ 4656:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var Stack = __webpack_require__(959),
+    baseIsEqual = __webpack_require__(9856);
+/** Used to compose bitmasks for value comparisons. */
+
+
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+/**
+ * The base implementation of `_.isMatch` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to inspect.
+ * @param {Object} source The object of property values to match.
+ * @param {Array} matchData The property names, values, and compare flags to match.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+ */
+
+function baseIsMatch(object, source, matchData, customizer) {
+  var index = matchData.length,
+      length = index,
+      noCustomizer = !customizer;
+
+  if (object == null) {
+    return !length;
+  }
+
+  object = Object(object);
+
+  while (index--) {
+    var data = matchData[index];
+
+    if (noCustomizer && data[2] ? data[1] !== object[data[0]] : !(data[0] in object)) {
+      return false;
+    }
+  }
+
+  while (++index < length) {
+    data = matchData[index];
+    var key = data[0],
+        objValue = object[key],
+        srcValue = data[1];
+
+    if (noCustomizer && data[2]) {
+      if (objValue === undefined && !(key in object)) {
+        return false;
+      }
+    } else {
+      var stack = new Stack();
+
+      if (customizer) {
+        var result = customizer(objValue, srcValue, key, object, source, stack);
+      }
+
+      if (!(result === undefined ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack) : result)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+module.exports = baseIsMatch;
+
+/***/ }),
+
 /***/ 4106:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -5833,6 +6038,45 @@ module.exports = baseIsTypedArray;
 
 /***/ }),
 
+/***/ 7250:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseMatches = __webpack_require__(8334),
+    baseMatchesProperty = __webpack_require__(5941),
+    identity = __webpack_require__(1559),
+    isArray = __webpack_require__(3670),
+    property = __webpack_require__(8886);
+/**
+ * The base implementation of `_.iteratee`.
+ *
+ * @private
+ * @param {*} [value=_.identity] The value to convert to an iteratee.
+ * @returns {Function} Returns the iteratee.
+ */
+
+
+function baseIteratee(value) {
+  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
+  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
+  if (typeof value == 'function') {
+    return value;
+  }
+
+  if (value == null) {
+    return identity;
+  }
+
+  if (typeof value == 'object') {
+    return isArray(value) ? baseMatchesProperty(value[0], value[1]) : baseMatches(value);
+  }
+
+  return property(value);
+}
+
+module.exports = baseIteratee;
+
+/***/ }),
+
 /***/ 7521:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -5873,6 +6117,119 @@ module.exports = baseKeys;
 
 /***/ }),
 
+/***/ 8334:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseIsMatch = __webpack_require__(4656),
+    getMatchData = __webpack_require__(2811),
+    matchesStrictComparable = __webpack_require__(4248);
+/**
+ * The base implementation of `_.matches` which doesn't clone `source`.
+ *
+ * @private
+ * @param {Object} source The object of property values to match.
+ * @returns {Function} Returns the new spec function.
+ */
+
+
+function baseMatches(source) {
+  var matchData = getMatchData(source);
+
+  if (matchData.length == 1 && matchData[0][2]) {
+    return matchesStrictComparable(matchData[0][0], matchData[0][1]);
+  }
+
+  return function (object) {
+    return object === source || baseIsMatch(object, source, matchData);
+  };
+}
+
+module.exports = baseMatches;
+
+/***/ }),
+
+/***/ 5941:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseIsEqual = __webpack_require__(9856),
+    get = __webpack_require__(643),
+    hasIn = __webpack_require__(9059),
+    isKey = __webpack_require__(837),
+    isStrictComparable = __webpack_require__(3631),
+    matchesStrictComparable = __webpack_require__(4248),
+    toKey = __webpack_require__(7102);
+/** Used to compose bitmasks for value comparisons. */
+
+
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+/**
+ * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+ *
+ * @private
+ * @param {string} path The path of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+
+function baseMatchesProperty(path, srcValue) {
+  if (isKey(path) && isStrictComparable(srcValue)) {
+    return matchesStrictComparable(toKey(path), srcValue);
+  }
+
+  return function (object) {
+    var objValue = get(object, path);
+    return objValue === undefined && objValue === srcValue ? hasIn(object, path) : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
+  };
+}
+
+module.exports = baseMatchesProperty;
+
+/***/ }),
+
+/***/ 3184:
+/***/ ((module) => {
+
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function baseProperty(key) {
+  return function (object) {
+    return object == null ? undefined : object[key];
+  };
+}
+
+module.exports = baseProperty;
+
+/***/ }),
+
+/***/ 886:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseGet = __webpack_require__(5974);
+/**
+ * A specialized version of `baseProperty` which supports deep paths.
+ *
+ * @private
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+
+
+function basePropertyDeep(path) {
+  return function (object) {
+    return baseGet(object, path);
+  };
+}
+
+module.exports = basePropertyDeep;
+
+/***/ }),
+
 /***/ 5094:
 /***/ ((module) => {
 
@@ -5897,6 +6254,53 @@ function baseTimes(n, iteratee) {
 }
 
 module.exports = baseTimes;
+
+/***/ }),
+
+/***/ 8257:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var Symbol = __webpack_require__(2773),
+    arrayMap = __webpack_require__(9258),
+    isArray = __webpack_require__(3670),
+    isSymbol = __webpack_require__(4655);
+/** Used as references for various `Number` constants. */
+
+
+var INFINITY = 1 / 0;
+/** Used to convert symbols to primitives and strings. */
+
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+
+  if (isArray(value)) {
+    // Recursively convert values (susceptible to call stack limits).
+    return arrayMap(value, baseToString) + '';
+  }
+
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+
+  var result = value + '';
+  return result == '0' && 1 / value == -INFINITY ? '-0' : result;
+}
+
+module.exports = baseToString;
 
 /***/ }),
 
@@ -5936,6 +6340,35 @@ function cacheHas(cache, key) {
 }
 
 module.exports = cacheHas;
+
+/***/ }),
+
+/***/ 6883:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isArray = __webpack_require__(3670),
+    isKey = __webpack_require__(837),
+    stringToPath = __webpack_require__(376),
+    toString = __webpack_require__(2049);
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {Array} Returns the cast property path array.
+ */
+
+
+function castPath(value, object) {
+  if (isArray(value)) {
+    return value;
+  }
+
+  return isKey(value, object) ? [value] : stringToPath(toString(value));
+}
+
+module.exports = castPath;
 
 /***/ }),
 
@@ -6316,6 +6749,37 @@ module.exports = getMapData;
 
 /***/ }),
 
+/***/ 2811:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isStrictComparable = __webpack_require__(3631),
+    keys = __webpack_require__(3225);
+/**
+ * Gets the property names, values, and compare flags of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the match data of `object`.
+ */
+
+
+function getMatchData(object) {
+  var result = keys(object),
+      length = result.length;
+
+  while (length--) {
+    var key = result[length],
+        value = object[key];
+    result[length] = [key, value, isStrictComparable(value)];
+  }
+
+  return result;
+}
+
+module.exports = getMatchData;
+
+/***/ }),
+
 /***/ 3203:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -6520,6 +6984,54 @@ module.exports = getValue;
 
 /***/ }),
 
+/***/ 4727:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var castPath = __webpack_require__(6883),
+    isArguments = __webpack_require__(9246),
+    isArray = __webpack_require__(3670),
+    isIndex = __webpack_require__(4782),
+    isLength = __webpack_require__(7100),
+    toKey = __webpack_require__(7102);
+/**
+ * Checks if `path` exists on `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @param {Function} hasFunc The function to check properties.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ */
+
+
+function hasPath(object, path, hasFunc) {
+  path = castPath(path, object);
+  var index = -1,
+      length = path.length,
+      result = false;
+
+  while (++index < length) {
+    var key = toKey(path[index]);
+
+    if (!(result = object != null && hasFunc(object, key))) {
+      break;
+    }
+
+    object = object[key];
+  }
+
+  if (result || ++index != length) {
+    return result;
+  }
+
+  length = object == null ? 0 : object.length;
+  return !!length && isLength(length) && isIndex(key, length) && (isArray(object) || isArguments(object));
+}
+
+module.exports = hasPath;
+
+/***/ }),
+
 /***/ 9129:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -6691,6 +7203,43 @@ module.exports = isIndex;
 
 /***/ }),
 
+/***/ 837:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isArray = __webpack_require__(3670),
+    isSymbol = __webpack_require__(4655);
+/** Used to match property names within property paths. */
+
+
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/;
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+
+  var type = typeof value;
+
+  if (type == 'number' || type == 'symbol' || type == 'boolean' || value == null || isSymbol(value)) {
+    return true;
+  }
+
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) || object != null && value in Object(object);
+}
+
+module.exports = isKey;
+
+/***/ }),
+
 /***/ 4480:
 /***/ ((module) => {
 
@@ -6758,6 +7307,28 @@ function isPrototype(value) {
 }
 
 module.exports = isPrototype;
+
+/***/ }),
+
+/***/ 3631:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isObject = __webpack_require__(71);
+/**
+ * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` if suitable for strict
+ *  equality comparisons, else `false`.
+ */
+
+
+function isStrictComparable(value) {
+  return value === value && !isObject(value);
+}
+
+module.exports = isStrictComparable;
 
 /***/ }),
 
@@ -7054,6 +7625,65 @@ function mapToArray(map) {
 }
 
 module.exports = mapToArray;
+
+/***/ }),
+
+/***/ 4248:
+/***/ ((module) => {
+
+/**
+ * A specialized version of `matchesProperty` for source values suitable
+ * for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function matchesStrictComparable(key, srcValue) {
+  return function (object) {
+    if (object == null) {
+      return false;
+    }
+
+    return object[key] === srcValue && (srcValue !== undefined || key in Object(object));
+  };
+}
+
+module.exports = matchesStrictComparable;
+
+/***/ }),
+
+/***/ 5933:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var memoize = __webpack_require__(104);
+/** Used as the maximum memoize cache size. */
+
+
+var MAX_MEMOIZE_SIZE = 500;
+/**
+ * A specialized version of `_.memoize` which clears the memoized function's
+ * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+ *
+ * @private
+ * @param {Function} func The function to have its output memoized.
+ * @returns {Function} Returns the new memoized function.
+ */
+
+function memoizeCapped(func) {
+  var result = memoize(func, function (key) {
+    if (cache.size === MAX_MEMOIZE_SIZE) {
+      cache.clear();
+    }
+
+    return key;
+  });
+  var cache = result.cache;
+  return result;
+}
+
+module.exports = memoizeCapped;
 
 /***/ }),
 
@@ -7382,6 +8012,72 @@ module.exports = stackSet;
 
 /***/ }),
 
+/***/ 376:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var memoizeCapped = __webpack_require__(5933);
+/** Used to match property names within property paths. */
+
+
+var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+/** Used to match backslashes in property paths. */
+
+var reEscapeChar = /\\(\\)?/g;
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+
+var stringToPath = memoizeCapped(function (string) {
+  var result = [];
+
+  if (string.charCodeAt(0) === 46
+  /* . */
+  ) {
+    result.push('');
+  }
+
+  string.replace(rePropName, function (match, number, quote, subString) {
+    result.push(quote ? subString.replace(reEscapeChar, '$1') : number || match);
+  });
+  return result;
+});
+module.exports = stringToPath;
+
+/***/ }),
+
+/***/ 7102:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isSymbol = __webpack_require__(4655);
+/** Used as references for various `Number` constants. */
+
+
+var INFINITY = 1 / 0;
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+
+  var result = value + '';
+  return result == '0' && 1 / value == -INFINITY ? '-0' : result;
+}
+
+module.exports = toKey;
+
+/***/ }),
+
 /***/ 1214:
 /***/ ((module) => {
 
@@ -7456,6 +8152,114 @@ function eq(value, other) {
 }
 
 module.exports = eq;
+
+/***/ }),
+
+/***/ 643:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseGet = __webpack_require__(5974);
+/**
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
+ */
+
+
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
+}
+
+module.exports = get;
+
+/***/ }),
+
+/***/ 9059:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseHasIn = __webpack_require__(5529),
+    hasPath = __webpack_require__(4727);
+/**
+ * Checks if `path` is a direct or inherited property of `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ * @example
+ *
+ * var object = _.create({ 'a': _.create({ 'b': 2 }) });
+ *
+ * _.hasIn(object, 'a');
+ * // => true
+ *
+ * _.hasIn(object, 'a.b');
+ * // => true
+ *
+ * _.hasIn(object, ['a', 'b']);
+ * // => true
+ *
+ * _.hasIn(object, 'b');
+ * // => false
+ */
+
+
+function hasIn(object, path) {
+  return object != null && hasPath(object, path, baseHasIn);
+}
+
+module.exports = hasIn;
+
+/***/ }),
+
+/***/ 1559:
+/***/ ((module) => {
+
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
 
 /***/ }),
 
@@ -7817,6 +8621,41 @@ module.exports = isObjectLike;
 
 /***/ }),
 
+/***/ 4655:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseGetTag = __webpack_require__(1185),
+    isObjectLike = __webpack_require__(4939);
+/** `Object#toString` result references. */
+
+
+var symbolTag = '[object Symbol]';
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+
+function isSymbol(value) {
+  return typeof value == 'symbol' || isObjectLike(value) && baseGetTag(value) == symbolTag;
+}
+
+module.exports = isSymbol;
+
+/***/ }),
+
 /***/ 1589:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -7894,6 +8733,166 @@ module.exports = keys;
 
 /***/ }),
 
+/***/ 4378:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseExtremum = __webpack_require__(2478),
+    baseGt = __webpack_require__(582),
+    baseIteratee = __webpack_require__(7250);
+/**
+ * This method is like `_.max` except that it accepts `iteratee` which is
+ * invoked for each element in `array` to generate the criterion by which
+ * the value is ranked. The iteratee is invoked with one argument: (value).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Math
+ * @param {Array} array The array to iterate over.
+ * @param {Function} [iteratee=_.identity] The iteratee invoked per element.
+ * @returns {*} Returns the maximum value.
+ * @example
+ *
+ * var objects = [{ 'n': 1 }, { 'n': 2 }];
+ *
+ * _.maxBy(objects, function(o) { return o.n; });
+ * // => { 'n': 2 }
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.maxBy(objects, 'n');
+ * // => { 'n': 2 }
+ */
+
+
+function maxBy(array, iteratee) {
+  return array && array.length ? baseExtremum(array, baseIteratee(iteratee, 2), baseGt) : undefined;
+}
+
+module.exports = maxBy;
+
+/***/ }),
+
+/***/ 104:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var MapCache = __webpack_require__(8423);
+/** Error message constants. */
+
+
+var FUNC_ERROR_TEXT = 'Expected a function';
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+
+function memoize(func, resolver) {
+  if (typeof func != 'function' || resolver != null && typeof resolver != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+
+  var memoized = function memoized() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result) || cache;
+    return result;
+  };
+
+  memoized.cache = new (memoize.Cache || MapCache)();
+  return memoized;
+} // Expose `MapCache`.
+
+
+memoize.Cache = MapCache;
+module.exports = memoize;
+
+/***/ }),
+
+/***/ 8886:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseProperty = __webpack_require__(3184),
+    basePropertyDeep = __webpack_require__(886),
+    isKey = __webpack_require__(837),
+    toKey = __webpack_require__(7102);
+/**
+ * Creates a function that returns the value at `path` of a given object.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ * @example
+ *
+ * var objects = [
+ *   { 'a': { 'b': 2 } },
+ *   { 'a': { 'b': 1 } }
+ * ];
+ *
+ * _.map(objects, _.property('a.b'));
+ * // => [2, 1]
+ *
+ * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
+ * // => [1, 2]
+ */
+
+
+function property(path) {
+  return isKey(path) ? baseProperty(toKey(path)) : basePropertyDeep(path);
+}
+
+module.exports = property;
+
+/***/ }),
+
 /***/ 4043:
 /***/ ((module) => {
 
@@ -7944,6 +8943,41 @@ function stubFalse() {
 }
 
 module.exports = stubFalse;
+
+/***/ }),
+
+/***/ 2049:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var baseToString = __webpack_require__(8257);
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+
+
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+module.exports = toString;
 
 /***/ }),
 
@@ -8321,7 +9355,7 @@ function main() {
 
 /***/ }),
 
-/***/ 5706:
+/***/ 6474:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9921,6 +10955,299 @@ function prepareRunaway(songsToRemove) {
 
   return useFamiliar(familiar);
 }
+// EXTERNAL MODULE: ./node_modules/lodash/maxBy.js
+var maxBy = __webpack_require__(4378);
+var maxBy_default = /*#__PURE__*/__webpack_require__.n(maxBy);
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2007/CandyHearts.js
+var CandyHearts_templateObject, CandyHearts_templateObject2, CandyHearts_templateObject3, CandyHearts_templateObject4, CandyHearts_templateObject5, CandyHearts_templateObject6, CandyHearts_templateObject7;
+
+function CandyHearts_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+var summonSkill = (0,template_string/* $skill */.tm)(CandyHearts_templateObject || (CandyHearts_templateObject = CandyHearts_taggedTemplateLiteral(["Summon Candy Heart"])));
+var libramChance = 1.0 / 6;
+var libramExpected = new Map([[(0,template_string/* $item */.xr)(CandyHearts_templateObject2 || (CandyHearts_templateObject2 = CandyHearts_taggedTemplateLiteral(["green candy heart"]))), libramChance], [(0,template_string/* $item */.xr)(CandyHearts_templateObject3 || (CandyHearts_templateObject3 = CandyHearts_taggedTemplateLiteral(["lavender candy heart"]))), libramChance], [(0,template_string/* $item */.xr)(CandyHearts_templateObject4 || (CandyHearts_templateObject4 = CandyHearts_taggedTemplateLiteral(["orange candy heart"]))), libramChance], [(0,template_string/* $item */.xr)(CandyHearts_templateObject5 || (CandyHearts_templateObject5 = CandyHearts_taggedTemplateLiteral(["pink candy heart"]))), libramChance], [(0,template_string/* $item */.xr)(CandyHearts_templateObject6 || (CandyHearts_templateObject6 = CandyHearts_taggedTemplateLiteral(["white candy heart"]))), libramChance], [(0,template_string/* $item */.xr)(CandyHearts_templateObject7 || (CandyHearts_templateObject7 = CandyHearts_taggedTemplateLiteral(["yellow candy heart"]))), libramChance]]);
+/**
+ * @returns true if the player can Summon Candy Heart
+ */
+
+function CandyHearts_have() {
+  return (0,lib/* have */.lf)(summonSkill);
+}
+/**
+ * @returns map containing the chance of an item to be summoned
+ */
+
+function expected() {
+  return libramExpected;
+}
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2008/DivineFavors.js
+var DivineFavors_templateObject, DivineFavors_templateObject2, DivineFavors_templateObject3, DivineFavors_templateObject4, DivineFavors_templateObject5, DivineFavors_templateObject6, DivineFavors_templateObject7;
+
+function DivineFavors_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+var DivineFavors_summonSkill = (0,template_string/* $skill */.tm)(DivineFavors_templateObject || (DivineFavors_templateObject = DivineFavors_taggedTemplateLiteral(["Summon Party Favor"])));
+/**
+ * @returns true if the player can Summon Party Favors
+ */
+
+function DivineFavors_have() {
+  return (0,lib/* have */.lf)(DivineFavors_summonSkill);
+}
+/**
+ * @returns map containing the chance of an item to be summoned
+ */
+
+function DivineFavors_expected() {
+  var rareSummons = (0,property/* get */.U2)("_favorRareSummons");
+  var totalRareChance = 1.0 / Math.pow(2, rareSummons + 1);
+  var commonChance = (1.0 - totalRareChance) / 3;
+  var rareChance = totalRareChance / 3;
+  return new Map([[(0,template_string/* $item */.xr)(DivineFavors_templateObject2 || (DivineFavors_templateObject2 = DivineFavors_taggedTemplateLiteral(["divine blowout"]))), commonChance], [(0,template_string/* $item */.xr)(DivineFavors_templateObject3 || (DivineFavors_templateObject3 = DivineFavors_taggedTemplateLiteral(["divine can of silly string"]))), commonChance], [(0,template_string/* $item */.xr)(DivineFavors_templateObject4 || (DivineFavors_templateObject4 = DivineFavors_taggedTemplateLiteral(["divine noisemaker"]))), commonChance], [(0,template_string/* $item */.xr)(DivineFavors_templateObject5 || (DivineFavors_templateObject5 = DivineFavors_taggedTemplateLiteral(["divine champagne flute"]))), rareChance], [(0,template_string/* $item */.xr)(DivineFavors_templateObject6 || (DivineFavors_templateObject6 = DivineFavors_taggedTemplateLiteral(["divine champagne popper"]))), rareChance], [(0,template_string/* $item */.xr)(DivineFavors_templateObject7 || (DivineFavors_templateObject7 = DivineFavors_taggedTemplateLiteral(["divine cracker"]))), rareChance]]);
+}
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2009/LoveSongs.js
+var LoveSongs_templateObject, LoveSongs_templateObject2, LoveSongs_templateObject3, LoveSongs_templateObject4, LoveSongs_templateObject5, LoveSongs_templateObject6, LoveSongs_templateObject7;
+
+function LoveSongs_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+var LoveSongs_summonSkill = (0,template_string/* $skill */.tm)(LoveSongs_templateObject || (LoveSongs_templateObject = LoveSongs_taggedTemplateLiteral(["Summon Love Song"])));
+var LoveSongs_libramChance = 1.0 / 6;
+var LoveSongs_libramExpected = new Map([[(0,template_string/* $item */.xr)(LoveSongs_templateObject2 || (LoveSongs_templateObject2 = LoveSongs_taggedTemplateLiteral(["love song of disturbing obsession"]))), LoveSongs_libramChance], [(0,template_string/* $item */.xr)(LoveSongs_templateObject3 || (LoveSongs_templateObject3 = LoveSongs_taggedTemplateLiteral(["love song of icy revenge"]))), LoveSongs_libramChance], [(0,template_string/* $item */.xr)(LoveSongs_templateObject4 || (LoveSongs_templateObject4 = LoveSongs_taggedTemplateLiteral(["love song of naughty innuendo"]))), LoveSongs_libramChance], [(0,template_string/* $item */.xr)(LoveSongs_templateObject5 || (LoveSongs_templateObject5 = LoveSongs_taggedTemplateLiteral(["love song of smoldering passion"]))), LoveSongs_libramChance], [(0,template_string/* $item */.xr)(LoveSongs_templateObject6 || (LoveSongs_templateObject6 = LoveSongs_taggedTemplateLiteral(["love song of sugary cuteness"]))), LoveSongs_libramChance], [(0,template_string/* $item */.xr)(LoveSongs_templateObject7 || (LoveSongs_templateObject7 = LoveSongs_taggedTemplateLiteral(["love song of vague ambiguity"]))), LoveSongs_libramChance]]);
+/**
+ * @returns true if the player can Summon Love Song
+ */
+
+function LoveSongs_have() {
+  return (0,lib/* have */.lf)(LoveSongs_summonSkill);
+}
+/**
+ * @returns map containing the chance of an item to be summoned
+ */
+
+function LoveSongs_expected() {
+  return LoveSongs_libramExpected;
+}
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2010/Brickos.js
+var Brickos_templateObject, Brickos_templateObject2, Brickos_templateObject3;
+
+function Brickos_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+var Brickos_summonSkill = (0,template_string/* $skill */.tm)(Brickos_templateObject || (Brickos_templateObject = Brickos_taggedTemplateLiteral(["Summon BRICKOs"])));
+/**
+ * @returns true if the player can Summon BRICKOs
+ */
+
+function Brickos_have() {
+  return (0,lib/* have */.lf)(Brickos_summonSkill);
+}
+/**
+ * @returns map containing the chance of an item to be summoned
+ */
+
+function Brickos_expected() {
+  var eyeSummons = (0,property/* get */.U2)("_brickoEyeSummons");
+  var eyeChance = eyeSummons === 3 ? 0.0 : eyeSummons === 0 ? 0.5 : 1.0 / 3.0;
+  return new Map([[(0,template_string/* $item */.xr)(Brickos_templateObject2 || (Brickos_templateObject2 = Brickos_taggedTemplateLiteral(["BRICKO eye brick"]))), eyeChance], [(0,template_string/* $item */.xr)(Brickos_templateObject3 || (Brickos_templateObject3 = Brickos_taggedTemplateLiteral(["BRICKO brick"]))), 3.0 - eyeChance]]);
+}
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2011/Gygaxian.js
+var Gygaxian_templateObject, Gygaxian_templateObject2, Gygaxian_templateObject3, Gygaxian_templateObject4, Gygaxian_templateObject5, Gygaxian_templateObject6, Gygaxian_templateObject7;
+
+function Gygaxian_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+var Gygaxian_summonSkill = (0,template_string/* $skill */.tm)(Gygaxian_templateObject || (Gygaxian_templateObject = Gygaxian_taggedTemplateLiteral(["Summon Dice"])));
+var Gygaxian_libramChance = 1.0 / 6;
+var Gygaxian_libramExpected = new Map([[(0,template_string/* $item */.xr)(Gygaxian_templateObject2 || (Gygaxian_templateObject2 = Gygaxian_taggedTemplateLiteral(["d4"]))), Gygaxian_libramChance], [(0,template_string/* $item */.xr)(Gygaxian_templateObject3 || (Gygaxian_templateObject3 = Gygaxian_taggedTemplateLiteral(["d6"]))), Gygaxian_libramChance], [(0,template_string/* $item */.xr)(Gygaxian_templateObject4 || (Gygaxian_templateObject4 = Gygaxian_taggedTemplateLiteral(["d8"]))), Gygaxian_libramChance], [(0,template_string/* $item */.xr)(Gygaxian_templateObject5 || (Gygaxian_templateObject5 = Gygaxian_taggedTemplateLiteral(["d10"]))), Gygaxian_libramChance], [(0,template_string/* $item */.xr)(Gygaxian_templateObject6 || (Gygaxian_templateObject6 = Gygaxian_taggedTemplateLiteral(["d12"]))), Gygaxian_libramChance], [(0,template_string/* $item */.xr)(Gygaxian_templateObject7 || (Gygaxian_templateObject7 = Gygaxian_taggedTemplateLiteral(["d20"]))), Gygaxian_libramChance]]);
+/**
+ * @returns true if the player can Summon Dice
+ */
+
+function Gygaxian_have() {
+  return (0,lib/* have */.lf)(Gygaxian_summonSkill);
+}
+/**
+ * @returns map containing the chance of an item to be summoned
+ */
+
+function Gygaxian_expected() {
+  return Gygaxian_libramExpected;
+}
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2012/Resolutions.js
+var Resolutions_templateObject, Resolutions_templateObject2, Resolutions_templateObject3, Resolutions_templateObject4, Resolutions_templateObject5, Resolutions_templateObject6, Resolutions_templateObject7, Resolutions_templateObject8, Resolutions_templateObject9, Resolutions_templateObject10;
+
+function Resolutions_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+var Resolutions_summonSkill = (0,template_string/* $skill */.tm)(Resolutions_templateObject || (Resolutions_templateObject = Resolutions_taggedTemplateLiteral(["Summon Resolutions"])));
+var commonChance = 0.98 / 6;
+var rareChance = 0.02 / 3;
+var Resolutions_libramExpected = new Map([[(0,template_string/* $item */.xr)(Resolutions_templateObject2 || (Resolutions_templateObject2 = Resolutions_taggedTemplateLiteral(["resolution: be feistier"]))), commonChance], [(0,template_string/* $item */.xr)(Resolutions_templateObject3 || (Resolutions_templateObject3 = Resolutions_taggedTemplateLiteral(["resolution: be happier"]))), commonChance], [(0,template_string/* $item */.xr)(Resolutions_templateObject4 || (Resolutions_templateObject4 = Resolutions_taggedTemplateLiteral(["resolution: be sexier"]))), commonChance], [(0,template_string/* $item */.xr)(Resolutions_templateObject5 || (Resolutions_templateObject5 = Resolutions_taggedTemplateLiteral(["resolution: be smarter"]))), commonChance], [(0,template_string/* $item */.xr)(Resolutions_templateObject6 || (Resolutions_templateObject6 = Resolutions_taggedTemplateLiteral(["resolution: be stronger"]))), commonChance], [(0,template_string/* $item */.xr)(Resolutions_templateObject7 || (Resolutions_templateObject7 = Resolutions_taggedTemplateLiteral(["resolution: be wealthier"]))), commonChance], [(0,template_string/* $item */.xr)(Resolutions_templateObject8 || (Resolutions_templateObject8 = Resolutions_taggedTemplateLiteral(["resolution: be kinder"]))), rareChance], [(0,template_string/* $item */.xr)(Resolutions_templateObject9 || (Resolutions_templateObject9 = Resolutions_taggedTemplateLiteral(["resolution: be luckier"]))), rareChance], [(0,template_string/* $item */.xr)(Resolutions_templateObject10 || (Resolutions_templateObject10 = Resolutions_taggedTemplateLiteral(["resolution: be more adventurous"]))), rareChance]]);
+/**
+ * @returns true if the player can Summon Resolutions
+ */
+
+function Resolutions_have() {
+  return (0,lib/* have */.lf)(Resolutions_summonSkill);
+}
+/**
+ * @returns map containing the chance of an item to be summoned
+ */
+
+function Resolutions_expected() {
+  return Resolutions_libramExpected;
+}
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2013/PulledTaffy.js
+var PulledTaffy_templateObject, PulledTaffy_templateObject2, PulledTaffy_templateObject3, PulledTaffy_templateObject4, PulledTaffy_templateObject5, PulledTaffy_templateObject6, PulledTaffy_templateObject7, PulledTaffy_templateObject8;
+
+function PulledTaffy_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+var PulledTaffy_summonSkill = (0,template_string/* $skill */.tm)(PulledTaffy_templateObject || (PulledTaffy_templateObject = PulledTaffy_taggedTemplateLiteral(["Summon Taffy"])));
+/**
+ * @returns true if the player can Summon Taffy
+ */
+
+function PulledTaffy_have() {
+  return (0,lib/* have */.lf)(PulledTaffy_summonSkill);
+}
+/**
+ * @returns map containing the chance of an item to be summoned
+ */
+
+function PulledTaffy_expected() {
+  var rareSummons = (0,property/* get */.U2)("_taffyRareSummons");
+  var yellowSummons = (0,property/* get */.U2)("_taffyYellowSummons");
+  var onlyYellow = yellowSummons === 0 && rareSummons === 3;
+  var totalRareChance = rareSummons < 4 ? 1.0 / Math.pow(2, rareSummons + 1) : 0.0;
+  var commonChance = (1.0 - totalRareChance) / 4;
+  var rareChance = onlyYellow ? 0.0 : totalRareChance / (3 - (0,property/* get */.U2)("_taffyYellowSummons"));
+  var yellowChance = yellowSummons === 1 ? 0.0 : onlyYellow ? totalRareChance : rareChance;
+  return new Map([[(0,template_string/* $item */.xr)(PulledTaffy_templateObject2 || (PulledTaffy_templateObject2 = PulledTaffy_taggedTemplateLiteral(["pulled blue taffy"]))), commonChance], [(0,template_string/* $item */.xr)(PulledTaffy_templateObject3 || (PulledTaffy_templateObject3 = PulledTaffy_taggedTemplateLiteral(["pulled orange taffy"]))), commonChance], [(0,template_string/* $item */.xr)(PulledTaffy_templateObject4 || (PulledTaffy_templateObject4 = PulledTaffy_taggedTemplateLiteral(["pulled violet taffy"]))), commonChance], [(0,template_string/* $item */.xr)(PulledTaffy_templateObject5 || (PulledTaffy_templateObject5 = PulledTaffy_taggedTemplateLiteral(["pulled red taffy"]))), commonChance], [(0,template_string/* $item */.xr)(PulledTaffy_templateObject6 || (PulledTaffy_templateObject6 = PulledTaffy_taggedTemplateLiteral(["pulled indigo taffy"]))), rareChance], [(0,template_string/* $item */.xr)(PulledTaffy_templateObject7 || (PulledTaffy_templateObject7 = PulledTaffy_taggedTemplateLiteral(["pulled green taffy"]))), rareChance], [(0,template_string/* $item */.xr)(PulledTaffy_templateObject8 || (PulledTaffy_templateObject8 = PulledTaffy_taggedTemplateLiteral(["pulled yellow taffy"]))), yellowChance]]);
+}
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/LibramSummon.js
+function LibramSummon_toConsumableArray(arr) { return LibramSummon_arrayWithoutHoles(arr) || LibramSummon_iterableToArray(arr) || LibramSummon_unsupportedIterableToArray(arr) || LibramSummon_nonIterableSpread(); }
+
+function LibramSummon_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function LibramSummon_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function LibramSummon_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return LibramSummon_arrayLikeToArray(arr); }
+
+function LibramSummon_slicedToArray(arr, i) { return LibramSummon_arrayWithHoles(arr) || LibramSummon_iterableToArrayLimit(arr, i) || LibramSummon_unsupportedIterableToArray(arr, i) || LibramSummon_nonIterableRest(); }
+
+function LibramSummon_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function LibramSummon_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return LibramSummon_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return LibramSummon_arrayLikeToArray(o, minLen); }
+
+function LibramSummon_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function LibramSummon_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function LibramSummon_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+
+
+
+/**
+ *
+ * @param summonSkill The libram summoning skill
+ * @returns map containing the chance of an item to be summoned
+ */
+
+function expectedLibramSummon(summonSkill) {
+  switch (summonSkill) {
+    case candyHeartsSkill:
+      return candyHeartsExpected();
+
+    case divineFavorsSkill:
+      return divineFavorsExpected();
+
+    case loveSongsSkill:
+      return loveSongsExpected();
+
+    case brickosSkill:
+      return brickosExpected();
+
+    case diceSkill:
+      return diceExpected();
+
+    case resolutionsSkill:
+      return resolutionsExpected();
+
+    case taffySkill:
+      return taffyExpected();
+  }
+
+  return new Map();
+}
+/**
+ *
+ * @returns map containing the chance of items to be summoned for each libram summoning skill available
+ */
+
+function possibleLibramSummons() {
+  var results = new Map();
+
+  if (CandyHearts_have()) {
+    results.set(summonSkill, expected());
+  }
+
+  if (DivineFavors_have()) {
+    results.set(DivineFavors_summonSkill, DivineFavors_expected());
+  }
+
+  if (LoveSongs_have()) {
+    results.set(LoveSongs_summonSkill, LoveSongs_expected());
+  }
+
+  if (Brickos_have()) {
+    results.set(Brickos_summonSkill, Brickos_expected());
+  }
+
+  if (Gygaxian_have()) {
+    results.set(Gygaxian_summonSkill, Gygaxian_expected());
+  }
+
+  if (Resolutions_have()) {
+    results.set(Resolutions_summonSkill, Resolutions_expected());
+  }
+
+  if (PulledTaffy_have()) {
+    results.set(PulledTaffy_summonSkill, PulledTaffy_expected());
+  }
+
+  return results;
+}
+function bestLibramToCast() {
+  var _maxBy;
+
+  return ((_maxBy = maxBy_default()(Array.from(possibleLibramSummons().entries()), _ref => {
+    var _ref2 = LibramSummon_slicedToArray(_ref, 2),
+        itemMap = _ref2[1];
+
+    return lib/* getSaleValue.apply */.xI.apply(void 0, LibramSummon_toConsumableArray((0,utils/* countedMapToArray */.Y8)(itemMap)));
+  })) !== null && _maxBy !== void 0 ? _maxBy : [null])[0];
+}
 ;// CONCATENATED MODULE: ./src/lib.ts
 var lib_templateObject, lib_templateObject2, lib_templateObject3, lib_templateObject4, lib_templateObject5, lib_templateObject6, lib_templateObject7, lib_templateObject8, lib_templateObject9, lib_templateObject10, lib_templateObject11, lib_templateObject12, lib_templateObject13, lib_templateObject14, lib_templateObject15, lib_templateObject16, lib_templateObject17, lib_templateObject18, lib_templateObject19, lib_templateObject20, lib_templateObject21, lib_templateObject22, lib_templateObject23, lib_templateObject24, lib_templateObject25, lib_templateObject26, lib_templateObject27, lib_templateObject28, lib_templateObject29, lib_templateObject30, lib_templateObject31, lib_templateObject32, lib_templateObject33, lib_templateObject34, lib_templateObject35, lib_templateObject36, lib_templateObject37, lib_templateObject38, lib_templateObject39, lib_templateObject40, lib_templateObject41, lib_templateObject42, lib_templateObject43, lib_templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69;
 
@@ -10166,6 +11493,18 @@ function pillkeeperOpportunityCost() {
   //Can't fight an embezzler without treasury access
   //If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
   return (0,external_canadv_ash_namespaceObject.canAdv)((0,template_string/* $location */.PG)(_templateObject68 || (_templateObject68 = lib_taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false) ? have() && !paintingFought() || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject69 || (_templateObject69 = lib_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,property/* get */.U2)("_photocopyUsed") ? 15000 : 50000 : 0;
+}
+/**
+ * Burns existing MP on the mall-optimal libram skill until unable to cast any more.
+ */
+
+function burnLibrams() {
+  var libramToCast = bestLibramToCast();
+
+  while (libramToCast && (0,external_kolmafia_.mpCost)(libramToCast) <= (0,external_kolmafia_.myMp)()) {
+    (0,external_kolmafia_.useSkill)(libramToCast);
+    libramToCast = bestLibramToCast();
+  }
 }
 ;// CONCATENATED MODULE: ./src/wanderer.ts
 var wanderer_templateObject, wanderer_templateObject2, wanderer_templateObject3, wanderer_templateObject4, wanderer_templateObject5, wanderer_templateObject6, wanderer_templateObject7, wanderer_templateObject8, wanderer_templateObject9, wanderer_templateObject10, wanderer_templateObject11, wanderer_templateObject12, wanderer_templateObject13, wanderer_templateObject14, wanderer_templateObject15, wanderer_templateObject16, wanderer_templateObject17, wanderer_templateObject18, _ref3;
@@ -13766,7 +15105,10 @@ function embezzlerSetup() {
 
   freeFightMood().execute(50);
   withStash((0,template_string/* $items */.vS)(fights_templateObject22 || (fights_templateObject22 = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card, Bag o' Tricks"]))), () => {
+    (0,external_kolmafia_.maximize)("MP", false);
+
     if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(fights_templateObject23 || (fights_templateObject23 = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) && !(0,property/* get */.U2)("expressCardUsed")) {
+      burnLibrams();
       (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject24 || (fights_templateObject24 = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
     }
 
@@ -13774,7 +15116,11 @@ function embezzlerSetup() {
       (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject26 || (fights_templateObject26 = fights_taggedTemplateLiteral(["Bag o' Tricks"]))));
     }
   });
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(fights_templateObject27 || (fights_templateObject27 = fights_taggedTemplateLiteral(["License to Chill"])))) && !(0,property/* get */.U2)("_licenseToChillUsed")) (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject28 || (fights_templateObject28 = fights_taggedTemplateLiteral(["License to Chill"]))));
+
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(fights_templateObject27 || (fights_templateObject27 = fights_taggedTemplateLiteral(["License to Chill"])))) && !(0,property/* get */.U2)("_licenseToChillUsed")) {
+    burnLibrams();
+    (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject28 || (fights_templateObject28 = fights_taggedTemplateLiteral(["License to Chill"]))));
+  }
 
   if (globalOptions.ascending && questStep("questM16Temple") > 0 && (0,property/* get */.U2)("lastTempleAdventures") < (0,external_kolmafia_.myAscensions)() && acquire(1, (0,template_string/* $item */.xr)(fights_templateObject29 || (fights_templateObject29 = fights_taggedTemplateLiteral(["stone wool"]))), 3 * (0,property/* get */.U2)("valueOfAdventure") + 100, false) > 0) {
     (0,lib/* ensureEffect */.pq)((0,template_string/* $effect */._G)(fights_templateObject30 || (fights_templateObject30 = fights_taggedTemplateLiteral(["Stone-Faced"]))));
@@ -15724,7 +17070,7 @@ module.exports = require("kolmafia");;
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 5706);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 6474);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
