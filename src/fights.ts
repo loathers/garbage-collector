@@ -16,7 +16,6 @@ import {
   itemAmount,
   lastDecision,
   mallPrice,
-  maximize,
   meatDropModifier,
   myAscensions,
   myClass,
@@ -94,7 +93,6 @@ import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
-  burnLibrams,
   embezzlerLog,
   findRun,
   FreeRun,
@@ -177,19 +175,14 @@ function embezzlerSetup() {
   }
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
-    maximize("MP", false);
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
-      burnLibrams();
       use($item`Platinum Yendorian Express Card`);
     }
     if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
       use($item`Bag o' Tricks`);
     }
   });
-  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
-    burnLibrams();
-    use($item`License to Chill`);
-  }
+  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) use($item`License to Chill`);
   if (
     globalOptions.ascending &&
     questStep("questM16Temple") > 0 &&
