@@ -1313,9 +1313,10 @@ var Copier = function Copier(couldCopy, prepare, canCopy, copiedMonster, fightCo
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LE": () => (/* binding */ Macro),
 /* harmony export */   "Qk": () => (/* binding */ adventureMacro),
-/* harmony export */   "Ao": () => (/* binding */ adventureMacroAuto)
+/* harmony export */   "Ao": () => (/* binding */ adventureMacroAuto),
+/* harmony export */   "t$": () => (/* binding */ StrictMacro)
 /* harmony export */ });
-/* unused harmony exports getMacroId, StrictMacro */
+/* unused harmony export getMacroId */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1664);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
@@ -1913,7 +1914,7 @@ function adventureMacroAuto(loc, autoMacro) {
     Macro.clearSaved();
   }
 }
-var StrictMacro = /*#__PURE__*/(/* unused pure expression or super */ null && (function (_Macro) {
+var StrictMacro = /*#__PURE__*/function (_Macro) {
   _inherits(StrictMacro, _Macro);
 
   var _super = _createSuper(StrictMacro);
@@ -2077,7 +2078,7 @@ var StrictMacro = /*#__PURE__*/(/* unused pure expression or super */ null && (f
   }]);
 
   return StrictMacro;
-}(Macro)));
+}(Macro);
 
 /***/ }),
 
@@ -9109,8 +9110,8 @@ function shouldRedigitize() {
   return libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf() && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
 }
 
-var Macro = /*#__PURE__*/function (_LibramMacro) {
-  _inherits(Macro, _LibramMacro);
+var Macro = /*#__PURE__*/function (_StrictMacro) {
+  _inherits(Macro, _StrictMacro);
 
   var _super = _createSuper(Macro);
 
@@ -9328,7 +9329,7 @@ var Macro = /*#__PURE__*/function (_LibramMacro) {
   }]);
 
   return Macro;
-}(libram__WEBPACK_IMPORTED_MODULE_6__/* .Macro */ .LE);
+}(libram__WEBPACK_IMPORTED_MODULE_6__/* .StrictMacro */ .t$);
 function withMacro(macro, action) {
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.setAutoAttack)(0);
   macro.save();
