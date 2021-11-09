@@ -6,6 +6,7 @@ import {
   getCounters,
   haveEquipped,
   haveSkill,
+  hippyStoneBroken,
   inMultiFight,
   itemType,
   mpCost,
@@ -416,7 +417,7 @@ export class Macro extends LibramMacro {
   kill(): Macro {
     return (
       this.externalIf(
-        monsterManuelAvailable(),
+        hippyStoneBroken() && monsterManuelAvailable(),
         Macro.if_(
           `monsterhpbelow ${Math.floor((100 + numericModifier("Monster Level")) / 5)}`,
           Macro.trySkill($skill`Feel Superior`)
