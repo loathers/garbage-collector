@@ -1,7 +1,7 @@
 import {
   availableAmount,
-  itemAmount,
   mySpleenUse,
+  retrieveItem,
   spleenLimit,
   sweetSynthesis,
   sweetSynthesisResult,
@@ -21,11 +21,16 @@ export default function synthesize(effect: Effect, casts: number): void {
       if (sweetSynthesisResult(itemA, itemB) !== effect) continue;
       const possibleCasts =
         itemA === itemB
-          ? Math.floor((itemAmount(itemA) - 1) / 2)
-          : Math.min(itemAmount(itemA), itemAmount(itemB)) - 1;
+          ? Math.floor((availableAmount(itemA) - 1) / 2)
+          : Math.min(availableAmount(itemA), availableAmount(itemB)) - 1;
       const spleen = Math.max(spleenLimit() - mySpleenUse(), 0);
       const castsToDo = Math.min(possibleCasts, casts, spleen);
       if (castsToDo === 0) continue;
+      if (itemA === itemB) retrieveItem(itemA, castsToDo * 2);
+      else {
+        retrieveItem(itemA, castsToDo);
+        retrieveItem(itemB, castsToDo);
+      }
       sweetSynthesis(castsToDo, itemA, itemB);
       casts -= castsToDo;
     }
