@@ -347,7 +347,9 @@ export function dailyFights(): void {
         ) {
           withMacro(firstChainMacro(), () =>
             fightSource.run({
-              location: determineDraggableZoneAndEnsureAccess(),
+              location: determineDraggableZoneAndEnsureAccess(
+                fightSource.name === "backup" ? draggableFight.BACKUP : draggableFight.WANDERER
+              ),
               macro: firstChainMacro(),
             })
           );
@@ -380,7 +382,9 @@ export function dailyFights(): void {
         ) {
           withMacro(secondChainMacro(), () =>
             fightSource.run({
-              location: determineDraggableZoneAndEnsureAccess(),
+              location: determineDraggableZoneAndEnsureAccess(
+                fightSource.name === "backup" ? draggableFight.BACKUP : draggableFight.WANDERER
+              ),
               macro: secondChainMacro(),
             })
           );
