@@ -13927,7 +13927,6 @@ function dailyFights() {
 
         if ((0,property/* get */.U2)("_pocketProfessorLectures") < 2 + Math.ceil(Math.sqrt((0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)()))) {
           (0,src_combat.withMacro)(firstChainMacro(), () => fightSource.run({
-            location: determineDraggableZoneAndEnsureAccess(),
             macro: firstChainMacro()
           }));
           horseradish();
@@ -13954,7 +13953,6 @@ function dailyFights() {
 
         if ((0,property/* get */.U2)("_pocketProfessorLectures") < 2 + Math.ceil(Math.sqrt((0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)()))) {
           (0,src_combat.withMacro)(secondChainMacro(), () => _fightSource.run({
-            location: determineDraggableZoneAndEnsureAccess(),
             macro: secondChainMacro()
           }));
           horseradish();
