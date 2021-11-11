@@ -283,6 +283,15 @@ export class Macro extends LibramMacro {
         Macro.if_("!monstername garbage tourist", Macro.trySkill($skill`Feel Nostalgic`))
       )
       .meatStasis(willCrit)
+      .externalIf(
+        hippyStoneBroken() && monsterManuelAvailable(),
+        Macro.if_(
+          `(monsterid 1758 || monsterid 1759 || monsterid 1760) && monsterhpbelow ${Math.floor(
+            (100 + numericModifier("Monster Level")) / 5
+          )}`,
+          Macro.trySkill($skill`Feel Superior`)
+        )
+      )
       .externalIf(sealClubberSetup, Macro.trySkill($skill`Furious Wallop`))
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`).attack())
       .externalIf(katanaSetup, Macro.trySkill($skill`Summer Siesta`))
@@ -417,18 +426,9 @@ export class Macro extends LibramMacro {
   kill(): Macro {
     return (
       this.externalIf(
-        hippyStoneBroken() && monsterManuelAvailable(),
-        Macro.if_(
-          `(monsterid 1758 || monsterid 1759 || monsterid 1760) && monsterhpbelow ${Math.floor(
-            (100 + numericModifier("Monster Level")) / 5
-          )}`,
-          Macro.trySkill($skill`Feel Superior`)
-        )
+        myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
+        Macro.trySkill($skill`Curse of Weaksauce`)
       )
-        .externalIf(
-          myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
-          Macro.trySkill($skill`Curse of Weaksauce`)
-        )
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
           Macro.while_("!pastround 20 && !hppercentbelow 25 && !missed 1", Macro.attack())
