@@ -347,7 +347,6 @@ export function dailyFights(): void {
         ) {
           withMacro(firstChainMacro(), () =>
             fightSource.run({
-              location: determineDraggableZoneAndEnsureAccess(),
               macro: firstChainMacro(),
             })
           );
@@ -380,7 +379,6 @@ export function dailyFights(): void {
         ) {
           withMacro(secondChainMacro(), () =>
             fightSource.run({
-              location: determineDraggableZoneAndEnsureAccess(),
               macro: secondChainMacro(),
             })
           );
