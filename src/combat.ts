@@ -419,7 +419,9 @@ export class Macro extends LibramMacro {
       this.externalIf(
         hippyStoneBroken() && monsterManuelAvailable(),
         Macro.if_(
-          `monsterhpbelow ${Math.floor((100 + numericModifier("Monster Level")) / 5)}`,
+          `(monsterid 1758 || monsterid 1759 || monsterid 1760) && monsterhpbelow ${Math.floor(
+            (100 + numericModifier("Monster Level")) / 5
+          )}`,
           Macro.trySkill($skill`Feel Superior`)
         )
       )
