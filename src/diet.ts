@@ -42,6 +42,7 @@ import {
   clamp,
   ensureEffect,
   get,
+  getAverageAdventures,
   have,
   Kmail,
   MayoClinic,
@@ -85,7 +86,7 @@ function drinkSafe(qty: number, item: Item) {
 }
 
 function chewSafe(qty: number, item: Item) {
-  acquire(qty, item);
+  acquire(qty, item, getAverageAdventures(item) * get("valueOfAdventure"));
   if (!chew(qty, item)) throw "Failed to chew safely";
 }
 
@@ -173,7 +174,6 @@ function fillSpleenWith(spleenItem: Item) {
       }
     }
     const count = Math.floor((spleenLimit() - mySpleenUse()) / spleenItem.spleen);
-    acquire(count, spleenItem);
     chewSafe(count, spleenItem);
   }
 }
