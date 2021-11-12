@@ -15,10 +15,6 @@ import {
 const priceCaps: { [index: string]: number } = {
   "jar of fermented pickle juice": 75000,
   "extra-greasy slider": 45000,
-  "voodoo snuff": 36000,
-  "antimatter wad": 24000,
-  "octolus oculus": 12000,
-  "blood-drive sticker": 210000,
   "spice melange": 500000,
   "splendid martini": 20000,
   "Eye and a Twist": 20000,
