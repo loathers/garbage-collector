@@ -33,24 +33,27 @@ export function valueBjornModifiers(mode: BonusEquipMode, modifiers: Modifiers):
   return bjornMeatDropValue + bjornItemDropValue;
 }
 
+createRiderMode("free", (modifiers: Modifiers) => valueBjornModifiers("free", modifiers), false);
+createRiderMode(
+  "embezzler",
+  (modifiers: Modifiers) => valueBjornModifiers("embezzler", modifiers),
+  true
+);
+createRiderMode("dmt", (modifiers: Modifiers) => valueBjornModifiers("dmt", modifiers), true);
+createRiderMode(
+  "free",
+  (modifiers: Modifiers) => valueBjornModifiers("barf", modifiers),
+  false,
+  true
+);
+
 /**
  * Determines the best familiar to bjornify given a particular fight mode
  * @param mode The BonusEquipMode of this fight: "free", "dmt", "embezzler", or "barf"
  * @returns The best familiar to bjornify given this fight mode
  */
 export function pickBjorn(mode: BonusEquipMode = "free"): FamiliarRider {
-  const firstTry = pickRider(mode);
-  if (firstTry) return firstTry;
-
-  //if firstTry was null, we need to create a rider list
-  createRiderMode(
-    mode,
-    (modifiers: Modifiers) => valueBjornModifiers(mode, modifiers),
-    ["embezzler", "dmt"].includes(mode),
-    true
-  );
-
-  const secondTry = pickRider(mode);
-  if (secondTry) return secondTry;
+  const attempt = pickRider(mode);
+  if (attempt) return attempt;
   throw new Error("Unable to make a sensible bjorn decision");
 }
