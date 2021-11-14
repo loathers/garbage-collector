@@ -2098,12 +2098,13 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* harmony export */   "aY": () => (/* binding */ haveWandererCounter),
 /* harmony export */   "ve": () => (/* binding */ getKramcoWandererChance),
 /* harmony export */   "_D": () => (/* binding */ getFoldGroup),
+/* harmony export */   "N": () => (/* binding */ getAverageAdventures),
 /* harmony export */   "Lo": () => (/* binding */ uneffect),
 /* harmony export */   "cL": () => (/* binding */ questStep),
 /* harmony export */   "pq": () => (/* binding */ ensureEffect),
 /* harmony export */   "xI": () => (/* binding */ getSaleValue)
 /* harmony export */ });
-/* unused harmony exports canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, haveCounter, isVoteWandererNow, isWandererNow, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getAverageAdventures, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier */
+/* unused harmony exports canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, haveCounter, isVoteWandererNow, isWandererNow, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier */
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4875);
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
@@ -9453,11 +9454,6 @@ var Kmail = /*#__PURE__*/function () {
 var priceCaps = {
   "jar of fermented pickle juice": 75000,
   "extra-greasy slider": 45000,
-  "transdermal smoke patch": 8000,
-  "voodoo snuff": 36000,
-  "antimatter wad": 24000,
-  "octolus oculus": 12000,
-  "blood-drive sticker": 210000,
   "spice melange": 500000,
   "splendid martini": 20000,
   "Eye and a Twist": 20000,
@@ -10823,7 +10819,7 @@ function drinkSafe(qty, item) {
 }
 
 function chewSafe(qty, item) {
-  acquire(qty, item);
+  acquire(qty, item, (0,lib/* getAverageAdventures */.N)(item) * (0,property/* get */.U2)("valueOfAdventure"));
   if (!(0,external_kolmafia_.chew)(qty, item)) throw "Failed to chew safely";
 }
 
@@ -10934,7 +10930,6 @@ function fillSpleenWith(spleenItem) {
     }
 
     var count = Math.floor(((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()) / spleenItem.spleen);
-    acquire(count, spleenItem);
     chewSafe(count, spleenItem);
   }
 }
