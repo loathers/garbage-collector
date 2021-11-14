@@ -7,11 +7,17 @@ import {
   haveEquipped,
   inebrietyLimit,
   itemAmount,
+  meatDropModifier,
   myAdventures,
+  myHash,
   myInebriety,
   myTurncount,
+  print,
   retrieveItem,
+  runCombat,
   use,
+  userConfirm,
+  visitUrl,
   wait,
 } from "kolmafia";
 import {
@@ -30,9 +36,10 @@ import {
   SourceTerminal,
   sum,
 } from "libram";
+import { acquire } from "./acquire";
 import { Macro } from "./combat";
+import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
-import { globalOptions } from "./lib";
 
 type EmbezzlerFightOptions = {
   location?: Location;
@@ -297,7 +304,10 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Professor MeatChain",
     () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false) ? 10 : 0),
+    () =>
+      have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)
+        ? Math.max(10 - get("_pocketProfessorLectures"), 0)
+        : 0,
     () => {
       return;
     }
@@ -305,7 +315,10 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Professor WeightChain",
     () => false,
-    () => (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false) ? 5 : 0),
+    () =>
+      have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)
+        ? Math.min(15 - get("_pocketProfessorLectures"), 5)
+        : 0,
     () => {
       return;
     }
@@ -339,4 +352,58 @@ export function estimatedTurns(): number {
   }
 
   return turns;
+}
+
+/**
+ * Gets next available embezzler fight. If there is no way to generate a fight, but copies are available,
+ * the user is prompted to purchase a pocket wish to start the embezzler chain.
+ * @returns the next available embezzler fight
+ */
+export function getNextEmbezzlerFight(): EmbezzlerFight | null {
+  for (const fight of embezzlerSources) {
+    if (fight.available()) return fight;
+  }
+  const potential = embezzlerCount();
+  const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
+  if (potential > 0) {
+    print(`You have the following embezzler-sources untapped right now:`, "blue");
+    embezzlerSources
+      .filter((source) => !source.available() && source.potential() > 0)
+      .map((source) => `${source.potential()} from ${source.name}`)
+      .forEach((text) => print(text, "blue"));
+    if (
+      get("_genieFightsUsed") < 3 &&
+      userConfirm(
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}. Should we wish for an Embezzler?`
+      )
+    ) {
+      acquire(1, $item`pocket wish`, WISH_VALUE);
+      const id = "Pocket Wish";
+      const wishFight = new EmbezzlerFight(
+        id,
+        () => true, // available so that future getNextEmbezzlerFight requests don't queue up more pocket wish KGEs
+        () => 1,
+        () => {
+          visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
+          visitUrl(
+            "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
+            true,
+            true
+          );
+          visitUrl("main.php", false);
+          runCombat();
+
+          // remove the pocket wish embezzler source
+          const index = embezzlerSources.findIndex((source) => source.name === id);
+          embezzlerSources.splice(index, 1);
+        }
+      );
+
+      // add the pocket wish as the first embezzler source
+      embezzlerSources.splice(0, 0, wishFight);
+
+      return wishFight;
+    }
+  }
+  return null;
 }
