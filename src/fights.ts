@@ -20,7 +20,6 @@ import {
   myAscensions,
   myClass,
   myFamiliar,
-  myHash,
   myHp,
   myInebriety,
   myLevel,
@@ -50,7 +49,6 @@ import {
   toUrl,
   use,
   useFamiliar,
-  userConfirm,
   useSkill,
   visitUrl,
   weightAdjustment,
@@ -117,10 +115,10 @@ import {
 import { bathroomFinance } from "./potions";
 import {
   embezzlerCount,
-  EmbezzlerFight,
   embezzlerMacro,
   embezzlerSources,
   estimatedTurns,
+  getNextEmbezzlerFight,
 } from "./embezzler";
 import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
@@ -258,48 +256,8 @@ function embezzlerSetup() {
   }
 }
 
-function getEmbezzlerFight(): EmbezzlerFight | null {
-  for (const fight of embezzlerSources) {
-    if (fight.available()) return fight;
-  }
-  const potential = embezzlerCount();
-  const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
-  if (potential > 0) {
-    print(`You have the following embezzler-sources untapped right now:`, "blue");
-    embezzlerSources
-      .filter((source) => !source.available() && source.potential() > 0)
-      .map((source) => `${source.potential()} from ${source.name}`)
-      .forEach((text) => print(text, "blue"));
-    if (
-      (1 + potential) * (averageEmbezzlerNet - get("valueOfAdventure")) > 50000 &&
-      get("_genieFightsUsed") < 3 &&
-      userConfirm(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Should we wish for an Embezzler?`
-      )
-    ) {
-      return new EmbezzlerFight(
-        "Pocket Wish",
-        () => false,
-        () => 0,
-        () => {
-          retrieveItem($item`pocket wish`);
-          visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
-          visitUrl(
-            "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
-            true,
-            true
-          );
-          visitUrl("main.php", false);
-          runCombat();
-        }
-      );
-    }
-  }
-  return null;
-}
-
 function startWandererCounter() {
-  if (getEmbezzlerFight()?.name === "Backup") return;
+  if (getNextEmbezzlerFight()?.name === "Backup") return;
   if (
     (getCounters("Digitize Monster", 0, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
@@ -329,13 +287,15 @@ export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
+      // check if user wants to wish for embezzler before doing setup
+      const fightSource = getNextEmbezzlerFight();
+      if (!fightSource) return;
+
       embezzlerSetup();
 
       // FIRST EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
         const startLectures = get("_pocketProfessorLectures");
-        const fightSource = getEmbezzlerFight();
-        if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
         meatOutfit(true, [
           ...fightSource.requirements,
@@ -363,7 +323,7 @@ export function dailyFights(): void {
       // SECOND EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
         const startLectures = get("_pocketProfessorLectures");
-        const fightSource = getEmbezzlerFight();
+        const fightSource = getNextEmbezzlerFight();
         if (!fightSource) return;
         useFamiliar($familiar`Pocket Professor`);
         const requirements = Requirement.merge([
@@ -393,7 +353,7 @@ export function dailyFights(): void {
       startWandererCounter();
 
       // REMAINING EMBEZZLER FIGHTS
-      let nextFight = getEmbezzlerFight();
+      let nextFight = getNextEmbezzlerFight();
       while (nextFight !== null) {
         const startTurns = totalTurnsPlayed();
         if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`))
@@ -453,7 +413,7 @@ export function dailyFights(): void {
           embezzlerLog.initialEmbezzlersFought++;
         }
         startWandererCounter();
-        nextFight = getEmbezzlerFight();
+        nextFight = getNextEmbezzlerFight();
         if (
           kramcoGuaranteed() &&
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name))

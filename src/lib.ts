@@ -68,6 +68,8 @@ export enum BonusEquipMode {
   DMT,
 }
 
+export const WISH_VALUE = 50000;
+
 export const propertyManager = new PropertiesManager();
 
 export const baseMeat =
@@ -433,6 +435,6 @@ export function pillkeeperOpportunityCost(): number {
     ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
       (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
       ? 15000
-      : 50000
+      : WISH_VALUE
     : 0;
 }
