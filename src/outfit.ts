@@ -88,7 +88,10 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
 
   const finalRequirement = new Requirement(parameters, {
     forceEquip: forceEquip,
-    preventEquip: preventEquip,
+    preventEquip: [
+      ...preventEquip,
+      ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
+    ],
     bonusEquip: new Map<Item, number>([
       ...bonusEquip,
       ...dropsItems(equipMode),
@@ -229,7 +232,7 @@ export function meatOutfit(
       {
         forceEquip,
         preventEquip: [
-          ...$items`broken champagne bottle`,
+          ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
