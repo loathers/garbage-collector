@@ -31,8 +31,7 @@ export default function synthesize(effect: Effect, casts: number): void {
         retrieveItem(itemA, castsToDo);
         retrieveItem(itemB, castsToDo);
       }
-      sweetSynthesis(castsToDo, itemA, itemB);
-      casts -= castsToDo;
+      if (sweetSynthesis(castsToDo, itemA, itemB)) casts -= castsToDo;
     }
   }
 
