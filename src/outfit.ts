@@ -25,6 +25,7 @@ import {
 import {
   $class,
   $effect,
+  $effects,
   $familiar,
   $item,
   $items,
@@ -94,6 +95,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       ...dropsItems(equipMode),
       ...pantsgiving(),
       ...cheeses(false),
+      ...shavingBonus(),
       ...(bjornAlike
         ? new Map<Item, number>([
             [
@@ -237,6 +239,7 @@ export function meatOutfit(
           ...dropsItems(equipMode),
           ...(embezzlerUp ? [] : pantsgiving()),
           ...cheeses(embezzlerUp),
+          ...shavingBonus(),
           ...(bjornAlike
             ? new Map<Item, number>([
                 [
@@ -416,4 +419,21 @@ function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
     return $item`Crown of Thrones`;
   }
   return $item`Buddy Bjorn`;
+}
+
+function shavingBonus(): Map<Item, number> {
+  // eslint-disable-next-line libram/verify-constants
+  if (!have($item`Daylight Shavings Helmet`)) return new Map();
+  // eslint-disable-next-line libram/verify-constants
+  if (
+    $effects`Barbell Moustache, Cowboy Stache, Friendly Chops, Grizzly Beard, Gull-Wing Moustache, Musician's Musician's Moustache, Pointy Wizard Beard, Space Warlord's Beard, Spectacle Moustache, Surrealist's Moustache, Toiletbrush Moustache`.some(
+      (effect) => have(effect)
+    )
+  ) {
+    return new Map();
+  }
+
+  const bonusValue = (baseMeat * 100 + 72 * 50) / 100;
+  // eslint-disable-next-line libram/verify-constants
+  return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
