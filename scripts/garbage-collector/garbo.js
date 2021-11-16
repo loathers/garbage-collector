@@ -8323,7 +8323,7 @@ function main() {
 
 /***/ }),
 
-/***/ 5706:
+/***/ 41:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9954,15 +9954,6 @@ var globalOptions = {
   saveTurns: 0,
   noBarf: false
 };
-var BonusEquipMode;
-
-(function (BonusEquipMode) {
-  BonusEquipMode[BonusEquipMode["FREE"] = 0] = "FREE";
-  BonusEquipMode[BonusEquipMode["EMBEZZLER"] = 1] = "EMBEZZLER";
-  BonusEquipMode[BonusEquipMode["BARF"] = 2] = "BARF";
-  BonusEquipMode[BonusEquipMode["DMT"] = 3] = "DMT";
-})(BonusEquipMode || (BonusEquipMode = {}));
-
 var propertyManager = new property/* PropertiesManager */.Jr();
 var baseMeat = SongBoom_have() && (songChangesLeft() > 0 || song() === "Total Eclipse of Your Meat" && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)()) ? 275 : 250;
 function safeInterrupt() {
@@ -12969,132 +12960,121 @@ function shrugPassiveDamage() {
     }
   });
 }
-;// CONCATENATED MODULE: ./src/bjorn.ts
-var bjorn_templateObject, bjorn_templateObject2, bjorn_templateObject3, bjorn_templateObject4, bjorn_templateObject5, bjorn_templateObject6, bjorn_templateObject7, bjorn_templateObject8, bjorn_templateObject9, bjorn_templateObject10, bjorn_templateObject11, bjorn_templateObject12, bjorn_templateObject13, bjorn_templateObject14, bjorn_templateObject15, bjorn_templateObject16, bjorn_templateObject17, bjorn_templateObject18, bjorn_templateObject19, bjorn_templateObject20, bjorn_templateObject21, bjorn_templateObject22, bjorn_templateObject23, bjorn_templateObject24, bjorn_templateObject25, bjorn_templateObject26, bjorn_templateObject27, bjorn_templateObject28, bjorn_templateObject29, bjorn_templateObject30, bjorn_templateObject31, bjorn_templateObject32, bjorn_templateObject33, bjorn_templateObject34, bjorn_templateObject35, bjorn_templateObject36, bjorn_templateObject37, bjorn_templateObject38, bjorn_templateObject39, bjorn_templateObject40, bjorn_templateObject41, bjorn_templateObject42, bjorn_templateObject43, bjorn_templateObject44, bjorn_templateObject45, bjorn_templateObject46, bjorn_templateObject47, bjorn_templateObject48, bjorn_templateObject49, bjorn_templateObject50, bjorn_templateObject51, bjorn_templateObject52, bjorn_templateObject53, bjorn_templateObject54, bjorn_templateObject55, bjorn_templateObject56, bjorn_templateObject57, bjorn_templateObject58, bjorn_templateObject59, bjorn_templateObject60, bjorn_templateObject61, bjorn_templateObject62, bjorn_templateObject63, bjorn_templateObject64, bjorn_templateObject65, bjorn_templateObject66, bjorn_templateObject67, bjorn_templateObject68, bjorn_templateObject69, bjorn_templateObject70, bjorn_templateObject71, bjorn_templateObject72, bjorn_templateObject73, bjorn_templateObject74, bjorn_templateObject75, bjorn_templateObject76, bjorn_templateObject77, bjorn_templateObject78, bjorn_templateObject79, bjorn_templateObject80, bjorn_templateObject81, bjorn_templateObject82, bjorn_templateObject83, bjorn_templateObject84, bjorn_templateObject85, bjorn_templateObject86, bjorn_templateObject87, bjorn_templateObject88, bjorn_templateObject89, bjorn_templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104;
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2010/CrownOfThrones.js
+var CrownOfThrones_templateObject, CrownOfThrones_templateObject2, _modifier, CrownOfThrones_templateObject3, CrownOfThrones_templateObject4, _modifier2, CrownOfThrones_templateObject5, CrownOfThrones_templateObject6, CrownOfThrones_templateObject7, CrownOfThrones_templateObject8, CrownOfThrones_templateObject9, CrownOfThrones_templateObject10, CrownOfThrones_templateObject11, CrownOfThrones_templateObject12, _modifier7, CrownOfThrones_templateObject13, CrownOfThrones_templateObject14, _modifier8, CrownOfThrones_templateObject15, CrownOfThrones_templateObject16, _modifier9, CrownOfThrones_templateObject17, CrownOfThrones_templateObject18, CrownOfThrones_templateObject19, CrownOfThrones_templateObject20, CrownOfThrones_templateObject21, CrownOfThrones_templateObject22, CrownOfThrones_templateObject23, CrownOfThrones_templateObject24, CrownOfThrones_templateObject25, CrownOfThrones_templateObject26, CrownOfThrones_templateObject27, CrownOfThrones_templateObject28, _modifier15, CrownOfThrones_templateObject29, CrownOfThrones_templateObject30, CrownOfThrones_templateObject31, CrownOfThrones_templateObject32, CrownOfThrones_templateObject33, CrownOfThrones_templateObject34, CrownOfThrones_templateObject35, CrownOfThrones_templateObject36, CrownOfThrones_templateObject37, CrownOfThrones_templateObject38, CrownOfThrones_templateObject39, CrownOfThrones_templateObject40, CrownOfThrones_templateObject41, CrownOfThrones_templateObject42, CrownOfThrones_templateObject43, CrownOfThrones_templateObject44, CrownOfThrones_templateObject45, CrownOfThrones_templateObject46, CrownOfThrones_templateObject47, CrownOfThrones_templateObject48, CrownOfThrones_templateObject49, CrownOfThrones_templateObject50, _modifier26, CrownOfThrones_templateObject51, CrownOfThrones_templateObject52, _modifier27, CrownOfThrones_templateObject53, CrownOfThrones_templateObject54, _modifier28, CrownOfThrones_templateObject55, CrownOfThrones_templateObject56, CrownOfThrones_templateObject57, CrownOfThrones_templateObject58, CrownOfThrones_templateObject59, CrownOfThrones_templateObject60, _modifier31, CrownOfThrones_templateObject61, CrownOfThrones_templateObject62, _modifier32, CrownOfThrones_templateObject63, CrownOfThrones_templateObject64, CrownOfThrones_templateObject65, CrownOfThrones_templateObject66, _modifier34, CrownOfThrones_templateObject67, CrownOfThrones_templateObject68, _modifier35, CrownOfThrones_templateObject69, CrownOfThrones_templateObject70, _modifier36, CrownOfThrones_templateObject71, CrownOfThrones_templateObject72, CrownOfThrones_templateObject73, CrownOfThrones_templateObject74, CrownOfThrones_templateObject75, CrownOfThrones_templateObject76, CrownOfThrones_templateObject77, CrownOfThrones_templateObject78, CrownOfThrones_templateObject79, CrownOfThrones_templateObject80, CrownOfThrones_templateObject81, CrownOfThrones_templateObject82, CrownOfThrones_templateObject83, CrownOfThrones_templateObject84, CrownOfThrones_templateObject85, CrownOfThrones_templateObject86, CrownOfThrones_templateObject87, CrownOfThrones_templateObject88, CrownOfThrones_templateObject89, CrownOfThrones_templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104;
 
-function bjorn_toConsumableArray(arr) { return bjorn_arrayWithoutHoles(arr) || bjorn_iterableToArray(arr) || bjorn_unsupportedIterableToArray(arr) || bjorn_nonIterableSpread(); }
+function CrownOfThrones_toConsumableArray(arr) { return CrownOfThrones_arrayWithoutHoles(arr) || CrownOfThrones_iterableToArray(arr) || CrownOfThrones_unsupportedIterableToArray(arr) || CrownOfThrones_nonIterableSpread(); }
 
-function bjorn_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function CrownOfThrones_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function bjorn_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return bjorn_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return bjorn_arrayLikeToArray(o, minLen); }
+function CrownOfThrones_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return CrownOfThrones_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return CrownOfThrones_arrayLikeToArray(o, minLen); }
 
-function bjorn_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function CrownOfThrones_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
-function bjorn_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return bjorn_arrayLikeToArray(arr); }
+function CrownOfThrones_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return CrownOfThrones_arrayLikeToArray(arr); }
 
-function bjorn_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function CrownOfThrones_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function bjorn_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+function CrownOfThrones_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function CrownOfThrones_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
 
 
 
-var BjornModifierType;
-
-(function (BjornModifierType) {
-  BjornModifierType[BjornModifierType["MEAT"] = 0] = "MEAT";
-  BjornModifierType[BjornModifierType["ITEM"] = 1] = "ITEM";
-  BjornModifierType[BjornModifierType["FMWT"] = 2] = "FMWT";
-})(BjornModifierType || (BjornModifierType = {}));
-
-var bjornFams = [{
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject || (bjorn_templateObject = bjorn_taggedTemplateLiteral(["Puck Man"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject2 || (bjorn_templateObject2 = bjorn_taggedTemplateLiteral(["yellow pixel"])))),
+var ridingFamiliars = [{
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject || (CrownOfThrones_templateObject = CrownOfThrones_taggedTemplateLiteral(["Puck Man"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject2 || (CrownOfThrones_templateObject2 = CrownOfThrones_taggedTemplateLiteral(["yellow pixel"])))),
   probability: 0.25,
+  modifier: (_modifier = {}, CrownOfThrones_defineProperty(_modifier, "Muscle", 10), CrownOfThrones_defineProperty(_modifier, "Mysticality", 10), CrownOfThrones_defineProperty(_modifier, "Moxie", 10), _modifier),
   dropPredicate: () => (0,property/* get */.U2)("_yellowPixelDropsCrown") < 25
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject3 || (bjorn_templateObject3 = bjorn_taggedTemplateLiteral(["Ms. Puck Man"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject4 || (bjorn_templateObject4 = bjorn_taggedTemplateLiteral(["yellow pixel"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject3 || (CrownOfThrones_templateObject3 = CrownOfThrones_taggedTemplateLiteral(["Ms. Puck Man"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject4 || (CrownOfThrones_templateObject4 = CrownOfThrones_taggedTemplateLiteral(["yellow pixel"])))),
   probability: 0.25,
+  modifier: (_modifier2 = {}, CrownOfThrones_defineProperty(_modifier2, "Muscle", 10), CrownOfThrones_defineProperty(_modifier2, "Mysticality", 10), CrownOfThrones_defineProperty(_modifier2, "Moxie", 10), _modifier2),
   dropPredicate: () => (0,property/* get */.U2)("_yellowPixelDropsCrown") < 25
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject5 || (bjorn_templateObject5 = bjorn_taggedTemplateLiteral(["Grimstone Golem"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject6 || (bjorn_templateObject6 = bjorn_taggedTemplateLiteral(["grimstone mask"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject5 || (CrownOfThrones_templateObject5 = CrownOfThrones_taggedTemplateLiteral(["Grimstone Golem"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject6 || (CrownOfThrones_templateObject6 = CrownOfThrones_taggedTemplateLiteral(["grimstone mask"])))),
   probability: 0.5,
+  modifier: CrownOfThrones_defineProperty({}, "Combat Rate", -5),
   dropPredicate: () => (0,property/* get */.U2)("_grimstoneMaskDropsCrown") < 1
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject7 || (bjorn_templateObject7 = bjorn_taggedTemplateLiteral(["Knob Goblin Organ Grinder"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject7 || (CrownOfThrones_templateObject7 = CrownOfThrones_taggedTemplateLiteral(["Knob Goblin Organ Grinder"]))),
   meatVal: () => 30,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 25
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 25)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject8 || (bjorn_templateObject8 = bjorn_taggedTemplateLiteral(["Happy Medium"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject8 || (CrownOfThrones_templateObject8 = CrownOfThrones_taggedTemplateLiteral(["Happy Medium"]))),
   meatVal: () => 30,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 25
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 25)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject9 || (bjorn_templateObject9 = bjorn_taggedTemplateLiteral(["Garbage Fire"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject10 || (bjorn_templateObject10 = bjorn_taggedTemplateLiteral(["burning newspaper"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject9 || (CrownOfThrones_templateObject9 = CrownOfThrones_taggedTemplateLiteral(["Garbage Fire"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject10 || (CrownOfThrones_templateObject10 = CrownOfThrones_taggedTemplateLiteral(["burning newspaper"])))),
   probability: 0.5,
+  modifier: CrownOfThrones_defineProperty({}, "Hot Spell Damage", 25),
   dropPredicate: () => (0,property/* get */.U2)("_garbageFireDropsCrown") < 3
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject11 || (bjorn_templateObject11 = bjorn_taggedTemplateLiteral(["Machine Elf"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject12 || (bjorn_templateObject12 = bjorn_taggedTemplateLiteral(["abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"]))))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject11 || (CrownOfThrones_templateObject11 = CrownOfThrones_taggedTemplateLiteral(["Machine Elf"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject12 || (CrownOfThrones_templateObject12 = CrownOfThrones_taggedTemplateLiteral(["abstraction: sensation, abstraction: thought, abstraction: action, abstraction: category, abstraction: perception, abstraction: purpose"]))))),
   probability: 0.2,
+  modifier: (_modifier7 = {}, CrownOfThrones_defineProperty(_modifier7, "Muscle", 7), CrownOfThrones_defineProperty(_modifier7, "Mysticality", 7), CrownOfThrones_defineProperty(_modifier7, "Moxie", 7), _modifier7),
   dropPredicate: () => (0,property/* get */.U2)("_abstractionDropsCrown") < 25
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject13 || (bjorn_templateObject13 = bjorn_taggedTemplateLiteral(["Trick-or-Treating Tot"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject14 || (bjorn_templateObject14 = bjorn_taggedTemplateLiteral(["hoarded candy wad"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject13 || (CrownOfThrones_templateObject13 = CrownOfThrones_taggedTemplateLiteral(["Trick-or-Treating Tot"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject14 || (CrownOfThrones_templateObject14 = CrownOfThrones_taggedTemplateLiteral(["hoarded candy wad"])))),
   probability: 0.5,
+  modifier: (_modifier8 = {}, CrownOfThrones_defineProperty(_modifier8, "Muscle", 10), CrownOfThrones_defineProperty(_modifier8, "Mysticality", 10), CrownOfThrones_defineProperty(_modifier8, "Moxie", 10), _modifier8),
   dropPredicate: () => (0,property/* get */.U2)("_hoardedCandyDropsCrown") < 3
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject15 || (bjorn_templateObject15 = bjorn_taggedTemplateLiteral(["Warbear Drone"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject16 || (bjorn_templateObject16 = bjorn_taggedTemplateLiteral(["warbear whosit"])))),
-  probability: 1 / 4.5
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject15 || (CrownOfThrones_templateObject15 = CrownOfThrones_taggedTemplateLiteral(["Warbear Drone"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject16 || (CrownOfThrones_templateObject16 = CrownOfThrones_taggedTemplateLiteral(["warbear whosit"])))),
+  probability: 1 / 4.5,
+  modifier: (_modifier9 = {}, CrownOfThrones_defineProperty(_modifier9, "Maximum HP", 15), CrownOfThrones_defineProperty(_modifier9, "Maximum MP", 15), _modifier9)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject17 || (bjorn_templateObject17 = bjorn_taggedTemplateLiteral(["Li'l Xenomorph"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject18 || (bjorn_templateObject18 = bjorn_taggedTemplateLiteral(["lunar isotope"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject17 || (CrownOfThrones_templateObject17 = CrownOfThrones_taggedTemplateLiteral(["Li'l Xenomorph"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject18 || (CrownOfThrones_templateObject18 = CrownOfThrones_taggedTemplateLiteral(["lunar isotope"])))),
   probability: 0.05,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 15
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 15)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject19 || (bjorn_templateObject19 = bjorn_taggedTemplateLiteral(["Pottery Barn Owl"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject20 || (bjorn_templateObject20 = bjorn_taggedTemplateLiteral(["volcanic ash"])))),
-  probability: 0.1
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject19 || (CrownOfThrones_templateObject19 = CrownOfThrones_taggedTemplateLiteral(["Pottery Barn Owl"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject20 || (CrownOfThrones_templateObject20 = CrownOfThrones_taggedTemplateLiteral(["volcanic ash"])))),
+  probability: 0.1,
+  modifier: CrownOfThrones_defineProperty({}, "Hot Damage", 10)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject21 || (bjorn_templateObject21 = bjorn_taggedTemplateLiteral(["Grim Brother"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject22 || (bjorn_templateObject22 = bjorn_taggedTemplateLiteral(["grim fairy tale"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject21 || (CrownOfThrones_templateObject21 = CrownOfThrones_taggedTemplateLiteral(["Grim Brother"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject22 || (CrownOfThrones_templateObject22 = CrownOfThrones_taggedTemplateLiteral(["grim fairy tale"])))),
   probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Combat Rate", 5),
   dropPredicate: () => (0,property/* get */.U2)("_grimFairyTaleDropsCrown") < 2
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject23 || (bjorn_templateObject23 = bjorn_taggedTemplateLiteral(["Optimistic Candle"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject24 || (bjorn_templateObject24 = bjorn_taggedTemplateLiteral(["glob of melted wax"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject23 || (CrownOfThrones_templateObject23 = CrownOfThrones_taggedTemplateLiteral(["Optimistic Candle"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject24 || (CrownOfThrones_templateObject24 = CrownOfThrones_taggedTemplateLiteral(["glob of melted wax"])))),
   probability: 1,
   dropPredicate: () => (0,property/* get */.U2)("_optimisticCandleDropsCrown") < 3,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 15
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 15)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject25 || (bjorn_templateObject25 = bjorn_taggedTemplateLiteral(["Adventurous Spelunker"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject26 || (bjorn_templateObject26 = bjorn_taggedTemplateLiteral(["teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"]))))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject25 || (CrownOfThrones_templateObject25 = CrownOfThrones_taggedTemplateLiteral(["Adventurous Spelunker"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject26 || (CrownOfThrones_templateObject26 = CrownOfThrones_taggedTemplateLiteral(["teflon ore, velcro ore, vinyl ore, cardboard ore, styrofoam ore, bubblewrap ore"]))))),
   probability: 1,
   dropPredicate: () => (0,property/* get */.U2)("_oreDropsCrown") < 6,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 15
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 15)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject27 || (bjorn_templateObject27 = bjorn_taggedTemplateLiteral(["Twitching Space Critter"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject28 || (bjorn_templateObject28 = bjorn_taggedTemplateLiteral(["space beast fur"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject27 || (CrownOfThrones_templateObject27 = CrownOfThrones_taggedTemplateLiteral(["Twitching Space Critter"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject28 || (CrownOfThrones_templateObject28 = CrownOfThrones_taggedTemplateLiteral(["space beast fur"])))),
   probability: 1,
+  modifier: (_modifier15 = {}, CrownOfThrones_defineProperty(_modifier15, "Hot Resistance", 2), CrownOfThrones_defineProperty(_modifier15, "Cold Resistance", 2), CrownOfThrones_defineProperty(_modifier15, "Spooky Resistance", 2), CrownOfThrones_defineProperty(_modifier15, "Sleaze Resistance", 2), CrownOfThrones_defineProperty(_modifier15, "Stench Resistance", 2), _modifier15),
   dropPredicate: () => (0,property/* get */.U2)("_spaceFurDropsCrown") < 1
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject29 || (bjorn_templateObject29 = bjorn_taggedTemplateLiteral(["Party Mouse"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject29 || (CrownOfThrones_templateObject29 = CrownOfThrones_taggedTemplateLiteral(["Party Mouse"]))),
   meatVal: () => 50,
 
   /*
   The below code is more accurate. However, party mouse is virtually never going to be worthwhile and this causes so many useless mall hits it isn't funny.
-     getSaleValue(
+         getSaleValue(
       ...Item.all().filter(
         (booze) =>
           ["decent", "good"].includes(booze.quality) &&
@@ -13107,330 +13087,313 @@ var bjornFams = [{
       )
     ),
     */
-  probability: 0.05
+  probability: 0.05,
+  modifier: CrownOfThrones_defineProperty({}, "Booze Drop", 25)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject30 || (bjorn_templateObject30 = bjorn_taggedTemplateLiteral(["Yule Hound"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject31 || (bjorn_templateObject31 = bjorn_taggedTemplateLiteral(["candy cane"])))),
-  probability: 1
-}, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject32 || (bjorn_templateObject32 = bjorn_taggedTemplateLiteral(["Gluttonous Green Ghost"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject33 || (bjorn_templateObject33 = bjorn_taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"]))))),
-  probability: 1
-}, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject34 || (bjorn_templateObject34 = bjorn_taggedTemplateLiteral(["Reassembled Blackbird"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject35 || (bjorn_templateObject35 = bjorn_taggedTemplateLiteral(["blackberry"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject30 || (CrownOfThrones_templateObject30 = CrownOfThrones_taggedTemplateLiteral(["Yule Hound"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject31 || (CrownOfThrones_templateObject31 = CrownOfThrones_taggedTemplateLiteral(["candy cane"])))),
   probability: 1,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 10
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Candy Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject36 || (bjorn_templateObject36 = bjorn_taggedTemplateLiteral(["Reconstituted Crow"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject37 || (bjorn_templateObject37 = bjorn_taggedTemplateLiteral(["blackberry"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject32 || (CrownOfThrones_templateObject32 = CrownOfThrones_taggedTemplateLiteral(["Gluttonous Green Ghost"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject33 || (CrownOfThrones_templateObject33 = CrownOfThrones_taggedTemplateLiteral(["bean burrito, enchanted bean burrito, jumping bean burrito"]))))),
   probability: 1,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 10
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Food Drop", 15)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject38 || (bjorn_templateObject38 = bjorn_taggedTemplateLiteral(["Hunchbacked Minion"]))),
-  meatVal: () => 0.02 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject39 || (bjorn_templateObject39 = bjorn_taggedTemplateLiteral(["disembodied brain"])))) + 0.98 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject40 || (bjorn_templateObject40 = bjorn_taggedTemplateLiteral(["skeleton bone"])))),
-  probability: 1
-}, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject41 || (bjorn_templateObject41 = bjorn_taggedTemplateLiteral(["Reanimated Reanimator"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject42 || (bjorn_templateObject42 = bjorn_taggedTemplateLiteral(["hot wing, broken skull"]))))),
-  probability: 1
-}, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject43 || (bjorn_templateObject43 = bjorn_taggedTemplateLiteral(["Attention-Deficit Demon"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject44 || (bjorn_templateObject44 = bjorn_taggedTemplateLiteral(["chorizo brownies, white chocolate and tomato pizza, carob chunk noodles"]))))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject34 || (CrownOfThrones_templateObject34 = CrownOfThrones_taggedTemplateLiteral(["Reassembled Blackbird"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject35 || (CrownOfThrones_templateObject35 = CrownOfThrones_taggedTemplateLiteral(["blackberry"])))),
   probability: 1,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 10)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject45 || (bjorn_templateObject45 = bjorn_taggedTemplateLiteral(["Piano Cat"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject46 || (bjorn_templateObject46 = bjorn_taggedTemplateLiteral(["beertini, papaya slung, salty slug, tomato daiquiri"]))))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject36 || (CrownOfThrones_templateObject36 = CrownOfThrones_taggedTemplateLiteral(["Reconstituted Crow"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject37 || (CrownOfThrones_templateObject37 = CrownOfThrones_taggedTemplateLiteral(["blackberry"])))),
   probability: 1,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 10)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject47 || (bjorn_templateObject47 = bjorn_taggedTemplateLiteral(["Golden Monkey"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject48 || (bjorn_templateObject48 = bjorn_taggedTemplateLiteral(["gold nuggets"])))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject38 || (CrownOfThrones_templateObject38 = CrownOfThrones_taggedTemplateLiteral(["Hunchbacked Minion"]))),
+  meatVal: () => 0.02 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject39 || (CrownOfThrones_templateObject39 = CrownOfThrones_taggedTemplateLiteral(["disembodied brain"])))) + 0.98 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject40 || (CrownOfThrones_templateObject40 = CrownOfThrones_taggedTemplateLiteral(["skeleton bone"])))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Muscle Experience", 2)
+}, {
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject41 || (CrownOfThrones_templateObject41 = CrownOfThrones_taggedTemplateLiteral(["Reanimated Reanimator"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject42 || (CrownOfThrones_templateObject42 = CrownOfThrones_taggedTemplateLiteral(["hot wing, broken skull"]))))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Mysticality Experience", 2)
+}, {
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject43 || (CrownOfThrones_templateObject43 = CrownOfThrones_taggedTemplateLiteral(["Attention-Deficit Demon"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject44 || (CrownOfThrones_templateObject44 = CrownOfThrones_taggedTemplateLiteral(["chorizo brownies, white chocolate and tomato pizza, carob chunk noodles"]))))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject45 || (CrownOfThrones_templateObject45 = CrownOfThrones_taggedTemplateLiteral(["Piano Cat"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject46 || (CrownOfThrones_templateObject46 = CrownOfThrones_taggedTemplateLiteral(["beertini, papaya slung, salty slug, tomato daiquiri"]))))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
+}, {
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject47 || (CrownOfThrones_templateObject47 = CrownOfThrones_taggedTemplateLiteral(["Golden Monkey"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject48 || (CrownOfThrones_templateObject48 = CrownOfThrones_taggedTemplateLiteral(["gold nuggets"])))),
   probability: 0.5,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 25
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 25)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject49 || (bjorn_templateObject49 = bjorn_taggedTemplateLiteral(["Robot Reindeer"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject50 || (bjorn_templateObject50 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
-  probability: 0.3
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject49 || (CrownOfThrones_templateObject49 = CrownOfThrones_taggedTemplateLiteral(["Robot Reindeer"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject50 || (CrownOfThrones_templateObject50 = CrownOfThrones_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
+  probability: 0.3,
+  modifier: (_modifier26 = {}, CrownOfThrones_defineProperty(_modifier26, "Muscle", 10), CrownOfThrones_defineProperty(_modifier26, "Mysticality", 10), CrownOfThrones_defineProperty(_modifier26, "Moxie", 10), _modifier26)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject51 || (bjorn_templateObject51 = bjorn_taggedTemplateLiteral(["Stocking Mimic"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject52 || (bjorn_templateObject52 = bjorn_taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"]))))),
-  probability: 0.3
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject51 || (CrownOfThrones_templateObject51 = CrownOfThrones_taggedTemplateLiteral(["Stocking Mimic"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject52 || (CrownOfThrones_templateObject52 = CrownOfThrones_taggedTemplateLiteral(["Angry Farmer candy, Cold Hots candy, Rock Pops, Tasty Fun Good rice candy, Wint-O-Fresh mint"]))))),
+  probability: 0.3,
+  modifier: (_modifier27 = {}, CrownOfThrones_defineProperty(_modifier27, "Muscle", 10), CrownOfThrones_defineProperty(_modifier27, "Mysticality", 10), CrownOfThrones_defineProperty(_modifier27, "Moxie", 10), _modifier27)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject53 || (bjorn_templateObject53 = bjorn_taggedTemplateLiteral(["BRICKO chick"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject54 || (bjorn_templateObject54 = bjorn_taggedTemplateLiteral(["BRICKO brick"])))),
-  probability: 1
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject53 || (CrownOfThrones_templateObject53 = CrownOfThrones_taggedTemplateLiteral(["BRICKO chick"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject54 || (CrownOfThrones_templateObject54 = CrownOfThrones_taggedTemplateLiteral(["BRICKO brick"])))),
+  probability: 1,
+  modifier: (_modifier28 = {}, CrownOfThrones_defineProperty(_modifier28, "Muscle Percent", 10), CrownOfThrones_defineProperty(_modifier28, "Mysticality Percent", 10), CrownOfThrones_defineProperty(_modifier28, "Moxie Percent", 10), _modifier28)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject55 || (bjorn_templateObject55 = bjorn_taggedTemplateLiteral(["Cotton Candy Carnie"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject56 || (bjorn_templateObject56 = bjorn_taggedTemplateLiteral(["cotton candy pinch"])))),
-  probability: 1
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject55 || (CrownOfThrones_templateObject55 = CrownOfThrones_taggedTemplateLiteral(["Cotton Candy Carnie"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject56 || (CrownOfThrones_templateObject56 = CrownOfThrones_taggedTemplateLiteral(["cotton candy pinch"])))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Initiative", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject57 || (bjorn_templateObject57 = bjorn_taggedTemplateLiteral(["Untamed Turtle"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject58 || (bjorn_templateObject58 = bjorn_taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"]))))),
-  probability: 0.35
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject57 || (CrownOfThrones_templateObject57 = CrownOfThrones_taggedTemplateLiteral(["Untamed Turtle"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject58 || (CrownOfThrones_templateObject58 = CrownOfThrones_taggedTemplateLiteral(["snailmail bits, turtlemail bits, turtle wax"]))))),
+  probability: 0.35,
+  modifier: CrownOfThrones_defineProperty({}, "Initiative", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject59 || (bjorn_templateObject59 = bjorn_taggedTemplateLiteral(["Astral Badger"]))),
-  meatVal: () => 2 * lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject60 || (bjorn_templateObject60 = bjorn_taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"]))))),
-  probability: 1
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject59 || (CrownOfThrones_templateObject59 = CrownOfThrones_taggedTemplateLiteral(["Astral Badger"]))),
+  meatVal: () => 2 * lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject60 || (CrownOfThrones_templateObject60 = CrownOfThrones_taggedTemplateLiteral(["spooky mushroom, Knob mushroom, Knoll mushroom"]))))),
+  probability: 1,
+  modifier: (_modifier31 = {}, CrownOfThrones_defineProperty(_modifier31, "Maximum HP", 10), CrownOfThrones_defineProperty(_modifier31, "Maximum MP", 10), _modifier31)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject61 || (bjorn_templateObject61 = bjorn_taggedTemplateLiteral(["Green Pixie"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject62 || (bjorn_templateObject62 = bjorn_taggedTemplateLiteral(["bottle of tequila"])))),
-  probability: 0.2
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject61 || (CrownOfThrones_templateObject61 = CrownOfThrones_taggedTemplateLiteral(["Green Pixie"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject62 || (CrownOfThrones_templateObject62 = CrownOfThrones_taggedTemplateLiteral(["bottle of tequila"])))),
+  probability: 0.2,
+  modifier: (_modifier32 = {}, CrownOfThrones_defineProperty(_modifier32, "Maximum HP", 10), CrownOfThrones_defineProperty(_modifier32, "Maximum MP", 10), _modifier32)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject63 || (bjorn_templateObject63 = bjorn_taggedTemplateLiteral(["Angry Goat"]))),
-  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(bjorn_templateObject64 || (bjorn_templateObject64 = bjorn_taggedTemplateLiteral(["goat cheese pizza"])))),
-  probability: 1
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject63 || (CrownOfThrones_templateObject63 = CrownOfThrones_taggedTemplateLiteral(["Angry Goat"]))),
+  meatVal: () => (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(CrownOfThrones_templateObject64 || (CrownOfThrones_templateObject64 = CrownOfThrones_taggedTemplateLiteral(["goat cheese pizza"])))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Muscle Percent", 15)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject65 || (bjorn_templateObject65 = bjorn_taggedTemplateLiteral(["Adorable Seal Larva"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject66 || (bjorn_templateObject66 = bjorn_taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"]))))),
-  probability: 0.35
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject65 || (CrownOfThrones_templateObject65 = CrownOfThrones_taggedTemplateLiteral(["Adorable Seal Larva"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject66 || (CrownOfThrones_templateObject66 = CrownOfThrones_taggedTemplateLiteral(["stench nuggets, spooky nuggets, hot nuggets, cold nuggets, sleaze nuggets"]))))),
+  probability: 0.35,
+  modifier: (_modifier34 = {}, CrownOfThrones_defineProperty(_modifier34, "HP Regen Min", 2), CrownOfThrones_defineProperty(_modifier34, "MP Regen Min", 2), CrownOfThrones_defineProperty(_modifier34, "HP Regen Max", 8), CrownOfThrones_defineProperty(_modifier34, "MP Regen Max", 8), _modifier34)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject67 || (bjorn_templateObject67 = bjorn_taggedTemplateLiteral(["Ancient Yuletide Troll"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject68 || (bjorn_templateObject68 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
-  probability: 0.3
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject67 || (CrownOfThrones_templateObject67 = CrownOfThrones_taggedTemplateLiteral(["Ancient Yuletide Troll"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject68 || (CrownOfThrones_templateObject68 = CrownOfThrones_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
+  probability: 0.3,
+  modifier: (_modifier35 = {}, CrownOfThrones_defineProperty(_modifier35, "HP Regen Min", 2), CrownOfThrones_defineProperty(_modifier35, "MP Regen Min", 2), CrownOfThrones_defineProperty(_modifier35, "HP Regen Max", 8), CrownOfThrones_defineProperty(_modifier35, "MP Regen Max", 8), _modifier35)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject69 || (bjorn_templateObject69 = bjorn_taggedTemplateLiteral(["Sweet Nutcracker"]))),
-  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, bjorn_toConsumableArray((0,template_string/* $items */.vS)(bjorn_templateObject70 || (bjorn_templateObject70 = bjorn_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
-  probability: 0.3
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject69 || (CrownOfThrones_templateObject69 = CrownOfThrones_taggedTemplateLiteral(["Sweet Nutcracker"]))),
+  meatVal: () => lib/* getSaleValue.apply */.xI.apply(void 0, CrownOfThrones_toConsumableArray((0,template_string/* $items */.vS)(CrownOfThrones_templateObject70 || (CrownOfThrones_templateObject70 = CrownOfThrones_taggedTemplateLiteral(["candy cane, eggnog, fruitcake, gingerbread bugbear"]))))),
+  probability: 0.3,
+  modifier: (_modifier36 = {}, CrownOfThrones_defineProperty(_modifier36, "HP Regen Min", 2), CrownOfThrones_defineProperty(_modifier36, "MP Regen Min", 2), CrownOfThrones_defineProperty(_modifier36, "HP Regen Max", 8), CrownOfThrones_defineProperty(_modifier36, "MP Regen Max", 8), _modifier36)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject71 || (bjorn_templateObject71 = bjorn_taggedTemplateLiteral(["Casagnova Gnome"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject71 || (CrownOfThrones_templateObject71 = CrownOfThrones_taggedTemplateLiteral(["Casagnova Gnome"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject72 || (bjorn_templateObject72 = bjorn_taggedTemplateLiteral(["Coffee Pixie"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject72 || (CrownOfThrones_templateObject72 = CrownOfThrones_taggedTemplateLiteral(["Coffee Pixie"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject73 || (bjorn_templateObject73 = bjorn_taggedTemplateLiteral(["Dancing Frog"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject73 || (CrownOfThrones_templateObject73 = CrownOfThrones_taggedTemplateLiteral(["Dancing Frog"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject74 || (bjorn_templateObject74 = bjorn_taggedTemplateLiteral(["Grouper Groupie"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject74 || (CrownOfThrones_templateObject74 = CrownOfThrones_taggedTemplateLiteral(["Grouper Groupie"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject75 || (bjorn_templateObject75 = bjorn_taggedTemplateLiteral(["Hand Turkey"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject75 || (CrownOfThrones_templateObject75 = CrownOfThrones_taggedTemplateLiteral(["Hand Turkey"]))),
   meatVal: () => 30,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject76 || (bjorn_templateObject76 = bjorn_taggedTemplateLiteral(["Hippo Ballerina"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject76 || (CrownOfThrones_templateObject76 = CrownOfThrones_taggedTemplateLiteral(["Hippo Ballerina"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject77 || (bjorn_templateObject77 = bjorn_taggedTemplateLiteral(["Jitterbug"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject77 || (CrownOfThrones_templateObject77 = CrownOfThrones_taggedTemplateLiteral(["Jitterbug"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject78 || (bjorn_templateObject78 = bjorn_taggedTemplateLiteral(["Leprechaun"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject78 || (CrownOfThrones_templateObject78 = CrownOfThrones_taggedTemplateLiteral(["Leprechaun"]))),
   meatVal: () => 30,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject79 || (bjorn_templateObject79 = bjorn_taggedTemplateLiteral(["Obtuse Angel"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject79 || (CrownOfThrones_templateObject79 = CrownOfThrones_taggedTemplateLiteral(["Obtuse Angel"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject80 || (bjorn_templateObject80 = bjorn_taggedTemplateLiteral(["Psychedelic Bear"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject80 || (CrownOfThrones_templateObject80 = CrownOfThrones_taggedTemplateLiteral(["Psychedelic Bear"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject81 || (bjorn_templateObject81 = bjorn_taggedTemplateLiteral(["Robortender"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject81 || (CrownOfThrones_templateObject81 = CrownOfThrones_taggedTemplateLiteral(["Robortender"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 20
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject82 || (bjorn_templateObject82 = bjorn_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject82 || (CrownOfThrones_templateObject82 = CrownOfThrones_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))),
   meatVal: () => 30,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 25
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 25)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject83 || (bjorn_templateObject83 = bjorn_taggedTemplateLiteral(["Hobo Monkey"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject83 || (CrownOfThrones_templateObject83 = CrownOfThrones_taggedTemplateLiteral(["Hobo Monkey"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.MEAT,
-    modifier: 25
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Meat Drop", 25)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject84 || (bjorn_templateObject84 = bjorn_taggedTemplateLiteral(["Rockin' Robin"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject84 || (CrownOfThrones_templateObject84 = CrownOfThrones_taggedTemplateLiteral(["Rockin' Robin"]))),
   meatVal: () => 60,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 15
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 15)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject85 || (bjorn_templateObject85 = bjorn_taggedTemplateLiteral(["Feral Kobold"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject85 || (CrownOfThrones_templateObject85 = CrownOfThrones_taggedTemplateLiteral(["Feral Kobold"]))),
   meatVal: () => 30,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 15
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 15)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject86 || (bjorn_templateObject86 = bjorn_taggedTemplateLiteral(["Oily Woim"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject86 || (CrownOfThrones_templateObject86 = CrownOfThrones_taggedTemplateLiteral(["Oily Woim"]))),
   meatVal: () => 30,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 10
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 10)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject87 || (bjorn_templateObject87 = bjorn_taggedTemplateLiteral(["Cat Burglar"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject87 || (CrownOfThrones_templateObject87 = CrownOfThrones_taggedTemplateLiteral(["Cat Burglar"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.ITEM,
-    modifier: 10
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Item Drop", 10)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject88 || (bjorn_templateObject88 = bjorn_taggedTemplateLiteral(["Misshapen Animal Skeleton"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject88 || (CrownOfThrones_templateObject88 = CrownOfThrones_taggedTemplateLiteral(["Misshapen Animal Skeleton"]))),
   meatVal: () => 30,
   probability: 1,
-  modifier: {
-    type: BjornModifierType.FMWT,
-    modifier: 5
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Familiar Weight", 5)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject89 || (bjorn_templateObject89 = bjorn_taggedTemplateLiteral(["Gelatinous Cubeling"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject89 || (CrownOfThrones_templateObject89 = CrownOfThrones_taggedTemplateLiteral(["Gelatinous Cubeling"]))),
   meatVal: () => 0,
   probability: 0,
-  modifier: {
-    type: BjornModifierType.FMWT,
-    modifier: 5
-  }
+  modifier: CrownOfThrones_defineProperty({}, "Familiar Weight", 5)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(bjorn_templateObject90 || (bjorn_templateObject90 = bjorn_taggedTemplateLiteral(["Frozen Gravy Fairy"]))),
+  familiar: (0,template_string/* $familiar */.HP)(CrownOfThrones_templateObject90 || (CrownOfThrones_templateObject90 = CrownOfThrones_taggedTemplateLiteral(["Frozen Gravy Fairy"]))),
   // drops a cold nugget every combat, 5 of which can be used to make a cold wad
-  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject91 || (_templateObject91 = bjorn_taggedTemplateLiteral(["cold wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject92 || (_templateObject92 = bjorn_taggedTemplateLiteral(["cold nuggets"]))))),
-  probability: 1
+  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject91 || (_templateObject91 = CrownOfThrones_taggedTemplateLiteral(["cold wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject92 || (_templateObject92 = CrownOfThrones_taggedTemplateLiteral(["cold nuggets"]))))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Cold Damage", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(_templateObject93 || (_templateObject93 = bjorn_taggedTemplateLiteral(["Stinky Gravy Fairy"]))),
+  familiar: (0,template_string/* $familiar */.HP)(_templateObject93 || (_templateObject93 = CrownOfThrones_taggedTemplateLiteral(["Stinky Gravy Fairy"]))),
   // drops a stench nugget every combat, 5 of which can be used to make a stench wad
-  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject94 || (_templateObject94 = bjorn_taggedTemplateLiteral(["stench wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject95 || (_templateObject95 = bjorn_taggedTemplateLiteral(["stench nuggets"]))))),
-  probability: 1
+  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject94 || (_templateObject94 = CrownOfThrones_taggedTemplateLiteral(["stench wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject95 || (_templateObject95 = CrownOfThrones_taggedTemplateLiteral(["stench nuggets"]))))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Stench Damage", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(_templateObject96 || (_templateObject96 = bjorn_taggedTemplateLiteral(["Sleazy Gravy Fairy"]))),
+  familiar: (0,template_string/* $familiar */.HP)(_templateObject96 || (_templateObject96 = CrownOfThrones_taggedTemplateLiteral(["Sleazy Gravy Fairy"]))),
   // drops a sleaze nugget every combat, 5 of which can be used to make a sleaze wad
-  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject97 || (_templateObject97 = bjorn_taggedTemplateLiteral(["sleaze wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject98 || (_templateObject98 = bjorn_taggedTemplateLiteral(["sleaze nuggets"]))))),
-  probability: 1
+  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject97 || (_templateObject97 = CrownOfThrones_taggedTemplateLiteral(["sleaze wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject98 || (_templateObject98 = CrownOfThrones_taggedTemplateLiteral(["sleaze nuggets"]))))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Sleaze Damage", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(_templateObject99 || (_templateObject99 = bjorn_taggedTemplateLiteral(["Spooky Gravy Fairy"]))),
+  familiar: (0,template_string/* $familiar */.HP)(_templateObject99 || (_templateObject99 = CrownOfThrones_taggedTemplateLiteral(["Spooky Gravy Fairy"]))),
   // drops a spooky nugget every combat, 5 of which can be used to make a spooky wad
-  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject100 || (_templateObject100 = bjorn_taggedTemplateLiteral(["spooky wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject101 || (_templateObject101 = bjorn_taggedTemplateLiteral(["spooky nuggets"]))))),
-  probability: 1
+  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject100 || (_templateObject100 = CrownOfThrones_taggedTemplateLiteral(["spooky wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject101 || (_templateObject101 = CrownOfThrones_taggedTemplateLiteral(["spooky nuggets"]))))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Spooky Damage", 20)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(_templateObject102 || (_templateObject102 = bjorn_taggedTemplateLiteral(["Flaming Gravy Fairy"]))),
+  familiar: (0,template_string/* $familiar */.HP)(_templateObject102 || (_templateObject102 = CrownOfThrones_taggedTemplateLiteral(["Flaming Gravy Fairy"]))),
   // drops a hot nugget every combat, 5 of which can be used to make a hot wad
-  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject103 || (_templateObject103 = bjorn_taggedTemplateLiteral(["hot wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject104 || (_templateObject104 = bjorn_taggedTemplateLiteral(["hot nuggets"]))))),
-  probability: 1
-}].filter(bjornFam => (0,lib/* have */.lf)(bjornFam.familiar));
-function additionalValue(familiar, mode) {
-  if (!familiar.modifier) return 0;
-  var meatVal = [BonusEquipMode.DMT, BonusEquipMode.FREE].includes(mode) ? 0 : baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0);
-  var itemVal = mode === BonusEquipMode.BARF ? 72 : 0;
-  if (familiar.modifier.type === BjornModifierType.MEAT) return familiar.modifier.modifier * meatVal / 100;
-  if (familiar.modifier.type === BjornModifierType.ITEM) return familiar.modifier.modifier * itemVal / 100;
+  meatVal: () => Math.max(0.2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject103 || (_templateObject103 = CrownOfThrones_taggedTemplateLiteral(["hot wad"])))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(_templateObject104 || (_templateObject104 = CrownOfThrones_taggedTemplateLiteral(["hot nuggets"]))))),
+  probability: 1,
+  modifier: CrownOfThrones_defineProperty({}, "Hot Damage", 20)
+}];
+function valueRider(rider, modifierValueFunction) {
+  var useLimitedDrops = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  var dropValue = !rider.dropPredicate || rider.dropPredicate() && !useLimitedDrops ? rider.probability * rider.meatVal() : 0;
+  var modifierValue = modifierValueFunction(rider.modifier);
+  return dropValue + modifierValue;
+}
+var riderModes = new Map();
+function createRiderMode(name, modifierValueFunction) {
+  var useLimitedDrops = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  var excludeCurrentFamiliar = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+  return riderModes.set(name, {
+    modifierValueFunction: modifierValueFunction,
+    useLimitedDrops: useLimitedDrops,
+    excludeCurrentFamiliar: excludeCurrentFamiliar
+  });
+}
+var riderLists = new Map();
+function pickRider(mode) {
+  var modeData = riderModes.get(mode);
+  if (!modeData) return null;
+  var modifierValueFunction = modeData.modifierValueFunction,
+      useLimitedDrops = modeData.useLimitedDrops,
+      excludeCurrentFamiliar = modeData.excludeCurrentFamiliar;
 
-  if (familiar.modifier.type === BjornModifierType.FMWT) {
-    var lepMult = leprechaunMultiplier(meatFamiliar());
-    var fairyMult = fairyMultiplier(meatFamiliar());
-    return (meatVal * (10 * lepMult + 5 * Math.sqrt(lepMult)) + itemVal * (5 * fairyMult + 2.5 * Math.sqrt(fairyMult))) / 100;
+  if (!riderLists.has(mode)) {
+    riderLists.set(mode, ridingFamiliars.filter(rider => (0,lib/* have */.lf)(rider.familiar)).sort((a, b) => valueRider(b, modifierValueFunction, useLimitedDrops) - valueRider(a, modifierValueFunction, useLimitedDrops)));
   }
 
-  return 0;
-}
-var bjornLists = new Map();
+  var list = riderLists.get(mode);
 
-function generateBjornList(mode) {
-  return bjorn_toConsumableArray(bjornFams).sort((a, b) => (!b.dropPredicate || b.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode) ? b.meatVal() * b.probability : 0) + additionalValue(b, mode) - ((!a.dropPredicate || a.dropPredicate() && ![BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].includes(mode) ? a.meatVal() * a.probability : 0) + additionalValue(a, mode)));
+  if (list) {
+    var riderToReturn = list.find(rider => (!rider.dropPredicate || rider.dropPredicate()) && (!excludeCurrentFamiliar || (0,external_kolmafia_.myFamiliar)() !== rider.familiar));
+    return riderToReturn !== null && riderToReturn !== void 0 ? riderToReturn : null;
+  }
+
+  return null;
 }
+;// CONCATENATED MODULE: ./src/bjorn.ts
+
+
+
+/**
+ * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
+ * @param mode The BonusEquipMode of this fight: "free", "dmt", "embezzler", or "barf"
+ * @param modifiers An object containing any and all modifier-value pairs that the potential familiar choice grants
+ * @returns The meat value of the modifier bonuses given that mode
+ */
+
+function valueBjornModifiers(mode, modifiers) {
+  var _modifiers$FamiliarW, _modifiers$MeatDrop, _modifiers$ItemDrop;
+
+  var weight = (_modifiers$FamiliarW = modifiers["Familiar Weight"]) !== null && _modifiers$FamiliarW !== void 0 ? _modifiers$FamiliarW : 0;
+  var meat = (_modifiers$MeatDrop = modifiers["Meat Drop"]) !== null && _modifiers$MeatDrop !== void 0 ? _modifiers$MeatDrop : 0;
+  var item = (_modifiers$ItemDrop = modifiers["Item Drop"]) !== null && _modifiers$ItemDrop !== void 0 ? _modifiers$ItemDrop : 0;
+  var meatValue = (!["dmt", "free"].includes(mode) ? baseMeat + mode === "embezzler" ? 750 : 0 : 0) / 100;
+  var itemValue = mode === "barf" ? 0.72 : 0;
+  var lepMult = leprechaunMultiplier(meatFamiliar());
+  var lepBonus = weight * (2 * lepMult + Math.sqrt(lepMult));
+  var fairyMult = fairyMultiplier(meatFamiliar());
+  var fairyBonus = weight * (fairyMult + Math.sqrt(fairyMult) / 2);
+  var bjornMeatDropValue = meatValue * (meat + lepBonus);
+  var bjornItemDropValue = itemValue * (item + fairyBonus);
+  return bjornMeatDropValue + bjornItemDropValue;
+}
+createRiderMode("free", modifiers => valueBjornModifiers("free", modifiers), false);
+createRiderMode("embezzler", modifiers => valueBjornModifiers("embezzler", modifiers), true);
+createRiderMode("dmt", modifiers => valueBjornModifiers("dmt", modifiers), true);
+createRiderMode("free", modifiers => valueBjornModifiers("barf", modifiers), false, true);
+/**
+ * Determines the best familiar to bjornify given a particular fight mode
+ * @param mode The BonusEquipMode of this fight: "free", "dmt", "embezzler", or "barf"
+ * @returns The best familiar to bjornify given this fight mode
+ */
 
 function pickBjorn() {
-  var mode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : BonusEquipMode.FREE;
-
-  if (!bjornLists.has(mode)) {
-    bjornLists.set(mode, generateBjornList(mode));
-  }
-
-  var bjornList = bjornLists.get(mode);
-
-  if (bjornList) {
-    while (bjornList[0].dropPredicate && !bjornList[0].dropPredicate()) {
-      bjornList.shift();
-    }
-
-    if ((0,external_kolmafia_.myFamiliar)() !== bjornList[0].familiar) return bjornList[0];
-
-    while (bjornList[1].dropPredicate && !bjornList[1].dropPredicate()) {
-      bjornList.splice(1, 1);
-    }
-
-    return bjornList[1];
-  }
-
-  throw new Error("Something went wrong while selecting a familiar to bjornify or crownulate");
+  var mode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "free";
+  var attempt = pickRider(mode);
+  if (attempt) return attempt;
+  throw new Error("Unable to make a sensible bjorn decision");
 }
 ;// CONCATENATED MODULE: ./src/outfit.ts
 var outfit_templateObject, outfit_templateObject2, outfit_templateObject3, outfit_templateObject4, outfit_templateObject5, outfit_templateObject6, outfit_templateObject7, outfit_templateObject8, outfit_templateObject9, outfit_templateObject10, outfit_templateObject11, outfit_templateObject12, outfit_templateObject13, outfit_templateObject14, outfit_templateObject15, outfit_templateObject16, outfit_templateObject17, outfit_templateObject18, outfit_templateObject19, outfit_templateObject20, outfit_templateObject21, outfit_templateObject22, outfit_templateObject23, outfit_templateObject24, outfit_templateObject25, outfit_templateObject26, outfit_templateObject27, outfit_templateObject28, outfit_templateObject29, outfit_templateObject30, outfit_templateObject31, outfit_templateObject32, outfit_templateObject33, outfit_templateObject34, outfit_templateObject35, outfit_templateObject36, outfit_templateObject37, outfit_templateObject38, outfit_templateObject39, outfit_templateObject40, outfit_templateObject41, outfit_templateObject42, outfit_templateObject43, outfit_templateObject44, outfit_templateObject45, outfit_templateObject46, outfit_templateObject47, outfit_templateObject48, outfit_templateObject49, outfit_templateObject50, outfit_templateObject51, outfit_templateObject52, outfit_templateObject53, outfit_templateObject54, outfit_templateObject55, outfit_templateObject56, outfit_templateObject57, outfit_templateObject58, outfit_templateObject59, outfit_templateObject60, outfit_templateObject61, outfit_templateObject62, outfit_templateObject63, outfit_templateObject64, outfit_templateObject65, outfit_templateObject66, outfit_templateObject67, outfit_templateObject68, outfit_templateObject69, outfit_templateObject70, outfit_templateObject71, outfit_templateObject72, outfit_templateObject73, outfit_templateObject74, outfit_templateObject75, outfit_templateObject76, outfit_templateObject77, outfit_templateObject78, outfit_templateObject79, outfit_templateObject80, outfit_templateObject81, outfit_templateObject82, outfit_templateObject83, outfit_templateObject84, outfit_templateObject85, outfit_templateObject86, outfit_templateObject87, outfit_templateObject88, outfit_templateObject89, outfit_templateObject90, outfit_templateObject91, outfit_templateObject92, outfit_templateObject93, outfit_templateObject94, outfit_templateObject95, outfit_templateObject96;
@@ -13462,7 +13425,7 @@ function freeFightOutfit() {
   var _compiledOptions$forc, _compiledOptions$bonu, _compiledOptions$prev, _compiledOptions$prev2;
 
   var requirements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var equipMode = (0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(outfit_templateObject2 || (outfit_templateObject2 = outfit_taggedTemplateLiteral(["Machine Elf"]))) ? BonusEquipMode.DMT : BonusEquipMode.FREE;
+  var equipMode = (0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(outfit_templateObject2 || (outfit_templateObject2 = outfit_taggedTemplateLiteral(["Machine Elf"]))) ? "dmt" : "free";
   var bjornChoice = pickBjorn(equipMode);
   var compiledRequirements = Requirement.merge(requirements);
   var compiledOptions = compiledRequirements.maximizeOptions;
@@ -13483,7 +13446,7 @@ function freeFightOutfit() {
   var finalRequirement = new Requirement(parameters, {
     forceEquip: forceEquip,
     preventEquip: preventEquip,
-    bonusEquip: new Map([].concat(outfit_toConsumableArray(bonusEquip), outfit_toConsumableArray(dropsItems(equipMode)), outfit_toConsumableArray(pantsgiving()), outfit_toConsumableArray(cheeses(false)), outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + additionalValue(bjornChoice, equipMode)]]) : []))),
+    bonusEquip: new Map([].concat(outfit_toConsumableArray(bonusEquip), outfit_toConsumableArray(dropsItems(equipMode)), outfit_toConsumableArray(pantsgiving()), outfit_toConsumableArray(cheeses(false)), outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, !bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0]]) : []))),
     preventSlot: [].concat(outfit_toConsumableArray(preventSlot), outfit_toConsumableArray((0,template_string/* $slots */.ei)(outfit_templateObject10 || (outfit_templateObject10 = outfit_taggedTemplateLiteral(["crown-of-thrones, buddy-bjorn"])))))
   });
   maximizeCached(finalRequirement.maximizeParameters, finalRequirement.maximizeOptions);
@@ -13513,7 +13476,7 @@ function meatOutfit(embezzlerUp) {
   var sea = arguments.length > 2 ? arguments[2] : undefined;
   var forceEquip = [];
   var additionalRequirements = [];
-  var equipMode = embezzlerUp ? BonusEquipMode.EMBEZZLER : BonusEquipMode.BARF;
+  var equipMode = embezzlerUp ? "embezzler" : "barf";
   var bjornChoice = pickBjorn(equipMode);
 
   if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) {
@@ -13560,7 +13523,7 @@ function meatOutfit(embezzlerUp) {
   var compiledRequirements = Requirement.merge([].concat(outfit_toConsumableArray(requirements), [new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(additionalRequirements), {
     forceEquip: forceEquip,
     preventEquip: [].concat(outfit_toConsumableArray((0,template_string/* $items */.vS)(outfit_templateObject51 || (outfit_templateObject51 = outfit_taggedTemplateLiteral(["broken champagne bottle"])))), outfit_toConsumableArray(embezzlerUp ? (0,template_string/* $items */.vS)(outfit_templateObject52 || (outfit_templateObject52 = outfit_taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === (0,template_string/* $item */.xr)(outfit_templateObject53 || (outfit_templateObject53 = outfit_taggedTemplateLiteral(["Buddy Bjorn"]))) ? (0,template_string/* $item */.xr)(outfit_templateObject54 || (outfit_templateObject54 = outfit_taggedTemplateLiteral(["Crown of Thrones"]))) : (0,template_string/* $item */.xr)(outfit_templateObject55 || (outfit_templateObject55 = outfit_taggedTemplateLiteral(["Buddy Bjorn"])))]),
-    bonusEquip: new Map([].concat(outfit_toConsumableArray(dropsItems(equipMode)), outfit_toConsumableArray(embezzlerUp ? [] : pantsgiving()), outfit_toConsumableArray(cheeses(embezzlerUp)), outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + additionalValue(bjornChoice, equipMode)]]) : []))),
+    bonusEquip: new Map([].concat(outfit_toConsumableArray(dropsItems(equipMode)), outfit_toConsumableArray(embezzlerUp ? [] : pantsgiving()), outfit_toConsumableArray(cheeses(embezzlerUp)), outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + valueBjornModifiers(equipMode, bjornChoice.modifier)]]) : []))),
     preventSlot: (0,template_string/* $slots */.ei)(outfit_templateObject56 || (outfit_templateObject56 = outfit_taggedTemplateLiteral(["crown-of-thrones, buddy-bjorn"])))
   })]));
   maximizeCached(compiledRequirements.maximizeParameters, compiledRequirements.maximizeOptions);
@@ -13647,7 +13610,7 @@ function cheeses(embezzlerUp) {
 function snowSuit(equipMode) {
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(outfit_templateObject75 || (outfit_templateObject75 = outfit_taggedTemplateLiteral(["Snow Suit"])))) || (0,property/* get */.U2)("_carrotNoseDrops") >= 3 || [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some(mode => mode === equipMode)) return new Map([]);
+  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(outfit_templateObject75 || (outfit_templateObject75 = outfit_taggedTemplateLiteral(["Snow Suit"])))) || (0,property/* get */.U2)("_carrotNoseDrops") >= 3 || ["embezzler", "dmt"].some(mode => mode === equipMode)) return new Map([]);
   return new Map([[(0,template_string/* $item */.xr)(outfit_templateObject76 || (outfit_templateObject76 = outfit_taggedTemplateLiteral(["Snow Suit"]))), (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(outfit_templateObject77 || (outfit_templateObject77 = outfit_taggedTemplateLiteral(["carrot nose"])))) / 10]]);
 }
 
@@ -13659,14 +13622,14 @@ function mayflowerBouquet(equipMode) {
   // so let's just assume rate drops by 11% with a min of 1% ¯\_(ツ)_/¯
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(outfit_templateObject78 || (outfit_templateObject78 = outfit_taggedTemplateLiteral(["Mayflower bouquet"])))) || [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some(mode => mode === equipMode)) return new Map([]);
-  var sporadicMeatBonus = 40 * 0.125 * (equipMode === BonusEquipMode.BARF ? baseMeat : 0) / 100;
+  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(outfit_templateObject78 || (outfit_templateObject78 = outfit_taggedTemplateLiteral(["Mayflower bouquet"])))) || ["embezzler", "dmt"].some(mode => mode === equipMode)) return new Map([]);
+  var sporadicMeatBonus = 40 * 0.125 * (equipMode === "barf" ? baseMeat : 0) / 100;
   var averageFlowerValue = lib/* getSaleValue.apply */.xI.apply(void 0, outfit_toConsumableArray((0,template_string/* $items */.vS)(outfit_templateObject79 || (outfit_templateObject79 = outfit_taggedTemplateLiteral(["tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia"]))))) * Math.max(0.01, 0.5 - (0,property/* get */.U2)("_mayflowerDrops") * 0.11);
   return new Map([[(0,template_string/* $item */.xr)(outfit_templateObject80 || (outfit_templateObject80 = outfit_taggedTemplateLiteral(["Mayflower bouquet"]))), ((0,property/* get */.U2)("_mayflowerDrops") < 10 ? averageFlowerValue : 0) + sporadicMeatBonus]]);
 }
 
 function dropsItems(equipMode) {
-  var isFree = [BonusEquipMode.FREE, BonusEquipMode.DMT].some(mode => mode === equipMode);
+  var isFree = ["free", "dmt"].some(mode => mode === equipMode);
   return new Map([[(0,template_string/* $item */.xr)(outfit_templateObject81 || (outfit_templateObject81 = outfit_taggedTemplateLiteral(["mafia thumb ring"]))), !isFree ? 300 : 0], [(0,template_string/* $item */.xr)(outfit_templateObject82 || (outfit_templateObject82 = outfit_taggedTemplateLiteral(["lucky gold ring"]))), 400], [(0,template_string/* $item */.xr)(outfit_templateObject83 || (outfit_templateObject83 = outfit_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 250], [(0,template_string/* $item */.xr)(outfit_templateObject84 || (outfit_templateObject84 = outfit_taggedTemplateLiteral(["pantogram pants"]))), (0,property/* get */.U2)("_pantogramModifier").includes("Drops Items") ? 100 : 0], [(0,template_string/* $item */.xr)(outfit_templateObject85 || (outfit_templateObject85 = outfit_taggedTemplateLiteral(["Mr. Screege's spectacles"]))), 180], [(0,template_string/* $item */.xr)(outfit_templateObject86 || (outfit_templateObject86 = outfit_taggedTemplateLiteral(["bag of many confections"]))), lib/* getSaleValue.apply */.xI.apply(void 0, outfit_toConsumableArray((0,template_string/* $items */.vS)(outfit_templateObject87 || (outfit_templateObject87 = outfit_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / 6]].concat(outfit_toConsumableArray(snowSuit(equipMode)), outfit_toConsumableArray(mayflowerBouquet(equipMode))));
 }
 
@@ -15718,7 +15681,7 @@ module.exports = require("kolmafia");;
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 5706);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 41);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
