@@ -193,16 +193,17 @@ export const embezzlerSources = [
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
+      retrieveItem($item`Eight Days a Week Pill Keeper`) &&
       canAdv($location`Cobb's Knob Treasury`, true) &&
       !get("_freePillKeeperUsed"),
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
+      retrieveItem($item`Eight Days a Week Pill Keeper`) &&
       canAdv($location`Cobb's Knob Treasury`, true) &&
       !get("_freePillKeeperUsed")
         ? 1
         : 0,
     () => {
-      retrieveItem($item`Eight Days a Week Pill Keeper`);
       cliExecute("pillkeeper semirare");
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
