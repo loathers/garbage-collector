@@ -215,4 +215,5 @@ const unsupportedChoices = new Map<Location, { [choice: number]: number | string
   [$location`The Haunted Laboratory`, { [884]: 4 }],
   [$location`The Haunted Nursery`, { [885]: 4 }],
   [$location`The Haunted Storage Room`, { [886]: 4 }],
+  [$location`The Hidden Park`, { [789]: 6 }],
 ]);
