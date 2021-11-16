@@ -40,7 +40,7 @@ import {
   maximizeCached,
   Requirement,
 } from "libram";
-import { pickBjorn, valueBjornModifiers } from "./bjorn";
+import { additionalValue, pickBjorn } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import { baseMeat, BonusEquipMode, globalOptions, leprechaunMultiplier } from "./lib";
@@ -55,7 +55,8 @@ const bestAdventuresFromPants =
     .sort((a, b) => b - a)[0] || 0;
 
 export function freeFightOutfit(requirements: Requirement[] = []): void {
-  const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
+  const equipMode =
+    myFamiliar() === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   const bjornChoice = pickBjorn(equipMode);
   const compiledRequirements = Requirement.merge(requirements);
   const compiledOptions = compiledRequirements.maximizeOptions;
@@ -97,9 +98,9 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
         ? new Map<Item, number>([
             [
               bjornAlike,
-              !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+              (!bjornChoice.dropPredicate || bjornChoice.dropPredicate()
                 ? bjornChoice.meatVal() * bjornChoice.probability
-                : 0,
+                : 0) + additionalValue(bjornChoice, equipMode),
             ],
           ])
         : []),
@@ -164,7 +165,7 @@ export function meatOutfit(
 ): void {
   const forceEquip: Item[] = [];
   const additionalRequirements = [];
-  const equipMode = embezzlerUp ? "embezzler" : "barf";
+  const equipMode = embezzlerUp ? BonusEquipMode.EMBEZZLER : BonusEquipMode.BARF;
   const bjornChoice = pickBjorn(equipMode);
 
   if (myInebriety() > inebrietyLimit()) {
@@ -242,7 +243,7 @@ export function meatOutfit(
                   bjornAlike,
                   (!bjornChoice.dropPredicate || bjornChoice.dropPredicate()
                     ? bjornChoice.meatVal() * bjornChoice.probability
-                    : 0) + valueBjornModifiers(equipMode, bjornChoice.modifier),
+                    : 0) + additionalValue(bjornChoice, equipMode),
                 ],
               ])
             : []),
@@ -346,7 +347,7 @@ function snowSuit(equipMode: BonusEquipMode) {
   if (
     !have($item`Snow Suit`) ||
     get("_carrotNoseDrops") >= 3 ||
-    ["embezzler", "dmt"].some((mode) => mode === equipMode)
+    [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some((mode) => mode === equipMode)
   )
     return new Map<Item, number>([]);
 
@@ -361,10 +362,13 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have($item`Mayflower bouquet`) || ["embezzler", "dmt"].some((mode) => mode === equipMode))
+  if (
+    !have($item`Mayflower bouquet`) ||
+    [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some((mode) => mode === equipMode)
+  )
     return new Map<Item, number>([]);
 
-  const sporadicMeatBonus = (40 * 0.125 * (equipMode === "barf" ? baseMeat : 0)) / 100;
+  const sporadicMeatBonus = (40 * 0.125 * (equipMode === BonusEquipMode.BARF ? baseMeat : 0)) / 100;
   const averageFlowerValue =
     getSaleValue(
       ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`
@@ -377,7 +381,7 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
   ]);
 }
 function dropsItems(equipMode: BonusEquipMode) {
-  const isFree = ["free", "dmt"].some((mode) => mode === equipMode);
+  const isFree = [BonusEquipMode.FREE, BonusEquipMode.DMT].some((mode) => mode === equipMode);
   return new Map<Item, number>([
     [$item`mafia thumb ring`, !isFree ? 300 : 0],
     [$item`lucky gold ring`, 400],

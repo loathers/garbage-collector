@@ -61,7 +61,12 @@ export const globalOptions: {
   noBarf: false,
 };
 
-export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
+export enum BonusEquipMode {
+  FREE,
+  EMBEZZLER,
+  BARF,
+  DMT,
+}
 
 export const propertyManager = new PropertiesManager();
 
