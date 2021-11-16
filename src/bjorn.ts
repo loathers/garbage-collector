@@ -41,7 +41,7 @@ createRiderMode(
 );
 createRiderMode("dmt", (modifiers: Modifiers) => valueBjornModifiers("dmt", modifiers), true);
 createRiderMode(
-  "free",
+  "barf",
   (modifiers: Modifiers) => valueBjornModifiers("barf", modifiers),
   false,
   true
