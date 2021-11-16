@@ -61,12 +61,7 @@ export const globalOptions: {
   noBarf: false,
 };
 
-export enum BonusEquipMode {
-  FREE,
-  EMBEZZLER,
-  BARF,
-  DMT,
-}
+export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
 
 export const WISH_VALUE = 50000;
 

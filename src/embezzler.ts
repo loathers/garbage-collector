@@ -1,7 +1,6 @@
 import { canAdv } from "canadv.ash";
 import {
   abort,
-  adv1,
   chatPrivate,
   cliExecute,
   getCounters,
@@ -14,6 +13,7 @@ import {
   myInebriety,
   myTurncount,
   print,
+  retrieveItem,
   runCombat,
   use,
   userConfirm,
@@ -209,8 +209,9 @@ export const embezzlerSources = [
         ? 1
         : 0,
     () => {
+      retrieveItem($item`Eight Days a Week Pill Keeper`);
       cliExecute("pillkeeper semirare");
-      adv1($location`Cobb's Knob Treasury`);
+      adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
   ),
   new EmbezzlerFight(

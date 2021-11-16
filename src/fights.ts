@@ -1241,6 +1241,9 @@ const freeRunFightSources = [
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 9,
     (runSource: FreeRun) => {
+      propertyManager.setChoices({
+        1215: 1, //Gingerbread Civic Center advance clock
+      });
       adventureMacro($location`Gingerbread Civic Center`, runSource.macro);
       if (
         [
@@ -1272,6 +1275,9 @@ const freeRunFightSources = [
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 &&
       availableAmount($item`sprinkles`) > 5,
     (runSource: FreeRun) => {
+      propertyManager.setChoices({
+        1215: 1, //Gingerbread Civic Center advance clock
+      });
       adventureMacro($location`Gingerbread Civic Center`, runSource.macro);
       if (
         [
@@ -1293,6 +1299,7 @@ const freeRunFightSources = [
     () => {
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
+        1215: 1, //Gingerbread Civic Center advance clock
       });
       adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
     }
