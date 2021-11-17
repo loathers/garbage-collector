@@ -119,6 +119,17 @@ export function argmax<T>(values: [T, number][]): T {
   )[0];
 }
 
+/**
+ * Returns true if the arguments have all elements equal.
+ * @param array1 First array.
+ * @param array2 Second array.
+ */
+export function arrayEquals<T>(array1: T[], array2: T[]): boolean {
+  return (
+    array1.length === array2.length && array1.every((element, index) => element === array2[index])
+  );
+}
+
 export function questStep(questName: string): number {
   const stringStep = property.getString(questName);
   if (stringStep === "unstarted" || stringStep === "") return -1;

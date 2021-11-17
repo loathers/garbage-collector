@@ -5,14 +5,14 @@ import {
   cliExecute,
   drink,
   eat,
+  elementalResistance,
   equip,
   fullnessLimit,
   getProperty,
+  getWorkshed,
   haveEffect,
-  inebrietyLimit,
-  itemAmount,
+  itemType,
   mallPrice,
-  maximize,
   myClass,
   myFamiliar,
   myFullness,
@@ -35,6 +35,7 @@ import {
   $class,
   $classes,
   $effect,
+  $element,
   $familiar,
   $item,
   $items,
@@ -45,12 +46,16 @@ import {
   getAverageAdventures,
   have,
   Kmail,
+  maximizeCached,
   MayoClinic,
+  MenuItem,
+  planDiet,
   set,
+  sum,
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
-import { globalOptions } from "./lib";
+import { arrayEquals, baseMeat, globalOptions } from "./lib";
 import { Potion } from "./potions";
 
 const MPA = get("valueOfAdventure");
@@ -58,16 +63,28 @@ print(`Using adventure value ${MPA}.`, "blue");
 
 const saladFork = $item`Ol' Scratch's salad fork`;
 const frostyMug = $item`Frosty's frosty mug`;
+const spleenCleaners = $items`extra-greasy slider, jar of fermented pickle juice`;
+
+const Mayo = MayoClinic.Mayo;
 
 function eatSafe(qty: number, item: Item) {
-  acquire(qty, $item`Special Seasoning`);
-  acquire(qty, item);
+  if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
+    use($item`Universal Seasoning`);
+  }
+  if (myLevel() >= 15 && !get("_hungerSauceUsed") && mallPrice($item`Hunger™ Sauce`) < 3 * MPA) {
+    acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
+    use($item`Hunger™ Sauce`);
+  }
+  if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
+    eat($item`fudge spork`);
+  }
+  useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
+
   if (!eat(qty, item)) throw "Failed to eat safely";
 }
 
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
-  acquire(qty, item);
   if (have($skill`The Ode to Booze`)) {
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
@@ -80,33 +97,28 @@ function drinkSafe(qty: number, item: Item) {
   }
   if (!drink(qty, item)) throw "Failed to drink safely";
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
-    // sometimes mafia does not track the mime army shot glass property
+    // sometimes mafia does not track the mime army shotglass property
     setProperty("_mimeArmyShotglassUsed", "true");
   }
 }
 
 function chewSafe(qty: number, item: Item) {
-  acquire(qty, item, getAverageAdventures(item) * get("valueOfAdventure"));
   if (!chew(qty, item)) throw "Failed to chew safely";
 }
 
-function eatSpleen(qty: number, item: Item) {
-  if (mySpleenUse() < 5) throw "No spleen to clear with this.";
-  eatSafe(qty, item);
-}
-
-function drinkSpleen(qty: number, item: Item) {
-  if (mySpleenUse() < 5) throw "No spleen to clear with this.";
-  drinkSafe(qty, item);
-}
-
-function adventureGain(item: Item) {
-  if (item.adventures.includes("-")) {
-    const [min, max] = item.adventures.split("-").map((s) => parseInt(s, 10));
-    return (min + max) / 2.0;
-  } else {
-    return parseInt(item.adventures, 10);
+function consumeSafe(qty: number, item: Item) {
+  if (
+    $items`jar of fermented pickle juice, extra-greasy slider`.includes(item) &&
+    mySpleenUse() < 5
+  ) {
+    throw "No spleen to clear with this.";
   }
+  const priceCap = getAverageAdventures(item) * get("valueOfAdventure");
+  acquire(qty, item, priceCap);
+  if (itemType(item) === "food") eatSafe(qty, item);
+  else if (itemType(item) === "booze") drinkSafe(qty, item);
+  else if (itemType(item) === "spleen item") chewSafe(qty, item);
+  else use(qty, item);
 }
 
 function propTrue(prop: string | boolean) {
@@ -129,7 +141,11 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   }
 }
 
-const valuePerSpleen = (item: Item) => (adventureGain(item) * MPA - mallPrice(item)) / item.spleen;
+function valuePerSpleen(item: Item) {
+  const price =
+    item === $item`coffee pixie stick` ? 10 * mallPrice($item`Game Grid ticket`) : mallPrice(item);
+  return (getAverageAdventures(item) * MPA - price) / item.spleen;
+}
 let savedBestSpleenItem: Item | null = null;
 let savedPotentialSpleenItems: Item[] | null = null;
 function getBestSpleenItems() {
@@ -153,16 +169,16 @@ function fillSomeSpleen() {
 
 function fillSpleenWith(spleenItem: Item) {
   if (mySpleenUse() + spleenItem.spleen <= spleenLimit()) {
-    // (adventureGain * spleenA + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
+    // (getAverageAdventures * spleenA + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
     // spleenA + spleenB = spleenTotal
-    // (adventureGain * (spleenTotal - spleenB) + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
-    // 1.04 * adventureGain * (spleenTotal - spleenB) + 1.04 * adventures + 40 = 30 * spleenB + synthTurns
-    // 1.04 * adventureGain * spleenTotal - 1.04 * adventureGain * spleenB + 1.04 * adventures + 40 = 30 * spleenB + synthTurns
-    // 1.04 * adventureGain * spleenTotal + 1.04 * adventures + 40 = 30 * spleenB + synthTurns + 1.04 * adventureGain * spleenB
-    // (1.04 * adventureGain * spleenTotal + 1.04 * adventures + 40 - synthTurns) / (30 + 1.04 * adventureGain) = spleenB
+    // (getAverageAdventures * (spleenTotal - spleenB) + adventures) * 1.04 + 40 = 30 * spleenB + synthTurns
+    // 1.04 * getAverageAdventures * (spleenTotal - spleenB) + 1.04 * adventures + 40 = 30 * spleenB + synthTurns
+    // 1.04 * getAverageAdventures * spleenTotal - 1.04 * getAverageAdventures * spleenB + 1.04 * adventures + 40 = 30 * spleenB + synthTurns
+    // 1.04 * getAverageAdventures * spleenTotal + 1.04 * adventures + 40 = 30 * spleenB + synthTurns + 1.04 * getAverageAdventures * spleenB
+    // (1.04 * getAverageAdventures * spleenTotal + 1.04 * adventures + 40 - synthTurns) / (30 + 1.04 * getAverageAdventures) = spleenB
     const synthTurns = haveEffect($effect`Synthesis: Greed`);
     const spleenTotal = spleenLimit() - mySpleenUse();
-    const adventuresPerItem = adventureGain(spleenItem);
+    const adventuresPerItem = getAverageAdventures(spleenItem);
     // when not barfing, only get synth for estimatedTurns() turns (ignore adv gain)
     const spleenAdvsGained = globalOptions.noBarf ? 0 : 1.04 * adventuresPerItem * spleenTotal;
     const spleenSynth = Math.ceil(
@@ -178,109 +194,18 @@ function fillSpleenWith(spleenItem: Item) {
   }
 }
 
-function fillStomach() {
-  if (myLevel() >= 15 && !get("_hungerSauceUsed") && mallPrice($item`Hunger™ Sauce`) < 3 * MPA) {
-    acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
-    use(1, $item`Hunger™ Sauce`);
-  }
-  useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
-
-  while (myFullness() + 5 <= fullnessLimit()) {
-    if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
-      use($item`Universal Seasoning`);
-    }
-    if (myMaxhp() < 1000) maximize("0.05hp, hot res", false);
-    const count = Math.floor(Math.min((fullnessLimit() - myFullness()) / 5, mySpleenUse() / 5));
-    if (mallPrice(saladFork) < (55 * MPA) / 6) {
-      acquire(count, saladFork, (55 * MPA) / 6, false);
-      eat(Math.min(count, itemAmount(saladFork)), saladFork);
-    }
-    MayoClinic.setMayoMinder(MayoClinic.Mayo.flex, count);
-    eatSpleen(count, $item`extra-greasy slider`);
-    fillSomeSpleen();
-  }
-}
-
-function fillLiverAstralPilsner() {
-  if (have($item`astral six-pack`)) {
-    use($item`astral six-pack`);
-  }
-  if (availableAmount($item`astral pilsner`) === 0) {
-    return;
-  }
-  try {
-    if (
-      !get("_mimeArmyShotglassUsed") &&
-      itemAmount($item`mime army shotglass`) > 0 &&
-      availableAmount($item`astral pilsner`) > 0
-    ) {
+function fillShotglass() {
+  if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
+    if (have($item`astral pilsner`)) {
       drinkSafe(1, $item`astral pilsner`);
+    } else {
+      equip($item`tuxedo shirt`);
+      drinkSafe(1, $item`splendid martini`);
     }
-    if (
-      globalOptions.ascending &&
-      myInebriety() + 1 <= inebrietyLimit() &&
-      availableAmount($item`astral pilsner`) > 0
-    ) {
-      const count = Math.floor(
-        Math.min(inebrietyLimit() - myInebriety(), availableAmount($item`astral pilsner`))
-      );
-      drinkSafe(count, $item`astral pilsner`);
-    }
-  } catch {
-    print(`Failed to drink astral pilsner.`, "red");
   }
 }
 
-function fillLiver() {
-  if (myFamiliar() === $familiar`Stooper`) {
-    useFamiliar($familiar`none`);
-  }
-  fillLiverAstralPilsner();
-  if (!get("_mimeArmyShotglassUsed") && itemAmount($item`mime army shotglass`) > 0) {
-    equip($item`tuxedo shirt`);
-    drinkSafe(1, $item`splendid martini`);
-  }
-  while (myInebriety() + 5 <= inebrietyLimit()) {
-    if (myMaxhp() < 1000) maximize("0.05hp, cold res", false);
-    const count = Math.floor(Math.min((inebrietyLimit() - myInebriety()) / 5, mySpleenUse() / 5));
-    if (mallPrice(frostyMug) < (55 * MPA) / 6) {
-      acquire(count, frostyMug, (55 * MPA) / 6, false);
-      drink(Math.min(count, itemAmount(frostyMug)), frostyMug);
-    }
-    drinkSpleen(count, $item`jar of fermented pickle juice`);
-    fillSomeSpleen();
-  }
-}
-
-export function runDiet(): void {
-  if (
-    get("barrelShrineUnlocked") &&
-    !get("_barrelPrayer") &&
-    $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
-  ) {
-    cliExecute("barrelprayer buff");
-  }
-
-  const { bestSpleenItem } = getBestSpleenItems();
-  const embezzlers = embezzlerCount();
-  if (embezzlers) {
-    if (mySpleenUse() < spleenLimit()) {
-      if (!have($effect`Eau d' Clochard`)) {
-        if (!have($item`beggin' cologne`)) {
-          const cologne = new Potion($item`beggin' cologne`);
-          const equilibriumPrice = cologne.gross(embezzlers) - valuePerSpleen(bestSpleenItem);
-          if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
-        }
-        if (have($item`beggin' cologne`)) {
-          chew(1, $item`beggin' cologne`);
-        }
-      }
-    }
-    if (have($skill`Sweet Synthesis`) && mySpleenUse() < spleenLimit())
-      ensureEffect($effect`Synthesis: Collection`);
-    if (have($item`body spradium`) && mySpleenUse() < spleenLimit())
-      ensureEffect($effect`Boxing Day Glow`);
-  }
+function nonOrganAdventures(): void {
   useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
 
   while (get("_loveChocolatesUsed") < 3) {
@@ -350,12 +275,10 @@ export function runDiet(): void {
   }
 
   if (globalOptions.ascending) useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 5 * MPA);
+}
 
-  fillSomeSpleen();
-  fillStomach();
-  fillLiver();
-
-  if (!get("_distentionPillUsed") && 1 <= myInebriety()) {
+function pillCheck(): void {
+  if (!get("_distentionPillUsed")) {
     if (!get<boolean>("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
       set(
         "garbo_skipPillCheck",
@@ -374,7 +297,7 @@ export function runDiet(): void {
     }
   }
 
-  if (!get("_syntheticDogHairPillUsed") && 1 <= myInebriety()) {
+  if (!get("_syntheticDogHairPillUsed")) {
     if (!get<boolean>("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
       set(
         "garbo_skipPillCheck",
@@ -392,16 +315,164 @@ export function runDiet(): void {
       print("WARNING: Out of synthetic dog hair pills.", "red");
     }
   }
+}
 
-  while (myFullness() < fullnessLimit()) {
-    if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
-      eat(1, $item`fudge spork`);
-    }
-    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
-    eatSafe(1, $item`jumping horseradish`);
+export function runDiet(): void {
+  pillCheck();
+
+  nonOrganAdventures();
+
+  if (myFamiliar() === $familiar`Stooper`) {
+    useFamiliar($familiar`none`);
   }
-  while (myInebriety() < inebrietyLimit()) {
-    drinkSafe(1, $item`Ambitious Turkey`);
+
+  if (have($item`astral six-pack`)) {
+    use($item`astral six-pack`);
+  }
+
+  fillShotglass();
+
+  if (
+    get("barrelShrineUnlocked") &&
+    !get("_barrelPrayer") &&
+    $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
+  ) {
+    cliExecute("barrelprayer buff");
+  }
+
+  const { bestSpleenItem } = getBestSpleenItems();
+  const embezzlers = embezzlerCount();
+  if (embezzlers) {
+    if (mySpleenUse() < spleenLimit()) {
+      if (!have($effect`Eau d' Clochard`)) {
+        if (!have($item`beggin' cologne`)) {
+          const cologne = new Potion($item`beggin' cologne`);
+          const equilibriumPrice = cologne.gross(embezzlers) - valuePerSpleen(bestSpleenItem);
+          if (equilibriumPrice > 0) buy(1, $item`beggin' cologne`, equilibriumPrice);
+        }
+        if (have($item`beggin' cologne`)) {
+          chew(1, $item`beggin' cologne`);
+        }
+      }
+    }
+    if (have($skill`Sweet Synthesis`) && mySpleenUse() < spleenLimit()) {
+      ensureEffect($effect`Synthesis: Collection`);
+    }
+    if (have($item`body spradium`) && mySpleenUse() < spleenLimit()) {
+      ensureEffect($effect`Boxing Day Glow`);
+    }
+  }
+
+  const liverStomachCleaners = $items`spice melange, distention pill, synthetic dog hair pill, cuppa Voraci tea, cuppa Sobrie tea`;
+  const helpers = [Mayo.flex, $item`Special Seasoning`, saladFork, frostyMug];
+  const haveMayo = getWorkshed() === $item`portable Mayo Clinic`;
+  const horseradishLength = haveMayo ? 100 : 50;
+  // Adjust value of horseradish if we have mayo, since we're using Mayozapine instead of Mayoflex.
+  const horseradishValue =
+    horseradishLength * baseMeat +
+    Math.min(horseradishLength, embezzlers) * 750 -
+    (haveMayo ? MPA : 0);
+  const menu = [
+    // BOOZE
+    new MenuItem($item`dirt julep`, {
+      maximum: 1,
+      additionalValue: 40 * baseMeat + Math.min(embezzlers, 40) * 750,
+    }),
+    new MenuItem($item`Ambitious Turkey`, {
+      maximum: 1,
+      additionalValue: 0.25 * (50 * baseMeat + Math.min(embezzlers, 50) + 750),
+    }),
+    new MenuItem($item`Ambitious Turkey`, { additionalValue: 0.25 * 50 * baseMeat }),
+    new MenuItem($item`jar of fermented pickle juice`),
+    new MenuItem($item`Sacramento wine`),
+    new MenuItem($item`splendid martini`),
+    new MenuItem($item`punch-drunk punch`),
+    new MenuItem($item`blood-red mushroom wine`),
+    new MenuItem($item`buzzing mushroom wine`),
+    new MenuItem($item`complex mushroom wine`),
+    new MenuItem($item`overpowering mushroom wine`),
+    new MenuItem($item`smooth mushroom wine`),
+    new MenuItem($item`swirling mushroom wine`),
+    new MenuItem($item`Hodgman's blanket`),
+
+    // FOOD
+    new MenuItem($item`jumping horseradish`, {
+      maximum: 1,
+      additionalValue: horseradishValue,
+    }),
+    new MenuItem($item`extra-greasy slider`),
+    new MenuItem($item`tin cup of mulligan stew`),
+    new MenuItem($item`Tea, Earl Grey, Hot`),
+    new MenuItem($item`meteoreo`),
+    new MenuItem($item`glass of raw eggs`),
+    new MenuItem($item`ice rice`),
+    new MenuItem($item`frozen banquet`),
+
+    // HELPERS
+    ...liverStomachCleaners.map((item) => new MenuItem(item)),
+    ...helpers.map((item) => new MenuItem(item)),
+    new MenuItem($item`pocket wish`, { maximum: 1, wishEffect: $effect`Refined Palate` }),
+  ];
+
+  // Only use our astral pilsners if we're ascending. Otherwise they're good for shotglass.
+  if (have($item`astral pilsner`) && globalOptions.ascending) {
+    menu.push(
+      new MenuItem($item`astral pilsner`, {
+        maximum: availableAmount($item`astral pilsner`),
+      })
+    );
+  }
+
+  // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
+  const diet = planDiet(MPA, menu);
+
+  fillSomeSpleen();
+
+  // Fill organs in rounds, making sure we're making progress in each round.
+  const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
+  let lastOrgans = [-1, -1, -1];
+  while (sum(diet, ([, count]) => count) > 0) {
+    if (arrayEquals(lastOrgans, organs())) {
+      throw "Stuck in an infinite loop in diet code.";
+    }
+
+    for (const itemCount of diet) {
+      const [menuItems, count] = itemCount;
+      if (count === 0) continue;
+
+      // Handle spleen manually.
+      if (menuItems.some((menuItem) => itemType(menuItem.item) === "spleen item")) continue;
+
+      let countToConsume = count;
+      if (menuItems.some((menuItem) => spleenCleaners.includes(menuItem.item))) {
+        countToConsume = Math.min(countToConsume, Math.floor(mySpleenUse() / 5));
+      }
+
+      for (const menuItem of menuItems) {
+        if ([saladFork, frostyMug].includes(menuItem.item)) {
+          const element = menuItem.item === saladFork ? $element`hot` : $element`cold`;
+          if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
+            maximizeCached(["0.05 HP", `${element} Resistance`]);
+            if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
+              throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
+            }
+          }
+          consumeSafe(countToConsume, menuItem.item);
+        } else if (menuItem.item === Mayo.flex) {
+          if (menuItem.item === $item`jumping horseradish`) {
+            MayoClinic.setMayoMinder(Mayo.zapine, countToConsume);
+          } else {
+            MayoClinic.setMayoMinder(Mayo.flex, countToConsume);
+          }
+        } else if (menuItem.item !== $item`Special Seasoning`) {
+          consumeSafe(countToConsume, menuItem.item);
+        }
+      }
+      itemCount[1] -= countToConsume;
+    }
+
+    fillSomeSpleen();
+    lastOrgans = organs();
   }
 
   const mojoFilterCount = 3 - get("currentMojoFilters");
@@ -414,8 +485,6 @@ export function runDiet(): void {
 
 export function horseradish(): void {
   if (myFullness() < fullnessLimit()) {
-    if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed"))
-      eat(1, $item`fudge spork`);
     MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
     eatSafe(1, $item`jumping horseradish`);
   }
