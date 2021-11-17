@@ -2847,10 +2847,6 @@ klona@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.4.tgz#7bb1e3affb0cb8624547ef7e8f6708ea2e39dfc0"
 
-kolmafia@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-1.2.1.tgz#6fe59488d4365baee4e3cbbe9225bb181b044134"
-
 kolmafia@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-1.4.0.tgz#25af4482f68abeb2705953cf00a558042ec92464"
