@@ -11,6 +11,7 @@ import {
   takeShop,
   takeStorage,
 } from "kolmafia";
+import { get } from "libram";
 
 const priceCaps: { [index: string]: number } = {
   "jar of fermented pickle juice": 75000,
@@ -37,10 +38,12 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   let remaining = qty - startAmount;
   if (remaining <= 0) return qty;
 
-  const getCloset = Math.min(remaining, closetAmount(item));
-  if (!takeCloset(getCloset, item) && throwOnFail) throw "failed to remove from closet";
-  remaining -= getCloset;
-  if (remaining <= 0) return qty;
+  if (get("autoSatisfyWithCloset")) {
+    const getCloset = Math.min(remaining, closetAmount(item));
+    if (!takeCloset(getCloset, item) && throwOnFail) throw "failed to remove from closet";
+    remaining -= getCloset;
+    if (remaining <= 0) return qty;
+  }
 
   const getStorage = Math.min(remaining, storageAmount(item));
   if (!takeStorage(getStorage, item) && throwOnFail) throw "failed to remove from storage";
