@@ -238,10 +238,7 @@ export class Macro extends StrictMacro {
 
     return this.externalIf(
       shouldRedigitize(),
-      Macro.if_(
-        get("_sourceTerminalDigitizeMonster") ?? $monster`none`,
-        Macro.trySkill($skill`Digitize`)
-      )
+      Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`))
     )
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
