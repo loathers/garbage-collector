@@ -217,14 +217,6 @@ export class Macro extends StrictMacro {
     return new Macro().tryCopier(itemOrSkill);
   }
 
-  ifMonster(monster: Monster, macro: Macro): Macro {
-    return this.if_(`monsterid ${monster.id}`, macro);
-  }
-
-  static ifMonster(monster: Monster, macro: Macro): Macro {
-    return new Macro().ifMonster(monster, macro);
-  }
-
   meatKill(): Macro {
     const sealClubberSetup =
       equippedAmount($item`mafia pointer finger ring`) > 0 &&
@@ -246,40 +238,37 @@ export class Macro extends StrictMacro {
 
     return this.externalIf(
       shouldRedigitize(),
-      Macro.if_(
-        `monstername ${get("_sourceTerminalDigitizeMonster")}`,
-        Macro.trySkill($skill`Digitize`)
-      )
+      Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`))
     )
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
         myAdventures() < 150 && have($skill`Meteor Lore`) && get("_meteorShowerUses") < 5,
-        Macro.ifMonster($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
+        Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
       )
       .externalIf(
         !have($effect`On the Trail`) && have($skill`Transcendent Olfaction`),
-        Macro.ifMonster($monster`garbage tourist`, Macro.trySkill($skill`Transcendent Olfaction`))
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Transcendent Olfaction`))
       )
       .externalIf(
         get("_gallapagosMonster") !== $monster`garbage tourist` &&
           have($skill`Gallapagosian Mating Call`),
-        Macro.ifMonster(
-          $monster`garbage tourist`,
-          Macro.trySkill($skill`Gallapagosian Mating Call`)
-        )
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Gallapagosian Mating Call`))
       )
       .externalIf(
         !get("_latteCopyUsed") &&
           (get("_latteMonster") !== $monster`garbage tourist` ||
             getCounters("Latte Monster", 0, 30).trim() === "") &&
           have($item`latte lovers member's mug`),
-        Macro.ifMonster($monster`garbage tourist`, Macro.trySkill($skill`Offer Latte to Opponent`))
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Offer Latte to Opponent`))
       )
       .externalIf(
         get("_feelNostalgicUsed") < 3 &&
           get("lastCopyableMonster") === $monster`garbage tourist` &&
           have($skill`Feel Nostalgic`),
-        Macro.if_("!monstername garbage tourist", Macro.trySkill($skill`Feel Nostalgic`))
+        Macro.if_(
+          `!monsterid ${$monster`garbage tourist`.id}`,
+          Macro.trySkill($skill`Feel Nostalgic`)
+        )
       )
       .meatStasis(willCrit)
       .externalIf(sealClubberSetup, Macro.trySkill($skill`Furious Wallop`))
@@ -545,7 +534,9 @@ export function withMacro<T>(macro: Macro, action: () => T): T {
 
 export function main(): void {
   if (have($effect`Eldritch Attunement`)) {
-    Macro.if_("monstername eldritch tentacle", Macro.basicCombat()).step(Macro.load()).submit();
+    Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
+      .step(Macro.load())
+      .submit();
   } else {
     Macro.load().submit();
   }
