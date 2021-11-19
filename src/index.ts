@@ -57,6 +57,8 @@ import { horseradish, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import {
+  embezzlerLog,
+  globalOptions,
   kramcoGuaranteed,
   printHelpMenu,
   printLog,
@@ -74,7 +76,6 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
-import { globalOptions, log } from "./globalvars";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
@@ -174,7 +175,7 @@ function barfTurn() {
       !embezzlerUp &&
       myInebriety() > inebrietyLimit() &&
       globalOptions.ascending &&
-      clamp(Math.floor(estimatedTurns()) - digitizedMonstersRemaining(), 1, estimatedTurns()) <=
+      clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
         availableAmount($item`Map to Safety Shelter Grimace Prime`)
     ) {
       const choiceToSet =
@@ -191,7 +192,7 @@ function barfTurn() {
         location,
         Macro.externalIf(
           underwater,
-          Macro.ifMonster($monster`Knob Goblin Embezzler`, Macro.item($item`pulled green taffy`))
+          Macro.if_($monster`Knob Goblin Embezzler`, Macro.item($item`pulled green taffy`))
         ).meatKill(),
         Macro.if_(
           `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
@@ -217,13 +218,13 @@ function barfTurn() {
     }
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
-    if (embezzlerUp) log.digitizedEmbezzlersFought++;
-    else log.initialEmbezzlersFought++;
+    if (embezzlerUp) embezzlerLog.digitizedEmbezzlersFought++;
+    else embezzlerLog.initialEmbezzlersFought++;
 }
 
 export function canContinue(): boolean {
   return (
-    myAdventures() > 0 &&
+    myAdventures() > globalOptions.saveTurns &&
     (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
   );
 }
@@ -258,7 +259,12 @@ export function main(argString = ""): void {
   const args = argString.split(" ");
   for (const arg of args) {
     if (arg.match(/\d+/)) {
-      globalOptions.stopTurncount = myTurncount() + parseInt(arg, 10);
+      const adventureCount = parseInt(arg, 10);
+      if (adventureCount >= 0) {
+        globalOptions.stopTurncount = myTurncount() + adventureCount;
+      } else {
+        globalOptions.saveTurns = -adventureCount;
+      }
     } else if (arg.match(/ascend/)) {
       globalOptions.ascending = true;
     } else if (arg.match(/nobarf/)) {
@@ -333,6 +339,8 @@ export function main(argString = ""): void {
       maximizerFoldables: true,
       hpAutoRecoveryTarget: 1.0,
       choiceAdventureScript: "",
+      customCombatScript: "garbo",
+      currentMood: "apathetic",
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -359,8 +367,6 @@ export function main(argString = ""): void {
     if (get("mpAutoRecoveryTarget") < mpTarget)
       propertyManager.set({ mpAutoRecoveryTarget: mpTarget });
 
-    cliExecute("mood apathetic");
-    cliExecute("ccs garbo");
     safeRestore();
 
     if (questStep("questM23Meatsmith") === -1) {
@@ -422,7 +428,11 @@ export function main(argString = ""): void {
             }
 
             // buy one-day tickets with FunFunds if user desires
-            if (get<boolean>("garbo_buyPass", false) && availableAmount($item`FunFunds™`) >= 20) {
+            if (
+              get<boolean>("garbo_buyPass", false) &&
+              availableAmount($item`FunFunds™`) >= 20 &&
+              !have($item`one-day ticket to Dinseylandfill`)
+            ) {
               print("Buying a one-day tickets", "blue");
               buy(
                 $coinmaster`The Dinsey Company Store`,
@@ -441,7 +451,7 @@ export function main(argString = ""): void {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     print(
-      `You fought ${log.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${log.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+      `You fought ${embezzlerLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${embezzlerLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
       "blue"
     );
     printLog("blue");

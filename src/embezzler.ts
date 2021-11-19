@@ -1,15 +1,16 @@
 import { canAdv } from "canadv.ash";
 import {
   abort,
-  adv1,
   chatPrivate,
   cliExecute,
   getCounters,
+  haveEquipped,
   inebrietyLimit,
   itemAmount,
   myAdventures,
   myInebriety,
   myTurncount,
+  retrieveItem,
   use,
   wait,
 } from "kolmafia";
@@ -30,8 +31,8 @@ import {
   sum,
 } from "libram";
 import { Macro } from "./combat";
-import { globalOptions } from "./globalvars";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
+import { globalOptions } from "./lib";
 
 type EmbezzlerFightOptions = {
   location?: Location;
@@ -84,8 +85,8 @@ function faxEmbezzler(): void {
 
 export const embezzlerMacro = (): Macro =>
   Macro.if_(
-    "monstername Knob Goblin Embezzler",
-    Macro.if_("snarfblat 186", Macro.tryCopier($item`pulled green taffy`))
+    $monster`Knob Goblin Embezzler`,
+    Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
       .trySkill($skill`Wink at`)
       .trySkill($skill`Fire a badly romantic arrow`)
       .externalIf(
@@ -110,7 +111,15 @@ export const embezzlerSources = [
     (options: EmbezzlerFightOptions) => {
       adventureMacro(
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
-        embezzlerMacro()
+        Macro.externalIf(
+          haveEquipped($item`backup camera`) &&
+            get("_backUpUses") < 11 &&
+            get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
+          Macro.if_(
+            `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
+            Macro.skill($skill`Back-Up to your Last Enemy`)
+          )
+        ).step(embezzlerMacro())
       );
     },
     [],
@@ -129,7 +138,15 @@ export const embezzlerSources = [
     (options: EmbezzlerFightOptions) => {
       adventureMacro(
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
-        embezzlerMacro()
+        Macro.externalIf(
+          haveEquipped($item`backup camera`) &&
+            get("_backUpUses") < 11 &&
+            get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
+          Macro.if_(
+            `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
+            Macro.skill($skill`Back-Up to your Last Enemy`)
+          )
+        ).step(embezzlerMacro())
       );
     },
     [],
@@ -150,7 +167,7 @@ export const embezzlerSources = [
       adventureMacro(
         realLocation,
         Macro.if_(
-          "!monstername Knob Goblin Embezzler",
+          `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
           Macro.skill($skill`Back-Up to your Last Enemy`)
         ).step(options.macro || embezzlerMacro())
       );
@@ -185,8 +202,9 @@ export const embezzlerSources = [
         ? 1
         : 0,
     () => {
+      retrieveItem($item`Eight Days a Week Pill Keeper`);
       cliExecute("pillkeeper semirare");
-      adv1($location`Cobb's Knob Treasury`);
+      adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
   ),
   new EmbezzlerFight(
@@ -299,13 +317,26 @@ export function embezzlerCount(): number {
 }
 
 export function estimatedTurns(): number {
+  // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
+  const pantsgivingAdventures = have($item`Pantsgiving`)
+    ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
+    : 0;
+  const potentialSausages =
+    itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`);
+  const sausageAdventures = have($item`Kramco Sausage-o-Matic™`)
+    ? Math.min(potentialSausages, 23 - get("_sausagesEaten"))
+    : 0;
+  const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
+  const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
+
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
   else if (globalOptions.noBarf) turns = embezzlerCount();
-  else
+  else {
     turns =
-      (myAdventures() + (globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0)) *
-      (have($item`mafia thumb ring`) ? 1.04 : 1);
+      (myAdventures() + sausageAdventures + pantsgivingAdventures + nightcapAdventures) *
+      thumbRingMultiplier;
+  }
 
   return turns;
 }

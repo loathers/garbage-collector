@@ -1,5 +1,4 @@
 import "core-js/modules/es.object.from-entries";
-import { canAdv } from "canadv.ash";
 import {
   cliExecute,
   effectModifier,
@@ -13,19 +12,9 @@ import {
   print,
   use,
 } from "kolmafia";
-import {
-  $effect,
-  $effects,
-  $familiar,
-  $item,
-  $items,
-  $location,
-  get,
-  getActiveEffects,
-  have,
-} from "libram";
+import { $effect, $effects, $familiar, $item, $items, get, getActiveEffects, have } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat } from "./lib";
+import { baseMeat, pillkeeperOpportunityCost } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -44,30 +33,30 @@ for (const effectGroup of mutuallyExclusiveList) {
   }
 }
 
-class Potion {
+export class Potion {
   potion: Item;
 
   constructor(potion: Item) {
     this.potion = potion;
   }
 
-  effect() {
+  effect(): Effect {
     return effectModifier(this.potion, "Effect");
   }
 
-  effectDuration() {
+  effectDuration(): number {
     return numericModifier(this.potion, "Effect Duration");
   }
 
-  meatDrop() {
+  meatDrop(): number {
     return numericModifier(this.effect(), "Meat Drop");
   }
 
-  familiarWeight() {
+  familiarWeight(): number {
     return numericModifier(this.effect(), "Familiar Weight");
   }
 
-  bonusMeat() {
+  bonusMeat(): number {
     const familiarMultiplier = have($familiar`Robortender`)
       ? 2
       : have($familiar`Hobo Monkey`)
@@ -84,7 +73,7 @@ class Potion {
     return this.familiarWeight() * marginalValue + this.meatDrop();
   }
 
-  gross(embezzlers: number, doubleDuration = false) {
+  gross(embezzlers: number, doubleDuration = false): number {
     const bonusMeat = this.bonusMeat();
     const duration = this.effectDuration() * (doubleDuration ? 2 : 1);
     // Number of embezzlers this will actually be in effect for.
@@ -96,25 +85,25 @@ class Potion {
     return (bonusMeat / 100) * (baseMeat * duration + 750 * embezzlersApplied);
   }
 
-  price(historical: boolean) {
+  price(historical: boolean): number {
     // If asked for historical, and age < 14 days, use historical.
     return historical && historicalAge(this.potion) < 14
       ? historicalPrice(this.potion)
       : mallPrice(this.potion);
   }
 
-  net(embezzlers: number, doubleDuration = false, historical = false) {
+  net(embezzlers: number, doubleDuration = false, historical = false): number {
     return this.gross(embezzlers, doubleDuration) - this.price(historical);
   }
 
-  doublingValue(embezzlers: number, historical = false) {
+  doublingValue(embezzlers: number, historical = false): number {
     return (
       Math.max(this.net(embezzlers, true, historical), 0) -
       Math.max(this.net(embezzlers, false, historical), 0)
     );
   }
 
-  useAsValuable(embezzlers: number, doubleDuration = false) {
+  useAsValuable(embezzlers: number, doubleDuration = false): void {
     const duration = this.effectDuration() * (doubleDuration ? 2 : 1);
 
     let quantityToUse = 0;
@@ -189,6 +178,10 @@ class Potion {
   }
 }
 
+/**
+ * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
+ * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
+ */
 export function potionSetup(doEmbezzlers = false): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
@@ -208,10 +201,7 @@ export function potionSetup(doEmbezzlers = false): void {
     if (testPotionsDoubled.length > 0) {
       const potion = testPotionsDoubled[0];
       // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
-      if (
-        potion.doublingValue(embezzlers) >
-        (canAdv($location`Cobb's Knob Treasury`, false) ? 15000 : 0)
-      ) {
+      if (potion.doublingValue(embezzlers) > pillkeeperOpportunityCost()) {
         cliExecute("pillkeeper extend");
         print(
           `Best doubling potion: ${potion.potion.name}, value ${potion
@@ -249,6 +239,10 @@ export function potionSetup(doEmbezzlers = false): void {
   }
 }
 
+/**
+ * Uses a Greenspan iff profitable; does not account for PYEC/LTC, or running out of adventures with the ascend flag.
+ * @param embezzlers Do we want to account for embezzlers when calculating the value of bathroom finance?
+ */
 export function bathroomFinance(embezzlers: number): void {
   if (have($effect`Buy!  Sell!  Buy!  Sell!`)) return;
 

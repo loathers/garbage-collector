@@ -25,6 +25,7 @@ import {
 import {
   $class,
   $effect,
+  $effects,
   $familiar,
   $item,
   $items,
@@ -40,11 +41,10 @@ import {
   maximizeCached,
   Requirement,
 } from "libram";
-import { additionalValue, pickBjorn } from "./bjorn";
+import { pickBjorn, valueBjornModifiers } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
-import { globalOptions } from "./globalvars";
-import { baseMeat, BonusEquipMode, leprechaunMultiplier } from "./lib";
+import { baseMeat, BonusEquipMode, globalOptions, leprechaunMultiplier } from "./lib";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -56,8 +56,7 @@ const bestAdventuresFromPants =
     .sort((a, b) => b - a)[0] || 0;
 
 export function freeFightOutfit(requirements: Requirement[] = []): void {
-  const equipMode =
-    myFamiliar() === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
+  const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
   const bjornChoice = pickBjorn(equipMode);
   const compiledRequirements = Requirement.merge(requirements);
   const compiledOptions = compiledRequirements.maximizeOptions;
@@ -89,19 +88,23 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
 
   const finalRequirement = new Requirement(parameters, {
     forceEquip: forceEquip,
-    preventEquip: preventEquip,
+    preventEquip: [
+      ...preventEquip,
+      ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
+    ],
     bonusEquip: new Map<Item, number>([
       ...bonusEquip,
       ...dropsItems(equipMode),
       ...pantsgiving(),
       ...cheeses(false),
+      ...shavingBonus(),
       ...(bjornAlike
         ? new Map<Item, number>([
             [
               bjornAlike,
-              (!bjornChoice.dropPredicate || bjornChoice.dropPredicate()
+              !bjornChoice.dropPredicate || bjornChoice.dropPredicate()
                 ? bjornChoice.meatVal() * bjornChoice.probability
-                : 0) + additionalValue(bjornChoice, equipMode),
+                : 0,
             ],
           ])
         : []),
@@ -166,7 +169,7 @@ export function meatOutfit(
 ): void {
   const forceEquip: Item[] = [];
   const additionalRequirements = [];
-  const equipMode = embezzlerUp ? BonusEquipMode.EMBEZZLER : BonusEquipMode.BARF;
+  const equipMode = embezzlerUp ? "embezzler" : "barf";
   const bjornChoice = pickBjorn(equipMode);
 
   if (myInebriety() > inebrietyLimit()) {
@@ -230,7 +233,7 @@ export function meatOutfit(
       {
         forceEquip,
         preventEquip: [
-          ...$items`broken champagne bottle`,
+          ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
@@ -238,13 +241,14 @@ export function meatOutfit(
           ...dropsItems(equipMode),
           ...(embezzlerUp ? [] : pantsgiving()),
           ...cheeses(embezzlerUp),
+          ...shavingBonus(),
           ...(bjornAlike
             ? new Map<Item, number>([
                 [
                   bjornAlike,
                   (!bjornChoice.dropPredicate || bjornChoice.dropPredicate()
                     ? bjornChoice.meatVal() * bjornChoice.probability
-                    : 0) + additionalValue(bjornChoice, equipMode),
+                    : 0) + valueBjornModifiers(equipMode, bjornChoice.modifier),
                 ],
               ])
             : []),
@@ -348,7 +352,7 @@ function snowSuit(equipMode: BonusEquipMode) {
   if (
     !have($item`Snow Suit`) ||
     get("_carrotNoseDrops") >= 3 ||
-    [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some((mode) => mode === equipMode)
+    ["embezzler", "dmt"].some((mode) => mode === equipMode)
   )
     return new Map<Item, number>([]);
 
@@ -363,13 +367,10 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (
-    !have($item`Mayflower bouquet`) ||
-    [BonusEquipMode.EMBEZZLER, BonusEquipMode.DMT].some((mode) => mode === equipMode)
-  )
+  if (!have($item`Mayflower bouquet`) || ["embezzler", "dmt"].some((mode) => mode === equipMode))
     return new Map<Item, number>([]);
 
-  const sporadicMeatBonus = (40 * 0.125 * (equipMode === BonusEquipMode.BARF ? baseMeat : 0)) / 100;
+  const sporadicMeatBonus = (40 * 0.125 * (equipMode === "barf" ? baseMeat : 0)) / 100;
   const averageFlowerValue =
     getSaleValue(
       ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`
@@ -382,7 +383,7 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
   ]);
 }
 function dropsItems(equipMode: BonusEquipMode) {
-  const isFree = [BonusEquipMode.FREE, BonusEquipMode.DMT].some((mode) => mode === equipMode);
+  const isFree = ["free", "dmt"].some((mode) => mode === equipMode);
   return new Map<Item, number>([
     [$item`mafia thumb ring`, !isFree ? 300 : 0],
     [$item`lucky gold ring`, 400],
@@ -417,4 +418,21 @@ function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
     return $item`Crown of Thrones`;
   }
   return $item`Buddy Bjorn`;
+}
+
+function shavingBonus(): Map<Item, number> {
+  // eslint-disable-next-line libram/verify-constants
+  if (!have($item`Daylight Shavings Helmet`)) return new Map();
+  if (
+    // eslint-disable-next-line libram/verify-constants
+    $effects`Barbell Moustache, Cowboy Stache, Friendly Chops, Grizzly Beard, Gull-Wing Moustache, Musician's Musician's Moustache, Pointy Wizard Beard, Space Warlord's Beard, Spectacle Moustache, Surrealist's Moustache, Toiletbrush Moustache`.some(
+      (effect) => have(effect)
+    )
+  ) {
+    return new Map();
+  }
+
+  const bonusValue = (baseMeat * 100 + 72 * 50) / 100;
+  // eslint-disable-next-line libram/verify-constants
+  return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }

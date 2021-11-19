@@ -2,6 +2,8 @@ import {
   buy,
   changeMcd,
   cliExecute,
+  equip,
+  familiarEquippedEquipment,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -37,6 +39,7 @@ import {
   $monster,
   $skill,
   $skills,
+  $slot,
   $stat,
   $thrall,
   ChateauMantegna,
@@ -92,7 +95,6 @@ export function postFreeFightDailySetup(): void {
 
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
-  visitUrl("place.php?whichplace=town_right&action=townright_vote");
 
   const voterValueTable = [
     {
@@ -116,6 +118,8 @@ function voterSetup(): void {
       value: 20 * 0.4 + 50 * 0.2 + 250 * 0.01,
     },
   ];
+
+  visitUrl("place.php?whichplace=town_right&action=townright_vote");
 
   const votingMonsterPriority = voterValueTable
     .sort((a, b) => b.value - a.value)
@@ -160,6 +164,15 @@ function configureGear(): void {
   if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
     useFamiliar($familiar`Cornbeefadon`);
     use($item`box of Familiar Jacks`);
+  }
+
+  if (
+    have($familiar`Shorter-Order Cook`) &&
+    familiarEquippedEquipment($familiar`Shorter-Order Cook`) !== $item`blue plate`
+  ) {
+    retrieveItem($item`blue plate`);
+    useFamiliar($familiar`Shorter-Order Cook`);
+    equip($slot`familiar`, $item`blue plate`);
   }
 
   if (have($item`portable pantogram`) && !have($item`pantogram pants`)) {
