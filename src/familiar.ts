@@ -18,6 +18,8 @@ export function meatFamiliar(): Familiar {
       have($item`li'l pirate costume`)
     ) {
       _meatFamiliar = $familiar`Trick-or-Treating Tot`;
+    } else if (have($familiar`Robortender`)) {
+      _meatFamiliar = $familiar`Robortender`;
     } else {
       const bestLeps = Familiar.all()
         .filter(have)
