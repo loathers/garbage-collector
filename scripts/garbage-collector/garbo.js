@@ -22131,7 +22131,7 @@ function horseradish() {
   }
 }
 ;// CONCATENATED MODULE: ./src/familiar.ts
-var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11, familiar_templateObject12, familiar_templateObject13, familiar_templateObject14, familiar_templateObject15, familiar_templateObject16, familiar_templateObject17, familiar_templateObject18, familiar_templateObject19, familiar_templateObject20, familiar_templateObject21, familiar_templateObject22, familiar_templateObject23, familiar_templateObject24, familiar_templateObject25, familiar_templateObject26, familiar_templateObject27, familiar_templateObject28, familiar_templateObject29, familiar_templateObject30, familiar_templateObject31, familiar_templateObject32, familiar_templateObject33, familiar_templateObject34, familiar_templateObject35;
+var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11, familiar_templateObject12, familiar_templateObject13, familiar_templateObject14, familiar_templateObject15, familiar_templateObject16, familiar_templateObject17, familiar_templateObject18, familiar_templateObject19, familiar_templateObject20, familiar_templateObject21, familiar_templateObject22, familiar_templateObject23, familiar_templateObject24, familiar_templateObject25, familiar_templateObject26, familiar_templateObject27, familiar_templateObject28, familiar_templateObject29, familiar_templateObject30, familiar_templateObject31, familiar_templateObject32, familiar_templateObject33, familiar_templateObject34, familiar_templateObject35, familiar_templateObject36, familiar_templateObject37;
 
 function familiar_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = familiar_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -22159,6 +22159,8 @@ function meatFamiliar() {
   if (!_meatFamiliar) {
     if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(familiar_templateObject || (familiar_templateObject = familiar_taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(familiar_templateObject2 || (familiar_templateObject2 = familiar_taggedTemplateLiteral(["li'l pirate costume"]))))) {
       _meatFamiliar = (0,template_string/* $familiar */.HP)(familiar_templateObject3 || (familiar_templateObject3 = familiar_taggedTemplateLiteral(["Trick-or-Treating Tot"])));
+    } else if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(familiar_templateObject4 || (familiar_templateObject4 = familiar_taggedTemplateLiteral(["Robortender"]))))) {
+      _meatFamiliar = (0,template_string/* $familiar */.HP)(familiar_templateObject5 || (familiar_templateObject5 = familiar_taggedTemplateLiteral(["Robortender"])));
     } else {
       var bestLeps = Familiar.all().filter(lib/* have */.lf).sort((a, b) => leprechaunMultiplier(b) - leprechaunMultiplier(a));
       var bestLepMult = leprechaunMultiplier(bestLeps[0]);
@@ -22179,92 +22181,92 @@ function myFamiliarWeight() {
 var rotatingFamiliars = {
   "Fist Turkey": {
     expected: [3.91, 4.52, 4.52, 5.29, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject4 || (familiar_templateObject4 = familiar_taggedTemplateLiteral(["Ambitious Turkey"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject6 || (familiar_templateObject6 = familiar_taggedTemplateLiteral(["Ambitious Turkey"]))),
     pref: "_turkeyBooze"
   },
   "Llama Lama": {
     expected: [3.42, 3.91, 4.52, 5.29, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject5 || (familiar_templateObject5 = familiar_taggedTemplateLiteral(["llama lama gong"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject7 || (familiar_templateObject7 = familiar_taggedTemplateLiteral(["llama lama gong"]))),
     pref: "_gongDrops"
   },
   "Astral Badger": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject6 || (familiar_templateObject6 = familiar_taggedTemplateLiteral(["astral mushroom"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject8 || (familiar_templateObject8 = familiar_taggedTemplateLiteral(["astral mushroom"]))),
     pref: "_astralDrops"
   },
   "Li'l Xenomorph": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject7 || (familiar_templateObject7 = familiar_taggedTemplateLiteral(["transporter transponder"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject9 || (familiar_templateObject9 = familiar_taggedTemplateLiteral(["transporter transponder"]))),
     pref: "_transponderDrops"
   },
   "Rogue Program": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject8 || (familiar_templateObject8 = familiar_taggedTemplateLiteral(["Game Grid token"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject10 || (familiar_templateObject10 = familiar_taggedTemplateLiteral(["Game Grid token"]))),
     pref: "_tokenDrops"
   },
   "Bloovian Groose": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject9 || (familiar_templateObject9 = familiar_taggedTemplateLiteral(["groose grease"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject11 || (familiar_templateObject11 = familiar_taggedTemplateLiteral(["groose grease"]))),
     pref: "_grooseDrops"
   },
   "Baby Sandworm": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject10 || (familiar_templateObject10 = familiar_taggedTemplateLiteral(["agua de vida"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject12 || (familiar_templateObject12 = familiar_taggedTemplateLiteral(["agua de vida"]))),
     pref: "_aguaDrops"
   },
   "Green Pixie": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject11 || (familiar_templateObject11 = familiar_taggedTemplateLiteral(["tiny bottle of absinthe"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject13 || (familiar_templateObject13 = familiar_taggedTemplateLiteral(["tiny bottle of absinthe"]))),
     pref: "_absintheDrops"
   },
   "Blavious Kloop": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject12 || (familiar_templateObject12 = familiar_taggedTemplateLiteral(["devilish folio"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject14 || (familiar_templateObject14 = familiar_taggedTemplateLiteral(["devilish folio"]))),
     pref: "_kloopDrops"
   },
   "Galloping Grill": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject13 || (familiar_templateObject13 = familiar_taggedTemplateLiteral(["hot ashes"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject15 || (familiar_templateObject15 = familiar_taggedTemplateLiteral(["hot ashes"]))),
     pref: "_hotAshesDrops"
   },
   "Grim Brother": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject14 || (familiar_templateObject14 = familiar_taggedTemplateLiteral(["grim fairy tale"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject16 || (familiar_templateObject16 = familiar_taggedTemplateLiteral(["grim fairy tale"]))),
     pref: "_grimFairyTaleDrops"
   },
   "Golden Monkey": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject15 || (familiar_templateObject15 = familiar_taggedTemplateLiteral(["powdered gold"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject17 || (familiar_templateObject17 = familiar_taggedTemplateLiteral(["powdered gold"]))),
     pref: "_powderedGoldDrops"
   },
   "Unconscious Collective": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject16 || (familiar_templateObject16 = familiar_taggedTemplateLiteral(["Unconscious Collective Dream Jar"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject18 || (familiar_templateObject18 = familiar_taggedTemplateLiteral(["Unconscious Collective Dream Jar"]))),
     pref: "_dreamJarDrops"
   },
   "Ms. Puck Man": {
-    expected: Array((0,template_string/* $familiar */.HP)(familiar_templateObject17 || (familiar_templateObject17 = familiar_taggedTemplateLiteral(["Ms. Puck Man"]))).dropsLimit).fill(12.85),
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject18 || (familiar_templateObject18 = familiar_taggedTemplateLiteral(["power pill"]))),
+    expected: Array((0,template_string/* $familiar */.HP)(familiar_templateObject19 || (familiar_templateObject19 = familiar_taggedTemplateLiteral(["Ms. Puck Man"]))).dropsLimit).fill(12.85),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject20 || (familiar_templateObject20 = familiar_taggedTemplateLiteral(["power pill"]))),
     pref: "_powerPillDrops"
   },
   "Puck Man": {
-    expected: Array((0,template_string/* $familiar */.HP)(familiar_templateObject19 || (familiar_templateObject19 = familiar_taggedTemplateLiteral(["Puck Man"]))).dropsLimit).fill(12.85),
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject20 || (familiar_templateObject20 = familiar_taggedTemplateLiteral(["power pill"]))),
+    expected: Array((0,template_string/* $familiar */.HP)(familiar_templateObject21 || (familiar_templateObject21 = familiar_taggedTemplateLiteral(["Puck Man"]))).dropsLimit).fill(12.85),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject22 || (familiar_templateObject22 = familiar_taggedTemplateLiteral(["power pill"]))),
     pref: "_powerPillDrops"
   },
   "Adventurous Spelunker": {
     expected: [7.0],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject21 || (familiar_templateObject21 = familiar_taggedTemplateLiteral(["Tales of Spelunking"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject23 || (familiar_templateObject23 = familiar_taggedTemplateLiteral(["Tales of Spelunking"]))),
     pref: "_spelunkingTalesDrops"
   },
   "Angry Jung Man": {
     expected: [30.0],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject22 || (familiar_templateObject22 = familiar_taggedTemplateLiteral(["psychoanalytic jar"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject24 || (familiar_templateObject24 = familiar_taggedTemplateLiteral(["psychoanalytic jar"]))),
     pref: "_jungDrops"
   },
   "Grimstone Golem": {
     expected: [45.0],
-    drop: (0,template_string/* $item */.xr)(familiar_templateObject23 || (familiar_templateObject23 = familiar_taggedTemplateLiteral(["grimstone mask"]))),
+    drop: (0,template_string/* $item */.xr)(familiar_templateObject25 || (familiar_templateObject25 = familiar_taggedTemplateLiteral(["grimstone mask"]))),
     pref: "_grimstoneMaskDrops"
   }
 };
@@ -22273,15 +22275,15 @@ var savedMimicDropValue = null;
 function mimicDropValue() {
   var _savedMimicDropValue;
 
-  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = lib/* getSaleValue.apply */.xI.apply(void 0, familiar_toConsumableArray((0,template_string/* $items */.vS)(familiar_templateObject24 || (familiar_templateObject24 = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
+  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = lib/* getSaleValue.apply */.xI.apply(void 0, familiar_toConsumableArray((0,template_string/* $items */.vS)(familiar_templateObject26 || (familiar_templateObject26 = familiar_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
 }
 
 function freeFightFamiliar() {
   var familiarValue = [];
 
-  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(familiar_templateObject25 || (familiar_templateObject25 = familiar_taggedTemplateLiteral(["Pocket Professor"])))) && (0,template_string/* $familiar */.HP)(familiar_templateObject26 || (familiar_templateObject26 = familiar_taggedTemplateLiteral(["Pocket Professor"]))).experience < 400 && !(0,property/* get */.U2)("_thesisDelivered")) {
+  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(familiar_templateObject27 || (familiar_templateObject27 = familiar_taggedTemplateLiteral(["Pocket Professor"])))) && (0,template_string/* $familiar */.HP)(familiar_templateObject28 || (familiar_templateObject28 = familiar_taggedTemplateLiteral(["Pocket Professor"]))).experience < 400 && !(0,property/* get */.U2)("_thesisDelivered")) {
     // Estimate based on value to charge thesis.
-    familiarValue.push([(0,template_string/* $familiar */.HP)(familiar_templateObject27 || (familiar_templateObject27 = familiar_taggedTemplateLiteral(["Pocket Professor"]))), 3000]);
+    familiarValue.push([(0,template_string/* $familiar */.HP)(familiar_templateObject29 || (familiar_templateObject29 = familiar_taggedTemplateLiteral(["Pocket Professor"]))), 3000]);
   }
 
   for (var _i = 0, _Object$keys = Object.keys(rotatingFamiliars); _i < _Object$keys.length; _i++) {
@@ -22300,16 +22302,16 @@ function freeFightFamiliar() {
     }
   }
 
-  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(familiar_templateObject28 || (familiar_templateObject28 = familiar_taggedTemplateLiteral(["Stocking Mimic"]))))) {
-    var mimicWeight = myFamiliarWeight((0,template_string/* $familiar */.HP)(familiar_templateObject29 || (familiar_templateObject29 = familiar_taggedTemplateLiteral(["Stocking Mimic"]))));
-    var actionPercentage = 1 / 3 + ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(familiar_templateObject30 || (familiar_templateObject30 = familiar_taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0);
+  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(familiar_templateObject30 || (familiar_templateObject30 = familiar_taggedTemplateLiteral(["Stocking Mimic"]))))) {
+    var mimicWeight = myFamiliarWeight((0,template_string/* $familiar */.HP)(familiar_templateObject31 || (familiar_templateObject31 = familiar_taggedTemplateLiteral(["Stocking Mimic"]))));
+    var actionPercentage = 1 / 3 + ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(familiar_templateObject32 || (familiar_templateObject32 = familiar_taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0);
     var mimicValue = mimicDropValue() + mimicWeight * actionPercentage * 1 / 4 * 10 * 4 * 1.2;
-    familiarValue.push([(0,template_string/* $familiar */.HP)(familiar_templateObject31 || (familiar_templateObject31 = familiar_taggedTemplateLiteral(["Stocking Mimic"]))), mimicValue]);
+    familiarValue.push([(0,template_string/* $familiar */.HP)(familiar_templateObject33 || (familiar_templateObject33 = familiar_taggedTemplateLiteral(["Stocking Mimic"]))), mimicValue]);
   }
 
-  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(familiar_templateObject32 || (familiar_templateObject32 = familiar_taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([(0,template_string/* $familiar */.HP)(familiar_templateObject33 || (familiar_templateObject33 = familiar_taggedTemplateLiteral(["Robortender"]))), 200]);
+  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(familiar_templateObject34 || (familiar_templateObject34 = familiar_taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([(0,template_string/* $familiar */.HP)(familiar_templateObject35 || (familiar_templateObject35 = familiar_taggedTemplateLiteral(["Robortender"]))), 200]);
 
-  var _iterator = familiar_createForOfIteratorHelper((0,template_string/* $familiars */.LG)(familiar_templateObject35 || (familiar_templateObject35 = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
+  var _iterator = familiar_createForOfIteratorHelper((0,template_string/* $familiars */.LG)(familiar_templateObject37 || (familiar_templateObject37 = familiar_taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
       _step;
 
   try {
@@ -22323,7 +22325,7 @@ function freeFightFamiliar() {
     _iterator.f();
   }
 
-  familiarValue.push([(0,template_string/* $familiar */.HP)(familiar_templateObject34 || (familiar_templateObject34 = familiar_taggedTemplateLiteral(["none"]))), 0]);
+  familiarValue.push([(0,template_string/* $familiar */.HP)(familiar_templateObject36 || (familiar_templateObject36 = familiar_taggedTemplateLiteral(["none"]))), 0]);
   return argmax(familiarValue);
 }
 // EXTERNAL MODULE: ./node_modules/libram/dist/Copier.js
