@@ -20021,6 +20021,7 @@ var Kmail = /*#__PURE__*/function () {
 
 ;// CONCATENATED MODULE: ./src/acquire.ts
 
+
 var priceCaps = {
   "jar of fermented pickle juice": 75000,
   "extra-greasy slider": 45000,
@@ -20042,10 +20043,14 @@ function acquire(qty, item, maxPrice) {
   var startAmount = (0,external_kolmafia_.itemAmount)(item);
   var remaining = qty - startAmount;
   if (remaining <= 0) return qty;
-  var getCloset = Math.min(remaining, (0,external_kolmafia_.closetAmount)(item));
-  if (!(0,external_kolmafia_.takeCloset)(getCloset, item) && throwOnFail) throw "failed to remove from closet";
-  remaining -= getCloset;
-  if (remaining <= 0) return qty;
+
+  if ((0,property/* get */.U2)("autoSatisfyWithCloset")) {
+    var getCloset = Math.min(remaining, (0,external_kolmafia_.closetAmount)(item));
+    if (!(0,external_kolmafia_.takeCloset)(getCloset, item) && throwOnFail) throw "failed to remove from closet";
+    remaining -= getCloset;
+    if (remaining <= 0) return qty;
+  }
+
   var getStorage = Math.min(remaining, (0,external_kolmafia_.storageAmount)(item));
   if (!(0,external_kolmafia_.takeStorage)(getStorage, item) && throwOnFail) throw "failed to remove from storage";
   remaining -= getStorage;
