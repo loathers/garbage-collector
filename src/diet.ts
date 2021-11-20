@@ -366,6 +366,9 @@ export function computeDiet(): [MenuItem[], number][] {
     new MenuItem($item`meteoreo`),
     new MenuItem($item`ice rice`),
     new MenuItem($item`frozen banquet`),
+    new MenuItem($item`fishy fish lasagna`),
+    new MenuItem($item`gnat lasagna`),
+    new MenuItem($item`long pork lasagna`),
 
     // BOOZE
     new MenuItem($item`Dreadsylvanian grimlet`),
@@ -388,12 +391,13 @@ export function computeDiet(): [MenuItem[], number][] {
     }),
 
     // HELPERS
-    ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem(item, { maximum: "auto" })),
-    new MenuItem($item`distention pill`, { maximum: "auto" }),
-    new MenuItem($item`cuppa Voraci tea`, { maximum: "auto" }),
+    ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem(item)),
+    new MenuItem($item`distention pill`),
+    new MenuItem($item`cuppa Voraci tea`),
     ...helpers.map((item) => new MenuItem(item)),
     new MenuItem($item`pocket wish`, { maximum: 1, wishEffect: $effect`Refined Palate` }),
     new MenuItem($item`toasted brie`, { maximum: 1 }),
+    new MenuItem($item`potion of the field gar`, { maximum: 1 }),
   ];
 
   const haveMayo = getWorkshed() === $item`portable Mayo Clinic`;
