@@ -16,6 +16,7 @@ import {
   itemAmount,
   lastDecision,
   mallPrice,
+  maximize,
   meatDropModifier,
   myAscensions,
   myClass,
@@ -93,6 +94,7 @@ import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
+  burnLibrams,
   embezzlerLog,
   findRun,
   FreeRun,
@@ -127,7 +129,7 @@ import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wandere
 
 const firstChainMacro = () =>
   Macro.if_(
-    "monstername Knob Goblin Embezzler",
+    $monster`Knob Goblin Embezzler`,
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.externalIf(
@@ -146,7 +148,7 @@ const firstChainMacro = () =>
 
 const secondChainMacro = () =>
   Macro.if_(
-    "monstername Knob Goblin Embezzler",
+    $monster`Knob Goblin Embezzler`,
     Macro.externalIf(
       myFamiliar() === $familiar`Pocket Professor`,
       Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill($skill`Meteor Shower`))
@@ -175,14 +177,19 @@ function embezzlerSetup() {
   }
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
+    maximize("MP", false);
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
+      burnLibrams();
       use($item`Platinum Yendorian Express Card`);
     }
     if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
       use($item`Bag o' Tricks`);
     }
   });
-  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) use($item`License to Chill`);
+  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    burnLibrams();
+    use($item`License to Chill`);
+  }
   if (
     globalOptions.ascending &&
     questStep("questM16Temple") > 0 &&
@@ -567,15 +574,15 @@ class FreeRunFight extends FreeFight {
 }
 
 const pygmyMacro = Macro.if_(
-  "monstername pygmy bowler",
+  $monster`pygmy bowler`,
   Macro.trySkill($skill`Snokebomb`).item($item`Louder Than Bomb`)
 )
   .if_(
-    "monstername pygmy orderlies",
+    $monster`pygmy orderlies`,
     Macro.trySkill($skill`Feel Hatred`).item($item`divine champagne popper`)
   )
-  .if_("monstername pygmy janitor", Macro.item($item`tennis ball`))
-  .if_("monstername time-spinner prank", Macro.basicCombat())
+  .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
+  .if_($monster`time-spinner prank`, Macro.basicCombat())
   .abort();
 
 function getStenchLocation() {
@@ -742,7 +749,7 @@ const freeFightSources = [
           (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) //Save a map to use for polar vortex
       ) {
         withMacro(
-          Macro.ifMonster($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`),
+          Macro.if_($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`),
           () => {
             mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
             runCombat();
@@ -757,21 +764,18 @@ const freeFightSources = [
         }
         adventureMacro(
           $location`Domed City of Grimacia`,
-          Macro.ifMonster(
+          Macro.if_(
             $monster`alielf`,
             Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).tryItem(
               $item`Louder Than Bomb`
             )
           )
-            .ifMonster(
-              $monster`cat-alien`,
-              Macro.trySkill($skill`Snokebomb`).tryItem($item`tennis ball`)
-            )
-            .ifMonster(
+            .if_($monster`cat-alien`, Macro.trySkill($skill`Snokebomb`).tryItem($item`tennis ball`))
+            .if_(
               $monster`dog-alien`,
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
             )
-            .ifMonster($monster`time-spinner prank`, Macro.kill())
+            .if_($monster`time-spinner prank`, Macro.kill())
             .skill($skill`Use the Force`)
         );
       }
@@ -971,7 +975,7 @@ const freeFightSources = [
       }
       adventureMacro(
         $location`Your Mushroom Garden`,
-        Macro.if_("hasskill macrometeorite", Macro.trySkill($skill`Portscan`)).basicCombat()
+        Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)).basicCombat()
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
@@ -995,9 +999,9 @@ const freeFightSources = [
       }
       adventureMacro(
         $location`Your Mushroom Garden`,
-        Macro.if_("monstername government agent", Macro.skill($skill`Macrometeorite`)).if_(
-          "monstername piranha plant",
-          Macro.if_("hasskill macrometeorite", Macro.trySkill($skill`Portscan`)).basicCombat()
+        Macro.if_($monster`Government agent`, Macro.skill($skill`Macrometeorite`)).if_(
+          $monster`piranha plant`,
+          Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)).basicCombat()
         )
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
@@ -1058,21 +1062,15 @@ const freeFightSources = [
         $location`The Deep Machine Tunnels`,
         Macro.externalIf(
           thought,
-          Macro.if_(
-            "monstername Perceiver of Sensations",
-            Macro.tryItem($item`abstraction: thought`)
-          )
+          Macro.if_($monster`Perceiver of Sensations`, Macro.tryItem($item`abstraction: thought`))
         )
           .externalIf(
             action,
-            Macro.if_("monstername Thinker of Thoughts", Macro.tryItem($item`abstraction: action`))
+            Macro.if_($monster`Thinker of Thoughts`, Macro.tryItem($item`abstraction: action`))
           )
           .externalIf(
             sensation,
-            Macro.if_(
-              "monstername Performer of Actions",
-              Macro.tryItem($item`abstraction: sensation`)
-            )
+            Macro.if_($monster`Performer of Actions`, Macro.tryItem($item`abstraction: sensation`))
           )
           .basicCombat()
       );
@@ -1426,11 +1424,8 @@ const freeRunFightSources = [
     (runSource: FreeRun) => {
       adventureMacro(
         $location`Cobb's Knob Menagerie, Level 1`,
-        Macro.if_(`monstername ${$monster`QuickBASIC Elemental`}`, Macro.basicCombat())
-          .if_(
-            `monstername ${$monster`BASIC Elemental`}`,
-            Macro.trySkill($skill`Summon Mayfly Swarm`)
-          )
+        Macro.if_($monster`QuickBASIC Elemental`, Macro.basicCombat())
+          .if_($monster`BASIC Elemental`, Macro.trySkill($skill`Summon Mayfly Swarm`))
           .step(runSource.macro)
       );
     },
@@ -1717,9 +1712,7 @@ function deliverThesis(): void {
 
   adventureMacro(
     thesisLocation,
-    Macro.ifMonster($monster`time-spinner prank`, Macro.basicCombat()).skill(
-      $skill`deliver your thesis!`
-    )
+    Macro.if_($monster`time-spinner prank`, Macro.basicCombat()).skill($skill`deliver your thesis!`)
   );
 }
 

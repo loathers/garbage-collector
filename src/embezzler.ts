@@ -85,8 +85,8 @@ function faxEmbezzler(): void {
 
 export const embezzlerMacro = (): Macro =>
   Macro.if_(
-    "monstername Knob Goblin Embezzler",
-    Macro.if_("snarfblat 186", Macro.tryCopier($item`pulled green taffy`))
+    $monster`Knob Goblin Embezzler`,
+    Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
       .trySkill($skill`Wink at`)
       .trySkill($skill`Fire a badly romantic arrow`)
       .externalIf(
@@ -167,7 +167,7 @@ export const embezzlerSources = [
       adventureMacro(
         realLocation,
         Macro.if_(
-          "!monstername Knob Goblin Embezzler",
+          `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
           Macro.skill($skill`Back-Up to your Last Enemy`)
         ).step(options.macro || embezzlerMacro())
       );

@@ -24,7 +24,6 @@ import {
   print,
   setProperty,
   spleenLimit,
-  sweetSynthesis,
   turnsPerCast,
   use,
   useFamiliar,
@@ -59,6 +58,7 @@ import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { argmax, arrayEquals, baseMeat, globalOptions } from "./lib";
 import { Potion } from "./potions";
+import synthesize from "./synthesis";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
@@ -211,10 +211,7 @@ function fillSpleenWith(spleenItem: Item) {
         (30 + thumbRingMultiplier * adventuresPerSpleen)
     );
     if (have($skill`Sweet Synthesis`)) {
-      sweetSynthesis(
-        clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()),
-        $effect`Synthesis: Greed`
-      );
+      synthesize($effect`Synthesis: Greed`, clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()));
     }
     const count = Math.max(0, Math.floor((spleenLimit() - mySpleenUse()) / spleenItem.spleen));
     chewSafe(count, spleenItem);

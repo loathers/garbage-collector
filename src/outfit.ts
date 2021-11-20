@@ -25,6 +25,7 @@ import {
 import {
   $class,
   $effect,
+  $effects,
   $familiar,
   $item,
   $items,
@@ -87,12 +88,16 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
 
   const finalRequirement = new Requirement(parameters, {
     forceEquip: forceEquip,
-    preventEquip: preventEquip,
+    preventEquip: [
+      ...preventEquip,
+      ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
+    ],
     bonusEquip: new Map<Item, number>([
       ...bonusEquip,
       ...dropsItems(equipMode),
       ...pantsgiving(),
       ...cheeses(false),
+      ...shavingBonus(),
       ...(bjornAlike
         ? new Map<Item, number>([
             [
@@ -228,7 +233,7 @@ export function meatOutfit(
       {
         forceEquip,
         preventEquip: [
-          ...$items`broken champagne bottle`,
+          ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
         ],
@@ -236,6 +241,7 @@ export function meatOutfit(
           ...dropsItems(equipMode),
           ...(embezzlerUp ? [] : pantsgiving()),
           ...cheeses(embezzlerUp),
+          ...shavingBonus(),
           ...(bjornAlike
             ? new Map<Item, number>([
                 [
@@ -412,4 +418,21 @@ function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
     return $item`Crown of Thrones`;
   }
   return $item`Buddy Bjorn`;
+}
+
+function shavingBonus(): Map<Item, number> {
+  // eslint-disable-next-line libram/verify-constants
+  if (!have($item`Daylight Shavings Helmet`)) return new Map();
+  if (
+    // eslint-disable-next-line libram/verify-constants
+    $effects`Barbell Moustache, Cowboy Stache, Friendly Chops, Grizzly Beard, Gull-Wing Moustache, Musician's Musician's Moustache, Pointy Wizard Beard, Space Warlord's Beard, Spectacle Moustache, Surrealist's Moustache, Toiletbrush Moustache`.some(
+      (effect) => have(effect)
+    )
+  ) {
+    return new Map();
+  }
+
+  const bonusValue = (baseMeat * 100 + 72 * 50) / 100;
+  // eslint-disable-next-line libram/verify-constants
+  return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }

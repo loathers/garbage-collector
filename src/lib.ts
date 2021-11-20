@@ -5,7 +5,9 @@ import {
   handlingChoice,
   haveSkill,
   inebrietyLimit,
+  mpCost,
   myInebriety,
+  myMp,
   myTurncount,
   numericModifier,
   print,
@@ -28,6 +30,7 @@ import {
   $location,
   $skill,
   Bandersnatch,
+  bestLibramToCast,
   ChateauMantegna,
   ensureEffect,
   get,
@@ -81,6 +84,21 @@ export function safeInterrupt(): void {
 
 export function setChoice(adventure: number, value: number): void {
   propertyManager.setChoices({ [adventure]: value });
+}
+
+/**
+ * Shuffle a copy of {array}.
+ * @param array Array to shuffle.
+ */
+export function shuffle<T>(array: T[]): T[] {
+  const shuffledArray = [...array];
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = shuffledArray[i];
+    shuffledArray[i] = shuffledArray[j];
+    shuffledArray[j] = temp;
+  }
+  return shuffledArray;
 }
 
 export function mapMonster(location: Location, monster: Monster): void {
@@ -441,4 +459,15 @@ export function pillkeeperOpportunityCost(): number {
       ? 15000
       : 50000
     : 0;
+}
+
+/**
+ * Burns existing MP on the mall-optimal libram skill until unable to cast any more.
+ */
+export function burnLibrams(): void {
+  let libramToCast = bestLibramToCast();
+  while (libramToCast && mpCost(libramToCast) <= myMp()) {
+    useSkill(libramToCast);
+    libramToCast = bestLibramToCast();
+  }
 }
