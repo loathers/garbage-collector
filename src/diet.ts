@@ -144,7 +144,7 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   }
 }
 
-function estimatedTurnsWithOrgans() {
+function estimatedTurnsWithOrgans(includeSpleen = true) {
   const fullnessAvailable =
     fullnessLimit() +
     (have($item`distention pill`) && !get("_distentionPillUsed") ? 1 : 0) +
@@ -154,12 +154,13 @@ function estimatedTurnsWithOrgans() {
     (have($item`synthetic dog hair pill`) && !get("_syntheticDogHairPillUsed") ? 1 : 0) +
     (mallPrice($item`spice melange`) < 50 * MPA ? 3 : 0);
   const spleenAvailable = spleenLimit() + (3 - get("currentMojoFilters"));
+  const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
   return (
     estimatedTurns() +
-    8 * Math.max(0, fullnessAvailable - myFullness()) +
-    8 * Math.max(0, inebrietyAvailable - myInebriety()) +
-    2 * Math.max(0, spleenAvailable - mySpleenUse()) +
-    (have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0)
+    thumbRingMultiplier *
+      (8 * Math.max(0, fullnessAvailable - myFullness()) +
+        8 * Math.max(0, inebrietyAvailable - myInebriety()) +
+        (includeSpleen ? 2 * Math.max(0, spleenAvailable - mySpleenUse()) : 0))
   );
 }
 
@@ -200,10 +201,14 @@ function fillSpleenWith(spleenItem: Item) {
     const synthTurns = haveEffect($effect`Synthesis: Greed`);
     const spleenTotal = spleenLimit() - mySpleenUse();
     const adventuresPerSpleen = getAverageAdventures(spleenItem) / spleenItem.spleen;
+    const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
     // when not barfing, only get synth for estimatedTurns() turns (ignore adv gain)
-    const spleenAdvsGained = globalOptions.noBarf ? 0 : 1.04 * adventuresPerSpleen * spleenTotal;
+    const spleenAdvsGained = globalOptions.noBarf
+      ? 0
+      : thumbRingMultiplier * adventuresPerSpleen * spleenTotal;
     const spleenSynth = Math.ceil(
-      (spleenAdvsGained + estimatedTurns() - synthTurns) / (30 + 1.04 * adventuresPerSpleen)
+      (spleenAdvsGained + estimatedTurnsWithOrgans(false) - synthTurns) /
+        (30 + thumbRingMultiplier * adventuresPerSpleen)
     );
     if (have($skill`Sweet Synthesis`)) {
       sweetSynthesis(
@@ -356,7 +361,18 @@ export function computeDiet(): [MenuItem[], number][] {
   const embezzlers = embezzlerCount();
   const helpers = [Mayo.flex, $item`Special Seasoning`, saladFork, frostyMug];
   const menu = [
+    // FOOD
+    new MenuItem($item`Dreadsylvanian spooky pocket`),
+    new MenuItem($item`tin cup of mulligan stew`),
+    new MenuItem($item`glass of raw eggs`, { maximum: availableAmount($item`glass of raw eggs`) }),
+    new MenuItem($item`Tea, Earl Grey, Hot`),
+    new MenuItem($item`meteoreo`),
+    new MenuItem($item`ice rice`),
+    new MenuItem($item`frozen banquet`),
+
     // BOOZE
+    new MenuItem($item`Dreadsylvanian grimlet`),
+    new MenuItem($item`Hodgman's blanket`),
     new MenuItem($item`Sacramento wine`),
     new MenuItem($item`splendid martini`),
     new MenuItem($item`Eye and a Twist`),
@@ -367,15 +383,6 @@ export function computeDiet(): [MenuItem[], number][] {
     new MenuItem($item`overpowering mushroom wine`),
     new MenuItem($item`smooth mushroom wine`),
     new MenuItem($item`swirling mushroom wine`),
-    new MenuItem($item`Hodgman's blanket`),
-
-    // FOOD
-    new MenuItem($item`tin cup of mulligan stew`),
-    new MenuItem($item`glass of raw eggs`, { maximum: availableAmount($item`glass of raw eggs`) }),
-    new MenuItem($item`Tea, Earl Grey, Hot`),
-    new MenuItem($item`meteoreo`),
-    new MenuItem($item`ice rice`),
-    new MenuItem($item`frozen banquet`),
 
     // Additional spleen cleaning to fill up on synth.
     new MenuItem(spleenCleaner, {
@@ -389,6 +396,7 @@ export function computeDiet(): [MenuItem[], number][] {
     new MenuItem($item`cuppa Voraci tea`, { maximum: "auto" }),
     ...helpers.map((item) => new MenuItem(item)),
     new MenuItem($item`pocket wish`, { maximum: 1, wishEffect: $effect`Refined Palate` }),
+    new MenuItem($item`toasted brie`, { maximum: 1 }),
   ];
 
   const haveMayo = getWorkshed() === $item`portable Mayo Clinic`;
@@ -419,17 +427,10 @@ export function computeDiet(): [MenuItem[], number][] {
     );
   }
 
-  if (myLevel() > 26) {
-    menu.push(
-      new MenuItem($item`Dreadsylvanian spooky pocket`),
-      new MenuItem($item`Dreadsylvanian grimlet`)
-    );
-  }
-
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
   return planDiet(MPA, menu, [
-    ["food", Math.max(0, fullnessLimit() - myFullness())],
-    ["booze", Math.max(0, inebrietyLimit() - myInebriety())],
+    ["food", null],
+    ["booze", null],
   ]);
 }
 
