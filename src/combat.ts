@@ -328,6 +328,7 @@ export class Macro extends StrictMacro {
       "monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername Knob Goblin Embezzler || monstername sausage goblin",
       Macro.if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Pocket Crumbs`))
         .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Extract`))
+        .if_(`monsterhpabove ${passiveDamage}`, Macro.tryHaveSkill($skill`Become a Wolf`))
         .externalIf(
           haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
           Macro.while_(
@@ -408,6 +409,7 @@ export class Macro extends StrictMacro {
         myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
         Macro.trySkill($skill`Curse of Weaksauce`)
       )
+        .tryHaveSkill($skill`Become a Wolf`)
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
           Macro.while_("!pastround 20 && !hppercentbelow 25 && !missed 1", Macro.attack())
