@@ -459,4 +459,5 @@ export function burnLibrams(): void {
     useSkill(libramToCast);
     libramToCast = bestLibramToCast();
   }
+  cliExecute("burn *");
 }
