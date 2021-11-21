@@ -313,12 +313,6 @@ function pillCheck(): void {
         )
       );
     }
-    if (
-      (have($item`distention pill`, 1) || !get<boolean>("garbo_skipPillCheck", false)) &&
-      !use($item`distention pill`)
-    ) {
-      print("WARNING: Out of distention pills.", "red");
-    }
   }
 
   if (!get("_syntheticDogHairPillUsed")) {
@@ -331,12 +325,6 @@ function pillCheck(): void {
           false
         )
       );
-    }
-    if (
-      (have($item`synthetic dog hair pill`, 1) || !get<boolean>("garbo_skipPillCheck", false)) &&
-      !use($item`synthetic dog hair pill`)
-    ) {
-      print("WARNING: Out of synthetic dog hair pills.", "red");
     }
   }
 }
@@ -417,6 +405,18 @@ export function computeDiet(): [MenuItem[], number][] {
         value + meatDrop * Math.min(embezzlers, effectDuration) * 750 - (useMayo ? MPA : 0);
       menu.push(new MenuItem(item, { maximum: 1, additionalValue: firstValue }));
     }
+  }
+
+  // We don't have a property to check if nothing has been eaten, so use this hack.
+  // This will fail in the rare case where someone has eaten non-PVPable food
+  // and then cleansed back down to 0.
+  if (
+    have($item`spaghetti breakfast`) &&
+    myFullness() === 0 &&
+    get("_timeSpinnerFoodAvailable") === "" &&
+    !get("_spaghettiBreakfastEaten")
+  ) {
+    menu.push(new MenuItem($item`spaghetti breakfast`, { maximum: 1 }));
   }
 
   // Only use our astral pilsners if we're ascending. Otherwise they're good for shotglass.
@@ -553,7 +553,7 @@ export function runDiet(): void {
           }
           consumeSafe(countToConsume, menuItem.item);
         } else if (menuItem.item === Mayo.flex) {
-          if (menuItem.item === $item`jumping horseradish`) {
+          if (menuItems[menuItems.length - 1].item === $item`jumping horseradish`) {
             MayoClinic.setMayoMinder(Mayo.zapine, countToConsume);
           } else {
             MayoClinic.setMayoMinder(Mayo.flex, countToConsume);
