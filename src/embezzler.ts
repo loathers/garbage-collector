@@ -323,6 +323,7 @@ export const embezzlerSources = [
       return;
     }
   ),
+  //This is very deliberately the last embezzler fight.
   new EmbezzlerFight(
     "Pocket Wish",
     () => {
