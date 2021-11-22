@@ -21068,6 +21068,8 @@ function burnLibrams() {
     (0,external_kolmafia_.useSkill)(libramToCast);
     libramToCast = bestLibramToCast();
   }
+
+  (0,external_kolmafia_.cliExecute)("burn *");
 }
 ;// CONCATENATED MODULE: ./src/wanderer.ts
 var wanderer_templateObject, wanderer_templateObject2, wanderer_templateObject3, wanderer_templateObject4, wanderer_templateObject5, wanderer_templateObject6, wanderer_templateObject7, wanderer_templateObject8, wanderer_templateObject9, wanderer_templateObject10, wanderer_templateObject11, wanderer_templateObject12, wanderer_templateObject13, wanderer_templateObject14, wanderer_templateObject15, wanderer_templateObject16, wanderer_templateObject17, wanderer_templateObject18, _ref3, wanderer_templateObject19, wanderer_templateObject20, wanderer_templateObject21, wanderer_templateObject22, wanderer_templateObject23;
