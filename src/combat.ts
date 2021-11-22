@@ -6,6 +6,7 @@ import {
   getCounters,
   haveEquipped,
   haveSkill,
+  hippyStoneBroken,
   inMultiFight,
   itemType,
   mpCost,
@@ -271,6 +272,15 @@ export class Macro extends StrictMacro {
         )
       )
       .meatStasis(willCrit)
+      .externalIf(
+        hippyStoneBroken() && monsterManuelAvailable(),
+        Macro.if_(
+          `(monsterid 1758 || monsterid 1759 || monsterid 1760) && monsterhpbelow ${Math.floor(
+            (100 + numericModifier("Monster Level")) / 5
+          )}`,
+          Macro.trySkill($skill`Feel Superior`)
+        )
+      )
       .externalIf(sealClubberSetup, Macro.trySkill($skill`Furious Wallop`))
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`).attack())
       .externalIf(katanaSetup, Macro.trySkill($skill`Summer Siesta`))
