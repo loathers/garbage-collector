@@ -334,7 +334,7 @@ export const embezzlerSources = [
       const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
       print(`You have the following embezzler-sources untapped right now:`, "blue");
       embezzlerSources
-        .filter((source) => !source.available() && source.potential() > 0)
+        .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, "blue"));
       globalOptions.askedAboutWish = true;
