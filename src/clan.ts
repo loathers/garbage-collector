@@ -5,6 +5,7 @@ import {
   enthroneFamiliar,
   getClanId,
   getClanName,
+  handlingChoice,
   print,
   putStash,
   refreshStash,
@@ -147,6 +148,12 @@ export class StashManager {
         .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
         .step("runaway")
         .submit();
+    } else if (handlingChoice()) {
+      const names = items.map((item) => item.name).join(", ");
+      print(
+        `I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash: ${names}.`,
+        "red"
+      );
     }
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
