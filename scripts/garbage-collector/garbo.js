@@ -23193,6 +23193,9 @@ var StashManager = /*#__PURE__*/function () {
         (0,external_kolmafia_.print)("In fight, trying to get away to return items to stash...", "blue");
 
         (_Macro$if_ = src_combat.Macro.if_((0,template_string/* $monster */.O4)(clan_templateObject2 || (clan_templateObject2 = clan_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), src_combat.Macro.attack().repeat())).tryItem.apply(_Macro$if_, clan_toConsumableArray((0,template_string/* $items */.vS)(clan_templateObject3 || (clan_templateObject3 = clan_taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper"]))))).step("runaway").submit();
+      } else if ((0,external_kolmafia_.handlingChoice)()) {
+        (0,external_kolmafia_.print)("I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:", "red");
+        items.forEach(item => (0,external_kolmafia_.print)("".concat(item.name, ","), "red"));
       }
 
       withClan(this.clanIdOrName, () => {
