@@ -339,7 +339,9 @@ export const embezzlerSources = [
         .forEach((text) => print(text, "blue"));
       globalOptions.askedAboutWish = true;
       return userConfirm(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}. Should we wish for an Embezzler?`
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}, so we expect to earn ${
+          potential * averageEmbezzlerNet - WISH_VALUE
+        } meat, after the cost of a wish. Should we wish for an Embezzler?`
       );
     },
     () => 0,
