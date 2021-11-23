@@ -149,11 +149,11 @@ export class StashManager {
         .step("runaway")
         .submit();
     } else if (handlingChoice()) {
-      const names = items.map((item) => item.name).join(", ");
       print(
-        `I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash: ${names}.`,
+        `I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:`,
         "red"
       );
+      items.forEach((item) => print(`${item.name},`, "red"));
     }
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
