@@ -184,7 +184,7 @@ function fillStomach() {
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
 
   while (myFullness() + 5 <= fullnessLimit()) {
-    if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
+    if (get("_universalSeasoningsUsed") < availableAmount($item`Universal Seasoning`)) {
       use($item`Universal Seasoning`);
     }
     if (myMaxhp() < 1000) maximize("0.05hp, hot res", false);
