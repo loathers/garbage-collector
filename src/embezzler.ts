@@ -46,7 +46,17 @@ export class EmbezzlerFight {
   requirements: Requirement[];
   draggable: boolean;
   name: string;
-
+  /**
+   * This is the class that creates all the different ways to fight embezzlers
+   * @classdesc Something goes here
+   * @prop {string} name The name of the fight so you know what you're doing
+   * @prop {boolean} available this should be a statement that checks the availability of the fight
+   * @prop {number} potential this should be a statement that checks the number of this type of embezzler fight available
+   * @prop {Location, Macro} run This runs the combat, using the macro and location provided, if any
+   * @prop {[]} requirements This is an array of requirements to do this fight
+   * @prop {boolean} [draggable=false] This tells the script if it should try to drag the embezzler to a different zone
+   *
+   */
   constructor(
     name: string,
     available: () => boolean,
