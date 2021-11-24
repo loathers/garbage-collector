@@ -21920,7 +21920,7 @@ function fillStomach() {
   useIfUnused((0,template_string/* $item */.xr)(diet_templateObject15 || (diet_templateObject15 = diet_taggedTemplateLiteral(["milk of magnesium"]))), "_milkOfMagnesiumUsed", 5 * MPA);
 
   while ((0,external_kolmafia_.myFullness)() + 5 <= (0,external_kolmafia_.fullnessLimit)()) {
-    if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject16 || (diet_templateObject16 = diet_taggedTemplateLiteral(["Universal Seasoning"])))) && !(0,property/* get */.U2)("_universalSeasoningUsed")) {
+    if ((0,property/* get */.U2)("_universalSeasoningsUsed") < (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject16 || (diet_templateObject16 = diet_taggedTemplateLiteral(["Universal Seasoning"]))))) {
       (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(diet_templateObject17 || (diet_templateObject17 = diet_taggedTemplateLiteral(["Universal Seasoning"]))));
     }
 
