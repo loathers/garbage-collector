@@ -58,12 +58,14 @@ export const globalOptions: {
   saveTurns: number;
   noBarf: boolean;
   askedAboutWish: boolean;
+  wishAnswer: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
   saveTurns: 0,
   noBarf: false,
   askedAboutWish: false,
+  wishAnswer: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";

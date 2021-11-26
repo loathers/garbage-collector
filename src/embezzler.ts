@@ -330,7 +330,7 @@ export const embezzlerSources = [
       const potential = embezzlerCount();
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
-      if (globalOptions.askedAboutWish) return false;
+      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
       const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
       print(`You have the following embezzler-sources untapped right now:`, "blue");
       embezzlerSources
@@ -338,11 +338,12 @@ export const embezzlerSources = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, "blue"));
       globalOptions.askedAboutWish = true;
-      return userConfirm(
+      globalOptions.wishAnswer = userConfirm(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}, so we expect to earn ${
           (potential + 1) * averageEmbezzlerNet - WISH_VALUE
         } meat, after the cost of a wish. Should we wish for an Embezzler?`
       );
+      return globalOptions.wishAnswer;
     },
     () => 0,
     () => {
@@ -355,6 +356,7 @@ export const embezzlerSources = [
       );
       visitUrl("main.php", false);
       runCombat();
+      globalOptions.askedAboutWish = false;
     }
   ),
 ];
