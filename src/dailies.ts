@@ -534,7 +534,7 @@ function pantogram(): void {
   if (!have($item`portable pantogram`) || have($item`pantogram pants`)) return;
   let pantogramValue: number;
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
-    const expectedBarfTurns = globalOptions.ascending
+    const expectedBarfTurns = globalOptions.noBarf
       ? 0
       : estimatedTurns() - digitizedMonstersRemaining() - embezzlerCount();
     pantogramValue = 100 * expectedBarfTurns;
