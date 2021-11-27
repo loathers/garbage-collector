@@ -23,6 +23,7 @@ import {
   retrieveItem,
   runChoice,
   toInt,
+  toSlot,
   use,
   useFamiliar,
   useSkill,
@@ -45,6 +46,7 @@ import {
   ChateauMantegna,
   ensureEffect,
   get,
+  getModifier,
   getSaleValue,
   have,
   property,
@@ -54,10 +56,18 @@ import {
   withProperty,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, coinmasterPrice, logMessage, tryFeast } from "./lib";
+import {
+  baseMeat,
+  coinmasterPrice,
+  globalOptions,
+  leprechaunMultiplier,
+  logMessage,
+  tryFeast,
+} from "./lib";
 import { withStash } from "./clan";
-import { estimatedTurns } from "./embezzler";
+import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
+import { digitizedMonstersRemaining } from "./wanderer";
 
 export function dailySetup(): void {
   voterSetup();
@@ -161,6 +171,8 @@ function voterSetup(): void {
 }
 
 function configureGear(): void {
+  pantogram();
+
   if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
     useFamiliar($familiar`Cornbeefadon`);
     use($item`box of Familiar Jacks`);
@@ -173,19 +185,6 @@ function configureGear(): void {
     retrieveItem($item`blue plate`);
     useFamiliar($familiar`Shorter-Order Cook`);
     equip($slot`familiar`, $item`blue plate`);
-  }
-
-  if (have($item`portable pantogram`) && !have($item`pantogram pants`)) {
-    retrieveItem($item`ten-leaf clover`);
-    retrieveItem($item`porquoise`);
-    retrieveItem($item`bubblin' crude`);
-    const m = new Map([
-      [$stat`Muscle`, 1],
-      [$stat`Mysticality`, 2],
-      [$stat`Moxie`, 3],
-    ]).get(myPrimestat());
-    visitUrl("inv_use.php?pwd&whichitem=9573");
-    visitUrl(`choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1`);
   }
 
   if (have($item`Fourth of May Cosplay Saber`) && get("_saberMod") === 0) {
@@ -529,4 +528,43 @@ export function implement(): void {
   if (!have($item`[glitch season reward name]`) || get("_glitchItemImplemented")) return;
   retrieveItem($item`[glitch season reward name]`);
   use($item`[glitch season reward name]`);
+}
+
+function pantogram(): void {
+  if (!have($item`portable pantogram`) || have($item`pantogram pants`)) return;
+  let pantogramValue: number;
+  if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
+    const expectedBarfTurns = globalOptions.ascending
+      ? 0
+      : estimatedTurns() - digitizedMonstersRemaining() - embezzlerCount();
+    pantogramValue = 100 * expectedBarfTurns;
+  } else {
+    const lepMult = leprechaunMultiplier(meatFamiliar());
+    const lepBonus = 2 * lepMult + Math.sqrt(lepMult);
+    const totalPantsValue = (pants: Item) =>
+      getModifier("Meat Drop", pants) + getModifier("Familiar Weight", pants) * lepBonus;
+    const bestPantsValue =
+      Item.all()
+        .filter((item) => have(item) && toSlot(item) === $slot`pants`)
+        .map((pants) => totalPantsValue(pants))
+        .sort((a, b) => b - a)[0] ?? 0;
+    pantogramValue = (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedTurns();
+  }
+  if (
+    Math.min(...$items`ten-leaf clover, disassembled clover`.map(mallPrice)) +
+      mallPrice($item`porquoise`) >
+    pantogramValue
+  ) {
+    return;
+  }
+  retrieveItem($item`ten-leaf clover`);
+  retrieveItem($item`porquoise`);
+  retrieveItem($item`bubblin' crude`);
+  const m = new Map([
+    [$stat`Muscle`, 1],
+    [$stat`Mysticality`, 2],
+    [$stat`Moxie`, 3],
+  ]).get(myPrimestat());
+  visitUrl("inv_use.php?pwd&whichitem=9573");
+  visitUrl(`choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1`);
 }
