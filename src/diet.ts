@@ -338,8 +338,10 @@ export function computeDiet(): [MenuItem[], number][] {
   // Roughly estimate how much spleen we need to clear for synth.
   const expectedTurns = estimatedTurnsWithOrgans();
   const spleenNeeded = Math.ceil((expectedTurns - haveEffect($effect`Synthesis: Greed`)) / 30);
-  const additionalSpleenNeeded =
-    spleenNeeded - Math.max(0, spleenLimit() - mySpleenUse()) - (3 - get("currentMojoFilters"));
+  const additionalSpleenNeeded = Math.max(
+    0,
+    spleenNeeded - Math.max(0, spleenLimit() - mySpleenUse()) - (3 - get("currentMojoFilters"))
+  );
   const spleenCleanersNeeded = Math.ceil(additionalSpleenNeeded / 5);
   const spleenCleaner = argmax(spleenCleaners.map((item) => [item, mallPrice(item)]));
 
