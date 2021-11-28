@@ -20044,15 +20044,19 @@ function acquire(qty, item, maxPrice) {
   var remaining = qty - startAmount;
   if (remaining <= 0) return qty;
 
+  var logError = (target, source) => {
+    throw "Failed to remove ".concat(target, " from ").concat(source);
+  };
+
   if ((0,property/* get */.U2)("autoSatisfyWithCloset")) {
     var getCloset = Math.min(remaining, (0,external_kolmafia_.closetAmount)(item));
-    if (!(0,external_kolmafia_.takeCloset)(getCloset, item) && throwOnFail) throw "failed to remove from closet";
+    if (!(0,external_kolmafia_.takeCloset)(getCloset, item) && throwOnFail) logError(item, "closet");
     remaining -= getCloset;
     if (remaining <= 0) return qty;
   }
 
   var getStorage = Math.min(remaining, (0,external_kolmafia_.storageAmount)(item));
-  if (!(0,external_kolmafia_.takeStorage)(getStorage, item) && throwOnFail) throw "failed to remove from storage";
+  if (!(0,external_kolmafia_.takeStorage)(getStorage, item) && throwOnFail) logError(item, "storage");
   remaining -= getStorage;
   if (remaining <= 0) return qty;
   var getMall = Math.min(remaining, (0,external_kolmafia_.shopAmount)(item));
@@ -20062,7 +20066,7 @@ function acquire(qty, item, maxPrice) {
     (0,external_kolmafia_.cliExecute)("refresh inventory");
     remaining = qty - (0,external_kolmafia_.itemAmount)(item);
     getMall = Math.min(remaining, (0,external_kolmafia_.shopAmount)(item));
-    if (!(0,external_kolmafia_.takeShop)(getMall, item) && throwOnFail) throw "failed to remove from shop";
+    if (!(0,external_kolmafia_.takeShop)(getMall, item) && throwOnFail) logError(item, "shop");
   }
 
   remaining -= getMall;
