@@ -38,19 +38,19 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   let remaining = qty - startAmount;
   if (remaining <= 0) return qty;
 
-  const logError = (num: number, target: Item, source: string) => {
-    throw `Failed to remove ${num} ${num > 1 ? target.plural : target.name} from ${source}`;
+  const logError = (target: Item, source: string) => {
+    throw `Failed to remove ${target} from ${source}`;
   };
 
   if (get("autoSatisfyWithCloset")) {
     const getCloset = Math.min(remaining, closetAmount(item));
-    if (!takeCloset(getCloset, item) && throwOnFail) logError(qty, item, "closet");
+    if (!takeCloset(getCloset, item) && throwOnFail) logError(item, "closet");
     remaining -= getCloset;
     if (remaining <= 0) return qty;
   }
 
   const getStorage = Math.min(remaining, storageAmount(item));
-  if (!takeStorage(getStorage, item) && throwOnFail) logError(qty, item, "storage");
+  if (!takeStorage(getStorage, item) && throwOnFail) logError(item, "storage");
   remaining -= getStorage;
   if (remaining <= 0) return qty;
 
@@ -60,7 +60,7 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
     cliExecute("refresh inventory");
     remaining = qty - itemAmount(item);
     getMall = Math.min(remaining, shopAmount(item));
-    if (!takeShop(getMall, item) && throwOnFail) logError(qty, item, "shop");
+    if (!takeShop(getMall, item) && throwOnFail) logError(item, "shop");
   }
   remaining -= getMall;
   if (remaining <= 0) return qty;
