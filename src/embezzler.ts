@@ -53,7 +53,7 @@ export class EmbezzlerFight {
    * @prop {() => boolean} available Returns whether or not we can do this fight right now.
    * @prop {() => number} potential Returns the number of embezzlers we expect to be able to fight from this source.
    * @prop {Location, Macro} run This runs the combat, using the macro and location provided, if any
-   * @prop {[]} requirements This is an array of requirements to do this fight
+   * @prop {Requirement[]} requirements This is an array of requirements to do this fight
    * @prop {boolean} [draggable=false] This tells the script if it is able the embezzler to a different zone
    *
    */
