@@ -273,7 +273,7 @@ module.exports = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsE
 
 var global = __webpack_require__(1463);
 
-var getOwnPropertyDescriptor = __webpack_require__(738).f;
+var getOwnPropertyDescriptor = (__webpack_require__(738).f);
 
 var createNonEnumerableProperty = __webpack_require__(3821);
 
@@ -386,7 +386,9 @@ module.exports = function (fn, that, length) {
       };
   }
 
-  return function () {
+  return function
+    /* ...args */
+  () {
     return fn.apply(that, arguments);
   };
 };
@@ -893,7 +895,7 @@ var has = __webpack_require__(718);
 
 var toIndexedObject = __webpack_require__(402);
 
-var indexOf = __webpack_require__(9191).indexOf;
+var indexOf = (__webpack_require__(9191).indexOf);
 
 var hiddenKeys = __webpack_require__(7449);
 
@@ -966,7 +968,7 @@ var objectKeys = __webpack_require__(8378);
 
 var toIndexedObject = __webpack_require__(402);
 
-var propertyIsEnumerable = __webpack_require__(324).f; // `Object.{ entries, values }` methods implementation
+var propertyIsEnumerable = (__webpack_require__(324).f); // `Object.{ entries, values }` methods implementation
 
 
 var createMethod = function createMethod(TO_ENTRIES) {
@@ -1321,7 +1323,7 @@ module.exports = function (name) {
 
 var $ = __webpack_require__(5987);
 
-var $entries = __webpack_require__(4291).entries; // `Object.entries` method
+var $entries = (__webpack_require__(4291).entries); // `Object.entries` method
 // https://tc39.es/ecma262/#sec-object.entries
 
 
@@ -1445,7 +1447,7 @@ __webpack_require__.d(__webpack_exports__, {
 });
 
 ;// CONCATENATED MODULE: external "kolmafia"
-const external_kolmafia_namespaceObject = require("kolmafia");;
+const external_kolmafia_namespaceObject = require("kolmafia");
 // EXTERNAL MODULE: ./node_modules/libram/node_modules/core-js/modules/es.object.entries.js
 var es_object_entries = __webpack_require__(3545);
 // EXTERNAL MODULE: ./node_modules/libram/node_modules/core-js/modules/es.object.from-entries.js

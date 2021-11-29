@@ -31,14 +31,14 @@ var Copier = function Copier(couldCopy, prepare, canCopy, copiedMonster, fightCo
 /* harmony export */   "t$": () => (/* binding */ StrictMacro)
 /* harmony export */ });
 /* unused harmony exports getMacroId, InvalidMacroError, Macro, adventureMacro, adventureMacroAuto */
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1664);
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
 /* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6672);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3311);
 var _templateObject, _templateObject2;
 
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
 
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 
@@ -886,7 +886,7 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* unused harmony exports getSongLimit, isSong, getActiveEffects, getActiveSongs, getSongCount, canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, Wanderer, haveCounter, haveWandererCounter, isVoteWandererNow, isWandererNow, getKramcoWandererChance, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getFoldGroup, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getAverageAdventures, uneffect, getPlayerFromIdOrName, questStep, EnsureError, ensureEffect, getSaleValue, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4875);
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(678);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11;
@@ -1560,7 +1560,7 @@ var es_object_entries = __webpack_require__(4875);
 // EXTERNAL MODULE: ./node_modules/libram/node_modules/core-js/modules/es.object.from-entries.js
 var es_object_from_entries = __webpack_require__(8819);
 // EXTERNAL MODULE: external "kolmafia"
-var external_kolmafia_ = __webpack_require__(1664);
+var external_kolmafia_ = __webpack_require__(7530);
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/propertyTyping.js
 function isNumericProperty(property, value) {
   return !isNaN(Number(value)) && !isNaN(parseFloat(value));
@@ -1795,7 +1795,7 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
 /* unused harmony exports item, Buffs, enhance, RolloverBuffs, enquiry, Skills, educate, getSkills, isCurrentSkill, Items, extrude, getChips, getDigitizeUses, getDigitizeMonster, getDigitizeMonsterCount, getMaximumDigitizeUses, getDigitizeUsesRemaining, couldDigitize, prepareDigitize, canDigitize, Digitize, getDuplicateUses, getEnhanceUses, getPortscanUses */
 /* harmony import */ var core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2231);
 /* harmony import */ var core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var lodash_isEqual__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7120);
 /* harmony import */ var lodash_isEqual__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash_isEqual__WEBPACK_IMPORTED_MODULE_2__);
@@ -2763,7 +2763,7 @@ module.exports = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsE
 
 var global = __webpack_require__(2328);
 
-var getOwnPropertyDescriptor = __webpack_require__(9609).f;
+var getOwnPropertyDescriptor = (__webpack_require__(9609).f);
 
 var createNonEnumerableProperty = __webpack_require__(4059);
 
@@ -2876,7 +2876,9 @@ module.exports = function (fn, that, length) {
       };
   }
 
-  return function () {
+  return function
+    /* ...args */
+  () {
     return fn.apply(that, arguments);
   };
 };
@@ -3383,7 +3385,7 @@ var has = __webpack_require__(2551);
 
 var toIndexedObject = __webpack_require__(6211);
 
-var indexOf = __webpack_require__(477).indexOf;
+var indexOf = (__webpack_require__(477).indexOf);
 
 var hiddenKeys = __webpack_require__(1055);
 
@@ -3456,7 +3458,7 @@ var objectKeys = __webpack_require__(669);
 
 var toIndexedObject = __webpack_require__(6211);
 
-var propertyIsEnumerable = __webpack_require__(7395).f; // `Object.{ entries, values }` methods implementation
+var propertyIsEnumerable = (__webpack_require__(7395).f); // `Object.{ entries, values }` methods implementation
 
 
 var createMethod = function createMethod(TO_ENTRIES) {
@@ -3811,7 +3813,7 @@ module.exports = function (name) {
 
 var $ = __webpack_require__(9004);
 
-var $entries = __webpack_require__(8256).entries; // `Object.entries` method
+var $entries = (__webpack_require__(8256).entries); // `Object.entries` method
 // https://tc39.es/ecma262/#sec-object.entries
 
 
@@ -3859,7 +3861,7 @@ $({
 
 var $ = __webpack_require__(9004);
 
-var $values = __webpack_require__(8256).values; // `Object.values` method
+var $values = (__webpack_require__(8256).values); // `Object.values` method
 // https://tc39.es/ecma262/#sec-object.values
 
 
@@ -6747,11 +6749,11 @@ module.exports = stubFalse;
 
 /***/ }),
 
-/***/ 1664:
+/***/ 7530:
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("kolmafia");;
+module.exports = require("kolmafia");
 
 /***/ })
 
@@ -6859,7 +6861,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "withMacro": () => (/* binding */ withMacro),
 /* harmony export */   "main": () => (/* binding */ main)
 /* harmony export */ });
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1664);
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6672);
@@ -6875,7 +6877,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
 
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 
