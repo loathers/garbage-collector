@@ -57,14 +57,20 @@ export const globalOptions: {
   stopTurncount: number | null;
   saveTurns: number;
   noBarf: boolean;
+  askedAboutWish: boolean;
+  wishAnswer: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
   saveTurns: 0,
   noBarf: false,
+  askedAboutWish: false,
+  wishAnswer: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
+
+export const WISH_VALUE = 50000;
 
 export const propertyManager = new PropertiesManager();
 
@@ -446,7 +452,7 @@ export function pillkeeperOpportunityCost(): number {
     ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
       (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
       ? 15000
-      : 50000
+      : WISH_VALUE
     : 0;
 }
 
