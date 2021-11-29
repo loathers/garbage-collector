@@ -373,8 +373,6 @@ export function computeDiet(): [MenuItem[], number][] {
     new MenuItem($item`overpowering mushroom wine`),
     new MenuItem($item`smooth mushroom wine`),
     new MenuItem($item`swirling mushroom wine`),
-    ...$items`perfect cosmopolitan, perfect dark and stormy, perfect mimosa, perfect negroni, perfect old-fashioned, perfect paloma`.map((perfectDrink) => new MenuItem(perfectDrink))
-
 
     // Additional spleen cleaning to fill up on synth.
     new MenuItem(spleenCleaner, {
