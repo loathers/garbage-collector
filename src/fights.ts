@@ -82,6 +82,7 @@ import {
   property,
   Requirement,
   set,
+  SongBoom,
   SourceTerminal,
   TunnelOfLove,
   Witchess,
@@ -573,17 +574,26 @@ class FreeRunFight extends FreeFight {
   }
 }
 
-const pygmyMacro = Macro.if_(
-  $monster`pygmy bowler`,
-  Macro.trySkill($skill`Snokebomb`).item($item`Louder Than Bomb`)
-)
-  .if_(
-    $monster`pygmy orderlies`,
-    Macro.trySkill($skill`Feel Hatred`).item($item`divine champagne popper`)
-  )
-  .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
-  .if_($monster`time-spinner prank`, Macro.basicCombat())
-  .abort();
+const pygmyMacro = () =>
+  Macro.if_($monster`pygmy bowler`, Macro.trySkill($skill`Snokebomb`).item($item`Louder Than Bomb`))
+    .if_(
+      $monster`pygmy orderlies`,
+      Macro.trySkill($skill`Feel Hatred`).item($item`divine champagne popper`)
+    )
+    .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
+    .if_($monster`time-spinner prank`, Macro.basicCombat())
+    .externalIf(
+      SourceTerminal.have() || SongBoom.have(),
+      Macro.if_(
+        $monster`drunk pygmy`,
+        Macro.externalIf(
+          SourceTerminal.have(),
+          Macro.trySkill($skill`Extract`),
+          Macro.skill($skill`Sing Along`)
+        )
+      )
+    )
+    .abort();
 
 function getStenchLocation() {
   return (
@@ -798,7 +808,7 @@ const freeFightSources = [
       retrieveItem($item`Louder Than Bomb`);
       retrieveItem($item`tennis ball`);
       retrieveItem($item`divine champagne popper`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro());
     },
     {
       requirements: () => [
@@ -816,7 +826,7 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro());
     },
     {
       requirements: () => [
@@ -837,7 +847,7 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro());
     },
     {
       requirements: () => [
@@ -882,7 +892,7 @@ const freeFightSources = [
         if (closetAmount($item`Bowl of Scorpions`) > 0)
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
         else retrieveItem($item`Bowl of Scorpions`);
-        adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+        adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro());
       }
     },
     {
@@ -905,7 +915,10 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(1, $item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+      adventureMacroAuto(
+        $location`The Hidden Bowling Alley`,
+        Macro.if_($monster`drunk pygmy`, pygmyMacro()).abort()
+      );
     },
     {
       requirements: () => [
@@ -925,7 +938,9 @@ const freeFightSources = [
       get("_timeSpinnerMinutesUsed") < 8,
     () => {
       retrieveItem($item`Bowl of Scorpions`);
-      Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`).setAutoAttack;
+      Macro.trySkill($skill`Extract`)
+        .trySkill($skill`Sing Along`)
+        .setAutoAttack();
       visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
       runChoice(1);
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
