@@ -49,7 +49,7 @@ export class EmbezzlerFight {
   /**
    * This is the class that creates all the different ways to fight embezzlers
    * @classdesc Something goes here
-   * @prop {string} name The name of the fight so you know what you're doing
+   * @prop {string} name The name of the source of this fight, primarily used to identify special cases.
    * @prop {boolean} available this should be a statement that checks the availability of the fight
    * @prop {number} potential this should be a statement that checks the number of this type of embezzler fight available
    * @prop {Location, Macro} run This runs the combat, using the macro and location provided, if any
