@@ -1321,6 +1321,7 @@ var Copier = function Copier(couldCopy, prepare, canCopy, copiedMonster, fightCo
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
 /* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6672);
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3311);
 var _templateObject, _templateObject2;
 
 function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
@@ -1366,6 +1367,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 
 
 
@@ -1650,6 +1652,7 @@ var Macro = /*#__PURE__*/function () {
      * Create a new macro with a condition evaluated at the time of building the macro.
      * @param condition The JS condition.
      * @param ifTrue Continuation to add if the condition is true.
+     * @param ifFalse Optional input to turn this into an if...else statement.
      * @returns {Macro} This object itself.
      */
 
@@ -1793,6 +1796,40 @@ var Macro = /*#__PURE__*/function () {
      * @returns {Macro} This object itself.
      */
 
+  }, {
+    key: "ifHolidayWanderer",
+    value:
+    /**
+     * Create an if_ statement based on what holiday of loathing it currently is. On non-holidays, returns the original macro, unmutated.
+     * @param macro The macro to place in the if_ statement
+     */
+    function ifHolidayWanderer(macro) {
+      var todaysWanderers = (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getTodaysHolidayWanderers */ .UL)();
+      if (todaysWanderers.length === 0) return this;
+      return this.if_(todaysWanderers.map(monster => "monsterid ".concat(monster.id)).join(" || "), macro);
+    }
+    /**
+     * Create a new macro starting with an ifHolidayWanderer step.
+     * @param macro The macro to place inside the if_ statement
+     */
+
+  }, {
+    key: "ifNotHolidayWanderer",
+    value:
+    /**
+     * Create an if_ statement based on what holiday of loathing it currently is. On non-holidays, returns the original macro, with the input macro appended.
+     * @param macro The macro to place in the if_ statement.
+     */
+    function ifNotHolidayWanderer(macro) {
+      var todaysWanderers = (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getTodaysHolidayWanderers */ .UL)();
+      if (todaysWanderers.length === 0) return this.step(macro);
+      return this.if_(todaysWanderers.map(monster => "!monsterid ".concat(monster.id)).join(" && "), macro);
+    }
+    /**
+     * Create a new macro starting with an ifNotHolidayWanderer step.
+     * @param macro The macro to place inside the if_ statement
+     */
+
   }], [{
     key: "load",
     value: function load() {
@@ -1838,8 +1875,8 @@ var Macro = /*#__PURE__*/function () {
     }
   }, {
     key: "externalIf",
-    value: function externalIf(condition, ifTrue) {
-      return new this().externalIf(condition, ifTrue);
+    value: function externalIf(condition, ifTrue, ifFalse) {
+      return new this().externalIf(condition, ifTrue, ifFalse);
     }
   }, {
     key: "skill",
@@ -1880,6 +1917,16 @@ var Macro = /*#__PURE__*/function () {
     key: "attack",
     value: function attack() {
       return new this().attack();
+    }
+  }, {
+    key: "ifHolidayWanderer",
+    value: function ifHolidayWanderer(macro) {
+      return new this().ifHolidayWanderer(macro);
+    }
+  }, {
+    key: "ifNotHolidayWanderer",
+    value: function ifNotHolidayWanderer(macro) {
+      return new this().ifNotHolidayWanderer(macro);
     }
   }]);
 
@@ -2133,16 +2180,17 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* harmony export */   "Lo": () => (/* binding */ uneffect),
 /* harmony export */   "cL": () => (/* binding */ questStep),
 /* harmony export */   "pq": () => (/* binding */ ensureEffect),
-/* harmony export */   "xI": () => (/* binding */ getSaleValue)
+/* harmony export */   "xI": () => (/* binding */ getSaleValue),
+/* harmony export */   "UL": () => (/* binding */ getTodaysHolidayWanderers)
 /* harmony export */ });
-/* unused harmony exports canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, haveCounter, isVoteWandererNow, isWandererNow, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier */
+/* unused harmony exports canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, haveCounter, isVoteWandererNow, isWandererNow, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4875);
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(678);
 /* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6672);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2784,6 +2832,14 @@ function findFairyMultiplier(familiar) {
   if (itemBonus === 0) return 0;
   return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
+var holidayWanderers = new Map([["El Dia De Los Muertos Borrachos", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Novia Cad\xE1ver, Novio Cad\xE1ver, Padre Cad\xE1ver, Persona Inocente Cad\xE1ver"])))], ["Feast of Boris", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Candied Yam Golem, Malevolent Tofurkey, Possessed Can of Cranberry Sauce, Stuffing Golem"])))], ["Talk Like a Pirate Day", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["ambulatory pirate, migratory pirate, peripatetic pirate"])))]]);
+function getTodaysHolidayWanderers() {
+  return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.holiday)().split("/").map(holiday => {
+    var _holidayWanderers$get;
+
+    return (_holidayWanderers$get = holidayWanderers.get(holiday)) !== null && _holidayWanderers$get !== void 0 ? _holidayWanderers$get : [];
+  }).flat();
+}
 
 /***/ }),
 
@@ -2842,6 +2898,10 @@ function isFamiliarProperty(property) {
 var statProps = (/* unused pure expression or super */ null && (["nsChallenge1", "shrugTopper", "snojoSetting"]));
 function isStatProperty(property) {
   return statProps.includes(property);
+}
+var phylumProps = ["dnaSyringe"];
+function isPhylumProperty(property) {
+  return phylumProps.includes(property) || property.endsWith("Phylum");
 }
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/property.js
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2925,6 +2985,10 @@ function get(property, _default) {
 
   if (isNumericProperty(property, value)) {
     return getNumber(property, _default);
+  }
+
+  if (isPhylumProperty(property)) {
+    return getPhylum(property);
   }
 
   return value;
@@ -18893,7 +18957,7 @@ function main() {
 
 /***/ }),
 
-/***/ 3031:
+/***/ 9614:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -19720,7 +19784,7 @@ var src_combat = __webpack_require__(4223);
 // EXTERNAL MODULE: ./node_modules/libram/node_modules/core-js/modules/es.object.values.js
 var es_object_values = __webpack_require__(2231);
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2015/MayoClinic.js
-var MayoClinic_templateObject, MayoClinic_templateObject2, MayoClinic_templateObject3, MayoClinic_templateObject4, MayoClinic_templateObject5, MayoClinic_templateObject6, MayoClinic_templateObject7, MayoClinic_templateObject8;
+var MayoClinic_templateObject, MayoClinic_templateObject2, MayoClinic_templateObject3, MayoClinic_templateObject4, MayoClinic_templateObject5, MayoClinic_templateObject6, MayoClinic_templateObject7, MayoClinic_templateObject8, MayoClinic_templateObject9, MayoClinic_templateObject10;
 
 function MayoClinic_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -19736,6 +19800,12 @@ var Mayo = {
   zapine: (0,template_string/* $item */.xr)(MayoClinic_templateObject3 || (MayoClinic_templateObject3 = MayoClinic_taggedTemplateLiteral(["Mayozapine"]))),
   flex: (0,template_string/* $item */.xr)(MayoClinic_templateObject4 || (MayoClinic_templateObject4 = MayoClinic_taggedTemplateLiteral(["Mayoflex"])))
 };
+function installed() {
+  return getWorkshed() === $item(MayoClinic_templateObject5 || (MayoClinic_templateObject5 = MayoClinic_taggedTemplateLiteral(["portable Mayo Clinic"])));
+}
+function have() {
+  return haveItem($item(MayoClinic_templateObject6 || (MayoClinic_templateObject6 = MayoClinic_taggedTemplateLiteral(["portable Mayo Clinic"])))) || installed();
+}
 /**
  * Sets mayo minder to a particular mayo, and ensures you have enough of it.
  * @param mayo Mayo to use
@@ -19744,7 +19814,7 @@ var Mayo = {
 
 function setMayoMinder(mayo) {
   var quantity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-  if ((0,external_kolmafia_.getWorkshed)() !== (0,template_string/* $item */.xr)(MayoClinic_templateObject5 || (MayoClinic_templateObject5 = MayoClinic_taggedTemplateLiteral(["portable Mayo Clinic"])))) return false;
+  if ((0,external_kolmafia_.getWorkshed)() !== (0,template_string/* $item */.xr)(MayoClinic_templateObject7 || (MayoClinic_templateObject7 = MayoClinic_taggedTemplateLiteral(["portable Mayo Clinic"])))) return false;
 
   if (!Object.values(Mayo).includes(mayo)) {
     logger.error("Invalid mayo selected");
@@ -19757,10 +19827,10 @@ function setMayoMinder(mayo) {
   }
 
   (0,external_kolmafia_.retrieveItem)(quantity, mayo);
-  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(MayoClinic_templateObject6 || (MayoClinic_templateObject6 = MayoClinic_taggedTemplateLiteral(["Mayo Minder\u2122"]))))) (0,external_kolmafia_.buy)((0,template_string/* $item */.xr)(MayoClinic_templateObject7 || (MayoClinic_templateObject7 = MayoClinic_taggedTemplateLiteral(["Mayo Minder\u2122"]))));
+  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(MayoClinic_templateObject8 || (MayoClinic_templateObject8 = MayoClinic_taggedTemplateLiteral(["Mayo Minder\u2122"]))))) (0,external_kolmafia_.buy)((0,template_string/* $item */.xr)(MayoClinic_templateObject9 || (MayoClinic_templateObject9 = MayoClinic_taggedTemplateLiteral(["Mayo Minder\u2122"]))));
 
   if ((0,property/* get */.U2)("mayoMinderSetting") !== mayo.name) {
-    (0,property/* withChoice */.Rj)(1076, (0,external_kolmafia_.toInt)(mayo) - 8260, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(MayoClinic_templateObject8 || (MayoClinic_templateObject8 = MayoClinic_taggedTemplateLiteral(["Mayo Minder\u2122"])))));
+    (0,property/* withChoice */.Rj)(1076, (0,external_kolmafia_.toInt)(mayo) - 8260, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(MayoClinic_templateObject10 || (MayoClinic_templateObject10 = MayoClinic_taggedTemplateLiteral(["Mayo Minder\u2122"])))));
   }
 
   return (0,property/* get */.U2)("mayoMinderSetting") === mayo.name;
@@ -20086,7 +20156,7 @@ function ChateauMantegna_taggedTemplateLiteral(strings, raw) { if (!raw) { raw =
 
 
 
-function have() {
+function ChateauMantegna_have() {
   return (0,property/* get */.U2)("chateauAvailable");
 }
 function paintingMonster() {
@@ -21059,7 +21129,7 @@ function printHelpMenu() {
 function pillkeeperOpportunityCost() {
   //Can't fight an embezzler without treasury access
   //If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
-  return (0,external_canadv_ash_namespaceObject.canAdv)((0,template_string/* $location */.PG)(_templateObject68 || (_templateObject68 = lib_taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false) ? have() && !paintingFought() || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject69 || (_templateObject69 = lib_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,property/* get */.U2)("_photocopyUsed") ? 15000 : 50000 : 0;
+  return (0,external_canadv_ash_namespaceObject.canAdv)((0,template_string/* $location */.PG)(_templateObject68 || (_templateObject68 = lib_taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false) ? ChateauMantegna_have() && !paintingFought() || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject69 || (_templateObject69 = lib_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,property/* get */.U2)("_photocopyUsed") ? 15000 : 50000 : 0;
 }
 /**
  * Burns existing MP on the mall-optimal libram skill until unable to cast any more.
@@ -21330,7 +21400,7 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
   (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(embezzler_templateObject40 || (embezzler_templateObject40 = embezzler_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"]))));
   (0,external_kolmafia_.cliExecute)("pillkeeper semirare");
   (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(embezzler_templateObject41 || (embezzler_templateObject41 = embezzler_taggedTemplateLiteral(["Cobb's Knob Treasury"]))), embezzlerMacro());
-}), new EmbezzlerFight("Chateau Painting", () => have() && !paintingFought() && paintingMonster() === (0,template_string/* $monster */.O4)(embezzler_templateObject42 || (embezzler_templateObject42 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), () => have() && !paintingFought() && paintingMonster() === (0,template_string/* $monster */.O4)(embezzler_templateObject43 || (embezzler_templateObject43 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) ? 1 : 0, () => fightPainting()), new EmbezzlerFight("Spooky Putty & Rain-Doh", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject44 || (embezzler_templateObject44 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"])))) && (0,property/* get */.U2)("spookyPuttyMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject45 || (embezzler_templateObject45 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject46 || (embezzler_templateObject46 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"])))) && (0,property/* get */.U2)("rainDohMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject47 || (embezzler_templateObject47 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), () => {
+}), new EmbezzlerFight("Chateau Painting", () => ChateauMantegna_have() && !paintingFought() && paintingMonster() === (0,template_string/* $monster */.O4)(embezzler_templateObject42 || (embezzler_templateObject42 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), () => ChateauMantegna_have() && !paintingFought() && paintingMonster() === (0,template_string/* $monster */.O4)(embezzler_templateObject43 || (embezzler_templateObject43 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) ? 1 : 0, () => fightPainting()), new EmbezzlerFight("Spooky Putty & Rain-Doh", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject44 || (embezzler_templateObject44 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"])))) && (0,property/* get */.U2)("spookyPuttyMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject45 || (embezzler_templateObject45 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject46 || (embezzler_templateObject46 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"])))) && (0,property/* get */.U2)("rainDohMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject47 || (embezzler_templateObject47 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), () => {
   if (((0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject48 || (embezzler_templateObject48 = embezzler_taggedTemplateLiteral(["Spooky Putty sheet"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject49 || (embezzler_templateObject49 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))))) && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject50 || (embezzler_templateObject50 = embezzler_taggedTemplateLiteral(["Rain-Doh black box"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject51 || (embezzler_templateObject51 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"])))))) {
     return 6 - (0,property/* get */.U2)("spookyPuttyCopiesMade") - (0,property/* get */.U2)("_raindohCopiesMade") + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(embezzler_templateObject52 || (embezzler_templateObject52 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"])))) + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(embezzler_templateObject53 || (embezzler_templateObject53 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"]))));
   } else if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject54 || (embezzler_templateObject54 = embezzler_taggedTemplateLiteral(["Spooky Putty sheet"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject55 || (embezzler_templateObject55 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))))) {
@@ -23254,6 +23324,102 @@ var StashManager = /*#__PURE__*/function () {
 
   return StashManager;
 }();
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2017/AsdonMartin.js
+var AsdonMartin_templateObject, AsdonMartin_templateObject2, AsdonMartin_templateObject3, AsdonMartin_templateObject4, AsdonMartin_templateObject5, AsdonMartin_templateObject6, AsdonMartin_templateObject7, AsdonMartin_templateObject8, AsdonMartin_templateObject9, AsdonMartin_templateObject10, AsdonMartin_templateObject11;
+
+function AsdonMartin_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+var AsdonMartin_fuelSkiplist = (0,template_string/* $items */.vS)(AsdonMartin_templateObject || (AsdonMartin_templateObject = AsdonMartin_taggedTemplateLiteral(["cup of \"tea\", thermos of \"whiskey\", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy, glass of \"milk\""])));
+
+function AsdonMartin_price(item) {
+  return (0,external_kolmafia_.historicalPrice)(item) === 0 ? (0,external_kolmafia_.mallPrice)(item) : (0,external_kolmafia_.historicalPrice)(item);
+}
+
+function AsdonMartin_calculateFuelEfficiency(it, targetUnits) {
+  var units = (0,lib/* getAverageAdventures */.N)(it);
+  return AsdonMartin_price(it) / Math.min(targetUnits, units);
+}
+
+function AsdonMartin_isFuelItem(it) {
+  return !(0,external_kolmafia_.isNpcItem)(it) && it.fullness + it.inebriety > 0 && (0,lib/* getAverageAdventures */.N)(it) > 0 && it.tradeable && it.discardable && !AsdonMartin_fuelSkiplist.includes(it);
+}
+
+var AsdonMartin_potentialFuel = (0,template_string/* $items */.vS)(AsdonMartin_templateObject2 || (AsdonMartin_templateObject2 = AsdonMartin_taggedTemplateLiteral([""]))).filter(AsdonMartin_isFuelItem);
+
+function AsdonMartin_getBestFuel(targetUnits) {
+  var key1 = item => -(0,lib/* getAverageAdventures */.N)(item);
+
+  var key2 = item => AsdonMartin_calculateFuelEfficiency(item, targetUnits);
+
+  AsdonMartin_potentialFuel.sort((x, y) => key1(x) - key1(y));
+  AsdonMartin_potentialFuel.sort((x, y) => key2(x) - key2(y));
+  return AsdonMartin_potentialFuel[0];
+}
+
+function AsdonMartin_insertFuel(it) {
+  var quantity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  var result = (0,external_kolmafia_.visitUrl)("campground.php?action=fuelconvertor&pwd&qty=".concat(quantity, "&iid=").concat((0,external_kolmafia_.toInt)(it), "&go=Convert%21"));
+  return result.includes("The display updates with a");
+}
+/**
+ * Fill your Asdon Martin to the given fuel level in the cheapest way possible
+ * @param targetUnits Fuel level to attempt to reach.
+ * @returns Whether we succeeded at filling to the target fuel level.
+ */
+
+
+function fillTo(targetUnits) {
+  while ((0,external_kolmafia_.getFuel)() < targetUnits) {
+    var remaining = targetUnits - (0,external_kolmafia_.getFuel)();
+    var fuel = AsdonMartin_getBestFuel(remaining);
+    var count = Math.ceil(targetUnits / (0,lib/* getAverageAdventures */.N)(fuel));
+    (0,external_kolmafia_.retrieveItem)(count, fuel);
+
+    if (!AsdonMartin_insertFuel(fuel, count)) {
+      throw new Error("Failed to fuel Asdon Martin.");
+    }
+  }
+
+  return (0,external_kolmafia_.getFuel)() >= targetUnits;
+}
+/**
+ * Object consisting of the various Asdon driving styles
+ */
+
+var Driving = {
+  Obnoxiously: (0,template_string/* $effect */._G)(AsdonMartin_templateObject3 || (AsdonMartin_templateObject3 = AsdonMartin_taggedTemplateLiteral(["Driving Obnoxiously"]))),
+  Stealthily: (0,template_string/* $effect */._G)(AsdonMartin_templateObject4 || (AsdonMartin_templateObject4 = AsdonMartin_taggedTemplateLiteral(["Driving Stealthily"]))),
+  Wastefully: (0,template_string/* $effect */._G)(AsdonMartin_templateObject5 || (AsdonMartin_templateObject5 = AsdonMartin_taggedTemplateLiteral(["Driving Wastefully"]))),
+  Safely: (0,template_string/* $effect */._G)(AsdonMartin_templateObject6 || (AsdonMartin_templateObject6 = AsdonMartin_taggedTemplateLiteral(["Driving Safely"]))),
+  Recklessly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject7 || (AsdonMartin_templateObject7 = AsdonMartin_taggedTemplateLiteral(["Driving Recklessly"]))),
+  Intimidatingly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject8 || (AsdonMartin_templateObject8 = AsdonMartin_taggedTemplateLiteral(["Driving Intimidatingly"]))),
+  Quickly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject9 || (AsdonMartin_templateObject9 = AsdonMartin_taggedTemplateLiteral(["Driving Quickly"]))),
+  Observantly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject10 || (AsdonMartin_templateObject10 = AsdonMartin_taggedTemplateLiteral(["Driving Observantly"]))),
+  Waterproofly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject11 || (AsdonMartin_templateObject11 = AsdonMartin_taggedTemplateLiteral(["Driving Waterproofly"])))
+};
+/**
+ * Attempt to drive with a particular style for a particular number of turns
+ * @param style The driving style to use
+ * @param turns The number of turns to attempt to get
+ * @returns Whether we have at least as many turns as requested of said driving style.
+ */
+
+function drive(style) {
+  var turns = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  if (!Object.values(Driving).includes(style)) return false;
+  if ((0,external_kolmafia_.haveEffect)(style) >= turns) return true;
+  var fuelNeeded = 37 * Math.ceil((turns - (0,external_kolmafia_.haveEffect)(style)) / 30);
+  fillTo(fuelNeeded);
+
+  while ((0,external_kolmafia_.getFuel)() >= 37 && (0,external_kolmafia_.haveEffect)(style) < turns) {
+    (0,external_kolmafia_.cliExecute)("asdonmartin drive ".concat(style.name.replace("Driving ", "")));
+  }
+
+  return (0,external_kolmafia_.haveEffect)(style) >= turns;
+}
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/mood.js
 var mood_templateObject, mood_templateObject2, mood_templateObject3, mood_templateObject4, mood_templateObject5, mood_templateObject6, mood_templateObject7, mood_templateObject8, mood_templateObject9, mood_templateObject10, mood_templateObject11, mood_templateObject12;
 
@@ -23290,6 +23456,7 @@ function mood_classCallCheck(instance, Constructor) { if (!(instance instanceof 
 function mood_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function mood_createClass(Constructor, protoProps, staticProps) { if (protoProps) mood_defineProperties(Constructor.prototype, protoProps); if (staticProps) mood_defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -23615,6 +23782,31 @@ var CustomMoodElement = /*#__PURE__*/function (_MoodElement4) {
 
   return CustomMoodElement;
 }(MoodElement);
+
+var AsdonMoodElement = /*#__PURE__*/function (_MoodElement5) {
+  mood_inherits(AsdonMoodElement, _MoodElement5);
+
+  var _super7 = mood_createSuper(AsdonMoodElement);
+
+  function AsdonMoodElement(effect) {
+    var _this5;
+
+    mood_classCallCheck(this, AsdonMoodElement);
+
+    _this5 = _super7.call(this);
+    _this5.effect = effect;
+    return _this5;
+  }
+
+  mood_createClass(AsdonMoodElement, [{
+    key: "execute",
+    value: function execute(mood, ensureTurns) {
+      return drive(this.effect, ensureTurns);
+    }
+  }]);
+
+  return AsdonMoodElement;
+}(MoodElement);
 /**
  * Class representing a mood object. Add mood elements using the instance methods, which can be chained.
  */
@@ -23721,6 +23913,20 @@ var Mood = /*#__PURE__*/function () {
     key: "genie",
     value: function genie(effect) {
       this.elements.push(new GenieMoodElement(effect));
+      return this;
+    }
+    /**
+     * Add an Asdon Martin driving style to the mood.
+     * @param effect Driving style to add to the mood.
+     */
+
+  }, {
+    key: "drive",
+    value: function drive(effect) {
+      if (Object.values(Driving).includes(effect)) {
+        this.elements.push(new AsdonMoodElement(effect));
+      }
+
       return this;
     }
     /**
@@ -25130,7 +25336,7 @@ var freeFightSources = [new FreeFight(() => TunnelOfLove_have() && !isUsed(), ()
 }), new FreeFight(() => {
   var _ChateauMantegna$pain, _ChateauMantegna$pain2, _ChateauMantegna$pain3;
 
-  return have() && !paintingFought() && ((_ChateauMantegna$pain = (_ChateauMantegna$pain2 = paintingMonster()) === null || _ChateauMantegna$pain2 === void 0 ? void 0 : (_ChateauMantegna$pain3 = _ChateauMantegna$pain2.attributes) === null || _ChateauMantegna$pain3 === void 0 ? void 0 : _ChateauMantegna$pain3.includes("FREE")) !== null && _ChateauMantegna$pain !== void 0 ? _ChateauMantegna$pain : false);
+  return ChateauMantegna_have() && !paintingFought() && ((_ChateauMantegna$pain = (_ChateauMantegna$pain2 = paintingMonster()) === null || _ChateauMantegna$pain2 === void 0 ? void 0 : (_ChateauMantegna$pain3 = _ChateauMantegna$pain2.attributes) === null || _ChateauMantegna$pain3 === void 0 ? void 0 : _ChateauMantegna$pain3.includes("FREE")) !== null && _ChateauMantegna$pain !== void 0 ? _ChateauMantegna$pain : false);
 }, () => fightPainting(), {
   familiar: () => (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject118 || (_templateObject118 = fights_taggedTemplateLiteral(["Robortender"])))) && (0,template_string/* $phyla */.bi)(_templateObject119 || (_templateObject119 = fights_taggedTemplateLiteral(["elf, fish, hobo, penguin, constellation"]))).some(phylum => {
     var _ChateauMantegna$pain4;
@@ -26286,7 +26492,7 @@ function martini() {
 }
 
 function chateauDesk() {
-  if (have() && !(0,property/* get */.U2)("_chateauDeskHarvested")) {
+  if (ChateauMantegna_have() && !(0,property/* get */.U2)("_chateauDeskHarvested")) {
     (0,external_kolmafia_.visitUrl)("place.php?whichplace=chateau&action=chateau_desk2", false);
   }
 }
@@ -26316,7 +26522,7 @@ function pantogram() {
     pantogramValue = (100 + 0.6 * baseMeat - bestPantsValue * baseMeat / 100) * estimatedTurns();
   }
 
-  if (Math.min.apply(Math, dailies_toConsumableArray((0,template_string/* $items */.vS)(dailies_templateObject117 || (dailies_templateObject117 = dailies_taggedTemplateLiteral(["ten-leaf clover, disassembled clover"]))).map(external_kolmafia_.mallPrice))) + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(dailies_templateObject118 || (dailies_templateObject118 = dailies_taggedTemplateLiteral(["porquoise"])))) > pantogramValue) {
+  if (Math.min.apply(Math, dailies_toConsumableArray((0,template_string/* $items */.vS)(dailies_templateObject117 || (dailies_templateObject117 = dailies_taggedTemplateLiteral(["ten-leaf clover, disassembled clover"]))).map(item => (0,external_kolmafia_.mallPrice)(item)))) + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(dailies_templateObject118 || (dailies_templateObject118 = dailies_taggedTemplateLiteral(["porquoise"])))) > pantogramValue) {
     return;
   }
 
@@ -26782,7 +26988,7 @@ module.exports = require("kolmafia");;
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 3031);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 9614);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });

@@ -35,6 +35,7 @@ var Copier = function Copier(couldCopy, prepare, canCopy, copiedMonster, fightCo
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
 /* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6672);
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3311);
 var _templateObject, _templateObject2;
 
 function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
@@ -80,6 +81,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 
 
 
@@ -364,6 +366,7 @@ var Macro = /*#__PURE__*/function () {
      * Create a new macro with a condition evaluated at the time of building the macro.
      * @param condition The JS condition.
      * @param ifTrue Continuation to add if the condition is true.
+     * @param ifFalse Optional input to turn this into an if...else statement.
      * @returns {Macro} This object itself.
      */
 
@@ -507,6 +510,40 @@ var Macro = /*#__PURE__*/function () {
      * @returns {Macro} This object itself.
      */
 
+  }, {
+    key: "ifHolidayWanderer",
+    value:
+    /**
+     * Create an if_ statement based on what holiday of loathing it currently is. On non-holidays, returns the original macro, unmutated.
+     * @param macro The macro to place in the if_ statement
+     */
+    function ifHolidayWanderer(macro) {
+      var todaysWanderers = (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getTodaysHolidayWanderers */ .UL)();
+      if (todaysWanderers.length === 0) return this;
+      return this.if_(todaysWanderers.map(monster => "monsterid ".concat(monster.id)).join(" || "), macro);
+    }
+    /**
+     * Create a new macro starting with an ifHolidayWanderer step.
+     * @param macro The macro to place inside the if_ statement
+     */
+
+  }, {
+    key: "ifNotHolidayWanderer",
+    value:
+    /**
+     * Create an if_ statement based on what holiday of loathing it currently is. On non-holidays, returns the original macro, with the input macro appended.
+     * @param macro The macro to place in the if_ statement.
+     */
+    function ifNotHolidayWanderer(macro) {
+      var todaysWanderers = (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getTodaysHolidayWanderers */ .UL)();
+      if (todaysWanderers.length === 0) return this.step(macro);
+      return this.if_(todaysWanderers.map(monster => "!monsterid ".concat(monster.id)).join(" && "), macro);
+    }
+    /**
+     * Create a new macro starting with an ifNotHolidayWanderer step.
+     * @param macro The macro to place inside the if_ statement
+     */
+
   }], [{
     key: "load",
     value: function load() {
@@ -552,8 +589,8 @@ var Macro = /*#__PURE__*/function () {
     }
   }, {
     key: "externalIf",
-    value: function externalIf(condition, ifTrue) {
-      return new this().externalIf(condition, ifTrue);
+    value: function externalIf(condition, ifTrue, ifFalse) {
+      return new this().externalIf(condition, ifTrue, ifFalse);
     }
   }, {
     key: "skill",
@@ -594,6 +631,16 @@ var Macro = /*#__PURE__*/function () {
     key: "attack",
     value: function attack() {
       return new this().attack();
+    }
+  }, {
+    key: "ifHolidayWanderer",
+    value: function ifHolidayWanderer(macro) {
+      return new this().ifHolidayWanderer(macro);
+    }
+  }, {
+    key: "ifNotHolidayWanderer",
+    value: function ifNotHolidayWanderer(macro) {
+      return new this().ifNotHolidayWanderer(macro);
     }
   }]);
 
@@ -833,14 +880,16 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "lf": () => (/* binding */ have),
-/* harmony export */   "sy": () => (/* binding */ haveInCampground)
+/* harmony export */   "sy": () => (/* binding */ haveInCampground),
+/* harmony export */   "UL": () => (/* binding */ getTodaysHolidayWanderers)
 /* harmony export */ });
-/* unused harmony exports getSongLimit, isSong, getActiveEffects, getActiveSongs, getSongCount, canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, Wanderer, haveCounter, haveWandererCounter, isVoteWandererNow, isWandererNow, getKramcoWandererChance, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getFoldGroup, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getAverageAdventures, uneffect, getPlayerFromIdOrName, questStep, EnsureError, ensureEffect, getSaleValue, Environment, findLeprechaunMultiplier, findFairyMultiplier */
+/* unused harmony exports getSongLimit, isSong, getActiveEffects, getActiveSongs, getSongCount, canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, Wanderer, haveCounter, haveWandererCounter, isVoteWandererNow, isWandererNow, getKramcoWandererChance, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getFoldGroup, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getAverageAdventures, uneffect, getPlayerFromIdOrName, questStep, EnsureError, ensureEffect, getSaleValue, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4875);
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_1__);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8;
+/* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(678);
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1482,6 +1531,14 @@ function findFairyMultiplier(familiar) {
   if (itemBonus === 0) return 0;
   return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
+var holidayWanderers = new Map([["El Dia De Los Muertos Borrachos", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Novia Cad\xE1ver, Novio Cad\xE1ver, Padre Cad\xE1ver, Persona Inocente Cad\xE1ver"])))], ["Feast of Boris", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Candied Yam Golem, Malevolent Tofurkey, Possessed Can of Cranberry Sauce, Stuffing Golem"])))], ["Talk Like a Pirate Day", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["ambulatory pirate, migratory pirate, peripatetic pirate"])))]]);
+function getTodaysHolidayWanderers() {
+  return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.holiday)().split("/").map(holiday => {
+    var _holidayWanderers$get;
+
+    return (_holidayWanderers$get = holidayWanderers.get(holiday)) !== null && _holidayWanderers$get !== void 0 ? _holidayWanderers$get : [];
+  }).flat();
+}
 
 /***/ }),
 
@@ -1535,6 +1592,10 @@ function isFamiliarProperty(property) {
 var statProps = (/* unused pure expression or super */ null && (["nsChallenge1", "shrugTopper", "snojoSetting"]));
 function isStatProperty(property) {
   return statProps.includes(property);
+}
+var phylumProps = ["dnaSyringe"];
+function isPhylumProperty(property) {
+  return phylumProps.includes(property) || property.endsWith("Phylum");
 }
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/property.js
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1618,6 +1679,10 @@ function get(property, _default) {
 
   if (isNumericProperty(property, value)) {
     return getNumber(property, _default);
+  }
+
+  if (isPhylumProperty(property)) {
+    return getPhylum(property);
   }
 
   return value;
@@ -2003,12 +2068,13 @@ function getPortscanUses() {
 /* harmony export */   "vS": () => (/* binding */ $items),
 /* harmony export */   "PG": () => (/* binding */ $location),
 /* harmony export */   "O4": () => (/* binding */ $monster),
+/* harmony export */   "fr": () => (/* binding */ $monsters),
 /* harmony export */   "tm": () => (/* binding */ $skill),
 /* harmony export */   "nx": () => (/* binding */ $skills),
 /* harmony export */   "Jh": () => (/* binding */ $slot),
 /* harmony export */   "_0": () => (/* binding */ $thralls)
 /* harmony export */ });
-/* unused harmony exports $bounty, $bounties, $classes, $coinmaster, $coinmasters, $effects, $element, $elements, $familiars, $locations, $monsters, $phylum, $phyla, $servant, $servants, $slots, $stat, $stats, $thrall */
+/* unused harmony exports $bounty, $bounties, $classes, $coinmaster, $coinmasters, $effects, $element, $elements, $familiars, $locations, $phylum, $phyla, $servant, $servants, $slots, $stat, $stats, $thrall */
 var concatTemplateString = function concatTemplateString(literals) {
   for (var _len = arguments.length, placeholders = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     placeholders[_key - 1] = arguments[_key];

@@ -1482,6 +1482,10 @@ var statProps = (/* unused pure expression or super */ null && (["nsChallenge1",
 function isStatProperty(property) {
   return statProps.includes(property);
 }
+var phylumProps = ["dnaSyringe"];
+function isPhylumProperty(property) {
+  return phylumProps.includes(property) || property.endsWith("Phylum");
+}
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/property.js
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -1642,6 +1646,10 @@ function get(property, _default) {
 
   if (isNumericProperty(property, value)) {
     return getNumber(property, _default);
+  }
+
+  if (isPhylumProperty(property)) {
+    return getPhylum(property);
   }
 
   return value;
