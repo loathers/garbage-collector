@@ -54,7 +54,7 @@ export class EmbezzlerFight {
    * @prop {number} potential this should be a statement that checks the number of this type of embezzler fight available
    * @prop {Location, Macro} run This runs the combat, using the macro and location provided, if any
    * @prop {[]} requirements This is an array of requirements to do this fight
-   * @prop {boolean} [draggable=false] This tells the script if it should try to drag the embezzler to a different zone
+   * @prop {boolean} [draggable=false] This tells the script if it is able the embezzler to a different zone
    *
    */
   constructor(
