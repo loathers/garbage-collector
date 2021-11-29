@@ -586,9 +586,8 @@ const pygmyMacro = () =>
       SourceTerminal.have() || SongBoom.have(),
       Macro.if_(
         $monster`drunk pygmy`,
-        Macro.externalIf(
-          SourceTerminal.have(),
-          Macro.trySkill($skill`Extract`),
+        Macro.externalIf(SourceTerminal.have(), Macro.trySkill($skill`Extract`)).externalIf(
+          !SourceTerminal.have(),
           Macro.skill($skill`Sing Along`)
         )
       )
