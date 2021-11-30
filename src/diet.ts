@@ -144,22 +144,33 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   }
 }
 
-function estimatedTurnsWithOrgans(includeSpleen = true) {
+function estimatedTurnsWithOrgans(diet: [MenuItem[], number][], includeSpleen = true) {
+  // FIXME: Just get the actual predicted adventure value of the diet.
+  const includedItems = new Set(
+    ([] as MenuItem[])
+      .concat(...diet.filter(([, count]) => count > 0).map(([menuItems]) => menuItems))
+      .map((menuItem) => menuItem.item)
+  );
   const fullnessAvailable =
     fullnessLimit() +
     (have($item`distention pill`) && !get("_distentionPillUsed") ? 1 : 0) +
-    (mallPrice($item`spice melange`) < 50 * MPA ? 3 : 0);
+    (includedItems.has($item`spice melange`) ? 3 : 0) +
+    (includedItems.has($item`cuppa Voraci tea`) ? 1 : 0) +
+    (includedItems.has($item`distention pill`) ? 1 : 0) -
+    myFullness();
   const inebrietyAvailable =
     inebrietyLimit() +
-    (have($item`synthetic dog hair pill`) && !get("_syntheticDogHairPillUsed") ? 1 : 0) +
-    (mallPrice($item`spice melange`) < 50 * MPA ? 3 : 0);
-  const spleenAvailable = spleenLimit() + (3 - get("currentMojoFilters"));
+    (includedItems.has($item`spice melange`) ? 3 : 0) +
+    (includedItems.has($item`cuppa Sobrie tea`) ? 1 : 0) +
+    (includedItems.has($item`synthetic dog hair pill`) ? 1 : 0) -
+    myInebriety();
+  const spleenAvailable = spleenLimit() + (3 - get("currentMojoFilters")) - mySpleenUse();
   const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
   return (
     estimatedTurns() +
     thumbRingMultiplier *
-      (8 * Math.max(0, fullnessAvailable) +
-        8 * Math.max(0, inebrietyAvailable) +
+      (7.5 * Math.max(0, fullnessAvailable) +
+        9 * Math.max(0, inebrietyAvailable) +
         (includeSpleen ? 2 * Math.max(0, spleenAvailable) : 0))
   );
 }
@@ -184,12 +195,12 @@ function getBestSpleenItems() {
   return { bestSpleenItem: savedBestSpleenItem, potentialSpleenItems: savedPotentialSpleenItems };
 }
 
-function fillSomeSpleen() {
+function fillSomeSpleen(diet: [MenuItem[], number][]) {
   const { bestSpleenItem } = getBestSpleenItems();
-  fillSpleenWith(bestSpleenItem);
+  fillSpleenWith(bestSpleenItem, diet);
 }
 
-function fillSpleenWith(spleenItem: Item) {
+function fillSpleenWith(spleenItem: Item, diet: [MenuItem[], number][]) {
   if (mySpleenUse() < spleenLimit()) {
     // (itemAdvs * spleenItem + adventures) * 1.04 = 30 * spleenSynth + synthTurns
     // spleenItem + spleenSynth = spleenTotal
@@ -207,7 +218,7 @@ function fillSpleenWith(spleenItem: Item) {
       ? 0
       : thumbRingMultiplier * adventuresPerSpleen * spleenTotal;
     const spleenSynth = Math.ceil(
-      (spleenAdvsGained + estimatedTurnsWithOrgans(false) - synthTurns) /
+      (spleenAdvsGained + estimatedTurnsWithOrgans(diet, false) - synthTurns) /
         (30 + thumbRingMultiplier * adventuresPerSpleen)
     );
     if (have($skill`Sweet Synthesis`)) {
@@ -336,7 +347,7 @@ const stomachLiverCleaners = new Map([
 ]);
 export function computeDiet(): [MenuItem[], number][] {
   // Roughly estimate how much spleen we need to clear for synth.
-  const expectedTurns = estimatedTurnsWithOrgans();
+  const expectedTurns = estimatedTurnsWithOrgans([]);
   const spleenNeeded = Math.ceil((expectedTurns - haveEffect($effect`Synthesis: Greed`)) / 30);
   const additionalSpleenNeeded = Math.max(
     0,
@@ -570,7 +581,7 @@ export function runDiet(): void {
       itemCount[1] -= countToConsume;
     }
 
-    fillSomeSpleen();
+    fillSomeSpleen(diet);
   }
 
   // FIXME: More accurate decision on whether to use mojo filters.
@@ -584,7 +595,7 @@ export function runDiet(): void {
     acquire(mojoFilterCount, $item`mojo filter`, spleenValue, false);
     if (have($item`mojo filter`)) {
       use(Math.min(mojoFilterCount, availableAmount($item`mojo filter`)), $item`mojo filter`);
-      fillSomeSpleen();
+      fillSomeSpleen(diet);
     }
   }
 }
