@@ -148,12 +148,14 @@ function estimatedTurnsWithOrgans(includeSpleen = true) {
   const fullnessAvailable =
     fullnessLimit() +
     (have($item`distention pill`) && !get("_distentionPillUsed") ? 1 : 0) +
-    (mallPrice($item`spice melange`) < 50 * MPA ? 3 : 0);
+    (mallPrice($item`spice melange`) < 50 * MPA ? 3 : 0) -
+    myFullness();
   const inebrietyAvailable =
     inebrietyLimit() +
     (have($item`synthetic dog hair pill`) && !get("_syntheticDogHairPillUsed") ? 1 : 0) +
-    (mallPrice($item`spice melange`) < 50 * MPA ? 3 : 0);
-  const spleenAvailable = spleenLimit() + (3 - get("currentMojoFilters"));
+    (mallPrice($item`spice melange`) < 50 * MPA ? 3 : 0) -
+    myInebriety();
+  const spleenAvailable = spleenLimit() + (3 - get("currentMojoFilters")) - mySpleenUse();
   const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
   return (
     estimatedTurns() +
