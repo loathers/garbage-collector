@@ -551,7 +551,7 @@ function pantogram(): void {
     pantogramValue = (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedTurns();
   }
   if (
-    Math.min(...$items`ten-leaf clover, disassembled clover`.map(mallPrice)) +
+    Math.min(...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item))) +
       mallPrice($item`porquoise`) >
     pantogramValue
   ) {
