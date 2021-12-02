@@ -101,7 +101,6 @@ function ensureBarfAccess() {
 
 function barfTurn() {
   const startTurns = totalTurnsPlayed();
-  horseradish();
   if (have($effect`Beaten Up`))
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
   if (SourceTerminal.have()) {
