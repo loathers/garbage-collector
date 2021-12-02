@@ -2,10 +2,16 @@ import { canAdv } from "canadv.ash";
 import {
   abort,
   cliExecute,
+  descToItem,
+  eat,
+  fullnessLimit,
+  getWorkshed,
   handlingChoice,
   haveSkill,
   inebrietyLimit,
+  mallPrice,
   mpCost,
+  myFullness,
   myInebriety,
   myMp,
   myTurncount,
@@ -17,6 +23,7 @@ import {
   runChoice,
   runCombat,
   toUrl,
+  turnsPlayed,
   use,
   useFamiliar,
   useSkill,
@@ -40,12 +47,14 @@ import {
   getSongLimit,
   have,
   Macro,
+  MayoClinic,
   PropertiesManager,
   property,
   Requirement,
   set,
   SongBoom,
 } from "libram";
+import { acquire } from "./acquire";
 
 export const embezzlerLog = {
   initialEmbezzlersFought: 0,
@@ -477,4 +486,53 @@ export function burnLibrams(): void {
     libramToCast = bestLibramToCast();
   }
   cliExecute("burn *");
+}
+
+function coldMedicineCabinet(): void {
+  // eslint-disable-next-line libram/verify-constants
+  if (getWorkshed() !== $item`cold medicine cabinet`) return;
+  if (
+    property.getNumber("_coldMedicineConsults") >= 5 ||
+    property.getNumber("_nextColdMedicineConsult") > turnsPlayed()
+  )
+    return;
+  const options = visitUrl("campground.php?action=workshed");
+  let bestChoice = 0;
+  let highestPrice = 0;
+  let i = 0;
+  let match;
+  const regexp = /descitem\((\d+)\)/g;
+  while ((match = regexp.exec(options)) !== null) {
+    i++;
+    const item = descToItem(match[1]);
+    const price = mallPrice(item);
+    print(item.toString());
+    if (price > highestPrice) {
+      highestPrice = price;
+      bestChoice = i;
+    }
+  }
+  visitUrl("campground.php?action=workshed");
+  runChoice(bestChoice);
+}
+
+function eatSafe(qty: number, item: Item) {
+  acquire(qty, $item`Special Seasoning`);
+  acquire(qty, item);
+  if (!eat(qty, item)) throw "Failed to eat safely";
+}
+
+function horseradish(): void {
+  if (myFullness() < fullnessLimit()) {
+    if (mallPrice($item`fudge spork`) < 3 * get("valueOfAdventure") && !get("_fudgeSporkUsed"))
+      eat(1, $item`fudge spork`);
+    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
+    eatSafe(1, $item`jumping horseradish`);
+  }
+}
+
+export function postCombatActions(): void {
+  horseradish();
+  coldMedicineCabinet();
+  safeInterrupt();
 }

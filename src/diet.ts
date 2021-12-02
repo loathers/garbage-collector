@@ -599,10 +599,3 @@ export function runDiet(): void {
     }
   }
 }
-
-export function horseradish(): void {
-  if (myFullness() < fullnessLimit()) {
-    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
-    eatSafe(1, $item`jumping horseradish`);
-  }
-}
