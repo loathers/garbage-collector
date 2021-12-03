@@ -13,7 +13,9 @@ export function expectedGregs(): number {
     : 0;
   const totalMonsterReplacers = macrometeors + replaceEnemies;
 
-  const monsterReplacerGregs = 0; //stuff;
+  const sabersLeft = have($item`fourth of may cosplay saber`)
+    ? clamp(5 - get("_saberForceUses"), 0, 3)
+    : 0;
 
   const gregs = baseGregs + timeSpunGregs + orbGregs + monsterReplacerGregs;
   return gregs;
