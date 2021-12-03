@@ -198,47 +198,6 @@ export const embezzlerSources = [
     true
   ),
   new EmbezzlerFight(
-    "Fax",
-    () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
-    () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
-    () => {
-      faxEmbezzler();
-      use($item`photocopied monster`);
-    }
-  ),
-  new EmbezzlerFight(
-    "Pillkeeper Semirare",
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed"),
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed")
-        ? 1
-        : 0,
-    () => {
-      retrieveItem($item`Eight Days a Week Pill Keeper`);
-      cliExecute("pillkeeper semirare");
-      adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
-    }
-  ),
-  new EmbezzlerFight(
-    "Chateau Painting",
-    () =>
-      ChateauMantegna.have() &&
-      !ChateauMantegna.paintingFought() &&
-      ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`,
-    () =>
-      ChateauMantegna.have() &&
-      !ChateauMantegna.paintingFought() &&
-      ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`
-        ? 1
-        : 0,
-    () => ChateauMantegna.fightPainting()
-  ),
-  new EmbezzlerFight(
     "Spooky Putty & Rain-Doh",
     () =>
       (have($item`Spooky Putty monster`) &&
@@ -312,28 +271,47 @@ export const embezzlerSources = [
     () => use($item`envyfish egg`)
   ),
   new EmbezzlerFight(
-    "Professor MeatChain",
-    () => false,
+    "Chateau Painting",
     () =>
-      have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)
-        ? Math.max(10 - get("_pocketProfessorLectures"), 0)
+      ChateauMantegna.have() &&
+      !ChateauMantegna.paintingFought() &&
+      ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`,
+    () =>
+      ChateauMantegna.have() &&
+      !ChateauMantegna.paintingFought() &&
+      ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`
+        ? 1
         : 0,
+    () => ChateauMantegna.fightPainting()
+  ),
+  new EmbezzlerFight(
+    "Fax",
+    () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
+    () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
     () => {
-      return;
+      faxEmbezzler();
+      use($item`photocopied monster`);
     }
   ),
   new EmbezzlerFight(
-    "Professor WeightChain",
-    () => false,
+    "Pillkeeper Semirare",
     () =>
-      have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)
-        ? Math.min(15 - get("_pocketProfessorLectures"), 5)
+      have($item`Eight Days a Week Pill Keeper`) &&
+      canAdv($location`Cobb's Knob Treasury`, true) &&
+      !get("_freePillKeeperUsed"),
+    () =>
+      have($item`Eight Days a Week Pill Keeper`) &&
+      canAdv($location`Cobb's Knob Treasury`, true) &&
+      !get("_freePillKeeperUsed")
+        ? 1
         : 0,
     () => {
-      return;
+      retrieveItem($item`Eight Days a Week Pill Keeper`);
+      cliExecute("pillkeeper semirare");
+      adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
   ),
-  //This is very deliberately the last embezzler fight.
+  //These are very deliberately the last embezzler fights.
   new EmbezzlerFight(
     "Pocket Wish",
     () => {
@@ -367,6 +345,28 @@ export const embezzlerSources = [
       visitUrl("main.php", false);
       runCombat();
       globalOptions.askedAboutWish = false;
+    }
+  ),
+  new EmbezzlerFight(
+    "Professor MeatChain",
+    () => false,
+    () =>
+      have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)
+        ? Math.max(10 - get("_pocketProfessorLectures"), 0)
+        : 0,
+    () => {
+      return;
+    }
+  ),
+  new EmbezzlerFight(
+    "Professor WeightChain",
+    () => false,
+    () =>
+      have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)
+        ? Math.min(15 - get("_pocketProfessorLectures"), 5)
+        : 0,
+    () => {
+      return;
     }
   ),
 ];
