@@ -107,6 +107,11 @@ export const embezzlerMacro = (): Macro =>
       .trySkill($skill`Wink at`)
       .trySkill($skill`Fire a badly romantic arrow`)
       .externalIf(
+        get<number>("beGregariousCharges") > 0 &&
+          get<Monster>("beGregariousMonster") === $monster`Knob Goblin Embezzler`,
+        Macro.trySkill($skill`Be Gregarious`)
+      )
+      .externalIf(
         get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
         Macro.tryCopier($skill`Digitize`)
       )
