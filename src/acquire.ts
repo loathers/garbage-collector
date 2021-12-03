@@ -15,7 +15,7 @@ import { get } from "libram";
 
 const priceCaps: { [index: string]: number } = {
   "jar of fermented pickle juice": 75000,
-  "extra-greasy slider": 45000,
+  "extra-greasy slider": 75000,
   "spice melange": 500000,
   "splendid martini": 20000,
   "Eye and a Twist": 20000,
