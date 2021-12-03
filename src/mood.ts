@@ -1,8 +1,6 @@
 import {
   cliExecute,
-  getCampground,
   getClanLounge,
-  getFuel,
   getWorkshed,
   haveEffect,
   haveSkill,
@@ -38,6 +36,7 @@ import { potionSetup } from "./potions";
 import { estimatedTurns } from "./embezzler";
 import { withStash } from "./clan";
 import synthesize from "./synthesis";
+import { Driving } from "libram/dist/resources/2017/AsdonMartin";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -87,10 +86,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     });
   }
 
-  if (getCampground()["Asdon Martin keyfob"] !== undefined) {
-    if (getFuel() < 37) cliExecute("asdonmartin fuel 1 pie man was not meant to eat");
-    mood.effect($effect`Driving Observantly`);
-  }
+  mood.drive(Driving.Observantly);
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View to Some Meat`, () => {

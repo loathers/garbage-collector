@@ -70,6 +70,7 @@ import {
   $slot,
   adventureMacro,
   adventureMacroAuto,
+  AsdonMartin,
   ChateauMantegna,
   clamp,
   ensureEffect,
@@ -85,7 +86,6 @@ import {
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
-import { fillAsdonMartinTo } from "./asdon";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import { horseradish } from "./diet";
@@ -1476,7 +1476,7 @@ const freeKillSources = [
     () => !get("_missileLauncherUsed") && getCampground()["Asdon Martin keyfob"] !== undefined,
     () => {
       ensureBeachAccess();
-      fillAsdonMartinTo(100);
+      AsdonMartin.fillTo(100);
       withMacro(
         Macro.trySkill($skill`Sing Along`).skill($skill`Asdon Martin: Missile Launcher`),
         () => use($item`drum machine`)
