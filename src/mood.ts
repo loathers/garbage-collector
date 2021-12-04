@@ -1,8 +1,6 @@
 import {
   cliExecute,
-  getCampground,
   getClanLounge,
-  getFuel,
   getWorkshed,
   haveEffect,
   haveSkill,
@@ -26,6 +24,7 @@ import {
   $items,
   $skill,
   $skills,
+  AsdonMartin,
   get,
   have,
   Mood,
@@ -87,10 +86,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     });
   }
 
-  if (getCampground()["Asdon Martin keyfob"] !== undefined) {
-    if (getFuel() < 37) cliExecute("asdonmartin fuel 1 pie man was not meant to eat");
-    mood.effect($effect`Driving Observantly`);
-  }
+  mood.drive(AsdonMartin.Driving.Observantly);
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View to Some Meat`, () => {
