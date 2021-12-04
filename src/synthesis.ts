@@ -10,11 +10,11 @@ import { $items, clamp } from "libram";
 import { shuffle } from "./lib";
 
 const whitelist = $items`sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt, Fudgie Roll`;
-export default function synthesize(effect: Effect, casts: number): void {
+export default function synthesize(casts: number, effect: Effect): void {
   const shuffledWhitelist = shuffle([...whitelist]);
   for (const itemA of shuffledWhitelist) {
     if (availableAmount(itemA) <= 1) continue;
-    if (casts === 0) return;
+    if (casts <= 0) return;
     for (const itemB of shuffledWhitelist) {
       const minimum = itemA === itemB ? 2 : 1;
       if (availableAmount(itemB) <= minimum) continue;
@@ -35,7 +35,5 @@ export default function synthesize(effect: Effect, casts: number): void {
     }
   }
 
-  for (let i = 0; i < clamp(casts, 0, spleenLimit() - mySpleenUse()); i++) {
-    sweetSynthesis(effect);
-  }
+  sweetSynthesis(clamp(casts, 0, spleenLimit() - mySpleenUse()), effect);
 }

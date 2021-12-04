@@ -385,6 +385,7 @@ export function estimatedTurns(): number {
   const sausageAdventures = have($item`Kramco Sausage-o-Matic™`)
     ? Math.min(potentialSausages, 23 - get("_sausagesEaten"))
     : 0;
+  const thesisAdventures = have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
   const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
   const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
 
@@ -393,7 +394,11 @@ export function estimatedTurns(): number {
   else if (globalOptions.noBarf) turns = embezzlerCount();
   else {
     turns =
-      (myAdventures() + sausageAdventures + pantsgivingAdventures + nightcapAdventures) *
+      (myAdventures() +
+        sausageAdventures +
+        pantsgivingAdventures +
+        nightcapAdventures +
+        thesisAdventures) *
       thumbRingMultiplier;
   }
 

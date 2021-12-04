@@ -81,7 +81,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
         mySpleenUse() < spleenLimit() &&
         haveEffect($effect`Synthesis: Greed`) < estimatedTurns()
       ) {
-        synthesize($effect`Synthesis: Greed`, 1);
+        synthesize(1, $effect`Synthesis: Greed`);
       }
     });
   }

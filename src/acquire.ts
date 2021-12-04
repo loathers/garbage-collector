@@ -14,24 +14,21 @@ import {
 import { get } from "libram";
 
 const priceCaps: { [index: string]: number } = {
-  "jar of fermented pickle juice": 75000,
-  "extra-greasy slider": 75000,
   "spice melange": 500000,
-  "splendid martini": 20000,
-  "Eye and a Twist": 20000,
-  "jumping horseradish": 20000,
-  "Ambitious Turkey": 20000,
+  "cuppa Voraci tea": 100000,
+  "cuppa Sobrie tea": 100000,
   "Special Seasoning": 20000,
   "astral pilsner": 0,
 };
 
 export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
+  if (!item.tradeable || (maxPrice !== undefined && maxPrice <= 0)) return 0;
   if (maxPrice === undefined) throw `No price cap for ${item.name}.`;
-  if (maxPrice <= 0) return 0;
+
   print(`Trying to acquire ${qty} ${item.plural}; max price ${maxPrice.toFixed(0)}.`, "green");
 
-  if (qty * mallPrice(item) > 1000000) throw "bad get!";
+  if (qty * mallPrice(item) > 1000000) throw "Aggregate cost too high! Probably a bug.";
 
   const startAmount = itemAmount(item);
 
