@@ -153,7 +153,6 @@ function estimatedTurnsWithOrgans(diet: [MenuItem[], number][], includeSpleen = 
   );
   const fullnessAvailable =
     fullnessLimit() +
-    (have($item`distention pill`) && !get("_distentionPillUsed") ? 1 : 0) +
     (includedItems.has($item`spice melange`) ? 3 : 0) +
     (includedItems.has($item`cuppa Voraci tea`) ? 1 : 0) +
     (includedItems.has($item`distention pill`) ? 1 : 0) -
@@ -375,6 +374,7 @@ export function computeDiet(): [MenuItem[], number][] {
     new MenuItem($item`Dreadsylvanian grimlet`),
     new MenuItem($item`Hodgman's blanket`),
     new MenuItem($item`Sacramento wine`),
+    new MenuItem($item`iced plum wine`),
     new MenuItem($item`splendid martini`),
     new MenuItem($item`Eye and a Twist`),
     new MenuItem($item`punch-drunk punch`, { maximum: availableAmount($item`punch-drunk punch`) }),
