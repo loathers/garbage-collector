@@ -26,3 +26,7 @@ export function expectedGregs(): number {
   const gregs = baseGregs + timeSpunGregs + orbGregs + monsterReplacerGregs;
   return gregs;
 }
+
+export function doingExtrovermectin(): boolean {
+  return true; //obviously this function will get fleshed out a lot later
+}

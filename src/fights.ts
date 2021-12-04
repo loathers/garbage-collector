@@ -868,6 +868,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       have($item`Time-Spinner`) &&
+      !doingExtrovermectin() &&
       $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
       get("_timeSpinnerMinutesUsed") < 8,
     () => {
