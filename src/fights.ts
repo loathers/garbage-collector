@@ -118,6 +118,7 @@ import {
 import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 import postCombatActions from "./post";
+import { doingExtrovermectin } from "./extrovermectin";
 
 const firstChainMacro = () =>
   Macro.if_(
