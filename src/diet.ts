@@ -221,7 +221,7 @@ function fillSpleenWith(spleenItem: Item, diet: [MenuItem[], number][]) {
         (30 + thumbRingMultiplier * adventuresPerSpleen)
     );
     if (have($skill`Sweet Synthesis`)) {
-      synthesize($effect`Synthesis: Greed`, clamp(spleenSynth, 0, spleenLimit() - mySpleenUse()));
+      synthesize(clamp(spleenSynth, 0, spleenTotal), $effect`Synthesis: Greed`);
     }
     const count = Math.max(0, Math.floor((spleenLimit() - mySpleenUse()) / spleenItem.spleen));
     chewSafe(count, spleenItem);
