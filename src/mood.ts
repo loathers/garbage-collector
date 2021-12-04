@@ -24,6 +24,7 @@ import {
   $items,
   $skill,
   $skills,
+  AsdonMartin,
   get,
   have,
   Mood,
@@ -36,7 +37,6 @@ import { potionSetup } from "./potions";
 import { estimatedTurns } from "./embezzler";
 import { withStash } from "./clan";
 import synthesize from "./synthesis";
-import { Driving } from "libram/dist/resources/2017/AsdonMartin";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -86,7 +86,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     });
   }
 
-  mood.drive(Driving.Observantly);
+  mood.drive(AsdonMartin.Driving.Observantly);
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View to Some Meat`, () => {
