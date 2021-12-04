@@ -123,6 +123,7 @@ import {
 } from "./embezzler";
 import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
+import { doingExtrovermectin } from "./extrovermectin";
 
 const firstChainMacro = () =>
   Macro.if_(
