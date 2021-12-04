@@ -1609,10 +1609,21 @@ $({
 /* harmony export */ });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var Copier = function Copier(couldCopy, prepare, canCopy, copiedMonster, fightCopy) {
   _classCallCheck(this, Copier);
 
-  this.fightCopy = null;
+  _defineProperty(this, "couldCopy", void 0);
+
+  _defineProperty(this, "prepare", void 0);
+
+  _defineProperty(this, "canCopy", void 0);
+
+  _defineProperty(this, "copiedMonster", void 0);
+
+  _defineProperty(this, "fightCopy", null);
+
   this.couldCopy = couldCopy;
   this.prepare = prepare;
   this.canCopy = canCopy;
@@ -1659,6 +1670,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1770,16 +1783,16 @@ var Macro = /*#__PURE__*/function () {
   function Macro() {
     _classCallCheck(this, Macro);
 
-    this.components = [];
+    _defineProperty(this, "components", []);
   }
-  /**
-   * Convert macro to string.
-   */
-
 
   _createClass(Macro, [{
     key: "toString",
-    value: function toString() {
+    value:
+    /**
+     * Convert macro to string.
+     */
+    function toString() {
       return this.components.join(";");
     }
     /**
@@ -2248,9 +2261,6 @@ var Macro = /*#__PURE__*/function () {
 
   return Macro;
 }();
-Macro.SAVED_MACRO_PROPERTY = "libram_savedMacro";
-Macro.cachedMacroId = null;
-Macro.cachedAutoAttack = null;
 /**
  * Adventure in a location and handle all combats with a given macro.
  * To use this function you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
@@ -2260,6 +2270,12 @@ Macro.cachedAutoAttack = null;
  * @param loc Location to adventure in.
  * @param macro Macro to execute.
  */
+
+_defineProperty(Macro, "SAVED_MACRO_PROPERTY", "libram_savedMacro");
+
+_defineProperty(Macro, "cachedMacroId", null);
+
+_defineProperty(Macro, "cachedAutoAttack", null);
 
 function adventureMacro(loc, macro) {
   macro.save();
@@ -3359,6 +3375,8 @@ function withChoice(choice, value, callback) {
 var PropertiesManager = /*#__PURE__*/function () {
   function PropertiesManager() {
     _classCallCheck(this, PropertiesManager);
+
+    _defineProperty(this, "properties", void 0);
 
     this.properties = {};
   }
@@ -19299,6 +19317,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 var defaultHandlers = {
   info: message => (0,external_kolmafia_.printHtml)("<b>[Libram]</b> ".concat(message)),
@@ -19310,13 +19330,13 @@ var Logger = /*#__PURE__*/function () {
   function Logger() {
     _classCallCheck(this, Logger);
 
-    this.handlers = defaultHandlers;
-  } // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
+    _defineProperty(this, "handlers", defaultHandlers);
+  }
 
   _createClass(Logger, [{
     key: "setHandler",
-    value: function setHandler(level, callback) {
+    value: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function setHandler(level, callback) {
       this.handlers[level] = callback;
     } // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
@@ -19353,9 +19373,7 @@ var _templateObject, _templateObject2, _templateObject3, _templateObject4, _temp
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { maximize_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -19399,6 +19417,8 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
 
 function maximize_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function maximize_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
@@ -19434,6 +19454,14 @@ var cachedSlots = (0,template_string/* $slots */.ei)(_templateObject || (_templa
 var CacheEntry = function CacheEntry(equipment, rider, familiar, canEquipItemCount) {
   maximize_classCallCheck(this, CacheEntry);
 
+  maximize_defineProperty(this, "equipment", void 0);
+
+  maximize_defineProperty(this, "rider", void 0);
+
+  maximize_defineProperty(this, "familiar", void 0);
+
+  maximize_defineProperty(this, "canEquipItemCount", void 0);
+
   this.equipment = equipment;
   this.rider = rider;
   this.familiar = familiar;
@@ -19447,17 +19475,19 @@ var _useHistory = /*#__PURE__*/new WeakMap();
 var _maxSize = /*#__PURE__*/new WeakMap();
 
 var OutfitLRUCache = /*#__PURE__*/function () {
+  // Current outfits allocated
+  // Array of indices into #outfitSlots in order of use. Most recent at the front.
   function OutfitLRUCache(maxSize) {
     maximize_classCallCheck(this, OutfitLRUCache);
 
     _classPrivateFieldInitSpec(this, _outfitSlots, {
       writable: true,
-      value: void 0
+      value: []
     });
 
     _classPrivateFieldInitSpec(this, _useHistory, {
       writable: true,
-      value: void 0
+      value: []
     });
 
     _classPrivateFieldInitSpec(this, _maxSize, {
@@ -19465,15 +19495,8 @@ var OutfitLRUCache = /*#__PURE__*/function () {
       value: void 0
     });
 
-    // Current outfits allocated
-    _classPrivateFieldSet(this, _outfitSlots, []); // Array of indices into #outfitSlots in order of use. Most recent at the front.
-
-
-    _classPrivateFieldSet(this, _useHistory, []);
-
     _classPrivateFieldSet(this, _maxSize, maxSize);
-  } // Current outfits allocated
-
+  }
 
   maximize_createClass(OutfitLRUCache, [{
     key: "checkConsistent",
@@ -19528,12 +19551,13 @@ var OutfitLRUCache = /*#__PURE__*/function () {
 
   return OutfitLRUCache;
 }();
-
-OutfitLRUCache.OUTFIT_PREFIX = "Script Outfit";
 /**
  * Save current equipment as KoL-native outfit.
  * @param name Name of new outfit.
  */
+
+
+maximize_defineProperty(OutfitLRUCache, "OUTFIT_PREFIX", "Script Outfit");
 
 function saveOutfit(name) {
   (0,external_kolmafia_.cliExecute)("outfit save ".concat(name));
@@ -20188,6 +20212,8 @@ function Kmail_defineProperties(target, props) { for (var i = 0; i < props.lengt
 
 function Kmail_createClass(Constructor, protoProps, staticProps) { if (protoProps) Kmail_defineProperties(Constructor.prototype, protoProps); if (staticProps) Kmail_defineProperties(Constructor, staticProps); return Constructor; }
 
+function Kmail_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -20195,6 +20221,18 @@ function Kmail_createClass(Constructor, protoProps, staticProps) { if (protoProp
 var Kmail = /*#__PURE__*/function () {
   function Kmail(rawKmail) {
     Kmail_classCallCheck(this, Kmail);
+
+    Kmail_defineProperty(this, "id", void 0);
+
+    Kmail_defineProperty(this, "date", void 0);
+
+    Kmail_defineProperty(this, "type", void 0);
+
+    Kmail_defineProperty(this, "senderId", void 0);
+
+    Kmail_defineProperty(this, "senderName", void 0);
+
+    Kmail_defineProperty(this, "rawMessage", void 0);
 
     var date = new Date(rawKmail.localtime); // Date come from KoL formatted with YY and so will be parsed 19YY, which is wrong.
     // We can safely add 100 because if 19YY was a leap year, 20YY will be too!
@@ -20208,22 +20246,15 @@ var Kmail = /*#__PURE__*/function () {
     this.rawMessage = rawKmail.message;
   }
   /**
-   * Parses a kmail from KoL's native format
+   * Delete the kmail
    *
-   * @param rawKmail Kmail in the format supplies by api.php
-   * @returns Parsed kmail
+   * @returns Whether the kmail was deleted
    */
 
 
   Kmail_createClass(Kmail, [{
     key: "delete",
-    value:
-    /**
-     * Delete the kmail
-     *
-     * @returns Whether the kmail was deleted
-     */
-    function _delete() {
+    value: function _delete() {
       return Kmail.delete([this]) === 1;
     }
     /**
@@ -20282,7 +20313,14 @@ var Kmail = /*#__PURE__*/function () {
     }
   }], [{
     key: "parse",
-    value: function parse(rawKmail) {
+    value:
+    /**
+     * Parses a kmail from KoL's native format
+     *
+     * @param rawKmail Kmail in the format supplies by api.php
+     * @returns Parsed kmail
+     */
+    function parse(rawKmail) {
       return new Kmail(rawKmail);
     }
     /**
@@ -23080,6 +23118,8 @@ function Clan_setPrototypeOf(o, p) { Clan_setPrototypeOf = Object.setPrototypeOf
 
 function Clan_getPrototypeOf(o) { Clan_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return Clan_getPrototypeOf(o); }
 
+function Clan_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
   var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -23105,6 +23145,9 @@ var ClanError = /*#__PURE__*/function (_Error) {
     Clan_classCallCheck(this, ClanError);
 
     _this = _super.call(this, message);
+
+    Clan_defineProperty(Clan_assertThisInitialized(_this), "reason", void 0);
+
     _this.reason = reason;
     Object.setPrototypeOf(Clan_assertThisInitialized(_this), ClanError.prototype);
     return _this;
@@ -23154,17 +23197,21 @@ var Clan = /*#__PURE__*/function () {
   function Clan(id, name) {
     Clan_classCallCheck(this, Clan);
 
+    Clan_defineProperty(this, "id", void 0);
+
+    Clan_defineProperty(this, "name", void 0);
+
     this.id = id;
     this.name = name;
   }
+  /**
+   * Join clan
+   */
+
 
   Clan_createClass(Clan, [{
     key: "join",
-    value:
-    /**
-     * Join clan
-     */
-    function join() {
+    value: function join() {
       return Clan._join(this.id);
     }
   }, {
@@ -23752,8 +23799,6 @@ function mood_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); 
 
 function mood_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { mood_ownKeys(Object(source), true).forEach(function (key) { mood_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { mood_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function mood_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function mood_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = mood_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 function mood_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return mood_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return mood_arrayLikeToArray(o, minLen); }
@@ -23775,6 +23820,8 @@ function mood_assertThisInitialized(self) { if (self === void 0) { throw new Ref
 function mood_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function mood_getPrototypeOf(o) { mood_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return mood_getPrototypeOf(o); }
+
+function mood_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function mood_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -23847,7 +23894,9 @@ var OscusSoda = /*#__PURE__*/function (_MpSource) {
 
   return OscusSoda;
 }(MpSource);
-OscusSoda.instance = new OscusSoda();
+
+mood_defineProperty(OscusSoda, "instance", new OscusSoda());
+
 var MagicalSausages = /*#__PURE__*/function (_MpSource2) {
   mood_inherits(MagicalSausages, _MpSource2);
 
@@ -23883,7 +23932,8 @@ var MagicalSausages = /*#__PURE__*/function (_MpSource2) {
 
   return MagicalSausages;
 }(MpSource);
-MagicalSausages.instance = new MagicalSausages();
+
+mood_defineProperty(MagicalSausages, "instance", new MagicalSausages());
 
 var MoodElement = /*#__PURE__*/function () {
   function MoodElement() {
@@ -23916,6 +23966,9 @@ var SkillMoodElement = /*#__PURE__*/function (_MoodElement) {
     mood_classCallCheck(this, SkillMoodElement);
 
     _this = _super3.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this), "skill", void 0);
+
     _this.skill = skill;
     return _this;
   }
@@ -24005,6 +24058,11 @@ var PotionMoodElement = /*#__PURE__*/function (_MoodElement2) {
     mood_classCallCheck(this, PotionMoodElement);
 
     _this2 = _super4.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this2), "potion", void 0);
+
+    mood_defineProperty(mood_assertThisInitialized(_this2), "maxPricePerTurn", void 0);
+
     _this2.potion = potion;
     _this2.maxPricePerTurn = maxPricePerTurn;
     return _this2;
@@ -24049,6 +24107,9 @@ var GenieMoodElement = /*#__PURE__*/function (_MoodElement3) {
     mood_classCallCheck(this, GenieMoodElement);
 
     _this3 = _super5.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this3), "effect", void 0);
+
     _this3.effect = effect;
     return _this3;
   }
@@ -24084,6 +24145,11 @@ var CustomMoodElement = /*#__PURE__*/function (_MoodElement4) {
     mood_classCallCheck(this, CustomMoodElement);
 
     _this4 = _super6.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this4), "effect", void 0);
+
+    mood_defineProperty(mood_assertThisInitialized(_this4), "gainEffect", void 0);
+
     _this4.effect = effect;
     _this4.gainEffect = gainEffect !== null && gainEffect !== void 0 ? gainEffect : () => (0,external_kolmafia_.cliExecute)(effect.default);
     return _this4;
@@ -24119,6 +24185,9 @@ var AsdonMoodElement = /*#__PURE__*/function (_MoodElement5) {
     mood_classCallCheck(this, AsdonMoodElement);
 
     _this5 = _super7.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this5), "effect", void 0);
+
     _this5.effect = effect;
     return _this5;
   }
@@ -24147,22 +24216,20 @@ var Mood = /*#__PURE__*/function () {
 
     mood_classCallCheck(this, Mood);
 
-    this.elements = [];
+    mood_defineProperty(this, "options", void 0);
+
+    mood_defineProperty(this, "elements", []);
+
     this.options = mood_objectSpread(mood_objectSpread({}, Mood.defaultOptions), options);
   }
   /**
-   * Set default options for new Mood instances.
-   * @param options Default options for new Mood instances.
+   * Get the MP available for casting skills.
    */
 
 
   mood_createClass(Mood, [{
     key: "availableMp",
-    value:
-    /**
-     * Get the MP available for casting skills.
-     */
-    function availableMp() {
+    value: function availableMp() {
       return (0,utils/* sum */.Sm)(this.options.mpSources, mpSource => mpSource.availableMpMin()) + Math.max((0,external_kolmafia_.myMp)() - this.options.reserveMp, 0);
     }
   }, {
@@ -24294,18 +24361,24 @@ var Mood = /*#__PURE__*/function () {
     }
   }], [{
     key: "setDefaultOptions",
-    value: function setDefaultOptions(options) {
+    value:
+    /**
+     * Set default options for new Mood instances.
+     * @param options Default options for new Mood instances.
+     */
+    function setDefaultOptions(options) {
       Mood.defaultOptions = mood_objectSpread(mood_objectSpread({}, Mood.defaultOptions), options);
     }
   }]);
 
   return Mood;
 }();
-Mood.defaultOptions = {
+
+mood_defineProperty(Mood, "defaultOptions", {
   songSlots: [],
   mpSources: [MagicalSausages.instance, OscusSoda.instance],
   reserveMp: 0
-};
+});
 ;// CONCATENATED MODULE: ./src/mood.ts
 var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, src_mood_templateObject11, src_mood_templateObject12, mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67;
 
@@ -25181,16 +25254,13 @@ function bestBjornalike(existingForceEquips) {
 }
 
 function shavingBonus() {
-  // eslint-disable-next-line libram/verify-constants
   if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(outfit_templateObject98 || (outfit_templateObject98 = outfit_taggedTemplateLiteral(["Daylight Shavings Helmet"]))))) return new Map();
 
-  if ( // eslint-disable-next-line libram/verify-constants
-  (0,template_string/* $effects */.lh)(outfit_templateObject99 || (outfit_templateObject99 = outfit_taggedTemplateLiteral(["Barbell Moustache, Cowboy Stache, Friendly Chops, Grizzly Beard, Gull-Wing Moustache, Musician's Musician's Moustache, Pointy Wizard Beard, Space Warlord's Beard, Spectacle Moustache, Surrealist's Moustache, Toiletbrush Moustache"]))).some(effect => (0,lib/* have */.lf)(effect))) {
+  if ((0,template_string/* $effects */.lh)(outfit_templateObject99 || (outfit_templateObject99 = outfit_taggedTemplateLiteral(["Barbell Moustache, Cowboy Stache, Friendly Chops, Grizzly Beard, Gull-Wing Moustache, Musician's Musician's Moustache, Pointy Wizard Beard, Space Warlord's Beard, Spectacle Moustache, Surrealist's Moustache, Toiletbrush Moustache"]))).some(effect => (0,lib/* have */.lf)(effect))) {
     return new Map();
   }
 
-  var bonusValue = (baseMeat * 100 + 72 * 50) / 100; // eslint-disable-next-line libram/verify-constants
-
+  var bonusValue = (baseMeat * 100 + 72 * 50) / 100;
   return new Map([[(0,template_string/* $item */.xr)(outfit_templateObject100 || (outfit_templateObject100 = outfit_taggedTemplateLiteral(["Daylight Shavings Helmet"]))), bonusValue]]);
 }
 ;// CONCATENATED MODULE: ./src/fights.ts

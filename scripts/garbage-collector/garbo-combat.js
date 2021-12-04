@@ -10,10 +10,21 @@
 /* harmony export */ });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var Copier = function Copier(couldCopy, prepare, canCopy, copiedMonster, fightCopy) {
   _classCallCheck(this, Copier);
 
-  this.fightCopy = null;
+  _defineProperty(this, "couldCopy", void 0);
+
+  _defineProperty(this, "prepare", void 0);
+
+  _defineProperty(this, "canCopy", void 0);
+
+  _defineProperty(this, "copiedMonster", void 0);
+
+  _defineProperty(this, "fightCopy", null);
+
   this.couldCopy = couldCopy;
   this.prepare = prepare;
   this.canCopy = canCopy;
@@ -57,6 +68,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -168,16 +181,16 @@ var Macro = /*#__PURE__*/function () {
   function Macro() {
     _classCallCheck(this, Macro);
 
-    this.components = [];
+    _defineProperty(this, "components", []);
   }
-  /**
-   * Convert macro to string.
-   */
-
 
   _createClass(Macro, [{
     key: "toString",
-    value: function toString() {
+    value:
+    /**
+     * Convert macro to string.
+     */
+    function toString() {
       return this.components.join(";");
     }
     /**
@@ -646,9 +659,6 @@ var Macro = /*#__PURE__*/function () {
 
   return Macro;
 }();
-Macro.SAVED_MACRO_PROPERTY = "libram_savedMacro";
-Macro.cachedMacroId = null;
-Macro.cachedAutoAttack = null;
 /**
  * Adventure in a location and handle all combats with a given macro.
  * To use this function you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
@@ -658,6 +668,12 @@ Macro.cachedAutoAttack = null;
  * @param loc Location to adventure in.
  * @param macro Macro to execute.
  */
+
+_defineProperty(Macro, "SAVED_MACRO_PROPERTY", "libram_savedMacro");
+
+_defineProperty(Macro, "cachedMacroId", null);
+
+_defineProperty(Macro, "cachedAutoAttack", null);
 
 function adventureMacro(loc, macro) {
   macro.save();
@@ -1737,6 +1753,8 @@ function withChoice(choice, value, callback) {
 var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null && (function () {
   function PropertiesManager() {
     _classCallCheck(this, PropertiesManager);
+
+    _defineProperty(this, "properties", void 0);
 
     this.properties = {};
   }

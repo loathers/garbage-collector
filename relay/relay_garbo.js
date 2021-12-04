@@ -1707,6 +1707,8 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
   function PropertiesManager() {
     _classCallCheck(this, PropertiesManager);
 
+    _defineProperty(this, "properties", void 0);
+
     this.properties = {};
   }
 
