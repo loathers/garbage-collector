@@ -3,6 +3,7 @@ import {
   abort,
   chatPrivate,
   cliExecute,
+  cliExecuteOutput,
   getCounters,
   haveEquipped,
   inebrietyLimit,
@@ -14,7 +15,9 @@ import {
   myTurncount,
   print,
   retrieveItem,
+  runChoice,
   runCombat,
+  toInt,
   use,
   userConfirm,
   visitUrl,
@@ -37,7 +40,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { Macro } from "./combat";
+import { Macro, withMacro } from "./combat";
 import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
@@ -274,6 +277,28 @@ export const embezzlerSources = [
         ? 1
         : 0,
     () => use($item`envyfish egg`)
+  ),
+  new EmbezzlerFight(
+    "Time-Spinner",
+    () =>
+      have($item`Time-Spinner`) &&
+      cliExecuteOutput("timespinner list").includes($monster`Knob Goblin Embezzler`.name) &&
+      get("_timeSpinnerMinutesUsed") <= 7,
+    () =>
+      have($item`Time-Spinner`) &&
+      cliExecuteOutput("timespinner list").includes($monster`Knob Goblin Embezzler`.name)
+        ? Math.min((10 - get("_timeSpinnerMinutesUsed")) / 3)
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => {
+        visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
+        runChoice(1);
+        visitUrl(
+          `choice.php?whichchoice=1196&monid=${$monster`Knob Goblin Embezzler`.id}&option=1`
+        );
+      });
+    }
   ),
   new EmbezzlerFight(
     "Chateau Painting",
