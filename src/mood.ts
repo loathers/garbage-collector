@@ -86,7 +86,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     });
   }
 
-  mood.drive(AsdonMartin.Driving.Observantly);
+  if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View to Some Meat`, () => {
