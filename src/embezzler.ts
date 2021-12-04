@@ -210,7 +210,9 @@ export const embezzlerSources = [
     "Time-Spinner",
     () =>
       have($item`Time-Spinner`) &&
-      cliExecuteOutput("timespinner list").includes($monster`Knob Goblin Embezzler`.name) &&
+      cliExecuteOutput("timespinner list monsters").includes(
+        $monster`Knob Goblin Embezzler`.name
+      ) &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
       have($item`Time-Spinner`) &&
