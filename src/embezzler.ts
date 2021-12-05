@@ -181,6 +181,30 @@ export const embezzlerSources = [
     true
   ),
   new EmbezzlerFight(
+    "Time-Spinner",
+    () =>
+      have($item`Time-Spinner`) &&
+      cliExecuteOutput("timespinner list monsters").includes(
+        $monster`Knob Goblin Embezzler`.name
+      ) &&
+      get("_timeSpinnerMinutesUsed") <= 7,
+    () =>
+      have($item`Time-Spinner`) &&
+      cliExecuteOutput("timespinner list").includes($monster`Knob Goblin Embezzler`.name)
+        ? Math.min((10 - get("_timeSpinnerMinutesUsed")) / 3)
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => {
+        visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
+        runChoice(1);
+        visitUrl(
+          `choice.php?whichchoice=1196&monid=${$monster`Knob Goblin Embezzler`.id}&option=1`
+        );
+      });
+    }
+  ),
+  new EmbezzlerFight(
     "Macrometeorite",
     () =>
       get("beGregariousMonster") === $monster`knob goblin embezzler` &&
@@ -267,30 +291,6 @@ export const embezzlerSources = [
       }),
     ],
     true
-  ),
-  new EmbezzlerFight(
-    "Time-Spinner",
-    () =>
-      have($item`Time-Spinner`) &&
-      cliExecuteOutput("timespinner list monsters").includes(
-        $monster`Knob Goblin Embezzler`.name
-      ) &&
-      get("_timeSpinnerMinutesUsed") <= 7,
-    () =>
-      have($item`Time-Spinner`) &&
-      cliExecuteOutput("timespinner list").includes($monster`Knob Goblin Embezzler`.name)
-        ? Math.min((10 - get("_timeSpinnerMinutesUsed")) / 3)
-        : 0,
-    (options: EmbezzlerFightOptions) => {
-      const macro = options.macro ?? embezzlerMacro();
-      withMacro(macro, () => {
-        visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
-        runChoice(1);
-        visitUrl(
-          `choice.php?whichchoice=1196&monid=${$monster`Knob Goblin Embezzler`.id}&option=1`
-        );
-      });
-    }
   ),
   new EmbezzlerFight(
     "Spooky Putty & Rain-Doh",
