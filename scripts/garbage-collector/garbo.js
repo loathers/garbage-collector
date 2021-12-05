@@ -28100,7 +28100,10 @@ function main() {
       hpAutoRecoveryTarget: 1.0,
       choiceAdventureScript: "",
       customCombatScript: "garbo",
-      currentMood: "apathetic"
+      currentMood: "apathetic",
+      autoTuxedo: true,
+      autoPinkyRing: true,
+      autoGarish: true
     });
     var bestHalloweiner = 0;
 
