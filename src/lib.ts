@@ -22,8 +22,8 @@ import {
   retrieveItem,
   runChoice,
   runCombat,
+  totalTurnsPlayed,
   toUrl,
-  turnsPlayed,
   use,
   useFamiliar,
   useSkill,
@@ -493,7 +493,7 @@ function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
   if (
     property.getNumber("_coldMedicineConsults") >= 5 ||
-    property.getNumber("_nextColdMedicineConsult") > turnsPlayed()
+    property.getNumber("_nextColdMedicineConsult") > totalTurnsPlayed()
   )
     return;
   const options = visitUrl("campground.php?action=workshed");
