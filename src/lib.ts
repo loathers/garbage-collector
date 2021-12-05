@@ -516,18 +516,14 @@ function coldMedicineCabinet(): void {
   runChoice(bestChoice);
 }
 
-function eatSafe(qty: number, item: Item) {
-  acquire(qty, $item`Special Seasoning`);
-  acquire(qty, item);
-  if (!eat(qty, item)) throw "Failed to eat safely";
-}
-
 function horseradish(): void {
   if (myFullness() < fullnessLimit()) {
     if (mallPrice($item`fudge spork`) < 3 * get("valueOfAdventure") && !get("_fudgeSporkUsed"))
       eat(1, $item`fudge spork`);
     MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
-    eatSafe(1, $item`jumping horseradish`);
+    acquire(1, $item`Special Seasoning`, get("valueOfAdventure"));
+    acquire(1, $item`jumping horseradish`, 5.5 * get("valueOfAdventure"));
+    if (!eat(1, $item`jumping horseradish`)) throw "Failed to eat safely";
   }
 }
 
