@@ -24,6 +24,7 @@ import {
   wait,
 } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
@@ -38,6 +39,7 @@ import {
   Requirement,
   SourceTerminal,
   sum,
+  uneffect,
 } from "libram";
 import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
@@ -530,6 +532,34 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
   }
   return null;
 }
-function ensureCrate() {
-  throw new Error("Function not implemented.");
+
+function ensureCrate(): void {
+  const macro = new Macro();
+  const reqs: Requirement[] = [];
+  if (
+    have($item`Fourth of May Cosplay Saber`) &&
+    get("_saberForceMonster") === $monster`Knob Goblin Embezzler` &&
+    get("_saberForceMonsterCount") > 1
+  )
+    return;
+  if (
+    have($skill`Transcendent Olfaction`) &&
+    (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
+  ) {
+    if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
+    macro.skill($skill`Transcendent Olfaction`);
+  }
+
+  if (have($skill`Gallapagosian Mating Call`) && get("_gallapagosMonster") !== $monster`crate`) {
+    macro.skill($skill`Gallapagosian Mating Call`);
+  }
+
+  if (
+    have($item`latte lovers member's mug`) &&
+    !get("_latteCopyUsed") &&
+    get("_latteMonster") !== $monster`crate`
+  ) {
+    reqs.push(new Requirement([], { forceEquip: $items`latte lovers member's mug` }));
+    macro.skill($skill`Offer Latte to Opponent`);
+  }
 }
