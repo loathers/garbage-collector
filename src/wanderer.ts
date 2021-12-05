@@ -114,7 +114,7 @@ function testZoneAndUsePotionToAccess() {
       use(1, place.potion);
     }
   });
-  const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory`;
+  const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
   if (
     forbiddenZones.includes(guzzlZone.zone) ||
     skiplist.includes(guzzlZone) ||
