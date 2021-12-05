@@ -5,6 +5,7 @@ import {
   chatPrivate,
   cliExecute,
   cliExecuteOutput,
+  equip,
   getCounters,
   haveEquipped,
   inebrietyLimit,
@@ -31,6 +32,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slot,
   adventureMacro,
   ChateauMantegna,
   get,
@@ -221,6 +223,22 @@ export const embezzlerSources = [
       adventureMacro($location`noob cave`, macro);
     },
     [new Requirement([], { forceEquip: $items`powerful glove` })]
+  ),
+  new EmbezzlerFight(
+    "Be Gregarious",
+    () =>
+      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousFightsLeft") > 0,
+    () =>
+      get("beGregariousMonster") === $monster`knob goblin embezzler`
+        ? get("beGregariousFightsLeft")
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      if (have($item`miniature crystal ball`) && get("beGregariousFightsLeft") === 1) {
+        equip($slot`familiar`, $item`miniature crystal ball`);
+      }
+      adventureMacro($location`the dire warren`, options.macro ?? embezzlerMacro());
+    }
   ),
   new EmbezzlerFight(
     "Backup",
