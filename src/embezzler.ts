@@ -1,4 +1,3 @@
-/* eslint-disable libram/verify-constants */
 import { canAdv } from "canadv.ash";
 import {
   abort,
@@ -205,35 +204,35 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Macrometeorite",
     () =>
-      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0 &&
-      have($skill`meteor lore`) &&
+      have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10,
     () =>
-      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0 &&
-      have($skill`meteor lore`)
+      have($skill`Meteor Lore`)
         ? 10 - get("_macrometeoriteUses")
         : 0,
     (options: EmbezzlerFightOptions) => {
       ensureCrate(); //obviously this function does not yet exist
       const baseMacro = options.macro ?? embezzlerMacro();
-      const macro = Macro.if_($monster`crate`, Macro.skill($skill`macrometeorite`)).step(baseMacro);
-      adventureMacro($location`noob cave`, macro);
+      const macro = Macro.if_($monster`crate`, Macro.skill($skill`Macrometeorite`)).step(baseMacro);
+      adventureMacro($location`Noob Cave`, macro);
     }
     //do we want to equip orb on these guys?
   ),
   new EmbezzlerFight(
     "Powerful Glove",
     () =>
-      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0 &&
-      have($item`powerful glove`) &&
+      have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 90,
     () =>
-      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0 &&
-      have($item`powerful glove`)
+      have($item`Powerful Glove`)
         ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0,
     (options: EmbezzlerFightOptions) => {
@@ -242,21 +241,21 @@ export const embezzlerSources = [
       const macro = Macro.if_($monster`crate`, Macro.skill($skill`CHEAT CODE: Replace Enemy`)).step(
         baseMacro
       );
-      adventureMacro($location`noob cave`, macro);
+      adventureMacro($location`Noob Cave`, macro);
     },
-    [new Requirement([], { forceEquip: $items`powerful glove` })]
+    [new Requirement([], { forceEquip: $items`Powerful Glove` })]
   ),
   new EmbezzlerFight(
     "Be Gregarious",
     () =>
-      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0,
     () =>
-      get("beGregariousMonster") === $monster`knob goblin embezzler`
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
         ? get("beGregariousFightsLeft")
         : 0,
     (options: EmbezzlerFightOptions) => {
-      adventureMacro($location`the dire warren`, options.macro ?? embezzlerMacro());
+      adventureMacro($location`The Dire Warren`, options.macro ?? embezzlerMacro());
     },
     [
       new Requirement([], {
@@ -267,20 +266,20 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Orb Prediction",
     () =>
-      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") === 0 &&
-      get("crystalBallMonster") === $monster`knob goblin embezzler` &&
-      get("crystalBallLocation") === $location`the dire warren`,
+      get("crystalBallMonster") === $monster`Knob Goblin Embezzler` &&
+      get("crystalBallLocation") === $location`The Dire Warren`,
     () =>
-      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") === 0 &&
-      get("crystalBallMonster") === $monster`knob goblin embezzler` &&
-      get("crystalBallLocation") === $location`the dire warren`
+      get("crystalBallMonster") === $monster`Knob Goblin Embezzler` &&
+      get("crystalBallLocation") === $location`The Dire Warren`
         ? 1
         : 0,
     (options: EmbezzlerFightOptions) => {
       const macro = options.macro ?? embezzlerMacro();
-      adventureMacro($location`the dire warren`, macro);
+      adventureMacro($location`The Dire Warren`, macro);
     },
     [new Requirement([], { forceEquip: $items`miniature crystal ball` })]
   ),
