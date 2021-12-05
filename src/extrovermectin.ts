@@ -1,3 +1,4 @@
+import { mallPrice } from "kolmafia";
 import { $item, $skill, clamp, get, have } from "libram";
 
 export function expectedGregs(): number {
@@ -28,5 +29,8 @@ export function expectedGregs(): number {
 }
 
 export function doingExtrovermectin(): boolean {
-  return true; //obviously this function will get fleshed out a lot later
+  return (
+    expectedGregs() * 25000 >
+    2 * (2.5 * get("valueOfAdventure") - mallPrice($item`transdermal smoke patch`))
+  );
 }
