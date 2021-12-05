@@ -343,6 +343,7 @@ export function main(argString = ""): void {
       currentMood: "apathetic",
       autoTuxedo: true,
       autoPinkyRing: true,
+      autoGarish: true,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
