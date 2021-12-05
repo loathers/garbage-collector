@@ -199,7 +199,29 @@ export const embezzlerSources = [
     }
     //do we want to equip orb on these guys?
   ),
-
+  new EmbezzlerFight(
+    "Powerful Glove",
+    () =>
+      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($item`powerful glove`) &&
+      get("_powerfulGloveBatteryPowerUsed") < 90,
+    () =>
+      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($item`powerful glove`)
+        ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      ensureCrate(); //obviously this function does not yet exist
+      const baseMacro = options.macro ?? embezzlerMacro();
+      const macro = Macro.if_($monster`crate`, Macro.skill($skill`CHEAT CODE: Replace Enemy`)).step(
+        baseMacro
+      );
+      adventureMacro($location`noob cave`, macro);
+    },
+    [new Requirement([], { forceEquip: $items`powerful glove` })]
+  ),
   new EmbezzlerFight(
     "Backup",
     () =>
@@ -470,4 +492,7 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
     if (fight.available()) return fight;
   }
   return null;
+}
+function ensureCrate() {
+  throw new Error("Function not implemented.");
 }
