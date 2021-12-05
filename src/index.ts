@@ -341,6 +341,8 @@ export function main(argString = ""): void {
       choiceAdventureScript: "",
       customCombatScript: "garbo",
       currentMood: "apathetic",
+      autoTuxedo: true,
+      autoPinkyRing: true,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
