@@ -1,3 +1,4 @@
+/* eslint-disable libram/verify-constants */
 import { canAdv } from "canadv.ash";
 import {
   abort,
@@ -177,6 +178,28 @@ export const embezzlerSources = [
     [],
     true
   ),
+  new EmbezzlerFight(
+    "Macrometeorite",
+    () =>
+      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($skill`meteor lore`) &&
+      get("_macrometeoriteUses") < 10,
+    () =>
+      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($skill`meteor lore`)
+        ? 10 - get("_macrometeoriteUses")
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      ensureCrate(); //obviously this function does not yet exist
+      const baseMacro = options.macro ?? embezzlerMacro();
+      const macro = Macro.if_($monster`crate`, Macro.skill($skill`macrometeorite`)).step(baseMacro);
+      adventureMacro($location`noob cave`, macro);
+    }
+    //do we want to equip orb on these guys?
+  ),
+
   new EmbezzlerFight(
     "Backup",
     () =>
