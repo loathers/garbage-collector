@@ -260,9 +260,29 @@ export const embezzlerSources = [
     },
     [
       new Requirement([], {
-        //forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+        forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
       }),
     ]
+  ),
+  new EmbezzlerFight(
+    "Orb Prediction",
+    () =>
+      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousFightsLeft") === 0 &&
+      get("crystalBallMonster") === $monster`knob goblin embezzler` &&
+      get("crystalBallLocation") === $location`the dire warren`,
+    () =>
+      get("beGregariousMonster") === $monster`knob goblin embezzler` &&
+      get("beGregariousFightsLeft") === 0 &&
+      get("crystalBallMonster") === $monster`knob goblin embezzler` &&
+      get("crystalBallLocation") === $location`the dire warren`
+        ? 1
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      adventureMacro($location`the dire warren`, macro);
+    },
+    [new Requirement([], { forceEquip: $items`miniature crystal ball` })]
   ),
   new EmbezzlerFight(
     "Backup",
