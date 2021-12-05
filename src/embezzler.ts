@@ -261,7 +261,7 @@ export const embezzlerSources = [
     },
     [
       new Requirement([], {
-        forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+        //forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
       }),
     ]
   ),
