@@ -217,9 +217,4 @@ function shrugBadEffects() {
       uneffect(effect);
     }
   });
-  textAlteringEffects.forEach((effect) => {
-    if (have(effect)) {
-      uneffect(effect);
-    }
-  });
 }
