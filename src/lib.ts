@@ -489,7 +489,6 @@ export function burnLibrams(): void {
 }
 
 function coldMedicineCabinet(): void {
-  // eslint-disable-next-line libram/verify-constants
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
   if (
     property.getNumber("_coldMedicineConsults") >= 5 ||
