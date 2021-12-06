@@ -448,6 +448,33 @@ export function computeDiet(): [MenuItem[], number][] {
   ]);
 }
 
+function printDiet(diet: [MenuItem[], number][]) {
+  for (const [menuItems, count] of diet) {
+    if (count === 0) continue;
+    const item = menuItems[menuItems.length - 1];
+    print(
+      `${count} ${item.item}${item.maximum !== undefined ? ` max ${item.maximum}` : ""}${
+        menuItems.length > 1 ? ` with ${menuItems.slice(0, -1).join(", ")}` : ""
+      }`
+    );
+  }
+}
+
+// Item priority - higher means we eat it first.
+// Anything that gives a consumption buff should go first (e.g. Refined Palate).
+function itemPriority(menuItems: MenuItem[]) {
+  // Last menu item is the food itself.
+  const menuItem = menuItems[menuItems.length - 1];
+  if (menuItem === undefined) {
+    throw "Shouldn't have an empty menu item.";
+  }
+  if ($items`pocket wish, toasted brie`.includes(menuItem.item)) {
+    return 100;
+  } else {
+    return 0;
+  }
+}
+
 export function runDiet(): void {
   pillCheck();
 
@@ -492,16 +519,13 @@ export function runDiet(): void {
   }
 
   const diet = computeDiet();
+
+  // Sort descending by item priority.
+  diet.sort(([x], [y]) => -(itemPriority(x) - itemPriority(y)));
+
   print();
   print("===== PLANNED DIET =====");
-  for (const [menuItems, count] of diet) {
-    const item = menuItems[menuItems.length - 1];
-    print(
-      `${count} ${item.item} max ${item.maximum} ${
-        menuItems.length > 1 ? ` with ${menuItems.slice(0, -1).join(", ")}` : ""
-      }`
-    );
-  }
+  printDiet(diet);
   print();
 
   const seasoningCount = sum(diet, ([menuItems, count]) =>
@@ -514,7 +538,11 @@ export function runDiet(): void {
   let lastOrgans = [-1, -1, -1];
   while (sum(diet, ([, count]) => count) > 0) {
     if (arrayEquals(lastOrgans, organs())) {
-      throw "Stuck in an infinite loop in diet code.";
+      print();
+      print("==== REMAINING DIET BEFORE ERROR ====");
+      printDiet(diet);
+      print();
+      throw "Failed to consume some diet item.";
     }
     lastOrgans = organs();
 
@@ -546,7 +574,6 @@ export function runDiet(): void {
         const cleaning = stomachLiverCleaners.get(menuItem.item);
         if (cleaning) {
           const [fullness, inebriety] = cleaning;
-          print(`found cleaning item ${menuItem.item}`);
           if (myFullness() + fullness < 0 || myInebriety() + inebriety < 0) {
             countToConsume = 0;
           }
