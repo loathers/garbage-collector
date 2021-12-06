@@ -53,18 +53,18 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro, withMacro } from "./combat";
-import { horseradish, runDiet } from "./diet";
+import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, safeRestore } from "./fights";
 import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
+  postCombatActions,
   printHelpMenu,
   printLog,
   propertyManager,
   questStep,
-  safeInterrupt,
   setChoice,
 } from "./lib";
 import { meatMood } from "./mood";
@@ -101,7 +101,6 @@ function ensureBarfAccess() {
 
 function barfTurn() {
   const startTurns = totalTurnsPlayed();
-  horseradish();
   if (have($effect`Beaten Up`))
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
   if (SourceTerminal.have()) {
@@ -427,7 +426,7 @@ export function main(argString = ""): void {
           try {
             while (canContinue()) {
               barfTurn();
-              safeInterrupt();
+              postCombatActions();
             }
 
             // buy one-day tickets with FunFunds if user desires

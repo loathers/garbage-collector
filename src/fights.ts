@@ -88,7 +88,6 @@ import {
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
-import { horseradish } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
   baseMeat,
@@ -101,9 +100,9 @@ import {
   logMessage,
   ltbRun,
   mapMonster,
+  postCombatActions,
   propertyManager,
   questStep,
-  safeInterrupt,
   setChoice,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
@@ -317,12 +316,11 @@ export function dailyFights(): void {
               macro: firstChainMacro(),
             })
           );
-          horseradish();
           embezzlerLog.initialEmbezzlersFought +=
             1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_meatChain", true);
-        safeInterrupt();
+        postCombatActions();
       }
 
       startWandererCounter();
@@ -349,12 +347,11 @@ export function dailyFights(): void {
               macro: secondChainMacro(),
             })
           );
-          horseradish();
           embezzlerLog.initialEmbezzlersFought +=
             1 + get("_pocketProfessorLectures") - startLectures;
         }
         set("_garbo_weightChain", true);
-        safeInterrupt();
+        postCombatActions();
       }
 
       startWandererCounter();
@@ -395,7 +392,6 @@ export function dailyFights(): void {
               }
               if (!have($effect`Fishy`)) use($item`fishy pipe`);
               nextFight.run({ location: $location`The Briny Deeps` });
-              horseradish();
             } else if (nextFight.draggable) {
               const type =
                 nextFight.name === "Backup" ? draggableFight.BACKUP : draggableFight.WANDERER;
@@ -403,13 +399,12 @@ export function dailyFights(): void {
               setLocation(location);
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location });
-              horseradish();
             } else {
               setLocation($location`Noob Cave`);
               meatOutfit(true, nextFight.requirements);
               nextFight.run({ location: $location`Noob Cave` });
-              horseradish();
             }
+            postCombatActions();
           }
         });
         if (
@@ -427,7 +422,6 @@ export function dailyFights(): void {
         ) {
           doSausage();
         }
-        safeInterrupt();
       }
 
       // Check in case our prof gained enough exp during the profchains
@@ -492,10 +486,9 @@ class FreeFight {
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
       withMacro(Macro.basicCombat(), this.run);
-      horseradish();
+      postCombatActions;
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
-      safeInterrupt();
     }
   }
 }
@@ -528,7 +521,7 @@ class FreeRunFight extends FreeFight {
       ]);
       safeRestore();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
-      safeInterrupt();
+      postCombatActions();
     }
   }
 }
@@ -1674,6 +1667,7 @@ function deliverThesis(): void {
     thesisLocation,
     Macro.if_($monster`time-spinner prank`, Macro.basicCombat()).skill($skill`deliver your thesis!`)
   );
+  postCombatActions();
 }
 
 export function safeRestore(): void {
@@ -1697,7 +1691,7 @@ function doSausage() {
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
   adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   setAutoAttack(0);
-  horseradish();
+  postCombatActions();
 }
 
 function ensureBeachAccess() {
