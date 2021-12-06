@@ -18,6 +18,7 @@ import {
   runChoice,
   runCombat,
   toInt,
+  toMonster,
   use,
   userConfirm,
   visitUrl,
@@ -41,7 +42,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
-import { equipOrbIfDesired, saberCrateIfDesired } from "./extrovermectin";
+import { crateStrategy, equipOrbIfDesired, saberCrateIfDesired } from "./extrovermectin";
 import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
@@ -209,7 +210,8 @@ export const embezzlerSources = [
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0 &&
       have($skill`Meteor Lore`) &&
-      get("_macrometeoriteUses") < 10,
+      get("_macrometeoriteUses") < 10 &&
+      proceedWithOrb(),
     () =>
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0 &&
@@ -231,7 +233,8 @@ export const embezzlerSources = [
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0 &&
       have($item`Powerful Glove`) &&
-      get("_powerfulGloveBatteryPowerUsed") < 90,
+      get("_powerfulGloveBatteryPowerUsed") < 90 &&
+      proceedWithOrb(),
     () =>
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 0 &&
@@ -533,4 +536,39 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
     if (fight.available()) return fight;
   }
   return null;
+}
+
+/**
+ * Determines whether we want to do this particular Embezzler fight; if we aren't using orb, should always return true. If we're using orb and it's a crate, we'll have to see!
+ * @returns
+ */
+function proceedWithOrb(): boolean {
+  const strat = crateStrategy();
+  //If we can't possibly use orb, return true
+  if (!have($item`miniature crystal ball`) || strat === "Saber") return true;
+
+  //If we're sniffing and an Embezzler is in the queue already, return true
+  if (
+    strat === "Sniff" &&
+    $location`Noob Cave`.combatQueue
+      .split(";")
+      .map((monster) => toMonster(monster))
+      .includes($monster`Knob Goblin Embezzler`)
+  ) {
+    return true;
+  }
+
+  //If we're using orb, we have a KGE prediction, and we can reset it, return false
+  const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
+  if (
+    get("crystalBallLocation") === $location`Noob Cave` &&
+    get("crystalBallMonster") !== $monster`Knob Goblin Embezzler` &&
+    embezzlerSources
+      .filter((source) => !gregFightNames.includes(source.name))
+      .find((source) => source.available())
+  ) {
+    return false;
+  }
+
+  return true;
 }
