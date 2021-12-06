@@ -4,6 +4,7 @@ import {
   chatPrivate,
   cliExecute,
   cliExecuteOutput,
+  equip,
   getCounters,
   haveEquipped,
   inebrietyLimit,
@@ -24,13 +25,13 @@ import {
   wait,
 } from "kolmafia";
 import {
-  $effect,
   $familiar,
   $item,
   $items,
   $location,
   $monster,
   $skill,
+  $slot,
   adventureMacro,
   ChateauMantegna,
   get,
@@ -39,10 +40,10 @@ import {
   Requirement,
   SourceTerminal,
   sum,
-  uneffect,
 } from "libram";
 import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
+import { saberCrateIfDesired } from "./extrovermectin";
 import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
@@ -218,7 +219,15 @@ export const embezzlerSources = [
         ? 10 - get("_macrometeoriteUses")
         : 0,
     (options: EmbezzlerFightOptions) => {
-      ensureCrate(); //obviously this function does not yet exist
+      saberCrateIfDesired();
+      if (
+        have($item`miniature crystal ball`) &&
+        get("crystalBallLocation") === $location`Noob Cave` &&
+        get("crystalBallMonster") !== $monster`Knob Goblin Embezzler` &&
+        !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0)
+      ) {
+        equip($slot`familiar`, $item`miniature crystal ball`);
+      }
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_($monster`crate`, Macro.skill($skill`Macrometeorite`)).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
@@ -239,7 +248,14 @@ export const embezzlerSources = [
         ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0,
     (options: EmbezzlerFightOptions) => {
-      ensureCrate(); //obviously this function does not yet exist
+      saberCrateIfDesired();
+      if (
+        have($item`miniature crystal ball`) &&
+        get("crystalBallLocation") === $location`Noob Cave` &&
+        get("crystalBallMonster") === $monster`crate`
+      ) {
+        equip($slot`familiar`, $item`miniature crystal ball`);
+      }
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_($monster`crate`, Macro.skill($skill`CHEAT CODE: Replace Enemy`)).step(
         baseMacro
@@ -532,35 +548,4 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
     if (fight.available()) return fight;
   }
   return null;
-}
-
-function ensureCrate(): void {
-  const macro = new Macro();
-  const reqs: Requirement[] = [];
-  if (
-    have($item`Fourth of May Cosplay Saber`) &&
-    get("_saberForceMonster") === $monster`Knob Goblin Embezzler` &&
-    get("_saberForceMonsterCount") > 1
-  )
-    return;
-  if (
-    have($skill`Transcendent Olfaction`) &&
-    (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
-  ) {
-    if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
-    macro.skill($skill`Transcendent Olfaction`);
-  }
-
-  if (have($skill`Gallapagosian Mating Call`) && get("_gallapagosMonster") !== $monster`crate`) {
-    macro.skill($skill`Gallapagosian Mating Call`);
-  }
-
-  if (
-    have($item`latte lovers member's mug`) &&
-    !get("_latteCopyUsed") &&
-    get("_latteMonster") !== $monster`crate`
-  ) {
-    reqs.push(new Requirement([], { forceEquip: $items`latte lovers member's mug` }));
-    macro.skill($skill`Offer Latte to Opponent`);
-  }
 }
