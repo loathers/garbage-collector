@@ -1,10 +1,11 @@
-import { useFamiliar } from "kolmafia";
+import { equip, toMonster, useFamiliar } from "kolmafia";
 import {
   $item,
   $items,
   $location,
   $monster,
   $skill,
+  $slot,
   adventureMacro,
   clamp,
   get,
@@ -81,5 +82,21 @@ export function saberCrateIfDesired(): void {
         .ifHolidayWanderer(run.macro)
         .abort()
     );
+  }
+}
+
+export function equipOrbIfDesired(): void {
+  if (
+    have($item`miniature crystal ball`) &&
+    get("crystalBallLocation") === $location`Noob Cave` &&
+    get("crystalBallMonster") !== $monster`Knob Goblin Embezzler` &&
+    !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
+    (crateStrategy() !== "Sniff" ||
+      !$location`Noob Cave`.combatQueue
+        .split(";")
+        .map((monster) => toMonster(monster))
+        .includes($monster`Knob Goblin Embezzler`))
+  ) {
+    equip($slot`familiar`, $item`miniature crystal ball`);
   }
 }

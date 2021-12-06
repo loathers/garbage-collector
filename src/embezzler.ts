@@ -4,7 +4,6 @@ import {
   chatPrivate,
   cliExecute,
   cliExecuteOutput,
-  equip,
   getCounters,
   haveEquipped,
   inebrietyLimit,
@@ -31,7 +30,6 @@ import {
   $location,
   $monster,
   $skill,
-  $slot,
   adventureMacro,
   ChateauMantegna,
   get,
@@ -43,7 +41,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
-import { saberCrateIfDesired } from "./extrovermectin";
+import { equipOrbIfDesired, saberCrateIfDesired } from "./extrovermectin";
 import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
@@ -219,14 +217,7 @@ export const embezzlerSources = [
         : 0,
     (options: EmbezzlerFightOptions) => {
       saberCrateIfDesired();
-      if (
-        have($item`miniature crystal ball`) &&
-        get("crystalBallLocation") === $location`Noob Cave` &&
-        get("crystalBallMonster") !== $monster`Knob Goblin Embezzler` &&
-        !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0)
-      ) {
-        equip($slot`familiar`, $item`miniature crystal ball`);
-      }
+      equipOrbIfDesired()
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_($monster`crate`, Macro.skill($skill`Macrometeorite`)).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
@@ -248,13 +239,7 @@ export const embezzlerSources = [
         : 0,
     (options: EmbezzlerFightOptions) => {
       saberCrateIfDesired();
-      if (
-        have($item`miniature crystal ball`) &&
-        get("crystalBallLocation") === $location`Noob Cave` &&
-        get("crystalBallMonster") === $monster`crate`
-      ) {
-        equip($slot`familiar`, $item`miniature crystal ball`);
-      }
+      equipOrbIfDesired();
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_($monster`crate`, Macro.skill($skill`CHEAT CODE: Replace Enemy`)).step(
         baseMacro
