@@ -218,7 +218,7 @@ export const embezzlerSources = [
         : 0,
     (options: EmbezzlerFightOptions) => {
       saberCrateIfDesired();
-      equipOrbIfDesired()
+      equipOrbIfDesired();
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_($monster`crate`, Macro.skill($skill`Macrometeorite`)).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
