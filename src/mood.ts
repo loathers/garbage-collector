@@ -143,7 +143,7 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   }
 
   potionSetup(embezzlers);
-  shrugPassiveDamage();
+  shrugBadEffects();
 
   return mood;
 }
@@ -200,7 +200,7 @@ export function freeFightMood(): Mood {
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
   }
-  shrugPassiveDamage();
+  shrugBadEffects();
 
   return mood;
 }
@@ -210,8 +210,9 @@ const stings = [
   $effect`Burning, Man`,
   $effect`Yes, Can Haz`,
 ];
-function shrugPassiveDamage() {
-  stings.forEach((effect) => {
+const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
+function shrugBadEffects() {
+  [...stings, ...textAlteringEffects].forEach((effect) => {
     if (have(effect)) {
       uneffect(effect);
     }
