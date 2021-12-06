@@ -212,7 +212,7 @@ const stings = [
 ];
 const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
 function shrugBadEffects() {
-  stings.forEach((effect) => {
+  [...stings, ...textAlteringEffects].forEach((effect) => {
     if (have(effect)) {
       uneffect(effect);
     }
