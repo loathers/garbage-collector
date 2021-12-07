@@ -26711,7 +26711,7 @@ var FreeFight = /*#__PURE__*/function () {
         freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
         safeRestore();
         (0,src_combat.withMacro)(src_combat.Macro.basicCombat(), this.run);
-        postCombatActions; // Slot in our Professor Thesis if it's become available
+        postCombatActions(); // Slot in our Professor Thesis if it's become available
 
         if (thesisReady()) deliverThesis();
       }
