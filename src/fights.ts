@@ -486,7 +486,7 @@ class FreeFight {
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
       withMacro(Macro.basicCombat(), this.run);
-      postCombatActions;
+      postCombatActions();
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
     }
