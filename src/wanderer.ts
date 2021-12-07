@@ -10,6 +10,7 @@ import {
   Guzzlr,
   have,
   questStep,
+  Requirement,
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
@@ -18,6 +19,10 @@ import { propertyManager } from "./lib";
 export enum draggableFight {
   BACKUP,
   WANDERER,
+}
+export enum wandererMode {
+  GUZZLR,
+  DEFAULT,
 }
 
 function untangleDigitizes(turnCount: number, chunks: number): number {
@@ -70,25 +75,8 @@ const zonePotions: ZonePotion[] = [
   },
 ];
 
-function acceptBestGuzzlrQuest() {
-  if (!Guzzlr.isQuestActive()) {
-    if (
-      Guzzlr.canPlatinum() &&
-      (!Guzzlr.haveFullPlatinumBonus() ||
-        (Guzzlr.haveFullBronzeBonus() && Guzzlr.haveFullGoldBonus()))
-    ) {
-      Guzzlr.acceptPlatinum();
-    } else if (Guzzlr.canGold() && (!Guzzlr.haveFullGoldBonus() || Guzzlr.haveFullBronzeBonus())) {
-      Guzzlr.acceptGold();
-    } else {
-      Guzzlr.acceptBronze();
-    }
-  }
-}
-
-function testZoneAndUsePotionToAccess() {
-  const guzzlZone = Guzzlr.getLocation();
-  if (!guzzlZone) return false;
+function testZoneAndUsePotionToAccess(zone: Location | null) {
+  if (!zone) return false;
   const forbiddenZones: string[] = [""]; //can't stockpile these potions,
   if (!get("_spookyAirportToday") && !get("spookyAirportAlways")) {
     forbiddenZones.push("Conspiracy Island");
@@ -107,7 +95,7 @@ function testZoneAndUsePotionToAccess() {
   }
 
   zonePotions.forEach((place) => {
-    if (guzzlZone.zone === place.zone && !have(place.effect)) {
+    if (zone.zone === place.zone && !have(place.effect)) {
       if (!have(place.potion)) {
         buy(1, place.potion, 10000);
       }
@@ -116,11 +104,11 @@ function testZoneAndUsePotionToAccess() {
   });
   const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory`;
   if (
-    forbiddenZones.includes(guzzlZone.zone) ||
-    skiplist.includes(guzzlZone) ||
-    guzzlZone.environment === "underwater" ||
-    !canAdv(guzzlZone, false) ||
-    (guzzlZone === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1) // (hopefully) temporary fix for canadv bug that results in infinite loop
+    forbiddenZones.includes(zone.zone) ||
+    skiplist.includes(zone) ||
+    zone.environment === "underwater" ||
+    !canAdv(zone, false) ||
+    (zone === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1) // (hopefully) temporary fix for canadv bug that results in infinite loop
   ) {
     return false;
   } else {
@@ -128,83 +116,116 @@ function testZoneAndUsePotionToAccess() {
   }
 }
 
-function testZoneForBackups(location: Location): boolean {
+function testZoneForBackups(location: Location | null): boolean {
   const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
-  return !backupSkiplist.includes(location) && location.combatPercent >= 100;
+  return location !== null && !backupSkiplist.includes(location) && location.combatPercent >= 100;
 }
 
-function testZoneForWanderers(location: Location): boolean {
+function testZoneForWanderers(location: Location | null): boolean {
   const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
-  return !wandererSkiplist.includes(location) && location.wanderers;
+  return location !== null && !wandererSkiplist.includes(location) && location.wanderers;
 }
 
-export function determineDraggableZoneAndEnsureAccess(
-  type: draggableFight = draggableFight.WANDERER
-): Location {
-  const defaultLocation =
-    get("_spookyAirportToday") || get("spookyAirportAlways")
-      ? $location`The Deep Dark Jungle`
-      : $location`Noob Cave`;
-  if (!Guzzlr.have()) return defaultLocation;
-
-  const predictedWanderers =
+function predictedWanderers(): number {
+  return (
     digitizedMonstersRemaining() +
-    (have($item`"I Voted!" sticker`) ? clamp(3 - get("_voteFreeFights"), 0, 3) : 0);
-  const predictedBackups = have($item`backup camera`) ? clamp(11 - get("_backUpUses"), 0, 11) : 0;
-  const turnsLeftOnThisQuest = Math.ceil(
+    (have($item`"I Voted!" sticker`) ? clamp(3 - get("_voteFreeFights"), 0, 3) : 0)
+  );
+}
+
+function predictedBackups() {
+  return have($item`backup camera`) ? clamp(11 - get("_backUpUses"), 0, 11) : 0;
+}
+
+function turnsAvailableToday(zone: Location) {
+  return (
+    (testZoneForWanderers(zone) ? predictedWanderers() : 0) +
+    (testZoneForBackups(zone) ? predictedBackups() : 0)
+  );
+}
+
+function prepareGuzzlr(): boolean {
+  if (!Guzzlr.isQuestActive()) {
+    if (
+      Guzzlr.canPlatinum() &&
+      (!Guzzlr.haveFullPlatinumBonus() ||
+        (Guzzlr.haveFullBronzeBonus() && Guzzlr.haveFullGoldBonus()))
+    ) {
+      Guzzlr.acceptPlatinum();
+    } else if (Guzzlr.canGold() && (!Guzzlr.haveFullGoldBonus() || Guzzlr.haveFullBronzeBonus())) {
+      Guzzlr.acceptGold();
+    } else {
+      Guzzlr.acceptBronze();
+    }
+  }
+  if (Guzzlr.getLocation() === null) {
+    // weird error state - we have accepted a quest, but mafia says the quest location is null
+    return false;
+  }
+
+  const location = Guzzlr.getLocation()!;
+  const turnsLeftOnQuest = Math.ceil(
     (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
   );
-
-  acceptBestGuzzlrQuest();
-
-  const currentGuzzlrZone = Guzzlr.getLocation() || $location`none`;
-  if (
-    !testZoneAndUsePotionToAccess() ||
-    (!testZoneForWanderers(currentGuzzlrZone) &&
-      predictedWanderers > predictedBackups &&
-      predictedBackups < turnsLeftOnThisQuest) ||
-    (!testZoneForBackups(currentGuzzlrZone) && predictedBackups >= predictedWanderers)
-  ) {
+  if (turnsAvailableToday(location) < turnsLeftOnQuest && Guzzlr.canAbandon()) {
     Guzzlr.abandon();
+    return prepareGuzzlr();
+  } else if (turnsAvailableToday(location) < turnsLeftOnQuest) {
+    return false;
   }
-  acceptBestGuzzlrQuest();
-
-  const guzzlZone = Guzzlr.getLocation();
-  if (!testZoneAndUsePotionToAccess()) return defaultLocation;
-  if (
-    !guzzlZone ||
-    (type === draggableFight.WANDERER && !testZoneForWanderers(guzzlZone)) ||
-    (type === draggableFight.BACKUP && !testZoneForBackups(guzzlZone))
-  ) {
-    return defaultLocation;
-  }
-
-  const choicesToSet = unsupportedChoices.get(guzzlZone);
-  if (choicesToSet) propertyManager.setChoices(choicesToSet);
 
   if (Guzzlr.getTier() === "platinum") {
-    zonePotions.forEach((place) => {
-      if (guzzlZone.zone === place.zone && !have(place.effect)) {
-        if (!have(place.potion)) {
-          buy(1, place.potion, 10000);
-        }
-        use(1, place.potion);
-      }
-    });
     if (!Guzzlr.havePlatinumBooze()) {
-      print("It's time to get buttery", "purple");
       cliExecute("make buttery boy");
     }
   } else {
     const guzzlrBooze = Guzzlr.getBooze();
     if (!guzzlrBooze) {
-      return defaultLocation;
+      return false;
     } else if (!have(guzzlrBooze)) {
-      print("just picking up some booze before we roll", "blue");
       retrieveItem(guzzlrBooze);
     }
   }
-  return guzzlZone;
+
+  return testZoneAndUsePotionToAccess(location);
+}
+
+export function determineWandererTarget(
+  type: draggableFight,
+  noRequirements: boolean
+): wandererMode {
+  const wandererCheck =
+    type === draggableFight.WANDERER ? testZoneForWanderers : testZoneForBackups;
+
+  if (Guzzlr.have() && prepareGuzzlr() && wandererCheck(Guzzlr.getLocation())) {
+    return wandererMode.GUZZLR;
+  }
+  return wandererMode.DEFAULT;
+}
+
+function wandererLocation(type: draggableFight, mode: wandererMode): Location {
+  switch (mode) {
+    case wandererMode.GUZZLR:
+      const guzzlrLocation = Guzzlr.getLocation();
+      if (guzzlrLocation) {
+        return guzzlrLocation;
+      } else {
+        return wandererLocation(type, wandererMode.DEFAULT);
+      }
+    case wandererMode.DEFAULT:
+      return type === draggableFight.WANDERER &&
+        (get("_spookyAirportToday") || get("spookyAirportAlways"))
+        ? $location`The Deep Dark Jungle`
+        : $location`Noob Cave`;
+  }
+}
+
+export function determineDraggableZoneAndEnsureAccess(
+  type: draggableFight = draggableFight.WANDERER,
+  noRequirements: boolean = false
+): Location {
+  const mode = determineWandererTarget(type, noRequirements);
+  return wandererLocation(type, mode);
 }
 
 const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
