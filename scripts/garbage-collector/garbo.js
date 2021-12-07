@@ -24033,38 +24033,74 @@ function fightPiece(piece) {
   return (0,external_kolmafia_.runCombat)();
 }
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2017/AsdonMartin.js
-var AsdonMartin_templateObject, AsdonMartin_templateObject2, AsdonMartin_templateObject3, AsdonMartin_templateObject4, AsdonMartin_templateObject5, AsdonMartin_templateObject6, AsdonMartin_templateObject7, AsdonMartin_templateObject8, AsdonMartin_templateObject9, AsdonMartin_templateObject10, AsdonMartin_templateObject11;
+var AsdonMartin_templateObject, AsdonMartin_templateObject2, AsdonMartin_templateObject3, AsdonMartin_templateObject4, AsdonMartin_templateObject5, AsdonMartin_templateObject6, AsdonMartin_templateObject7, AsdonMartin_templateObject8, AsdonMartin_templateObject9, AsdonMartin_templateObject10, AsdonMartin_templateObject11, AsdonMartin_templateObject12, AsdonMartin_templateObject13;
 
 function AsdonMartin_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
 
 
-var fuelSkiplist = (0,template_string/* $items */.vS)(AsdonMartin_templateObject || (AsdonMartin_templateObject = AsdonMartin_taggedTemplateLiteral(["cup of \"tea\", thermos of \"whiskey\", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy, glass of \"milk\""])));
+/**
+ * Returns whether or not we have the Asdon installed in the workshed at present.
+ */
 
-function price(item) {
-  return (0,external_kolmafia_.historicalPrice)(item) === 0 ? (0,external_kolmafia_.mallPrice)(item) : (0,external_kolmafia_.historicalPrice)(item);
+function AsdonMartin_installed() {
+  return (0,external_kolmafia_.getWorkshed)() === (0,template_string/* $item */.xr)(AsdonMartin_templateObject || (AsdonMartin_templateObject = AsdonMartin_taggedTemplateLiteral(["Asdon Martin keyfob"])));
+}
+/**
+ * Returns true if we have the Asdon or if it's installed.
+ */
+
+function AsdonMartin_have() {
+  return AsdonMartin_installed() || haveItem($item(AsdonMartin_templateObject2 || (AsdonMartin_templateObject2 = AsdonMartin_taggedTemplateLiteral(["Asdon Martin keyfob"]))));
+}
+var fuelSkiplist = (0,template_string/* $items */.vS)(AsdonMartin_templateObject3 || (AsdonMartin_templateObject3 = AsdonMartin_taggedTemplateLiteral(["cup of \"tea\", thermos of \"whiskey\", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy, glass of \"milk\""])));
+
+function priceTooOld(item) {
+  return (0,external_kolmafia_.historicalPrice)(item) === 0 || (0,external_kolmafia_.historicalAge)(item) >= 7;
 }
 
+function price(item) {
+  return priceTooOld(item) ? (0,external_kolmafia_.mallPrice)(item) : (0,external_kolmafia_.historicalPrice)(item);
+} // Efficiency in meat per fuel.
+
+
 function calculateFuelEfficiency(it, targetUnits) {
+  var usePrecisePrice = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var units = (0,lib/* getAverageAdventures */.N)(it);
-  return price(it) / Math.min(targetUnits, units);
+  return (usePrecisePrice ? price(it) : (0,external_kolmafia_.mallPrice)(it)) / Math.min(targetUnits, units);
 }
 
 function isFuelItem(it) {
   return !(0,external_kolmafia_.isNpcItem)(it) && it.fullness + it.inebriety > 0 && (0,lib/* getAverageAdventures */.N)(it) > 0 && it.tradeable && it.discardable && !fuelSkiplist.includes(it);
 }
 
-var potentialFuel = (0,template_string/* $items */.vS)(AsdonMartin_templateObject2 || (AsdonMartin_templateObject2 = AsdonMartin_taggedTemplateLiteral([""]))).filter(isFuelItem);
+var potentialFuel = (0,template_string/* $items */.vS)(AsdonMartin_templateObject4 || (AsdonMartin_templateObject4 = AsdonMartin_taggedTemplateLiteral([""]))).filter(isFuelItem);
 
 function getBestFuel(targetUnits) {
+  if (potentialFuel.filter(priceTooOld).length > 100) {
+    (0,external_kolmafia_.mallPrices)("food");
+    (0,external_kolmafia_.mallPrices)("booze");
+  }
+
   var key1 = item => -(0,lib/* getAverageAdventures */.N)(item);
 
   var key2 = item => calculateFuelEfficiency(item, targetUnits);
 
   potentialFuel.sort((x, y) => key1(x) - key1(y));
-  potentialFuel.sort((x, y) => key2(x) - key2(y));
-  return potentialFuel[0];
+  potentialFuel.sort((x, y) => key2(x) - key2(y)); // Get precise price for the top candidates.
+
+  var candidates = potentialFuel.slice(0, 10);
+
+  var key3 = item => calculateFuelEfficiency(item, targetUnits, true);
+
+  candidates.sort((x, y) => key3(x) - key3(y));
+
+  if (calculateFuelEfficiency(candidates[0], targetUnits, true) > 100) {
+    throw new Error("Could not identify any fuel with efficiency better than 100 meat per fuel. " + "This means something went wrong.");
+  }
+
+  return candidates[0];
 }
 
 function insertFuel(it) {
@@ -24080,6 +24116,8 @@ function insertFuel(it) {
 
 
 function fillTo(targetUnits) {
+  if (!AsdonMartin_installed()) return false;
+
   while ((0,external_kolmafia_.getFuel)() < targetUnits) {
     var remaining = targetUnits - (0,external_kolmafia_.getFuel)();
     var fuel = getBestFuel(remaining);
@@ -24098,15 +24136,15 @@ function fillTo(targetUnits) {
  */
 
 var Driving = {
-  Obnoxiously: (0,template_string/* $effect */._G)(AsdonMartin_templateObject3 || (AsdonMartin_templateObject3 = AsdonMartin_taggedTemplateLiteral(["Driving Obnoxiously"]))),
-  Stealthily: (0,template_string/* $effect */._G)(AsdonMartin_templateObject4 || (AsdonMartin_templateObject4 = AsdonMartin_taggedTemplateLiteral(["Driving Stealthily"]))),
-  Wastefully: (0,template_string/* $effect */._G)(AsdonMartin_templateObject5 || (AsdonMartin_templateObject5 = AsdonMartin_taggedTemplateLiteral(["Driving Wastefully"]))),
-  Safely: (0,template_string/* $effect */._G)(AsdonMartin_templateObject6 || (AsdonMartin_templateObject6 = AsdonMartin_taggedTemplateLiteral(["Driving Safely"]))),
-  Recklessly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject7 || (AsdonMartin_templateObject7 = AsdonMartin_taggedTemplateLiteral(["Driving Recklessly"]))),
-  Intimidatingly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject8 || (AsdonMartin_templateObject8 = AsdonMartin_taggedTemplateLiteral(["Driving Intimidatingly"]))),
-  Quickly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject9 || (AsdonMartin_templateObject9 = AsdonMartin_taggedTemplateLiteral(["Driving Quickly"]))),
-  Observantly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject10 || (AsdonMartin_templateObject10 = AsdonMartin_taggedTemplateLiteral(["Driving Observantly"]))),
-  Waterproofly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject11 || (AsdonMartin_templateObject11 = AsdonMartin_taggedTemplateLiteral(["Driving Waterproofly"])))
+  Obnoxiously: (0,template_string/* $effect */._G)(AsdonMartin_templateObject5 || (AsdonMartin_templateObject5 = AsdonMartin_taggedTemplateLiteral(["Driving Obnoxiously"]))),
+  Stealthily: (0,template_string/* $effect */._G)(AsdonMartin_templateObject6 || (AsdonMartin_templateObject6 = AsdonMartin_taggedTemplateLiteral(["Driving Stealthily"]))),
+  Wastefully: (0,template_string/* $effect */._G)(AsdonMartin_templateObject7 || (AsdonMartin_templateObject7 = AsdonMartin_taggedTemplateLiteral(["Driving Wastefully"]))),
+  Safely: (0,template_string/* $effect */._G)(AsdonMartin_templateObject8 || (AsdonMartin_templateObject8 = AsdonMartin_taggedTemplateLiteral(["Driving Safely"]))),
+  Recklessly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject9 || (AsdonMartin_templateObject9 = AsdonMartin_taggedTemplateLiteral(["Driving Recklessly"]))),
+  Intimidatingly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject10 || (AsdonMartin_templateObject10 = AsdonMartin_taggedTemplateLiteral(["Driving Intimidatingly"]))),
+  Quickly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject11 || (AsdonMartin_templateObject11 = AsdonMartin_taggedTemplateLiteral(["Driving Quickly"]))),
+  Observantly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject12 || (AsdonMartin_templateObject12 = AsdonMartin_taggedTemplateLiteral(["Driving Observantly"]))),
+  Waterproofly: (0,template_string/* $effect */._G)(AsdonMartin_templateObject13 || (AsdonMartin_templateObject13 = AsdonMartin_taggedTemplateLiteral(["Driving Waterproofly"])))
 };
 /**
  * Attempt to drive with a particular style for a particular number of turns
@@ -24118,6 +24156,7 @@ var Driving = {
 function drive(style) {
   var turns = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
   if (!Object.values(Driving).includes(style)) return false;
+  if (!AsdonMartin_installed()) return false;
   if ((0,external_kolmafia_.haveEffect)(style) >= turns) return true;
   var fuelNeeded = 37 * Math.ceil((turns - (0,external_kolmafia_.haveEffect)(style)) / 30);
   fillTo(fuelNeeded);
@@ -25376,7 +25415,7 @@ var Mood = /*#__PURE__*/function () {
   }, {
     key: "drive",
     value: function drive(effect) {
-      if (Object.values(Driving).includes(effect)) {
+      if (Object.values(Driving).includes(effect) && AsdonMartin_installed()) {
         this.elements.push(new AsdonMoodElement(effect));
       }
 
