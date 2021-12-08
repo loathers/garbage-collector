@@ -1,5 +1,5 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, myTurncount, retrieveItem, use } from "kolmafia";
+import { buy, craftType, myTurncount, print, retrieveItem, use } from "kolmafia";
 import {
   $effect,
   $item,
@@ -8,6 +8,7 @@ import {
   $skill,
   clamp,
   get,
+  getSaleValue,
   Guzzlr,
   have,
   questStep,
@@ -19,10 +20,6 @@ import { globalOptions, propertyManager } from "./lib";
 export enum draggableFight {
   BACKUP,
   WANDERER,
-}
-export enum wandererMode {
-  GUZZLR,
-  DEFAULT,
 }
 const WANDERER_PRICE_THRESHOLD = 10000;
 
@@ -53,9 +50,10 @@ export function digitizedMonstersRemaining(): number {
 }
 
 interface ZoneUnlocker {
-  zone: string;
+  zone: string | null;
+  location: Location | null;
   available: () => boolean;
-  unlocker: Item;
+  unlocker: Item | null;
   noInv?: boolean;
 }
 
@@ -66,93 +64,97 @@ function airportAvailable(element: "spooky" | "stench" | "hot" | "cold" | "sleaz
 const zoneUnlockers: ZoneUnlocker[] = [
   {
     zone: "Spaaace",
+    location: null,
     available: () => have($effect`Transpondent`),
     unlocker: $item`transporter transponder`,
   },
   {
     zone: "Wormwood",
+    location: null,
     available: () => have($effect`Absinthe-Minded`),
     unlocker: $item`tiny bottle of absinthe`,
   },
   {
     zone: "RabbitHole",
+    location: null,
     available: () => have($effect`Down the Rabbit Hole`),
     unlocker: $item`"DRINK ME" potion`,
   },
   {
     zone: "Conspiracy Island",
+    location: null,
     available: () => airportAvailable("spooky"),
     unlocker: $item`one-day ticket to Conspiracy Island`,
     noInv: true,
   },
   {
     zone: "Dinseylandfill",
+    location: null,
     available: () => airportAvailable("stench"),
     unlocker: $item`one-day ticket to Dinseylandfill`,
     noInv: true,
   },
   {
     zone: "The Glaciest",
+    location: null,
     available: () => airportAvailable("cold"),
     unlocker: $item`one-day ticket to The Glaciest`,
     noInv: true,
   },
   {
     zone: "Spring Break Beach",
+    location: null,
     available: () => airportAvailable("sleaze"),
     unlocker: $item`one-day ticket to Spring Break Beach`,
     noInv: true,
   },
+  {
+    zone: null,
+    location: $location`The Oasis`,
+    available: () => have($effect`Ultrahydrated`),
+    unlocker: null,
+  },
 ];
 
-function testZoneAndUsePotionToAccess(zone: Location | null) {
-  if (!zone) return false;
-
-  // these zones have equip or effect requirements that we don't want to deal with
+function canAdvOrUnlock(loc: Location) {
+  const underwater = loc.environment === "underwater";
   const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory`;
-  if (skiplist.includes(zone)) {
-    return false;
-  }
-  zoneUnlockers.forEach((place) => {
-    if (zone.zone === place.zone && !place.available()) {
-      if (
-        (!place.noInv && have(place.unlocker)) ||
-        buy(1, place.unlocker, WANDERER_PRICE_THRESHOLD) > 0
-      ) {
-        use(1, place.unlocker);
-      }
-    }
-  });
-  const canAdvHack = zone === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
-  if (zone.environment === "underwater" || canAdvHack || !canAdv(zone, false)) {
-    return false;
-  } else {
-    return true;
-  }
+  const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
+  const canUnlock = zoneUnlockers.some((z) => (z.available() || !z.noInv) && loc.zone === z.zone);
+  return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdv(loc, false) || canUnlock);
 }
 
-function testZoneForBackups(location: Location | null): boolean {
-  if (!location) return false;
-  const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
-  return !backupSkiplist.includes(location) && location.combatPercent >= 100;
+function unlock(loc: Location) {
+  return (
+    zoneUnlockers.some(
+      (z) =>
+        (z.zone === loc.zone || z.location === loc) &&
+        z.unlocker &&
+        buy(1, z.unlocker, WANDERER_PRICE_THRESHOLD) > 0 &&
+        use(z.unlocker)
+    ) || canAdv(loc, false)
+  );
 }
 
-function testZoneForWanderers(location: Location | null): boolean {
-  if (!location) return false;
-  const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
-  return !wandererSkiplist.includes(location) && location.wanderers;
+function canWander(location: Location, type: draggableFight) {
+  if (type === draggableFight.BACKUP) {
+    const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
+    return !backupSkiplist.includes(location) && location.combatPercent >= 100;
+  } else if (type === draggableFight.WANDERER) {
+    const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
+    return !wandererSkiplist.includes(location) && location.wanderers;
+  }
+  return false;
 }
 
 function wandererTurnsAvailableToday(zone: Location) {
   return (
-    (testZoneForWanderers(zone)
+    (canWander(zone, draggableFight.WANDERER)
       ? digitizedMonstersRemaining() +
         (have($item`"I Voted!" sticker`) ? clamp(3 - get("_voteFreeFights"), 0, 3) : 0)
       : 0) +
-    (testZoneForBackups(zone)
-      ? have($item`backup camera`)
-        ? clamp(11 - get("_backUpUses"), 0, 11)
-        : 0
+    (canWander(zone, draggableFight.BACKUP) && have($item`backup camera`)
+      ? clamp(11 - get("_backUpUses"), 0, 11)
       : 0)
   );
 }
@@ -163,88 +165,164 @@ function freeCrafts() {
     (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
   );
 }
+class WandererTarget {
+  // name of this wanderer - for documentation/logging purposes
+  name: string;
 
-function prepareGuzzlr(): boolean {
-  const hasFreeCrafts = freeCrafts() > 0;
-  if (!Guzzlr.isQuestActive()) {
-    // const platBooze = Guzzlr.getCheapestPlatinumCocktail(hasFreeCrafts);
-    const platBooze = Guzzlr.getCheapestPlatinumCocktail();
-    if (
-      Guzzlr.canPlatinum() &&
-      (have(platBooze) || freeCrafts() > 0 || buy(1, platBooze, WANDERER_PRICE_THRESHOLD) > 0) &&
-      (!Guzzlr.haveFullPlatinumBonus() ||
-        (Guzzlr.haveFullBronzeBonus() && Guzzlr.haveFullGoldBonus()))
-    ) {
-      Guzzlr.acceptPlatinum();
-    } else if (Guzzlr.canGold() && (!Guzzlr.haveFullGoldBonus() || Guzzlr.haveFullBronzeBonus())) {
-      Guzzlr.acceptGold();
-    } else {
-      Guzzlr.acceptBronze();
+  // simple check to even try this wanderer
+  available: () => boolean;
+
+  // attempt to set this up without spending any turns or meat
+  prepareWanderer: () => boolean;
+
+  // where to adventure to target this
+  location: () => Location | null;
+
+  // the expected value of a single wanderer for this
+  value: () => number;
+
+  // attempt to set up, spending meat and or items as necessary
+  prepareTurn: () => boolean;
+
+  constructor(
+    name: string,
+    available: () => boolean,
+    location: () => Location | null,
+    value: () => number,
+    prepareWanderer: () => boolean = () => true,
+    prepareTurn: () => boolean = () => true
+  ) {
+    this.name = name;
+    this.available = available;
+    this.prepareWanderer = prepareWanderer;
+    this.value = value;
+    this.location = location;
+    this.prepareTurn = prepareTurn;
+  }
+
+  computeCachedValue() {
+    if (this.available() && this.prepareWanderer() && this.location()) {
+      return { value: this.value(), target: this };
     }
+    return { value: 0, target: this };
   }
+}
 
-  const location = Guzzlr.getLocation()!;
-  const guzzlrBooze =
-    Guzzlr.getTier() === "platinum"
-      ? Guzzlr.getCheapestPlatinumCocktail() // Guzzlr.getCheapestPlatinumCocktail(hasFreeCrafts)
-      : Guzzlr.getBooze();
+const wandererTargets = [
+  new WandererTarget(
+    "Guzzlr",
+    () => Guzzlr.have(),
+    () => Guzzlr.getLocation(),
+    () => {
+      const tier = Guzzlr.getTier();
+      const progressPerTurn = 100 / (10 - get("_guzzlrDeliveries"));
+      if (tier) {
+        const buckValue = getSaleValue($item`Never Don't Stop Not Striving`) / 1000;
+        switch (tier) {
+          case "bronze":
+            return (3 * buckValue) / progressPerTurn;
+          case "gold":
+            return (6 * buckValue) / progressPerTurn;
+          case "platinum":
+            return (21.5 * buckValue) / progressPerTurn;
+        }
+      }
+      return -1;
+    },
+    () => {
+      // try to accept the best possible quest, with the following algorithm:
+      // * always prefer 1 plat per day
+      // * go for gold if plat unavailable and gold not maxed and bronze is maxed or if both gold and bronze are maxed
+      // * go for bronze if plat unavailable and gold is maxed and either gold unavailable or quests are not maxed
+      while (!Guzzlr.isQuestActive() && Guzzlr.canAbandon()) {
+        if (Guzzlr.canPlatinum()) {
+          Guzzlr.acceptPlatinum();
+        } else if (
+          Guzzlr.canGold() &&
+          (Guzzlr.haveFullBronzeBonus() || !Guzzlr.haveFullGoldBonus())
+        ) {
+          // if gold is not maxed, do that first since they are limited per day
+          Guzzlr.acceptGold();
+        } else {
+          // fall back to bronze when can't plat, can't gold, or bronze is not maxed
+          Guzzlr.acceptBronze();
+        }
 
-  // error state - accepted a quest, but mafia says the quest location or booze is null
-  if (!location || !guzzlrBooze) return false;
+        const location = Guzzlr.getLocation();
+        const remaningTurns = Math.ceil(
+          (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
+        );
 
-  const turnsInZoneToday = wandererTurnsAvailableToday(location);
-  // const turnsLeftOnQuest = Guzzlr.turnsLeftOnQuest();
-  const turnsLeftOnQuest = Math.ceil(
-    (100 - get("guzzlrDeliveryProgress")) / 10 - get("_guzzlrDeliveries")
-  );
+        if (
+          // consider abandoning
+          !location || // if mafia faled to track the location correctly
+          !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+          (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
+        ) {
+          Guzzlr.abandon();
+        }
+      }
 
-  if (turnsInZoneToday < turnsLeftOnQuest && Guzzlr.canAbandon()) {
-    Guzzlr.abandon(); // reroll a new quest if out of turns to finish this quest today
-    return prepareGuzzlr();
-  } else if (turnsInZoneToday < turnsLeftOnQuest && globalOptions.ascending) {
-    return false; // if ascending and we won't finish the quest in time, just abandon ship
-  }
+      // return true only if it is safe to try get guzzlr
+      return Guzzlr.isQuestActive() && Guzzlr.getLocation() !== null;
+    },
+    () => {
+      const guzzlrBooze =
+        Guzzlr.getTier() === "platinum" ? Guzzlr.getCheapestPlatinumCocktail() : Guzzlr.getBooze();
 
-  const fancy = craftType(guzzlrBooze).includes("fancy");
-  if (!have(guzzlrBooze)) {
-    if (!fancy || (fancy && hasFreeCrafts)) {
-      retrieveItem(guzzlrBooze);
-    } else {
-      buy(1, guzzlrBooze, WANDERER_PRICE_THRESHOLD);
+      if (!guzzlrBooze) {
+        // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze
+        return false;
+      }
+
+      if (!have(guzzlrBooze)) {
+        const fancy = guzzlrBooze && craftType(guzzlrBooze).includes("fancy");
+        if (guzzlrBooze && (!fancy || (fancy && freeCrafts() > 0))) {
+          retrieveItem(guzzlrBooze);
+        } else if (guzzlrBooze) {
+          buy(1, guzzlrBooze, WANDERER_PRICE_THRESHOLD);
+        }
+      }
+      return have(guzzlrBooze);
     }
-  }
-
-  return have(guzzlrBooze) && testZoneAndUsePotionToAccess(location);
-}
-
-export function determineWandererTarget(type: draggableFight): wandererMode {
-  const wandererCheck =
-    type === draggableFight.WANDERER ? testZoneForWanderers : testZoneForBackups;
-
-  if (Guzzlr.have() && prepareGuzzlr() && wandererCheck(Guzzlr.getLocation())) {
-    return wandererMode.GUZZLR;
-  }
-  return wandererMode.DEFAULT;
-}
-
-function wandererLocation(type: draggableFight, mode: wandererMode): Location {
-  switch (mode) {
-    case wandererMode.GUZZLR:
-      return Guzzlr.getLocation()!;
-    case wandererMode.DEFAULT:
-      return type === draggableFight.WANDERER && airportAvailable("spooky")
-        ? $location`The Deep Dark Jungle`
-        : $location`Noob Cave`;
-  }
-}
+  ),
+  new WandererTarget(
+    "Coinspiracy",
+    () => airportAvailable("spooky") && get("lovebugsUnlocked"),
+    () => $location`The Deep Dark Jungle`,
+    () => 2 // slightly higher value
+  ),
+  new WandererTarget(
+    "Default",
+    () => true, // can always do default
+    () => $location`Noob Cave`,
+    () => 1 // slightly lower value
+  ),
+];
 
 export function determineDraggableZoneAndEnsureAccess(
   type: draggableFight = draggableFight.WANDERER
 ): Location {
-  const mode = determineWandererTarget(type);
-  const location = wandererLocation(type, mode);
-  const locationChoices = unsupportedChoices.get(location);
-  if (locationChoices) propertyManager.setChoices(locationChoices);
+  const sortedTargets = wandererTargets
+    .filter((target: WandererTarget) => target.available())
+    .map((target: WandererTarget) => target.computeCachedValue())
+    .sort((a, b) => a.value - b.value);
+
+  const best = sortedTargets.find((prospect) => {
+    const location = prospect.target.location();
+    return (
+      location && canWander(location, type) && unlock(location) && prospect.target.prepareTurn()
+    );
+  }) || { target: wandererTargets[wandererTargets.length - 1], value: 1 };
+
+  const location = best.target.location() || $location`Noob Cave`;
+  print(
+    `Wandering ${best.target.name} at ${best.target.location()} for expected value ${best.value}`
+  );
+
+  const choices = unsupportedChoices.get(location);
+  if (choices) propertyManager.setChoices(choices);
+
   return location;
 }
 
