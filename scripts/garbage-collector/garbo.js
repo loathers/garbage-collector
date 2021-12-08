@@ -21257,11 +21257,11 @@ function planDiet(mpa, menu) {
 
 
 var priceCaps = {
-  "spice melange": 500000,
-  "cuppa Voraci tea": 100000,
-  "cuppa Sobrie tea": 100000,
+  "cuppa Voraci tea": 200000,
+  "cuppa Sobrie tea": 200000,
+  "potion of the field gar": 50000,
   "Special Seasoning": 20000,
-  "astral pilsner": 0
+  "spice melange": 500000
 };
 function acquire(qty, item, maxPrice) {
   var throwOnFail = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
