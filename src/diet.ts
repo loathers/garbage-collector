@@ -398,7 +398,7 @@ export function computeDiet(): [MenuItem[], number][] {
     // HELPERS
     ...stomachLiverCleanerItems.map((item) => new MenuItem(item)),
     ...spacePills
-      .filter((item) => have(item) || !get<boolean>("garbo_skipPillCheck"))
+      .filter((item) => have(item) || !get<boolean>("garbo_skipPillCheck", false))
       .map((item) => new MenuItem(item)),
     new MenuItem($item`distention pill`),
     new MenuItem($item`cuppa Voraci tea`),
