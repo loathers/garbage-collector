@@ -354,6 +354,10 @@ export function computeDiet(): [MenuItem[], number][] {
   );
   const spleenCleanersNeeded = Math.ceil(additionalSpleenNeeded / 5);
   const spleenCleaner = argmax(spleenCleaners.map((item) => [item, mallPrice(item)]));
+  const spacePills = $items`synthetic dog hair pill, distention pill`;
+  const stomachLiverCleanerItems = [...stomachLiverCleaners.keys()].filter(
+    (item) => !spacePills.includes(item)
+  );
 
   const embezzlers = embezzlerCount();
   const helpers = [Mayo.flex, $item`Special Seasoning`, saladFork, frostyMug];
@@ -392,7 +396,10 @@ export function computeDiet(): [MenuItem[], number][] {
     }),
 
     // HELPERS
-    ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem(item)),
+    ...stomachLiverCleanerItems.map((item) => new MenuItem(item)),
+    ...spacePills
+      .filter((item) => have(item) || !get<boolean>("garbo_skipPillCheck"))
+      .map((item) => new MenuItem(item)),
     new MenuItem($item`distention pill`),
     new MenuItem($item`cuppa Voraci tea`),
     ...helpers.map((item) => new MenuItem(item)),
