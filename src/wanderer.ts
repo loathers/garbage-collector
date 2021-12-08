@@ -1,14 +1,5 @@
 import { canAdv } from "canadv.ash";
-import {
-  availableAmount,
-  buy,
-  cliExecute,
-  craftType,
-  myTurncount,
-  print,
-  retrieveItem,
-  use,
-} from "kolmafia";
+import { buy, craftType, myTurncount, retrieveItem, use } from "kolmafia";
 import {
   $effect,
   $item,
@@ -20,7 +11,6 @@ import {
   Guzzlr,
   have,
   questStep,
-  Requirement,
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
@@ -70,7 +60,7 @@ interface ZoneUnlocker {
 }
 
 function airportAvailable(element: "spooky" | "stench" | "hot" | "cold" | "sleaze"): boolean {
-  return get(`_{element}AirportToday`) || get(`{element}AirportAlways`);
+  return get(`_${element}AirportToday`) || get(`${element}AirportAlways`);
 }
 
 const zoneUnlockers: ZoneUnlocker[] = [
