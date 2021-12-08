@@ -177,7 +177,8 @@ function freeCrafts() {
 function prepareGuzzlr(): boolean {
   const hasFreeCrafts = freeCrafts() > 0;
   if (!Guzzlr.isQuestActive()) {
-    const platBooze = Guzzlr.getCheapestPlatinumCocktail(hasFreeCrafts);
+    // const platBooze = Guzzlr.getCheapestPlatinumCocktail(hasFreeCrafts);
+    const platBooze = Guzzlr.getCheapestPlatinumCocktail();
     if (
       Guzzlr.canPlatinum() &&
       (have(platBooze) || freeCrafts() > 0 || buy(1, platBooze, WANDERER_PRICE_THRESHOLD) > 0) &&
