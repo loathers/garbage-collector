@@ -14,11 +14,11 @@ import {
 import { get } from "libram";
 
 const priceCaps: { [index: string]: number } = {
-  "spice melange": 500000,
-  "cuppa Voraci tea": 100000,
-  "cuppa Sobrie tea": 100000,
+  "cuppa Voraci tea": 200000,
+  "cuppa Sobrie tea": 200000,
+  "potion of the field gar": 50000,
   "Special Seasoning": 20000,
-  "astral pilsner": 0,
+  "spice melange": 500000,
 };
 
 export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
