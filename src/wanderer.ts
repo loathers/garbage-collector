@@ -195,14 +195,17 @@ function prepareGuzzlr(): boolean {
   const location = Guzzlr.getLocation()!;
   const guzzlrBooze =
     Guzzlr.getTier() === "platinum"
-      ? Guzzlr.getCheapestPlatinumCocktail(hasFreeCrafts)
+      ? Guzzlr.getCheapestPlatinumCocktail() // Guzzlr.getCheapestPlatinumCocktail(hasFreeCrafts)
       : Guzzlr.getBooze();
 
   // error state - accepted a quest, but mafia says the quest location or booze is null
   if (!location || !guzzlrBooze) return false;
 
   const turnsInZoneToday = wandererTurnsAvailableToday(location);
-  const turnsLeftOnQuest = Guzzlr.turnsLeftOnQuest();
+  // const turnsLeftOnQuest = Guzzlr.turnsLeftOnQuest();
+  const turnsLeftOnQuest = Math.ceil(
+    (100 - get("guzzlrDeliveryProgress")) / 10 - get("_guzzlrDeliveries")
+  );
 
   if (turnsInZoneToday < turnsLeftOnQuest && Guzzlr.canAbandon()) {
     Guzzlr.abandon(); // reroll a new quest if out of turns to finish this quest today
@@ -249,9 +252,8 @@ export function determineDraggableZoneAndEnsureAccess(
 ): Location {
   const mode = determineWandererTarget(type);
   const location = wandererLocation(type, mode);
-  if (unsupportedChoices.get(location)) {
-    propertyManager.setChoices(unsupportedChoices.get(location));
-  }
+  const locationChoices = unsupportedChoices.get(location);
+  if (locationChoices) propertyManager.setChoices(locationChoices);
   return location;
 }
 
