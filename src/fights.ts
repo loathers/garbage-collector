@@ -1689,7 +1689,10 @@ function doSausage() {
   if (!kramcoGuaranteed()) return;
   useFamiliar(freeFightFamiliar());
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
-  adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+  adventureMacroAuto(
+    determineDraggableZoneAndEnsureAccess(),
+    Macro.if_($monster`sausage goblin`, Macro.basicCombat()).abort()
+  );
   setAutoAttack(0);
   postCombatActions();
 }
