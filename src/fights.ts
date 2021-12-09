@@ -959,7 +959,10 @@ const freeFightSources = [
       }
       adventureMacro(
         $location`Your Mushroom Garden`,
-        Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)).basicCombat()
+        Macro.externalIf(
+          !doingExtrovermectin(),
+          Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`))
+        ).basicCombat()
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
@@ -971,6 +974,7 @@ const freeFightSources = [
   // Portscan and mushroom garden
   new FreeFight(
     () =>
+      !doingExtrovermectin() &&
       (have($item`packet of mushroom spores`) ||
         getCampground()["packet of mushroom spores"] !== undefined) &&
       getCounters("portscan.edu", 0, 0) === "portscan.edu" &&
@@ -1203,6 +1207,7 @@ const freeRunFightSources = [
 
   new FreeRunFight(
     () =>
+      !doingExtrovermectin() &&
       have($familiar`Space Jellyfish`) &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
@@ -1224,6 +1229,7 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
+      !doingExtrovermectin() &&
       have($familiar`Space Jellyfish`) &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
