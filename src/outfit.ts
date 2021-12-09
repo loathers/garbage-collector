@@ -15,7 +15,6 @@ import {
   myFamiliar,
   myFullness,
   myInebriety,
-  myPrimestat,
   numericModifier,
   retrieveItem,
   toSlot,
@@ -32,7 +31,6 @@ import {
   $skill,
   $slot,
   $slots,
-  $stat,
   get,
   getFoldGroup,
   getKramcoWandererChance,
@@ -142,18 +140,14 @@ export function tryFillLatte(): boolean {
           (get("latteUnlocks").includes("carrot") &&
             numericModifier($item`latte lovers member's mug`, "Item Drop") !== 20))))
   ) {
-    const latteIngredients = [
-      "cajun",
-      "rawhide",
-      get("latteUnlocks").includes("carrot")
-        ? "carrot"
-        : myPrimestat() === $stat`muscle`
-        ? "vanilla"
-        : myPrimestat() === $stat`mysticality`
-        ? "pumpkin spice"
-        : "cinnamon",
-    ].join(" ");
-    cliExecute(`latte refill ${latteIngredients}`);
+    const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
+    const latteIngredients = goodLatteIngredients.filter((ingredient) =>
+      get("latteUnlocks").includes(ingredient)
+    );
+    if (latteIngredients.length < 3) latteIngredients.push("pumpkin spice");
+    if (latteIngredients.length < 3) latteIngredients.push("vanilla");
+    if (latteIngredients.length < 3) latteIngredients.push("cinnamon");
+    cliExecute(`latte refill ${latteIngredients.join(" ")}`);
   }
 
   return (
