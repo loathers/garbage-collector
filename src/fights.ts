@@ -14,7 +14,6 @@ import {
   inebrietyLimit,
   isBanished,
   itemAmount,
-  lastDecision,
   mallPrice,
   maximize,
   meatDropModifier,
@@ -1072,7 +1071,6 @@ const freeFightSources = [
           {
             forceEquip: [
               ...(have($item`January's Garbage Tote`) ? $items`makeshift garbage shirt` : []),
-              ...(get("_questPartyFairQuest") === "woots" ? $items`cosmetic football` : []),
             ],
           }
         ),
@@ -1561,20 +1559,13 @@ function setNepQuestChoicesAndPrepItems() {
     if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
       print("Gerald/ine quest!", "blue");
     }
-    if (["food", "booze", "woots", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
+    if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
       runChoice(1); // Accept quest
     } else {
       runChoice(2); // Decline quest
     }
   }
   const quest = get("_questPartyFairQuest");
-
-  if (get("lastEncounter") === "A Room With a View... Of a Bed" && lastDecision() === 5) {
-    set("_garbo_nepUsedRedDress", true);
-  }
-  if (get("lastEncounter") === "Basement Urges" && lastDecision() === 4) {
-    set("_garbo_nepUsedElectronicsKit", true);
-  }
 
   if (quest === "food") {
     if (!questStep("_questPartyFair")) {
@@ -1596,22 +1587,6 @@ function setNepQuestChoicesAndPrepItems() {
       print("Found Gerald!", "blue");
       const partyFairInfo = get("_questPartyFairProgress").split(" ");
       logMessage(`Gerald wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
-    }
-  } else if (quest === "woots") {
-    retrieveItem($item`cosmetic football`);
-
-    if (!get<boolean>("_garbo_nepUsedElectronicsKit", false)) {
-      retrieveItem($item`electronics kit`);
-      setChoice(1324, 4); // Investigate the basement
-      setChoice(1328, 4); // Modify the living room lights
-    } else if (!get<boolean>("_garbo_nepUsedRedDress", false)) {
-      retrieveItem($item`very small red dress`);
-      setChoice(1324, 1); // Head upstairs
-      setChoice(1325, 5); // Toss the red dress on the lamp
-      if (have($item`Clara's bell`) && !get("_claraBellUsed")) {
-        // We've used one item, ready to use the other - skip to next NC.
-        use($item`Clara's bell`);
-      }
     }
   } else {
     setChoice(1324, 5); // Pick a fight
