@@ -444,7 +444,10 @@ export function dailyFights(): void {
         if (
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-          (nextFight.name === "Backup" || get("lastEncounter") === "Knob Goblin Embezzler")
+          (nextFight.name === "Backup" ||
+            nextFight.name === "Powerful Glove" ||
+            nextFight.name === "Macrometeorite" ||
+            get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
           embezzlerLog.initialEmbezzlersFought++;
         }
