@@ -288,7 +288,17 @@ function embezzlerSetup() {
 }
 
 function startWandererCounter() {
-  if (getNextEmbezzlerFight()?.name === "Backup") return;
+  if (
+    [
+      "Backup",
+      "Macrometeorite",
+      "Powerful Glove",
+      "Be Gregarious",
+      "Final Be Gregarious",
+      "Done With Embezzlers",
+    ].includes(getNextEmbezzlerFight()?.name ?? "Done With Embezzlers")
+  )
+    return;
   if (
     (getCounters("Digitize Monster", 0, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
