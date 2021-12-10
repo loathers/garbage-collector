@@ -5,7 +5,6 @@ import {
   buy,
   cliExecute,
   closetAmount,
-  eat,
   equip,
   familiarWeight,
   getCampground,
@@ -21,12 +20,9 @@ import {
   myAscensions,
   myClass,
   myFamiliar,
-  myHp,
   myInebriety,
   myLevel,
   myMaxhp,
-  myMaxmp,
-  myMp,
   myPathId,
   mySpleenUse,
   numericModifier,
@@ -35,7 +31,6 @@ import {
   putCloset,
   refreshStash,
   restoreHp,
-  restoreMp,
   retrieveItem,
   runChoice,
   runCombat,
@@ -103,6 +98,7 @@ import {
   postCombatActions,
   propertyManager,
   questStep,
+  safeRestore,
   setChoice,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
@@ -1668,21 +1664,6 @@ function deliverThesis(): void {
     Macro.if_($monster`time-spinner prank`, Macro.basicCombat()).skill($skill`deliver your thesis!`)
   );
   postCombatActions();
-}
-
-export function safeRestore(): void {
-  if (myHp() < myMaxhp() * 0.5) {
-    restoreHp(myMaxhp() * 0.9);
-  }
-  if (myMp() < 50 && myMaxmp() > 50) {
-    if (
-      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get<number>("_sausagesEaten") < 23
-    ) {
-      eat($item`magical sausage`);
-    }
-    restoreMp(50);
-  }
 }
 
 function doSausage() {

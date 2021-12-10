@@ -55,7 +55,7 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, freeFights, safeRestore } from "./fights";
+import { dailyFights, freeFights } from "./fights";
 import {
   embezzlerLog,
   globalOptions,
@@ -65,6 +65,7 @@ import {
   printLog,
   propertyManager,
   questStep,
+  safeRestore,
   setChoice,
 } from "./lib";
 import { meatMood } from "./mood";
@@ -363,11 +364,6 @@ export function main(argString = ""): void {
       1108: bestHalloweiner,
       1341: 1, // Cure her poison
     });
-    if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
-    if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
-    const mpTarget = myLevel() < 18 ? 0.5 : 0.3;
-    if (get("mpAutoRecoveryTarget") < mpTarget)
-      propertyManager.set({ mpAutoRecoveryTarget: mpTarget });
 
     safeRestore();
 
