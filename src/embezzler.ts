@@ -25,6 +25,7 @@ import {
   wait,
 } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
@@ -223,7 +224,13 @@ export const embezzlerSources = [
       saberCrateIfDesired();
       equipOrbIfDesired();
       const baseMacro = options.macro ?? embezzlerMacro();
-      const macro = Macro.if_($monster`crate`, Macro.skill($skill`Macrometeorite`)).step(baseMacro);
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`),
+          Macro.trySkill($skill`Transcendent Olfaction`)
+        ).skill($skill`Macrometeorite`)
+      ).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
     }
     //do we want to equip orb on these guys?
@@ -246,9 +253,13 @@ export const embezzlerSources = [
       saberCrateIfDesired();
       equipOrbIfDesired();
       const baseMacro = options.macro ?? embezzlerMacro();
-      const macro = Macro.if_($monster`crate`, Macro.skill($skill`CHEAT CODE: Replace Enemy`)).step(
-        baseMacro
-      );
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`),
+          Macro.trySkill($skill`Transcendent Olfaction`)
+        ).skill($skill`CHEAT CODE: Replace Enemy`)
+      ).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
     },
     [new Requirement([], { forceEquip: $items`Powerful Glove` })]
