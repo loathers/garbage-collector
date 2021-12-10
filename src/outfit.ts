@@ -144,7 +144,7 @@ export function tryFillLatte(): boolean {
     const latteIngredients = goodLatteIngredients.filter((ingredient) =>
       get("latteUnlocks").includes(ingredient)
     );
-    if (latteIngredients.length < 3) latteIngredients.push("pumpkin spice");
+    if (latteIngredients.length < 3) latteIngredients.push("pumpkin");
     if (latteIngredients.length < 3) latteIngredients.push("vanilla");
     if (latteIngredients.length < 3) latteIngredients.push("cinnamon");
     cliExecute(`latte refill ${latteIngredients.join(" ")}`);
