@@ -12,12 +12,16 @@ import {
   mallPrice,
   mpCost,
   myFullness,
+  myHp,
   myInebriety,
+  myMaxhp,
+  myMaxmp,
   myMp,
   myTurncount,
   numericModifier,
   print,
   printHtml,
+  restoreHp,
   restoreMp,
   retrieveItem,
   runChoice,
@@ -526,8 +530,24 @@ function horseradish(): void {
   }
 }
 
+export function safeRestore(): void {
+  if (myHp() < myMaxhp() * 0.5) {
+    restoreHp(myMaxhp() * 0.9);
+  }
+  const mpTarget = Math.min(myMaxmp(), 200);
+  if (myMp() < mpTarget) {
+    if (
+      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
+      get("_sausagesEaten") < 23
+    ) {
+      eat($item`magical sausage`);
+    } else restoreMp(mpTarget);
+  }
+}
+
 export function postCombatActions(): void {
   horseradish();
   coldMedicineCabinet();
   safeInterrupt();
+  safeRestore();
 }
