@@ -148,7 +148,8 @@ export const embezzlerSources = [
       getCounters("Enamorang", 0, 0).trim() !== "" &&
       get("enamorangMonster") === $monster`Knob Goblin Embezzler`,
     () =>
-      get("enamorangMonster") === $monster`Knob Goblin Embezzler` ||
+      (getCounters("Enamorang", 0, 0).trim() !== "" &&
+        get("enamorangMonster") === $monster`Knob Goblin Embezzler`) ||
       (have($item`LOV Enamorang`) && !get("_enamorangs"))
         ? 1
         : 0,
@@ -321,15 +322,15 @@ export const embezzlerSources = [
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
       const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
       print(`You have the following embezzler-sources untapped right now:`, "blue");
+      const profit = (potential + 1) * averageEmbezzlerNet - WISH_VALUE;
+      if (profit < 0) return false;
       embezzlerSources
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, "blue"));
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = userConfirm(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}, so we expect to earn ${
-          (potential + 1) * averageEmbezzlerNet - WISH_VALUE
-        } meat, after the cost of a wish. Should we wish for an Embezzler?`
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`
       );
       return globalOptions.wishAnswer;
     },
