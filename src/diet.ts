@@ -39,6 +39,7 @@ import {
   $familiar,
   $item,
   $items,
+  $monster,
   $skill,
   clamp,
   ensureEffect,
@@ -56,6 +57,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { expectedGregs } from "./extrovermectin";
 import { argmax, arrayEquals, baseMeat, globalOptions } from "./lib";
 import { Potion } from "./potions";
 import synthesize from "./synthesis";
@@ -502,6 +504,23 @@ export function runDiet(): void {
   const embezzlers = embezzlerCount();
   if (embezzlers) {
     if (mySpleenUse() < spleenLimit()) {
+      if (
+        mySpleenUse() + 2 <= spleenLimit() &&
+        !get("beGregariousCharges") &&
+        !(
+          get("beGregariousFightsLeft") &&
+          get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+        )
+      ) {
+        const value = expectedGregs() * 25000;
+        if (
+          value - mallPrice($item`Extrovermectin™`) >
+          5 * MPA - 2 * mallPrice($item`transdermal smoke patch`)
+        ) {
+          acquire(1, $item`Extrovermectin™`, value);
+          chew(1, $item`Extrovermectin™`);
+        }
+      }
       if (!have($effect`Eau d' Clochard`)) {
         if (!have($item`beggin' cologne`)) {
           const cologne = new Potion($item`beggin' cologne`);
