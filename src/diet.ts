@@ -503,24 +503,24 @@ export function runDiet(): void {
   const { bestSpleenItem } = getBestSpleenItems();
   const embezzlers = embezzlerCount();
   if (embezzlers) {
-    if (mySpleenUse() < spleenLimit()) {
+    if (
+      mySpleenUse() + 2 <= spleenLimit() &&
+      !get("beGregariousCharges") &&
+      !(
+        get("beGregariousFightsLeft") &&
+        get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+      )
+    ) {
+      const value = expectedGregs() * 25000;
       if (
-        mySpleenUse() + 2 <= spleenLimit() &&
-        !get("beGregariousCharges") &&
-        !(
-          get("beGregariousFightsLeft") &&
-          get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
-        )
+        value - mallPrice($item`Extrovermectin™`) >
+        5 * MPA - 2 * mallPrice($item`transdermal smoke patch`)
       ) {
-        const value = expectedGregs() * 25000;
-        if (
-          value - mallPrice($item`Extrovermectin™`) >
-          5 * MPA - 2 * mallPrice($item`transdermal smoke patch`)
-        ) {
-          acquire(1, $item`Extrovermectin™`, value);
-          chew(1, $item`Extrovermectin™`);
-        }
+        acquire(1, $item`Extrovermectin™`, value);
+        chew(1, $item`Extrovermectin™`);
       }
+    }
+    if (mySpleenUse() < spleenLimit()) {
       if (!have($effect`Eau d' Clochard`)) {
         if (!have($item`beggin' cologne`)) {
           const cologne = new Potion($item`beggin' cologne`);
