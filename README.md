@@ -91,3 +91,7 @@ Increase autoBuyPriceLimit by typing `set autoBuyPriceLimit = 1234` where 1234 i
 > Garbo crashed with error Mall price too high for item?
 
 Try rerunning it once. These checks are emergency stops in case the mall prices go beyond expectations.
+
+> Garbo crashed with error Macro Aborted - Unknown predicate: monsterhpbelow 69?
+
+If you own Monster Manuel, factoids are required for the relevant monsters that will be encountered by Garbo. You can just finish combat manually and resume until these errors go away (up to once per unique monster).
