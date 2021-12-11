@@ -534,13 +534,14 @@ export function safeRestore(): void {
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
   }
-  if (myMp() < 100 && myMaxmp() > 100) {
+  const mpTarget = Math.min(myMaxmp(), 200);
+  if (myMp() < mpTarget) {
     if (
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
       get("_sausagesEaten") < 23
     ) {
       eat($item`magical sausage`);
-    } else restoreMp(100);
+    } else restoreMp(mpTarget);
   }
 }
 
