@@ -13,7 +13,7 @@ import {
   Requirement,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { findRun, ltbRun } from "./lib";
+import { findRun, ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 
 export function expectedGregs(): number {
@@ -62,22 +62,16 @@ export function saberCrateIfDesired(): void {
     (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2)
   ) {
     const run = findRun() ?? ltbRun;
-    const macro = Macro.trySkill($skill`Transcendent Olfaction`)
-      .trySkill($skill`Offer Latte to Opponent`)
-      .externalIf(
-        get("_gallapagosMonster") !== $monster`crate` && have($skill`Gallapagosian Mating Call`),
-        Macro.trySkill($skill`Gallapagosian Mating Call`)
-      )
-      .step(run.macro);
 
-    new Requirement(["100 Monster Level"], { forceEquip: $items`Fourth of May Cosplay Saber` })
+    new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` })
       .merge(run.requirement ? run.requirement : new Requirement([], {}))
       .maximize();
     useFamiliar(freeFightFamiliar());
     if (run.prepare) run.prepare();
+    setChoice(1387, 2);
     adventureMacro(
       $location`Noob Cave`,
-      Macro.if_($monster`crate`, macro)
+      Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
         .if_($monster`time-spinner prank`, Macro.kill())
         .ifHolidayWanderer(run.macro)
         .abort()
