@@ -436,7 +436,7 @@ export function printHelpMenu(): void {
     |              |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |
     +--------------+---------------------------------------------------------------------------------------------------+
     | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
-    |              |  200 turns are spent. Negative numbers terminate when the specified number of turns remain.       |
+    |              |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.       |
     +--------------+---------------------------------------------------------------------------------------------------+
     |     Note:    | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
     +--------------+---------------------------------------------------------------------------------------------------+</pre>`);
