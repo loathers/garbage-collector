@@ -8,6 +8,7 @@ import {
   equip,
   familiarWeight,
   getCampground,
+  getCounter,
   getCounters,
   handlingChoice,
   inebrietyLimit,
@@ -413,7 +414,9 @@ export function dailyFights(): void {
         nextFight = getNextEmbezzlerFight();
         if (
           kramcoGuaranteed() &&
-          !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name))
+          !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
+          (getCounter("Romantic Monster Window End") === -1 ||
+            getCounter("Romantic Monster Window start") !== -1)
         ) {
           doSausage();
         }
