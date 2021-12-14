@@ -23,7 +23,6 @@ import {
   myLevel,
   myMaxhp,
   myPathId,
-  mySpleenUse,
   numericModifier,
   outfit,
   print,
@@ -35,7 +34,6 @@ import {
   runCombat,
   setAutoAttack,
   setLocation,
-  spleenLimit,
   stashAmount,
   takeCloset,
   toInt,
@@ -163,10 +161,6 @@ const secondChainMacro = () =>
 function embezzlerSetup() {
   meatMood(true, true).execute(estimatedTurns());
   safeRestore();
-  if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
-  if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
-    ensureEffect($effect`Boxing Day Glow`);
-  }
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
     maximize("MP", false);
