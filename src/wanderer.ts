@@ -208,6 +208,7 @@ export function determineDraggableZoneAndEnsureAccess(
 }
 
 const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
+  [$location`The Spooky Forest`, { [502]: 2, [505]: 2 }],
   [$location`Guano Junction`, { [1427]: 1 }],
   [$location`The Hidden Apartment Building`, { [780]: 6, [1578]: 6 }],
   [$location`The Black Forest`, { [923]: 1, [924]: 1 }],
