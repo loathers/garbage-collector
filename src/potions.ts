@@ -33,19 +33,36 @@ for (const effectGroup of mutuallyExclusiveList) {
   }
 }
 
+interface PotionOptions {
+  effect?: Effect;
+  duration?: number;
+  noUse?: boolean;
+}
 export class Potion {
   potion: Item;
+  overrideEffect?: Effect;
+  duration?: number;
+  noUse: boolean;
 
-  constructor(potion: Item) {
+  constructor(potion: Item, options: PotionOptions = {}) {
     this.potion = potion;
+    this.overrideEffect = options.effect;
+    this.duration = options.duration;
+    this.noUse = options.noUse ?? false;
   }
 
   effect(): Effect {
-    return effectModifier(this.potion, "Effect");
+    return this.overrideEffect ?? effectModifier(this.potion, "Effect");
   }
 
   effectDuration(): number {
-    return numericModifier(this.potion, "Effect Duration");
+    return this.duration ?? numericModifier(this.potion, "Effect Duration");
+  }
+
+  maximumUses(totalTurns: number, doubleDuration = false) {
+    return Math.ceil(
+      ((totalTurns - haveEffect(this.effect())) / (doubleDuration ? 2 : 1)) * this.effectDuration()
+    );
   }
 
   meatDrop(): number {
@@ -85,6 +102,10 @@ export class Potion {
     return (bonusMeat / 100) * (baseMeat * duration + 750 * embezzlersApplied);
   }
 
+  static gross(item: Item, embezzlers: number, doubleDuration = false) {
+    return new Potion(item).gross(embezzlers, doubleDuration);
+  }
+
   price(historical: boolean): number {
     // If asked for historical, and age < 14 days, use historical.
     return historical && historicalAge(this.potion) < 14
@@ -104,6 +125,8 @@ export class Potion {
   }
 
   useAsValuable(embezzlers: number, doubleDuration = false): void {
+    if (this.noUse) return;
+
     const duration = this.effectDuration() * (doubleDuration ? 2 : 1);
 
     let quantityToUse = 0;
