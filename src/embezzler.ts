@@ -175,8 +175,8 @@ export const embezzlerSources = [
     () =>
       get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
       have($item`backup camera`) &&
-      get<number>("_backUpUses") < 11,
-    () => (have($item`backup camera`) ? 11 - get<number>("_backUpUses") : 0),
+      get("_backUpUses") < 11,
+    () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
     (options: EmbezzlerFightOptions) => {
       const realLocation =
         options.location && options.location.combatPercent >= 100
