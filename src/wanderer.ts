@@ -234,7 +234,8 @@ const wandererTargets = [
       // * always prefer 1 plat per day
       // * go for gold if plat unavailable and gold not maxed and bronze is maxed or if both gold and bronze are maxed
       // * go for bronze if plat unavailable and gold is maxed and either gold unavailable or quests are not maxed
-      while (!Guzzlr.isQuestActive() && Guzzlr.canAbandon()) {
+      while (!Guzzlr.isQuestActive()) {
+        print("Picking a guzzlr quest");
         if (Guzzlr.canPlatinum()) {
           Guzzlr.acceptPlatinum();
         } else if (
@@ -247,10 +248,13 @@ const wandererTargets = [
           // fall back to bronze when can't plat, can't gold, or bronze is not maxed
           Guzzlr.acceptBronze();
         }
-
         const location = Guzzlr.getLocation();
         const remaningTurns = Math.ceil(
           (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
+        );
+
+        print(
+          `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`
         );
 
         if (
@@ -259,6 +263,7 @@ const wandererTargets = [
           !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
           (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
         ) {
+          print("Abandoning...");
           Guzzlr.abandon();
         }
       }
@@ -304,12 +309,22 @@ export function determineDraggableZoneAndEnsureAccess(
   type: draggableFight = draggableFight.WANDERER
 ): Location {
   const sortedTargets = wandererTargets
-    .filter((target: WandererTarget) => target.available())
+    .filter((target: WandererTarget) => target.available() && target.prepareWanderer())
     .map((target: WandererTarget) => target.computeCachedValue())
-    .sort((a, b) => a.value - b.value);
+    .sort((a, b) => b.value - a.value);
 
   const best = sortedTargets.find((prospect) => {
     const location = prospect.target.location();
+    print(`Trying for ${prospect.target.name}`);
+    if (location) {
+      print(
+        `Checking canWander=${canWander(location, type)} unlock=${unlock(
+          location
+        )} prepareTurn=${prospect.target.prepareTurn()}`
+      );
+    } else {
+      print("Invalid location!");
+    }
     return (
       location && canWander(location, type) && unlock(location) && prospect.target.prepareTurn()
     );
