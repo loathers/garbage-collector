@@ -598,8 +598,8 @@ function proceedWithOrb(): boolean {
   //If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (
-    CrystalBall.currentPredictions().get($location`noob cave`) ===
-      $monster`knob goblin embezzler` &&
+    CrystalBall.currentPredictions().get($location`Noob Cave`) ===
+      $monster`Knob Goblin Embezzler` &&
     embezzlerSources
       .filter((source) => !gregFightNames.includes(source.name))
       .find((source) => source.available())
