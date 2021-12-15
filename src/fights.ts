@@ -66,6 +66,7 @@ import {
   AsdonMartin,
   ChateauMantegna,
   clamp,
+  CrystalBall,
   ensureEffect,
   get,
   getSaleValue,
@@ -845,7 +846,8 @@ const freeFightSources = [
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
-      get("crystalBallMonster") === $monster`drunk pygmy` &&
+      CrystalBall.currentPredictions().get($location`The Hidden Bowling Alley`) ===
+        $monster`drunk pygmy` &&
       get("_drunkPygmyBanishes") >= 11,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
