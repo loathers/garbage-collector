@@ -2,16 +2,11 @@ import { canAdv } from "canadv.ash";
 import {
   abort,
   cliExecute,
-  descToItem,
   eat,
-  fullnessLimit,
-  getWorkshed,
   handlingChoice,
   haveSkill,
   inebrietyLimit,
-  mallPrice,
   mpCost,
-  myFullness,
   myHp,
   myInebriety,
   myMaxhp,
@@ -26,7 +21,6 @@ import {
   retrieveItem,
   runChoice,
   runCombat,
-  totalTurnsPlayed,
   toUrl,
   use,
   useFamiliar,
@@ -51,14 +45,12 @@ import {
   getSongLimit,
   have,
   Macro,
-  MayoClinic,
   PropertiesManager,
   property,
   Requirement,
   set,
   SongBoom,
 } from "libram";
-import { acquire } from "./acquire";
 
 export const embezzlerLog = {
   initialEmbezzlersFought: 0,
@@ -492,44 +484,6 @@ export function burnLibrams(): void {
   cliExecute("burn *");
 }
 
-function coldMedicineCabinet(): void {
-  if (getWorkshed() !== $item`cold medicine cabinet`) return;
-  if (
-    property.getNumber("_coldMedicineConsults") >= 5 ||
-    property.getNumber("_nextColdMedicineConsult") > totalTurnsPlayed()
-  )
-    return;
-  const options = visitUrl("campground.php?action=workshed");
-  let bestChoice = 0;
-  let highestPrice = 0;
-  let i = 0;
-  let match;
-  const regexp = /descitem\((\d+)\)/g;
-  while ((match = regexp.exec(options)) !== null) {
-    i++;
-    const item = descToItem(match[1]);
-    const price = mallPrice(item);
-    print(item.toString());
-    if (price > highestPrice) {
-      highestPrice = price;
-      bestChoice = i;
-    }
-  }
-  visitUrl("campground.php?action=workshed");
-  runChoice(bestChoice);
-}
-
-function horseradish(): void {
-  if (myFullness() < fullnessLimit()) {
-    if (mallPrice($item`fudge spork`) < 3 * get("valueOfAdventure") && !get("_fudgeSporkUsed"))
-      eat(1, $item`fudge spork`);
-    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
-    acquire(1, $item`Special Seasoning`, get("valueOfAdventure"));
-    acquire(1, $item`jumping horseradish`, 5.5 * get("valueOfAdventure"));
-    if (!eat(1, $item`jumping horseradish`)) throw "Failed to eat safely";
-  }
-}
-
 export function safeRestore(): void {
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
@@ -543,11 +497,4 @@ export function safeRestore(): void {
       eat($item`magical sausage`);
     } else restoreMp(mpTarget);
   }
-}
-
-export function postCombatActions(): void {
-  horseradish();
-  coldMedicineCabinet();
-  safeInterrupt();
-  safeRestore();
 }

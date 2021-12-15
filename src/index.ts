@@ -60,7 +60,6 @@ import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
-  postCombatActions,
   printHelpMenu,
   printLog,
   propertyManager,
@@ -69,6 +68,7 @@ import {
   setChoice,
 } from "./lib";
 import { meatMood } from "./mood";
+import { postCombatActions } from "./post";
 import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
