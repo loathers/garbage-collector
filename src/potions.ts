@@ -33,19 +33,33 @@ for (const effectGroup of mutuallyExclusiveList) {
   }
 }
 
+interface PotionOptions {
+  canDouble?: boolean;
+  effect?: Effect;
+  duration?: number;
+  use?: (quanityt: number) => boolean;
+}
 export class Potion {
   potion: Item;
+  canDouble: boolean;
+  overrideEffect?: Effect;
+  overrideDuration?: number;
+  useOverride?: (quantity: number) => boolean;
 
-  constructor(potion: Item) {
+  constructor(potion: Item, options: PotionOptions = {}) {
     this.potion = potion;
+    this.canDouble = options.canDouble ?? true;
+    this.overrideDuration = options.duration;
+    this.overrideEffect = options.effect;
+    this.useOverride = options.use;
   }
 
   effect(): Effect {
-    return effectModifier(this.potion, "Effect");
+    return this.overrideEffect ?? effectModifier(this.potion, "Effect");
   }
 
   effectDuration(): number {
-    return numericModifier(this.potion, "Effect Duration");
+    return this.overrideDuration ?? numericModifier(this.potion, "Effect Duration");
   }
 
   meatDrop(): number {
@@ -73,9 +87,13 @@ export class Potion {
     return this.familiarWeight() * marginalValue + this.meatDrop();
   }
 
+  static bonusMeat(item: Item): number {
+    return new Potion(item).bonusMeat();
+  }
+
   gross(embezzlers: number, doubleDuration = false): number {
     const bonusMeat = this.bonusMeat();
-    const duration = this.effectDuration() * (doubleDuration ? 2 : 1);
+    const duration = this.effectDuration() * (this.canDouble && doubleDuration ? 2 : 1);
     // Number of embezzlers this will actually be in effect for.
     const embezzlersApplied = Math.max(
       Math.min(duration, embezzlers) - haveEffect(this.effect()),
@@ -83,6 +101,10 @@ export class Potion {
     );
 
     return (bonusMeat / 100) * (baseMeat * duration + 750 * embezzlersApplied);
+  }
+
+  static gross(item: Item, embezzlers: number, doubleDuration = false): number {
+    return new Potion(item).gross(embezzlers, doubleDuration);
   }
 
   price(historical: boolean): number {
@@ -96,6 +118,10 @@ export class Potion {
     return this.gross(embezzlers, doubleDuration) - this.price(historical);
   }
 
+  static net(item: Item, embezzlers: number, doubleDuration = false, historical = false): number {
+    return new Potion(item).net(embezzlers, doubleDuration, historical);
+  }
+
   doublingValue(embezzlers: number, historical = false): number {
     return (
       Math.max(this.net(embezzlers, true, historical), 0) -
@@ -103,78 +129,99 @@ export class Potion {
     );
   }
 
-  useAsValuable(embezzlers: number, doubleDuration = false): void {
-    const duration = this.effectDuration() * (doubleDuration ? 2 : 1);
+  static doublingValue(item: Item, embezzlers: number, historical = false): number {
+    return new Potion(item).doublingValue(embezzlers, historical);
+  }
 
-    let quantityToUse = 0;
-    let embezzlersRemaining = Math.max(embezzlers - haveEffect(this.effect()), 0);
-    let keepGoing = true;
+  usesToCover(turns: number, doubleDuration = false): number {
+    return Math.ceil(turns / (this.effectDuration() * (this.canDouble && doubleDuration ? 2 : 1)));
+  }
 
-    // Use however many will land entirely on embezzler turns.
-    const embezzlerQuantity = Math.floor(embezzlersRemaining / duration);
-    if (this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlerQuantity > 0) {
-      acquire(
-        embezzlerQuantity,
-        this.potion,
-        this.gross(embezzlersRemaining, doubleDuration),
-        false
-      );
-      quantityToUse = Math.min(embezzlerQuantity, itemAmount(this.potion));
-      print(
-        `Determined that ${quantityToUse} ${
-          this.potion.plural
-        } are profitable on embezzlers: net value ${this.net(
-          embezzlersRemaining,
-          doubleDuration
-        ).toFixed(0)}.`,
-        "blue"
-      );
-      embezzlersRemaining -= quantityToUse * duration;
+  static usesToCover(item: Item, turns: number, doubleDuration = false): number {
+    return new Potion(item).usesToCover(turns, doubleDuration);
+  }
+
+  use(quantity: number): boolean {
+    if (this.useOverride) {
+      return this.useOverride(quantity);
+    } else if (itemType(this.potion) === "potion") {
+      return use(quantity, this.potion);
+    } else {
+      // must provide an override for non potions, otherwise they won't use
+      return false;
     }
-    if (quantityToUse < embezzlerQuantity || (doubleDuration && quantityToUse > 0)) {
-      keepGoing = false;
-    }
+  }
+}
 
-    // Now, is there one with both embezzlers and non-embezzlers?
-    if (keepGoing && this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlersRemaining > 0) {
-      acquire(1, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
-      const additional = Math.min(1, itemAmount(this.potion) - quantityToUse);
+function useAsValuable(potion: Potion, embezzlers: number, doubleDuration = false): void {
+  const duration = potion.effectDuration() * (doubleDuration ? 2 : 1);
+
+  let quantityToUse = 0;
+  let embezzlersRemaining = Math.max(embezzlers - haveEffect(potion.effect()), 0);
+  let keepGoing = true;
+
+  // Use however many will land entirely on embezzler turns.
+  const embezzlerQuantity = Math.floor(embezzlersRemaining / duration);
+  if (potion.net(embezzlersRemaining, doubleDuration) > 0 && embezzlerQuantity > 0) {
+    acquire(
+      embezzlerQuantity,
+      potion.potion,
+      potion.gross(embezzlersRemaining, doubleDuration),
+      false
+    );
+    quantityToUse = Math.min(embezzlerQuantity, itemAmount(potion.potion));
+    print(
+      `Determined that ${quantityToUse} ${
+        potion.potion.plural
+      } are profitable on embezzlers: net value ${potion
+        .net(embezzlersRemaining, doubleDuration)
+        .toFixed(0)}.`,
+      "blue"
+    );
+    embezzlersRemaining -= quantityToUse * duration;
+  }
+  if (quantityToUse < embezzlerQuantity || (doubleDuration && quantityToUse > 0)) {
+    keepGoing = false;
+  }
+
+  // Now, is there one with both embezzlers and non-embezzlers?
+  if (keepGoing && potion.net(embezzlersRemaining, doubleDuration) > 0 && embezzlersRemaining > 0) {
+    acquire(1, potion.potion, potion.gross(embezzlersRemaining, doubleDuration), false);
+    const additional = Math.min(1, itemAmount(potion.potion) - quantityToUse);
+    print(
+      `Determined that ${additional} ${
+        potion.potion.plural
+      } are profitable on partial embezzlers: net value ${potion
+        .net(embezzlersRemaining, doubleDuration)
+        .toFixed(0)}.`,
+      "blue"
+    );
+    quantityToUse += additional;
+    embezzlersRemaining = Math.max(embezzlersRemaining - additional * duration, 0);
+  }
+  if (embezzlersRemaining > 0 || (doubleDuration && quantityToUse > 0)) keepGoing = false;
+
+  // How many should we use with non-embezzlers?
+  if (keepGoing && potion.net(0, doubleDuration) > 0) {
+    const adventureCap = estimatedTurns();
+    const tourists = adventureCap - haveEffect(potion.effect()) - quantityToUse * duration;
+    if (tourists > 0) {
+      const touristQuantity = Math.ceil(tourists / duration);
+      acquire(touristQuantity, potion.potion, potion.gross(0, doubleDuration), false);
+      const additional = Math.min(touristQuantity, itemAmount(potion.potion) - quantityToUse);
       print(
         `Determined that ${additional} ${
-          this.potion.plural
-        } are profitable on partial embezzlers: net value ${this.net(
-          embezzlersRemaining,
-          doubleDuration
-        ).toFixed(0)}.`,
+          potion.potion.plural
+        } are profitable on tourists: net value ${potion.net(0, doubleDuration).toFixed(0)}.`,
         "blue"
       );
       quantityToUse += additional;
-      embezzlersRemaining = Math.max(embezzlersRemaining - additional * duration, 0);
     }
-    if (embezzlersRemaining > 0 || (doubleDuration && quantityToUse > 0)) keepGoing = false;
+  }
 
-    // How many should we use with non-embezzlers?
-    if (keepGoing && this.net(0, doubleDuration) > 0) {
-      const adventureCap = estimatedTurns();
-      const tourists = adventureCap - haveEffect(this.effect()) - quantityToUse * duration;
-      if (tourists > 0) {
-        const touristQuantity = Math.ceil(tourists / duration);
-        acquire(touristQuantity, this.potion, this.gross(0, doubleDuration), false);
-        const additional = Math.min(touristQuantity, itemAmount(this.potion) - quantityToUse);
-        print(
-          `Determined that ${additional} ${
-            this.potion.plural
-          } are profitable on tourists: net value ${this.net(0, doubleDuration).toFixed(0)}.`,
-          "blue"
-        );
-        quantityToUse += additional;
-      }
-    }
-
-    if (quantityToUse > 0) {
-      if (doubleDuration) quantityToUse = 1;
-      use(quantityToUse, this.potion);
-    }
+  if (quantityToUse > 0) {
+    if (doubleDuration) quantityToUse = 1;
+    potion.use(quantityToUse);
   }
 }
 
@@ -189,9 +236,20 @@ export function potionSetup(doEmbezzlers = false): void {
   const potions = Item.all().filter(
     (item) => item.tradeable && !banned.includes(item) && itemType(item) === "potion"
   );
-  const meatPotions = potions
-    .map((item) => new Potion(item))
-    .filter((potion) => potion.bonusMeat() > 0);
+
+  const meatPotions = [
+    ...potions.map((item) => new Potion(item)).filter((potion) => potion.bonusMeat() > 0),
+    ...$effects`Braaaaaains, Frosty`.map(
+      (effect) =>
+        new Potion($item`pocket wish`, {
+          effect,
+          canDouble: false,
+          duration: 20,
+          use: (quantity: number) =>
+            new Array(quantity).every(() => cliExecute(`genie effect ${effect}`)),
+        })
+    ),
+  ];
 
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
     const testPotionsDoubled = meatPotions.filter(
@@ -209,7 +267,7 @@ export function potionSetup(doEmbezzlers = false): void {
             .toFixed(0)}`,
           "blue"
         );
-        potion.useAsValuable(embezzlers, true);
+        useAsValuable(potion, embezzlers, true);
       }
     }
   }
@@ -230,7 +288,7 @@ export function potionSetup(doEmbezzlers = false): void {
   for (const potion of testPotions) {
     const effect = potion.effect();
     if (excludedEffects.has(effect)) continue;
-    potion.useAsValuable(embezzlers);
+    useAsValuable(potion, embezzlers);
     if (have(effect)) {
       for (const excluded of mutuallyExclusive.get(effect) ?? []) {
         excludedEffects.add(excluded);
