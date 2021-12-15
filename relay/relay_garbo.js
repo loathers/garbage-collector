@@ -1707,12 +1707,20 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
   function PropertiesManager() {
     _classCallCheck(this, PropertiesManager);
 
-    _defineProperty(this, "properties", void 0);
-
-    this.properties = {};
+    _defineProperty(this, "properties", {});
   }
 
   _createClass(PropertiesManager, [{
+    key: "storedValues",
+    get: function get() {
+      return this.properties;
+    }
+    /**
+     * Sets a collection of properties to the given values, storing the old values.
+     * @param propertiesToSet A Properties object, keyed by property name.
+     */
+
+  }, {
     key: "set",
     value: function set(propertiesToSet) {
       for (var _i2 = 0, _Object$entries2 = Object.entries(propertiesToSet); _i2 < _Object$entries2.length; _i2++) {
@@ -1727,6 +1735,11 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
         _set(propertyName, propertyValue);
       }
     }
+    /**
+     * Sets a collection of choice adventure properties to the given values, storing the old values.
+     * @param choicesToSet An object keyed by choice adventure number.
+     */
+
   }, {
     key: "setChoices",
     value: function setChoices(choicesToSet) {
@@ -1738,6 +1751,31 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
         return ["choiceAdventure".concat(choiceNumber), choiceValue];
       })));
     }
+    /**
+     * Resets the given properties to their original stored value. Does not delete entries from the manager.
+     * @param properties Collection of properties to reset.
+     */
+
+  }, {
+    key: "reset",
+    value: function reset() {
+      for (var _len = arguments.length, properties = new Array(_len), _key = 0; _key < _len; _key++) {
+        properties[_key] = arguments[_key];
+      }
+
+      for (var _i3 = 0, _properties = properties; _i3 < _properties.length; _i3++) {
+        var property = _properties[_i3];
+        var value = this.properties[property];
+
+        if (value) {
+          _set(property, value);
+        }
+      }
+    }
+    /**
+     * Iterates over all stored values, setting each property back to its original stored value. Does not delete entries from the manager.
+     */
+
   }, {
     key: "resetAll",
     value: function resetAll() {
@@ -1748,6 +1786,69 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
 
         return _set(propertyName, propertyValue);
       });
+    }
+    /**
+     * Stops storing the original values of inputted properties.
+     * @param properties Properties for the manager to forget.
+     */
+
+  }, {
+    key: "clear",
+    value: function clear() {
+      for (var _len2 = arguments.length, properties = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        properties[_key2] = arguments[_key2];
+      }
+
+      for (var _i4 = 0, _properties2 = properties; _i4 < _properties2.length; _i4++) {
+        var property = _properties2[_i4];
+
+        if (this.properties[property]) {
+          delete this.properties[property];
+        }
+      }
+    }
+    /**
+     * Clears all properties.
+     */
+
+  }, {
+    key: "clearAll",
+    value: function clearAll() {
+      this.properties = {};
+    }
+    /**
+     * Increases a numeric property to the given value if necessary.
+     * @param property The numeric property we want to potentially raise.
+     * @param value The minimum value we want that property to have.
+     * @returns Whether we needed to change the property.
+     */
+
+  }, {
+    key: "setMinimumValue",
+    value: function setMinimumValue(property, value) {
+      if (get(property) < value) {
+        this.set(_defineProperty({}, property, value));
+        return true;
+      }
+
+      return false;
+    }
+    /**
+     * Decrease a numeric property to the given value if necessary.
+     * @param property The numeric property we want to potentially lower.
+     * @param value The maximum value we want that property to have.
+     * @returns Whether we needed to change the property.
+     */
+
+  }, {
+    key: "setMaximumValue",
+    value: function setMaximumValue(property, value) {
+      if (get(property) > value) {
+        this.set(_defineProperty({}, property, value));
+        return true;
+      }
+
+      return false;
     }
   }]);
 

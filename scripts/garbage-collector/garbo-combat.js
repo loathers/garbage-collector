@@ -53,6 +53,8 @@ function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Re
 
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -108,11 +110,12 @@ var MACRO_NAME = "Script Autoattack Macro";
  */
 
 function getMacroId() {
-  var macroMatches = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.xpath)((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php"), "//select[@name=\"macroid\"]/option[text()=\"".concat(MACRO_NAME, "\"]/@value"));
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : MACRO_NAME;
+  var macroMatches = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.xpath)((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php"), "//select[@name=\"macroid\"]/option[text()=\"".concat(name, "\"]/@value"));
 
   if (macroMatches.length === 0) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?action=new");
-    var newMacroText = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?macroid=0&name=".concat(MACRO_NAME, "&macrotext=abort&action=save"));
+    var newMacroText = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?macroid=0&name=".concat(name, "&macrotext=abort&action=save"));
     return parseInt((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.xpath)(newMacroText, "//input[@name=macroid]/@value")[0], 10);
   } else {
     return parseInt(macroMatches[0], 10);
@@ -182,6 +185,8 @@ var Macro = /*#__PURE__*/function () {
     _classCallCheck(this, Macro);
 
     _defineProperty(this, "components", []);
+
+    _defineProperty(this, "name", MACRO_NAME);
   }
 
   _createClass(Macro, [{
@@ -192,6 +197,19 @@ var Macro = /*#__PURE__*/function () {
      */
     function toString() {
       return this.components.join(";");
+    }
+    /**
+     * Gives your macro a new name to be used when saving an autoattack.
+     * @param name The name to be used when saving as an autoattack.
+     * @returns The previous name assigned to this macro.
+     */
+
+  }, {
+    key: "rename",
+    value: function rename(name) {
+      var returnValue = this.name;
+      this.name = name;
+      return returnValue;
     }
     /**
      * Save a macro to a Mafia property for use in a consult script.
@@ -249,25 +267,42 @@ var Macro = /*#__PURE__*/function () {
   }, {
     key: "setAutoAttack",
     value: function setAutoAttack() {
-      if (Macro.cachedMacroId === null) Macro.cachedMacroId = getMacroId();
+      var id = Macro.cachedMacroIds.get(this.name);
+      if (id === undefined) Macro.cachedMacroIds.set(this.name, getMacroId(this.name));
+      id = getMacroId(this.name);
 
-      if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getAutoAttack)() === 99000000 + Macro.cachedMacroId && this.toString() === Macro.cachedAutoAttack) {
+      if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getAutoAttack)() === 99000000 + id && this.toString() === Macro.cachedAutoAttacks.get(this.name)) {
         // This macro is already set. Don"t make the server request.
         return;
       }
 
-      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?macroid=".concat(Macro.cachedMacroId, "&name=").concat((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.urlEncode)(MACRO_NAME), "&macrotext=").concat((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.urlEncode)(this.toString()), "&action=save"), true, true);
-      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account.php?am=1&action=autoattack&value=".concat(99000000 + Macro.cachedMacroId, "&ajax=1"));
-      Macro.cachedAutoAttack = this.toString();
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?macroid=".concat(id, "&name=").concat((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.urlEncode)(this.name), "&macrotext=").concat((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.urlEncode)(this.toString()), "&action=save"), true, true);
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account.php?am=1&action=autoattack&value=".concat(99000000 + id, "&ajax=1"));
+      Macro.cachedAutoAttacks.set(this.name, this.toString());
     }
     /**
-     * Add an "abort" step to this macro.
-     * @returns {Macro} This object itself.
+     * Renames the macro, then sets it as an autoattack.
+     * @param name The name to save the macro under as an autoattack.
+     */
+
+  }, {
+    key: "setAutoAttackAs",
+    value: function setAutoAttackAs(name) {
+      this.name = name;
+      this.setAutoAttack();
+    }
+    /**
+     * Clear all cached autoattacks, and delete all stored macros server-side.
      */
 
   }, {
     key: "abort",
-    value: function abort() {
+    value:
+    /**
+     * Add an "abort" step to this macro.
+     * @returns {Macro} This object itself.
+     */
+    function abort() {
       return this.step("abort");
     }
     /**
@@ -581,6 +616,27 @@ var Macro = /*#__PURE__*/function () {
       return (_this2 = new this()).step.apply(_this2, arguments);
     }
   }, {
+    key: "clearAutoAttackMacros",
+    value: function clearAutoAttackMacros() {
+      var _iterator = _createForOfIteratorHelper(Macro.cachedAutoAttacks.keys()),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _Macro$cachedMacroIds;
+
+          var name = _step.value;
+          var id = (_Macro$cachedMacroIds = Macro.cachedMacroIds.get(name)) !== null && _Macro$cachedMacroIds !== void 0 ? _Macro$cachedMacroIds : getMacroId(name);
+          (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?macroid=".concat(id, "&action=edit&what=Delete&confirm=1"));
+          Macro.cachedAutoAttacks.delete(name);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    }
+  }, {
     key: "abort",
     value: function abort() {
       return new this().abort();
@@ -671,9 +727,9 @@ var Macro = /*#__PURE__*/function () {
 
 _defineProperty(Macro, "SAVED_MACRO_PROPERTY", "libram_savedMacro");
 
-_defineProperty(Macro, "cachedMacroId", null);
+_defineProperty(Macro, "cachedMacroIds", new Map());
 
-_defineProperty(Macro, "cachedAutoAttack", null);
+_defineProperty(Macro, "cachedAutoAttacks", new Map());
 
 function adventureMacro(loc, macro) {
   macro.save();
@@ -902,9 +958,11 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* unused harmony exports getSongLimit, isSong, getActiveEffects, getActiveSongs, getSongCount, canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, Wanderer, haveCounter, haveWandererCounter, isVoteWandererNow, isWandererNow, getKramcoWandererChance, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getFoldGroup, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getAverageAdventures, uneffect, getPlayerFromIdOrName, questStep, EnsureError, ensureEffect, getSaleValue, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4875);
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7530);
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(678);
+/* harmony import */ var core_js_features_array_flat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2580);
+/* harmony import */ var core_js_features_array_flat__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_features_array_flat__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7530);
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(678);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -946,6 +1004,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 /** @module GeneralLibrary */
+
 
 
 
@@ -1058,27 +1117,27 @@ function have(thing) {
   var quantity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
   if (thing instanceof Effect) {
-    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEffect)(thing) >= quantity;
+    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.haveEffect)(thing) >= quantity;
   }
 
   if (thing instanceof Familiar) {
-    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveFamiliar)(thing);
+    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.haveFamiliar)(thing);
   }
 
   if (thing instanceof Item) {
-    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.availableAmount)(thing) >= quantity;
+    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.availableAmount)(thing) >= quantity;
   }
 
   if (thing instanceof Servant) {
-    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveServant)(thing);
+    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.haveServant)(thing);
   }
 
   if (thing instanceof Skill) {
-    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveSkill)(thing);
+    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.haveSkill)(thing);
   }
 
   if (thing instanceof Thrall) {
-    var thrall = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myThrall)();
+    var thrall = (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.myThrall)();
     return thrall.id === thing.id && thrall.level >= quantity;
   }
 
@@ -1092,7 +1151,7 @@ function have(thing) {
  */
 
 function haveInCampground(item) {
-  return Object.keys((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getCampground)()).map(i => Item.get(i)).includes(item);
+  return Object.keys((0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.getCampground)()).map(i => Item.get(i)).includes(item);
 }
 var Wanderer;
 
@@ -1547,9 +1606,9 @@ function findFairyMultiplier(familiar) {
   if (itemBonus === 0) return 0;
   return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
-var holidayWanderers = new Map([["El Dia De Los Muertos Borrachos", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Novia Cad\xE1ver, Novio Cad\xE1ver, Padre Cad\xE1ver, Persona Inocente Cad\xE1ver"])))], ["Feast of Boris", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Candied Yam Golem, Malevolent Tofurkey, Possessed Can of Cranberry Sauce, Stuffing Golem"])))], ["Talk Like a Pirate Day", (0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$monsters */ .fr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["ambulatory pirate, migratory pirate, peripatetic pirate"])))]]);
+var holidayWanderers = new Map([["El Dia De Los Muertos Borrachos", (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$monsters */ .fr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Novia Cad\xE1ver, Novio Cad\xE1ver, Padre Cad\xE1ver, Persona Inocente Cad\xE1ver"])))], ["Feast of Boris", (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$monsters */ .fr)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Candied Yam Golem, Malevolent Tofurkey, Possessed Can of Cranberry Sauce, Stuffing Golem"])))], ["Talk Like a Pirate Day", (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$monsters */ .fr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["ambulatory pirate, migratory pirate, peripatetic pirate"])))]]);
 function getTodaysHolidayWanderers() {
-  return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.holiday)().split("/").map(holiday => {
+  return (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.holiday)().split("/").map(holiday => {
     var _holidayWanderers$get;
 
     return (_holidayWanderers$get = holidayWanderers.get(holiday)) !== null && _holidayWanderers$get !== void 0 ? _holidayWanderers$get : [];
@@ -1754,12 +1813,20 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
   function PropertiesManager() {
     _classCallCheck(this, PropertiesManager);
 
-    _defineProperty(this, "properties", void 0);
-
-    this.properties = {};
+    _defineProperty(this, "properties", {});
   }
 
   _createClass(PropertiesManager, [{
+    key: "storedValues",
+    get: function get() {
+      return this.properties;
+    }
+    /**
+     * Sets a collection of properties to the given values, storing the old values.
+     * @param propertiesToSet A Properties object, keyed by property name.
+     */
+
+  }, {
     key: "set",
     value: function set(propertiesToSet) {
       for (var _i2 = 0, _Object$entries2 = Object.entries(propertiesToSet); _i2 < _Object$entries2.length; _i2++) {
@@ -1774,6 +1841,11 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
         _set(propertyName, propertyValue);
       }
     }
+    /**
+     * Sets a collection of choice adventure properties to the given values, storing the old values.
+     * @param choicesToSet An object keyed by choice adventure number.
+     */
+
   }, {
     key: "setChoices",
     value: function setChoices(choicesToSet) {
@@ -1785,6 +1857,31 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
         return ["choiceAdventure".concat(choiceNumber), choiceValue];
       })));
     }
+    /**
+     * Resets the given properties to their original stored value. Does not delete entries from the manager.
+     * @param properties Collection of properties to reset.
+     */
+
+  }, {
+    key: "reset",
+    value: function reset() {
+      for (var _len = arguments.length, properties = new Array(_len), _key = 0; _key < _len; _key++) {
+        properties[_key] = arguments[_key];
+      }
+
+      for (var _i3 = 0, _properties = properties; _i3 < _properties.length; _i3++) {
+        var property = _properties[_i3];
+        var value = this.properties[property];
+
+        if (value) {
+          _set(property, value);
+        }
+      }
+    }
+    /**
+     * Iterates over all stored values, setting each property back to its original stored value. Does not delete entries from the manager.
+     */
+
   }, {
     key: "resetAll",
     value: function resetAll() {
@@ -1795,6 +1892,69 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
 
         return _set(propertyName, propertyValue);
       });
+    }
+    /**
+     * Stops storing the original values of inputted properties.
+     * @param properties Properties for the manager to forget.
+     */
+
+  }, {
+    key: "clear",
+    value: function clear() {
+      for (var _len2 = arguments.length, properties = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        properties[_key2] = arguments[_key2];
+      }
+
+      for (var _i4 = 0, _properties2 = properties; _i4 < _properties2.length; _i4++) {
+        var property = _properties2[_i4];
+
+        if (this.properties[property]) {
+          delete this.properties[property];
+        }
+      }
+    }
+    /**
+     * Clears all properties.
+     */
+
+  }, {
+    key: "clearAll",
+    value: function clearAll() {
+      this.properties = {};
+    }
+    /**
+     * Increases a numeric property to the given value if necessary.
+     * @param property The numeric property we want to potentially raise.
+     * @param value The minimum value we want that property to have.
+     * @returns Whether we needed to change the property.
+     */
+
+  }, {
+    key: "setMinimumValue",
+    value: function setMinimumValue(property, value) {
+      if (get(property) < value) {
+        this.set(_defineProperty({}, property, value));
+        return true;
+      }
+
+      return false;
+    }
+    /**
+     * Decrease a numeric property to the given value if necessary.
+     * @param property The numeric property we want to potentially lower.
+     * @param value The maximum value we want that property to have.
+     * @returns Whether we needed to change the property.
+     */
+
+  }, {
+    key: "setMaximumValue",
+    value: function setMaximumValue(property, value) {
+      if (get(property) > value) {
+        this.set(_defineProperty({}, property, value));
+        return true;
+      }
+
+      return false;
     }
   }]);
 
@@ -2509,6 +2669,28 @@ function invertMap(map) {
 
 /***/ }),
 
+/***/ 8469:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+__webpack_require__(9101);
+
+__webpack_require__(8938);
+
+var entryUnbind = __webpack_require__(7592);
+
+module.exports = entryUnbind('Array', 'flat');
+
+/***/ }),
+
+/***/ 2580:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var parent = __webpack_require__(8469);
+
+module.exports = parent;
+
+/***/ }),
+
 /***/ 1361:
 /***/ ((module) => {
 
@@ -2518,6 +2700,33 @@ module.exports = function (it) {
   }
 
   return it;
+};
+
+/***/ }),
+
+/***/ 7331:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var wellKnownSymbol = __webpack_require__(7457);
+
+var create = __webpack_require__(5131);
+
+var definePropertyModule = __webpack_require__(811);
+
+var UNSCOPABLES = wellKnownSymbol('unscopables');
+var ArrayPrototype = Array.prototype; // Array.prototype[@@unscopables]
+// https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
+
+if (ArrayPrototype[UNSCOPABLES] == undefined) {
+  definePropertyModule.f(ArrayPrototype, UNSCOPABLES, {
+    configurable: true,
+    value: create(null)
+  });
+} // add a key to Array.prototype[@@unscopables]
+
+
+module.exports = function (key) {
+  ArrayPrototype[UNSCOPABLES][key] = true;
 };
 
 /***/ }),
@@ -2573,6 +2782,35 @@ module.exports = {
   // `Array.prototype.indexOf` method
   // https://tc39.es/ecma262/#sec-array.prototype.indexof
   indexOf: createMethod(false)
+};
+
+/***/ }),
+
+/***/ 586:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isObject = __webpack_require__(2949);
+
+var isArray = __webpack_require__(1746);
+
+var wellKnownSymbol = __webpack_require__(7457);
+
+var SPECIES = wellKnownSymbol('species'); // `ArraySpeciesCreate` abstract operation
+// https://tc39.es/ecma262/#sec-arrayspeciescreate
+
+module.exports = function (originalArray, length) {
+  var C;
+
+  if (isArray(originalArray)) {
+    C = originalArray.constructor; // cross-realm fallback
+
+    if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;else if (isObject(C)) {
+      C = C[SPECIES];
+      if (C === null) C = undefined;
+    }
+  }
+
+  return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
 };
 
 /***/ }),
@@ -2768,6 +3006,21 @@ module.exports = version && +version;
 
 /***/ }),
 
+/***/ 7592:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var global = __webpack_require__(2328);
+
+var bind = __webpack_require__(1871);
+
+var call = Function.call;
+
+module.exports = function (CONSTRUCTOR, METHOD, length) {
+  return bind(call, global[CONSTRUCTOR].prototype[METHOD], length);
+};
+
+/***/ }),
+
 /***/ 393:
 /***/ ((module) => {
 
@@ -2859,6 +3112,50 @@ module.exports = function (exec) {
     return true;
   }
 };
+
+/***/ }),
+
+/***/ 8529:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var isArray = __webpack_require__(1746);
+
+var toLength = __webpack_require__(588);
+
+var bind = __webpack_require__(1871); // `FlattenIntoArray` abstract operation
+// https://tc39.github.io/proposal-flatMap/#sec-FlattenIntoArray
+
+
+var flattenIntoArray = function flattenIntoArray(target, original, source, sourceLen, start, depth, mapper, thisArg) {
+  var targetIndex = start;
+  var sourceIndex = 0;
+  var mapFn = mapper ? bind(mapper, thisArg, 3) : false;
+  var element;
+
+  while (sourceIndex < sourceLen) {
+    if (sourceIndex in source) {
+      element = mapFn ? mapFn(source[sourceIndex], sourceIndex, original) : source[sourceIndex];
+
+      if (depth > 0 && isArray(element)) {
+        targetIndex = flattenIntoArray(target, original, element, toLength(element.length), targetIndex, depth - 1) - 1;
+      } else {
+        if (targetIndex >= 0x1FFFFFFFFFFFFF) throw TypeError('Exceed the acceptable array length');
+        target[targetIndex] = element;
+      }
+
+      targetIndex++;
+    }
+
+    sourceIndex++;
+  }
+
+  return targetIndex;
+};
+
+module.exports = flattenIntoArray;
 
 /***/ }),
 
@@ -2971,6 +3268,15 @@ module.exports = Object.hasOwn || function hasOwn(it, key) {
 /***/ ((module) => {
 
 module.exports = {};
+
+/***/ }),
+
+/***/ 4861:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var getBuiltIn = __webpack_require__(1575);
+
+module.exports = getBuiltIn('document', 'documentElement');
 
 /***/ }),
 
@@ -3132,6 +3438,20 @@ var ArrayPrototype = Array.prototype; // check on default Array iterator
 
 module.exports = function (it) {
   return it !== undefined && (Iterators.Array === it || ArrayPrototype[ITERATOR] === it);
+};
+
+/***/ }),
+
+/***/ 1746:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var classof = __webpack_require__(6202); // `IsArray` abstract operation
+// https://tc39.es/ecma262/#sec-isarray
+// eslint-disable-next-line es/no-array-isarray -- safe
+
+
+module.exports = Array.isArray || function isArray(arg) {
+  return classof(arg) == 'Array';
 };
 
 /***/ }),
@@ -3303,6 +3623,138 @@ var inspectSource = __webpack_require__(7599);
 
 var WeakMap = global.WeakMap;
 module.exports = typeof WeakMap === 'function' && /native code/.test(inspectSource(WeakMap));
+
+/***/ }),
+
+/***/ 5131:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var anObject = __webpack_require__(3739);
+
+var defineProperties = __webpack_require__(422);
+
+var enumBugKeys = __webpack_require__(393);
+
+var hiddenKeys = __webpack_require__(1055);
+
+var html = __webpack_require__(4861);
+
+var documentCreateElement = __webpack_require__(4603);
+
+var sharedKey = __webpack_require__(1449);
+
+var GT = '>';
+var LT = '<';
+var PROTOTYPE = 'prototype';
+var SCRIPT = 'script';
+var IE_PROTO = sharedKey('IE_PROTO');
+
+var EmptyConstructor = function EmptyConstructor() {
+  /* empty */
+};
+
+var scriptTag = function scriptTag(content) {
+  return LT + SCRIPT + GT + content + LT + '/' + SCRIPT + GT;
+}; // Create object with fake `null` prototype: use ActiveX Object with cleared prototype
+
+
+var NullProtoObjectViaActiveX = function NullProtoObjectViaActiveX(activeXDocument) {
+  activeXDocument.write(scriptTag(''));
+  activeXDocument.close();
+  var temp = activeXDocument.parentWindow.Object;
+  activeXDocument = null; // avoid memory leak
+
+  return temp;
+}; // Create object with fake `null` prototype: use iframe Object with cleared prototype
+
+
+var NullProtoObjectViaIFrame = function NullProtoObjectViaIFrame() {
+  // Thrash, waste and sodomy: IE GC bug
+  var iframe = documentCreateElement('iframe');
+  var JS = 'java' + SCRIPT + ':';
+  var iframeDocument;
+  iframe.style.display = 'none';
+  html.appendChild(iframe); // https://github.com/zloirock/core-js/issues/475
+
+  iframe.src = String(JS);
+  iframeDocument = iframe.contentWindow.document;
+  iframeDocument.open();
+  iframeDocument.write(scriptTag('document.F=Object'));
+  iframeDocument.close();
+  return iframeDocument.F;
+}; // Check for document.domain and active x support
+// No need to use active x approach when document.domain is not set
+// see https://github.com/es-shims/es5-shim/issues/150
+// variation of https://github.com/kitcambridge/es5-shim/commit/4f738ac066346
+// avoid IE GC bug
+
+
+var activeXDocument;
+
+var _NullProtoObject = function NullProtoObject() {
+  try {
+    /* global ActiveXObject -- old IE */
+    activeXDocument = document.domain && new ActiveXObject('htmlfile');
+  } catch (error) {
+    /* ignore */
+  }
+
+  _NullProtoObject = activeXDocument ? NullProtoObjectViaActiveX(activeXDocument) : NullProtoObjectViaIFrame();
+  var length = enumBugKeys.length;
+
+  while (length--) {
+    delete _NullProtoObject[PROTOTYPE][enumBugKeys[length]];
+  }
+
+  return _NullProtoObject();
+};
+
+hiddenKeys[IE_PROTO] = true; // `Object.create` method
+// https://tc39.es/ecma262/#sec-object.create
+
+module.exports = Object.create || function create(O, Properties) {
+  var result;
+
+  if (O !== null) {
+    EmptyConstructor[PROTOTYPE] = anObject(O);
+    result = new EmptyConstructor();
+    EmptyConstructor[PROTOTYPE] = null; // add "__proto__" for Object.getPrototypeOf polyfill
+
+    result[IE_PROTO] = O;
+  } else result = _NullProtoObject();
+
+  return Properties === undefined ? result : defineProperties(result, Properties);
+};
+
+/***/ }),
+
+/***/ 422:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var DESCRIPTORS = __webpack_require__(2171);
+
+var definePropertyModule = __webpack_require__(811);
+
+var anObject = __webpack_require__(3739);
+
+var objectKeys = __webpack_require__(669); // `Object.defineProperties` method
+// https://tc39.es/ecma262/#sec-object.defineproperties
+// eslint-disable-next-line es/no-object-defineproperties -- safe
+
+
+module.exports = DESCRIPTORS ? Object.defineProperties : function defineProperties(O, Properties) {
+  anObject(O);
+  var keys = objectKeys(Properties);
+  var length = keys.length;
+  var index = 0;
+  var key;
+
+  while (length > index) {
+    definePropertyModule.f(O, key = keys[index++], Properties[key]);
+  }
+
+  return O;
+};
 
 /***/ }),
 
@@ -3823,6 +4275,56 @@ module.exports = function (name) {
 
   return WellKnownSymbolsStore[name];
 };
+
+/***/ }),
+
+/***/ 9101:
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var $ = __webpack_require__(9004);
+
+var flattenIntoArray = __webpack_require__(8529);
+
+var toObject = __webpack_require__(6068);
+
+var toLength = __webpack_require__(588);
+
+var toInteger = __webpack_require__(4770);
+
+var arraySpeciesCreate = __webpack_require__(586); // `Array.prototype.flat` method
+// https://tc39.es/ecma262/#sec-array.prototype.flat
+
+
+$({
+  target: 'Array',
+  proto: true
+}, {
+  flat: function
+    /* depthArg = 1 */
+  flat() {
+    var depthArg = arguments.length ? arguments[0] : undefined;
+    var O = toObject(this);
+    var sourceLen = toLength(O.length);
+    var A = arraySpeciesCreate(O, 0);
+    A.length = flattenIntoArray(A, O, O, sourceLen, 0, depthArg === undefined ? 1 : toInteger(depthArg));
+    return A;
+  }
+});
+
+/***/ }),
+
+/***/ 8938:
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+// this method was added to unscopables after implementation
+// in popular engines, so it's moved to a separate module
+var addToUnscopables = __webpack_require__(7331); // https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
+
+
+addToUnscopables('flat');
 
 /***/ }),
 
