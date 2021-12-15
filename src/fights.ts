@@ -93,7 +93,6 @@ import {
   logMessage,
   ltbRun,
   mapMonster,
-  postCombatActions,
   propertyManager,
   questStep,
   safeRestore,
@@ -117,6 +116,7 @@ import {
 } from "./embezzler";
 import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
+import { postCombatActions } from "./post";
 
 const firstChainMacro = () =>
   Macro.if_(
