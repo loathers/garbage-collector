@@ -3,7 +3,6 @@ import {
   abort,
   cliExecute,
   descToItem,
-  eat,
   fullnessLimit,
   getWorkshed,
   handlingChoice,
@@ -47,14 +46,13 @@ import {
   getSongLimit,
   have,
   Macro,
-  MayoClinic,
   PropertiesManager,
   property,
   Requirement,
   set,
   SongBoom,
 } from "libram";
-import { acquire } from "./acquire";
+import { fillPantsgiving } from "./diet";
 
 export const embezzlerLog = {
   initialEmbezzlersFought: 0,
@@ -68,6 +66,7 @@ export const globalOptions: {
   noBarf: boolean;
   askedAboutWish: boolean;
   wishAnswer: boolean;
+  pillKeeperUses: number;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -75,6 +74,7 @@ export const globalOptions: {
   noBarf: false,
   askedAboutWish: false,
   wishAnswer: false,
+  pillKeeperUses: 0,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -517,17 +517,12 @@ function coldMedicineCabinet(): void {
 
 function horseradish(): void {
   if (myFullness() < fullnessLimit()) {
-    if (mallPrice($item`fudge spork`) < 3 * get("valueOfAdventure") && !get("_fudgeSporkUsed"))
-      eat(1, $item`fudge spork`);
-    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
-    acquire(1, $item`Special Seasoning`, get("valueOfAdventure"));
-    acquire(1, $item`jumping horseradish`, 5.5 * get("valueOfAdventure"));
-    if (!eat(1, $item`jumping horseradish`)) throw "Failed to eat safely";
+    fillPantsgiving();
   }
 }
 
-export function postCombatActions(): void {
-  horseradish();
+export function postCombatActions(skipDiet = false): void {
+  if (!skipDiet) horseradish();
   coldMedicineCabinet();
   safeInterrupt();
 }

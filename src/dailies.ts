@@ -82,7 +82,6 @@ export function dailySetup(): void {
   volcanoDailies();
   cheat();
   tomeSummons();
-  gin();
   internetMemeShop();
   pickTea();
   refreshLatte();
@@ -456,18 +455,6 @@ function tomeSummons(): void {
     }
     if (best !== $item`none`) {
       cliExecute(`try; create ${$skill`Summon Clip Art`.dailylimit} ${best}`);
-    }
-  }
-}
-
-function gin(): void {
-  if (have($item`Time-Spinner`)) {
-    if (
-      !get("_timeSpinnerReplicatorUsed") &&
-      get("timeSpinnerMedals") >= 5 &&
-      get("_timeSpinnerMinutesUsed") <= 8
-    ) {
-      cliExecute("FarFuture drink");
     }
   }
 }

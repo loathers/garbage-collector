@@ -59,9 +59,9 @@ export class Potion {
     return this.duration ?? numericModifier(this.potion, "Effect Duration");
   }
 
-  maximumUses(totalTurns: number, doubleDuration = false) {
+  maximumUses(totalTurns: number, doubleDuration = false): number {
     return Math.ceil(
-      ((totalTurns - haveEffect(this.effect())) / (doubleDuration ? 2 : 1)) * this.effectDuration()
+      (totalTurns - haveEffect(this.effect())) / ((doubleDuration ? 2 : 1) * this.effectDuration())
     );
   }
 
@@ -102,7 +102,7 @@ export class Potion {
     return (bonusMeat / 100) * (baseMeat * duration + 750 * embezzlersApplied);
   }
 
-  static gross(item: Item, embezzlers: number, doubleDuration = false) {
+  static gross(item: Item, embezzlers: number, doubleDuration = false): number {
     return new Potion(item).gross(embezzlers, doubleDuration);
   }
 

@@ -28,7 +28,6 @@ import {
   myMaxmp,
   myMp,
   myPathId,
-  mySpleenUse,
   numericModifier,
   outfit,
   print,
@@ -41,7 +40,6 @@ import {
   runCombat,
   setAutoAttack,
   setLocation,
-  spleenLimit,
   stashAmount,
   takeCloset,
   toInt,
@@ -167,13 +165,9 @@ const secondChainMacro = () =>
     ).meatKill()
   ).abort();
 
-function embezzlerSetup() {
+export function embezzlerSetup(): void {
   meatMood(true, true).execute(estimatedTurns());
   safeRestore();
-  if (mySpleenUse() < spleenLimit()) ensureEffect($effect`Eau d' Clochard`);
-  if (mySpleenUse() < spleenLimit() && have($item`body spradium`)) {
-    ensureEffect($effect`Boxing Day Glow`);
-  }
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
     maximize("MP", false);
@@ -454,10 +448,7 @@ export function dailyFights(): void {
         if (
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-          (nextFight.name === "Backup" ||
-            nextFight.name === "Powerful Glove" ||
-            nextFight.name === "Macrometeorite" ||
-            get("lastEncounter") === "Knob Goblin Embezzler")
+          (nextFight.swaps || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
           embezzlerLog.initialEmbezzlersFought++;
         }
@@ -533,7 +524,7 @@ class FreeFight {
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
       withMacro(Macro.basicCombat(), this.run);
-      postCombatActions();
+      postCombatActions(true);
       // Slot in our Professor Thesis if it's become available
       if (thesisReady()) deliverThesis();
     }
@@ -568,7 +559,7 @@ class FreeRunFight extends FreeFight {
       ]);
       safeRestore();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
-      postCombatActions();
+      postCombatActions(true);
     }
   }
 }
@@ -1723,7 +1714,7 @@ function deliverThesis(): void {
     thesisLocation,
     Macro.if_($monster`time-spinner prank`, Macro.basicCombat()).skill($skill`deliver your thesis!`)
   );
-  postCombatActions();
+  postCombatActions(true);
 }
 
 export function safeRestore(): void {

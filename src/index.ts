@@ -55,7 +55,7 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, freeFights, safeRestore } from "./fights";
+import { dailyFights, embezzlerSetup, freeFights, safeRestore } from "./fights";
 import {
   embezzlerLog,
   globalOptions,
@@ -399,26 +399,25 @@ export function main(argString = ""): void {
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {
-        // 0. diet stuff.
-        runDiet();
-
-        // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+        // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (songboom, robortender drinks)
         dailySetup();
-
         setDefaultMaximizeOptions({
           preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
-        // 2. get a ticket (done before free fights so we can deliver thesis in
-        // Uncle Gator's Country Fun-Time Liquid Waste Sluice)
+        // 2. free fights (ensure barf to thesis at the sluice)
         if (!globalOptions.noBarf) {
           ensureBarfAccess();
         }
-
-        // 3. do some embezzler stuff
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
+
+        // 3. setup embezzlers to understand the value of an additional embezzler, then use that to compute diet
+        embezzlerSetup();
+        runDiet();
+
+        // 4. do some embezzler stuff
         dailyFights();
 
         if (!globalOptions.noBarf) {

@@ -13,6 +13,7 @@ import {
   myHash,
   myInebriety,
   myTurncount,
+  numericModifier,
   print,
   retrieveItem,
   runChoice,
@@ -20,6 +21,7 @@ import {
   toInt,
   toMonster,
   use,
+  useFamiliar,
   userConfirm,
   visitUrl,
   wait,
@@ -44,12 +46,19 @@ import {
 import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
 import { crateStrategy, equipOrbIfDesired, saberCrateIfDesired } from "./extrovermectin";
+import { meatFamiliar } from "./familiar";
 import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
+import { meatOutfit } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
 type EmbezzlerFightOptions = {
   location?: Location;
   macro?: Macro;
+};
+
+type EmbezzlerFightConfiguration = {
+  swaps?: boolean;
+  draggable?: boolean;
 };
 
 export class EmbezzlerFight {
@@ -58,6 +67,7 @@ export class EmbezzlerFight {
   run: (options: EmbezzlerFightOptions) => void;
   requirements: Requirement[];
   draggable: boolean;
+  swaps: boolean;
   name: string;
   /**
    * This is the class that creates all the different ways to fight embezzlers
@@ -76,14 +86,15 @@ export class EmbezzlerFight {
     potential: () => number,
     run: (options: EmbezzlerFightOptions) => void,
     requirements: Requirement[] = [],
-    draggable = false
+    options: EmbezzlerFightConfiguration = {}
   ) {
     this.name = name;
     this.available = available;
     this.potential = potential;
     this.run = run;
     this.requirements = requirements;
-    this.draggable = draggable;
+    this.draggable = options.draggable ?? false;
+    this.swaps = options.swaps ?? false;
   }
 }
 
@@ -115,7 +126,11 @@ export const embezzlerMacro = (): Macro =>
       .externalIf(
         get("beGregariousCharges") > 0 &&
           (get("beGregariousMonster") !== $monster`Knob Goblin Embezzler` ||
-            get("beGregariousFightsLeft") === 0),
+            get("beGregariousFightsLeft") === 0) &&
+          !(
+            get("crystalBallMonster") === $monster`Knob Goblin Embezzler` &&
+            get("crystalBallLocation") === $location`The Dire Warren`
+          ),
         Macro.trySkill($skill`Be Gregarious`)
       )
       .externalIf(
@@ -152,7 +167,7 @@ export const embezzlerSources = [
       );
     },
     [],
-    true
+    { draggable: true }
   ),
   new EmbezzlerFight(
     "Enamorang",
@@ -179,7 +194,7 @@ export const embezzlerSources = [
       );
     },
     [],
-    true
+    { draggable: true }
   ),
   new EmbezzlerFight(
     "Time-Spinner",
@@ -231,8 +246,9 @@ export const embezzlerSources = [
         ).skill($skill`Macrometeorite`)
       ).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
-    }
-    //do we want to equip orb on these guys?
+    },
+    [],
+    { swaps: true }
   ),
   new EmbezzlerFight(
     "Powerful Glove",
@@ -261,14 +277,15 @@ export const embezzlerSources = [
       ).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
     },
-    [new Requirement([], { forceEquip: $items`Powerful Glove` })]
+    [new Requirement([], { forceEquip: $items`Powerful Glove` })],
+    { swaps: true }
   ),
   new EmbezzlerFight(
     "Be Gregarious",
     () =>
       retrieveItem(1, $item`human musk`) &&
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
-      get("beGregariousFightsLeft") > 0,
+      get("beGregariousFightsLeft") > (have($item`miniature crystal ball`) ? 1 : 0),
     () =>
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
         ? get("beGregariousFightsLeft")
@@ -353,7 +370,7 @@ export const embezzlerSources = [
         bonusEquip: new Map([[$item`backup camera`, 5000]]),
       }),
     ],
-    true
+    { draggable: true, swaps: true }
   ),
   new EmbezzlerFight(
     "Spooky Putty & Rain-Doh",
@@ -458,15 +475,14 @@ export const embezzlerSources = [
       canAdv($location`Cobb's Knob Treasury`, true) &&
       !get("_freePillKeeperUsed"),
     () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed")
-        ? 1
+      have($item`Eight Days a Week Pill Keeper`) && canAdv($location`Cobb's Knob Treasury`, true)
+        ? (get("_freePillKeeperUsed") ? 0 : 1) + globalOptions.pillKeeperUses
         : 0,
     () => {
       retrieveItem($item`Eight Days a Week Pill Keeper`);
       cliExecute("pillkeeper semirare");
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
+      globalOptions.pillKeeperUses = Math.max(globalOptions.pillKeeperUses - 1, 0);
     }
   ),
   //These are very deliberately the last embezzler fights.
@@ -531,6 +547,24 @@ export const embezzlerSources = [
 
 export function embezzlerCount(): number {
   return sum(embezzlerSources, (source: EmbezzlerFight) => source.potential());
+}
+
+export function embezzlerDifferential(): number {
+  useFamiliar(meatFamiliar());
+  meatOutfit(true);
+
+  const embezzlerMeat = 750 + baseMeat;
+
+  const meatModifier = (100 + numericModifier("Meat Drop")) / 100;
+  const differential = embezzlerMeat * meatModifier - baseMeat * meatModifier;
+
+  print(
+    `Computed Embezzler Differential: ${differential} (${embezzlerMeat * meatModifier} - ${
+      baseMeat * meatModifier
+    }) modifier: ${meatModifier}`
+  );
+
+  return differential;
 }
 
 export function estimatedTurns(): number {

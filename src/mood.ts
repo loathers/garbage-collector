@@ -3,14 +3,11 @@ import {
   getClanLounge,
   getWorkshed,
   haveEffect,
-  haveSkill,
   itemAmount,
   myClass,
   myEffects,
   myLevel,
-  mySpleenUse,
   numericModifier,
-  spleenLimit,
   toSkill,
   use,
   useSkill,
@@ -34,9 +31,7 @@ import {
 } from "libram";
 import { baseMeat, questStep, setChoice } from "./lib";
 import { potionSetup } from "./potions";
-import { estimatedTurns } from "./embezzler";
 import { withStash } from "./clan";
-import synthesize from "./synthesis";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -74,17 +69,6 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
   if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
-
-  if (haveSkill($skill`Sweet Synthesis`)) {
-    mood.effect($effect`Synthesis: Greed`, () => {
-      if (
-        mySpleenUse() < spleenLimit() &&
-        haveEffect($effect`Synthesis: Greed`) < estimatedTurns()
-      ) {
-        synthesize(1, $effect`Synthesis: Greed`);
-      }
-    });
-  }
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 

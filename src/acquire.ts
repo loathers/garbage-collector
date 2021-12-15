@@ -19,6 +19,8 @@ const priceCaps: { [index: string]: number } = {
   "potion of the field gar": 50000,
   "Special Seasoning": 20000,
   "spice melange": 500000,
+  "Extrovermectin&trade;": 100000,
+  "mojo filter": 9000,
 };
 
 export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
