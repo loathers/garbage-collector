@@ -8,6 +8,7 @@ import {
   $slot,
   adventureMacro,
   clamp,
+  CrystalBall,
   get,
   have,
   Requirement,
@@ -82,8 +83,8 @@ export function saberCrateIfDesired(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    get("crystalBallLocation") === $location`Noob Cave` &&
-    get("crystalBallMonster") !== $monster`Knob Goblin Embezzler` &&
+    CrystalBall.currentPredictions().get($location`noob cave`) ===
+      $monster`Knob Goblin Embezzler` &&
     !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
     (crateStrategy() !== "Sniff" ||
       !$location`Noob Cave`.combatQueue

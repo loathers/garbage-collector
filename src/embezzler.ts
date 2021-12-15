@@ -34,6 +34,7 @@ import {
   $skill,
   adventureMacro,
   ChateauMantegna,
+  CrystalBall,
   get,
   have,
   property,
@@ -313,15 +314,11 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Orb Prediction",
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
-      get("beGregariousFightsLeft") === 0 &&
-      get("crystalBallMonster") === $monster`Knob Goblin Embezzler` &&
-      get("crystalBallLocation") === $location`The Dire Warren`,
+      CrystalBall.currentPredictions().get($location`The Dire Warren`) ===
+      $monster`Knob Goblin Embezzler`,
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
-      get("beGregariousFightsLeft") === 0 &&
-      get("crystalBallMonster") === $monster`Knob Goblin Embezzler` &&
-      get("crystalBallLocation") === $location`The Dire Warren`
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
+      (get("beGregariousCharges") > 0 && have($item`miniature crystal ball`))
         ? 1
         : 0,
     (options: EmbezzlerFightOptions) => {
@@ -601,8 +598,8 @@ function proceedWithOrb(): boolean {
   //If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (
-    get("crystalBallLocation") === $location`Noob Cave` &&
-    get("crystalBallMonster") !== $monster`Knob Goblin Embezzler` &&
+    CrystalBall.currentPredictions().get($location`noob cave`) ===
+      $monster`knob goblin embezzler` &&
     embezzlerSources
       .filter((source) => !gregFightNames.includes(source.name))
       .find((source) => source.available())
