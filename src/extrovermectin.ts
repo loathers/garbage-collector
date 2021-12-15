@@ -83,7 +83,7 @@ export function saberCrateIfDesired(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    CrystalBall.currentPredictions().get($location`noob cave`) ===
+    CrystalBall.currentPredictions().get($location`Noob Cave`) ===
       $monster`Knob Goblin Embezzler` &&
     !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
     (crateStrategy() !== "Sniff" ||
