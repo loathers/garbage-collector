@@ -3,7 +3,6 @@ import {
   abort,
   chatPrivate,
   cliExecute,
-  cliExecuteOutput,
   getCounters,
   haveEquipped,
   inebrietyLimit,
@@ -30,6 +29,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $skill,
   adventureMacro,
@@ -186,13 +186,15 @@ export const embezzlerSources = [
     "Time-Spinner",
     () =>
       have($item`Time-Spinner`) &&
-      cliExecuteOutput("timespinner list monsters").includes(
-        $monster`Knob Goblin Embezzler`.name
+      $locations`Noob Cave, The Dire Warren`.some((location) =>
+        location.combatQueue.includes($monster`Knob Goblin Embezzler`.name)
       ) &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
       have($item`Time-Spinner`) &&
-      cliExecuteOutput("timespinner list monsters").includes($monster`Knob Goblin Embezzler`.name)
+      $locations`Noob Cave, The Dire Warren`.some((location) =>
+        location.combatQueue.includes($monster`Knob Goblin Embezzler`.name)
+      )
         ? Math.min((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
     (options: EmbezzlerFightOptions) => {
