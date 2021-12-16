@@ -108,7 +108,7 @@ import {
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
-import { bathroomFinance } from "./potions";
+import { bathroomFinance, potionSetup } from "./potions";
 import {
   embezzlerCount,
   embezzlerMacro,
@@ -163,7 +163,8 @@ const secondChainMacro = () =>
   ).abort();
 
 function embezzlerSetup() {
-  meatMood(true, true).execute(estimatedTurns());
+  potionSetup(false);
+  meatMood(true).execute(estimatedTurns());
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {

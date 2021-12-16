@@ -33,7 +33,6 @@ import {
   Witchess,
 } from "libram";
 import { baseMeat, questStep, setChoice } from "./lib";
-import { potionSetup } from "./potions";
 import { estimatedTurns } from "./embezzler";
 import { withStash } from "./clan";
 import synthesize from "./synthesis";
@@ -47,7 +46,7 @@ Mood.setDefaultOptions({
   ],
 });
 
-export function meatMood(urKels = false, embezzlers = false): Mood {
+export function meatMood(urKels = false): Mood {
   const mood = new Mood();
 
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
@@ -142,7 +141,6 @@ export function meatMood(urKels = false, embezzlers = false): Mood {
     }
   }
 
-  potionSetup(embezzlers);
   shrugBadEffects();
 
   return mood;
