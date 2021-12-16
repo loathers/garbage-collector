@@ -193,8 +193,10 @@ export const embezzlerSources = [
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren`.some((location) =>
-        location.combatQueue.includes($monster`Knob Goblin Embezzler`.name)
+      $locations`Noob Cave, The Dire Warren`.some(
+        (location) =>
+          location.combatQueue.includes($monster`Knob Goblin Embezzler`.name) ||
+          get("beGregariousCharges") > 0
       )
         ? Math.min((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
@@ -218,8 +220,9 @@ export const embezzlerSources = [
       get("_macrometeoriteUses") < 10 &&
       proceedWithOrb(),
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
-      get("beGregariousFightsLeft") > 0 &&
+      ((get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
       have($skill`Meteor Lore`)
         ? 10 - get("_macrometeoriteUses")
         : 0,
@@ -247,8 +250,9 @@ export const embezzlerSources = [
       get("_powerfulGloveBatteryPowerUsed") < 90 &&
       proceedWithOrb(),
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
-      get("beGregariousFightsLeft") > 0 &&
+      ((get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
       have($item`Powerful Glove`)
         ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0,
@@ -274,8 +278,11 @@ export const embezzlerSources = [
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 1,
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
-        ? get("beGregariousFightsLeft")
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
+      get("beGregariousCharges") > 0
+        ? get("beGregariousCharges") === 0
+          ? get("beGregariousFightsLeft")
+          : 3
         : 0,
     (options: EmbezzlerFightOptions) => {
       adventureMacro(
@@ -293,8 +300,9 @@ export const embezzlerSources = [
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") === 1,
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
-      get("beGregariousFightsLeft") > 0
+      (get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+      get("beGregariousCharges") > 0
         ? 1
         : 0,
     (options: EmbezzlerFightOptions) => {
@@ -317,8 +325,9 @@ export const embezzlerSources = [
       CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
       $monster`Knob Goblin Embezzler`,
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
-      (get("beGregariousCharges") > 0 && have($item`miniature crystal ball`))
+      (get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
+        get("beGregariousCharges") > 0) &&
+      have($item`miniature crystal ball`)
         ? 1
         : 0,
     (options: EmbezzlerFightOptions) => {
