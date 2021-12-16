@@ -51,7 +51,7 @@ function horseradish(): void {
   }
 }
 
-export function postCombatActions(skipDiet = false): void {
+export default function postCombatActions(skipDiet = false): void {
   if (!skipDiet) horseradish();
   coldMedicineCabinet();
   safeInterrupt();
