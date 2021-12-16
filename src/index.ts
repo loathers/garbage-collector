@@ -70,6 +70,7 @@ import {
 } from "./lib";
 import { meatMood } from "./mood";
 import {
+  defaultPreventEquip,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
@@ -402,7 +403,7 @@ export function main(argString = ""): void {
         dailySetup();
 
         setDefaultMaximizeOptions({
-          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
+          preventEquip: defaultPreventEquip,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 

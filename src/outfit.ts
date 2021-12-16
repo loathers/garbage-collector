@@ -46,6 +46,8 @@ import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import { baseMeat, BonusEquipMode, globalOptions, leprechaunMultiplier } from "./lib";
 
+export const defaultPreventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`;
+
 const bestAdventuresFromPants =
   Item.all()
     .filter(
@@ -55,10 +57,10 @@ const bestAdventuresFromPants =
     .map((pants) => numericModifier(pants, "Adventures"))
     .sort((a, b) => b - a)[0] || 0;
 
-export function freeFightOutfit(requirements: Requirement[] = []): void {
+export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
   const bjornChoice = pickBjorn(equipMode);
-  const compiledRequirements = Requirement.merge(requirements);
+  const compiledRequirements = requirement ?? new Requirement([], {});
   const compiledOptions = compiledRequirements.maximizeOptions;
   const compiledParameters = compiledRequirements.maximizeParameters;
 
@@ -87,11 +89,8 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
   );
 
   const finalRequirement = new Requirement(parameters, {
-    forceEquip: forceEquip,
-    preventEquip: [
-      ...preventEquip,
-      ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
-    ],
+    forceEquip,
+    ...(preventEquip.length > 0 ? { preventEquip } : {}),
     bonusEquip: new Map<Item, number>([
       ...bonusEquip,
       ...dropsItems(equipMode),
@@ -111,7 +110,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     ]),
     preventSlot: [...preventSlot, ...$slots`crown-of-thrones, buddy-bjorn`],
   });
-  maximizeCached(finalRequirement.maximizeParameters, finalRequirement.maximizeOptions);
+  finalRequirement.maximize();
 
   if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`)
     equip(bjornAlike);

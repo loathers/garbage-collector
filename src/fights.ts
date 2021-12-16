@@ -77,6 +77,7 @@ import {
   set,
   SourceTerminal,
   TunnelOfLove,
+  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -102,6 +103,7 @@ import {
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
+  defaultPreventEquip,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
@@ -1382,6 +1384,10 @@ const freeRunFightSources = [
   ),
 ];
 
+const sandwormPreventEquip = defaultPreventEquip.filter(
+  (item) => item !== $item`broken champagne bottle`
+);
+
 const freeKillSources = [
   new FreeFight(
     () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
@@ -1393,7 +1399,9 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [
+        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
+      ],
     }
   ),
 
@@ -1407,7 +1415,9 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [
+        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
+      ],
     }
   ),
 
@@ -1440,7 +1450,10 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [
-        new Requirement(["100 Item Drop"], { forceEquip: $items`Lil' Doctor™ bag` }),
+        new Requirement(["100 Item Drop"], {
+          forceEquip: $items`Lil' Doctor™ bag`,
+          preventEquip: sandwormPreventEquip,
+        }),
       ],
     }
   ),
@@ -1455,7 +1468,9 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [
+        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
+      ],
     }
   ),
 
@@ -1471,7 +1486,9 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [
+        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
+      ],
     }
   ),
 
@@ -1485,7 +1502,9 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [
+        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
+      ],
     }
   ),
 ];
@@ -1528,24 +1547,31 @@ export function freeFights(): void {
 
   tryFillLatte();
 
-  try {
-    for (const freeKillSource of freeKillSources) {
-      if (freeKillSource.available()) {
-        // TODO: Add potions that are profitable for free kills.
-        // TODO: Don't run free kills at all if they're not profitable.
-        if (have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3) {
-          ensureEffect($effect`Feeling Lost`);
+  // Use free fights on melanges if we have Tote/Squint and prices are reasonable.
+  const canSquint =
+    have($effect`Steely-Eyed Squint`) ||
+    (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed"));
+  if (
+    have($item`January's Garbage Tote`) &&
+    canSquint &&
+    mallPrice($item`drum machine`) < 0.02 * mallPrice($item`spice melange`)
+  ) {
+    try {
+      for (const freeKillSource of freeKillSources) {
+        if (freeKillSource.available() && get("garbageChampagneCharge") > 0) {
+          // TODO: Add potions that are profitable for free kills.
+          if (have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3) {
+            ensureEffect($effect`Feeling Lost`);
+          }
+          ensureEffect($effect`Steely-Eyed Squint`);
         }
-        if (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed")) {
-          useSkill($skill`Steely-Eyed Squint`);
-        }
-      }
 
-      freeKillSource.runAll();
+        freeKillSource.runAll();
+      }
+    } finally {
+      if (have($effect`Feeling Lost`)) uneffect($effect`Feeling Lost`);
+      if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
     }
-  } finally {
-    cliExecute("uneffect Feeling Lost");
-    if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
   }
 }
 
