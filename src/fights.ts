@@ -895,7 +895,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
-      CrystalBall.currentPredictions().get($location`The Hidden Bowling Alley`) ===
+      CrystalBall.currentPredictions(false).get($location`The Hidden Bowling Alley`) ===
         $monster`drunk pygmy` &&
       get("_drunkPygmyBanishes") >= 11,
     () => {

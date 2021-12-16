@@ -314,7 +314,7 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Orb Prediction",
     () =>
-      CrystalBall.currentPredictions().get($location`The Dire Warren`) ===
+      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
       $monster`Knob Goblin Embezzler`,
     () =>
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
@@ -598,7 +598,7 @@ function proceedWithOrb(): boolean {
   //If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (
-    CrystalBall.currentPredictions().get($location`Noob Cave`) ===
+    CrystalBall.currentPredictions(false).get($location`Noob Cave`) ===
       $monster`Knob Goblin Embezzler` &&
     embezzlerSources
       .filter((source) => !gregFightNames.includes(source.name))
