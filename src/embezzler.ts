@@ -272,7 +272,7 @@ export const embezzlerSources = [
     () =>
       retrieveItem(1, $item`human musk`) &&
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
-      get("beGregariousFightsLeft") > 0,
+      get("beGregariousFightsLeft") > 1,
     () =>
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
         ? get("beGregariousFightsLeft")
