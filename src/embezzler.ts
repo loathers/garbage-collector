@@ -208,6 +208,7 @@ export const embezzlerSources = [
         visitUrl(
           `choice.php?whichchoice=1196&monid=${$monster`Knob Goblin Embezzler`.id}&option=1`
         );
+        runCombat();
       });
     }
   ),
