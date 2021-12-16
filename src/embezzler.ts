@@ -326,8 +326,10 @@ export const embezzlerSources = [
       CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
       $monster`Knob Goblin Embezzler`,
     () =>
-      (get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
-        get("beGregariousCharges") > 0) &&
+      (get("beGregariousCharges") > 0 ||
+        get("beGregariousFightsLeft") > 0 ||
+        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+          $monster`Knob Goblin Embezzler`) &&
       have($item`miniature crystal ball`)
         ? 1
         : 0,
