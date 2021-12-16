@@ -255,35 +255,38 @@ function embezzlerSetup() {
   }
 
   if (doingExtrovermectin()) {
-    if (
-      have($skill`Transcendent Olfaction`) &&
-      (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
-    ) {
-      if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
-      const run = findRun() ?? ltbRun;
-      const macro = Macro.trySkill($skill`Transcendent Olfaction`)
-        .trySkill($skill`Offer Latte to Opponent`)
-        .externalIf(
-          get("_gallapagosMonster") !== $monster`crate` && have($skill`Gallapagosian Mating Call`),
-          Macro.trySkill($skill`Gallapagosian Mating Call`)
-        )
-        .step(run.macro);
+    do {
+      if (
+        have($skill`Transcendent Olfaction`) &&
+        (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
+      ) {
+        if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
+        const run = findRun() ?? ltbRun;
+        const macro = Macro.trySkill($skill`Transcendent Olfaction`)
+          .trySkill($skill`Offer Latte to Opponent`)
+          .externalIf(
+            get("_gallapagosMonster") !== $monster`crate` &&
+              have($skill`Gallapagosian Mating Call`),
+            Macro.trySkill($skill`Gallapagosian Mating Call`)
+          )
+          .step(run.macro);
 
-      new Requirement(["100 Monster Level"], {
-        forceEquip: $items`latte lovers member's mug`.filter((item) => have(item)),
-      })
-        .merge(run.requirement ? run.requirement : new Requirement([], {}))
-        .maximize();
-      useFamiliar(freeFightFamiliar());
-      if (run.prepare) run.prepare();
-      adventureMacro(
-        $location`Noob Cave`,
-        Macro.if_($monster`crate`, macro)
-          .if_($monster`time-spinner prank`, Macro.kill())
-          .ifHolidayWanderer(run.macro)
-          .abort()
-      );
-    } else saberCrateIfDesired();
+        new Requirement(["100 Monster Level"], {
+          forceEquip: $items`latte lovers member's mug`.filter((item) => have(item)),
+        })
+          .merge(run.requirement ? run.requirement : new Requirement([], {}))
+          .maximize();
+        useFamiliar(freeFightFamiliar());
+        if (run.prepare) run.prepare();
+        adventureMacro(
+          $location`Noob Cave`,
+          Macro.if_($monster`crate`, macro)
+            .if_($monster`time-spinner prank`, Macro.kill())
+            .ifHolidayWanderer(run.macro)
+            .abort()
+        );
+      } else saberCrateIfDesired();
+    } while (get("lastEncounter") !== "crate");
   }
 }
 
