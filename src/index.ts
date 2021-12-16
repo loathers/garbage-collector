@@ -68,7 +68,7 @@ import {
   setChoice,
 } from "./lib";
 import { meatMood } from "./mood";
-import { postCombatActions } from "./post";
+import postCombatActions from "./post";
 import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
