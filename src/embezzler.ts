@@ -184,6 +184,25 @@ export const embezzlerSources = [
     true
   ),
   new EmbezzlerFight(
+    "Orb Prediction",
+    () =>
+      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+      $monster`Knob Goblin Embezzler`,
+    () =>
+      (get("beGregariousCharges") > 0 ||
+        get("beGregariousFightsLeft") > 0 ||
+        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+          $monster`Knob Goblin Embezzler`) &&
+      have($item`miniature crystal ball`)
+        ? 1
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      adventureMacro($location`The Dire Warren`, macro);
+    },
+    [new Requirement([], { forceEquip: $items`miniature crystal ball` })]
+  ),
+  new EmbezzlerFight(
     "Time-Spinner",
     () =>
       have($item`Time-Spinner`) &&
@@ -319,25 +338,6 @@ export const embezzlerSources = [
         forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
       }),
     ]
-  ),
-  new EmbezzlerFight(
-    "Orb Prediction",
-    () =>
-      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
-      $monster`Knob Goblin Embezzler`,
-    () =>
-      (get("beGregariousCharges") > 0 ||
-        get("beGregariousFightsLeft") > 0 ||
-        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
-          $monster`Knob Goblin Embezzler`) &&
-      have($item`miniature crystal ball`)
-        ? 1
-        : 0,
-    (options: EmbezzlerFightOptions) => {
-      const macro = options.macro ?? embezzlerMacro();
-      adventureMacro($location`The Dire Warren`, macro);
-    },
-    [new Requirement([], { forceEquip: $items`miniature crystal ball` })]
   ),
   new EmbezzlerFight(
     "Backup",
