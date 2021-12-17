@@ -285,7 +285,13 @@ function embezzlerSetup() {
             .ifHolidayWanderer(run.macro)
             .abort()
         );
-      } else saberCrateIfDesired();
+      } else if (
+        crateStrategy() === "Saber" &&
+        (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
+        get("_saberForceUses") < 5
+      )
+        saberCrateIfDesired();
+      else break;
     } while (get("lastEncounter") !== "crate");
   }
 }
