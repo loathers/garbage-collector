@@ -318,10 +318,13 @@ function startWandererCounter() {
       if (run.prepare) run.prepare();
       freeFightOutfit(run.requirement ? [run.requirement] : []);
       adventureMacro(
-        $location`Noob Cave`,
+        $location`The Haunted Kitchen`,
         Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
       );
-    } while (get("lastCopyableMonster") === $monster`Government agent`);
+    } while (
+      get("lastCopyableMonster") === $monster`Government agent` &&
+      get("lastEncounter") === "Lights Out in the Kitchen"
+    );
   }
 }
 
