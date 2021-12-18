@@ -309,15 +309,18 @@ function startWandererCounter() {
   )
     return;
   if (
-    (getCounters("Digitize Monster", 0, 100).trim() === "" &&
+    (getCounters("Digitize Monster", -3, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
-    (getCounters("Enamorang Monster", 0, 100).trim() === "" && get("enamorangMonster"))
+    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster"))
   ) {
     do {
       const run = findRun() || ltbRun;
       if (run.prepare) run.prepare();
       freeFightOutfit(run.requirement ? [run.requirement] : []);
-      adventureMacro($location`Noob Cave`, run.macro);
+      adventureMacro(
+        $location`Noob Cave`,
+        Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
+      );
     } while (get("lastCopyableMonster") === $monster`Government agent`);
   }
 }
