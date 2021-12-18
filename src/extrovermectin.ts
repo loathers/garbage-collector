@@ -45,7 +45,7 @@ export function expectedGregs(): number {
 }
 
 export function doingExtrovermectin(): boolean {
-  return get("beGregariousCharges") > 0;
+  return get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
 }
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
