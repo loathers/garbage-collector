@@ -321,13 +321,17 @@ function startWandererCounter() {
       } else {
         freeFightOutfit(run.requirement ? [run.requirement] : []);
       }
+      const targetZone =
+        $locations`The Bat Hole Entrance, The Neverending Party, Pirates of the Garbage Barges, The Bugbear Pen, Thugnderdome, Domed City of Grimacia, The Degrassi Knoll Restroom`.find(
+          (location) => canAdv(location, false)
+        ) ?? $location`The Haunted Kitchen`;
       adventureMacro(
-        $location`The Haunted Kitchen`,
+        targetZone,
         Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
-      get("lastEncounter") === "Lights Out in the Kitchen"
+      ["Lights Out in the Kitchen", "Play Misty For Me"].includes(get("lastEncounter"))
     );
   }
 }
