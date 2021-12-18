@@ -129,7 +129,7 @@ function barfTurn() {
     ghostLocation
   ) {
     useFamiliar(freeFightFamiliar());
-    freeFightOutfit([new Requirement([], { forceEquip: $items`protonic accelerator pack` })]);
+    freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
     adventureMacro(ghostLocation, Macro.ghostBustin());
   } else if (
     myInebriety() <= inebrietyLimit() &&
@@ -139,11 +139,11 @@ function barfTurn() {
     get("_voteFreeFights") < 3
   ) {
     useFamiliar(freeFightFamiliar());
-    freeFightOutfit([new Requirement([], { forceEquip: $items`"I Voted!" sticker` })]);
+    freeFightOutfit(new Requirement([], { forceEquip: $items`"I Voted!" sticker` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
     useFamiliar(freeFightFamiliar());
-    freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
+    freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
     // c. set up familiar

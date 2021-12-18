@@ -194,7 +194,7 @@ function embezzlerSetup() {
       const runSource = findRun() || ltbRun;
       if (!runSource) break;
       if (runSource.prepare) runSource.prepare();
-      freeFightOutfit(runSource.requirement ? [runSource.requirement] : []);
+      freeFightOutfit(runSource.requirement ? runSource.requirement : undefined);
       adventureMacro($location`The Hidden Temple`, runSource.macro);
     }
   }
@@ -317,7 +317,7 @@ function startWandererCounter() {
     do {
       const run = findRun() || ltbRun;
       if (run.prepare) run.prepare();
-      freeFightOutfit(run.requirement ? [run.requirement] : []);
+      freeFightOutfit(run.requirement ? run.requirement : undefined);
       adventureMacro($location`Noob Cave`, run.macro);
     } while (get("lastCopyableMonster") === $monster`Government agent`);
   }
@@ -533,7 +533,9 @@ class FreeFight {
         this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
       );
       freeFightMood().execute();
-      freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
+      freeFightOutfit(
+        this.options.requirements ? Requirement.merge(this.options.requirements()) : undefined
+      );
       safeRestore();
       withMacro(Macro.basicCombat(), this.run);
       postCombatActions();
@@ -565,10 +567,12 @@ class FreeRunFight extends FreeFight {
         this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
       );
       if (runSource.prepare) runSource.prepare();
-      freeFightOutfit([
-        ...(this.options.requirements ? this.options.requirements() : []),
-        ...(runSource.requirement ? [runSource.requirement] : []),
-      ]);
+      freeFightOutfit(
+        Requirement.merge([
+          ...(this.options.requirements ? this.options.requirements() : []),
+          ...(runSource.requirement ? [runSource.requirement] : []),
+        ])
+      );
       safeRestore();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
       postCombatActions();
@@ -1693,7 +1697,7 @@ function deliverThesis(): void {
 
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
-  freeFightOutfit([new Requirement(["100 muscle"], {})]);
+  freeFightOutfit(new Requirement(["100 muscle"], {}));
   safeRestore();
 
   if (
@@ -1733,7 +1737,7 @@ function deliverThesis(): void {
 function doSausage() {
   if (!kramcoGuaranteed()) return;
   useFamiliar(freeFightFamiliar());
-  freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
+  freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
   adventureMacroAuto(
     determineDraggableZoneAndEnsureAccess(),
     Macro.if_($monster`sausage goblin`, Macro.basicCombat()).abort()
