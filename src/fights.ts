@@ -77,6 +77,7 @@ import {
   set,
   SourceTerminal,
   TunnelOfLove,
+  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -118,6 +119,7 @@ import {
 import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 import postCombatActions from "./post";
+import { crateStrategy, doingExtrovermectin, saberCrateIfDesired } from "./extrovermectin";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -251,10 +253,61 @@ function embezzlerSetup() {
   if (have($item`ice sculpture`) && !get("iceSculptureMonster")) {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
+
+  if (doingExtrovermectin()) {
+    do {
+      if (
+        have($skill`Transcendent Olfaction`) &&
+        (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
+      ) {
+        if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
+        const run = findRun() ?? ltbRun;
+        const macro = Macro.trySkill($skill`Transcendent Olfaction`)
+          .trySkill($skill`Offer Latte to Opponent`)
+          .externalIf(
+            get("_gallapagosMonster") !== $monster`crate` &&
+              have($skill`Gallapagosian Mating Call`),
+            Macro.trySkill($skill`Gallapagosian Mating Call`)
+          )
+          .step(run.macro);
+
+        new Requirement(["100 Monster Level"], {
+          forceEquip: $items`latte lovers member's mug`.filter((item) => have(item)),
+        })
+          .merge(run.requirement ? run.requirement : new Requirement([], {}))
+          .maximize();
+        useFamiliar(freeFightFamiliar());
+        if (run.prepare) run.prepare();
+        adventureMacro(
+          $location`Noob Cave`,
+          Macro.if_($monster`crate`, macro)
+            .if_($monster`time-spinner prank`, Macro.kill())
+            .ifHolidayWanderer(run.macro)
+            .abort()
+        );
+      } else if (
+        crateStrategy() === "Saber" &&
+        (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
+        get("_saberForceUses") < 5
+      )
+        saberCrateIfDesired();
+      else break;
+    } while (get("lastEncounter") !== "crate");
+  }
 }
 
 function startWandererCounter() {
-  if (getNextEmbezzlerFight()?.name === "Backup") return;
+  if (
+    [
+      "Backup",
+      "Macrometeorite",
+      "Powerful Glove",
+      "Be Gregarious",
+      "Final Be Gregarious",
+      "Done With Embezzlers",
+    ].includes(getNextEmbezzlerFight()?.name ?? "Done With Embezzlers")
+  )
+    return;
   if (
     (getCounters("Digitize Monster", 0, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
@@ -401,7 +454,10 @@ export function dailyFights(): void {
         if (
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-          (nextFight.name === "Backup" || get("lastEncounter") === "Knob Goblin Embezzler")
+          (nextFight.name === "Backup" ||
+            nextFight.name === "Powerful Glove" ||
+            nextFight.name === "Macrometeorite" ||
+            get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
           embezzlerLog.initialEmbezzlersFought++;
         }
@@ -779,7 +835,7 @@ const freeFightSources = [
     () =>
       get("questL11Worship") !== "unstarted" &&
       get("_drunkPygmyBanishes") === 10 &&
-      !have($item`Fourth of May Cosplay Saber`),
+      (!have($item`Fourth of May Cosplay Saber`) || crateStrategy() === "Saber"),
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
@@ -796,7 +852,9 @@ const freeFightSources = [
   new FreeFight(
     () => {
       const rightTime =
-        have($item`Fourth of May Cosplay Saber`) && get("_drunkPygmyBanishes") >= 10;
+        have($item`Fourth of May Cosplay Saber`) &&
+        crateStrategy() === "Saber" &&
+        get("_drunkPygmyBanishes") >= 10;
       const saberedMonster = get("_saberForceMonster");
       const wrongPygmySabered =
         saberedMonster &&
@@ -846,7 +904,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
-      CrystalBall.currentPredictions().get($location`The Hidden Bowling Alley`) ===
+      CrystalBall.currentPredictions(false).get($location`The Hidden Bowling Alley`) ===
         $monster`drunk pygmy` &&
       get("_drunkPygmyBanishes") >= 11,
     () => {
@@ -868,6 +926,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       have($item`Time-Spinner`) &&
+      !doingExtrovermectin() &&
       $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
       get("_timeSpinnerMinutesUsed") < 8,
     () => {
@@ -922,7 +981,10 @@ const freeFightSources = [
       }
       adventureMacro(
         $location`Your Mushroom Garden`,
-        Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)).basicCombat()
+        Macro.externalIf(
+          !doingExtrovermectin(),
+          Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`))
+        ).basicCombat()
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
@@ -934,6 +996,7 @@ const freeFightSources = [
   // Portscan and mushroom garden
   new FreeFight(
     () =>
+      !doingExtrovermectin() &&
       (have($item`packet of mushroom spores`) ||
         getCampground()["packet of mushroom spores"] !== undefined) &&
       getCounters("portscan.edu", 0, 0) === "portscan.edu" &&
@@ -1166,6 +1229,7 @@ const freeRunFightSources = [
 
   new FreeRunFight(
     () =>
+      !doingExtrovermectin() &&
       have($familiar`Space Jellyfish`) &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
@@ -1187,6 +1251,7 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
+      !doingExtrovermectin() &&
       have($familiar`Space Jellyfish`) &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
@@ -1714,6 +1779,8 @@ function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
 function wantPills(): boolean {
   return (
     have($item`Fourth of May Cosplay Saber`) &&
+    !(crateStrategy() !== "Saber") &&
+    doingExtrovermectin() &&
     ((clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
       clamp(availableAmount($item`distention pill`), 0, 100) +
       availableAmount($item`Map to Safety Shelter Grimace Prime`) <

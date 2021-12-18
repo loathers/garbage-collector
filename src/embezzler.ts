@@ -14,21 +14,27 @@ import {
   myTurncount,
   print,
   retrieveItem,
+  runChoice,
   runCombat,
+  toInt,
+  toMonster,
   use,
   userConfirm,
   visitUrl,
   wait,
 } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $skill,
   adventureMacro,
   ChateauMantegna,
+  CrystalBall,
   get,
   have,
   property,
@@ -37,7 +43,8 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { Macro } from "./combat";
+import { Macro, withMacro } from "./combat";
+import { crateStrategy, equipOrbIfDesired, saberCrateIfDesired } from "./extrovermectin";
 import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
@@ -107,6 +114,12 @@ export const embezzlerMacro = (): Macro =>
       .trySkill($skill`Wink at`)
       .trySkill($skill`Fire a badly romantic arrow`)
       .externalIf(
+        get("beGregariousCharges") > 0 &&
+          (get("beGregariousMonster") !== $monster`Knob Goblin Embezzler` ||
+            get("beGregariousFightsLeft") === 0),
+        Macro.trySkill($skill`Be Gregarious`)
+      )
+      .externalIf(
         get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
         Macro.tryCopier($skill`Digitize`)
       )
@@ -169,6 +182,162 @@ export const embezzlerSources = [
     },
     [],
     true
+  ),
+  new EmbezzlerFight(
+    "Orb Prediction",
+    () =>
+      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+      $monster`Knob Goblin Embezzler`,
+    () =>
+      (get("beGregariousCharges") > 0 ||
+        get("beGregariousFightsLeft") > 0 ||
+        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+          $monster`Knob Goblin Embezzler`) &&
+      have($item`miniature crystal ball`)
+        ? 1
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      adventureMacro($location`The Dire Warren`, macro);
+    },
+    [new Requirement([], { forceEquip: $items`miniature crystal ball` })]
+  ),
+  new EmbezzlerFight(
+    "Time-Spinner",
+    () =>
+      have($item`Time-Spinner`) &&
+      $locations`Noob Cave, The Dire Warren`.some((location) =>
+        location.combatQueue.includes($monster`Knob Goblin Embezzler`.name)
+      ) &&
+      get("_timeSpinnerMinutesUsed") <= 7,
+    () =>
+      have($item`Time-Spinner`) &&
+      $locations`Noob Cave, The Dire Warren`.some(
+        (location) =>
+          location.combatQueue.includes($monster`Knob Goblin Embezzler`.name) ||
+          get("beGregariousCharges") > 0
+      )
+        ? Math.min((10 - get("_timeSpinnerMinutesUsed")) / 3)
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => {
+        visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
+        runChoice(1);
+        visitUrl(
+          `choice.php?whichchoice=1196&monid=${$monster`Knob Goblin Embezzler`.id}&option=1`
+        );
+        runCombat();
+      });
+    }
+  ),
+  new EmbezzlerFight(
+    "Macrometeorite",
+    () =>
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($skill`Meteor Lore`) &&
+      get("_macrometeoriteUses") < 10 &&
+      proceedWithOrb(),
+    () =>
+      ((get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
+      have($skill`Meteor Lore`)
+        ? 10 - get("_macrometeoriteUses")
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      saberCrateIfDesired();
+      equipOrbIfDesired();
+      const baseMacro = options.macro ?? embezzlerMacro();
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`),
+          Macro.trySkill($skill`Transcendent Olfaction`)
+        ).skill($skill`Macrometeorite`)
+      ).step(baseMacro);
+      adventureMacro($location`Noob Cave`, macro);
+    }
+    //do we want to equip orb on these guys?
+  ),
+  new EmbezzlerFight(
+    "Powerful Glove",
+    () =>
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($item`Powerful Glove`) &&
+      get("_powerfulGloveBatteryPowerUsed") < 90 &&
+      proceedWithOrb(),
+    () =>
+      ((get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
+      have($item`Powerful Glove`)
+        ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      saberCrateIfDesired();
+      equipOrbIfDesired();
+      const baseMacro = options.macro ?? embezzlerMacro();
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`),
+          Macro.trySkill($skill`Transcendent Olfaction`)
+        ).skill($skill`CHEAT CODE: Replace Enemy`)
+      ).step(baseMacro);
+      adventureMacro($location`Noob Cave`, macro);
+    },
+    [new Requirement([], { forceEquip: $items`Powerful Glove` })]
+  ),
+  new EmbezzlerFight(
+    "Be Gregarious",
+    () =>
+      retrieveItem(1, $item`human musk`) &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+      get("beGregariousFightsLeft") > 1,
+    () =>
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
+      get("beGregariousCharges") > 0
+        ? get("beGregariousCharges") === 0
+          ? get("beGregariousFightsLeft")
+          : 3
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      adventureMacro(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, Macro.item($item`human musk`)).step(
+          options.macro ?? embezzlerMacro()
+        )
+      );
+    }
+  ),
+  new EmbezzlerFight(
+    "Final Be Gregarious",
+    () =>
+      retrieveItem(1, $item`human musk`) &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+      get("beGregariousFightsLeft") === 1,
+    () =>
+      (get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+      get("beGregariousCharges") > 0
+        ? 1
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      adventureMacro(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, Macro.item($item`human musk`)).step(
+          options.macro ?? embezzlerMacro()
+        )
+      );
+    },
+    [
+      new Requirement([], {
+        forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+      }),
+    ]
   ),
   new EmbezzlerFight(
     "Backup",
@@ -416,4 +585,39 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
     if (fight.available()) return fight;
   }
   return null;
+}
+
+/**
+ * Determines whether we want to do this particular Embezzler fight; if we aren't using orb, should always return true. If we're using orb and it's a crate, we'll have to see!
+ * @returns
+ */
+function proceedWithOrb(): boolean {
+  const strat = crateStrategy();
+  //If we can't possibly use orb, return true
+  if (!have($item`miniature crystal ball`) || strat === "Saber") return true;
+
+  //If we're sniffing and an Embezzler is in the queue already, return true
+  if (
+    strat === "Sniff" &&
+    $location`Noob Cave`.combatQueue
+      .split(";")
+      .map((monster) => toMonster(monster))
+      .includes($monster`Knob Goblin Embezzler`)
+  ) {
+    return true;
+  }
+
+  //If we're using orb, we have a KGE prediction, and we can reset it, return false
+  const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
+  if (
+    CrystalBall.currentPredictions(false).get($location`Noob Cave`) ===
+      $monster`Knob Goblin Embezzler` &&
+    embezzlerSources
+      .filter((source) => !gregFightNames.includes(source.name))
+      .find((source) => source.available())
+  ) {
+    return false;
+  }
+
+  return true;
 }
