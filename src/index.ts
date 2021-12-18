@@ -80,6 +80,7 @@ import { withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
+import { potionSetup } from "./potions";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -419,6 +420,7 @@ export function main(argString = ""): void {
 
         if (!globalOptions.noBarf) {
           // 4. burn turns at barf
+          potionSetup(false);
           try {
             while (canContinue()) {
               barfTurn();

@@ -210,8 +210,9 @@ export class Potion {
       : (quantity: number) => quantity;
 
     // compute the value of covering embezzlers
-    const embezzlerQuantity = this.usesToCover(startingTurns, false);
-    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlers) : 0;
+    const embezzlerTurns = Math.max(0, embezzlers - startingTurns);
+    const embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
+    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlerTurns) : 0;
 
     values.push({
       name: "embezzler",
@@ -220,7 +221,7 @@ export class Potion {
     });
 
     // compute the number of embezzlers missed before, and their value (along with barf unless nobarf)
-    const overlapEmbezzlers = -this.overage(embezzlers, embezzlerQuantity);
+    const overlapEmbezzlers = -this.overage(embezzlerTurns, embezzlerQuantity);
 
     if (overlapEmbezzlers > 0) {
       values.push({
@@ -231,18 +232,18 @@ export class Potion {
     }
 
     const embezzlerCoverage =
-      (embezzlerQuantity + overlapEmbezzlers > 0 ? 1 : 0) * this.effectDuration();
+      embezzlerQuantity + (overlapEmbezzlers > 0 ? 1 : 0) * this.effectDuration();
 
     if (!globalOptions.noBarf) {
       // unless nobarf, compute the value of barf turns
       // if ascending, break those turns that are not fully covered by a potion into their own value
-      const remainingTurns = totalTurns - embezzlerCoverage - startingTurns;
+      const remainingTurns = Math.max(0, totalTurns - embezzlerCoverage - startingTurns);
 
       const barfQuantity = this.usesToCover(remainingTurns, ascending);
       values.push({ name: "barf", quantity: limitFunction(barfQuantity), value: this.gross(0) });
 
       if (globalOptions.ascending && this.overage(remainingTurns, barfQuantity) <= 0) {
-        const ascendingTurns = remainingTurns - barfQuantity * this.effectDuration();
+        const ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
         values.push({
           name: "ascending",
           quantity: limitFunction(1),
@@ -250,6 +251,9 @@ export class Potion {
         });
       }
     }
+
+    print(`POTION: Breakpoints for ${this.potion} (starting turns ${startingTurns}):`);
+    values.forEach((tier) => print(`${tier.name}: ${tier.quantity} @ ${tier.value}`));
 
     return values.filter((tier) => tier.quantity > 0);
   }
@@ -271,11 +275,11 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   const price = potion.price(false);
   const amountsAcquired = value.map((value) =>
     (!embezzlersOnly || value.name === "embezzlers") && value.value - price > 0
-      ? acquire(value.quantity, potion.potion, value.value)
+      ? acquire(value.quantity, potion.potion, value.value, false)
       : 0
   );
 
-  const total = amountsAcquired.reduce((total, amount) => total + amount);
+  const total = amountsAcquired.reduce((total, amount) => total + amount, 0);
   if (total > 0) {
     print(`Using ${total} ${potion.potion.plural}`);
     potion.use(total);
@@ -283,7 +287,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   return total;
 }
 
-const farmingPotiosn = [
+const farmingPotions = [
   ...Item.all()
     .filter((item) => item.tradeable && !banned.includes(item) && itemType(item) === "potion")
     .map((item) => new Potion(item))
@@ -301,7 +305,7 @@ const farmingPotiosn = [
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {
-  return farmingPotiosn
+  return farmingPotions
     .filter((potion) => potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5)
     .map((potion) => {
       return { potion: potion, value: potion.doublingValue(embezzlers) };
@@ -330,7 +334,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
   }
 
   // Only test potions which are reasonably close to being profitable using historical price.
-  const testPotions = farmingPotiosn.filter(
+  const testPotions = farmingPotions.filter(
     (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
   );
   testPotions.sort((x, y) => -(x.net(embezzlers) - y.net(embezzlers)));
