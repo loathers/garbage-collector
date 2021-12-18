@@ -262,6 +262,7 @@ function embezzlerSetup() {
       ) {
         if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
         const run = findRun() ?? ltbRun;
+        setChoice(1387, 2);
         const macro = Macro.trySkill($skill`Transcendent Olfaction`)
           .trySkill($skill`Offer Latte to Opponent`)
           .externalIf(
@@ -269,10 +270,13 @@ function embezzlerSetup() {
               have($skill`Gallapagosian Mating Call`),
             Macro.trySkill($skill`Gallapagosian Mating Call`)
           )
+          .trySkill($skill`Use the Force`)
           .step(run.macro);
 
         new Requirement(["100 Monster Level"], {
-          forceEquip: $items`latte lovers member's mug`.filter((item) => have(item)),
+          forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter(
+            (item) => have(item)
+          ),
         })
           .merge(run.requirement ? run.requirement : new Requirement([], {}))
           .maximize();
