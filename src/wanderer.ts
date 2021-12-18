@@ -114,7 +114,7 @@ function testZoneAndUsePotionToAccess() {
       use(1, place.potion);
     }
   });
-  const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory`;
+  const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
   if (
     forbiddenZones.includes(guzzlZone.zone) ||
     skiplist.includes(guzzlZone) ||
@@ -208,6 +208,7 @@ export function determineDraggableZoneAndEnsureAccess(
 }
 
 const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
+  [$location`The Spooky Forest`, { [502]: 2, [505]: 2 }],
   [$location`Guano Junction`, { [1427]: 1 }],
   [$location`The Hidden Apartment Building`, { [780]: 6, [1578]: 6 }],
   [$location`The Black Forest`, { [923]: 1, [924]: 1 }],
