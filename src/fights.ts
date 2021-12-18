@@ -322,7 +322,7 @@ function startWandererCounter() {
         Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
       );
     } while (
-      get("lastCopyableMonster") === $monster`Government agent` &&
+      get("lastCopyableMonster") === $monster`Government agent` ||
       get("lastEncounter") === "Lights Out in the Kitchen"
     );
   }
