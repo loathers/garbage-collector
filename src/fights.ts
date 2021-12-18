@@ -321,12 +321,8 @@ function startWandererCounter() {
       } else {
         freeFightOutfit(run.requirement ? [run.requirement] : []);
       }
-      const targetZone =
-        $locations`The Bat Hole Entrance, The Neverending Party, Pirates of the Garbage Barges, The Bugbear Pen, Thugnderdome, Domed City of Grimacia, The Degrassi Knoll Restroom`.find(
-          (location) => canAdv(location, false)
-        ) ?? $location`The Haunted Kitchen`;
       adventureMacro(
-        targetZone,
+        $location`The Haunted Kitchen`,
         Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
       );
     } while (
