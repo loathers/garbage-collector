@@ -1785,11 +1785,10 @@ function wantPills(): boolean {
     have($item`Fourth of May Cosplay Saber`) &&
     !(crateStrategy() !== "Saber") &&
     doingExtrovermectin() &&
-    ((clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
+    clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
       clamp(availableAmount($item`distention pill`), 0, 100) +
       availableAmount($item`Map to Safety Shelter Grimace Prime`) <
       200 &&
-      availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60) ||
-      get("questL11Worship") === "unstarted")
+    availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60
   );
 }
