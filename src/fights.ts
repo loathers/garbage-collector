@@ -314,9 +314,13 @@ function startWandererCounter() {
     (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster"))
   ) {
     do {
-      const run = findRun() || ltbRun;
+      const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
       if (run.prepare) run.prepare();
-      freeFightOutfit(run.requirement ? [run.requirement] : []);
+      if (get("beGregariousFightsLeft") > 0) {
+        meatOutfit(true, run.requirement ? [run.requirement] : []);
+      } else {
+        freeFightOutfit(run.requirement ? [run.requirement] : []);
+      }
       adventureMacro(
         $location`The Haunted Kitchen`,
         Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
