@@ -10,6 +10,7 @@ import {
   haveEffect,
   haveEquipped,
   inebrietyLimit,
+  itemAmount,
   mallPrice,
   myClass,
   myFamiliar,
@@ -323,6 +324,7 @@ function pantsgiving() {
   pantsgivingBonuses.set(turns, pantsgivingBonus);
   return new Map<Item, number>([[$item`Pantsgiving`, pantsgivingBonus]]);
 }
+
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
 function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&
@@ -340,6 +342,107 @@ function cheeses(embezzlerUp: boolean) {
       )
     : [];
 }
+
+function mafiaThumbRing(equipMode: BonusEquipMode) {
+  if (!have($item`mafia thumb ring`) || ["free", "dmt"].some((mode) => mode === equipMode)) {
+    return new Map<Item, number>([]);
+  }
+
+  return new Map<Item, number>([
+    [$item`mafia thumb ring`, (1 / 0.96 - 1) * get("valueOfAdventure")],
+  ]);
+}
+
+function luckyGoldRing(equipMode: BonusEquipMode) {
+  if (!have($item`lucky gold ring`)) {
+    return new Map<Item, number>([]);
+  }
+
+  // Volcoino has a low drop rate which isn't accounted for here
+  // Overestimating until it drops is probably fine, don't @ me
+  const dropValues = [
+    100, // 80 - 120 meat
+    ...[
+      itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
+      itemAmount($item`sand dollar`) > 0 ? getSaleValue($item`sand dollar`) : 0, // This should be closeted
+      itemAmount($item`Freddy Kruegerand`) > 0
+        ? Math.max(
+            getSaleValue($item`bottle of Bloodweiser`) / 200,
+            getSaleValue($item`electric Kool-Aid`) / 200
+          )
+        : 0,
+      get("sleazeAirportAlways") || get("_sleazeAirportToday")
+        ? getSaleValue($item`one-day ticket to Spring Break Beach`) / 100
+        : 0,
+      get("spookyAirportAlways") || get("_spookyAirportToday")
+        ? getSaleValue($item`one-day ticket to Conspiracy Island`) / 100
+        : 0,
+      get("stenchAirportAlways") || get("_stenchAirportToday")
+        ? getSaleValue($item`one-day ticket to Dinseylandfill`) / 20
+        : 0,
+      !get("_luckyGoldRingVolcoino") && (get("hotAirportAlways") || get("_hotAirportToday"))
+        ? Math.max(
+            getSaleValue($item`one-day ticket to That 70s Volcano`) / 3,
+            getSaleValue($item`karma shawarma`) / 7
+          )
+        : 0,
+      get("coldAirportAlways") || get("_coldAirportToday")
+        ? getSaleValue($item`one-day ticket to The Glaciest`) / 50
+        : 0,
+      get("frAlways") || get("_frToday") ? getSaleValue($item`FantasyRealm guest pass`) / 350 : 0,
+    ].filter((value) => value > 0),
+  ];
+
+  // Items drop every ~10 turns
+  return new Map<Item, number>([
+    [
+      $item`lucky gold ring`,
+      dropValues.reduce((previous, current) => previous + current) / dropValues.length / 10,
+    ],
+  ]);
+}
+
+function mrCheengsSpectacles(equipMode: BonusEquipMode) {
+  if (!have($item`Mr. Cheeng's spectacles`)) {
+    return new Map<Item, number>([]);
+  }
+
+  // Items drop every 4 turns
+  // TODO: Possible drops are speculated to be any pvpable potion that will never be banned by standard
+  return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 400]]);
+}
+
+function mrScreegesSpectacles(equipMode: BonusEquipMode) {
+  if (!have($item`Mr. Screege's spectacles`)) {
+    return new Map<Item, number>([]);
+  }
+
+  // TODO: Calculate actual bonus value (good luck!)
+  return new Map<Item, number>([[$item`Mr. Screege's spectacles`, 180]]);
+}
+
+function pantogramPants(equipMode: BonusEquipMode) {
+  if (!have($item`pantogram pants`) || !get("_pantogramModifier").includes("Drops Items")) {
+    return new Map<Item, number>([]);
+  }
+
+  // TODO: Calculate actual bonus value (good luck!)
+  return new Map<Item, number>([[$item`pantogram pants`, 100]]);
+}
+
+function bagOfManyConfections(equipMode: BonusEquipMode) {
+  if (!have($item`bag of many confections`)) {
+    return new Map<Item, number>([]);
+  }
+
+  return new Map<Item, number>([
+    [
+      $item`bag of many confections`,
+      getSaleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
+    ],
+  ]);
+}
+
 function snowSuit(equipMode: BonusEquipMode) {
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
@@ -352,6 +455,7 @@ function snowSuit(equipMode: BonusEquipMode) {
 
   return new Map<Item, number>([[$item`Snow Suit`, getSaleValue($item`carrot nose`) / 10]]);
 }
+
 function mayflowerBouquet(equipMode: BonusEquipMode) {
   // +40% meat drop 12.5% of the time (effectively 5%)
   // Drops flowers 50% of the time, wiki says 5-10 a day.
@@ -376,18 +480,15 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
     ],
   ]);
 }
+
 function dropsItems(equipMode: BonusEquipMode) {
-  const isFree = ["free", "dmt"].some((mode) => mode === equipMode);
   return new Map<Item, number>([
-    [$item`mafia thumb ring`, !isFree ? 300 : 0],
-    [$item`lucky gold ring`, 400],
-    [$item`Mr. Cheeng's spectacles`, 250],
-    [$item`pantogram pants`, get("_pantogramModifier").includes("Drops Items") ? 100 : 0],
-    [$item`Mr. Screege's spectacles`, 180],
-    [
-      $item`bag of many confections`,
-      getSaleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
-    ],
+    ...mafiaThumbRing(equipMode),
+    ...luckyGoldRing(equipMode),
+    ...mrCheengsSpectacles(equipMode),
+    ...mrScreegesSpectacles(equipMode),
+    ...pantogramPants(equipMode),
+    ...bagOfManyConfections(equipMode),
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
   ]);
