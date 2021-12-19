@@ -9,6 +9,7 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
+  itemAmount,
   myAdventures,
   myClass,
   myGardenType,
@@ -212,9 +213,14 @@ function barfTurn() {
   if (myAdventures() === 1) {
     if (
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get<number>("_sausagesEaten") < 23
+      get("_sausagesEaten") < 23
     ) {
-      eat($item`magical sausage`);
+      const available = clamp(
+        23 - get("_sausagesEaten"),
+        0,
+        itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
+      );
+      eat(available, $item`magical sausage`);
     }
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
