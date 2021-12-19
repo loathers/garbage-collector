@@ -23660,7 +23660,7 @@ function proceedWithOrb() {
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.from-entries.js
 var es_object_from_entries = __webpack_require__(5809);
 ;// CONCATENATED MODULE: ./src/potions.ts
-var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8;
+var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8, potions_templateObject9, potions_templateObject10;
 
 function potions_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -23722,22 +23722,60 @@ for (var _i = 0, _mutuallyExclusiveLis = mutuallyExclusiveList; _i < _mutuallyEx
 
 var Potion = /*#__PURE__*/function () {
   function Potion(potion) {
+    var _options$canDouble;
+
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
     potions_classCallCheck(this, Potion);
 
     potions_defineProperty(this, "potion", void 0);
 
+    potions_defineProperty(this, "providesDoubleDuration", void 0);
+
+    potions_defineProperty(this, "canDouble", void 0);
+
+    potions_defineProperty(this, "overrideEffect", void 0);
+
+    potions_defineProperty(this, "overrideDuration", void 0);
+
+    potions_defineProperty(this, "useOverride", void 0);
+
     this.potion = potion;
+    this.providesDoubleDuration = options.providesDoubleDuration;
+    this.canDouble = (_options$canDouble = options.canDouble) !== null && _options$canDouble !== void 0 ? _options$canDouble : true;
+    this.overrideDuration = options.duration;
+    this.overrideEffect = options.effect;
+    this.useOverride = options.use;
   }
 
   potions_createClass(Potion, [{
+    key: "doubleDuration",
+    value: function doubleDuration() {
+      if (this.canDouble) {
+        return new Potion(this.potion, {
+          providesDoubleDuration: true,
+          canDouble: this.canDouble,
+          duration: this.overrideDuration,
+          effect: this.overrideEffect,
+          use: this.useOverride
+        });
+      }
+
+      return this;
+    }
+  }, {
     key: "effect",
     value: function effect() {
-      return (0,external_kolmafia_.effectModifier)(this.potion, "Effect");
+      var _this$overrideEffect;
+
+      return (_this$overrideEffect = this.overrideEffect) !== null && _this$overrideEffect !== void 0 ? _this$overrideEffect : (0,external_kolmafia_.effectModifier)(this.potion, "Effect");
     }
   }, {
     key: "effectDuration",
     value: function effectDuration() {
-      return (0,external_kolmafia_.numericModifier)(this.potion, "Effect Duration");
+      var _this$overrideDuratio;
+
+      return ((_this$overrideDuratio = this.overrideDuration) !== null && _this$overrideDuratio !== void 0 ? _this$overrideDuratio : (0,external_kolmafia_.numericModifier)(this.potion, "Effect Duration")) * (this.providesDoubleDuration ? 2 : 1);
     }
   }, {
     key: "meatDrop",
@@ -23761,10 +23799,9 @@ var Potion = /*#__PURE__*/function () {
     }
   }, {
     key: "gross",
-    value: function gross(embezzlers) {
-      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    value: function gross(embezzlers, maxTurns) {
       var bonusMeat = this.bonusMeat();
-      var duration = this.effectDuration() * (doubleDuration ? 2 : 1); // Number of embezzlers this will actually be in effect for.
+      var duration = Math.max(this.effectDuration(), maxTurns !== null && maxTurns !== void 0 ? maxTurns : 0); // Number of embezzlers this will actually be in effect for.
 
       var embezzlersApplied = Math.max(Math.min(duration, embezzlers) - (0,external_kolmafia_.haveEffect)(this.effect()), 0);
       return bonusMeat / 100 * (baseMeat * duration + 750 * embezzlersApplied);
@@ -23778,103 +23815,208 @@ var Potion = /*#__PURE__*/function () {
   }, {
     key: "net",
     value: function net(embezzlers) {
-      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var historical = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      return this.gross(embezzlers, doubleDuration) - this.price(historical);
+      var historical = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      return this.gross(embezzlers) - this.price(historical);
     }
   }, {
     key: "doublingValue",
     value: function doublingValue(embezzlers) {
       var historical = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      return Math.max(this.net(embezzlers, true, historical), 0) - Math.max(this.net(embezzlers, false, historical), 0);
+      return Math.max(this.doubleDuration().net(embezzlers, historical), 0) - Math.max(this.net(embezzlers, historical), 0);
     }
   }, {
-    key: "useAsValuable",
-    value: function useAsValuable(embezzlers) {
-      var doubleDuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var duration = this.effectDuration() * (doubleDuration ? 2 : 1);
-      var quantityToUse = 0;
-      var embezzlersRemaining = Math.max(embezzlers - (0,external_kolmafia_.haveEffect)(this.effect()), 0);
-      var keepGoing = true; // Use however many will land entirely on embezzler turns.
+    key: "usesToCover",
+    value:
+    /**
+     * Compute how many times to use this potion to cover the range of turns
+     * @param turns the number of turns to cover
+     * @param allowOverage whether or not to allow the potion to extend past this number of turns
+     * @returns the number of uses required by this potion to cover thatrange
+     */
+    function usesToCover(turns, allowOverage) {
+      if (allowOverage) {
+        return Math.ceil(turns / this.effectDuration());
+      } else {
+        return Math.floor(turns / this.effectDuration());
+      }
+    }
+  }, {
+    key: "overage",
+    value:
+    /**
+     * Compute how many fewer or more turns we are from the desired turn count based on the input usage
+     * @param turns the number of turns to cover
+     * @param uses the number of uses of hte potion
+     * @returns negative number of the number of turns short, positive number of the number of extra turns
+     */
+    function overage(turns, uses) {
+      return this.effectDuration() * uses - turns;
+    }
+  }, {
+    key: "value",
+    value:
+    /**
+     * Compute up to 4 possible value thresholds for this potion based on the number of embezzlers to fight at the start of the day
+     * - using it to only cover embezzlers
+     * - using it to cover both barf and embezzlers (this is max 1 use)
+     * - using it to only cover barf
+     * - using it to cover turns in barf and those that would be lost at the end of the day
+     * @param embezzlers The number of embezzlers expected to be fought in a block at the start of the day
+     * @returns
+     */
+    function value(embezzlers, turns, limit) {
+      var startingTurns = (0,external_kolmafia_.haveEffect)(this.effect());
+      var ascending = globalOptions.ascending;
+      var totalTurns = turns !== null && turns !== void 0 ? turns : estimatedTurns();
+      var values = [];
+      var limitFunction = limit ? quantity => Math.min(limit - values.reduce((total, tier) => tier.quantity, 0), quantity) : quantity => quantity; // compute the value of covering embezzlers
 
-      var embezzlerQuantity = Math.floor(embezzlersRemaining / duration);
+      var embezzlerTurns = Math.max(0, embezzlers - startingTurns);
+      var embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
+      var embezzlerValue = embezzlerQuantity ? this.gross(embezzlerTurns) : 0;
+      values.push({
+        name: "embezzler",
+        quantity: limitFunction(embezzlerQuantity),
+        value: embezzlerValue
+      }); // compute the number of embezzlers missed before, and their value (along with barf unless nobarf)
 
-      if (this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlerQuantity > 0) {
-        acquire(embezzlerQuantity, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
-        quantityToUse = Math.min(embezzlerQuantity, (0,external_kolmafia_.itemAmount)(this.potion));
-        (0,external_kolmafia_.print)("Determined that ".concat(quantityToUse, " ").concat(this.potion.plural, " are profitable on embezzlers: net value ").concat(this.net(embezzlersRemaining, doubleDuration).toFixed(0), "."), "blue");
-        embezzlersRemaining -= quantityToUse * duration;
+      var overlapEmbezzlers = -this.overage(embezzlerTurns, embezzlerQuantity);
+
+      if (overlapEmbezzlers > 0) {
+        values.push({
+          name: "overlap",
+          quantity: limitFunction(1),
+          value: this.gross(overlapEmbezzlers, globalOptions.noBarf ? overlapEmbezzlers : undefined)
+        });
       }
 
-      if (quantityToUse < embezzlerQuantity || doubleDuration && quantityToUse > 0) {
-        keepGoing = false;
-      } // Now, is there one with both embezzlers and non-embezzlers?
+      var embezzlerCoverage = embezzlerQuantity + (overlapEmbezzlers > 0 ? 1 : 0) * this.effectDuration();
 
+      if (!globalOptions.noBarf) {
+        // unless nobarf, compute the value of barf turns
+        // if ascending, break those turns that are not fully covered by a potion into their own value
+        var remainingTurns = Math.max(0, totalTurns - embezzlerCoverage - startingTurns);
+        var barfQuantity = this.usesToCover(remainingTurns, ascending);
+        values.push({
+          name: "barf",
+          quantity: limitFunction(barfQuantity),
+          value: this.gross(0)
+        });
 
-      if (keepGoing && this.net(embezzlersRemaining, doubleDuration) > 0 && embezzlersRemaining > 0) {
-        acquire(1, this.potion, this.gross(embezzlersRemaining, doubleDuration), false);
-        var additional = Math.min(1, (0,external_kolmafia_.itemAmount)(this.potion) - quantityToUse);
-        (0,external_kolmafia_.print)("Determined that ".concat(additional, " ").concat(this.potion.plural, " are profitable on partial embezzlers: net value ").concat(this.net(embezzlersRemaining, doubleDuration).toFixed(0), "."), "blue");
-        quantityToUse += additional;
-        embezzlersRemaining = Math.max(embezzlersRemaining - additional * duration, 0);
-      }
-
-      if (embezzlersRemaining > 0 || doubleDuration && quantityToUse > 0) keepGoing = false; // How many should we use with non-embezzlers?
-
-      if (keepGoing && this.net(0, doubleDuration) > 0) {
-        var adventureCap = estimatedTurns();
-        var tourists = adventureCap - (0,external_kolmafia_.haveEffect)(this.effect()) - quantityToUse * duration;
-
-        if (tourists > 0) {
-          var touristQuantity = Math.ceil(tourists / duration);
-          acquire(touristQuantity, this.potion, this.gross(0, doubleDuration), false);
-
-          var _additional = Math.min(touristQuantity, (0,external_kolmafia_.itemAmount)(this.potion) - quantityToUse);
-
-          (0,external_kolmafia_.print)("Determined that ".concat(_additional, " ").concat(this.potion.plural, " are profitable on tourists: net value ").concat(this.net(0, doubleDuration).toFixed(0), "."), "blue");
-          quantityToUse += _additional;
+        if (globalOptions.ascending && this.overage(remainingTurns, barfQuantity) <= 0) {
+          var ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
+          values.push({
+            name: "ascending",
+            quantity: limitFunction(1),
+            value: this.gross(0, ascendingTurns)
+          });
         }
       }
 
-      if (quantityToUse > 0) {
-        if (doubleDuration) quantityToUse = 1;
-        (0,external_kolmafia_.use)(quantityToUse, this.potion);
+      (0,external_kolmafia_.print)("POTION: Breakpoints for ".concat(this.potion, " (starting turns ").concat(startingTurns, "):"));
+      values.forEach(tier => (0,external_kolmafia_.print)("".concat(tier.name, ": ").concat(tier.quantity, " @ ").concat(tier.value)));
+      return values.filter(tier => tier.quantity > 0);
+    }
+  }, {
+    key: "use",
+    value: function use(quantity) {
+      if (this.useOverride) {
+        return this.useOverride(quantity);
+      } else if ((0,external_kolmafia_.itemType)(this.potion) === "potion") {
+        return (0,external_kolmafia_.use)(quantity, this.potion);
+      } else {
+        // must provide an override for non potions, otherwise they won't use
+        return false;
       }
+    }
+  }], [{
+    key: "bonusMeat",
+    value: function bonusMeat(item) {
+      return new Potion(item).bonusMeat();
+    }
+  }, {
+    key: "gross",
+    value: function gross(item, embezzlers) {
+      return new Potion(item).gross(embezzlers);
+    }
+  }, {
+    key: "net",
+    value: function net(item, embezzlers) {
+      var historical = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      return new Potion(item).net(embezzlers, historical);
+    }
+  }, {
+    key: "doublingValue",
+    value: function doublingValue(item, embezzlers) {
+      var historical = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      return new Potion(item).doublingValue(embezzlers, historical);
+    }
+  }, {
+    key: "usesToCover",
+    value: function usesToCover(item, turns, allowOverage) {
+      return new Potion(item).usesToCover(turns, allowOverage);
+    }
+  }, {
+    key: "overage",
+    value: function overage(item, turns, uses) {
+      return new Potion(item).overage(turns, uses);
     }
   }]);
 
   return Potion;
 }();
+
+function useAsValuable(potion, embezzlers, embezzlersOnly) {
+  var value = potion.value(embezzlers);
+  var price = potion.price(false);
+  var amountsAcquired = value.map(value => (!embezzlersOnly || value.name === "embezzlers") && value.value - price > 0 ? acquire(value.quantity, potion.potion, value.value, false) : 0);
+  var total = amountsAcquired.reduce((total, amount) => total + amount, 0);
+
+  if (total > 0) {
+    (0,external_kolmafia_.print)("Using ".concat(total, " ").concat(potion.potion.plural));
+    potion.use(total);
+  }
+
+  return total;
+}
+
+var farmingPotions = [].concat(potions_toConsumableArray(Item.all().filter(item => item.tradeable && !banned.includes(item) && (0,external_kolmafia_.itemType)(item) === "potion").map(item => new Potion(item)).filter(potion => potion.bonusMeat() > 0)), potions_toConsumableArray((0,template_string/* $effects */.lh)(potions_templateObject6 || (potions_templateObject6 = potions_taggedTemplateLiteral(["Braaaaaains, Frosty"]))).map(effect => new Potion((0,template_string/* $item */.xr)(potions_templateObject7 || (potions_templateObject7 = potions_taggedTemplateLiteral(["pocket wish"]))), {
+  effect: effect,
+  canDouble: false,
+  duration: 20,
+  use: quantity => new Array(quantity).every(() => (0,external_kolmafia_.cliExecute)("genie effect ".concat(effect)))
+}))));
+function doublingPotions(embezzlers) {
+  return farmingPotions.filter(potion => potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5).map(potion => {
+    return {
+      potion: potion,
+      value: potion.doublingValue(embezzlers)
+    };
+  }).sort((a, b) => b.value - a.value).map(pair => pair.potion);
+}
 /**
  * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
  * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
  */
 
-function potionSetup() {
-  var doEmbezzlers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+function potionSetup(embezzlersOnly) {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
-  var embezzlers = doEmbezzlers ? embezzlerCount() : 0;
-  var potions = Item.all().filter(item => item.tradeable && !banned.includes(item) && (0,external_kolmafia_.itemType)(item) === "potion");
-  var meatPotions = potions.map(item => new Potion(item)).filter(potion => potion.bonusMeat() > 0);
+  var embezzlers = embezzlerCount();
 
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(potions_templateObject6 || (potions_templateObject6 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,property/* get */.U2)("_freePillKeeperUsed")) {
-    var testPotionsDoubled = meatPotions.filter(potion => potion.gross(embezzlers, true) / potion.price(true) > 0.5);
-    testPotionsDoubled.sort((x, y) => -(x.doublingValue(embezzlers) - y.doublingValue(embezzlers)));
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,property/* get */.U2)("_freePillKeeperUsed")) {
+    var possibleDoublingPotions = doublingPotions(embezzlers);
+    var bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
 
-    if (testPotionsDoubled.length > 0) {
-      var potion = testPotionsDoubled[0]; // Estimate that the opportunity cost of free PK useage is 10k meat - approximately +1 embezzler.
-
-      if (potion.doublingValue(embezzlers) > pillkeeperOpportunityCost()) {
-        (0,external_kolmafia_.cliExecute)("pillkeeper extend");
-        (0,external_kolmafia_.print)("Best doubling potion: ".concat(potion.potion.name, ", value ").concat(potion.doublingValue(embezzlers).toFixed(0)), "blue");
-        potion.useAsValuable(embezzlers, true);
-      }
+    if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
+      (0,external_kolmafia_.print)("Determined that ".concat(bestPotion.potion, " was the best potion to double"), "blue");
+      (0,external_kolmafia_.cliExecute)("pillkeeper extend");
+      possibleDoublingPotions[0].use(1);
     }
   } // Only test potions which are reasonably close to being profitable using historical price.
 
 
-  var testPotions = meatPotions.filter(potion => potion.gross(embezzlers) / potion.price(true) > 0.5);
+  var testPotions = farmingPotions.filter(potion => potion.gross(embezzlers) / potion.price(true) > 0.5);
   testPotions.sort((x, y) => -(x.net(embezzlers) - y.net(embezzlers)));
   var excludedEffects = new Set();
 
@@ -23912,15 +24054,11 @@ function potionSetup() {
 
   try {
     for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-      var _potion = _step3.value;
+      var potion = _step3.value;
 
-      var _effect = _potion.effect();
+      var _effect = potion.effect();
 
-      if (excludedEffects.has(_effect)) continue;
-
-      _potion.useAsValuable(embezzlers);
-
-      if ((0,lib/* have */.lf)(_effect)) {
+      if (!excludedEffects.has(_effect) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
         var _mutuallyExclusive$ge3;
 
         var _iterator5 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
@@ -23950,7 +24088,7 @@ function potionSetup() {
  */
 
 function bathroomFinance(embezzlers) {
-  if ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(potions_templateObject7 || (potions_templateObject7 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
+  if ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(potions_templateObject9 || (potions_templateObject9 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
 
   var averageEmbezzlerGross = (baseMeat + 750) * 2 * (embezzlers + 1) / 2 / 100;
   var embezzlerGross = averageEmbezzlerGross * embezzlers;
@@ -23958,12 +24096,16 @@ function bathroomFinance(embezzlers) {
 
   var averageTouristGross = baseMeat * 2 * (100 + embezzlers + 1) / 2 / 100;
   var touristGross = averageTouristGross * tourists;
-  var greenspan = (0,template_string/* $item */.xr)(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
+  var greenspan = (0,template_string/* $item */.xr)(potions_templateObject10 || (potions_templateObject10 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
 
   if (touristGross + embezzlerGross > (0,external_kolmafia_.mallPrice)(greenspan)) {
-    (0,external_kolmafia_.print)("Using Uncle Greenspan's guide!", "blue");
     acquire(1, greenspan, touristGross + embezzlerGross);
-    if ((0,external_kolmafia_.itemAmount)(greenspan) > 0) (0,external_kolmafia_.use)(greenspan);
+
+    if ((0,external_kolmafia_.itemAmount)(greenspan) > 0) {
+      (0,external_kolmafia_.print)("Using ".concat(greenspan, "!"), "blue");
+
+      (0,external_kolmafia_.use)(greenspan);
+    }
   }
 }
 ;// CONCATENATED MODULE: ./src/synthesis.ts
@@ -26293,13 +26435,11 @@ function src_mood_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = string
 
 
 
-
 Mood.setDefaultOptions({
   songSlots: [(0,template_string/* $effects */.lh)(src_mood_templateObject || (src_mood_templateObject = src_mood_taggedTemplateLiteral(["Polka of Plenty"]))), (0,template_string/* $effects */.lh)(src_mood_templateObject2 || (src_mood_templateObject2 = src_mood_taggedTemplateLiteral(["Fat Leon's Phat Loot Lyric, Ur-Kel's Aria of Annoyance"]))), (0,template_string/* $effects */.lh)(src_mood_templateObject3 || (src_mood_templateObject3 = src_mood_taggedTemplateLiteral(["Chorale of Companionship"]))), (0,template_string/* $effects */.lh)(src_mood_templateObject4 || (src_mood_templateObject4 = src_mood_taggedTemplateLiteral(["The Ballad of Richie Thingfinder"])))]
 });
 function meatMood() {
   var urKels = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  var embezzlers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var mood = new Mood();
   mood.potion((0,template_string/* $item */.xr)(src_mood_templateObject5 || (src_mood_templateObject5 = src_mood_taggedTemplateLiteral(["How to Avoid Scams"]))), 3 * baseMeat);
   mood.potion((0,template_string/* $item */.xr)(src_mood_templateObject6 || (src_mood_templateObject6 = src_mood_taggedTemplateLiteral(["resolution: be wealthier"]))), 0.3 * baseMeat);
@@ -26371,7 +26511,6 @@ function meatMood() {
     }
   }
 
-  potionSetup(embezzlers);
   shrugBadEffects();
   return mood;
 }
@@ -27272,7 +27411,8 @@ var firstChainMacro = () => src_combat.Macro.if_((0,template_string/* $monster *
 var secondChainMacro = () => src_combat.Macro.if_((0,template_string/* $monster */.O4)(fights_templateObject10 || (fights_templateObject10 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), src_combat.Macro.externalIf((0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(fights_templateObject11 || (fights_templateObject11 = fights_taggedTemplateLiteral(["Pocket Professor"]))), src_combat.Macro.if_("!hasskill Lecture on Relativity", src_combat.Macro.trySkill((0,template_string/* $skill */.tm)(fights_templateObject12 || (fights_templateObject12 = fights_taggedTemplateLiteral(["Meteor Shower"]))))).if_("!hasskill Lecture on Relativity", src_combat.Macro.externalIf((0,property/* get */.U2)("_sourceTerminalDigitizeMonster") !== (0,template_string/* $monster */.O4)(fights_templateObject13 || (fights_templateObject13 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), src_combat.Macro.tryCopier((0,template_string/* $skill */.tm)(fights_templateObject14 || (fights_templateObject14 = fights_taggedTemplateLiteral(["Digitize"]))))).tryCopier((0,template_string/* $item */.xr)(fights_templateObject15 || (fights_templateObject15 = fights_taggedTemplateLiteral(["Spooky Putty sheet"])))).tryCopier((0,template_string/* $item */.xr)(fights_templateObject16 || (fights_templateObject16 = fights_taggedTemplateLiteral(["Rain-Doh black box"])))).tryCopier((0,template_string/* $item */.xr)(fights_templateObject17 || (fights_templateObject17 = fights_taggedTemplateLiteral(["4-d camera"])))).tryCopier((0,template_string/* $item */.xr)(fights_templateObject18 || (fights_templateObject18 = fights_taggedTemplateLiteral(["unfinished ice sculpture"])))).externalIf((0,property/* get */.U2)("_enamorangs") === 0, src_combat.Macro.tryCopier((0,template_string/* $item */.xr)(fights_templateObject19 || (fights_templateObject19 = fights_taggedTemplateLiteral(["LOV Enamorang"])))))).trySkill((0,template_string/* $skill */.tm)(fights_templateObject20 || (fights_templateObject20 = fights_taggedTemplateLiteral(["lecture on relativity"]))))).meatKill()).abort();
 
 function embezzlerSetup() {
-  meatMood(true, true).execute(estimatedTurns());
+  potionSetup(false);
+  meatMood(true).execute(estimatedTurns());
   safeRestore();
   freeFightMood().execute(50);
   withStash((0,template_string/* $items */.vS)(fights_templateObject21 || (fights_templateObject21 = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card, Bag o' Tricks"]))), () => {
@@ -28802,6 +28942,7 @@ function src_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.sli
 
 
 
+
  // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 
 var TICKET_MAX_PRICE = 500000;
@@ -29076,6 +29217,8 @@ function main() {
 
         if (!globalOptions.noBarf) {
           // 4. burn turns at barf
+          potionSetup(false);
+
           try {
             while (canContinue()) {
               barfTurn();
