@@ -170,7 +170,7 @@ function barfTurn() {
     }
 
     // d. get dressed
-    meatOutfit(embezzlerUp, [], underwater);
+    meatOutfit(embezzlerUp, undefined, underwater);
 
     if (
       !embezzlerUp &&

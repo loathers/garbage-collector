@@ -102,7 +102,6 @@ import {
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
-  defaultPreventEquip,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
@@ -348,10 +347,11 @@ export function dailyFights(): void {
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
         const startLectures = get("_pocketProfessorLectures");
         useFamiliar($familiar`Pocket Professor`);
-        meatOutfit(true, [
-          ...fightSource.requirements,
-          new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
-        ]);
+        const requirement = Requirement.merge(fightSource.requirements);
+        const forceEquip = requirement.maximizeOptions.forceEquip ?? [];
+        forceEquip.push($item`Pocket Professor memory chip`);
+        requirement.maximizeOptions.forceEquip = forceEquip;
+        meatOutfit(true, requirement);
         if (
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
@@ -431,7 +431,7 @@ export function dailyFights(): void {
               retrieveItem($item`pulled green taffy`)
             ) {
               setLocation($location`The Briny Deeps`);
-              meatOutfit(true, nextFight.requirements, true);
+              meatOutfit(true, Requirement.merge(nextFight.requirements), true);
               if (get("questS01OldGuy") === "unstarted") {
                 visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
               }
@@ -442,11 +442,11 @@ export function dailyFights(): void {
                 nextFight.name === "Backup" ? draggableFight.BACKUP : draggableFight.WANDERER;
               const location = determineDraggableZoneAndEnsureAccess(type);
               setLocation(location);
-              meatOutfit(true, nextFight.requirements);
+              meatOutfit(true, Requirement.merge(nextFight.requirements));
               nextFight.run({ location });
             } else {
               setLocation($location`Noob Cave`);
-              meatOutfit(true, nextFight.requirements);
+              meatOutfit(true, Requirement.merge(nextFight.requirements));
               nextFight.run({ location: $location`Noob Cave` });
             }
             postCombatActions();
@@ -1451,9 +1451,12 @@ const freeRunFightSources = [
   ),
 ];
 
-const sandwormPreventEquip = defaultPreventEquip.filter(
-  (item) => item !== $item`broken champagne bottle`
-);
+function sandwormRequirement() {
+  return new Requirement(
+    ["100 Item Drop"],
+    get("garbageChampagneCharge") > 0 ? { forceEquip: $items`broken champagne bottle` } : {}
+  );
+}
 
 const freeKillSources = [
   new FreeFight(
@@ -1466,9 +1469,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [
-        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
-      ],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 
@@ -1482,9 +1483,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [
-        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
-      ],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 
@@ -1500,7 +1499,9 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [
-        new Requirement(["100 Item Drop"], { forceEquip: $items`The Jokester's gun` }),
+        sandwormRequirement().merge(
+          new Requirement([], { forceEquip: $items`The Jokester's gun` })
+        ),
       ],
     }
   ),
@@ -1517,10 +1518,7 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [
-        new Requirement(["100 Item Drop"], {
-          forceEquip: $items`Lil' Doctor™ bag`,
-          preventEquip: sandwormPreventEquip,
-        }),
+        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })),
       ],
     }
   ),
@@ -1535,9 +1533,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [
-        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
-      ],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 
@@ -1553,9 +1549,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [
-        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
-      ],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 
@@ -1569,9 +1563,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [
-        new Requirement(["100 Item Drop"], { preventEquip: sandwormPreventEquip }),
-      ],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 ];
