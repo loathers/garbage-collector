@@ -431,7 +431,7 @@ function pantogramPants(equipMode: BonusEquipMode) {
 }
 
 function bagOfManyConfections(equipMode: BonusEquipMode) {
-  if (!have($item`bag of many confections`)) {
+  if (!have($item`bag of many confections`) || !have($familiar`Stocking Mimic`)) {
     return new Map<Item, number>([]);
   }
 
