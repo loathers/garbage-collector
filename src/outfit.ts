@@ -375,16 +375,16 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
         ? getSaleValue($item`one-day ticket to Spring Break Beach`) / 100
         : 0,
       get("spookyAirportAlways") || get("_spookyAirportToday")
-        ? getSaleValue($item`one-day ticket to Conspiracy Island`) / 100
+        ? Math.max(
+            getSaleValue($item`one-day ticket to Conspiracy Island`) / 100,
+            getSaleValue($item`karma shawarma`) / 7
+          )
         : 0,
       get("stenchAirportAlways") || get("_stenchAirportToday")
         ? getSaleValue($item`one-day ticket to Dinseylandfill`) / 20
         : 0,
-      !get("_luckyGoldRingVolcoino") && (get("hotAirportAlways") || get("_hotAirportToday"))
-        ? Math.max(
-            getSaleValue($item`one-day ticket to That 70s Volcano`) / 3,
-            getSaleValue($item`karma shawarma`) / 7
-          )
+      (get("hotAirportAlways") || get("_hotAirportToday")) && !get("_luckyGoldRingVolcoino")
+        ? getSaleValue($item`one-day ticket to That 70s Volcano`) / 3
         : 0,
       get("coldAirportAlways") || get("_coldAirportToday")
         ? getSaleValue($item`one-day ticket to The Glaciest`) / 50
