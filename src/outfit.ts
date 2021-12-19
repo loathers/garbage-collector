@@ -354,7 +354,8 @@ function mafiaThumbRing(equipMode: BonusEquipMode) {
 }
 
 function luckyGoldRing(equipMode: BonusEquipMode) {
-  if (!have($item`lucky gold ring`)) {
+  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
+  if (!have($item`lucky gold ring`) || ["dmt"].some((mode) => mode === equipMode)) {
     return new Map<Item, number>([]);
   }
 
@@ -402,7 +403,7 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
   ]);
 }
 
-function mrCheengsSpectacles(equipMode: BonusEquipMode) {
+function mrCheengsSpectacles() {
   if (!have($item`Mr. Cheeng's spectacles`)) {
     return new Map<Item, number>([]);
   }
@@ -412,7 +413,7 @@ function mrCheengsSpectacles(equipMode: BonusEquipMode) {
   return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 400]]);
 }
 
-function mrScreegesSpectacles(equipMode: BonusEquipMode) {
+function mrScreegesSpectacles() {
   if (!have($item`Mr. Screege's spectacles`)) {
     return new Map<Item, number>([]);
   }
@@ -421,7 +422,7 @@ function mrScreegesSpectacles(equipMode: BonusEquipMode) {
   return new Map<Item, number>([[$item`Mr. Screege's spectacles`, 180]]);
 }
 
-function pantogramPants(equipMode: BonusEquipMode) {
+function pantogramPants() {
   if (!have($item`pantogram pants`) || !get("_pantogramModifier").includes("Drops Items")) {
     return new Map<Item, number>([]);
   }
@@ -430,7 +431,7 @@ function pantogramPants(equipMode: BonusEquipMode) {
   return new Map<Item, number>([[$item`pantogram pants`, 100]]);
 }
 
-function bagOfManyConfections(equipMode: BonusEquipMode) {
+function bagOfManyConfections() {
   if (!have($item`bag of many confections`) || !have($familiar`Stocking Mimic`)) {
     return new Map<Item, number>([]);
   }
@@ -485,10 +486,10 @@ function dropsItems(equipMode: BonusEquipMode) {
   return new Map<Item, number>([
     ...mafiaThumbRing(equipMode),
     ...luckyGoldRing(equipMode),
-    ...mrCheengsSpectacles(equipMode),
-    ...mrScreegesSpectacles(equipMode),
-    ...pantogramPants(equipMode),
-    ...bagOfManyConfections(equipMode),
+    ...mrCheengsSpectacles(),
+    ...mrScreegesSpectacles(),
+    ...pantogramPants(),
+    ...bagOfManyConfections(),
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
   ]);
