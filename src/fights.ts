@@ -373,6 +373,9 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
           withMacro(firstChainMacro(), () =>
             fightSource.run({
               macro: firstChainMacro(),
@@ -404,6 +407,9 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
           withMacro(secondChainMacro(), () =>
             fightSource.run({
               macro: secondChainMacro(),
@@ -422,8 +428,12 @@ export function dailyFights(): void {
       let nextFight = getNextEmbezzlerFight();
       while (nextFight !== null) {
         const startTurns = totalTurnsPlayed();
-        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`))
+        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`)) {
           useSkill($skill`Musk of the Moose`);
+        }
+        if (["Macrometeorite", "Powerful Glove"].includes(nextFight.name)) {
+          saberCrateIfDesired();
+        }
         withMacro(embezzlerMacro(), () => {
           if (nextFight) {
             useFamiliar(meatFamiliar());
