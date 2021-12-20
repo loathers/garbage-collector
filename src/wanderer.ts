@@ -14,6 +14,7 @@ import {
   questStep,
   SourceTerminal,
 } from "libram";
+import { acquire } from "./acquire";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions, propertyManager } from "./lib";
 
@@ -125,15 +126,13 @@ function canAdvOrUnlock(loc: Location) {
 }
 
 function unlock(loc: Location) {
-  return (
-    zoneUnlockers.some(
-      (z) =>
-        (z.zone === loc.zone || z.location === loc) &&
-        z.unlocker &&
-        buy(1, z.unlocker, WANDERER_PRICE_THRESHOLD) > 0 &&
-        use(z.unlocker)
-    ) || canAdv(loc, false)
-  );
+  const zoneUnlocker = zoneUnlockers.find((z) => z.zone === loc.zone || z.location === loc);
+  if (!zoneUnlocker || !zoneUnlocker.unlocker) return canAdv(loc, false);
+  if (!zoneUnlocker.available()) {
+    if (acquire(1, zoneUnlocker.unlocker, WANDERER_PRICE_THRESHOLD, false) === 0) return false;
+    return use(zoneUnlocker.unlocker);
+  }
+  return true;
 }
 
 function canWander(location: Location, type: draggableFight) {
