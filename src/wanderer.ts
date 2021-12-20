@@ -127,12 +127,12 @@ function unlock(loc: Location) {
   return use(zoneUnlocker.unlocker);
 }
 
+const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
+const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
 function canWander(location: Location, type: draggableFight) {
   if (type === draggableFight.BACKUP) {
-    const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
     return !backupSkiplist.includes(location) && location.combatPercent >= 100;
   } else if (type === draggableFight.WANDERER) {
-    const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
     return !wandererSkiplist.includes(location) && location.wanderers;
   }
   return false;
@@ -304,16 +304,7 @@ export function determineDraggableZoneAndEnsureAccess(
 
   const best = sortedTargets.find((prospect) => {
     const location = prospect.target.location();
-    print(`Trying for ${prospect.target.name}`);
-    if (location) {
-      print(
-        `Checking canWander=${canWander(location, type)} unlock=${unlock(
-          location
-        )} prepareTurn=${prospect.target.prepareTurn()}`
-      );
-    } else {
-      print("Invalid location!");
-    }
+    print(`Trying to place a wanderer using ${prospect.target.name}`, "blue");
     return (
       location && canWander(location, type) && unlock(location) && prospect.target.prepareTurn()
     );
