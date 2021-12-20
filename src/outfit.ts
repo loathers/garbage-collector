@@ -355,7 +355,7 @@ function mafiaThumbRing(equipMode: BonusEquipMode) {
 
 function luckyGoldRing(equipMode: BonusEquipMode) {
   // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
-  if (!have($item`lucky gold ring`) || ["dmt"].some((mode) => mode === equipMode)) {
+  if (!have($item`lucky gold ring`) || equipMode === "dmt") {
     return new Map<Item, number>([]);
   }
 
@@ -398,7 +398,7 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
   return new Map<Item, number>([
     [
       $item`lucky gold ring`,
-      dropValues.reduce((previous, current) => previous + current) / dropValues.length / 10,
+      sumNumbers(dropValues) / dropValues.length / 10,
     ],
   ]);
 }
