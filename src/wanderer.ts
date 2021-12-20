@@ -122,11 +122,9 @@ function canAdvOrUnlock(loc: Location) {
 function unlock(loc: Location) {
   const zoneUnlocker = zoneUnlockers.find((z) => z.zone === loc.zone || z.location === loc);
   if (!zoneUnlocker) return canAdv(loc, false);
-  if (!zoneUnlocker.available()) {
-    if (acquire(1, zoneUnlocker.unlocker, WANDERER_PRICE_THRESHOLD, false) === 0) return false;
-    return use(zoneUnlocker.unlocker);
-  }
-  return true;
+  if (zoneUnlocker.available()) return true;
+  if (acquire(1, zoneUnlocker.unlocker, WANDERER_PRICE_THRESHOLD, false) === 0) return false;
+  return use(zoneUnlocker.unlocker);
 }
 
 function canWander(location: Location, type: draggableFight) {
