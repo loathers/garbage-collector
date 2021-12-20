@@ -51,8 +51,7 @@ export function digitizedMonstersRemaining(): number {
 }
 
 interface UnlockableZone {
-  zone: string | null;
-  location: Location | null;
+  zone: string;
   available: () => boolean;
   unlocker: Item;
   noInv?: boolean;
@@ -65,46 +64,39 @@ function airportAvailable(element: "spooky" | "stench" | "hot" | "cold" | "sleaz
 const UnlockableZones: UnlockableZone[] = [
   {
     zone: "Spaaace",
-    location: null,
     available: () => have($effect`Transpondent`),
     unlocker: $item`transporter transponder`,
   },
   {
     zone: "Wormwood",
-    location: null,
     available: () => have($effect`Absinthe-Minded`),
     unlocker: $item`tiny bottle of absinthe`,
   },
   {
     zone: "RabbitHole",
-    location: null,
     available: () => have($effect`Down the Rabbit Hole`),
     unlocker: $item`"DRINK ME" potion`,
   },
   {
     zone: "Conspiracy Island",
-    location: null,
     available: () => airportAvailable("spooky"),
     unlocker: $item`one-day ticket to Conspiracy Island`,
     noInv: true,
   },
   {
     zone: "Dinseylandfill",
-    location: null,
     available: () => airportAvailable("stench"),
     unlocker: $item`one-day ticket to Dinseylandfill`,
     noInv: true,
   },
   {
     zone: "The Glaciest",
-    location: null,
     available: () => airportAvailable("cold"),
     unlocker: $item`one-day ticket to The Glaciest`,
     noInv: true,
   },
   {
     zone: "Spring Break Beach",
-    location: null,
     available: () => airportAvailable("sleaze"),
     unlocker: $item`one-day ticket to Spring Break Beach`,
     noInv: true,
@@ -120,7 +112,7 @@ function canAdvOrUnlock(loc: Location) {
 }
 
 function unlock(loc: Location) {
-  const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone || z.location === loc);
+  const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
   if (!unlockableZone) return canAdv(loc, false);
   if (unlockableZone.available()) return true;
   if (acquire(1, unlockableZone.unlocker, WANDERER_PRICE_THRESHOLD, false) === 0) return false;
