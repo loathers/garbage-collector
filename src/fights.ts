@@ -257,12 +257,12 @@ function embezzlerSetup() {
 
   if (get("beGregariousCharges") > 0 && get("beGregariousFightsLeft") === 0) {
     do {
-      if (get("olfactedMonster") !== $monster`crate`) {
+      if (property.getString("olfactedMonster") !== "crate") {
         visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
       }
       if (
         have($skill`Transcendent Olfaction`) &&
-        (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
+        (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate")
       ) {
         if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
         const run = findRun() ?? ltbRun;
