@@ -22955,7 +22955,7 @@ function expectedGregs() {
   return gregs;
 }
 function doingExtrovermectin() {
-  return (0,property/* get */.U2)("beGregariousCharges") > 0;
+  return (0,property/* get */.U2)("beGregariousCharges") > 0 || (0,property/* get */.U2)("beGregariousFightsLeft") > 0;
 }
 function crateStrategy() {
   if (!doingExtrovermectin()) return null;
@@ -27495,7 +27495,7 @@ function embezzlerSetup() {
     (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,template_string/* $item */.xr)(fights_templateObject52 || (fights_templateObject52 = fights_taggedTemplateLiteral(["ice sculpture"]))).descid), false, false);
   }
 
-  if (doingExtrovermectin()) {
+  if ((0,property/* get */.U2)("beGregariousCharges") > 0 && (0,property/* get */.U2)("beGregariousFightsLeft") === 0) {
     do {
       if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(fights_templateObject53 || (fights_templateObject53 = fights_taggedTemplateLiteral(["Transcendent Olfaction"])))) && (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(fights_templateObject54 || (fights_templateObject54 = fights_taggedTemplateLiteral(["On the Trail"])))) || (0,property/* get */.U2)("olfactedMonster") !== (0,template_string/* $monster */.O4)(fights_templateObject55 || (fights_templateObject55 = fights_taggedTemplateLiteral(["crate"]))))) {
         var _findRun;
