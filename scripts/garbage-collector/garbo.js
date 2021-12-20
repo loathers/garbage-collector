@@ -23517,7 +23517,6 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
 }), new EmbezzlerFight("Macrometeorite", () => (0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject43 || (embezzler_templateObject43 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,property/* get */.U2)("beGregariousFightsLeft") > 0 && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(embezzler_templateObject44 || (embezzler_templateObject44 = embezzler_taggedTemplateLiteral(["Meteor Lore"])))) && (0,property/* get */.U2)("_macrometeoriteUses") < 10 && proceedWithOrb(), () => ((0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject45 || (embezzler_templateObject45 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,property/* get */.U2)("beGregariousFightsLeft") > 0 || (0,property/* get */.U2)("beGregariousCharges") > 0) && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(embezzler_templateObject46 || (embezzler_templateObject46 = embezzler_taggedTemplateLiteral(["Meteor Lore"])))) ? 10 - (0,property/* get */.U2)("_macrometeoriteUses") : 0, options => {
   var _options$macro3;
 
-  saberCrateIfDesired();
   equipOrbIfDesired();
   var baseMacro = (_options$macro3 = options.macro) !== null && _options$macro3 !== void 0 ? _options$macro3 : embezzlerMacro();
   var macro = src_combat.Macro.if_((0,template_string/* $monster */.O4)(embezzler_templateObject47 || (embezzler_templateObject47 = embezzler_taggedTemplateLiteral(["crate"]))), src_combat.Macro.externalIf(crateStrategy() !== "Saber" && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(embezzler_templateObject48 || (embezzler_templateObject48 = embezzler_taggedTemplateLiteral(["On the Trail"])))), src_combat.Macro.trySkill((0,template_string/* $skill */.tm)(embezzler_templateObject49 || (embezzler_templateObject49 = embezzler_taggedTemplateLiteral(["Transcendent Olfaction"]))))).skill((0,template_string/* $skill */.tm)(embezzler_templateObject50 || (embezzler_templateObject50 = embezzler_taggedTemplateLiteral(["Macrometeorite"]))))).step(baseMacro);
@@ -23526,7 +23525,6 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
 ), new EmbezzlerFight("Powerful Glove", () => (0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject52 || (embezzler_templateObject52 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,property/* get */.U2)("beGregariousFightsLeft") > 0 && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject53 || (embezzler_templateObject53 = embezzler_taggedTemplateLiteral(["Powerful Glove"])))) && (0,property/* get */.U2)("_powerfulGloveBatteryPowerUsed") < 90 && proceedWithOrb(), () => ((0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject54 || (embezzler_templateObject54 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,property/* get */.U2)("beGregariousFightsLeft") > 0 || (0,property/* get */.U2)("beGregariousCharges") > 0) && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject55 || (embezzler_templateObject55 = embezzler_taggedTemplateLiteral(["Powerful Glove"])))) ? Math.min((100 - (0,property/* get */.U2)("_powerfulGloveBatteryPowerUsed")) / 10) : 0, options => {
   var _options$macro4;
 
-  saberCrateIfDesired();
   equipOrbIfDesired();
   var baseMacro = (_options$macro4 = options.macro) !== null && _options$macro4 !== void 0 ? _options$macro4 : embezzlerMacro();
   var macro = src_combat.Macro.if_((0,template_string/* $monster */.O4)(embezzler_templateObject56 || (embezzler_templateObject56 = embezzler_taggedTemplateLiteral(["crate"]))), src_combat.Macro.externalIf(crateStrategy() !== "Saber" && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(embezzler_templateObject57 || (embezzler_templateObject57 = embezzler_taggedTemplateLiteral(["On the Trail"])))), src_combat.Macro.trySkill((0,template_string/* $skill */.tm)(embezzler_templateObject58 || (embezzler_templateObject58 = embezzler_taggedTemplateLiteral(["Transcendent Olfaction"]))))).skill((0,template_string/* $skill */.tm)(embezzler_templateObject59 || (embezzler_templateObject59 = embezzler_taggedTemplateLiteral(["CHEAT CODE: Replace Enemy"]))))).step(baseMacro);
@@ -27635,6 +27633,10 @@ function dailyFights() {
         })]));
 
         if ((0,property/* get */.U2)("_pocketProfessorLectures") < 2 + Math.ceil(Math.sqrt((0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)()))) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
+
           (0,src_combat.withMacro)(firstChainMacro(), () => fightSource.run({
             macro: firstChainMacro()
           }));
@@ -27660,6 +27662,10 @@ function dailyFights() {
         maximizeCached(requirements.maximizeParameters, requirements.maximizeOptions);
 
         if ((0,property/* get */.U2)("_pocketProfessorLectures") < 2 + Math.ceil(Math.sqrt((0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)()))) {
+          if (["Macrometeorite", "Powerful Glove"].includes(_fightSource.name)) {
+            saberCrateIfDesired();
+          }
+
           (0,src_combat.withMacro)(secondChainMacro(), () => _fightSource.run({
             macro: secondChainMacro()
           }));
@@ -27676,7 +27682,15 @@ function dailyFights() {
 
       while (nextFight !== null) {
         var startTurns = (0,external_kolmafia_.totalTurnsPlayed)();
-        if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(fights_templateObject87 || (fights_templateObject87 = fights_taggedTemplateLiteral(["Musk of the Moose"])))) && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(fights_templateObject88 || (fights_templateObject88 = fights_taggedTemplateLiteral(["Musk of the Moose"]))))) (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(fights_templateObject89 || (fights_templateObject89 = fights_taggedTemplateLiteral(["Musk of the Moose"]))));
+
+        if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(fights_templateObject87 || (fights_templateObject87 = fights_taggedTemplateLiteral(["Musk of the Moose"])))) && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(fights_templateObject88 || (fights_templateObject88 = fights_taggedTemplateLiteral(["Musk of the Moose"]))))) {
+          (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(fights_templateObject89 || (fights_templateObject89 = fights_taggedTemplateLiteral(["Musk of the Moose"]))));
+        }
+
+        if (["Macrometeorite", "Powerful Glove"].includes(nextFight.name)) {
+          saberCrateIfDesired();
+        }
+
         (0,src_combat.withMacro)(embezzlerMacro(), () => {
           if (nextFight) {
             (0,external_kolmafia_.useFamiliar)(meatFamiliar());
