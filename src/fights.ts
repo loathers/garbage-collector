@@ -254,7 +254,7 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin()) {
+  if (get("beGregariousCharges") > 0 && get("beGregariousFightsLeft") === 0) {
     do {
       if (
         have($skill`Transcendent Olfaction`) &&
