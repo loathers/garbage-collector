@@ -1724,7 +1724,13 @@ function deliverThesis(): void {
 }
 
 function doSausage() {
-  if (!kramcoGuaranteed()) return;
+  // If sausage isn't up or we have forced crates in noob cave, return.
+  if (
+    !kramcoGuaranteed() ||
+    (get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0)
+  ) {
+    return;
+  }
   useFamiliar(freeFightFamiliar());
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
   adventureMacroAuto(
