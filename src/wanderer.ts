@@ -157,24 +157,22 @@ function freeCrafts() {
   );
 }
 class WandererTarget {
-  // name of this wanderer - for documentation/logging purposes
   name: string;
-
-  // simple check to even try this wanderer
   available: () => boolean;
-
-  // attempt to set this up without spending any turns or meat
   prepareWanderer: () => boolean;
-
-  // where to adventure to target this
   location: () => Location | null;
-
-  // the expected value of a single wanderer for this
   value: () => number;
-
-  // attempt to set up, spending meat and or items as necessary
   prepareTurn: () => boolean;
 
+  /**
+   * Process for determining where to put a wanderer to extract additional value from it
+   * @param name name of this wanderer - for documentation/logging purposes
+   * @param available returns whether we can actually use this particular wanderer target
+   * @param location returns the location to adventure to target this; null only if something goes wrong
+   * @param value the expected additional value of putting a single wanderer-fight into the zone for this
+   * @param prepareWanderer attempt to set this up without spending any turns or meat
+   * @param prepareTurn attempt to set up, spending meat and or items as necessary
+   */
   constructor(
     name: string,
     available: () => boolean,
