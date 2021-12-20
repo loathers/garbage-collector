@@ -109,12 +109,6 @@ const zoneUnlockers: ZoneUnlocker[] = [
     unlocker: $item`one-day ticket to Spring Break Beach`,
     noInv: true,
   },
-  {
-    zone: null,
-    location: $location`The Oasis`,
-    available: () => have($effect`Ultrahydrated`),
-    unlocker: null,
-  },
 ];
 
 function canAdvOrUnlock(loc: Location) {
