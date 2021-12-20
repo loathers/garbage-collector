@@ -9,6 +9,7 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
+  itemAmount,
   myAdventures,
   myClass,
   myGardenType,
@@ -55,19 +56,20 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, freeFights, safeRestore } from "./fights";
+import { dailyFights, freeFights } from "./fights";
 import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
-  postCombatActions,
   printHelpMenu,
   printLog,
   propertyManager,
   questStep,
+  safeRestore,
   setChoice,
 } from "./lib";
 import { meatMood } from "./mood";
+import postCombatActions from "./post";
 import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
@@ -79,6 +81,7 @@ import { withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
+import { potionSetup } from "./potions";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -211,9 +214,14 @@ function barfTurn() {
   if (myAdventures() === 1) {
     if (
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get<number>("_sausagesEaten") < 23
+      get("_sausagesEaten") < 23
     ) {
-      eat($item`magical sausage`);
+      const available = clamp(
+        23 - get("_sausagesEaten"),
+        0,
+        itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
+      );
+      eat(available, $item`magical sausage`);
     }
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
@@ -363,11 +371,6 @@ export function main(argString = ""): void {
       1108: bestHalloweiner,
       1341: 1, // Cure her poison
     });
-    if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
-    if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
-    const mpTarget = myLevel() < 18 ? 0.5 : 0.3;
-    if (get("mpAutoRecoveryTarget") < mpTarget)
-      propertyManager.set({ mpAutoRecoveryTarget: mpTarget });
 
     safeRestore();
 
@@ -423,6 +426,7 @@ export function main(argString = ""): void {
 
         if (!globalOptions.noBarf) {
           // 4. burn turns at barf
+          potionSetup(false);
           try {
             while (canContinue()) {
               barfTurn();
