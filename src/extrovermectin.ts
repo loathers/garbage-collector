@@ -45,7 +45,7 @@ export function expectedGregs(): number {
 }
 
 export function doingExtrovermectin(): boolean {
-  return get("beGregariousCharges") > 0;
+  return get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
 }
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
@@ -57,7 +57,7 @@ export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
 }
 
 export function saberCrateIfDesired(): void {
-  if (crateStrategy() !== "Saber") return;
+  if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
   if (
     get("_saberForceUses") > 0 &&
     (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2)

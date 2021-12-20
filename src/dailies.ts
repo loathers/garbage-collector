@@ -83,6 +83,7 @@ export function dailySetup(): void {
   cheat();
   tomeSummons();
   gin();
+  extrude();
   internetMemeShop();
   pickTea();
   refreshLatte();
@@ -456,6 +457,28 @@ function tomeSummons(): void {
     }
     if (best !== $item`none`) {
       cliExecute(`try; create ${$skill`Summon Clip Art`.dailylimit} ${best}`);
+    }
+  }
+}
+
+function extrude(): void {
+  if (SourceTerminal.have()) {
+    const extrudeConsumables = $items`browser cookie, hacked gibson`;
+    const bestExtrude = extrudeConsumables.sort((a, b) => getSaleValue(b) - getSaleValue(a))[0];
+    if (getSaleValue(bestExtrude) < getSaleValue($item`Source essence`) * 10) {
+      return;
+    }
+
+    let extrudes = get("_sourceTerminalExtrudes");
+    while (extrudes < 3) {
+      if (
+        !retrieveItem($item`Source essence`, 10) ||
+        !SourceTerminal.extrude(bestExtrude) ||
+        get("_sourceTerminalExtrudes") === extrudes
+      ) {
+        break;
+      }
+      extrudes = get("_sourceTerminalExtrudes");
     }
   }
 }

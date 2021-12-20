@@ -108,7 +108,7 @@ import {
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
-import { bathroomFinance } from "./potions";
+import { bathroomFinance, potionSetup } from "./potions";
 import {
   embezzlerCount,
   embezzlerMacro,
@@ -163,7 +163,8 @@ const secondChainMacro = () =>
   ).abort();
 
 function embezzlerSetup() {
-  meatMood(true, true).execute(estimatedTurns());
+  potionSetup(false);
+  meatMood(true).execute(estimatedTurns());
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
@@ -254,14 +255,18 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin()) {
+  if (get("beGregariousCharges") > 0 && get("beGregariousFightsLeft") === 0) {
     do {
+      if (property.getString("olfactedMonster") !== "crate") {
+        visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
+      }
       if (
         have($skill`Transcendent Olfaction`) &&
-        (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
+        (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate")
       ) {
         if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
         const run = findRun() ?? ltbRun;
+        setChoice(1387, 2);
         const macro = Macro.trySkill($skill`Transcendent Olfaction`)
           .trySkill($skill`Offer Latte to Opponent`)
           .externalIf(
@@ -269,10 +274,13 @@ function embezzlerSetup() {
               have($skill`Gallapagosian Mating Call`),
             Macro.trySkill($skill`Gallapagosian Mating Call`)
           )
+          .trySkill($skill`Use the Force`)
           .step(run.macro);
 
         new Requirement(["100 Monster Level"], {
-          forceEquip: $items`latte lovers member's mug`.filter((item) => have(item)),
+          forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter(
+            (item) => have(item)
+          ),
         })
           .merge(run.requirement ? run.requirement : new Requirement([], {}))
           .maximize();
@@ -309,16 +317,26 @@ function startWandererCounter() {
   )
     return;
   if (
-    (getCounters("Digitize Monster", 0, 100).trim() === "" &&
+    (getCounters("Digitize Monster", -3, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
-    (getCounters("Enamorang Monster", 0, 100).trim() === "" && get("enamorangMonster"))
+    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster"))
   ) {
     do {
-      const run = findRun() || ltbRun;
+      const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
       if (run.prepare) run.prepare();
-      freeFightOutfit(run.requirement ? run.requirement : undefined);
-      adventureMacro($location`Noob Cave`, run.macro);
-    } while (get("lastCopyableMonster") === $monster`Government agent`);
+      if (get("beGregariousFightsLeft") > 0) {
+        meatOutfit(true, run.requirement ? run.requirement : undefined);
+      } else {
+        freeFightOutfit(run.requirement ? run.requirement : undefined);
+      }
+      adventureMacro(
+        $location`The Haunted Kitchen`,
+        Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
+      );
+    } while (
+      get("lastCopyableMonster") === $monster`Government agent` ||
+      ["Lights Out in the Kitchen", "Play Misty For Me"].includes(get("lastEncounter"))
+    );
   }
 }
 
@@ -1802,11 +1820,10 @@ function wantPills(): boolean {
     have($item`Fourth of May Cosplay Saber`) &&
     !(crateStrategy() !== "Saber") &&
     doingExtrovermectin() &&
-    ((clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
+    clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
       clamp(availableAmount($item`distention pill`), 0, 100) +
       availableAmount($item`Map to Safety Shelter Grimace Prime`) <
       200 &&
-      availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60) ||
-      get("questL11Worship") === "unstarted")
+    availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60
   );
 }

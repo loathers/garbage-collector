@@ -9,6 +9,7 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
+  itemAmount,
   myAdventures,
   myClass,
   myGardenType,
@@ -81,6 +82,7 @@ import { withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
+import { potionSetup } from "./potions";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -213,9 +215,14 @@ function barfTurn() {
   if (myAdventures() === 1) {
     if (
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get<number>("_sausagesEaten") < 23
+      get("_sausagesEaten") < 23
     ) {
-      eat($item`magical sausage`);
+      const available = clamp(
+        23 - get("_sausagesEaten"),
+        0,
+        itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
+      );
+      eat(available, $item`magical sausage`);
     }
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
@@ -420,6 +427,7 @@ export function main(argString = ""): void {
 
         if (!globalOptions.noBarf) {
           // 4. burn turns at barf
+          potionSetup(false);
           try {
             while (canContinue()) {
               barfTurn();
