@@ -54,7 +54,7 @@ interface ZoneUnlocker {
   zone: string | null;
   location: Location | null;
   available: () => boolean;
-  unlocker: Item | null;
+  unlocker: Item;
   noInv?: boolean;
 }
 
@@ -121,7 +121,7 @@ function canAdvOrUnlock(loc: Location) {
 
 function unlock(loc: Location) {
   const zoneUnlocker = zoneUnlockers.find((z) => z.zone === loc.zone || z.location === loc);
-  if (!zoneUnlocker || !zoneUnlocker.unlocker) return canAdv(loc, false);
+  if (!zoneUnlocker) return canAdv(loc, false);
   if (!zoneUnlocker.available()) {
     if (acquire(1, zoneUnlocker.unlocker, WANDERER_PRICE_THRESHOLD, false) === 0) return false;
     return use(zoneUnlocker.unlocker);
