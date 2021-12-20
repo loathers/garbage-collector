@@ -73,6 +73,14 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
   );
 
+  if (
+    have($item`protonic accelerator pack`) &&
+    get("questPAGhost") === "unstarted" &&
+    get("nextParanormalActivity") <= totalTurnsPlayed()
+  ) {
+    forceEquip.push($item`protonic accelerator pack`);
+  }
+
   const bjornAlike = bestBjornalike(forceEquip);
 
   preventEquip.push(
@@ -92,7 +100,6 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
       ...pantsgiving(),
       ...cheeses(false),
       ...shavingBonus(),
-      ...protonPack(),
       ...(bjornAlike
         ? new Map<Item, number>([
             [
@@ -166,6 +173,14 @@ export function meatOutfit(
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
+    if (
+      have($item`protonic accelerator pack`) &&
+      get("questPAGhost") === "unstarted" &&
+      get("nextParanormalActivity") <= totalTurnsPlayed()
+    ) {
+      forceEquip.push($item`protonic accelerator pack`);
+    }
+
     if (have($item`mafia pointer finger ring`)) {
       if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
         forceEquip.push($item`mafia pointer finger ring`);
@@ -225,7 +240,6 @@ export function meatOutfit(
           ...(embezzlerUp ? [] : pantsgiving()),
           ...cheeses(embezzlerUp),
           ...shavingBonus(),
-          ...protonPack(),
           ...(bjornAlike
             ? new Map<Item, number>([
                 [
@@ -525,14 +539,4 @@ function cloake(): Map<Item, number> {
     duration: 1,
   }).gross(embezzlerCount());
   return new Map<Item, number>([[$item`vampyric cloake`, value]]);
-}
-
-function protonPack(): Map<Item, number> {
-  if (get("questPAGhost") === "unstarted" && get("nextParanormalActivity") <= totalTurnsPlayed()) {
-    return new Map();
-  }
-
-  return new Map<Item, number>([
-    [$item`protonic accelerator pack`, get("garbo_valueOfFreeFight", 2000)],
-  ]);
 }
