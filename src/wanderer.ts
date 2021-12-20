@@ -115,7 +115,7 @@ function canAdvOrUnlock(loc: Location) {
   const underwater = loc.environment === "underwater";
   const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
   const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
-  const canUnlock = zoneUnlockers.some((z) => (z.available() || !z.noInv) && loc.zone === z.zone);
+  const canUnlock = zoneUnlockers.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
   return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdv(loc, false) || canUnlock);
 }
 
