@@ -44,7 +44,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
-import { crateStrategy, equipOrbIfDesired, saberCrateIfDesired } from "./extrovermectin";
+import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
@@ -247,7 +247,6 @@ export const embezzlerSources = [
         ? 10 - get("_macrometeoriteUses")
         : 0,
     (options: EmbezzlerFightOptions) => {
-      saberCrateIfDesired();
       equipOrbIfDesired();
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_(
@@ -277,7 +276,6 @@ export const embezzlerSources = [
         ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0,
     (options: EmbezzlerFightOptions) => {
-      saberCrateIfDesired();
       equipOrbIfDesired();
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_(

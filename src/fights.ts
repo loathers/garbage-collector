@@ -374,6 +374,9 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
           withMacro(firstChainMacro(), () =>
             fightSource.run({
               macro: firstChainMacro(),
@@ -405,6 +408,9 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
           withMacro(secondChainMacro(), () =>
             fightSource.run({
               macro: secondChainMacro(),
@@ -423,8 +429,12 @@ export function dailyFights(): void {
       let nextFight = getNextEmbezzlerFight();
       while (nextFight !== null) {
         const startTurns = totalTurnsPlayed();
-        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`))
+        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`)) {
           useSkill($skill`Musk of the Moose`);
+        }
+        if (["Macrometeorite", "Powerful Glove"].includes(nextFight.name)) {
+          saberCrateIfDesired();
+        }
         withMacro(embezzlerMacro(), () => {
           if (nextFight) {
             useFamiliar(meatFamiliar());
@@ -1745,7 +1755,13 @@ function deliverThesis(): void {
 }
 
 function doSausage() {
-  if (!kramcoGuaranteed()) return;
+  // If sausage isn't up or we have forced crates in noob cave, return.
+  if (
+    !kramcoGuaranteed() ||
+    (get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0)
+  ) {
+    return;
+  }
   useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
   adventureMacroAuto(
