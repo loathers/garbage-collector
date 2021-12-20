@@ -42,9 +42,10 @@ import {
   sumNumbers,
 } from "libram";
 import { pickBjorn, valueBjornModifiers } from "./bjorn";
-import { estimatedTurns } from "./embezzler";
+import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import { baseMeat, BonusEquipMode, globalOptions, leprechaunMultiplier } from "./lib";
+import { Potion } from "./potions";
 
 const bestAdventuresFromPants =
   Item.all()
@@ -72,14 +73,6 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
   );
 
-  if (
-    have($item`vampyric cloake`) &&
-    get("_vampyreCloakeFormUses") < 10 &&
-    forceEquip.every((equip) => toSlot(equip) !== $slot`back`)
-  ) {
-    forceEquip.push($item`vampyric cloake`);
-  }
-
   const bjornAlike = bestBjornalike(forceEquip);
 
   preventEquip.push(
@@ -95,9 +88,11 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     bonusEquip: new Map<Item, number>([
       ...bonusEquip,
       ...dropsItems(equipMode),
+      ...cloake(),
       ...pantsgiving(),
       ...cheeses(false),
       ...shavingBonus(),
+      ...protonPack(),
       ...(bjornAlike
         ? new Map<Item, number>([
             [
@@ -171,14 +166,6 @@ export function meatOutfit(
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
   } else if (!embezzlerUp) {
-    if (
-      have($item`protonic accelerator pack`) &&
-      get("questPAGhost") === "unstarted" &&
-      get("nextParanormalActivity") <= totalTurnsPlayed()
-    ) {
-      forceEquip.push($item`protonic accelerator pack`);
-    }
-
     if (have($item`mafia pointer finger ring`)) {
       if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
         forceEquip.push($item`mafia pointer finger ring`);
@@ -238,6 +225,7 @@ export function meatOutfit(
           ...(embezzlerUp ? [] : pantsgiving()),
           ...cheeses(embezzlerUp),
           ...shavingBonus(),
+          ...protonPack(),
           ...(bjornAlike
             ? new Map<Item, number>([
                 [
@@ -527,4 +515,24 @@ function shavingBonus(): Map<Item, number> {
 
   const bonusValue = (baseMeat * 100 + 72 * 50) / 100;
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
+}
+
+function cloake(): Map<Item, number> {
+  if (!have($item`vampyric cloake`) || get("_vampyreCloakeFormUses") >= 10) return new Map();
+
+  const value = new Potion($item`vampyric cloake`, {
+    effect: $effect`Wolf Form`,
+    duration: 1,
+  }).gross(embezzlerCount());
+  return new Map<Item, number>([[$item`vampyric cloake`, value]]);
+}
+
+function protonPack(): Map<Item, number> {
+  if (get("questPAGhost") === "unstarted" && get("nextParanormalActivity") <= totalTurnsPlayed()) {
+    return new Map();
+  }
+
+  return new Map<Item, number>([
+    [$item`protonic accelerator pack`, get("garbo_valueOfFreeFight", 2000)],
+  ]);
 }
