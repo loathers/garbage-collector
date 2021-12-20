@@ -54,7 +54,7 @@ interface UnlockableZone {
   zone: string;
   available: () => boolean;
   unlocker: Item;
-  noInv?: boolean;
+  noInv: boolean;
 }
 
 function airportAvailable(element: "spooky" | "stench" | "hot" | "cold" | "sleaze"): boolean {
@@ -66,16 +66,19 @@ const UnlockableZones: UnlockableZone[] = [
     zone: "Spaaace",
     available: () => have($effect`Transpondent`),
     unlocker: $item`transporter transponder`,
+    noInv: false,
   },
   {
     zone: "Wormwood",
     available: () => have($effect`Absinthe-Minded`),
     unlocker: $item`tiny bottle of absinthe`,
+    noInv: false,
   },
   {
     zone: "RabbitHole",
     available: () => have($effect`Down the Rabbit Hole`),
     unlocker: $item`"DRINK ME" potion`,
+    noInv: false,
   },
   {
     zone: "Conspiracy Island",
