@@ -39,6 +39,7 @@ import {
   have,
   maximizeCached,
   Requirement,
+  sumNumbers,
 } from "libram";
 import { pickBjorn, valueBjornModifiers } from "./bjorn";
 import { estimatedTurns } from "./embezzler";
@@ -369,7 +370,8 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
       itemAmount($item`Freddy Kruegerand`) > 0
         ? Math.max(
             getSaleValue($item`bottle of Bloodweiser`) / 200,
-            getSaleValue($item`electric Kool-Aid`) / 200
+            getSaleValue($item`electric Kool-Aid`) / 200,
+            getSaleValue($item`Dreadsylvanian skeleton key`) / 25
           )
         : 0,
       get("sleazeAirportAlways") || get("_sleazeAirportToday")
@@ -396,10 +398,7 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
 
   // Items drop every ~10 turns
   return new Map<Item, number>([
-    [
-      $item`lucky gold ring`,
-      sumNumbers(dropValues) / dropValues.length / 10,
-    ],
+    [$item`lucky gold ring`, sumNumbers(dropValues) / dropValues.length / 10],
   ]);
 }
 
