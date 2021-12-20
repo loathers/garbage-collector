@@ -50,7 +50,7 @@ export function digitizedMonstersRemaining(): number {
   );
 }
 
-interface ZoneUnlocker {
+interface UnlockableZone {
   zone: string | null;
   location: Location | null;
   available: () => boolean;
@@ -62,7 +62,7 @@ function airportAvailable(element: "spooky" | "stench" | "hot" | "cold" | "sleaz
   return get(`_${element}AirportToday`) || get(`${element}AirportAlways`);
 }
 
-const zoneUnlockers: ZoneUnlocker[] = [
+const UnlockableZones: UnlockableZone[] = [
   {
     zone: "Spaaace",
     location: null,
@@ -115,16 +115,16 @@ function canAdvOrUnlock(loc: Location) {
   const underwater = loc.environment === "underwater";
   const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
   const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
-  const canUnlock = zoneUnlockers.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
+  const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
   return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdv(loc, false) || canUnlock);
 }
 
 function unlock(loc: Location) {
-  const zoneUnlocker = zoneUnlockers.find((z) => z.zone === loc.zone || z.location === loc);
-  if (!zoneUnlocker) return canAdv(loc, false);
-  if (zoneUnlocker.available()) return true;
-  if (acquire(1, zoneUnlocker.unlocker, WANDERER_PRICE_THRESHOLD, false) === 0) return false;
-  return use(zoneUnlocker.unlocker);
+  const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone || z.location === loc);
+  if (!unlockableZone) return canAdv(loc, false);
+  if (unlockableZone.available()) return true;
+  if (acquire(1, unlockableZone.unlocker, WANDERER_PRICE_THRESHOLD, false) === 0) return false;
+  return use(unlockableZone.unlocker);
 }
 
 const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
