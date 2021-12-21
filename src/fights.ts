@@ -1404,6 +1404,7 @@ const freeRunFightSources = [
       const best = getBestFireExtinguisherZone();
       if (!best) throw `Unable to find fire extinguisher zone?`;
       try {
+        if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
         Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
@@ -1766,8 +1767,9 @@ type fireExtinguisherZone = {
   monster: Monster;
   dropRate: number;
   maximize: string[];
-  open: () => boolean;
+  isOpen: () => boolean;
   openCost: () => number;
+  preReq: () => void;
 };
 const fireExtinguishZones = [
   {
@@ -1776,8 +1778,9 @@ const fireExtinguishZones = [
     item: $item`transdermal smoke patch`,
     dropRate: 1,
     maximize: [],
-    open: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
+    isOpen: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
     openCost: () => 0,
+    preReq: null,
   },
   {
     location: $location`The Ice Hotel`,
@@ -1785,8 +1788,9 @@ const fireExtinguishZones = [
     item: $item`perfect ice cube`,
     dropRate: 1,
     maximize: [],
-    open: () => get("_coldAirportToday") || get("coldAirportAlways"),
+    isOpen: () => get("_coldAirportToday") || get("coldAirportAlways"),
     openCost: () => 0,
+    preReq: null,
   },
   {
     location: $location`The Haunted Library`,
@@ -1794,18 +1798,25 @@ const fireExtinguishZones = [
     item: $item`tattered scrap of paper`,
     dropRate: 1,
     maximize: ["99 monster level 100 max"], // Bookbats need up to +100 ML to survive the polar vortices
-    open: () => have($item`[7302]Spookyraven library key`),
+    isOpen: () => have($item`[7302]Spookyraven library key`),
     openCost: () => 0,
+    preReq: null,
   },
   {
     location: $location`The Stately Pleasure Dome`,
     monster: $monster`toothless mastiff bitch`,
     item: $item`disintegrating spiky collar`,
     dropRate: 1,
-    maximize: ["1 hp 100 max"],
-    open: () => true,
+    maximize: ["1 muscle 100 max"], // Ensure mastiff is at least 100 hp
+    isOpen: () => true,
     openCost: () =>
       !have($effect`Absinthe-Minded`) ? mallPrice($item`tiny bottle of absinthe`) : 0,
+    preReq: () => {
+      if (!have($effect`Absinthe-Minded`)) {
+        if (!have($item`tiny bottle of absinthe`)) buy(1, $item`tiny bottle of absinthe`);
+        use($item`tiny bottle of absinthe`);
+      }
+    },
   },
   {
     location: $location`Twin Peak`,
@@ -1813,20 +1824,23 @@ const fireExtinguishZones = [
     item: $item`rusty hedge trimmers`,
     dropRate: 0.5,
     maximize: ["99 monster level 11 max"], // Topiary animals need an extra 11 HP to survive polar vortices
-    open: () => myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
+    isOpen: () =>
+      myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
     openCost: () => 0,
+    preReq: null,
   },
 ] as fireExtinguisherZone[];
 
 let bestFireExtinguisherZoneCached: fireExtinguisherZone | undefined = undefined;
 function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
   if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
-  const targets = fireExtinguishZones.filter((zone) => zone.open() && !isBanished(zone.monster));
+  const targets = fireExtinguishZones.filter((zone) => zone.isOpen() && !isBanished(zone.monster));
   const vorticesAvail = Math.floor(get("_fireExtinguisherCharge") / 10);
   bestFireExtinguisherZoneCached = targets.sort((a, b) => {
-    const B = b.dropRate * getSaleValue(b.item);
-    const A = a.dropRate * getSaleValue(a.item);
-    return B * vorticesAvail - b.openCost() - (A * vorticesAvail - a.openCost());
+    const value = (zone: fireExtinguisherZone): number => {
+      return zone.dropRate * getSaleValue(zone.item) * vorticesAvail - zone.openCost();
+    };
+    return value(b) - value(a);
   })[0];
   return bestFireExtinguisherZoneCached;
 }
