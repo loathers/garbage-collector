@@ -70,15 +70,7 @@ export function hasMonsterReplacers(): boolean {
  * Saberfriends a crate if we are able to do so.
  */
 export function saberCrateIfDesired(): void {
-  if (
-    !have($item`Fourth of May Cosplay Saber`) ||
-    get("_saberForceUses") >= 5 ||
-    !hasMonsterReplacers() ||
-    (get("beGregariousFightsLeft") <= 1 && !doingExtrovermectin())
-  ) {
-    return;
-  }
-
+  if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
   if (
     get("_saberForceUses") > 0 &&
     (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2)
