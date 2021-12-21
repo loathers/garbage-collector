@@ -338,9 +338,13 @@ function shavingBonus(): Map<Item, number> {
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 
-let usingThumb: boolean | null = null;
+let usingThumb: boolean;
+/**
+ * Calculates and caches whether we expect to be wearing the thumb ring for most of the day
+ * @returns whether we expect to be wearing the thumb ring for most of the day
+ */
 export function usingThumbRing(): boolean {
-  if (usingThumb === null) {
+  if (usingThumb === undefined) {
     if (!have($item`mafia thumb ring`)) {
       usingThumb = false;
     } else {
