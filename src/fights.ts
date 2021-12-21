@@ -335,7 +335,9 @@ function startWandererCounter() {
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
-      ["Lights Out in the Kitchen", "Play Misty For Me"].includes(get("lastEncounter"))
+      ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
+        get("lastEncounter")
+      )
     );
   }
 }
@@ -496,7 +498,8 @@ export function dailyFights(): void {
           kramcoGuaranteed() &&
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
           (getCounter("Romantic Monster Window End") === -1 ||
-            getCounter("Romantic Monster Window start") !== -1)
+            getCounter("Romantic Monster Window Start") > 0 ||
+            getCounter("Romantic Monster Window Start") === -1)
         ) {
           doSausage();
         }
