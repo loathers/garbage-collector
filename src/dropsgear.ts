@@ -346,7 +346,7 @@ export function usingThumbRing(): boolean {
     } else {
       const gear = bonusGear("barf");
       usingThumb = Array.from(gear.entries())
-        .filter(([item]) => have(item))
+        .filter(([item]) => have(item) && toSlot(item) === $slot`acc1`)
         .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
         .map(([item]) => item)
         .slice(0, 2)
