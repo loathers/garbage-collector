@@ -27593,7 +27593,7 @@ function startWandererCounter() {
       }
 
       (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(fights_templateObject70 || (fights_templateObject70 = fights_taggedTemplateLiteral(["The Haunted Kitchen"]))), src_combat.Macro.if_((0,template_string/* $monster */.O4)(fights_templateObject71 || (fights_templateObject71 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), embezzlerMacro()).step(run.macro));
-    } while ((0,property/* get */.U2)("lastCopyableMonster") === (0,template_string/* $monster */.O4)(fights_templateObject69 || (fights_templateObject69 = fights_taggedTemplateLiteral(["Government agent"]))) || ["Lights Out in the Kitchen", "Play Misty For Me"].includes((0,property/* get */.U2)("lastEncounter")));
+    } while ((0,property/* get */.U2)("lastCopyableMonster") === (0,template_string/* $monster */.O4)(fights_templateObject69 || (fights_templateObject69 = fights_taggedTemplateLiteral(["Government agent"]))) || ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes((0,property/* get */.U2)("lastEncounter")));
   }
 }
 
