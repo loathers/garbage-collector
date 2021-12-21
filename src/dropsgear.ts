@@ -341,38 +341,34 @@ function shavingBonus(): Map<Item, number> {
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 
-let usingThumb: boolean;
 /**
- * Calculates and caches whether we expect to be wearing the thumb ring for most of the day
+ * Calculates whether we expect to be wearing the thumb ring for most of the day
  * @returns whether we expect to be wearing the thumb ring for most of the day
  */
 export function usingThumbRing(): boolean {
-  if (usingThumb === undefined) {
-    if (!have($item`mafia thumb ring`)) {
-      usingThumb = false;
-    } else {
-      const gear = bonusGear("barf");
-      const accessoryBonuses = Array.from(gear.entries()).filter(
-        ([item]) => have(item) && toSlot(item) === $slot`acc1`
-      );
+  if (!have($item`mafia thumb ring`)) {
+    return false;
+  } else {
+    const gear = bonusGear("barf");
+    const accessoryBonuses = Array.from(gear.entries()).filter(
+      ([item]) => have(item) && toSlot(item) === $slot`acc1`
+    );
 
-      setLocation($location`Barf Mountain`);
-      const meatAccessories = Item.all()
-        .filter(
-          (item) => have(item) && toSlot(item) === $slot`acc1` && getModifier("Meat Drop", item) > 0
-        )
-        .map((item) => [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [Item, number]);
+    setLocation($location`Barf Mountain`);
+    const meatAccessories = Item.all()
+      .filter(
+        (item) => have(item) && toSlot(item) === $slot`acc1` && getModifier("Meat Drop", item) > 0
+      )
+      .map((item) => [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [Item, number]);
 
-      const accessoryValues = new Map<Item, number>(accessoryBonuses);
-      for (const [accessory, value] of meatAccessories) {
-        accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
-      }
-
-      const bestAccessories = Array.from(accessoryValues.entries())
-        .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
-        .map(([item]) => item);
-      usingThumb = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
+    const accessoryValues = new Map<Item, number>(accessoryBonuses);
+    for (const [accessory, value] of meatAccessories) {
+      accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
     }
+
+    const bestAccessories = Array.from(accessoryValues.entries())
+      .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
+      .map(([item]) => item);
+    return bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
   }
-  return usingThumb;
 }
