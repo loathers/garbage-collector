@@ -259,7 +259,14 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin() && get("beGregariousFightsLeft") === 0) initializeCrates();
+  if (
+    doingExtrovermectin() &&
+    get("beGregariousFightsLeft") === 0 &&
+    ((have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) ||
+      (have($item`Powerful Glove`) && get("_powerfulGloveBatteryPowerUsed") < 90))
+  ) {
+    initializeCrates();
+  }
 }
 
 function startWandererCounter() {
