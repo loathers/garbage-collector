@@ -56,6 +56,9 @@ export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   return null;
 }
 
+/**
+ * Saberfriends a crate if we are able to do so.
+ */
 export function saberCrateIfDesired(): void {
   if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
   if (
@@ -80,6 +83,9 @@ export function saberCrateIfDesired(): void {
   }
 }
 
+/**
+ * Equip the miniature crystal ball if the current prediction is good for us.
+ */
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
