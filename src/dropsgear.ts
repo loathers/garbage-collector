@@ -349,12 +349,13 @@ export function usingThumbRing(): boolean {
       usingThumb = false;
     } else {
       const gear = bonusGear("barf");
-      usingThumb = Array.from(gear.entries())
-        .filter(([item]) => have(item) && toSlot(item) === $slot`acc1`)
+      const accessoryBonuses = Array.from(gear.entries()).filter(
+        ([item]) => have(item) && toSlot(item) === $slot`acc1`
+      );
+      const bestAccessories = accessoryBonuses
         .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
-        .map(([item]) => item)
-        .slice(0, 2)
-        .includes($item`mafia thumb ring`);
+        .map(([item]) => item);
+      usingThumb = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
     }
   }
   return usingThumb;
