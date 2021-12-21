@@ -201,7 +201,15 @@ function configureGear(): void {
 
 function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
-    for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, Bloody Nora`) {
+    // Omit the nora if we aren't going to go to the Sea. If we have another reason to go to
+    // the Sea, this logic will get a bit more hairy.
+    if (((itemAmount($item`fishy pipe`) === 0) || (get(_fishyPipeUsed) != false)) && 
+      (!have($effect`Fishy`))) {
+      robortDrinksList = `Newark, drive-by shooting, Feliz Navidad, single entendre`
+    } else {
+      robortDrinksList = `Newark, drive-by shooting, Feliz Navidad, single entendre, Bloody Nora`
+    }
+    for (const drink of robortDrinksList) {
       if (get("_roboDrinks").includes(drink.name)) continue;
       useFamiliar($familiar`Robortender`);
       if (itemAmount(drink) === 0) retrieveItem(1, drink);
