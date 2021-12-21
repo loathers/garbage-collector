@@ -1335,6 +1335,14 @@ const freeRunFightSources = [
       ) {
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`carnivorous potted plant`.filter((item) => have(item)),
+        }),
+      ],
     }
   ),
   new FreeFight(
@@ -1369,6 +1377,14 @@ const freeRunFightSources = [
       ) {
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`carnivorous potted plant`.filter((item) => have(item)),
+        }),
+      ],
     }
   ),
   new FreeFight(
@@ -1472,7 +1488,14 @@ const freeRunFightSources = [
       );
     },
     {
-      requirements: () => [new Requirement([], { forceEquip: $items`mayfly bait necklace` })],
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`mayfly bait necklace, carnivorous potted plant`.filter((item) =>
+            have(item)
+          ),
+        }),
+      ],
     }
   ),
 ];
