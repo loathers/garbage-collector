@@ -1,5 +1,6 @@
-import { equip, toMonster, useFamiliar } from "kolmafia";
+import { equip, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
+  $effect,
   $item,
   $items,
   $location,
@@ -11,7 +12,9 @@ import {
   CrystalBall,
   get,
   have,
+  property,
   Requirement,
+  uneffect,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
 import { findRun, ltbRun, setChoice } from "./lib";
@@ -100,4 +103,51 @@ export function equipOrbIfDesired(): void {
   ) {
     equip($slot`familiar`, $item`miniature crystal ball`);
   }
+}
+
+export function initializeCrates(): void {
+  do {
+    if (property.getString("olfactedMonster") !== "crate") {
+      visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
+    }
+    if (
+      have($skill`Transcendent Olfaction`) &&
+      (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate")
+    ) {
+      if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
+      const run = findRun() ?? ltbRun;
+      setChoice(1387, 2);
+      const macro = Macro.trySkill($skill`Transcendent Olfaction`)
+        .trySkill($skill`Offer Latte to Opponent`)
+        .externalIf(
+          get("_gallapagosMonster") !== $monster`crate` && have($skill`Gallapagosian Mating Call`),
+          Macro.trySkill($skill`Gallapagosian Mating Call`)
+        )
+        .trySkill($skill`Use the Force`)
+        .step(run.macro);
+
+      new Requirement(["100 Monster Level"], {
+        forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter((item) =>
+          have(item)
+        ),
+      })
+        .merge(run.requirement ? run.requirement : new Requirement([], {}))
+        .maximize();
+      useFamiliar(freeFightFamiliar());
+      if (run.prepare) run.prepare();
+      adventureMacro(
+        $location`Noob Cave`,
+        Macro.if_($monster`crate`, macro)
+          .if_($monster`time-spinner prank`, Macro.kill())
+          .ifHolidayWanderer(run.macro)
+          .abort()
+      );
+    } else if (
+      crateStrategy() === "Saber" &&
+      (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
+      get("_saberForceUses") < 5
+    )
+      saberCrateIfDesired();
+    else break;
+  } while (get("lastEncounter") !== "crate");
 }

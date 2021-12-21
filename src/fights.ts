@@ -77,7 +77,6 @@ import {
   set,
   SourceTerminal,
   TunnelOfLove,
-  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -119,7 +118,12 @@ import {
 import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 import postCombatActions from "./post";
-import { crateStrategy, doingExtrovermectin, saberCrateIfDesired } from "./extrovermectin";
+import {
+  crateStrategy,
+  doingExtrovermectin,
+  initializeCrates,
+  saberCrateIfDesired,
+} from "./extrovermectin";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -255,53 +259,7 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (get("beGregariousCharges") > 0 && get("beGregariousFightsLeft") === 0) {
-    do {
-      if (property.getString("olfactedMonster") !== "crate") {
-        visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
-      }
-      if (
-        have($skill`Transcendent Olfaction`) &&
-        (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate")
-      ) {
-        if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
-        const run = findRun() ?? ltbRun;
-        setChoice(1387, 2);
-        const macro = Macro.trySkill($skill`Transcendent Olfaction`)
-          .trySkill($skill`Offer Latte to Opponent`)
-          .externalIf(
-            get("_gallapagosMonster") !== $monster`crate` &&
-              have($skill`Gallapagosian Mating Call`),
-            Macro.trySkill($skill`Gallapagosian Mating Call`)
-          )
-          .trySkill($skill`Use the Force`)
-          .step(run.macro);
-
-        new Requirement(["100 Monster Level"], {
-          forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter(
-            (item) => have(item)
-          ),
-        })
-          .merge(run.requirement ? run.requirement : new Requirement([], {}))
-          .maximize();
-        useFamiliar(freeFightFamiliar());
-        if (run.prepare) run.prepare();
-        adventureMacro(
-          $location`Noob Cave`,
-          Macro.if_($monster`crate`, macro)
-            .if_($monster`time-spinner prank`, Macro.kill())
-            .ifHolidayWanderer(run.macro)
-            .abort()
-        );
-      } else if (
-        crateStrategy() === "Saber" &&
-        (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
-        get("_saberForceUses") < 5
-      )
-        saberCrateIfDesired();
-      else break;
-    } while (get("lastEncounter") !== "crate");
-  }
+  if (doingExtrovermectin() && get("beGregariousFightsLeft") === 0) initializeCrates();
 }
 
 function startWandererCounter() {
