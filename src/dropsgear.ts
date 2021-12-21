@@ -342,9 +342,10 @@ function shavingBonus(): Map<Item, number> {
 }
 
 /**
- * Calculates whether we expect to be wearing the thumb ring for most of the day
- * This is used in calculating diets and potions, among other things
- * @returns whether we expect to be wearing the thumb ring for most of the day
+ * Calculates whether we expect to be wearing the thumb ring for most of the farming day.
+ * This is used in functions that leverage projected turns; for instance, calculating the
+ * number of turns of sweet synthesis required in our diet calcs or potion costs.
+ * @returns boolean of whether we expect to be wearing the thumb ring for much of the day
  */
 export function usingThumbRing(): boolean {
   if (!have($item`mafia thumb ring`)) {
