@@ -1807,7 +1807,7 @@ const fireExtinguishZones = [
     monster: $monster`toothless mastiff bitch`,
     item: $item`disintegrating spiky collar`,
     dropRate: 1,
-    maximize: ["1 muscle 100 max"], // Ensure mastiff is at least 100 hp
+    maximize: ["99 muscle 100 max"], // Ensure mastiff is at least 100 hp
     isOpen: () => true,
     openCost: () =>
       !have($effect`Absinthe-Minded`) ? mallPrice($item`tiny bottle of absinthe`) : 0,
