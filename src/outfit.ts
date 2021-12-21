@@ -263,3 +263,17 @@ export function meatOutfit(
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+
+let usingThumb: boolean | null = null;
+export function usingThumbRing(): boolean {
+  if (usingThumb === null) {
+    const gear = bonusGear("barf");
+    usingThumb = Array.from(gear.entries())
+      .filter(([item]) => have(item))
+      .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
+      .map(([item]) => item)
+      .slice(0, 2)
+      .includes($item`mafia thumb ring`);
+  }
+  return usingThumb;
+}
