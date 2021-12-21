@@ -658,7 +658,7 @@ const freeFightSources = [
   new FreeFight(
     () => get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought"),
     () => {
-      const haveEldritchEssence = have($item`eldritch essence`);
+      const haveEldritchEssence = itemAmount($item`eldritch essence`) !== 0;
       visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
       if (!handlingChoice()) throw "No choice?";
       runChoice(haveEldritchEssence ? 2 : 1);
