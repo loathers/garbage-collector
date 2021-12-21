@@ -7,6 +7,7 @@ import {
   myClass,
   myFullness,
   numericModifier,
+  setLocation,
   toSlot,
 } from "kolmafia";
 import {
@@ -16,6 +17,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $slot,
   get,
   getFoldGroup,
@@ -353,6 +355,8 @@ export function usingThumbRing(): boolean {
       const accessoryBonuses = Array.from(gear.entries()).filter(
         ([item]) => have(item) && toSlot(item) === $slot`acc1`
       );
+
+      setLocation($location`Barf Mountain`);
       const meatAccessories = Item.all()
         .filter(
           (item) => have(item) && toSlot(item) === $slot`acc1` && getModifier("Meat Drop", item) > 0
