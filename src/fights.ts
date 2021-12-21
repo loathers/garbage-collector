@@ -335,7 +335,9 @@ function startWandererCounter() {
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
-      ["Lights Out in the Kitchen", "Play Misty For Me"].includes(get("lastEncounter"))
+      ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
+        get("lastEncounter")
+      )
     );
   }
 }
