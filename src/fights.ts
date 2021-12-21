@@ -1765,8 +1765,9 @@ type fireExtinguisherZone = {
   location: Location;
   monster: Monster;
   dropRate: number;
-  open: () => boolean;
   maximize: string[];
+  open: () => boolean;
+  openCost: () => number;
 };
 const fireExtinguishZones = [
   {
@@ -1776,6 +1777,7 @@ const fireExtinguishZones = [
     dropRate: 1,
     maximize: [],
     open: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
+    openCost: () => 0,
   },
   {
     location: $location`The Ice Hotel`,
@@ -1784,6 +1786,7 @@ const fireExtinguishZones = [
     dropRate: 1,
     maximize: [],
     open: () => get("_coldAirportToday") || get("coldAirportAlways"),
+    openCost: () => 0,
   },
   {
     location: $location`The Haunted Library`,
@@ -1792,6 +1795,17 @@ const fireExtinguishZones = [
     dropRate: 1,
     maximize: ["99 monster level 100 max"], // Bookbats need up to +100 ML to survive the polar vortices
     open: () => have($item`[7302]Spookyraven library key`),
+    openCost: () => 0,
+  },
+  {
+    location: $location`The Stately Pleasure Dome`,
+    monster: $monster`toothless mastiff bitch`,
+    item: $item`disintegrating spiky collar`,
+    dropRate: 1,
+    maximize: ["1 hp 100 max"],
+    open: () => true,
+    openCost: () =>
+      !have($effect`Absinthe-Minded`) ? mallPrice($item`tiny bottle of absinthe`) : 0,
   },
   {
     location: $location`Twin Peak`,
@@ -1800,6 +1814,7 @@ const fireExtinguishZones = [
     dropRate: 0.5,
     maximize: ["99 monster level 11 max"], // Topiary animals need an extra 11 HP to survive polar vortices
     open: () => myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
+    openCost: () => 0,
   },
 ] as fireExtinguisherZone[];
 
@@ -1807,9 +1822,12 @@ let bestFireExtinguisherZoneCached: fireExtinguisherZone | undefined = undefined
 function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
   if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
   const targets = fireExtinguishZones.filter((zone) => zone.open() && !isBanished(zone.monster));
-  bestFireExtinguisherZoneCached = targets.sort(
-    (a, b) => b.dropRate * getSaleValue(b.item) - a.dropRate * getSaleValue(a.item)
-  )[0];
+  const vorticesAvail = Math.floor(get("_fireExtinguisherCharge") / 10);
+  bestFireExtinguisherZoneCached = targets.sort((a, b) => {
+    const B = b.dropRate * getSaleValue(b.item);
+    const A = a.dropRate * getSaleValue(a.item);
+    return B * vorticesAvail - b.openCost() - (A * vorticesAvail - a.openCost());
+  })[0];
   return bestFireExtinguisherZoneCached;
 }
 
