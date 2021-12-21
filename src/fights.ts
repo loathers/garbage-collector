@@ -225,7 +225,7 @@ function embezzlerSetup() {
     });
   }
 
-  if (!get("_enamorangs") && !itemAmount($item`LOV Enamorang`) && averageEmbezzlerNet > 20000) {
+  if (!get("_enamorangs") && !have($item`LOV Enamorang`) && averageEmbezzlerNet > 20000) {
     retrieveItem($item`LOV Enamorang`);
   }
 
@@ -658,7 +658,7 @@ const freeFightSources = [
   new FreeFight(
     () => get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought"),
     () => {
-      const haveEldritchEssence = itemAmount($item`eldritch essence`) !== 0;
+      const haveEldritchEssence = have($item`eldritch essence`);
       visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
       if (!handlingChoice()) throw "No choice?";
       runChoice(haveEldritchEssence ? 2 : 1);

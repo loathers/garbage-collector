@@ -4,7 +4,6 @@ import {
   getWorkshed,
   haveEffect,
   haveSkill,
-  itemAmount,
   myClass,
   myEffects,
   myLevel,
@@ -102,7 +101,7 @@ export function meatMood(urKels = false): Mood {
     cliExecute("concert optimist primal");
   }
 
-  if (itemAmount($item`Bird-a-Day calendar`) > 0) {
+  if (have($item`Bird-a-Day calendar`)) {
     if (!have($skill`Seek out a Bird`)) {
       use(1, $item`Bird-a-Day calendar`);
     }

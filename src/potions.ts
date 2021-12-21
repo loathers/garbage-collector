@@ -5,7 +5,6 @@ import {
   haveEffect,
   historicalAge,
   historicalPrice,
-  itemAmount,
   itemType,
   mallPrice,
   numericModifier,
@@ -375,7 +374,7 @@ export function bathroomFinance(embezzlers: number): void {
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
   if (touristGross + embezzlerGross > mallPrice(greenspan)) {
     acquire(1, greenspan, touristGross + embezzlerGross);
-    if (itemAmount(greenspan) > 0) {
+    if (have(greenspan)) {
       print(`Using ${greenspan}!`, "blue");
       use(greenspan);
     }

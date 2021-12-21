@@ -10,7 +10,6 @@ import {
   haveEffect,
   haveEquipped,
   inebrietyLimit,
-  itemAmount,
   mallPrice,
   myClass,
   myFamiliar,
@@ -365,9 +364,9 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
   const dropValues = [
     100, // 80 - 120 meat
     ...[
-      itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
-      itemAmount($item`sand dollar`) > 0 ? getSaleValue($item`sand dollar`) : 0, // This should be closeted
-      itemAmount($item`Freddy Kruegerand`) > 0
+      have($item`hobo nickel`) ? 100 : 0, // This should be closeted
+      have($item`sand dollar`) ? getSaleValue($item`sand dollar`) : 0, // This should be closeted
+      have($item`Freddy Kruegerand`)
         ? Math.max(
             getSaleValue($item`bottle of Bloodweiser`) / 200,
             getSaleValue($item`electric Kool-Aid`) / 200,
