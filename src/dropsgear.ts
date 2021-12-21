@@ -343,6 +343,7 @@ function shavingBonus(): Map<Item, number> {
 
 /**
  * Calculates whether we expect to be wearing the thumb ring for most of the day
+ * This is used in calculating diets and potions, among other things
  * @returns whether we expect to be wearing the thumb ring for most of the day
  */
 export function usingThumbRing(): boolean {
