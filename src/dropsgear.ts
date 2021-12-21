@@ -337,3 +337,21 @@ function shavingBonus(): Map<Item, number> {
   const bonusValue = (baseMeat * 100 + 72 * 50) / 100;
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
+
+let usingThumb: boolean | null = null;
+export function usingThumbRing(): boolean {
+  if (usingThumb === null) {
+    if (!have($item`mafia thumb ring`)) {
+      usingThumb = false;
+    } else {
+      const gear = bonusGear("barf");
+      usingThumb = Array.from(gear.entries())
+        .filter(([item]) => have(item))
+        .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
+        .map(([item]) => item)
+        .slice(0, 2)
+        .includes($item`mafia thumb ring`);
+    }
+  }
+  return usingThumb;
+}
