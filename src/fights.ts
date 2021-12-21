@@ -283,6 +283,7 @@ function startWandererCounter() {
       const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
       if (run.prepare) run.prepare();
       if (get("beGregariousFightsLeft") > 0) {
+        //If there's a chance we hit an embezzler as we try to do this, we might as well try to get meat out of it
         meatOutfit(true, run.requirement ? [run.requirement] : []);
       } else {
         freeFightOutfit(run.requirement ? [run.requirement] : []);
@@ -296,6 +297,9 @@ function startWandererCounter() {
       ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
         get("lastEncounter")
       )
+      //We use the haunted kitchen because we don't do anything else there, it's always available, it's 100% combat, and it allows wanderers
+      //Account for lights out and semi-rare
+      //It sucks to hit the semi-rare, but SRs interact weirdly with wanderers, and it's better to know than not to know
     );
   }
 }
