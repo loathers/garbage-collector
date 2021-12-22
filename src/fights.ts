@@ -1398,7 +1398,7 @@ const freeRunFightSources = [
       propertyManager.set({ lightsOutAutomation: 2 });
       propertyManager.setChoices({
         163: 4, // Leave without taking anything
-        164: 4, // Play some volleyball
+        164: 3, // Play some volleyball
         165: 4, // Measure the caverns
         166: 1, // Go up to the crow's nest
         888: 4, // Reading is for losers. I'm outta here.
