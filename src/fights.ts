@@ -257,12 +257,12 @@ function embezzlerSetup() {
 
   if (get("beGregariousCharges") > 0 && get("beGregariousFightsLeft") === 0) {
     do {
-      if (get("olfactedMonster") !== $monster`crate`) {
+      if (property.getString("olfactedMonster") !== "crate") {
         visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
       }
       if (
         have($skill`Transcendent Olfaction`) &&
-        (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
+        (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate")
       ) {
         if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
         const run = findRun() ?? ltbRun;
@@ -335,7 +335,9 @@ function startWandererCounter() {
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
-      ["Lights Out in the Kitchen", "Play Misty For Me"].includes(get("lastEncounter"))
+      ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
+        get("lastEncounter")
+      )
     );
   }
 }
@@ -373,6 +375,9 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
           withMacro(firstChainMacro(), () =>
             fightSource.run({
               macro: firstChainMacro(),
@@ -404,6 +409,9 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
           withMacro(secondChainMacro(), () =>
             fightSource.run({
               macro: secondChainMacro(),
@@ -422,8 +430,12 @@ export function dailyFights(): void {
       let nextFight = getNextEmbezzlerFight();
       while (nextFight !== null) {
         const startTurns = totalTurnsPlayed();
-        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`))
+        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`)) {
           useSkill($skill`Musk of the Moose`);
+        }
+        if (["Macrometeorite", "Powerful Glove"].includes(nextFight.name)) {
+          saberCrateIfDesired();
+        }
         withMacro(embezzlerMacro(), () => {
           if (nextFight) {
             useFamiliar(meatFamiliar());
@@ -485,7 +497,8 @@ export function dailyFights(): void {
           kramcoGuaranteed() &&
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
           (getCounter("Romantic Monster Window End") === -1 ||
-            getCounter("Romantic Monster Window start") !== -1)
+            getCounter("Romantic Monster Window Start") > 0 ||
+            getCounter("Romantic Monster Window Start") === -1)
         ) {
           doSausage();
         }
@@ -1322,6 +1335,14 @@ const freeRunFightSources = [
       ) {
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`carnivorous potted plant`.filter((item) => have(item)),
+        }),
+      ],
     }
   ),
   new FreeFight(
@@ -1356,6 +1377,14 @@ const freeRunFightSources = [
       ) {
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`carnivorous potted plant`.filter((item) => have(item)),
+        }),
+      ],
     }
   ),
   new FreeFight(
@@ -1459,7 +1488,14 @@ const freeRunFightSources = [
       );
     },
     {
-      requirements: () => [new Requirement([], { forceEquip: $items`mayfly bait necklace` })],
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`mayfly bait necklace, carnivorous potted plant`.filter((item) =>
+            have(item)
+          ),
+        }),
+      ],
     }
   ),
 ];
@@ -1724,7 +1760,13 @@ function deliverThesis(): void {
 }
 
 function doSausage() {
-  if (!kramcoGuaranteed()) return;
+  // If sausage isn't up or we have forced crates in noob cave, return.
+  if (
+    !kramcoGuaranteed() ||
+    (get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0)
+  ) {
+    return;
+  }
   useFamiliar(freeFightFamiliar());
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
   adventureMacroAuto(
