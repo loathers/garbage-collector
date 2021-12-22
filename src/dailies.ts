@@ -43,7 +43,9 @@ import {
   $slot,
   $stat,
   $thrall,
+  BeachComb,
   ChateauMantegna,
+  clamp,
   ensureEffect,
   get,
   getModifier,
@@ -68,6 +70,7 @@ import { withStash } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
 import { digitizedMonstersRemaining } from "./wanderer";
+import comb from "./beach";
 
 export function dailySetup(): void {
   voterSetup();
@@ -88,6 +91,7 @@ export function dailySetup(): void {
   pickTea();
   refreshLatte();
   implement();
+  combBeach();
 
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`Half a Purse`);
@@ -254,6 +258,8 @@ function dailyBuffs(): void {
   if (!get("demonSummoned") && get("demonName2", false) && get("questL11Manor") === "finished") {
     cliExecute("summon Preternatural Greed");
   }
+
+  BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
 
   while (SourceTerminal.have() && SourceTerminal.getEnhanceUses() < 3) {
     cliExecute("terminal enhance meat.enh");
@@ -590,4 +596,12 @@ function pantogram(): void {
   ]).get(myPrimestat());
   visitUrl("inv_use.php?pwd&whichitem=9573");
   visitUrl(`choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1`);
+}
+
+function combBeach(): void {
+  if (!have($item`Beach Comb`)) return;
+  const combsToDo = clamp(11 - get("_freeBeachWalksUsed"), 0, 11);
+  for (let i = 1; i <= combsToDo; i++) {
+    comb();
+  }
 }
