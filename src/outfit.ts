@@ -30,7 +30,6 @@ import {
   maximizeCached,
   Requirement,
 } from "libram";
-import { Potion } from "./potions";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { baseMeat } from "./lib";
 
@@ -73,7 +72,6 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     ],
     bonusEquip: new Map<Item, number>([
       ...bonusEquip,
-      ...cloake(),
       ...bonusGear(equipMode),
       ...(bjornAlike
         ? new Map<Item, number>([
@@ -265,14 +263,3 @@ export function meatOutfit(
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
-
-function cloake(): Map<Item, number> {
-  if (!have($item`vampyric cloake`) || get("_vampyreCloakeFormUses") >= 10) return new Map();
-
-  const value = new Potion($item`vampyric cloake`, {
-    effect: $effect`Wolf Form`,
-    duration: 1,
-  }).gross(embezzlerCount());
-  return new Map<Item, number>([[$item`vampyric cloake`, value]]);
-}
-

@@ -33,7 +33,7 @@ import {
   FamiliarRider,
   pickRider,
 } from "libram/dist/resources/2010/CrownOfThrones";
-import { estimatedTurns } from "./embezzler";
+import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
@@ -42,6 +42,7 @@ import {
   globalOptions,
   leprechaunMultiplier,
 } from "./lib";
+import { Potion } from "./potions";
 
 /**
  * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
@@ -291,6 +292,16 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
   ]);
 }
 
+function cloake(): Map<Item, number> {
+  if (!have($item`vampyric cloake`) || get("_vampyreCloakeFormUses") >= 10) return new Map();
+
+  const value = new Potion($item`vampyric cloake`, {
+    effect: $effect`Wolf Form`,
+    duration: 1,
+  }).gross(embezzlerCount());
+  return new Map<Item, number>([[$item`vampyric cloake`, value]]);
+}
+
 /*
 This is separate from bonusGear to prevent circular references
 bonusGear() calls pantsgiving(), which calls estimatedTurns(), which calls usingThumbRing()
@@ -315,6 +326,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
     ...bagOfManyConfections(),
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
+    ...(["free", "dmt"].includes(equipMode) ? cloake() : []),
   ]);
 }
 
