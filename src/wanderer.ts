@@ -283,7 +283,7 @@ const wandererTargets = [
   new WandererTarget(
     "Default",
     () => true, // can always do default
-    () => $location`Noob Cave`,
+    () => $location`The Haunted Kitchen`,
     () => 1 // slightly lower value
   ),
 ];
@@ -304,7 +304,7 @@ export function determineDraggableZoneAndEnsureAccess(
     );
   }) || { target: wandererTargets[wandererTargets.length - 1], value: 1 };
 
-  const location = best.target.location() || $location`Noob Cave`;
+  const location = best.target.location() || $location`The Haunted Kitchen`;
   print(
     `Wandering ${best.target.name} at ${best.target.location()} for expected value ${best.value}`
   );
