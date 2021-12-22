@@ -14,7 +14,6 @@ import {
   questStep,
   SourceTerminal,
 } from "libram";
-import { acquire } from "./acquire";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions, propertyManager } from "./lib";
 
@@ -118,7 +117,7 @@ function unlock(loc: Location) {
   const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
   if (!unlockableZone) return canAdv(loc, false);
   if (unlockableZone.available()) return true;
-  if (acquire(1, unlockableZone.unlocker, WANDERER_PRICE_THRESHOLD, false) === 0) return false;
+  if (buy(1, unlockableZone.unlocker, WANDERER_PRICE_THRESHOLD) === 0) return false;
   return use(unlockableZone.unlocker);
 }
 
