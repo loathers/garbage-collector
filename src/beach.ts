@@ -723,7 +723,7 @@ function getStepLength(): number {
 }
 
 export default function comb(): void {
-  const index = getStepLength() + get("garbo_lastTileCombed", 0);
+  const index = getStepLength() + (get("garbo_lastTileCombed", 0) % 697);
   const tile = rareTiles[index];
   _comb(tile);
   set("garbo_lastTileCombed", index);
