@@ -44,6 +44,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
+import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
@@ -555,7 +556,7 @@ export function estimatedTurns(): number {
     : 0;
   const thesisAdventures = have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
   const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
-  const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
+  const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();

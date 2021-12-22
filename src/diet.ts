@@ -56,6 +56,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
+import { usingThumbRing } from "./dropsgear";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import { argmax, arrayEquals, baseMeat, globalOptions } from "./lib";
@@ -166,7 +167,7 @@ function estimatedTurnsWithOrgans(diet: [MenuItem[], number][], includeSpleen = 
     (includedItems.has($item`synthetic dog hair pill`) ? 1 : 0) -
     myInebriety();
   const spleenAvailable = spleenLimit() + (3 - get("currentMojoFilters")) - mySpleenUse();
-  const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
+  const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
   return (
     estimatedTurns() +
     thumbRingMultiplier *
