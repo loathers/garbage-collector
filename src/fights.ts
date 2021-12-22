@@ -1408,20 +1408,25 @@ const freeRunFightSources = [
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestFireExtinguisherZone() !== undefined,
+      getBestFireExtinguisherZone() !== null,
     (runSource: FreeRun) => {
       // Haunted Library is full of free noncombats
       propertyManager.set({ lightsOutAutomation: 2 });
       propertyManager.setChoices({
         163: 4, // Leave without taking anything
+        164: 3, // Play some volleyball
+        165: 4, // Measure the caverns
+        166: 1, // Go up to the crow's nest
         888: 4, // Reading is for losers. I'm outta here.
         889: 5, // Reading is for losers. I'm outta here.
       });
       const best = getBestFireExtinguisherZone();
       if (!best) throw `Unable to find fire extinguisher zone?`;
       try {
+        if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
-        Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
+        Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
+          .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
         mapMonster(best.location, best.monster);
@@ -1788,8 +1793,10 @@ type fireExtinguisherZone = {
   location: Location;
   monster: Monster;
   dropRate: number;
-  open: () => boolean;
   maximize: string[];
+  isOpen: () => boolean;
+  openCost: () => number;
+  preReq: () => void;
 };
 const fireExtinguishZones = [
   {
@@ -1798,7 +1805,9 @@ const fireExtinguishZones = [
     item: $item`transdermal smoke patch`,
     dropRate: 1,
     maximize: [],
-    open: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
+    isOpen: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
+    openCost: () => 0,
+    preReq: null,
   },
   {
     location: $location`The Ice Hotel`,
@@ -1806,7 +1815,9 @@ const fireExtinguishZones = [
     item: $item`perfect ice cube`,
     dropRate: 1,
     maximize: [],
-    open: () => get("_coldAirportToday") || get("coldAirportAlways"),
+    isOpen: () => get("_coldAirportToday") || get("coldAirportAlways"),
+    openCost: () => 0,
+    preReq: null,
   },
   {
     location: $location`The Haunted Library`,
@@ -1814,7 +1825,25 @@ const fireExtinguishZones = [
     item: $item`tattered scrap of paper`,
     dropRate: 1,
     maximize: ["99 monster level 100 max"], // Bookbats need up to +100 ML to survive the polar vortices
-    open: () => have($item`[7302]Spookyraven library key`),
+    isOpen: () => have($item`[7302]Spookyraven library key`),
+    openCost: () => 0,
+    preReq: null,
+  },
+  {
+    location: $location`The Stately Pleasure Dome`,
+    monster: $monster`toothless mastiff bitch`,
+    item: $item`disintegrating spiky collar`,
+    dropRate: 1,
+    maximize: ["99 muscle 100 max"], // Ensure mastiff is at least 100 hp
+    isOpen: () => true,
+    openCost: () =>
+      !have($effect`Absinthe-Minded`) ? mallPrice($item`tiny bottle of absinthe`) : 0,
+    preReq: () => {
+      if (!have($effect`Absinthe-Minded`)) {
+        if (!have($item`tiny bottle of absinthe`)) buy(1, $item`tiny bottle of absinthe`);
+        use($item`tiny bottle of absinthe`);
+      }
+    },
   },
   {
     location: $location`Twin Peak`,
@@ -1822,17 +1851,28 @@ const fireExtinguishZones = [
     item: $item`rusty hedge trimmers`,
     dropRate: 0.5,
     maximize: ["99 monster level 11 max"], // Topiary animals need an extra 11 HP to survive polar vortices
-    open: () => myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
+    isOpen: () =>
+      myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
+    openCost: () => 0,
+    preReq: null,
   },
 ] as fireExtinguisherZone[];
 
-let bestFireExtinguisherZoneCached: fireExtinguisherZone | undefined = undefined;
-function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
+let bestFireExtinguisherZoneCached: fireExtinguisherZone | null | undefined = undefined;
+function getBestFireExtinguisherZone(): fireExtinguisherZone | null {
   if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
-  const targets = fireExtinguishZones.filter((zone) => zone.open() && !isBanished(zone.monster));
-  bestFireExtinguisherZoneCached = targets.sort(
-    (a, b) => b.dropRate * getSaleValue(b.item) - a.dropRate * getSaleValue(a.item)
-  )[0];
+  const targets = fireExtinguishZones.filter((zone) => zone.isOpen() && !isBanished(zone.monster));
+  const vorticesAvail = Math.floor(get("_fireExtinguisherCharge") / 10);
+  const value = (zone: fireExtinguisherZone): number => {
+    return zone.dropRate * getSaleValue(zone.item) * vorticesAvail - zone.openCost();
+  };
+  bestFireExtinguisherZoneCached = targets.sort((a, b) => {
+    return value(b) - value(a);
+  })[0];
+  // If we don't find any zones or the best zone is negative value then ignore it
+  if (!bestFireExtinguisherZoneCached || value(bestFireExtinguisherZoneCached) < 1) {
+    bestFireExtinguisherZoneCached = null;
+  }
   return bestFireExtinguisherZoneCached;
 }
 
