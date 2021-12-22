@@ -252,9 +252,6 @@ export class Potion {
       }
     }
 
-    print(`POTION: Breakpoints for ${this.potion} (starting turns ${startingTurns}):`);
-    values.forEach((tier) => print(`${tier.name}: ${tier.quantity} @ ${tier.value}`));
-
     return values.filter((tier) => tier.quantity > 0);
   }
 
