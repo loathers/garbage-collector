@@ -18,6 +18,7 @@ import {
   $item,
   $items,
   $location,
+  $skill,
   $slot,
   get,
   getFoldGroup,
@@ -377,6 +378,15 @@ export function usingThumbRing(): boolean {
       accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
     }
 
+    if (
+      have($item`mafia pointer finger ring`) &&
+      ((myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) ||
+        have($item`haiku katana`) ||
+        have($item`Operation Patriot Shield`) ||
+        have($item`unwrapped knock-off retro superhero cape`))
+    ) {
+      accessoryValues.set($item`mafia pointer finger ring`, 500);
+    }
     const bestAccessories = Array.from(accessoryValues.entries())
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
       .map(([item]) => item);
