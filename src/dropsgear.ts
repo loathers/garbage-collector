@@ -290,15 +290,21 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
   ]);
 }
 
+function bonusAccessories(equipMode: BonusEquipMode): Map<Item, number> {
+  return new Map<Item, number>([
+    ...mafiaThumbRing(equipMode),
+    ...luckyGoldRing(equipMode),
+    ...mrCheengsSpectacles(),
+    ...mrScreegesSpectacles(),
+  ]);
+}
+
 export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
     ...(equipMode !== "embezzler" ? pantsgiving() : []),
     ...shavingBonus(),
-    ...mafiaThumbRing(equipMode),
-    ...luckyGoldRing(equipMode),
-    ...mrCheengsSpectacles(),
-    ...mrScreegesSpectacles(),
+    ...bonusAccessories(equipMode),
     ...pantogramPants(),
     ...bagOfManyConfections(),
     ...snowSuit(equipMode),
@@ -351,10 +357,8 @@ export function usingThumbRing(): boolean {
   if (!have($item`mafia thumb ring`)) {
     return false;
   } else {
-    const gear = bonusGear("barf");
-    const accessoryBonuses = Array.from(gear.entries()).filter(
-      ([item]) => have(item) && toSlot(item) === $slot`acc1`
-    );
+    const gear = bonusAccessories("barf");
+    const accessoryBonuses = Array.from(gear.entries()).filter(([item]) => have(item));
 
     setLocation($location`Barf Mountain`);
     const meatAccessories = Item.all()
