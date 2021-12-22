@@ -290,6 +290,11 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
   ]);
 }
 
+/*
+This is separate from bonusGear to prevent circular references
+bonusGear() calls pantsgiving(), which calls estimatedTurns(), which calls usingThumbRing()
+If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
+*/
 function bonusAccessories(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...mafiaThumbRing(equipMode),
