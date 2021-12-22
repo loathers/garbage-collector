@@ -496,9 +496,9 @@ export function dailyFights(): void {
         if (
           kramcoGuaranteed() &&
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
-          (getCounter("Romantic Monster Window End") === -1 ||
-            getCounter("Romantic Monster Window Start") > 0 ||
-            getCounter("Romantic Monster Window Start") === -1)
+          (getCounter("Romantic Monster Window end") === -1 ||
+            getCounter("Romantic Monster Window begin") > 0 ||
+            getCounter("Romantic Monster Window begin") === -1)
         ) {
           doSausage();
         }
