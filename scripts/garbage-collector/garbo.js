@@ -27839,7 +27839,7 @@ function dailyFights() {
         startWandererCounter();
         nextFight = getNextEmbezzlerFight();
 
-        if (kramcoGuaranteed() && !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) && ((0,external_kolmafia_.getCounter)("Romantic Monster Window End") === -1 || (0,external_kolmafia_.getCounter)("Romantic Monster Window Start") > 0 || (0,external_kolmafia_.getCounter)("Romantic Monster Window Start") === -1)) {
+        if (kramcoGuaranteed() && !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) && ((0,external_kolmafia_.getCounter)("Romantic Monster Window end") === -1 || (0,external_kolmafia_.getCounter)("Romantic Monster Window begin") > 0 || (0,external_kolmafia_.getCounter)("Romantic Monster Window begin") === -1)) {
           doSausage();
         }
       } // Check in case our prof gained enough exp during the profchains
