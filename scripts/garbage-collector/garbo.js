@@ -24050,7 +24050,7 @@ function proceedWithOrb() {
   return true;
 }
 ;// CONCATENATED MODULE: ./src/dropsgear.ts
-var dropsgear_templateObject, dropsgear_templateObject2, dropsgear_templateObject3, dropsgear_templateObject4, dropsgear_templateObject5, dropsgear_templateObject6, dropsgear_templateObject7, dropsgear_templateObject8, dropsgear_templateObject9, dropsgear_templateObject10, dropsgear_templateObject11, dropsgear_templateObject12, dropsgear_templateObject13, dropsgear_templateObject14, dropsgear_templateObject15, dropsgear_templateObject16, dropsgear_templateObject17, dropsgear_templateObject18, dropsgear_templateObject19, dropsgear_templateObject20, dropsgear_templateObject21, dropsgear_templateObject22, dropsgear_templateObject23, dropsgear_templateObject24, dropsgear_templateObject25, dropsgear_templateObject26, dropsgear_templateObject27, dropsgear_templateObject28, dropsgear_templateObject29, dropsgear_templateObject30, dropsgear_templateObject31, dropsgear_templateObject32, dropsgear_templateObject33, dropsgear_templateObject34, dropsgear_templateObject35, dropsgear_templateObject36, dropsgear_templateObject37, dropsgear_templateObject38, dropsgear_templateObject39, dropsgear_templateObject40, dropsgear_templateObject41, dropsgear_templateObject42, dropsgear_templateObject43, dropsgear_templateObject44, dropsgear_templateObject45, dropsgear_templateObject46, dropsgear_templateObject47, dropsgear_templateObject48, dropsgear_templateObject49, dropsgear_templateObject50, dropsgear_templateObject51, dropsgear_templateObject52, dropsgear_templateObject53, dropsgear_templateObject54, dropsgear_templateObject55, dropsgear_templateObject56, dropsgear_templateObject57, dropsgear_templateObject58, dropsgear_templateObject59, dropsgear_templateObject60, dropsgear_templateObject61, dropsgear_templateObject62;
+var dropsgear_templateObject, dropsgear_templateObject2, dropsgear_templateObject3, dropsgear_templateObject4, dropsgear_templateObject5, dropsgear_templateObject6, dropsgear_templateObject7, dropsgear_templateObject8, dropsgear_templateObject9, dropsgear_templateObject10, dropsgear_templateObject11, dropsgear_templateObject12, dropsgear_templateObject13, dropsgear_templateObject14, dropsgear_templateObject15, dropsgear_templateObject16, dropsgear_templateObject17, dropsgear_templateObject18, dropsgear_templateObject19, dropsgear_templateObject20, dropsgear_templateObject21, dropsgear_templateObject22, dropsgear_templateObject23, dropsgear_templateObject24, dropsgear_templateObject25, dropsgear_templateObject26, dropsgear_templateObject27, dropsgear_templateObject28, dropsgear_templateObject29, dropsgear_templateObject30, dropsgear_templateObject31, dropsgear_templateObject32, dropsgear_templateObject33, dropsgear_templateObject34, dropsgear_templateObject35, dropsgear_templateObject36, dropsgear_templateObject37, dropsgear_templateObject38, dropsgear_templateObject39, dropsgear_templateObject40, dropsgear_templateObject41, dropsgear_templateObject42, dropsgear_templateObject43, dropsgear_templateObject44, dropsgear_templateObject45, dropsgear_templateObject46, dropsgear_templateObject47, dropsgear_templateObject48, dropsgear_templateObject49, dropsgear_templateObject50, dropsgear_templateObject51, dropsgear_templateObject52, dropsgear_templateObject53, dropsgear_templateObject54, dropsgear_templateObject55, dropsgear_templateObject56, dropsgear_templateObject57, dropsgear_templateObject58, dropsgear_templateObject59, dropsgear_templateObject60, dropsgear_templateObject61;
 
 function dropsgear_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = dropsgear_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -24227,9 +24227,19 @@ function mayflowerBouquet(equipMode) {
   var averageFlowerValue = lib/* getSaleValue.apply */.xI.apply(void 0, dropsgear_toConsumableArray((0,template_string/* $items */.vS)(dropsgear_templateObject44 || (dropsgear_templateObject44 = dropsgear_taggedTemplateLiteral(["tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia"]))))) * Math.max(0.01, 0.5 - (0,property/* get */.U2)("_mayflowerDrops") * 0.11);
   return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject45 || (dropsgear_templateObject45 = dropsgear_taggedTemplateLiteral(["Mayflower bouquet"]))), ((0,property/* get */.U2)("_mayflowerDrops") < 10 ? averageFlowerValue : 0) + sporadicMeatBonus]]);
 }
+/*
+This is separate from bonusGear to prevent circular references
+bonusGear() calls pantsgiving(), which calls estimatedTurns(), which calls usingThumbRing()
+If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
+*/
+
+
+function bonusAccessories(equipMode) {
+  return new Map([].concat(dropsgear_toConsumableArray(mafiaThumbRing(equipMode)), dropsgear_toConsumableArray(luckyGoldRing(equipMode)), dropsgear_toConsumableArray(mrCheengsSpectacles()), dropsgear_toConsumableArray(mrScreegesSpectacles())));
+}
 
 function bonusGear(equipMode) {
-  return new Map([].concat(dropsgear_toConsumableArray(cheeses(equipMode === "embezzler")), dropsgear_toConsumableArray(equipMode !== "embezzler" ? pantsgiving() : []), dropsgear_toConsumableArray(shavingBonus()), dropsgear_toConsumableArray(mafiaThumbRing(equipMode)), dropsgear_toConsumableArray(luckyGoldRing(equipMode)), dropsgear_toConsumableArray(mrCheengsSpectacles()), dropsgear_toConsumableArray(mrScreegesSpectacles()), dropsgear_toConsumableArray(pantogramPants()), dropsgear_toConsumableArray(bagOfManyConfections()), dropsgear_toConsumableArray(snowSuit(equipMode)), dropsgear_toConsumableArray(mayflowerBouquet(equipMode))));
+  return new Map([].concat(dropsgear_toConsumableArray(cheeses(equipMode === "embezzler")), dropsgear_toConsumableArray(equipMode !== "embezzler" ? pantsgiving() : []), dropsgear_toConsumableArray(shavingBonus()), dropsgear_toConsumableArray(bonusAccessories(equipMode)), dropsgear_toConsumableArray(pantogramPants()), dropsgear_toConsumableArray(bagOfManyConfections()), dropsgear_toConsumableArray(snowSuit(equipMode)), dropsgear_toConsumableArray(mayflowerBouquet(equipMode))));
 }
 function bestBjornalike(existingForceEquips) {
   var bjornalikes = (0,template_string/* $items */.vS)(dropsgear_templateObject46 || (dropsgear_templateObject46 = dropsgear_taggedTemplateLiteral(["Buddy Bjorn, Crown of Thrones"])));
@@ -24274,15 +24284,15 @@ function usingThumbRing() {
   if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dropsgear_templateObject58 || (dropsgear_templateObject58 = dropsgear_taggedTemplateLiteral(["mafia thumb ring"]))))) {
     return false;
   } else {
-    var gear = bonusGear("barf");
+    var gear = bonusAccessories("barf");
     var accessoryBonuses = Array.from(gear.entries()).filter(_ref => {
       var _ref2 = dropsgear_slicedToArray(_ref, 1),
           item = _ref2[0];
 
-      return (0,lib/* have */.lf)(item) && (0,external_kolmafia_.toSlot)(item) === (0,template_string/* $slot */.Jh)(dropsgear_templateObject59 || (dropsgear_templateObject59 = dropsgear_taggedTemplateLiteral(["acc1"])));
+      return (0,lib/* have */.lf)(item);
     });
-    (0,external_kolmafia_.setLocation)((0,template_string/* $location */.PG)(dropsgear_templateObject60 || (dropsgear_templateObject60 = dropsgear_taggedTemplateLiteral(["Barf Mountain"]))));
-    var meatAccessories = Item.all().filter(item => (0,lib/* have */.lf)(item) && (0,external_kolmafia_.toSlot)(item) === (0,template_string/* $slot */.Jh)(dropsgear_templateObject61 || (dropsgear_templateObject61 = dropsgear_taggedTemplateLiteral(["acc1"]))) && modifier_get("Meat Drop", item) > 0).map(item => [item, modifier_get("Meat Drop", item) * baseMeat / 100]);
+    (0,external_kolmafia_.setLocation)((0,template_string/* $location */.PG)(dropsgear_templateObject59 || (dropsgear_templateObject59 = dropsgear_taggedTemplateLiteral(["Barf Mountain"]))));
+    var meatAccessories = Item.all().filter(item => (0,lib/* have */.lf)(item) && (0,external_kolmafia_.toSlot)(item) === (0,template_string/* $slot */.Jh)(dropsgear_templateObject60 || (dropsgear_templateObject60 = dropsgear_taggedTemplateLiteral(["acc1"]))) && modifier_get("Meat Drop", item) > 0).map(item => [item, modifier_get("Meat Drop", item) * baseMeat / 100]);
     var accessoryValues = new Map(accessoryBonuses);
 
     var _iterator = dropsgear_createForOfIteratorHelper(meatAccessories),
@@ -24318,7 +24328,7 @@ function usingThumbRing() {
 
       return item;
     });
-    return bestAccessories.slice(0, 2).includes((0,template_string/* $item */.xr)(dropsgear_templateObject62 || (dropsgear_templateObject62 = dropsgear_taggedTemplateLiteral(["mafia thumb ring"]))));
+    return bestAccessories.slice(0, 2).includes((0,template_string/* $item */.xr)(dropsgear_templateObject61 || (dropsgear_templateObject61 = dropsgear_taggedTemplateLiteral(["mafia thumb ring"]))));
   }
 }
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.from-entries.js
