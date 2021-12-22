@@ -1804,8 +1804,7 @@ function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
 function wantPills(): boolean {
   return (
     have($item`Fourth of May Cosplay Saber`) &&
-    !(crateStrategy() !== "Saber") &&
-    doingExtrovermectin() &&
+    crateStrategy() !== "Saber" &&
     clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
       clamp(availableAmount($item`distention pill`), 0, 100) +
       availableAmount($item`Map to Safety Shelter Grimace Prime`) <
