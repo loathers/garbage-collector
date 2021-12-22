@@ -293,7 +293,7 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
-    ...(equipMode === "embezzler" ? pantsgiving() : []),
+    ...(equipMode !== "embezzler" ? pantsgiving() : []),
     ...shavingBonus(),
     ...mafiaThumbRing(equipMode),
     ...luckyGoldRing(equipMode),
