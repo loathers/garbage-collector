@@ -77,7 +77,6 @@ import {
   set,
   SourceTerminal,
   TunnelOfLove,
-  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -119,7 +118,13 @@ import {
 import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 import postCombatActions from "./post";
-import { crateStrategy, doingExtrovermectin, saberCrateIfDesired } from "./extrovermectin";
+import {
+  crateStrategy,
+  doingExtrovermectin,
+  hasMonsterReplacers,
+  initializeCrates,
+  saberCrateIfDesired,
+} from "./extrovermectin";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -255,52 +260,8 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (get("beGregariousCharges") > 0 && get("beGregariousFightsLeft") === 0) {
-    do {
-      if (property.getString("olfactedMonster") !== "crate") {
-        visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
-      }
-      if (
-        have($skill`Transcendent Olfaction`) &&
-        (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate")
-      ) {
-        if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
-        const run = findRun() ?? ltbRun;
-        setChoice(1387, 2);
-        const macro = Macro.trySkill($skill`Transcendent Olfaction`)
-          .trySkill($skill`Offer Latte to Opponent`)
-          .externalIf(
-            get("_gallapagosMonster") !== $monster`crate` &&
-              have($skill`Gallapagosian Mating Call`),
-            Macro.trySkill($skill`Gallapagosian Mating Call`)
-          )
-          .trySkill($skill`Use the Force`)
-          .step(run.macro);
-
-        new Requirement(["100 Monster Level"], {
-          forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter(
-            (item) => have(item)
-          ),
-        })
-          .merge(run.requirement ? run.requirement : new Requirement([], {}))
-          .maximize();
-        useFamiliar(freeFightFamiliar());
-        if (run.prepare) run.prepare();
-        adventureMacro(
-          $location`Noob Cave`,
-          Macro.if_($monster`crate`, macro)
-            .if_($monster`time-spinner prank`, Macro.kill())
-            .ifHolidayWanderer(run.macro)
-            .abort()
-        );
-      } else if (
-        crateStrategy() === "Saber" &&
-        (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
-        get("_saberForceUses") < 5
-      )
-        saberCrateIfDesired();
-      else break;
-    } while (get("lastEncounter") !== "crate");
+  if (doingExtrovermectin() && get("beGregariousFightsLeft") === 0 && hasMonsterReplacers()) {
+    initializeCrates();
   }
 }
 
@@ -325,6 +286,7 @@ function startWandererCounter() {
       const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
       if (run.prepare) run.prepare();
       if (get("beGregariousFightsLeft") > 0) {
+        //If there's a chance we hit an embezzler as we try to do this, we might as well try to get meat out of it
         meatOutfit(true, run.requirement ? [run.requirement] : []);
       } else {
         freeFightOutfit(run.requirement ? [run.requirement] : []);
@@ -338,6 +300,9 @@ function startWandererCounter() {
       ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
         get("lastEncounter")
       )
+      //We use the haunted kitchen because we don't do anything else there, it's always available, it's 100% combat, and it allows wanderers
+      //Account for lights out and semi-rare
+      //It sucks to hit the semi-rare, but SRs interact weirdly with wanderers, and it's better to know than not to know
     );
   }
 }
@@ -1879,8 +1844,7 @@ function getBestFireExtinguisherZone(): fireExtinguisherZone | null {
 function wantPills(): boolean {
   return (
     have($item`Fourth of May Cosplay Saber`) &&
-    !(crateStrategy() !== "Saber") &&
-    doingExtrovermectin() &&
+    crateStrategy() !== "Saber" &&
     clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
       clamp(availableAmount($item`distention pill`), 0, 100) +
       availableAmount($item`Map to Safety Shelter Grimace Prime`) <
