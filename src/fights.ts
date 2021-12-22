@@ -1392,7 +1392,6 @@ const freeRunFightSources = [
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestFireExtinguisherZone() !== undefined &&
       getBestFireExtinguisherZone() !== null,
     (runSource: FreeRun) => {
       // Haunted Library is full of free noncombats
@@ -1837,7 +1836,7 @@ const fireExtinguishZones = [
 ] as fireExtinguisherZone[];
 
 let bestFireExtinguisherZoneCached: fireExtinguisherZone | null | undefined = undefined;
-function getBestFireExtinguisherZone(): fireExtinguisherZone | null | undefined {
+function getBestFireExtinguisherZone(): fireExtinguisherZone | null {
   if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
   const targets = fireExtinguishZones.filter((zone) => zone.isOpen() && !isBanished(zone.monster));
   const vorticesAvail = Math.floor(get("_fireExtinguisherCharge") / 10);
@@ -1847,8 +1846,10 @@ function getBestFireExtinguisherZone(): fireExtinguisherZone | null | undefined 
   bestFireExtinguisherZoneCached = targets.sort((a, b) => {
     return value(b) - value(a);
   })[0];
-  // Don't return a negative value zone;
-  if (value(bestFireExtinguisherZoneCached) < 1) bestFireExtinguisherZoneCached = null;
+  // If we don't find any zones or the best zone is negative value then ignore it
+  if (!bestFireExtinguisherZoneCached || value(bestFireExtinguisherZoneCached) < 1) {
+    bestFireExtinguisherZoneCached = null;
+  }
   return bestFireExtinguisherZoneCached;
 }
 
