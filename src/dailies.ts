@@ -600,8 +600,7 @@ function pantogram(): void {
 
 function combBeach(): void {
   if (!have($item`Beach Comb`)) return;
-  const combsToDo = clamp(11 - get("_freeBeachWalksUsed"), 0, 11);
-  for (let i = 1; i <= combsToDo; i++) {
+  while (get("_freeBeachWalksUsed") < 11) {
     comb();
   }
 }

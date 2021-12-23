@@ -1,4 +1,4 @@
-import { cliExecute, fileToBuffer, myId } from "kolmafia";
+import { cliExecute, fileToBuffer, gamedayToInt, myId } from "kolmafia";
 import { get, set } from "libram";
 
 type BeachTile = { minute: number; row: number; column: number };
@@ -38,6 +38,10 @@ export default function comb(): void {
   const tileList = getShuffledArray();
   const index = (get("garbo_lastTileCombed", 0) + 1) % tileList.length;
   const tile = tileList[index];
-  _comb(tile);
+  const dayOfMonth = 1 + (gamedayToInt() % 8);
+  const rowsHidden = 4 - Math.abs(4 - dayOfMonth);
+  const shouldComb = tile.row > rowsHidden;
+  if (shouldComb) _comb(tile);
   set("garbo_lastTileCombed", index);
+  return
 }
