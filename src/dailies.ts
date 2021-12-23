@@ -6,6 +6,7 @@ import {
   familiarEquippedEquipment,
   getCampground,
   getClanLounge,
+  handlingChoice,
   haveSkill,
   inebrietyLimit,
   itemAmount,
@@ -602,4 +603,5 @@ function combBeach(): void {
   while (get("_freeBeachWalksUsed") < 11) {
     comb();
   }
+  if (handlingChoice()) runChoice(5);
 }
