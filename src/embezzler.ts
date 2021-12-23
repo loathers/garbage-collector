@@ -18,6 +18,7 @@ import {
   runCombat,
   toInt,
   toMonster,
+  toUrl,
   use,
   userConfirm,
   visitUrl,
@@ -190,13 +191,13 @@ export const embezzlerSources = [
       CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
       $monster`Knob Goblin Embezzler`,
     () =>
-      (get("beGregariousCharges") > 0 ||
-        get("beGregariousFightsLeft") > 0 ||
-        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
-          $monster`Knob Goblin Embezzler`) &&
-      have($item`miniature crystal ball`)
+      (have($item`miniature crystal ball`) ? 1 : 0) *
+      get("beGregariousCharges") *
+      +(get("beGregariousFightsLeft") > 0 ||
+      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+        $monster`Knob Goblin Embezzler`
         ? 1
-        : 0,
+        : 0),
     (options: EmbezzlerFightOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       adventureMacro($location`The Dire Warren`, macro);
@@ -297,11 +298,8 @@ export const embezzlerSources = [
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 1,
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
-      get("beGregariousCharges") > 0
-        ? get("beGregariousCharges") === 0
-          ? get("beGregariousFightsLeft")
-          : 3
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+        ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
         : 0,
     (options: EmbezzlerFightOptions) => {
       adventureMacro(
@@ -310,6 +308,23 @@ export const embezzlerSources = [
           options.macro ?? embezzlerMacro()
         )
       );
+      // reset the crystal ball prediction by staring longingly at toast
+      if (
+        get("beGregariousFightsLeft") === 1 &&
+        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !==
+          $monster`Knob Goblin Embezzler`
+      ) {
+        try {
+          const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+          if (!store.includes("Check Out the Gift Shop")) {
+            print("Unable to stare longingly at toast");
+          }
+          runChoice(4);
+        } catch {
+          // orb reseting raises a mafia error
+        }
+        visitUrl("main.php");
+      }
     }
   ),
   new EmbezzlerFight(
