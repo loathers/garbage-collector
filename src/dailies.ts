@@ -76,6 +76,7 @@ import { withStash } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
 import { digitizedMonstersRemaining } from "./wanderer";
+import { doingExtrovermectin } from "./extrovermectin";
 
 export function dailySetup(): void {
   voterSetup();
@@ -495,6 +496,7 @@ function extrude(): void {
 function gin(): void {
   if (have($item`Time-Spinner`)) {
     if (
+      !doingExtrovermectin() &&
       !get("_timeSpinnerReplicatorUsed") &&
       get("timeSpinnerMedals") >= 5 &&
       get("_timeSpinnerMinutesUsed") <= 8
