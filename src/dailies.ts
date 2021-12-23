@@ -98,6 +98,7 @@ export function dailySetup(): void {
   pickCargoPocket();
   refreshLatte();
   implement();
+  comb();
 
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`Half a Purse`);
@@ -643,4 +644,10 @@ function pickCargoPocket(): void {
   if (pockets.length > 0) {
     cliExecute(`cargo ${Math.trunc(argmax(pockets))}`);
   }
+}
+
+function comb(): void {
+  if (!have($item`Beach Comb`)) return;
+  const combs = 11 - get("_freeBeachWalksUsed");
+  cliExecute(`combo ${combs}`);
 }
