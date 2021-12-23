@@ -485,9 +485,9 @@ function extrude(): void {
 }
 
 function gin(): void {
-  if (doingExtrovermectin()) return;
   if (have($item`Time-Spinner`)) {
     if (
+      !doingExtrovermectin() &&
       !get("_timeSpinnerReplicatorUsed") &&
       get("timeSpinnerMedals") >= 5 &&
       get("_timeSpinnerMinutesUsed") <= 8
