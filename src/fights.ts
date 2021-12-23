@@ -1840,14 +1840,11 @@ function getBestFireExtinguisherZone(): fireExtinguisherZone | null {
   return bestFireExtinguisherZoneCached;
 }
 
+const haveEnoughPills =
+  clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
+    clamp(availableAmount($item`distention pill`), 0, 100) +
+    availableAmount($item`Map to Safety Shelter Grimace Prime`) <
+    200 && availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60;
 function wantPills(): boolean {
-  return (
-    have($item`Fourth of May Cosplay Saber`) &&
-    crateStrategy() !== "Saber" &&
-    clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
-      clamp(availableAmount($item`distention pill`), 0, 100) +
-      availableAmount($item`Map to Safety Shelter Grimace Prime`) <
-      200 &&
-    availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60
-  );
+  return have($item`Fourth of May Cosplay Saber`) && crateStrategy() !== "Saber" && haveEnoughPills;
 }
