@@ -21,7 +21,6 @@ import {
   myPrimestat,
   myThrall,
   pickedPockets,
-  pickPocket,
   pocketItems,
   pocketMeat,
   print,
@@ -619,12 +618,12 @@ function pickCargoPocket(): void {
     if (pocket in items) {
       value += Object.entries(pocketItems(pocket))
         .map(([item, count]) => getSaleValue(toItem(item)) * count)
-        .reduce((prev, cur) => prev + cur);
+        .reduce((prev, cur) => prev + cur, 0);
     }
     if (pocket in meats) {
       value += Object.values(pocketMeat(pocket))
         .map((x) => parseInt(x))
-        .reduce((prev, cur) => prev + cur);
+        .reduce((prev, cur) => prev + cur, 0);
     }
     if (pocket in scraps) {
       value += 200;
@@ -641,7 +640,6 @@ function pickCargoPocket(): void {
   }
 
   if (pockets.length > 0) {
-    abort(`Will pick pocket ${argmax(pockets)}`);
-    //pickPocket(argmax(pockets));
+    cliExecute(`cargo ${Math.trunc(argmax(pockets))}`);
   }
 }
