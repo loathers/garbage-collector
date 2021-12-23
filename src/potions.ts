@@ -239,7 +239,7 @@ export class Potion {
       // if ascending, break those turns that are not fully covered by a potion into their own value
       const remainingTurns = Math.max(0, totalTurns - embezzlerCoverage - startingTurns);
 
-      const barfQuantity = this.usesToCover(remainingTurns, ascending);
+      const barfQuantity = this.usesToCover(remainingTurns, !ascending);
       values.push({ name: "barf", quantity: limitFunction(barfQuantity), value: this.gross(0) });
 
       if (globalOptions.ascending && this.overage(remainingTurns, barfQuantity) <= 0) {

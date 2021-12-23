@@ -1,7 +1,5 @@
 import { canAdv } from "canadv.ash";
 import {
-  abort,
-  // abort,
   availableAmount,
   chew,
   cliExecute,
@@ -45,8 +43,6 @@ import {
   $skill,
   clamp,
   Diet,
-  dietExpectedAdventures,
-  dietExpectedValue,
   get,
   getAverageAdventures,
   getSaleValue,
@@ -55,7 +51,6 @@ import {
   maximizeCached,
   MayoClinic,
   MenuItem,
-  planDiet,
   set,
   sum,
 } from "libram";
@@ -320,7 +315,7 @@ function menu(): MenuItem<string>[] {
     new MenuItem<string>($item`blood-drive sticker`),
 
     // HELPERS
-    //...spleenCleaners.map((item) => new MenuItem<string>(item)),
+    ...spleenCleaners.map((item) => new MenuItem<string>(item)),
     ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<string>(item)),
     new MenuItem<string>($item`distention pill`),
     new MenuItem<string>($item`cuppa Voraci tea`),
@@ -366,29 +361,13 @@ function copiers() {
 
 function countCopies(diet: Diet<string>) {
   const normalGregs = have($item`miniature crystal ball`) ? 4 : 3;
-  const firstGregarious = diet.some((menuOption) =>
-    menuOption[0].some(
+  const firstGregarious = diet.entries.some((dietEntry) =>
+    dietEntry.menuItems.some(
       (menuItem) => menuItem.item === $item`Extrovermectin™` && menuItem.data === "first gregarious"
     )
   );
-  const otherGregarious = sum(diet, (menuOption) =>
-    menuOption[0].some(
-      (menuItem) =>
-        menuItem.item === $item`Extrovermectin™` && menuItem.data === "additional gregarious"
-    )
-      ? normalGregs * menuOption[1]
-      : 0
-  );
-  const pillkeeperSemirare = diet.filter((menuOption) =>
-    menuOption[0].some(
-      (menuItem) =>
-        menuItem.item === $item`Eight Days a Week Pill Keeper` && menuItem.data === "semirare"
-    )
-  ).length;
 
-  print(`Embezzler Copies ${(firstGregarious ? 1 : 0) * expectedGregs()} + ${otherGregarious}`);
-
-  return (firstGregarious ? 1 : 0) * expectedGregs() + otherGregarious + 0;
+  return (firstGregarious ? 1 : 0) * expectedGregs();
 }
 
 /**
@@ -496,12 +475,12 @@ function balanceMenu(baseMenu: MenuItem<string>[], dietPlanner: DietPlanner): Me
         menu,
         iterations - 1,
         countCopies(balancingDiet),
-        dietExpectedAdventures(balancingDiet)
+        balancingDiet.expectedAdventures()
       );
     }
   }
   const baseDiet = dietPlanner(baseMenu);
-  return rebalance(baseMenu, 5, 0, dietExpectedAdventures(baseDiet));
+  return rebalance(baseMenu, 5, 0, baseDiet.expectedAdventures());
 }
 
 export function computeDiet(): {
@@ -511,15 +490,9 @@ export function computeDiet(): {
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
-  const fullDietPlanner = (menu: MenuItem<string>[]) =>
-    planDiet<string>(MPA, menu, [
-      ["food", null],
-      ["booze", null],
-      ["spleen item", null],
-    ]);
-
-  const shotglassDietPlanner = (menu: MenuItem<string>[]) => planDiet(MPA, menu, [["booze", 1]]);
-  const pantsgivingDietPlanner = (menu: MenuItem<string>[]) => planDiet(MPA, menu, [["food", 1]]);
+  const fullDietPlanner = (menu: MenuItem<string>[]) => Diet.plan(MPA, menu);
+  const shotglassDietPlanner = (menu: MenuItem<string>[]) => Diet.plan(MPA, menu, { booze: 1 });
+  const pantsgivingDietPlanner = (menu: MenuItem<string>[]) => Diet.plan(MPA, menu, { food: 1 });
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
@@ -542,20 +515,27 @@ export function computeDiet(): {
 }
 
 function printDiet(diet: Diet<string>) {
-  let totalCost = 0;
-  for (const [menuItems, count] of diet) {
-    if (count === 0) continue;
-    const item = menuItems[menuItems.length - 1];
-    const maxstr = item.maximum ? ` max ${item.maximum}` : "";
-    const helpers = menuItems.length > 1 ? ` with ${menuItems.slice(0, -1).join(", ")}` : "";
-    const cost = sum(menuItems, (i) => i.price());
-    const addedValue = item.additionalValue ? ` (additional value: ${item.additionalValue})` : "";
-    const note = item.data ?? "";
-    const size = item.size;
-    print(`${count} ${item.item}${maxstr}${helpers}${addedValue} ${cost}:${size} ${note}`);
-    totalCost += cost * count;
+  const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
+  const adventures = Math.floor(estimatedTurns() + diet.expectedAdventures());
+  print(`Planning to fight ${embezzlers} embezzlers and run ${adventures} adventures`);
+
+  for (const dietEntry of diet.entries) {
+    if (dietEntry.quantity === 0) continue;
+    const target = dietEntry.target();
+    const datastr = target.data ? `(${target.data})` : "";
+    const maxstr = target.maximum ? ` (max ${target.maximum})` : "";
+    const helpersstr =
+      dietEntry.helpers().length > 0 ? ` helpers: ${dietEntry.helpers().join(", ")}` : "";
+    const addvalstr = target.additionalValue
+      ? ` (additional value: ${target.additionalValue})`
+      : "";
+    const valuestr = `value: ${Math.floor(
+      dietEntry.expectedValue(MPA, diet)
+    )}${addvalstr} price: ${Math.floor(dietEntry.expectedPrice())}`;
+    print(`${dietEntry.quantity}${maxstr} ${target}${datastr}${helpersstr} ${valuestr}`);
   }
-  const totalValue = dietExpectedValue(MPA, diet);
+  const totalValue = diet.expectedValue(MPA);
+  const totalCost = diet.expectedPrice();
   const netValue = totalValue - totalCost;
   print(
     `Assuming MPA of ${MPA}. Total Cost: ${totalCost}, Total Value ${totalValue}, Net Value ${netValue}`
@@ -578,27 +558,23 @@ function itemPriority(menuItems: MenuItem<string>[]) {
 }
 
 export function consumeDiet(diet: Diet<string>): void {
+  diet = diet.copy();
   print();
-
-  const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
-  const adventures = Math.floor(estimatedTurns() + dietExpectedAdventures(diet));
-
-  print(`Planning to fight ${embezzlers} embezzlers and run ${adventures} adventures`);
   print("===== PLANNED DIET =====");
   printDiet(diet);
   print();
 
-  diet.sort(([x], [y]) => -(itemPriority(x) - itemPriority(y)));
+  diet.entries.sort((a, b) => -(itemPriority(a.menuItems) - itemPriority(b.menuItems)));
 
-  const seasoningCount = sum(diet, ([menuItems, count]) =>
-    menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`) ? count : 0
+  const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
+    menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`) ? quantity : 0
   );
   acquire(seasoningCount, $item`Special Seasoning`, MPA);
 
   // Fill organs in rounds, making sure we're making progress in each round.
   const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
   let lastOrgans = [-1, -1, -1];
-  while (sum(diet, ([, count]) => count) > 0) {
+  while (sum(diet.entries, ({ quantity }) => quantity) > 0) {
     if (arrayEquals(lastOrgans, organs())) {
       print();
       print("==== REMAINING DIET BEFORE ERROR ====");
@@ -608,11 +584,11 @@ export function consumeDiet(diet: Diet<string>): void {
     }
     lastOrgans = organs();
 
-    for (const itemCount of diet) {
-      const [menuItems, count] = itemCount;
-      if (count === 0) continue;
+    for (const dietEntry of diet.entries) {
+      const { menuItems, quantity } = dietEntry;
+      if (quantity === 0) continue;
 
-      let countToConsume = count;
+      let countToConsume = quantity;
       if (menuItems.some((menuItem) => spleenCleaners.includes(menuItem.item))) {
         countToConsume = Math.min(countToConsume, Math.floor(mySpleenUse() / 5));
       }
@@ -662,37 +638,45 @@ export function consumeDiet(diet: Diet<string>): void {
           consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
         }
       }
-      itemCount[1] -= countToConsume;
+      dietEntry.quantity -= countToConsume;
     }
   }
 }
 
-export function runDiet(): void {
-  pillCheck();
-
-  nonOrganAdventures();
-
+export function runDiet(simulate: boolean = false): void {
   if (myFamiliar() === $familiar`Stooper`) {
     useFamiliar($familiar`none`);
   }
 
-  if (have($item`astral six-pack`)) {
-    use($item`astral six-pack`);
-  }
-
   const dietBuilder = computeDiet();
 
-  if (!get("_mimeArmyShotglassUsed")) {
-    consumeDiet(dietBuilder.shotglass());
-  }
+  if (simulate) {
+    if (!get("_mimeArmyShotglassUsed")) {
+      printDiet(dietBuilder.shotglass());
+    }
 
-  if (
-    get("barrelShrineUnlocked") &&
-    !get("_barrelPrayer") &&
-    $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
-  ) {
-    cliExecute("barrelprayer buff");
-  }
+    print("===== SIMULATED DIET =====");
+    printDiet(dietBuilder.diet());
+  } else {
+    pillCheck();
 
-  consumeDiet(dietBuilder.diet());
+    nonOrganAdventures();
+
+    if (have($item`astral six-pack`)) {
+      use($item`astral six-pack`);
+    }
+    if (!get("_mimeArmyShotglassUsed")) {
+      consumeDiet(dietBuilder.shotglass());
+    }
+
+    if (
+      get("barrelShrineUnlocked") &&
+      !get("_barrelPrayer") &&
+      $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
+    ) {
+      cliExecute("barrelprayer buff");
+    }
+
+    consumeDiet(dietBuilder.diet());
+  }
 }

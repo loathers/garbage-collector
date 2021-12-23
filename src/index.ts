@@ -258,6 +258,7 @@ export function main(argString = ""): void {
   }
 
   const args = argString.split(" ");
+  let simulateDiet = false;
   for (const arg of args) {
     if (arg.match(/\d+/)) {
       const adventureCount = parseInt(arg, 10);
@@ -273,11 +274,19 @@ export function main(argString = ""): void {
     } else if (arg.match(/help/i)) {
       printHelpMenu();
       return;
+    } else if (arg.match(/simdiet/)) {
+      simulateDiet = true;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
       return;
     }
   }
+
+  if (simulateDiet) {
+    runDiet(true);
+    return;
+  }
+
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
