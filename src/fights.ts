@@ -1729,7 +1729,6 @@ function deliverThesis(): void {
 }
 
 function doSausage() {
-  // If sausage isn't up or we have forced crates in noob cave, return.
   if (!kramcoGuaranteed()) {
     return;
   }
