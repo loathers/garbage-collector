@@ -28848,7 +28848,6 @@ function dailies_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings
 
 
 
-
 function dailySetup() {
   voterSetup();
   martini();
@@ -29202,7 +29201,7 @@ function extrude() {
 
 function gin() {
   if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailies_templateObject101 || (dailies_templateObject101 = dailies_taggedTemplateLiteral(["Time-Spinner"]))))) {
-    if (!doingExtrovermectin() && !(0,property/* get */.U2)("_timeSpinnerReplicatorUsed") && (0,property/* get */.U2)("timeSpinnerMedals") >= 5 && (0,property/* get */.U2)("_timeSpinnerMinutesUsed") <= 8) {
+    if (!(0,property/* get */.U2)("_timeSpinnerReplicatorUsed") && (0,property/* get */.U2)("timeSpinnerMedals") >= 5 && (0,property/* get */.U2)("_timeSpinnerMinutesUsed") <= 8) {
       (0,external_kolmafia_.cliExecute)("FarFuture drink");
     }
   }
