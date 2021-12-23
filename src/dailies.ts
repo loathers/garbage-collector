@@ -1,4 +1,5 @@
 import {
+  abort,
   buy,
   changeMcd,
   cliExecute,
@@ -9,20 +10,28 @@ import {
   haveSkill,
   inebrietyLimit,
   itemAmount,
+  itemPockets,
   mallPrice,
   maximize,
+  meatPockets,
   myClass,
   myHp,
   myInebriety,
   myMaxhp,
   myPrimestat,
   myThrall,
+  pickedPockets,
+  pickPocket,
+  pocketItems,
+  pocketMeat,
   print,
   putCloset,
   restoreHp,
   retrieveItem,
   runChoice,
+  scrapPockets,
   toInt,
+  toItem,
   toSlot,
   use,
   useFamiliar,
@@ -57,6 +66,7 @@ import {
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import {
+  argmax,
   baseMeat,
   coinmasterPrice,
   globalOptions,
@@ -86,6 +96,7 @@ export function dailySetup(): void {
   extrude();
   internetMemeShop();
   pickTea();
+  pickCargoPocket();
   refreshLatte();
   implement();
 
@@ -590,4 +601,47 @@ function pantogram(): void {
   ]).get(myPrimestat());
   visitUrl("inv_use.php?pwd&whichitem=9573");
   visitUrl(`choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1`);
+}
+
+function pickCargoPocket(): void {
+  if (!have($item`Cargo Cultist Shorts`) || get("_cargoPocketEmptied")) return;
+
+  const picked = pickedPockets();
+  const items = itemPockets();
+  const meats = meatPockets();
+  const scraps = scrapPockets();
+
+  function pocketValue(pocket: number): number {
+    let value = 0;
+    if (pocket in picked) {
+      return value;
+    }
+    if (pocket in items) {
+      value += Object.entries(pocketItems(pocket))
+        .map(([item, count]) => getSaleValue(toItem(item)) * count)
+        .reduce((prev, cur) => prev + cur);
+    }
+    if (pocket in meats) {
+      value += Object.values(pocketMeat(pocket))
+        .map((x) => parseInt(x))
+        .reduce((prev, cur) => prev + cur);
+    }
+    if (pocket in scraps) {
+      value += 200;
+    }
+    return value;
+  }
+
+  const pockets: [number, number][] = [];
+  for (let i = 1; i <= 666; i++) {
+    const value = pocketValue(i);
+    if (value > 0) {
+      pockets.push([i, value]);
+    }
+  }
+
+  if (pockets.length > 0) {
+    abort(`Will pick pocket ${argmax(pockets)}`);
+    //pickPocket(argmax(pockets));
+  }
 }
