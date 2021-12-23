@@ -708,23 +708,34 @@ function _comb(tile: BeachTile): void {
   cliExecute(`beach wander ${minute}; beach comb ${row} ${column}`);
 }
 
-let stepLength: number;
-function getStepLength(): number {
-  if (stepLength === undefined) {
-    const id = parseInt(myId());
-    const possibleStepValues = Array(697)
-      .fill(null)
-      .map((_value, index) => index + 1)
-      .filter((value) => value % 17 !== 0 && value % 41 !== 0);
-    const index = id % possibleStepValues.length;
-    stepLength = possibleStepValues[index];
+let seed = parseInt(myId());
+function deterministicRandom(): number {
+  seed++;
+  return Math.sin(seed);
+}
+
+function deterministicShuffle<T>(array: T[]): T[] {
+  const returnValue: T[] = [];
+  while (array.length > 0) {
+    const index = Math.floor(deterministicRandom() * array.length);
+    returnValue.push(...array.splice(index));
   }
-  return stepLength;
+  return returnValue;
+}
+
+let shuffledArray: BeachTile[];
+
+function getShuffledArray(): BeachTile[] {
+  if (!shuffledArray) {
+    shuffledArray = deterministicShuffle(rareTiles);
+  }
+  return shuffledArray;
 }
 
 export default function comb(): void {
-  const index = getStepLength() + (get("garbo_lastTileCombed", 0) % 697);
-  const tile = rareTiles[index];
+  const tileList = getShuffledArray();
+  const index = (get("garbo_lastTileCombed", 0) + 1) % tileList.length;
+  const tile = tileList[index];
   _comb(tile);
   set("garbo_lastTileCombed", index);
 }
