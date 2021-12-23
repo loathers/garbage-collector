@@ -10,20 +10,27 @@ import {
   haveSkill,
   inebrietyLimit,
   itemAmount,
+  itemPockets,
   mallPrice,
   maximize,
+  meatPockets,
   myClass,
   myHp,
   myInebriety,
   myMaxhp,
   myPrimestat,
   myThrall,
+  pickedPockets,
+  pocketItems,
+  pocketMeat,
   print,
   putCloset,
   restoreHp,
   retrieveItem,
   runChoice,
+  scrapPockets,
   toInt,
+  toItem,
   toSlot,
   use,
   useFamiliar,
@@ -59,6 +66,7 @@ import {
 } from "libram";
 import { meatFamiliar } from "./familiar";
 import {
+  argmax,
   baseMeat,
   coinmasterPrice,
   globalOptions,
@@ -71,6 +79,7 @@ import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
 import { digitizedMonstersRemaining } from "./wanderer";
 import comb from "./beach";
+import { doingExtrovermectin } from "./extrovermectin";
 
 export function dailySetup(): void {
   voterSetup();
@@ -89,6 +98,7 @@ export function dailySetup(): void {
   extrude();
   internetMemeShop();
   pickTea();
+  pickCargoPocket();
   refreshLatte();
   implement();
   combBeach();
@@ -492,6 +502,7 @@ function extrude(): void {
 function gin(): void {
   if (have($item`Time-Spinner`)) {
     if (
+      !doingExtrovermectin() &&
       !get("_timeSpinnerReplicatorUsed") &&
       get("timeSpinnerMedals") >= 5 &&
       get("_timeSpinnerMinutesUsed") <= 8
@@ -604,4 +615,46 @@ function combBeach(): void {
     comb();
   }
   if (handlingChoice()) runChoice(5);
+}
+
+function pickCargoPocket(): void {
+  if (!have($item`Cargo Cultist Shorts`) || get("_cargoPocketEmptied")) return;
+
+  const picked = pickedPockets();
+  const items = itemPockets();
+  const meats = meatPockets();
+  const scraps = scrapPockets();
+
+  function pocketValue(pocket: number): number {
+    let value = 0;
+    if (pocket in picked) {
+      return value;
+    }
+    if (pocket in items) {
+      value += Object.entries(pocketItems(pocket))
+        .map(([item, count]) => getSaleValue(toItem(item)) * count)
+        .reduce((prev, cur) => prev + cur, 0);
+    }
+    if (pocket in meats) {
+      value += Object.values(pocketMeat(pocket))
+        .map((x) => parseInt(x))
+        .reduce((prev, cur) => prev + cur, 0);
+    }
+    if (pocket in scraps) {
+      value += 200;
+    }
+    return value;
+  }
+
+  const pockets: [number, number][] = [];
+  for (let i = 1; i <= 666; i++) {
+    const value = pocketValue(i);
+    if (value > 0) {
+      pockets.push([i, value]);
+    }
+  }
+
+  if (pockets.length > 0) {
+    cliExecute(`cargo ${Math.trunc(argmax(pockets))}`);
+  }
 }
