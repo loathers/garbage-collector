@@ -45,7 +45,6 @@ import {
   $thrall,
   BeachComb,
   ChateauMantegna,
-  clamp,
   ensureEffect,
   get,
   getModifier,
