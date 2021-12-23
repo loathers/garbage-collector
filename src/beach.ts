@@ -43,5 +43,5 @@ export default function comb(): void {
   const shouldComb = tile.row > rowsHidden;
   if (shouldComb) _comb(tile);
   set("garbo_lastTileCombed", index);
-  return
+  return;
 }
