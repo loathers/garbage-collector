@@ -77,7 +77,6 @@ import {
   set,
   SourceTerminal,
   TunnelOfLove,
-  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -119,7 +118,13 @@ import {
 import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 import postCombatActions from "./post";
-import { crateStrategy, doingExtrovermectin, saberCrateIfDesired } from "./extrovermectin";
+import {
+  crateStrategy,
+  doingExtrovermectin,
+  hasMonsterReplacers,
+  initializeCrates,
+  saberCrateIfDesired,
+} from "./extrovermectin";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -255,45 +260,8 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin()) {
-    do {
-      if (
-        have($skill`Transcendent Olfaction`) &&
-        (!have($effect`On the Trail`) || get("olfactedMonster") !== $monster`crate`)
-      ) {
-        if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
-        const run = findRun() ?? ltbRun;
-        const macro = Macro.trySkill($skill`Transcendent Olfaction`)
-          .trySkill($skill`Offer Latte to Opponent`)
-          .externalIf(
-            get("_gallapagosMonster") !== $monster`crate` &&
-              have($skill`Gallapagosian Mating Call`),
-            Macro.trySkill($skill`Gallapagosian Mating Call`)
-          )
-          .step(run.macro);
-
-        new Requirement(["100 Monster Level"], {
-          forceEquip: $items`latte lovers member's mug`.filter((item) => have(item)),
-        })
-          .merge(run.requirement ? run.requirement : new Requirement([], {}))
-          .maximize();
-        useFamiliar(freeFightFamiliar());
-        if (run.prepare) run.prepare();
-        adventureMacro(
-          $location`Noob Cave`,
-          Macro.if_($monster`crate`, macro)
-            .if_($monster`time-spinner prank`, Macro.kill())
-            .ifHolidayWanderer(run.macro)
-            .abort()
-        );
-      } else if (
-        crateStrategy() === "Saber" &&
-        (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
-        get("_saberForceUses") < 5
-      )
-        saberCrateIfDesired();
-      else break;
-    } while (get("lastEncounter") !== "crate");
+  if (doingExtrovermectin() && get("beGregariousFightsLeft") === 0 && hasMonsterReplacers()) {
+    initializeCrates();
   }
 }
 
@@ -310,16 +278,32 @@ function startWandererCounter() {
   )
     return;
   if (
-    (getCounters("Digitize Monster", 0, 100).trim() === "" &&
+    (getCounters("Digitize Monster", -3, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
-    (getCounters("Enamorang Monster", 0, 100).trim() === "" && get("enamorangMonster"))
+    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster"))
   ) {
     do {
-      const run = findRun() || ltbRun;
+      const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
       if (run.prepare) run.prepare();
-      freeFightOutfit(run.requirement ? [run.requirement] : []);
-      adventureMacro($location`Noob Cave`, run.macro);
-    } while (get("lastCopyableMonster") === $monster`Government agent`);
+      if (get("beGregariousFightsLeft") > 0) {
+        //If there's a chance we hit an embezzler as we try to do this, we might as well try to get meat out of it
+        meatOutfit(true, run.requirement ? [run.requirement] : []);
+      } else {
+        freeFightOutfit(run.requirement ? [run.requirement] : []);
+      }
+      adventureMacro(
+        $location`The Haunted Kitchen`,
+        Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
+      );
+    } while (
+      get("lastCopyableMonster") === $monster`Government agent` ||
+      ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
+        get("lastEncounter")
+      )
+      //We use the haunted kitchen because we don't do anything else there, it's always available, it's 100% combat, and it allows wanderers
+      //Account for lights out and semi-rare
+      //It sucks to hit the semi-rare, but SRs interact weirdly with wanderers, and it's better to know than not to know
+    );
   }
 }
 
@@ -356,6 +340,9 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
           withMacro(firstChainMacro(), () =>
             fightSource.run({
               macro: firstChainMacro(),
@@ -387,6 +374,9 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
+          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
+            saberCrateIfDesired();
+          }
           withMacro(secondChainMacro(), () =>
             fightSource.run({
               macro: secondChainMacro(),
@@ -405,8 +395,12 @@ export function dailyFights(): void {
       let nextFight = getNextEmbezzlerFight();
       while (nextFight !== null) {
         const startTurns = totalTurnsPlayed();
-        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`))
+        if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`)) {
           useSkill($skill`Musk of the Moose`);
+        }
+        if (["Macrometeorite", "Powerful Glove"].includes(nextFight.name)) {
+          saberCrateIfDesired();
+        }
         withMacro(embezzlerMacro(), () => {
           if (nextFight) {
             useFamiliar(meatFamiliar());
@@ -467,8 +461,8 @@ export function dailyFights(): void {
         if (
           kramcoGuaranteed() &&
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
-          (getCounter("Romantic Monster Window End") === -1 ||
-            getCounter("Romantic Monster Window start") !== -1)
+          (getCounter("Romantic Monster Window end") === -1 ||
+            getCounter("Romantic Monster Window begin") > 0)
         ) {
           doSausage();
         }
@@ -1305,6 +1299,14 @@ const freeRunFightSources = [
       ) {
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`carnivorous potted plant`.filter((item) => have(item)),
+        }),
+      ],
     }
   ),
   new FreeFight(
@@ -1339,6 +1341,14 @@ const freeRunFightSources = [
       ) {
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
+    },
+    {
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`carnivorous potted plant`.filter((item) => have(item)),
+        }),
+      ],
     }
   ),
   new FreeFight(
@@ -1362,20 +1372,25 @@ const freeRunFightSources = [
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestFireExtinguisherZone() !== undefined,
+      getBestFireExtinguisherZone() !== null,
     (runSource: FreeRun) => {
       // Haunted Library is full of free noncombats
       propertyManager.set({ lightsOutAutomation: 2 });
       propertyManager.setChoices({
         163: 4, // Leave without taking anything
+        164: 3, // Play some volleyball
+        165: 4, // Measure the caverns
+        166: 1, // Go up to the crow's nest
         888: 4, // Reading is for losers. I'm outta here.
         889: 5, // Reading is for losers. I'm outta here.
       });
       const best = getBestFireExtinguisherZone();
       if (!best) throw `Unable to find fire extinguisher zone?`;
       try {
+        if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
-        Macro.while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
+        Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
+          .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
         mapMonster(best.location, best.monster);
@@ -1442,7 +1457,14 @@ const freeRunFightSources = [
       );
     },
     {
-      requirements: () => [new Requirement([], { forceEquip: $items`mayfly bait necklace` })],
+      requirements: () => [
+        new Requirement([], {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip: $items`mayfly bait necklace, carnivorous potted plant`.filter((item) =>
+            have(item)
+          ),
+        }),
+      ],
     }
   ),
 ];
@@ -1707,7 +1729,13 @@ function deliverThesis(): void {
 }
 
 function doSausage() {
-  if (!kramcoGuaranteed()) return;
+  // If sausage isn't up or we have forced crates in noob cave, return.
+  if (
+    !kramcoGuaranteed() ||
+    (get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0)
+  ) {
+    return;
+  }
   useFamiliar(freeFightFamiliar());
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
   adventureMacroAuto(
@@ -1729,8 +1757,10 @@ type fireExtinguisherZone = {
   location: Location;
   monster: Monster;
   dropRate: number;
-  open: () => boolean;
   maximize: string[];
+  isOpen: () => boolean;
+  openCost: () => number;
+  preReq: () => void;
 };
 const fireExtinguishZones = [
   {
@@ -1739,7 +1769,9 @@ const fireExtinguishZones = [
     item: $item`transdermal smoke patch`,
     dropRate: 1,
     maximize: [],
-    open: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
+    isOpen: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
+    openCost: () => 0,
+    preReq: null,
   },
   {
     location: $location`The Ice Hotel`,
@@ -1747,7 +1779,9 @@ const fireExtinguishZones = [
     item: $item`perfect ice cube`,
     dropRate: 1,
     maximize: [],
-    open: () => get("_coldAirportToday") || get("coldAirportAlways"),
+    isOpen: () => get("_coldAirportToday") || get("coldAirportAlways"),
+    openCost: () => 0,
+    preReq: null,
   },
   {
     location: $location`The Haunted Library`,
@@ -1755,7 +1789,25 @@ const fireExtinguishZones = [
     item: $item`tattered scrap of paper`,
     dropRate: 1,
     maximize: ["99 monster level 100 max"], // Bookbats need up to +100 ML to survive the polar vortices
-    open: () => have($item`[7302]Spookyraven library key`),
+    isOpen: () => have($item`[7302]Spookyraven library key`),
+    openCost: () => 0,
+    preReq: null,
+  },
+  {
+    location: $location`The Stately Pleasure Dome`,
+    monster: $monster`toothless mastiff bitch`,
+    item: $item`disintegrating spiky collar`,
+    dropRate: 1,
+    maximize: ["99 muscle 100 max"], // Ensure mastiff is at least 100 hp
+    isOpen: () => true,
+    openCost: () =>
+      !have($effect`Absinthe-Minded`) ? mallPrice($item`tiny bottle of absinthe`) : 0,
+    preReq: () => {
+      if (!have($effect`Absinthe-Minded`)) {
+        if (!have($item`tiny bottle of absinthe`)) buy(1, $item`tiny bottle of absinthe`);
+        use($item`tiny bottle of absinthe`);
+      }
+    },
   },
   {
     location: $location`Twin Peak`,
@@ -1763,30 +1815,39 @@ const fireExtinguishZones = [
     item: $item`rusty hedge trimmers`,
     dropRate: 0.5,
     maximize: ["99 monster level 11 max"], // Topiary animals need an extra 11 HP to survive polar vortices
-    open: () => myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
+    isOpen: () =>
+      myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
+    openCost: () => 0,
+    preReq: null,
   },
 ] as fireExtinguisherZone[];
 
-let bestFireExtinguisherZoneCached: fireExtinguisherZone | undefined = undefined;
-function getBestFireExtinguisherZone(): fireExtinguisherZone | undefined {
+let bestFireExtinguisherZoneCached: fireExtinguisherZone | null | undefined = undefined;
+function getBestFireExtinguisherZone(): fireExtinguisherZone | null {
   if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
-  const targets = fireExtinguishZones.filter((zone) => zone.open() && !isBanished(zone.monster));
-  bestFireExtinguisherZoneCached = targets.sort(
-    (a, b) => b.dropRate * getSaleValue(b.item) - a.dropRate * getSaleValue(a.item)
-  )[0];
+  const targets = fireExtinguishZones.filter((zone) => zone.isOpen() && !isBanished(zone.monster));
+  const vorticesAvail = Math.floor(get("_fireExtinguisherCharge") / 10);
+  const value = (zone: fireExtinguisherZone): number => {
+    return zone.dropRate * getSaleValue(zone.item) * vorticesAvail - zone.openCost();
+  };
+  bestFireExtinguisherZoneCached = targets.sort((a, b) => {
+    return value(b) - value(a);
+  })[0];
+  // If we don't find any zones or the best zone is negative value then ignore it
+  if (!bestFireExtinguisherZoneCached || value(bestFireExtinguisherZoneCached) < 1) {
+    bestFireExtinguisherZoneCached = null;
+  }
   return bestFireExtinguisherZoneCached;
 }
 
 function wantPills(): boolean {
   return (
     have($item`Fourth of May Cosplay Saber`) &&
-    !(crateStrategy() !== "Saber") &&
-    doingExtrovermectin() &&
-    ((clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
+    crateStrategy() !== "Saber" &&
+    clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
       clamp(availableAmount($item`distention pill`), 0, 100) +
       availableAmount($item`Map to Safety Shelter Grimace Prime`) <
       200 &&
-      availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60) ||
-      get("questL11Worship") === "unstarted")
+    availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60
   );
 }

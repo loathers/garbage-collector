@@ -1,5 +1,6 @@
-import { equip, toMonster, useFamiliar } from "kolmafia";
+import { equip, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
+  $effect,
   $item,
   $items,
   $location,
@@ -11,7 +12,9 @@ import {
   CrystalBall,
   get,
   have,
+  property,
   Requirement,
+  uneffect,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
 import { findRun, ltbRun, setChoice } from "./lib";
@@ -45,7 +48,7 @@ export function expectedGregs(): number {
 }
 
 export function doingExtrovermectin(): boolean {
-  return get("beGregariousCharges") > 0;
+  return get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
 }
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
@@ -56,8 +59,18 @@ export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   return null;
 }
 
+export function hasMonsterReplacers(): boolean {
+  return (
+    (have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) ||
+    (have($item`Powerful Glove`) && get("_powerfulGloveBatteryPowerUsed") < 90)
+  );
+}
+
+/**
+ * Saberfriends a crate if we are able to do so.
+ */
 export function saberCrateIfDesired(): void {
-  if (crateStrategy() !== "Saber") return;
+  if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
   if (
     get("_saberForceUses") > 0 &&
     (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2)
@@ -80,6 +93,9 @@ export function saberCrateIfDesired(): void {
   }
 }
 
+/**
+ * Equip the miniature crystal ball if the current prediction is good for us.
+ */
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
@@ -94,4 +110,61 @@ export function equipOrbIfDesired(): void {
   ) {
     equip($slot`familiar`, $item`miniature crystal ball`);
   }
+}
+
+/**
+ * Pre-olfact/saber crates, for extrovermectin/gregarious reasons.
+ */
+export function initializeCrates(): void {
+  do {
+    //We use the force while olfacting sometimes, so we'll need to refresh mafia's knowledge of olfaction
+    if (property.getString("olfactedMonster") !== "crate") {
+      visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
+    }
+    //if we have olfaction, that's our primary method for ensuring crates
+    if (
+      have($skill`Transcendent Olfaction`) &&
+      (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate")
+    ) {
+      //We only get to this point if crates aren't already olfacted
+      if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
+      const run = findRun() ?? ltbRun;
+      setChoice(1387, 2); //use the force, in case we decide to use that
+
+      //Sniff the crate in as many ways as humanly possible
+      const macro = Macro.trySkill($skill`Transcendent Olfaction`)
+        .trySkill($skill`Offer Latte to Opponent`)
+        .externalIf(
+          get("_gallapagosMonster") !== $monster`crate` && have($skill`Gallapagosian Mating Call`),
+          Macro.trySkill($skill`Gallapagosian Mating Call`)
+        )
+        .trySkill($skill`Use the Force`)
+        .step(run.macro);
+
+      //equip latte and saber for lattesniff and saberfriends, if we want to
+      //Crank up ML to make sure the crate survives several rounds; we may have some passive damage
+      new Requirement(["100 Monster Level"], {
+        forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter((item) =>
+          have(item)
+        ),
+      })
+        .merge(run.requirement ? run.requirement : new Requirement([], {}))
+        .maximize();
+      useFamiliar(freeFightFamiliar());
+      if (run.prepare) run.prepare();
+      adventureMacro(
+        $location`Noob Cave`,
+        Macro.if_($monster`crate`, macro)
+          .if_($monster`time-spinner prank`, Macro.kill())
+          .ifHolidayWanderer(run.macro)
+          .abort()
+      );
+    } else if (
+      crateStrategy() === "Saber" &&
+      (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
+      get("_saberForceUses") < 5
+    )
+      saberCrateIfDesired();
+    else break; //we can break the loop if there's nothing to do
+  } while (!["crate", "Using the Force"].includes(get("lastEncounter"))); //loop until we actually hit a crate
 }

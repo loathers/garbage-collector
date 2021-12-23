@@ -56,6 +56,7 @@ import {
 } from "libram";
 import { StringProperty } from "libram/dist/propertyTypes";
 import { acquire } from "./acquire";
+import { usingThumbRing } from "./dropsgear";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import { arrayEquals, globalOptions } from "./lib";
