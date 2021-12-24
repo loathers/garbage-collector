@@ -4,3 +4,4 @@ https://github.com/Ezandora/Briefcase/branches/Release/
 https://github.com/Ezandora/Far-Future/branches/Release/
 https://svn.code.sf.net/p/therazekolmafia/canadv/code/
 https://github.com/Loathing-Associates-Scripting-Society/KoL-MineVolcano/branches/master/RELEASE/
+https://github.com/Loathing-Associates-Scripting-Society/combo/branches/release/
