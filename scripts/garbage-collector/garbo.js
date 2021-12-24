@@ -23937,7 +23937,7 @@ function determineDraggableZoneAndEnsureAccess() {
   var best = sortedTargets.find(prospect => {
     var location = prospect.target.location();
     (0,external_kolmafia_.print)("Trying to place a wanderer using ".concat(prospect.target.name), "blue");
-    return location && canWander(location, type) && unlock(location) && prospect.target.prepareTurn();
+    return location && canWander(location, type) && canAdvOrUnlock(location) && unlock(location) && prospect.target.prepareTurn();
   }) || {
     target: wandererTargets[wandererTargets.length - 1],
     value: 1
