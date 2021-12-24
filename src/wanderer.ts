@@ -300,7 +300,11 @@ export function determineDraggableZoneAndEnsureAccess(
     const location = prospect.target.location();
     print(`Trying to place a wanderer using ${prospect.target.name}`, "blue");
     return (
-      location && canWander(location, type) && unlock(location) && prospect.target.prepareTurn()
+      location &&
+      canWander(location, type) &&
+      canAdvOrUnlock(location) &&
+      unlock(location) &&
+      prospect.target.prepareTurn()
     );
   }) || { target: wandererTargets[wandererTargets.length - 1], value: 1 };
 
