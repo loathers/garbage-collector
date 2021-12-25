@@ -551,7 +551,16 @@ export function main(): void {
       .step(Macro.load())
       .submit();
   } else if (getTodaysHolidayWanderers().length !== 0) {
-    Macro.ifHolidayWanderer(Macro.basicCombat()).step(Macro.load()).submit();
+    Macro.ifHolidayWanderer(
+      Macro.externalIf(
+        haveEquipped($item`backup camera`) &&
+          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
+        Macro.step(Macro.load()),
+        Macro.basicCombat()
+      )
+    )
+      .step(Macro.load())
+      .submit();
   } else {
     Macro.load().submit();
   }
