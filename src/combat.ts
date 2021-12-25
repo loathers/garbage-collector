@@ -38,6 +38,7 @@ import {
   $thralls,
   clamp,
   get,
+  getTodaysHolidayWanderers,
   have,
   SourceTerminal,
   StrictMacro,
@@ -549,6 +550,8 @@ export function main(): void {
     Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
       .step(Macro.load())
       .submit();
+  } else if (getTodaysHolidayWanderers().length !== 0) {
+    Macro.ifHolidayWanderer(Macro.basicCombat()).step(Macro.load()).submit();
   } else {
     Macro.load().submit();
   }
