@@ -70,6 +70,7 @@ import {
   ensureEffect,
   get,
   getSaleValue,
+  getTodaysHolidayWanderers,
   have,
   maximizeCached,
   property,
@@ -297,9 +298,12 @@ function startWandererCounter() {
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
-      ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
-        get("lastEncounter")
-      )
+      [
+        "Lights Out in the Kitchen",
+        "Play Misty For Me",
+        "Wooof! Wooooooof!",
+        ...getTodaysHolidayWanderers().map((monster) => monster.name),
+      ].includes(get("lastEncounter"))
       //We use the haunted kitchen because we don't do anything else there, it's always available, it's 100% combat, and it allows wanderers
       //Account for lights out and semi-rare
       //It sucks to hit the semi-rare, but SRs interact weirdly with wanderers, and it's better to know than not to know
