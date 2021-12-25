@@ -584,6 +584,7 @@ const pygmyMacro = Macro.if_(
   )
   .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
   .if_($monster`time-spinner prank`, Macro.basicCombat())
+  .ifHolidayWanderer(Macro.basicCombat())
   .abort();
 
 function getStenchLocation() {
