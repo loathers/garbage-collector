@@ -190,7 +190,7 @@ function barfTurn() {
       ensureEffect($effect`Transpondent`);
       use($item`Map to Safety Shelter Grimace Prime`);
     } else {
-      adventureMacro(
+      adventureMacroAuto(
         location,
         Macro.externalIf(
           underwater,
