@@ -503,16 +503,19 @@ export const embezzlerSources = [
       return globalOptions.wishAnswer;
     },
     () => 0,
-    () => {
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
       acquire(1, $item`pocket wish`, WISH_VALUE);
-      visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
-      visitUrl(
-        "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
-        true,
-        true
-      );
-      visitUrl("main.php", false);
-      runCombat();
+      withMacro(macro, () => {
+        visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
+        visitUrl(
+          "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
+          true,
+          true
+        );
+        visitUrl("main.php", false);
+        runCombat();
+      });
       globalOptions.askedAboutWish = false;
     }
   ),
