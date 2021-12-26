@@ -190,15 +190,16 @@ function barfTurn() {
       ensureEffect($effect`Transpondent`);
       use($item`Map to Safety Shelter Grimace Prime`);
     } else {
-      adventureMacro(
+      adventureMacroAuto(
         location,
         Macro.externalIf(
           underwater,
-          Macro.if_(
-            $monster`Knob Goblin Embezzler`,
-            Macro.item($item`pulled green taffy`).meatKill()
-          ).abort()
-        )
+          Macro.if_($monster`Knob Goblin Embezzler`, Macro.item($item`pulled green taffy`))
+        ).meatKill(),
+        Macro.if_(
+          `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
+          Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
+        ).abort()
       );
     }
   }
