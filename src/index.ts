@@ -196,9 +196,9 @@ function barfTurn() {
           underwater,
           Macro.if_(
             $monster`Knob Goblin Embezzler`,
-            Macro.item($item`pulled green taffy`).meatKill()
-          ).abort()
-        )
+            Macro.item($item`pulled green taffy`)
+          ).meatKill()
+        ).abort()
       );
     }
   }
