@@ -554,6 +554,7 @@ export function main(): void {
     Macro.ifHolidayWanderer(
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
+          get("_backUpUses") < 11 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
         Macro.step(Macro.load()),
         Macro.basicCombat()
