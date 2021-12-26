@@ -70,7 +70,6 @@ import {
   ensureEffect,
   get,
   getSaleValue,
-  getTodaysHolidayWanderers,
   have,
   maximizeCached,
   property,
@@ -298,12 +297,9 @@ function startWandererCounter() {
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
-      [
-        "Lights Out in the Kitchen",
-        "Play Misty For Me",
-        "Wooof! Wooooooof!",
-        ...getTodaysHolidayWanderers().map((monster) => monster.name),
-      ].includes(get("lastEncounter"))
+      ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
+        get("lastEncounter")
+      )
       //We use the haunted kitchen because we don't do anything else there, it's always available, it's 100% combat, and it allows wanderers
       //Account for lights out and semi-rare
       //It sucks to hit the semi-rare, but SRs interact weirdly with wanderers, and it's better to know than not to know
@@ -584,7 +580,6 @@ const pygmyMacro = Macro.if_(
   )
   .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
   .if_($monster`time-spinner prank`, Macro.basicCombat())
-  .ifHolidayWanderer(Macro.basicCombat())
   .abort();
 
 function getStenchLocation() {
@@ -1745,9 +1740,7 @@ function doSausage() {
   freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
   adventureMacroAuto(
     determineDraggableZoneAndEnsureAccess(),
-    Macro.if_($monster`sausage goblin`, Macro.basicCombat())
-      .ifHolidayWanderer(Macro.basicCombat())
-      .abort()
+    Macro.if_($monster`sausage goblin`, Macro.basicCombat()).abort()
   );
   setAutoAttack(0);
   postCombatActions();
