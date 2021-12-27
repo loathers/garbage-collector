@@ -163,7 +163,7 @@ export const embezzlerSources = [
       get("_romanticFightsLeft") > 0 &&
       getCounter("Romantic Monster Window begin") <= 0 &&
       getCounter("Romantic Monster Window end") <= 0,
-    () => 1,
+    () => 0,
     (options: EmbezzlerFightOptions) => {
       const location =
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER);
