@@ -1579,6 +1579,12 @@ const freeKillSources = [
 
 export function freeFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
+  if (
+    get("beGregariousFightsLeft") > 0 &&
+    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+  ) {
+    return;
+  }
   visitUrl("place.php?whichplace=town_wrong");
 
   propertyManager.setChoices({
