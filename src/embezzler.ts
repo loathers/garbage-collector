@@ -47,7 +47,7 @@ import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
-import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
+import { baseMeat, globalOptions, ltbRun, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
 type EmbezzlerFightOptions = {
@@ -294,7 +294,6 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Be Gregarious",
     () =>
-      retrieveItem(1, $item`human musk`) &&
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 1,
     () =>
@@ -302,11 +301,10 @@ export const embezzlerSources = [
         ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
         : 0,
     (options: EmbezzlerFightOptions) => {
+      if (ltbRun.prepare) ltbRun.prepare();
       adventureMacro(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.item($item`human musk`)).step(
-          options.macro ?? embezzlerMacro()
-        )
+        Macro.if_($monster`fluffy bunny`, ltbRun.macro).step(options.macro ?? embezzlerMacro())
       );
       // reset the crystal ball prediction by staring longingly at toast
       if (
