@@ -122,7 +122,7 @@ function unlock(loc: Location) {
 }
 
 const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
-const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber`;
+const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak`;
 function canWander(location: Location, type: draggableFight) {
   if (type === draggableFight.BACKUP) {
     return !backupSkiplist.includes(location) && location.combatPercent >= 100;
@@ -329,6 +329,6 @@ const unsupportedChoices = new Map<Location, { [choice: number]: number | string
   [$location`The Haunted Nursery`, { [885]: 6 }],
   [$location`The Haunted Storage Room`, { [886]: 6 }],
   [$location`The Hidden Park`, { [789]: 6 }],
-  [$location`The Haunted Kitchen`, { [893]: 1 }],
   [$location`A Mob of Zeppelin Protesters`, { [1432]: 1, [857]: 2 }],
+  [$location`A-Boo Peak`, { [1430]: 2 }],
 ]);
