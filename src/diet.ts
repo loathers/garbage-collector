@@ -1,4 +1,3 @@
-import { canAdv } from "canadv.ash";
 import {
   availableAmount,
   chew,
@@ -38,7 +37,6 @@ import {
   $familiar,
   $item,
   $items,
-  $location,
   $monster,
   $skill,
   clamp,
@@ -54,9 +52,7 @@ import {
   set,
   sum,
 } from "libram";
-import { StringProperty } from "libram/dist/propertyTypes";
 import { acquire } from "./acquire";
-import { usingThumbRing } from "./dropsgear";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import { arrayEquals, globalOptions } from "./lib";
@@ -334,7 +330,7 @@ function menu(): MenuItem<string>[] {
 
 function copiers() {
   const embezzlerDifferential = 25000 - 7500;
-  const normalGregs = have($item`miniature crystal ball`) ? 4 : 3;
+  // const normalGregs = have($item`miniature crystal ball`) ? 4 : 3;
   const alreadyGregarious =
     get("beGregariousCharges") > 0 ||
     (get("beGregariousFightsLeft") > 0 &&
@@ -361,7 +357,7 @@ function copiers() {
 }
 
 function countCopies(diet: Diet<string>) {
-  const normalGregs = have($item`miniature crystal ball`) ? 4 : 3;
+  // const normalGregs = have($item`miniature crystal ball`) ? 4 : 3;
   const firstGregarious = diet.entries.some((dietEntry) =>
     dietEntry.menuItems.some(
       (menuItem) => menuItem.item === $item`Extrovermectin™` && menuItem.data === "first gregarious"
@@ -565,7 +561,7 @@ export function consumeDiet(diet: Diet<string>): void {
   printDiet(diet);
   print();
 
-  diet.entries.sort((a, b) => -(itemPriority(a.menuItems) - itemPriority(b.menuItems)));
+  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
 
   const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
     menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`) ? quantity : 0
@@ -644,7 +640,7 @@ export function consumeDiet(diet: Diet<string>): void {
   }
 }
 
-export function runDiet(simulate: boolean = false): void {
+export function runDiet(simulate = false): void {
   if (myFamiliar() === $familiar`Stooper`) {
     useFamiliar($familiar`none`);
   }
