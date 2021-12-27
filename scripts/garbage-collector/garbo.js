@@ -21822,7 +21822,9 @@ var priceCaps = {
   "cuppa Sobrie tea": 200000,
   "potion of the field gar": 50000,
   "Special Seasoning": 20000,
-  "spice melange": 500000
+  "spice melange": 500000,
+  "Ol' Scratch's salad fork": 200000,
+  "Frosty's frosty mug": 200000
 };
 function acquire(qty, item, maxPrice) {
   var throwOnFail = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
