@@ -460,7 +460,8 @@ export function dailyFights(): void {
         nextFight = getNextEmbezzlerFight();
         if (
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
-          (getCounter("Romantic Monster Window end") === -1 ||
+          ((getCounter("Romantic Monster Window end") === -1 &&
+            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
             getCounter("Romantic Monster Window begin") > 0)
         ) {
           if (kramcoGuaranteed()) doSausage();
