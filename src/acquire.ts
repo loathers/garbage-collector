@@ -20,6 +20,8 @@ const priceCaps: { [index: string]: number } = {
   "Special Seasoning": 20000,
   "spice melange": 500000,
   "mojo filter": 10000,
+  "Ol' Scratch's salad fork": 200000,
+  "Frosty's frosty mug": 200000,
 };
 
 export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
