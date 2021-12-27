@@ -29512,6 +29512,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("a1b403169f72c15602ddce8eff9372aa47c5f4a4"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -29556,6 +29557,9 @@ function main() {
         globalOptions.noBarf = true;
       } else if (arg.match(/help/i)) {
         printHelpMenu();
+        return;
+      } else if (arg.match(/version/i)) {
+        //it already printed the version above, so do nothings
         return;
       } else if (arg) {
         (0,external_kolmafia_.print)("Invalid argument ".concat(arg, " passed. Run garbo help to see valid arguments."), "red");
