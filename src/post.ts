@@ -8,7 +8,7 @@ import {
 } from "kolmafia";
 import { $item, getRemainingStomach, property } from "libram";
 import { computeDiet, consumeDiet } from "./diet";
-import { argmax, safeInterrupt, safeRestore } from "./lib";
+import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
@@ -38,7 +38,7 @@ function coldMedicineCabinet(): void {
 }
 
 function horseradish(): void {
-  if (getRemainingStomach() > 0) {
+  if (getRemainingStomach() > 0 && !globalOptions.noDiet) {
     consumeDiet(computeDiet().pantsgiving());
   }
 }

@@ -640,14 +640,14 @@ export function consumeDiet(diet: Diet<string>): void {
   }
 }
 
-export function runDiet(simulate = false): void {
+export function runDiet(): void {
   if (myFamiliar() === $familiar`Stooper`) {
     useFamiliar($familiar`none`);
   }
 
   const dietBuilder = computeDiet();
 
-  if (simulate) {
+  if (globalOptions.simulateDiet) {
     if (!get("_mimeArmyShotglassUsed")) {
       printDiet(dietBuilder.shotglass());
     }

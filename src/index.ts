@@ -264,7 +264,6 @@ export function main(argString = ""): void {
   }
 
   const args = argString.split(" ");
-  let simulateDiet = false;
   for (const arg of args) {
     if (arg.match(/\d+/)) {
       const adventureCount = parseInt(arg, 10);
@@ -281,15 +280,17 @@ export function main(argString = ""): void {
       printHelpMenu();
       return;
     } else if (arg.match(/simdiet/)) {
-      simulateDiet = true;
+      globalOptions.simulateDiet = true;
+    } else if (arg.match(/nodiet/)) {
+      globalOptions.noDiet = true;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
       return;
     }
   }
 
-  if (simulateDiet) {
-    runDiet(true);
+  if (globalOptions.simulateDiet) {
+    runDiet();
     return;
   }
 
@@ -412,7 +413,7 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        runDiet();
+        if (!globalOptions.noDiet) runDiet();
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
