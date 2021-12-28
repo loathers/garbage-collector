@@ -24115,7 +24115,7 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
   (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject126 || (_templateObject126 = embezzler_taggedTemplateLiteral(["Cobb's Knob Treasury"]))), embezzlerMacro());
 }), //These are very deliberately the last embezzler fights.
 new EmbezzlerFight("Pocket Wish", () => {
-  var potential = embezzlerCount();
+  var potential = Math.floor(embezzlerCount());
   if (potential < 1) return false;
   if ((0,property/* get */.U2)("_genieFightsUsed") >= 3) return false;
   if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
@@ -29512,7 +29512,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1499d8e8deb8ece0ed0112ff89274c3554fa0c55"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e1ce2e98f45aab1b23e113854344b21594e93382"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
