@@ -597,6 +597,14 @@ export function estimatedTurns(): number {
  * @returns the next available embezzler fight
  */
 export function getNextEmbezzlerFight(): EmbezzlerFight | null {
+  print(`Romantic Monster window begin: ${getCounter("Romantic Monster window begin")}`, "blue");
+  print(`Romantic Monster window end: ${getCounter("Romantic Monster window end")}`, "blue");
+  const willRomance =
+    getCounter("Romantic Monster window begin") <= 0 &&
+    getCounter("Romantic Monster window end") <= 0 &&
+    get("_romanticFightsLeft") > 0;
+  print(`We expect ${!willRomance ? "not" : ""} to fight a romance monster`, "blue");
+  print("YEET YEET YEET YEET THIS MAKES CTRL+F EASIER");
   for (const fight of embezzlerSources) {
     if (fight.available()) return fight;
   }
