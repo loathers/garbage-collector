@@ -24286,7 +24286,7 @@ function pantsgiving() {
   var cachedBonus = pantsgivingBonuses.get(turns);
   if (cachedBonus) return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject2 || (dropsgear_templateObject2 = dropsgear_taggedTemplateLiteral(["Pantsgiving"]))), cachedBonus]]);
   var expectedSinusTurns = (0,external_kolmafia_.getWorkshed)() === (0,template_string/* $item */.xr)(dropsgear_templateObject3 || (dropsgear_templateObject3 = dropsgear_taggedTemplateLiteral(["portable Mayo Clinic"]))) ? 100 : 50;
-  var expectedUseableSinusTurns = globalOptions.ascending ? Math.min(estimatedTurns() - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(dropsgear_templateObject4 || (dropsgear_templateObject4 = dropsgear_taggedTemplateLiteral(["Kicked in the Sinuses"])))), expectedSinusTurns, estimatedTurns() - (turns - count)) : expectedSinusTurns;
+  var expectedUseableSinusTurns = globalOptions.ascending ? (0,utils/* clamp */.uZ)(estimatedTurns() - (turns - count) - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(dropsgear_templateObject4 || (dropsgear_templateObject4 = dropsgear_taggedTemplateLiteral(["Kicked in the Sinuses"])))), 0, expectedSinusTurns) : expectedSinusTurns;
   var sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
   var fullnessValue = sinusVal + (0,property/* get */.U2)("valueOfAdventure") * 6.5 - ((0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(dropsgear_templateObject5 || (dropsgear_templateObject5 = dropsgear_taggedTemplateLiteral(["jumping horseradish"])))) + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(dropsgear_templateObject6 || (dropsgear_templateObject6 = dropsgear_taggedTemplateLiteral(["Special Seasoning"])))));
   var pantsgivingBonus = fullnessValue / (turns * 0.9);
@@ -29512,7 +29512,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8c8397cf7ec25b487b4badf0ec0d1beb37b010b1"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("6555f865573da68c4396e8e17d9252ba9ed4d0ae"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
