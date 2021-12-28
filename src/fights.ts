@@ -280,7 +280,11 @@ function startWandererCounter() {
   if (
     (getCounters("Digitize Monster", -3, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
-    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster"))
+    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster")) ||
+    (get("_romanticFightsLeft") > 0 &&
+      getCounter("Romantic Monster window begin") === -1 &&
+      getCounter("Romantic Monster window end") === -1 &&
+      getCounters("Romantic Monster window end", -1, -1).trim() === "")
   ) {
     do {
       const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
