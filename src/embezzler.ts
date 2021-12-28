@@ -484,7 +484,7 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Pocket Wish",
     () => {
-      const potential = embezzlerCount();
+      const potential = Math.floor(embezzlerCount());
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
