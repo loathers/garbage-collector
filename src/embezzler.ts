@@ -162,7 +162,9 @@ export const embezzlerSources = [
     () =>
       get("_romanticFightsLeft") > 0 &&
       getCounter("Romantic Monster window begin") <= 0 &&
-      getCounter("Romantic Monster window end") <= 0,
+      getCounter("Romantic Monster window end") <= 0 &&
+      (getCounter("Romantic Monster window end") !== -1 ||
+        getCounters("Romantic Monster window end", -1, -1).trim() !== ""),
     () => 0,
     (options: EmbezzlerFightOptions) => {
       const location =
