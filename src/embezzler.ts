@@ -218,7 +218,7 @@ export const embezzlerSources = [
           location.combatQueue.includes($monster`Knob Goblin Embezzler`.name) ||
           get("beGregariousCharges") > 0
       )
-        ? Math.min((10 - get("_timeSpinnerMinutesUsed")) / 3)
+        ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
     (options: EmbezzlerFightOptions) => {
       const macro = options.macro ?? embezzlerMacro();
