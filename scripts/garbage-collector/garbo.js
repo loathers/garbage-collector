@@ -27977,13 +27977,12 @@ function dailyFights() {
         startWandererCounter();
         nextFight = getNextEmbezzlerFight();
 
-        if (kramcoGuaranteed() && !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) && ((0,external_kolmafia_.getCounter)("Romantic Monster Window end") === -1 || (0,external_kolmafia_.getCounter)("Romantic Monster Window begin") > 0)) {
-          doSausage();
+        if (!(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) && ((0,external_kolmafia_.getCounter)("Romantic Monster Window end") === -1 || (0,external_kolmafia_.getCounter)("Romantic Monster Window begin") > 0)) {
+          if (kramcoGuaranteed()) doSausage(); // Check in case our prof gained enough exp during the profchains
+
+          if (thesisReady() && (0,property/* get */.U2)("beGregariousFightsLeft") <= 0) deliverThesis();
         }
-      } // Check in case our prof gained enough exp during the profchains
-
-
-      if (thesisReady()) deliverThesis();
+      }
     });
   }
 }
@@ -29512,7 +29511,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("6555f865573da68c4396e8e17d9252ba9ed4d0ae"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f72c20e1807ec0ee0741a19e9a4e10b0dfcf9e6c"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
