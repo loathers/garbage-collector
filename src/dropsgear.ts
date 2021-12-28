@@ -20,6 +20,7 @@ import {
   $location,
   $skill,
   $slot,
+  clamp,
   get,
   getFoldGroup,
   getModifier,
@@ -112,10 +113,10 @@ function pantsgiving() {
 
   const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
   const expectedUseableSinusTurns = globalOptions.ascending
-    ? Math.min(
-        estimatedTurns() - haveEffect($effect`Kicked in the Sinuses`),
-        expectedSinusTurns,
-        estimatedTurns() - (turns - count)
+    ? clamp(
+        estimatedTurns() - (turns - count) - haveEffect($effect`Kicked in the Sinuses`),
+        0,
+        expectedSinusTurns
       )
     : expectedSinusTurns;
   const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
