@@ -459,17 +459,15 @@ export function dailyFights(): void {
         startWandererCounter();
         nextFight = getNextEmbezzlerFight();
         if (
-          kramcoGuaranteed() &&
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
           (getCounter("Romantic Monster Window end") === -1 ||
             getCounter("Romantic Monster Window begin") > 0)
         ) {
-          doSausage();
+          if (kramcoGuaranteed()) doSausage();
+          // Check in case our prof gained enough exp during the profchains
+          if (thesisReady() && get("beGregariousFightsLeft") <= 0) deliverThesis();
         }
       }
-
-      // Check in case our prof gained enough exp during the profchains
-      if (thesisReady()) deliverThesis();
     });
   }
 }
