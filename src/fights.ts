@@ -463,10 +463,12 @@ export function dailyFights(): void {
         startWandererCounter();
         nextFight = getNextEmbezzlerFight();
         if (
-          !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
-          ((getCounter("Romantic Monster Window end") === -1 &&
-            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
-            getCounter("Romantic Monster Window begin") > 0)
+          !(
+            nextFight &&
+            ["Backup", "Digitize", "Enamorang", "Guaranteed Romantic Monster"].includes(
+              nextFight.name
+            )
+          )
         ) {
           if (kramcoGuaranteed()) doSausage();
           // Check in case our prof gained enough exp during the profchains
