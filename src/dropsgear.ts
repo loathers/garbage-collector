@@ -112,10 +112,13 @@ function pantsgiving() {
 
   const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
   const expectedUseableSinusTurns = globalOptions.ascending
-    ? Math.min(
-        estimatedTurns() - haveEffect($effect`Kicked in the Sinuses`),
-        expectedSinusTurns,
-        estimatedTurns() - (turns - count)
+    ? Math.max(
+        Math.min(
+          estimatedTurns() - haveEffect($effect`Kicked in the Sinuses`),
+          expectedSinusTurns,
+          estimatedTurns() - (turns - count)
+        ),
+        0
       )
     : expectedSinusTurns;
   const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
