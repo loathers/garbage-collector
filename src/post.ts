@@ -1,10 +1,12 @@
 import {
+  cliExecute,
   descToItem,
   eat,
   fullnessLimit,
   getWorkshed,
   mallPrice,
   myFullness,
+  reverseNumberology,
   runChoice,
   totalTurnsPlayed,
   visitUrl,
@@ -51,7 +53,17 @@ function horseradish(): void {
   }
 }
 
+function numberology(): void {
+  if (
+    Object.keys(reverseNumberology()).includes("69") &&
+    get("_universeCalculated") < get("skillLevel144")
+  ) {
+    cliExecute("numberology 69");
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
+  numberology();
   if (!skipDiet) horseradish();
   coldMedicineCabinet();
   safeInterrupt();
