@@ -474,7 +474,13 @@ export function dailyFights(): void {
         ) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
-          if (thesisReady() && get("beGregariousFightsLeft") <= 0) deliverThesis();
+          if (
+            thesisReady() &&
+            get("beGregariousFightsLeft") <= 0 &&
+            nextFight?.name !== "Orb Prediction"
+          ) {
+            deliverThesis();
+          }
         }
         startWandererCounter();
       }
