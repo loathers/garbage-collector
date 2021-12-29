@@ -460,7 +460,6 @@ export function dailyFights(): void {
         ) {
           embezzlerLog.initialEmbezzlersFought++;
         }
-        startWandererCounter();
         nextFight = getNextEmbezzlerFight();
         if (
           !(
@@ -474,6 +473,7 @@ export function dailyFights(): void {
           // Check in case our prof gained enough exp during the profchains
           if (thesisReady() && get("beGregariousFightsLeft") <= 0) deliverThesis();
         }
+        startWandererCounter();
       }
     });
   }
