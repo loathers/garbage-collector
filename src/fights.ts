@@ -450,6 +450,7 @@ export function dailyFights(): void {
             postCombatActions();
           }
         });
+
         if (
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
@@ -460,12 +461,16 @@ export function dailyFights(): void {
         ) {
           embezzlerLog.initialEmbezzlersFought++;
         }
+
         nextFight = getNextEmbezzlerFight();
+
+        const romanticMonsterPossible =
+          (getCounter("Romantic Monster Window end") === -1 &&
+            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
+          getCounter("Romantic Monster Window begin") > 0;
         if (
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
-          ((getCounter("Romantic Monster Window end") === -1 &&
-            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
-            getCounter("Romantic Monster Window begin") > 0)
+          romanticMonsterPossible
         ) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
