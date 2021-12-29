@@ -469,7 +469,7 @@ export function dailyFights(): void {
             )
           )
         ) {
-          if (kramcoGuaranteed()) doSausage();
+          doSausage();
           // Check in case our prof gained enough exp during the profchains
           if (thesisReady() && get("beGregariousFightsLeft") <= 0) deliverThesis();
         }
