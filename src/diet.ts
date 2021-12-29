@@ -56,13 +56,14 @@ import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import { arrayEquals, globalOptions } from "./lib";
-import { Potion } from "./potions";
+import { Potion, PotionTier } from "./potions";
 import synthesize from "./synthesis";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
 
 const Mayo = MayoClinic.Mayo;
+type Note = "first gregarious" | PotionTier | null;
 
 function eatSafe(qty: number, item: Item) {
   if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
@@ -253,7 +254,7 @@ const stomachLiverCleaners = new Map([
  * Generate a basic menu of high-yield items to consider
  * @returns basic menu
  */
-function menu(): MenuItem<string>[] {
+function menu(): MenuItem<Note>[] {
   const spaghettiBreakfast =
     have($item`spaghetti breakfast`) &&
     myFullness() === 0 &&
@@ -264,100 +265,88 @@ function menu(): MenuItem<string>[] {
 
   return [
     // FOOD
-    new MenuItem<string>($item`Dreadsylvanian spooky pocket`),
-    new MenuItem<string>($item`tin cup of mulligan stew`),
-    new MenuItem<string>($item`glass of raw eggs`, {
+    new MenuItem($item`Dreadsylvanian spooky pocket`),
+    new MenuItem($item`tin cup of mulligan stew`),
+    new MenuItem($item`glass of raw eggs`, {
       maximum: availableAmount($item`glass of raw eggs`),
     }),
-    new MenuItem<string>($item`Tea, Earl Grey, Hot`),
-    new MenuItem<string>($item`meteoreo`),
-    new MenuItem<string>($item`ice rice`),
-    new MenuItem<string>($item`frozen banquet`),
-    new MenuItem<string>($item`fishy fish lasagna`),
-    new MenuItem<string>($item`gnat lasagna`),
-    new MenuItem<string>($item`long pork lasagna`),
-    new MenuItem<string>($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
+    new MenuItem($item`Tea, Earl Grey, Hot`),
+    new MenuItem($item`meteoreo`),
+    new MenuItem($item`ice rice`),
+    new MenuItem($item`frozen banquet`),
+    new MenuItem($item`fishy fish lasagna`),
+    new MenuItem($item`gnat lasagna`),
+    new MenuItem($item`long pork lasagna`),
+    new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
 
     // BOOZE
-    new MenuItem<string>($item`elemental caipiroska`),
-    new MenuItem<string>($item`Dreadsylvanian grimlet`),
-    new MenuItem<string>($item`Hodgman's blanket`),
-    new MenuItem<string>($item`Sacramento wine`),
-    new MenuItem<string>($item`iced plum wine`),
-    new MenuItem<string>($item`splendid martini`),
-    new MenuItem<string>($item`Eye and a Twist`),
-    new MenuItem<string>($item`punch-drunk punch`, {
+    new MenuItem($item`elemental caipiroska`),
+    new MenuItem($item`Dreadsylvanian grimlet`),
+    new MenuItem($item`Hodgman's blanket`),
+    new MenuItem($item`Sacramento wine`),
+    new MenuItem($item`iced plum wine`),
+    new MenuItem($item`splendid martini`),
+    new MenuItem($item`Eye and a Twist`),
+    new MenuItem($item`punch-drunk punch`, {
       maximum: availableAmount($item`punch-drunk punch`),
     }),
-    new MenuItem<string>($item`blood-red mushroom wine`),
-    new MenuItem<string>($item`buzzing mushroom wine`),
-    new MenuItem<string>($item`complex mushroom wine`),
-    new MenuItem<string>($item`overpowering mushroom wine`),
-    new MenuItem<string>($item`smooth mushroom wine`),
-    new MenuItem<string>($item`swirling mushroom wine`),
-    new MenuItem<string>($item`astral pilsner`, {
+    new MenuItem($item`blood-red mushroom wine`),
+    new MenuItem($item`buzzing mushroom wine`),
+    new MenuItem($item`complex mushroom wine`),
+    new MenuItem($item`overpowering mushroom wine`),
+    new MenuItem($item`smooth mushroom wine`),
+    new MenuItem($item`swirling mushroom wine`),
+    new MenuItem($item`astral pilsner`, {
       maximum: globalOptions.ascending ? availableAmount($item`astral pilsner`) : 0,
     }),
     ...Item.all()
       .filter((item) => getIngredients(item)["perfect ice cube"])
-      .map((item) => new MenuItem<string>(item)),
+      .map((item) => new MenuItem<Note>(item)),
 
     // SPLEEN
-    new MenuItem<string>($item`octolus oculus`),
-    new MenuItem<string>($item`cute mushroom`),
-    new MenuItem<string>($item`prismatic wad`),
-    new MenuItem<string>($item`transdermal smoke patch`),
-    new MenuItem<string>($item`antimatter wad`),
-    new MenuItem<string>($item`voodoo snuff`),
-    new MenuItem<string>($item`blood-drive sticker`),
+    new MenuItem($item`octolus oculus`),
+    new MenuItem($item`cute mushroom`),
+    new MenuItem($item`prismatic wad`),
+    new MenuItem($item`transdermal smoke patch`),
+    new MenuItem($item`antimatter wad`),
+    new MenuItem($item`voodoo snuff`),
+    new MenuItem($item`blood-drive sticker`),
 
     // HELPERS
-    ...spleenCleaners.map((item) => new MenuItem<string>(item)),
-    ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<string>(item)),
-    new MenuItem<string>($item`distention pill`),
-    new MenuItem<string>($item`cuppa Voraci tea`),
-    new MenuItem<string>(Mayo.flex),
-    new MenuItem<string>(Mayo.zapine),
-    new MenuItem<string>($item`Special Seasoning`),
-    new MenuItem<string>(saladFork),
-    new MenuItem<string>(frostyMug),
-    new MenuItem<string>($item`mojo filter`),
-    new MenuItem<string>($item`pocket wish`, { maximum: 1, effect: $effect`Refined Palate` }),
-    new MenuItem<string>($item`toasted brie`, { maximum: 1 }),
-    new MenuItem<string>($item`potion of the field gar`, { maximum: 1 }),
+    new MenuItem($item`distention pill`),
+    new MenuItem($item`cuppa Voraci tea`),
+    new MenuItem(Mayo.flex),
+    new MenuItem(Mayo.zapine),
+    new MenuItem($item`Special Seasoning`),
+    new MenuItem(saladFork),
+    new MenuItem(frostyMug),
+    new MenuItem($item`mojo filter`),
+    new MenuItem($item`pocket wish`, { maximum: 1, effect: $effect`Refined Palate` }),
+    new MenuItem($item`toasted brie`, { maximum: 1 }),
+    new MenuItem($item`potion of the field gar`, { maximum: 1 }),
+
+    ...spleenCleaners.map((item) => new MenuItem<Note>(item)),
+    ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<Note>(item)),
   ];
 }
 
-function copiers() {
+function copiers(): MenuItem<Note>[] {
   const embezzlerDifferential = 25000 - 7500;
-  // const normalGregs = have($item`miniature crystal ball`) ? 4 : 3;
   const alreadyGregarious =
     get("beGregariousCharges") > 0 ||
     (get("beGregariousFightsLeft") > 0 &&
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler`);
 
   return [
-    new MenuItem<string>($item`Extrovermectin™`, {
+    new MenuItem($item`Extrovermectin™`, {
       additionalValue: expectedGregs() * embezzlerDifferential,
       maximum: alreadyGregarious ? 0 : 1,
       data: "first gregarious",
     }),
-    /*new MenuItem<string>($item`Extrovermectin™`, {
-      additionalValue: normalGregs * embezzlerDifferential,
-      data: "additional gregarious",
-    }),
-    new MenuItem<string>($item`Eight Days a Week Pill Keeper`, {
-      additionalValue: embezzlerDifferential,
-      organ: "spleen item",
-      maximum: canAdv($location`Cobb's Knob Treasury`, true) ? undefined : 0,
-      size: 3,
-      data: "semirare",
-    }),*/
   ];
 }
 
-function countCopies(diet: Diet<string>) {
-  // const normalGregs = have($item`miniature crystal ball`) ? 4 : 3;
+function countCopies(diet: Diet<Note>) {
   const firstGregarious = diet.entries.some((dietEntry) =>
     dietEntry.menuItems.some(
       (menuItem) => menuItem.item === $item`Extrovermectin™` && menuItem.data === "first gregarious"
@@ -373,15 +362,15 @@ function countCopies(diet: Diet<string>) {
  * @param turns number of turns total expecte
  */
 export function potionMenu(
-  baseMenu: MenuItem<string>[],
+  baseMenu: MenuItem<Note>[],
   embezzlers: number,
   turns: number
-): MenuItem<string>[] {
+): MenuItem<Note>[] {
   function limitedPotion(
     input: Item | Potion,
     limit?: number,
     options: { price?: number; organ?: "spleen item" | "booze" | "food"; size?: number } = {}
-  ) {
+  ): MenuItem<Note>[] {
     if (limit === 0) {
       return [];
     }
@@ -394,7 +383,7 @@ export function potionMenu(
     }
     return potion.value(embezzlers, turns, limit).map(
       (tier) =>
-        new MenuItem<string>(potion.potion, {
+        new MenuItem(potion.potion, {
           maximum: tier.quantity,
           additionalValue: tier.value,
           priceOverride: options.price,
@@ -405,7 +394,7 @@ export function potionMenu(
         })
     );
   }
-  function potion(potion: Item | Potion, options = {}) {
+  function potion(potion: Item | Potion, options = {}): MenuItem<Note>[] {
     return limitedPotion(potion, undefined, options);
   }
 
@@ -453,16 +442,16 @@ export function potionMenu(
 }
 
 interface DietPlanner {
-  (menu: MenuItem<string>[]): Diet<string>;
+  (menu: MenuItem<Note>[]): Diet<Note>;
 }
-function balanceMenu(baseMenu: MenuItem<string>[], dietPlanner: DietPlanner): MenuItem<string>[] {
+function balanceMenu(baseMenu: MenuItem<Note>[], dietPlanner: DietPlanner): MenuItem<Note>[] {
   const baseEmbezzlers = embezzlerCount();
   function rebalance(
-    menu: MenuItem<string>[],
+    menu: MenuItem<Note>[],
     iterations: number,
     embezzlers: number,
     adventures: number
-  ): MenuItem<string>[] {
+  ): MenuItem<Note>[] {
     const fullMenu = potionMenu(menu, baseEmbezzlers + embezzlers, estimatedTurns() + adventures);
     if (iterations <= 0) {
       return fullMenu;
@@ -481,15 +470,15 @@ function balanceMenu(baseMenu: MenuItem<string>[], dietPlanner: DietPlanner): Me
 }
 
 export function computeDiet(): {
-  diet: () => Diet<string>;
-  shotglass: () => Diet<string>;
-  pantsgiving: () => Diet<string>;
+  diet: () => Diet<Note>;
+  shotglass: () => Diet<Note>;
+  pantsgiving: () => Diet<Note>;
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
-  const fullDietPlanner = (menu: MenuItem<string>[]) => Diet.plan(MPA, menu);
-  const shotglassDietPlanner = (menu: MenuItem<string>[]) => Diet.plan(MPA, menu, { booze: 1 });
-  const pantsgivingDietPlanner = (menu: MenuItem<string>[]) => Diet.plan(MPA, menu, { food: 1 });
+  const fullDietPlanner = (menu: MenuItem<Note>[]) => Diet.plan(MPA, menu);
+  const shotglassDietPlanner = (menu: MenuItem<Note>[]) => Diet.plan(MPA, menu, { booze: 1 });
+  const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) => Diet.plan(MPA, menu, { food: 1 });
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
@@ -511,7 +500,8 @@ export function computeDiet(): {
   };
 }
 
-function printDiet(diet: Diet<string>) {
+function printDiet(diet: Diet<Note>) {
+  if (diet.entries.length === 0) return;
   const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
   const adventures = Math.floor(estimatedTurns() + diet.expectedAdventures());
   print(`Planning to fight ${embezzlers} embezzlers and run ${adventures} adventures`);
@@ -535,13 +525,13 @@ function printDiet(diet: Diet<string>) {
   const totalCost = diet.expectedPrice();
   const netValue = totalValue - totalCost;
   print(
-    `Assuming MPA of ${MPA}. Total Cost: ${totalCost}, Total Value ${totalValue}, Net Value ${netValue}`
+    `Assuming MPA of ${MPA}, Total Cost ${totalCost}, Total Value ${totalValue}, Net Value ${netValue}`
   );
 }
 
 // Item priority - higher means we eat it first.
 // Anything that gives a consumption buff should go first (e.g. Refined Palate).
-function itemPriority(menuItems: MenuItem<string>[]) {
+function itemPriority<T>(menuItems: MenuItem<T>[]) {
   // Last menu item is the food itself.
   const menuItem = menuItems[menuItems.length - 1];
   if (menuItem === undefined) {
@@ -554,7 +544,8 @@ function itemPriority(menuItems: MenuItem<string>[]) {
   }
 }
 
-export function consumeDiet(diet: Diet<string>): void {
+export function consumeDiet(diet: Diet<Note>): void {
+  if (diet.entries.length === 0) return;
   diet = diet.copy();
   print();
   print("===== PLANNED DIET =====");
