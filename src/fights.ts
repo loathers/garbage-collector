@@ -121,8 +121,7 @@ import postCombatActions from "./post";
 import {
   crateStrategy,
   doingExtrovermectin,
-  hasMonsterReplacers,
-  initializeCrates,
+  intializeExtrovermectinZones,
   saberCrateIfDesired,
 } from "./extrovermectin";
 
@@ -260,8 +259,8 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin() && get("beGregariousFightsLeft") === 0 && hasMonsterReplacers()) {
-    initializeCrates();
+  if (doingExtrovermectin()) {
+    intializeExtrovermectinZones();
   }
 }
 
