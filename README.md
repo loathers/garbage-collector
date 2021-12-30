@@ -13,7 +13,7 @@
     - [`simdiet` flag](#simdiet-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
-  - [Frequent Questions](#frequent-questions)
+  - [Frequent Questions](#frequent-questions) 
 
 ## Introduction
 
