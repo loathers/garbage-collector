@@ -659,7 +659,7 @@ export function runDiet(): void {
   const dietBuilder = computeDiet();
 
   if (globalOptions.simulateDiet) {
-    if (!get("_mimeArmyShotglassUsed")) {
+    if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
       printDiet(dietBuilder.shotglass());
     }
 
@@ -673,7 +673,7 @@ export function runDiet(): void {
     if (have($item`astral six-pack`)) {
       use($item`astral six-pack`);
     }
-    if (!get("_mimeArmyShotglassUsed")) {
+    if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
       consumeDiet(dietBuilder.shotglass());
     }
 
