@@ -126,7 +126,7 @@ export function maxPassiveDamage(): number {
   return vykeaMaxDamage + thrallMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
 }
 
-function shouldRedigitize() {
+export function shouldRedigitize(): boolean {
   const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
   const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
   // triangular number * 10 - 3

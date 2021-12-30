@@ -45,7 +45,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { Macro, withMacro } from "./combat";
+import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import { baseMeat, globalOptions, ltbRun, WISH_VALUE } from "./lib";
@@ -123,7 +123,8 @@ export const embezzlerMacro = (): Macro =>
         Macro.trySkill($skill`Be Gregarious`)
       )
       .externalIf(
-        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler` ||
+          shouldRedigitize(),
         Macro.tryCopier($skill`Digitize`)
       )
       .tryCopier($item`Spooky Putty sheet`)
