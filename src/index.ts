@@ -238,7 +238,7 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(25968);
-
+  print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
     //Van & Duffel's Baleet Shop
@@ -283,6 +283,9 @@ export function main(argString = ""): void {
       globalOptions.simulateDiet = true;
     } else if (arg.match(/nodiet/)) {
       globalOptions.noDiet = true;
+    } else if (arg.match(/version/i)) {
+      //it already printed the version above, so do nothings
+      return;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
       return;

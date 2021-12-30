@@ -121,8 +121,7 @@ import postCombatActions from "./post";
 import {
   crateStrategy,
   doingExtrovermectin,
-  hasMonsterReplacers,
-  initializeCrates,
+  intializeExtrovermectinZones,
   saberCrateIfDesired,
 } from "./extrovermectin";
 
@@ -260,8 +259,8 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin() && get("beGregariousFightsLeft") === 0 && hasMonsterReplacers()) {
-    initializeCrates();
+  if (doingExtrovermectin()) {
+    intializeExtrovermectinZones();
   }
 }
 
@@ -280,7 +279,11 @@ function startWandererCounter() {
   if (
     (getCounters("Digitize Monster", -3, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
-    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster"))
+    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster")) ||
+    (get("_romanticFightsLeft") > 0 &&
+      getCounter("Romantic Monster window begin") === -1 &&
+      getCounter("Romantic Monster window end") === -1 &&
+      getCounters("Romantic Monster window end", -1, -1).trim() === "")
   ) {
     do {
       const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
@@ -446,6 +449,7 @@ export function dailyFights(): void {
             postCombatActions();
           }
         });
+
         if (
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
@@ -456,20 +460,29 @@ export function dailyFights(): void {
         ) {
           embezzlerLog.initialEmbezzlersFought++;
         }
-        startWandererCounter();
+
         nextFight = getNextEmbezzlerFight();
+
+        const romanticMonsterPossible =
+          (getCounter("Romantic Monster Window end") === -1 &&
+            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
+          getCounter("Romantic Monster Window begin") > 0;
         if (
-          kramcoGuaranteed() &&
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
-          (getCounter("Romantic Monster Window end") === -1 ||
-            getCounter("Romantic Monster Window begin") > 0)
+          romanticMonsterPossible
         ) {
           doSausage();
+          // Check in case our prof gained enough exp during the profchains
+          if (
+            thesisReady() &&
+            get("beGregariousFightsLeft") <= 0 &&
+            nextFight?.name !== "Orb Prediction"
+          ) {
+            deliverThesis();
+          }
         }
+        startWandererCounter();
       }
-
-      // Check in case our prof gained enough exp during the profchains
-      if (thesisReady()) deliverThesis();
     });
   }
 }
@@ -580,6 +593,7 @@ const pygmyMacro = Macro.if_(
   )
   .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
   .if_($monster`time-spinner prank`, Macro.basicCombat())
+  .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`))
   .abort();
 
 function getStenchLocation() {
@@ -795,7 +809,7 @@ const freeFightSources = [
       retrieveItem($item`Louder Than Bomb`);
       retrieveItem($item`tennis ball`);
       retrieveItem($item`divine champagne popper`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     {
       requirements: () => [
@@ -813,7 +827,7 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     {
       requirements: () => [
@@ -834,7 +848,7 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     {
       requirements: () => [
@@ -881,7 +895,7 @@ const freeFightSources = [
         if (closetAmount($item`Bowl of Scorpions`) > 0)
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
         else retrieveItem($item`Bowl of Scorpions`);
-        adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+        adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
       }
     },
     {
@@ -905,7 +919,10 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(1, $item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, Macro.abort());
+      adventureMacroAuto(
+        $location`The Hidden Bowling Alley`,
+        Macro.if_($monster`drunk pygmy`, pygmyMacro).abort()
+      );
     },
     {
       requirements: () => [
@@ -926,7 +943,9 @@ const freeFightSources = [
       get("_timeSpinnerMinutesUsed") < 8,
     () => {
       retrieveItem($item`Bowl of Scorpions`);
-      Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`).setAutoAttack;
+      Macro.trySkill($skill`Extract`)
+        .trySkill($skill`Sing Along`)
+        .setAutoAttack();
       visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
       runChoice(1);
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
