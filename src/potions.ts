@@ -261,6 +261,7 @@ export class Potion {
   }
 
   use(quantity: number): boolean {
+    acquire(quantity, this.potion, this.gross(embezzlerCount()));
     if (this.useOverride) {
       return this.useOverride(quantity);
     } else if (itemType(this.potion) === "potion") {
