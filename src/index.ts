@@ -9,6 +9,7 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
+  itemAmount,
   myAdventures,
   myClass,
   myGardenType,
@@ -17,7 +18,6 @@ import {
   myTurncount,
   print,
   retrieveItem,
-  reverseNumberology,
   runChoice,
   setAutoAttack,
   totalTurnsPlayed,
@@ -55,19 +55,20 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, freeFights, safeRestore } from "./fights";
+import { dailyFights, freeFights } from "./fights";
 import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
-  postCombatActions,
   printHelpMenu,
   printLog,
   propertyManager,
   questStep,
+  safeRestore,
   setChoice,
 } from "./lib";
 import { meatMood } from "./mood";
+import postCombatActions from "./post";
 import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
@@ -79,6 +80,7 @@ import { withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
+import { potionSetup } from "./potions";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -201,19 +203,17 @@ function barfTurn() {
     }
   }
 
-  if (
-    Object.keys(reverseNumberology()).includes("69") &&
-    get("_universeCalculated") < get("skillLevel144")
-  ) {
-    cliExecute("numberology 69");
-  }
-
   if (myAdventures() === 1) {
     if (
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get<number>("_sausagesEaten") < 23
+      get("_sausagesEaten") < 23
     ) {
-      eat($item`magical sausage`);
+      const available = clamp(
+        23 - get("_sausagesEaten"),
+        0,
+        itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
+      );
+      eat(available, $item`magical sausage`);
     }
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
@@ -230,7 +230,7 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(25968);
-
+  print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
     //Van & Duffel's Baleet Shop
@@ -271,11 +271,24 @@ export function main(argString = ""): void {
     } else if (arg.match(/help/i)) {
       printHelpMenu();
       return;
+    } else if (arg.match(/simdiet/)) {
+      globalOptions.simulateDiet = true;
+    } else if (arg.match(/nodiet/)) {
+      globalOptions.noDiet = true;
+    } else if (arg.match(/version/i)) {
+      //it already printed the version above, so do nothings
+      return;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
       return;
     }
   }
+
+  if (globalOptions.simulateDiet) {
+    runDiet();
+    return;
+  }
+
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
@@ -363,11 +376,6 @@ export function main(argString = ""): void {
       1108: bestHalloweiner,
       1341: 1, // Cure her poison
     });
-    if (get("hpAutoRecovery") < 0.35) propertyManager.set({ hpAutoRecovery: 0.35 });
-    if (get("mpAutoRecovery") < 0.25) propertyManager.set({ mpAutoRecovery: 0.25 });
-    const mpTarget = myLevel() < 18 ? 0.5 : 0.3;
-    if (get("mpAutoRecoveryTarget") < mpTarget)
-      propertyManager.set({ mpAutoRecoveryTarget: mpTarget });
 
     safeRestore();
 
@@ -400,7 +408,7 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        runDiet();
+        if (!globalOptions.noDiet) runDiet();
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
@@ -423,6 +431,7 @@ export function main(argString = ""): void {
 
         if (!globalOptions.noBarf) {
           // 4. burn turns at barf
+          potionSetup(false);
           try {
             while (canContinue()) {
               barfTurn();

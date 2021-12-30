@@ -9,6 +9,7 @@
   - [Usage](#usage)
     - [`nobarf` flag](#nobarf-flag)
     - [`ascend` flag](#ascend-flag)
+    - [Turncount](#turncount)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)
 
@@ -68,6 +69,10 @@ Running Garbo in `nobarf` mode will not target spending the bulk of your turns a
 
 Garbo operates under the assumption that you plan on staying in this run over rollover. It will, by default, avoid using borrowed time, charge stinky cheese equipment, and hopefully do other stuff that hinges on this assumption. If that assumption is incorrect, you can call `garbo ascend` instead of the classic `garbo`, and it will then operate under the assumption that you do plan to ascend. As time goes on, we expect more and more features to pay attention to the ascend flag, so it's good to get in the habit of doing so.
 
+### Turncount
+
+Garbo can run for a specified number of turns, or run until you have a specified number of turns remaining. To run for `N` turns, run `garbo N`. To run until `M` turns are remaining, run `garbo -M`.
+
 ### `help` flag
 
 Running Garbo `help` will print out simple help documentation and not run any turns.
@@ -91,3 +96,7 @@ Increase autoBuyPriceLimit by typing `set autoBuyPriceLimit = 1234` where 1234 i
 > Garbo crashed with error Mall price too high for item?
 
 Try rerunning it once. These checks are emergency stops in case the mall prices go beyond expectations.
+
+> Garbo crashed with error Macro Aborted - Unknown predicate: monsterhpbelow 69?
+
+If you own Monster Manuel, factoids are required for the relevant monsters that will be encountered by Garbo. You can just finish combat manually and resume until these errors go away (up to once per unique monster).

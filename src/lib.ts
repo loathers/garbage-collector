@@ -2,27 +2,25 @@ import { canAdv } from "canadv.ash";
 import {
   abort,
   cliExecute,
-  descToItem,
   eat,
-  fullnessLimit,
-  getWorkshed,
   handlingChoice,
   haveSkill,
   inebrietyLimit,
-  mallPrice,
   mpCost,
-  myFullness,
+  myHp,
   myInebriety,
+  myMaxhp,
+  myMaxmp,
   myMp,
   myTurncount,
   numericModifier,
   print,
   printHtml,
+  restoreHp,
   restoreMp,
   retrieveItem,
   runChoice,
   runCombat,
-  totalTurnsPlayed,
   toUrl,
   use,
   useFamiliar,
@@ -47,14 +45,12 @@ import {
   getSongLimit,
   have,
   Macro,
-  MayoClinic,
   PropertiesManager,
   property,
   Requirement,
   set,
   SongBoom,
 } from "libram";
-import { acquire } from "./acquire";
 
 export const embezzlerLog = {
   initialEmbezzlersFought: 0,
@@ -68,6 +64,8 @@ export const globalOptions: {
   noBarf: boolean;
   askedAboutWish: boolean;
   wishAnswer: boolean;
+  simulateDiet: boolean;
+  noDiet: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -75,6 +73,8 @@ export const globalOptions: {
   noBarf: false,
   askedAboutWish: false,
   wishAnswer: false,
+  simulateDiet: false,
+  noDiet: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -432,7 +432,11 @@ export function printHelpMenu(): void {
     |              |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |
     +--------------+---------------------------------------------------------------------------------------------------+
     | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
-    |              |  200 turns are spent.                                                                             |
+    |              |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.       |
+    +------------------------------------------------------------------------------------------------------------------+
+    |   simdiet    | garbo will print out what it computes as an optimal diet and then exit                            |
+    +------------------------------------------------------------------------------------------------------------------+
+    |    nodiet    | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |
     +--------------+---------------------------------------------------------------------------------------------------+
     |     Note:    | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
     +--------------+---------------------------------------------------------------------------------------------------+</pre>`);
@@ -488,46 +492,17 @@ export function burnLibrams(): void {
   cliExecute("burn *");
 }
 
-function coldMedicineCabinet(): void {
-  if (getWorkshed() !== $item`cold medicine cabinet`) return;
-  if (
-    property.getNumber("_coldMedicineConsults") >= 5 ||
-    property.getNumber("_nextColdMedicineConsult") > totalTurnsPlayed()
-  )
-    return;
-  const options = visitUrl("campground.php?action=workshed");
-  let bestChoice = 0;
-  let highestPrice = 0;
-  let i = 0;
-  let match;
-  const regexp = /descitem\((\d+)\)/g;
-  while ((match = regexp.exec(options)) !== null) {
-    i++;
-    const item = descToItem(match[1]);
-    const price = mallPrice(item);
-    print(item.toString());
-    if (price > highestPrice) {
-      highestPrice = price;
-      bestChoice = i;
-    }
+export function safeRestore(): void {
+  if (myHp() < myMaxhp() * 0.5) {
+    restoreHp(myMaxhp() * 0.9);
   }
-  visitUrl("campground.php?action=workshed");
-  runChoice(bestChoice);
-}
-
-function horseradish(): void {
-  if (myFullness() < fullnessLimit()) {
-    if (mallPrice($item`fudge spork`) < 3 * get("valueOfAdventure") && !get("_fudgeSporkUsed"))
-      eat(1, $item`fudge spork`);
-    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
-    acquire(1, $item`Special Seasoning`, get("valueOfAdventure"));
-    acquire(1, $item`jumping horseradish`, 5.5 * get("valueOfAdventure"));
-    if (!eat(1, $item`jumping horseradish`)) throw "Failed to eat safely";
+  const mpTarget = Math.min(myMaxmp(), 200);
+  if (myMp() < mpTarget) {
+    if (
+      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
+      get("_sausagesEaten") < 23
+    ) {
+      eat($item`magical sausage`);
+    } else restoreMp(mpTarget);
   }
-}
-
-export function postCombatActions(): void {
-  horseradish();
-  coldMedicineCabinet();
-  safeInterrupt();
 }

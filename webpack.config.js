@@ -4,6 +4,7 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { merge } = require("webpack-merge");
+const { EnvironmentPlugin } = require("webpack");
 
 const sharedConfig = {
   mode: "production",
@@ -31,7 +32,10 @@ const sharedConfig = {
       },
     ],
   },
-  plugins: [new MiniCssExtractPlugin()],
+  plugins: [
+    new MiniCssExtractPlugin(),
+    new EnvironmentPlugin({ GITHUB_SHA: "CustomBuild", GITHUB_REPOSITORY: "CustomBuild" }),
+  ],
   externals: {
     "canadv.ash": "commonjs canadv.ash",
     kolmafia: "commonjs kolmafia",

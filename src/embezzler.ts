@@ -3,6 +3,7 @@ import {
   abort,
   chatPrivate,
   cliExecute,
+  getCounter,
   getCounters,
   haveEquipped,
   inebrietyLimit,
@@ -14,21 +15,28 @@ import {
   myTurncount,
   print,
   retrieveItem,
+  runChoice,
   runCombat,
+  toInt,
+  toMonster,
+  toUrl,
   use,
   userConfirm,
   visitUrl,
   wait,
 } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $skill,
   adventureMacro,
   ChateauMantegna,
+  CrystalBall,
   get,
   have,
   property,
@@ -37,8 +45,10 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { Macro } from "./combat";
-import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
+import { Macro, shouldRedigitize, withMacro } from "./combat";
+import { usingThumbRing } from "./dropsgear";
+import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
+import { baseMeat, globalOptions, ltbRun, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
 type EmbezzlerFightOptions = {
@@ -107,7 +117,14 @@ export const embezzlerMacro = (): Macro =>
       .trySkill($skill`Wink at`)
       .trySkill($skill`Fire a badly romantic arrow`)
       .externalIf(
-        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        get("beGregariousCharges") > 0 &&
+          (get("beGregariousMonster") !== $monster`Knob Goblin Embezzler` ||
+            get("beGregariousFightsLeft") === 0),
+        Macro.trySkill($skill`Be Gregarious`)
+      )
+      .externalIf(
+        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler` ||
+          shouldRedigitize(),
         Macro.tryCopier($skill`Digitize`)
       )
       .tryCopier($item`Spooky Putty sheet`)
@@ -143,12 +160,31 @@ export const embezzlerSources = [
     true
   ),
   new EmbezzlerFight(
+    "Guaranteed Romantic Monster",
+    () =>
+      get("_romanticFightsLeft") > 0 &&
+      getCounter("Romantic Monster window begin") <= 0 &&
+      getCounter("Romantic Monster window end") <= 0 &&
+      (getCounter("Romantic Monster window end") !== -1 ||
+        getCounters("Romantic Monster window end", -1, -1).trim() !== ""),
+    () => 0,
+    (options: EmbezzlerFightOptions) => {
+      const location =
+        options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER);
+      const macro = options.macro ?? embezzlerMacro();
+      adventureMacro(location, macro);
+    },
+    undefined,
+    true
+  ),
+  new EmbezzlerFight(
     "Enamorang",
     () =>
       getCounters("Enamorang", 0, 0).trim() !== "" &&
       get("enamorangMonster") === $monster`Knob Goblin Embezzler`,
     () =>
-      get("enamorangMonster") === $monster`Knob Goblin Embezzler` ||
+      (getCounters("Enamorang", 0, 0).trim() !== "" &&
+        get("enamorangMonster") === $monster`Knob Goblin Embezzler`) ||
       (have($item`LOV Enamorang`) && !get("_enamorangs"))
         ? 1
         : 0,
@@ -170,12 +206,178 @@ export const embezzlerSources = [
     true
   ),
   new EmbezzlerFight(
+    "Orb Prediction",
+    () =>
+      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+      $monster`Knob Goblin Embezzler`,
+    () =>
+      (have($item`miniature crystal ball`) ? 1 : 0) *
+      get("beGregariousCharges") *
+      +(get("beGregariousFightsLeft") > 0 ||
+      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+        $monster`Knob Goblin Embezzler`
+        ? 1
+        : 0),
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      adventureMacro($location`The Dire Warren`, macro);
+    },
+    [new Requirement([], { forceEquip: $items`miniature crystal ball` })]
+  ),
+  new EmbezzlerFight(
+    "Time-Spinner",
+    () =>
+      have($item`Time-Spinner`) &&
+      $locations`Noob Cave, The Dire Warren`.some((location) =>
+        location.combatQueue.includes($monster`Knob Goblin Embezzler`.name)
+      ) &&
+      get("_timeSpinnerMinutesUsed") <= 7,
+    () =>
+      have($item`Time-Spinner`) &&
+      $locations`Noob Cave, The Dire Warren`.some(
+        (location) =>
+          location.combatQueue.includes($monster`Knob Goblin Embezzler`.name) ||
+          get("beGregariousCharges") > 0
+      )
+        ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => {
+        visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
+        runChoice(1);
+        visitUrl(
+          `choice.php?whichchoice=1196&monid=${$monster`Knob Goblin Embezzler`.id}&option=1`
+        );
+        runCombat();
+      });
+    }
+  ),
+  new EmbezzlerFight(
+    "Macrometeorite",
+    () =>
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($skill`Meteor Lore`) &&
+      get("_macrometeoriteUses") < 10 &&
+      proceedWithOrb(),
+    () =>
+      ((get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
+      have($skill`Meteor Lore`)
+        ? 10 - get("_macrometeoriteUses")
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      equipOrbIfDesired();
+      const baseMacro = options.macro ?? embezzlerMacro();
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`),
+          Macro.trySkill($skill`Transcendent Olfaction`)
+        ).skill($skill`Macrometeorite`)
+      ).step(baseMacro);
+      adventureMacro($location`Noob Cave`, macro);
+    }
+    //do we want to equip orb on these guys?
+  ),
+  new EmbezzlerFight(
+    "Powerful Glove",
+    () =>
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($item`Powerful Glove`) &&
+      get("_powerfulGloveBatteryPowerUsed") < 90 &&
+      proceedWithOrb(),
+    () =>
+      ((get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
+      have($item`Powerful Glove`)
+        ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      equipOrbIfDesired();
+      const baseMacro = options.macro ?? embezzlerMacro();
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`),
+          Macro.trySkill($skill`Transcendent Olfaction`)
+        ).skill($skill`CHEAT CODE: Replace Enemy`)
+      ).step(baseMacro);
+      adventureMacro($location`Noob Cave`, macro);
+    },
+    [new Requirement([], { forceEquip: $items`Powerful Glove` })]
+  ),
+  new EmbezzlerFight(
+    "Be Gregarious",
+    () =>
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+      get("beGregariousFightsLeft") > 1,
+    () =>
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+        ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      if (ltbRun.prepare) ltbRun.prepare();
+      adventureMacro(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, ltbRun.macro).step(options.macro ?? embezzlerMacro())
+      );
+      // reset the crystal ball prediction by staring longingly at toast
+      if (
+        get("beGregariousFightsLeft") === 1 &&
+        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !==
+          $monster`Knob Goblin Embezzler`
+      ) {
+        try {
+          const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+          if (!store.includes("Check Out the Gift Shop")) {
+            print("Unable to stare longingly at toast");
+          }
+          runChoice(4);
+        } catch {
+          // orb reseting raises a mafia error
+        }
+        visitUrl("main.php");
+      }
+    }
+  ),
+  new EmbezzlerFight(
+    "Final Be Gregarious",
+    () =>
+      retrieveItem(1, $item`human musk`) &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+      get("beGregariousFightsLeft") === 1,
+    () =>
+      (get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
+        get("beGregariousFightsLeft") > 0) ||
+      get("beGregariousCharges") > 0
+        ? 1
+        : 0,
+    (options: EmbezzlerFightOptions) => {
+      adventureMacro(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, Macro.item($item`human musk`)).step(
+          options.macro ?? embezzlerMacro()
+        )
+      );
+    },
+    [
+      new Requirement([], {
+        forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+      }),
+    ]
+  ),
+  new EmbezzlerFight(
     "Backup",
     () =>
       get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
       have($item`backup camera`) &&
-      get<number>("_backUpUses") < 11,
-    () => (have($item`backup camera`) ? 11 - get<number>("_backUpUses") : 0),
+      get("_backUpUses") < 11,
+    () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
     (options: EmbezzlerFightOptions) => {
       const realLocation =
         options.location && options.location.combatPercent >= 100
@@ -315,21 +517,21 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Pocket Wish",
     () => {
-      const potential = embezzlerCount();
+      const potential = Math.floor(embezzlerCount());
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
       const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
       print(`You have the following embezzler-sources untapped right now:`, "blue");
+      const profit = (potential + 1) * averageEmbezzlerNet - WISH_VALUE;
+      if (profit < 0) return false;
       embezzlerSources
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, "blue"));
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = userConfirm(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}, so we expect to earn ${
-          (potential + 1) * averageEmbezzlerNet - WISH_VALUE
-        } meat, after the cost of a wish. Should we wish for an Embezzler?`
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`
       );
       return globalOptions.wishAnswer;
     },
@@ -387,7 +589,7 @@ export function estimatedTurns(): number {
     : 0;
   const thesisAdventures = have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
   const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
-  const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
+  const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
@@ -415,4 +617,39 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
     if (fight.available()) return fight;
   }
   return null;
+}
+
+/**
+ * Determines whether we want to do this particular Embezzler fight; if we aren't using orb, should always return true. If we're using orb and it's a crate, we'll have to see!
+ * @returns
+ */
+function proceedWithOrb(): boolean {
+  const strat = crateStrategy();
+  //If we can't possibly use orb, return true
+  if (!have($item`miniature crystal ball`) || strat === "Saber") return true;
+
+  //If we're sniffing and an Embezzler is in the queue already, return true
+  if (
+    strat === "Sniff" &&
+    $location`Noob Cave`.combatQueue
+      .split(";")
+      .map((monster) => toMonster(monster))
+      .includes($monster`Knob Goblin Embezzler`)
+  ) {
+    return true;
+  }
+
+  //If we're using orb, we have a KGE prediction, and we can reset it, return false
+  const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
+  if (
+    CrystalBall.currentPredictions(false).get($location`Noob Cave`) ===
+      $monster`Knob Goblin Embezzler` &&
+    embezzlerSources
+      .filter((source) => !gregFightNames.includes(source.name))
+      .find((source) => source.available())
+  ) {
+    return false;
+  }
+
+  return true;
 }
