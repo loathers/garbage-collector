@@ -261,7 +261,6 @@ export class Potion {
   }
 
   use(quantity: number): boolean {
-    acquire(quantity, this.potion, this.gross(embezzlerCount()));
     if (this.useOverride) {
       return this.useOverride(quantity);
     } else if (itemType(this.potion) === "potion") {
@@ -332,7 +331,8 @@ export function potionSetup(embezzlersOnly: boolean): void {
     if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
       print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
       cliExecute("pillkeeper extend");
-      possibleDoublingPotions[0].use(1);
+      acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
+      bestPotion.use(1);
     }
   }
 
