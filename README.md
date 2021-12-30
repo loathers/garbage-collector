@@ -9,6 +9,8 @@
   - [Usage](#usage)
     - [`nobarf` flag](#nobarf-flag)
     - [`ascend` flag](#ascend-flag)
+    - [`nodiet` flag](#nodiet-flag)
+    - [`simdiet` flag](#simdiet-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)
@@ -16,6 +18,10 @@
 ## Introduction
 
 This script is an automated turn-burning script for the Kingdom of Loathing that spends a day's resources and adventures on farming in [Barf Mountain](https://kol.coldfront.net/thekolwiki/index.php/Barf_Mountain). This script should ideally be used by folks who have a decent number of IOTMs, but it should have some profit generation even for relatively low-shiny accounts due to the inherent value of Barf Mountain turns.
+
+Garbage Collector, or Garbo for short, is a tool that is designed to maximally extract value from all resources you have available and those you didn't know you had available. When it does something you don't expect, it is either because it has mall data to back up that decision or because the developers intuited that the decision would be profitable. So don't worry about that cognac you were saving for marriage, it's safe. 
+
+Garbo is minimally configurable to make things simpler for both the users and the developers, and it will always try to make the most profitable decisions possible.
 
 ## Setup
 
@@ -57,6 +63,8 @@ Sometimes, this script will get you caught in a weird loop if your auto-recovery
 svn checkout https://svn.code.sf.net/p/kolmafiascripts/mafiarecovery/code/
 ```
 
+Universal Recovery will look a lot like mafia's default recovery settings, but will be managed in a more sophisticated manner. You can access these settings via the relay browser.
+
 ## Usage
 
 To invoke Garbage Collector, type `garbo` in the Mafia GCLI. In addition, you can use various flags to configure how Garbage Collector runs. Additionally, you can also specify the number of turns for garbo to run.
@@ -67,7 +75,19 @@ Running Garbo in `nobarf` mode will not target spending the bulk of your turns a
 
 ### `ascend` flag
 
-Garbo operates under the assumption that you plan on staying in this run over rollover. It will, by default, avoid using borrowed time, charge stinky cheese equipment, and hopefully do other stuff that hinges on this assumption. If that assumption is incorrect, you can call `garbo ascend` instead of the classic `garbo`, and it will then operate under the assumption that you do plan to ascend. As time goes on, we expect more and more features to pay attention to the ascend flag, so it's good to get in the habit of doing so.
+Garbo operates under the assumption that you plan on staying in this run over rollover. It will, by default, avoid using borrowed time, charge stinky cheese equipment, and hopefully do other stuff that hinges on this assumption. If that assumption is incorrect, you can call `garbo ascend` instead of the classic `garbo`, and it will then operate under the assumption that you do plan to ascend. 
+
+`garbo ascend` will collect Safety Maps to Grimace Prime and will use your overdrunk turns to gain distention pills and synthetic dog hair pills. Simply run `garbo ascend` again after your nightcap, before you ascend, and it will spend as many turns farming with Drunkula's Wineglass if you have one, and then use remaining turns on maps for pills. Garbo won't obtain more than 100 of each pill, so don't worry about getting too many.
+
+As time goes on, we expect more and more features to pay attention to the ascend flag, so it's good to get in the habit of doing so.
+
+### `nodiet` flag
+
+*EXPERIMENTAL* Garbo will not eat or drink anything as part of the run (including Pantsgiving snacks). This command can be run in conjunction with the `ascend` flag ie; `garbo nodiet ascend`.
+
+### `simdiet` flag
+
+Garbo will list the optimal diet it plans to consume computed from your defined mpa and current prices, and then exit.  
 
 ### Turncount
 
@@ -100,3 +120,11 @@ Try rerunning it once. These checks are emergency stops in case the mall prices 
 > Garbo crashed with error Macro Aborted - Unknown predicate: monsterhpbelow 69?
 
 If you own Monster Manuel, factoids are required for the relevant monsters that will be encountered by Garbo. You can just finish combat manually and resume until these errors go away (up to once per unique monster).
+
+> Help, I ran garbo and now some of my stuff is missing!
+
+Garbo will use your consumables and potions if it is deemed profitable to do so. Garbo will also deposit certain items into your closet for safe keeping.
+
+> I was trying to click around the mall/campground/inventory/etc and then Garbo crashed, and now it is behaving strangely! Is this a bug?
+
+Garbo can be very fragile during some particular segments of the run and it is strongly recommended you do not click on anything while it is performing. This isn't a bug, Garbo is just pretty complex and the last thing either of us wants is to try looking for a bug that isn't there! Go make yourself a sandwich, do some chores, or relax and watch the meat number go up.
