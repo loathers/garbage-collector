@@ -17,6 +17,7 @@ import { acquire } from "./acquire";
 import { baseMeat, globalOptions, pillkeeperOpportunityCost } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 
+export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
 
 const mutuallyExclusiveList: Effect[][] = [
@@ -199,11 +200,15 @@ export class Potion {
     embezzlers: number,
     turns?: number,
     limit?: number
-  ): { name: string; quantity: number; value: number }[] {
+  ): { name: PotionTier; quantity: number; value: number }[] {
     const startingTurns = haveEffect(this.effect());
     const ascending = globalOptions.ascending;
     const totalTurns = turns ?? estimatedTurns();
-    const values: { name: string; quantity: number; value: number }[] = [];
+    const values: {
+      name: PotionTier;
+      quantity: number;
+      value: number;
+    }[] = [];
     const limitFunction = limit
       ? (quantity: number) =>
           Math.min(limit - values.reduce((total, tier) => tier.quantity, 0), quantity)
@@ -239,7 +244,7 @@ export class Potion {
       // if ascending, break those turns that are not fully covered by a potion into their own value
       const remainingTurns = Math.max(0, totalTurns - embezzlerCoverage - startingTurns);
 
-      const barfQuantity = this.usesToCover(remainingTurns, ascending);
+      const barfQuantity = this.usesToCover(remainingTurns, !ascending);
       values.push({ name: "barf", quantity: limitFunction(barfQuantity), value: this.gross(0) });
 
       if (globalOptions.ascending && this.overage(remainingTurns, barfQuantity) <= 0) {
@@ -251,9 +256,6 @@ export class Potion {
         });
       }
     }
-
-    print(`POTION: Breakpoints for ${this.potion} (starting turns ${startingTurns}):`);
-    values.forEach((tier) => print(`${tier.name}: ${tier.quantity} @ ${tier.value}`));
 
     return values.filter((tier) => tier.quantity > 0);
   }
@@ -274,7 +276,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   const value = potion.value(embezzlers);
   const price = potion.price(false);
   const amountsAcquired = value.map((value) =>
-    (!embezzlersOnly || value.name === "embezzlers") && value.value - price > 0
+    (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0
       ? acquire(value.quantity, potion.potion, value.value, false)
       : 0
   );
@@ -337,7 +339,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
   const testPotions = farmingPotions.filter(
     (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
   );
-  testPotions.sort((x, y) => -(x.net(embezzlers) - y.net(embezzlers)));
+  testPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
 
   const excludedEffects = new Set<Effect>();
   for (const effect of getActiveEffects()) {
