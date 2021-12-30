@@ -1,7 +1,6 @@
 import {
   cliExecute,
   descToItem,
-  get,
   getWorkshed,
   mallPrice,
   myAdventures,
@@ -10,7 +9,7 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, getRemainingStomach, property } from "libram";
+import { $item, get, getRemainingStomach, property } from "libram";
 import { computeDiet, consumeDiet } from "./diet";
 import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
 
