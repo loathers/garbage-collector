@@ -64,6 +64,8 @@ export const globalOptions: {
   noBarf: boolean;
   askedAboutWish: boolean;
   wishAnswer: boolean;
+  simulateDiet: boolean;
+  noDiet: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -71,6 +73,8 @@ export const globalOptions: {
   noBarf: false,
   askedAboutWish: false,
   wishAnswer: false,
+  simulateDiet: false,
+  noDiet: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -429,6 +433,10 @@ export function printHelpMenu(): void {
     +--------------+---------------------------------------------------------------------------------------------------+
     | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
     |              |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.       |
+    +------------------------------------------------------------------------------------------------------------------+
+    |   simdiet    | garbo will print out what it computes as an optimal diet and then exit                            |
+    +------------------------------------------------------------------------------------------------------------------+
+    |    nodiet    | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |
     +--------------+---------------------------------------------------------------------------------------------------+
     |     Note:    | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
     +--------------+---------------------------------------------------------------------------------------------------+</pre>`);

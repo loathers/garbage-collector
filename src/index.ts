@@ -271,6 +271,10 @@ export function main(argString = ""): void {
     } else if (arg.match(/help/i)) {
       printHelpMenu();
       return;
+    } else if (arg.match(/simdiet/)) {
+      globalOptions.simulateDiet = true;
+    } else if (arg.match(/nodiet/)) {
+      globalOptions.noDiet = true;
     } else if (arg.match(/version/i)) {
       //it already printed the version above, so do nothings
       return;
@@ -279,6 +283,12 @@ export function main(argString = ""): void {
       return;
     }
   }
+
+  if (globalOptions.simulateDiet) {
+    runDiet();
+    return;
+  }
+
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
@@ -398,7 +408,7 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        runDiet();
+        if (!globalOptions.noDiet) runDiet();
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();

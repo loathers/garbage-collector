@@ -1,4 +1,4 @@
-import { equip, toMonster, useFamiliar, visitUrl } from "kolmafia";
+import { equip, retrieveItem, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
@@ -19,6 +19,7 @@ import {
 import { freeFightFamiliar } from "./familiar";
 import { findRun, ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
+import { embezzlerMacro } from "./embezzler";
 
 export function expectedGregs(): number {
   const baseGregs = 3;
@@ -115,7 +116,7 @@ export function equipOrbIfDesired(): void {
 /**
  * Pre-olfact/saber crates, for extrovermectin/gregarious reasons.
  */
-export function initializeCrates(): void {
+function initializeCrates(): void {
   do {
     //We use the force while olfacting sometimes, so we'll need to refresh mafia's knowledge of olfaction
     if (property.getString("olfactedMonster") !== "crate") {
@@ -167,4 +168,21 @@ export function initializeCrates(): void {
       saberCrateIfDesired();
     else break; //we can break the loop if there's nothing to do
   } while (!["crate", "Using the Force"].includes(get("lastEncounter"))); //loop until we actually hit a crate
+}
+
+function initializeDireWarren(): void {
+  retrieveItem(1, $item`human musk`);
+  do {
+    adventureMacro(
+      $location`The Dire Warren`,
+      Macro.if_($monster`fluffy bunny`, Macro.item($item`human musk`)).step(embezzlerMacro())
+    );
+  } while ("fluffy bunny" !== get("lastEncounter"));
+}
+
+export function intializeExtrovermectinZones(): void {
+  if (get("beGregariousFightsLeft") === 0 && hasMonsterReplacers()) {
+    initializeCrates();
+  }
+  initializeDireWarren();
 }

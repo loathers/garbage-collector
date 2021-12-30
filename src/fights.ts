@@ -121,8 +121,7 @@ import postCombatActions from "./post";
 import {
   crateStrategy,
   doingExtrovermectin,
-  hasMonsterReplacers,
-  initializeCrates,
+  intializeExtrovermectinZones,
   saberCrateIfDesired,
 } from "./extrovermectin";
 
@@ -260,8 +259,8 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin() && get("beGregariousFightsLeft") === 0 && hasMonsterReplacers()) {
-    initializeCrates();
+  if (doingExtrovermectin()) {
+    intializeExtrovermectinZones();
   }
 }
 
@@ -280,7 +279,11 @@ function startWandererCounter() {
   if (
     (getCounters("Digitize Monster", -3, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
-    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster"))
+    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster")) ||
+    (get("_romanticFightsLeft") > 0 &&
+      getCounter("Romantic Monster window begin") === -1 &&
+      getCounter("Romantic Monster window end") === -1 &&
+      getCounters("Romantic Monster window end", -1, -1).trim() === "")
   ) {
     do {
       const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
@@ -446,6 +449,7 @@ export function dailyFights(): void {
             postCombatActions();
           }
         });
+
         if (
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
@@ -456,17 +460,28 @@ export function dailyFights(): void {
         ) {
           embezzlerLog.initialEmbezzlersFought++;
         }
-        startWandererCounter();
+
         nextFight = getNextEmbezzlerFight();
+
+        const romanticMonsterPossible =
+          (getCounter("Romantic Monster Window end") === -1 &&
+            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
+          getCounter("Romantic Monster Window begin") > 0;
         if (
           !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
-          (getCounter("Romantic Monster Window end") === -1 ||
-            getCounter("Romantic Monster Window begin") > 0)
+          romanticMonsterPossible
         ) {
-          if (kramcoGuaranteed()) doSausage();
+          doSausage();
           // Check in case our prof gained enough exp during the profchains
-          if (thesisReady() && get("beGregariousFightsLeft") <= 0) deliverThesis();
+          if (
+            thesisReady() &&
+            get("beGregariousFightsLeft") <= 0 &&
+            nextFight?.name !== "Orb Prediction"
+          ) {
+            deliverThesis();
+          }
         }
+        startWandererCounter();
       }
     });
   }

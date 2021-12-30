@@ -1,8 +1,6 @@
 import {
   cliExecute,
   descToItem,
-  eat,
-  fullnessLimit,
   getWorkshed,
   mallPrice,
   myAdventures,
@@ -12,9 +10,9 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, get, MayoClinic, property } from "libram";
-import { acquire } from "./acquire";
-import { argmax, safeInterrupt, safeRestore } from "./lib";
+import { $item, getRemainingStomach, property } from "libram";
+import { computeDiet, consumeDiet } from "./diet";
+import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
@@ -44,13 +42,8 @@ function coldMedicineCabinet(): void {
 }
 
 function horseradish(): void {
-  if (myFullness() < fullnessLimit()) {
-    if (mallPrice($item`fudge spork`) < 3 * get("valueOfAdventure") && !get("_fudgeSporkUsed"))
-      eat(1, $item`fudge spork`);
-    MayoClinic.setMayoMinder(MayoClinic.Mayo.zapine, 1);
-    acquire(1, $item`Special Seasoning`, get("valueOfAdventure"));
-    acquire(1, $item`jumping horseradish`, 5.5 * get("valueOfAdventure"));
-    if (!eat(1, $item`jumping horseradish`)) throw "Failed to eat safely";
+  if (getRemainingStomach() > 0 && !globalOptions.noDiet) {
+    consumeDiet(computeDiet().pantsgiving());
   }
 }
 
