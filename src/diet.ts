@@ -63,7 +63,7 @@ const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
 
 const Mayo = MayoClinic.Mayo;
-type Note = "first gregarious" | PotionTier | null;
+type Note = "first gregarious" | "additional gregarious" | PotionTier | null;
 
 function eatSafe(qty: number, item: Item) {
   if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
@@ -330,6 +330,10 @@ function menu(): MenuItem<Note>[] {
   ];
 }
 
+function gregariousCopies(): number {
+  return 3 + (have($item`miniature crystal ball`) ? 1 : 0);
+}
+
 function copiers(): MenuItem<Note>[] {
   const embezzlerDifferential = 25000 - 7500;
   const alreadyGregarious =
@@ -343,6 +347,10 @@ function copiers(): MenuItem<Note>[] {
       maximum: alreadyGregarious ? 0 : 1,
       data: "first gregarious",
     }),
+    new MenuItem($item`Extrovermectin™`, {
+      additionalValue: embezzlerDifferential * gregariousCopies(),
+      data: "additional gregarious",
+    }),
   ];
 }
 
@@ -352,8 +360,20 @@ function countCopies(diet: Diet<Note>) {
       (menuItem) => menuItem.item === $item`Extrovermectin™` && menuItem.data === "first gregarious"
     )
   );
+  const otherGregarious = diet.entries.reduce(
+    (total, dietEntry) =>
+      total +
+      dietEntry.quantity *
+        (dietEntry.menuItems.some(
+          (menuItem) =>
+            menuItem.item === $item`Extrovermectin™` && menuItem.data === "first gregarious"
+        )
+          ? 1
+          : 0),
+    0
+  );
 
-  return (firstGregarious ? 1 : 0) * expectedGregs();
+  return (firstGregarious ? 1 : 0) * expectedGregs() + otherGregarious * gregariousCopies();
 }
 
 /**
