@@ -25135,7 +25135,8 @@ function potionSetup(embezzlersOnly) {
     if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
       (0,external_kolmafia_.print)("Determined that ".concat(bestPotion.potion, " was the best potion to double"), "blue");
       (0,external_kolmafia_.cliExecute)("pillkeeper extend");
-      possibleDoublingPotions[0].use(1);
+      acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
+      bestPotion.use(1);
     }
   } // Only test potions which are reasonably close to being profitable using historical price.
 
@@ -29721,7 +29722,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8cb5927fc203040707030016256ae0fc870bb651"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("d3335567c824c58558bc7c770b30b61ef5583c1f"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
