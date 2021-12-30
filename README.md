@@ -19,7 +19,7 @@
 
 This script is an automated turn-burning script for the Kingdom of Loathing that spends a day's resources and adventures on farming in [Barf Mountain](https://kol.coldfront.net/thekolwiki/index.php/Barf_Mountain). This script should ideally be used by folks who have a decent number of IOTMs, but it should have some profit generation even for relatively low-shiny accounts due to the inherent value of Barf Mountain turns.
 
-Garbage Collector, or Garbo for short, is a tool that is designed to maximally extract value from all resources you have available and those you didn't know you had available. When it does something you don't expect, it is either because it has mall data to back up that decision or because the developers intuited that the decision would be profitable. So don't worry about that cognac you were saving for marriage, it's safe. 
+Garbage Collector, or Garbo for short, is a tool that is designed to maximally extract value from all resources you have available and those you didn't know you had available. When it does something you don't expect, it is either because it has mall data to back up that decision or because the developers intuited that the decision would be profitable. So don't worry about that cognac you were saving for marriage, it's safe.
 
 Garbo is minimally configurable to make things simpler for both the users and the developers, and it will always try to make the most profitable decisions possible.
 
@@ -75,7 +75,7 @@ Running Garbo in `nobarf` mode will not target spending the bulk of your turns a
 
 ### `ascend` flag
 
-Garbo operates under the assumption that you plan on staying in this run over rollover. It will, by default, avoid using borrowed time, charge stinky cheese equipment, and hopefully do other stuff that hinges on this assumption. If that assumption is incorrect, you can call `garbo ascend` instead of the classic `garbo`, and it will then operate under the assumption that you do plan to ascend. 
+Garbo operates under the assumption that you plan on staying in this run over rollover. It will, by default, avoid using borrowed time, charge stinky cheese equipment, and hopefully do other stuff that hinges on this assumption. If that assumption is incorrect, you can call `garbo ascend` instead of the classic `garbo`, and it will then operate under the assumption that you do plan to ascend.
 
 `garbo ascend` will collect Safety Maps to Grimace Prime and will use your overdrunk turns to gain distention pills and synthetic dog hair pills. Simply run `garbo ascend` again after your nightcap, before you ascend, and it will spend as many turns farming with Drunkula's Wineglass if you have one, and then use remaining turns on maps for pills. Garbo won't obtain more than 100 of each pill, so don't worry about getting too many.
 
@@ -83,11 +83,11 @@ As time goes on, we expect more and more features to pay attention to the ascend
 
 ### `nodiet` flag
 
-*EXPERIMENTAL* Garbo will not eat or drink anything as part of the run (including Pantsgiving snacks). This command can be run in conjunction with the `ascend` flag ie; `garbo nodiet ascend`.
+_EXPERIMENTAL_ Garbo will not eat or drink anything as part of the run (including Pantsgiving snacks). This command can be run in conjunction with the `ascend` flag ie; `garbo nodiet ascend`.
 
 ### `simdiet` flag
 
-Garbo will list the optimal diet it plans to consume computed from your defined mpa and current prices, and then exit.  
+Garbo will list the optimal diet it plans to consume computed from your defined mpa and current prices, and then exit.
 
 ### Turncount
 
