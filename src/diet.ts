@@ -430,7 +430,7 @@ export function potionMenu(
     ...limitedPotion(
       $item`Dinsey food-cone`,
       get("_stenchAirportToday") || get("stenchAirportAlways")
-        ? availableAmount($item`FunFunds™`) / 2
+        ? Math.floor(availableAmount($item`FunFunds™`) / 2)
         : 0,
       { price: (2 * getSaleValue($item`one-day ticket to Dinseylandfill`)) / 20 }
     ),
