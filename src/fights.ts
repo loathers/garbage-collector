@@ -176,6 +176,7 @@ function embezzlerSetup() {
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
       burnLibrams();
       use($item`Platinum Yendorian Express Card`);
+      burnLibrams();
     }
     if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
       use($item`Bag o' Tricks`);
@@ -184,6 +185,7 @@ function embezzlerSetup() {
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
     burnLibrams();
     use($item`License to Chill`);
+    burnLibrams();
   }
   if (
     globalOptions.ascending &&

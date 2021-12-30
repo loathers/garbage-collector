@@ -483,13 +483,17 @@ export function pillkeeperOpportunityCost(): number {
 /**
  * Burns existing MP on the mall-optimal libram skill until unable to cast any more.
  */
-export function burnLibrams(): void {
+export function burnLibrams(mpTarget = 0): void {
   let libramToCast = bestLibramToCast();
-  while (libramToCast && mpCost(libramToCast) <= myMp()) {
+  while (libramToCast && mpCost(libramToCast) <= myMp() - mpTarget) {
     useSkill(libramToCast);
     libramToCast = bestLibramToCast();
   }
-  cliExecute("burn *");
+  if (mpTarget > 0) {
+    cliExecute(`burn -${mpTarget}`);
+  } else {
+    cliExecute("burn *");
+  }
 }
 
 export function safeRestore(): void {
@@ -505,4 +509,6 @@ export function safeRestore(): void {
       eat($item`magical sausage`);
     } else restoreMp(mpTarget);
   }
+
+  burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
