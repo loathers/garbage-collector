@@ -1,12 +1,15 @@
 import {
+  cliExecute,
   descToItem,
   getWorkshed,
   mallPrice,
+  myAdventures,
+  reverseNumberology,
   runChoice,
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, getRemainingStomach, property } from "libram";
+import { $item, get, getRemainingStomach, property } from "libram";
 import { computeDiet, consumeDiet } from "./diet";
 import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
 
@@ -43,7 +46,18 @@ function horseradish(): void {
   }
 }
 
+function numberology(): void {
+  if (
+    myAdventures() > 0 &&
+    Object.keys(reverseNumberology()).includes("69") &&
+    get("_universeCalculated") < get("skillLevel144")
+  ) {
+    cliExecute("numberology 69");
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
+  numberology();
   if (!skipDiet) horseradish();
   coldMedicineCabinet();
   safeInterrupt();

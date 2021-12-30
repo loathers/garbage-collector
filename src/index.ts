@@ -18,7 +18,6 @@ import {
   myTurncount,
   print,
   retrieveItem,
-  reverseNumberology,
   runChoice,
   setAutoAttack,
   totalTurnsPlayed,
@@ -202,13 +201,6 @@ function barfTurn() {
         ).abort()
       );
     }
-  }
-
-  if (
-    Object.keys(reverseNumberology()).includes("69") &&
-    get("_universeCalculated") < get("skillLevel144")
-  ) {
-    cliExecute("numberology 69");
   }
 
   if (myAdventures() === 1) {
