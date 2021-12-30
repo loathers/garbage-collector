@@ -5,6 +5,7 @@ import {
   fullnessLimit,
   getWorkshed,
   mallPrice,
+  myAdventures,
   myFullness,
   reverseNumberology,
   runChoice,
@@ -55,6 +56,7 @@ function horseradish(): void {
 
 function numberology(): void {
   if (
+    myAdventures() > 0 &&
     Object.keys(reverseNumberology()).includes("69") &&
     get("_universeCalculated") < get("skillLevel144")
   ) {
