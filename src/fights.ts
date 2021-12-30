@@ -1322,8 +1322,10 @@ const freeRunFightSources = [
     {
       requirements: () => [
         new Requirement([], {
-          // eslint-disable-next-line libram/verify-constants
-          forceEquip: $items`carnivorous potted plant`.filter((item) => have(item)),
+          bonusEquip: new Map(
+            // eslint-disable-next-line libram/verify-constants
+            $items`carnivorous potted plant`.map((item) => [item, 100])
+          ),
         }),
       ],
     }
@@ -1364,8 +1366,10 @@ const freeRunFightSources = [
     {
       requirements: () => [
         new Requirement([], {
-          // eslint-disable-next-line libram/verify-constants
-          forceEquip: $items`carnivorous potted plant`.filter((item) => have(item)),
+          bonusEquip: new Map(
+            // eslint-disable-next-line libram/verify-constants
+            $items`carnivorous potted plant`.map((item) => [item, 100])
+          ),
         }),
       ],
     }
@@ -1478,9 +1482,10 @@ const freeRunFightSources = [
     {
       requirements: () => [
         new Requirement([], {
-          // eslint-disable-next-line libram/verify-constants
-          forceEquip: $items`mayfly bait necklace, carnivorous potted plant`.filter((item) =>
-            have(item)
+          forceEquip: $items`mayfly bait necklace`,
+          bonusEquip: new Map(
+            // eslint-disable-next-line libram/verify-constants
+            $items`carnivorous potted plant`.map((item) => [item, 100])
           ),
         }),
       ],
