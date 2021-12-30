@@ -7377,6 +7377,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "monsterManuelAvailable": () => (/* binding */ monsterManuelAvailable),
 /* harmony export */   "maxPassiveDamage": () => (/* binding */ maxPassiveDamage),
+/* harmony export */   "shouldRedigitize": () => (/* binding */ shouldRedigitize),
 /* harmony export */   "Macro": () => (/* binding */ Macro),
 /* harmony export */   "withMacro": () => (/* binding */ withMacro),
 /* harmony export */   "main": () => (/* binding */ main)
@@ -7490,7 +7491,6 @@ function maxPassiveDamage() {
   var familiarMaxDamage = maxFamiliarDamage((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)());
   return vykeaMaxDamage + thrallMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
 }
-
 function shouldRedigitize() {
   var digitizesLeft = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .clamp */ .uZ)(3 - (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_sourceTerminalDigitizeUses"), 0, 3);
   var monsterCount = (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_sourceTerminalDigitizeMonsterCount") + 1; // triangular number * 10 - 3
@@ -7499,7 +7499,6 @@ function shouldRedigitize() {
 
   return libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf() && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
 }
-
 var Macro = /*#__PURE__*/function (_StrictMacro) {
   _inherits(Macro, _StrictMacro);
 

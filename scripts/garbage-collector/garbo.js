@@ -19439,6 +19439,7 @@ module.exports = toString;
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "shouldRedigitize": () => (/* binding */ shouldRedigitize),
 /* harmony export */   "Macro": () => (/* binding */ Macro),
 /* harmony export */   "withMacro": () => (/* binding */ withMacro)
 /* harmony export */ });
@@ -19552,7 +19553,6 @@ function maxPassiveDamage() {
   var familiarMaxDamage = maxFamiliarDamage((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)());
   return vykeaMaxDamage + thrallMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
 }
-
 function shouldRedigitize() {
   var digitizesLeft = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .clamp */ .uZ)(3 - (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_sourceTerminalDigitizeUses"), 0, 3);
   var monsterCount = (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_sourceTerminalDigitizeMonsterCount") + 1; // triangular number * 10 - 3
@@ -19561,7 +19561,6 @@ function shouldRedigitize() {
 
   return libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf() && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
 }
-
 var Macro = /*#__PURE__*/function (_StrictMacro) {
   _inherits(Macro, _StrictMacro);
 
@@ -24051,7 +24050,7 @@ function faxEmbezzler() {
   }
 }
 
-var embezzlerMacro = () => src_combat.Macro.if_((0,template_string/* $monster */.O4)(embezzler_templateObject2 || (embezzler_templateObject2 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), src_combat.Macro.if_((0,template_string/* $location */.PG)(embezzler_templateObject3 || (embezzler_templateObject3 = embezzler_taggedTemplateLiteral(["The Briny Deeps"]))), src_combat.Macro.tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject4 || (embezzler_templateObject4 = embezzler_taggedTemplateLiteral(["pulled green taffy"]))))).trySkill((0,template_string/* $skill */.tm)(embezzler_templateObject5 || (embezzler_templateObject5 = embezzler_taggedTemplateLiteral(["Wink at"])))).trySkill((0,template_string/* $skill */.tm)(embezzler_templateObject6 || (embezzler_templateObject6 = embezzler_taggedTemplateLiteral(["Fire a badly romantic arrow"])))).externalIf((0,property/* get */.U2)("beGregariousCharges") > 0 && ((0,property/* get */.U2)("beGregariousMonster") !== (0,template_string/* $monster */.O4)(embezzler_templateObject7 || (embezzler_templateObject7 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) || (0,property/* get */.U2)("beGregariousFightsLeft") === 0), src_combat.Macro.trySkill((0,template_string/* $skill */.tm)(embezzler_templateObject8 || (embezzler_templateObject8 = embezzler_taggedTemplateLiteral(["Be Gregarious"]))))).externalIf((0,property/* get */.U2)("_sourceTerminalDigitizeMonster") !== (0,template_string/* $monster */.O4)(embezzler_templateObject9 || (embezzler_templateObject9 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), src_combat.Macro.tryCopier((0,template_string/* $skill */.tm)(embezzler_templateObject10 || (embezzler_templateObject10 = embezzler_taggedTemplateLiteral(["Digitize"]))))).tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject11 || (embezzler_templateObject11 = embezzler_taggedTemplateLiteral(["Spooky Putty sheet"])))).tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject12 || (embezzler_templateObject12 = embezzler_taggedTemplateLiteral(["Rain-Doh black box"])))).tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject13 || (embezzler_templateObject13 = embezzler_taggedTemplateLiteral(["4-d camera"])))).tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject14 || (embezzler_templateObject14 = embezzler_taggedTemplateLiteral(["unfinished ice sculpture"])))).externalIf((0,property/* get */.U2)("_enamorangs") === 0, src_combat.Macro.tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject15 || (embezzler_templateObject15 = embezzler_taggedTemplateLiteral(["LOV Enamorang"]))))).meatKill()).abort();
+var embezzlerMacro = () => src_combat.Macro.if_((0,template_string/* $monster */.O4)(embezzler_templateObject2 || (embezzler_templateObject2 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), src_combat.Macro.if_((0,template_string/* $location */.PG)(embezzler_templateObject3 || (embezzler_templateObject3 = embezzler_taggedTemplateLiteral(["The Briny Deeps"]))), src_combat.Macro.tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject4 || (embezzler_templateObject4 = embezzler_taggedTemplateLiteral(["pulled green taffy"]))))).trySkill((0,template_string/* $skill */.tm)(embezzler_templateObject5 || (embezzler_templateObject5 = embezzler_taggedTemplateLiteral(["Wink at"])))).trySkill((0,template_string/* $skill */.tm)(embezzler_templateObject6 || (embezzler_templateObject6 = embezzler_taggedTemplateLiteral(["Fire a badly romantic arrow"])))).externalIf((0,property/* get */.U2)("beGregariousCharges") > 0 && ((0,property/* get */.U2)("beGregariousMonster") !== (0,template_string/* $monster */.O4)(embezzler_templateObject7 || (embezzler_templateObject7 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) || (0,property/* get */.U2)("beGregariousFightsLeft") === 0), src_combat.Macro.trySkill((0,template_string/* $skill */.tm)(embezzler_templateObject8 || (embezzler_templateObject8 = embezzler_taggedTemplateLiteral(["Be Gregarious"]))))).externalIf((0,property/* get */.U2)("_sourceTerminalDigitizeMonster") !== (0,template_string/* $monster */.O4)(embezzler_templateObject9 || (embezzler_templateObject9 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) || (0,src_combat.shouldRedigitize)(), src_combat.Macro.tryCopier((0,template_string/* $skill */.tm)(embezzler_templateObject10 || (embezzler_templateObject10 = embezzler_taggedTemplateLiteral(["Digitize"]))))).tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject11 || (embezzler_templateObject11 = embezzler_taggedTemplateLiteral(["Spooky Putty sheet"])))).tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject12 || (embezzler_templateObject12 = embezzler_taggedTemplateLiteral(["Rain-Doh black box"])))).tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject13 || (embezzler_templateObject13 = embezzler_taggedTemplateLiteral(["4-d camera"])))).tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject14 || (embezzler_templateObject14 = embezzler_taggedTemplateLiteral(["unfinished ice sculpture"])))).externalIf((0,property/* get */.U2)("_enamorangs") === 0, src_combat.Macro.tryCopier((0,template_string/* $item */.xr)(embezzler_templateObject15 || (embezzler_templateObject15 = embezzler_taggedTemplateLiteral(["LOV Enamorang"]))))).meatKill()).abort();
 var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get */.U2)("_sourceTerminalDigitizeMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject16 || (embezzler_templateObject16 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,external_kolmafia_.getCounters)("Digitize Monster", 0, 0).trim() !== "", () => SourceTerminal/* have */.lf() && (0,property/* get */.U2)("_sourceTerminalDigitizeUses") === 0 ? 1 : 0, options => {
   var _options$location;
 
@@ -29556,7 +29555,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("a680ce5f506c593176d2e4cbce2a5b3c569960ee"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8da3d0ebf0ecec6c16e8f45933c4096a1f3e6e22"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
