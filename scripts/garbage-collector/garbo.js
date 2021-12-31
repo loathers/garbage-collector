@@ -29731,7 +29731,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("c6625107b6a48c7529660ecd88099f99016fd5b4"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8f4d5518be7f67e643aa869a057733799224379c"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -29830,7 +29830,10 @@ function main() {
       autoSatisfyWithStash: false,
       dontStopForCounters: true,
       maximizerFoldables: true,
-      hpAutoRecoveryTarget: 1.0,
+      hpAutoRecovery: 0.0,
+      hpAutoRecoveryTarget: 0.0,
+      mpAutoRecovery: 0.0,
+      mpAutoRecoveryTarget: 0.0,
       choiceAdventureScript: "",
       customCombatScript: "garbo",
       currentMood: "apathetic",
