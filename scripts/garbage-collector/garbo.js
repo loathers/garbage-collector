@@ -21122,7 +21122,7 @@ function knapsack(values, capacity) {
       throw new Error("Invalid weight ".concat(weight, " for ").concat(thing instanceof Not ? "not ".concat(thing.thing) : thing));
     }
 
-    var maxQuantity = maximum !== null && maximum !== void 0 ? maximum : Math.floor(adjustedCapacity / weight);
+    var maxQuantity = Math.floor(maximum !== null && maximum !== void 0 ? maximum : adjustedCapacity / weight);
 
     if (maxQuantity < 0) {
       throw new Error("Invalid max quantity ".concat(maxQuantity, " for ").concat(thing instanceof Not ? "not ".concat(thing.thing) : thing));
@@ -21590,7 +21590,7 @@ var DietPlanner = /*#__PURE__*/function () {
 
     this.menu = menu.filter(item => item.organ);
 
-    if (menu.length > 100) {
+    if (menu.filter(item => (0,external_kolmafia_.historicalPrice)(item.item) === 0 || (0,external_kolmafia_.historicalAge)(item.item) >= 1).length > 100) {
       (0,external_kolmafia_.mallPrices)("food");
       (0,external_kolmafia_.mallPrices)("booze");
     }
@@ -21599,7 +21599,13 @@ var DietPlanner = /*#__PURE__*/function () {
     spleenItems.sort((x, y) => -(this.consumptionValue(x) / x.item.spleen - this.consumptionValue(y) / y.item.spleen));
 
     if (spleenItems.length > 0) {
-      this.spleenValue = this.consumptionValue(spleenItems[0]) / spleenItems[0].item.spleen;
+      // Marginal value for sliders and jars depends on our best unlimited spleen item.
+      // TODO: spleenLimit() - mySpleenUse() is a poor estimate.
+      var bestMarginalSpleenItem = spleenItems.find(spleenItem => spleenItem.maximum === undefined || spleenItem.maximum * spleenItem.size >= (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)());
+
+      if (bestMarginalSpleenItem) {
+        this.spleenValue = Math.max(0, this.consumptionValue(bestMarginalSpleenItem) / bestMarginalSpleenItem.size);
+      }
     }
   }
   /**
@@ -21940,12 +21946,11 @@ var DietEntry = /*#__PURE__*/function () {
     key: "expectedValue",
     value: function expectedValue(mpa, diet) {
       var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "gross";
-      var adventures = this.expectedAdventures(diet);
-      var gross = this.quantity * (mpa * adventures + (0,utils/* sumNumbers */.JD)(this.menuItems.map(menuItem => {
+      var gross = mpa * this.expectedAdventures(diet) + this.quantity * (0,utils/* sumNumbers */.JD)(this.menuItems.map(menuItem => {
         var _menuItem$additionalV3;
 
         return (_menuItem$additionalV3 = menuItem.additionalValue) !== null && _menuItem$additionalV3 !== void 0 ? _menuItem$additionalV3 : 0;
-      })));
+      }));
 
       if (method === "gross") {
         return gross;
@@ -29731,7 +29736,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8f4d5518be7f67e643aa869a057733799224379c"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("0ff6a4f1277b2e5a2a3bd567e18717cf7bef5dcf"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
