@@ -356,6 +356,9 @@ export function main(argString = ""): void {
       autoTuxedo: true,
       autoPinkyRing: true,
       autoGarish: true,
+      allowNonMoodBurning: !globalOptions.ascending,
+      allowSummonBurning: true,
+      libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
