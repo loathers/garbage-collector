@@ -28261,9 +28261,16 @@ var FreeFight = /*#__PURE__*/function () {
       if ((this.options.cost ? this.options.cost() : 0) > (0,property/* get */.U2)("garbo_valueOfFreeFight", 2000)) return;
 
       while (this.available()) {
-        var _this$options$familia;
+        var _this$options, _this$options$noncomb;
 
-        (0,external_kolmafia_.useFamiliar)(this.options.familiar ? (_this$options$familia = this.options.familiar()) !== null && _this$options$familia !== void 0 ? _this$options$familia : freeFightFamiliar() : freeFightFamiliar());
+        var noncombat = !!((_this$options = this.options) !== null && _this$options !== void 0 && (_this$options$noncomb = _this$options.noncombat) !== null && _this$options$noncomb !== void 0 && _this$options$noncomb.call(_this$options));
+
+        if (!noncombat) {
+          var _this$options$familia;
+
+          (0,external_kolmafia_.useFamiliar)(this.options.familiar ? (_this$options$familia = this.options.familiar()) !== null && _this$options$familia !== void 0 ? _this$options$familia : freeFightFamiliar() : freeFightFamiliar());
+        }
+
         freeFightMood().execute();
         freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
         safeRestore();
@@ -28307,11 +28314,15 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
       if ((this.options.cost ? this.options.cost() : 0) > (0,property/* get */.U2)("garbo_valueOfFreeFight", 2000)) return;
 
       var _loop = function _loop() {
-        var _this2$options$famili;
-
         var runSource = findRun(_this2.options.familiar ? false : true);
         if (!runSource) return "break";
-        (0,external_kolmafia_.useFamiliar)(_this2.options.familiar ? (_this2$options$famili = _this2.options.familiar()) !== null && _this2$options$famili !== void 0 ? _this2$options$famili : freeFightFamiliar() : freeFightFamiliar());
+
+        if (!["Bander", "Boots"].includes(runSource.name)) {
+          var _this2$options$famili;
+
+          (0,external_kolmafia_.useFamiliar)(_this2.options.familiar ? (_this2$options$famili = _this2.options.familiar()) !== null && _this2$options$famili !== void 0 ? _this2$options$famili : freeFightFamiliar() : freeFightFamiliar());
+        }
+
         if (runSource.prepare) runSource.prepare();
         freeFightOutfit([].concat(fights_toConsumableArray(_this2.options.requirements ? _this2.options.requirements() : []), fights_toConsumableArray(runSource.requirement ? [runSource.requirement] : [])));
         safeRestore();
@@ -28628,6 +28639,8 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
 
   });
   (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject353 || (_templateObject353 = fights_taggedTemplateLiteral(["Gingerbread Civic Center"]))), src_combat.Macro.abort());
+}, {
+  noncombat: () => true
 }), new FreeRunFight(() => ((0,property/* get */.U2)("gingerbreadCityAvailable") || (0,property/* get */.U2)("_gingerbreadCityToday")) && (0,property/* get */.U2)("_gingerbreadCityTurns") + ((0,property/* get */.U2)("_gingerbreadClockAdvanced") ? 5 : 0) < 9, runSource => {
   propertyManager.setChoices({
     1215: 1 //Gingerbread Civic Center advance clock
@@ -28649,6 +28662,8 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
 
   });
   (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject356 || (_templateObject356 = fights_taggedTemplateLiteral(["Gingerbread Train Station"]))), src_combat.Macro.abort());
+}, {
+  noncombat: () => true
 }), new FreeRunFight(() => ((0,property/* get */.U2)("gingerbreadCityAvailable") || (0,property/* get */.U2)("_gingerbreadCityToday")) && (0,property/* get */.U2)("_gingerbreadCityTurns") + ((0,property/* get */.U2)("_gingerbreadClockAdvanced") ? 5 : 0) >= 10 && (0,property/* get */.U2)("_gingerbreadCityTurns") + ((0,property/* get */.U2)("_gingerbreadClockAdvanced") ? 5 : 0) < 19 && (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(_templateObject357 || (_templateObject357 = fights_taggedTemplateLiteral(["sprinkles"])))) > 5, runSource => {
   propertyManager.setChoices({
     1215: 1 //Gingerbread Civic Center advance clock
@@ -28672,6 +28687,8 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
 
   });
   (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject361 || (_templateObject361 = fights_taggedTemplateLiteral(["Gingerbread Civic Center"]))), src_combat.Macro.abort());
+}, {
+  noncombat: () => true
 }), // Must run before fishing for hipster/goth fights otherwise the targets may be banished
 new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject362 || (_templateObject362 = fights_taggedTemplateLiteral(["industrial fire extinguisher"])))) && (0,property/* get */.U2)("_fireExtinguisherCharge") >= 10 && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject363 || (_templateObject363 = fights_taggedTemplateLiteral(["Comprehensive Cartography"])))) && (0,property/* get */.U2)("_monstersMapped") < 3 && (0,property/* get */.U2)("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
 getBestFireExtinguisherZone() !== null, runSource => {
@@ -29743,7 +29760,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("722de125971005a718c3cbf99fc215caddbea84e"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("130ca862a076aefcac78183031d9c08713ffe086"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
