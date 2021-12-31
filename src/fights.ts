@@ -23,7 +23,6 @@ import {
   myInebriety,
   myLevel,
   myMaxhp,
-  myMp,
   myPathId,
   numericModifier,
   outfit,
