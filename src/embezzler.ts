@@ -153,7 +153,7 @@ export const embezzlerSources = [
             `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
             Macro.skill($skill`Back-Up to your Last Enemy`)
           )
-        ).step(embezzlerMacro())
+        ).step(options.macro ?? embezzlerMacro())
       );
     },
     [],
@@ -171,7 +171,15 @@ export const embezzlerSources = [
     (options: EmbezzlerFightOptions) => {
       const location =
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER);
-      const macro = options.macro ?? embezzlerMacro();
+      const macro = Macro.externalIf(
+        haveEquipped($item`backup camera`) &&
+          get("_backUpUses") < 11 &&
+          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
+        Macro.if_(
+          `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
+          Macro.skill($skill`Back-Up to your Last Enemy`)
+        )
+      ).step(options.macro ?? embezzlerMacro());
       adventureMacro(location, macro);
     },
     undefined,
