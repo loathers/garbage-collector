@@ -72,10 +72,7 @@ export function hasMonsterReplacers(): boolean {
  */
 export function saberCrateIfDesired(): void {
   if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
-  if (
-    get("_saberForceUses") > 0 &&
-    (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2)
-  ) {
+  if (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2) {
     const run = findRun() ?? ltbRun;
 
     new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` })
