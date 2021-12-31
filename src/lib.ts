@@ -64,6 +64,8 @@ export const globalOptions: {
   noBarf: boolean;
   askedAboutWish: boolean;
   wishAnswer: boolean;
+  simulateDiet: boolean;
+  noDiet: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -71,6 +73,8 @@ export const globalOptions: {
   noBarf: false,
   askedAboutWish: false,
   wishAnswer: false,
+  simulateDiet: false,
+  noDiet: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -429,6 +433,10 @@ export function printHelpMenu(): void {
     +--------------+---------------------------------------------------------------------------------------------------+
     | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
     |              |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.       |
+    +------------------------------------------------------------------------------------------------------------------+
+    |   simdiet    | garbo will print out what it computes as an optimal diet and then exit                            |
+    +------------------------------------------------------------------------------------------------------------------+
+    |    nodiet    | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |
     +--------------+---------------------------------------------------------------------------------------------------+
     |     Note:    | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
     +--------------+---------------------------------------------------------------------------------------------------+</pre>`);
@@ -475,13 +483,17 @@ export function pillkeeperOpportunityCost(): number {
 /**
  * Burns existing MP on the mall-optimal libram skill until unable to cast any more.
  */
-export function burnLibrams(): void {
+export function burnLibrams(mpTarget = 0): void {
   let libramToCast = bestLibramToCast();
-  while (libramToCast && mpCost(libramToCast) <= myMp()) {
+  while (libramToCast && mpCost(libramToCast) <= myMp() - mpTarget) {
     useSkill(libramToCast);
     libramToCast = bestLibramToCast();
   }
-  cliExecute("burn *");
+  if (mpTarget > 0) {
+    cliExecute(`burn -${mpTarget}`);
+  } else {
+    cliExecute("burn *");
+  }
 }
 
 export function safeRestore(): void {
@@ -497,4 +509,6 @@ export function safeRestore(): void {
       eat($item`magical sausage`);
     } else restoreMp(mpTarget);
   }
+
+  burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }

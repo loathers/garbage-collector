@@ -18,7 +18,6 @@ import {
   myTurncount,
   print,
   retrieveItem,
-  reverseNumberology,
   runChoice,
   setAutoAttack,
   totalTurnsPlayed,
@@ -205,13 +204,6 @@ function barfTurn() {
     }
   }
 
-  if (
-    Object.keys(reverseNumberology()).includes("69") &&
-    get("_universeCalculated") < get("skillLevel144")
-  ) {
-    cliExecute("numberology 69");
-  }
-
   if (myAdventures() === 1) {
     if (
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
@@ -239,7 +231,7 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(25968);
-
+  print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
     //Van & Duffel's Baleet Shop
@@ -280,11 +272,24 @@ export function main(argString = ""): void {
     } else if (arg.match(/help/i)) {
       printHelpMenu();
       return;
+    } else if (arg.match(/simdiet/)) {
+      globalOptions.simulateDiet = true;
+    } else if (arg.match(/nodiet/)) {
+      globalOptions.noDiet = true;
+    } else if (arg.match(/version/i)) {
+      //it already printed the version above, so do nothings
+      return;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
       return;
     }
   }
+
+  if (globalOptions.simulateDiet) {
+    runDiet();
+    return;
+  }
+
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
@@ -352,6 +357,9 @@ export function main(argString = ""): void {
       autoTuxedo: true,
       autoPinkyRing: true,
       autoGarish: true,
+      allowNonMoodBurning: !globalOptions.ascending,
+      allowSummonBurning: true,
+      libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -404,7 +412,7 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        runDiet();
+        if (!globalOptions.noDiet) runDiet();
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();

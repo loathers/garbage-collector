@@ -3,6 +3,7 @@ import {
   abort,
   chatPrivate,
   cliExecute,
+  getCounter,
   getCounters,
   haveEquipped,
   inebrietyLimit,
@@ -18,6 +19,7 @@ import {
   runCombat,
   toInt,
   toMonster,
+  toUrl,
   use,
   userConfirm,
   visitUrl,
@@ -43,9 +45,10 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { Macro, withMacro } from "./combat";
+import { Macro, shouldRedigitize, withMacro } from "./combat";
+import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
-import { baseMeat, globalOptions, WISH_VALUE } from "./lib";
+import { baseMeat, globalOptions, ltbRun, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
 type EmbezzlerFightOptions = {
@@ -120,7 +123,8 @@ export const embezzlerMacro = (): Macro =>
         Macro.trySkill($skill`Be Gregarious`)
       )
       .externalIf(
-        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler` ||
+          shouldRedigitize(),
         Macro.tryCopier($skill`Digitize`)
       )
       .tryCopier($item`Spooky Putty sheet`)
@@ -153,6 +157,24 @@ export const embezzlerSources = [
       );
     },
     [],
+    true
+  ),
+  new EmbezzlerFight(
+    "Guaranteed Romantic Monster",
+    () =>
+      get("_romanticFightsLeft") > 0 &&
+      getCounter("Romantic Monster window begin") <= 0 &&
+      getCounter("Romantic Monster window end") <= 0 &&
+      (getCounter("Romantic Monster window end") !== -1 ||
+        getCounters("Romantic Monster window end", -1, -1).trim() !== ""),
+    () => 0,
+    (options: EmbezzlerFightOptions) => {
+      const location =
+        options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER);
+      const macro = options.macro ?? embezzlerMacro();
+      adventureMacro(location, macro);
+    },
+    undefined,
     true
   ),
   new EmbezzlerFight(
@@ -189,13 +211,13 @@ export const embezzlerSources = [
       CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
       $monster`Knob Goblin Embezzler`,
     () =>
-      (get("beGregariousCharges") > 0 ||
-        get("beGregariousFightsLeft") > 0 ||
-        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
-          $monster`Knob Goblin Embezzler`) &&
-      have($item`miniature crystal ball`)
+      (have($item`miniature crystal ball`) ? 1 : 0) *
+      get("beGregariousCharges") *
+      +(get("beGregariousFightsLeft") > 0 ||
+      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+        $monster`Knob Goblin Embezzler`
         ? 1
-        : 0,
+        : 0),
     (options: EmbezzlerFightOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       adventureMacro($location`The Dire Warren`, macro);
@@ -217,7 +239,7 @@ export const embezzlerSources = [
           location.combatQueue.includes($monster`Knob Goblin Embezzler`.name) ||
           get("beGregariousCharges") > 0
       )
-        ? Math.min((10 - get("_timeSpinnerMinutesUsed")) / 3)
+        ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
     (options: EmbezzlerFightOptions) => {
       const macro = options.macro ?? embezzlerMacro();
@@ -292,23 +314,35 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Be Gregarious",
     () =>
-      retrieveItem(1, $item`human musk`) &&
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") > 1,
     () =>
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler` ||
-      get("beGregariousCharges") > 0
-        ? get("beGregariousCharges") === 0
-          ? get("beGregariousFightsLeft")
-          : 3
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+        ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
         : 0,
     (options: EmbezzlerFightOptions) => {
+      if (ltbRun.prepare) ltbRun.prepare();
       adventureMacro(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.item($item`human musk`)).step(
-          options.macro ?? embezzlerMacro()
-        )
+        Macro.if_($monster`fluffy bunny`, ltbRun.macro).step(options.macro ?? embezzlerMacro())
       );
+      // reset the crystal ball prediction by staring longingly at toast
+      if (
+        get("beGregariousFightsLeft") === 1 &&
+        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !==
+          $monster`Knob Goblin Embezzler`
+      ) {
+        try {
+          const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+          if (!store.includes("Check Out the Gift Shop")) {
+            print("Unable to stare longingly at toast");
+          }
+          runChoice(4);
+        } catch {
+          // orb reseting raises a mafia error
+        }
+        visitUrl("main.php");
+      }
     }
   ),
   new EmbezzlerFight(
@@ -483,7 +517,7 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Pocket Wish",
     () => {
-      const potential = embezzlerCount();
+      const potential = Math.floor(embezzlerCount());
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
@@ -555,7 +589,7 @@ export function estimatedTurns(): number {
     : 0;
   const thesisAdventures = have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
   const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
-  const thumbRingMultiplier = have($item`mafia thumb ring`) ? 1 / 0.96 : 1;
+  const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
