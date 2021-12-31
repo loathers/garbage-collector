@@ -23919,7 +23919,7 @@ function hasMonsterReplacers() {
 function saberCrateIfDesired() {
   if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(extrovermectin_templateObject12 || (extrovermectin_templateObject12 = extrovermectin_taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) || (0,property/* get */.U2)("_saberForceUses") >= 5) return;
 
-  if ((0,property/* get */.U2)("_saberForceUses") > 0 && ((0,property/* get */.U2)("_saberForceMonster") !== (0,template_string/* $monster */.O4)(extrovermectin_templateObject13 || (extrovermectin_templateObject13 = extrovermectin_taggedTemplateLiteral(["crate"]))) || (0,property/* get */.U2)("_saberForceMonsterCount") < 2)) {
+  if ((0,property/* get */.U2)("_saberForceMonster") !== (0,template_string/* $monster */.O4)(extrovermectin_templateObject13 || (extrovermectin_templateObject13 = extrovermectin_taggedTemplateLiteral(["crate"]))) || (0,property/* get */.U2)("_saberForceMonsterCount") < 2) {
     var _findRun;
 
     var run = (_findRun = findRun()) !== null && _findRun !== void 0 ? _findRun : ltbRun;
@@ -29731,7 +29731,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("818f6071ee90cd5504f2fd019f710f3222e87552"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("c6625107b6a48c7529660ecd88099f99016fd5b4"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
