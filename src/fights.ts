@@ -197,7 +197,7 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const runSource = findRun() || ltbRun;
+      const runSource = findRun() || ltbRun();
       if (!runSource) break;
       if (runSource.prepare) runSource.prepare();
       freeFightOutfit(runSource.requirement ? [runSource.requirement] : []);
@@ -285,11 +285,11 @@ function startWandererCounter() {
     do {
       let run: FreeRun;
       if (get("beGregariousFightsLeft") > 0) {
-        run = ltbRun;
+        run = ltbRun();
         useFamiliar(meatFamiliar());
         meatOutfit(true);
       } else {
-        run = findRun() || ltbRun;
+        run = findRun() || ltbRun();
         useFamiliar(freeFightFamiliar());
         if (run.prepare) run.prepare();
         freeFightOutfit(run.requirement ? [run.requirement] : []);
