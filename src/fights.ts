@@ -1503,7 +1503,9 @@ const freeRunFightSources = [
 function sandwormRequirement() {
   return new Requirement(
     ["100 Item Drop"],
-    get("garbageChampagneCharge") > 0 ? { forceEquip: $items`broken champagne bottle` } : {}
+    have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
+      ? { forceEquip: $items`broken champagne bottle` }
+      : {}
   );
 }
 
