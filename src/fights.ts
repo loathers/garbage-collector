@@ -23,6 +23,7 @@ import {
   myInebriety,
   myLevel,
   myMaxhp,
+  myMp,
   myPathId,
   numericModifier,
   outfit,
@@ -172,21 +173,21 @@ function embezzlerSetup() {
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
-    maximize("MP", false);
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
+      maximize("MP", false);
       burnLibrams();
       use($item`Platinum Yendorian Express Card`);
-      burnLibrams();
     }
     if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
       use($item`Bag o' Tricks`);
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    maximize("MP", false);
     burnLibrams();
     use($item`License to Chill`);
-    burnLibrams();
   }
+  burnLibrams(400);
   if (
     globalOptions.ascending &&
     questStep("questM16Temple") > 0 &&
