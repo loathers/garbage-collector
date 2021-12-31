@@ -172,8 +172,8 @@ function embezzlerSetup() {
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
-    maximize("MP", false);
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
+      maximize("MP", false);
       burnLibrams();
       use($item`Platinum Yendorian Express Card`);
     }
@@ -182,9 +182,11 @@ function embezzlerSetup() {
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    maximize("MP", false);
     burnLibrams();
     use($item`License to Chill`);
   }
+  burnLibrams(400);
   if (
     globalOptions.ascending &&
     questStep("questM16Temple") > 0 &&
