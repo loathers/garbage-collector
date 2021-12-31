@@ -268,14 +268,9 @@ function embezzlerSetup() {
 
 function startWandererCounter() {
   if (
-    [
-      "Backup",
-      "Macrometeorite",
-      "Powerful Glove",
-      "Be Gregarious",
-      "Final Be Gregarious",
-      "Done With Embezzlers",
-    ].includes(getNextEmbezzlerFight()?.name ?? "Done With Embezzlers")
+    ["Backup", "Be Gregarious", "Final Be Gregarious", "Done With Embezzlers"].includes(
+      getNextEmbezzlerFight()?.name ?? "Done With Embezzlers"
+    )
   )
     return;
   if (
@@ -288,12 +283,15 @@ function startWandererCounter() {
       getCounters("Romantic Monster window end", -1, -1).trim() === "")
   ) {
     do {
-      const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
-      if (run.prepare) run.prepare();
+      let run: FreeRun;
       if (get("beGregariousFightsLeft") > 0) {
-        //If there's a chance we hit an embezzler as we try to do this, we might as well try to get meat out of it
-        meatOutfit(true, run.requirement ? [run.requirement] : []);
+        run = ltbRun;
+        useFamiliar(meatFamiliar());
+        meatOutfit(true);
       } else {
+        run = findRun() || ltbRun;
+        useFamiliar(freeFightFamiliar());
+        if (run.prepare) run.prepare();
         freeFightOutfit(run.requirement ? [run.requirement] : []);
       }
       adventureMacro(
