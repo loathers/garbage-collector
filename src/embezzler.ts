@@ -329,10 +329,11 @@ export const embezzlerSources = [
         ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
         : 0,
     (options: EmbezzlerFightOptions) => {
-      if (ltbRun.prepare) ltbRun.prepare();
+      const run = ltbRun();
+      if (run.prepare) run.prepare();
       adventureMacro(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, ltbRun.macro).step(options.macro ?? embezzlerMacro())
+        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro ?? embezzlerMacro())
       );
       // reset the crystal ball prediction by staring longingly at toast
       if (

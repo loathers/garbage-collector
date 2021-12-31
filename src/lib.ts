@@ -6,6 +6,7 @@ import {
   handlingChoice,
   haveSkill,
   inebrietyLimit,
+  mallPrice,
   mpCost,
   myHp,
   myInebriety,
@@ -364,13 +365,18 @@ export function findRun(useFamiliar = true): FreeRun | undefined {
   );
 }
 
-export const ltbRun = new FreeRun(
-  "LTB",
-  () => retrieveItem($item`Louder Than Bomb`),
-  Macro.item($item`Louder Than Bomb`),
-  new Requirement([], {}),
-  () => retrieveItem($item`Louder Than Bomb`)
-);
+export const ltbRun: () => FreeRun = () => {
+  const freeRunItem = $items`Louder Than Bomb, divine champagne popper, tennis ball`.sort(
+    (a, b) => mallPrice(a) - mallPrice(b)
+  )[0];
+  return new FreeRun(
+    "LTB",
+    () => retrieveItem(freeRunItem),
+    Macro.item(freeRunItem),
+    new Requirement([], {}),
+    () => retrieveItem(freeRunItem)
+  );
+};
 
 export function coinmasterPrice(item: Item): number {
   // TODO: Get this from coinmasters.txt if more are needed
