@@ -447,17 +447,19 @@ export function potionMenu(
     ...limitedPotion($item`body spradium`, availableAmount($item`body spradium`)),
     ...potion($item`Knob Goblin pet-buffing spray`),
     ...potion($item`Knob Goblin nasal spray`),
-    ...potion(
-      new Potion($item`Rethinking Candy`, {
-        effect: $effect`Synthesis: Greed`,
-        duration: 30,
-      }),
-      {
-        size: 1,
-        organ: "spleen item",
-        price: 0,
-      }
-    ),
+    ...(have($skill`Sweet Synthesis`)
+      ? potion(
+          new Potion($item`Rethinking Candy`, {
+            effect: $effect`Synthesis: Greed`,
+            duration: 30,
+          }),
+          {
+            size: 1,
+            organ: "spleen item",
+            price: 0,
+          }
+        )
+      : []),
   ];
 }
 
