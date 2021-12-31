@@ -23362,14 +23362,19 @@ function pillkeeperOpportunityCost() {
  */
 
 function burnLibrams() {
+  var mpTarget = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   var libramToCast = bestLibramToCast();
 
-  while (libramToCast && (0,external_kolmafia_.mpCost)(libramToCast) <= (0,external_kolmafia_.myMp)()) {
+  while (libramToCast && (0,external_kolmafia_.mpCost)(libramToCast) <= (0,external_kolmafia_.myMp)() - mpTarget) {
     (0,external_kolmafia_.useSkill)(libramToCast);
     libramToCast = bestLibramToCast();
   }
 
-  (0,external_kolmafia_.cliExecute)("burn *");
+  if (mpTarget > 0) {
+    (0,external_kolmafia_.cliExecute)("burn -".concat(mpTarget));
+  } else {
+    (0,external_kolmafia_.cliExecute)("burn *");
+  }
 }
 function safeRestore() {
   if ((0,external_kolmafia_.myHp)() < (0,external_kolmafia_.myMaxhp)() * 0.5) {
@@ -23383,6 +23388,8 @@ function safeRestore() {
       (0,external_kolmafia_.eat)((0,template_string/* $item */.xr)(lib_templateObject72 || (lib_templateObject72 = lib_taggedTemplateLiteral(["magical sausage"]))));
     } else (0,external_kolmafia_.restoreMp)(mpTarget);
   }
+
+  burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
 ;// CONCATENATED MODULE: ./src/familiar.ts
 var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11, familiar_templateObject12, familiar_templateObject13, familiar_templateObject14, familiar_templateObject15, familiar_templateObject16, familiar_templateObject17, familiar_templateObject18, familiar_templateObject19, familiar_templateObject20, familiar_templateObject21, familiar_templateObject22, familiar_templateObject23, familiar_templateObject24, familiar_templateObject25, familiar_templateObject26, familiar_templateObject27, familiar_templateObject28, familiar_templateObject29, familiar_templateObject30, familiar_templateObject31, familiar_templateObject32, familiar_templateObject33, familiar_templateObject34, familiar_templateObject35, familiar_templateObject36, familiar_templateObject37;
@@ -27935,9 +27942,8 @@ function embezzlerSetup() {
   safeRestore();
   freeFightMood().execute(50);
   withStash((0,template_string/* $items */.vS)(fights_templateObject21 || (fights_templateObject21 = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card, Bag o' Tricks"]))), () => {
-    (0,external_kolmafia_.maximize)("MP", false);
-
     if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(fights_templateObject22 || (fights_templateObject22 = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) && !(0,property/* get */.U2)("expressCardUsed")) {
+      (0,external_kolmafia_.maximize)("MP", false);
       burnLibrams();
       (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject23 || (fights_templateObject23 = fights_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
     }
@@ -27948,9 +27954,12 @@ function embezzlerSetup() {
   });
 
   if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(fights_templateObject26 || (fights_templateObject26 = fights_taggedTemplateLiteral(["License to Chill"])))) && !(0,property/* get */.U2)("_licenseToChillUsed")) {
+    (0,external_kolmafia_.maximize)("MP", false);
     burnLibrams();
     (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject27 || (fights_templateObject27 = fights_taggedTemplateLiteral(["License to Chill"]))));
   }
+
+  burnLibrams(400);
 
   if (globalOptions.ascending && questStep("questM16Temple") > 0 && (0,property/* get */.U2)("lastTempleAdventures") < (0,external_kolmafia_.myAscensions)() && acquire(1, (0,template_string/* $item */.xr)(fights_templateObject28 || (fights_templateObject28 = fights_taggedTemplateLiteral(["stone wool"]))), 3 * (0,property/* get */.U2)("valueOfAdventure") + 100, false) > 0) {
     (0,lib/* ensureEffect */.pq)((0,template_string/* $effect */._G)(fights_templateObject29 || (fights_templateObject29 = fights_taggedTemplateLiteral(["Stone-Faced"]))));
@@ -29722,7 +29731,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("c32c476314a97e66a969746ab5b5bd58ac1b0983"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("818f6071ee90cd5504f2fd019f710f3222e87552"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -29827,7 +29836,11 @@ function main() {
       currentMood: "apathetic",
       autoTuxedo: true,
       autoPinkyRing: true,
-      autoGarish: true
+      autoGarish: true,
+      allowNonMoodBurning: !globalOptions.ascending,
+      allowSummonBurning: true,
+      libramSkillsSoftcore: "none" // Don't cast librams when mana burning, handled manually based on sale price
+
     });
     var bestHalloweiner = 0;
 
