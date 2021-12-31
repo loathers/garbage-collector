@@ -232,7 +232,11 @@ function embezzlerSetup() {
   }
 
   if (!get("_enamorangs") && !itemAmount($item`LOV Enamorang`) && averageEmbezzlerNet > 20000) {
-    retrieveItem($item`LOV Enamorang`);
+    try {
+      retrieveItem($item`LOV Enamorang`);
+    } catch {
+      //retrieveItem acts as an assertion
+    }
   }
 
   // Fix invalid copiers (caused by ascending or combat text-effects)
