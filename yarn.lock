@@ -2919,10 +2919,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.5.0.tgz#b1ced6ebae1c46936a517e885c112b9edf9b0944"
-  integrity sha512-qy0wuXjK6jjcv4+gejFruwHmYMiBMsCkb4PkL0+n07C1Ws4oYAonOd+X/rB/OtmF8ExBSRHjDLEQ40nUJ70Gzg==
+libram@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.5.3.tgz#351debe95f940041d25ac702855da4a62a9447b5"
+  integrity sha512-ynapNVsnjJwMpVztBHiVhrmldfGIxiqmZJWdKE2Gty2QcaFhOtOwYn3BgsL1w2ehxncnM9VUvbL23mrM8azaOQ==
   dependencies:
     "@babel/runtime-corejs3" "^7.14.9"
     core-js "3.15.2"
