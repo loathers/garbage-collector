@@ -444,7 +444,7 @@ export function potionMenu(
 
     // SPLEEN POTIONS
     ...potion($item`beggin' cologne`),
-    ...limitedPotion($item`body spradium`, availableAmount($item`body spradium`)),
+    ...limitedPotion($item`body spradium`, clamp(availableAmount($item`body spradium`), 0, 1)),
     ...potion($item`Knob Goblin pet-buffing spray`),
     ...potion($item`Knob Goblin nasal spray`),
     ...(have($skill`Sweet Synthesis`)
