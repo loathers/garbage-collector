@@ -14,7 +14,6 @@ import {
   have,
   property,
   Requirement,
-  uneffect,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
 import { findRun, ltbRun, setChoice } from "./lib";
@@ -124,8 +123,6 @@ function initializeCrates(): void {
       have($skill`Transcendent Olfaction`) &&
       (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate")
     ) {
-      //We only get to this point if crates aren't already olfacted
-      if (have($effect`On the Trail`)) uneffect($effect`On the Trail`);
       const run = findRun() ?? ltbRun;
       setChoice(1387, 2); //use the force, in case we decide to use that
 
