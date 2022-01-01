@@ -197,7 +197,7 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const runSource = findRun() || ltbRun;
+      const runSource = findRun() || ltbRun();
       if (!runSource) break;
       if (runSource.prepare) runSource.prepare();
       freeFightOutfit(runSource.requirement ? [runSource.requirement] : []);
@@ -268,14 +268,9 @@ function embezzlerSetup() {
 
 function startWandererCounter() {
   if (
-    [
-      "Backup",
-      "Macrometeorite",
-      "Powerful Glove",
-      "Be Gregarious",
-      "Final Be Gregarious",
-      "Done With Embezzlers",
-    ].includes(getNextEmbezzlerFight()?.name ?? "Done With Embezzlers")
+    ["Backup", "Be Gregarious", "Final Be Gregarious", "Done With Embezzlers"].includes(
+      getNextEmbezzlerFight()?.name ?? "Done With Embezzlers"
+    )
   )
     return;
   if (
@@ -288,12 +283,15 @@ function startWandererCounter() {
       getCounters("Romantic Monster window end", -1, -1).trim() === "")
   ) {
     do {
-      const run = findRun(get("beGregariousFightsLeft") === 0) || ltbRun;
-      if (run.prepare) run.prepare();
+      let run: FreeRun;
       if (get("beGregariousFightsLeft") > 0) {
-        //If there's a chance we hit an embezzler as we try to do this, we might as well try to get meat out of it
-        meatOutfit(true, run.requirement ? [run.requirement] : []);
+        run = ltbRun();
+        useFamiliar(meatFamiliar());
+        meatOutfit(true);
       } else {
+        run = findRun() || ltbRun();
+        useFamiliar(freeFightFamiliar());
+        if (run.prepare) run.prepare();
         freeFightOutfit(run.requirement ? [run.requirement] : []);
       }
       adventureMacro(
@@ -493,6 +491,7 @@ type FreeFightOptions = {
   cost?: () => number;
   familiar?: () => Familiar | null;
   requirements?: () => Requirement[];
+  noncombat?: () => boolean;
 };
 
 let bestNonCheerleaderFairy: Familiar;
@@ -538,9 +537,14 @@ class FreeFight {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
-      useFamiliar(
-        this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
-      );
+      const noncombat = !!this.options?.noncombat?.();
+      if (!noncombat) {
+        useFamiliar(
+          this.options.familiar
+            ? this.options.familiar() ?? freeFightFamiliar()
+            : freeFightFamiliar()
+        );
+      }
       freeFightMood().execute();
       freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
       safeRestore();
@@ -570,9 +574,13 @@ class FreeRunFight extends FreeFight {
     while (this.available()) {
       const runSource = findRun(this.options.familiar ? false : true);
       if (!runSource) break;
-      useFamiliar(
-        this.options.familiar ? this.options.familiar() ?? freeFightFamiliar() : freeFightFamiliar()
-      );
+      if (!["Bander", "Boots"].includes(runSource.name)) {
+        useFamiliar(
+          this.options.familiar
+            ? this.options.familiar() ?? freeFightFamiliar()
+            : freeFightFamiliar()
+        );
+      }
       if (runSource.prepare) runSource.prepare();
       freeFightOutfit([
         ...(this.options.requirements ? this.options.requirements() : []),
@@ -1299,6 +1307,9 @@ const freeRunFightSources = [
         1215: 1, //Gingerbread Civic Center advance clock
       });
       adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+    },
+    {
+      noncombat: () => true,
     }
   ),
   new FreeRunFight(
@@ -1341,6 +1352,9 @@ const freeRunFightSources = [
         1204: 1, // Gingerbread Train Station Noon random candy
       });
       adventureMacro($location`Gingerbread Train Station`, Macro.abort());
+    },
+    {
+      noncombat: () => true,
     }
   ),
   new FreeRunFight(
@@ -1387,6 +1401,9 @@ const freeRunFightSources = [
         1215: 1, //Gingerbread Civic Center advance clock
       });
       adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+    },
+    {
+      noncombat: () => true,
     }
   ),
   // Must run before fishing for hipster/goth fights otherwise the targets may be banished

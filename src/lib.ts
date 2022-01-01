@@ -1,4 +1,4 @@
-import { canAdv } from "canadv.ash";
+//import { canAdv } from "canadv.ash";
 import {
   abort,
   cliExecute,
@@ -6,6 +6,7 @@ import {
   handlingChoice,
   haveSkill,
   inebrietyLimit,
+  mallPrice,
   mpCost,
   myHp,
   myInebriety,
@@ -32,11 +33,11 @@ import {
   $familiar,
   $item,
   $items,
-  $location,
+  //$location,
   $skill,
   Bandersnatch,
   bestLibramToCast,
-  ChateauMantegna,
+  //ChateauMantegna,
   ensureEffect,
   get,
   getFoldGroup,
@@ -364,13 +365,18 @@ export function findRun(useFamiliar = true): FreeRun | undefined {
   );
 }
 
-export const ltbRun = new FreeRun(
-  "LTB",
-  () => retrieveItem($item`Louder Than Bomb`),
-  Macro.item($item`Louder Than Bomb`),
-  new Requirement([], {}),
-  () => retrieveItem($item`Louder Than Bomb`)
-);
+export const ltbRun: () => FreeRun = () => {
+  const freeRunItem = $items`Louder Than Bomb, divine champagne popper, tennis ball`.sort(
+    (a, b) => mallPrice(a) - mallPrice(b)
+  )[0];
+  return new FreeRun(
+    "LTB",
+    () => retrieveItem(freeRunItem),
+    Macro.item(freeRunItem),
+    new Requirement([], {}),
+    () => retrieveItem(freeRunItem)
+  );
+};
 
 export function coinmasterPrice(item: Item): number {
   // TODO: Get this from coinmasters.txt if more are needed
@@ -472,12 +478,13 @@ export function printHelpMenu(): void {
 export function pillkeeperOpportunityCost(): number {
   //Can't fight an embezzler without treasury access
   //If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
-  return canAdv($location`Cobb's Knob Treasury`, false)
+  /*return canAdv($location`Cobb's Knob Treasury`, false)
     ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
       (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
       ? 15000
       : WISH_VALUE
-    : 0;
+    : 0;*/
+  return 0;
 }
 
 /**

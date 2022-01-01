@@ -72,7 +72,7 @@ export function hasMonsterReplacers(): boolean {
 export function saberCrateIfDesired(): void {
   if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
   if (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2) {
-    const run = findRun() ?? ltbRun;
+    const run = findRun() ?? ltbRun();
 
     new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` })
       .merge(run.requirement ? run.requirement : new Requirement([], {}))
@@ -124,7 +124,7 @@ function initializeCrates(): void {
       (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate") &&
       get<number>("_olfactionuses") < 3
     ) {
-      const run = findRun() ?? ltbRun;
+      const run = findRun() ?? ltbRun();
       setChoice(1387, 2); //use the force, in case we decide to use that
 
       //Sniff the crate in as many ways as humanly possible

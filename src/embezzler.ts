@@ -1,4 +1,4 @@
-import { canAdv } from "canadv.ash";
+//import { canAdv } from "canadv.ash";
 import {
   abort,
   chatPrivate,
@@ -153,7 +153,7 @@ export const embezzlerSources = [
             `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
             Macro.skill($skill`Back-Up to your Last Enemy`)
           )
-        ).step(embezzlerMacro())
+        ).step(options.macro ?? embezzlerMacro())
       );
     },
     [],
@@ -171,7 +171,15 @@ export const embezzlerSources = [
     (options: EmbezzlerFightOptions) => {
       const location =
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER);
-      const macro = options.macro ?? embezzlerMacro();
+      const macro = Macro.externalIf(
+        haveEquipped($item`backup camera`) &&
+          get("_backUpUses") < 11 &&
+          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
+        Macro.if_(
+          `!monsterid ${$monster`Knob Goblin Embezzler`.id}`,
+          Macro.skill($skill`Back-Up to your Last Enemy`)
+        )
+      ).step(options.macro ?? embezzlerMacro());
       adventureMacro(location, macro);
     },
     undefined,
@@ -321,10 +329,11 @@ export const embezzlerSources = [
         ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
         : 0,
     (options: EmbezzlerFightOptions) => {
-      if (ltbRun.prepare) ltbRun.prepare();
+      const run = ltbRun();
+      if (run.prepare) run.prepare();
       adventureMacro(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, ltbRun.macro).step(options.macro ?? embezzlerMacro())
+        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro ?? embezzlerMacro())
       );
       // reset the crystal ball prediction by staring longingly at toast
       if (
@@ -495,7 +504,7 @@ export const embezzlerSources = [
       use($item`photocopied monster`);
     }
   ),
-  new EmbezzlerFight(
+  /*new EmbezzlerFight(
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
@@ -512,7 +521,7 @@ export const embezzlerSources = [
       cliExecute("pillkeeper semirare");
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
-  ),
+  ),*/
   //These are very deliberately the last embezzler fights.
   new EmbezzlerFight(
     "Pocket Wish",
