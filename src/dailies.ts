@@ -50,6 +50,7 @@ import {
   $slot,
   $stat,
   $thrall,
+  BeachComb,
   ChateauMantegna,
   ensureEffect,
   get,
@@ -274,6 +275,8 @@ function dailyBuffs(): void {
     ensureEffect($effect`Down the Rabbit Hole`);
     cliExecute("hatter 22");
   }
+
+  BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
 }
 
 function configureMisc(): void {
