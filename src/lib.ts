@@ -1,4 +1,4 @@
-import { canAdv } from "canadv.ash";
+//import { canAdv } from "canadv.ash";
 import {
   abort,
   cliExecute,
@@ -32,11 +32,11 @@ import {
   $familiar,
   $item,
   $items,
-  $location,
+  //$location,
   $skill,
   Bandersnatch,
   bestLibramToCast,
-  ChateauMantegna,
+  //ChateauMantegna,
   ensureEffect,
   get,
   getFoldGroup,
@@ -472,12 +472,13 @@ export function printHelpMenu(): void {
 export function pillkeeperOpportunityCost(): number {
   //Can't fight an embezzler without treasury access
   //If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
-  return canAdv($location`Cobb's Knob Treasury`, false)
+  /*return canAdv($location`Cobb's Knob Treasury`, false)
     ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
       (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
       ? 15000
       : WISH_VALUE
-    : 0;
+    : 0;*/
+  return 0;
 }
 
 /**
