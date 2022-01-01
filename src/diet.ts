@@ -6,6 +6,7 @@ import {
   eat,
   elementalResistance,
   fullnessLimit,
+  getClanLounge,
   getIngredients,
   getProperty,
   haveEffect,
@@ -53,6 +54,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
+import { withVIPClan } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import { arrayEquals, globalOptions } from "./lib";
@@ -418,6 +420,9 @@ export function potionMenu(
     return limitedPotion(potion, undefined, options);
   }
 
+  const speakeasy = $item`Clan speakeasy`;
+  const hasSpeakeasy = getClanLounge()[`${speakeasy}`];
+
   return [
     ...baseMenu,
     ...copiers(),
@@ -440,7 +445,7 @@ export function potionMenu(
     ...potion($item`Ambitious Turkey`),
     ...potion($item`Friendly Turkey`),
     ...potion($item`vintage smart drink`),
-    ...limitedPotion($item`Hot Socks`, 3, { price: 5000 }),
+    ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
 
     // SPLEEN POTIONS
     ...potion($item`beggin' cologne`),
@@ -609,7 +614,9 @@ export function consumeDiet(diet: Diet<Note>): void {
         "spleen item": spleenLimit() - mySpleenUse(),
       };
       for (const menuItem of menuItems) {
-        if (menuItem.organ && menuItem.size > 0) {
+        if (menuItem.organ === "booze" && menuItem.size === 1 && !get("_mimeArmyShotglassUsed")) {
+          countToConsume = 1;
+        } else if (menuItem.organ && menuItem.size > 0) {
           countToConsume = Math.min(
             countToConsume,
             Math.floor(capacity[menuItem.organ] / menuItem.size)
@@ -644,6 +651,8 @@ export function consumeDiet(diet: Diet<Note>): void {
           cliExecute(`genie effect ${menuItem.effect}`);
         } else if (menuItem.item === $item`Rethinking Candy`) {
           synthesize(countToConsume, $effect`Synthesis: Greed`);
+        } else if (getClanLounge()[`${menuItem.item}`] && itemType(menuItem.item) === "booze") {
+          cliExecute(`drink ${menuItem.item}`);
         } else if (menuItem.item !== $item`Special Seasoning`) {
           consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
         }
@@ -654,39 +663,41 @@ export function consumeDiet(diet: Diet<Note>): void {
 }
 
 export function runDiet(): void {
-  if (myFamiliar() === $familiar`Stooper`) {
-    useFamiliar($familiar`none`);
-  }
-
-  const dietBuilder = computeDiet();
-
-  if (globalOptions.simulateDiet) {
-    if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
-      printDiet(dietBuilder.shotglass());
+  withVIPClan(() => {
+    if (myFamiliar() === $familiar`Stooper`) {
+      useFamiliar($familiar`none`);
     }
 
-    print("===== SIMULATED DIET =====");
-    printDiet(dietBuilder.diet());
-  } else {
-    pillCheck();
+    const dietBuilder = computeDiet();
 
-    nonOrganAdventures();
+    if (globalOptions.simulateDiet) {
+      if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
+        printDiet(dietBuilder.shotglass());
+      }
 
-    if (have($item`astral six-pack`)) {
-      use($item`astral six-pack`);
+      print("===== SIMULATED DIET =====");
+      printDiet(dietBuilder.diet());
+    } else {
+      pillCheck();
+
+      nonOrganAdventures();
+
+      if (have($item`astral six-pack`)) {
+        use($item`astral six-pack`);
+      }
+      if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
+        consumeDiet(dietBuilder.shotglass());
+      }
+
+      if (
+        get("barrelShrineUnlocked") &&
+        !get("_barrelPrayer") &&
+        $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
+      ) {
+        cliExecute("barrelprayer buff");
+      }
+
+      consumeDiet(dietBuilder.diet());
     }
-    if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
-      consumeDiet(dietBuilder.shotglass());
-    }
-
-    if (
-      get("barrelShrineUnlocked") &&
-      !get("_barrelPrayer") &&
-      $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
-    ) {
-      cliExecute("barrelprayer buff");
-    }
-
-    consumeDiet(dietBuilder.diet());
-  }
+  });
 }
