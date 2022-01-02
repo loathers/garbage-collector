@@ -233,7 +233,8 @@ const freeRuns: FreeRun[] = [
     "Bander",
     () =>
       have($familiar`Frumious Bandersnatch`) &&
-      (have($effect`Ode to Booze`) || getSongCount() < getSongLimit()) &&
+      (have($effect`Ode to Booze`) ||
+        (getSongCount() < getSongLimit() && have($skill`The Ode to Booze`))) &&
       Bandersnatch.getRemainingRunaways() > 0,
     Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).step("runaway"),
     new Requirement(["Familiar Weight"], {}),
