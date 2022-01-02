@@ -40,6 +40,7 @@ import {
   get,
   getTodaysHolidayWanderers,
   have,
+  property,
   SourceTerminal,
   StrictMacro,
 } from "libram";
@@ -248,7 +249,9 @@ export class Macro extends StrictMacro {
         Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
       )
       .externalIf(
-        !have($effect`On the Trail`) && have($skill`Transcendent Olfaction`),
+        have($skill`Transcendent Olfaction`) &&
+          property.getString("olfactedMonster") !== "garbage tourist" &&
+          get<number>("_olfactionUses") < 3,
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Transcendent Olfaction`))
       )
       .externalIf(
