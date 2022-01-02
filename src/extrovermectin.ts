@@ -20,7 +20,7 @@ import { findRun, ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 
-export function expectedGregs(): number {
+export function expectedGregs(): number[] {
   const baseGregs = 3;
   const timeSpunGregs = have($item`Time-Spinner`)
     ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
@@ -31,19 +31,26 @@ export function expectedGregs(): number {
   const replaceEnemies = have($item`Powerful Glove`)
     ? Math.floor((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
     : 0;
-  const totalMonsterReplacers = macrometeors + replaceEnemies;
+  let totalMonsterReplacers = macrometeors + replaceEnemies;
 
   const sabersLeft = have($item`Fourth of May Cosplay Saber`)
     ? clamp(5 - get("_saberForceUses"), 0, 3)
     : 0;
 
-  const baseRateMultiplier = have($skill`Transcendent Olfaction`) ? 0.95 : 0.75;
-  const monsterReplacerGregs = clamp(
-    totalMonsterReplacers,
-    0,
-    2 * sabersLeft + baseRateMultiplier * (totalMonsterReplacers - 2 * sabersLeft)
-  );
-  const gregs = baseGregs + timeSpunGregs + orbGregs + monsterReplacerGregs;
+  const gregs = [];
+
+  // these are estimates based on intuition
+  const replacesPerGreg = have($skill`Transcendent Olfaction`) ? 7 : 5;
+  const firstReplaces = clamp(sabersLeft * 2 + replacesPerGreg, 0, totalMonsterReplacers);
+
+  gregs.push(baseGregs + orbGregs + timeSpunGregs + sabersLeft * 2 + replacesPerGreg);
+  totalMonsterReplacers -= firstReplaces;
+  while (totalMonsterReplacers > 0) {
+    gregs.push(baseGregs + orbGregs + clamp(replacesPerGreg, 0, totalMonsterReplacers));
+    totalMonsterReplacers -= replacesPerGreg;
+  }
+  gregs.push(baseGregs + orbGregs);
+
   return gregs;
 }
 
