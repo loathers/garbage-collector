@@ -77,6 +77,7 @@ import {
   set,
   SourceTerminal,
   TunnelOfLove,
+  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -200,7 +201,7 @@ function embezzlerSetup() {
       const runSource = findRun() || ltbRun();
       if (!runSource) break;
       if (runSource.prepare) runSource.prepare();
-      freeFightOutfit(runSource.requirement ? [runSource.requirement] : []);
+      freeFightOutfit(runSource.requirement ? runSource.requirement : undefined);
       adventureMacro($location`The Hidden Temple`, runSource.macro);
     }
   }
@@ -292,7 +293,7 @@ function startWandererCounter() {
         run = findRun() || ltbRun();
         useFamiliar(freeFightFamiliar());
         if (run.prepare) run.prepare();
-        freeFightOutfit(run.requirement ? [run.requirement] : []);
+        freeFightOutfit(run.requirement);
       }
       adventureMacro(
         $location`The Haunted Kitchen`,
@@ -335,10 +336,11 @@ export function dailyFights(): void {
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
         const startLectures = get("_pocketProfessorLectures");
         useFamiliar($familiar`Pocket Professor`);
-        meatOutfit(true, [
-          ...fightSource.requirements,
-          new Requirement([], { forceEquip: $items`Pocket Professor memory chip` }),
-        ]);
+        const requirement = Requirement.merge(fightSource.requirements);
+        const forceEquip = requirement.maximizeOptions.forceEquip ?? [];
+        forceEquip.push($item`Pocket Professor memory chip`);
+        requirement.maximizeOptions.forceEquip = forceEquip;
+        meatOutfit(true, requirement);
         if (
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
@@ -428,7 +430,7 @@ export function dailyFights(): void {
               retrieveItem($item`pulled green taffy`)
             ) {
               setLocation($location`The Briny Deeps`);
-              meatOutfit(true, nextFight.requirements, true);
+              meatOutfit(true, Requirement.merge(nextFight.requirements), true);
               if (get("questS01OldGuy") === "unstarted") {
                 visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
               }
@@ -439,11 +441,11 @@ export function dailyFights(): void {
                 nextFight.name === "Backup" ? draggableFight.BACKUP : draggableFight.WANDERER;
               const location = determineDraggableZoneAndEnsureAccess(type);
               setLocation(location);
-              meatOutfit(true, nextFight.requirements);
+              meatOutfit(true, Requirement.merge(nextFight.requirements));
               nextFight.run({ location });
             } else {
               setLocation($location`Noob Cave`);
-              meatOutfit(true, nextFight.requirements);
+              meatOutfit(true, Requirement.merge(nextFight.requirements));
               nextFight.run({ location: $location`Noob Cave` });
             }
             postCombatActions();
@@ -546,7 +548,9 @@ class FreeFight {
         );
       }
       freeFightMood().execute();
-      freeFightOutfit(this.options.requirements ? this.options.requirements() : []);
+      freeFightOutfit(
+        this.options.requirements ? Requirement.merge(this.options.requirements()) : undefined
+      );
       safeRestore();
       withMacro(Macro.basicCombat(), this.run);
       postCombatActions();
@@ -582,10 +586,12 @@ class FreeRunFight extends FreeFight {
         );
       }
       if (runSource.prepare) runSource.prepare();
-      freeFightOutfit([
-        ...(this.options.requirements ? this.options.requirements() : []),
-        ...(runSource.requirement ? [runSource.requirement] : []),
-      ]);
+      freeFightOutfit(
+        Requirement.merge([
+          ...(this.options.requirements ? this.options.requirements() : []),
+          ...(runSource.requirement ? [runSource.requirement] : []),
+        ])
+      );
       safeRestore();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
       postCombatActions();
@@ -1503,6 +1509,15 @@ const freeRunFightSources = [
   ),
 ];
 
+function sandwormRequirement() {
+  return new Requirement(
+    ["100 Item Drop"],
+    have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
+      ? { forceEquip: $items`broken champagne bottle` }
+      : {}
+  );
+}
+
 const freeKillSources = [
   new FreeFight(
     () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
@@ -1514,7 +1529,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 
@@ -1528,7 +1543,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 
@@ -1544,7 +1559,9 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [
-        new Requirement(["100 Item Drop"], { forceEquip: $items`The Jokester's gun` }),
+        sandwormRequirement().merge(
+          new Requirement([], { forceEquip: $items`The Jokester's gun` })
+        ),
       ],
     }
   ),
@@ -1561,7 +1578,7 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [
-        new Requirement(["100 Item Drop"], { forceEquip: $items`Lil' Doctor™ bag` }),
+        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })),
       ],
     }
   ),
@@ -1576,7 +1593,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 
@@ -1592,7 +1609,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 
@@ -1606,7 +1623,7 @@ const freeKillSources = [
     },
     {
       familiar: bestFairy,
-      requirements: () => [new Requirement(["100 Item Drop"], {})],
+      requirements: () => [sandwormRequirement()],
     }
   ),
 ];
@@ -1655,24 +1672,31 @@ export function freeFights(): void {
 
   tryFillLatte();
 
-  try {
-    for (const freeKillSource of freeKillSources) {
-      if (freeKillSource.available()) {
-        // TODO: Add potions that are profitable for free kills.
-        // TODO: Don't run free kills at all if they're not profitable.
-        if (have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3) {
-          ensureEffect($effect`Feeling Lost`);
+  // Use free fights on melanges if we have Tote/Squint and prices are reasonable.
+  const canSquint =
+    have($effect`Steely-Eyed Squint`) ||
+    (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed"));
+  if (
+    have($item`January's Garbage Tote`) &&
+    canSquint &&
+    mallPrice($item`drum machine`) < 0.02 * mallPrice($item`spice melange`)
+  ) {
+    try {
+      for (const freeKillSource of freeKillSources) {
+        if (freeKillSource.available() && get("garbageChampagneCharge") > 0) {
+          // TODO: Add potions that are profitable for free kills.
+          if (have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3) {
+            ensureEffect($effect`Feeling Lost`);
+          }
+          ensureEffect($effect`Steely-Eyed Squint`);
         }
-        if (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed")) {
-          useSkill($skill`Steely-Eyed Squint`);
-        }
-      }
 
-      freeKillSource.runAll();
+        freeKillSource.runAll();
+      }
+    } finally {
+      if (have($effect`Feeling Lost`)) uneffect($effect`Feeling Lost`);
+      if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
     }
-  } finally {
-    cliExecute("uneffect Feeling Lost");
-    if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
   }
 }
 
@@ -1731,7 +1755,7 @@ function deliverThesis(): void {
 
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
-  freeFightOutfit([new Requirement(["100 muscle"], {})]);
+  freeFightOutfit(new Requirement(["100 muscle"], {}));
   safeRestore();
 
   if (
@@ -1773,7 +1797,7 @@ function doSausage() {
     return;
   }
   useFamiliar(freeFightFamiliar());
-  freeFightOutfit([new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` })]);
+  freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
   adventureMacroAuto(
     determineDraggableZoneAndEnsureAccess(),
     Macro.if_($monster`sausage goblin`, Macro.basicCombat()).abort()
