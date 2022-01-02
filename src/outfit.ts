@@ -27,24 +27,22 @@ import {
   get,
   getKramcoWandererChance,
   have,
-  maximizeCached,
   Requirement,
 } from "libram";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { baseMeat } from "./lib";
 
-export function freeFightOutfit(requirements: Requirement[] = []): void {
+export const defaultPreventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`;
+
+export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
   const bjornChoice = pickBjorn(equipMode);
-  const compiledRequirements = Requirement.merge(requirements);
-  const compiledOptions = compiledRequirements.maximizeOptions;
-  const compiledParameters = compiledRequirements.maximizeParameters;
 
-  const forceEquip = compiledOptions.forceEquip ?? [];
-  const bonusEquip = compiledOptions.bonusEquip ?? new Map<Item, number>();
-  const preventEquip = compiledOptions.preventEquip ?? [];
-  const preventSlot = compiledOptions.preventSlot ?? [];
-  const parameters = compiledParameters;
+  const parameters = requirement?.maximizeParameters ?? [];
+  const forceEquip = requirement?.maximizeOptions.forceEquip ?? [];
+  const bonusEquip = requirement?.maximizeOptions.bonusEquip ?? new Map();
+  const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
+  const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
 
   parameters.push(
     myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
@@ -65,11 +63,12 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
   );
 
   const finalRequirement = new Requirement(parameters, {
-    forceEquip: forceEquip,
+    forceEquip,
     preventEquip: [
+      ...defaultPreventEquip,
       ...preventEquip,
-      ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
-    ],
+      bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
+    ].filter((item) => !forceEquip.includes(item)),
     bonusEquip: new Map<Item, number>([
       ...bonusEquip,
       ...bonusGear(equipMode),
@@ -86,7 +85,7 @@ export function freeFightOutfit(requirements: Requirement[] = []): void {
     ]),
     preventSlot: [...preventSlot, ...$slots`crown-of-thrones, buddy-bjorn`],
   });
-  maximizeCached(finalRequirement.maximizeParameters, finalRequirement.maximizeOptions);
+  finalRequirement.maximize();
 
   if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`)
     equip(bjornAlike);
@@ -133,15 +132,14 @@ export function tryFillLatte(): boolean {
   );
 }
 
-export function meatOutfit(
-  embezzlerUp: boolean,
-  requirements: Requirement[] = [],
-  sea?: boolean
-): void {
-  const forceEquip: Item[] = [];
-  const additionalRequirements = [];
+export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?: boolean): void {
   const equipMode = embezzlerUp ? "embezzler" : "barf";
   const bjornChoice = pickBjorn(equipMode);
+
+  const parameters = requirement?.maximizeParameters ?? [];
+  const forceEquip = requirement?.maximizeOptions.forceEquip ?? [];
+  const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
+  const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
 
   if (myInebriety() > inebrietyLimit()) {
     forceEquip.push($item`Drunkula's wineglass`);
@@ -190,24 +188,25 @@ export function meatOutfit(
     if (!have($item`quake of arrows`)) retrieveItem($item`quake of arrows`);
   }
   if (sea) {
-    additionalRequirements.push("sea");
+    parameters.push("sea");
   }
+
   const bjornAlike = bestBjornalike(forceEquip);
-  const compiledRequirements = Requirement.merge([
-    ...requirements,
+  const compiledRequirements = (requirement ?? new Requirement([], {})).merge(
     new Requirement(
       [
         `${((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2)} Meat Drop`,
         `${embezzlerUp ? 0 : 0.72} Item Drop`,
-        ...additionalRequirements,
+        ...parameters,
       ],
       {
         forceEquip,
         preventEquip: [
-          ...$items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`,
+          ...defaultPreventEquip,
+          ...preventEquip,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
-        ],
+        ].filter((item) => !forceEquip.includes(item)),
         bonusEquip: new Map([
           ...bonusGear(equipMode),
           ...(bjornAlike
@@ -221,12 +220,11 @@ export function meatOutfit(
               ])
             : []),
         ]),
-        preventSlot: $slots`crown-of-thrones, buddy-bjorn`,
+        preventSlot: [...preventSlot, $slots`crown-of-thrones, buddy-bjorn`],
       }
-    ),
-  ]);
-
-  maximizeCached(compiledRequirements.maximizeParameters, compiledRequirements.maximizeOptions);
+    )
+  );
+  compiledRequirements.maximize();
 
   if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`)
     equip(bjornAlike);
