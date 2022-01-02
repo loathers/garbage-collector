@@ -50,6 +50,7 @@ import {
   $slot,
   $stat,
   $thrall,
+  BeachComb,
   ChateauMantegna,
   ensureEffect,
   get,
@@ -254,6 +255,8 @@ function horse(): void {
 }
 
 function dailyBuffs(): void {
+  BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
+
   if (
     !get("_clanFortuneBuffUsed") &&
     have($item`Clan VIP Lounge key`) &&
