@@ -27853,7 +27853,7 @@ function meatOutfit(embezzlerUp) {
 var waterBreathingEquipment = (0,template_string/* $items */.vS)(outfit_templateObject61 || (outfit_templateObject61 = outfit_taggedTemplateLiteral(["The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank"])));
 var familiarWaterBreathingEquipment = (0,template_string/* $items */.vS)(outfit_templateObject62 || (outfit_templateObject62 = outfit_taggedTemplateLiteral(["das boot, little bitty bathysphere"])));
 ;// CONCATENATED MODULE: ./src/post.ts
-var post_templateObject;
+var post_templateObject, post_templateObject2;
 
 function post_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -27871,6 +27871,11 @@ function coldMedicineCabinet() {
   var regexp = /descitem\((\d+)\)/g;
   var itemChoices = new Map();
 
+  if (!globalOptions.noBarf) {
+    // if spending turns at barf, we probably will be able to get an extro so always consider it
+    itemChoices.set((0,template_string/* $item */.xr)(post_templateObject2 || (post_templateObject2 = post_taggedTemplateLiteral(["Extrovermectin\u2122"]))), -1);
+  }
+
   while ((match = regexp.exec(options)) !== null) {
     i++;
     var item = (0,external_kolmafia_.descToItem)(match[1]);
@@ -27880,7 +27885,7 @@ function coldMedicineCabinet() {
   var bestItem = argmax(Array.from(itemChoices.keys()).map(i => [i, (0,external_kolmafia_.mallPrice)(i)]));
   var bestChoice = itemChoices.get(bestItem);
 
-  if (bestChoice) {
+  if (bestChoice && bestChoice > 0) {
     (0,external_kolmafia_.visitUrl)("campground.php?action=workshed");
     (0,external_kolmafia_.runChoice)(bestChoice);
   }
@@ -29782,7 +29787,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("78009492c7dee5ddf657f63aae089b13dfaf9e5f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f64a494bcd846b4e63d97392c28abe0997b03a66"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
