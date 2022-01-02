@@ -107,7 +107,8 @@ function chewSafe(qty: number, item: Item) {
 }
 
 function consumeSafe(qty: number, item: Item, additionalValue?: number) {
-  if (spleenCleaners.includes(item) && mySpleenUse() < 5) {
+  const spleenCleaned = spleenCleaners.get(item);
+  if (spleenCleaned && mySpleenUse() < spleenCleaned) {
     throw "No spleen to clear with this.";
   }
   const averageAdventures = getAverageAdventures(item);
@@ -245,7 +246,11 @@ function pillCheck(): void {
 
 const saladFork = $item`Ol' Scratch's salad fork`;
 const frostyMug = $item`Frosty's frosty mug`;
-const spleenCleaners = $items`extra-greasy slider, jar of fermented pickle juice`;
+const spleenCleaners = new Map([
+  [$item`extra-greasy slider`, 5],
+  [$item`jar of fermented pickle juice`, 5],
+  [$item`mojo filter`, 1],
+]);
 const stomachLiverCleaners = new Map([
   [$item`spice melange`, [-3, -3]],
   [$item`synthetic dog hair pill`, [0, -1]],
@@ -280,6 +285,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`gnat lasagna`),
     new MenuItem($item`long pork lasagna`),
     new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
+    new MenuItem($item`extra-greasy slider`),
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -304,6 +310,7 @@ function menu(): MenuItem<Note>[] {
     ...Item.all()
       .filter((item) => getIngredients(item)["perfect ice cube"])
       .map((item) => new MenuItem<Note>(item)),
+    new MenuItem($item`jar of fermented pickle juice`),
 
     // SPLEEN
     new MenuItem($item`octolus oculus`),
@@ -326,8 +333,6 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`pocket wish`, { maximum: 1, effect: $effect`Refined Palate` }),
     new MenuItem($item`toasted brie`, { maximum: 1 }),
     new MenuItem($item`potion of the field gar`, { maximum: 1 }),
-
-    ...spleenCleaners.map((item) => new MenuItem<Note>(item)),
     ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<Note>(item)),
   ];
 }
@@ -529,6 +534,9 @@ export function computeDiet(): {
 
 function printDiet(diet: Diet<Note>) {
   if (diet.entries.length === 0) return;
+  diet = diet.copy();
+  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
+
   const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
   const adventures = Math.floor(estimatedTurns() + diet.expectedAdventures());
   print(`Planning to fight ${embezzlers} embezzlers and run ${adventures} adventures`);
@@ -564,7 +572,11 @@ function itemPriority<T>(menuItems: MenuItem<T>[]) {
   if (menuItem === undefined) {
     throw "Shouldn't have an empty menu item.";
   }
-  if ($items`pocket wish, toasted brie`.includes(menuItem.item)) {
+  if (
+    $items`pocket wish, toasted brie`.includes(menuItem.item) ||
+    spleenCleaners.get(menuItem.item) ||
+    stomachLiverCleaners.get(menuItem.item)
+  ) {
     return 100;
   } else {
     return 0;
@@ -574,12 +586,12 @@ function itemPriority<T>(menuItems: MenuItem<T>[]) {
 export function consumeDiet(diet: Diet<Note>): void {
   if (diet.entries.length === 0) return;
   diet = diet.copy();
+  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
+
   print();
   print("===== PLANNED DIET =====");
   printDiet(diet);
   print();
-
-  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
 
   const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
     menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`) ? quantity : 0
@@ -604,9 +616,6 @@ export function consumeDiet(diet: Diet<Note>): void {
       if (quantity === 0) continue;
 
       let countToConsume = quantity;
-      if (menuItems.some((menuItem) => spleenCleaners.includes(menuItem.item))) {
-        countToConsume = Math.min(countToConsume, Math.floor(mySpleenUse() / 5));
-      }
 
       const capacity = {
         food: fullnessLimit() - myFullness(),
@@ -629,6 +638,11 @@ export function consumeDiet(diet: Diet<Note>): void {
           if (myFullness() + fullness < 0 || myInebriety() + inebriety < 0) {
             countToConsume = 0;
           }
+        }
+
+        const spleenCleaned = spleenCleaners.get(menuItem.item);
+        if (spleenCleaned) {
+          countToConsume = Math.min(countToConsume, Math.floor(mySpleenUse() / spleenCleaned));
         }
       }
 
