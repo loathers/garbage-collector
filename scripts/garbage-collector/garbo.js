@@ -22128,6 +22128,731 @@ function acquire(qty, item, maxPrice) {
   if ((0,external_kolmafia_.itemAmount)(item) < qty && throwOnFail) throw "Mall price too high for ".concat(item.name, ".");
   return (0,external_kolmafia_.itemAmount)(item) - startAmount;
 }
+;// CONCATENATED MODULE: ./node_modules/libram/dist/Clan.js
+function Clan_toConsumableArray(arr) { return Clan_arrayWithoutHoles(arr) || Clan_iterableToArray(arr) || Clan_unsupportedIterableToArray(arr) || Clan_nonIterableSpread(); }
+
+function Clan_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function Clan_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function Clan_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return Clan_arrayLikeToArray(arr); }
+
+function Clan_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = Clan_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function Clan_slicedToArray(arr, i) { return Clan_arrayWithHoles(arr) || Clan_iterableToArrayLimit(arr, i) || Clan_unsupportedIterableToArray(arr, i) || Clan_nonIterableRest(); }
+
+function Clan_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function Clan_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Clan_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Clan_arrayLikeToArray(o, minLen); }
+
+function Clan_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function Clan_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function Clan_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function Clan_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Clan_createClass(Constructor, protoProps, staticProps) { if (protoProps) Clan_defineProperties(Constructor.prototype, protoProps); if (staticProps) Clan_defineProperties(Constructor, staticProps); return Constructor; }
+
+function _wrapRegExp() { _wrapRegExp = function _wrapRegExp(re, groups) { return new BabelRegExp(re, undefined, groups); }; var _super = RegExp.prototype; var _groups = new WeakMap(); function BabelRegExp(re, flags, groups) { var _this = new RegExp(re, flags); _groups.set(_this, groups || _groups.get(re)); return Clan_setPrototypeOf(_this, BabelRegExp.prototype); } Clan_inherits(BabelRegExp, RegExp); BabelRegExp.prototype.exec = function (str) { var result = _super.exec.call(this, str); if (result) result.groups = buildGroups(result, this); return result; }; BabelRegExp.prototype[Symbol.replace] = function (str, substitution) { if (typeof substitution === "string") { var groups = _groups.get(this); return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) { return "$" + groups[name]; })); } else if (typeof substitution === "function") { var _this = this; return _super[Symbol.replace].call(this, str, function () { var args = arguments; if (typeof args[args.length - 1] !== "object") { args = [].slice.call(args); args.push(buildGroups(args, _this)); } return substitution.apply(this, args); }); } else { return _super[Symbol.replace].call(this, str, substitution); } }; function buildGroups(result, re) { var g = _groups.get(re); return Object.keys(g).reduce(function (groups, name) { groups[name] = result[g[name]]; return groups; }, Object.create(null)); } return _wrapRegExp.apply(this, arguments); }
+
+function Clan_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Clan_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) Clan_setPrototypeOf(subClass, superClass); }
+
+function Clan_createSuper(Derived) { var hasNativeReflectConstruct = Clan_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = Clan_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = Clan_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return Clan_possibleConstructorReturn(this, result); }; }
+
+function Clan_possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return Clan_assertThisInitialized(self); }
+
+function Clan_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function Clan_wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; Clan_wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !Clan_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return Clan_construct(Class, arguments, Clan_getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return Clan_setPrototypeOf(Wrapper, Class); }; return Clan_wrapNativeSuper(Class); }
+
+function Clan_construct(Parent, args, Class) { if (Clan_isNativeReflectConstruct()) { Clan_construct = Reflect.construct; } else { Clan_construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) Clan_setPrototypeOf(instance, Class.prototype); return instance; }; } return Clan_construct.apply(null, arguments); }
+
+function Clan_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function Clan_isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+function Clan_setPrototypeOf(o, p) { Clan_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return Clan_setPrototypeOf(o, p); }
+
+function Clan_getPrototypeOf(o) { Clan_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return Clan_getPrototypeOf(o); }
+
+function Clan_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+  var c = arguments.length,
+      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+      d;
+  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
+    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  }
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+
+var ClanError = /*#__PURE__*/function (_Error) {
+  Clan_inherits(ClanError, _Error);
+
+  var _super = Clan_createSuper(ClanError);
+
+  function ClanError(message, reason) {
+    var _this;
+
+    Clan_classCallCheck(this, ClanError);
+
+    _this = _super.call(this, message);
+
+    Clan_defineProperty(Clan_assertThisInitialized(_this), "reason", void 0);
+
+    _this.reason = reason;
+    Object.setPrototypeOf(Clan_assertThisInitialized(_this), ClanError.prototype);
+    return _this;
+  }
+
+  return ClanError;
+}( /*#__PURE__*/Clan_wrapNativeSuper(Error)); // It would be fantastic to have this function properly typed
+// But until someone can work out how to do it, it gets the
+// comment blocks of shame
+
+/* eslint-disable */
+
+function validate(target, propertyName, descriptor) {
+  if (!(descriptor !== null && descriptor !== void 0 && descriptor.value)) return;
+  var method = descriptor.value; // @ts-ignore
+
+  descriptor.value = function () {
+    // @ts-ignore
+    if (this.id !== (0,external_kolmafia_.getClanId)()) {
+      throw new Error("You are no longer a member of this clan");
+    }
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return method.apply(this, args);
+  };
+}
+/* eslint-enable */
+
+
+var clanIdCache = {};
+
+var toPlayerId = player => typeof player === "string" ? (0,external_kolmafia_.getPlayerId)(player) : player;
+
+var LOG_FAX_PATTERN = /*#__PURE__*/_wrapRegExp(/([0-9]{2}\/[0-9]{2}\/[0-9]{2}, [0-9]{2}:[0-9]{2}(?:AM|PM): )<a (?:(?!>)[\s\S])+>((?:(?!<)[\s\S])+)<\/a>(?: faxed in a (.*?))<br>/, {
+  monster: 3
+});
+
+var WHITELIST_DEGREE_PATTERN = /*#__PURE__*/_wrapRegExp(/(.*?) \(\xB0([0-9]+)\)/, {
+  name: 1,
+  degree: 2
+});
+
+var Clan = /*#__PURE__*/function () {
+  function Clan(id, name) {
+    Clan_classCallCheck(this, Clan);
+
+    Clan_defineProperty(this, "id", void 0);
+
+    Clan_defineProperty(this, "name", void 0);
+
+    this.id = id;
+    this.name = name;
+  }
+  /**
+   * Join clan
+   */
+
+
+  Clan_createClass(Clan, [{
+    key: "join",
+    value: function join() {
+      return Clan._join(this.id);
+    }
+  }, {
+    key: "check",
+    value: function check() {
+      return (0,external_kolmafia_.visitUrl)("clan_hall.php").includes("<b>".concat(this.name, "</b>"));
+    }
+    /**
+     * Return the monster that is currently in the current clan's fax machine if any
+     */
+
+  }, {
+    key: "getCurrentFax",
+    value: function getCurrentFax() {
+      var logs = (0,external_kolmafia_.visitUrl)("clan_log.php");
+      var lastFax = logs.match(LOG_FAX_PATTERN);
+      if (!lastFax) return null;
+
+      var _lastFax = Clan_slicedToArray(lastFax, 4),
+          monsterName = _lastFax[3];
+
+      if (!monsterName) return null;
+      return Monster.get(monsterName);
+    }
+    /**
+     * List available ranks (name, degree and id) from the current clan
+     */
+
+  }, {
+    key: "getRanks",
+    value: function getRanks() {
+      var page = (0,external_kolmafia_.visitUrl)("clan_whitelist.php");
+      return (0,external_kolmafia_.xpath)(page, '//select[@name="level"]//option').map(option => {
+        var validHtml = "<select>".concat(option, "</select>");
+        var match = (0,external_kolmafia_.xpath)(validHtml, "//text()")[0].match(WHITELIST_DEGREE_PATTERN);
+        var id = (0,external_kolmafia_.xpath)(validHtml, "//@value")[0];
+        if (!match || !id) return null;
+
+        var _match = Clan_slicedToArray(match, 3),
+            name = _match[1],
+            degree = _match[2];
+
+        return {
+          name: name,
+          degree: Number.parseInt(degree),
+          id: Number.parseInt(id)
+        };
+      }).filter(utils/* notNull */.Nf);
+    }
+    /**
+     * Add a player to the current clan's whitelist.
+     * If the player is already in the whitelist this will change their rank or title.
+     * @param player Player id or name
+     * @param rankName Rank to give the player. If not provided they will be given the lowest rank
+     * @param title Title to give the player. If not provided, will be blank
+     */
+
+  }, {
+    key: "addPlayerToWhitelist",
+    value: function addPlayerToWhitelist(player, rankName) {
+      var title = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+      var playerId = toPlayerId(player);
+      var ranks = this.getRanks();
+      var rank = rankName ? ranks.find(r => r.name === rankName) : ranks.sort((a, b) => a.degree - b.degree)[0];
+      if (!rank) return false;
+      var result = (0,external_kolmafia_.visitUrl)("clan_whitelist.php?action=add&pwd&addwho=".concat(playerId, "&level=").concat(rank.id, "&title=").concat(title));
+      return result.includes("added to whitelist.") || result.includes("That player is already on the whitelist");
+    }
+    /**
+     * Remove a player from the current clan's whitelist
+     * @param player Player id or name
+     */
+
+  }, {
+    key: "removePlayerFromWhitelist",
+    value: function removePlayerFromWhitelist(player) {
+      var playerId = toPlayerId(player);
+      var result = (0,external_kolmafia_.visitUrl)("clan_whitelist.php?action=updatewl&pwd&who=".concat(playerId, "&remove=Remove"));
+      return result.includes("Whitelist updated.");
+    }
+    /**
+     * Return the amount of meat in the current clan's coffer.
+     */
+
+  }, {
+    key: "getMeatInCoffer",
+    value: function getMeatInCoffer() {
+      var page = (0,external_kolmafia_.visitUrl)("clan_stash.php");
+
+      var _ref = page.match(/Your <b>Clan Coffer<\/b> contains ([\d,]+) Meat./) || ["0", "0"],
+          _ref2 = Clan_slicedToArray(_ref, 2),
+          meat = _ref2[1];
+
+      return (0,utils/* parseNumber */.p3)(meat);
+    }
+    /**
+     * Add the given amount of meat to the current clan's coffer.
+     * @param amount Amount of meat to put in coffer
+     */
+
+  }, {
+    key: "putMeatInCoffer",
+    value: function putMeatInCoffer(amount) {
+      var result = (0,external_kolmafia_.visitUrl)("clan_stash.php?pwd&action=contribute&howmuch=".concat(amount));
+      return result.includes("You contributed");
+    }
+  }, {
+    key: "take",
+    value: function take(items) {
+      var map = (0,utils/* arrayToCountedMap */.tv)(items);
+      map.forEach((quantity, item) => {
+        var needed = Math.max(0, quantity - (0,external_kolmafia_.availableAmount)(item));
+
+        if (needed === 0) {
+          return map.set(item, 0);
+        }
+
+        var foldGroup = (0,lib/* getFoldGroup */._D)(item);
+
+        var _iterator = Clan_createForOfIteratorHelper(foldGroup),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var foldable = _step.value;
+            var quantityToFold = Math.min(needed, (0,external_kolmafia_.availableAmount)(foldable));
+
+            for (var _i3 = 0; _i3 < quantityToFold; _i3++) {
+              (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
+              needed--;
+            }
+
+            return map.set(item, needed);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        (0,external_kolmafia_.refreshStash)();
+
+        for (var _i2 = 0, _arr2 = [item].concat(Clan_toConsumableArray(foldGroup)); _i2 < _arr2.length; _i2++) {
+          var matchingItem = _arr2[_i2];
+          var quantityToTake = Math.min(needed, (0,external_kolmafia_.stashAmount)(matchingItem));
+          if (quantityToTake === 0) continue; // If we can't take from the stash, there's no sense in iterating through the whole fold group
+
+          if (!(0,external_kolmafia_.takeStash)(quantityToTake, matchingItem)) return;
+
+          if (matchingItem === item) {
+            needed -= quantityToTake;
+          } else {
+            for (var i = 0; i < quantityToTake; i++) {
+              (0,external_kolmafia_.cliExecute)("fold ".concat(matchingItem.name));
+              needed--;
+            }
+          }
+        }
+      });
+      return Array.isArray(items) ? (0,utils/* countedMapToArray */.Y8)(map) : map;
+    }
+  }, {
+    key: "put",
+    value: function put(items) {
+      var map = (0,utils/* arrayToCountedMap */.tv)(items);
+      if (!this.check()) throw new Error("Wanted to return ".concat((0,utils/* countedMapToString */.N3)(map), " to ").concat(this.name, " but KoLmafia's clan data is out of sync"));
+      map.forEach((quantity, item) => {
+        (0,external_kolmafia_.retrieveItem)(quantity, item);
+        var returned = Math.min(quantity, (0,external_kolmafia_.availableAmount)(item));
+        (0,external_kolmafia_.putStash)(returned, item);
+        map.set(item, quantity - returned);
+      });
+      return Array.isArray(items) ? (0,utils/* countedMapToArray */.Y8)(map) : map;
+    }
+  }, {
+    key: "withStash",
+    value: function withStash(items, callback // eslint-disable-line @typescript-eslint/no-explicit-any
+    ) {
+      var map = (0,utils/* arrayToCountedMap */.tv)(items);
+      return Clan._withStash(() => this.take(map), borrowed => this.put(borrowed), callback);
+    }
+  }], [{
+    key: "_join",
+    value: function _join(id) {
+      var result = (0,external_kolmafia_.visitUrl)("showclan.php?recruiter=1&whichclan=".concat(id, "&pwd&whichclan=").concat(id, "&action=joinclan&apply=Apply+to+this+Clan&confirm=on"));
+
+      if (!result.includes("clanhalltop.gif")) {
+        throw new Error("Could not join clan");
+      }
+
+      return Clan.get();
+    }
+  }, {
+    key: "_withStash",
+    value: function _withStash(borrowFn, // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    returnFn, // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callback) {
+      var borrowed = borrowFn();
+      var map = (0,utils/* arrayToCountedMap */.tv)(borrowed);
+
+      try {
+        return callback(borrowed);
+      } finally {
+        if (map.size > 0) {
+          var returned = (0,utils/* arrayToCountedMap */.tv)(returnFn(borrowed));
+          map.forEach((quantity, item) => {
+            var remaining = quantity - (returned.get(item) || 0);
+
+            if (remaining > 0) {
+              map.set(item, remaining);
+            } else {
+              map.delete(item);
+            }
+          });
+
+          if (map.size > 0) {
+            logger.error("Failed to return <b>".concat((0,utils/* countedMapToString */.N3)(map), "</b> to <b>").concat(this.name, "</b> stash"));
+          }
+        }
+      }
+    }
+    /**
+     * Join a clan and return its instance
+     * @param clanIdOrName Clan id or name
+     */
+
+  }, {
+    key: "join",
+    value: function join(clanIdOrName) {
+      var clanId;
+
+      if (typeof clanIdOrName === "string") {
+        var clanName = clanIdOrName.toLowerCase();
+
+        if (clanName === (0,external_kolmafia_.getClanName)().toLowerCase()) {
+          return Clan.get();
+        }
+
+        if (!(clanName in clanIdCache)) {
+          var clan = Clan.getWhitelisted().find(c => c.name.toLowerCase() === clanName);
+
+          if (!clan) {
+            throw new Error("Player is not whitelisted to clan");
+          }
+
+          clanIdCache[clanName] = clan.id;
+        }
+
+        clanId = clanIdCache[clanName];
+      } else {
+        clanId = clanIdOrName;
+
+        if (clanId === (0,external_kolmafia_.getClanId)()) {
+          return Clan.get();
+        }
+      }
+
+      return Clan._join(clanId);
+    }
+    /**
+     * Execute callback as a member of a clan
+     * and then restore prior membership
+     * @param clanIdOrName Clan id or name
+     */
+
+  }, {
+    key: "with",
+    value: function _with(clanIdOrName, callback) {
+      var startingClan = Clan.get();
+      var clan = Clan.join(clanIdOrName);
+
+      try {
+        return callback(clan);
+      } finally {
+        startingClan.join();
+      }
+    }
+  }, {
+    key: "withStash",
+    value: function withStash(clanIdOrName, items, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+    callback // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+    ) {
+      return Clan._withStash(() => Clan.with(clanIdOrName, clan => clan.take(items)), borrowed => Clan.with(clanIdOrName, clan => clan.put(borrowed)), callback);
+    }
+    /**
+     * Return player's current Clan
+     */
+
+  }, {
+    key: "get",
+    value: function get() {
+      return new Clan((0,external_kolmafia_.getClanId)(), (0,external_kolmafia_.getClanName)());
+    }
+    /**
+     * Get list of clans to which the player is whitelisted
+     */
+
+  }, {
+    key: "getWhitelisted",
+    value: function getWhitelisted() {
+      var page = (0,external_kolmafia_.visitUrl)("clan_signup.php");
+      return (0,external_kolmafia_.xpath)(page, '//select[@name="whichclan"]//option').map(option => {
+        var validHtml = "<select>".concat(option, "</select>");
+        var id = Number.parseInt((0,external_kolmafia_.xpath)(validHtml, "//@value")[0]);
+        var name = (0,external_kolmafia_.xpath)(validHtml, "//text()")[0];
+        return new Clan(id, name);
+      });
+    }
+  }]);
+
+  return Clan;
+}();
+
+__decorate([validate], Clan.prototype, "getCurrentFax", null);
+
+__decorate([validate], Clan.prototype, "getRanks", null);
+
+__decorate([validate], Clan.prototype, "addPlayerToWhitelist", null);
+
+__decorate([validate], Clan.prototype, "removePlayerFromWhitelist", null);
+
+__decorate([validate], Clan.prototype, "getMeatInCoffer", null);
+
+__decorate([validate], Clan.prototype, "putMeatInCoffer", null);
+
+__decorate([validate], Clan.prototype, "take", null);
+
+__decorate([validate], Clan.prototype, "put", null);
+
+__decorate([validate], Clan.prototype, "withStash", null);
+;// CONCATENATED MODULE: ./src/clan.ts
+var clan_templateObject, clan_templateObject2, clan_templateObject3, clan_templateObject4, clan_templateObject5, clan_templateObject6, clan_templateObject7, clan_templateObject8, clan_templateObject9;
+
+function clan_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = clan_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function clan_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function clan_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function clan_createClass(Constructor, protoProps, staticProps) { if (protoProps) clan_defineProperties(Constructor.prototype, protoProps); if (staticProps) clan_defineProperties(Constructor, staticProps); return Constructor; }
+
+function clan_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function clan_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function clan_toConsumableArray(arr) { return clan_arrayWithoutHoles(arr) || clan_iterableToArray(arr) || clan_unsupportedIterableToArray(arr) || clan_nonIterableSpread(); }
+
+function clan_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function clan_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return clan_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return clan_arrayLikeToArray(o, minLen); }
+
+function clan_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function clan_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return clan_arrayLikeToArray(arr); }
+
+function clan_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+
+
+function withStash(itemsToTake, action) {
+  var manager = new StashManager();
+
+  try {
+    manager.take.apply(manager, clan_toConsumableArray(itemsToTake));
+    return action();
+  } finally {
+    manager.putBackAll();
+  }
+}
+function withVIPClan(action) {
+  var clanIdOrName = (0,property/* get */.U2)("garbo_vipClan", undefined);
+
+  if (!clanIdOrName && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(clan_templateObject || (clan_templateObject = clan_taggedTemplateLiteral(["Clan VIP Lounge key"]))))) {
+    if ((0,external_kolmafia_.userConfirm)("The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)", 15000, true)) {
+      clanIdOrName = (0,external_kolmafia_.getClanId)();
+      (0,property/* set */.t8)("garbo_vipClan", clanIdOrName);
+    }
+  }
+
+  return withClan(clanIdOrName || (0,external_kolmafia_.getClanId)(), action);
+}
+
+function withClan(clanIdOrName, action) {
+  var startingClanId = (0,external_kolmafia_.getClanId)();
+  Clan.join(clanIdOrName);
+
+  try {
+    return action();
+  } finally {
+    Clan.join(startingClanId);
+  }
+}
+
+var StashManager = /*#__PURE__*/function () {
+  function StashManager(clanIdOrName) {
+    clan_classCallCheck(this, StashManager);
+
+    clan_defineProperty(this, "clanIdOrName", void 0);
+
+    clan_defineProperty(this, "enabled", void 0);
+
+    clan_defineProperty(this, "taken", new Map());
+
+    if (clanIdOrName === undefined) {
+      clanIdOrName = (0,property/* get */.U2)("garbo_stashClan", undefined);
+
+      if (!clanIdOrName) {
+        if ((0,external_kolmafia_.userConfirm)("The preference 'garbo_stashClan' is not set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)", 15000, true)) {
+          clanIdOrName = (0,external_kolmafia_.getClanId)();
+          (0,property/* set */.t8)("garbo_stashClan", clanIdOrName);
+        } else {
+          throw "No garbo_stashClan set.";
+        }
+      }
+    }
+
+    this.clanIdOrName = clanIdOrName;
+    this.enabled = 0 !== clanIdOrName && "none" !== clanIdOrName;
+  }
+
+  clan_createClass(StashManager, [{
+    key: "take",
+    value: function take() {
+      for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
+        items[_key] = arguments[_key];
+      }
+
+      if (items.length === 0) {
+        return;
+      }
+
+      if (!this.enabled) {
+        (0,external_kolmafia_.print)("Stash access is disabled. Ignoring request to borrow \"".concat(items.map(value => value.name).join(", "), "\" from clan stash."), "yellow");
+        return;
+      }
+
+      withClan(this.clanIdOrName, () => {
+        var _iterator = clan_createForOfIteratorHelper(items),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var item = _step.value;
+            if ((0,lib/* have */.lf)(item)) continue;
+
+            if ((0,lib/* getFoldGroup */._D)(item).some(fold => (0,lib/* have */.lf)(fold))) {
+              (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
+              continue;
+            }
+
+            var foldArray = [item].concat(clan_toConsumableArray((0,lib/* getFoldGroup */._D)(item)));
+            (0,external_kolmafia_.refreshStash)();
+
+            var _iterator2 = clan_createForOfIteratorHelper(foldArray),
+                _step2;
+
+            try {
+              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+                var fold = _step2.value;
+
+                try {
+                  if ((0,external_kolmafia_.stashAmount)(fold) > 0) {
+                    if ((0,external_kolmafia_.takeStash)(1, fold)) {
+                      var _this$taken$get;
+
+                      (0,external_kolmafia_.print)("Took ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
+                      if (fold !== item) (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
+                      this.taken.set(item, ((_this$taken$get = this.taken.get(item)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
+                      break;
+                    } else {
+                      (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from the stash. Do you have stash access in ").concat((0,external_kolmafia_.getClanName)(), "?"), "red");
+                    }
+                  }
+                } catch (_unused) {
+                  (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+                }
+              }
+            } catch (err) {
+              _iterator2.e(err);
+            } finally {
+              _iterator2.f();
+            }
+
+            if ((0,lib/* have */.lf)(item)) continue;
+            (0,external_kolmafia_.print)("Couldn't find ".concat(item.name, " in clan stash for ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      });
+    }
+    /**
+     * Ensure at least one of each of {items} in inventory.
+     * @param items Items to take from the stash.
+     */
+
+  }, {
+    key: "ensure",
+    value: function ensure() {
+      for (var _len2 = arguments.length, items = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        items[_key2] = arguments[_key2];
+      }
+
+      this.take.apply(this, clan_toConsumableArray(items.filter(item => (0,external_kolmafia_.availableAmount)(item) === 0)));
+    }
+  }, {
+    key: "putBack",
+    value: function putBack() {
+      for (var _len3 = arguments.length, items = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        items[_key3] = arguments[_key3];
+      }
+
+      if (items.length === 0) return;
+
+      if ((0,external_kolmafia_.visitUrl)("fight.php").includes("You're fighting")) {
+        var _Macro$if_;
+
+        (0,external_kolmafia_.print)("In fight, trying to get away to return items to stash...", "blue");
+
+        (_Macro$if_ = src_combat.Macro.if_((0,template_string/* $monster */.O4)(clan_templateObject2 || (clan_templateObject2 = clan_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), src_combat.Macro.attack().repeat())).tryItem.apply(_Macro$if_, clan_toConsumableArray((0,template_string/* $items */.vS)(clan_templateObject3 || (clan_templateObject3 = clan_taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper"]))))).step("runaway").submit();
+      } else if ((0,external_kolmafia_.handlingChoice)()) {
+        (0,external_kolmafia_.print)("I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:", "red");
+        items.forEach(item => (0,external_kolmafia_.print)("".concat(item.name, ","), "red"));
+      }
+
+      withClan(this.clanIdOrName, () => {
+        var _iterator3 = clan_createForOfIteratorHelper(items),
+            _step3;
+
+        try {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var _this$taken$get2;
+
+            var item = _step3.value;
+            var count = (_this$taken$get2 = this.taken.get(item)) !== null && _this$taken$get2 !== void 0 ? _this$taken$get2 : 0;
+
+            if (count > 0) {
+              (0,external_kolmafia_.retrieveItem)(count, item);
+
+              if (item === (0,template_string/* $item */.xr)(clan_templateObject4 || (clan_templateObject4 = clan_taggedTemplateLiteral(["Buddy Bjorn"])))) {
+                (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,template_string/* $item */.xr)(clan_templateObject5 || (clan_templateObject5 = clan_taggedTemplateLiteral(["Buddy Bjorn"]))).descid));
+                (0,external_kolmafia_.bjornifyFamiliar)((0,template_string/* $familiar */.HP)(clan_templateObject6 || (clan_templateObject6 = clan_taggedTemplateLiteral(["none"]))));
+              }
+
+              if (item === (0,template_string/* $item */.xr)(clan_templateObject7 || (clan_templateObject7 = clan_taggedTemplateLiteral(["Crown of Thrones"])))) {
+                (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,template_string/* $item */.xr)(clan_templateObject8 || (clan_templateObject8 = clan_taggedTemplateLiteral(["Crown of Thrones"]))).descid));
+                (0,external_kolmafia_.enthroneFamiliar)((0,template_string/* $familiar */.HP)(clan_templateObject9 || (clan_templateObject9 = clan_taggedTemplateLiteral(["none"]))));
+              }
+
+              if ((0,external_kolmafia_.putStash)(count, item)) {
+                (0,external_kolmafia_.print)("Returned ".concat(item.name, " to stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
+                this.taken.delete(item);
+              } else {
+                throw "Failed to return ".concat(item.name, " to stash.");
+              }
+            }
+          }
+        } catch (err) {
+          _iterator3.e(err);
+        } finally {
+          _iterator3.f();
+        }
+      });
+    }
+    /**
+     * Put all items back in the stash.
+     */
+
+  }, {
+    key: "putBackAll",
+    value: function putBackAll() {
+      this.putBack.apply(this, clan_toConsumableArray(this.taken.keys()));
+    }
+  }]);
+
+  return StashManager;
+}();
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2021/CrystalBall.js
 function CrystalBall_slicedToArray(arr, i) { return CrystalBall_arrayWithHoles(arr) || CrystalBall_iterableToArrayLimit(arr, i) || CrystalBall_unsupportedIterableToArray(arr, i) || CrystalBall_nonIterableRest(); }
 
@@ -25338,7 +26063,7 @@ function synthesize(casts, effect) {
   (0,external_kolmafia_.sweetSynthesis)((0,utils/* clamp */.uZ)(casts, 0, (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()), effect);
 }
 ;// CONCATENATED MODULE: ./src/diet.ts
-var src_diet_templateObject, src_diet_templateObject2, src_diet_templateObject3, src_diet_templateObject4, src_diet_templateObject5, src_diet_templateObject6, src_diet_templateObject7, src_diet_templateObject8, src_diet_templateObject9, src_diet_templateObject10, src_diet_templateObject11, src_diet_templateObject12, src_diet_templateObject13, src_diet_templateObject14, src_diet_templateObject15, src_diet_templateObject16, src_diet_templateObject17, src_diet_templateObject18, src_diet_templateObject19, src_diet_templateObject20, src_diet_templateObject21, src_diet_templateObject22, src_diet_templateObject23, src_diet_templateObject24, src_diet_templateObject25, src_diet_templateObject26, src_diet_templateObject27, src_diet_templateObject28, src_diet_templateObject29, src_diet_templateObject30, src_diet_templateObject31, src_diet_templateObject32, src_diet_templateObject33, src_diet_templateObject34, src_diet_templateObject35, src_diet_templateObject36, src_diet_templateObject37, src_diet_templateObject38, src_diet_templateObject39, src_diet_templateObject40, src_diet_templateObject41, src_diet_templateObject42, src_diet_templateObject43, src_diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74, diet_templateObject75, diet_templateObject76, diet_templateObject77, diet_templateObject78, diet_templateObject79, diet_templateObject80, diet_templateObject81, diet_templateObject82, diet_templateObject83, diet_templateObject84, diet_templateObject85, diet_templateObject86, diet_templateObject87, diet_templateObject88, diet_templateObject89, diet_templateObject90, diet_templateObject91, diet_templateObject92, diet_templateObject93, diet_templateObject94, diet_templateObject95, diet_templateObject96, diet_templateObject97, diet_templateObject98, diet_templateObject99, diet_templateObject100, diet_templateObject101, diet_templateObject102, diet_templateObject103, diet_templateObject104, diet_templateObject105, diet_templateObject106, diet_templateObject107, diet_templateObject108, diet_templateObject109, diet_templateObject110, diet_templateObject111, diet_templateObject112, diet_templateObject113, diet_templateObject114, diet_templateObject115, diet_templateObject116, diet_templateObject117, diet_templateObject118, diet_templateObject119, diet_templateObject120, diet_templateObject121, diet_templateObject122, diet_templateObject123, diet_templateObject124, diet_templateObject125, diet_templateObject126, diet_templateObject127, diet_templateObject128, diet_templateObject129, diet_templateObject130, diet_templateObject131, diet_templateObject132, diet_templateObject133, diet_templateObject134, diet_templateObject135, diet_templateObject136, diet_templateObject137;
+var src_diet_templateObject, src_diet_templateObject2, src_diet_templateObject3, src_diet_templateObject4, src_diet_templateObject5, src_diet_templateObject6, src_diet_templateObject7, src_diet_templateObject8, src_diet_templateObject9, src_diet_templateObject10, src_diet_templateObject11, src_diet_templateObject12, src_diet_templateObject13, src_diet_templateObject14, src_diet_templateObject15, src_diet_templateObject16, src_diet_templateObject17, src_diet_templateObject18, src_diet_templateObject19, src_diet_templateObject20, src_diet_templateObject21, src_diet_templateObject22, src_diet_templateObject23, src_diet_templateObject24, src_diet_templateObject25, src_diet_templateObject26, src_diet_templateObject27, src_diet_templateObject28, src_diet_templateObject29, src_diet_templateObject30, src_diet_templateObject31, src_diet_templateObject32, src_diet_templateObject33, src_diet_templateObject34, src_diet_templateObject35, src_diet_templateObject36, src_diet_templateObject37, src_diet_templateObject38, src_diet_templateObject39, src_diet_templateObject40, src_diet_templateObject41, src_diet_templateObject42, src_diet_templateObject43, src_diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74, diet_templateObject75, diet_templateObject76, diet_templateObject77, diet_templateObject78, diet_templateObject79, diet_templateObject80, diet_templateObject81, diet_templateObject82, diet_templateObject83, diet_templateObject84, diet_templateObject85, diet_templateObject86, diet_templateObject87, diet_templateObject88, diet_templateObject89, diet_templateObject90, diet_templateObject91, diet_templateObject92, diet_templateObject93, diet_templateObject94, diet_templateObject95, diet_templateObject96, diet_templateObject97, diet_templateObject98, diet_templateObject99, diet_templateObject100, diet_templateObject101, diet_templateObject102, diet_templateObject103, diet_templateObject104, diet_templateObject105, diet_templateObject106, diet_templateObject107, diet_templateObject108, diet_templateObject109, diet_templateObject110, diet_templateObject111, diet_templateObject112, diet_templateObject113, diet_templateObject114, diet_templateObject115, diet_templateObject116, diet_templateObject117, diet_templateObject118, diet_templateObject119, diet_templateObject120, diet_templateObject121, diet_templateObject122, diet_templateObject123, diet_templateObject124, diet_templateObject125, diet_templateObject126, diet_templateObject127, diet_templateObject128, diet_templateObject129, diet_templateObject130, diet_templateObject131, diet_templateObject132, diet_templateObject133, diet_templateObject134, diet_templateObject135, diet_templateObject136, diet_templateObject137, diet_templateObject138;
 
 function src_diet_slicedToArray(arr, i) { return src_diet_arrayWithHoles(arr) || src_diet_iterableToArrayLimit(arr, i) || src_diet_unsupportedIterableToArray(arr, i) || src_diet_nonIterableRest(); }
 
@@ -25363,6 +26088,7 @@ function src_diet_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return src_di
 function src_diet_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function src_diet_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 
 
 
@@ -25635,12 +26361,14 @@ function potionMenu(baseMenu, embezzlers, turns) {
     return limitedPotion(potion, undefined, options);
   }
 
-  return [].concat(src_diet_toConsumableArray(baseMenu), src_diet_toConsumableArray(copiers()), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject101 || (diet_templateObject101 = src_diet_taggedTemplateLiteral(["jumping horseradish"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject102 || (diet_templateObject102 = src_diet_taggedTemplateLiteral(["tempura cauliflower"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject103 || (diet_templateObject103 = src_diet_taggedTemplateLiteral(["sea truffle"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject104 || (diet_templateObject104 = src_diet_taggedTemplateLiteral(["tempura broccoli"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject105 || (diet_templateObject105 = src_diet_taggedTemplateLiteral(["Dinsey food-cone"]))), (0,property/* get */.U2)("_stenchAirportToday") || (0,property/* get */.U2)("stenchAirportAlways") ? Math.floor((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject106 || (diet_templateObject106 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"])))) / 2) : 0, {
-    price: 2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(diet_templateObject107 || (diet_templateObject107 = src_diet_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"])))) / 20
-  })), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject108 || (diet_templateObject108 = src_diet_taggedTemplateLiteral(["dirt julep"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject109 || (diet_templateObject109 = src_diet_taggedTemplateLiteral(["Ambitious Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject110 || (diet_templateObject110 = src_diet_taggedTemplateLiteral(["Friendly Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject111 || (diet_templateObject111 = src_diet_taggedTemplateLiteral(["vintage smart drink"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject112 || (diet_templateObject112 = src_diet_taggedTemplateLiteral(["Hot Socks"]))), 3, {
+  var speakeasy = (0,template_string/* $item */.xr)(diet_templateObject101 || (diet_templateObject101 = src_diet_taggedTemplateLiteral(["Clan speakeasy"])));
+  var hasSpeakeasy = (0,external_kolmafia_.getClanLounge)()["".concat(speakeasy)];
+  return [].concat(src_diet_toConsumableArray(baseMenu), src_diet_toConsumableArray(copiers()), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject102 || (diet_templateObject102 = src_diet_taggedTemplateLiteral(["jumping horseradish"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject103 || (diet_templateObject103 = src_diet_taggedTemplateLiteral(["tempura cauliflower"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject104 || (diet_templateObject104 = src_diet_taggedTemplateLiteral(["sea truffle"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject105 || (diet_templateObject105 = src_diet_taggedTemplateLiteral(["tempura broccoli"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject106 || (diet_templateObject106 = src_diet_taggedTemplateLiteral(["Dinsey food-cone"]))), (0,property/* get */.U2)("_stenchAirportToday") || (0,property/* get */.U2)("stenchAirportAlways") ? Math.floor((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject107 || (diet_templateObject107 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"])))) / 2) : 0, {
+    price: 2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(diet_templateObject108 || (diet_templateObject108 = src_diet_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"])))) / 20
+  })), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject109 || (diet_templateObject109 = src_diet_taggedTemplateLiteral(["dirt julep"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject110 || (diet_templateObject110 = src_diet_taggedTemplateLiteral(["Ambitious Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject111 || (diet_templateObject111 = src_diet_taggedTemplateLiteral(["Friendly Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject112 || (diet_templateObject112 = src_diet_taggedTemplateLiteral(["vintage smart drink"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject113 || (diet_templateObject113 = src_diet_taggedTemplateLiteral(["Hot Socks"]))), hasSpeakeasy ? 3 : 0, {
     price: 5000
-  })), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject113 || (diet_templateObject113 = src_diet_taggedTemplateLiteral(["beggin' cologne"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject114 || (diet_templateObject114 = src_diet_taggedTemplateLiteral(["body spradium"]))), (0,utils/* clamp */.uZ)((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject115 || (diet_templateObject115 = src_diet_taggedTemplateLiteral(["body spradium"])))), 0, 1))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject116 || (diet_templateObject116 = src_diet_taggedTemplateLiteral(["Knob Goblin pet-buffing spray"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject117 || (diet_templateObject117 = src_diet_taggedTemplateLiteral(["Knob Goblin nasal spray"]))))), src_diet_toConsumableArray((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject118 || (diet_templateObject118 = src_diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? potion(new Potion((0,template_string/* $item */.xr)(diet_templateObject119 || (diet_templateObject119 = src_diet_taggedTemplateLiteral(["Rethinking Candy"]))), {
-    effect: (0,template_string/* $effect */._G)(diet_templateObject120 || (diet_templateObject120 = src_diet_taggedTemplateLiteral(["Synthesis: Greed"]))),
+  })), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject114 || (diet_templateObject114 = src_diet_taggedTemplateLiteral(["beggin' cologne"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject115 || (diet_templateObject115 = src_diet_taggedTemplateLiteral(["body spradium"]))), (0,utils/* clamp */.uZ)((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject116 || (diet_templateObject116 = src_diet_taggedTemplateLiteral(["body spradium"])))), 0, 1))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject117 || (diet_templateObject117 = src_diet_taggedTemplateLiteral(["Knob Goblin pet-buffing spray"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject118 || (diet_templateObject118 = src_diet_taggedTemplateLiteral(["Knob Goblin nasal spray"]))))), src_diet_toConsumableArray((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject119 || (diet_templateObject119 = src_diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? potion(new Potion((0,template_string/* $item */.xr)(diet_templateObject120 || (diet_templateObject120 = src_diet_taggedTemplateLiteral(["Rethinking Candy"]))), {
+    effect: (0,template_string/* $effect */._G)(diet_templateObject121 || (diet_templateObject121 = src_diet_taggedTemplateLiteral(["Synthesis: Greed"]))),
     duration: 30
   }), {
     size: 1,
@@ -25730,7 +26458,7 @@ function itemPriority(menuItems) {
     throw "Shouldn't have an empty menu item.";
   }
 
-  if ((0,template_string/* $items */.vS)(diet_templateObject121 || (diet_templateObject121 = src_diet_taggedTemplateLiteral(["pocket wish, toasted brie"]))).includes(menuItem.item)) {
+  if ((0,template_string/* $items */.vS)(diet_templateObject122 || (diet_templateObject122 = src_diet_taggedTemplateLiteral(["pocket wish, toasted brie"]))).includes(menuItem.item)) {
     return 100;
   } else {
     return 0;
@@ -25748,9 +26476,9 @@ function consumeDiet(diet) {
   var seasoningCount = (0,utils/* sum */.Sm)(diet.entries, _ref => {
     var menuItems = _ref.menuItems,
         quantity = _ref.quantity;
-    return menuItems.some(menuItem => menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject122 || (diet_templateObject122 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) ? quantity : 0;
+    return menuItems.some(menuItem => menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject123 || (diet_templateObject123 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) ? quantity : 0;
   });
-  acquire(seasoningCount, (0,template_string/* $item */.xr)(diet_templateObject123 || (diet_templateObject123 = src_diet_taggedTemplateLiteral(["Special Seasoning"]))), MPA); // Fill organs in rounds, making sure we're making progress in each round.
+  acquire(seasoningCount, (0,template_string/* $item */.xr)(diet_templateObject124 || (diet_templateObject124 = src_diet_taggedTemplateLiteral(["Special Seasoning"]))), MPA); // Fill organs in rounds, making sure we're making progress in each round.
 
   var organs = () => [(0,external_kolmafia_.myFullness)(), (0,external_kolmafia_.myInebriety)(), (0,external_kolmafia_.mySpleenUse)()];
 
@@ -25798,7 +26526,9 @@ function consumeDiet(diet) {
           for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
             var menuItem = _step3.value;
 
-            if (menuItem.organ && menuItem.size > 0) {
+            if (menuItem.organ === "booze" && menuItem.size === 1 && !(0,property/* get */.U2)("_mimeArmyShotglassUsed")) {
+              countToConsume = 1;
+            } else if (menuItem.organ && menuItem.size > 0) {
               countToConsume = Math.min(countToConsume, Math.floor(capacity[menuItem.organ] / menuItem.size));
             }
 
@@ -25830,7 +26560,7 @@ function consumeDiet(diet) {
             var _menuItem = _step4.value;
 
             if ([saladFork, frostyMug].includes(_menuItem.item)) {
-              var element = _menuItem.item === saladFork ? (0,template_string/* $element */.SS)(diet_templateObject124 || (diet_templateObject124 = src_diet_taggedTemplateLiteral(["hot"]))) : (0,template_string/* $element */.SS)(diet_templateObject125 || (diet_templateObject125 = src_diet_taggedTemplateLiteral(["cold"])));
+              var element = _menuItem.item === saladFork ? (0,template_string/* $element */.SS)(diet_templateObject125 || (diet_templateObject125 = src_diet_taggedTemplateLiteral(["hot"]))) : (0,template_string/* $element */.SS)(diet_templateObject126 || (diet_templateObject126 = src_diet_taggedTemplateLiteral(["cold"])));
 
               if ((0,external_kolmafia_.myMaxhp)() < 1000 * (1 - (0,external_kolmafia_.elementalResistance)(element) / 100)) {
                 maximizeCached(["0.05 HP", "".concat(element, " Resistance")]);
@@ -25843,12 +26573,14 @@ function consumeDiet(diet) {
               consumeSafe(countToConsume, _menuItem.item);
             } else if ([diet_Mayo.flex, diet_Mayo.zapine].includes(_menuItem.item)) {
               setMayoMinder(_menuItem.item);
-            } else if (_menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject126 || (diet_templateObject126 = src_diet_taggedTemplateLiteral(["pocket wish"])))) {
-              acquire(1, (0,template_string/* $item */.xr)(diet_templateObject127 || (diet_templateObject127 = src_diet_taggedTemplateLiteral(["pocket wish"]))), 60000);
+            } else if (_menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject127 || (diet_templateObject127 = src_diet_taggedTemplateLiteral(["pocket wish"])))) {
+              acquire(1, (0,template_string/* $item */.xr)(diet_templateObject128 || (diet_templateObject128 = src_diet_taggedTemplateLiteral(["pocket wish"]))), 60000);
               (0,external_kolmafia_.cliExecute)("genie effect ".concat(_menuItem.effect));
-            } else if (_menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject128 || (diet_templateObject128 = src_diet_taggedTemplateLiteral(["Rethinking Candy"])))) {
-              synthesize(countToConsume, (0,template_string/* $effect */._G)(diet_templateObject129 || (diet_templateObject129 = src_diet_taggedTemplateLiteral(["Synthesis: Greed"]))));
-            } else if (_menuItem.item !== (0,template_string/* $item */.xr)(diet_templateObject130 || (diet_templateObject130 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) {
+            } else if (_menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject129 || (diet_templateObject129 = src_diet_taggedTemplateLiteral(["Rethinking Candy"])))) {
+              synthesize(countToConsume, (0,template_string/* $effect */._G)(diet_templateObject130 || (diet_templateObject130 = src_diet_taggedTemplateLiteral(["Synthesis: Greed"]))));
+            } else if ((0,external_kolmafia_.getClanLounge)()["".concat(_menuItem.item)] && (0,external_kolmafia_.itemType)(_menuItem.item) === "booze") {
+              (0,external_kolmafia_.cliExecute)("drink ".concat(_menuItem.item));
+            } else if (_menuItem.item !== (0,template_string/* $item */.xr)(diet_templateObject131 || (diet_templateObject131 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) {
               consumeSafe(countToConsume, _menuItem.item, _menuItem.additionalValue);
             }
           }
@@ -25868,37 +26600,39 @@ function consumeDiet(diet) {
   }
 }
 function runDiet() {
-  if ((0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(diet_templateObject131 || (diet_templateObject131 = src_diet_taggedTemplateLiteral(["Stooper"])))) {
-    (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(diet_templateObject132 || (diet_templateObject132 = src_diet_taggedTemplateLiteral(["none"]))));
-  }
-
-  var dietBuilder = computeDiet();
-
-  if (globalOptions.simulateDiet) {
-    if (!(0,property/* get */.U2)("_mimeArmyShotglassUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject133 || (diet_templateObject133 = src_diet_taggedTemplateLiteral(["mime army shotglass"]))))) {
-      printDiet(dietBuilder.shotglass());
+  withVIPClan(() => {
+    if ((0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(diet_templateObject132 || (diet_templateObject132 = src_diet_taggedTemplateLiteral(["Stooper"])))) {
+      (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(diet_templateObject133 || (diet_templateObject133 = src_diet_taggedTemplateLiteral(["none"]))));
     }
 
-    (0,external_kolmafia_.print)("===== SIMULATED DIET =====");
-    printDiet(dietBuilder.diet());
-  } else {
-    pillCheck();
-    nonOrganAdventures();
+    var dietBuilder = computeDiet();
 
-    if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject134 || (diet_templateObject134 = src_diet_taggedTemplateLiteral(["astral six-pack"]))))) {
-      (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(diet_templateObject135 || (diet_templateObject135 = src_diet_taggedTemplateLiteral(["astral six-pack"]))));
+    if (globalOptions.simulateDiet) {
+      if (!(0,property/* get */.U2)("_mimeArmyShotglassUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject134 || (diet_templateObject134 = src_diet_taggedTemplateLiteral(["mime army shotglass"]))))) {
+        printDiet(dietBuilder.shotglass());
+      }
+
+      (0,external_kolmafia_.print)("===== SIMULATED DIET =====");
+      printDiet(dietBuilder.diet());
+    } else {
+      pillCheck();
+      nonOrganAdventures();
+
+      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject135 || (diet_templateObject135 = src_diet_taggedTemplateLiteral(["astral six-pack"]))))) {
+        (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(diet_templateObject136 || (diet_templateObject136 = src_diet_taggedTemplateLiteral(["astral six-pack"]))));
+      }
+
+      if (!(0,property/* get */.U2)("_mimeArmyShotglassUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject137 || (diet_templateObject137 = src_diet_taggedTemplateLiteral(["mime army shotglass"]))))) {
+        consumeDiet(dietBuilder.shotglass());
+      }
+
+      if ((0,property/* get */.U2)("barrelShrineUnlocked") && !(0,property/* get */.U2)("_barrelPrayer") && (0,template_string/* $classes */.JT)(diet_templateObject138 || (diet_templateObject138 = src_diet_taggedTemplateLiteral(["Turtle Tamer, Accordion Thief"]))).includes((0,external_kolmafia_.myClass)())) {
+        (0,external_kolmafia_.cliExecute)("barrelprayer buff");
+      }
+
+      consumeDiet(dietBuilder.diet());
     }
-
-    if (!(0,property/* get */.U2)("_mimeArmyShotglassUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject136 || (diet_templateObject136 = src_diet_taggedTemplateLiteral(["mime army shotglass"]))))) {
-      consumeDiet(dietBuilder.shotglass());
-    }
-
-    if ((0,property/* get */.U2)("barrelShrineUnlocked") && !(0,property/* get */.U2)("_barrelPrayer") && (0,template_string/* $classes */.JT)(diet_templateObject137 || (diet_templateObject137 = src_diet_taggedTemplateLiteral(["Turtle Tamer, Accordion Thief"]))).includes((0,external_kolmafia_.myClass)())) {
-      (0,external_kolmafia_.cliExecute)("barrelprayer buff");
-    }
-
-    consumeDiet(dietBuilder.diet());
-  }
+  });
 }
 // EXTERNAL MODULE: ./node_modules/libram/dist/Copier.js
 var Copier = __webpack_require__(2219);
@@ -26173,731 +26907,6 @@ function drive(style) {
 
   return (0,external_kolmafia_.haveEffect)(style) >= turns;
 }
-;// CONCATENATED MODULE: ./node_modules/libram/dist/Clan.js
-function Clan_toConsumableArray(arr) { return Clan_arrayWithoutHoles(arr) || Clan_iterableToArray(arr) || Clan_unsupportedIterableToArray(arr) || Clan_nonIterableSpread(); }
-
-function Clan_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function Clan_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function Clan_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return Clan_arrayLikeToArray(arr); }
-
-function Clan_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = Clan_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function Clan_slicedToArray(arr, i) { return Clan_arrayWithHoles(arr) || Clan_iterableToArrayLimit(arr, i) || Clan_unsupportedIterableToArray(arr, i) || Clan_nonIterableRest(); }
-
-function Clan_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function Clan_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Clan_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Clan_arrayLikeToArray(o, minLen); }
-
-function Clan_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function Clan_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function Clan_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function Clan_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function Clan_createClass(Constructor, protoProps, staticProps) { if (protoProps) Clan_defineProperties(Constructor.prototype, protoProps); if (staticProps) Clan_defineProperties(Constructor, staticProps); return Constructor; }
-
-function _wrapRegExp() { _wrapRegExp = function _wrapRegExp(re, groups) { return new BabelRegExp(re, undefined, groups); }; var _super = RegExp.prototype; var _groups = new WeakMap(); function BabelRegExp(re, flags, groups) { var _this = new RegExp(re, flags); _groups.set(_this, groups || _groups.get(re)); return Clan_setPrototypeOf(_this, BabelRegExp.prototype); } Clan_inherits(BabelRegExp, RegExp); BabelRegExp.prototype.exec = function (str) { var result = _super.exec.call(this, str); if (result) result.groups = buildGroups(result, this); return result; }; BabelRegExp.prototype[Symbol.replace] = function (str, substitution) { if (typeof substitution === "string") { var groups = _groups.get(this); return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) { return "$" + groups[name]; })); } else if (typeof substitution === "function") { var _this = this; return _super[Symbol.replace].call(this, str, function () { var args = arguments; if (typeof args[args.length - 1] !== "object") { args = [].slice.call(args); args.push(buildGroups(args, _this)); } return substitution.apply(this, args); }); } else { return _super[Symbol.replace].call(this, str, substitution); } }; function buildGroups(result, re) { var g = _groups.get(re); return Object.keys(g).reduce(function (groups, name) { groups[name] = result[g[name]]; return groups; }, Object.create(null)); } return _wrapRegExp.apply(this, arguments); }
-
-function Clan_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function Clan_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) Clan_setPrototypeOf(subClass, superClass); }
-
-function Clan_createSuper(Derived) { var hasNativeReflectConstruct = Clan_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = Clan_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = Clan_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return Clan_possibleConstructorReturn(this, result); }; }
-
-function Clan_possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return Clan_assertThisInitialized(self); }
-
-function Clan_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function Clan_wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; Clan_wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !Clan_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return Clan_construct(Class, arguments, Clan_getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return Clan_setPrototypeOf(Wrapper, Class); }; return Clan_wrapNativeSuper(Class); }
-
-function Clan_construct(Parent, args, Class) { if (Clan_isNativeReflectConstruct()) { Clan_construct = Reflect.construct; } else { Clan_construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) Clan_setPrototypeOf(instance, Class.prototype); return instance; }; } return Clan_construct.apply(null, arguments); }
-
-function Clan_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function Clan_isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
-
-function Clan_setPrototypeOf(o, p) { Clan_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return Clan_setPrototypeOf(o, p); }
-
-function Clan_getPrototypeOf(o) { Clan_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return Clan_getPrototypeOf(o); }
-
-function Clan_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-  var c = arguments.length,
-      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-      d;
-  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-  }
-  return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-
-
-
-
-
-var ClanError = /*#__PURE__*/function (_Error) {
-  Clan_inherits(ClanError, _Error);
-
-  var _super = Clan_createSuper(ClanError);
-
-  function ClanError(message, reason) {
-    var _this;
-
-    Clan_classCallCheck(this, ClanError);
-
-    _this = _super.call(this, message);
-
-    Clan_defineProperty(Clan_assertThisInitialized(_this), "reason", void 0);
-
-    _this.reason = reason;
-    Object.setPrototypeOf(Clan_assertThisInitialized(_this), ClanError.prototype);
-    return _this;
-  }
-
-  return ClanError;
-}( /*#__PURE__*/Clan_wrapNativeSuper(Error)); // It would be fantastic to have this function properly typed
-// But until someone can work out how to do it, it gets the
-// comment blocks of shame
-
-/* eslint-disable */
-
-function validate(target, propertyName, descriptor) {
-  if (!(descriptor !== null && descriptor !== void 0 && descriptor.value)) return;
-  var method = descriptor.value; // @ts-ignore
-
-  descriptor.value = function () {
-    // @ts-ignore
-    if (this.id !== (0,external_kolmafia_.getClanId)()) {
-      throw new Error("You are no longer a member of this clan");
-    }
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return method.apply(this, args);
-  };
-}
-/* eslint-enable */
-
-
-var clanIdCache = {};
-
-var toPlayerId = player => typeof player === "string" ? (0,external_kolmafia_.getPlayerId)(player) : player;
-
-var LOG_FAX_PATTERN = /*#__PURE__*/_wrapRegExp(/([0-9]{2}\/[0-9]{2}\/[0-9]{2}, [0-9]{2}:[0-9]{2}(?:AM|PM): )<a (?:(?!>)[\s\S])+>((?:(?!<)[\s\S])+)<\/a>(?: faxed in a (.*?))<br>/, {
-  monster: 3
-});
-
-var WHITELIST_DEGREE_PATTERN = /*#__PURE__*/_wrapRegExp(/(.*?) \(\xB0([0-9]+)\)/, {
-  name: 1,
-  degree: 2
-});
-
-var Clan = /*#__PURE__*/function () {
-  function Clan(id, name) {
-    Clan_classCallCheck(this, Clan);
-
-    Clan_defineProperty(this, "id", void 0);
-
-    Clan_defineProperty(this, "name", void 0);
-
-    this.id = id;
-    this.name = name;
-  }
-  /**
-   * Join clan
-   */
-
-
-  Clan_createClass(Clan, [{
-    key: "join",
-    value: function join() {
-      return Clan._join(this.id);
-    }
-  }, {
-    key: "check",
-    value: function check() {
-      return (0,external_kolmafia_.visitUrl)("clan_hall.php").includes("<b>".concat(this.name, "</b>"));
-    }
-    /**
-     * Return the monster that is currently in the current clan's fax machine if any
-     */
-
-  }, {
-    key: "getCurrentFax",
-    value: function getCurrentFax() {
-      var logs = (0,external_kolmafia_.visitUrl)("clan_log.php");
-      var lastFax = logs.match(LOG_FAX_PATTERN);
-      if (!lastFax) return null;
-
-      var _lastFax = Clan_slicedToArray(lastFax, 4),
-          monsterName = _lastFax[3];
-
-      if (!monsterName) return null;
-      return Monster.get(monsterName);
-    }
-    /**
-     * List available ranks (name, degree and id) from the current clan
-     */
-
-  }, {
-    key: "getRanks",
-    value: function getRanks() {
-      var page = (0,external_kolmafia_.visitUrl)("clan_whitelist.php");
-      return (0,external_kolmafia_.xpath)(page, '//select[@name="level"]//option').map(option => {
-        var validHtml = "<select>".concat(option, "</select>");
-        var match = (0,external_kolmafia_.xpath)(validHtml, "//text()")[0].match(WHITELIST_DEGREE_PATTERN);
-        var id = (0,external_kolmafia_.xpath)(validHtml, "//@value")[0];
-        if (!match || !id) return null;
-
-        var _match = Clan_slicedToArray(match, 3),
-            name = _match[1],
-            degree = _match[2];
-
-        return {
-          name: name,
-          degree: Number.parseInt(degree),
-          id: Number.parseInt(id)
-        };
-      }).filter(utils/* notNull */.Nf);
-    }
-    /**
-     * Add a player to the current clan's whitelist.
-     * If the player is already in the whitelist this will change their rank or title.
-     * @param player Player id or name
-     * @param rankName Rank to give the player. If not provided they will be given the lowest rank
-     * @param title Title to give the player. If not provided, will be blank
-     */
-
-  }, {
-    key: "addPlayerToWhitelist",
-    value: function addPlayerToWhitelist(player, rankName) {
-      var title = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
-      var playerId = toPlayerId(player);
-      var ranks = this.getRanks();
-      var rank = rankName ? ranks.find(r => r.name === rankName) : ranks.sort((a, b) => a.degree - b.degree)[0];
-      if (!rank) return false;
-      var result = (0,external_kolmafia_.visitUrl)("clan_whitelist.php?action=add&pwd&addwho=".concat(playerId, "&level=").concat(rank.id, "&title=").concat(title));
-      return result.includes("added to whitelist.") || result.includes("That player is already on the whitelist");
-    }
-    /**
-     * Remove a player from the current clan's whitelist
-     * @param player Player id or name
-     */
-
-  }, {
-    key: "removePlayerFromWhitelist",
-    value: function removePlayerFromWhitelist(player) {
-      var playerId = toPlayerId(player);
-      var result = (0,external_kolmafia_.visitUrl)("clan_whitelist.php?action=updatewl&pwd&who=".concat(playerId, "&remove=Remove"));
-      return result.includes("Whitelist updated.");
-    }
-    /**
-     * Return the amount of meat in the current clan's coffer.
-     */
-
-  }, {
-    key: "getMeatInCoffer",
-    value: function getMeatInCoffer() {
-      var page = (0,external_kolmafia_.visitUrl)("clan_stash.php");
-
-      var _ref = page.match(/Your <b>Clan Coffer<\/b> contains ([\d,]+) Meat./) || ["0", "0"],
-          _ref2 = Clan_slicedToArray(_ref, 2),
-          meat = _ref2[1];
-
-      return (0,utils/* parseNumber */.p3)(meat);
-    }
-    /**
-     * Add the given amount of meat to the current clan's coffer.
-     * @param amount Amount of meat to put in coffer
-     */
-
-  }, {
-    key: "putMeatInCoffer",
-    value: function putMeatInCoffer(amount) {
-      var result = (0,external_kolmafia_.visitUrl)("clan_stash.php?pwd&action=contribute&howmuch=".concat(amount));
-      return result.includes("You contributed");
-    }
-  }, {
-    key: "take",
-    value: function take(items) {
-      var map = (0,utils/* arrayToCountedMap */.tv)(items);
-      map.forEach((quantity, item) => {
-        var needed = Math.max(0, quantity - (0,external_kolmafia_.availableAmount)(item));
-
-        if (needed === 0) {
-          return map.set(item, 0);
-        }
-
-        var foldGroup = (0,lib/* getFoldGroup */._D)(item);
-
-        var _iterator = Clan_createForOfIteratorHelper(foldGroup),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var foldable = _step.value;
-            var quantityToFold = Math.min(needed, (0,external_kolmafia_.availableAmount)(foldable));
-
-            for (var _i3 = 0; _i3 < quantityToFold; _i3++) {
-              (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
-              needed--;
-            }
-
-            return map.set(item, needed);
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-
-        (0,external_kolmafia_.refreshStash)();
-
-        for (var _i2 = 0, _arr2 = [item].concat(Clan_toConsumableArray(foldGroup)); _i2 < _arr2.length; _i2++) {
-          var matchingItem = _arr2[_i2];
-          var quantityToTake = Math.min(needed, (0,external_kolmafia_.stashAmount)(matchingItem));
-          if (quantityToTake === 0) continue; // If we can't take from the stash, there's no sense in iterating through the whole fold group
-
-          if (!(0,external_kolmafia_.takeStash)(quantityToTake, matchingItem)) return;
-
-          if (matchingItem === item) {
-            needed -= quantityToTake;
-          } else {
-            for (var i = 0; i < quantityToTake; i++) {
-              (0,external_kolmafia_.cliExecute)("fold ".concat(matchingItem.name));
-              needed--;
-            }
-          }
-        }
-      });
-      return Array.isArray(items) ? (0,utils/* countedMapToArray */.Y8)(map) : map;
-    }
-  }, {
-    key: "put",
-    value: function put(items) {
-      var map = (0,utils/* arrayToCountedMap */.tv)(items);
-      if (!this.check()) throw new Error("Wanted to return ".concat((0,utils/* countedMapToString */.N3)(map), " to ").concat(this.name, " but KoLmafia's clan data is out of sync"));
-      map.forEach((quantity, item) => {
-        (0,external_kolmafia_.retrieveItem)(quantity, item);
-        var returned = Math.min(quantity, (0,external_kolmafia_.availableAmount)(item));
-        (0,external_kolmafia_.putStash)(returned, item);
-        map.set(item, quantity - returned);
-      });
-      return Array.isArray(items) ? (0,utils/* countedMapToArray */.Y8)(map) : map;
-    }
-  }, {
-    key: "withStash",
-    value: function withStash(items, callback // eslint-disable-line @typescript-eslint/no-explicit-any
-    ) {
-      var map = (0,utils/* arrayToCountedMap */.tv)(items);
-      return Clan._withStash(() => this.take(map), borrowed => this.put(borrowed), callback);
-    }
-  }], [{
-    key: "_join",
-    value: function _join(id) {
-      var result = (0,external_kolmafia_.visitUrl)("showclan.php?recruiter=1&whichclan=".concat(id, "&pwd&whichclan=").concat(id, "&action=joinclan&apply=Apply+to+this+Clan&confirm=on"));
-
-      if (!result.includes("clanhalltop.gif")) {
-        throw new Error("Could not join clan");
-      }
-
-      return Clan.get();
-    }
-  }, {
-    key: "_withStash",
-    value: function _withStash(borrowFn, // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    returnFn, // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callback) {
-      var borrowed = borrowFn();
-      var map = (0,utils/* arrayToCountedMap */.tv)(borrowed);
-
-      try {
-        return callback(borrowed);
-      } finally {
-        if (map.size > 0) {
-          var returned = (0,utils/* arrayToCountedMap */.tv)(returnFn(borrowed));
-          map.forEach((quantity, item) => {
-            var remaining = quantity - (returned.get(item) || 0);
-
-            if (remaining > 0) {
-              map.set(item, remaining);
-            } else {
-              map.delete(item);
-            }
-          });
-
-          if (map.size > 0) {
-            logger.error("Failed to return <b>".concat((0,utils/* countedMapToString */.N3)(map), "</b> to <b>").concat(this.name, "</b> stash"));
-          }
-        }
-      }
-    }
-    /**
-     * Join a clan and return its instance
-     * @param clanIdOrName Clan id or name
-     */
-
-  }, {
-    key: "join",
-    value: function join(clanIdOrName) {
-      var clanId;
-
-      if (typeof clanIdOrName === "string") {
-        var clanName = clanIdOrName.toLowerCase();
-
-        if (clanName === (0,external_kolmafia_.getClanName)().toLowerCase()) {
-          return Clan.get();
-        }
-
-        if (!(clanName in clanIdCache)) {
-          var clan = Clan.getWhitelisted().find(c => c.name.toLowerCase() === clanName);
-
-          if (!clan) {
-            throw new Error("Player is not whitelisted to clan");
-          }
-
-          clanIdCache[clanName] = clan.id;
-        }
-
-        clanId = clanIdCache[clanName];
-      } else {
-        clanId = clanIdOrName;
-
-        if (clanId === (0,external_kolmafia_.getClanId)()) {
-          return Clan.get();
-        }
-      }
-
-      return Clan._join(clanId);
-    }
-    /**
-     * Execute callback as a member of a clan
-     * and then restore prior membership
-     * @param clanIdOrName Clan id or name
-     */
-
-  }, {
-    key: "with",
-    value: function _with(clanIdOrName, callback) {
-      var startingClan = Clan.get();
-      var clan = Clan.join(clanIdOrName);
-
-      try {
-        return callback(clan);
-      } finally {
-        startingClan.join();
-      }
-    }
-  }, {
-    key: "withStash",
-    value: function withStash(clanIdOrName, items, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    callback // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    ) {
-      return Clan._withStash(() => Clan.with(clanIdOrName, clan => clan.take(items)), borrowed => Clan.with(clanIdOrName, clan => clan.put(borrowed)), callback);
-    }
-    /**
-     * Return player's current Clan
-     */
-
-  }, {
-    key: "get",
-    value: function get() {
-      return new Clan((0,external_kolmafia_.getClanId)(), (0,external_kolmafia_.getClanName)());
-    }
-    /**
-     * Get list of clans to which the player is whitelisted
-     */
-
-  }, {
-    key: "getWhitelisted",
-    value: function getWhitelisted() {
-      var page = (0,external_kolmafia_.visitUrl)("clan_signup.php");
-      return (0,external_kolmafia_.xpath)(page, '//select[@name="whichclan"]//option').map(option => {
-        var validHtml = "<select>".concat(option, "</select>");
-        var id = Number.parseInt((0,external_kolmafia_.xpath)(validHtml, "//@value")[0]);
-        var name = (0,external_kolmafia_.xpath)(validHtml, "//text()")[0];
-        return new Clan(id, name);
-      });
-    }
-  }]);
-
-  return Clan;
-}();
-
-__decorate([validate], Clan.prototype, "getCurrentFax", null);
-
-__decorate([validate], Clan.prototype, "getRanks", null);
-
-__decorate([validate], Clan.prototype, "addPlayerToWhitelist", null);
-
-__decorate([validate], Clan.prototype, "removePlayerFromWhitelist", null);
-
-__decorate([validate], Clan.prototype, "getMeatInCoffer", null);
-
-__decorate([validate], Clan.prototype, "putMeatInCoffer", null);
-
-__decorate([validate], Clan.prototype, "take", null);
-
-__decorate([validate], Clan.prototype, "put", null);
-
-__decorate([validate], Clan.prototype, "withStash", null);
-;// CONCATENATED MODULE: ./src/clan.ts
-var clan_templateObject, clan_templateObject2, clan_templateObject3, clan_templateObject4, clan_templateObject5, clan_templateObject6, clan_templateObject7, clan_templateObject8, clan_templateObject9;
-
-function clan_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = clan_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function clan_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function clan_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function clan_createClass(Constructor, protoProps, staticProps) { if (protoProps) clan_defineProperties(Constructor.prototype, protoProps); if (staticProps) clan_defineProperties(Constructor, staticProps); return Constructor; }
-
-function clan_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function clan_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function clan_toConsumableArray(arr) { return clan_arrayWithoutHoles(arr) || clan_iterableToArray(arr) || clan_unsupportedIterableToArray(arr) || clan_nonIterableSpread(); }
-
-function clan_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function clan_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return clan_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return clan_arrayLikeToArray(o, minLen); }
-
-function clan_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function clan_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return clan_arrayLikeToArray(arr); }
-
-function clan_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-
-
-
-function withStash(itemsToTake, action) {
-  var manager = new StashManager();
-
-  try {
-    manager.take.apply(manager, clan_toConsumableArray(itemsToTake));
-    return action();
-  } finally {
-    manager.putBackAll();
-  }
-}
-function withVIPClan(action) {
-  var clanIdOrName = (0,property/* get */.U2)("garbo_vipClan", undefined);
-
-  if (!clanIdOrName && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(clan_templateObject || (clan_templateObject = clan_taggedTemplateLiteral(["Clan VIP Lounge key"]))))) {
-    if ((0,external_kolmafia_.userConfirm)("The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)", 15000, true)) {
-      clanIdOrName = (0,external_kolmafia_.getClanId)();
-      (0,property/* set */.t8)("garbo_vipClan", clanIdOrName);
-    }
-  }
-
-  return withClan(clanIdOrName || (0,external_kolmafia_.getClanId)(), action);
-}
-
-function withClan(clanIdOrName, action) {
-  var startingClanId = (0,external_kolmafia_.getClanId)();
-  Clan.join(clanIdOrName);
-
-  try {
-    return action();
-  } finally {
-    Clan.join(startingClanId);
-  }
-}
-
-var StashManager = /*#__PURE__*/function () {
-  function StashManager(clanIdOrName) {
-    clan_classCallCheck(this, StashManager);
-
-    clan_defineProperty(this, "clanIdOrName", void 0);
-
-    clan_defineProperty(this, "enabled", void 0);
-
-    clan_defineProperty(this, "taken", new Map());
-
-    if (clanIdOrName === undefined) {
-      clanIdOrName = (0,property/* get */.U2)("garbo_stashClan", undefined);
-
-      if (!clanIdOrName) {
-        if ((0,external_kolmafia_.userConfirm)("The preference 'garbo_stashClan' is not set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)", 15000, true)) {
-          clanIdOrName = (0,external_kolmafia_.getClanId)();
-          (0,property/* set */.t8)("garbo_stashClan", clanIdOrName);
-        } else {
-          throw "No garbo_stashClan set.";
-        }
-      }
-    }
-
-    this.clanIdOrName = clanIdOrName;
-    this.enabled = 0 !== clanIdOrName && "none" !== clanIdOrName;
-  }
-
-  clan_createClass(StashManager, [{
-    key: "take",
-    value: function take() {
-      for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
-        items[_key] = arguments[_key];
-      }
-
-      if (items.length === 0) {
-        return;
-      }
-
-      if (!this.enabled) {
-        (0,external_kolmafia_.print)("Stash access is disabled. Ignoring request to borrow \"".concat(items.map(value => value.name).join(", "), "\" from clan stash."), "yellow");
-        return;
-      }
-
-      withClan(this.clanIdOrName, () => {
-        var _iterator = clan_createForOfIteratorHelper(items),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var item = _step.value;
-            if ((0,lib/* have */.lf)(item)) continue;
-
-            if ((0,lib/* getFoldGroup */._D)(item).some(fold => (0,lib/* have */.lf)(fold))) {
-              (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
-              continue;
-            }
-
-            var foldArray = [item].concat(clan_toConsumableArray((0,lib/* getFoldGroup */._D)(item)));
-            (0,external_kolmafia_.refreshStash)();
-
-            var _iterator2 = clan_createForOfIteratorHelper(foldArray),
-                _step2;
-
-            try {
-              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-                var fold = _step2.value;
-
-                try {
-                  if ((0,external_kolmafia_.stashAmount)(fold) > 0) {
-                    if ((0,external_kolmafia_.takeStash)(1, fold)) {
-                      var _this$taken$get;
-
-                      (0,external_kolmafia_.print)("Took ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
-                      if (fold !== item) (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
-                      this.taken.set(item, ((_this$taken$get = this.taken.get(item)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
-                      break;
-                    } else {
-                      (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from the stash. Do you have stash access in ").concat((0,external_kolmafia_.getClanName)(), "?"), "red");
-                    }
-                  }
-                } catch (_unused) {
-                  (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
-                }
-              }
-            } catch (err) {
-              _iterator2.e(err);
-            } finally {
-              _iterator2.f();
-            }
-
-            if ((0,lib/* have */.lf)(item)) continue;
-            (0,external_kolmafia_.print)("Couldn't find ".concat(item.name, " in clan stash for ").concat((0,external_kolmafia_.getClanName)(), "."), "red");
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-      });
-    }
-    /**
-     * Ensure at least one of each of {items} in inventory.
-     * @param items Items to take from the stash.
-     */
-
-  }, {
-    key: "ensure",
-    value: function ensure() {
-      for (var _len2 = arguments.length, items = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        items[_key2] = arguments[_key2];
-      }
-
-      this.take.apply(this, clan_toConsumableArray(items.filter(item => (0,external_kolmafia_.availableAmount)(item) === 0)));
-    }
-  }, {
-    key: "putBack",
-    value: function putBack() {
-      for (var _len3 = arguments.length, items = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        items[_key3] = arguments[_key3];
-      }
-
-      if (items.length === 0) return;
-
-      if ((0,external_kolmafia_.visitUrl)("fight.php").includes("You're fighting")) {
-        var _Macro$if_;
-
-        (0,external_kolmafia_.print)("In fight, trying to get away to return items to stash...", "blue");
-
-        (_Macro$if_ = src_combat.Macro.if_((0,template_string/* $monster */.O4)(clan_templateObject2 || (clan_templateObject2 = clan_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), src_combat.Macro.attack().repeat())).tryItem.apply(_Macro$if_, clan_toConsumableArray((0,template_string/* $items */.vS)(clan_templateObject3 || (clan_templateObject3 = clan_taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper"]))))).step("runaway").submit();
-      } else if ((0,external_kolmafia_.handlingChoice)()) {
-        (0,external_kolmafia_.print)("I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:", "red");
-        items.forEach(item => (0,external_kolmafia_.print)("".concat(item.name, ","), "red"));
-      }
-
-      withClan(this.clanIdOrName, () => {
-        var _iterator3 = clan_createForOfIteratorHelper(items),
-            _step3;
-
-        try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var _this$taken$get2;
-
-            var item = _step3.value;
-            var count = (_this$taken$get2 = this.taken.get(item)) !== null && _this$taken$get2 !== void 0 ? _this$taken$get2 : 0;
-
-            if (count > 0) {
-              (0,external_kolmafia_.retrieveItem)(count, item);
-
-              if (item === (0,template_string/* $item */.xr)(clan_templateObject4 || (clan_templateObject4 = clan_taggedTemplateLiteral(["Buddy Bjorn"])))) {
-                (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,template_string/* $item */.xr)(clan_templateObject5 || (clan_templateObject5 = clan_taggedTemplateLiteral(["Buddy Bjorn"]))).descid));
-                (0,external_kolmafia_.bjornifyFamiliar)((0,template_string/* $familiar */.HP)(clan_templateObject6 || (clan_templateObject6 = clan_taggedTemplateLiteral(["none"]))));
-              }
-
-              if (item === (0,template_string/* $item */.xr)(clan_templateObject7 || (clan_templateObject7 = clan_taggedTemplateLiteral(["Crown of Thrones"])))) {
-                (0,external_kolmafia_.visitUrl)("desc_item.php?whichitem=".concat((0,template_string/* $item */.xr)(clan_templateObject8 || (clan_templateObject8 = clan_taggedTemplateLiteral(["Crown of Thrones"]))).descid));
-                (0,external_kolmafia_.enthroneFamiliar)((0,template_string/* $familiar */.HP)(clan_templateObject9 || (clan_templateObject9 = clan_taggedTemplateLiteral(["none"]))));
-              }
-
-              if ((0,external_kolmafia_.putStash)(count, item)) {
-                (0,external_kolmafia_.print)("Returned ".concat(item.name, " to stash in ").concat((0,external_kolmafia_.getClanName)(), "."), "blue");
-                this.taken.delete(item);
-              } else {
-                throw "Failed to return ".concat(item.name, " to stash.");
-              }
-            }
-          }
-        } catch (err) {
-          _iterator3.e(err);
-        } finally {
-          _iterator3.f();
-        }
-      });
-    }
-    /**
-     * Put all items back in the stash.
-     */
-
-  }, {
-    key: "putBackAll",
-    value: function putBackAll() {
-      this.putBack.apply(this, clan_toConsumableArray(this.taken.keys()));
-    }
-  }]);
-
-  return StashManager;
-}();
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/mood.js
 var mood_templateObject, mood_templateObject2, mood_templateObject3, mood_templateObject4, mood_templateObject5, mood_templateObject6, mood_templateObject7, mood_templateObject8, mood_templateObject9, mood_templateObject10, mood_templateObject11, mood_templateObject12;
 
@@ -29782,7 +29791,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("46a11e8d977ee880de59910364ca4811a45501c0"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("31b45e41d82cdc160be37e36e66d5b5af679af1b"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
