@@ -28680,8 +28680,7 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
   }
 }, {
   requirements: () => [new Requirement([], {
-    bonusEquip: new Map( // eslint-disable-next-line libram/verify-constants
-    (0,template_string/* $items */.vS)(_templateObject355 || (_templateObject355 = fights_taggedTemplateLiteral(["carnivorous potted plant"]))).map(item => [item, 100]))
+    bonusEquip: new Map((0,template_string/* $items */.vS)(_templateObject355 || (_templateObject355 = fights_taggedTemplateLiteral(["carnivorous potted plant"]))).map(item => [item, 100]))
   })]
 }), new FreeFight(() => ((0,property/* get */.U2)("gingerbreadCityAvailable") || (0,property/* get */.U2)("_gingerbreadCityToday")) && (0,property/* get */.U2)("_gingerbreadCityTurns") + ((0,property/* get */.U2)("_gingerbreadClockAdvanced") ? 5 : 0) === 9, () => {
   propertyManager.setChoices({
@@ -28703,8 +28702,7 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
   }
 }, {
   requirements: () => [new Requirement([], {
-    bonusEquip: new Map( // eslint-disable-next-line libram/verify-constants
-    (0,template_string/* $items */.vS)(_templateObject359 || (_templateObject359 = fights_taggedTemplateLiteral(["carnivorous potted plant"]))).map(item => [item, 100]))
+    bonusEquip: new Map((0,template_string/* $items */.vS)(_templateObject359 || (_templateObject359 = fights_taggedTemplateLiteral(["carnivorous potted plant"]))).map(item => [item, 100]))
   })]
 }), new FreeFight(() => ((0,property/* get */.U2)("gingerbreadCityAvailable") || (0,property/* get */.U2)("_gingerbreadCityToday")) && (0,property/* get */.U2)("_gingerbreadCityTurns") + ((0,property/* get */.U2)("_gingerbreadClockAdvanced") ? 5 : 0) === 19 && (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(_templateObject360 || (_templateObject360 = fights_taggedTemplateLiteral(["sprinkles"])))) > 5, () => {
   propertyManager.setChoices({
@@ -28772,8 +28770,7 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
 }, {
   requirements: () => [new Requirement([], {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject385 || (_templateObject385 = fights_taggedTemplateLiteral(["mayfly bait necklace"]))),
-    bonusEquip: new Map( // eslint-disable-next-line libram/verify-constants
-    (0,template_string/* $items */.vS)(_templateObject386 || (_templateObject386 = fights_taggedTemplateLiteral(["carnivorous potted plant"]))).map(item => [item, 100]))
+    bonusEquip: new Map((0,template_string/* $items */.vS)(_templateObject386 || (_templateObject386 = fights_taggedTemplateLiteral(["carnivorous potted plant"]))).map(item => [item, 100]))
   })]
 })];
 var freeKillSources = [new FreeFight(() => !(0,property/* get */.U2)("_gingerbreadMobHitUsed") && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject387 || (_templateObject387 = fights_taggedTemplateLiteral(["Gingerbread Mob Hit"])))), () => {
@@ -29787,7 +29784,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(25968);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f64a494bcd846b4e63d97392c28abe0997b03a66"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("4a5e7a8bfc009ab1f987b0995e598cf872956eb4"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
