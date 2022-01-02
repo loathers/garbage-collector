@@ -51,6 +51,7 @@ import {
   MenuItem,
   set,
   sum,
+  sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
@@ -63,7 +64,7 @@ const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, "blue");
 
 const Mayo = MayoClinic.Mayo;
-type Note = "first gregarious" | "additional gregarious" | PotionTier | null;
+type Note = PotionTier | null;
 
 function eatSafe(qty: number, item: Item) {
   if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
@@ -330,10 +331,6 @@ function menu(): MenuItem<Note>[] {
   ];
 }
 
-function gregariousCopies(): number {
-  return 3 + (have($item`miniature crystal ball`) ? 1 : 0);
-}
-
 function copiers(): MenuItem<Note>[] {
   const embezzlerDifferential = 25000 - 7500;
   const alreadyGregarious =
@@ -341,39 +338,38 @@ function copiers(): MenuItem<Note>[] {
     (get("beGregariousFightsLeft") > 0 &&
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler`);
 
+  const gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0);
   return [
-    new MenuItem($item`Extrovermectin™`, {
-      additionalValue: expectedGregs() * embezzlerDifferential,
-      maximum: alreadyGregarious ? 0 : 1,
-      data: "first gregarious",
-    }),
-    new MenuItem($item`Extrovermectin™`, {
-      additionalValue: embezzlerDifferential * gregariousCopies(),
-      data: "additional gregarious",
-    }),
+    ...gregCounts.map(
+      (embezzlers, index) =>
+        new MenuItem<Note>($item`Extrovermectin™`, {
+          additionalValue: embezzlers * embezzlerDifferential,
+          maximum: index === gregCounts.length - 1 ? undefined : 1,
+        })
+    ),
   ];
 }
 
-function countCopies(diet: Diet<Note>) {
-  const firstGregarious = diet.entries.some((dietEntry) =>
-    dietEntry.menuItems.some(
-      (menuItem) => menuItem.item === $item`Extrovermectin™` && menuItem.data === "first gregarious"
+function countCopies(diet: Diet<Note>): number {
+  // this only counts the copies not yet realized
+  // any copies already realized will be properly counted by embezzlerCount
+  const alreadyGregarious =
+    get("beGregariousCharges") > 0 ||
+    (get("beGregariousFightsLeft") > 0 &&
+      get("beGregariousMonster") === $monster`Knob Goblin Embezzler`);
+
+  const gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0);
+  const extros = sumNumbers(
+    diet.entries.map((dietEntry) =>
+      dietEntry.menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`)
+        ? dietEntry.quantity
+        : 0
     )
   );
-  const otherGregarious = diet.entries.reduce(
-    (total, dietEntry) =>
-      total +
-      dietEntry.quantity *
-        (dietEntry.menuItems.some(
-          (menuItem) =>
-            menuItem.item === $item`Extrovermectin™` && menuItem.data === "first gregarious"
-        )
-          ? 1
-          : 0),
-    0
-  );
+  const replaceExtros = sumNumbers(gregCounts.slice(0, Math.min(extros, gregCounts.length)));
+  const bonusExtros = Math.max(0, extros - gregCounts.length) * gregCounts[gregCounts.length - 1];
 
-  return (firstGregarious ? 1 : 0) * expectedGregs() + otherGregarious * gregariousCopies();
+  return replaceExtros + bonusExtros;
 }
 
 /**
