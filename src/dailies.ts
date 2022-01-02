@@ -255,6 +255,8 @@ function horse(): void {
 }
 
 function dailyBuffs(): void {
+  BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
+
   if (
     !get("_clanFortuneBuffUsed") &&
     have($item`Clan VIP Lounge key`) &&
@@ -275,8 +277,6 @@ function dailyBuffs(): void {
     ensureEffect($effect`Down the Rabbit Hole`);
     cliExecute("hatter 22");
   }
-
-  BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
 }
 
 function configureMisc(): void {
