@@ -22,6 +22,7 @@ import {
   retrieveItem,
   runChoice,
   runCombat,
+  todayToString,
   toUrl,
   use,
   useFamiliar,
@@ -96,6 +97,20 @@ export function safeInterrupt(): void {
     set("garbo_interrupt", false);
     abort("User interrupt requested. Stopping Garbage Collector.");
   }
+}
+
+export function persistEmbezzlerLog(): number {
+  const today = todayToString();
+  if (property.getString("garboEmbezzlerDate") !== today) {
+    property.set("garboEmbezzlerDate", today);
+    property.set("garboEmbezzlerCount", 0);
+  }
+  const totalEmbezzlers =
+    property.getNumber("garboEmbezzlerCount", 0) +
+    embezzlerLog.initialEmbezzlersFought +
+    embezzlerLog.digitizedEmbezzlersFought;
+  property.set("garboEmbezzlerCount", totalEmbezzlers);
+  return totalEmbezzlers;
 }
 
 export function setChoice(adventure: number, value: number): void {
