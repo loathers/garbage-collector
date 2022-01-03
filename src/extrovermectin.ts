@@ -121,20 +121,20 @@ export function equipOrbIfDesired(): void {
  */
 function initializeCrates(): void {
   do {
-    //We use the force while olfacting sometimes, so we'll need to refresh mafia's knowledge of olfaction
+    // We use the force while olfacting sometimes, so we'll need to refresh mafia's knowledge of olfaction
     if (property.getString("olfactedMonster") !== "crate") {
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
     }
-    //if we have olfaction, that's our primary method for ensuring crates
+    // if we have olfaction, that's our primary method for ensuring crates
     if (
       have($skill`Transcendent Olfaction`) &&
       (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate") &&
       get<number>("_olfactionUses") < 3
     ) {
       const run = findRun() ?? ltbRun();
-      setChoice(1387, 2); //use the force, in case we decide to use that
+      setChoice(1387, 2); // use the force, in case we decide to use that
 
-      //Sniff the crate in as many ways as humanly possible
+      // Sniff the crate in as many ways as humanly possible
       const macro = Macro.trySkill($skill`Transcendent Olfaction`)
         .trySkill($skill`Offer Latte to Opponent`)
         .externalIf(
@@ -144,8 +144,8 @@ function initializeCrates(): void {
         .trySkill($skill`Use the Force`)
         .step(run.macro);
 
-      //equip latte and saber for lattesniff and saberfriends, if we want to
-      //Crank up ML to make sure the crate survives several rounds; we may have some passive damage
+      // equip latte and saber for lattesniff and saberfriends, if we want to
+      // Crank up ML to make sure the crate survives several rounds; we may have some passive damage
       new Requirement(["100 Monster Level"], {
         forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter((item) =>
           have(item)
@@ -166,10 +166,10 @@ function initializeCrates(): void {
       crateStrategy() === "Saber" &&
       (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
       get("_saberForceUses") < 5
-    )
+    ) {
       saberCrateIfDesired();
-    else break; //we can break the loop if there's nothing to do
-  } while (!["crate", "Using the Force"].includes(get("lastEncounter"))); //loop until we actually hit a crate
+    } else break; // we can break the loop if there's nothing to do
+  } while (!["crate", "Using the Force"].includes(get("lastEncounter"))); // loop until we actually hit a crate
 }
 
 function initializeDireWarren(): void {

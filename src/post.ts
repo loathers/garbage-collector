@@ -19,8 +19,9 @@ function coldMedicineCabinet(): void {
   if (
     property.getNumber("_coldMedicineConsults") >= 5 ||
     property.getNumber("_nextColdMedicineConsult") > totalTurnsPlayed()
-  )
+  ) {
     return;
+  }
   const options = visitUrl("campground.php?action=workshed");
   let i = 0;
   let match;

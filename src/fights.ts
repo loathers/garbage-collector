@@ -272,8 +272,9 @@ function startWandererCounter() {
     ["Backup", "Be Gregarious", "Final Be Gregarious", "Done With Embezzlers"].includes(
       getNextEmbezzlerFight()?.name ?? "Done With Embezzlers"
     )
-  )
+  ) {
     return;
+  }
   if (
     (getCounters("Digitize Monster", -3, 100).trim() === "" &&
       get("_sourceTerminalDigitizeUses") !== 0) ||
@@ -304,9 +305,9 @@ function startWandererCounter() {
       ["Lights Out in the Kitchen", "Play Misty For Me", "Wooof! Wooooooof!"].includes(
         get("lastEncounter")
       )
-      //We use the haunted kitchen because we don't do anything else there, it's always available, it's 100% combat, and it allows wanderers
-      //Account for lights out and semi-rare
-      //It sucks to hit the semi-rare, but SRs interact weirdly with wanderers, and it's better to know than not to know
+      // We use the haunted kitchen because we don't do anything else there, it's always available, it's 100% combat, and it allows wanderers
+      // Account for lights out and semi-rare
+      // It sucks to hit the semi-rare, but SRs interact weirdly with wanderers, and it's better to know than not to know
     );
   }
 }
@@ -499,10 +500,12 @@ type FreeFightOptions = {
 let bestNonCheerleaderFairy: Familiar;
 
 function bestFairy() {
-  if (have($familiar`Trick-or-Treating Tot`) && have($item`li'l ninja costume`))
+  if (have($familiar`Trick-or-Treating Tot`) && have($item`li'l ninja costume`)) {
     return $familiar`Trick-or-Treating Tot`;
-  if (get("_cheerleaderSteam") > 100 && have($familiar`Steam-Powered Cheerleader`))
+  }
+  if (get("_cheerleaderSteam") > 100 && have($familiar`Steam-Powered Cheerleader`)) {
     return $familiar`Steam-Powered Cheerleader`;
+  }
 
   if (!bestNonCheerleaderFairy) {
     setLocation($location`Noob Cave`);
@@ -773,7 +776,7 @@ const freeFightSources = [
       if (
         have($skill`Comprehensive Cartography`) &&
         get("_monstersMapped") <
-          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) //Save a map to use for polar vortex
+          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
       ) {
         withMacro(
           Macro.if_($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`),
@@ -815,7 +818,7 @@ const freeFightSources = [
     }
   ),
 
-  //Initial 9 Pygmy fights
+  // Initial 9 Pygmy fights
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" ? clamp(9 - get("_drunkPygmyBanishes"), 0, 9) : 0,
@@ -837,7 +840,7 @@ const freeFightSources = [
     }
   ),
 
-  //10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
+  // 10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
   new FreeFight(
     () => get("questL11Worship") !== "unstarted" && get("_drunkPygmyBanishes") === 9,
     () => {
@@ -855,7 +858,7 @@ const freeFightSources = [
       ],
     }
   ),
-  //11th pygmy fight if we lack a saber
+  // 11th pygmy fight if we lack a saber
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
@@ -873,7 +876,7 @@ const freeFightSources = [
     }
   ),
 
-  //11th+ pygmy fight if we have a saber- saber friends
+  // 11th+ pygmy fight if we have a saber- saber friends
   new FreeFight(
     () => {
       const rightTime =
@@ -908,9 +911,9 @@ const freeFightSources = [
         putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
         adventureMacro($location`The Hidden Bowling Alley`, Macro.skill($skill`Use the Force`));
       } else {
-        if (closetAmount($item`Bowl of Scorpions`) > 0)
+        if (closetAmount($item`Bowl of Scorpions`) > 0) {
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-        else retrieveItem($item`Bowl of Scorpions`);
+        } else retrieveItem($item`Bowl of Scorpions`);
         adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
       }
     },
@@ -925,7 +928,7 @@ const freeFightSources = [
     }
   ),
 
-  //Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
+  // Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
@@ -1080,7 +1083,7 @@ const freeFightSources = [
     () => (have($familiar`Machine Elf`) ? clamp(5 - get("_machineTunnelsAdv"), 0, 5) : 0),
     () => {
       propertyManager.setChoices({
-        1119: 6, //escape DMT
+        1119: 6, // escape DMT
       });
       const thought =
         getSaleValue($item`abstraction: certainty`) >= getSaleValue($item`abstraction: thought`);
@@ -1218,8 +1221,8 @@ const freeRunFightSources = [
       questStep("questL11MacGuffin") > -1,
     (runSource: FreeRun) => {
       propertyManager.setChoices({
-        [923]: 1, //go to the blackberries in All Around the Map
-        [924]: 1, //fight a blackberry bush, so that we can freerun
+        [923]: 1, // go to the blackberries in All Around the Map
+        [924]: 1, // fight a blackberry bush, so that we can freerun
       });
       adventureMacro($location`The Black Forest`, runSource.macro);
     },
@@ -1234,8 +1237,8 @@ const freeRunFightSources = [
       questStep("questL02Larva") > -1,
     (runSource: FreeRun) => {
       propertyManager.setChoices({
-        [502]: 2, //go towards the stream in Arboreal Respite, so we can skip adventure
-        [505]: 2, //skip adventure
+        [502]: 2, // go towards the stream in Arboreal Respite, so we can skip adventure
+        [505]: 2, // skip adventure
       });
       adventureMacro($location`The Spooky Forest`, runSource.macro);
     },
@@ -1310,7 +1313,7 @@ const freeRunFightSources = [
       get("_gingerbreadCityTurns") <= 3,
     () => {
       propertyManager.setChoices({
-        1215: 1, //Gingerbread Civic Center advance clock
+        1215: 1, // Gingerbread Civic Center advance clock
       });
       adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
     },
@@ -1324,7 +1327,7 @@ const freeRunFightSources = [
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 9,
     (runSource: FreeRun) => {
       propertyManager.setChoices({
-        1215: 1, //Gingerbread Civic Center advance clock
+        1215: 1, // Gingerbread Civic Center advance clock
       });
       adventureMacro($location`Gingerbread Civic Center`, runSource.macro);
       if (
@@ -1368,7 +1371,7 @@ const freeRunFightSources = [
       availableAmount($item`sprinkles`) > 5,
     (runSource: FreeRun) => {
       propertyManager.setChoices({
-        1215: 1, //Gingerbread Civic Center advance clock
+        1215: 1, // Gingerbread Civic Center advance clock
       });
       adventureMacro($location`Gingerbread Civic Center`, runSource.macro);
       if (
@@ -1398,7 +1401,7 @@ const freeRunFightSources = [
     () => {
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
-        1215: 1, //Gingerbread Civic Center advance clock
+        1215: 1, // Gingerbread Civic Center advance clock
       });
       adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
     },
@@ -1639,8 +1642,8 @@ export function freeFights(): void {
   visitUrl("place.php?whichplace=town_wrong");
 
   propertyManager.setChoices({
-    1387: 2, //"You will go find two friends and meet me here."
-    1324: 5, //Fight a random partier
+    1387: 2, // "You will go find two friends and meet me here."
+    1324: 5, // Fight a random partier
   });
 
   for (const freeFightSource of freeFightSources) {
@@ -1772,7 +1775,7 @@ function deliverThesis(): void {
 
   let thesisLocation = $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`;
   if (thesisInNEP) {
-    //Set up NEP if we haven't yet
+    // Set up NEP if we haven't yet
     setNepQuestChoicesAndPrepItems();
     thesisLocation = $location`The Neverending Party`;
   }
@@ -1807,7 +1810,10 @@ function doSausage() {
 }
 
 function ensureBeachAccess() {
-  if (get("lastDesertUnlock") !== myAscensions() && myPathId() !== 23 /*Actually Ed the Undying*/) {
+  if (
+    get("lastDesertUnlock") !== myAscensions() &&
+    myPathId() !== 23 /* Actually Ed the Undying*/
+  ) {
     cliExecute(`create ${$item`bitchin' meatcar`}`);
   }
 }

@@ -238,11 +238,12 @@ function prepFamiliars(): void {
 
   if (get("_feastUsed") === 0) {
     withStash($items`moveable feast`, () => {
-      if (have($item`moveable feast`))
+      if (have($item`moveable feast`)) {
         [
           ...$familiars`Pocket Professor, Frumious Bandersnatch, Pair of Stomping Boots`,
           meatFamiliar(),
         ].forEach(tryFeast);
+      }
     });
   }
 }
@@ -332,7 +333,7 @@ function configureVykea() {
       [1, 0],
       [2, 1],
       [3, 11],
-    ]; //excluding 4 and 5 as per bean's suggestion
+    ]; // excluding 4 and 5 as per bean's suggestion
     const vykeaProfit = (level: number, cost: number) =>
       estimatedTurns() * baseMeat * 0.1 * level -
       (5 * mallPrice($item`VYKEA rail`) +
@@ -447,8 +448,9 @@ function cheat(): void {
       "Island",
       "Ancestral Recall",
     ].forEach((card) => {
-      if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card))
+      if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card)) {
         cliExecute(`cheat ${card}`);
+      }
     });
   }
 }
@@ -541,8 +543,9 @@ function pickTea(): void {
 function gaze(): void {
   if (!get("getawayCampsiteUnlocked")) return;
   if (!get("_campAwayCloudBuffs")) visitUrl("place.php?whichplace=campaway&action=campaway_sky");
-  while (get("_campAwaySmileBuffs") < 3)
+  while (get("_campAwaySmileBuffs") < 3) {
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
+  }
 }
 
 function martini(): void {
