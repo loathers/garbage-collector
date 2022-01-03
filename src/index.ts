@@ -104,8 +104,9 @@ function ensureBarfAccess() {
 
 function barfTurn() {
   const startTurns = totalTurnsPlayed();
-  if (have($effect`Beaten Up`))
+  if (have($effect`Beaten Up`)) {
     throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
+  }
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
@@ -117,7 +118,7 @@ function barfTurn() {
   // a. set up mood stuff
   meatMood().execute(estimatedTurns());
 
-  safeRestore(); //get enough mp to use summer siesta and enough hp to not get our ass kicked
+  safeRestore(); // get enough mp to use summer siesta and enough hp to not get our ass kicked
   const ghostLocation = get("ghostLocation");
   // b. check for wanderers, and do them
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
@@ -217,9 +218,10 @@ function barfTurn() {
       eat(available, $item`magical sausage`);
     }
   }
-  if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler")
+  if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler") {
     if (embezzlerUp) embezzlerLog.digitizedEmbezzlersFought++;
     else embezzlerLog.initialEmbezzlersFought++;
+  }
 }
 
 export function canContinue(): boolean {
@@ -234,7 +236,7 @@ export function main(argString = ""): void {
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
-    //Van & Duffel's Baleet Shop
+    // Van & Duffel's Baleet Shop
     forbiddenStores.push("3408540");
     set("forbiddenStores", forbiddenStores.join(","));
   }
@@ -277,7 +279,7 @@ export function main(argString = ""): void {
     } else if (arg.match(/nodiet/)) {
       globalOptions.noDiet = true;
     } else if (arg.match(/version/i)) {
-      //it already printed the version above, so do nothings
+      // it already printed the version above, so do nothings
       return;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
@@ -324,8 +326,9 @@ export function main(argString = ""): void {
       have($item`packet of tall grass seeds`) &&
       myGardenType() !== "grass" &&
       myGardenType() !== "mushroom"
-    )
+    ) {
       use($item`packet of tall grass seeds`);
+    }
 
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
@@ -409,8 +412,9 @@ export function main(argString = ""): void {
     if (
       myInebriety() <= inebrietyLimit() &&
       (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
-    )
+    ) {
       stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
+    }
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {

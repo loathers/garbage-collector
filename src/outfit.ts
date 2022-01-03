@@ -87,8 +87,9 @@ export function freeFightOutfit(requirement?: Requirement): void {
   });
   finalRequirement.maximize();
 
-  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`)
+  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
     equip(bjornAlike);
+  }
 
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
@@ -226,8 +227,9 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   );
   compiledRequirements.maximize();
 
-  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`)
+  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
     equip(bjornAlike);
+  }
 
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);

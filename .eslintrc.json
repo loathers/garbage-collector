@@ -4,12 +4,13 @@
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   "rules": {
     "block-scoped-var": "error",
-    "eqeqeq": "error",
-    "no-var": "error",
-    "prefer-const": "error",
+    "curly": ["error", "multi-line"],
     "eol-last": "error",
-    "prefer-arrow-callback": "error",
+    "eqeqeq": "error",
     "no-trailing-spaces": "error",
+    "no-var": "error",
+    "prefer-arrow-callback": "error",
+    "prefer-const": "error",
     "prefer-template": "error",
     "sort-imports": [
       "error",
@@ -18,9 +19,13 @@
         "ignoreDeclarationSort": true
       }
     ],
-    "node/no-unpublished-import": "off",
+    "spaced-comment": "error",
+
+    // This one needs a fix because TS's rules are different?
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "error",
+
+    // eslint-plugin-libram
     "libram/verify-constants": "error"
   },
   "parserOptions": {
