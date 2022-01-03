@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { merge } = require("webpack-merge");

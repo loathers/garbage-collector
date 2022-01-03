@@ -1,4 +1,4 @@
-//import { canAdv } from "canadv.ash";
+// import { canAdv } from "canadv.ash";
 import {
   abort,
   chatPrivate,
@@ -288,7 +288,7 @@ export const embezzlerSources = [
       ).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
     }
-    //do we want to equip orb on these guys?
+    // do we want to equip orb on these guys?
   ),
   new EmbezzlerFight(
     "Powerful Glove",
@@ -504,7 +504,7 @@ export const embezzlerSources = [
       use($item`photocopied monster`);
     }
   ),
-  /*new EmbezzlerFight(
+  /* new EmbezzlerFight(
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
@@ -522,7 +522,7 @@ export const embezzlerSources = [
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
   ),*/
-  //These are very deliberately the last embezzler fights.
+  // These are very deliberately the last embezzler fights.
   new EmbezzlerFight(
     "Pocket Wish",
     () => {
@@ -634,10 +634,10 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
  */
 function proceedWithOrb(): boolean {
   const strat = crateStrategy();
-  //If we can't possibly use orb, return true
+  // If we can't possibly use orb, return true
   if (!have($item`miniature crystal ball`) || strat === "Saber") return true;
 
-  //If we're sniffing and an Embezzler is in the queue already, return true
+  // If we're sniffing and an Embezzler is in the queue already, return true
   if (
     strat === "Sniff" &&
     $location`Noob Cave`.combatQueue
@@ -648,7 +648,7 @@ function proceedWithOrb(): boolean {
     return true;
   }
 
-  //If we're using orb, we have a KGE prediction, and we can reset it, return false
+  // If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (
     CrystalBall.currentPredictions(false).get($location`Noob Cave`) ===
