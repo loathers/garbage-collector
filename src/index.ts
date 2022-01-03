@@ -60,6 +60,7 @@ import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
+  persistEmbezzlerLog,
   printHelpMenu,
   printLog,
   propertyManager,
@@ -472,10 +473,12 @@ export function main(argString = ""): void {
     propertyManager.resetAll();
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
+    const totalEmbezzlers = persistEmbezzlerLog();
     print(
       `You fought ${embezzlerLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${embezzlerLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
       "blue"
     );
+    print(`Including this, you have fought ${totalEmbezzlers} across all ascensions today`, "blue");
     printLog("blue");
   }
 }
