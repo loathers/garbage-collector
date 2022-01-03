@@ -24147,6 +24147,20 @@ function safeRestore() {
 
   burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
+function checkGithubVersion() {
+  if (false) {} else {
+    var gitBranches = JSON.parse((0,external_kolmafia_.visitUrl)("https://api.github.com/repos/".concat("Loathing-Associates-Scripting-Society/garbage-collector", "/branches")));
+    var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
+    var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
+
+    if ("967e99f0c77f3a34b35cdd0191386aa975b7937e" === mainSha) {
+      (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
+    } else {
+      (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
+      (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "/main is at ").concat(mainSha));
+    }
+  }
+}
 ;// CONCATENATED MODULE: ./src/familiar.ts
 var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11, familiar_templateObject12, familiar_templateObject13, familiar_templateObject14, familiar_templateObject15, familiar_templateObject16, familiar_templateObject17, familiar_templateObject18, familiar_templateObject19, familiar_templateObject20, familiar_templateObject21, familiar_templateObject22, familiar_templateObject23, familiar_templateObject24, familiar_templateObject25, familiar_templateObject26, familiar_templateObject27, familiar_templateObject28, familiar_templateObject29, familiar_templateObject30, familiar_templateObject31, familiar_templateObject32, familiar_templateObject33, familiar_templateObject34, familiar_templateObject35, familiar_templateObject36, familiar_templateObject37;
 
@@ -29900,7 +29914,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26085);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("cd93406d27128b2b31a10ec11ee9428375846f05"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("967e99f0c77f3a34b35cdd0191386aa975b7937e"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -29951,7 +29965,7 @@ function main() {
       } else if (arg.match(/nodiet/)) {
         globalOptions.noDiet = true;
       } else if (arg.match(/version/i)) {
-        // it already printed the version above, so do nothings
+        checkGithubVersion();
         return;
       } else if (arg) {
         (0,external_kolmafia_.print)("Invalid argument ".concat(arg, " passed. Run garbo help to see valid arguments."), "red");
