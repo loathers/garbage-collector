@@ -23866,6 +23866,18 @@ function safeInterrupt() {
     (0,external_kolmafia_.abort)("User interrupt requested. Stopping Garbage Collector.");
   }
 }
+function persistEmbezzlerLog() {
+  var today = (0,external_kolmafia_.todayToString)();
+
+  if (property/* getString */.KF("garboEmbezzlerDate") !== today) {
+    property/* set */.t8("garboEmbezzlerDate", today);
+    property/* set */.t8("garboEmbezzlerCount", 0);
+  }
+
+  var totalEmbezzlers = property/* getNumber */.Dx("garboEmbezzlerCount", 0) + embezzlerLog.initialEmbezzlersFought + embezzlerLog.digitizedEmbezzlersFought;
+  property/* set */.t8("garboEmbezzlerCount", totalEmbezzlers);
+  return totalEmbezzlers;
+}
 function setChoice(adventure, value) {
   propertyManager.setChoices(lib_defineProperty({}, adventure, value));
 }
@@ -29888,7 +29900,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26085);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("5aee71d041406f658d3b463d105d4120bbafad22"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("cd93406d27128b2b31a10ec11ee9428375846f05"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -30106,7 +30118,9 @@ function main() {
     propertyManager.resetAll();
     (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=".concat(aaBossFlag, "&action=Update"), true);
     if (startingGarden && (0,lib/* have */.lf)(startingGarden)) (0,external_kolmafia_.use)(startingGarden);
+    var totalEmbezzlers = persistEmbezzlerLog();
     (0,external_kolmafia_.print)("You fought ".concat(embezzlerLog.initialEmbezzlersFought, " KGEs at the beginning of the day, and an additional ").concat(embezzlerLog.digitizedEmbezzlersFought, " digitized KGEs throughout the day. Good work, probably!"), "blue");
+    (0,external_kolmafia_.print)("Including this, you have fought ".concat(totalEmbezzlers, " across all ascensions today"), "blue");
     printLog("blue");
   }
 }
