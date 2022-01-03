@@ -57,6 +57,7 @@ import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights } from "./fights";
 import {
+  checkGithubVersion,
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
@@ -279,7 +280,7 @@ export function main(argString = ""): void {
     } else if (arg.match(/nodiet/)) {
       globalOptions.noDiet = true;
     } else if (arg.match(/version/i)) {
-      // it already printed the version above, so do nothings
+      checkGithubVersion();
       return;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
