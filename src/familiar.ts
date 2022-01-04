@@ -181,3 +181,7 @@ export function freeFightFamiliar(): Familiar {
 
   return argmax(familiarValue);
 }
+
+export function pocketProfessorCopies(): number {
+  return 2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()));
+}

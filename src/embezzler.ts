@@ -51,18 +51,45 @@ import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import { averageEmbezzlerNet, globalOptions, ltbRun, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
-type EmbezzlerFightOptions = {
+/**
+ * Configure the behavior of the fights in use in different parts of the fight engine
+ * @interface EmbezzlerFightConfigOptions
+ * @member {Requirement[]?} requirements maximizer requirements to use for this fight (defaults to empty)
+ * @member {draggableFight?} draggable if this fight can be pulled into another zone and what kind of draggable it is (defaults to undefined)
+ * @member {boolean?} canStartWanderers if this fight can be used to initialize wanderers (defaults to true)
+ * @member {boolean?} gregariousReplace if this is a "monster replacement" fight - pulls another monster from the CSV (defautls to false)
+ * @member {boolean?} wrongEncounterName if mafia does not update the lastEncounter properly when doing this fight (defaults to value of gregariousReplace)
+ */
+interface EmbezzlerFightConfigOptions {
+  requirements?: Requirement[];
+  draggable?: draggableFight;
+  canStartWanderers?: boolean;
+  wrongEncounterName?: boolean;
+  gregariousReplace?: boolean;
+}
+
+/**
+ * Options to override the default behavior of a fight
+ * @interface EmbezzlerFightRunOptions
+ * @member {Location?} location where to run this fight
+ * @member {Macro?} macro the macro to use when running this fight
+ */
+interface EmbezzlerFightRunOptions {
   location?: Location;
   macro?: Macro;
-};
+}
 
 export class EmbezzlerFight {
+  name: string;
   available: () => boolean;
   potential: () => number;
-  run: (options: EmbezzlerFightOptions) => void;
+  run: (options: EmbezzlerFightRunOptions) => void;
   requirements: Requirement[];
-  draggable: boolean;
-  name: string;
+  draggable?: draggableFight;
+  canStartWanderers: boolean;
+  wrongEncounterName: boolean;
+  gregariousReplace: boolean;
+
   /**
    * This is the class that creates all the different ways to fight embezzlers
    * @classdesc Something goes here
@@ -70,24 +97,25 @@ export class EmbezzlerFight {
    * @prop {() => boolean} available Returns whether or not we can do this fight right now.
    * @prop {() => number} potential Returns the number of embezzlers we expect to be able to fight from this source.
    * @prop {(options: EmbezzlerFightOptions) => void} run This runs the combat, optionally using the provided location and macro. Location is used only by draggable fights.
-   * @prop {Requirement[]} requirements This is an array of requirements to do this fight
-   * @prop {boolean} [draggable=false] This tells the script if it is able the embezzler to a different zone
+   * @prop {EmbezzlerFightConfigOptions} options configuration options for this fight
    *
    */
   constructor(
     name: string,
     available: () => boolean,
     potential: () => number,
-    run: (options: EmbezzlerFightOptions) => void,
-    requirements: Requirement[] = [],
-    draggable = false
+    run: (options: EmbezzlerFightRunOptions) => void,
+    options: EmbezzlerFightConfigOptions = {}
   ) {
     this.name = name;
     this.available = available;
     this.potential = potential;
     this.run = run;
-    this.requirements = requirements;
-    this.draggable = draggable;
+    this.requirements = options.requirements ?? [];
+    this.draggable = options.draggable;
+    this.canStartWanderers = options.canStartWanderers ?? true;
+    this.gregariousReplace = options.gregariousReplace ?? false;
+    this.wrongEncounterName = options.wrongEncounterName ?? this.gregariousReplace;
   }
 }
 
@@ -142,7 +170,7 @@ export const embezzlerSources = [
       get("_sourceTerminalDigitizeMonster") === $monster`Knob Goblin Embezzler` &&
       getCounters("Digitize Monster", 0, 0).trim() !== "",
     () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       adventureMacro(
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
         Macro.externalIf(
@@ -156,8 +184,9 @@ export const embezzlerSources = [
         ).step(options.macro ?? embezzlerMacro())
       );
     },
-    [],
-    true
+    {
+      draggable: draggableFight.WANDERER,
+    }
   ),
   new EmbezzlerFight(
     "Guaranteed Romantic Monster",
@@ -168,7 +197,7 @@ export const embezzlerSources = [
       (getCounter("Romantic Monster window end") !== -1 ||
         getCounters("Romantic Monster window end", -1, -1).trim() !== ""),
     () => 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const location =
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER);
       const macro = Macro.externalIf(
@@ -182,8 +211,9 @@ export const embezzlerSources = [
       ).step(options.macro ?? embezzlerMacro());
       adventureMacro(location, macro);
     },
-    undefined,
-    true
+    {
+      draggable: draggableFight.WANDERER,
+    }
   ),
   new EmbezzlerFight(
     "Enamorang",
@@ -196,7 +226,7 @@ export const embezzlerSources = [
       (have($item`LOV Enamorang`) && !get("_enamorangs"))
         ? 1
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       adventureMacro(
         options.location ?? determineDraggableZoneAndEnsureAccess(draggableFight.WANDERER),
         Macro.externalIf(
@@ -210,8 +240,9 @@ export const embezzlerSources = [
         ).step(embezzlerMacro())
       );
     },
-    [],
-    true
+    {
+      draggable: draggableFight.WANDERER,
+    }
   ),
   new EmbezzlerFight(
     "Orb Prediction",
@@ -220,17 +251,19 @@ export const embezzlerSources = [
       $monster`Knob Goblin Embezzler`,
     () =>
       (have($item`miniature crystal ball`) ? 1 : 0) *
-      get("beGregariousCharges") *
-      +(get("beGregariousFightsLeft") > 0 ||
-      CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
-        $monster`Knob Goblin Embezzler`
-        ? 1
-        : 0),
-    (options: EmbezzlerFightOptions) => {
+      (get("beGregariousCharges") +
+        (get("beGregariousFightsLeft") > 0 ||
+        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) ===
+          $monster`Knob Goblin Embezzler`
+          ? 1
+          : 0)),
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       adventureMacro($location`The Dire Warren`, macro);
     },
-    [new Requirement([], { forceEquip: $items`miniature crystal ball` })]
+    {
+      requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
+    }
   ),
   new EmbezzlerFight(
     "Time-Spinner",
@@ -249,7 +282,7 @@ export const embezzlerSources = [
       )
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       withMacro(macro, () => {
         visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
@@ -276,7 +309,7 @@ export const embezzlerSources = [
       have($skill`Meteor Lore`)
         ? 10 - get("_macrometeoriteUses")
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       equipOrbIfDesired();
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_(
@@ -287,8 +320,10 @@ export const embezzlerSources = [
         ).skill($skill`Macrometeorite`)
       ).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
+    },
+    {
+      gregariousReplace: true,
     }
-    // do we want to equip orb on these guys?
   ),
   new EmbezzlerFight(
     "Powerful Glove",
@@ -305,7 +340,7 @@ export const embezzlerSources = [
       have($item`Powerful Glove`)
         ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       equipOrbIfDesired();
       const baseMacro = options.macro ?? embezzlerMacro();
       const macro = Macro.if_(
@@ -317,7 +352,10 @@ export const embezzlerSources = [
       ).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
     },
-    [new Requirement([], { forceEquip: $items`Powerful Glove` })]
+    {
+      requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
+      gregariousReplace: true,
+    }
   ),
   new EmbezzlerFight(
     "Be Gregarious",
@@ -328,7 +366,7 @@ export const embezzlerSources = [
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
         ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const run = ltbRun();
       run.constraints.preparation?.();
       adventureMacro(
@@ -365,7 +403,7 @@ export const embezzlerSources = [
       get("beGregariousCharges") > 0
         ? 1
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const run = ltbRun();
       run.constraints.preparation?.();
       adventureMacro(
@@ -373,11 +411,14 @@ export const embezzlerSources = [
         Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro ?? embezzlerMacro())
       );
     },
-    [
-      new Requirement([], {
-        forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-      }),
-    ]
+    {
+      requirements: [
+        new Requirement([], {
+          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+        }),
+      ],
+      canStartWanderers: false,
+    }
   ),
   new EmbezzlerFight(
     "Backup",
@@ -386,7 +427,7 @@ export const embezzlerSources = [
       have($item`backup camera`) &&
       get("_backUpUses") < 11,
     () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const realLocation =
         options.location && options.location.combatPercent >= 100
           ? options.location
@@ -399,13 +440,17 @@ export const embezzlerSources = [
         ).step(options.macro || embezzlerMacro())
       );
     },
-    [
-      new Requirement([], {
-        forceEquip: $items`backup camera`,
-        bonusEquip: new Map([[$item`backup camera`, 5000]]),
-      }),
-    ],
-    true
+    {
+      requirements: [
+        new Requirement([], {
+          forceEquip: $items`backup camera`,
+          bonusEquip: new Map([[$item`backup camera`, 5000]]),
+        }),
+      ],
+      draggable: draggableFight.BACKUP,
+      wrongEncounterName: true,
+      canStartWanderers: false,
+    }
   ),
   new EmbezzlerFight(
     "Spooky Putty & Rain-Doh",
@@ -433,7 +478,7 @@ export const embezzlerSources = [
       }
       return 0;
     },
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       withMacro(macro, () => {
         if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
@@ -453,7 +498,7 @@ export const embezzlerSources = [
       !get("_cameraUsed")
         ? 1
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       withMacro(macro, () => use($item`shaking 4-d camera`));
     }
@@ -470,7 +515,7 @@ export const embezzlerSources = [
       !get("_iceSculptureUsed")
         ? 1
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       withMacro(macro, () => use($item`ice sculpture`));
     }
@@ -487,7 +532,7 @@ export const embezzlerSources = [
       !get("_envyfishEggUsed")
         ? 1
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       withMacro(macro, () => use($item`envyfish egg`));
     }
@@ -504,7 +549,7 @@ export const embezzlerSources = [
       ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`
         ? 1
         : 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       withMacro(macro, () => ChateauMantegna.fightPainting());
     }
@@ -513,7 +558,7 @@ export const embezzlerSources = [
     "Fax",
     () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
     () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       faxEmbezzler();
       withMacro(macro, () => use($item`photocopied monster`));
@@ -605,7 +650,7 @@ export const embezzlerSources = [
       return globalOptions.wishAnswer;
     },
     () => 0,
-    (options: EmbezzlerFightOptions) => {
+    (options: EmbezzlerFightRunOptions) => {
       const macro = options.macro ?? embezzlerMacro();
       withMacro(macro, () => {
         acquire(1, $item`pocket wish`, WISH_VALUE);
@@ -686,8 +731,12 @@ export function estimatedTurns(): number {
  */
 export function getNextEmbezzlerFight(): EmbezzlerFight | null {
   for (const fight of embezzlerSources) {
-    if (fight.available()) return fight;
+    if (fight.available()) {
+      print(`getNextEmbezzlerFight(): Next fight ${fight.name}`);
+      return fight;
+    }
   }
+  print(`getNextEmbezzlerFight(): No next fight`);
   return null;
 }
 

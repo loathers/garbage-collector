@@ -6,7 +6,6 @@ import {
   cliExecute,
   closetAmount,
   equip,
-  familiarWeight,
   getCampground,
   getCounter,
   getCounters,
@@ -44,12 +43,12 @@ import {
   useFamiliar,
   useSkill,
   visitUrl,
-  weightAdjustment,
 } from "kolmafia";
 import {
   $class,
   $effect,
   $familiar,
+  $familiars,
   $item,
   $items,
   $location,
@@ -84,7 +83,7 @@ import {
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
-import { freeFightFamiliar, meatFamiliar } from "./familiar";
+import { freeFightFamiliar, meatFamiliar, pocketProfessorCopies } from "./familiar";
 import {
   burnLibrams,
   embezzlerLog,
@@ -269,11 +268,8 @@ function embezzlerSetup() {
 }
 
 function startWandererCounter() {
-  if (
-    ["Backup", "Be Gregarious", "Final Be Gregarious", "Done With Embezzlers"].includes(
-      getNextEmbezzlerFight()?.name ?? "Done With Embezzlers"
-    )
-  ) {
+  const nextFight = getNextEmbezzlerFight();
+  if (!nextFight || !nextFight.canStartWanderers) {
     return;
   }
   if (
@@ -324,79 +320,88 @@ function bestWitchessPiece() {
   return witchessPieces.sort((a, b) => getSaleValue(b.drop) - getSaleValue(a.drop))[0].piece;
 }
 
+function checkUnderwater() {
+  // first check to see if underwater even makes sense
+  if (
+    !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
+    (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
+    (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
+    (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
+  ) {
+    // then check if the underwater copy makes sense
+    if (mallPrice($item`pulled green taffy`) < 10000 && retrieveItem($item`pulled green taffy`)) {
+      // unlock the sea
+      if (get("questS01OldGuy") === "unstarted") {
+        visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+      }
+      if (!have($effect`Fishy`) && !get("_fishyPipeUsed")) use($item`fishy pipe`);
+
+      return have($effect`Fishy`);
+    }
+  }
+
+  return false;
+}
+
 export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for embezzler before doing setup
-      const firstFightSource = getNextEmbezzlerFight();
-      if (!firstFightSource) return;
-
+      if (!getNextEmbezzlerFight()) return;
       embezzlerSetup();
 
-      // FIRST EMBEZZLER CHAIN
-      if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
-        if (["Macrometeorite", "Powerful Glove"].includes(firstFightSource.name)) {
-          saberCrateIfDesired();
-        }
-        const startLectures = get("_pocketProfessorLectures");
-        useFamiliar($familiar`Pocket Professor`);
-        const requirement = Requirement.merge(firstFightSource.requirements);
-        const forceEquip = requirement.maximizeOptions.forceEquip ?? [];
-        forceEquip.push($item`Pocket Professor memory chip`);
-        requirement.maximizeOptions.forceEquip = forceEquip;
-        meatOutfit(true, requirement);
-        if (
-          get("_pocketProfessorLectures") <
-          2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
-        ) {
-          withMacro(firstChainMacro(), () =>
-            firstFightSource.run({
-              macro: firstChainMacro(),
-            })
+      // PROFESSOR COPIES
+      if (have($familiar`Pocket Professor`)) {
+        const profCopies = [
+          {
+            property: "_garbo_meatChain",
+            maximizeParameters: [], // implicitly maximize against meat
+            macro: firstChainMacro(),
+            goalMaximize: (requirements: Requirement) => meatOutfit(true, requirements),
+          },
+          {
+            property: "_garbo_weightChain",
+            maximizeParameters: ["Familiar Weight"],
+            macro: secondChainMacro(),
+            goalMaximize: (requirements: Requirement) =>
+              maximizeCached(requirements.maximizeParameters, requirements.maximizeOptions),
+          },
+        ];
+
+        for (const profCopy of profCopies) {
+          const { property, maximizeParameters, macro, goalMaximize } = profCopy;
+          const fightSource = getNextEmbezzlerFight();
+          if (!fightSource) return;
+          if (get(property, false)) continue;
+
+          if (fightSource.gregariousReplace) {
+            saberCrateIfDesired();
+          }
+
+          useFamiliar($familiar`Pocket Professor`);
+          goalMaximize(
+            Requirement.merge([
+              new Requirement(maximizeParameters, {
+                forceEquip: $items`Pocket Professor memory chip`,
+              }),
+              ...fightSource.requirements,
+            ])
           );
-          embezzlerLog.initialEmbezzlersFought +=
-            1 + get("_pocketProfessorLectures") - startLectures;
+
+          if (get("_pocketProfessorLectures") < pocketProfessorCopies()) {
+            const startLectures = get("_pocketProfessorLectures");
+            fightSource.run({
+              macro: macro,
+            });
+            embezzlerLog.initialEmbezzlersFought +=
+              1 + get("_pocketProfessorLectures") - startLectures;
+          }
+          set(property, true);
+          postCombatActions();
+          startWandererCounter();
         }
-        set("_garbo_meatChain", true);
-        postCombatActions();
       }
-
-      startWandererCounter();
-
-      // SECOND EMBEZZLER CHAIN
-      if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
-        const startLectures = get("_pocketProfessorLectures");
-        const secondFightSource = getNextEmbezzlerFight();
-        if (!secondFightSource) return;
-        if (["Macrometeorite", "Powerful Glove"].includes(secondFightSource.name)) {
-          saberCrateIfDesired();
-        }
-        useFamiliar($familiar`Pocket Professor`);
-        const requirements = Requirement.merge([
-          new Requirement(["Familiar Weight"], {
-            forceEquip: $items`Pocket Professor memory chip`,
-          }),
-          ...secondFightSource.requirements,
-        ]);
-        maximizeCached(requirements.maximizeParameters, requirements.maximizeOptions);
-        if (
-          get("_pocketProfessorLectures") <
-          2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
-        ) {
-          withMacro(secondChainMacro(), () =>
-            secondFightSource.run({
-              macro: secondChainMacro(),
-            })
-          );
-          embezzlerLog.initialEmbezzlersFought +=
-            1 + get("_pocketProfessorLectures") - startLectures;
-        }
-        set("_garbo_weightChain", true);
-        postCombatActions();
-      }
-
-      startWandererCounter();
 
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getNextEmbezzlerFight();
@@ -405,51 +410,27 @@ export function dailyFights(): void {
         if (have($skill`Musk of the Moose`) && !have($effect`Musk of the Moose`)) {
           useSkill($skill`Musk of the Moose`);
         }
-        if (["Macrometeorite", "Powerful Glove"].includes(nextFight.name)) {
+        if (nextFight.gregariousReplace) {
           saberCrateIfDesired();
         }
         withMacro(embezzlerMacro(), () => {
           if (nextFight) {
-            useFamiliar(meatFamiliar());
-            if (
-              (have($familiar`Reanimated Reanimator`) || have($familiar`Obtuse Angel`)) &&
-              get("_badlyRomanticArrows") === 0 &&
-              !nextFight.draggable
-            ) {
-              if (have($familiar`Obtuse Angel`)) useFamiliar($familiar`Obtuse Angel`);
-              else useFamiliar($familiar`Reanimated Reanimator`);
+            const romanticFamiliar = $familiars`Obtuse Angel, Reanimated Reanimator`.find(have);
+            if (romanticFamiliar && get("_badlyRomanticArrows") === 0 && nextFight.draggable) {
+              useFamiliar(romanticFamiliar);
+            } else {
+              meatFamiliar();
             }
 
-            if (
-              nextFight.draggable &&
-              !get("_envyfishEggUsed") &&
-              (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
-              (booleanModifier("Underwater Familiar") ||
-                familiarWaterBreathingEquipment.some(have)) &&
-              (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-              !have($item`envyfish egg`) &&
-              mallPrice($item`pulled green taffy`) < 10000 &&
-              retrieveItem($item`pulled green taffy`)
-            ) {
-              setLocation($location`The Briny Deeps`);
-              meatOutfit(true, Requirement.merge(nextFight.requirements), true);
-              if (get("questS01OldGuy") === "unstarted") {
-                visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-              }
-              if (!have($effect`Fishy`)) use($item`fishy pipe`);
-              nextFight.run({ location: $location`The Briny Deeps` });
-            } else if (nextFight.draggable) {
-              const type =
-                nextFight.name === "Backup" ? draggableFight.BACKUP : draggableFight.WANDERER;
-              const location = determineDraggableZoneAndEnsureAccess(type);
-              setLocation(location);
-              meatOutfit(true, Requirement.merge(nextFight.requirements));
-              nextFight.run({ location });
-            } else {
-              setLocation($location`Noob Cave`);
-              meatOutfit(true, Requirement.merge(nextFight.requirements));
-              nextFight.run({ location: $location`Noob Cave` });
-            }
+            const location = nextFight.draggable
+              ? checkUnderwater()
+                ? $location`The Briny Deeps`
+                : determineDraggableZoneAndEnsureAccess(nextFight.draggable)
+              : $location`Noob Cave`;
+
+            setLocation(location);
+            meatOutfit(true, Requirement.merge(nextFight.requirements));
+            nextFight.run({ location });
             postCombatActions();
           }
         });
@@ -457,24 +438,19 @@ export function dailyFights(): void {
         if (
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-          (nextFight.name === "Backup" ||
-            nextFight.name === "Powerful Glove" ||
-            nextFight.name === "Macrometeorite" ||
-            get("lastEncounter") === "Knob Goblin Embezzler")
+          (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
           embezzlerLog.initialEmbezzlersFought++;
         }
 
         nextFight = getNextEmbezzlerFight();
 
+        // try to deliver the thesis
         const romanticMonsterPossible =
           (getCounter("Romantic Monster Window end") === -1 &&
             getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
           getCounter("Romantic Monster Window begin") > 0;
-        if (
-          !(nextFight && ["Backup", "Digitize", "Enamorang"].includes(nextFight.name)) &&
-          romanticMonsterPossible
-        ) {
+        if (!(nextFight && nextFight.draggable) && romanticMonsterPossible) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
           if (
