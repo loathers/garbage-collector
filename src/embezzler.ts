@@ -434,9 +434,12 @@ export const embezzlerSources = [
       }
       return 0;
     },
-    () => {
-      if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
-      return use($item`Rain-Doh box full of monster`);
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => {
+        if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
+        return use($item`Rain-Doh box full of monster`);
+      });
     }
   ),
   new EmbezzlerFight(
@@ -451,7 +454,10 @@ export const embezzlerSources = [
       !get("_cameraUsed")
         ? 1
         : 0,
-    () => use($item`shaking 4-d camera`)
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => use($item`shaking 4-d camera`));
+    }
   ),
   new EmbezzlerFight(
     "Ice Sculpture",
@@ -465,7 +471,10 @@ export const embezzlerSources = [
       !get("_iceSculptureUsed")
         ? 1
         : 0,
-    () => use($item`ice sculpture`)
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => use($item`ice sculpture`));
+    }
   ),
   new EmbezzlerFight(
     "Green Taffy",
@@ -479,7 +488,10 @@ export const embezzlerSources = [
       !get("_envyfishEggUsed")
         ? 1
         : 0,
-    () => use($item`envyfish egg`)
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => use($item`envyfish egg`));
+    }
   ),
   new EmbezzlerFight(
     "Chateau Painting",
@@ -493,15 +505,19 @@ export const embezzlerSources = [
       ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`
         ? 1
         : 0,
-    () => ChateauMantegna.fightPainting()
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => ChateauMantegna.fightPainting());
+    }
   ),
   new EmbezzlerFight(
     "Fax",
     () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
     () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
-    () => {
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
       faxEmbezzler();
-      use($item`photocopied monster`);
+      withMacro(macro, () => use($item`photocopied monster`));
     }
   ),
   /* new EmbezzlerFight(
@@ -547,8 +563,8 @@ export const embezzlerSources = [
     () => 0,
     (options: EmbezzlerFightOptions) => {
       const macro = options.macro ?? embezzlerMacro();
-      acquire(1, $item`pocket wish`, WISH_VALUE);
       withMacro(macro, () => {
+        acquire(1, $item`pocket wish`, WISH_VALUE);
         visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
         visitUrl(
           "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
