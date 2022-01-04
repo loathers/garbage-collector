@@ -328,16 +328,19 @@ export function dailyFights(): void {
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for embezzler before doing setup
-      const fightSource = getNextEmbezzlerFight();
-      if (!fightSource) return;
+      const firstFightSource = getNextEmbezzlerFight();
+      if (!firstFightSource) return;
 
       embezzlerSetup();
 
       // FIRST EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)) {
+        if (["Macrometeorite", "Powerful Glove"].includes(firstFightSource.name)) {
+          saberCrateIfDesired();
+        }
         const startLectures = get("_pocketProfessorLectures");
         useFamiliar($familiar`Pocket Professor`);
-        const requirement = Requirement.merge(fightSource.requirements);
+        const requirement = Requirement.merge(firstFightSource.requirements);
         const forceEquip = requirement.maximizeOptions.forceEquip ?? [];
         forceEquip.push($item`Pocket Professor memory chip`);
         requirement.maximizeOptions.forceEquip = forceEquip;
@@ -346,11 +349,8 @@ export function dailyFights(): void {
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
-          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
-            saberCrateIfDesired();
-          }
           withMacro(firstChainMacro(), () =>
-            fightSource.run({
+            firstFightSource.run({
               macro: firstChainMacro(),
             })
           );
@@ -366,25 +366,25 @@ export function dailyFights(): void {
       // SECOND EMBEZZLER CHAIN
       if (have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)) {
         const startLectures = get("_pocketProfessorLectures");
-        const fightSource = getNextEmbezzlerFight();
-        if (!fightSource) return;
+        const secondFightSource = getNextEmbezzlerFight();
+        if (!secondFightSource) return;
+        if (["Macrometeorite", "Powerful Glove"].includes(secondFightSource.name)) {
+          saberCrateIfDesired();
+        }
         useFamiliar($familiar`Pocket Professor`);
         const requirements = Requirement.merge([
           new Requirement(["Familiar Weight"], {
             forceEquip: $items`Pocket Professor memory chip`,
           }),
-          ...fightSource.requirements,
+          ...secondFightSource.requirements,
         ]);
         maximizeCached(requirements.maximizeParameters, requirements.maximizeOptions);
         if (
           get("_pocketProfessorLectures") <
           2 + Math.ceil(Math.sqrt(familiarWeight(myFamiliar()) + weightAdjustment()))
         ) {
-          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
-            saberCrateIfDesired();
-          }
           withMacro(secondChainMacro(), () =>
-            fightSource.run({
+            secondFightSource.run({
               macro: secondChainMacro(),
             })
           );
