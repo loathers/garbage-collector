@@ -24153,7 +24153,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("beeee6e8054cf830d768ade11498fc7512aad642" === mainSha) {
+    if ("f45d338cd4e71ddf8da9a986006aed08ce54a30b" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -29947,7 +29947,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26085);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("beeee6e8054cf830d768ade11498fc7512aad642"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f45d338cd4e71ddf8da9a986006aed08ce54a30b"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -30054,7 +30054,10 @@ function main() {
       hpAutoRecoveryTarget: 0.0,
       mpAutoRecovery: 0.0,
       mpAutoRecoveryTarget: 0.0,
+      afterAdventureScript: "",
+      betweenBattleScript: "",
       choiceAdventureScript: "",
+      familiarScript: "",
       customCombatScript: "garbo",
       currentMood: "apathetic",
       autoTuxedo: true,
