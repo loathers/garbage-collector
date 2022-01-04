@@ -24153,7 +24153,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("967e99f0c77f3a34b35cdd0191386aa975b7937e" === mainSha) {
+    if ("beeee6e8054cf830d768ade11498fc7512aad642" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25483,12 +25483,40 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
   }
 
   return 0;
-}, () => {
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject103 || (embezzler_templateObject103 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))))) return (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(embezzler_templateObject104 || (embezzler_templateObject104 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))));
-  return (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject105 || (_templateObject105 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"]))));
-}), new EmbezzlerFight("4-d Camera", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject106 || (_templateObject106 = embezzler_taggedTemplateLiteral(["shaking 4-d camera"])))) && (0,property/* get */.U2)("cameraMonster") === (0,template_string/* $monster */.O4)(_templateObject107 || (_templateObject107 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_cameraUsed"), () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject108 || (_templateObject108 = embezzler_taggedTemplateLiteral(["shaking 4-d camera"])))) && (0,property/* get */.U2)("cameraMonster") === (0,template_string/* $monster */.O4)(_templateObject109 || (_templateObject109 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_cameraUsed") ? 1 : 0, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject110 || (_templateObject110 = embezzler_taggedTemplateLiteral(["shaking 4-d camera"]))))), new EmbezzlerFight("Ice Sculpture", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject111 || (_templateObject111 = embezzler_taggedTemplateLiteral(["ice sculpture"])))) && (0,property/* get */.U2)("iceSculptureMonster") === (0,template_string/* $monster */.O4)(_templateObject112 || (_templateObject112 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_iceSculptureUsed"), () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject113 || (_templateObject113 = embezzler_taggedTemplateLiteral(["ice sculpture"])))) && (0,property/* get */.U2)("iceSculptureMonster") === (0,template_string/* $monster */.O4)(_templateObject114 || (_templateObject114 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_iceSculptureUsed") ? 1 : 0, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject115 || (_templateObject115 = embezzler_taggedTemplateLiteral(["ice sculpture"]))))), new EmbezzlerFight("Green Taffy", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject116 || (_templateObject116 = embezzler_taggedTemplateLiteral(["envyfish egg"])))) && (0,property/* get */.U2)("envyfishMonster") === (0,template_string/* $monster */.O4)(_templateObject117 || (_templateObject117 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_envyfishEggUsed"), () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject118 || (_templateObject118 = embezzler_taggedTemplateLiteral(["envyfish egg"])))) && (0,property/* get */.U2)("envyfishMonster") === (0,template_string/* $monster */.O4)(_templateObject119 || (_templateObject119 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_envyfishEggUsed") ? 1 : 0, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject120 || (_templateObject120 = embezzler_taggedTemplateLiteral(["envyfish egg"]))))), new EmbezzlerFight("Chateau Painting", () => ChateauMantegna_have() && !paintingFought() && paintingMonster() === (0,template_string/* $monster */.O4)(_templateObject121 || (_templateObject121 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), () => ChateauMantegna_have() && !paintingFought() && paintingMonster() === (0,template_string/* $monster */.O4)(_templateObject122 || (_templateObject122 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) ? 1 : 0, () => fightPainting()), new EmbezzlerFight("Fax", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject123 || (_templateObject123 = embezzler_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,property/* get */.U2)("_photocopyUsed"), () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject124 || (_templateObject124 = embezzler_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,property/* get */.U2)("_photocopyUsed") ? 1 : 0, () => {
+}, options => {
+  var _options$macro9;
+
+  var macro = (_options$macro9 = options.macro) !== null && _options$macro9 !== void 0 ? _options$macro9 : embezzlerMacro();
+  (0,src_combat.withMacro)(macro, () => {
+    if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject103 || (embezzler_templateObject103 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))))) return (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(embezzler_templateObject104 || (embezzler_templateObject104 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))));
+    return (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject105 || (_templateObject105 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"]))));
+  });
+}), new EmbezzlerFight("4-d Camera", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject106 || (_templateObject106 = embezzler_taggedTemplateLiteral(["shaking 4-d camera"])))) && (0,property/* get */.U2)("cameraMonster") === (0,template_string/* $monster */.O4)(_templateObject107 || (_templateObject107 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_cameraUsed"), () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject108 || (_templateObject108 = embezzler_taggedTemplateLiteral(["shaking 4-d camera"])))) && (0,property/* get */.U2)("cameraMonster") === (0,template_string/* $monster */.O4)(_templateObject109 || (_templateObject109 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_cameraUsed") ? 1 : 0, options => {
+  var _options$macro10;
+
+  var macro = (_options$macro10 = options.macro) !== null && _options$macro10 !== void 0 ? _options$macro10 : embezzlerMacro();
+  (0,src_combat.withMacro)(macro, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject110 || (_templateObject110 = embezzler_taggedTemplateLiteral(["shaking 4-d camera"])))));
+}), new EmbezzlerFight("Ice Sculpture", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject111 || (_templateObject111 = embezzler_taggedTemplateLiteral(["ice sculpture"])))) && (0,property/* get */.U2)("iceSculptureMonster") === (0,template_string/* $monster */.O4)(_templateObject112 || (_templateObject112 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_iceSculptureUsed"), () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject113 || (_templateObject113 = embezzler_taggedTemplateLiteral(["ice sculpture"])))) && (0,property/* get */.U2)("iceSculptureMonster") === (0,template_string/* $monster */.O4)(_templateObject114 || (_templateObject114 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_iceSculptureUsed") ? 1 : 0, options => {
+  var _options$macro11;
+
+  var macro = (_options$macro11 = options.macro) !== null && _options$macro11 !== void 0 ? _options$macro11 : embezzlerMacro();
+  (0,src_combat.withMacro)(macro, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject115 || (_templateObject115 = embezzler_taggedTemplateLiteral(["ice sculpture"])))));
+}), new EmbezzlerFight("Green Taffy", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject116 || (_templateObject116 = embezzler_taggedTemplateLiteral(["envyfish egg"])))) && (0,property/* get */.U2)("envyfishMonster") === (0,template_string/* $monster */.O4)(_templateObject117 || (_templateObject117 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_envyfishEggUsed"), () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject118 || (_templateObject118 = embezzler_taggedTemplateLiteral(["envyfish egg"])))) && (0,property/* get */.U2)("envyfishMonster") === (0,template_string/* $monster */.O4)(_templateObject119 || (_templateObject119 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && !(0,property/* get */.U2)("_envyfishEggUsed") ? 1 : 0, options => {
+  var _options$macro12;
+
+  var macro = (_options$macro12 = options.macro) !== null && _options$macro12 !== void 0 ? _options$macro12 : embezzlerMacro();
+  (0,src_combat.withMacro)(macro, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject120 || (_templateObject120 = embezzler_taggedTemplateLiteral(["envyfish egg"])))));
+}), new EmbezzlerFight("Chateau Painting", () => ChateauMantegna_have() && !paintingFought() && paintingMonster() === (0,template_string/* $monster */.O4)(_templateObject121 || (_templateObject121 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), () => ChateauMantegna_have() && !paintingFought() && paintingMonster() === (0,template_string/* $monster */.O4)(_templateObject122 || (_templateObject122 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) ? 1 : 0, options => {
+  var _options$macro13;
+
+  var macro = (_options$macro13 = options.macro) !== null && _options$macro13 !== void 0 ? _options$macro13 : embezzlerMacro();
+  (0,src_combat.withMacro)(macro, () => fightPainting());
+}), new EmbezzlerFight("Fax", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject123 || (_templateObject123 = embezzler_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,property/* get */.U2)("_photocopyUsed"), () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject124 || (_templateObject124 = embezzler_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,property/* get */.U2)("_photocopyUsed") ? 1 : 0, options => {
+  var _options$macro14;
+
+  var macro = (_options$macro14 = options.macro) !== null && _options$macro14 !== void 0 ? _options$macro14 : embezzlerMacro();
   faxEmbezzler();
-  (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject125 || (_templateObject125 = embezzler_taggedTemplateLiteral(["photocopied monster"]))));
+  (0,src_combat.withMacro)(macro, () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject125 || (_templateObject125 = embezzler_taggedTemplateLiteral(["photocopied monster"])))));
 }),
 /* new EmbezzlerFight(
   "Pillkeeper Semirare",
@@ -25522,13 +25550,18 @@ new EmbezzlerFight("Pocket Wish", () => {
   globalOptions.askedAboutWish = true;
   globalOptions.wishAnswer = (0,external_kolmafia_.userConfirm)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat(averageEmbezzlerNet, ", so we expect to earn ").concat(profit, " meat, after the cost of a wish. Should we wish for an Embezzler?"));
   return globalOptions.wishAnswer;
-}, () => 0, () => {
-  acquire(1, (0,template_string/* $item */.xr)(_templateObject126 || (_templateObject126 = embezzler_taggedTemplateLiteral(["pocket wish"]))), WISH_VALUE);
-  (0,external_kolmafia_.visitUrl)("inv_use.php?pwd=".concat((0,external_kolmafia_.myHash)(), "&which=3&whichitem=9537"), false, true);
-  (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ", true, true);
-  (0,external_kolmafia_.visitUrl)("main.php", false);
-  (0,external_kolmafia_.runCombat)();
-  globalOptions.askedAboutWish = false;
+}, () => 0, options => {
+  var _options$macro15;
+
+  var macro = (_options$macro15 = options.macro) !== null && _options$macro15 !== void 0 ? _options$macro15 : embezzlerMacro();
+  (0,src_combat.withMacro)(macro, () => {
+    acquire(1, (0,template_string/* $item */.xr)(_templateObject126 || (_templateObject126 = embezzler_taggedTemplateLiteral(["pocket wish"]))), WISH_VALUE);
+    (0,external_kolmafia_.visitUrl)("inv_use.php?pwd=".concat((0,external_kolmafia_.myHash)(), "&which=3&whichitem=9537"), false, true);
+    (0,external_kolmafia_.visitUrl)("choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ", true, true);
+    (0,external_kolmafia_.visitUrl)("main.php", false);
+    (0,external_kolmafia_.runCombat)();
+    globalOptions.askedAboutWish = false;
+  });
 }), new EmbezzlerFight("Professor MeatChain", () => false, () => (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject127 || (_templateObject127 = embezzler_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,property/* get */.U2)("_garbo_meatChain", false) ? Math.max(10 - (0,property/* get */.U2)("_pocketProfessorLectures"), 0) : 0, () => {
   return;
 }), new EmbezzlerFight("Professor WeightChain", () => false, () => (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject128 || (_templateObject128 = embezzler_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,property/* get */.U2)("_garbo_weightChain", false) ? Math.min(15 - (0,property/* get */.U2)("_pocketProfessorLectures"), 5) : 0, () => {
@@ -29914,7 +29947,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26085);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("967e99f0c77f3a34b35cdd0191386aa975b7937e"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("beeee6e8054cf830d768ade11498fc7512aad642"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
