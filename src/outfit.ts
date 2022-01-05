@@ -23,7 +23,6 @@ import {
   $items,
   $skill,
   $slot,
-  $slots,
   get,
   getKramcoWandererChance,
   have,
@@ -31,8 +30,6 @@ import {
 } from "libram";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { baseMeat } from "./lib";
-
-export const defaultPreventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, smoke ball`;
 
 export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
@@ -65,7 +62,6 @@ export function freeFightOutfit(requirement?: Requirement): void {
   const finalRequirement = new Requirement(parameters, {
     forceEquip,
     preventEquip: [
-      ...defaultPreventEquip,
       ...preventEquip,
       bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
     ].filter((item) => !forceEquip.includes(item)),
@@ -83,7 +79,7 @@ export function freeFightOutfit(requirement?: Requirement): void {
           ])
         : []),
     ]),
-    preventSlot: [...preventSlot, ...$slots`crown-of-thrones, buddy-bjorn`],
+    preventSlot: preventSlot,
   });
   finalRequirement.maximize();
 
@@ -203,7 +199,6 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       {
         forceEquip,
         preventEquip: [
-          ...defaultPreventEquip,
           ...preventEquip,
           ...(embezzlerUp ? $items`cheap sunglasses` : []),
           bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`,
@@ -221,7 +216,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
               ])
             : []),
         ]),
-        preventSlot: [...preventSlot, $slots`crown-of-thrones, buddy-bjorn`],
+        preventSlot: preventSlot,
       }
     )
   );
