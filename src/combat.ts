@@ -249,7 +249,7 @@ export class Macro extends StrictMacro {
           Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
         )
         // eslint-disable-next-line libram/verify-constants
-        .externalIf(have($item`cosmic bowling ball`), Macro.trySkill($skill`Bowl Straight Up`))
+        .externalIf(have($item`cosmic bowling ball`), Macro.tryHaveSkill($skill`Bowl Straight Up`))
         .externalIf(
           have($skill`Transcendent Olfaction`) &&
             property.getString("olfactedMonster") !== "garbage tourist" &&
@@ -388,7 +388,7 @@ export class Macro extends StrictMacro {
       this.tryHaveSkill($skill`Sing Along`)
         .tryHaveSkill($skill`Curse of Weaksauce`)
         // eslint-disable-next-line libram/verify-constants
-        .externalIf(have($item`cosmic bowling ball`), Macro.trySkill($skill`Bowl Straight Up`))
+        .externalIf(have($item`cosmic bowling ball`), Macro.tryHaveSkill($skill`Bowl Straight Up`))
         .tryHaveSkill($skill`Become a Wolf`)
         .trySkill($skill`Pocket Crumbs`)
         .trySkill($skill`Extract`)
