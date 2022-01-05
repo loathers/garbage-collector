@@ -24153,7 +24153,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("f45d338cd4e71ddf8da9a986006aed08ce54a30b" === mainSha) {
+    if ("8f44e158820caef6132dbcc5bfbdd5a626e43ebf" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -28231,27 +28231,27 @@ function dailyFights() {
   if (embezzlerSources.some(source => source.potential())) {
     withStash((0,template_string/* $items */.vS)(fights_templateObject64 || (fights_templateObject64 = fights_taggedTemplateLiteral(["Spooky Putty sheet"]))), () => {
       // check if user wants to wish for embezzler before doing setup
-      var fightSource = getNextEmbezzlerFight();
-      if (!fightSource) return;
+      var firstFightSource = getNextEmbezzlerFight();
+      if (!firstFightSource) return;
       embezzlerSetup(); // FIRST EMBEZZLER CHAIN
 
       if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(fights_templateObject65 || (fights_templateObject65 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,property/* get */.U2)("_garbo_meatChain", false)) {
         var _requirement$maximize;
 
+        if (["Macrometeorite", "Powerful Glove"].includes(firstFightSource.name)) {
+          saberCrateIfDesired();
+        }
+
         var startLectures = (0,property/* get */.U2)("_pocketProfessorLectures");
         (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(fights_templateObject66 || (fights_templateObject66 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
-        var requirement = Requirement.merge(fightSource.requirements);
+        var requirement = Requirement.merge(firstFightSource.requirements);
         var forceEquip = (_requirement$maximize = requirement.maximizeOptions.forceEquip) !== null && _requirement$maximize !== void 0 ? _requirement$maximize : [];
         forceEquip.push((0,template_string/* $item */.xr)(fights_templateObject67 || (fights_templateObject67 = fights_taggedTemplateLiteral(["Pocket Professor memory chip"]))));
         requirement.maximizeOptions.forceEquip = forceEquip;
         meatOutfit(true, requirement);
 
         if ((0,property/* get */.U2)("_pocketProfessorLectures") < 2 + Math.ceil(Math.sqrt((0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)()))) {
-          if (["Macrometeorite", "Powerful Glove"].includes(fightSource.name)) {
-            saberCrateIfDesired();
-          }
-
-          (0,src_combat.withMacro)(firstChainMacro(), () => fightSource.run({
+          (0,src_combat.withMacro)(firstChainMacro(), () => firstFightSource.run({
             macro: firstChainMacro()
           }));
           embezzlerLog.initialEmbezzlersFought += 1 + (0,property/* get */.U2)("_pocketProfessorLectures") - startLectures;
@@ -28266,21 +28266,21 @@ function dailyFights() {
       if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(fights_templateObject68 || (fights_templateObject68 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && !(0,property/* get */.U2)("_garbo_weightChain", false)) {
         var _startLectures = (0,property/* get */.U2)("_pocketProfessorLectures");
 
-        var _fightSource = getNextEmbezzlerFight();
+        var secondFightSource = getNextEmbezzlerFight();
+        if (!secondFightSource) return;
 
-        if (!_fightSource) return;
+        if (["Macrometeorite", "Powerful Glove"].includes(secondFightSource.name)) {
+          saberCrateIfDesired();
+        }
+
         (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(fights_templateObject69 || (fights_templateObject69 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
         var requirements = Requirement.merge([new Requirement(["Familiar Weight"], {
           forceEquip: (0,template_string/* $items */.vS)(fights_templateObject70 || (fights_templateObject70 = fights_taggedTemplateLiteral(["Pocket Professor memory chip"])))
-        })].concat(fights_toConsumableArray(_fightSource.requirements)));
+        })].concat(fights_toConsumableArray(secondFightSource.requirements)));
         maximizeCached(requirements.maximizeParameters, requirements.maximizeOptions);
 
         if ((0,property/* get */.U2)("_pocketProfessorLectures") < 2 + Math.ceil(Math.sqrt((0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)()))) {
-          if (["Macrometeorite", "Powerful Glove"].includes(_fightSource.name)) {
-            saberCrateIfDesired();
-          }
-
-          (0,src_combat.withMacro)(secondChainMacro(), () => _fightSource.run({
+          (0,src_combat.withMacro)(secondChainMacro(), () => secondFightSource.run({
             macro: secondChainMacro()
           }));
           embezzlerLog.initialEmbezzlersFought += 1 + (0,property/* get */.U2)("_pocketProfessorLectures") - _startLectures;
@@ -29947,7 +29947,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26085);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f45d338cd4e71ddf8da9a986006aed08ce54a30b"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8f44e158820caef6132dbcc5bfbdd5a626e43ebf"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
