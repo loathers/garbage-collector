@@ -17,10 +17,7 @@ import {
 import { estimatedTurns } from "./embezzler";
 import { globalOptions, propertyManager } from "./lib";
 
-export enum draggableFight {
-  BACKUP,
-  WANDERER,
-}
+export type DraggableFight = "backup" | "wanderer";
 const WANDERER_PRICE_THRESHOLD = 10000;
 
 function untangleDigitizes(turnCount: number, chunks: number): number {
@@ -122,11 +119,17 @@ function unlock(loc: Location) {
 }
 
 const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
+<<<<<<< HEAD
 const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, Lair of the Ninja Snowmen`;
 function canWander(location: Location, type: draggableFight) {
   if (type === draggableFight.BACKUP) {
+=======
+const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak`;
+function canWander(location: Location, type: DraggableFight) {
+  if (type === "backup") {
+>>>>>>> Respond to comments
     return !backupSkiplist.includes(location) && location.combatPercent >= 100;
-  } else if (type === draggableFight.WANDERER) {
+  } else if (type === "wanderer") {
     return !wandererSkiplist.includes(location) && location.wanderers;
   }
   return false;
@@ -134,12 +137,12 @@ function canWander(location: Location, type: draggableFight) {
 
 function wandererTurnsAvailableToday(zone: Location) {
   return (
-    (canWander(zone, draggableFight.WANDERER)
+    (canWander(zone, "wanderer")
       ? digitizedMonstersRemaining() +
         (have($item`"I Voted!" sticker`) ? clamp(3 - get("_voteFreeFights"), 0, 3) : 0) +
         (have($item`cursed magnifying glass`) ? clamp(5 - get("_voidFreeFights"), 0, 5) : 0)
       : 0) +
-    (canWander(zone, draggableFight.BACKUP) && have($item`backup camera`)
+    (canWander(zone, "backup") && have($item`backup camera`)
       ? clamp(11 - get("_backUpUses"), 0, 11)
       : 0)
   );
@@ -289,9 +292,7 @@ const wandererTargets = [
   ),
 ];
 
-export function determineDraggableZoneAndEnsureAccess(
-  type: draggableFight = draggableFight.WANDERER
-): Location {
+export function determineDraggableZoneAndEnsureAccess(type: DraggableFight = "wanderer"): Location {
   const sortedTargets = wandererTargets
     .filter((target: WandererTarget) => target.available() && target.prepareWanderer())
     .map((target: WandererTarget) => target.computeCachedValue())
