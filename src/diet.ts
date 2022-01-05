@@ -568,6 +568,7 @@ function itemPriority<T>(menuItems: MenuItem<T>[]) {
   if (menuItem === undefined) {
     throw "Shouldn't have an empty menu item.";
   }
+  if (menuItem.item === $item`spaghetti breakfast`) return 200;
   if (
     $items`pocket wish, toasted brie`.includes(menuItem.item) ||
     spleenCleaners.get(menuItem.item) ||
