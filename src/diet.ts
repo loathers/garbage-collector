@@ -655,7 +655,7 @@ export function consumeDiet(diet: Diet<Note>): void {
           }
           consumeSafe(countToConsume, menuItem.item);
         } else if ([Mayo.flex, Mayo.zapine].includes(menuItem.item)) {
-          MayoClinic.setMayoMinder(menuItem.item);
+          MayoClinic.setMayoMinder(menuItem.item, countToConsume);
         } else if (menuItem.item === $item`pocket wish`) {
           acquire(1, $item`pocket wish`, 60000);
           cliExecute(`genie effect ${menuItem.effect}`);
