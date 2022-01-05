@@ -83,7 +83,7 @@ import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
-  averageEmbezzlerProfit,
+  expectedEmbezzlerProfit,
   burnLibrams,
   embezzlerLog,
   findRun,
@@ -210,7 +210,7 @@ function embezzlerSetup() {
   if (
     !get("_cameraUsed") &&
     !have($item`shaking 4-d camera`) &&
-    averageEmbezzlerProfit() > mallPrice($item`4-d camera`)
+    expectedEmbezzlerProfit() > mallPrice($item`4-d camera`)
   ) {
     property.withProperty("autoSatisfyWithCloset", true, () => retrieveItem($item`4-d camera`));
   }
@@ -218,7 +218,7 @@ function embezzlerSetup() {
   if (
     !get("_iceSculptureUsed") &&
     !have($item`ice sculpture`) &&
-    averageEmbezzlerProfit() > (mallPrice($item`snow berries`) + mallPrice($item`ice harvest`)) * 3
+    expectedEmbezzlerProfit() > (mallPrice($item`snow berries`) + mallPrice($item`ice harvest`)) * 3
   ) {
     property.withProperty("autoSatisfyWithCloset", true, () => {
       cliExecute("refresh inventory");
@@ -229,7 +229,7 @@ function embezzlerSetup() {
   if (
     !get("_enamorangs") &&
     !itemAmount($item`LOV Enamorang`) &&
-    averageEmbezzlerProfit() > 20000
+    expectedEmbezzlerProfit() > 20000
   ) {
     retrieveItem($item`LOV Enamorang`);
   }

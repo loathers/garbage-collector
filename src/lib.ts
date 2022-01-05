@@ -100,7 +100,7 @@ export function averageTouristNet(): number {
   return (baseMeat * meatDropModifier()) / 100;
 }
 
-export function averageEmbezzlerProfit(): number {
+export function expectedEmbezzlerProfit(): number {
   return averageEmbezzlerNet() - averageTouristNet();
 }
 

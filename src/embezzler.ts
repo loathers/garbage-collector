@@ -530,19 +530,6 @@ export const embezzlerSources = [
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
   ),
-  /*new EmbezzlerFight(
-    "11-leaf clover",
-    () =>
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      have($item`11-leaf clover`)
-    () => (canAdv($location`Cobb's Knob Treasury`, true) ? itemAmount($item`11-leaf clover`) : 0),
-    () => {
-      use($item`11-leaf clover`);
-      if (have($effect`Lucky!`)) {
-        adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
-      }
-    }
-  ),*/
   //These are very deliberately the last embezzler fights.
   new EmbezzlerFight(
     "11-leaf clover (untapped potential)",
