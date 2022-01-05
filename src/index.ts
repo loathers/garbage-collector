@@ -8,6 +8,7 @@ import {
   getCampground,
   getCounters,
   guildStoreAvailable,
+  holiday,
   inebrietyLimit,
   itemAmount,
   myAdventures,
@@ -282,8 +283,20 @@ export function main(argString = ""): void {
     } else if (arg.match(/version/i)) {
       checkGithubVersion();
       return;
+    } else if (arg.match(/noholidaycheer/i)) {
+      globalOptions.noHolidayCheer = true;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
+      return;
+    }
+  }
+
+  if (!globalOptions.noHolidayCheer && holiday() === "Halloween") {
+    if (
+      userConfirm(
+        "Today is Halloween! You may want to run a holiday specific script to generate more meat! Do you want to abort? "
+      )
+    ) {
       return;
     }
   }

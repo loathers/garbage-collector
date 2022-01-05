@@ -68,6 +68,7 @@ export const globalOptions: {
   wishAnswer: boolean;
   simulateDiet: boolean;
   noDiet: boolean;
+  noHolidayCheer: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -77,6 +78,7 @@ export const globalOptions: {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
+  noHolidayCheer: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
