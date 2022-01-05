@@ -1,4 +1,4 @@
-// import { canAdv } from "canadv.ash";
+import { canAdv } from "canadv.ash";
 import {
   abort,
   chatPrivate,
@@ -520,7 +520,7 @@ export const embezzlerSources = [
       withMacro(macro, () => use($item`photocopied monster`));
     }
   ),
-  /* new EmbezzlerFight(
+  new EmbezzlerFight(
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
@@ -537,7 +537,7 @@ export const embezzlerSources = [
       cliExecute("pillkeeper semirare");
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
-  ),*/
+  ),
   // These are very deliberately the last embezzler fights.
   new EmbezzlerFight(
     "Pocket Wish",
