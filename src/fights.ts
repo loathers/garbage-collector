@@ -1550,25 +1550,6 @@ const freeKillSources = [
     }
   ),
 
-  // Use the jokester's gun even if we don't have tot
-  new FreeFight(
-    () => !get("_firedJokestersGun") && have($item`The Jokester's gun`),
-    () => {
-      ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Fire the Jokester's Gun`), () =>
-        use($item`drum machine`)
-      );
-    },
-    {
-      familiar: bestFairy,
-      requirements: () => [
-        sandwormRequirement().merge(
-          new Requirement([], { forceEquip: $items`The Jokester's gun` })
-        ),
-      ],
-    }
-  ),
-
   // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
   new FreeFight(
     () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
