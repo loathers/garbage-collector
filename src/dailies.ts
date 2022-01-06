@@ -353,8 +353,8 @@ function volcanoDailies(): void {
   if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
-  print("Getting my free volcoino!", "blue");
   if (!get("_infernoDiscoVisited")) {
+    print("Getting my free volcoino!", "blue");
     $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.forEach(
       (discoEquip) => {
         retrieveItem(discoEquip);
