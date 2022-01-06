@@ -126,6 +126,14 @@ export function meatMood(urKels = false): Mood {
       setChoice(1399, 2);
       useSkill($skill`Seek out a Bird`, 6 - get("_birdsSoughtToday"));
     }
+
+    if (
+      have($skill`Incredible Self-Esteem`) &&
+      $effects`Always be Collecting, Work For Hours a Week`.some((effect) => have(effect)) &&
+      !get("_incredibleSelfEsteemCast")
+    ) {
+      useSkill($skill`Incredible Self-Esteem`);
+    }
   }
 
   const canRecord =
@@ -152,8 +160,9 @@ export function freeFightMood(): Mood {
   if (!get<boolean>("_garbo_defectiveTokenAttempted", false)) {
     set("_garbo_defectiveTokenAttempted", true);
     withStash($items`defective Game Grid token`, () => {
-      if (!get("_defectiveTokenUsed") && have($item`defective Game Grid token`))
+      if (!get("_defectiveTokenUsed") && have($item`defective Game Grid token`)) {
         use($item`defective Game Grid token`);
+      }
     });
   }
 

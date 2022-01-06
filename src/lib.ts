@@ -1,4 +1,4 @@
-//import { canAdv } from "canadv.ash";
+import { canAdv } from "canadv.ash";
 import {
   abort,
   cliExecute,
@@ -23,6 +23,7 @@ import {
   retrieveItem,
   runChoice,
   runCombat,
+  todayToString,
   toUrl,
   use,
   useFamiliar,
@@ -34,11 +35,11 @@ import {
   $familiar,
   $item,
   $items,
-  //$location,
+  $location,
   $skill,
   Bandersnatch,
   bestLibramToCast,
-  //ChateauMantegna,
+  ChateauMantegna,
   ensureEffect,
   get,
   getFoldGroup,
@@ -109,6 +110,20 @@ export function safeInterrupt(): void {
     set("garbo_interrupt", false);
     abort("User interrupt requested. Stopping Garbage Collector.");
   }
+}
+
+export function persistEmbezzlerLog(): number {
+  const today = todayToString();
+  if (property.getString("garboEmbezzlerDate") !== today) {
+    property.set("garboEmbezzlerDate", today);
+    property.set("garboEmbezzlerCount", 0);
+  }
+  const totalEmbezzlers =
+    property.getNumber("garboEmbezzlerCount", 0) +
+    embezzlerLog.initialEmbezzlersFought +
+    embezzlerLog.digitizedEmbezzlersFought;
+  property.set("garboEmbezzlerCount", totalEmbezzlers);
+  return totalEmbezzlers;
 }
 
 export function setChoice(adventure: number, value: number): void {
@@ -246,7 +261,8 @@ const freeRuns: FreeRun[] = [
     "Bander",
     () =>
       have($familiar`Frumious Bandersnatch`) &&
-      (have($effect`Ode to Booze`) || getSongCount() < getSongLimit()) &&
+      (have($effect`Ode to Booze`) ||
+        (getSongCount() < getSongLimit() && have($skill`The Ode to Booze`))) &&
       Bandersnatch.getRemainingRunaways() > 0,
     Macro.trySkill($skill`Asdon Martin: Spring-Loaded Front Bumper`).step("runaway"),
     new Requirement(["Familiar Weight"], {}),
@@ -414,15 +430,17 @@ export function kramcoGuaranteed(): boolean {
 }
 
 export function leprechaunMultiplier(familiar: Familiar): number {
-  if (familiar === $familiar`Mutant Cactus Bud`)
+  if (familiar === $familiar`Mutant Cactus Bud`) {
     return numericModifier(familiar, "Leprechaun Effectiveness", 1, $item`none`);
+  }
   const meatBonus = numericModifier(familiar, "Meat Drop", 1, $item`none`);
   return Math.pow(Math.sqrt(meatBonus / 2 + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
 
 export function fairyMultiplier(familiar: Familiar): number {
-  if (familiar === $familiar`Mutant Fire Ant`)
+  if (familiar === $familiar`Mutant Fire Ant`) {
     return numericModifier(familiar, "Fairy Effectiveness", 1, $item`none`);
+  }
   const itemBonus = numericModifier(familiar, "Item Drop", 1, $item`none`);
   return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
@@ -489,15 +507,14 @@ export function printHelpMenu(): void {
  * @returns The expected value of using a pillkeeper charge to fight an embezzler
  */
 export function pillkeeperOpportunityCost(): number {
-  //Can't fight an embezzler without treasury access
-  //If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
-  /*return canAdv($location`Cobb's Knob Treasury`, false)
+  // Can't fight an embezzler without treasury access
+  // If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
+  return canAdv($location`Cobb's Knob Treasury`, false)
     ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
       (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
       ? 15000
       : WISH_VALUE
-    : 0;*/
-  return 0;
+    : 0;
 }
 
 /**
@@ -531,4 +548,22 @@ export function safeRestore(): void {
   }
 
   burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
+}
+
+export function checkGithubVersion(): void {
+  if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
+    print("Skipping version check for custom build");
+  } else {
+    const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
+      visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
+    );
+    const mainBranch = gitBranches.find((branchInfo) => branchInfo.name === "main");
+    const mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
+    if (process.env.GITHUB_SHA === mainSha) {
+      print("Garbo is up to date!", "blue");
+    } else {
+      print("Garbo is out of date. Please run 'svn update!", "red");
+      print(`${process.env.GITHUB_REPOSITORY}/main is at ${mainSha}`);
+    }
+  }
 }

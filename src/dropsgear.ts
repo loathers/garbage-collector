@@ -261,8 +261,9 @@ function snowSuit(equipMode: BonusEquipMode) {
     !have($item`Snow Suit`) ||
     get("_carrotNoseDrops") >= 3 ||
     ["embezzler", "dmt"].some((mode) => mode === equipMode)
-  )
+  ) {
     return new Map<Item, number>([]);
+  }
 
   return new Map<Item, number>([[$item`Snow Suit`, getSaleValue($item`carrot nose`) / 10]]);
 }
@@ -276,8 +277,9 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have($item`Mayflower bouquet`) || ["embezzler", "dmt"].some((mode) => mode === equipMode))
+  if (!have($item`Mayflower bouquet`) || ["embezzler", "dmt"].some((mode) => mode === equipMode)) {
     return new Map<Item, number>([]);
+  }
 
   const sporadicMeatBonus = (40 * 0.125 * (equipMode === "barf" ? baseMeat : 0)) / 100;
   const averageFlowerValue =
@@ -332,8 +334,9 @@ export function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
   const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
   const goodRobortHats = $items`crumpled felt fedora`;
   if (myClass() === $class`Turtle Tamer`) goodRobortHats.push($item`warbear foil hat`);
-  if (numericModifier($item`shining star cap`, "Familiar Weight") === 10)
+  if (numericModifier($item`shining star cap`, "Familiar Weight") === 10) {
     goodRobortHats.push($item`shining star cap`);
+  }
   if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
     return $item`Crown of Thrones`;
   }

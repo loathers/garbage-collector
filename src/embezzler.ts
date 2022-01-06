@@ -288,7 +288,7 @@ export const embezzlerSources = [
       ).step(baseMacro);
       adventureMacro($location`Noob Cave`, macro);
     }
-    //do we want to equip orb on these guys?
+    // do we want to equip orb on these guys?
   ),
   new EmbezzlerFight(
     "Powerful Glove",
@@ -434,9 +434,12 @@ export const embezzlerSources = [
       }
       return 0;
     },
-    () => {
-      if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
-      return use($item`Rain-Doh box full of monster`);
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => {
+        if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
+        return use($item`Rain-Doh box full of monster`);
+      });
     }
   ),
   new EmbezzlerFight(
@@ -451,7 +454,10 @@ export const embezzlerSources = [
       !get("_cameraUsed")
         ? 1
         : 0,
-    () => use($item`shaking 4-d camera`)
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => use($item`shaking 4-d camera`));
+    }
   ),
   new EmbezzlerFight(
     "Ice Sculpture",
@@ -465,7 +471,10 @@ export const embezzlerSources = [
       !get("_iceSculptureUsed")
         ? 1
         : 0,
-    () => use($item`ice sculpture`)
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => use($item`ice sculpture`));
+    }
   ),
   new EmbezzlerFight(
     "Green Taffy",
@@ -479,7 +488,10 @@ export const embezzlerSources = [
       !get("_envyfishEggUsed")
         ? 1
         : 0,
-    () => use($item`envyfish egg`)
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => use($item`envyfish egg`));
+    }
   ),
   new EmbezzlerFight(
     "Chateau Painting",
@@ -493,27 +505,33 @@ export const embezzlerSources = [
       ChateauMantegna.paintingMonster() === $monster`Knob Goblin Embezzler`
         ? 1
         : 0,
-    () => ChateauMantegna.fightPainting()
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => ChateauMantegna.fightPainting());
+    }
   ),
   new EmbezzlerFight(
     "Fax",
     () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
     () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
-    () => {
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
       faxEmbezzler();
-      use($item`photocopied monster`);
+      withMacro(macro, () => use($item`photocopied monster`));
     }
   ),
-  /*new EmbezzlerFight(
+  new EmbezzlerFight(
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed"),
+      !get("_freePillKeeperUsed") &&
+      !have($effect`Lucky!`),
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed")
+      !get("_freePillKeeperUsed") &&
+      !have($effect`Lucky!`)
         ? 1
         : 0,
     () => {
@@ -521,7 +539,7 @@ export const embezzlerSources = [
       cliExecute("pillkeeper semirare");
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
-  ),*/
+  ),
   new EmbezzlerFight(
     "Lucky!",
     () => canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`),
@@ -530,7 +548,7 @@ export const embezzlerSources = [
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
   ),
-  //These are very deliberately the last embezzler fights.
+  // These are very deliberately the last embezzler fights.
   new EmbezzlerFight(
     "11-leaf clover (untapped potential)",
     () => {
@@ -587,17 +605,20 @@ export const embezzlerSources = [
       return globalOptions.wishAnswer;
     },
     () => 0,
-    () => {
-      acquire(1, $item`pocket wish`, WISH_VALUE);
-      visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
-      visitUrl(
-        "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
-        true,
-        true
-      );
-      visitUrl("main.php", false);
-      runCombat();
-      globalOptions.askedAboutWish = false;
+    (options: EmbezzlerFightOptions) => {
+      const macro = options.macro ?? embezzlerMacro();
+      withMacro(macro, () => {
+        acquire(1, $item`pocket wish`, WISH_VALUE);
+        visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
+        visitUrl(
+          "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
+          true,
+          true
+        );
+        visitUrl("main.php", false);
+        runCombat();
+        globalOptions.askedAboutWish = false;
+      });
     }
   ),
   new EmbezzlerFight(
@@ -676,10 +697,10 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
  */
 function proceedWithOrb(): boolean {
   const strat = crateStrategy();
-  //If we can't possibly use orb, return true
+  // If we can't possibly use orb, return true
   if (!have($item`miniature crystal ball`) || strat === "Saber") return true;
 
-  //If we're sniffing and an Embezzler is in the queue already, return true
+  // If we're sniffing and an Embezzler is in the queue already, return true
   if (
     strat === "Sniff" &&
     $location`Noob Cave`.combatQueue
@@ -690,7 +711,7 @@ function proceedWithOrb(): boolean {
     return true;
   }
 
-  //If we're using orb, we have a KGE prediction, and we can reset it, return false
+  // If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (
     CrystalBall.currentPredictions(false).get($location`Noob Cave`) ===
