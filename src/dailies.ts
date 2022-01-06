@@ -291,8 +291,8 @@ function configureMisc(): void {
     [$item`BittyCar MeatCar`, "meatcar"],
     [$item`BittyCar SoulCar`, "soulcar"],
   ] as [Item, string][]) {
-    if (have(car) && get("_bittycar") !== active) {
-      use(1, car);
+    if (have(car)) {
+      if (get("_bittycar") !== active) use(1, car);
       break;
     }
   }
