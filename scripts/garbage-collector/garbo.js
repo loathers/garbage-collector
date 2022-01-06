@@ -24150,7 +24150,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("633568f7a7a5f676ae710db6fc2da26aca348eca" === mainSha) {
+    if ("83b39d7867d4a00c667e863c08b34ae79d12602e" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -29484,9 +29484,9 @@ function configureVykea() {
 function volcanoDailies() {
   if (!((0,property/* get */.U2)("hotAirportAlways") || (0,property/* get */.U2)("_hotAirportToday"))) return;
   if (!(0,property/* get */.U2)("_volcanoItemRedeemed")) checkVolcanoQuest();
-  (0,external_kolmafia_.print)("Getting my free volcoino!", "blue");
 
   if (!(0,property/* get */.U2)("_infernoDiscoVisited")) {
+    (0,external_kolmafia_.print)("Getting my free volcoino!", "blue");
     (0,template_string/* $items */.vS)(dailies_templateObject66 || (dailies_templateObject66 = dailies_taggedTemplateLiteral(["smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants"]))).forEach(discoEquip => {
       (0,external_kolmafia_.retrieveItem)(discoEquip);
     });
@@ -29919,7 +29919,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26092);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("633568f7a7a5f676ae710db6fc2da26aca348eca"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("83b39d7867d4a00c667e863c08b34ae79d12602e"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
