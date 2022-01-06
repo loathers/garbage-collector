@@ -558,7 +558,7 @@ class FreeFight {
       withMacro(Macro.basicCombat(), this.run);
       postCombatActions();
       // Slot in our Professor Thesis if it's become available
-      if (thesisReady()) deliverThesis();
+      if (thesisReady() && !have($effect`Feeling Lost`)) deliverThesis();
     }
   }
 }
