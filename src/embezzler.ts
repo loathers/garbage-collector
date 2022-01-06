@@ -556,8 +556,9 @@ export const embezzlerSources = [
       if (potential < 1) return false;
       if (!canAdv($location`Cobb's Knob Treasury`, true)) return false;
       // Don't use clovers if wishes are available and cheaper
-      if (get("_genieFightsUsed") < 3 && mallPrice($item`11-leaf clover`) >= WISH_VALUE)
+      if (get("_genieFightsUsed") < 3 && mallPrice($item`11-leaf clover`) >= WISH_VALUE) {
         return false;
+      }
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
       const profit = (potential + 1) * averageEmbezzlerNet() - mallPrice($item`11-leaf clover`);
       if (profit < 0) return false;

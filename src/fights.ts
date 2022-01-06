@@ -84,9 +84,9 @@ import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
-  expectedEmbezzlerProfit,
   burnLibrams,
   embezzlerLog,
+  expectedEmbezzlerProfit,
   findRun,
   FreeRun,
   globalOptions,
