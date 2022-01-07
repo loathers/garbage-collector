@@ -48,7 +48,7 @@ function coldMedicineCabinet(): void {
 
 function horseradish(): void {
   if (getRemainingStomach() > 0 && !globalOptions.noDiet) {
-    consumeDiet(computeDiet().pantsgiving());
+    consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING");
   }
 }
 
