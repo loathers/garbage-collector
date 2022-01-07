@@ -335,11 +335,12 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`toasted brie`, { maximum: 1 }),
     new MenuItem($item`potion of the field gar`, { maximum: 1 }),
     ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<Note>(item)),
+    new MenuItem($item`sweet tooth`, { size: -1, organ: "food", maximum: 1 }),
   ];
 }
 
 function copiers(): MenuItem<Note>[] {
-  const embezzlerDifferential = 25000 - 7500;
+  const embezzlerDifferential = 25000 - MPA;
   const alreadyGregarious =
     get("beGregariousCharges") > 0 ||
     (get("beGregariousFightsLeft") > 0 &&
@@ -528,7 +529,10 @@ export function computeDiet(): {
   };
 }
 
-function printDiet(diet: Diet<Note>) {
+type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING";
+
+function printDiet(diet: Diet<Note>, name: DietName) {
+  print(`===== ${name} DIET =====`);
   if (diet.entries.length === 0) return;
   diet = diet.copy();
   diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
@@ -580,14 +584,13 @@ function itemPriority<T>(menuItems: MenuItem<T>[]) {
   }
 }
 
-export function consumeDiet(diet: Diet<Note>): void {
+export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   if (diet.entries.length === 0) return;
   diet = diet.copy();
   diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
 
   print();
-  print("===== PLANNED DIET =====");
-  printDiet(diet);
+  printDiet(diet, name);
   print();
 
   const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
@@ -601,8 +604,7 @@ export function consumeDiet(diet: Diet<Note>): void {
   while (sum(diet.entries, ({ quantity }) => quantity) > 0) {
     if (arrayEquals(lastOrgans, organs())) {
       print();
-      print("==== REMAINING DIET BEFORE ERROR ====");
-      printDiet(diet);
+      printDiet(diet, "REMAINING");
       print();
       throw "Failed to consume some diet item.";
     }
@@ -682,12 +684,11 @@ export function runDiet(): void {
     const dietBuilder = computeDiet();
 
     if (globalOptions.simulateDiet) {
-      if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
-        printDiet(dietBuilder.shotglass());
-      }
-
       print("===== SIMULATED DIET =====");
-      printDiet(dietBuilder.diet());
+      if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
+        printDiet(dietBuilder.shotglass(), "SHOTGLASS");
+      }
+      printDiet(dietBuilder.diet(), "FULL");
     } else {
       pillCheck();
 
@@ -697,7 +698,7 @@ export function runDiet(): void {
         use($item`astral six-pack`);
       }
       if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
-        consumeDiet(dietBuilder.shotglass());
+        consumeDiet(dietBuilder.shotglass(), "SHOTGLASS");
       }
 
       if (
@@ -708,7 +709,7 @@ export function runDiet(): void {
         cliExecute("barrelprayer buff");
       }
 
-      consumeDiet(dietBuilder.diet());
+      consumeDiet(dietBuilder.diet(), "FULL");
     }
   });
 }
