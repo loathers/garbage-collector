@@ -287,15 +287,17 @@ function configureMisc(): void {
     SourceTerminal.enquiry($effect`familiar.enq`);
   }
 
-  for (const [car, active] of [
-    [$item`BittyCar MeatCar`, "meatcar"],
-    [$item`BittyCar SoulCar`, "soulcar"],
-  ] as [Item, string][]) {
-    if (have(car)) {
-      if (get("_bittycar") !== active) use(1, car);
-      break;
+  withStash($items`BittyCar MeatCar, BittyCar SoulCar`, () => {
+    for (const [car, active] of [
+      [$item`BittyCar MeatCar`, "meatcar"],
+      [$item`BittyCar SoulCar`, "soulcar"],
+    ] as [Item, string][]) {
+      if (have(car)) {
+        if (get("_bittycar") !== active) use(1, car);
+        break;
+      }
     }
-  }
+  });
 
   if (
     getClanLounge()["Olympic-sized Clan crate"] !== undefined &&
