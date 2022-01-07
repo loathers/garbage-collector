@@ -10,7 +10,6 @@ import {
   inebrietyLimit,
   itemAmount,
   mallPrice,
-  meatDropModifier,
   myAdventures,
   myHash,
   myInebriety,
@@ -106,13 +105,30 @@ export class EmbezzlerFight {
 
   /**
    * This is the class that creates all the different ways to fight embezzlers
-   * @classdesc Something goes here
+   * @classdesc Embezzler Fight enc
    * @prop {string} name The name of the source of this fight, primarily used to identify special cases.
-   * @prop {() => boolean} available Returns whether or not we can do this fight right now.
-   * @prop {() => number} potential Returns the number of embezzlers we expect to be able to fight from this source.
-   * @prop {(options: EmbezzlerFightOptions) => void} run This runs the combat, optionally using the provided location and macro. Location is used only by draggable fights.
-   * @prop {EmbezzlerFightConfigOptions} options configuration options for this fight
-   *
+   * @prop {() => boolean} available Returns whether or not we can do this fight right now (this may change later in the day).
+   * @prop {() => number} potential Returns the number of embezzlers we expect to be able to fight from this source given the current state of hte character
+   *  This is used when computing turns for buffs, so it should be as accurate as possible to the number of KGE we will fight
+   * @prop {(options: EmbezzlerFightRunOptions) => void} execute This runs the combat, optionally using the provided location and macro. Location is used only by draggable fights.
+   *  This is the meat of each fight. How do you initialize the fight? Are there any special considerations?
+   * @prop {EmbezzlerFightConfigOptions} options configuration options for this fight. see EmbezzlerFightConfigOptions for full details of all available options
+   * @example
+   * // suppose that we wanted to add a fight that will use print screens repeatedly, as long as we have them in our inventory
+   * new EmbezzlerFight(
+   *  "Print Screen Monster",
+   *  () => have($item`screencapped monster`) && get('screencappedMonster') === $monster`Knob Goblin Embezzler`, // in order to start this fight, a KGE must already be screen capped
+   *  () => availableAmount($item`screencapped monster`) + availableAmount($item`print screen button`) // the total of potential of this fight is the number of already copied KGE + the number of potentially copiable KGE
+   *  () => (options: EmbezzlerFightRunOptions) => {
+   *    const macro = Macro
+   *      .externalIf(have($item`print screen button`), Macro.tryItem($item`print screen button`))
+   *      .step(options.macro); // you should always include the macro passed in via options, as it may have special considerations for this fight
+   *    withMacro(macro, () => useItem($item`screen capped monster`));
+   *  },
+   *  {
+   *    canInitializeWnadererCounts: false; // this copy cannot be used to start wanderer counters, since the combats are not adv.php
+   *  }
+   * )
    */
   constructor(
     name: string,
@@ -426,7 +442,7 @@ export const embezzlerSources = [
     }
   ),
   new EmbezzlerFight(
-    "Final Be Gregarious",
+    "Be Gregarious (Set Up Crystal Ball)",
     () =>
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") === 1,

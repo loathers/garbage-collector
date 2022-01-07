@@ -404,11 +404,15 @@ export function dailyFights(): void {
         nextFight.run();
         postCombatActions();
 
+        print(`Finished ${nextFight.name}`);
         if (
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
+          if (nextFight.wrongEncounterName) {
+            print(`fight ${nextFight.name} reports wrong encounter!`);
+          }
           embezzlerLog.initialEmbezzlersFought++;
         }
 
