@@ -24159,7 +24159,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("53c11badc71f28d84bbeeb3a2c31fd449b6eb77f" === mainSha) {
+    if ("1694a72be7c65d72c1d3fc6e4960ba68659a8525" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -26715,6 +26715,7 @@ function runDiet() {
       (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(diet_templateObject137 || (diet_templateObject137 = src_diet_taggedTemplateLiteral(["none"]))));
     }
 
+    if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) return;
     var dietBuilder = computeDiet();
 
     if (globalOptions.simulateDiet) {
@@ -29316,12 +29317,12 @@ function dailySetup() {
   refreshLatte();
   implement();
   comb();
-  if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) return;
   (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject || (dailies_templateObject = dailies_taggedTemplateLiteral(["Half a Purse"]))));
-  (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject2 || (dailies_templateObject2 = dailies_taggedTemplateLiteral(["seal tooth"]))));
-  (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject3 || (dailies_templateObject3 = dailies_taggedTemplateLiteral(["The Jokester's gun"]))));
-  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(dailies_templateObject4 || (dailies_templateObject4 = dailies_taggedTemplateLiteral(["hobo nickel"])))), (0,template_string/* $item */.xr)(dailies_templateObject5 || (dailies_templateObject5 = dailies_taggedTemplateLiteral(["hobo nickel"]))));
-  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(dailies_templateObject6 || (dailies_templateObject6 = dailies_taggedTemplateLiteral(["sand dollar"])))), (0,template_string/* $item */.xr)(dailies_templateObject7 || (dailies_templateObject7 = dailies_taggedTemplateLiteral(["sand dollar"]))));
+  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(dailies_templateObject2 || (dailies_templateObject2 = dailies_taggedTemplateLiteral(["hobo nickel"])))), (0,template_string/* $item */.xr)(dailies_templateObject3 || (dailies_templateObject3 = dailies_taggedTemplateLiteral(["hobo nickel"]))));
+  (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(dailies_templateObject4 || (dailies_templateObject4 = dailies_taggedTemplateLiteral(["sand dollar"])))), (0,template_string/* $item */.xr)(dailies_templateObject5 || (dailies_templateObject5 = dailies_taggedTemplateLiteral(["sand dollar"]))));
+  if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) return;
+  (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject6 || (dailies_templateObject6 = dailies_taggedTemplateLiteral(["seal tooth"]))));
+  (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject7 || (dailies_templateObject7 = dailies_taggedTemplateLiteral(["The Jokester's gun"]))));
   (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(dailies_templateObject8 || (dailies_templateObject8 = dailies_taggedTemplateLiteral(["4-d camera"])))), (0,template_string/* $item */.xr)(dailies_templateObject9 || (dailies_templateObject9 = dailies_taggedTemplateLiteral(["4-d camera"]))));
   (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(dailies_templateObject10 || (dailies_templateObject10 = dailies_taggedTemplateLiteral(["unfinished ice sculpture"])))), (0,template_string/* $item */.xr)(dailies_templateObject11 || (dailies_templateObject11 = dailies_taggedTemplateLiteral(["unfinished ice sculpture"]))));
 }
@@ -29959,7 +29960,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26092);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("53c11badc71f28d84bbeeb3a2c31fd449b6eb77f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1694a72be7c65d72c1d3fc6e4960ba68659a8525"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
