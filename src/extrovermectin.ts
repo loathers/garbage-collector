@@ -173,9 +173,11 @@ function initializeCrates(): void {
 }
 
 function initializeDireWarren(): void {
-  const banish = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`.sort(
-    (a, b) => mallPrice(a) - mallPrice(b)
-  )[0];
+  const longBanishes = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
+  const banishOptions = have($item`miniature crystal ball`)
+    ? longBanishes
+    : [...$items`Louder Than Bomb, tennis ball`, ...longBanishes];
+  const banish = banishOptions.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
   retrieveItem(1, banish);
   do {
     adventureMacro(
