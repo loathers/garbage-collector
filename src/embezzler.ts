@@ -357,7 +357,6 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Final Be Gregarious",
     () =>
-      retrieveItem(1, $item`human musk`) &&
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler` &&
       get("beGregariousFightsLeft") === 1,
     () =>
@@ -367,11 +366,11 @@ export const embezzlerSources = [
         ? 1
         : 0,
     (options: EmbezzlerFightOptions) => {
+      const run = ltbRun();
+      if (run.prepare) run.prepare();
       adventureMacro(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.item($item`human musk`)).step(
-          options.macro ?? embezzlerMacro()
-        )
+        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro ?? embezzlerMacro())
       );
     },
     [
