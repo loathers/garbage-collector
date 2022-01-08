@@ -101,12 +101,12 @@ export function dailySetup(): void {
   implement();
   comb();
 
-  if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`Half a Purse`);
-  retrieveItem($item`seal tooth`);
-  retrieveItem($item`The Jokester's gun`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
+  if (myInebriety() > inebrietyLimit()) return;
+  retrieveItem($item`seal tooth`);
+  retrieveItem($item`The Jokester's gun`);
   putCloset(itemAmount($item`4-d camera`), $item`4-d camera`);
   putCloset(itemAmount($item`unfinished ice sculpture`), $item`unfinished ice sculpture`);
 }
