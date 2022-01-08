@@ -1,4 +1,4 @@
-import { equip, retrieveItem, toMonster, useFamiliar, visitUrl } from "kolmafia";
+import { equip, mallPrice, retrieveItem, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
@@ -173,11 +173,14 @@ function initializeCrates(): void {
 }
 
 function initializeDireWarren(): void {
-  retrieveItem(1, $item`human musk`);
+  const banish = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`.sort(
+    (a, b) => mallPrice(a) - mallPrice(b)
+  )[0];
+  retrieveItem(1, banish);
   do {
     adventureMacro(
       $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, Macro.item($item`human musk`)).step(embezzlerMacro())
+      Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(embezzlerMacro())
     );
   } while ("fluffy bunny" !== get("lastEncounter"));
 }
