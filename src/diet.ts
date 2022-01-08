@@ -681,6 +681,8 @@ export function runDiet(): void {
       useFamiliar($familiar`none`);
     }
 
+    if (myInebriety() > inebrietyLimit()) return;
+
     const dietBuilder = computeDiet();
 
     if (globalOptions.simulateDiet) {
