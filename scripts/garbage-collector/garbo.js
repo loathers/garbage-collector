@@ -24160,7 +24160,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("b4b5988a49fb2bdd86f9100703af3b59bfdca99b" === mainSha) {
+    if ("964e255d0fe3167cd308bd6f19e941f22fa2143d" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25457,7 +25457,7 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
     try {
       var store = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)((0,template_string/* $location */.PG)(embezzler_templateObject72 || (embezzler_templateObject72 = embezzler_taggedTemplateLiteral(["The Shore, Inc. Travel Agency"])))));
 
-      if (!store.includes("Check Out the Gift Shop")) {
+      if (!store.includes("Check out the gift shop")) {
         (0,external_kolmafia_.print)("Unable to stare longingly at toast");
       }
 
@@ -29964,7 +29964,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26092);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("b4b5988a49fb2bdd86f9100703af3b59bfdca99b"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("964e255d0fe3167cd308bd6f19e941f22fa2143d"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
