@@ -343,7 +343,7 @@ export const embezzlerSources = [
       ) {
         try {
           const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
-          if (!store.includes("Check Out the Gift Shop")) {
+          if (!store.includes("Check out the gift shop")) {
             print("Unable to stare longingly at toast");
           }
           runChoice(4);
