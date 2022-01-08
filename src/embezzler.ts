@@ -8,7 +8,7 @@ import {
   haveEquipped,
   inebrietyLimit,
   itemAmount,
-  meatDropModifier,
+  mallPrice,
   myAdventures,
   myHash,
   myInebriety,
@@ -48,7 +48,7 @@ import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
-import { baseMeat, globalOptions, ltbRun, WISH_VALUE } from "./lib";
+import { averageEmbezzlerNet, globalOptions, ltbRun, WISH_VALUE } from "./lib";
 import { determineDraggableZoneAndEnsureAccess, draggableFight } from "./wanderer";
 
 type EmbezzlerFightOptions = {
@@ -525,11 +525,13 @@ export const embezzlerSources = [
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed"),
+      !get("_freePillKeeperUsed") &&
+      !have($effect`Lucky!`),
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed")
+      !get("_freePillKeeperUsed") &&
+      !have($effect`Lucky!`)
         ? 1
         : 0,
     () => {
@@ -538,25 +540,68 @@ export const embezzlerSources = [
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
   ),
+  new EmbezzlerFight(
+    "Lucky!",
+    () => canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`),
+    () => (canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`) ? 1 : 0),
+    () => {
+      adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
+    }
+  ),
   // These are very deliberately the last embezzler fights.
   new EmbezzlerFight(
-    "Pocket Wish",
+    "11-leaf clover (untapped potential)",
     () => {
       const potential = Math.floor(embezzlerCount());
       if (potential < 1) return false;
-      if (get("_genieFightsUsed") >= 3) return false;
+      if (!canAdv($location`Cobb's Knob Treasury`, true)) return false;
+      // Don't use clovers if wishes are available and cheaper
+      if (get("_genieFightsUsed") < 3 && mallPrice($item`11-leaf clover`) >= WISH_VALUE) {
+        return false;
+      }
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
-      const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
-      print(`You have the following embezzler-sources untapped right now:`, "blue");
-      const profit = (potential + 1) * averageEmbezzlerNet - WISH_VALUE;
+      const profit = (potential + 1) * averageEmbezzlerNet() - mallPrice($item`11-leaf clover`);
       if (profit < 0) return false;
+      print(`You have the following embezzler-sources untapped right now:`, "blue");
       embezzlerSources
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, "blue"));
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = userConfirm(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`
+      );
+      return globalOptions.wishAnswer;
+    },
+    () => 0,
+    () => {
+      property.withProperty("autoSatisfyWithCloset", true, () =>
+        retrieveItem($item`11-leaf clover`)
+      );
+      use($item`11-leaf clover`);
+      if (have($effect`Lucky!`)) {
+        adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
+      }
+      globalOptions.askedAboutWish = false;
+    }
+  ),
+  new EmbezzlerFight(
+    "Pocket Wish (untapped potential)",
+    () => {
+      const potential = Math.floor(embezzlerCount());
+      if (potential < 1) return false;
+      if (get("_genieFightsUsed") >= 3) return false;
+      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
+      const profit = (potential + 1) * averageEmbezzlerNet() - WISH_VALUE;
+      if (profit < 0) return false;
+      print(`You have the following embezzler-sources untapped right now:`, "blue");
+      embezzlerSources
+        .filter((source) => source.potential() > 0)
+        .map((source) => `${source.potential()} from ${source.name}`)
+        .forEach((text) => print(text, "blue"));
+      globalOptions.askedAboutWish = true;
+      globalOptions.wishAnswer = userConfirm(
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`
       );
       return globalOptions.wishAnswer;
     },

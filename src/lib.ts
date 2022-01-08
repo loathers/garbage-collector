@@ -7,6 +7,7 @@ import {
   haveSkill,
   inebrietyLimit,
   mallPrice,
+  meatDropModifier,
   mpCost,
   myHp,
   myInebriety,
@@ -91,6 +92,18 @@ export const baseMeat =
     (SongBoom.song() === "Total Eclipse of Your Meat" && myInebriety() <= inebrietyLimit()))
     ? 275
     : 250;
+
+export function averageEmbezzlerNet(): number {
+  return ((baseMeat + 750) * meatDropModifier()) / 100;
+}
+
+export function averageTouristNet(): number {
+  return (baseMeat * meatDropModifier()) / 100;
+}
+
+export function expectedEmbezzlerProfit(): number {
+  return averageEmbezzlerNet() - averageTouristNet();
+}
 
 export function safeInterrupt(): void {
   if (get<boolean>("garbo_interrupt", false)) {
