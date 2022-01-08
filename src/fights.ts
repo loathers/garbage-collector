@@ -16,7 +16,6 @@ import {
   itemAmount,
   mallPrice,
   maximize,
-  meatDropModifier,
   myAscensions,
   myClass,
   myFamiliar,
@@ -85,9 +84,9 @@ import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import {
-  baseMeat,
   burnLibrams,
   embezzlerLog,
+  expectedEmbezzlerProfit,
   findRun,
   FreeRun,
   globalOptions,
@@ -208,14 +207,11 @@ function embezzlerSetup() {
 
   bathroomFinance(embezzlerCount());
 
-  const averageEmbezzlerNet = ((baseMeat + 750) * meatDropModifier()) / 100;
-  const averageTouristNet = (baseMeat * meatDropModifier()) / 100;
-
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   if (
     !get("_cameraUsed") &&
     !have($item`shaking 4-d camera`) &&
-    averageEmbezzlerNet - averageTouristNet > mallPrice($item`4-d camera`)
+    expectedEmbezzlerProfit() > mallPrice($item`4-d camera`)
   ) {
     property.withProperty("autoSatisfyWithCloset", true, () => retrieveItem($item`4-d camera`));
   }
@@ -223,8 +219,7 @@ function embezzlerSetup() {
   if (
     !get("_iceSculptureUsed") &&
     !have($item`ice sculpture`) &&
-    averageEmbezzlerNet - averageTouristNet >
-      (mallPrice($item`snow berries`) + mallPrice($item`ice harvest`)) * 3
+    expectedEmbezzlerProfit() > (mallPrice($item`snow berries`) + mallPrice($item`ice harvest`)) * 3
   ) {
     property.withProperty("autoSatisfyWithCloset", true, () => {
       cliExecute("refresh inventory");
@@ -232,7 +227,11 @@ function embezzlerSetup() {
     });
   }
 
-  if (!get("_enamorangs") && !itemAmount($item`LOV Enamorang`) && averageEmbezzlerNet > 20000) {
+  if (
+    !get("_enamorangs") &&
+    !itemAmount($item`LOV Enamorang`) &&
+    expectedEmbezzlerProfit() > 20000
+  ) {
     retrieveItem($item`LOV Enamorang`);
   }
 
