@@ -22085,7 +22085,8 @@ var priceCaps = {
   "spice melange": 500000,
   "mojo filter": 10000,
   "Ol' Scratch's salad fork": 200000,
-  "Frosty's frosty mug": 200000
+  "Frosty's frosty mug": 200000,
+  "sweet tooth": 200000
 };
 function acquire(qty, item, maxPrice) {
   var throwOnFail = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
@@ -24159,7 +24160,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("1694a72be7c65d72c1d3fc6e4960ba68659a8525" === mainSha) {
+    if ("53dfa370a89efc539ad953b882d314579f9d1612" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -29960,7 +29961,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26092);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1694a72be7c65d72c1d3fc6e4960ba68659a8525"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("53dfa370a89efc539ad953b882d314579f9d1612"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
