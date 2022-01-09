@@ -308,6 +308,14 @@ function bonusAccessories(equipMode: BonusEquipMode): Map<Item, number> {
   ]);
 }
 
+function magnifyingGlass(mode: BonusEquipMode): Map<Item, number> {
+  if (!have($item`cursed magnifying glass`) || mode !== "barf") return new Map<Item, number>();
+
+  return new Map<Item, number>([
+    [$item`cursed magnifying glass`, get("garbo_valueOfFreeFight", 2000) / 13],
+  ]);
+}
+
 export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
@@ -318,6 +326,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
     ...bagOfManyConfections(),
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
+    ...magnifyingGlass(equipMode),
   ]);
 }
 
