@@ -24160,7 +24160,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("964e255d0fe3167cd308bd6f19e941f22fa2143d" === mainSha) {
+    if ("d81ba7698044a228e2cb24ef5dc4a469efa10005" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -24662,7 +24662,19 @@ function usingThumbRing() {
   }
 }
 ;// CONCATENATED MODULE: ./src/extrovermectin.ts
-var extrovermectin_templateObject, extrovermectin_templateObject2, extrovermectin_templateObject3, extrovermectin_templateObject4, extrovermectin_templateObject5, extrovermectin_templateObject6, extrovermectin_templateObject7, extrovermectin_templateObject8, extrovermectin_templateObject9, extrovermectin_templateObject10, extrovermectin_templateObject11, extrovermectin_templateObject12, extrovermectin_templateObject13, extrovermectin_templateObject14, extrovermectin_templateObject15, extrovermectin_templateObject16, extrovermectin_templateObject17, extrovermectin_templateObject18, extrovermectin_templateObject19, extrovermectin_templateObject20, extrovermectin_templateObject21, extrovermectin_templateObject22, extrovermectin_templateObject23, extrovermectin_templateObject24, extrovermectin_templateObject25, extrovermectin_templateObject26, extrovermectin_templateObject27, extrovermectin_templateObject28, extrovermectin_templateObject29, extrovermectin_templateObject30, extrovermectin_templateObject31, extrovermectin_templateObject32, extrovermectin_templateObject33, extrovermectin_templateObject34, extrovermectin_templateObject35, extrovermectin_templateObject36, extrovermectin_templateObject37, extrovermectin_templateObject38, extrovermectin_templateObject39, extrovermectin_templateObject40, extrovermectin_templateObject41, extrovermectin_templateObject42, extrovermectin_templateObject43;
+var extrovermectin_templateObject, extrovermectin_templateObject2, extrovermectin_templateObject3, extrovermectin_templateObject4, extrovermectin_templateObject5, extrovermectin_templateObject6, extrovermectin_templateObject7, extrovermectin_templateObject8, extrovermectin_templateObject9, extrovermectin_templateObject10, extrovermectin_templateObject11, extrovermectin_templateObject12, extrovermectin_templateObject13, extrovermectin_templateObject14, extrovermectin_templateObject15, extrovermectin_templateObject16, extrovermectin_templateObject17, extrovermectin_templateObject18, extrovermectin_templateObject19, extrovermectin_templateObject20, extrovermectin_templateObject21, extrovermectin_templateObject22, extrovermectin_templateObject23, extrovermectin_templateObject24, extrovermectin_templateObject25, extrovermectin_templateObject26, extrovermectin_templateObject27, extrovermectin_templateObject28, extrovermectin_templateObject29, extrovermectin_templateObject30, extrovermectin_templateObject31, extrovermectin_templateObject32, extrovermectin_templateObject33, extrovermectin_templateObject34, extrovermectin_templateObject35, extrovermectin_templateObject36, extrovermectin_templateObject37, extrovermectin_templateObject38, extrovermectin_templateObject39, extrovermectin_templateObject40, extrovermectin_templateObject41, extrovermectin_templateObject42, extrovermectin_templateObject43, extrovermectin_templateObject44, extrovermectin_templateObject45;
+
+function extrovermectin_toConsumableArray(arr) { return extrovermectin_arrayWithoutHoles(arr) || extrovermectin_iterableToArray(arr) || extrovermectin_unsupportedIterableToArray(arr) || extrovermectin_nonIterableSpread(); }
+
+function extrovermectin_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function extrovermectin_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return extrovermectin_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return extrovermectin_arrayLikeToArray(o, minLen); }
+
+function extrovermectin_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function extrovermectin_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return extrovermectin_arrayLikeToArray(arr); }
+
+function extrovermectin_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function extrovermectin_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -24774,11 +24786,17 @@ function initializeCrates() {
 }
 
 function initializeDireWarren() {
-  var banish = (0,template_string/* $items */.vS)(extrovermectin_templateObject41 || (extrovermectin_templateObject41 = extrovermectin_taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"]))).sort((a, b) => (0,external_kolmafia_.mallPrice)(a) - (0,external_kolmafia_.mallPrice)(b))[0];
+  var options = (0,template_string/* $items */.vS)(extrovermectin_templateObject41 || (extrovermectin_templateObject41 = extrovermectin_taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"])));
+
+  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(extrovermectin_templateObject42 || (extrovermectin_templateObject42 = extrovermectin_taggedTemplateLiteral(["miniature crystal ball"]))))) {
+    options.push.apply(options, extrovermectin_toConsumableArray((0,template_string/* $items */.vS)(extrovermectin_templateObject43 || (extrovermectin_templateObject43 = extrovermectin_taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
+  }
+
+  var banish = options.sort((a, b) => (0,external_kolmafia_.mallPrice)(a) - (0,external_kolmafia_.mallPrice)(b))[0];
   (0,external_kolmafia_.retrieveItem)(1, banish);
 
   do {
-    (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(extrovermectin_templateObject42 || (extrovermectin_templateObject42 = extrovermectin_taggedTemplateLiteral(["The Dire Warren"]))), src_combat.Macro.if_((0,template_string/* $monster */.O4)(extrovermectin_templateObject43 || (extrovermectin_templateObject43 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))), src_combat.Macro.item(banish)).step(embezzlerMacro()));
+    (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(extrovermectin_templateObject44 || (extrovermectin_templateObject44 = extrovermectin_taggedTemplateLiteral(["The Dire Warren"]))), src_combat.Macro.if_((0,template_string/* $monster */.O4)(extrovermectin_templateObject45 || (extrovermectin_templateObject45 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))), src_combat.Macro.item(banish)).step(embezzlerMacro()));
   } while ("fluffy bunny" !== (0,property/* get */.U2)("lastEncounter"));
 }
 
@@ -29964,7 +29982,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26092);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("964e255d0fe3167cd308bd6f19e941f22fa2143d"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("d81ba7698044a228e2cb24ef5dc4a469efa10005"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
