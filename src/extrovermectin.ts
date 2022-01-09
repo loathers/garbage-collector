@@ -14,9 +14,10 @@ import {
   have,
   property,
   Requirement,
+  tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { findRun, ltbRun, setChoice } from "./lib";
+import { ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 
@@ -79,13 +80,17 @@ export function hasMonsterReplacers(): boolean {
 export function saberCrateIfDesired(): void {
   if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
   if (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2) {
-    const run = findRun() ?? ltbRun();
+    const run = tryFindFreeRun() ?? ltbRun();
 
+    useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
+    run.prepare?.();
     new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` })
-      .merge(run.requirement ? run.requirement : new Requirement([], {}))
+      .merge(
+        run.constraints.equipmentRequirements
+          ? run.constraints.equipmentRequirements()
+          : new Requirement([], {})
+      )
       .maximize();
-    useFamiliar(freeFightFamiliar());
-    if (run.prepare) run.prepare();
     setChoice(1387, 2);
     adventureMacro(
       $location`Noob Cave`,
@@ -131,7 +136,7 @@ function initializeCrates(): void {
       (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate") &&
       get<number>("_olfactionUses") < 3
     ) {
-      const run = findRun() ?? ltbRun();
+      const run = tryFindFreeRun() ?? ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
 
       // Sniff the crate in as many ways as humanly possible
@@ -146,15 +151,19 @@ function initializeCrates(): void {
 
       // equip latte and saber for lattesniff and saberfriends, if we want to
       // Crank up ML to make sure the crate survives several rounds; we may have some passive damage
+      useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
+      run.prepare?.();
       new Requirement(["100 Monster Level"], {
         forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter((item) =>
           have(item)
         ),
       })
-        .merge(run.requirement ? run.requirement : new Requirement([], {}))
+        .merge(
+          run.constraints.equipmentRequirements
+            ? run.constraints.equipmentRequirements()
+            : new Requirement([], {})
+        )
         .maximize();
-      useFamiliar(freeFightFamiliar());
-      if (run.prepare) run.prepare();
       adventureMacro(
         $location`Noob Cave`,
         Macro.if_($monster`crate`, macro)
