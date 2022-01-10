@@ -670,6 +670,10 @@ const freeFightSources = [
 
       visitUrl("choice.php");
       if (handlingChoice()) throw "Did not get all the way through LOV.";
+      safeRestore(); // Force burn any excess mana before continuing
+    },
+    {
+      requirements: () => [new Requirement(["MP"], {})],
     }
   ),
 
@@ -1546,11 +1550,12 @@ function sandwormRequirement() {
 }
 
 const freeKillSources = [
-  new FreeKillFight(
-    () => true, // Fight as many as free runs are available available
-    (killSource: ActionSource) => {
+  // If ascending use up any remaining Shocking Lick charges
+  new FreeFight(
+    () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
+    () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).step(killSource.macro), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).skill($skill`Shocking Lick`), () =>
         use($item`drum machine`)
       );
     },
@@ -1560,11 +1565,12 @@ const freeKillSources = [
     }
   ),
 
-  new FreeFight(
-    () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
-    () => {
+  // Use remaining free kills on sandworms
+  new FreeKillFight(
+    () => true, // Fight as many as daily free runs are available
+    (killSource: ActionSource) => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).skill($skill`Shocking Lick`), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).step(killSource.macro), () =>
         use($item`drum machine`)
       );
     },
