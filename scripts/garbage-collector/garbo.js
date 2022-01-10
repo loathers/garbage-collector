@@ -24763,7 +24763,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("45abe7c9591e1a02fde454ff59a2010f6df5394e" === mainSha) {
+    if ("1f3649ee1bcbb784e5d750ec4240ea9a63c4b26c" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25763,7 +25763,7 @@ function unlock(loc) {
 }
 
 var backupSkiplist = (0,template_string/* $locations */.xw)(wanderer_templateObject13 || (wanderer_templateObject13 = wanderer_taggedTemplateLiteral(["The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux"])));
-var wandererSkiplist = (0,template_string/* $locations */.xw)(wanderer_templateObject14 || (wanderer_templateObject14 = wanderer_taggedTemplateLiteral(["The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak"])));
+var wandererSkiplist = (0,template_string/* $locations */.xw)(wanderer_templateObject14 || (wanderer_templateObject14 = wanderer_taggedTemplateLiteral(["The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, Lair of the Ninja Snowmen"])));
 
 function canWander(location, type) {
   if (type === draggableFight.BACKUP) {
@@ -30466,7 +30466,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26092);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("45abe7c9591e1a02fde454ff59a2010f6df5394e"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1f3649ee1bcbb784e5d750ec4240ea9a63c4b26c"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
