@@ -83,7 +83,7 @@ export function saberCrateIfDesired(): void {
     const run = tryFindFreeRun() ?? ltbRun();
 
     useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
-    run.prepare?.();
+    run.constraints.preparation?.();
     new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` })
       .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
       .maximize();
@@ -148,7 +148,7 @@ function initializeCrates(): void {
       // equip latte and saber for lattesniff and saberfriends, if we want to
       // Crank up ML to make sure the crate survives several rounds; we may have some passive damage
       useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
-      run.prepare?.();
+      run.constraints.preparation?.();
       new Requirement(["100 Monster Level"], {
         forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter((item) =>
           have(item)

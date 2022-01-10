@@ -200,7 +200,7 @@ function embezzlerSetup() {
       const run = tryFindFreeRun() ?? ltbRun();
       if (!run) break;
       useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
-      run.prepare?.();
+      run.constraints.preparation?.();
       freeFightOutfit(run.constraints.equipmentRequirements?.());
       adventureMacro($location`The Hidden Temple`, run.macro);
     }
@@ -293,7 +293,7 @@ function startWandererCounter() {
       } else {
         run = tryFindFreeRun() ?? ltbRun();
         useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
-        run.prepare?.();
+        run.constraints.preparation?.();
         freeFightOutfit(run.constraints.equipmentRequirements?.());
       }
       adventureMacro(
@@ -584,7 +584,7 @@ class FreeRunFight extends FreeFight {
       useFamiliar(
         runSource.constraints.familiar?.() ?? this.options.familiar?.() ?? freeFightFamiliar()
       );
-      runSource.prepare?.();
+      runSource.constraints.preparation?.();
       freeFightOutfit(
         Requirement.merge([
           ...(this.options.requirements ? this.options.requirements() : []),
