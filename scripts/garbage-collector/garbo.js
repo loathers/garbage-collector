@@ -24763,7 +24763,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("f8a362d9f0ada6e276242218b2d10f278d9b427f" === mainSha) {
+    if ("45abe7c9591e1a02fde454ff59a2010f6df5394e" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25626,11 +25626,11 @@ function getCheapestPlatinumCocktail() {
   if (freeCraft) {
     var _maxBy;
 
-    return ((_maxBy = (0,lodash.maxBy)(Array.from(ingredientToPlatinumCocktail), ingredientAndCocktail => Math.min.apply(Math, Guzzlr_toConsumableArray(ingredientAndCocktail.map(item => (0,external_kolmafia_.mallPrice)(item)))))) !== null && _maxBy !== void 0 ? _maxBy : defaultCocktail)[1];
+    return ((_maxBy = (0,lodash.maxBy)(Array.from(ingredientToPlatinumCocktail), ingredientAndCocktail => Math.max.apply(Math, Guzzlr_toConsumableArray(ingredientAndCocktail.map(item => -(0,external_kolmafia_.mallPrice)(item)))))) !== null && _maxBy !== void 0 ? _maxBy : defaultCocktail)[1];
   } else {
     var _maxBy2;
 
-    return ((_maxBy2 = (0,lodash.maxBy)(Array.from(ingredientToPlatinumCocktail), ingredientAndCocktail => (0,external_kolmafia_.mallPrice)(ingredientAndCocktail[1]))) !== null && _maxBy2 !== void 0 ? _maxBy2 : defaultCocktail)[1];
+    return ((_maxBy2 = (0,lodash.maxBy)(Array.from(ingredientToPlatinumCocktail), ingredientAndCocktail => -(0,external_kolmafia_.mallPrice)(ingredientAndCocktail[1]))) !== null && _maxBy2 !== void 0 ? _maxBy2 : defaultCocktail)[1];
   }
 }
 function turnsLeftOnQuest() {
@@ -30466,7 +30466,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26092);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f8a362d9f0ada6e276242218b2d10f278d9b427f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("45abe7c9591e1a02fde454ff59a2010f6df5394e"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
