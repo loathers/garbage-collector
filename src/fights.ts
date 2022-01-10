@@ -579,7 +579,7 @@ class FreeRunFight extends FreeFight {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
-      const runSource = tryFindFreeRun(this.options.familiar ? { noFamiliar: () => true } : {});
+      const runSource = tryFindFreeRun({ noFamiliar: () => this.options.familiar !== undefined });
       if (!runSource) break;
       useFamiliar(
         runSource.constraints.familiar?.() ?? this.options.familiar?.() ?? freeFightFamiliar()
