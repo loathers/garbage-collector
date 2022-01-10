@@ -1541,12 +1541,13 @@ const freeRunFightSources = [
 ];
 
 function sandwormRequirement() {
-  return new Requirement(
-    ["100 Item Drop"],
-    have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
-      ? { forceEquip: $items`broken champagne bottle` }
-      : {}
-  );
+  return new Requirement(["100 Item Drop"], {
+    bonusEquip: new Map<Item, number>(
+      have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
+        ? [[$item`broken champagne bottle`, 10000]]
+        : []
+    ),
+  });
 }
 
 const freeKillSources = [
