@@ -60,6 +60,7 @@ import {
   $phylum,
   $skill,
   $slot,
+  ActionSource,
   adventureMacro,
   adventureMacroAuto,
   AsdonMartin,
@@ -75,6 +76,7 @@ import {
   Requirement,
   set,
   SourceTerminal,
+  tryFindFreeRun,
   TunnelOfLove,
   uneffect,
   Witchess,
@@ -87,8 +89,6 @@ import {
   burnLibrams,
   embezzlerLog,
   expectedEmbezzlerProfit,
-  findRun,
-  FreeRun,
   globalOptions,
   kramcoGuaranteed,
   logMessage,
@@ -197,11 +197,12 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const runSource = findRun() || ltbRun();
-      if (!runSource) break;
-      if (runSource.prepare) runSource.prepare();
-      freeFightOutfit(runSource.requirement ? runSource.requirement : undefined);
-      adventureMacro($location`The Hidden Temple`, runSource.macro);
+      const run = tryFindFreeRun() ?? ltbRun();
+      if (!run) break;
+      useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
+      run.constraints.preparation?.();
+      freeFightOutfit(run.constraints.equipmentRequirements?.());
+      adventureMacro($location`The Hidden Temple`, run.macro);
     }
   }
 
@@ -284,16 +285,16 @@ function startWandererCounter() {
       getCounters("Romantic Monster window end", -1, -1).trim() === "")
   ) {
     do {
-      let run: FreeRun;
+      let run: ActionSource;
       if (get("beGregariousFightsLeft") > 0) {
         run = ltbRun();
         useFamiliar(meatFamiliar());
         meatOutfit(true);
       } else {
-        run = findRun() || ltbRun();
-        useFamiliar(freeFightFamiliar());
-        if (run.prepare) run.prepare();
-        freeFightOutfit(run.requirement);
+        run = tryFindFreeRun() ?? ltbRun();
+        useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
+        run.constraints.preparation?.();
+        freeFightOutfit(run.constraints.equipmentRequirements?.());
       }
       adventureMacro(
         $location`The Haunted Kitchen`,
@@ -563,11 +564,11 @@ class FreeFight {
 }
 
 class FreeRunFight extends FreeFight {
-  freeRun: (runSource: FreeRun) => void;
+  freeRun: (runSource: ActionSource) => void;
 
   constructor(
     available: () => number | boolean,
-    run: (runSource: FreeRun) => void,
+    run: (runSource: ActionSource) => void,
     options: FreeFightOptions = {}
   ) {
     super(available, () => null, options);
@@ -578,20 +579,18 @@ class FreeRunFight extends FreeFight {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
-      const runSource = findRun(this.options.familiar ? false : true);
+      const runSource = tryFindFreeRun({ noFamiliar: () => this.options.familiar !== undefined });
       if (!runSource) break;
-      if (!["Bander", "Boots"].includes(runSource.name)) {
-        useFamiliar(
-          this.options.familiar
-            ? this.options.familiar() ?? freeFightFamiliar()
-            : freeFightFamiliar()
-        );
-      }
-      if (runSource.prepare) runSource.prepare();
+      useFamiliar(
+        runSource.constraints.familiar?.() ?? this.options.familiar?.() ?? freeFightFamiliar()
+      );
+      runSource.constraints.preparation?.();
       freeFightOutfit(
         Requirement.merge([
           ...(this.options.requirements ? this.options.requirements() : []),
-          ...(runSource.requirement ? [runSource.requirement] : []),
+          ...(runSource.constraints.equipmentRequirements
+            ? [runSource.constraints.equipmentRequirements()]
+            : []),
         ])
       );
       safeRestore();
@@ -1218,7 +1217,7 @@ const freeRunFightSources = [
       have($item`latte lovers member's mug`) &&
       !get("latteUnlocks").includes("cajun") &&
       questStep("questL11MacGuffin") > -1,
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       propertyManager.setChoices({
         [923]: 1, // go to the blackberries in All Around the Map
         [924]: 1, // fight a blackberry bush, so that we can freerun
@@ -1234,7 +1233,7 @@ const freeRunFightSources = [
       have($item`latte lovers member's mug`) &&
       !get("latteUnlocks").includes("rawhide") &&
       questStep("questL02Larva") > -1,
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       propertyManager.setChoices({
         [502]: 2, // go towards the stream in Arboreal Respite, so we can skip adventure
         [505]: 2, // skip adventure
@@ -1251,7 +1250,7 @@ const freeRunFightSources = [
       !get("latteUnlocks").includes("carrot") &&
       get("latteUnlocks").includes("cajun") &&
       get("latteUnlocks").includes("rawhide"),
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       adventureMacro($location`The Dire Warren`, runSource.macro);
     },
     {
@@ -1266,7 +1265,7 @@ const freeRunFightSources = [
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
       getStenchLocation() !== $location`none`,
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       adventureMacro(
         getStenchLocation(),
         Macro.while_(
@@ -1288,7 +1287,7 @@ const freeRunFightSources = [
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
       getStenchLocation() !== $location`none`,
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       adventureMacro(
         getStenchLocation(),
         Macro.while_(
@@ -1324,7 +1323,7 @@ const freeRunFightSources = [
     () =>
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 9,
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
       });
@@ -1368,7 +1367,7 @@ const freeRunFightSources = [
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) >= 10 &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 &&
       availableAmount($item`sprinkles`) > 5,
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
       });
@@ -1417,7 +1416,7 @@ const freeRunFightSources = [
       get("_monstersMapped") < 3 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
       getBestFireExtinguisherZone() !== null,
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       // Haunted Library is full of free noncombats
       propertyManager.set({ lightsOutAutomation: 2 });
       propertyManager.setChoices({
@@ -1458,7 +1457,7 @@ const freeRunFightSources = [
     () =>
       get("_hipsterAdv") < 7 &&
       (have($familiar`Mini-Hipster`) || have($familiar`Artistic Goth Kid`)),
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       const targetLocation = determineDraggableZoneAndEnsureAccess(draggableFight.BACKUP);
       adventureMacro(
         targetLocation,
@@ -1492,7 +1491,7 @@ const freeRunFightSources = [
       have($item`mayfly bait necklace`) &&
       canAdv($location`Cobb's Knob Menagerie, Level 1`, false) &&
       get("_mayflySummons") < 30,
-    (runSource: FreeRun) => {
+    (runSource: ActionSource) => {
       adventureMacro(
         $location`Cobb's Knob Menagerie, Level 1`,
         Macro.if_($monster`QuickBASIC Elemental`, Macro.basicCombat())
