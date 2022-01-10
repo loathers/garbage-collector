@@ -122,7 +122,7 @@ function unlock(loc: Location) {
 }
 
 const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
-const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak`;
+const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, Lair of the Ninja Snowmen`;
 function canWander(location: Location, type: draggableFight) {
   if (type === draggableFight.BACKUP) {
     return !backupSkiplist.includes(location) && location.combatPercent >= 100;
