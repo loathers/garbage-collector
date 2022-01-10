@@ -24763,7 +24763,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("415f8d108354b01163904b963256e7fea4c82b70" === mainSha) {
+    if ("f8a362d9f0ada6e276242218b2d10f278d9b427f" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25404,11 +25404,10 @@ function initializeDireWarren() {
 }
 
 function intializeExtrovermectinZones() {
-  if ((0,property/* get */.U2)("beGregariousFightsLeft") === 0 && hasMonsterReplacers()) {
-    initializeCrates();
+  if ((0,property/* get */.U2)("beGregariousFightsLeft") === 0) {
+    if (hasMonsterReplacers()) initializeCrates();
+    initializeDireWarren();
   }
-
-  initializeDireWarren();
 }
 // EXTERNAL MODULE: ./node_modules/lodash/lodash.js
 var lodash = __webpack_require__(3974);
@@ -30467,7 +30466,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26092);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("415f8d108354b01163904b963256e7fea4c82b70"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f8a362d9f0ada6e276242218b2d10f278d9b427f"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
