@@ -85,11 +85,7 @@ export function saberCrateIfDesired(): void {
     useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
     run.prepare?.();
     new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` })
-      .merge(
-        run.constraints.equipmentRequirements
-          ? run.constraints.equipmentRequirements()
-          : new Requirement([], {})
-      )
+      .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
       .maximize();
     setChoice(1387, 2);
     adventureMacro(
@@ -158,11 +154,7 @@ function initializeCrates(): void {
           have(item)
         ),
       })
-        .merge(
-          run.constraints.equipmentRequirements
-            ? run.constraints.equipmentRequirements()
-            : new Requirement([], {})
-        )
+        .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
         .maximize();
       adventureMacro(
         $location`Noob Cave`,
