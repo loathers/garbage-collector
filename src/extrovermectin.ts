@@ -188,8 +188,8 @@ function initializeDireWarren(): void {
 }
 
 export function intializeExtrovermectinZones(): void {
-  if (get("beGregariousFightsLeft") === 0 && hasMonsterReplacers()) {
-    initializeCrates();
+  if (get("beGregariousFightsLeft") === 0) {
+    if (hasMonsterReplacers()) initializeCrates();
+    initializeDireWarren();
   }
-  initializeDireWarren();
 }
