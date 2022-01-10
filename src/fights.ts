@@ -63,7 +63,6 @@ import {
   ActionSource,
   adventureMacro,
   adventureMacroAuto,
-  AsdonMartin,
   ChateauMantegna,
   clamp,
   CrystalBall,
@@ -76,6 +75,7 @@ import {
   Requirement,
   set,
   SourceTerminal,
+  tryFindFreeKill,
   tryFindFreeRun,
   TunnelOfLove,
   uneffect,
@@ -600,6 +600,43 @@ class FreeRunFight extends FreeFight {
   }
 }
 
+class FreeKillFight extends FreeFight {
+  freeKill: (runSource: ActionSource) => void;
+
+  constructor(
+    available: () => number | boolean,
+    run: (killSource: ActionSource) => void,
+    options: FreeFightOptions = {}
+  ) {
+    super(available, () => null, options);
+    this.freeKill = run;
+  }
+
+  runAll() {
+    if (!this.available()) return;
+    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
+    while (this.available()) {
+      const killSource = tryFindFreeKill({ noFamiliar: () => this.options.familiar !== undefined });
+      if (!killSource) break;
+      useFamiliar(
+        killSource.constraints.familiar?.() ?? this.options.familiar?.() ?? freeFightFamiliar()
+      );
+      killSource.constraints.preparation?.();
+      freeFightOutfit(
+        Requirement.merge([
+          ...(this.options.requirements ? this.options.requirements() : []),
+          ...(killSource.constraints.equipmentRequirements
+            ? [killSource.constraints.equipmentRequirements()]
+            : []),
+        ])
+      );
+      safeRestore();
+      withMacro(Macro.step(killSource.macro), () => this.freeKill(killSource));
+      postCombatActions();
+    }
+  }
+}
+
 const pygmyMacro = Macro.if_(
   $monster`pygmy bowler`,
   Macro.trySkill($skill`Snokebomb`).item($item`Louder Than Bomb`)
@@ -991,11 +1028,15 @@ const freeFightSources = [
 
   new FreeFight(
     () =>
-      get("questL11Ron") === "finished"
-        ? clamp(5 - get("_glarkCableUses"), 0, itemAmount($item`glark cable`))
+      get("questL11Ron") === "finished" && canAdv($location`The Red Zeppelin`, false)
+        ? clamp(5 - get("_glarkCableUses"), 0, 5)
         : 0,
     () => {
+      retrieveItem($item`glark cable`);
       adventureMacro($location`The Red Zeppelin`, Macro.item($item`glark cable`));
+    },
+    {
+      cost: () => mallPrice($item`glark cable`),
     }
   ),
 
@@ -1168,44 +1209,29 @@ const freeFightSources = [
   ),
 
   // Get a li'l ninja costume for 150% item drop
-  new FreeFight(
+  new FreeKillFight(
     () =>
       !have($item`li'l ninja costume`) &&
       have($familiar`Trick-or-Treating Tot`) &&
-      !get("_firedJokestersGun") &&
-      have($item`The Jokester's gun`) &&
       questStep("questL08Trapper") >= 2,
-    () =>
-      adventureMacro(
-        $location`Lair of the Ninja Snowmen`,
-        Macro.skill($skill`Fire the Jokester's Gun`).abort()
-      ),
-    {
-      requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
-    }
+    (killSource: ActionSource) =>
+      adventureMacro($location`Lair of the Ninja Snowmen`, Macro.step(killSource.macro).abort())
   ),
 
   // Fallback for li'l ninja costume if Lair of the Ninja Snowmen is unavailable
-  new FreeFight(
+  new FreeKillFight(
     () =>
       !have($item`li'l ninja costume`) &&
       have($familiar`Trick-or-Treating Tot`) &&
-      !get("_firedJokestersGun") &&
-      have($item`The Jokester's gun`) &&
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3,
-    () => {
+    (killSource: ActionSource) => {
       try {
-        Macro.skill($skill`Fire the Jokester's Gun`)
-          .abort()
-          .setAutoAttack();
+        Macro.step(killSource.macro).abort().setAutoAttack();
         mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
       } finally {
         setAutoAttack(0);
       }
-    },
-    {
-      requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
     }
   ),
 ];
@@ -1520,73 +1546,12 @@ function sandwormRequirement() {
 }
 
 const freeKillSources = [
-  new FreeFight(
-    () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
-    () => {
+  new FreeKillFight(
+    () => true, // Fight as many as free runs are available available
+    (killSource: ActionSource) => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Gingerbread Mob Hit`), () =>
+      withMacro(Macro.trySkill($skill`Sing Along`).step(killSource.macro), () =>
         use($item`drum machine`)
-      );
-    },
-    {
-      familiar: bestFairy,
-      requirements: () => [sandwormRequirement()],
-    }
-  ),
-
-  new FreeFight(
-    () => (have($skill`Shattering Punch`) ? clamp(3 - get("_shatteringPunchUsed"), 0, 3) : 0),
-    () => {
-      ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Shattering Punch`), () =>
-        use($item`drum machine`)
-      );
-    },
-    {
-      familiar: bestFairy,
-      requirements: () => [sandwormRequirement()],
-    }
-  ),
-
-  // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
-  new FreeFight(
-    () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
-    () => {
-      ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Chest X-Ray`), () =>
-        use($item`drum machine`)
-      );
-    },
-    {
-      familiar: bestFairy,
-      requirements: () => [
-        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })),
-      ],
-    }
-  ),
-
-  new FreeFight(
-    () => (have($item`replica bat-oomerang`) ? clamp(3 - get("_usedReplicaBatoomerang"), 0, 3) : 0),
-    () => {
-      ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).item($item`replica bat-oomerang`), () =>
-        use($item`drum machine`)
-      );
-    },
-    {
-      familiar: bestFairy,
-      requirements: () => [sandwormRequirement()],
-    }
-  ),
-
-  new FreeFight(
-    () => !get("_missileLauncherUsed") && getCampground()["Asdon Martin keyfob"] !== undefined,
-    () => {
-      ensureBeachAccess();
-      AsdonMartin.fillTo(100);
-      withMacro(
-        Macro.trySkill($skill`Sing Along`).skill($skill`Asdon Martin: Missile Launcher`),
-        () => use($item`drum machine`)
       );
     },
     {
@@ -1627,17 +1592,6 @@ export function freeFights(): void {
 
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
-  }
-
-  if (
-    canAdv($location`The Red Zeppelin`, false) &&
-    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
-  ) {
-    buy(
-      clamp(5 - get("_glarkCableUses"), 0, 5),
-      $item`glark cable`,
-      get("garbo_valueOfFreeFight", 2000)
-    );
   }
 
   const stashRun = stashAmount($item`navel ring of navel gazing`)
