@@ -148,6 +148,16 @@ function barfTurn() {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+  } else if (
+    myInebriety() <= inebrietyLimit() &&
+    !embezzlerUp &&
+    have($item`cursed magnifying glass`) &&
+    get<number>("cursedMagnifyingGlassCount") === 13 &&
+    get<number>("_voidFreeFights") < 5
+  ) {
+    useFamiliar(freeFightFamiliar());
+    freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
+    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
     // c. set up familiar
     useFamiliar(meatFamiliar());
@@ -233,7 +243,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26092);
+  sinceKolmafiaRevision(26113);
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
