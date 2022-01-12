@@ -621,6 +621,23 @@ function getStenchLocation() {
   );
 }
 
+function bowlOfScorpionsAvailable() {
+  if (get("hiddenTavernUnlock") === myAscensions()) {
+    return true;
+  } else if (globalOptions.triedToUnlockHiddenTavern) {
+    return false;
+  } else {
+    globalOptions.triedToUnlockHiddenTavern = true;
+    retrieveItem($item`book of matches`);
+    if (have($item`book of matches`)) {
+      use($item`book of matches`);
+    }
+    return (
+      get("hiddenTavernUnlock") === myAscensions() || mallPrice($item`Bowl of Scorpions`) < 1000
+    );
+  }
+}
+
 const freeFightSources = [
   new FreeFight(
     () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
@@ -819,7 +836,9 @@ const freeFightSources = [
   // Initial 9 Pygmy fights
   new FreeFight(
     () =>
-      get("questL11Worship") !== "unstarted" ? clamp(9 - get("_drunkPygmyBanishes"), 0, 9) : 0,
+      get("questL11Worship") !== "unstarted" && bowlOfScorpionsAvailable()
+        ? clamp(9 - get("_drunkPygmyBanishes"), 0, 9)
+        : 0,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(clamp(9 - get("_drunkPygmyBanishes"), 0, 9), $item`Bowl of Scorpions`);

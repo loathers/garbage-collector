@@ -58,6 +58,7 @@ export const globalOptions: {
   saveTurns: number;
   noBarf: boolean;
   askedAboutWish: boolean;
+  triedToUnlockHiddenTavern: boolean;
   wishAnswer: boolean;
   simulateDiet: boolean;
   noDiet: boolean;
@@ -67,6 +68,7 @@ export const globalOptions: {
   saveTurns: 0,
   noBarf: false,
   askedAboutWish: false,
+  triedToUnlockHiddenTavern: false,
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
