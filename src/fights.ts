@@ -38,6 +38,7 @@ import {
   takeCloset,
   toInt,
   toItem,
+  toSlot,
   totalTurnsPlayed,
   toUrl,
   use,
@@ -495,6 +496,7 @@ type FreeFightOptions = {
   familiar?: () => Familiar | null;
   requirements?: () => Requirement[];
   noncombat?: () => boolean;
+  actionAllowed?: (killSource: ActionSource) => boolean;
 };
 
 let bestNonCheerleaderFairy: Familiar;
@@ -579,7 +581,10 @@ class FreeRunFight extends FreeFight {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
-      const runSource = tryFindFreeRun({ noFamiliar: () => this.options.familiar !== undefined });
+      const runSource = tryFindFreeRun({
+        noFamiliar: () => this.options.familiar !== undefined,
+        allowedAction: this.options.actionAllowed,
+      });
       if (!runSource) break;
       useFamiliar(
         runSource.constraints.familiar?.() ?? this.options.familiar?.() ?? freeFightFamiliar()
@@ -616,7 +621,10 @@ class FreeKillFight extends FreeFight {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
-      const killSource = tryFindFreeKill({ noFamiliar: () => this.options.familiar !== undefined });
+      const killSource = tryFindFreeKill({
+        noFamiliar: () => this.options.familiar !== undefined,
+        allowedAction: this.options.actionAllowed,
+      });
       if (!killSource) break;
       useFamiliar(
         killSource.constraints.familiar?.() ?? this.options.familiar?.() ?? freeFightFamiliar()
@@ -1211,33 +1219,6 @@ const freeFightSources = [
       ],
     }
   ),
-
-  // Get a li'l ninja costume for 150% item drop
-  new FreeKillFight(
-    () =>
-      !have($item`li'l ninja costume`) &&
-      have($familiar`Trick-or-Treating Tot`) &&
-      questStep("questL08Trapper") >= 2,
-    (killSource: ActionSource) =>
-      adventureMacro($location`Lair of the Ninja Snowmen`, Macro.step(killSource.macro).abort())
-  ),
-
-  // Fallback for li'l ninja costume if Lair of the Ninja Snowmen is unavailable
-  new FreeKillFight(
-    () =>
-      !have($item`li'l ninja costume`) &&
-      have($familiar`Trick-or-Treating Tot`) &&
-      have($skill`Comprehensive Cartography`) &&
-      get("_monstersMapped") < 3,
-    (killSource: ActionSource) => {
-      try {
-        Macro.step(killSource.macro).abort().setAutoAttack();
-        mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
-      } finally {
-        setAutoAttack(0);
-      }
-    }
-  ),
 ];
 
 const freeRunFightSources = [
@@ -1549,7 +1530,60 @@ function sandwormRequirement() {
   );
 }
 
+function actionSourceNeedsWeapon(killSource: ActionSource): boolean {
+  if (
+    killSource.constraints
+      .equipmentRequirements?.()
+      .maximizeOptions?.forceEquip?.find((item) => toSlot(item) === $slot`weapon`)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+// Get a li'l ninja costume for 150% item drop
+const ninjaCostumeSource = new FreeKillFight(
+  () =>
+    !have($item`li'l ninja costume`) &&
+    have($familiar`Trick-or-Treating Tot`) &&
+    questStep("questL08Trapper") >= 2,
+  (killSource: ActionSource) =>
+    adventureMacro($location`Lair of the Ninja Snowmen`, Macro.step(killSource.macro).abort())
+);
+
+// Fallback for li'l ninja costume if Lair of the Ninja Snowmen is unavailable
+const ninjaConstumeSourceAlt = new FreeKillFight(
+  () =>
+    !have($item`li'l ninja costume`) &&
+    have($familiar`Trick-or-Treating Tot`) &&
+    have($skill`Comprehensive Cartography`) &&
+    get("_monstersMapped") < 3,
+  (killSource: ActionSource) => {
+    try {
+      Macro.step(killSource.macro).abort().setAutoAttack();
+      mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
+    } finally {
+      setAutoAttack(0);
+    }
+  }
+);
+
 const freeKillSources = [
+  // Get a li'l ninja costume for 150% item drop
+
+  // Try using free kills that require weapons first
+  new FreeKillFight(ninjaCostumeSource.available, ninjaCostumeSource.run, {
+    actionAllowed: (killSource: ActionSource) => actionSourceNeedsWeapon(killSource),
+  }),
+
+  new FreeKillFight(ninjaConstumeSourceAlt.available, ninjaConstumeSourceAlt.run, {
+    actionAllowed: (killSource: ActionSource) => actionSourceNeedsWeapon(killSource),
+  }),
+
+  // Try any free kill sources
+  ninjaCostumeSource,
+  ninjaConstumeSourceAlt,
+
   // If ascending use up any remaining Shocking Lick charges
   new FreeFight(
     () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
@@ -1577,6 +1611,7 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
+      actionAllowed: (killSource: ActionSource) => !actionSourceNeedsWeapon(killSource),
     }
   ),
 ];
