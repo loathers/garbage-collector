@@ -29,6 +29,7 @@ import {
   Requirement,
 } from "libram";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
+import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./lib";
 
 export function freeFightOutfit(requirement?: Requirement): void {
@@ -160,12 +161,17 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
         have($item`unwrapped knock-off retro superhero cape`) &&
         forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
       ) {
-        if (!have($item`ice nine`)) {
+        const gun =
+          have($item`love`) && meatFamiliar() === $familiar`Robortender`
+            ? $item`love`
+            : $item`ice nine`;
+        if (gun === $item`ice nine` && !have($item`ice nine`)) {
           cliExecute("refresh inventory");
           retrieveItem($item`ice nine`);
         }
         forceEquip.push(
-          ...$items`unwrapped knock-off retro superhero cape, ice nine, mafia pointer finger ring`
+          gun,
+          ...$items`unwrapped knock-off retro superhero cape, mafia pointer finger ring`
         );
       } else if (have($item`Operation Patriot Shield`)) {
         forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
