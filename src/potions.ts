@@ -211,7 +211,7 @@ export class Potion {
     }[] = [];
     const limitFunction = limit
       ? (quantity: number) =>
-          Math.min(limit - values.reduce((_total, tier) => tier.quantity, 0), quantity)
+          Math.min(limit - values.reduce((total, tier) => total + tier.quantity, 0), quantity)
       : (quantity: number) => quantity;
 
     // compute the value of covering embezzlers
