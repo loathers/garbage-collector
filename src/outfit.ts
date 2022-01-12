@@ -12,6 +12,7 @@ import {
   myInebriety,
   numericModifier,
   retrieveItem,
+  setLocation,
   toSlot,
   totalTurnsPlayed,
   visitUrl,
@@ -21,6 +22,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $skill,
   $slot,
   get,
@@ -81,6 +83,7 @@ export function freeFightOutfit(requirement?: Requirement): void {
     ]),
     preventSlot: preventSlot,
   });
+  setLocation($location`Noob Cave`); // Prevent maximizing for specific zones
   finalRequirement.maximize();
 
   if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
