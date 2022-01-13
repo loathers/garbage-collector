@@ -543,6 +543,7 @@ class FreeFight {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
+      voidMonster();
       const noncombat = !!this.options?.noncombat?.();
       if (!noncombat) {
         useFamiliar(
@@ -1912,4 +1913,12 @@ const haveEnoughPills =
     200 && availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60;
 function wantPills(): boolean {
   return have($item`Fourth of May Cosplay Saber`) && crateStrategy() !== "Saber" && haveEnoughPills;
+}
+
+function voidMonster(): void {
+  if (get("cursedMagnifyingGlassCount") < 13 || !have($item`cursed magnifying glass`)) return;
+
+  useFamiliar(freeFightFamiliar());
+  freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
+  adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
 }
