@@ -308,7 +308,7 @@ function bonusAccessories(equipMode: BonusEquipMode): Map<Item, number> {
   ]);
 }
 
-function magnifyingGlass(mode: BonusEquipMode): Map<Item, number> {
+export function magnifyingGlass(mode: BonusEquipMode): Map<Item, number> {
   if (
     !have($item`cursed magnifying glass`) ||
     mode !== "barf" ||
