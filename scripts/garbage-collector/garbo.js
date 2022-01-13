@@ -24830,7 +24830,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("e0c3ffdbfdda1ed517315a6851193367820d09d8" === mainSha) {
+    if ("ec68ebfade4293d3cc1d3b020253f8e8d9a3fdbc" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -30580,8 +30580,8 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(26113);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e0c3ffdbfdda1ed517315a6851193367820d09d8"));
+  sinceKolmafiaRevision(26118);
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("ec68ebfade4293d3cc1d3b020253f8e8d9a3fdbc"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
