@@ -136,7 +136,8 @@ function wandererTurnsAvailableToday(zone: Location) {
   return (
     (canWander(zone, draggableFight.WANDERER)
       ? digitizedMonstersRemaining() +
-        (have($item`"I Voted!" sticker`) ? clamp(3 - get("_voteFreeFights"), 0, 3) : 0)
+        (have($item`"I Voted!" sticker`) ? clamp(3 - get("_voteFreeFights"), 0, 3) : 0) +
+        (have($item`cursed magnifying glass`) ? clamp(5 - get("_voidFreeFights"), 0, 5) : 0)
       : 0) +
     (canWander(zone, draggableFight.BACKUP) && have($item`backup camera`)
       ? clamp(11 - get("_backUpUses"), 0, 11)
