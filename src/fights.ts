@@ -853,7 +853,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("barf")]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
         }),
       ],
     }
@@ -872,7 +872,7 @@ const freeFightSources = [
         new Requirement([], {
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("barf")]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
         }),
       ],
     }
@@ -940,7 +940,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`Fourth of May Cosplay Saber`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("barf")]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
@@ -966,7 +966,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("barf")]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
@@ -991,7 +991,7 @@ const freeFightSources = [
     {
       requirements: () => [
         new Requirement([], {
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("barf")]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
@@ -1917,7 +1917,7 @@ function wantPills(): boolean {
 
 function voidMonster(): void {
   if (
-    get("cursedMagnifyingGlassCount") < 13 ||
+    get("cursedmagnifyingGlass()Count") < 13 ||
     !have($item`cursed magnifying glass`) ||
     get("_voidFreeFights") >= 5
   ) {
