@@ -124,6 +124,7 @@ import {
   intializeExtrovermectinZones,
   saberCrateIfDesired,
 } from "./extrovermectin";
+import { magnifyingGlass } from "./dropsgear";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -542,6 +543,7 @@ class FreeFight {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
+      voidMonster();
       const noncombat = !!this.options?.noncombat?.();
       if (!noncombat) {
         useFamiliar(
@@ -851,7 +853,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
         }),
       ],
     }
@@ -870,7 +872,7 @@ const freeFightSources = [
         new Requirement([], {
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
         }),
       ],
     }
@@ -938,7 +940,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`Fourth of May Cosplay Saber`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
@@ -964,7 +966,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
@@ -989,7 +991,7 @@ const freeFightSources = [
     {
       requirements: () => [
         new Requirement([], {
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
@@ -1911,4 +1913,19 @@ const haveEnoughPills =
     200 && availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60;
 function wantPills(): boolean {
   return have($item`Fourth of May Cosplay Saber`) && crateStrategy() !== "Saber" && haveEnoughPills;
+}
+
+function voidMonster(): void {
+  if (
+    get("cursedmagnifyingGlass()Count") < 13 ||
+    !have($item`cursed magnifying glass`) ||
+    get("_voidFreeFights") >= 5
+  ) {
+    return;
+  }
+
+  useFamiliar(freeFightFamiliar());
+  freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
+  adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+  postCombatActions();
 }
