@@ -1916,7 +1916,13 @@ function wantPills(): boolean {
 }
 
 function voidMonster(): void {
-  if (get("cursedMagnifyingGlassCount") < 13 || !have($item`cursed magnifying glass`)) return;
+  if (
+    get("cursedMagnifyingGlassCount") < 13 ||
+    !have($item`cursed magnifying glass`) ||
+    get("_voidFreeFights") >= 5
+  ) {
+    return;
+  }
 
   useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
