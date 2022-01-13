@@ -24830,7 +24830,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("171634d8f7ddd8cc5460a228665df7521077ad59" === mainSha) {
+    if ("efae246c0f9e2a2b8bc3106a8e82732bc6c468d2" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -27123,11 +27123,13 @@ function menu() {
 function copiers() {
   var embezzlerDifferential = 25000 - MPA;
   var alreadyGregarious = (0,property/* get */.U2)("beGregariousCharges") > 0 || (0,property/* get */.U2)("beGregariousFightsLeft") > 0 && (0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(diet_templateObject100 || (diet_templateObject100 = src_diet_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
-  var gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0);
-  return src_diet_toConsumableArray(gregCounts.map((embezzlers, index) => new MenuItem((0,template_string/* $item */.xr)(diet_templateObject101 || (diet_templateObject101 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
+  var gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0); // if you are drunk, you can't cast Be Gregarious, so don't include these in the diet
+
+  var extro = (0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() ? [] : gregCounts.map((embezzlers, index) => new MenuItem((0,template_string/* $item */.xr)(diet_templateObject101 || (diet_templateObject101 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
     additionalValue: embezzlers * embezzlerDifferential,
     maximum: index === gregCounts.length - 1 ? undefined : 1
-  })));
+  }));
+  return src_diet_toConsumableArray(extro);
 }
 
 function countCopies(diet) {
@@ -27215,15 +27217,17 @@ function balanceMenu(baseMenu, dietPlanner) {
 
 function computeDiet() {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
-  var fullDietPlanner = menu => Diet.plan(MPA, menu);
+  var orEmpty = diet => diet.expectedValue(MPA, "net") < 0 ? new Diet() : diet;
 
-  var shotglassDietPlanner = menu => Diet.plan(MPA, menu, {
+  var fullDietPlanner = menu => orEmpty(Diet.plan(MPA, menu));
+
+  var shotglassDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
     booze: 1
-  });
+  }));
 
-  var pantsgivingDietPlanner = menu => Diet.plan(MPA, menu, {
+  var pantsgivingDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
     food: 1
-  }); // const shotglassFilter = (menuItem: MenuItem)
+  })); // const shotglassFilter = (menuItem: MenuItem)
 
 
   return {
@@ -27427,7 +27431,6 @@ function runDiet() {
       (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(diet_templateObject137 || (diet_templateObject137 = src_diet_taggedTemplateLiteral(["none"]))));
     }
 
-    if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) return;
     var dietBuilder = computeDiet();
 
     if (globalOptions.simulateDiet) {
@@ -30595,7 +30598,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("171634d8f7ddd8cc5460a228665df7521077ad59"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("efae246c0f9e2a2b8bc3106a8e82732bc6c468d2"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
