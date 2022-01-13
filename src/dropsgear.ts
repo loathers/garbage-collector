@@ -361,7 +361,7 @@ export function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
 function shavingBonus(): Map<Item, number> {
   if (!DaylightShavings.have() || DaylightShavings.hasBuff()) return new Map();
 
-  const timeToMeatBuff = DaylightShavings.buffsUntil($effect`Friendly Chops`) ?? Infinity;
+  const timeToMeatBuff = 11 * (DaylightShavings.buffsUntil($effect`Friendly Chops`) ?? Infinity);
   if (globalOptions.ascending && timeToMeatBuff > estimatedTurns()) {
     return new Map();
   }
