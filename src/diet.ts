@@ -348,15 +348,18 @@ function copiers(): MenuItem<Note>[] {
       get("beGregariousMonster") === $monster`Knob Goblin Embezzler`);
 
   const gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0);
-  return [
-    ...gregCounts.map(
-      (embezzlers, index) =>
-        new MenuItem<Note>($item`Extrovermectin™`, {
-          additionalValue: embezzlers * embezzlerDifferential,
-          maximum: index === gregCounts.length - 1 ? undefined : 1,
-        })
-    ),
-  ];
+  // if you are drunk, you can't cast Be Gregarious, so don't include these in the diet
+  const extro =
+    myInebriety() > inebrietyLimit()
+      ? []
+      : gregCounts.map(
+          (embezzlers, index) =>
+            new MenuItem<Note>($item`Extrovermectin™`, {
+              additionalValue: embezzlers * embezzlerDifferential,
+              maximum: index === gregCounts.length - 1 ? undefined : 1,
+            })
+        );
+  return [...extro];
 }
 
 function countCopies(diet: Diet<Note>): number {
@@ -506,9 +509,13 @@ export function computeDiet(): {
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
-  const fullDietPlanner = (menu: MenuItem<Note>[]) => Diet.plan(MPA, menu);
-  const shotglassDietPlanner = (menu: MenuItem<Note>[]) => Diet.plan(MPA, menu, { booze: 1 });
-  const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) => Diet.plan(MPA, menu, { food: 1 });
+  const orEmpty = (diet: Diet<Note>) =>
+    diet.expectedValue(MPA, "net") < 0 ? new Diet<Note>() : diet;
+  const fullDietPlanner = (menu: MenuItem<Note>[]) => orEmpty(Diet.plan(MPA, menu));
+  const shotglassDietPlanner = (menu: MenuItem<Note>[]) =>
+    orEmpty(Diet.plan(MPA, menu, { booze: 1 }));
+  const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) =>
+    orEmpty(Diet.plan(MPA, menu, { food: 1 }));
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
@@ -681,8 +688,6 @@ export function runDiet(): void {
     if (myFamiliar() === $familiar`Stooper`) {
       useFamiliar($familiar`none`);
     }
-
-    if (myInebriety() > inebrietyLimit()) return;
 
     const dietBuilder = computeDiet();
 
