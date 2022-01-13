@@ -13,7 +13,6 @@ import {
 import {
   $class,
   $effect,
-  $effects,
   $familiar,
   $item,
   $items,
@@ -21,6 +20,7 @@ import {
   $skill,
   $slot,
   clamp,
+  DaylightShavings,
   get,
   getFoldGroup,
   getModifier,
@@ -359,11 +359,19 @@ export function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
 }
 
 function shavingBonus(): Map<Item, number> {
-  if (!have($item`Daylight Shavings Helmet`)) return new Map();
+  if (!DaylightShavings.have() || DaylightShavings.buffs.some((buff) => have(buff, 2))) {
+    return new Map();
+  }
+
+  const timeToMeatBuff = 11 * (DaylightShavings.buffsUntil($effect`Friendly Chops`) ?? Infinity);
+  if (globalOptions.ascending && timeToMeatBuff > estimatedTurns()) {
+    return new Map();
+  }
+
   if (
-    $effects`Barbell Moustache, Cowboy Stache, Friendly Chops, Grizzly Beard, Gull-Wing Moustache, Musician's Musician's Moustache, Pointy Wizard Beard, Space Warlord's Beard, Spectacle Moustache, Surrealist's Moustache, Toiletbrush Moustache`.some(
-      (effect) => have(effect)
-    )
+    !globalOptions.ascending &&
+    DaylightShavings.nextBuff() === $effect`Friendly Chops` &&
+    estimatedTurns() < 11 * 11
   ) {
     return new Map();
   }
