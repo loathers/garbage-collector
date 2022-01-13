@@ -124,6 +124,7 @@ import {
   intializeExtrovermectinZones,
   saberCrateIfDesired,
 } from "./extrovermectin";
+import { magnifyingGlass } from "./dropsgear";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -851,7 +852,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("free")]),
         }),
       ],
     }
@@ -870,7 +871,7 @@ const freeFightSources = [
         new Requirement([], {
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("free")]),
         }),
       ],
     }
@@ -938,7 +939,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`Fourth of May Cosplay Saber`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("free")]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
@@ -964,7 +965,7 @@ const freeFightSources = [
       requirements: () => [
         new Requirement([], {
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("free")]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
@@ -989,7 +990,7 @@ const freeFightSources = [
     {
       requirements: () => [
         new Requirement([], {
-          bonusEquip: new Map([[$item`garbage sticker`, 100]]),
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass("free")]),
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
