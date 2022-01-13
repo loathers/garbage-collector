@@ -152,8 +152,8 @@ function barfTurn() {
     myInebriety() <= inebrietyLimit() &&
     !embezzlerUp &&
     have($item`cursed magnifying glass`) &&
-    get<number>("cursedMagnifyingGlassCount") === 13 &&
-    get<number>("_voidFreeFights") < 5
+    get("cursedMagnifyingGlassCount") === 13 &&
+    get("_voidFreeFights") < 5
   ) {
     useFamiliar(freeFightFamiliar());
     freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));

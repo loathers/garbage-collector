@@ -252,7 +252,7 @@ export class Macro extends StrictMacro {
       .externalIf(
         have($skill`Transcendent Olfaction`) &&
           property.getString("olfactedMonster") !== "garbage tourist" &&
-          get<number>("_olfactionUses") < 3,
+          get("_olfactionUses") < 3,
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Transcendent Olfaction`))
       )
       .externalIf(

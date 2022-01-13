@@ -308,12 +308,8 @@ function bonusAccessories(equipMode: BonusEquipMode): Map<Item, number> {
   ]);
 }
 
-function magnifyingGlass(mode: BonusEquipMode): Map<Item, number> {
-  if (
-    !have($item`cursed magnifying glass`) ||
-    mode !== "barf" ||
-    get<number>("_voidFreeFights") >= 5
-  ) {
+export function magnifyingGlass(): Map<Item, number> {
+  if (!have($item`cursed magnifying glass`) || get("_voidFreeFights") >= 5) {
     return new Map<Item, number>();
   }
 
@@ -332,7 +328,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
     ...bagOfManyConfections(),
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
-    ...magnifyingGlass(equipMode),
+    ...(equipMode === "barf" ? magnifyingGlass() : []),
   ]);
 }
 
