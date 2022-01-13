@@ -1917,7 +1917,7 @@ function wantPills(): boolean {
 
 function voidMonster(): void {
   if (
-    get("cursedmagnifyingGlass()Count") < 13 ||
+    get("cursedmagnifyingGlassCount") < 13 ||
     !have($item`cursed magnifying glass`) ||
     get("_voidFreeFights") >= 5
   ) {
