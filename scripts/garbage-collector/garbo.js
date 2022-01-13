@@ -19802,7 +19802,7 @@ function main() {
 
 /***/ }),
 
-/***/ 4760:
+/***/ 3264:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -22904,11 +22904,6 @@ function currentPredictions() {
   }));
 }
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2015/ChateauMantegna.js
-var ChateauMantegna_templateObject, ChateauMantegna_templateObject2, ChateauMantegna_templateObject3, ChateauMantegna_templateObject4, ChateauMantegna_templateObject5, ChateauMantegna_templateObject6;
-
-function ChateauMantegna_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-
 
 
 function ChateauMantegna_have() {
@@ -22924,35 +22919,108 @@ function fightPainting() {
   (0,external_kolmafia_.visitUrl)("place.php?whichplace=chateau&action=chateau_painting", false);
   return (0,external_kolmafia_.runCombat)();
 }
-var desks = (0,template_string/* $items */.vS)(ChateauMantegna_templateObject || (ChateauMantegna_templateObject = ChateauMantegna_taggedTemplateLiteral(["fancy stationery set, Swiss piggy bank, continental juice bar"])));
-var ceilings = (0,template_string/* $items */.vS)(ChateauMantegna_templateObject2 || (ChateauMantegna_templateObject2 = ChateauMantegna_taggedTemplateLiteral(["antler chandelier, ceiling fan, artificial skylight"])));
-var nightstands = (0,template_string/* $items */.vS)(ChateauMantegna_templateObject3 || (ChateauMantegna_templateObject3 = ChateauMantegna_taggedTemplateLiteral(["foreign language tapes, bowl of potpourri, electric muscle stimulator"])));
+var desks = (/* unused pure expression or super */ null && (["fancy stationery set", "Swiss piggy bank", "continental juice bar"]));
+var ceilings = (/* unused pure expression or super */ null && (["antler chandelier", "ceiling fan", "artificial skylight"]));
+var nightstands = (/* unused pure expression or super */ null && (["foreign language tapes", "bowl of potpourri", "electric muscle stimulator"]));
 function getDesk() {
-  return desks.find(desk => Object.keys(getChateau()).includes(desk.name)) || $item(ChateauMantegna_templateObject4 || (ChateauMantegna_templateObject4 = ChateauMantegna_taggedTemplateLiteral(["none"])));
+  var _desks$find;
+
+  return (_desks$find = desks.find(desk => Object.keys(getChateau()).includes(desk))) !== null && _desks$find !== void 0 ? _desks$find : null;
 }
 function getCeiling() {
-  return ceilings.find(ceiling => Object.keys(getChateau()).includes(ceiling.name)) || $item(ChateauMantegna_templateObject5 || (ChateauMantegna_templateObject5 = ChateauMantegna_taggedTemplateLiteral(["none"])));
+  var _ceilings$find;
+
+  return (_ceilings$find = ceilings.find(ceiling => Object.keys(getChateau()).includes(ceiling))) !== null && _ceilings$find !== void 0 ? _ceilings$find : null;
 }
 function getNightstand() {
-  return nightstands.find(nightstand => Object.keys(getChateau()).includes(nightstand.name)) || $item(ChateauMantegna_templateObject6 || (ChateauMantegna_templateObject6 = ChateauMantegna_taggedTemplateLiteral(["none"])));
+  var _nightstands$find;
+
+  return (_nightstands$find = nightstands.find(nightstand => Object.keys(getChateau()).includes(nightstand))) !== null && _nightstands$find !== void 0 ? _nightstands$find : null;
 }
 function changeDesk(desk) {
   if (getDesk() === desk) return true;
   if (!desks.includes(desk)) return false;
-  buy(desk);
+  buy(Item.get(desk));
   return getDesk() === desk;
 }
 function changeCeiling(ceiling) {
   if (getCeiling() === ceiling) return true;
   if (!ceilings.includes(ceiling)) return false;
-  buy(ceiling);
+  buy(Item.get(ceiling));
   return getCeiling() === ceiling;
 }
 function changeNightstand(nightstand) {
   if (getNightstand() === nightstand) return true;
   if (!nightstands.includes(nightstand)) return false;
-  buy(nightstand);
+  buy(Item.get(nightstand));
   return getNightstand() === nightstand;
+}
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2021/DaylightShavings.js
+var DaylightShavings_templateObject, DaylightShavings_templateObject2;
+
+function DaylightShavings_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+
+var helmet = (0,template_string/* $item */.xr)(DaylightShavings_templateObject || (DaylightShavings_templateObject = DaylightShavings_taggedTemplateLiteral(["Daylight Shavings Helmet"])));
+/**
+ * Returns whether the player owns an unpackaged Daylight Shavings Helmet, and it's available in either the inventory or other zones as determined by autoSatisfy settings.
+ * @returns whether we have the Daylight Shavings Helmet.
+ */
+
+function DaylightShavings_have() {
+  return (0,lib/* have */.lf)(helmet);
+}
+var buffs = (0,template_string/* $effects */.lh)(DaylightShavings_templateObject2 || (DaylightShavings_templateObject2 = DaylightShavings_taggedTemplateLiteral(["Spectacle Moustache, Toiletbrush Moustache, Barbell Moustache, Grizzly Beard, Surrealist's Moustache, Musician's Musician's Moustache, Gull-Wing Moustache, Space Warlord's Beard, Pointy Wizard Beard, Cowboy Stache, Friendly Chops"])));
+function hasBuff() {
+  return buffs.some(buff => haveItem(buff));
+}
+/**
+ * Calculates and returns the cycle of buffs that the hat should cycle through.
+ * @param playerclass The class to generate a cycle for
+ * @returns An ordered array consisting of the cycle for this class. The first element of the array will be the first buff a player should expect to get in a given ascension.
+ */
+
+function buffCycle() {
+  var playerclass = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : (0,external_kolmafia_.myClass)();
+  if ((0,external_kolmafia_.toInt)(playerclass) <= 0) return [];
+  var returnValue = [];
+  var id = (0,external_kolmafia_.toInt)(playerclass);
+  var seed = id > 6 ? id % 6 + 1 : id;
+
+  for (var i = 1; i < 12; i++) {
+    var index = i * seed % 11;
+    returnValue.push(buffs[index]);
+  }
+
+  return returnValue;
+}
+/**
+ * Returns the next buff we expect to get from the shaving hat.
+ * @returns The next buff we expect to get from the shaving hat.
+ */
+
+function nextBuff() {
+  var currentBuff = (0,external_kolmafia_.toEffect)((0,property/* get */.U2)("lastBeardBuff").toFixed(0));
+  var cycle = buffCycle();
+  var index = cycle.indexOf(currentBuff);
+  var newIndex = (1 + index) % 11;
+  return cycle[newIndex];
+}
+/**
+ * Returns the number of buffs we expect it'll take to get to a given buff. Returns 1 for the next buff, 2 for the one after that, and so on. Returns 11 for the most recent buff.
+ * @param buff The shaving buff in question
+ * @returns The number of buffs we expect it'll take to get to the inputted buff; null if said buff is not granted by the shaving hat.
+ */
+
+function buffsUntil(buff) {
+  if (!buffs.includes(buff)) return null;
+  var currentIndex = buffs.indexOf(nextBuff()) - 1;
+  var newIndex = buffs.indexOf(buff);
+  var diff = (newIndex - currentIndex) % 11;
+  return diff === 0 ? 11 : diff;
 }
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2010/CrownOfThrones.js
 var CrownOfThrones_templateObject, CrownOfThrones_templateObject2, _modifier, CrownOfThrones_templateObject3, CrownOfThrones_templateObject4, _modifier2, CrownOfThrones_templateObject5, CrownOfThrones_templateObject6, CrownOfThrones_templateObject7, CrownOfThrones_templateObject8, CrownOfThrones_templateObject9, CrownOfThrones_templateObject10, CrownOfThrones_templateObject11, CrownOfThrones_templateObject12, _modifier7, CrownOfThrones_templateObject13, CrownOfThrones_templateObject14, _modifier8, CrownOfThrones_templateObject15, CrownOfThrones_templateObject16, _modifier9, CrownOfThrones_templateObject17, CrownOfThrones_templateObject18, CrownOfThrones_templateObject19, CrownOfThrones_templateObject20, CrownOfThrones_templateObject21, CrownOfThrones_templateObject22, CrownOfThrones_templateObject23, CrownOfThrones_templateObject24, CrownOfThrones_templateObject25, CrownOfThrones_templateObject26, CrownOfThrones_templateObject27, CrownOfThrones_templateObject28, _modifier15, CrownOfThrones_templateObject29, CrownOfThrones_templateObject30, CrownOfThrones_templateObject31, CrownOfThrones_templateObject32, CrownOfThrones_templateObject33, CrownOfThrones_templateObject34, CrownOfThrones_templateObject35, CrownOfThrones_templateObject36, CrownOfThrones_templateObject37, CrownOfThrones_templateObject38, CrownOfThrones_templateObject39, CrownOfThrones_templateObject40, CrownOfThrones_templateObject41, CrownOfThrones_templateObject42, CrownOfThrones_templateObject43, CrownOfThrones_templateObject44, CrownOfThrones_templateObject45, CrownOfThrones_templateObject46, CrownOfThrones_templateObject47, CrownOfThrones_templateObject48, CrownOfThrones_templateObject49, CrownOfThrones_templateObject50, _modifier26, CrownOfThrones_templateObject51, CrownOfThrones_templateObject52, _modifier27, CrownOfThrones_templateObject53, CrownOfThrones_templateObject54, _modifier28, CrownOfThrones_templateObject55, CrownOfThrones_templateObject56, CrownOfThrones_templateObject57, CrownOfThrones_templateObject58, CrownOfThrones_templateObject59, _templateObject60, _modifier31, _templateObject61, _templateObject62, _modifier32, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _modifier34, _templateObject67, _templateObject68, _modifier35, _templateObject69, _templateObject70, _modifier36, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104;
@@ -24762,7 +24830,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("62a5095c39258a4ab175f1ddbc94234c0019812f" === mainSha) {
+    if ("e0c3ffdbfdda1ed517315a6851193367820d09d8" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25199,9 +25267,19 @@ function bestBjornalike(existingForceEquips) {
 }
 
 function shavingBonus() {
-  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dropsgear_templateObject57 || (dropsgear_templateObject57 = dropsgear_taggedTemplateLiteral(["Daylight Shavings Helmet"]))))) return new Map();
+  var _DaylightShavings$buf;
 
-  if ((0,template_string/* $effects */.lh)(dropsgear_templateObject58 || (dropsgear_templateObject58 = dropsgear_taggedTemplateLiteral(["Barbell Moustache, Cowboy Stache, Friendly Chops, Grizzly Beard, Gull-Wing Moustache, Musician's Musician's Moustache, Pointy Wizard Beard, Space Warlord's Beard, Spectacle Moustache, Surrealist's Moustache, Toiletbrush Moustache"]))).some(effect => (0,lib/* have */.lf)(effect))) {
+  if (!DaylightShavings_have() || buffs.some(buff => (0,lib/* have */.lf)(buff, 2))) {
+    return new Map();
+  }
+
+  var timeToMeatBuff = 11 * ((_DaylightShavings$buf = buffsUntil((0,template_string/* $effect */._G)(dropsgear_templateObject57 || (dropsgear_templateObject57 = dropsgear_taggedTemplateLiteral(["Friendly Chops"]))))) !== null && _DaylightShavings$buf !== void 0 ? _DaylightShavings$buf : Infinity);
+
+  if (globalOptions.ascending && timeToMeatBuff > estimatedTurns()) {
+    return new Map();
+  }
+
+  if (!globalOptions.ascending && nextBuff() === (0,template_string/* $effect */._G)(dropsgear_templateObject58 || (dropsgear_templateObject58 = dropsgear_taggedTemplateLiteral(["Friendly Chops"]))) && estimatedTurns() < 11 * 11) {
     return new Map();
   }
 
@@ -30503,7 +30581,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26113);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("62a5095c39258a4ab175f1ddbc94234c0019812f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e0c3ffdbfdda1ed517315a6851193367820d09d8"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -30840,7 +30918,7 @@ module.exports = require("kolmafia");
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 4760);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 3264);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
