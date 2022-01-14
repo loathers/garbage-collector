@@ -24830,7 +24830,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("74b0d21a9eb6a954cf522c29b818ff52c02ad868" === mainSha) {
+    if ("9ff4ad18e2e2f19f02498d74bb483c5bc780a7aa" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -26567,7 +26567,7 @@ var Potion = /*#__PURE__*/function () {
       var ascending = globalOptions.ascending;
       var totalTurns = turns !== null && turns !== void 0 ? turns : estimatedTurns();
       var values = [];
-      var limitFunction = limit ? quantity => Math.min(limit - values.reduce((_total, tier) => tier.quantity, 0), quantity) : quantity => quantity; // compute the value of covering embezzlers
+      var limitFunction = limit ? quantity => (0,utils/* clamp */.uZ)(limit - (0,utils/* sumNumbers */.JD)(values.map(tier => tier.quantity)), 0, quantity) : quantity => quantity; // compute the value of covering embezzlers
 
       var embezzlerTurns = Math.max(0, embezzlers - startingTurns);
       var embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
@@ -26874,7 +26874,7 @@ function synthesize(casts, effect) {
   (0,external_kolmafia_.sweetSynthesis)((0,utils/* clamp */.uZ)(casts, 0, (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()), effect);
 }
 ;// CONCATENATED MODULE: ./src/diet.ts
-var src_diet_templateObject, src_diet_templateObject2, src_diet_templateObject3, src_diet_templateObject4, src_diet_templateObject5, src_diet_templateObject6, src_diet_templateObject7, src_diet_templateObject8, src_diet_templateObject9, src_diet_templateObject10, src_diet_templateObject11, src_diet_templateObject12, src_diet_templateObject13, src_diet_templateObject14, src_diet_templateObject15, src_diet_templateObject16, src_diet_templateObject17, src_diet_templateObject18, src_diet_templateObject19, src_diet_templateObject20, src_diet_templateObject21, src_diet_templateObject22, src_diet_templateObject23, src_diet_templateObject24, src_diet_templateObject25, src_diet_templateObject26, src_diet_templateObject27, src_diet_templateObject28, src_diet_templateObject29, src_diet_templateObject30, src_diet_templateObject31, src_diet_templateObject32, src_diet_templateObject33, src_diet_templateObject34, src_diet_templateObject35, src_diet_templateObject36, src_diet_templateObject37, src_diet_templateObject38, src_diet_templateObject39, src_diet_templateObject40, src_diet_templateObject41, src_diet_templateObject42, src_diet_templateObject43, src_diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74, diet_templateObject75, diet_templateObject76, diet_templateObject77, diet_templateObject78, diet_templateObject79, diet_templateObject80, diet_templateObject81, diet_templateObject82, diet_templateObject83, diet_templateObject84, diet_templateObject85, diet_templateObject86, diet_templateObject87, diet_templateObject88, diet_templateObject89, diet_templateObject90, diet_templateObject91, diet_templateObject92, diet_templateObject93, diet_templateObject94, diet_templateObject95, diet_templateObject96, diet_templateObject97, diet_templateObject98, diet_templateObject99, diet_templateObject100, diet_templateObject101, diet_templateObject102, diet_templateObject103, diet_templateObject104, diet_templateObject105, diet_templateObject106, diet_templateObject107, diet_templateObject108, diet_templateObject109, diet_templateObject110, diet_templateObject111, diet_templateObject112, diet_templateObject113, diet_templateObject114, diet_templateObject115, diet_templateObject116, diet_templateObject117, diet_templateObject118, diet_templateObject119, diet_templateObject120, diet_templateObject121, diet_templateObject122, diet_templateObject123, diet_templateObject124, diet_templateObject125, diet_templateObject126, diet_templateObject127, diet_templateObject128, diet_templateObject129, diet_templateObject130, diet_templateObject131, diet_templateObject132, diet_templateObject133, diet_templateObject134, diet_templateObject135, diet_templateObject136, diet_templateObject137, diet_templateObject138, diet_templateObject139, diet_templateObject140, diet_templateObject141, diet_templateObject142;
+var src_diet_templateObject, src_diet_templateObject2, src_diet_templateObject3, src_diet_templateObject4, src_diet_templateObject5, src_diet_templateObject6, src_diet_templateObject7, src_diet_templateObject8, src_diet_templateObject9, src_diet_templateObject10, src_diet_templateObject11, src_diet_templateObject12, src_diet_templateObject13, src_diet_templateObject14, src_diet_templateObject15, src_diet_templateObject16, src_diet_templateObject17, src_diet_templateObject18, src_diet_templateObject19, src_diet_templateObject20, src_diet_templateObject21, src_diet_templateObject22, src_diet_templateObject23, src_diet_templateObject24, src_diet_templateObject25, src_diet_templateObject26, src_diet_templateObject27, src_diet_templateObject28, src_diet_templateObject29, src_diet_templateObject30, src_diet_templateObject31, src_diet_templateObject32, src_diet_templateObject33, src_diet_templateObject34, src_diet_templateObject35, src_diet_templateObject36, src_diet_templateObject37, src_diet_templateObject38, src_diet_templateObject39, src_diet_templateObject40, src_diet_templateObject41, src_diet_templateObject42, src_diet_templateObject43, src_diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74, diet_templateObject75, diet_templateObject76, diet_templateObject77, diet_templateObject78, diet_templateObject79, diet_templateObject80, diet_templateObject81, diet_templateObject82, diet_templateObject83, diet_templateObject84, diet_templateObject85, diet_templateObject86, diet_templateObject87, diet_templateObject88, diet_templateObject89, diet_templateObject90, diet_templateObject91, diet_templateObject92, diet_templateObject93, diet_templateObject94, diet_templateObject95, diet_templateObject96, diet_templateObject97, diet_templateObject98, diet_templateObject99, diet_templateObject100, diet_templateObject101, diet_templateObject102, diet_templateObject103, diet_templateObject104, diet_templateObject105, diet_templateObject106, diet_templateObject107, diet_templateObject108, diet_templateObject109, diet_templateObject110, diet_templateObject111, diet_templateObject112, diet_templateObject113, diet_templateObject114, diet_templateObject115, diet_templateObject116, diet_templateObject117, diet_templateObject118, diet_templateObject119, diet_templateObject120, diet_templateObject121, diet_templateObject122, diet_templateObject123, diet_templateObject124, diet_templateObject125, diet_templateObject126, diet_templateObject127, diet_templateObject128, diet_templateObject129;
 
 function src_diet_slicedToArray(arr, i) { return src_diet_arrayWithHoles(arr) || src_diet_iterableToArrayLimit(arr, i) || src_diet_unsupportedIterableToArray(arr, i) || src_diet_nonIterableRest(); }
 
@@ -27094,52 +27094,80 @@ var stomachLiverCleaners = new Map([[(0,template_string/* $item */.xr)(diet_temp
 
 function menu() {
   var spaghettiBreakfast = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject52 || (diet_templateObject52 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"])))) && (0,external_kolmafia_.myFullness)() === 0 && (0,property/* get */.U2)("_timeSpinnerFoodAvailable") === "" && !(0,property/* get */.U2)("_spaghettiBreakfastEaten") ? 1 : 0;
+  var complexMushroomWines = Item.all().filter(item => (0,external_kolmafia_.getIngredients)(item)["mushroom fermenting solution"] && item.quality === "EPIC");
+  var perfectDrinks = Item.all().filter(item => (0,external_kolmafia_.getIngredients)(item)["perfect ice cube"]);
+  var lasagnas = (0,template_string/* $items */.vS)(diet_templateObject53 || (diet_templateObject53 = src_diet_taggedTemplateLiteral(["fishy fish lasagna, gnat lasagna, long pork lasagna"])));
+  var smallEpics = (0,template_string/* $items */.vS)(diet_templateObject54 || (diet_templateObject54 = src_diet_taggedTemplateLiteral(["meteoreo, ice rice"]))).concat([(0,template_string/* $item */.xr)(diet_templateObject55 || (diet_templateObject55 = src_diet_taggedTemplateLiteral(["Tea, Earl Grey, Hot"])))]);
+  var boxingDayCareItems = (0,template_string/* $items */.vS)(diet_templateObject56 || (diet_templateObject56 = src_diet_taggedTemplateLiteral(["glass of raw eggs, punch-drunk punch"]))).filter(item => (0,lib/* have */.lf)(item));
+  var pilsners = (0,template_string/* $items */.vS)(diet_templateObject57 || (diet_templateObject57 = src_diet_taggedTemplateLiteral(["astral pilsner"]))).filter(item => globalOptions.ascending && (0,lib/* have */.lf)(item));
+  var limitedItems = [].concat(src_diet_toConsumableArray(boxingDayCareItems), src_diet_toConsumableArray(pilsners)).map(item => new MenuItem(item, {
+    maximum: (0,external_kolmafia_.availableAmount)(item)
+  }));
+
+  var mallMin = items => argmax(items.map(i => [i, -(0,external_kolmafia_.mallPrice)(i)]));
+
   return [// FOOD
-  new MenuItem((0,template_string/* $item */.xr)(diet_templateObject53 || (diet_templateObject53 = src_diet_taggedTemplateLiteral(["Dreadsylvanian spooky pocket"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject54 || (diet_templateObject54 = src_diet_taggedTemplateLiteral(["tin cup of mulligan stew"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject55 || (diet_templateObject55 = src_diet_taggedTemplateLiteral(["glass of raw eggs"]))), {
-    maximum: (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject56 || (diet_templateObject56 = src_diet_taggedTemplateLiteral(["glass of raw eggs"]))))
-  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject57 || (diet_templateObject57 = src_diet_taggedTemplateLiteral(["Tea, Earl Grey, Hot"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject58 || (diet_templateObject58 = src_diet_taggedTemplateLiteral(["meteoreo"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject59 || (diet_templateObject59 = src_diet_taggedTemplateLiteral(["ice rice"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject60 || (diet_templateObject60 = src_diet_taggedTemplateLiteral(["frozen banquet"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject61 || (diet_templateObject61 = src_diet_taggedTemplateLiteral(["fishy fish lasagna"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject62 || (diet_templateObject62 = src_diet_taggedTemplateLiteral(["gnat lasagna"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject63 || (diet_templateObject63 = src_diet_taggedTemplateLiteral(["long pork lasagna"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject64 || (diet_templateObject64 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"]))), {
+  new MenuItem((0,template_string/* $item */.xr)(diet_templateObject58 || (diet_templateObject58 = src_diet_taggedTemplateLiteral(["Dreadsylvanian spooky pocket"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject59 || (diet_templateObject59 = src_diet_taggedTemplateLiteral(["tin cup of mulligan stew"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject60 || (diet_templateObject60 = src_diet_taggedTemplateLiteral(["frozen banquet"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject61 || (diet_templateObject61 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"]))), {
     maximum: spaghettiBreakfast
-  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject65 || (diet_templateObject65 = src_diet_taggedTemplateLiteral(["extra-greasy slider"])))), // BOOZE
-  new MenuItem((0,template_string/* $item */.xr)(diet_templateObject66 || (diet_templateObject66 = src_diet_taggedTemplateLiteral(["elemental caipiroska"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject67 || (diet_templateObject67 = src_diet_taggedTemplateLiteral(["Dreadsylvanian grimlet"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject68 || (diet_templateObject68 = src_diet_taggedTemplateLiteral(["Hodgman's blanket"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject69 || (diet_templateObject69 = src_diet_taggedTemplateLiteral(["Sacramento wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject70 || (diet_templateObject70 = src_diet_taggedTemplateLiteral(["iced plum wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject71 || (diet_templateObject71 = src_diet_taggedTemplateLiteral(["splendid martini"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject72 || (diet_templateObject72 = src_diet_taggedTemplateLiteral(["Eye and a Twist"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject73 || (diet_templateObject73 = src_diet_taggedTemplateLiteral(["punch-drunk punch"]))), {
-    maximum: (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject74 || (diet_templateObject74 = src_diet_taggedTemplateLiteral(["punch-drunk punch"]))))
-  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject75 || (diet_templateObject75 = src_diet_taggedTemplateLiteral(["blood-red mushroom wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject76 || (diet_templateObject76 = src_diet_taggedTemplateLiteral(["buzzing mushroom wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject77 || (diet_templateObject77 = src_diet_taggedTemplateLiteral(["complex mushroom wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject78 || (diet_templateObject78 = src_diet_taggedTemplateLiteral(["overpowering mushroom wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject79 || (diet_templateObject79 = src_diet_taggedTemplateLiteral(["smooth mushroom wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject80 || (diet_templateObject80 = src_diet_taggedTemplateLiteral(["swirling mushroom wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject81 || (diet_templateObject81 = src_diet_taggedTemplateLiteral(["astral pilsner"]))), {
-    maximum: globalOptions.ascending ? (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject82 || (diet_templateObject82 = src_diet_taggedTemplateLiteral(["astral pilsner"])))) : 0
-  })].concat(src_diet_toConsumableArray(Item.all().filter(item => (0,external_kolmafia_.getIngredients)(item)["perfect ice cube"]).map(item => new MenuItem(item))), [new MenuItem((0,template_string/* $item */.xr)(diet_templateObject83 || (diet_templateObject83 = src_diet_taggedTemplateLiteral(["jar of fermented pickle juice"])))), // SPLEEN
-  new MenuItem((0,template_string/* $item */.xr)(diet_templateObject84 || (diet_templateObject84 = src_diet_taggedTemplateLiteral(["octolus oculus"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject85 || (diet_templateObject85 = src_diet_taggedTemplateLiteral(["cute mushroom"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject86 || (diet_templateObject86 = src_diet_taggedTemplateLiteral(["prismatic wad"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject87 || (diet_templateObject87 = src_diet_taggedTemplateLiteral(["transdermal smoke patch"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject88 || (diet_templateObject88 = src_diet_taggedTemplateLiteral(["antimatter wad"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject89 || (diet_templateObject89 = src_diet_taggedTemplateLiteral(["voodoo snuff"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject90 || (diet_templateObject90 = src_diet_taggedTemplateLiteral(["blood-drive sticker"])))), // HELPERS
-  new MenuItem((0,template_string/* $item */.xr)(diet_templateObject91 || (diet_templateObject91 = src_diet_taggedTemplateLiteral(["distention pill"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject92 || (diet_templateObject92 = src_diet_taggedTemplateLiteral(["cuppa Voraci tea"])))), new MenuItem(diet_Mayo.flex), new MenuItem(diet_Mayo.zapine), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject93 || (diet_templateObject93 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))), new MenuItem(saladFork), new MenuItem(frostyMug), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject94 || (diet_templateObject94 = src_diet_taggedTemplateLiteral(["mojo filter"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject95 || (diet_templateObject95 = src_diet_taggedTemplateLiteral(["pocket wish"]))), {
+  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject62 || (diet_templateObject62 = src_diet_taggedTemplateLiteral(["extra-greasy slider"])))), new MenuItem(mallMin(lasagnas)), new MenuItem(mallMin(smallEpics)), // BOOZE
+  new MenuItem((0,template_string/* $item */.xr)(diet_templateObject63 || (diet_templateObject63 = src_diet_taggedTemplateLiteral(["elemental caipiroska"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject64 || (diet_templateObject64 = src_diet_taggedTemplateLiteral(["Dreadsylvanian grimlet"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject65 || (diet_templateObject65 = src_diet_taggedTemplateLiteral(["Hodgman's blanket"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject66 || (diet_templateObject66 = src_diet_taggedTemplateLiteral(["Sacramento wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject67 || (diet_templateObject67 = src_diet_taggedTemplateLiteral(["iced plum wine"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject68 || (diet_templateObject68 = src_diet_taggedTemplateLiteral(["splendid martini"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject69 || (diet_templateObject69 = src_diet_taggedTemplateLiteral(["Eye and a Twist"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject70 || (diet_templateObject70 = src_diet_taggedTemplateLiteral(["jar of fermented pickle juice"])))), new MenuItem(mallMin(complexMushroomWines)), new MenuItem(mallMin(perfectDrinks)), // SPLEEN
+  new MenuItem((0,template_string/* $item */.xr)(diet_templateObject71 || (diet_templateObject71 = src_diet_taggedTemplateLiteral(["octolus oculus"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject72 || (diet_templateObject72 = src_diet_taggedTemplateLiteral(["cute mushroom"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject73 || (diet_templateObject73 = src_diet_taggedTemplateLiteral(["prismatic wad"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject74 || (diet_templateObject74 = src_diet_taggedTemplateLiteral(["transdermal smoke patch"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject75 || (diet_templateObject75 = src_diet_taggedTemplateLiteral(["antimatter wad"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject76 || (diet_templateObject76 = src_diet_taggedTemplateLiteral(["voodoo snuff"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject77 || (diet_templateObject77 = src_diet_taggedTemplateLiteral(["blood-drive sticker"]))))].concat(src_diet_toConsumableArray(limitedItems), [// HELPERS
+  new MenuItem((0,template_string/* $item */.xr)(diet_templateObject78 || (diet_templateObject78 = src_diet_taggedTemplateLiteral(["distention pill"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject79 || (diet_templateObject79 = src_diet_taggedTemplateLiteral(["cuppa Voraci tea"])))), new MenuItem(diet_Mayo.flex), new MenuItem(diet_Mayo.zapine), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject80 || (diet_templateObject80 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))), new MenuItem(saladFork), new MenuItem(frostyMug), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject81 || (diet_templateObject81 = src_diet_taggedTemplateLiteral(["mojo filter"])))), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject82 || (diet_templateObject82 = src_diet_taggedTemplateLiteral(["pocket wish"]))), {
     maximum: 1,
-    effect: (0,template_string/* $effect */._G)(diet_templateObject96 || (diet_templateObject96 = src_diet_taggedTemplateLiteral(["Refined Palate"])))
-  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject97 || (diet_templateObject97 = src_diet_taggedTemplateLiteral(["toasted brie"]))), {
+    effect: (0,template_string/* $effect */._G)(diet_templateObject83 || (diet_templateObject83 = src_diet_taggedTemplateLiteral(["Refined Palate"])))
+  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject84 || (diet_templateObject84 = src_diet_taggedTemplateLiteral(["toasted brie"]))), {
     maximum: 1
-  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject98 || (diet_templateObject98 = src_diet_taggedTemplateLiteral(["potion of the field gar"]))), {
+  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject85 || (diet_templateObject85 = src_diet_taggedTemplateLiteral(["potion of the field gar"]))), {
     maximum: 1
-  })], src_diet_toConsumableArray(src_diet_toConsumableArray(stomachLiverCleaners.keys()).map(item => new MenuItem(item))), [new MenuItem((0,template_string/* $item */.xr)(diet_templateObject99 || (diet_templateObject99 = src_diet_taggedTemplateLiteral(["sweet tooth"]))), {
+  })], src_diet_toConsumableArray(src_diet_toConsumableArray(stomachLiverCleaners.keys()).map(item => new MenuItem(item))), [new MenuItem((0,template_string/* $item */.xr)(diet_templateObject86 || (diet_templateObject86 = src_diet_taggedTemplateLiteral(["sweet tooth"]))), {
     size: -1,
     organ: "food",
     maximum: 1
   })]);
 }
 
+function gregariousCount() {
+  var gregariousCharges = (0,property/* get */.U2)("beGregariousCharges") + ((0,property/* get */.U2)("beGregariousFightsLeft") > 0 && (0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(diet_templateObject87 || (diet_templateObject87 = src_diet_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) ? 1 : 0);
+  var gregariousFightsPerCharge = expectedGregs(); // remove and preserve the last index - that is the marginal count of gregarious fights
+
+  var marginalGregariousFights = gregariousFightsPerCharge.splice(gregariousFightsPerCharge.length - 1, 1)[0];
+  var expectedGregariousFights = gregariousFightsPerCharge.slice(gregariousCharges);
+  return {
+    expectedGregariousFights: expectedGregariousFights,
+    marginalGregariousFights: marginalGregariousFights
+  };
+}
+
 function copiers() {
   var embezzlerDifferential = 25000 - MPA;
-  var alreadyGregarious = (0,property/* get */.U2)("beGregariousCharges") > 0 || (0,property/* get */.U2)("beGregariousFightsLeft") > 0 && (0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(diet_templateObject100 || (diet_templateObject100 = src_diet_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
-  var gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0); // if you are drunk, you can't cast Be Gregarious, so don't include these in the diet
 
-  var extro = (0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() ? [] : gregCounts.map((embezzlers, index) => new MenuItem((0,template_string/* $item */.xr)(diet_templateObject101 || (diet_templateObject101 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
+  var _gregariousCount = gregariousCount(),
+      expectedGregariousFights = _gregariousCount.expectedGregariousFights,
+      marginalGregariousFights = _gregariousCount.marginalGregariousFights;
+
+  var extros = (0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() ? [] : src_diet_toConsumableArray(expectedGregariousFights.map(embezzlers => new MenuItem((0,template_string/* $item */.xr)(diet_templateObject88 || (diet_templateObject88 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
     additionalValue: embezzlers * embezzlerDifferential,
-    maximum: index === gregCounts.length - 1 ? undefined : 1
-  }));
-  return src_diet_toConsumableArray(extro);
+    maximum: 1
+  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject89 || (diet_templateObject89 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
+    additionalValue: marginalGregariousFights * embezzlerDifferential
+  })));
+  return src_diet_toConsumableArray(extros);
 }
 
 function countCopies(diet) {
   // this only counts the copies not yet realized
   // any copies already realized will be properly counted by embezzlerCount
-  var alreadyGregarious = (0,property/* get */.U2)("beGregariousCharges") > 0 || (0,property/* get */.U2)("beGregariousFightsLeft") > 0 && (0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(diet_templateObject102 || (diet_templateObject102 = src_diet_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
-  var gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0);
-  var extros = (0,utils/* sumNumbers */.JD)(diet.entries.map(dietEntry => dietEntry.menuItems.some(menuItem => menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject103 || (diet_templateObject103 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"])))) ? dietEntry.quantity : 0));
-  var replaceExtros = (0,utils/* sumNumbers */.JD)(gregCounts.slice(0, Math.min(extros, gregCounts.length)));
-  var bonusExtros = Math.max(0, extros - gregCounts.length) * gregCounts[gregCounts.length - 1];
+  // returns an array of expected counts for number of greg copies to fight per pill use
+  // the last value is how much you expect to fight per pill
+  var extros = (0,utils/* sumNumbers */.JD)(diet.entries.map(dietEntry => dietEntry.menuItems.some(menuItem => menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject90 || (diet_templateObject90 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"])))) ? dietEntry.quantity : 0));
+
+  var _gregariousCount2 = gregariousCount(),
+      expectedGregariousFights = _gregariousCount2.expectedGregariousFights,
+      marginalGregariousFights = _gregariousCount2.marginalGregariousFights; // slice will never return an array that is bigger than the original array
+
+
+  var replaceExtros = (0,utils/* sumNumbers */.JD)(expectedGregariousFights.slice(0, extros));
+  var bonusExtros = (0,utils/* clamp */.uZ)(extros - expectedGregariousFights.length, 0, extros) * marginalGregariousFights;
   return replaceExtros + bonusExtros;
 }
 /**
@@ -27181,14 +27209,14 @@ function potionMenu(baseMenu, embezzlers, turns) {
     return limitedPotion(potion, undefined, options);
   }
 
-  var speakeasy = (0,template_string/* $item */.xr)(diet_templateObject104 || (diet_templateObject104 = src_diet_taggedTemplateLiteral(["Clan speakeasy"])));
+  var speakeasy = (0,template_string/* $item */.xr)(diet_templateObject91 || (diet_templateObject91 = src_diet_taggedTemplateLiteral(["Clan speakeasy"])));
   var hasSpeakeasy = (0,external_kolmafia_.getClanLounge)()["".concat(speakeasy)];
-  return [].concat(src_diet_toConsumableArray(baseMenu), src_diet_toConsumableArray(copiers()), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject105 || (diet_templateObject105 = src_diet_taggedTemplateLiteral(["jumping horseradish"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject106 || (diet_templateObject106 = src_diet_taggedTemplateLiteral(["tempura cauliflower"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject107 || (diet_templateObject107 = src_diet_taggedTemplateLiteral(["sea truffle"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject108 || (diet_templateObject108 = src_diet_taggedTemplateLiteral(["tempura broccoli"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject109 || (diet_templateObject109 = src_diet_taggedTemplateLiteral(["Dinsey food-cone"]))), (0,property/* get */.U2)("_stenchAirportToday") || (0,property/* get */.U2)("stenchAirportAlways") ? Math.floor((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject110 || (diet_templateObject110 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"])))) / 2) : 0, {
-    price: 2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(diet_templateObject111 || (diet_templateObject111 = src_diet_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"])))) / 20
-  })), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject112 || (diet_templateObject112 = src_diet_taggedTemplateLiteral(["dirt julep"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject113 || (diet_templateObject113 = src_diet_taggedTemplateLiteral(["Ambitious Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject114 || (diet_templateObject114 = src_diet_taggedTemplateLiteral(["Friendly Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject115 || (diet_templateObject115 = src_diet_taggedTemplateLiteral(["vintage smart drink"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject116 || (diet_templateObject116 = src_diet_taggedTemplateLiteral(["Hot Socks"]))), hasSpeakeasy ? 3 : 0, {
+  return [].concat(src_diet_toConsumableArray(baseMenu), src_diet_toConsumableArray(copiers()), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject92 || (diet_templateObject92 = src_diet_taggedTemplateLiteral(["jumping horseradish"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject93 || (diet_templateObject93 = src_diet_taggedTemplateLiteral(["tempura cauliflower"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject94 || (diet_templateObject94 = src_diet_taggedTemplateLiteral(["sea truffle"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject95 || (diet_templateObject95 = src_diet_taggedTemplateLiteral(["tempura broccoli"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject96 || (diet_templateObject96 = src_diet_taggedTemplateLiteral(["Dinsey food-cone"]))), (0,property/* get */.U2)("_stenchAirportToday") || (0,property/* get */.U2)("stenchAirportAlways") ? Math.floor((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject97 || (diet_templateObject97 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"])))) / 2) : 0, {
+    price: 2 * (0,lib/* getSaleValue */.xI)((0,template_string/* $item */.xr)(diet_templateObject98 || (diet_templateObject98 = src_diet_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"])))) / 20
+  })), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject99 || (diet_templateObject99 = src_diet_taggedTemplateLiteral(["dirt julep"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject100 || (diet_templateObject100 = src_diet_taggedTemplateLiteral(["Ambitious Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject101 || (diet_templateObject101 = src_diet_taggedTemplateLiteral(["Friendly Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject102 || (diet_templateObject102 = src_diet_taggedTemplateLiteral(["vintage smart drink"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject103 || (diet_templateObject103 = src_diet_taggedTemplateLiteral(["Hot Socks"]))), hasSpeakeasy ? 3 : 0, {
     price: 5000
-  })), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject117 || (diet_templateObject117 = src_diet_taggedTemplateLiteral(["beggin' cologne"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject118 || (diet_templateObject118 = src_diet_taggedTemplateLiteral(["body spradium"]))), (0,utils/* clamp */.uZ)((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject119 || (diet_templateObject119 = src_diet_taggedTemplateLiteral(["body spradium"])))), 0, 1))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject120 || (diet_templateObject120 = src_diet_taggedTemplateLiteral(["Knob Goblin pet-buffing spray"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject121 || (diet_templateObject121 = src_diet_taggedTemplateLiteral(["Knob Goblin nasal spray"]))))), src_diet_toConsumableArray((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject122 || (diet_templateObject122 = src_diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? potion(new Potion((0,template_string/* $item */.xr)(diet_templateObject123 || (diet_templateObject123 = src_diet_taggedTemplateLiteral(["Rethinking Candy"]))), {
-    effect: (0,template_string/* $effect */._G)(diet_templateObject124 || (diet_templateObject124 = src_diet_taggedTemplateLiteral(["Synthesis: Greed"]))),
+  })), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject104 || (diet_templateObject104 = src_diet_taggedTemplateLiteral(["beggin' cologne"]))))), src_diet_toConsumableArray(limitedPotion((0,template_string/* $item */.xr)(diet_templateObject105 || (diet_templateObject105 = src_diet_taggedTemplateLiteral(["body spradium"]))), (0,utils/* clamp */.uZ)((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(diet_templateObject106 || (diet_templateObject106 = src_diet_taggedTemplateLiteral(["body spradium"])))), 0, 1))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject107 || (diet_templateObject107 = src_diet_taggedTemplateLiteral(["Knob Goblin pet-buffing spray"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(diet_templateObject108 || (diet_templateObject108 = src_diet_taggedTemplateLiteral(["Knob Goblin nasal spray"]))))), src_diet_toConsumableArray((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject109 || (diet_templateObject109 = src_diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? potion(new Potion((0,template_string/* $item */.xr)(diet_templateObject110 || (diet_templateObject110 = src_diet_taggedTemplateLiteral(["Rethinking Candy"]))), {
+    effect: (0,template_string/* $effect */._G)(diet_templateObject111 || (diet_templateObject111 = src_diet_taggedTemplateLiteral(["Synthesis: Greed"]))),
     duration: 30
   }), {
     size: 1,
@@ -27283,9 +27311,9 @@ function itemPriority(menuItems) {
     throw "Shouldn't have an empty menu item.";
   }
 
-  if (menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject125 || (diet_templateObject125 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"])))) return 200;
+  if (menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject112 || (diet_templateObject112 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"])))) return 200;
 
-  if ((0,template_string/* $items */.vS)(diet_templateObject126 || (diet_templateObject126 = src_diet_taggedTemplateLiteral(["pocket wish, toasted brie"]))).includes(menuItem.item) || spleenCleaners.get(menuItem.item) || stomachLiverCleaners.get(menuItem.item)) {
+  if ((0,template_string/* $items */.vS)(diet_templateObject113 || (diet_templateObject113 = src_diet_taggedTemplateLiteral(["pocket wish, toasted brie"]))).includes(menuItem.item) || spleenCleaners.get(menuItem.item) || stomachLiverCleaners.get(menuItem.item)) {
     return 100;
   } else {
     return 0;
@@ -27302,9 +27330,9 @@ function consumeDiet(diet, name) {
   var seasoningCount = (0,utils/* sum */.Sm)(diet.entries, _ref => {
     var menuItems = _ref.menuItems,
         quantity = _ref.quantity;
-    return menuItems.some(menuItem => menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject127 || (diet_templateObject127 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) ? quantity : 0;
+    return menuItems.some(menuItem => menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject114 || (diet_templateObject114 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) ? quantity : 0;
   });
-  acquire(seasoningCount, (0,template_string/* $item */.xr)(diet_templateObject128 || (diet_templateObject128 = src_diet_taggedTemplateLiteral(["Special Seasoning"]))), MPA); // Fill organs in rounds, making sure we're making progress in each round.
+  acquire(seasoningCount, (0,template_string/* $item */.xr)(diet_templateObject115 || (diet_templateObject115 = src_diet_taggedTemplateLiteral(["Special Seasoning"]))), MPA); // Fill organs in rounds, making sure we're making progress in each round.
 
   var organs = () => [(0,external_kolmafia_.myFullness)(), (0,external_kolmafia_.myInebriety)(), (0,external_kolmafia_.mySpleenUse)()];
 
@@ -27386,7 +27414,7 @@ function consumeDiet(diet, name) {
             var _menuItem = _step4.value;
 
             if ([saladFork, frostyMug].includes(_menuItem.item)) {
-              var element = _menuItem.item === saladFork ? (0,template_string/* $element */.SS)(diet_templateObject129 || (diet_templateObject129 = src_diet_taggedTemplateLiteral(["hot"]))) : (0,template_string/* $element */.SS)(diet_templateObject130 || (diet_templateObject130 = src_diet_taggedTemplateLiteral(["cold"])));
+              var element = _menuItem.item === saladFork ? (0,template_string/* $element */.SS)(diet_templateObject116 || (diet_templateObject116 = src_diet_taggedTemplateLiteral(["hot"]))) : (0,template_string/* $element */.SS)(diet_templateObject117 || (diet_templateObject117 = src_diet_taggedTemplateLiteral(["cold"])));
 
               if ((0,external_kolmafia_.myMaxhp)() < 1000 * (1 - (0,external_kolmafia_.elementalResistance)(element) / 100)) {
                 maximizeCached(["0.05 HP", "".concat(element, " Resistance")]);
@@ -27399,14 +27427,14 @@ function consumeDiet(diet, name) {
               consumeSafe(countToConsume, _menuItem.item);
             } else if ([diet_Mayo.flex, diet_Mayo.zapine].includes(_menuItem.item)) {
               setMayoMinder(_menuItem.item, countToConsume);
-            } else if (_menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject131 || (diet_templateObject131 = src_diet_taggedTemplateLiteral(["pocket wish"])))) {
-              acquire(1, (0,template_string/* $item */.xr)(diet_templateObject132 || (diet_templateObject132 = src_diet_taggedTemplateLiteral(["pocket wish"]))), 60000);
+            } else if (_menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject118 || (diet_templateObject118 = src_diet_taggedTemplateLiteral(["pocket wish"])))) {
+              acquire(1, (0,template_string/* $item */.xr)(diet_templateObject119 || (diet_templateObject119 = src_diet_taggedTemplateLiteral(["pocket wish"]))), 60000);
               (0,external_kolmafia_.cliExecute)("genie effect ".concat(_menuItem.effect));
-            } else if (_menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject133 || (diet_templateObject133 = src_diet_taggedTemplateLiteral(["Rethinking Candy"])))) {
-              synthesize(countToConsume, (0,template_string/* $effect */._G)(diet_templateObject134 || (diet_templateObject134 = src_diet_taggedTemplateLiteral(["Synthesis: Greed"]))));
+            } else if (_menuItem.item === (0,template_string/* $item */.xr)(diet_templateObject120 || (diet_templateObject120 = src_diet_taggedTemplateLiteral(["Rethinking Candy"])))) {
+              synthesize(countToConsume, (0,template_string/* $effect */._G)(diet_templateObject121 || (diet_templateObject121 = src_diet_taggedTemplateLiteral(["Synthesis: Greed"]))));
             } else if ((0,external_kolmafia_.getClanLounge)()["".concat(_menuItem.item)] && (0,external_kolmafia_.itemType)(_menuItem.item) === "booze") {
               (0,external_kolmafia_.cliExecute)("drink ".concat(_menuItem.item));
-            } else if (_menuItem.item !== (0,template_string/* $item */.xr)(diet_templateObject135 || (diet_templateObject135 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) {
+            } else if (_menuItem.item !== (0,template_string/* $item */.xr)(diet_templateObject122 || (diet_templateObject122 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) {
               consumeSafe(countToConsume, _menuItem.item, _menuItem.additionalValue);
             }
           }
@@ -27427,8 +27455,8 @@ function consumeDiet(diet, name) {
 }
 function runDiet() {
   withVIPClan(() => {
-    if ((0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(diet_templateObject136 || (diet_templateObject136 = src_diet_taggedTemplateLiteral(["Stooper"])))) {
-      (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(diet_templateObject137 || (diet_templateObject137 = src_diet_taggedTemplateLiteral(["none"]))));
+    if ((0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(diet_templateObject123 || (diet_templateObject123 = src_diet_taggedTemplateLiteral(["Stooper"])))) {
+      (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(diet_templateObject124 || (diet_templateObject124 = src_diet_taggedTemplateLiteral(["none"]))));
     }
 
     var dietBuilder = computeDiet();
@@ -27436,7 +27464,7 @@ function runDiet() {
     if (globalOptions.simulateDiet) {
       (0,external_kolmafia_.print)("===== SIMULATED DIET =====");
 
-      if (!(0,property/* get */.U2)("_mimeArmyShotglassUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject138 || (diet_templateObject138 = src_diet_taggedTemplateLiteral(["mime army shotglass"]))))) {
+      if (!(0,property/* get */.U2)("_mimeArmyShotglassUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject125 || (diet_templateObject125 = src_diet_taggedTemplateLiteral(["mime army shotglass"]))))) {
         printDiet(dietBuilder.shotglass(), "SHOTGLASS");
       }
 
@@ -27445,15 +27473,15 @@ function runDiet() {
       pillCheck();
       nonOrganAdventures();
 
-      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject139 || (diet_templateObject139 = src_diet_taggedTemplateLiteral(["astral six-pack"]))))) {
-        (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(diet_templateObject140 || (diet_templateObject140 = src_diet_taggedTemplateLiteral(["astral six-pack"]))));
+      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject126 || (diet_templateObject126 = src_diet_taggedTemplateLiteral(["astral six-pack"]))))) {
+        (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(diet_templateObject127 || (diet_templateObject127 = src_diet_taggedTemplateLiteral(["astral six-pack"]))));
       }
 
-      if (!(0,property/* get */.U2)("_mimeArmyShotglassUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject141 || (diet_templateObject141 = src_diet_taggedTemplateLiteral(["mime army shotglass"]))))) {
+      if (!(0,property/* get */.U2)("_mimeArmyShotglassUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject128 || (diet_templateObject128 = src_diet_taggedTemplateLiteral(["mime army shotglass"]))))) {
         consumeDiet(dietBuilder.shotglass(), "SHOTGLASS");
       }
 
-      if ((0,property/* get */.U2)("barrelShrineUnlocked") && !(0,property/* get */.U2)("_barrelPrayer") && (0,template_string/* $classes */.JT)(diet_templateObject142 || (diet_templateObject142 = src_diet_taggedTemplateLiteral(["Turtle Tamer, Accordion Thief"]))).includes((0,external_kolmafia_.myClass)())) {
+      if ((0,property/* get */.U2)("barrelShrineUnlocked") && !(0,property/* get */.U2)("_barrelPrayer") && (0,template_string/* $classes */.JT)(diet_templateObject129 || (diet_templateObject129 = src_diet_taggedTemplateLiteral(["Turtle Tamer, Accordion Thief"]))).includes((0,external_kolmafia_.myClass)())) {
         (0,external_kolmafia_.cliExecute)("barrelprayer buff");
       }
 
@@ -30598,7 +30626,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("74b0d21a9eb6a954cf522c29b818ff52c02ad868"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("9ff4ad18e2e2f19f02498d74bb483c5bc780a7aa"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
