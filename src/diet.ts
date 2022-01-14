@@ -58,7 +58,7 @@ import { acquire } from "./acquire";
 import { withVIPClan } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import { arrayEquals, globalOptions } from "./lib";
+import { argmax, arrayEquals, globalOptions } from "./lib";
 import { Potion, PotionTier } from "./potions";
 import synthesize from "./synthesis";
 
@@ -272,22 +272,31 @@ function menu(): MenuItem<Note>[] {
       ? 1
       : 0;
 
+  const complexMushroomWines = Item.all().filter(
+    (item) => getIngredients(item)["mushroom fermenting solution"] && item.quality === "EPIC"
+  );
+  const perfectDrinks = Item.all().filter((item) => getIngredients(item)["perfect ice cube"]);
+  const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
+  const smallEpics = $items`meteoreo, ice rice`.concat([$item`Tea, Earl Grey, Hot`]);
+  const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
+    have(item)
+  );
+  const pilsners = $items`astral pilsner`.filter((item) => globalOptions.ascending && have(item));
+  const limitedItems = [...boxingDayCareItems, ...pilsners].map(
+    (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
+  );
+
+  const mallMin = (items: Item[]) => argmax(items.map((i) => [i, -mallPrice(i)]));
+
   return [
     // FOOD
     new MenuItem($item`Dreadsylvanian spooky pocket`),
     new MenuItem($item`tin cup of mulligan stew`),
-    new MenuItem($item`glass of raw eggs`, {
-      maximum: availableAmount($item`glass of raw eggs`),
-    }),
-    new MenuItem($item`Tea, Earl Grey, Hot`),
-    new MenuItem($item`meteoreo`),
-    new MenuItem($item`ice rice`),
     new MenuItem($item`frozen banquet`),
-    new MenuItem($item`fishy fish lasagna`),
-    new MenuItem($item`gnat lasagna`),
-    new MenuItem($item`long pork lasagna`),
     new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
     new MenuItem($item`extra-greasy slider`),
+    new MenuItem(mallMin(lasagnas)),
+    new MenuItem(mallMin(smallEpics)),
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -297,22 +306,9 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`iced plum wine`),
     new MenuItem($item`splendid martini`),
     new MenuItem($item`Eye and a Twist`),
-    new MenuItem($item`punch-drunk punch`, {
-      maximum: availableAmount($item`punch-drunk punch`),
-    }),
-    new MenuItem($item`blood-red mushroom wine`),
-    new MenuItem($item`buzzing mushroom wine`),
-    new MenuItem($item`complex mushroom wine`),
-    new MenuItem($item`overpowering mushroom wine`),
-    new MenuItem($item`smooth mushroom wine`),
-    new MenuItem($item`swirling mushroom wine`),
-    new MenuItem($item`astral pilsner`, {
-      maximum: globalOptions.ascending ? availableAmount($item`astral pilsner`) : 0,
-    }),
-    ...Item.all()
-      .filter((item) => getIngredients(item)["perfect ice cube"])
-      .map((item) => new MenuItem<Note>(item)),
     new MenuItem($item`jar of fermented pickle juice`),
+    new MenuItem(mallMin(complexMushroomWines)),
+    new MenuItem(mallMin(perfectDrinks)),
 
     // SPLEEN
     new MenuItem($item`octolus oculus`),
@@ -322,6 +318,9 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`antimatter wad`),
     new MenuItem($item`voodoo snuff`),
     new MenuItem($item`blood-drive sticker`),
+
+    // MISC
+    ...limitedItems,
 
     // HELPERS
     new MenuItem($item`distention pill`),
@@ -340,37 +339,58 @@ function menu(): MenuItem<Note>[] {
   ];
 }
 
+function gregariousCount(): {
+  expectedGregariousFights: number[];
+  marginalGregariousFights: number;
+} {
+  const gregariousCharges =
+    get("beGregariousCharges") +
+    (get("beGregariousFightsLeft") > 0 &&
+    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+      ? 1
+      : 0);
+  const gregariousFightsPerCharge = expectedGregs();
+  // remove and preserve the last index - that is the marginal count of gregarious fights
+  const marginalGregariousFights = gregariousFightsPerCharge.splice(
+    gregariousFightsPerCharge.length - 1,
+    1
+  )[0];
+
+  const expectedGregariousFights = gregariousFightsPerCharge.slice(gregariousCharges);
+
+  return {
+    expectedGregariousFights,
+    marginalGregariousFights,
+  };
+}
+
 function copiers(): MenuItem<Note>[] {
   const embezzlerDifferential = 25000 - MPA;
-  const alreadyGregarious =
-    get("beGregariousCharges") > 0 ||
-    (get("beGregariousFightsLeft") > 0 &&
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler`);
-
-  const gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0);
-  // if you are drunk, you can't cast Be Gregarious, so don't include these in the diet
-  const extro =
+  const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
+  const extros =
     myInebriety() > inebrietyLimit()
       ? []
-      : gregCounts.map(
-          (embezzlers, index) =>
+      : [
+          ...expectedGregariousFights.map(
+            (embezzlers) =>
+              new MenuItem<Note>($item`Extrovermectin™`, {
+                additionalValue: embezzlers * embezzlerDifferential,
+                maximum: 1,
+              }),
             new MenuItem<Note>($item`Extrovermectin™`, {
-              additionalValue: embezzlers * embezzlerDifferential,
-              maximum: index === gregCounts.length - 1 ? undefined : 1,
+              additionalValue: marginalGregariousFights * embezzlerDifferential,
             })
-        );
-  return [...extro];
+          ),
+        ];
+  return [...extros];
 }
 
 function countCopies(diet: Diet<Note>): number {
   // this only counts the copies not yet realized
   // any copies already realized will be properly counted by embezzlerCount
-  const alreadyGregarious =
-    get("beGregariousCharges") > 0 ||
-    (get("beGregariousFightsLeft") > 0 &&
-      get("beGregariousMonster") === $monster`Knob Goblin Embezzler`);
 
-  const gregCounts = expectedGregs().slice(alreadyGregarious ? 1 : 0);
+  // returns an array of expected counts for number of greg copies to fight per pill use
+  // the last value is how much you expect to fight per pill
   const extros = sumNumbers(
     diet.entries.map((dietEntry) =>
       dietEntry.menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`)
@@ -378,8 +398,12 @@ function countCopies(diet: Diet<Note>): number {
         : 0
     )
   );
-  const replaceExtros = sumNumbers(gregCounts.slice(0, Math.min(extros, gregCounts.length)));
-  const bonusExtros = Math.max(0, extros - gregCounts.length) * gregCounts[gregCounts.length - 1];
+  const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
+
+  // slice will never return an array that is bigger than the original array
+  const replaceExtros = sumNumbers(expectedGregariousFights.slice(0, extros));
+  const bonusExtros =
+    clamp(extros - expectedGregariousFights.length, 0, extros) * marginalGregariousFights;
 
   return replaceExtros + bonusExtros;
 }
