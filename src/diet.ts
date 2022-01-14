@@ -7,7 +7,6 @@ import {
   elementalResistance,
   fullnessLimit,
   getClanLounge,
-  getIngredients,
   getProperty,
   haveEffect,
   inebrietyLimit,
@@ -272,12 +271,23 @@ function menu(): MenuItem<Note>[] {
       ? 1
       : 0;
 
-  const complexMushroomWines = Item.all().filter(
-    (item) => getIngredients(item)["mushroom fermenting solution"] && item.quality === "EPIC"
-  );
-  const perfectDrinks = Item.all().filter((item) => getIngredients(item)["perfect ice cube"]);
+  /*
+   * generated in mafia with an account that has super human cocktail crafting
+   *  > js Item.all().filter((item) => item.inebriety > 0 && item.quality === "EPIC" && getIngredients(item)["mushroom fermenting powder]).join(", ")
+   */
+  const complexMushroomWines = $items`overpowering mushroom wine, complex mushroom wine, smooth mushroom wine, blood-red mushroom wine, buzzing mushroom wine, swirling mushroom wine`;
+  /*
+   * generated in mafia with:
+   *  > js Item.all().filter((item) => item.inebriety > 0 && getIngredients(item)["perfect ice cube"]).join(", ")
+   */
+  const perfectDrinks = $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`;
+  /*
+   * generated in mafia with an account that has Transcendental Noodlecraft
+   *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
+   */
   const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
   const smallEpics = $items`meteoreo, ice rice`.concat([$item`Tea, Earl Grey, Hot`]);
+
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
     have(item)
   );
@@ -300,6 +310,7 @@ function menu(): MenuItem<Note>[] {
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
+    new MenuItem($item`moreltini`),
     new MenuItem($item`Dreadsylvanian grimlet`),
     new MenuItem($item`Hodgman's blanket`),
     new MenuItem($item`Sacramento wine`),
