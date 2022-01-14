@@ -30,5 +30,10 @@
     "name": "garbo_buyPass",
     "type": "boolean",
     "description": "Should a dinsey day pass be bought with FunFunds (if possible) at the end of the script?"
+  },
+  {
+    "name": "garbo_skipPillCheck",
+    "type": "boolean",
+    "description": "Should skip prompting you to go acquire distention and synthetic dog hair pills? Set to true if you want to proceed without them, and false if you want to be reminded."
   }
 ]
