@@ -365,8 +365,8 @@ export const embezzlerSources = [
       const macro = Macro.if_(
         $monster`crate`,
         Macro.externalIf(
-          crateStrategy() !== "Saber" && !have($effect`On the Trail`),
-          Macro.trySkill($skill`Transcendent Olfaction`)
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
+          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
         ).skill($skill`Macrometeorite`)
       ).step(options.macro);
       adventureMacro($location`Noob Cave`, macro);
