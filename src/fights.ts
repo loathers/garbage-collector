@@ -7,6 +7,7 @@ import {
   closetAmount,
   equip,
   familiarWeight,
+  getAutoAttack,
   getCampground,
   getCounter,
   getCounters,
@@ -1805,7 +1806,7 @@ function doSausage() {
     determineDraggableZoneAndEnsureAccess(),
     Macro.if_($monster`sausage goblin`, Macro.basicCombat()).abort()
   );
-  setAutoAttack(0);
+  if (getAutoAttack() !== 0) setAutoAttack(0);
   postCombatActions();
 }
 
