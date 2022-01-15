@@ -22670,7 +22670,7 @@ function withClan(clanIdOrName, action) {
 }
 
 var StashManager = /*#__PURE__*/function () {
-  function StashManager(clanIdOrName) {
+  function StashManager() {
     clan_classCallCheck(this, StashManager);
 
     clan_defineProperty(this, "clanIdOrName", void 0);
@@ -22679,19 +22679,7 @@ var StashManager = /*#__PURE__*/function () {
 
     clan_defineProperty(this, "taken", new Map());
 
-    if (clanIdOrName === undefined) {
-      clanIdOrName = (0,property/* get */.U2)("garbo_stashClan", undefined);
-
-      if (!clanIdOrName) {
-        if ((0,external_kolmafia_.userConfirm)("The preference 'garbo_stashClan' is not set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)", 15000, true)) {
-          clanIdOrName = (0,external_kolmafia_.getClanId)();
-          (0,property/* set */.t8)("garbo_stashClan", clanIdOrName);
-        } else {
-          throw "No garbo_stashClan set.";
-        }
-      }
-    }
-
+    var clanIdOrName = (0,property/* get */.U2)("garbo_stashClan", "none");
     this.clanIdOrName = clanIdOrName;
     this.enabled = 0 !== clanIdOrName && "none" !== clanIdOrName;
   }
@@ -24830,7 +24818,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("e73150046a7a24d0f31a39debc133e15eb1362c2" === mainSha) {
+    if ("71427bf01472556a20af1658dd54e6e7c932004d" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -30641,7 +30629,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e73150046a7a24d0f31a39debc133e15eb1362c2"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("71427bf01472556a20af1658dd54e6e7c932004d"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
