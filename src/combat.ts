@@ -358,14 +358,14 @@ export class Macro extends StrictMacro {
             $familiar`Stocking Mimic`,
           ].some((familiar) => myFamiliar() === familiar),
           Macro.while_(
-            `!pastround 10 && monsterhpabove ${passiveDamage}`,
+            `!pastround 10 && monsterhpabove ${passiveDamage} && !hppercentbelow 25`,
             Macro.item($item`seal tooth`)
           )
         )
         .externalIf(
           myFamiliar() === $familiar`Hobo Monkey`,
           Macro.while_(
-            `!match "shoulder, and hands you some Meat." && !pastround 20 && monsterhpabove ${passiveDamage}`,
+            `!match "shoulder, and hands you some Meat." && !pastround 20 && monsterhpabove ${passiveDamage} && !hppercentbelow 25`,
             Macro.item($item`seal tooth`)
           )
         )
