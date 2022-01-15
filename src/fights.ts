@@ -423,7 +423,7 @@ export function dailyFights(): void {
           (getCounter("Romantic Monster Window end") === -1 &&
             getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
           getCounter("Romantic Monster Window begin") > 0;
-        if (!(nextFight && nextFight.draggable) && romanticMonsterPossible) {
+        if (!romanticMonsterPossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
           if (
