@@ -1398,7 +1398,7 @@ const freeRunFightSources = [
             myFamiliar() === $familiar`XO Skeleton` && get("_xoHugsUsed") < 11,
             Macro.skill($skill`Hugs and Kisses!`)
           )
-          .step(itemStealOlfact())
+          .step(itemStealOlfact(best))
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
@@ -1434,7 +1434,7 @@ const freeRunFightSources = [
       try {
         if (best.preReq) best.preReq();
         Macro.if_(`!monsterid ${best.monster.id}`, runSource.macro)
-          .step(itemStealOlfact())
+          .step(itemStealOlfact(best))
           .skill($skill`Hugs and Kisses!`)
           .step(runSource.macro)
           .setAutoAttack();
@@ -1906,7 +1906,7 @@ function setupItemStealZones() {
   });
 }
 
-function itemStealOlfact() {
+function itemStealOlfact(best: ItemStealZone) {
   return Macro.externalIf(
     have($skill`Transcendent Olfaction`) &&
       get("_olfactionsUsed") < 2 &&
