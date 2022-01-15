@@ -32,7 +32,7 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { baseMeat, questStep, setChoice } from "./lib";
+import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
 import { estimatedTurns } from "./embezzler";
 import { withStash } from "./clan";
 import synthesize from "./synthesis";
@@ -47,7 +47,8 @@ Mood.setDefaultOptions({
 });
 
 export function meatMood(urKels = false): Mood {
-  const mood = new Mood();
+  // Reserve the amount of MP we try to restore before each fight.
+  const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
