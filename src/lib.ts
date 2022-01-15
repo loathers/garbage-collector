@@ -47,9 +47,14 @@ import {
   SongBoom,
 } from "libram";
 
-export const embezzlerLog = {
+export const embezzlerLog: {
+  initialEmbezzlersFought: number;
+  digitizedEmbezzlersFought: number;
+  sources: Array<string>;
+} = {
   initialEmbezzlersFought: 0,
   digitizedEmbezzlersFought: 0,
+  sources: [],
 };
 
 export const globalOptions: {
@@ -106,18 +111,25 @@ export function safeInterrupt(): void {
   }
 }
 
-export function persistEmbezzlerLog(): number {
+export function persistEmbezzlerLog(): { total: number; sources: Array<string> } {
   const today = todayToString();
   if (property.getString("garboEmbezzlerDate") !== today) {
     property.set("garboEmbezzlerDate", today);
     property.set("garboEmbezzlerCount", 0);
+    property.set("garboEmbezzlerSources", "");
   }
   const totalEmbezzlers =
     property.getNumber("garboEmbezzlerCount", 0) +
     embezzlerLog.initialEmbezzlersFought +
     embezzlerLog.digitizedEmbezzlersFought;
+  const allEmbezzlerSources = property
+    .getString("garboEmbezzlerSources")
+    .split(",")
+    .filter((source) => source);
+  allEmbezzlerSources.push(...embezzlerLog.sources);
   property.set("garboEmbezzlerCount", totalEmbezzlers);
-  return totalEmbezzlers;
+  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+  return { total: totalEmbezzlers, sources: allEmbezzlerSources };
 }
 
 export function setChoice(adventure: number, value: number): void {

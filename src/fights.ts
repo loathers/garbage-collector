@@ -366,6 +366,12 @@ export function dailyFights(): void {
             });
             embezzlerLog.initialEmbezzlersFought +=
               1 + get("_pocketProfessorLectures") - startLectures;
+            embezzlerLog.sources.push(fightSource.name);
+            embezzlerLog.sources.push(
+              ...new Array<string>(get("_pocketProfessorLectures") - startLectures).fill(
+                "Pocket Professor"
+              )
+            );
           }
           set(property, true);
           postCombatActions();
@@ -414,6 +420,7 @@ export function dailyFights(): void {
             print(`fight ${nextFight.name} reports wrong encounter!`);
           }
           embezzlerLog.initialEmbezzlersFought++;
+          embezzlerLog.sources.push(nextFight.name);
         }
 
         nextFight = getNextEmbezzlerFight();
