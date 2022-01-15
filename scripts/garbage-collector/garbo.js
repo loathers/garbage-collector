@@ -24797,12 +24797,15 @@ function burnLibrams() {
     (0,external_kolmafia_.cliExecute)("burn *");
   }
 }
+function safeRestoreMpTarget() {
+  return Math.min((0,external_kolmafia_.myMaxmp)(), 200);
+}
 function safeRestore() {
   if ((0,external_kolmafia_.myHp)() < (0,external_kolmafia_.myMaxhp)() * 0.5) {
     (0,external_kolmafia_.restoreHp)((0,external_kolmafia_.myMaxhp)() * 0.9);
   }
 
-  var mpTarget = Math.min((0,external_kolmafia_.myMaxmp)(), 200);
+  var mpTarget = safeRestoreMpTarget();
 
   if ((0,external_kolmafia_.myMp)() < mpTarget) {
     if (((0,lib/* have */.lf)((0,template_string/* $item */.xr)(lib_templateObject18 || (lib_templateObject18 = lib_taggedTemplateLiteral(["magical sausage"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(lib_templateObject19 || (lib_templateObject19 = lib_taggedTemplateLiteral(["magical sausage casing"]))))) && (0,property/* get */.U2)("_sausagesEaten") < 23) {
@@ -24818,7 +24821,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("8291d7affe010b13e4aaa5ba7095c3fe7b5998a2" === mainSha) {
+    if ("b0b77f2864f8ac01c6f3752bcf8d65412be1e7b4" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -28584,7 +28587,10 @@ Mood.setDefaultOptions({
 });
 function meatMood() {
   var urKels = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  var mood = new Mood();
+  // Reserve the amount of MP we try to restore before each fight.
+  var mood = new Mood({
+    reserveMp: safeRestoreMpTarget()
+  });
   mood.potion((0,template_string/* $item */.xr)(src_mood_templateObject5 || (src_mood_templateObject5 = src_mood_taggedTemplateLiteral(["How to Avoid Scams"]))), 3 * baseMeat);
   mood.potion((0,template_string/* $item */.xr)(src_mood_templateObject6 || (src_mood_templateObject6 = src_mood_taggedTemplateLiteral(["resolution: be wealthier"]))), 0.3 * baseMeat);
   mood.potion((0,template_string/* $item */.xr)(src_mood_templateObject7 || (src_mood_templateObject7 = src_mood_taggedTemplateLiteral(["resolution: be happier"]))), 0.15 * 0.45 * 0.8 * 200);
@@ -30727,7 +30733,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8291d7affe010b13e4aaa5ba7095c3fe7b5998a2"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("b0b77f2864f8ac01c6f3752bcf8d65412be1e7b4"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
