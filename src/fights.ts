@@ -1398,6 +1398,7 @@ const freeRunFightSources = [
             myFamiliar() === $familiar`XO Skeleton` && get("_xoHugsUsed") < 11,
             Macro.skill($skill`Hugs and Kisses!`)
           )
+          .step(itemStealOlfact())
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
@@ -1433,16 +1434,7 @@ const freeRunFightSources = [
       try {
         if (best.preReq) best.preReq();
         Macro.if_(`!monsterid ${best.monster.id}`, runSource.macro)
-          .externalIf(
-            have($skill`Transcendent Olfaction`) &&
-              get("_olfactionsUsed") < 2 &&
-              itemStealZones.every((zone) => get("olfactedMonster") !== zone.monster),
-            Macro.skill($skill`Transcendent Olfaction`)
-          )
-          .externalIf(
-            have($skill`Gallapagosian Mating Call`) && get("_gallapagosMonster") !== best.monster,
-            Macro.skill($skill`Gallapagosian Mating Call`)
-          )
+          .step(itemStealOlfact())
           .skill($skill`Hugs and Kisses!`)
           .step(runSource.macro)
           .setAutoAttack();
@@ -1912,6 +1904,18 @@ function setupItemStealZones() {
     888: 4,
     889: 5,
   });
+}
+
+function itemStealOlfact() {
+  return Macro.externalIf(
+    have($skill`Transcendent Olfaction`) &&
+      get("_olfactionsUsed") < 2 &&
+      itemStealZones.every((zone) => get("olfactedMonster") !== zone.monster),
+    Macro.skill($skill`Transcendent Olfaction`)
+  ).externalIf(
+    have($skill`Gallapagosian Mating Call`) && get("_gallapagosMonster") !== best.monster,
+    Macro.skill($skill`Gallapagosian Mating Call`)
+  );
 }
 
 const haveEnoughPills =
