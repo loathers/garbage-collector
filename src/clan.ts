@@ -60,24 +60,8 @@ export class StashManager {
   enabled: boolean;
   taken = new Map<Item, number>();
 
-  constructor(clanIdOrName?: string | number) {
-    if (clanIdOrName === undefined) {
-      clanIdOrName = get("garbo_stashClan", undefined);
-      if (!clanIdOrName) {
-        if (
-          userConfirm(
-            "The preference 'garbo_stashClan' is not set. Use the current clan as a stash clan? (Defaults to yes in 15 seconds)",
-            15000,
-            true
-          )
-        ) {
-          clanIdOrName = getClanId();
-          set("garbo_stashClan", clanIdOrName);
-        } else {
-          throw "No garbo_stashClan set.";
-        }
-      }
-    }
+  constructor() {
+    const clanIdOrName = get<string | number>("garbo_stashClan", "none");
     this.clanIdOrName = clanIdOrName;
     this.enabled = 0 !== clanIdOrName && "none" !== clanIdOrName;
   }
