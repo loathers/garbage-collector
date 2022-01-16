@@ -420,11 +420,11 @@ export function dailyFights(): void {
         nextFight = getNextEmbezzlerFight();
 
         // try to deliver the thesis
-        const romanticMonsterPossible =
+        const romanticMonsterImpossible =
           (getCounter("Romantic Monster Window end") === -1 &&
-            getCounters("Romantic Monster Window end", -1, -1).trim() !== "") ||
+            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
           getCounter("Romantic Monster Window begin") > 0;
-        if (!romanticMonsterPossible && (!nextFight || !nextFight.draggable)) {
+        if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
           if (
