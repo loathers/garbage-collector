@@ -167,7 +167,7 @@ export class EmbezzlerFight {
     ) {
       return determineDraggableZoneAndEnsureAccess(this.draggable);
     }
-    return $location`Noob Cave`;
+    return suggestion ?? $location`Noob Cave`;
   }
 }
 
