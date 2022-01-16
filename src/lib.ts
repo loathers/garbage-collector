@@ -341,11 +341,15 @@ export function burnLibrams(mpTarget = 0): void {
   }
 }
 
+export function safeRestoreMpTarget(): number {
+  return Math.min(myMaxmp(), 200);
+}
+
 export function safeRestore(): void {
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
   }
-  const mpTarget = Math.min(myMaxmp(), 200);
+  const mpTarget = safeRestoreMpTarget();
   if (myMp() < mpTarget) {
     if (
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
