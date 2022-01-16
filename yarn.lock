@@ -954,11 +954,11 @@
     "@babel/plugin-transform-typescript" "^7.16.0"
 
 "@babel/runtime-corejs3@^7.14.9":
-  version "7.16.7"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.16.7.tgz#a762745fe8b4d61a26444a9151e6586d36044dde"
-  integrity sha512-MiYR1yk8+TW/CpOD0CyX7ve9ffWTKqLk/L6pk8TPl0R8pNi+1pFY8fH9yET55KlvukQ4PAWfXsGr2YHVjcI4Pw==
+  version "7.16.8"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.16.8.tgz#ea533d96eda6fdc76b1812248e9fbd0c11d4a1a7"
+  integrity sha512-3fKhuICS1lMz0plI5ktOE/yEtBRMVxplzRkdn6mJQ197XiY0JnrzYV0+Mxozq3JZ8SBV9Ecurmw1XsGbwOf+Sg==
   dependencies:
-    core-js-pure "^3.19.0"
+    core-js-pure "^3.20.2"
     regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.8.4":
@@ -1857,10 +1857,10 @@ core-js-compat@^3.18.0, core-js-compat@^3.19.1:
     browserslist "^4.17.6"
     semver "7.0.0"
 
-core-js-pure@^3.19.0:
-  version "3.20.2"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.20.2.tgz#5d263565f0e34ceeeccdc4422fae3e84ca6b8c0f"
-  integrity sha512-CmWHvSKn2vNL6p6StNp1EmMIfVY/pqn3JLAjfZQ8WZGPOlGoO92EkX9/Mk81i6GxvoPXjUqEQnpM3rJ5QxxIOg==
+core-js-pure@^3.20.2:
+  version "3.20.3"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.20.3.tgz#6cc4f36da06c61d95254efc54024fe4797fd5d02"
+  integrity sha512-Q2H6tQ5MtPtcC7f3HxJ48i4Q7T9ybPKgvWyuH7JXIoNa2pm0KuBnycsET/qw1SLLZYfbsbrZQNMeIOClb+6WIA==
 
 core-js@3.15.2:
   version "3.15.2"
@@ -2920,9 +2920,9 @@ levn@^0.4.1:
     type-check "~0.4.0"
 
 libram@^0.5.8:
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.5.8.tgz#2a06007bb20c25ec4a3385b106ced8577489f4b7"
-  integrity sha512-qgDPdD3lZYJwPFSuahXjaeVCaHqzBT82XlaOPi6SRlK1jEqWd6e5G5b5lmOIGdkQ+EyaucJbrATudVvg8zDR7w==
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.5.9.tgz#ad8c8a5d81881d4b50b1ed510c01c49934bacc6c"
+  integrity sha512-tEmj6r+KxGcs1QAXrz8qYiFjaYtpuUUJpmah7w0i2obmCKtrSnh31zmdxg1yqgbR+3VQWufso/H5v2+47l0UDQ==
   dependencies:
     "@babel/runtime-corejs3" "^7.14.9"
     core-js "3.15.2"
