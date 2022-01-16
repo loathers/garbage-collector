@@ -24842,7 +24842,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("f6a543101643a51547fa3fbb8c4abaf484c0953b" === mainSha) {
+    if ("1f9d3ff3d90092de9c9b864fed18cc5248b70cfc" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -29143,16 +29143,17 @@ function dailyFights() {
           saberCrateIfDesired();
         }
 
+        var underwater = nextFight.location().environment === "underwater";
         var romanticFamiliar = (0,template_string/* $familiars */.LG)(fights_templateObject71 || (fights_templateObject71 = fights_taggedTemplateLiteral(["Obtuse Angel, Reanimated Reanimator"]))).find(lib/* have */.lf);
 
-        if (romanticFamiliar && (0,property/* get */.U2)("_badlyRomanticArrows") === 0 && nextFight.draggable) {
+        if (romanticFamiliar && (0,property/* get */.U2)("_badlyRomanticArrows") === 0 && nextFight.draggable && underwater) {
           (0,external_kolmafia_.useFamiliar)(romanticFamiliar);
         } else {
           (0,external_kolmafia_.useFamiliar)(meatFamiliar());
         }
 
         (0,external_kolmafia_.setLocation)(nextFight.location());
-        meatOutfit(true, Requirement.merge(nextFight.requirements));
+        meatOutfit(true, Requirement.merge(nextFight.requirements), underwater);
         nextFight.run();
         postCombatActions();
         (0,external_kolmafia_.print)("Finished ".concat(nextFight.name));
@@ -30825,7 +30826,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f6a543101643a51547fa3fbb8c4abaf484c0953b"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1f9d3ff3d90092de9c9b864fed18cc5248b70cfc"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
