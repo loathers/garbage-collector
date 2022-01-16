@@ -5,7 +5,6 @@ import {
   cliExecute,
   closetAmount,
   equip,
-  familiarWeight,
   getAutoAttack,
   getCampground,
   getCounter,
