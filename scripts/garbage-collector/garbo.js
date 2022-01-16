@@ -19802,7 +19802,7 @@ function main() {
 
 /***/ }),
 
-/***/ 3264:
+/***/ 7208:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -24821,7 +24821,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("8484f55ef1289c20b6306bae2380c191d414abbd" === mainSha) {
+    if ("0ad4e740399db77222ee35b29e9d526173f6addb" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -26250,7 +26250,7 @@ function embezzler_classApplyDescriptorSet(receiver, descriptor, value) { if (de
  * @interface EmbezzlerFightConfigOptions
  * @member {Requirement[]?} requirements maximizer requirements to use for this fight (defaults to empty)
  * @member {draggableFight?} draggable if this fight can be pulled into another zone and what kind of draggable it is (defaults to undefined)
- * @member {boolean?} canInitializeWandererCounters if this fight can be used to initialize wanderers (defaults to true)
+ * @member {boolean?} canInitializeWandererCounters if this fight can be used to initialize wanderers (defaults to false)
  * @member {boolean?} gregariousReplace if this is a "monster replacement" fight - pulls another monster from the CSV (defautls to false)
  * @member {boolean?} wrongEncounterName if mafia does not update the lastEncounter properly when doing this fight (defaults to value of gregariousReplace)
  */
@@ -26356,7 +26356,7 @@ var EmbezzlerFight = /*#__PURE__*/function () {
     this.execute = execute;
     this.requirements = (_options$requirements = options.requirements) !== null && _options$requirements !== void 0 ? _options$requirements : [];
     this.draggable = options.draggable;
-    this.canInitializeWandererCounters = (_options$canInitializ = options.canInitializeWandererCounters) !== null && _options$canInitializ !== void 0 ? _options$canInitializ : true;
+    this.canInitializeWandererCounters = (_options$canInitializ = options.canInitializeWandererCounters) !== null && _options$canInitializ !== void 0 ? _options$canInitializ : false;
     this.gregariousReplace = (_options$gregariousRe = options.gregariousReplace) !== null && _options$gregariousRe !== void 0 ? _options$gregariousRe : false;
     this.wrongEncounterName = (_options$wrongEncount = options.wrongEncounterName) !== null && _options$wrongEncount !== void 0 ? _options$wrongEncount : this.gregariousReplace;
   }
@@ -26384,7 +26384,7 @@ var EmbezzlerFight = /*#__PURE__*/function () {
         return determineDraggableZoneAndEnsureAccess(this.draggable);
       }
 
-      return (0,template_string/* $location */.PG)(embezzler_templateObject2 || (embezzler_templateObject2 = embezzler_taggedTemplateLiteral(["Noob Cave"])));
+      return suggestion !== null && suggestion !== void 0 ? suggestion : (0,template_string/* $location */.PG)(embezzler_templateObject2 || (embezzler_templateObject2 = embezzler_taggedTemplateLiteral(["Noob Cave"])));
     }
   }]);
 
@@ -26451,7 +26451,8 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
 }, {
   requirements: [new Requirement([], {
     forceEquip: (0,template_string/* $items */.vS)(embezzler_templateObject40 || (embezzler_templateObject40 = embezzler_taggedTemplateLiteral(["miniature crystal ball"])))
-  })]
+  })],
+  canInitializeWandererCounters: true
 }), new EmbezzlerFight("Time-Spinner", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject41 || (embezzler_templateObject41 = embezzler_taggedTemplateLiteral(["Time-Spinner"])))) && (0,template_string/* $locations */.xw)(embezzler_templateObject42 || (embezzler_templateObject42 = embezzler_taggedTemplateLiteral(["Noob Cave, The Dire Warren"]))).some(location => location.combatQueue.includes((0,template_string/* $monster */.O4)(embezzler_templateObject43 || (embezzler_templateObject43 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))).name)) && (0,property/* get */.U2)("_timeSpinnerMinutesUsed") <= 7, () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject44 || (embezzler_templateObject44 = embezzler_taggedTemplateLiteral(["Time-Spinner"])))) && (0,template_string/* $locations */.xw)(embezzler_templateObject45 || (embezzler_templateObject45 = embezzler_taggedTemplateLiteral(["Noob Cave, The Dire Warren"]))).some(location => location.combatQueue.includes((0,template_string/* $monster */.O4)(embezzler_templateObject46 || (embezzler_templateObject46 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))).name) || (0,property/* get */.U2)("beGregariousCharges") > 0) ? Math.floor((10 - (0,property/* get */.U2)("_timeSpinnerMinutesUsed")) / 3) : 0, options => {
   (0,src_combat.withMacro)(options.macro, () => {
     (0,external_kolmafia_.visitUrl)("inv_use.php?whichitem=".concat((0,external_kolmafia_.toInt)((0,template_string/* $item */.xr)(embezzler_templateObject47 || (embezzler_templateObject47 = embezzler_taggedTemplateLiteral(["Time-Spinner"]))))));
@@ -26505,7 +26506,7 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
   requirements: [new Requirement([], {
     forceEquip: (0,template_string/* $items */.vS)(embezzler_templateObject79 || (embezzler_templateObject79 = embezzler_taggedTemplateLiteral(["miniature crystal ball"]))).filter(item => (0,lib/* have */.lf)(item))
   })],
-  canInitializeWandererCounters: false
+  canInitializeWandererCounters: true
 }), new EmbezzlerFight("Backup", () => (0,property/* get */.U2)("lastCopyableMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject80 || (embezzler_templateObject80 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject81 || (embezzler_templateObject81 = embezzler_taggedTemplateLiteral(["backup camera"])))) && (0,property/* get */.U2)("_backUpUses") < 11, () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject82 || (embezzler_templateObject82 = embezzler_taggedTemplateLiteral(["backup camera"])))) ? 11 - (0,property/* get */.U2)("_backUpUses") : 0, options => {
   (0,combat/* adventureMacro */.Qk)(options.location, src_combat.Macro.if_("!monsterid ".concat((0,template_string/* $monster */.O4)(embezzler_templateObject83 || (embezzler_templateObject83 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))).id), src_combat.Macro.skill((0,template_string/* $skill */.tm)(embezzler_templateObject84 || (embezzler_templateObject84 = embezzler_taggedTemplateLiteral(["Back-Up to your Last Enemy"]))))).step(options.macro));
 }, {
@@ -26515,7 +26516,7 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
   })],
   draggable: "backup",
   wrongEncounterName: true,
-  canInitializeWandererCounters: false
+  canInitializeWandererCounters: true
 }), new EmbezzlerFight("Spooky Putty & Rain-Doh", () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject87 || (embezzler_templateObject87 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"])))) && (0,property/* get */.U2)("spookyPuttyMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject88 || (embezzler_templateObject88 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject89 || (embezzler_templateObject89 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"])))) && (0,property/* get */.U2)("rainDohMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject90 || (embezzler_templateObject90 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), () => {
   if (((0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject91 || (embezzler_templateObject91 = embezzler_taggedTemplateLiteral(["Spooky Putty sheet"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject92 || (embezzler_templateObject92 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))))) && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject93 || (embezzler_templateObject93 = embezzler_taggedTemplateLiteral(["Rain-Doh black box"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(embezzler_templateObject94 || (embezzler_templateObject94 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"])))))) {
     return 6 - (0,property/* get */.U2)("spookyPuttyCopiesMade") - (0,property/* get */.U2)("_raindohCopiesMade") + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(embezzler_templateObject95 || (embezzler_templateObject95 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"])))) + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(embezzler_templateObject96 || (embezzler_templateObject96 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"]))));
@@ -27819,6 +27820,36 @@ function runDiet() {
     }
   });
 }
+;// CONCATENATED MODULE: ./node_modules/libram/dist/counter.js
+
+/**
+ * Returns null for counters that do not exist, and otherwise returns the duration of the counter
+ * @param counter The name of the counter in question
+ * @returns null if the counter does not exist; otherwise returns the duration of the counter
+ */
+
+function counter_get(counter) {
+  var value = (0,external_kolmafia_.getCounter)(counter); //getCounter returns -1 for counters that don't exist, but it also returns -1 for counters whose value is -1
+
+  if (value === -1) {
+    //if we have a counter with value -1, we check to see if that counter exists via getCounters()
+    //We return null if it doesn't exist
+    return (0,external_kolmafia_.getCounters)(counter, -1, -1).trim() === "" ? null : -1;
+  }
+
+  return value;
+}
+/**
+ * Creates a manual counter with specified name and duration
+ * @param counter Name of the counter to manually create
+ * @param duration Duration of counter to manually set
+ * @returns Whether the counter was successfully set
+ */
+
+function set(counter, duration) {
+  cliExecute("counters add ".concat(duration, " ").concat(counter));
+  return counter_get(counter) !== null;
+}
 // EXTERNAL MODULE: ./node_modules/libram/dist/Copier.js
 var Copier = __webpack_require__(2219);
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2017/TunnelOfLove.js
@@ -28966,7 +28997,7 @@ function embezzlerSetup() {
 function startWandererCounter() {
   var nextFight = getNextEmbezzlerFight();
 
-  if (!(nextFight && nextFight.canInitializeWandererCounters)) {
+  if (!nextFight || nextFight.canInitializeWandererCounters) {
     return;
   }
 
@@ -29073,6 +29104,8 @@ function dailyFights() {
       var nextFight = getNextEmbezzlerFight();
 
       while (nextFight !== null) {
+        var _Counter$get;
+
         (0,external_kolmafia_.print)("Running fight ".concat(nextFight.name));
         var startTurns = (0,external_kolmafia_.totalTurnsPlayed)();
 
@@ -29108,9 +29141,9 @@ function dailyFights() {
 
         nextFight = getNextEmbezzlerFight(); // try to deliver the thesis
 
-        var romanticMonsterPossible = (0,external_kolmafia_.getCounter)("Romantic Monster Window end") === -1 && (0,external_kolmafia_.getCounters)("Romantic Monster Window end", -1, -1).trim() === "" || (0,external_kolmafia_.getCounter)("Romantic Monster Window begin") > 0;
+        var romanticMonsterImpossible = counter_get("Romantic Monster Window end") === null || ((_Counter$get = counter_get("Romantic Monster Window begin")) !== null && _Counter$get !== void 0 ? _Counter$get : Infinity) > 0;
 
-        if (!romanticMonsterPossible && (!nextFight || !nextFight.draggable)) {
+        if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           var _nextFight;
 
           doSausage(); // Check in case our prof gained enough exp during the profchains
@@ -30759,7 +30792,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8484f55ef1289c20b6306bae2380c191d414abbd"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("0ad4e740399db77222ee35b29e9d526173f6addb"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31096,7 +31129,7 @@ module.exports = require("kolmafia");
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 3264);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 7208);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
