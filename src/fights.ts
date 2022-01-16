@@ -406,7 +406,7 @@ export function dailyFights(): void {
           romanticFamiliar &&
           get("_badlyRomanticArrows") === 0 &&
           nextFight.draggable &&
-          underwater
+          !underwater
         ) {
           useFamiliar(romanticFamiliar);
         } else {
