@@ -263,7 +263,7 @@ function embezzlerSetup() {
 
 function startWandererCounter() {
   const nextFight = getNextEmbezzlerFight();
-  if (!(nextFight && nextFight.canInitializeWandererCounters)) {
+  if (!nextFight || !nextFight.canInitializeWandererCounters) {
     return;
   }
   if (
