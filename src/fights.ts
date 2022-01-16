@@ -743,7 +743,7 @@ const freeFightSources = [
       if (
         have($skill`Comprehensive Cartography`) &&
         get("_monstersMapped") <
-          (getBestFireExtinguisherZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
+          (getBestItemStealZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
       ) {
         withMacro(
           Macro.if_($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`),
@@ -1378,7 +1378,7 @@ const freeRunFightSources = [
       noncombat: () => true,
     }
   ),
-  // Must run before fishing for hipster/goth fights otherwise the targets may be banished
+  // Fire Extinguisher on best available target.
   new FreeRunFight(
     () =>
       have($item`industrial fire extinguisher`) &&
@@ -1386,24 +1386,20 @@ const freeRunFightSources = [
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestFireExtinguisherZone() !== null,
+      getBestItemStealZone() !== null,
     (runSource: ActionSource) => {
-      // Haunted Library is full of free noncombats
-      propertyManager.set({ lightsOutAutomation: 2 });
-      propertyManager.setChoices({
-        163: 4, // Leave without taking anything
-        164: 3, // Play some volleyball
-        165: 4, // Measure the caverns
-        166: 1, // Go up to the crow's nest
-        888: 4, // Reading is for losers. I'm outta here.
-        889: 5, // Reading is for losers. I'm outta here.
-      });
-      const best = getBestFireExtinguisherZone();
+      setupItemStealZones();
+      const best = getBestItemStealZone();
       if (!best) throw `Unable to find fire extinguisher zone?`;
       try {
         if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
         Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
+          .externalIf(
+            myFamiliar() === $familiar`XO Skeleton` && get("_xoHugsUsed") < 11,
+            Macro.skill($skill`Hugs and Kisses!`)
+          )
+          .step(itemStealOlfact(best))
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
@@ -1413,13 +1409,50 @@ const freeRunFightSources = [
       }
     },
     {
+      familiar: () =>
+        have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11 ? $familiar`XO Skeleton` : null,
       requirements: () => {
-        const zone = getBestFireExtinguisherZone();
+        const zone = getBestItemStealZone();
         return [
           new Requirement(zone?.maximize ?? [], {
             forceEquip: $items`industrial fire extinguisher`,
           }),
         ];
+      },
+    }
+  ),
+  // Use XO pockets on best available target.
+  new FreeRunFight(
+    () =>
+      have($familiar`XO Skeleton`) &&
+      get("_xoHugsUsed") < 11 &&
+      get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
+      getBestItemStealZone() !== null,
+    (runSource: ActionSource) => {
+      setupItemStealZones();
+      const best = getBestItemStealZone();
+      if (!best) throw `Unable to find XO Skeleton zone?`;
+      try {
+        if (best.preReq) best.preReq();
+        Macro.if_(`!monsterid ${best.monster.id}`, runSource.macro)
+          .step(itemStealOlfact(best))
+          .skill($skill`Hugs and Kisses!`)
+          .step(runSource.macro)
+          .setAutoAttack();
+        if (have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) {
+          mapMonster(best.location, best.monster);
+        } else {
+          adv1(best.location, -1, "");
+        }
+      } finally {
+        setAutoAttack(0);
+      }
+    },
+    {
+      familiar: () => $familiar`XO Skeleton`,
+      requirements: () => {
+        const zone = getBestItemStealZone();
+        return [new Requirement(zone?.maximize ?? [], {})];
       },
     }
   ),
@@ -1768,7 +1801,7 @@ function ensureBeachAccess() {
   }
 }
 
-type fireExtinguisherZone = {
+type ItemStealZone = {
   item: Item;
   location: Location;
   monster: Monster;
@@ -1778,7 +1811,7 @@ type fireExtinguisherZone = {
   openCost: () => number;
   preReq: () => void;
 };
-const fireExtinguishZones = [
+const itemStealZones = [
   {
     location: $location`The Deep Dark Jungle`,
     monster: $monster`smoke monster`,
@@ -1836,24 +1869,54 @@ const fireExtinguishZones = [
     openCost: () => 0,
     preReq: null,
   },
-] as fireExtinguisherZone[];
+] as ItemStealZone[];
 
-let bestFireExtinguisherZoneCached: fireExtinguisherZone | null | undefined = undefined;
-function getBestFireExtinguisherZone(): fireExtinguisherZone | null {
-  if (bestFireExtinguisherZoneCached !== undefined) return bestFireExtinguisherZoneCached;
-  const targets = fireExtinguishZones.filter((zone) => zone.isOpen() && !isBanished(zone.monster));
+function getBestItemStealZone(): ItemStealZone | null {
+  const targets = itemStealZones.filter(
+    (zone) =>
+      zone.isOpen() &&
+      (!isBanished(zone.monster) ||
+        get("olfactedMonster") === zone.monster ||
+        get("_gallapagosMonster") === zone.monster)
+  );
   const vorticesAvail = Math.floor(get("_fireExtinguisherCharge") / 10);
-  const value = (zone: fireExtinguisherZone): number => {
-    return zone.dropRate * getSaleValue(zone.item) * vorticesAvail - zone.openCost();
+  const hugsAvail = have($familiar`XO Skeleton`) ? clamp(11 - get("_xoHugsUsed"), 0, 11) : 0;
+  const value = (zone: ItemStealZone): number => {
+    // We have to divide hugs by 2 - will likely use a banish as a free run so we will be alternating zones.
+    return (
+      zone.dropRate * getSaleValue(zone.item) * (vorticesAvail + hugsAvail / 2) - zone.openCost()
+    );
   };
-  bestFireExtinguisherZoneCached = targets.sort((a, b) => {
-    return value(b) - value(a);
-  })[0];
-  // If we don't find any zones or the best zone is negative value then ignore it
-  if (!bestFireExtinguisherZoneCached || value(bestFireExtinguisherZoneCached) < 1) {
-    bestFireExtinguisherZoneCached = null;
-  }
-  return bestFireExtinguisherZoneCached;
+  return (
+    targets.sort((a, b) => {
+      return value(b) - value(a);
+    })[0] ?? null
+  );
+}
+
+function setupItemStealZones() {
+  // Haunted Library is full of free noncombats
+  propertyManager.set({ lightsOutAutomation: 2 });
+  propertyManager.setChoices({
+    163: 4,
+    164: 3,
+    165: 4,
+    166: 1,
+    888: 4,
+    889: 5,
+  });
+}
+
+function itemStealOlfact(best: ItemStealZone) {
+  return Macro.externalIf(
+    have($skill`Transcendent Olfaction`) &&
+      get("_olfactionsUsed") < 2 &&
+      itemStealZones.every((zone) => get("olfactedMonster") !== zone.monster),
+    Macro.skill($skill`Transcendent Olfaction`)
+  ).externalIf(
+    have($skill`Gallapagosian Mating Call`) && get("_gallapagosMonster") !== best.monster,
+    Macro.skill($skill`Gallapagosian Mating Call`)
+  );
 }
 
 const haveEnoughPills =
