@@ -7715,7 +7715,7 @@ var Macro = /*#__PURE__*/function (_StrictMacro) {
   return Macro;
 }(libram__WEBPACK_IMPORTED_MODULE_6__/* .StrictMacro */ .t$);
 function withMacro(macro, action) {
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.setAutoAttack)(0);
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getAutoAttack)() !== 0) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.setAutoAttack)(0);
   macro.save();
 
   try {

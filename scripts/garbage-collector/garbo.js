@@ -19777,7 +19777,7 @@ var Macro = /*#__PURE__*/function (_StrictMacro) {
   return Macro;
 }(libram__WEBPACK_IMPORTED_MODULE_6__/* .StrictMacro */ .t$);
 function withMacro(macro, action) {
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.setAutoAttack)(0);
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getAutoAttack)() !== 0) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.setAutoAttack)(0);
   macro.save();
 
   try {
@@ -24821,7 +24821,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("46433b6d251e6790a656b740d4e7a26b3ac358c1" === mainSha) {
+    if ("e0c40e40c481dcc2b7abf259960c7eb032c01ffe" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -29904,7 +29904,7 @@ function doSausage() {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject435 || (_templateObject435 = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
   }));
   (0,combat/* adventureMacroAuto */.Ao)(determineDraggableZoneAndEnsureAccess(), src_combat.Macro.if_((0,template_string/* $monster */.O4)(_templateObject436 || (_templateObject436 = fights_taggedTemplateLiteral(["sausage goblin"]))), src_combat.Macro.basicCombat()).abort());
-  (0,external_kolmafia_.setAutoAttack)(0);
+  if ((0,external_kolmafia_.getAutoAttack)() !== 0) (0,external_kolmafia_.setAutoAttack)(0);
   postCombatActions();
 }
 
@@ -30733,7 +30733,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("46433b6d251e6790a656b740d4e7a26b3ac358c1"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e0c40e40c481dcc2b7abf259960c7eb032c01ffe"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
