@@ -22962,8 +22962,21 @@ function DaylightShavings_have() {
   return (0,lib/* have */.lf)(helmet);
 }
 var buffs = (0,template_string/* $effects */.lh)(DaylightShavings_templateObject2 || (DaylightShavings_templateObject2 = DaylightShavings_taggedTemplateLiteral(["Spectacle Moustache, Toiletbrush Moustache, Barbell Moustache, Grizzly Beard, Surrealist's Moustache, Musician's Musician's Moustache, Gull-Wing Moustache, Space Warlord's Beard, Pointy Wizard Beard, Cowboy Stache, Friendly Chops"])));
+/**
+ * Tells you whether you currently have a beardbuff active. Warning: because of spaghetti, this does not determine buff eligibility.
+ * @returns Whether you currently have a beardbuff active
+ */
+
 function hasBuff() {
   return buffs.some(buff => haveItem(buff));
+}
+/**
+ * Checks to see if there are any beardbuffs you have more than 1 turn of, determining whether you are eligible to receive a buff post-combat.
+ * @returns Whether you current are able to get a buff from the Daylight Shaving Helmet.
+ */
+
+function buffAvailable() {
+  return !buffs.some(buff => haveItem(buff, 2));
 }
 /**
  * Calculates and returns the cycle of buffs that the hat should cycle through.
@@ -23677,7 +23690,7 @@ var ActionSource = /*#__PURE__*/function () {
 function filterAction(action, constraints) {
   var _constraints$requireF, _constraints$requireU, _constraints$noFamili, _constraints$noRequir, _constraints$noPrepar, _constraints$maximumC, _constraints$maximumC2;
 
-  return action.available() && !((_constraints$requireF = constraints.requireFamiliar) !== null && _constraints$requireF !== void 0 && _constraints$requireF.call(constraints) && !action.constraints.familiar) && !((_constraints$requireU = constraints.requireUnlimited) !== null && _constraints$requireU !== void 0 && _constraints$requireU.call(constraints) && !action.isUnlimited()) && !((_constraints$noFamili = constraints.noFamiliar) !== null && _constraints$noFamili !== void 0 && _constraints$noFamili.call(constraints) && action.constraints.familiar) && !((_constraints$noRequir = constraints.noRequirements) !== null && _constraints$noRequir !== void 0 && _constraints$noRequir.call(constraints) && action.constraints.equipmentRequirements) && !((_constraints$noPrepar = constraints.noPreparation) !== null && _constraints$noPrepar !== void 0 && _constraints$noPrepar.call(constraints) && action.constraints.preparation) && action.cost() <= ((_constraints$maximumC = (_constraints$maximumC2 = constraints.maximumCost) === null || _constraints$maximumC2 === void 0 ? void 0 : _constraints$maximumC2.call(constraints)) !== null && _constraints$maximumC !== void 0 ? _constraints$maximumC : 0);
+  return action.available() && (constraints.allowedAction === undefined || constraints.allowedAction(action)) && !((_constraints$requireF = constraints.requireFamiliar) !== null && _constraints$requireF !== void 0 && _constraints$requireF.call(constraints) && !action.constraints.familiar) && !((_constraints$requireU = constraints.requireUnlimited) !== null && _constraints$requireU !== void 0 && _constraints$requireU.call(constraints) && !action.isUnlimited()) && !((_constraints$noFamili = constraints.noFamiliar) !== null && _constraints$noFamili !== void 0 && _constraints$noFamili.call(constraints) && action.constraints.familiar) && !((_constraints$noRequir = constraints.noRequirements) !== null && _constraints$noRequir !== void 0 && _constraints$noRequir.call(constraints) && action.constraints.equipmentRequirements) && !((_constraints$noPrepar = constraints.noPreparation) !== null && _constraints$noPrepar !== void 0 && _constraints$noPrepar.call(constraints) && action.constraints.preparation) && action.cost() <= ((_constraints$maximumC = (_constraints$maximumC2 = constraints.maximumCost) === null || _constraints$maximumC2 === void 0 ? void 0 : _constraints$maximumC2.call(constraints)) !== null && _constraints$maximumC !== void 0 ? _constraints$maximumC : 0);
 }
 /**
  * Find an available action source subject to constraints.
@@ -24551,6 +24564,8 @@ function lib_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function lib_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
+function lib_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function lib_toConsumableArray(arr) { return lib_arrayWithoutHoles(arr) || lib_iterableToArray(arr) || lib_unsupportedIterableToArray(arr) || lib_nonIterableSpread(); }
 
 function lib_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -24563,14 +24578,13 @@ function lib_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return lib_arrayLi
 
 function lib_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function lib_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 
 
 var embezzlerLog = {
   initialEmbezzlersFought: 0,
-  digitizedEmbezzlersFought: 0
+  digitizedEmbezzlersFought: 0,
+  sources: []
 };
 var globalOptions = {
   stopTurncount: null,
@@ -24607,11 +24621,18 @@ function persistEmbezzlerLog() {
   if (property/* getString */.KF("garboEmbezzlerDate") !== today) {
     property/* set */.t8("garboEmbezzlerDate", today);
     property/* set */.t8("garboEmbezzlerCount", 0);
+    property/* set */.t8("garboEmbezzlerSources", "");
   }
 
   var totalEmbezzlers = property/* getNumber */.Dx("garboEmbezzlerCount", 0) + embezzlerLog.initialEmbezzlersFought + embezzlerLog.digitizedEmbezzlersFought;
+  var allEmbezzlerSources = property/* getString */.KF("garboEmbezzlerSources").split(",").filter(source => source);
+  allEmbezzlerSources.push.apply(allEmbezzlerSources, lib_toConsumableArray(embezzlerLog.sources));
   property/* set */.t8("garboEmbezzlerCount", totalEmbezzlers);
-  return totalEmbezzlers;
+  property/* set */.t8("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+  return {
+    total: totalEmbezzlers,
+    sources: allEmbezzlerSources
+  };
 }
 function setChoice(adventure, value) {
   propertyManager.setChoices(lib_defineProperty({}, adventure, value));
@@ -24821,7 +24842,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("0ad4e740399db77222ee35b29e9d526173f6addb" === mainSha) {
+    if ("f6a543101643a51547fa3fbb8c4abaf484c0953b" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -29087,11 +29108,16 @@ function dailyFights() {
           })].concat(fights_toConsumableArray(fightSource.requirements))));
 
           if ((0,property/* get */.U2)("_pocketProfessorLectures") < pocketProfessorLectures()) {
+            var _embezzlerLog$sources;
+
             var startLectures = (0,property/* get */.U2)("_pocketProfessorLectures");
             fightSource.run({
               macro: macro
             });
             embezzlerLog.initialEmbezzlersFought += 1 + (0,property/* get */.U2)("_pocketProfessorLectures") - startLectures;
+            embezzlerLog.sources.push(fightSource.name);
+
+            (_embezzlerLog$sources = embezzlerLog.sources).push.apply(_embezzlerLog$sources, fights_toConsumableArray(new Array((0,property/* get */.U2)("_pocketProfessorLectures") - startLectures).fill("Pocket Professor")));
           }
 
           (0,property/* set */.t8)(_property, true);
@@ -29137,6 +29163,7 @@ function dailyFights() {
           }
 
           embezzlerLog.initialEmbezzlersFought++;
+          embezzlerLog.sources.push(nextFight.name);
         }
 
         nextFight = getNextEmbezzlerFight(); // try to deliver the thesis
@@ -30782,7 +30809,13 @@ function barfTurn() {
   }
 
   if ((0,external_kolmafia_.totalTurnsPlayed)() - startTurns === 1 && (0,property/* get */.U2)("lastEncounter") === "Knob Goblin Embezzler") {
-    if (embezzlerUp) embezzlerLog.digitizedEmbezzlersFought++;else embezzlerLog.initialEmbezzlersFought++;
+    if (embezzlerUp) {
+      embezzlerLog.digitizedEmbezzlersFought++;
+      embezzlerLog.sources.push("Digitize");
+    } else {
+      embezzlerLog.initialEmbezzlersFought++;
+      embezzlerLog.sources.push("Unknown Source");
+    }
   }
 }
 
@@ -30792,7 +30825,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("0ad4e740399db77222ee35b29e9d526173f6addb"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f6a543101643a51547fa3fbb8c4abaf484c0953b"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -30887,7 +30920,7 @@ function main() {
     (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true);
     propertyManager.set({
       logPreferenceChange: true,
-      logPreferenceChangeFilter: src_toConsumableArray(new Set([].concat(src_toConsumableArray((0,property/* get */.U2)("logPreferenceChangeFilter").split(",")), ["libram_savedMacro", "maximizerMRUList", "testudinalTeachings"]))).sort().filter(a => a).join(","),
+      logPreferenceChangeFilter: src_toConsumableArray(new Set([].concat(src_toConsumableArray((0,property/* get */.U2)("logPreferenceChangeFilter").split(",")), ["libram_savedMacro", "maximizerMRUList", "testudinalTeachings", "garboEmbezzlerDate", "garboEmbezzlerCount", "garboEmbezzlerSources"]))).sort().filter(a => a).join(","),
       battleAction: "custom combat script",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
@@ -31013,9 +31046,9 @@ function main() {
     propertyManager.resetAll();
     (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=".concat(aaBossFlag, "&action=Update"), true);
     if (startingGarden && (0,lib/* have */.lf)(startingGarden)) (0,external_kolmafia_.use)(startingGarden);
-    var totalEmbezzlers = persistEmbezzlerLog();
+    var persistLog = persistEmbezzlerLog();
     (0,external_kolmafia_.print)("You fought ".concat(embezzlerLog.initialEmbezzlersFought, " KGEs at the beginning of the day, and an additional ").concat(embezzlerLog.digitizedEmbezzlersFought, " digitized KGEs throughout the day. Good work, probably!"), "blue");
-    (0,external_kolmafia_.print)("Including this, you have fought ".concat(totalEmbezzlers, " across all ascensions today"), "blue");
+    (0,external_kolmafia_.print)("Including this, you have fought ".concat(persistLog.total, " across all ascensions today"), "blue");
     printLog("blue");
   }
 }
