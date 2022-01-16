@@ -65,6 +65,7 @@ import {
   AsdonMartin,
   ChateauMantegna,
   clamp,
+  Counter,
   CrystalBall,
   ensureEffect,
   get,
@@ -421,9 +422,8 @@ export function dailyFights(): void {
 
         // try to deliver the thesis
         const romanticMonsterImpossible =
-          (getCounter("Romantic Monster Window end") === -1 &&
-            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
-          getCounter("Romantic Monster Window begin") > 0;
+          Counter.get("Romantic Monster Window end") === null ||
+          (Counter.get("Romantic Monster Window begin") ?? Infinity) > 0;
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
