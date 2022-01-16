@@ -422,7 +422,7 @@ export function dailyFights(): void {
         // try to deliver the thesis
         const romanticMonsterPossible =
           (getCounter("Romantic Monster Window end") === -1 &&
-            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
+            getCounters("Romantic Monster Window end", -1, -1).trim() !== "") ||
           getCounter("Romantic Monster Window begin") > 0;
         if (!romanticMonsterPossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
