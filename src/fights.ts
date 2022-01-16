@@ -65,6 +65,7 @@ import {
   AsdonMartin,
   ChateauMantegna,
   clamp,
+  Counter,
   CrystalBall,
   ensureEffect,
   get,
@@ -263,7 +264,7 @@ function embezzlerSetup() {
 
 function startWandererCounter() {
   const nextFight = getNextEmbezzlerFight();
-  if (!(nextFight && nextFight.canInitializeWandererCounters)) {
+  if (!nextFight || nextFight.canInitializeWandererCounters) {
     return;
   }
   if (
@@ -420,11 +421,10 @@ export function dailyFights(): void {
         nextFight = getNextEmbezzlerFight();
 
         // try to deliver the thesis
-        const romanticMonsterPossible =
-          (getCounter("Romantic Monster Window end") === -1 &&
-            getCounters("Romantic Monster Window end", -1, -1).trim() === "") ||
-          getCounter("Romantic Monster Window begin") > 0;
-        if (!romanticMonsterPossible && (!nextFight || !nextFight.draggable)) {
+        const romanticMonsterImpossible =
+          Counter.get("Romantic Monster Window end") === null ||
+          (Counter.get("Romantic Monster Window begin") ?? Infinity) > 0;
+        if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
           if (

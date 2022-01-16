@@ -58,7 +58,7 @@ import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wandere
  * @interface EmbezzlerFightConfigOptions
  * @member {Requirement[]?} requirements maximizer requirements to use for this fight (defaults to empty)
  * @member {draggableFight?} draggable if this fight can be pulled into another zone and what kind of draggable it is (defaults to undefined)
- * @member {boolean?} canInitializeWandererCounters if this fight can be used to initialize wanderers (defaults to true)
+ * @member {boolean?} canInitializeWandererCounters if this fight can be used to initialize wanderers (defaults to false)
  * @member {boolean?} gregariousReplace if this is a "monster replacement" fight - pulls another monster from the CSV (defautls to false)
  * @member {boolean?} wrongEncounterName if mafia does not update the lastEncounter properly when doing this fight (defaults to value of gregariousReplace)
  */
@@ -143,7 +143,7 @@ export class EmbezzlerFight {
     this.execute = execute;
     this.requirements = options.requirements ?? [];
     this.draggable = options.draggable;
-    this.canInitializeWandererCounters = options.canInitializeWandererCounters ?? true;
+    this.canInitializeWandererCounters = options.canInitializeWandererCounters ?? false;
     this.gregariousReplace = options.gregariousReplace ?? false;
     this.wrongEncounterName = options.wrongEncounterName ?? this.gregariousReplace;
   }
@@ -167,7 +167,7 @@ export class EmbezzlerFight {
     ) {
       return determineDraggableZoneAndEnsureAccess(this.draggable);
     }
-    return $location`Noob Cave`;
+    return suggestion ?? $location`Noob Cave`;
   }
 }
 
@@ -315,6 +315,7 @@ export const embezzlerSources = [
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
+      canInitializeWandererCounters: true,
     }
   ),
   new EmbezzlerFight(
@@ -466,7 +467,7 @@ export const embezzlerSources = [
           forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
         }),
       ],
-      canInitializeWandererCounters: false,
+      canInitializeWandererCounters: true,
     }
   ),
   new EmbezzlerFight(
@@ -494,7 +495,7 @@ export const embezzlerSources = [
       ],
       draggable: "backup",
       wrongEncounterName: true,
-      canInitializeWandererCounters: false,
+      canInitializeWandererCounters: true,
     }
   ),
   new EmbezzlerFight(
