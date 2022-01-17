@@ -437,7 +437,8 @@ export function dailyFights(): void {
         // try to deliver the thesis
         const romanticMonsterImpossible =
           Counter.get("Romantic Monster Window end") === null ||
-          (Counter.get("Romantic Monster Window begin") ?? Infinity) > 0;
+          (Counter.get("Romantic Monster Window begin") ?? -1) > 0 ||
+          get("_romanticFightsLeft") <= 0;
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
