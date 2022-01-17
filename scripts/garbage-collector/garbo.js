@@ -24842,7 +24842,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("4fcb67a409761101ffa4335f22097d0f3c4e424f" === mainSha) {
+    if ("b00b4241863010d13d8250f13e40d9800a83dba8" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -26517,6 +26517,8 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,property/* get *
 
     (0,external_kolmafia_.visitUrl)("main.php");
   }
+}, {
+  canInitializeWandererCounters: true
 }), new EmbezzlerFight("Be Gregarious (Set Up Crystal Ball)", () => (0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject75 || (embezzler_templateObject75 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,property/* get */.U2)("beGregariousFightsLeft") === 1, () => (0,property/* get */.U2)("beGregariousMonster") === (0,template_string/* $monster */.O4)(embezzler_templateObject76 || (embezzler_templateObject76 = embezzler_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (0,property/* get */.U2)("beGregariousFightsLeft") > 0 || (0,property/* get */.U2)("beGregariousCharges") > 0 ? 1 : 0, options => {
   var _run$constraints$prep2, _run$constraints2, _options$macro2;
 
@@ -29018,7 +29020,7 @@ function embezzlerSetup() {
 function startWandererCounter() {
   var nextFight = getNextEmbezzlerFight();
 
-  if (!nextFight || nextFight.canInitializeWandererCounters) {
+  if (!nextFight || nextFight.canInitializeWandererCounters || nextFight.draggable) {
     return;
   }
 
@@ -29169,7 +29171,7 @@ function dailyFights() {
 
         nextFight = getNextEmbezzlerFight(); // try to deliver the thesis
 
-        var romanticMonsterImpossible = counter_get("Romantic Monster Window end") === null || ((_Counter$get = counter_get("Romantic Monster Window begin")) !== null && _Counter$get !== void 0 ? _Counter$get : Infinity) > 0;
+        var romanticMonsterImpossible = counter_get("Romantic Monster Window end") === null || ((_Counter$get = counter_get("Romantic Monster Window begin")) !== null && _Counter$get !== void 0 ? _Counter$get : -1) > 0 || (0,property/* get */.U2)("_romanticFightsLeft") <= 0;
 
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           var _nextFight;
@@ -30826,7 +30828,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("4fcb67a409761101ffa4335f22097d0f3c4e424f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("b00b4241863010d13d8250f13e40d9800a83dba8"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
