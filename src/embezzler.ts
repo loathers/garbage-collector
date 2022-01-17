@@ -440,6 +440,9 @@ export const embezzlerSources = [
         }
         visitUrl("main.php");
       }
+    },
+    {
+      canInitializeWandererCounters: true,
     }
   ),
   new EmbezzlerFight(
