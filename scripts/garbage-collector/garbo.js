@@ -24842,7 +24842,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("19075a6334bad48b5d72c24ba620cd51dddbc007" === mainSha) {
+    if ("c3588c4e9def4ae8f5ac223c429f7bd770ed5658" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -29024,17 +29024,25 @@ function startWandererCounter() {
     return;
   }
 
-  if ((0,external_kolmafia_.getCounters)("Digitize Monster", -3, 100).trim() === "" && (0,property/* get */.U2)("_sourceTerminalDigitizeUses") !== 0 || (0,external_kolmafia_.getCounters)("Enamorang Monster", -3, 100).trim() === "" && (0,property/* get */.U2)("enamorangMonster") || (0,property/* get */.U2)("_romanticFightsLeft") > 0 && (0,external_kolmafia_.getCounter)("Romantic Monster window begin") === -1 && (0,external_kolmafia_.getCounter)("Romantic Monster window end") === -1 && (0,external_kolmafia_.getCounters)("Romantic Monster window end", -1, -1).trim() === "") {
+  var digitizeNeedsStarting = counter_get("Digitize Monster") === null && (0,property/* get */.U2)("_sourceTerminalDigitizeUses") !== 0;
+  var romanceNeedsStarting = (0,property/* get */.U2)("_romanticFightsLeft") > 0 && counter_get("Romantic Monster window begin") === null && counter_get("Romantic Monster window end") === null;
+
+  if (digitizeNeedsStarting || romanceNeedsStarting) {
+    if (digitizeNeedsStarting) (0,external_kolmafia_.print)("Starting digitize counter by visiting the Haunted Kitchen!");
+    if (romanceNeedsStarting) (0,external_kolmafia_.print)("Starting romance counter by visiting the Haunted Kitchen!");
+
     do {
       var run = void 0;
 
       if ((0,property/* get */.U2)("beGregariousFightsLeft") > 0) {
+        (0,external_kolmafia_.print)("You still have gregs active, so we're going to wear your meat outfit.");
         run = ltbRun();
         (0,external_kolmafia_.useFamiliar)(meatFamiliar());
         meatOutfit(true);
       } else {
         var _tryFindFreeRun2, _run$constraints$fami3, _run$constraints$fami4, _run$constraints4, _run$constraints$prep2, _run$constraints5, _run$constraints$equi2, _run$constraints6;
 
+        (0,external_kolmafia_.print)("You do not have gregs active, so this is a regular free run.");
         run = (_tryFindFreeRun2 = tryFindFreeRun()) !== null && _tryFindFreeRun2 !== void 0 ? _tryFindFreeRun2 : ltbRun();
         (0,external_kolmafia_.useFamiliar)((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints4 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints4)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : freeFightFamiliar());
         (_run$constraints$prep2 = (_run$constraints5 = run.constraints).preparation) === null || _run$constraints$prep2 === void 0 ? void 0 : _run$constraints$prep2.call(_run$constraints5);
@@ -29507,7 +29515,7 @@ new FreeFight(() => ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_tem
 }, {
   familiar: () => (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject252 || (_templateObject252 = fights_taggedTemplateLiteral(["Robortender"])))) ? (0,template_string/* $familiar */.HP)(_templateObject253 || (_templateObject253 = fights_taggedTemplateLiteral(["Robortender"]))) : null
 }), // Portscan and mushroom garden
-new FreeFight(() => !doingExtrovermectin() && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject254 || (_templateObject254 = fights_taggedTemplateLiteral(["packet of mushroom spores"])))) || (0,external_kolmafia_.getCampground)()["packet of mushroom spores"] !== undefined) && (0,external_kolmafia_.getCounters)("portscan.edu", 0, 0) === "portscan.edu" && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject255 || (_templateObject255 = fights_taggedTemplateLiteral(["Macrometeorite"])))) && (0,property/* get */.U2)("_macrometeoriteUses") < 10, () => {
+new FreeFight(() => !doingExtrovermectin() && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject254 || (_templateObject254 = fights_taggedTemplateLiteral(["packet of mushroom spores"])))) || (0,external_kolmafia_.getCampground)()["packet of mushroom spores"] !== undefined) && counter_get("portscan.edu") === 0 && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject255 || (_templateObject255 = fights_taggedTemplateLiteral(["Macrometeorite"])))) && (0,property/* get */.U2)("_macrometeoriteUses") < 10, () => {
   if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject256 || (_templateObject256 = fights_taggedTemplateLiteral(["packet of mushroom spores"]))))) (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject257 || (_templateObject257 = fights_taggedTemplateLiteral(["packet of mushroom spores"]))));
 
   if (SourceTerminal/* have */.lf()) {
@@ -30828,7 +30836,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("19075a6334bad48b5d72c24ba620cd51dddbc007"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("c3588c4e9def4ae8f5ac223c429f7bd770ed5658"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
