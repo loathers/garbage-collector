@@ -7,8 +7,6 @@ import {
   equip,
   getAutoAttack,
   getCampground,
-  getCounter,
-  getCounters,
   handlingChoice,
   inebrietyLimit,
   isBanished,
@@ -267,22 +265,24 @@ function startWandererCounter() {
   if (!nextFight || nextFight.canInitializeWandererCounters || nextFight.draggable) {
     return;
   }
-  if (
-    (getCounters("Digitize Monster", -3, 100).trim() === "" &&
-      get("_sourceTerminalDigitizeUses") !== 0) ||
-    (getCounters("Enamorang Monster", -3, 100).trim() === "" && get("enamorangMonster")) ||
-    (get("_romanticFightsLeft") > 0 &&
-      getCounter("Romantic Monster window begin") === -1 &&
-      getCounter("Romantic Monster window end") === -1 &&
-      getCounters("Romantic Monster window end", -1, -1).trim() === "")
-  ) {
+  const digitizeNeedsStarting =
+    Counter.get("Digitize Monster") === null && get("_sourceTerminalDigitizeUses") !== 0;
+  const romanceNeedsStarting =
+    get("_romanticFightsLeft") > 0 &&
+    Counter.get("Romantic Monster window begin") === null &&
+    Counter.get("Romantic Monster window end") === null;
+  if (digitizeNeedsStarting || romanceNeedsStarting) {
+    if (digitizeNeedsStarting) print("Starting digitize counter by visiting the Haunted Kitchen!");
+    if (romanceNeedsStarting) print("Starting romance counter by visiting the Haunted Kitchen!");
     do {
       let run: ActionSource;
       if (get("beGregariousFightsLeft") > 0) {
+        print("You still have gregs active, so we're going to wear your meat outfit.");
         run = ltbRun();
         useFamiliar(meatFamiliar());
         meatOutfit(true);
       } else {
+        print("You do not have gregs active, so this is a regular free run.");
         run = tryFindFreeRun() ?? ltbRun();
         useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
         run.constraints.preparation?.();
@@ -1016,7 +1016,7 @@ const freeFightSources = [
       !doingExtrovermectin() &&
       (have($item`packet of mushroom spores`) ||
         getCampground()["packet of mushroom spores"] !== undefined) &&
-      getCounters("portscan.edu", 0, 0) === "portscan.edu" &&
+      Counter.get("portscan.edu") === 0 &&
       have($skill`Macrometeorite`) &&
       get("_macrometeoriteUses") < 10,
     () => {
