@@ -391,3 +391,9 @@ export function checkGithubVersion(): void {
     }
   }
 }
+
+export function realmAvailable(
+  element: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fr"
+): boolean {
+  return get(`_${element}AirportToday`) || get(`${element}AirportAlways`);
+}

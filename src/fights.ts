@@ -69,7 +69,6 @@ import {
   CrystalBall,
   ensureEffect,
   get,
-  getSaleValue,
   have,
   maximizeCached,
   property,
@@ -119,6 +118,7 @@ import {
   saberCrateIfDesired,
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
+import { garboValue } from "./snapshot";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -312,7 +312,7 @@ const witchessPieces = [
 ];
 
 function bestWitchessPiece() {
-  return witchessPieces.sort((a, b) => getSaleValue(b.drop) - getSaleValue(a.drop))[0].piece;
+  return witchessPieces.sort((a, b) => garboValue(b.drop) - garboValue(a.drop))[0].piece;
 }
 
 export function dailyFights(): void {
@@ -1070,20 +1070,19 @@ const freeFightSources = [
         1119: 6, // escape DMT
       });
       const thought =
-        getSaleValue($item`abstraction: certainty`) >= getSaleValue($item`abstraction: thought`);
-      const action =
-        getSaleValue($item`abstraction: joy`) >= getSaleValue($item`abstraction: action`);
+        garboValue($item`abstraction: certainty`) >= garboValue($item`abstraction: thought`);
+      const action = garboValue($item`abstraction: joy`) >= garboValue($item`abstraction: action`);
       const sensation =
-        getSaleValue($item`abstraction: motion`) >= getSaleValue($item`abstraction: sensation`);
+        garboValue($item`abstraction: motion`) >= garboValue($item`abstraction: sensation`);
 
       if (thought) {
-        acquire(1, $item`abstraction: thought`, getSaleValue($item`abstraction: certainty`), false);
+        acquire(1, $item`abstraction: thought`, garboValue($item`abstraction: certainty`), false);
       }
       if (action) {
-        acquire(1, $item`abstraction: action`, getSaleValue($item`abstraction: joy`), false);
+        acquire(1, $item`abstraction: action`, garboValue($item`abstraction: joy`), false);
       }
       if (sensation) {
-        acquire(1, $item`abstraction: sensation`, getSaleValue($item`abstraction: motion`), false);
+        acquire(1, $item`abstraction: sensation`, garboValue($item`abstraction: motion`), false);
       }
       adventureMacro(
         $location`The Deep Machine Tunnels`,
@@ -1494,9 +1493,9 @@ const freeRunFightSources = [
           bonusEquip: new Map<Item, number>(
             have($familiar`Mini-Hipster`)
               ? [
-                  [$item`ironic moustache`, getSaleValue($item`mole skin notebook`)],
-                  [$item`chiptune guitar`, getSaleValue($item`ironic knit cap`)],
-                  [$item`fixed-gear bicycle`, getSaleValue($item`ironic oversized sunglasses`)],
+                  [$item`ironic moustache`, garboValue($item`mole skin notebook`)],
+                  [$item`chiptune guitar`, garboValue($item`ironic knit cap`)],
+                  [$item`fixed-gear bicycle`, garboValue($item`ironic oversized sunglasses`)],
                 ]
               : []
           ),
@@ -1899,7 +1898,7 @@ function getBestItemStealZone(): ItemStealZone | null {
   const value = (zone: ItemStealZone): number => {
     // We have to divide hugs by 2 - will likely use a banish as a free run so we will be alternating zones.
     return (
-      zone.dropRate * getSaleValue(zone.item) * (vorticesAvail + hugsAvail / 2) - zone.openCost()
+      zone.dropRate * garboValue(zone.item) * (vorticesAvail + hugsAvail / 2) - zone.openCost()
     );
   };
   return (

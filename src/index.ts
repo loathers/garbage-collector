@@ -42,7 +42,6 @@ import {
   clamp,
   ensureEffect,
   get,
-  getSaleValue,
   have,
   haveInCampground,
   property,
@@ -83,6 +82,7 @@ import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
+import { printSnapshot, startSnapshot, garboValue } from "./snapshot";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -249,6 +249,7 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(26118);
+  startSnapshot();
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
@@ -398,7 +399,7 @@ export function main(argString = ""): void {
           [$items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`, 3],
         ] as [Item[], number][]
       ).map(([halloweinerOption, choiceId]) => {
-        return { price: getSaleValue(...halloweinerOption), choiceId: choiceId };
+        return { price: garboValue(...halloweinerOption), choiceId: choiceId };
       });
       bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
     }
@@ -503,6 +504,7 @@ export function main(argString = ""): void {
       `Including this, you have fought ${persistLog.total} across all ascensions today`,
       "blue"
     );
+    printSnapshot();
     printLog("blue");
   }
 }
