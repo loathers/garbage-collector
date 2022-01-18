@@ -43,7 +43,7 @@ import {
   leprechaunMultiplier,
   realmAvailable,
 } from "./lib";
-import { garboValue } from "./snapshot";
+import { garboAverageValue, garboValue } from "./snapshot";
 
 /**
  * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
@@ -231,7 +231,7 @@ function bagOfManyConfections() {
   return new Map<Item, number>([
     [
       $item`bag of many confections`,
-      garboValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
+      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
     ],
   ]);
 }
@@ -265,7 +265,7 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
   const sporadicMeatBonus = (40 * 0.125 * (equipMode === "barf" ? baseMeat : 0)) / 100;
   const averageFlowerValue =
-    garboValue(
+    garboAverageValue(
       ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`
     ) * Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
   return new Map<Item, number>([

@@ -68,6 +68,7 @@ import {
   baseMeat,
   coinmasterPrice,
   globalOptions,
+  HIGHLIGHT,
   leprechaunMultiplier,
   logMessage,
   tryFeast,
@@ -77,7 +78,7 @@ import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
 import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
-import { garboValue } from "./snapshot";
+import { garboAverageValue, garboValue } from "./snapshot";
 
 export function dailySetup(): void {
   voterSetup();
@@ -217,7 +218,7 @@ function prepFamiliars(): void {
       if (get("_roboDrinks").includes(drink.name)) continue;
       useFamiliar($familiar`Robortender`);
       if (itemAmount(drink) === 0) retrieveItem(1, drink);
-      print(`Feeding robortender ${drink}.`, "blue");
+      print(`Feeding robortender ${drink}.`, HIGHLIGHT);
       visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
     }
   }
@@ -356,7 +357,7 @@ function volcanoDailies(): void {
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
   if (!get("_infernoDiscoVisited")) {
-    print("Getting my free volcoino!", "blue");
+    print("Getting my free volcoino!", HIGHLIGHT);
     $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.forEach(
       (discoEquip) => {
         retrieveItem(discoEquip);
@@ -379,7 +380,7 @@ function volcanoDailies(): void {
   }
 }
 function checkVolcanoQuest() {
-  print("Checking volcano quest", "blue");
+  print("Checking volcano quest", HIGHLIGHT);
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
   const volcoinoValue = (1 / 3) * garboValue($item`one-day ticket to That 70s Volcano`);
   const volcanoProperties = new Map<Item, number>([
@@ -537,7 +538,7 @@ const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Cha
 function pickTea(): void {
   if (!getCampground()["potted tea tree"] || get("_pottedTeaTreeUsed")) return;
   const bestTea = teas.sort((a, b) => garboValue(b) - garboValue(a))[0];
-  const shakeVal = 3 * garboValue(...teas);
+  const shakeVal = 3 * garboAverageValue(...teas);
   const teaAction = shakeVal > garboValue(bestTea) ? "shake" : bestTea.name;
   cliExecute(`teatree ${teaAction}`);
 }

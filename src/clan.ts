@@ -17,6 +17,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $items, $monster, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
+import { HIGHLIGHT } from "./lib";
 
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
   const manager = new StashManager();
@@ -93,7 +94,7 @@ export class StashManager {
           try {
             if (stashAmount(fold) > 0) {
               if (takeStash(1, fold)) {
-                print(`Took ${fold.name} from stash in ${getClanName()}.`, "blue");
+                print(`Took ${fold.name} from stash in ${getClanName()}.`, HIGHLIGHT);
                 if (fold !== item) cliExecute(`fold ${item.name}`);
                 this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
                 break;
@@ -127,7 +128,7 @@ export class StashManager {
   putBack(...items: Item[]): void {
     if (items.length === 0) return;
     if (visitUrl("fight.php").includes("You're fighting")) {
-      print("In fight, trying to get away to return items to stash...", "blue");
+      print("In fight, trying to get away to return items to stash...", HIGHLIGHT);
       Macro.if_($monster`Knob Goblin Embezzler`, Macro.attack().repeat())
         .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
         .step("runaway")
@@ -153,7 +154,7 @@ export class StashManager {
             enthroneFamiliar($familiar`none`);
           }
           if (putStash(count, item)) {
-            print(`Returned ${item.name} to stash in ${getClanName()}.`, "blue");
+            print(`Returned ${item.name} to stash in ${getClanName()}.`, HIGHLIGHT);
             this.taken.delete(item);
           } else {
             throw `Failed to return ${item.name} to stash.`;

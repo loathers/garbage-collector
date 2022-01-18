@@ -89,12 +89,14 @@ import {
   embezzlerLog,
   expectedEmbezzlerProfit,
   globalOptions,
+  HIGHLIGHT,
   kramcoGuaranteed,
   logMessage,
   ltbRun,
   mapMonster,
   propertyManager,
   questStep,
+  resetDailyPreference,
   safeRestore,
   setChoice,
 } from "./lib";
@@ -1704,7 +1706,7 @@ function setNepQuestChoicesAndPrepItems() {
   if (get("_questPartyFair") === "unstarted") {
     visitUrl(toUrl($location`The Neverending Party`));
     if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
-      print("Gerald/ine quest!", "blue");
+      print("Gerald/ine quest!", HIGHLIGHT);
     }
     if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
       runChoice(1); // Accept quest
@@ -1720,7 +1722,7 @@ function setNepQuestChoicesAndPrepItems() {
       setChoice(1326, 3); // Talk to the woman
     } else if (get("choiceAdventure1324") !== 5) {
       setChoice(1324, 5);
-      print("Found Geraldine!", "blue");
+      print("Found Geraldine!", HIGHLIGHT);
       // Format of this property is count, space, item ID.
       const partyFairInfo = get("_questPartyFairProgress").split(" ");
       logMessage(`Geraldine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
@@ -1731,7 +1733,7 @@ function setNepQuestChoicesAndPrepItems() {
       setChoice(1327, 3); // Find Gerald
     } else if (get("choiceAdventure1324") !== 5) {
       setChoice(1324, 5);
-      print("Found Gerald!", "blue");
+      print("Found Gerald!", HIGHLIGHT);
       const partyFairInfo = get("_questPartyFairProgress").split(" ");
       logMessage(`Gerald wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
     }
@@ -1955,4 +1957,33 @@ function voidMonster(): void {
   freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
   adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   postCombatActions();
+}
+
+export function printEmbezzlerLog(): void {
+  if (resetDailyPreference("garboEmbezzlerDate")) {
+    property.set("garboEmbezzlerCount", 0);
+    property.set("garboEmbezzlerSources", "");
+  }
+  const totalEmbezzlers =
+    property.getNumber("garboEmbezzlerCount", 0) +
+    embezzlerLog.initialEmbezzlersFought +
+    embezzlerLog.digitizedEmbezzlersFought;
+
+  const allEmbezzlerSources = property
+    .getString("garboEmbezzlerSources")
+    .split(",")
+    .filter((source) => source);
+  allEmbezzlerSources.push(...embezzlerLog.sources);
+
+  property.set("garboEmbezzlerCount", totalEmbezzlers);
+  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+
+  print(
+    `You fought ${embezzlerLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${embezzlerLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+    HIGHLIGHT
+  );
+  print(
+    `Including this, you have fought ${totalEmbezzlers} across all ascensions today`,
+    HIGHLIGHT
+  );
 }

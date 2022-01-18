@@ -8,7 +8,7 @@ import {
 } from "kolmafia";
 import { $effect, $familiar, $familiars, $item, $items, get, have } from "libram";
 import { argmax, fairyMultiplier, leprechaunMultiplier } from "./lib";
-import { garboValue } from "./snapshot";
+import { garboAverageValue, garboValue } from "./snapshot";
 
 let _meatFamiliar: Familiar;
 export function meatFamiliar(): Familiar {
@@ -138,7 +138,7 @@ function mimicDropValue() {
   return (
     savedMimicDropValue ??
     (savedMimicDropValue =
-      garboValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
+      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
   );
 }
 

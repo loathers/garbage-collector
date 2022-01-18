@@ -56,13 +56,13 @@ import { acquire } from "./acquire";
 import { withVIPClan } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import { argmax, arrayEquals, globalOptions } from "./lib";
+import { argmax, arrayEquals, globalOptions, HIGHLIGHT } from "./lib";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./snapshot";
 import synthesize from "./synthesis";
 
 const MPA = get("valueOfAdventure");
-print(`Using adventure value ${MPA}.`, "blue");
+print(`Using adventure value ${MPA}.`, HIGHLIGHT);
 
 const Mayo = MayoClinic.Mayo;
 type Note = PotionTier | null;
@@ -489,6 +489,7 @@ export function potionMenu(
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
 
     // SPLEEN POTIONS
+    ...potion($item`cute mushroom`),
     ...potion($item`beggin' cologne`),
     ...limitedPotion($item`body spradium`, clamp(availableAmount($item`body spradium`), 0, 1)),
     ...potion($item`Knob Goblin pet-buffing spray`),

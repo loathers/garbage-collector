@@ -14,7 +14,7 @@ import {
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
-import { globalOptions, propertyManager, realmAvailable } from "./lib";
+import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
 import { garboValue } from "./snapshot";
 
 export type DraggableFight = "backup" | "wanderer";
@@ -290,7 +290,7 @@ export function determineDraggableZoneAndEnsureAccess(type: DraggableFight = "wa
 
   const best = sortedTargets.find((prospect) => {
     const location = prospect.target.location();
-    print(`Trying to place a wanderer using ${prospect.target.name}`, "blue");
+    print(`Trying to place a wanderer using ${prospect.target.name}`, HIGHLIGHT);
     return (
       location &&
       canWander(location, type) &&

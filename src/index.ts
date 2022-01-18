@@ -54,13 +54,13 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, freeFights } from "./fights";
+import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   checkGithubVersion,
   embezzlerLog,
   globalOptions,
+  HIGHLIGHT,
   kramcoGuaranteed,
-  persistEmbezzlerLog,
   printHelpMenu,
   printLog,
   propertyManager,
@@ -82,7 +82,7 @@ import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
-import { printSnapshot, startSnapshot, garboValue } from "./snapshot";
+import { garboAverageValue, printGarboSnapshot, startSnapshot } from "./snapshot";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -95,7 +95,7 @@ function ensureBarfAccess() {
     use(ticket);
   }
   if (!get("_dinseyGarbageDisposed")) {
-    print("Disposing of garbage.", "blue");
+    print("Disposing of garbage.", HIGHLIGHT);
     retrieveItem($item`bag of park garbage`);
     visitUrl("place.php?whichplace=airport_stench&action=airport3_tunnels");
     runChoice(6);
@@ -333,9 +333,9 @@ export function main(argString = ""): void {
       : 0;
 
   try {
-    print("Collecting garbage!", "blue");
+    print("Collecting garbage!", HIGHLIGHT);
     if (globalOptions.stopTurncount !== null) {
-      print(`Stopping in ${globalOptions.stopTurncount - myTurncount()}`, "blue");
+      print(`Stopping in ${globalOptions.stopTurncount - myTurncount()}`, HIGHLIGHT);
     }
     print();
 
@@ -399,7 +399,7 @@ export function main(argString = ""): void {
           [$items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`, 3],
         ] as [Item[], number][]
       ).map(([halloweinerOption, choiceId]) => {
-        return { price: garboValue(...halloweinerOption), choiceId: choiceId };
+        return { price: garboAverageValue(...halloweinerOption), choiceId: choiceId };
       });
       bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
     }
@@ -478,7 +478,7 @@ export function main(argString = ""): void {
               availableAmount($item`FunFunds™`) >= 20 &&
               !have($item`one-day ticket to Dinseylandfill`)
             ) {
-              print("Buying a one-day tickets", "blue");
+              print("Buying a one-day tickets", HIGHLIGHT);
               buy(
                 $coinmaster`The Dinsey Company Store`,
                 1,
@@ -495,16 +495,8 @@ export function main(argString = ""): void {
     propertyManager.resetAll();
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
-    const persistLog = persistEmbezzlerLog();
-    print(
-      `You fought ${embezzlerLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${embezzlerLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
-      "blue"
-    );
-    print(
-      `Including this, you have fought ${persistLog.total} across all ascensions today`,
-      "blue"
-    );
-    printSnapshot();
-    printLog("blue");
+    printEmbezzlerLog();
+    printGarboSnapshot();
+    printLog(HIGHLIGHT);
   }
 }

@@ -11,7 +11,7 @@ import {
 import { $item, get, getRemainingStomach, property } from "libram";
 import { computeDiet, consumeDiet } from "./diet";
 import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
-import { garboValue } from "./snapshot";
+import { garboValue, snapshotSinceStart } from "./snapshot";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
@@ -62,10 +62,15 @@ function numberology(): void {
   }
 }
 
+function updateMallPrices(): void {
+  snapshotSinceStart().value(garboValue);
+}
+
 export default function postCombatActions(skipDiet = false): void {
   numberology();
   if (!skipDiet) horseradish();
   coldMedicineCabinet();
   safeInterrupt();
   safeRestore();
+  updateMallPrices();
 }
