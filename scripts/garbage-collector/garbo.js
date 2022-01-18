@@ -24842,7 +24842,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("b00b4241863010d13d8250f13e40d9800a83dba8" === mainSha) {
+    if ("19075a6334bad48b5d72c24ba620cd51dddbc007" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25247,7 +25247,7 @@ function bonusAccessories(equipMode) {
 }
 
 function magnifyingGlass() {
-  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dropsgear_templateObject46 || (dropsgear_templateObject46 = dropsgear_taggedTemplateLiteral(["cursed magnifying glass"])))) || (0,property/* get */.U2)("_voidFreeFights") >= 5) {
+  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dropsgear_templateObject46 || (dropsgear_templateObject46 = dropsgear_taggedTemplateLiteral(["cursed magnifying glass"])))) || (0,property/* get */.U2)("_voidFreeFights") >= 5 || (0,property/* get */.U2)("cursedMagnifyingGlassCount") >= 13) {
     return new Map();
   }
 
@@ -30828,7 +30828,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("b00b4241863010d13d8250f13e40d9800a83dba8"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("19075a6334bad48b5d72c24ba620cd51dddbc007"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
