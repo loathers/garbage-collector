@@ -1951,9 +1951,10 @@ function voidMonster(): void {
   ) {
     return;
   }
-
-  useFamiliar(freeFightFamiliar());
-  freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
-  adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
-  postCombatActions();
+  do {
+    useFamiliar(freeFightFamiliar());
+    freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
+    adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+    postCombatActions();
+  } while (!get("lastEncounter").includes("void"));
 }
