@@ -104,7 +104,7 @@ export function meatMood(urKels = false): Mood {
   }
 
   if (itemAmount($item`Bird-a-Day calendar`) > 0) {
-    if (!have($skill`Seek out a Bird`)) {
+    if (!have($skill`Seek out a Bird`) || !get("_canSeekBirds")) {
       use(1, $item`Bird-a-Day calendar`);
     }
 
@@ -127,14 +127,14 @@ export function meatMood(urKels = false): Mood {
       setChoice(1399, 2);
       useSkill($skill`Seek out a Bird`, 6 - get("_birdsSoughtToday"));
     }
+  }
 
-    if (
-      have($skill`Incredible Self-Esteem`) &&
-      $effects`Always be Collecting, Work For Hours a Week`.some((effect) => have(effect)) &&
-      !get("_incredibleSelfEsteemCast")
-    ) {
-      useSkill($skill`Incredible Self-Esteem`);
-    }
+  if (
+    have($skill`Incredible Self-Esteem`) &&
+    $effects`Always be Collecting, Work For Hours a Week`.some((effect) => have(effect)) &&
+    !get("_incredibleSelfEsteemCast")
+  ) {
+    useSkill($skill`Incredible Self-Esteem`);
   }
 
   const canRecord =
