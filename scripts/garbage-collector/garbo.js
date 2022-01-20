@@ -24842,7 +24842,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("97ca6d610f3e8fe9bc81ffeee077a065072ea66f" === mainSha) {
+    if ("8943be5e86b2e5bb24c148d1364642a44c928fd9" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -28688,7 +28688,7 @@ function meatMood() {
   }
 
   if ((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject30 || (mood_templateObject30 = src_mood_taggedTemplateLiteral(["Bird-a-Day calendar"])))) > 0) {
-    if (!(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(mood_templateObject31 || (mood_templateObject31 = src_mood_taggedTemplateLiteral(["Seek out a Bird"]))))) {
+    if (!(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(mood_templateObject31 || (mood_templateObject31 = src_mood_taggedTemplateLiteral(["Seek out a Bird"])))) || !(0,property/* get */.U2)("_canSeekBirds")) {
       (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(mood_templateObject32 || (mood_templateObject32 = src_mood_taggedTemplateLiteral(["Bird-a-Day calendar"]))));
     }
 
@@ -28701,10 +28701,10 @@ function meatMood() {
       setChoice(1399, 2);
       (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(mood_templateObject40 || (mood_templateObject40 = src_mood_taggedTemplateLiteral(["Seek out a Bird"]))), 6 - (0,property/* get */.U2)("_birdsSoughtToday"));
     }
+  }
 
-    if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(mood_templateObject41 || (mood_templateObject41 = src_mood_taggedTemplateLiteral(["Incredible Self-Esteem"])))) && (0,template_string/* $effects */.lh)(mood_templateObject42 || (mood_templateObject42 = src_mood_taggedTemplateLiteral(["Always be Collecting, Work For Hours a Week"]))).some(effect => (0,lib/* have */.lf)(effect)) && !(0,property/* get */.U2)("_incredibleSelfEsteemCast")) {
-      (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(mood_templateObject43 || (mood_templateObject43 = src_mood_taggedTemplateLiteral(["Incredible Self-Esteem"]))));
-    }
+  if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(mood_templateObject41 || (mood_templateObject41 = src_mood_taggedTemplateLiteral(["Incredible Self-Esteem"])))) && (0,template_string/* $effects */.lh)(mood_templateObject42 || (mood_templateObject42 = src_mood_taggedTemplateLiteral(["Always be Collecting, Work For Hours a Week"]))).some(effect => (0,lib/* have */.lf)(effect)) && !(0,property/* get */.U2)("_incredibleSelfEsteemCast")) {
+    (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(mood_templateObject43 || (mood_templateObject43 = src_mood_taggedTemplateLiteral(["Incredible Self-Esteem"]))));
   }
 
   var canRecord = (0,external_kolmafia_.getWorkshed)() === (0,template_string/* $item */.xr)(mood_templateObject44 || (mood_templateObject44 = src_mood_taggedTemplateLiteral(["warbear LP-ROM burner"]))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject45 || (mood_templateObject45 = src_mood_taggedTemplateLiteral(["warbear LP-ROM burner"]))) || (0,property/* get */.U2)("questG04Nemesis") === "finished");
@@ -30836,7 +30836,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("97ca6d610f3e8fe9bc81ffeee077a065072ea66f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8943be5e86b2e5bb24c148d1364642a44c928fd9"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
