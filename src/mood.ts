@@ -104,7 +104,7 @@ export function meatMood(urKels = false): Mood {
   }
 
   if (itemAmount($item`Bird-a-Day calendar`) > 0) {
-    if (!have($skill`Seek out a Bird`)) {
+    if (!have($skill`Seek out a Bird`) || !get("_birdOfTheDay")) {
       use(1, $item`Bird-a-Day calendar`);
     }
 
