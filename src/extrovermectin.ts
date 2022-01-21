@@ -78,37 +78,38 @@ export function hasMonsterReplacers(): boolean {
  * Saberfriends a crate if we are able to do so.
  */
 export function saberCrateIfSafe(): void {
-  if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
-  if (get("beGregariousFightsLeft") === 0 || get("_saberForceMonsterCount") > 0) {
-    do {
-      const run = tryFindFreeRun() ?? ltbRun();
+  const canSaber = !have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5;
+  const isSafeToSaber = get("beGregariousFightsLeft") === 0 || get("_saberForceMonsterCount") > 0;
+  if (!canSaber || !isSafeToSaber) return;
 
-      useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
-      run.constraints.preparation?.();
-      new Requirement([], {
-        forceEquip: $items`Fourth of May Cosplay Saber`,
-        preventEquip: $items`Kramco Sausage-o-Matic™`,
-      })
-        .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
-        .maximize();
-      setChoice(1387, 2);
-      adventureMacro(
-        $location`Noob Cave`,
-        Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
-          .if_($monster`time-spinner prank`, Macro.kill())
-          .if_($monster`sausage goblin`, Macro.kill())
-          .ifHolidayWanderer(run.macro)
-          .abort()
-      );
-    } while (
-      [
-        "Puttin' it on Wax",
-        "Wooof! Wooooooof!",
-        "Playing Fetch*",
-        "Your Dog Found Something Again",
-      ].includes(get("lastEncounter"))
+  do {
+    const run = tryFindFreeRun() ?? ltbRun();
+
+    useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
+    run.constraints.preparation?.();
+    new Requirement([], {
+      forceEquip: $items`Fourth of May Cosplay Saber`,
+      preventEquip: $items`Kramco Sausage-o-Matic™`,
+    })
+      .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
+      .maximize();
+    setChoice(1387, 2);
+    adventureMacro(
+      $location`Noob Cave`,
+      Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
+        .if_($monster`time-spinner prank`, Macro.kill())
+        .if_($monster`sausage goblin`, Macro.kill())
+        .ifHolidayWanderer(run.macro)
+        .abort()
     );
-  }
+  } while (
+    [
+      "Puttin' it on Wax",
+      "Wooof! Wooooooof!",
+      "Playing Fetch*",
+      "Your Dog Found Something Again",
+    ].includes(get("lastEncounter"))
+  );
 }
 
 /**
