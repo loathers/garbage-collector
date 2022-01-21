@@ -515,8 +515,12 @@ export const embezzlerSources = [
       ) {
         return (
           6 -
-          get("spookyPuttyCopiesMade") -
-          get("_raindohCopiesMade") +
+          (get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`
+            ? get("spookyPuttyCopiesMade")
+            : 0) -
+          (get("rainDohMonster") === $monster`Knob Goblin Embezzler`
+            ? get("_raindohCopiesMade")
+            : 0) +
           itemAmount($item`Spooky Putty monster`) +
           itemAmount($item`Rain-Doh box full of monster`)
         );
