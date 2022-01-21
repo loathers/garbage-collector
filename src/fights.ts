@@ -279,6 +279,7 @@ function startWandererCounter() {
       if (get("beGregariousFightsLeft") > 0) {
         print("You still have gregs active, so we're going to wear your meat outfit.");
         run = ltbRun();
+        run.constraints.preparation?.();
         useFamiliar(meatFamiliar());
         meatOutfit(true);
       } else {
