@@ -81,8 +81,8 @@ export function saberCrateIfDesired(): void {
   if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
   if (
     (get("beGregariousFightsLeft") > 0 && get("_saberForceMonsterCount") === 1) ||
-    get("_saberForceMonster") !== $monster`crate` ||
-    get("_saberForceMonsterCount") < 2
+    (get("beGregariousFightsLeft") === 0 &&
+      (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2))
   ) {
     do {
       const run = tryFindFreeRun() ?? ltbRun();
