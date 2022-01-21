@@ -536,15 +536,23 @@ export const embezzlerSources = [
         get("rainDohMonster") === $monster`Knob Goblin Embezzler`),
     () => {
       if (
-        (have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`)) &&
-        (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`))
+        (have($item`Spooky Putty sheet`) ||
+          (have($item`Spooky Putty monster`) &&
+            get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`)) &&
+        (have($item`Rain-Doh black box`) ||
+          (have($item`Rain-Doh box full of monster`) &&
+            get("rainDohMonster") === $monster`Knob Goblin Embezzler`))
       ) {
         return (
           6 -
           get("spookyPuttyCopiesMade") -
           get("_raindohCopiesMade") +
-          itemAmount($item`Spooky Putty monster`) +
-          itemAmount($item`Rain-Doh box full of monster`)
+          (get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`
+            ? itemAmount($item`Spooky Putty monster`)
+            : 0) +
+          (get("rainDohMonster") === $monster`Knob Goblin Embezzler`
+            ? itemAmount($item`Rain-Doh box full of monster`)
+            : 0)
         );
       } else if (have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`)) {
         return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky Putty monster`);
