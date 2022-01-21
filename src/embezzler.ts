@@ -515,14 +515,14 @@ export const embezzlerSources = [
       ) {
         return (
           6 -
+          get("spookyPuttyCopiesMade") -
+          get("_raindohCopiesMade") +
           (get("spookyPuttyMonster") === $monster`Knob Goblin Embezzler`
-            ? get("spookyPuttyCopiesMade")
-            : 0) -
-          (get("rainDohMonster") === $monster`Knob Goblin Embezzler`
-            ? get("_raindohCopiesMade")
+            ? itemAmount($item`Spooky Putty monster`)
             : 0) +
-          itemAmount($item`Spooky Putty monster`) +
-          itemAmount($item`Rain-Doh box full of monster`)
+          (get("rainDohMonster") === $monster`Knob Goblin Embezzler`
+            ? itemAmount($item`Rain-Doh box full of monster`)
+            : 0)
         );
       } else if (have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`)) {
         return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky Putty monster`);
