@@ -49,7 +49,7 @@ import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
-import { averageEmbezzlerNet, globalOptions, ltbRun, WISH_VALUE } from "./lib";
+import { averageEmbezzlerNet, globalOptions, ltbRun, setChoice, WISH_VALUE } from "./lib";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
 
@@ -363,12 +363,25 @@ export const embezzlerSources = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       equipOrbIfDesired();
+
+      const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
+      const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
+      const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+      setChoice(1387, 2);
+
       const macro = Macro.if_(
         $monster`crate`,
         Macro.externalIf(
           crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
           Macro.tryHaveSkill($skill`Transcendent Olfaction`)
-        ).skill($skill`Macrometeorite`)
+        )
+          .externalIf(
+            haveEquipped($item`Fourth of May Cosplay Saber`) &&
+              weWantToSaberCrates &&
+              get("_saberForceUses") < 5,
+            Macro.trySkill($skill`Use the Force`)
+          )
+          .skill($skill`Macrometeorite`)
       ).step(options.macro);
       adventureMacro($location`Noob Cave`, macro);
     },
@@ -393,12 +406,25 @@ export const embezzlerSources = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       equipOrbIfDesired();
+
+      const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
+      const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
+      const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+      setChoice(1387, 2);
+
       const macro = Macro.if_(
         $monster`crate`,
         Macro.externalIf(
           crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
           Macro.tryHaveSkill($skill`Transcendent Olfaction`)
-        ).skill($skill`CHEAT CODE: Replace Enemy`)
+        )
+          .externalIf(
+            haveEquipped($item`Fourth of May Cosplay Saber`) &&
+              weWantToSaberCrates &&
+              get("_saberForceUses") < 5,
+            Macro.trySkill($skill`Use the Force`)
+          )
+          .skill($skill`CHEAT CODE: Replace Enemy`)
       ).step(options.macro);
       adventureMacro($location`Noob Cave`, macro);
     },

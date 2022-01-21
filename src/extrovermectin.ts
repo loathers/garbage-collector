@@ -77,9 +77,12 @@ export function hasMonsterReplacers(): boolean {
 /**
  * Saberfriends a crate if we are able to do so.
  */
-export function saberCrateIfDesired(): void {
-  if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
-  if (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2) {
+export function saberCrateIfSafe(): void {
+  const canSaber = !have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5;
+  const isSafeToSaber = get("beGregariousFightsLeft") === 0 || get("_saberForceMonsterCount") > 0;
+  if (!canSaber || !isSafeToSaber) return;
+
+  do {
     const run = tryFindFreeRun() ?? ltbRun();
 
     useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
@@ -99,7 +102,14 @@ export function saberCrateIfDesired(): void {
         .ifHolidayWanderer(run.macro)
         .abort()
     );
-  }
+  } while (
+    [
+      "Puttin' it on Wax",
+      "Wooof! Wooooooof!",
+      "Playing Fetch*",
+      "Your Dog Found Something Again",
+    ].includes(get("lastEncounter"))
+  );
 }
 
 /**
@@ -172,7 +182,7 @@ function initializeCrates(): void {
       (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
       get("_saberForceUses") < 5
     ) {
-      saberCrateIfDesired();
+      saberCrateIfSafe();
     } else break; // we can break the loop if there's nothing to do
   } while (!["crate", "Using the Force"].includes(get("lastEncounter"))); // loop until we actually hit a crate
 }
