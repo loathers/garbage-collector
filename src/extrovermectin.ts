@@ -105,7 +105,7 @@ export function saberCrateIfDesired(): void {
           .abort()
       );
     } while (
-      ![
+      [
         "Puttin' it on Wax",
         "Wooof! Wooooooof!",
         "Playing Fetch*",
