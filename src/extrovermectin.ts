@@ -79,7 +79,11 @@ export function hasMonsterReplacers(): boolean {
  */
 export function saberCrateIfDesired(): void {
   if (!have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5) return;
-  if (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") < 2) {
+  if (
+    (get("beGregariousFightsLeft") > 0 && get("_saberForceMonsterCount") === 1) ||
+    get("_saberForceMonster") !== $monster`crate` ||
+    get("_saberForceMonsterCount") < 2
+  ) {
     const run = tryFindFreeRun() ?? ltbRun();
 
     useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
