@@ -84,24 +84,33 @@ export function saberCrateIfDesired(): void {
     get("_saberForceMonster") !== $monster`crate` ||
     get("_saberForceMonsterCount") < 2
   ) {
-    const run = tryFindFreeRun() ?? ltbRun();
+    do {
+      const run = tryFindFreeRun() ?? ltbRun();
 
-    useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
-    run.constraints.preparation?.();
-    new Requirement([], {
-      forceEquip: $items`Fourth of May Cosplay Saber`,
-      preventEquip: $items`Kramco Sausage-o-Matic™`,
-    })
-      .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
-      .maximize();
-    setChoice(1387, 2);
-    adventureMacro(
-      $location`Noob Cave`,
-      Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
-        .if_($monster`time-spinner prank`, Macro.kill())
-        .if_($monster`sausage goblin`, Macro.kill())
-        .ifHolidayWanderer(run.macro)
-        .abort()
+      useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
+      run.constraints.preparation?.();
+      new Requirement([], {
+        forceEquip: $items`Fourth of May Cosplay Saber`,
+        preventEquip: $items`Kramco Sausage-o-Matic™`,
+      })
+        .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
+        .maximize();
+      setChoice(1387, 2);
+      adventureMacro(
+        $location`Noob Cave`,
+        Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
+          .if_($monster`time-spinner prank`, Macro.kill())
+          .if_($monster`sausage goblin`, Macro.kill())
+          .ifHolidayWanderer(run.macro)
+          .abort()
+      );
+    } while (
+      ![
+        "Puttin' it on Wax",
+        "Wooof! Wooooooof!",
+        "Playing Fetch*",
+        "Your Dog Found Something Again",
+      ].includes(get("lastEncounter"))
     );
   }
 }
