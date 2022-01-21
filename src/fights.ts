@@ -114,7 +114,7 @@ import {
   crateStrategy,
   doingExtrovermectin,
   intializeExtrovermectinZones,
-  saberCrateIfDesired,
+  saberCrateIfSafe,
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
 
@@ -348,7 +348,10 @@ export function dailyFights(): void {
           if (get(property, false)) continue;
 
           if (fightSource.gregariousReplace) {
-            saberCrateIfDesired();
+            const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
+            const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
+            const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+            if (weWantToSaberCrates) saberCrateIfSafe();
           }
 
           useFamiliar($familiar`Pocket Professor`);
@@ -396,7 +399,10 @@ export function dailyFights(): void {
         }
 
         if (nextFight.gregariousReplace) {
-          saberCrateIfDesired();
+          const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
+          const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
+          const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+          if (weWantToSaberCrates) saberCrateIfSafe();
         }
 
         const underwater = nextFight.location().environment === "underwater";
