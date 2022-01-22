@@ -78,7 +78,7 @@ export function hasMonsterReplacers(): boolean {
  * Saberfriends a crate if we are able to do so.
  */
 export function saberCrateIfSafe(): void {
-  const canSaber = !have($item`Fourth of May Cosplay Saber`) || get("_saberForceUses") >= 5;
+  const canSaber = have($item`Fourth of May Cosplay Saber`) && get("_saberForceUses") < 5;
   const isSafeToSaber = get("beGregariousFightsLeft") === 0 || get("_saberForceMonsterCount") > 0;
   if (!canSaber || !isSafeToSaber) return;
 
