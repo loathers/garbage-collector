@@ -1,6 +1,8 @@
 # ITOM and Rare Items used by Garbo
 
-Listed below is a list of items used by Garbo in farming Barf Mountain. 
+Listed below is a list of items used by Garbo in farming. 
+
+DISCLAIMER: Nothing on this list is required or in paticularlly worth buying for farming.
 
 | Item                                    | Type               | Notes                                                               |
 | --------------------------------------- | ------------------ | ------------------------------------------------------------------- |
