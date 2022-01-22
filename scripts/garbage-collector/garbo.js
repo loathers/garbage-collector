@@ -24842,7 +24842,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("5843d559383d41a2d44c86a04eb71c43c5f1595b" === mainSha) {
+    if ("2cb3b161b442364cdf21ce6aff60c084ac4c676f" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25427,7 +25427,7 @@ function hasMonsterReplacers() {
  */
 
 function saberCrateIfSafe() {
-  var canSaber = !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(extrovermectin_templateObject12 || (extrovermectin_templateObject12 = extrovermectin_taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) || (0,property/* get */.U2)("_saberForceUses") >= 5;
+  var canSaber = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(extrovermectin_templateObject12 || (extrovermectin_templateObject12 = extrovermectin_taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) && (0,property/* get */.U2)("_saberForceUses") < 5;
   var isSafeToSaber = (0,property/* get */.U2)("beGregariousFightsLeft") === 0 || (0,property/* get */.U2)("_saberForceMonsterCount") > 0;
   if (!canSaber || !isSafeToSaber) return;
 
@@ -30858,7 +30858,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("5843d559383d41a2d44c86a04eb71c43c5f1595b"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("2cb3b161b442364cdf21ce6aff60c084ac4c676f"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
