@@ -6,6 +6,7 @@ DISCLAIMER: Nothing on this list is required or in paticularlly worth buying for
 
 | Item                                    | Type               | Notes                                                               |
 | --------------------------------------- | ------------------ | ------------------------------------------------------------------- |
+| Beach Comb                              | Accessory          | Familiar weight, comb the beach for profit                          |
 | Guzzlr tablet                           | Accessory          | Item Drops, Booze & Guzzlrbucks                                     |
 | Kremlin's Greatest Briefcase            | Accessory          | Banish                                                              |
 | Lil' Doctor™ bag                        | Accessory          | Banish and Insta-kill                                               |
@@ -71,13 +72,15 @@ DISCLAIMER: Nothing on this list is required or in paticularlly worth buying for
 | Snow Suit                               | Familiar Equipment | Starts at +20 familiar weight and drops every 5 adventures.         |
 | Crown of Thrones                        | Hat                | Enthrone your familiars for buffs.                                  |
 | Daylight Shavings Helmet                | Hat                | Adventures, familiar weight, random buffs every 11 advs.            |
-| Beach Comb                              | Item               | Familiar weight, comb the beach for profit                          |
+| BittyCar MeatCar                        | Item               | Combat item that has a chance to drop meat.                         |
+| BittyCar SoulCar                        | Item               | Combat item that has a chance to restore hp/hp.                     |
 | bottle of lovebug pheromones            | Item               | Summon lovebugs for meat and other misc effects.                    |
 | can of Rain-Doh                         | Item               | Copier                                                              |
 | container of Spooky Putty               | Item               | Copier                                                              |
 | Deck of Every Card                      | Item               | Draw cards for buffs, etc.                                          |
 | defective Game Grid token               | Item               | Rare Item from Jackass Plumber                                      |
 | January's Garbage Tote                  | Item               | Limited charge items for meat drops and other items.                |
+| mime army shotglass                     | Item               | Your first 1-drunkenness booze item of the day doesn't count        |
 | Monster Manuel                          | Item               | Factoids and knowing monster values.                                |
 | mumming trunk                           | Item               | Dress up your familiars                                             |
 | pantogram                               | Item               | Sacrifice for pants with specific enchantments.                     |
@@ -95,6 +98,7 @@ DISCLAIMER: Nothing on this list is required or in paticularlly worth buying for
 | Greatest American Pants                 | Pants              | Free runs and other misc abilities.                                 |
 | Pantsgiving                             | Pants              | Meat/Item Drops, can increase fullness at cap                       |
 | repaid diaper                           | Pants              | Ultra Rare                                                          |
+| origami pasties                         | Shirt              | 30% meat drops and foldable to other items.                         |
 | Bird-a-Day calendar                     | Skill              | Daily bird with various random enchantment in a buff                |
 | Comprehensive Cartography               | Skill              | Sometimes buffs after combat, fight specific monsters               |
 | emotion chip                            | Skill              | various skills, item drops/etc                                      |
