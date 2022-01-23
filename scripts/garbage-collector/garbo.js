@@ -1705,7 +1705,7 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 var MACRO_NAME = "Script Autoattack Macro";
 /**
- * Get the KoL native ID of the macro with name Script Autoattack Macro.
+ * Get the KoL native ID of the macro with name name.
  *
  * @category Combat
  * @returns {number} The macro ID.
@@ -1870,8 +1870,11 @@ var Macro = /*#__PURE__*/function () {
     key: "setAutoAttack",
     value: function setAutoAttack() {
       var id = Macro.cachedMacroIds.get(this.name);
-      if (id === undefined) Macro.cachedMacroIds.set(this.name, getMacroId(this.name));
-      id = getMacroId(this.name);
+
+      if (id === undefined) {
+        id = getMacroId(this.name);
+        Macro.cachedMacroIds.set(this.name, id);
+      }
 
       if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getAutoAttack)() === 99000000 + id && this.toString() === Macro.cachedAutoAttacks.get(this.name)) {
         // This macro is already set. Don"t make the server request.
@@ -24842,7 +24845,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("2cb3b161b442364cdf21ce6aff60c084ac4c676f" === mainSha) {
+    if ("8ffff8b4db65ad70645eb93444d1f90a76b51562" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -30858,7 +30861,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("2cb3b161b442364cdf21ce6aff60c084ac4c676f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8ffff8b4db65ad70645eb93444d1f90a76b51562"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {

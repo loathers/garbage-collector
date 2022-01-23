@@ -103,7 +103,7 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 var MACRO_NAME = "Script Autoattack Macro";
 /**
- * Get the KoL native ID of the macro with name Script Autoattack Macro.
+ * Get the KoL native ID of the macro with name name.
  *
  * @category Combat
  * @returns {number} The macro ID.
@@ -268,8 +268,11 @@ var Macro = /*#__PURE__*/function () {
     key: "setAutoAttack",
     value: function setAutoAttack() {
       var id = Macro.cachedMacroIds.get(this.name);
-      if (id === undefined) Macro.cachedMacroIds.set(this.name, getMacroId(this.name));
-      id = getMacroId(this.name);
+
+      if (id === undefined) {
+        id = getMacroId(this.name);
+        Macro.cachedMacroIds.set(this.name, id);
+      }
 
       if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getAutoAttack)() === 99000000 + id && this.toString() === Macro.cachedAutoAttacks.get(this.name)) {
         // This macro is already set. Don"t make the server request.
