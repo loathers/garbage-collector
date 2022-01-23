@@ -120,7 +120,7 @@ import {
   saberCrateIfDesired,
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
-import { garboValue } from "./snapshot";
+import { garboValue } from "./session";
 
 const firstChainMacro = () =>
   Macro.if_(

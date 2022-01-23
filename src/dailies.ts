@@ -78,7 +78,7 @@ import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
 import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
-import { garboAverageValue, garboValue } from "./snapshot";
+import { garboAverageValue, garboValue } from "./session";
 
 export function dailySetup(): void {
   voterSetup();
@@ -382,7 +382,7 @@ function volcanoDailies(): void {
 function checkVolcanoQuest() {
   print("Checking volcano quest", HIGHLIGHT);
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-  const volcoinoValue = (1 / 3) * garboValue($item`one-day ticket to That 70s Volcano`);
+  const volcoinoValue = garboValue($item`Volcoino`);
   const volcanoProperties = new Map<Item, number>([
     [property.getItem("_volcanoItem1") || $item`none`, get("_volcanoItemCount1")],
     [property.getItem("_volcanoItem2") || $item`none`, get("_volcanoItemCount2")],

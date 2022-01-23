@@ -8,7 +8,7 @@ import {
 } from "kolmafia";
 import { $effect, $familiar, $familiars, $item, $items, get, have } from "libram";
 import { argmax, fairyMultiplier, leprechaunMultiplier } from "./lib";
-import { garboAverageValue, garboValue } from "./snapshot";
+import { garboAverageValue, garboValue } from "./session";
 
 let _meatFamiliar: Familiar;
 export function meatFamiliar(): Familiar {

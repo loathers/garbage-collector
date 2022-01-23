@@ -43,7 +43,7 @@ import {
   leprechaunMultiplier,
   realmAvailable,
 } from "./lib";
-import { garboAverageValue, garboValue } from "./snapshot";
+import { garboAverageValue, garboValue } from "./session";
 
 /**
  * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
@@ -185,7 +185,7 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
       realmAvailable("stench") ? garboValue($item`FunFunds™`) : 0,
       realmAvailable("hot") && !get("_luckyGoldRingVolcoino") ? garboValue($item`Volcoino`) : 0,
       realmAvailable("cold") ? garboValue($item`Wal-Mart gift certificate`) : 0,
-      realmAvailable("fr") ? garboValue($item`Rubee™`) : 0,
+      realmAvailable("fantasy") ? garboValue($item`Rubee™`) : 0,
     ].filter((value) => value > 0),
   ];
 

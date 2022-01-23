@@ -384,11 +384,14 @@ export function checkGithubVersion(): void {
 }
 
 export function realmAvailable(
-  element: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fr"
+  identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
 ): boolean {
-  return get(`_${element}AirportToday`) || get(`${element}AirportAlways`);
+  if (identifier === "fantasy" || identifier === "pirate") {
+    return get(`_${identifier[0]}rToday`) || get(`${identifier[0]}rAlways`);
+  }
+  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
 }
 
-export function fmt(num: number): string {
+export function formatNumber(num: number): string {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }

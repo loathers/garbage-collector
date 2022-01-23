@@ -82,7 +82,7 @@ import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
-import { garboAverageValue, printGarboSnapshot, startSnapshot } from "./snapshot";
+import { garboAverageValue, printGarboSession, startSession } from "./session";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -249,7 +249,6 @@ export function canContinue(): boolean {
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(26118);
-  startSnapshot();
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
@@ -304,6 +303,7 @@ export function main(argString = ""): void {
     }
   }
 
+  startSession();
   if (globalOptions.simulateDiet) {
     runDiet();
     return;
@@ -496,7 +496,7 @@ export function main(argString = ""): void {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEmbezzlerLog();
-    printGarboSnapshot();
+    printGarboSession();
     printLog(HIGHLIGHT);
   }
 }

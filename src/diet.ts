@@ -58,7 +58,7 @@ import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import { argmax, arrayEquals, globalOptions, HIGHLIGHT } from "./lib";
 import { Potion, PotionTier } from "./potions";
-import { garboValue } from "./snapshot";
+import { garboValue } from "./session";
 import synthesize from "./synthesis";
 
 const MPA = get("valueOfAdventure");

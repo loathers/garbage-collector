@@ -15,7 +15,7 @@ import {
 } from "libram";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
-import { garboValue } from "./snapshot";
+import { garboValue } from "./session";
 
 export type DraggableFight = "backup" | "wanderer";
 const WANDERER_PRICE_THRESHOLD = 10000;
