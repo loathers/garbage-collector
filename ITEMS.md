@@ -2,7 +2,7 @@
 
 Listed below is a list of items used by Garbo in farming. 
 
-:warning: DISCLAIMER: Nothing on this list is required or in paticularlly worth buying for farming. :warning:
+:warning: *DISCLAIMER: Nothing on this list is required or in paticularlly worth buying for farming.* :warning:
 
 | Item                                    | Type               | Notes                                                               |
 | --------------------------------------- | ------------------ | ------------------------------------------------------------------- |
