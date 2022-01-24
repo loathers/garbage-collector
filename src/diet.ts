@@ -307,8 +307,6 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`extra-greasy slider`),
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
-    new MenuItem($item`Miserable Pie`),
-    new MenuItem($item`Every Day is Like This Sundae`),
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -322,8 +320,6 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`jar of fermented pickle juice`),
     new MenuItem(mallMin(complexMushroomWines)),
     new MenuItem(mallMin(perfectDrinks)),
-    new MenuItem($item`Strikes Again Bigmouth`),
-    new MenuItem($item`Irish Coffee, English Heart`),
 
     // SPLEEN
     new MenuItem($item`octolus oculus`),
@@ -333,7 +329,6 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`antimatter wad`),
     new MenuItem($item`voodoo snuff`),
     new MenuItem($item`blood-drive sticker`),
-    new MenuItem($item`handful of Smithereens`),
 
     // MISC
     ...limitedItems,
@@ -485,6 +480,8 @@ export function potionMenu(
         : 0,
       { price: (2 * getSaleValue($item`one-day ticket to Dinseylandfill`)) / 20 }
     ),
+    ...potion($item`miserable pie`),
+    ...potion($item`every day is like this sundae`),
 
     // BOOZE POTIONS
     ...potion($item`dirt julep`),
@@ -492,6 +489,8 @@ export function potionMenu(
     ...potion($item`Friendly Turkey`),
     ...potion($item`vintage smart drink`),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
+    ...potion($item`strikes again bigmouth`),
+    ...potion($item`irish coffee english heart`),
 
     // SPLEEN POTIONS
     ...potion($item`beggin' cologne`),
@@ -511,6 +510,7 @@ export function potionMenu(
           }
         )
       : []),
+      ...potion($item`handful of smithereens`)
   ];
 }
 
