@@ -24845,7 +24845,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("f900af3cd0d090370cb2073efac5025685a6c60f" === mainSha) {
+    if ("5c36ab6b53d8a7219dfdafc5957753705f8a6812" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25401,7 +25401,7 @@ function expectedGregs() {
 
   var replacesPerGreg = (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(extrovermectin_templateObject6 || (extrovermectin_templateObject6 = extrovermectin_taggedTemplateLiteral(["Transcendent Olfaction"])))) ? 7 : 5;
   var firstReplaces = (0,utils/* clamp */.uZ)(sabersLeft * 2 + replacesPerGreg, 0, totalMonsterReplacers);
-  gregs.push(baseGregs + orbGregs + timeSpunGregs + sabersLeft * 2 + replacesPerGreg);
+  gregs.push(baseGregs + orbGregs + timeSpunGregs + firstReplaces);
   totalMonsterReplacers -= firstReplaces;
 
   while (totalMonsterReplacers > 0) {
@@ -30861,7 +30861,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f900af3cd0d090370cb2073efac5025685a6c60f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("5c36ab6b53d8a7219dfdafc5957753705f8a6812"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
