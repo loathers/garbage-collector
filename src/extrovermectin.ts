@@ -44,7 +44,7 @@ export function expectedGregs(): number[] {
   const replacesPerGreg = have($skill`Transcendent Olfaction`) ? 7 : 5;
   const firstReplaces = clamp(sabersLeft * 2 + replacesPerGreg, 0, totalMonsterReplacers);
 
-  gregs.push(baseGregs + orbGregs + timeSpunGregs + sabersLeft * 2 + replacesPerGreg);
+  gregs.push(baseGregs + orbGregs + timeSpunGregs + firstReplaces);
   totalMonsterReplacers -= firstReplaces;
   while (totalMonsterReplacers > 0) {
     gregs.push(baseGregs + orbGregs + clamp(replacesPerGreg, 0, totalMonsterReplacers));
