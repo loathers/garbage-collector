@@ -24845,7 +24845,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("8ffff8b4db65ad70645eb93444d1f90a76b51562" === mainSha) {
+    if ("f900af3cd0d090370cb2073efac5025685a6c60f" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", "blue");
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -27512,12 +27512,12 @@ function copiers() {
       expectedGregariousFights = _gregariousCount.expectedGregariousFights,
       marginalGregariousFights = _gregariousCount.marginalGregariousFights;
 
-  var extros = (0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() ? [] : src_diet_toConsumableArray(expectedGregariousFights.map(embezzlers => new MenuItem((0,template_string/* $item */.xr)(diet_templateObject91 || (diet_templateObject91 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
+  var extros = (0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() ? [] : [].concat(src_diet_toConsumableArray(expectedGregariousFights.map(embezzlers => new MenuItem((0,template_string/* $item */.xr)(diet_templateObject91 || (diet_templateObject91 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
     additionalValue: embezzlers * embezzlerDifferential,
     maximum: 1
-  }), new MenuItem((0,template_string/* $item */.xr)(diet_templateObject92 || (diet_templateObject92 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
+  }))), [new MenuItem((0,template_string/* $item */.xr)(diet_templateObject92 || (diet_templateObject92 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
     additionalValue: marginalGregariousFights * embezzlerDifferential
-  })));
+  })]);
   return src_diet_toConsumableArray(extros);
 }
 
@@ -30861,7 +30861,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8ffff8b4db65ad70645eb93444d1f90a76b51562"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f900af3cd0d090370cb2073efac5025685a6c60f"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
