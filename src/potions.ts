@@ -17,7 +17,6 @@ import {
   $familiar,
   $item,
   $items,
-  $location,
   clamp,
   get,
   getActiveEffects,
@@ -28,14 +27,11 @@ import {
 import { acquire } from "./acquire";
 import { baseMeat, globalOptions, pillkeeperOpportunityCost } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
-import { canAdv } from "canadv.ash";
+import { usingPurse } from "./outfit";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
-const usingPurse = () =>
-  !have($item`latte lovers member's mug`) ||
-  !have($familiar`Robortender`) ||
-  !canAdv($location`The Black Forest`, false);
+
 
 const mutuallyExclusiveList: Effect[][] = [
   $effects`Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue`,
