@@ -266,7 +266,13 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
-export const usingPurse: () => boolean = () =>
-  !have($item`latte lovers member's mug`) ||
-  !have($familiar`Robortender`) ||
-  !canAdv($location`The Black Forest`, false);
+let cachedUsingPurse: boolean | null = null;
+export function usingPurse(): boolean {
+  if (cachedUsingPurse === null) {
+    cachedUsingPurse =
+      !have($item`latte lovers member's mug`) ||
+      !have($familiar`Robortender`) ||
+      !canAdv($location`The Black Forest`, false);
+  }
+  return cachedUsingPurse;
+}
