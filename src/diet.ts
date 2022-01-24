@@ -387,11 +387,11 @@ function copiers(): MenuItem<Note>[] {
               new MenuItem<Note>($item`Extrovermectin™`, {
                 additionalValue: embezzlers * embezzlerDifferential,
                 maximum: 1,
-              }),
-            new MenuItem<Note>($item`Extrovermectin™`, {
-              additionalValue: marginalGregariousFights * embezzlerDifferential,
-            })
+              })
           ),
+          new MenuItem<Note>($item`Extrovermectin™`, {
+            additionalValue: marginalGregariousFights * embezzlerDifferential,
+          }),
         ];
   return [...extros];
 }
