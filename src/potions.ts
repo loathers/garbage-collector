@@ -32,7 +32,7 @@ import { canAdv } from "canadv.ash";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
-const usingPurse =
+const usingPurse = () =>
   !have($item`latte lovers member's mug`) ||
   !have($familiar`Robortender`) ||
   !canAdv($location`The Black Forest`, false);
@@ -104,7 +104,7 @@ export class Potion {
   meatDrop(): number {
     return (
       getModifier("Meat Drop", this.effect()) +
-      2 * (usingPurse ? getModifier("Smithsness", this.effect()) : 0)
+      2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
     );
   }
 
