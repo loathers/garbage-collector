@@ -387,7 +387,7 @@ export function realmAvailable(
   identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
 ): boolean {
   if (identifier === "fantasy" || identifier === "pirate") {
-    return get(`_${identifier[0]}rToday`) || get(`${identifier[0]}rAlways`);
+    return get(`_${identifier[0]}rToday`, false) || get(`${identifier[0]}rAlways`, false);
   }
   return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
 }
