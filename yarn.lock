@@ -2919,11 +2919,12 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.2.tgz#fef10525d44df55e17c7f658353dd811b50f636c"
-  integrity sha512-r2oYG56j9UhlHkOtlqeHU8bwbBVP/kncj43AvSj776peTzSjHwhRAJ4P1se3uU5B5w3qcEEMvL3Ia4xWjE5hRw==
-  dependencies:
+libram@^0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.3.tgz#f11d1d62fbd7e3ccdeca843806f1e5f5c6a9913c"
+  integrity sha512-XfsCIKmg0li/kqhKzwbjl1lBEUJFyKrdSpNwHmvN4EjosngC3ou6tk7UcMgzkSvXTvKn4T4pPPrHAZ2X+SZWFw==
+
+dependencies:
     "@babel/runtime-corejs3" "^7.14.9"
     core-js "3.15.2"
     kolmafia "^1.4.0"

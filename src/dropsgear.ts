@@ -291,7 +291,11 @@ function bonusAccessories(equipMode: BonusEquipMode): Map<Item, number> {
 }
 
 export function magnifyingGlass(): Map<Item, number> {
-  if (!have($item`cursed magnifying glass`) || get("_voidFreeFights") >= 5) {
+  if (
+    !have($item`cursed magnifying glass`) ||
+    get("_voidFreeFights") >= 5 ||
+    get("cursedMagnifyingGlassCount") >= 13
+  ) {
     return new Map<Item, number>();
   }
 

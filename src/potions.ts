@@ -8,7 +8,6 @@ import {
   itemAmount,
   itemType,
   mallPrice,
-  numericModifier,
   print,
   use,
 } from "kolmafia";
@@ -21,12 +20,14 @@ import {
   clamp,
   get,
   getActiveEffects,
+  getModifier,
   have,
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
 import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { usingPurse } from "./outfit";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -90,17 +91,20 @@ export class Potion {
 
   effectDuration(): number {
     return (
-      (this.overrideDuration ?? numericModifier(this.potion, "Effect Duration")) *
+      (this.overrideDuration ?? getModifier("Effect Duration", this.potion)) *
       (this.providesDoubleDuration ? 2 : 1)
     );
   }
 
   meatDrop(): number {
-    return numericModifier(this.effect(), "Meat Drop");
+    return (
+      getModifier("Meat Drop", this.effect()) +
+      2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
+    );
   }
 
   familiarWeight(): number {
-    return numericModifier(this.effect(), "Familiar Weight");
+    return getModifier("Familiar Weight", this.effect());
   }
 
   bonusMeat(): number {
