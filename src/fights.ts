@@ -57,7 +57,6 @@ import {
   $phylum,
   $skill,
   $slot,
-  $stat,
   ActionSource,
   adventureMacro,
   adventureMacroAuto,
@@ -1125,7 +1124,7 @@ const freeFightSources = [
   new FreeFight(
     () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
     () => {
-      if (get("snojoSetting") === $stat`none`) {
+      if (get("snojoSetting") === null) {
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         runChoice(3);
       }
