@@ -30,7 +30,7 @@ export function withStash<T>(itemsToTake: Item[], action: () => T): T {
 }
 
 export function withVIPClan<T>(action: () => T): T {
-  let clanIdOrName: number | string | undefined = get("garbo_vipClan", undefined);
+  let clanIdOrName: number | string | undefined = get("garbo_vipClan", 0) || undefined;
   if (!clanIdOrName && have($item`Clan VIP Lounge key`)) {
     if (
       userConfirm(
