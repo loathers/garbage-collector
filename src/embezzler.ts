@@ -49,7 +49,14 @@ import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
-import { averageEmbezzlerNet, globalOptions, ltbRun, setChoice, WISH_VALUE } from "./lib";
+import {
+  averageEmbezzlerNet,
+  globalOptions,
+  HIGHLIGHT,
+  ltbRun,
+  setChoice,
+  WISH_VALUE,
+} from "./lib";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
 
@@ -684,11 +691,11 @@ export const embezzlerSources = [
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
       const profit = (potential + 1) * averageEmbezzlerNet() - mallPrice($item`11-leaf clover`);
       if (profit < 0) return false;
-      print(`You have the following embezzler-sources untapped right now:`, "blue");
+      print(`You have the following embezzler-sources untapped right now:`, HIGHLIGHT);
       embezzlerSources
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
-        .forEach((text) => print(text, "blue"));
+        .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = userConfirm(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`
@@ -716,11 +723,11 @@ export const embezzlerSources = [
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
       const profit = (potential + 1) * averageEmbezzlerNet() - WISH_VALUE;
       if (profit < 0) return false;
-      print(`You have the following embezzler-sources untapped right now:`, "blue");
+      print(`You have the following embezzler-sources untapped right now:`, HIGHLIGHT);
       embezzlerSources
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
-        .forEach((text) => print(text, "blue"));
+        .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = userConfirm(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`

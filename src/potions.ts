@@ -25,7 +25,7 @@ import {
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, globalOptions, pillkeeperOpportunityCost } from "./lib";
+import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { usingPurse } from "./outfit";
 
@@ -344,7 +344,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
     const possibleDoublingPotions = doublingPotions(embezzlers);
     const bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
     if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
-      print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
+      print(`Determined that ${bestPotion.potion} was the best potion to double`, HIGHLIGHT);
       cliExecute("pillkeeper extend");
       acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
       bestPotion.use(1);
@@ -394,7 +394,7 @@ export function bathroomFinance(embezzlers: number): void {
   if (touristGross + embezzlerGross > mallPrice(greenspan)) {
     acquire(1, greenspan, touristGross + embezzlerGross);
     if (itemAmount(greenspan) > 0) {
-      print(`Using ${greenspan}!`, "blue");
+      print(`Using ${greenspan}!`, HIGHLIGHT);
       use(greenspan);
     }
   }

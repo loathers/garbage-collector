@@ -67,7 +67,6 @@ import {
   CrystalBall,
   ensureEffect,
   get,
-  getSaleValue,
   have,
   maximizeCached,
   property,
@@ -88,12 +87,14 @@ import {
   embezzlerLog,
   expectedEmbezzlerProfit,
   globalOptions,
+  HIGHLIGHT,
   kramcoGuaranteed,
   logMessage,
   ltbRun,
   mapMonster,
   propertyManager,
   questStep,
+  resetDailyPreference,
   safeRestore,
   setChoice,
 } from "./lib";
@@ -117,6 +118,7 @@ import {
   saberCrateIfSafe,
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
+import { garboValue } from "./session";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -313,7 +315,7 @@ const witchessPieces = [
 ];
 
 function bestWitchessPiece() {
-  return witchessPieces.sort((a, b) => getSaleValue(b.drop) - getSaleValue(a.drop))[0].piece;
+  return witchessPieces.sort((a, b) => garboValue(b.drop) - garboValue(a.drop))[0].piece;
 }
 
 export function dailyFights(): void {
@@ -1077,20 +1079,19 @@ const freeFightSources = [
         1119: 6, // escape DMT
       });
       const thought =
-        getSaleValue($item`abstraction: certainty`) >= getSaleValue($item`abstraction: thought`);
-      const action =
-        getSaleValue($item`abstraction: joy`) >= getSaleValue($item`abstraction: action`);
+        garboValue($item`abstraction: certainty`) >= garboValue($item`abstraction: thought`);
+      const action = garboValue($item`abstraction: joy`) >= garboValue($item`abstraction: action`);
       const sensation =
-        getSaleValue($item`abstraction: motion`) >= getSaleValue($item`abstraction: sensation`);
+        garboValue($item`abstraction: motion`) >= garboValue($item`abstraction: sensation`);
 
       if (thought) {
-        acquire(1, $item`abstraction: thought`, getSaleValue($item`abstraction: certainty`), false);
+        acquire(1, $item`abstraction: thought`, garboValue($item`abstraction: certainty`), false);
       }
       if (action) {
-        acquire(1, $item`abstraction: action`, getSaleValue($item`abstraction: joy`), false);
+        acquire(1, $item`abstraction: action`, garboValue($item`abstraction: joy`), false);
       }
       if (sensation) {
-        acquire(1, $item`abstraction: sensation`, getSaleValue($item`abstraction: motion`), false);
+        acquire(1, $item`abstraction: sensation`, garboValue($item`abstraction: motion`), false);
       }
       adventureMacro(
         $location`The Deep Machine Tunnels`,
@@ -1501,9 +1502,9 @@ const freeRunFightSources = [
           bonusEquip: new Map<Item, number>(
             have($familiar`Mini-Hipster`)
               ? [
-                  [$item`ironic moustache`, getSaleValue($item`mole skin notebook`)],
-                  [$item`chiptune guitar`, getSaleValue($item`ironic knit cap`)],
-                  [$item`fixed-gear bicycle`, getSaleValue($item`ironic oversized sunglasses`)],
+                  [$item`ironic moustache`, garboValue($item`mole skin notebook`)],
+                  [$item`chiptune guitar`, garboValue($item`ironic knit cap`)],
+                  [$item`fixed-gear bicycle`, garboValue($item`ironic oversized sunglasses`)],
                 ]
               : []
           ),
@@ -1712,7 +1713,7 @@ function setNepQuestChoicesAndPrepItems() {
   if (get("_questPartyFair") === "unstarted") {
     visitUrl(toUrl($location`The Neverending Party`));
     if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
-      print("Gerald/ine quest!", "blue");
+      print("Gerald/ine quest!", HIGHLIGHT);
     }
     if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
       runChoice(1); // Accept quest
@@ -1728,7 +1729,7 @@ function setNepQuestChoicesAndPrepItems() {
       setChoice(1326, 3); // Talk to the woman
     } else if (get("choiceAdventure1324") !== 5) {
       setChoice(1324, 5);
-      print("Found Geraldine!", "blue");
+      print("Found Geraldine!", HIGHLIGHT);
       // Format of this property is count, space, item ID.
       const partyFairInfo = get("_questPartyFairProgress").split(" ");
       logMessage(`Geraldine wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
@@ -1739,7 +1740,7 @@ function setNepQuestChoicesAndPrepItems() {
       setChoice(1327, 3); // Find Gerald
     } else if (get("choiceAdventure1324") !== 5) {
       setChoice(1324, 5);
-      print("Found Gerald!", "blue");
+      print("Found Gerald!", HIGHLIGHT);
       const partyFairInfo = get("_questPartyFairProgress").split(" ");
       logMessage(`Gerald wants ${partyFairInfo[0]} ${toItem(partyFairInfo[1]).plural}, please!`);
     }
@@ -1906,7 +1907,7 @@ function getBestItemStealZone(): ItemStealZone | null {
   const value = (zone: ItemStealZone): number => {
     // We have to divide hugs by 2 - will likely use a banish as a free run so we will be alternating zones.
     return (
-      zone.dropRate * getSaleValue(zone.item) * (vorticesAvail + hugsAvail / 2) - zone.openCost()
+      zone.dropRate * garboValue(zone.item) * (vorticesAvail + hugsAvail / 2) - zone.openCost()
     );
   };
   return (
@@ -1963,4 +1964,33 @@ function voidMonster(): void {
   freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
   adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   postCombatActions();
+}
+
+export function printEmbezzlerLog(): void {
+  if (resetDailyPreference("garboEmbezzlerDate")) {
+    property.set("garboEmbezzlerCount", 0);
+    property.set("garboEmbezzlerSources", "");
+  }
+  const totalEmbezzlers =
+    property.getNumber("garboEmbezzlerCount", 0) +
+    embezzlerLog.initialEmbezzlersFought +
+    embezzlerLog.digitizedEmbezzlersFought;
+
+  const allEmbezzlerSources = property
+    .getString("garboEmbezzlerSources")
+    .split(",")
+    .filter((source) => source);
+  allEmbezzlerSources.push(...embezzlerLog.sources);
+
+  property.set("garboEmbezzlerCount", totalEmbezzlers);
+  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+
+  print(
+    `You fought ${embezzlerLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${embezzlerLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+    HIGHLIGHT
+  );
+  print(
+    `Including this, you have fought ${totalEmbezzlers} across all ascensions today`,
+    HIGHLIGHT
+  );
 }

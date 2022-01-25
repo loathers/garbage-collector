@@ -24,7 +24,6 @@ import {
   get,
   getFoldGroup,
   getModifier,
-  getSaleValue,
   have,
   Modifiers,
   sumNumbers,
@@ -42,7 +41,9 @@ import {
   fairyMultiplier,
   globalOptions,
   leprechaunMultiplier,
+  realmAvailable,
 } from "./lib";
+import { garboAverageValue, garboValue } from "./session";
 
 /**
  * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
@@ -177,33 +178,14 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
     100, // 80 - 120 meat
     ...[
       itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
-      itemAmount($item`sand dollar`) > 0 ? getSaleValue($item`sand dollar`) : 0, // This should be closeted
-      itemAmount($item`Freddy Kruegerand`) > 0
-        ? Math.max(
-            getSaleValue($item`bottle of Bloodweiser`) / 200,
-            getSaleValue($item`electric Kool-Aid`) / 200,
-            getSaleValue($item`Dreadsylvanian skeleton key`) / 25
-          )
-        : 0,
-      get("sleazeAirportAlways") || get("_sleazeAirportToday")
-        ? getSaleValue($item`one-day ticket to Spring Break Beach`) / 100
-        : 0,
-      get("spookyAirportAlways") || get("_spookyAirportToday")
-        ? Math.max(
-            getSaleValue($item`one-day ticket to Conspiracy Island`) / 100,
-            getSaleValue($item`karma shawarma`) / 7
-          )
-        : 0,
-      get("stenchAirportAlways") || get("_stenchAirportToday")
-        ? getSaleValue($item`one-day ticket to Dinseylandfill`) / 20
-        : 0,
-      (get("hotAirportAlways") || get("_hotAirportToday")) && !get("_luckyGoldRingVolcoino")
-        ? getSaleValue($item`one-day ticket to That 70s Volcano`) / 3
-        : 0,
-      get("coldAirportAlways") || get("_coldAirportToday")
-        ? getSaleValue($item`one-day ticket to The Glaciest`) / 50
-        : 0,
-      get("frAlways") || get("_frToday") ? getSaleValue($item`FantasyRealm guest pass`) / 350 : 0,
+      itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
+      itemAmount($item`Freddy Kruegerand`) > 0 ? garboValue($item`Freddy Kruegerand`) : 0,
+      realmAvailable("sleaze") ? garboValue($item`Beach Buck`) : 0,
+      realmAvailable("spooky") ? garboValue($item`Coinspiracy`) : 0,
+      realmAvailable("stench") ? garboValue($item`FunFunds™`) : 0,
+      realmAvailable("hot") && !get("_luckyGoldRingVolcoino") ? garboValue($item`Volcoino`) : 0,
+      realmAvailable("cold") ? garboValue($item`Wal-Mart gift certificate`) : 0,
+      realmAvailable("fantasy") ? garboValue($item`Rubee™`) : 0,
     ].filter((value) => value > 0),
   ];
 
@@ -249,7 +231,7 @@ function bagOfManyConfections() {
   return new Map<Item, number>([
     [
       $item`bag of many confections`,
-      getSaleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
+      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
     ],
   ]);
 }
@@ -265,7 +247,7 @@ function snowSuit(equipMode: BonusEquipMode) {
     return new Map<Item, number>([]);
   }
 
-  return new Map<Item, number>([[$item`Snow Suit`, getSaleValue($item`carrot nose`) / 10]]);
+  return new Map<Item, number>([[$item`Snow Suit`, garboValue($item`carrot nose`) / 10]]);
 }
 
 function mayflowerBouquet(equipMode: BonusEquipMode) {
@@ -283,7 +265,7 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
   const sporadicMeatBonus = (40 * 0.125 * (equipMode === "barf" ? baseMeat : 0)) / 100;
   const averageFlowerValue =
-    getSaleValue(
+    garboAverageValue(
       ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`
     ) * Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
   return new Map<Item, number>([
