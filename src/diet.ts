@@ -480,6 +480,8 @@ export function potionMenu(
         : 0,
       { price: (2 * getSaleValue($item`one-day ticket to Dinseylandfill`)) / 20 }
     ),
+    ...potion($item`Miserable Pie`),
+    ...potion($item`Every Day is Like This Sundae`),
 
     // BOOZE POTIONS
     ...potion($item`dirt julep`),
@@ -487,6 +489,8 @@ export function potionMenu(
     ...potion($item`Friendly Turkey`),
     ...potion($item`vintage smart drink`),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
+    ...potion($item`Strikes Again Bigmouth`),
+    ...potion($item`Irish Coffee, English Heart`),
 
     // SPLEEN POTIONS
     ...potion($item`beggin' cologne`),
@@ -506,6 +510,7 @@ export function potionMenu(
           }
         )
       : []),
+    ...potion($item`handful of Smithereens`),
   ];
 }
 
