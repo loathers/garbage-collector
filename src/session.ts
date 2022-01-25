@@ -80,23 +80,20 @@ const specialValueLookup = new Map<Item, () => number>([
   ],
   [
     $item`weathered barrel`,
-    () =>
-      garboAverageValue(
-        ...$items`banana, bean burrito, enchanted bean burrito, jumping bean burrito`
-      ),
+    () => garboAverageValue(...$items`bean burrito, enchanted bean burrito, jumping bean burrito`),
   ],
   [
     $item`dusty barrel`,
     () =>
       garboAverageValue(
-        ...$items`banana, spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito`
+        ...$items`spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito`
       ),
   ],
   [
     $item`disintegrating barrel`,
     () =>
       garboAverageValue(
-        ...$items`banana, insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito`
+        ...$items`insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito`
       ),
   ],
   [

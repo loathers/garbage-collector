@@ -1,5 +1,6 @@
 import {
   availableAmount,
+  buy,
   chew,
   cliExecute,
   drink,
@@ -56,7 +57,7 @@ import { acquire } from "./acquire";
 import { withVIPClan } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import { argmax, arrayEquals, globalOptions, HIGHLIGHT } from "./lib";
+import { argmax, arrayEquals, globalOptions, HIGHLIGHT, realmAvailable } from "./lib";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -464,6 +465,32 @@ export function potionMenu(
   const speakeasy = $item`Clan speakeasy`;
   const hasSpeakeasy = getClanLounge()[`${speakeasy}`];
 
+  const twiceHauntedPrice =
+    Math.min(
+      garboValue($item`haunted orange`),
+      garboValue($item`orange`) + garboValue($item`ghostly ectoplasm`)
+    ) +
+    Math.min(
+      garboValue($item`haunted bottle of vodka`),
+      garboValue($item`bottle of vodka`) + garboValue($item`ghostly ectoplasm`)
+    );
+
+  const muffin =
+    !globalOptions.ascending && have($item`blueberry muffin`)
+      ? limitedPotion($item`blueberry muffin`, 1, { price: 0 })
+      : [];
+
+  const campfireHotdog = get("getawayCampsiteUnlocked")
+    ? potion($item`campfire hot dog`, { price: garboValue($item`stick of firewood`) })
+    : [];
+
+  const foodCone =
+    realmAvailable("stench") || !globalOptions.noBarf
+      ? limitedPotion($item`Dinsey food-cone`, Math.floor(availableAmount($item`FunFunds™`) / 2), {
+          price: 2 * garboValue($item`FunFunds™`),
+        })
+      : [];
+
   return [
     ...baseMenu,
     ...copiers(),
@@ -473,31 +500,47 @@ export function potionMenu(
     ...potion($item`tempura cauliflower`),
     ...potion($item`sea truffle`),
     ...potion($item`tempura broccoli`),
-    ...limitedPotion(
-      $item`Dinsey food-cone`,
-      get("_stenchAirportToday") || get("stenchAirportAlways")
-        ? Math.floor(availableAmount($item`FunFunds™`) / 2)
-        : 0,
-      { price: (2 * garboValue($item`one-day ticket to Dinseylandfill`)) / 20 }
-    ),
     ...potion($item`Miserable Pie`),
     ...potion($item`Every Day is Like This Sundae`),
+    ...potion($item`bowl of mummy guts`),
+    ...potion($item`haunted Hell ramen`),
+    ...muffin,
+    ...campfireHotdog,
+    ...foodCone,
 
     // BOOZE POTIONS
     ...potion($item`dirt julep`),
     ...potion($item`Ambitious Turkey`),
     ...potion($item`Friendly Turkey`),
     ...potion($item`vintage smart drink`),
-    ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
     ...potion($item`Strikes Again Bigmouth`),
     ...potion($item`Irish Coffee, English Heart`),
+    ...potion($item`Jack-O-Lantern beer`),
+    ...potion($item`Amnesiac Ale`),
+    ...potion($item`mentholated wine`),
+    ...potion($item`Feliz Navidad`),
+    ...potion($item`broberry brogurt`),
+    ...potion($item`haunted martini`),
+    ...potion($item`twice-haunted screwdriver`, { price: twiceHauntedPrice }),
+    ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
 
     // SPLEEN POTIONS
     ...potion($item`cute mushroom`),
     ...potion($item`beggin' cologne`),
-    ...limitedPotion($item`body spradium`, clamp(availableAmount($item`body spradium`), 0, 1)),
-    ...potion($item`Knob Goblin pet-buffing spray`),
     ...potion($item`Knob Goblin nasal spray`),
+    ...potion($item`handful of Smithereens`),
+    ...potion($item`black striped oyster egg`),
+    ...potion($item`black paisley oyster egg`),
+    ...potion($item`black polka-dot oyster egg`),
+    ...potion($item`lustrous oyster egg`),
+    ...potion($item`glimmering buzzard feather`),
+    ...potion($item`Knob Goblin pet-buffing spray`),
+    ...potion($item`abstraction: joy`),
+    ...potion($item`beastly paste`),
+    ...potion($item`gleaming oyster egg`),
+    ...potion($item`Party-in-a-Can™`),
+    ...limitedPotion($item`body spradium`, clamp(availableAmount($item`body spradium`), 0, 1)),
+
     ...(have($skill`Sweet Synthesis`)
       ? potion(
           new Potion($item`Rethinking Candy`, {
@@ -511,7 +554,6 @@ export function potionMenu(
           }
         )
       : []),
-    ...potion($item`handful of Smithereens`),
   ];
 }
 
@@ -715,6 +757,12 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           synthesize(countToConsume, $effect`Synthesis: Greed`);
         } else if (getClanLounge()[`${menuItem.item}`] && itemType(menuItem.item) === "booze") {
           cliExecute(`drink ${menuItem.item}`);
+        } else if (menuItem.item === $item`campfire hot dog`) {
+          // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
+          if (!have($item`stick of firewood`)) {
+            buy(1, $item`stick of firewood`, garboValue($item`stick of firewood`));
+          }
+          consumeSafe(countToConsume, menuItem.item);
         } else if (menuItem.item !== $item`Special Seasoning`) {
           consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
         }
