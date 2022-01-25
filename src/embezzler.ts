@@ -49,7 +49,14 @@ import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
-import { averageEmbezzlerNet, globalOptions, HIGHLIGHT, ltbRun, setChoice, WISH_VALUE } from "./lib";
+import {
+  averageEmbezzlerNet,
+  globalOptions,
+  HIGHLIGHT,
+  ltbRun,
+  setChoice,
+  WISH_VALUE,
+} from "./lib";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
 
