@@ -7,6 +7,7 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import { $effect, $familiar, $familiars, $item, $items, get, have } from "libram";
+import { NumericProperty } from "libram/dist/propertyTypes";
 import { argmax, fairyMultiplier, leprechaunMultiplier } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
@@ -40,7 +41,9 @@ function myFamiliarWeight(familiar: Familiar | null = null) {
 }
 
 // 5, 10, 15, 20, 25 +5/turn: 5.29, 4.52, 3.91, 3.42, 3.03
-const rotatingFamiliars: { [index: string]: { expected: number[]; drop: Item; pref: string } } = {
+const rotatingFamiliars: {
+  [index: string]: { expected: number[]; drop: Item; pref: NumericProperty };
+} = {
   "Fist Turkey": {
     expected: [3.91, 4.52, 4.52, 5.29, 5.29],
     drop: $item`Ambitious Turkey`,
@@ -158,7 +161,7 @@ export function freeFightFamiliar(): Familiar {
     const familiar: Familiar = Familiar.get(familiarName);
     if (have(familiar)) {
       const { expected, drop, pref } = rotatingFamiliars[familiarName];
-      const dropsAlready = get<number>(pref);
+      const dropsAlready = get(pref);
       if (dropsAlready >= expected.length) continue;
       const value = garboValue(drop) / expected[dropsAlready];
       familiarValue.push([familiar, value]);
