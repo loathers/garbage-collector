@@ -8,14 +8,14 @@ import {
   $skill,
   clamp,
   get,
-  getSaleValue,
   Guzzlr,
   have,
   questStep,
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
-import { globalOptions, propertyManager } from "./lib";
+import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
+import { garboValue } from "./session";
 
 export type DraggableFight = "backup" | "wanderer";
 const WANDERER_PRICE_THRESHOLD = 10000;
@@ -53,10 +53,6 @@ interface UnlockableZone {
   noInv: boolean;
 }
 
-function airportAvailable(element: "spooky" | "stench" | "hot" | "cold" | "sleaze"): boolean {
-  return get(`_${element}AirportToday`) || get(`${element}AirportAlways`);
-}
-
 const UnlockableZones: UnlockableZone[] = [
   {
     zone: "Spaaace",
@@ -78,25 +74,25 @@ const UnlockableZones: UnlockableZone[] = [
   },
   {
     zone: "Conspiracy Island",
-    available: () => airportAvailable("spooky"),
+    available: () => realmAvailable("spooky"),
     unlocker: $item`one-day ticket to Conspiracy Island`,
     noInv: true,
   },
   {
     zone: "Dinseylandfill",
-    available: () => airportAvailable("stench"),
+    available: () => realmAvailable("stench"),
     unlocker: $item`one-day ticket to Dinseylandfill`,
     noInv: true,
   },
   {
     zone: "The Glaciest",
-    available: () => airportAvailable("cold"),
+    available: () => realmAvailable("cold"),
     unlocker: $item`one-day ticket to The Glaciest`,
     noInv: true,
   },
   {
     zone: "Spring Break Beach",
-    available: () => airportAvailable("sleaze"),
+    available: () => realmAvailable("sleaze"),
     unlocker: $item`one-day ticket to Spring Break Beach`,
     noInv: true,
   },
@@ -198,7 +194,7 @@ const wandererTargets = [
       const tier = Guzzlr.getTier();
       const progressPerTurn = 100 / (10 - get("_guzzlrDeliveries"));
       if (tier) {
-        const buckValue = getSaleValue($item`Never Don't Stop Not Striving`) / 1000;
+        const buckValue = garboValue($item`Guzzlrbuck`);
         switch (tier) {
           case "bronze":
             return (3 * buckValue) / progressPerTurn;
@@ -274,7 +270,7 @@ const wandererTargets = [
   ),
   new WandererTarget(
     "Coinspiracy",
-    () => airportAvailable("spooky") && get("lovebugsUnlocked"),
+    () => realmAvailable("spooky") && get("lovebugsUnlocked"),
     () => $location`The Deep Dark Jungle`,
     () => 2 // slightly higher value
   ),
@@ -294,7 +290,7 @@ export function determineDraggableZoneAndEnsureAccess(type: DraggableFight = "wa
 
   const best = sortedTargets.find((prospect) => {
     const location = prospect.target.location();
-    print(`Trying to place a wanderer using ${prospect.target.name}`, "blue");
+    print(`Trying to place a wanderer using ${prospect.target.name}`, HIGHLIGHT);
     return (
       location &&
       canWander(location, type) &&

@@ -6,6 +6,7 @@ import {
   handlingChoice,
   haveSkill,
   inebrietyLimit,
+  isDarkMode,
   meatDropModifier,
   mpCost,
   myHp,
@@ -82,6 +83,7 @@ export const globalOptions: {
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
 
 export const WISH_VALUE = 50000;
+export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 
 export const propertyManager = new PropertiesManager();
 
@@ -111,25 +113,14 @@ export function safeInterrupt(): void {
   }
 }
 
-export function persistEmbezzlerLog(): { total: number; sources: Array<string> } {
+export function resetDailyPreference(trackingPreference: string): boolean {
   const today = todayToString();
-  if (property.getString("garboEmbezzlerDate") !== today) {
-    property.set("garboEmbezzlerDate", today);
-    property.set("garboEmbezzlerCount", 0);
-    property.set("garboEmbezzlerSources", "");
+  if (property.getString(trackingPreference) !== today) {
+    property.set(trackingPreference, today);
+    return true;
+  } else {
+    return false;
   }
-  const totalEmbezzlers =
-    property.getNumber("garboEmbezzlerCount", 0) +
-    embezzlerLog.initialEmbezzlersFought +
-    embezzlerLog.digitizedEmbezzlersFought;
-  const allEmbezzlerSources = property
-    .getString("garboEmbezzlerSources")
-    .split(",")
-    .filter((source) => source);
-  allEmbezzlerSources.push(...embezzlerLog.sources);
-  property.set("garboEmbezzlerCount", totalEmbezzlers);
-  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
-  return { total: totalEmbezzlers, sources: allEmbezzlerSources };
 }
 
 export function setChoice(adventure: number, value: number): void {
@@ -384,10 +375,23 @@ export function checkGithubVersion(): void {
     const mainBranch = gitBranches.find((branchInfo) => branchInfo.name === "main");
     const mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
     if (process.env.GITHUB_SHA === mainSha) {
-      print("Garbo is up to date!", "blue");
+      print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
       print(`${process.env.GITHUB_REPOSITORY}/main is at ${mainSha}`);
     }
   }
+}
+
+export function realmAvailable(
+  identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
+): boolean {
+  if (identifier === "fantasy" || identifier === "pirate") {
+    return get(`_${identifier[0]}rToday`) || get(`${identifier[0]}rAlways`);
+  }
+  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
+}
+
+export function formatNumber(num: number): string {
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }

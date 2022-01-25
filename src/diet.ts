@@ -43,7 +43,6 @@ import {
   Diet,
   get,
   getAverageAdventures,
-  getSaleValue,
   have,
   Kmail,
   maximizeCached,
@@ -57,12 +56,13 @@ import { acquire } from "./acquire";
 import { withVIPClan } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import { argmax, arrayEquals, globalOptions } from "./lib";
+import { argmax, arrayEquals, globalOptions, HIGHLIGHT } from "./lib";
 import { Potion, PotionTier } from "./potions";
+import { garboValue } from "./session";
 import synthesize from "./synthesis";
 
 const MPA = get("valueOfAdventure");
-print(`Using adventure value ${MPA}.`, "blue");
+print(`Using adventure value ${MPA}.`, HIGHLIGHT);
 
 const Mayo = MayoClinic.Mayo;
 type Note = PotionTier | null;
@@ -478,7 +478,7 @@ export function potionMenu(
       get("_stenchAirportToday") || get("stenchAirportAlways")
         ? Math.floor(availableAmount($item`FunFunds™`) / 2)
         : 0,
-      { price: (2 * getSaleValue($item`one-day ticket to Dinseylandfill`)) / 20 }
+      { price: (2 * garboValue($item`one-day ticket to Dinseylandfill`)) / 20 }
     ),
     ...potion($item`Miserable Pie`),
     ...potion($item`Every Day is Like This Sundae`),

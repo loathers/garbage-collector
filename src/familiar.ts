@@ -6,8 +6,9 @@ import {
   myInebriety,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $familiars, $item, $items, get, getSaleValue, have } from "libram";
+import { $effect, $familiar, $familiars, $item, $items, get, have } from "libram";
 import { argmax, fairyMultiplier, leprechaunMultiplier } from "./lib";
+import { garboAverageValue, garboValue } from "./session";
 
 let _meatFamiliar: Familiar;
 export function meatFamiliar(): Familiar {
@@ -137,7 +138,7 @@ function mimicDropValue() {
   return (
     savedMimicDropValue ??
     (savedMimicDropValue =
-      getSaleValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
+      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
   );
 }
 
@@ -159,7 +160,7 @@ export function freeFightFamiliar(): Familiar {
       const { expected, drop, pref } = rotatingFamiliars[familiarName];
       const dropsAlready = get<number>(pref);
       if (dropsAlready >= expected.length) continue;
-      const value = getSaleValue(drop) / expected[dropsAlready];
+      const value = garboValue(drop) / expected[dropsAlready];
       familiarValue.push([familiar, value]);
     }
   }
