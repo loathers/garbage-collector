@@ -1,4 +1,5 @@
 import {
+  autosellPrice,
   availableAmount,
   buy,
   chew,
@@ -23,6 +24,7 @@ import {
   print,
   setProperty,
   spleenLimit,
+  toItem,
   turnsPerCast,
   use,
   useFamiliar,
@@ -304,6 +306,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`Dreadsylvanian spooky pocket`),
     new MenuItem($item`tin cup of mulligan stew`),
     new MenuItem($item`frozen banquet`),
+    new MenuItem($item`deviled egg`),
     new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
     new MenuItem($item`extra-greasy slider`),
     new MenuItem(mallMin(lasagnas)),
@@ -420,6 +423,19 @@ function countCopies(diet: Diet<Note>): number {
   return replaceExtros + bonusExtros;
 }
 
+function ingredientCost(item: Item): number {
+  const ingredientMallPrice = mallPrice(item);
+  const ingredientAutosellPrice = autosellPrice(item);
+
+  if (
+    !have(item) ||
+    (item.tradeable && ingredientMallPrice > Math.max(100, 2 * ingredientAutosellPrice))
+  ) {
+    return ingredientMallPrice;
+  }
+  return ingredientAutosellPrice;
+}
+
 /**
  * Generate a potion diet that has entries
  * @param embezzlers number of embezzlers expected to be encountered on this day
@@ -467,12 +483,12 @@ export function potionMenu(
 
   const twiceHauntedPrice =
     Math.min(
-      garboValue($item`haunted orange`),
-      garboValue($item`orange`) + garboValue($item`ghostly ectoplasm`)
+      ingredientCost($item`haunted orange`),
+      ingredientCost($item`orange`) + ingredientCost($item`ghostly ectoplasm`)
     ) +
     Math.min(
-      garboValue($item`haunted bottle of vodka`),
-      garboValue($item`bottle of vodka`) + garboValue($item`ghostly ectoplasm`)
+      ingredientCost($item`haunted bottle of vodka`),
+      ingredientCost($item`bottle of vodka`) + ingredientCost($item`ghostly ectoplasm`)
     );
 
   const muffin =
@@ -481,7 +497,7 @@ export function potionMenu(
       : [];
 
   const campfireHotdog = get("getawayCampsiteUnlocked")
-    ? potion($item`campfire hot dog`, { price: garboValue($item`stick of firewood`) })
+    ? potion($item`campfire hot dog`, { price: ingredientCost($item`stick of firewood`) })
     : [];
 
   const foodCone =
@@ -738,9 +754,9 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
 
       if (countToConsume === 0) continue;
 
-      for (const menuItem of menuItems) {
-        if ([saladFork, frostyMug].includes(menuItem.item)) {
-          const element = menuItem.item === saladFork ? $element`hot` : $element`cold`;
+      type ItemAction = (countToConsume: number, menuItem: MenuItem<Note>) => void;
+      const elementalResistAction = (element: Element): ItemAction => {
+        return (countToConsume: number, menuItem: MenuItem<Note>) => {
           if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
             maximizeCached(["0.05 HP", `${element} Resistance`]);
             if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
@@ -748,22 +764,61 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
             }
           }
           consumeSafe(countToConsume, menuItem.item);
-        } else if ([Mayo.flex, Mayo.zapine].includes(menuItem.item)) {
+        };
+      };
+
+      const speakeasyDrinks: [Item, ItemAction][] = Object.keys(getClanLounge())
+        .map((s) => toItem(s))
+        .filter((i) => i.inebriety > 0)
+        .map((drink) => [
+          drink,
+          (countToConsume: number, menuItem: MenuItem<Note>) => {
+            cliExecute(`drink ${countToConsume} ${menuItem.item}`);
+          },
+        ]);
+      const mayoActions: [Item, ItemAction][] = Object.values(Mayo).map((i) => [
+        i,
+        (countToConsume: number, menuItem: MenuItem<Note>) => {
           MayoClinic.setMayoMinder(menuItem.item, countToConsume);
-        } else if (menuItem.item === $item`pocket wish`) {
-          acquire(1, $item`pocket wish`, 60000);
-          cliExecute(`genie effect ${menuItem.effect}`);
-        } else if (menuItem.item === $item`Rethinking Candy`) {
-          synthesize(countToConsume, $effect`Synthesis: Greed`);
-        } else if (getClanLounge()[`${menuItem.item}`] && itemType(menuItem.item) === "booze") {
-          cliExecute(`drink ${menuItem.item}`);
-        } else if (menuItem.item === $item`campfire hot dog`) {
-          // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
-          if (!have($item`stick of firewood`)) {
-            buy(1, $item`stick of firewood`, garboValue($item`stick of firewood`));
-          }
-          consumeSafe(countToConsume, menuItem.item);
-        } else if (menuItem.item !== $item`Special Seasoning`) {
+        },
+      ]);
+
+      const itemActions = new Map<Item, ItemAction | "skip">([
+        [saladFork, elementalResistAction($element`hot`)],
+        [frostyMug, elementalResistAction($element`cold`)],
+        [
+          $item`pocket wish`,
+          (countToConsume: number, menuItem: MenuItem<Note>) =>
+            acquire(countToConsume, $item`pocket wish`, 60000) &&
+            cliExecute(`genie effect ${menuItem.effect}`),
+        ],
+        [
+          $item`campfire hot dog`,
+          (countToConsume: number, menuItem: MenuItem<Note>) => {
+            // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
+            if (!have($item`stick of firewood`)) {
+              buy(1, $item`stick of firewood`, ingredientCost($item`stick of firewood`));
+            }
+            consumeSafe(countToConsume, menuItem.item);
+          },
+        ],
+        [$item`Special Seasoning`, "skip"],
+        [
+          $item`Rethinking Candy`,
+          (countToConsume: number, menuItem: MenuItem<Note>) =>
+            synthesize(countToConsume, menuItem.effect ?? $effect`Synthesis: Greed`),
+        ],
+        ...mayoActions,
+        ...speakeasyDrinks,
+      ]);
+
+      for (const menuItem of menuItems) {
+        const itemAction = itemActions.get(menuItem.item);
+        if (itemAction === "skip") {
+          continue;
+        } else if (itemAction) {
+          itemAction(countToConsume, menuItem);
+        } else {
           consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
         }
       }
