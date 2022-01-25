@@ -526,11 +526,8 @@ function internetMemeShop(): void {
     _internetDailyDungeonMalwareBought: $item`daily dungeon malware`,
   };
 
-  for (const [property, item] of Object.entries(internetMemeShopProperties)) {
-    if (
-      !get(property as keyof typeof internetMemeShopProperties) &&
-      baconValue * coinmasterPrice(item) < garboValue(item)
-    ) {
+  for (const [prop, item] of Object.entries(internetMemeShopProperties)) {
+    if (!property.getBoolean(prop) && baconValue * coinmasterPrice(item) < garboValue(item)) {
       retrieveItem($item`BACON`, coinmasterPrice(item));
       buy($coinmaster`Internet Meme Shop`, 1, item);
     }
