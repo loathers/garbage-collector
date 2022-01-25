@@ -323,7 +323,6 @@ function menu(): MenuItem<Note>[] {
 
     // SPLEEN
     new MenuItem($item`octolus oculus`),
-    new MenuItem($item`cute mushroom`),
     new MenuItem($item`prismatic wad`),
     new MenuItem($item`transdermal smoke patch`),
     new MenuItem($item`antimatter wad`),
@@ -376,7 +375,8 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  const embezzlerDifferential = 25000 - MPA;
+  // assuming embezzler is worth 4 * MPA and a marginal turn is 1 * MPA, the differential is 3 * MPA
+  const embezzlerDifferential = 3 * MPA;
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
   const extros =
     myInebriety() > inebrietyLimit()
@@ -493,6 +493,7 @@ export function potionMenu(
     ...potion($item`Irish Coffee, English Heart`),
 
     // SPLEEN POTIONS
+    ...potion($item`cute mushroom`),
     ...potion($item`beggin' cologne`),
     ...limitedPotion($item`body spradium`, clamp(availableAmount($item`body spradium`), 0, 1)),
     ...potion($item`Knob Goblin pet-buffing spray`),
