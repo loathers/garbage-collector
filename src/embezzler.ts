@@ -11,6 +11,7 @@ import {
   itemAmount,
   mallPrice,
   myAdventures,
+  myFamiliar,
   myHash,
   myInebriety,
   myTurncount,
@@ -166,7 +167,12 @@ export class EmbezzlerFight {
 
   location(location?: Location): Location {
     const suggestion =
-      this.draggable && !location && checkUnderwater() ? $location`The Briny Deeps` : location;
+      this.draggable &&
+      !location &&
+      checkUnderwater() &&
+      myFamiliar() !== $familiar`Pocket Professor`
+        ? $location`The Briny Deeps`
+        : location;
 
     if (
       (this.draggable && !suggestion) ||
