@@ -107,7 +107,7 @@ export function expectedEmbezzlerProfit(): number {
 }
 
 export function safeInterrupt(): void {
-  if (get<boolean>("garbo_interrupt", false)) {
+  if (get("garbo_interrupt", false)) {
     set("garbo_interrupt", false);
     abort("User interrupt requested. Stopping Garbage Collector.");
   }
@@ -386,10 +386,12 @@ export function checkGithubVersion(): void {
 export function realmAvailable(
   identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
 ): boolean {
-  if (identifier === "fantasy" || identifier === "pirate") {
-    return get(`_${identifier[0]}rToday`) || get(`${identifier[0]}rAlways`);
+  if (identifier === "fantasy") {
+    return get(`_frToday`) || get(`frAlways`);
+  } else if (identifier === "pirate") {
+    return get(`_prToday`) || get(`prAlways`);
   }
-  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
+  return get(`_${identifier}AirportToday`, false) || get(`${identifier}AirportAlways`, false);
 }
 
 export function formatNumber(num: number): string {

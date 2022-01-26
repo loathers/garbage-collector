@@ -760,7 +760,7 @@ export const embezzlerSources = [
     "Professor MeatChain",
     () => false,
     () =>
-      have($familiar`Pocket Professor`) && !get<boolean>("_garbo_meatChain", false)
+      have($familiar`Pocket Professor`) && !get("_garbo_meatChain", false)
         ? Math.max(10 - get("_pocketProfessorLectures"), 0)
         : 0,
     () => {
@@ -771,7 +771,7 @@ export const embezzlerSources = [
     "Professor WeightChain",
     () => false,
     () =>
-      have($familiar`Pocket Professor`) && !get<boolean>("_garbo_weightChain", false)
+      have($familiar`Pocket Professor`) && !get("_garbo_weightChain", false)
         ? Math.min(15 - get("_pocketProfessorLectures"), 5)
         : 0,
     () => {
