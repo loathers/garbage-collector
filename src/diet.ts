@@ -109,16 +109,16 @@ function chewSafe(qty: number, item: Item) {
   if (!chew(qty, item)) throw "Failed to chew safely";
 }
 
-function consumeSafe(qty: number, item: Item, additionalValue?: number) {
+function consumeSafe(qty: number, item: Item, additionalValue?: number, skipAcquire?: boolean) {
   const spleenCleaned = spleenCleaners.get(item);
   if (spleenCleaned && mySpleenUse() < spleenCleaned) {
     throw "No spleen to clear with this.";
   }
   const averageAdventures = getAverageAdventures(item);
-  if (averageAdventures > 0 || additionalValue) {
+  if (!skipAcquire && (averageAdventures > 0 || additionalValue)) {
     const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
     acquire(qty, item, cap);
-  } else {
+  } else if (!skipAcquire) {
     acquire(qty, item);
   }
   if (itemType(item) === "food") eatSafe(qty, item);
@@ -807,6 +807,11 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           $item`Rethinking Candy`,
           (countToConsume: number, menuItem: MenuItem<Note>) =>
             synthesize(countToConsume, menuItem.effect ?? $effect`Synthesis: Greed`),
+        ],
+        [
+          $item`blueberry muffin`,
+          (countToConsume: number, menuItem: MenuItem<Note>) =>
+            consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue, true),
         ],
         ...mayoActions,
         ...speakeasyDrinks,

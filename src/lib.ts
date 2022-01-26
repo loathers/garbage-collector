@@ -400,7 +400,7 @@ export function formatNumber(num: number): string {
 export function getChoiceOption(partialText: string): number {
   if (handlingChoice()) {
     const findResults = Object.entries(availableChoiceOptions()).find(
-      (value) => value[1].indexOf(partialText) >= -1
+      (value) => value[1].indexOf(partialText) > -1
     );
     if (findResults) {
       return parseInt(findResults[0]);
