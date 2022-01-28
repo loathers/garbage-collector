@@ -78,7 +78,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import { withStash, withVIPClan } from "./clan";
-import { breakfastCounter, dailySetup, postFreeFightDailySetup } from "./dailies";
+import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
@@ -485,7 +485,6 @@ export function main(argString = ""): void {
                 $item`one-day ticket to Dinseylandfill`
               );
             }
-            breakfastCounter();
           } finally {
             setAutoAttack(0);
           }

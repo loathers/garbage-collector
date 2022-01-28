@@ -6,7 +6,6 @@ import {
   familiarEquippedEquipment,
   getCampground,
   getClanLounge,
-  handlingChoice,
   haveSkill,
   inebrietyLimit,
   itemAmount,
@@ -68,7 +67,6 @@ import {
   argmax,
   baseMeat,
   coinmasterPrice,
-  getChoiceOption,
   globalOptions,
   HIGHLIGHT,
   leprechaunMultiplier,
@@ -103,7 +101,6 @@ export function dailySetup(): void {
   refreshLatte();
   implement();
   comb();
-  breakfastCounter();
 
   retrieveItem($item`Half a Purse`);
   putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
@@ -662,28 +659,4 @@ function comb(): void {
   if (!have($item`Beach Comb`)) return;
   const combs = 11 - get("_freeBeachWalksUsed");
   cliExecute(`combo ${combs}`);
-}
-
-export function breakfastCounter(): void {
-  visitUrl("place.php?whichplace=monorail&action=monorail_downtown");
-
-  const breakfast = getChoiceOption("Visit the Breakfast Counter");
-  if (breakfast > 0) {
-    runChoice(breakfast);
-    const blueberry = getChoiceOption("Order a blueberry muffin");
-    if (!have($item`blueberry muffin`) && blueberry > 0) {
-      runChoice(blueberry);
-    }
-    const leaveCounter = getChoiceOption("Back to the Platform!");
-    if (leaveCounter > 0) {
-      runChoice(leaveCounter);
-    }
-  }
-  const leaveStation = getChoiceOption("Nevermind");
-  if (leaveStation > 0) {
-    runChoice(leaveStation);
-  }
-  if (handlingChoice()) {
-    throw "Failed to leave the monorail station!!";
-  }
 }

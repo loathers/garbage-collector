@@ -491,11 +491,6 @@ export function potionMenu(
       ingredientCost($item`bottle of vodka`) + ingredientCost($item`ghostly ectoplasm`)
     );
 
-  const muffin =
-    !globalOptions.ascending && have($item`blueberry muffin`)
-      ? limitedPotion($item`blueberry muffin`, 1, { price: 0 })
-      : [];
-
   const campfireHotdog = get("getawayCampsiteUnlocked")
     ? potion($item`campfire hot dog`, { price: ingredientCost($item`stick of firewood`) })
     : [];
@@ -520,7 +515,6 @@ export function potionMenu(
     ...potion($item`Every Day is Like This Sundae`),
     ...potion($item`bowl of mummy guts`),
     ...potion($item`haunted Hell ramen`),
-    ...muffin,
     ...campfireHotdog,
     ...foodCone,
 
@@ -807,11 +801,6 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           $item`Rethinking Candy`,
           (countToConsume: number, menuItem: MenuItem<Note>) =>
             synthesize(countToConsume, menuItem.effect ?? $effect`Synthesis: Greed`),
-        ],
-        [
-          $item`blueberry muffin`,
-          (countToConsume: number, menuItem: MenuItem<Note>) =>
-            consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue, true),
         ],
         ...mayoActions,
         ...speakeasyDrinks,
