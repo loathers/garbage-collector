@@ -864,7 +864,10 @@ const freeFightSources = [
     },
     {
       requirements: () => [
-        new Requirement([], { preventEquip: $items`Staff of Queso Escusado, stinky cheese sword` }),
+        new Requirement([], {
+          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
+        }),
       ],
     }
   ),
@@ -874,7 +877,7 @@ const freeFightSources = [
     () => {
       const rightTime =
         have($item`Fourth of May Cosplay Saber`) &&
-        crateStrategy() === "Saber" &&
+        crateStrategy() !== "Saber" &&
         get("_drunkPygmyBanishes") >= 10;
       const saberedMonster = get("_saberForceMonster");
       const wrongPygmySabered =
