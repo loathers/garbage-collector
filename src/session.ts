@@ -200,9 +200,17 @@ export function printGarboSession(): void {
       HIGHLIGHT
     );
 
-  const { meat, items } = sessionSinceStart().value(garboValue);
+  const { meat, items, itemDetails } = sessionSinceStart().value(garboValue);
   const totalMeat = meat + property.getNumber("garboResultsMeat", 0);
   const totalItems = items + property.getNumber("garboResultsItems", 0);
+
+  // list the top 3 gaining and top 3 losing items
+  const losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
+  const winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
+  print(`Extreme Items:`, HIGHLIGHT);
+  for (const detail of [...winners, ...losers]) {
+    print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
+  }
 
   set("garboResultsMeat", totalMeat);
   set("garboResultsItems", totalItems);
