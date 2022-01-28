@@ -22,6 +22,7 @@ import {
   myMaxhp,
   mySpleenUse,
   print,
+  retrieveItem,
   setProperty,
   spleenLimit,
   toItem,
@@ -774,6 +775,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         i,
         (countToConsume: number, menuItem: MenuItem<Note>) => {
           MayoClinic.setMayoMinder(menuItem.item, countToConsume);
+          retrieveItem(countToConsume, menuItem.item);
         },
       ]);
 
