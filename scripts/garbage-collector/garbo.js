@@ -24081,7 +24081,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("bddb3b887f42d14c7fc164e598a479ee03033b72" === mainSha) {
+    if ("f01bf7795fbaa2e53e0f9bb13ac20d8a077a60db" === mainSha) {
       (0,external_kolmafia_.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,external_kolmafia_.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25335,10 +25335,21 @@ function printGarboSession() {
 
   var _sessionSinceStart$va = sessionSinceStart().value(garboValue),
       meat = _sessionSinceStart$va.meat,
-      items = _sessionSinceStart$va.items;
+      items = _sessionSinceStart$va.items,
+      itemDetails = _sessionSinceStart$va.itemDetails;
 
   var totalMeat = meat + property/* getNumber */.Dx("garboResultsMeat", 0);
-  var totalItems = items + property/* getNumber */.Dx("garboResultsItems", 0);
+  var totalItems = items + property/* getNumber */.Dx("garboResultsItems", 0); // list the top 3 gaining and top 3 losing items
+
+  var losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
+  var winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
+  (0,external_kolmafia_.print)("Extreme Items:", HIGHLIGHT);
+
+  for (var _i2 = 0, _arr2 = [].concat(src_session_toConsumableArray(winners), src_session_toConsumableArray(losers)); _i2 < _arr2.length; _i2++) {
+    var detail = _arr2[_i2];
+    (0,external_kolmafia_.print)("".concat(detail.quantity, " ").concat(detail.item, " worth ").concat(detail.value, " total"), HIGHLIGHT);
+  }
+
   (0,property/* set */.t8)("garboResultsMeat", totalMeat);
   (0,property/* set */.t8)("garboResultsItems", totalItems);
   message("This run of garbo", meat, items);
@@ -31424,7 +31435,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26118);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("bddb3b887f42d14c7fc164e598a479ee03033b72"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f01bf7795fbaa2e53e0f9bb13ac20d8a077a60db"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
