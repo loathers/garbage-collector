@@ -304,6 +304,9 @@ export function main(argString = ""): void {
   }
 
   startSession();
+  if (!globalOptions.noBarf) {
+    ensureBarfAccess();
+  }
   if (globalOptions.simulateDiet) {
     runDiet();
     return;
@@ -452,19 +455,13 @@ export function main(argString = ""): void {
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
-        // 2. get a ticket (done before free fights so we can deliver thesis in
-        // Uncle Gator's Country Fun-Time Liquid Waste Sluice)
-        if (!globalOptions.noBarf) {
-          ensureBarfAccess();
-        }
-
-        // 3. do some embezzler stuff
+        // 2. do some embezzler stuff
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         dailyFights();
 
         if (!globalOptions.noBarf) {
-          // 4. burn turns at barf
+          // 3. burn turns at barf
           potionSetup(false);
           try {
             while (canContinue()) {

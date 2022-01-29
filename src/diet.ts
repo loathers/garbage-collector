@@ -495,12 +495,11 @@ export function potionMenu(
     ? potion($item`campfire hot dog`, { price: ingredientCost($item`stick of firewood`) })
     : [];
 
-  const foodCone =
-    realmAvailable("stench") || !globalOptions.noBarf
-      ? limitedPotion($item`Dinsey food-cone`, Math.floor(availableAmount($item`FunFunds™`) / 2), {
-          price: 2 * garboValue($item`FunFunds™`),
-        })
-      : [];
+  const foodCone = realmAvailable("stench")
+    ? limitedPotion($item`Dinsey food-cone`, Math.floor(availableAmount($item`FunFunds™`) / 2), {
+        price: 2 * garboValue($item`FunFunds™`),
+      })
+    : [];
 
   return [
     ...baseMenu,
