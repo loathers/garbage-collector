@@ -144,7 +144,7 @@ function initializeCrates(): void {
     if (
       have($skill`Transcendent Olfaction`) &&
       (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate") &&
-      get("_olfactionUses") < 2
+      get("_olfactionsUseD") < 2
     ) {
       const run = tryFindFreeRun() ?? ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
