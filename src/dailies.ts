@@ -103,7 +103,9 @@ export function dailySetup(): void {
   comb();
 
   retrieveItem($item`Half a Purse`);
-  putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
+  if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
+    putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
+  }
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`seal tooth`);
