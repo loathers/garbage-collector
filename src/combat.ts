@@ -45,6 +45,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
+import { digitizedMonstersRemaining } from "./wanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
 export function monsterManuelAvailable(): boolean {
@@ -246,7 +247,9 @@ export class Macro extends StrictMacro {
     )
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
-        myAdventures() < 150 && have($skill`Meteor Lore`) && get("_meteorShowerUses") < 5,
+        digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
+          have($skill`Meteor Lore`) &&
+          get("_meteorShowerUses") < 5,
         Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
       )
       .trySkill($skill`Bowl Straight Up`)
