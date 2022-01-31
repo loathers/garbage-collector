@@ -31,8 +31,8 @@ Those are our best recommendations for a handful of relatively cheap things Garb
 | Mayflower bouquet               | Familiar Equipment | Drops items and has a chance to increase meat or item drops.      |
 | moveable feast                  | Familiar Equipment | Familiar weight buff                                              |
 | Snow Suit                       | Familiar Equipment | +20 familiar weight, decreases every 5 combats, drops carrot nose |
-| BittyCar MeatCar                | Item               | Drops meat in the first 6 rounds of combat.                       |
-| BittyCar SoulCar                | Item               | Restores hp/mp in the first 6 rounds of combat.                   |
+| BittyCar MeatCar                | Item               | Drops meat randomly during combat.                                |
+| BittyCar SoulCar                | Item               | Restores hp/mp randomly during combat.                            |
 | defective Game Grid token       | Item               | Gives a small meat buff that overlaps your embezzlers             |
 | Platinum Yendorian Express Card | Item               | Full MP restorer, extends all effects by 5                        |
 | Spooky Putty sheet              | Item               | Copier                                                            |
@@ -138,7 +138,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Rethinking Candy                         | Skill              | Use spleen to increase meat drops/etc.                                             |
 | Tome of Clip Art                         | Skill              | Borrowed time, banishes, etc.                                                      |
 | Fourth of May Cosplay Saber              | Weapon             | Copy/Banish/Yellow Ray, also configurable                                          |
-| Industrial fire extinguisher             | Weapon             | Garbo uses it for guaranteed pickpockets in various locations for profit           |
+| industrial fire extinguisher             | Weapon             | Garbo uses it for guaranteed pickpockets in various locations for profit           |
 | airplane charter: Conspiracy Island      | Zone               | Used for Guzzlr/Fire Extinguisher                                                  |
 | airplane charter: Dinseylandfill         | Zone               | BARF                                                                               |
 | airplane charter: Spring Break Beach     | Zone               | Used for Guzzlr/Fire Extinguisher                                                  |
