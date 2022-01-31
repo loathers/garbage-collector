@@ -23,8 +23,8 @@ export function meatFamiliar(): Familiar {
       _meatFamiliar = $familiar`Robortender`;
     } else {
       const bestLeps = Familiar.all()
-      // The commerce ghost canot go underwater in most circumstances, and cannot use an amulet coin
-      // We absolutely do not want that
+        // The commerce ghost canot go underwater in most circumstances, and cannot use an amulet coin
+        // We absolutely do not want that
         .filter((fam) => have(fam) && fam !== $familiar`Ghost of Crimbo Commerce`)
         .sort((a, b) => leprechaunMultiplier(b) - leprechaunMultiplier(a));
       const bestLepMult = leprechaunMultiplier(bestLeps[0]);
