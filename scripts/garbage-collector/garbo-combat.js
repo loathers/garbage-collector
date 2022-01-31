@@ -20518,7 +20518,7 @@ function intializeExtrovermectinZones() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(678);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7442);
 /* harmony import */ var _session__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(742);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -20550,7 +20550,9 @@ function meatFamiliar() {
     } else if ((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Robortender"]))))) {
       _meatFamiliar = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Robortender"])));
     } else {
-      var bestLeps = Familiar.all().filter(libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf).sort((a, b) => (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(b) - (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(a));
+      var bestLeps = Familiar.all() // The commerce ghost canot go underwater in most circumstances, and cannot use an amulet coin
+      // We absolutely do not want that
+      .filter(fam => (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)(fam) && fam !== (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Ghost of Crimbo Commerce"])))).sort((a, b) => (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(b) - (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(a));
       var bestLepMult = (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(bestLeps[0]);
       _meatFamiliar = bestLeps.filter(familiar => (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(familiar) === bestLepMult).sort((a, b) => (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .fairyMultiplier */ .xW)(b) - (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .fairyMultiplier */ .xW)(a))[0];
     }
@@ -20569,92 +20571,92 @@ function myFamiliarWeight() {
 var rotatingFamiliars = {
   "Fist Turkey": {
     expected: [3.91, 4.52, 4.52, 5.29, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Ambitious Turkey"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Ambitious Turkey"]))),
     pref: "_turkeyBooze"
   },
   "Llama Lama": {
     expected: [3.42, 3.91, 4.52, 5.29, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["llama lama gong"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["llama lama gong"]))),
     pref: "_gongDrops"
   },
   "Astral Badger": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["astral mushroom"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["astral mushroom"]))),
     pref: "_astralDrops"
   },
   "Li'l Xenomorph": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["transporter transponder"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["transporter transponder"]))),
     pref: "_transponderDrops"
   },
   "Rogue Program": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Game Grid token"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Game Grid token"]))),
     pref: "_tokenDrops"
   },
   "Bloovian Groose": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["groose grease"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["groose grease"]))),
     pref: "_grooseDrops"
   },
   "Baby Sandworm": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["agua de vida"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["agua de vida"]))),
     pref: "_aguaDrops"
   },
   "Green Pixie": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["tiny bottle of absinthe"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["tiny bottle of absinthe"]))),
     pref: "_absintheDrops"
   },
   "Blavious Kloop": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["devilish folio"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["devilish folio"]))),
     pref: "_kloopDrops"
   },
   "Galloping Grill": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["hot ashes"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["hot ashes"]))),
     pref: "_hotAshesDrops"
   },
   "Grim Brother": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["grim fairy tale"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["grim fairy tale"]))),
     pref: "_grimFairyTaleDrops"
   },
   "Golden Monkey": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["powdered gold"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["powdered gold"]))),
     pref: "_powderedGoldDrops"
   },
   "Unconscious Collective": {
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["Unconscious Collective Dream Jar"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Unconscious Collective Dream Jar"]))),
     pref: "_dreamJarDrops"
   },
   "Ms. Puck Man": {
-    expected: Array((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Ms. Puck Man"]))).dropsLimit).fill(12.85),
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["power pill"]))),
+    expected: Array((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["Ms. Puck Man"]))).dropsLimit).fill(12.85),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["power pill"]))),
     pref: "_powerPillDrops"
   },
   "Puck Man": {
-    expected: Array((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Puck Man"]))).dropsLimit).fill(12.85),
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["power pill"]))),
+    expected: Array((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Puck Man"]))).dropsLimit).fill(12.85),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["power pill"]))),
     pref: "_powerPillDrops"
   },
   "Adventurous Spelunker": {
     expected: [7.0],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Tales of Spelunking"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Tales of Spelunking"]))),
     pref: "_spelunkingTalesDrops"
   },
   "Angry Jung Man": {
     expected: [30.0],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["psychoanalytic jar"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["psychoanalytic jar"]))),
     pref: "_jungDrops"
   },
   "Grimstone Golem": {
     expected: [45.0],
-    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["grimstone mask"]))),
+    drop: (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["grimstone mask"]))),
     pref: "_grimstoneMaskDrops"
   }
 };
@@ -20663,15 +20665,15 @@ var savedMimicDropValue = null;
 function mimicDropValue() {
   var _savedMimicDropValue;
 
-  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = garboAverageValue.apply(void 0, _toConsumableArray($items(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
+  return (_savedMimicDropValue = savedMimicDropValue) !== null && _savedMimicDropValue !== void 0 ? _savedMimicDropValue : savedMimicDropValue = garboAverageValue.apply(void 0, _toConsumableArray($items(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / (6.29 * 0.95 + 1 * 0.05);
 }
 
 function freeFightFamiliar() {
   var familiarValue = [];
 
-  if (have($familiar(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Pocket Professor"])))) && $familiar(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Pocket Professor"]))).experience < 400 && !get("_thesisDelivered")) {
+  if (have($familiar(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Pocket Professor"])))) && $familiar(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Pocket Professor"]))).experience < 400 && !get("_thesisDelivered")) {
     // Estimate based on value to charge thesis.
-    familiarValue.push([$familiar(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Pocket Professor"]))), 3000]);
+    familiarValue.push([$familiar(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Pocket Professor"]))), 3000]);
   }
 
   for (var _i = 0, _Object$keys = Object.keys(rotatingFamiliars); _i < _Object$keys.length; _i++) {
@@ -20690,16 +20692,16 @@ function freeFightFamiliar() {
     }
   }
 
-  if (have($familiar(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Stocking Mimic"]))))) {
-    var mimicWeight = myFamiliarWeight($familiar(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Stocking Mimic"]))));
-    var actionPercentage = 1 / 3 + (haveEffect($effect(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0);
+  if (have($familiar(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Stocking Mimic"]))))) {
+    var mimicWeight = myFamiliarWeight($familiar(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Stocking Mimic"]))));
+    var actionPercentage = 1 / 3 + (haveEffect($effect(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0);
     var mimicValue = mimicDropValue() + mimicWeight * actionPercentage * 1 / 4 * 10 * 4 * 1.2;
-    familiarValue.push([$familiar(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Stocking Mimic"]))), mimicValue]);
+    familiarValue.push([$familiar(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Stocking Mimic"]))), mimicValue]);
   }
 
-  if (have($familiar(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([$familiar(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Robortender"]))), 200]);
+  if (have($familiar(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([$familiar(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Robortender"]))), 200]);
 
-  var _iterator = _createForOfIteratorHelper($familiars(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
+  var _iterator = _createForOfIteratorHelper($familiars(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
       _step;
 
   try {
@@ -20713,11 +20715,11 @@ function freeFightFamiliar() {
     _iterator.f();
   }
 
-  familiarValue.push([$familiar(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["none"]))), 0]);
+  familiarValue.push([$familiar(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["none"]))), 0]);
   return argmax(familiarValue);
 }
 function pocketProfessorLectures() {
-  return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Pocket Professor"])))) + weightAdjustment()));
+  return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Pocket Professor"])))) + weightAdjustment()));
 }
 
 /***/ }),
@@ -21032,7 +21034,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("d5d5cd68e21f1fc5342eeaabae207cfd1693e060" === mainSha) {
+    if ("78c8ebb7c1898ea844eb87294fadb01f9dd63ee3" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
