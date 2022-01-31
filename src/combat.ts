@@ -39,6 +39,7 @@ import {
   $thralls,
   clamp,
   get,
+  getTodaysHolidayWanderers,
   have,
   property,
   SourceTerminal,
@@ -556,6 +557,18 @@ export function withMacro<T>(macro: Macro, action: () => T): T {
 export function main(): void {
   if (have($effect`Eldritch Attunement`)) {
     Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
+      .step(Macro.load())
+      .submit();
+  } else if (getTodaysHolidayWanderers().length !== 0) {
+    Macro.ifHolidayWanderer(
+      Macro.externalIf(
+        haveEquipped($item`backup camera`) &&
+          get("_backUpUses") < 11 &&
+          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
+        Macro.step(Macro.load()),
+        Macro.basicCombat()
+      )
+    )
       .step(Macro.load())
       .submit();
   } else {
