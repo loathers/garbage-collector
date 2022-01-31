@@ -23,26 +23,26 @@ Those are our best recommendations for a handful of relatively cheap things Garb
 
 ## Items worth setting up Stash Clan access for
 
-| Item                            | Type               | Notes                                                        |
-| ------------------------------- | ------------------ | ------------------------------------------------------------ |
-| navel ring of navel gazing      | Accessory          | Free runs                                                    |
-| Buddy Bjorn                     | Back               | Wear familiars for item drops                                |
-| Crown of Thrones                | Hat                | Wear familiars for item drops                                |
-| Mayflower bouquet               | Familiar Equipment | Drops items and has a chance to increase meat or item drops. |
-| moveable feast                  | Familiar Equipment | Familiar weight buff                                         |
-| Snow Suit                       | Familiar Equipment | Starts at +20 familiar weight, decreases every 5 combats.    |
-| BittyCar MeatCar                | Item               | Drops meat in the first 6 rounds of combat.                  |
-| BittyCar SoulCar                | Item               | Restores hp/mp in the first 6 rounds of combat.              |
-| defective Game Grid token       | Item               | Gives a small meat buff that overlaps your embezzlers        |
-| Platinum Yendorian Express Card | Item               | Full MP restorer, extends all effects by 5                   |
-| Spooky Putty sheet              | Item               | Copier                                                       |
-| haiku katana                    | Weapon             | Combat skills, guaranteed crit source for the pointer ring   |
-| Bag o' Tricks                   | Off-hand           | Item/Meat Drops, randomly extends effects by 3 turns         |
-| Operation Patriot Shield        | Off-hand           | Class specific bonuses                                       |
-| Greatest American Pants         | Pants              | Free runs and other misc abilities.                          |
-| Pantsgiving                     | Pants              | Meat/Item Drops, increase fullness cap                       |
-| repaid diaper                   | Pants              | +15 familiar weight, best-in-class for robort users          |
-| origami pasties                 | Shirt              | 30% meat drops and foldable to other items.                  |
+| Item                            | Type               | Notes                                                             |
+| ------------------------------- | ------------------ | ----------------------------------------------------------------- |
+| navel ring of navel gazing      | Accessory          | Free runs (shared with Greatest American Pants)                   |
+| Buddy Bjorn                     | Back               | Wear familiars for item drops                                     |
+| Crown of Thrones                | Hat                | Wear familiars for item drops                                     |
+| Mayflower bouquet               | Familiar Equipment | Drops items and has a chance to increase meat or item drops.      |
+| moveable feast                  | Familiar Equipment | Familiar weight buff                                              |
+| Snow Suit                       | Familiar Equipment | Starts at +20 familiar weight, decreases every 5 combats.         |
+| BittyCar MeatCar                | Item               | Drops meat in the first 6 rounds of combat.                       |
+| BittyCar SoulCar                | Item               | Restores hp/mp in the first 6 rounds of combat.                   |
+| defective Game Grid token       | Item               | Gives a small meat buff that overlaps your embezzlers             |
+| Platinum Yendorian Express Card | Item               | Full MP restorer, extends all effects by 5                        |
+| Spooky Putty sheet              | Item               | Copier                                                            |
+| haiku katana                    | Weapon             | Combat skills, guaranteed crit source for the pointer ring        |
+| Bag o' Tricks                   | Off-hand           | Item/Meat Drops, randomly extends effects by 3 turns              |
+| Operation Patriot Shield        | Off-hand           | Class specific bonus, guaranteed crit source for the pointer ring |
+| Greatest American Pants         | Pants              | Free runs (shared with the navel ring of navel gazing)            |
+| Pantsgiving                     | Pants              | Meat/Item Drops, increase fullness cap                            |
+| repaid diaper                   | Pants              | +15 familiar weight, best-in-class for robort users               |
+| origami pasties                 | Shirt              | +30% meat drops                                                   |
 
 Having gone through tradeable things and cheap purchases, the rest of this list is devoted to bind-to-account IOTMs that Garbo utilizes for farming.
 
