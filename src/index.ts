@@ -20,6 +20,7 @@ import {
   retrieveItem,
   runChoice,
   setAutoAttack,
+  toInt,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -256,6 +257,7 @@ export function main(argString = ""): void {
     forbiddenStores.push("3408540");
     set("forbiddenStores", forbiddenStores.join(","));
   }
+  if (toInt(myClass()) > 6) abort("Garbo does not support avatar classes.");
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
     const proceedRegardless = userConfirm(
       "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
