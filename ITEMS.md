@@ -57,20 +57,20 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Beach Comb                              | Accessory          | +5 Familiar Weight buff. Also, 11 free COMBO beachcombs, which is LIT              |
 | Guzzlr tablet                           | Accessory          | Garbo uses Guzzlr to extract a bit of value from wanderers, by gaining guzzlrbucks |
 | Kremlin's Greatest Briefcase            | Accessory          | Banish, buffs, & martinis                                                          |
-| Lil' Doctor™ bag                        | Accessory          | Banish and Insta-kill                                                              |
-| mayfly bait necklace                    | Accessory          | Used to snag a few more funfunds                                                   |
+| Lil' Doctor™ bag                        | Accessory          | Banish and 3x Free Insta-kills per day                                             |
+| mayfly bait necklace                    | Accessory          | Used to snag a few more funfunds & freerun from BASIC elementals                   |
 | mint-in-box Powerful Glove              | Accessory          | Monster Replacer; used in concert w/ Extrovermectin for additional Embezzlers      |
 | packaged backup camera                  | Accessory          | Copier, +Meat Drops                                                                |
 | Unopened Eight Days a Week Pill Keeper  | Accessory          | Used to double the next potion.                                                    |
-| packaged knock-off retro superhero cape | Back               | Configureable Back-Item                                                            |
-| Protonic accelerator pack               | Back               | Bust Ghosts for buffs and profit                                                   |
+| packaged knock-off retro superhero cape | Back               | Configurable back item that serves as a crit source for the pointer ring           |
+| Protonic accelerator pack               | Back               | Bust Ghosts for free fights & profit                                               |
 | vampyric cloake pattern                 | Back               | adventures, item drops, and +meat                                                  |
 | Asdon Martin                            | Campground         | Meat/Item/Booze Drops                                                              |
 | haunted doghouse                        | Campground         | Fetches things!                                                                    |
 | packaged cold medicine cabinet          | Campground         | Two Words: Horse Paste.                                                            |
-| packet of mushroom spores               | Campground         | Mushrooms for food and booze                                                       |
+| packet of mushroom spores               | Campground         | 1x free fight per day, & some minor booze                                          |
 | packet of tall grass seeds              | Campground         | Drops fertilizer, which sell for decent meat gain                                  |
-| portable Mayo Clinic                    | Campground         | Additional adventures from food and increases your cholesterol.                    |
+| portable Mayo Clinic                    | Campground         | Additional adventures from food or double effect duration from food                |
 | potted tea tree                         | Campground         | Drink your tea!                                                                    |
 | Source terminal                         | Campground         | Digitize wanderers, meat drops, other buffs etc.                                   |
 | Witchess Set                            | Campground         | Free Fights, and a big familiar weight buff                                        |
@@ -119,16 +119,16 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | January's Garbage Tote                  | Item               | Limited charge items for meat drops and other items.                               |
 | mime army shotglass                     | Item               | Your first 1-drunkenness booze item of the day doesn't count                       |
 | Monster Manuel                          | Item               | Factoids and knowing monster values.                                               |
-| mumming trunk                           | Item               | Dress up your familiars                                                            |
+| mumming trunk                           | Item               | Add +meat & +item to a few familiars for the rest of the day                       |
 | pantogram                               | Item               | Sacrifice for pants with specific enchantments.                                    |
 | SongBoom™ BoomBox                       | Item               | Increase Meat Drops                                                                |
 | stinky cheese ball                      | Item               | Free fight, meat/item drops                                                        |
 | Time-Spinner                            | Item               | Copier                                                                             |
 | Undrilled cosmic bowling ball           | Item               | Item/Meat Drops, banishes                                                          |
 | cursed magnifying glass                 | Off-hand           | Free Fights                                                                        |
-| Kramco Sausage-o-Matic™                 | Off-hand           | Item Drops, Increase Crits, and make sausages                                      |
-| latte lovers member's mug               | Off-hand           | Fill your coffee mug for various buffs.                                            |
-| Cargo Cultist Shorts                    | Pants              | The pocketseses                                                                    |
+| Kramco Sausage-o-Matic™                 | Off-hand           | Extra adventures & a few free fights every day; 13-16 depending on turns played    |
+| latte lovers member's mug               | Off-hand           | Fill your mug for various enchantments (+5 fam / 40% meat / 20% item).             |
+| Cargo Cultist Shorts                    | Pants              | Grab a valuable item, once per day                                                 |
 | Bird-a-Day calendar                     | Skill              | Daily bird with various random enchantment in a buff                               |
 | Comprehensive Cartography               | Skill              | Sometimes buffs after combat, fight specific monsters                              |
 | emotion chip                            | Skill              | various skills, item drops/etc                                                     |
@@ -136,7 +136,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Sweet Synthesis                         | Skill              | Use spleen to increase meat drops/etc                                              |
 | Tome of Clip Art                        | Skill              | Borrowed time, banishes, etc                                                       |
 | Fourth of May Cosplay Saber             | Weapon             | Copy/Banish/Yellow Ray, also configurable                                          |
-| Industrial fire extinguisher            | Weapon             | Various Combat Skills                                                              |
+| Industrial fire extinguisher            | Weapon             | Garbo uses it for guaranteed pickpockets in various locations for profit           |
 | Airplane charter: Conspiracy Island     | Zone               | Used for Guzzlr/Fire Extinguisher                                                  |
 | airplane charter: Dinseylandfill        | Zone               | BARF                                                                               |
 | Airplane charter: Spring Break Beach    | Zone               | Used for Guzzlr/Fire Extinguisher                                                  |
@@ -146,7 +146,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Boxing Day care package                 | Zone               | Free items, buffs, misc                                                            |
 | Build-a-City Gingerbread kit            | Zone               | Zone with various items/buffs                                                      |
 | Chateau Mantegna room key               | Zone               | Fax/Copier, better resting, access to other items                                  |
-| Distant Woods Getaway Brochure          | Zone               | Free buffs                                                                         |
+| Distant Woods Getaway Brochure          | Zone               | Free buffs, and better resting                                                     |
 | heart-shaped crate                      | Zone               | 3x free fights per day (and useful added items/buffs)                              |
 | Horsery contract                        | Zone               | Horses with buffs!                                                                 |
 | shrine to the Barrel god                | Zone               | Drops barrels during combat, can pray for items/buffs                              |
