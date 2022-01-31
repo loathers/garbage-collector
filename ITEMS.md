@@ -2,21 +2,22 @@
 
 In an ideal world, Garbo is supposed to be a flexible script that operates successfully for users regardless of their existing IOTM loadout. While Garbo has -support- for quite a lot of IOTMs, it doesn't really -require- any of them -- Garbo will do its best to make you as much meat as possible given the resources available to you. All that said, there are a few (relatively) cheap items that Garbo uses that can be useful to pick up. While Garbo does buy things like your diet & your potions, these are items where Garbo will not purchase them itself (as they don't pay for themselves in one distinct session of Garbo), but do make Garbo better enough to be worth looking into acquiring.
 
-| Item                              | Type      | Notes                                                                                        |
-| --------------------------------- | --------- | -------------------------------------------------------------------------------------------- |
-| mafia pointer finger ring         | Accessory | Gain meat on critical hits. Bad for embezzlers, but generally worn (almost) all day in Barf. |
-| mafia thumb ring                  | Accessory | Gives an adventure on turn-taking combats 4% of the time. One of the best accessories.       |
-| Stooper                           | Familiar  | Liver +1, ergo, quite a few extra turns each day                                             |
-| Gingerbread Mob Hit               | Skill     | Insta-kill (1x a day)                                                                        |
-| training scroll: Shattering Punch | Skill     | Insta-kill (3x a day)                                                                        |
-| defective Game Grid token         | Item      | Gives a small but always-there meat buff that overlaps your embezzlers                       |
-| fishy pipe                        | Item      | Acquire from the old man by the sea for a Damp Old Boot (50 sand dollars)                    |
+| Item                              | Type      | Notes                                                                                                |
+| --------------------------------- | --------- | ---------------------------------------------------------------------------------------------------- |
+| mafia pointer finger ring         | Accessory | Gain meat on critical hits. Bad for embezzlers, but generally worn (almost) all day in Barf.         |
+| mafia thumb ring                  | Accessory | Gives an adventure on turn-taking combats 4% of the time. One of the best accessories.               |
+| lucky gold ring                   | Accessory | Piraterealm reward. Extra funfunds & Freddies; very high MPA accessory, much higher than you'd think |
+| belt of loathing                  | Accessory | +10 familiar weight; fantastic Barf accessory if you don't have the above.                           |
+| Stooper                           | Familiar  | Liver +1, ergo, quite a few extra turns each day                                                     |
+| Gingerbread Mob Hit               | Skill     | Insta-kill (1x a day)                                                                                |
+| training scroll: Shattering Punch | Skill     | Insta-kill (3x a day)                                                                                |
+| defective Game Grid token         | Item      | Gives a small but always-there meat buff that overlaps your embezzlers                               |
+| fishy pipe                        | Item      | Acquire from the old man by the sea for a Damp Old Boot (50 sand dollars)                            |
 
 Those are our best recommendations for a handful of relatively cheap things Garbo uses that you may want to look into purchasing, as they effectively pay for themselves. This next table outlines something a bit different -- tradable IOTMs that are commonly availabe in a communal clan stash, but are (almost certainly) not worth purchasing for solo use. If you don't have access to them, that's totally fine -- Garbo will, again, do its best! But if you have any access to possible stash clans, you should make sure your stash clan preferences are set properly so that Garbo can utilize these tradeable tools for profit and value.
 
 | Item                            | Type               | Notes                                                          |
 | ------------------------------- | ------------------ | -------------------------------------------------------------- |
-| mayfly bait necklace            | Accessory          | Used to snag a few more funfunds                               |
 | navel ring of navel gazing      | Accessory          | Free runs                                                      |
 | Buddy Bjorn                     | Back               | Allows you to wear familiars to get extra MPA from their drops |
 | Crown of Thrones                | Hat                | Allows you to wear familiars to get extra MPA from their drops |
@@ -24,7 +25,7 @@ Those are our best recommendations for a handful of relatively cheap things Garb
 | moveable feast                  | Familiar Equipment | Familiar weight, extra fam xp, familiar combat                 |
 | Snow Suit                       | Familiar Equipment | Starts at +20 familiar weight and drops every 5 adventures.    |
 | container of Spooky Putty       | Item               | Copier                                                         |
-| haiku katana                    | Weapon             | Combat skills, increases crit                                  |
+| haiku katana                    | Weapon             | Combat skills, guaranteed crit source for the pointer ring     |
 | Platinum Yendorian Express Card | Item               | Ultra Rare MP Restorer, extends current effects by 5           |
 | Bag o' Tricks                   | Off-hand           | Item/Meat Drops, random extending buffs by 3 turns             |
 | Operation Patriot Shield        | Off-hand           | Class specific bonuses                                         |
@@ -47,8 +48,9 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | --------------------------------------- | ------------------ | ---------------------------------------------------------------------------------- |
 | Beach Comb                              | Accessory          | Familiar weight beachcomb buff                                                     |
 | Guzzlr tablet                           | Accessory          | Garbo uses Guzzlr to extract a bit of value from wanderers, by gaining guzzlrbucks |
-| Kremlin's Greatest Briefcase            | Accessory          | Banish                                                                             |
+| Kremlin's Greatest Briefcase            | Accessory          | Banish, buffs, & martinis                                                          |
 | Lil' Doctor™ bag                        | Accessory          | Banish and Insta-kill                                                              |
+| mayfly bait necklace                    | Accessory          | Used to snag a few more funfunds                                                   |
 | mint-in-box Powerful Glove              | Accessory          | Monster Replacer                                                                   |
 | packaged backup camera                  | Accessory          | Copier, +Meat Drops                                                                |
 | Unopened Eight Days a Week Pill Keeper  | Accessory          | Used to double the next potion.                                                    |
@@ -59,11 +61,11 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | haunted doghouse                        | Campground         | Fetches things!                                                                    |
 | packaged cold medicine cabinet          | Campground         | Two Words: Horse Paste.                                                            |
 | packet of mushroom spores               | Campground         | Mushrooms for food and booze                                                       |
-| packet of tall grass seeds              | Campground         | Pokemon... but not!                                                                |
+| packet of tall grass seeds              | Campground         | Drops fertilizer, which sell for decent meat gain                                  |
 | portable Mayo Clinic                    | Campground         | Additional adventures from food and increases your cholesterol.                    |
 | potted tea tree                         | Campground         | Drink your tea!                                                                    |
 | Source terminal                         | Campground         | Digitize wanderers, meat drops, other buffs etc.                                   |
-| Witchess Set                            | Campground         | Free Fights                                                                        |
+| Witchess Set                            | Campground         | Free Fights, and a big familiar weight buff                                        |
 | Clan VIP Lounge invitation              | Clan               | Fax, tons of other good stuff in the Clan VIP Lounge.                              |
 | Adventurous Spelunker                   | Familiar           | Drops Item - Tales of Spelunking (1)                                               |
 | Angry Jung Man                          | Familiar           | Drops Item - psychoanalytic jar (1)                                                |
