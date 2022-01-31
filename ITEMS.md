@@ -2,19 +2,24 @@
 
 In an ideal world, Garbo is supposed to be a flexible script that operates successfully for users regardless of their existing IOTM loadout. While Garbo has -support- for quite a lot of IOTMs, it doesn't really -require- any of them -- Garbo will do its best to make you as much meat as possible given the resources available to you. All that said, there are a few (relatively) cheap items that Garbo uses that can be useful to pick up. While Garbo does buy things like your diet & your potions, these are items where Garbo will not purchase them itself (as they don't pay for themselves in one distinct session of Garbo), but do make Garbo better enough to be worth looking into acquiring.
 
-| Item                              | Type      | Notes                                                                                                |
-| --------------------------------- | --------- | ---------------------------------------------------------------------------------------------------- |
-| mafia pointer finger ring         | Accessory | Gain meat on critical hits. Bad for embezzlers, but generally worn (almost) all day in Barf.         |
-| mafia thumb ring                  | Accessory | Gives an adventure on turn-taking combats 4% of the time. One of the best accessories.               |
-| lucky gold ring                   | Accessory | Piraterealm reward. Extra funfunds & Freddies; very high MPA accessory, much higher than you'd think |
-| belt of loathing                  | Accessory | +10 familiar weight; fantastic Barf accessory if you don't have the above.                           |
-| Stooper                           | Familiar  | Liver +1, ergo, quite a few extra turns each day                                                     |
-| Gingerbread Mob Hit               | Skill     | Insta-kill (1x a day)                                                                                |
-| training scroll: Shattering Punch | Skill     | Insta-kill (3x a day)                                                                                |
-| defective Game Grid token         | Item      | Gives a small but always-there meat buff that overlaps your embezzlers                               |
-| fishy pipe                        | Item      | Acquire from the old man by the sea for a Damp Old Boot (50 sand dollars)                            |
+## "Cheap" items worth acquiring (<10 million)
+
+| Item                              | Type      | Notes                                                                                              |
+| --------------------------------- | --------- | -------------------------------------------------------------------------------------------------- |
+| mafia pointer finger ring         | Accessory | Gain meat on critical hits. Bad for embezzlers, but generally worn rest of the Barf day.           |
+| Mr. Cheeng's Spectacles           | Accessory | That 70s Volcano reward. Drops random potions; many are cheap, but some are quite high value.      |
+| mafia thumb ring                  | Accessory | Gives an adventure on turn-taking combats 4% of the time.                                          |
+| lucky gold ring                   | Accessory | Piraterealm reward. Extra funfunds & Freddies; very high MPA accessory                             |
+| belt of loathing                  | Accessory | +10 familiar weight; fantastic Barf accessory if you don't have the above.                         |
+| Stooper                           | Familiar  | Liver +1, ergo, quite a few extra turns each day                                                   |
+| Gingerbread Mob Hit               | Skill     | Free Insta-kill (1x a day)                                                                         |
+| training scroll: Shattering Punch | Skill     | Free Insta-kill (3x a day)                                                                         |
+| fishy pipe                        | Item      | Useful with wanderers/backup; synergizes with green taffy for +1 embezzler. Costs 50 sand dollars. |
+| The Jokester's Gun                | Item      | Free Insta-kil (1x a day)                                                                          |
 
 Those are our best recommendations for a handful of relatively cheap things Garbo uses that you may want to look into purchasing, as they effectively pay for themselves. This next table outlines something a bit different -- tradable IOTMs that are commonly availabe in a communal clan stash, but are (almost certainly) not worth purchasing for solo use. If you don't have access to them, that's totally fine -- Garbo will, again, do its best! But if you have any access to possible stash clans, you should make sure your stash clan preferences are set properly so that Garbo can utilize these tradeable tools for profit and value.
+
+## Items worth setting up Stash Clan access for
 
 | Item                            | Type               | Notes                                                          |
 | ------------------------------- | ------------------ | -------------------------------------------------------------- |
@@ -25,13 +30,14 @@ Those are our best recommendations for a handful of relatively cheap things Garb
 | moveable feast                  | Familiar Equipment | Familiar weight, extra fam xp, familiar combat                 |
 | Snow Suit                       | Familiar Equipment | Starts at +20 familiar weight and drops every 5 adventures.    |
 | container of Spooky Putty       | Item               | Copier                                                         |
+| defective Game Grid token       | Item               | Gives a small meat buff that overlaps your embezzlers          |
 | haiku katana                    | Weapon             | Combat skills, guaranteed crit source for the pointer ring     |
 | Platinum Yendorian Express Card | Item               | Ultra Rare MP Restorer, extends current effects by 5           |
 | Bag o' Tricks                   | Off-hand           | Item/Meat Drops, random extending buffs by 3 turns             |
 | Operation Patriot Shield        | Off-hand           | Class specific bonuses                                         |
 | Greatest American Pants         | Pants              | Free runs and other misc abilities.                            |
 | Pantsgiving                     | Pants              | Meat/Item Drops, can increase fullness at cap                  |
-| repaid diaper                   | Pants              | Ultra Rare                                                     |
+| repaid diaper                   | Pants              | +15 familiar weight, best-in-class for robort users            |
 | origami pasties                 | Shirt              | 30% meat drops and foldable to other items.                    |
 
 Having gone through tradeable things and cheap purchases, the rest of this list is devoted to bind-to-account IOTMs that Garbo utilizes for farming.
@@ -44,14 +50,16 @@ Let's take, for example, the best farming item in KOL history -- the Robortender
 
 So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list. This is simply a list of what Garbo supports. If you have an IOTM that is not included in this list, but you think it -should-, let us know in the #garbage-collector channel on the ASS Discord, and we can walk you through the process of submitting a pull request. Thank you for reading, and happy garbage farming!
 
+## Bind-On-Equip Items Garbo Uses
+
 | Item                                    | Type               | Notes                                                                              |
 | --------------------------------------- | ------------------ | ---------------------------------------------------------------------------------- |
-| Beach Comb                              | Accessory          | Familiar weight beachcomb buff                                                     |
+| Beach Comb                              | Accessory          | +5 Familiar Weight buff. Also, 11 free COMBO beachcombs, which is LIT              |
 | Guzzlr tablet                           | Accessory          | Garbo uses Guzzlr to extract a bit of value from wanderers, by gaining guzzlrbucks |
 | Kremlin's Greatest Briefcase            | Accessory          | Banish, buffs, & martinis                                                          |
 | Lil' Doctor™ bag                        | Accessory          | Banish and Insta-kill                                                              |
 | mayfly bait necklace                    | Accessory          | Used to snag a few more funfunds                                                   |
-| mint-in-box Powerful Glove              | Accessory          | Monster Replacer                                                                   |
+| mint-in-box Powerful Glove              | Accessory          | Monster Replacer; used in concert w/ Extrovermectin for additional Embezzlers      |
 | packaged backup camera                  | Accessory          | Copier, +Meat Drops                                                                |
 | Unopened Eight Days a Week Pill Keeper  | Accessory          | Used to double the next potion.                                                    |
 | packaged knock-off retro superhero cape | Back               | Configureable Back-Item                                                            |
@@ -87,7 +95,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Machine Elf                             | Familiar           | Zone unlock with free fights.                                                      |
 | Mini-Hipster                            | Familiar           | Scaling Monster/Free Fights                                                        |
 | Ms. Puck Man                            | Familiar           | Drops Item - yellow pixel (25) & Power pill                                        |
-| Obtuse Angel                            | Familiar           | Drops Time arrow's for creating wanderers                                          |
+| Obtuse Angel                            | Familiar           | Wanderers, and drops Time's Arrow for extra meat                                   |
 | Pocket Professor                        | Familiar           | Copier                                                                             |
 | Puck Man                                | Familiar           | Drops Item - yellow pixel (25) & Power pill                                        |
 | Reanimated Reanimator                   | Familiar           | Copier                                                                             |
@@ -139,9 +147,9 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Build-a-City Gingerbread kit            | Zone               | Zone with various items/buffs                                                      |
 | Chateau Mantegna room key               | Zone               | Fax/Copier, better resting, access to other items                                  |
 | Distant Woods Getaway Brochure          | Zone               | Free buffs                                                                         |
-| heart-shaped crate                      | Zone               | Zone where can gain various items, ex LOV Enamorang                                |
+| heart-shaped crate                      | Zone               | 3x free fights per day (and useful added items/buffs)                              |
 | Horsery contract                        | Zone               | Horses with buffs!                                                                 |
 | shrine to the Barrel god                | Zone               | Drops barrels during combat, can pray for items/buffs                              |
-| The Neverending Party                   | Zone               | Various buffs                                                                      |
+| The Neverending Party                   | Zone               | 10x free fights per day                                                            |
 | voter registration form                 | Zone               | Wandering monsters with various buffs                                              |
 | X-32-F snowman crate                    | Zone               | Free fights, items, buffs, skills                                                  |
