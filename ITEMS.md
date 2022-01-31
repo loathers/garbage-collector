@@ -30,7 +30,7 @@ Those are our best recommendations for a handful of relatively cheap things Garb
 | Crown of Thrones                | Hat                | Wear familiars for item drops                                     |
 | Mayflower bouquet               | Familiar Equipment | Drops items and has a chance to increase meat or item drops.      |
 | moveable feast                  | Familiar Equipment | Familiar weight buff                                              |
-| Snow Suit                       | Familiar Equipment | Starts at +20 familiar weight, decreases every 5 combats.         |
+| Snow Suit                       | Familiar Equipment | +20 familiar weight, decreases every 5 combats, drops carrot nose |
 | BittyCar MeatCar                | Item               | Drops meat in the first 6 rounds of combat.                       |
 | BittyCar SoulCar                | Item               | Restores hp/mp in the first 6 rounds of combat.                   |
 | defective Game Grid token       | Item               | Gives a small meat buff that overlaps your embezzlers             |
