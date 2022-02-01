@@ -320,22 +320,15 @@ export class Macro extends StrictMacro {
     };
 
     // Construct the monster HP component of the stasis condition
-    // Start by evaluating the passive damage
+    // Evaluate the passive damage
     const passiveDamage =
       maxPassiveDamage() + 5;
-    // If we don't care about killing the monster don't bother checking passive damage
-    let monsterHpCheck = '';
-    // However, if we do care about killing the monster...
-    if (checkPassive) {
-      if (!monsterManuelAvailable()) {
-        // Only stasis if the monster manuel is available and we have access to monsterhpabove
-        return this;
-      } else {
-        // We're going to be stasising until we hit passiveDamage HP remaining
-        // Add the && part so it can be added at the end of the while clause easily
-        monsterHpCheck = `&& monsterhpabove ${passiveDamage}`;
-      }
+    // We can't stasis without manuel's monsterhpabove if we want to crit
+    if (checkPassive && !monsterManuelAvailable()) {
+      return this;
     }
+    // Are we aiming to crit? If so, we need to respect the passive damage
+    const monsterHpCheck = (checkPassive) ? `&& monsterhpabove ${passiveDamage}` : '';
     
     // Determine how long we'll be stasising for
     // By default there's no reason to stasis
