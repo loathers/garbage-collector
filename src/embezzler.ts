@@ -100,6 +100,22 @@ class EmbezzlerFightRunOptions {
   }
 }
 
+// TODO: This functionality will be covered by mafia at some point
+let hasLocketCopies = true;
+function checkLocket() {
+  if (hasLocketCopies) {
+    const page = visitUrl("inventory.php?reminisce=1");
+    if (
+      page.includes("You don't want to reminisce any more today.") ||
+      !page.includes(`a ${$monster`Knob Goblin Embezzler`}`)
+    ) {
+      hasLocketCopies = false;
+    }
+    return hasLocketCopies;
+  }
+  return false;
+}
+
 export class EmbezzlerFight {
   name: string;
   available: () => boolean;
@@ -354,6 +370,23 @@ export const embezzlerSources = [
         runChoice(1);
         visitUrl(
           `choice.php?whichchoice=1196&monid=${$monster`Knob Goblin Embezzler`.id}&option=1`
+        );
+        runCombat();
+      });
+    }
+  ),
+
+  new EmbezzlerFight(
+    "Locket",
+    // eslint-disable-next-line libram/verify-constants
+    () => have($item`combat lover's locket`) && checkLocket(),
+    // eslint-disable-next-line libram/verify-constants
+    () => (have($item`combat lover's locket`) && checkLocket() ? 1 : 0),
+    (options: EmbezzlerFightRunOptions) => {
+      withMacro(options.macro, () => {
+        visitUrl(`inventory.php?reminisce=1`);
+        visitUrl(
+          `choice.php?whichchoice=1463&monid=${$monster`Knob Goblin Embezzler`.id}&option=1`
         );
         runCombat();
       });
