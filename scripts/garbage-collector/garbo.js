@@ -30591,7 +30591,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26200);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("dbeb8cf2a1b999db5bc51866f22a6ab4b7545728"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("beef762e5d7ab7c3e7f5a2c62781f6463c8c1522"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -30599,6 +30599,8 @@ function main() {
     forbiddenStores.push("3408540");
     (0,property/* set */.t8)("forbiddenStores", forbiddenStores.join(","));
   }
+
+  if ((0,external_kolmafia_.toInt)((0,external_kolmafia_.myClass)()) > 6) (0,external_kolmafia_.abort)("Garbo does not support avatar classes.");
 
   if (!(0,property/* get */.U2)("garbo_skipAscensionCheck", false) && (!(0,property/* get */.U2)("kingLiberated") || (0,external_kolmafia_.myLevel)() < 13)) {
     var proceedRegardless = (0,external_kolmafia_.userConfirm)("Looks like your ascension may not be done yet. Are you sure you want to garbo?");
@@ -31155,7 +31157,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("dbeb8cf2a1b999db5bc51866f22a6ab4b7545728" === mainSha) {
+    if ("beef762e5d7ab7c3e7f5a2c62781f6463c8c1522" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
