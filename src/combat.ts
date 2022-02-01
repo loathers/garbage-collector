@@ -23,6 +23,7 @@ import {
   myThrall,
   numericModifier,
   print,
+  retrieveItem,
   runCombat,
   setAutoAttack,
   visitUrl,
@@ -279,6 +280,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Feel Nostalgic`)
         )
       )
+      .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
       .meatStasis(willCrit)
       .externalIf(
         hippyStoneBroken() && monsterManuelAvailable(),
@@ -290,7 +292,7 @@ export class Macro extends StrictMacro {
         )
       )
       .externalIf(sealClubberSetup, Macro.trySkill($skill`Furious Wallop`))
-      .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`).attack())
+      .externalIf(opsSetup, Macro.attack())
       .externalIf(katanaSetup, Macro.trySkill($skill`Summer Siesta`))
       .externalIf(capeSetup, Macro.trySkill($skill`Precision Shot`))
       .externalIf(
@@ -307,39 +309,57 @@ export class Macro extends StrictMacro {
   }
 
   meatStasis(checkPassive: boolean): Macro {
-    // If we don't care about killing the monster don't bother checking passave damage
-    if (!checkPassive) {
-      return this.trySkill($skill`Pocket Crumbs`)
-        .trySkill($skill`Extract`)
-        .externalIf(
-          myFamiliar() === $familiar`Hobo Monkey`,
-          Macro.while_(
-            `!match "shoulder, and hands you some Meat." && !pastround  5 && !hppercentbelow 25`,
-            Macro.item($item`seal tooth`)
-          )
-        )
-        .externalIf(
-          [
-            $familiar`Cocoabo`,
-            $familiar`Feather Boa Constrictor`,
-            $familiar`Ninja Pirate Zombie Robot`,
-            $familiar`Stocking Mimic`,
-          ].includes(myFamiliar()),
-          Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item($item`seal tooth`))
-        )
-        .externalIf(
-          haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
-          Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item($item`seal tooth`))
-        )
-        .tryItem($item`porquoise-handled sixgun`);
-    }
+    // Determine stasis item to use
+    // Garbo already gets a seal tooth at the start of the day, so that's around always
+    let stasisItem = $item`seal tooth`;
+    if (retrieveItem($item`facsimile dictionary`)) {
+      // The dictionaries are nicer though as they don't hurt the monster
+      stasisItem = $item`facsimile dictionary`;
+    } else if (retrieveItem($item`dictionary`)) {
+      stasisItem = $item`dictionary`;
+    };
 
-    // Only stasis if the monster manuel is available and we have access to monsterhpabove
-    if (!monsterManuelAvailable()) {
-      return this;
-    }
+    // Construct the monster HP component of the stasis condition
+    // Start by evaluating the passive damage
     const passiveDamage =
-      (maxPassiveDamage() + 5) * (haveEquipped($item`Operation Patriot Shield`) ? 2 : 1);
+      maxPassiveDamage() + 5;
+    // If we don't care about killing the monster don't bother checking passive damage
+    let monsterHpCheck = '';
+    // However, if we do care about killing the monster...
+    if (checkPassive) {
+      if (!monsterManuelAvailable()) {
+        // Only stasis if the monster manuel is available and we have access to monsterhpabove
+        return this;
+      } else {
+        // We're going to be stasising until we hit passiveDamage HP remaining
+        // Add the && part so it can be added at the end of the while clause easily
+        monsterHpCheck = `&& monsterhpabove ${passiveDamage}`;
+      }
+    }
+    
+    // Determine how long we'll be stasising for
+    // By default there's no reason to stasis
+    let stasisRounds = 0;
+    if (
+      [
+        $familiar`Cocoabo`,
+        $familiar`Feather Boa Constrictor`,
+        $familiar`Ninja Pirate Zombie Robot`,
+        $familiar`Stocking Mimic`,
+      ].includes(myFamiliar())
+    ) {
+      // Cocoabo-likes drop meat for the first ten rounds of combat
+      stasisRounds = 10;
+    }
+    if (
+      myFamiliar() === $familiar`Hobo Monkey` ||
+      haveEquipped($item`Buddy Bjorn`) ||
+      haveEquipped($item`Crown of Thrones`) ||
+      get("_bittycar")
+    ) {
+      // These things can take a little longer to proc sometimes
+      stasisRounds = 20;
+    }
 
     // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
     return this.if_(
@@ -347,35 +367,13 @@ export class Macro extends StrictMacro {
       Macro.if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Pocket Crumbs`))
         .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Extract`))
         .if_(`monsterhpabove ${passiveDamage}`, Macro.tryHaveSkill($skill`Become a Wolf`))
-        .externalIf(
-          haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
-          Macro.while_(
-            `!pastround 3 && monsterhpabove ${passiveDamage}`,
-            Macro.item($item`seal tooth`)
-          )
-        )
-        .externalIf(
-          [
-            $familiar`Cocoabo`,
-            $familiar`Feather Boa Constrictor`,
-            $familiar`Ninja Pirate Zombie Robot`,
-            $familiar`Stocking Mimic`,
-          ].some((familiar) => myFamiliar() === familiar),
-          Macro.while_(
-            `!pastround 10 && monsterhpabove ${passiveDamage} && !hppercentbelow 25`,
-            Macro.item($item`seal tooth`)
-          )
-        )
-        .externalIf(
-          myFamiliar() === $familiar`Hobo Monkey`,
-          Macro.while_(
-            `!match "shoulder, and hands you some Meat." && !pastround  5 && monsterhpabove ${passiveDamage} && !hppercentbelow 25`,
-            Macro.item($item`seal tooth`)
-          )
-        )
         .if_(
           `monsterhpabove ${passiveDamage + 40}`,
           Macro.tryHaveItem($item`porquoise-handled sixgun`)
+        )
+        .while_(
+          `!hppercentbelow 25 && !pastround ${stasisRounds} ${monsterHpCheck}`,
+          Macro.item(stasisItem)
         )
     );
   }
