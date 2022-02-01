@@ -309,6 +309,11 @@ export class Macro extends StrictMacro {
   }
 
   meatStasis(checkPassive: boolean): Macro {
+    // We can't stasis without manuel's monsterhpabove if we want to crit
+    if (checkPassive && !monsterManuelAvailable()) {
+      return this;
+    }
+
     // Determine stasis item to use
     // Garbo already gets a seal tooth at the start of the day, so that's around always
     let stasisItem = $item`seal tooth`;
@@ -323,10 +328,6 @@ export class Macro extends StrictMacro {
     // Evaluate the passive damage
     const passiveDamage =
       maxPassiveDamage() + 5;
-    // We can't stasis without manuel's monsterhpabove if we want to crit
-    if (checkPassive && !monsterManuelAvailable()) {
-      return this;
-    }
     // Are we aiming to crit? If so, we need to respect the passive damage
     const monsterHpCheck = (checkPassive) ? `&& monsterhpabove ${passiveDamage}` : '';
     
