@@ -328,7 +328,14 @@ export class Macro extends StrictMacro {
     // Evaluate the passive damage
     const passiveDamage = maxPassiveDamage() + 5;
     // Are we aiming to crit? If so, we need to respect the passive damage
-    const monsterHpCheck = checkPassive ? `&& monsterhpabove ${passiveDamage}` : "";
+    // Also we need to respect our health total
+    const hpCheck = checkPassive
+      ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage}`
+      : "!hppercentbelow 25";
+    // Same story but for the gun
+    const hpCheckSixgun = checkPassive
+      ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage + 40}`
+      : "!hppercentbelow 25";
 
     // Determine how long we'll be stasising for
     // By default there's no reason to stasis
@@ -358,25 +365,13 @@ export class Macro extends StrictMacro {
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
       "monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername Knob Goblin Embezzler || monstername sausage goblin",
-      Macro.if_(
-        `monsterhpabove ${passiveDamage} && monstername sausage goblin`,
-        Macro.tryHaveItem($item`Time-Spinner`)
-      )
-        .if_(
-          `monsterhpabove ${passiveDamage} && monstername sausage goblin`,
-          Macro.tryHaveSkill($skill`Micrometeorite`)
-        )
-        .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Pocket Crumbs`))
-        .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Extract`))
-        .if_(`monsterhpabove ${passiveDamage}`, Macro.tryHaveSkill($skill`Become a Wolf`))
-        .if_(
-          `monsterhpabove ${passiveDamage + 40}`,
-          Macro.tryHaveItem($item`porquoise-handled sixgun`)
-        )
-        .while_(
-          `!hppercentbelow 25 && !pastround ${stasisRounds} ${monsterHpCheck}`,
-          Macro.item(stasisItem)
-        )
+      Macro.if_(`${hpCheck} && monstername sausage goblin`, Macro.tryHaveItem($item`Time-Spinner`))
+        .if_(`${hpCheck} && monstername sausage goblin`, Macro.tryHaveSkill($skill`Micrometeorite`))
+        .if_(`${hpCheck}`, Macro.trySkill($skill`Pocket Crumbs`))
+        .if_(`${hpCheck}`, Macro.trySkill($skill`Extract`))
+        .if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
+        .if_(`${hpCheckSixgun}`, Macro.tryHaveItem($item`porquoise-handled sixgun`))
+        .while_(`${hpCheckSixgun} && !pastround ${stasisRounds}`, Macro.item(stasisItem))
     );
   }
 
