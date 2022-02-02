@@ -1,7 +1,9 @@
 import {
+  Familiar,
   familiarWeight,
   haveEffect,
   inebrietyLimit,
+  Item,
   myFamiliar,
   myInebriety,
   weightAdjustment,

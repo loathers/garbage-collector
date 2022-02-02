@@ -9,6 +9,7 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
+  Item,
   itemAmount,
   myAdventures,
   myClass,

@@ -8,6 +8,7 @@ import {
   equippedItem,
   haveEquipped,
   inebrietyLimit,
+  Item,
   myClass,
   myFamiliar,
   myInebriety,

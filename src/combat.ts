@@ -2,6 +2,7 @@ import {
   choiceFollowsFight,
   equippedAmount,
   equippedItem,
+  Familiar,
   familiarWeight,
   getAutoAttack,
   getCounters,
@@ -9,6 +10,7 @@ import {
   haveSkill,
   hippyStoneBroken,
   inMultiFight,
+  Item,
   itemType,
   mpCost,
   myAdventures,
@@ -25,6 +27,7 @@ import {
   print,
   runCombat,
   setAutoAttack,
+  Skill,
   visitUrl,
 } from "kolmafia";
 import {

@@ -6,6 +6,7 @@ import {
   getClanId,
   getClanName,
   handlingChoice,
+  Item,
   print,
   putStash,
   refreshStash,

@@ -9,6 +9,7 @@ import {
   haveEquipped,
   inebrietyLimit,
   itemAmount,
+  Location,
   mallPrice,
   myAdventures,
   myFamiliar,

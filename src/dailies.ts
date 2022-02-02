@@ -8,6 +8,7 @@ import {
   getClanLounge,
   haveSkill,
   inebrietyLimit,
+  Item,
   itemAmount,
   itemPockets,
   mallPrice,
