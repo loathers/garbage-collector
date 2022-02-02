@@ -355,9 +355,18 @@ export class Macro extends StrictMacro {
     }
 
     // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
+    // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
       "monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername Knob Goblin Embezzler || monstername sausage goblin",
-      Macro.if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Pocket Crumbs`))
+      Macro.if_(
+        `monsterhpabove ${passiveDamage} && monstername sausage goblin`,
+        Macro.tryHaveItem($item`Time-Spinner`)
+      )
+        .if_(
+          `monsterhpabove ${passiveDamage} && monstername sausage goblin`,
+          Macro.tryHaveSkill($skill`Micrometeorite`)
+        )
+        .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Pocket Crumbs`))
         .if_(`monsterhpabove ${passiveDamage}`, Macro.trySkill($skill`Extract`))
         .if_(`monsterhpabove ${passiveDamage}`, Macro.tryHaveSkill($skill`Become a Wolf`))
         .if_(
@@ -422,7 +431,7 @@ export class Macro extends StrictMacro {
         .tryHaveSkill($skill`Become a Wolf`)
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
-          Macro.while_("!pastround 20 && !hppercentbelow 25 && !missed 1", Macro.attack())
+          Macro.while_("!pastround 24 && !hppercentbelow 25 && !missed 1", Macro.attack())
         )
         // Using while_ here in case you run out of mp
         .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
