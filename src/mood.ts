@@ -205,6 +205,8 @@ export function freeFightMood(): Mood {
   }
   shrugBadEffects();
 
+  if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
+
   return mood;
 }
 

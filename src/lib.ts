@@ -1,6 +1,7 @@
 import { canAdv } from "canadv.ash";
 import {
   abort,
+  availableChoiceOptions,
   cliExecute,
   eat,
   handlingChoice,
@@ -396,4 +397,16 @@ export function realmAvailable(
 
 export function formatNumber(num: number): string {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+
+export function getChoiceOption(partialText: string): number {
+  if (handlingChoice()) {
+    const findResults = Object.entries(availableChoiceOptions()).find(
+      (value) => value[1].indexOf(partialText) > -1
+    );
+    if (findResults) {
+      return parseInt(findResults[0]);
+    }
+  }
+  return -1;
 }

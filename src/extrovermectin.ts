@@ -177,6 +177,7 @@ function initializeCrates(): void {
           .ifHolidayWanderer(run.macro)
           .abort()
       );
+      visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
     } else if (
       crateStrategy() === "Saber" &&
       (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&

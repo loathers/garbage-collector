@@ -864,7 +864,10 @@ const freeFightSources = [
     },
     {
       requirements: () => [
-        new Requirement([], { preventEquip: $items`Staff of Queso Escusado, stinky cheese sword` }),
+        new Requirement([], {
+          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
+          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
+        }),
       ],
     }
   ),
@@ -874,7 +877,7 @@ const freeFightSources = [
     () => {
       const rightTime =
         have($item`Fourth of May Cosplay Saber`) &&
-        crateStrategy() === "Saber" &&
+        crateStrategy() !== "Saber" &&
         get("_drunkPygmyBanishes") >= 10;
       const saberedMonster = get("_saberForceMonster");
       const wrongPygmySabered =
@@ -1652,10 +1655,6 @@ export function freeFights(): void {
     1324: 5, // Fight a random partier
   });
 
-  for (const freeFightSource of freeFightSources) {
-    freeFightSource.runAll();
-  }
-
   if (
     canAdv($location`The Red Zeppelin`, false) &&
     !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
@@ -1665,6 +1664,10 @@ export function freeFights(): void {
       $item`glark cable`,
       get("garbo_valueOfFreeFight", 2000)
     );
+  }
+
+  for (const freeFightSource of freeFightSources) {
+    freeFightSource.runAll();
   }
 
   const stashRun = stashAmount($item`navel ring of navel gazing`)

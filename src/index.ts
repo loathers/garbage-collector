@@ -20,6 +20,7 @@ import {
   retrieveItem,
   runChoice,
   setAutoAttack,
+  toInt,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -248,7 +249,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26118);
+  sinceKolmafiaRevision(26200);
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
@@ -256,6 +257,7 @@ export function main(argString = ""): void {
     forbiddenStores.push("3408540");
     set("forbiddenStores", forbiddenStores.join(","));
   }
+  if (toInt(myClass()) > 6) abort("Garbo does not support avatar classes.");
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
     const proceedRegardless = userConfirm(
       "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
@@ -304,6 +306,9 @@ export function main(argString = ""): void {
   }
 
   startSession();
+  if (!globalOptions.noBarf) {
+    ensureBarfAccess();
+  }
   if (globalOptions.simulateDiet) {
     runDiet();
     return;
@@ -452,19 +457,13 @@ export function main(argString = ""): void {
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
-        // 2. get a ticket (done before free fights so we can deliver thesis in
-        // Uncle Gator's Country Fun-Time Liquid Waste Sluice)
-        if (!globalOptions.noBarf) {
-          ensureBarfAccess();
-        }
-
-        // 3. do some embezzler stuff
+        // 2. do some embezzler stuff
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         dailyFights();
 
         if (!globalOptions.noBarf) {
-          // 4. burn turns at barf
+          // 3. burn turns at barf
           potionSetup(false);
           try {
             while (canContinue()) {

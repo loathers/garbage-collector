@@ -631,6 +631,31 @@ export const embezzlerSources = [
     }
   ),
   new EmbezzlerFight(
+    "Screencapped Monster",
+    () =>
+      have($item`screencapped monster`) &&
+      property.getString("screencappedMonster") === "Knob Goblin Embezzler",
+    () =>
+      property.getString("screencappedMonster") === "Knob Goblin Embezzler"
+        ? itemAmount($item`screencapped monster`)
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      withMacro(options.macro, () => use($item`screencapped monster`));
+    }
+  ),
+  new EmbezzlerFight(
+    "Sticky Clay Homunculus",
+    () =>
+      have($item`sticky clay homunculus`) &&
+      property.getString("crudeMonster") === "Knob Goblin Embezzler",
+    () =>
+      property.getString("crudeMonster") === "Knob Goblin Embezzler"
+        ? itemAmount($item`sticky clay homunculus`)
+        : 0,
+    (options: EmbezzlerFightRunOptions) =>
+      withMacro(options.macro, () => use($item`sticky clay homunculus`))
+  ),
+  new EmbezzlerFight(
     "Chateau Painting",
     () =>
       ChateauMantegna.have() &&

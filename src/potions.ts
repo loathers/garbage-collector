@@ -9,6 +9,7 @@ import {
   itemType,
   mallPrice,
   print,
+  setLocation,
   use,
 } from "kolmafia";
 import {
@@ -17,6 +18,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   clamp,
   get,
   getActiveEffects,
@@ -97,6 +99,7 @@ export class Potion {
   }
 
   meatDrop(): number {
+    setLocation($location`none`);
     return (
       getModifier("Meat Drop", this.effect()) +
       2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)

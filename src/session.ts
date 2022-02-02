@@ -80,23 +80,20 @@ const specialValueLookup = new Map<Item, () => number>([
   ],
   [
     $item`weathered barrel`,
-    () =>
-      garboAverageValue(
-        ...$items`banana, bean burrito, enchanted bean burrito, jumping bean burrito`
-      ),
+    () => garboAverageValue(...$items`bean burrito, enchanted bean burrito, jumping bean burrito`),
   ],
   [
     $item`dusty barrel`,
     () =>
       garboAverageValue(
-        ...$items`banana, spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito`
+        ...$items`spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito`
       ),
   ],
   [
     $item`disintegrating barrel`,
     () =>
       garboAverageValue(
-        ...$items`banana, insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito`
+        ...$items`insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito`
       ),
   ],
   [
@@ -203,9 +200,17 @@ export function printGarboSession(): void {
       HIGHLIGHT
     );
 
-  const { meat, items } = sessionSinceStart().value(garboValue);
+  const { meat, items, itemDetails } = sessionSinceStart().value(garboValue);
   const totalMeat = meat + property.getNumber("garboResultsMeat", 0);
   const totalItems = items + property.getNumber("garboResultsItems", 0);
+
+  // list the top 3 gaining and top 3 losing items
+  const losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
+  const winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
+  print(`Extreme Items:`, HIGHLIGHT);
+  for (const detail of [...winners, ...losers]) {
+    print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
+  }
 
   set("garboResultsMeat", totalMeat);
   set("garboResultsItems", totalItems);
