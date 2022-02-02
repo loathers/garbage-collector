@@ -322,15 +322,14 @@ export class Macro extends StrictMacro {
       stasisItem = $item`facsimile dictionary`;
     } else if (retrieveItem($item`dictionary`)) {
       stasisItem = $item`dictionary`;
-    };
+    }
 
     // Construct the monster HP component of the stasis condition
     // Evaluate the passive damage
-    const passiveDamage =
-      maxPassiveDamage() + 5;
+    const passiveDamage = maxPassiveDamage() + 5;
     // Are we aiming to crit? If so, we need to respect the passive damage
-    const monsterHpCheck = (checkPassive) ? `&& monsterhpabove ${passiveDamage}` : '';
-    
+    const monsterHpCheck = checkPassive ? `&& monsterhpabove ${passiveDamage}` : "";
+
     // Determine how long we'll be stasising for
     // By default there's no reason to stasis
     let stasisRounds = 0;
