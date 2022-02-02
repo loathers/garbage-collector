@@ -2,6 +2,7 @@ import {
   fullnessLimit,
   getWorkshed,
   haveEffect,
+  Item,
   itemAmount,
   mallPrice,
   myClass,

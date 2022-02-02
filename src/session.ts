@@ -1,4 +1,4 @@
-import { print, sellPrice, toInt } from "kolmafia";
+import { Coinmaster, Item, print, sellPrice, toInt } from "kolmafia";
 import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
 
