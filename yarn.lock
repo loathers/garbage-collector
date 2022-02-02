@@ -2932,9 +2932,9 @@ levn@^0.4.1:
     type-check "~0.4.0"
 
 libram@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.3.tgz#f11d1d62fbd7e3ccdeca843806f1e5f5c6a9913c"
-  integrity sha512-XfsCIKmg0li/kqhKzwbjl1lBEUJFyKrdSpNwHmvN4EjosngC3ou6tk7UcMgzkSvXTvKn4T4pPPrHAZ2X+SZWFw==
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.4.tgz#d5a34bf05daa449af86374722bf1e4e1f2dd1241"
+  integrity sha512-c6hKIV+aaRe9bNmIXYJ1aZOSkCBuvfNPI4hVyTgzbk2HKI5slSWymAvr4B1/mL9P53XCmGA83hpJG8kXWnKlSQ==
   dependencies:
     "@babel/runtime-corejs3" "^7.14.9"
     core-js "3.15.2"
