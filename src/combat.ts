@@ -332,7 +332,7 @@ export class Macro extends StrictMacro {
     const hpCheck = checkPassive
       ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage}`
       : "!hppercentbelow 25";
-    // Same story but for the gun
+    // Same story but for the sixgun shot, which wants 40 more HP if possible
     const hpCheckSixgun = checkPassive
       ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage + 40}`
       : "!hppercentbelow 25";
@@ -371,7 +371,7 @@ export class Macro extends StrictMacro {
         .if_(`${hpCheck}`, Macro.trySkill($skill`Extract`))
         .if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
         .if_(`${hpCheckSixgun}`, Macro.tryHaveItem($item`porquoise-handled sixgun`))
-        .while_(`${hpCheckSixgun} && !pastround ${stasisRounds}`, Macro.item(stasisItem))
+        .while_(`${hpCheck} && !pastround ${stasisRounds}`, Macro.item(stasisItem))
     );
   }
 
