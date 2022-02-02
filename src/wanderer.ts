@@ -213,7 +213,10 @@ const wandererTargets = [
       // * go for bronze if plat unavailable and gold is maxed and either gold unavailable or quests are not maxed
       while (!Guzzlr.isQuestActive()) {
         print("Picking a guzzlr quest");
-        if (Guzzlr.canPlatinum()) {
+        if (
+          Guzzlr.canPlatinum() &&
+          !(get("garbo_prioritizeCappingGuzzlr", false) && Guzzlr.haveFullPlatinumBonus())
+        ) {
           Guzzlr.acceptPlatinum();
         } else if (
           Guzzlr.canGold() &&

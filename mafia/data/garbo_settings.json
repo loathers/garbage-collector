@@ -35,5 +35,10 @@
     "name": "garbo_skipPillCheck",
     "type": "boolean",
     "description": "Should skip prompting you to go acquire distention and synthetic dog hair pills? Set to true if you want to proceed without them, and false if you want to be reminded."
+  },
+  {
+    "name": "garbo_prioritizeCappingGuzzlr",
+    "type": "boolean",
+    "description": "Should garbo prioritize capping your Guzzlr tablet over getting guzzlrbucks?"
   }
 ]
