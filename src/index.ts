@@ -263,7 +263,7 @@ export function main(argString = ""): void {
       myClass()
     )
   ) {
-    abort("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
+    throw new Error("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
   }
 
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
