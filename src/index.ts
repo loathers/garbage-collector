@@ -30,6 +30,7 @@ import {
 } from "kolmafia";
 import {
   $class,
+  $classes,
   $coinmaster,
   $effect,
   $item,
@@ -257,7 +258,15 @@ export function main(argString = ""): void {
     forbiddenStores.push("3408540");
     set("forbiddenStores", forbiddenStores.join(","));
   }
-  if (toInt(myClass()) > 6) abort("Garbo does not support avatar classes.");
+
+  if (
+    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
+      myClass()
+    )
+  ) {
+    abort("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
+  }
+
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
     const proceedRegardless = userConfirm(
       "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
