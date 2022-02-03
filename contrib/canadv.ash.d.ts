@@ -9,6 +9,8 @@
  *  - ASH script forum thread: https://kolmafia.us/threads/canadv-check-whether-you-can-adventure-at-a-given-location.2027/
  */
 
+import { Location } from "kolmafia";
+
 /**
  * Checks if the player can adventure at `location`.
  * @param location
