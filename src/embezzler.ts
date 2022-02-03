@@ -1,6 +1,5 @@
 import { canAdv } from "canadv.ash";
 import {
-  abort,
   booleanModifier,
   chatPrivate,
   cliExecute,
