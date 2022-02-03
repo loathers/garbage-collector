@@ -3222,7 +3222,7 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.6.3:
+libram@^0.6.5:
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.5.tgz#6bf1f2d04cdeb273dd7f1a84e1ddb11b53af9de1"
   integrity sha512-pjdA36wPK0g9qubbSX0rFe0fSd1TIrjcGPHFVFDcNJ61VuyMbpxpTM8qPRTtZu+nhGGYJ2uqNtIEeu+2+qjCLQ==
