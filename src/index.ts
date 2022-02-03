@@ -20,7 +20,6 @@ import {
   retrieveItem,
   runChoice,
   setAutoAttack,
-  toInt,
   totalTurnsPlayed,
   use,
   useFamiliar,
