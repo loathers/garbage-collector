@@ -254,7 +254,9 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   }
 
   if (
-    (compiledRequirements.maximizeOptions.forceEquip ?? []).some((equip) => !haveEquipped(equip))
+    (compiledRequirements.maximizeOptions.forceEquip ?? []).some(
+      (equipment) => !haveEquipped(equipment)
+    )
   ) {
     throw new Error("Failed to don outfit appropriately!");
   }
