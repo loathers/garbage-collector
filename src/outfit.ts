@@ -94,6 +94,14 @@ export function freeFightOutfit(requirement?: Requirement): void {
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+
+  if (
+    (finalRequirement.maximizeOptions.forceEquip ?? []).some(
+      (equipment) => !haveEquipped(equipment)
+    )
+  ) {
+    throw new Error("Failed to don outfit appropriately!");
+  }
 }
 
 export function refreshLatte(): boolean {
@@ -244,6 +252,13 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   ) {
     cliExecute("retrocape robot kill");
   }
+
+  if (
+    (compiledRequirements.maximizeOptions.forceEquip ?? []).some((equip) => !haveEquipped(equip))
+  ) {
+    throw new Error("Failed to don outfit appropriately!");
+  }
+
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (const airSource of waterBreathingEquipment) {
