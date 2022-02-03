@@ -2,6 +2,7 @@ import {
   cliExecute,
   descToItem,
   getWorkshed,
+  Item,
   myAdventures,
   reverseNumberology,
   runChoice,

@@ -6,6 +6,7 @@ import {
   getClanId,
   getClanName,
   handlingChoice,
+  Item,
   print,
   putStash,
   refreshStash,
@@ -30,8 +31,11 @@ export function withStash<T>(itemsToTake: Item[], action: () => T): T {
 }
 
 export function withVIPClan<T>(action: () => T): T {
-  let clanIdOrName: number | string | undefined = get("garbo_vipClan", undefined);
-  if (!clanIdOrName && have($item`Clan VIP Lounge key`)) {
+  const clanIdOrNameString = get("garbo_vipClan");
+  let clanIdOrName = clanIdOrNameString.match(/^\d+$/)
+    ? parseInt(clanIdOrNameString)
+    : clanIdOrNameString;
+  if (clanIdOrName === "" && have($item`Clan VIP Lounge key`)) {
     if (
       userConfirm(
         "The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
@@ -62,9 +66,9 @@ export class StashManager {
   taken = new Map<Item, number>();
 
   constructor() {
-    const clanIdOrName = get<string | number>("garbo_stashClan", "none");
-    this.clanIdOrName = clanIdOrName;
-    this.enabled = 0 !== clanIdOrName && "none" !== clanIdOrName;
+    const clanIdOrName = get("garbo_stashClan");
+    this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
+    this.enabled = 0 !== this.clanIdOrName && "none" !== this.clanIdOrName;
   }
 
   take(...items: Item[]): void {

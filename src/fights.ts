@@ -5,14 +5,18 @@ import {
   cliExecute,
   closetAmount,
   equip,
+  Familiar,
   getAutoAttack,
   getCampground,
   handlingChoice,
   inebrietyLimit,
   isBanished,
+  Item,
   itemAmount,
+  Location,
   mallPrice,
   maximize,
+  Monster,
   myAscensions,
   myClass,
   myFamiliar,
@@ -1127,7 +1131,7 @@ const freeFightSources = [
   new FreeFight(
     () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
     () => {
-      if (get("snojoSetting", "NONE") === "NONE") {
+      if (get("snojoSetting") === null) {
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         runChoice(3);
       }

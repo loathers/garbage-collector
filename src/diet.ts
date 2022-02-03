@@ -6,12 +6,14 @@ import {
   cliExecute,
   drink,
   eat,
+  Element,
   elementalResistance,
   fullnessLimit,
   getClanLounge,
   getProperty,
   haveEffect,
   inebrietyLimit,
+  Item,
   itemType,
   mallPrice,
   myClass,
@@ -222,7 +224,7 @@ function nonOrganAdventures(): void {
 
 function pillCheck(): void {
   if (!get("_distentionPillUsed")) {
-    if (!get<boolean>("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
+    if (!get("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
       set(
         "garbo_skipPillCheck",
         userConfirm(
@@ -235,7 +237,7 @@ function pillCheck(): void {
   }
 
   if (!get("_syntheticDogHairPillUsed")) {
-    if (!get<boolean>("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
+    if (!get("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
       set(
         "garbo_skipPillCheck",
         userConfirm(

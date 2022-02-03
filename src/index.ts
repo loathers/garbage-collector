@@ -9,6 +9,7 @@ import {
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
+  Item,
   itemAmount,
   myAdventures,
   myClass,
@@ -473,7 +474,7 @@ export function main(argString = ""): void {
 
             // buy one-day tickets with FunFunds if user desires
             if (
-              get<boolean>("garbo_buyPass", false) &&
+              get("garbo_buyPass", false) &&
               availableAmount($item`FunFunds™`) >= 20 &&
               !have($item`one-day ticket to Dinseylandfill`)
             ) {
