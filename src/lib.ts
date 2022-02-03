@@ -1,6 +1,5 @@
 import { canAdv } from "canadv.ash";
 import {
-  abort,
   availableChoiceOptions,
   cliExecute,
   eat,

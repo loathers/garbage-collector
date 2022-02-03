@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   booleanModifier,
   buy,
@@ -263,14 +262,18 @@ export function main(argString = ""): void {
       myClass()
     )
   ) {
-    throw new Error("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
+    throw new Error(
+      "Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes"
+    );
   }
 
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
     const proceedRegardless = userConfirm(
       "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
     );
-    if (!proceedRegardless) abort();
+    if (!proceedRegardless) {
+      throw new Error("User interrupt requested. Stopping Garbage Collector.");
+    }
   }
 
   if (get("valueOfAdventure") <= 3500) {
