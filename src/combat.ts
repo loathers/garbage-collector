@@ -11,6 +11,7 @@ import {
   hippyStoneBroken,
   inMultiFight,
   Item,
+  itemAmount,
   itemType,
   mpCost,
   myAdventures,
@@ -49,7 +50,6 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { globalOptions } from "./lib";
 import { digitizedMonstersRemaining } from "./wanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -319,12 +319,11 @@ export class Macro extends StrictMacro {
       return this;
     }
 
-    if (!globalOptions.stasisItem) {
-      globalOptions.stasisItem =
-        $items`facsimile dictionary, dictionary`.find((item) => retrieveItem(item)) ??
-        $item`seal tooth`;
-    }
-    const stasisItem = globalOptions.stasisItem;
+    const checkGet = (i: Item) => have(i) && (itemAmount(i) > 0 || retrieveItem(i));
+    const stasisItem = $items`facsimile dictionary, dictionary, seal tooth`.find(checkGet);
+
+    // We retrieve a seal tooth at the start of the day, so this is just to make sure nothing has gone awry.
+    if (!stasisItem) throw new Error("Acquire a seal tooth and run garbo again.");
 
     // Construct the monster HP component of the stasis condition
     // Evaluate the passive damage
