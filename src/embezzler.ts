@@ -231,9 +231,12 @@ export const embezzlerMacro = (): Macro =>
   Macro.if_(
     $monster`Knob Goblin Embezzler`,
     Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
-      .externalIf(myFamiliar() === $familiar`Obtuse Angel`, Macro.trySkill($skill`Wink at`))
       .externalIf(
         myFamiliar() === $familiar`Reanimated Reanimator`,
+        Macro.trySkill($skill`Wink at`)
+      )
+      .externalIf(
+        myFamiliar() === $familiar`Obtuse Angel`,
         Macro.trySkill($skill`Fire a badly romantic arrow`)
       )
       .externalIf(
