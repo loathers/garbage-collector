@@ -73,6 +73,7 @@ export const globalOptions: {
   wishAnswer: boolean;
   simulateDiet: boolean;
   noDiet: boolean;
+  checkedForDictionaries: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -83,6 +84,7 @@ export const globalOptions: {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
+  checkedForDictionaries: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";

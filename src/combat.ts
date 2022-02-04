@@ -49,6 +49,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
+import { globalOptions } from "./lib";
 import { digitizedMonstersRemaining } from "./wanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -321,11 +322,14 @@ export class Macro extends StrictMacro {
     // Determine stasis item to use
     // Garbo already gets a seal tooth at the start of the day, so that's around always
     let stasisItem = $item`seal tooth`;
-    if (retrieveItem($item`facsimile dictionary`)) {
-      // The dictionaries are nicer though as they don't hurt the monster
-      stasisItem = $item`facsimile dictionary`;
-    } else if (retrieveItem($item`dictionary`)) {
-      stasisItem = $item`dictionary`;
+    if (!globalOptions.checkedForDictionaries) {
+      if (retrieveItem($item`facsimile dictionary`)) {
+        // The dictionaries are nicer though as they don't hurt the monster
+        stasisItem = $item`facsimile dictionary`;
+      } else if (retrieveItem($item`dictionary`)) {
+        stasisItem = $item`dictionary`;
+      }
+      globalOptions.checkedForDictionaries = true;
     }
 
     // Construct the monster HP component of the stasis condition
@@ -369,12 +373,36 @@ export class Macro extends StrictMacro {
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
       "monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername Knob Goblin Embezzler || monstername sausage goblin",
-      Macro.externalIf(have($item`Time-Spinner`), Macro.if_(`${hpCheck} && monstername sausage goblin`, Macro.tryHaveItem($item`Time-Spinner`)))
-        .externalIf(have($skill`Meteor Lore`), Macro.if_(`${hpCheck} && monstername sausage goblin`, Macro.tryHaveSkill($skill`Micrometeorite`)))
-        .externalIf(haveEquipped($item`Pantsgiving`), Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Pocket Crumbs`)))
-        .externalIf(SourceTerminal.getSkills().includes($skill`Extract`), Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Extract`)))
-        .externalIf(haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10, Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`)))
-        .externalIf(have($item`porquoise-handled sixgun`), Macro.if_(`${hpCheckSixgun}`, Macro.tryItem($item`porquoise-handled sixgun`)))
+      Macro.externalIf(
+        have($item`Time-Spinner`),
+        Macro.if_(
+          `${hpCheck} && monstername sausage goblin`,
+          Macro.tryHaveItem($item`Time-Spinner`)
+        )
+      )
+        .externalIf(
+          have($skill`Meteor Lore`),
+          Macro.if_(
+            `${hpCheck} && monstername sausage goblin`,
+            Macro.tryHaveSkill($skill`Micrometeorite`)
+          )
+        )
+        .externalIf(
+          haveEquipped($item`Pantsgiving`),
+          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Pocket Crumbs`))
+        )
+        .externalIf(
+          SourceTerminal.getSkills().includes($skill`Extract`),
+          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Extract`))
+        )
+        .externalIf(
+          haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
+          Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
+        )
+        .externalIf(
+          have($item`porquoise-handled sixgun`),
+          Macro.if_(`${hpCheckSixgun}`, Macro.tryItem($item`porquoise-handled sixgun`))
+        )
         .while_(`${hpCheck} && !pastround ${stasisRounds}`, Macro.item(stasisItem))
     );
   }
@@ -386,10 +414,19 @@ export class Macro extends StrictMacro {
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
-      .externalIf(get("cosmicBowlingBallReturnCombats") === -1, Macro.trySkill($skill`Bowl Straight Up`))
-      .externalIf(haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10, Macro.tryHaveSkill($skill`Become a Wolf`))
+      .externalIf(
+        get("cosmicBowlingBallReturnCombats") === -1,
+        Macro.trySkill($skill`Bowl Straight Up`)
+      )
+      .externalIf(
+        haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
+        Macro.tryHaveSkill($skill`Become a Wolf`)
+      )
       .externalIf(haveEquipped($item`Pantsgiving`), Macro.trySkill($skill`Pocket Crumbs`))
-      .externalIf(SourceTerminal.getSkills().includes($skill`Extract`), Macro.trySkill($skill`Extract`))
+      .externalIf(
+        SourceTerminal.getSkills().includes($skill`Extract`),
+        Macro.trySkill($skill`Extract`)
+      )
       .tryHaveItem($item`porquoise-handled sixgun`)
       .externalIf(have($skill`Meteor Lore`), Macro.trySkill($skill`Micrometeorite`))
       .tryHaveItem($item`Time-Spinner`)
