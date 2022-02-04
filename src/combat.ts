@@ -36,6 +36,7 @@ import {
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $skill,
@@ -139,7 +140,11 @@ export function shouldRedigitize(): boolean {
   // triangular number * 10 - 3
   const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
   // Redigitize if fewer adventures than this digitize usage.
-  return SourceTerminal.have() && myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
+  return (
+    SourceTerminal.have() &&
+    SourceTerminal.canDigitize() &&
+    myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed
+  );
 }
 
 export class Macro extends StrictMacro {
@@ -170,51 +175,47 @@ export class Macro extends StrictMacro {
     switch (itemOrSkill) {
       case $item`Spooky Putty sheet`:
         return this.externalIf(
-          get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6,
+          get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6 &&
+            $items`Spooky Putty sheet, Spooky Putty monster`.some((item) => have(item)),
           Macro.tryItem(itemOrSkill)
         );
       case $item`Rain-Doh black box`:
         return this.externalIf(
-          get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6,
-          Macro.tryItem(itemOrSkill)
+          get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6 &&
+            $items`Rain-Doh black box, Rain-Doh box full of monster`.some((item) => have(item)),
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`4-d camera`:
         return this.externalIf(
           !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`crappy camera`:
         return this.externalIf(
           !get("_crappyCameraUsed") && !have($item`shaking crappy camera`),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`unfinished ice sculpture`:
         return this.externalIf(
           !get("_iceSculptureUsed") && !have($item`ice sculpture`),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`pulled green taffy`:
         return this.externalIf(
           !get("_envyfishEggUsed") && !have($item`envyfish egg`),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`print screen button`:
-        return this.tryItem(itemOrSkill);
+        return this.tryHaveItem(itemOrSkill);
       case $item`alpine watercolor set`:
-        return this.tryItem(itemOrSkill);
+        return this.tryHaveItem(itemOrSkill);
       case $item`LOV Enamorang`:
         return this.externalIf(
           get("_enamorangs") < 5 && !get("enamorangMonster"),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $skill`Digitize`:
-        return this.externalIf(
-          get("_sourceTerminalDigitizeUses") <
-            1 +
-              (get("sourceTerminalChips").includes("TRAM") ? 1 : 0) +
-              (get("sourceTerminalChips").includes("TRIGRAM") ? 1 : 0),
-          Macro.trySkill(itemOrSkill)
-        );
+        return this.externalIf(SourceTerminal.canDigitize(), Macro.trySkill(itemOrSkill));
     }
 
     // Unsupported item or skill
