@@ -89,9 +89,11 @@ import { garboAverageValue, printGarboSession, startSession } from "./session";
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
 
-function ensureBarfAccess() {
+function ensureBarfAccess(): boolean {
   if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
     const ticket = $item`one-day ticket to Dinseylandfill`;
+    const warn = `Simdiet may be innaccurate without barf access. Buy a ticket? (For garbo nobarf, do "garbo nobarf simdiet" instead)`;
+    if (globalOptions.simulateDiet && !userConfirm(warn)) return false;
     // TODO: Get better item acquisition logic that e.g. checks own mall store.
     if (!have(ticket)) buy(1, ticket, TICKET_MAX_PRICE);
     use(ticket);
@@ -103,6 +105,7 @@ function ensureBarfAccess() {
     runChoice(6);
     cliExecute("refresh inv");
   }
+  return true;
 }
 
 function barfTurn() {
@@ -308,7 +311,8 @@ export function main(argString = ""): void {
 
   startSession();
   if (!globalOptions.noBarf) {
-    ensureBarfAccess();
+    const userContinue = ensureBarfAccess();
+    if (!userContinue) return;
   }
   if (globalOptions.simulateDiet) {
     runDiet();
