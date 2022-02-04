@@ -231,8 +231,14 @@ export const embezzlerMacro = (): Macro =>
   Macro.if_(
     $monster`Knob Goblin Embezzler`,
     Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
-      .trySkill($skill`Wink at`)
-      .trySkill($skill`Fire a badly romantic arrow`)
+      .externalIf(
+        myFamiliar() === $familiar`Reanimated Reanimator`,
+        Macro.trySkill($skill`Wink at`)
+      )
+      .externalIf(
+        myFamiliar() === $familiar`Obtuse Angel`,
+        Macro.trySkill($skill`Fire a badly romantic arrow`)
+      )
       .externalIf(
         get("beGregariousCharges") > 0 &&
           (get("beGregariousMonster") !== $monster`Knob Goblin Embezzler` ||

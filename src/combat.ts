@@ -11,6 +11,7 @@ import {
   hippyStoneBroken,
   inMultiFight,
   Item,
+  itemAmount,
   itemType,
   mpCost,
   myAdventures,
@@ -36,6 +37,7 @@ import {
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $skill,
@@ -139,7 +141,11 @@ export function shouldRedigitize(): boolean {
   // triangular number * 10 - 3
   const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
   // Redigitize if fewer adventures than this digitize usage.
-  return SourceTerminal.have() && myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
+  return (
+    SourceTerminal.have() &&
+    SourceTerminal.canDigitize() &&
+    myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed
+  );
 }
 
 export class Macro extends StrictMacro {
@@ -170,51 +176,47 @@ export class Macro extends StrictMacro {
     switch (itemOrSkill) {
       case $item`Spooky Putty sheet`:
         return this.externalIf(
-          get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6,
+          get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6 &&
+            $items`Spooky Putty sheet, Spooky Putty monster`.some((item) => have(item)),
           Macro.tryItem(itemOrSkill)
         );
       case $item`Rain-Doh black box`:
         return this.externalIf(
-          get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6,
+          get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6 &&
+            $items`Rain-Doh black box, Rain-Doh box full of monster`.some((item) => have(item)),
           Macro.tryItem(itemOrSkill)
         );
       case $item`4-d camera`:
         return this.externalIf(
           !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`crappy camera`:
         return this.externalIf(
           !get("_crappyCameraUsed") && !have($item`shaking crappy camera`),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`unfinished ice sculpture`:
         return this.externalIf(
           !get("_iceSculptureUsed") && !have($item`ice sculpture`),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`pulled green taffy`:
         return this.externalIf(
           !get("_envyfishEggUsed") && !have($item`envyfish egg`),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`print screen button`:
-        return this.tryItem(itemOrSkill);
+        return this.tryHaveItem(itemOrSkill);
       case $item`alpine watercolor set`:
-        return this.tryItem(itemOrSkill);
+        return this.tryHaveItem(itemOrSkill);
       case $item`LOV Enamorang`:
         return this.externalIf(
           get("_enamorangs") < 5 && !get("enamorangMonster"),
-          Macro.tryItem(itemOrSkill)
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $skill`Digitize`:
-        return this.externalIf(
-          get("_sourceTerminalDigitizeUses") <
-            1 +
-              (get("sourceTerminalChips").includes("TRAM") ? 1 : 0) +
-              (get("sourceTerminalChips").includes("TRIGRAM") ? 1 : 0),
-          Macro.trySkill(itemOrSkill)
-        );
+        return this.externalIf(SourceTerminal.canDigitize(), Macro.trySkill(itemOrSkill));
     }
 
     // Unsupported item or skill
@@ -317,15 +319,11 @@ export class Macro extends StrictMacro {
       return this;
     }
 
-    // Determine stasis item to use
-    // Garbo already gets a seal tooth at the start of the day, so that's around always
-    let stasisItem = $item`seal tooth`;
-    if (retrieveItem($item`facsimile dictionary`)) {
-      // The dictionaries are nicer though as they don't hurt the monster
-      stasisItem = $item`facsimile dictionary`;
-    } else if (retrieveItem($item`dictionary`)) {
-      stasisItem = $item`dictionary`;
-    }
+    const checkGet = (i: Item) => have(i) && (itemAmount(i) > 0 || retrieveItem(i));
+    const stasisItem = $items`facsimile dictionary, dictionary, seal tooth`.find(checkGet);
+
+    // We retrieve a seal tooth at the start of the day, so this is just to make sure nothing has gone awry.
+    if (!stasisItem) throw new Error("Acquire a seal tooth and run garbo again.");
 
     // Construct the monster HP component of the stasis condition
     // Evaluate the passive damage
@@ -368,12 +366,36 @@ export class Macro extends StrictMacro {
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
       "monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername Knob Goblin Embezzler || monstername sausage goblin",
-      Macro.if_(`${hpCheck} && monstername sausage goblin`, Macro.tryHaveItem($item`Time-Spinner`))
-        .if_(`${hpCheck} && monstername sausage goblin`, Macro.tryHaveSkill($skill`Micrometeorite`))
-        .if_(`${hpCheck}`, Macro.trySkill($skill`Pocket Crumbs`))
-        .if_(`${hpCheck}`, Macro.trySkill($skill`Extract`))
-        .if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
-        .if_(`${hpCheckSixgun}`, Macro.tryHaveItem($item`porquoise-handled sixgun`))
+      Macro.externalIf(
+        have($item`Time-Spinner`),
+        Macro.if_(
+          `${hpCheck} && monstername sausage goblin`,
+          Macro.tryHaveItem($item`Time-Spinner`)
+        )
+      )
+        .externalIf(
+          have($skill`Meteor Lore`),
+          Macro.if_(
+            `${hpCheck} && monstername sausage goblin`,
+            Macro.tryHaveSkill($skill`Micrometeorite`)
+          )
+        )
+        .externalIf(
+          haveEquipped($item`Pantsgiving`),
+          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Pocket Crumbs`))
+        )
+        .externalIf(
+          SourceTerminal.getSkills().includes($skill`Extract`),
+          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Extract`))
+        )
+        .externalIf(
+          haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
+          Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
+        )
+        .externalIf(
+          have($item`porquoise-handled sixgun`),
+          Macro.if_(`${hpCheckSixgun}`, Macro.tryItem($item`porquoise-handled sixgun`))
+        )
         .while_(`${hpCheck} && !pastround ${stasisRounds}`, Macro.item(stasisItem))
     );
   }
@@ -385,10 +407,19 @@ export class Macro extends StrictMacro {
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
-      .trySkill($skill`Bowl Straight Up`)
-      .tryHaveSkill($skill`Become a Wolf`)
-      .trySkill($skill`Pocket Crumbs`)
-      .trySkill($skill`Extract`)
+      .externalIf(
+        get("cosmicBowlingBallReturnCombats") < 1,
+        Macro.trySkill($skill`Bowl Straight Up`)
+      )
+      .externalIf(
+        haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
+        Macro.tryHaveSkill($skill`Become a Wolf`)
+      )
+      .externalIf(haveEquipped($item`Pantsgiving`), Macro.trySkill($skill`Pocket Crumbs`))
+      .externalIf(
+        SourceTerminal.getSkills().includes($skill`Extract`),
+        Macro.trySkill($skill`Extract`)
+      )
       .tryHaveItem($item`porquoise-handled sixgun`)
       .externalIf(have($skill`Meteor Lore`), Macro.trySkill($skill`Micrometeorite`))
       .tryHaveItem($item`Time-Spinner`)
