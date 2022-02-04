@@ -319,18 +319,12 @@ export class Macro extends StrictMacro {
       return this;
     }
 
-    // Determine stasis item to use
-    // Garbo already gets a seal tooth at the start of the day, so that's around always
-    let stasisItem = $item`seal tooth`;
-    if (!globalOptions.checkedForDictionaries) {
-      if (retrieveItem($item`facsimile dictionary`)) {
-        // The dictionaries are nicer though as they don't hurt the monster
-        stasisItem = $item`facsimile dictionary`;
-      } else if (retrieveItem($item`dictionary`)) {
-        stasisItem = $item`dictionary`;
-      }
-      globalOptions.checkedForDictionaries = true;
+    if (!globalOptions.stasisItem) {
+      globalOptions.stasisItem =
+        $items`facsimile dictionary, dictionary`.find((item) => retrieveItem(item)) ??
+        $item`seal tooth`;
     }
+    const stasisItem = globalOptions.stasisItem;
 
     // Construct the monster HP component of the stasis condition
     // Evaluate the passive damage
