@@ -100,7 +100,7 @@ export function freeFightOutfit(requirement?: Requirement): void {
       (equipment) => !haveEquipped(equipment)
     )
   ) {
-    throw new Error("Failed to don outfit appropriately!");
+    throw new Error("Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?");
   }
 }
 
@@ -258,7 +258,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       (equipment) => !haveEquipped(equipment)
     )
   ) {
-    throw new Error("Failed to don outfit appropriately!");
+    throw new Error("Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?");
   }
 
   if (sea) {
