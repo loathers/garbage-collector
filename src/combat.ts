@@ -415,7 +415,7 @@ export class Macro extends StrictMacro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
       .externalIf(
-        get("cosmicBowlingBallReturnCombats") === -1,
+        get("cosmicBowlingBallReturnCombats") < 1,
         Macro.trySkill($skill`Bowl Straight Up`)
       )
       .externalIf(
