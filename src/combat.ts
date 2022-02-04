@@ -184,7 +184,7 @@ export class Macro extends StrictMacro {
         return this.externalIf(
           get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6 &&
             $items`Rain-Doh black box, Rain-Doh box full of monster`.some((item) => have(item)),
-          Macro.tryHaveItem(itemOrSkill)
+          Macro.tryItem(itemOrSkill)
         );
       case $item`4-d camera`:
         return this.externalIf(
