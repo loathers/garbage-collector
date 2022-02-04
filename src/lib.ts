@@ -73,7 +73,7 @@ export const globalOptions: {
   wishAnswer: boolean;
   simulateDiet: boolean;
   noDiet: boolean;
-  stasisItem: Item | null
+  stasisItem: Item | null;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -84,7 +84,7 @@ export const globalOptions: {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
-  stasisItem: null
+  stasisItem: null,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
