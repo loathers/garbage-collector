@@ -20136,7 +20136,7 @@ function faxEmbezzler() {
       if (checkFax()) return;
     }
 
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.abort)("Failed to acquire photocopied Knob Goblin Embezzler.");
+    throw new Error("Failed to acquire photocopied Knob Goblin Embezzler.");
   }
 }
 
@@ -20875,7 +20875,7 @@ function expectedEmbezzlerProfit() {
 function safeInterrupt() {
   if (get("garbo_interrupt", false)) {
     set("garbo_interrupt", false);
-    abort("User interrupt requested. Stopping Garbage Collector.");
+    throw new Error("User interrupt requested. Stopping Garbage Collector.");
   }
 }
 function resetDailyPreference(trackingPreference) {
@@ -21096,7 +21096,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("b8d38be9c52fbe48ccbff2ee2a8532d5acadb210" === mainSha) {
+    if ("dda7fca9099220a707b4487e4d54c8a308307c1a" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
