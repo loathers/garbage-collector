@@ -27310,7 +27310,7 @@ function potionMenu(baseMenu, embezzlers, turns) {
   var campfireHotdog = (0,property/* get */.U2)("getawayCampsiteUnlocked") ? potion((0,template_string/* $item */.xr)(_templateObject101 || (_templateObject101 = src_diet_taggedTemplateLiteral(["campfire hot dog"]))), {
     price: ingredientCost((0,template_string/* $item */.xr)(_templateObject102 || (_templateObject102 = src_diet_taggedTemplateLiteral(["stick of firewood"]))))
   }) : [];
-  var foodCone = (0,src_lib/* realmAvailable */.e6)("stench") ? limitedPotion((0,template_string/* $item */.xr)(_templateObject103 || (_templateObject103 = src_diet_taggedTemplateLiteral(["Dinsey food-cone"]))), Math.floor((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(_templateObject104 || (_templateObject104 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"])))) / 2), {
+  var foodCone = (0,src_lib/* realmAvailable */.e6)("stench") || src_lib/* globalOptions.simulateDiet */.Xe.simulateDiet && !src_lib/* globalOptions.noBarf */.Xe.noBarf ? limitedPotion((0,template_string/* $item */.xr)(_templateObject103 || (_templateObject103 = src_diet_taggedTemplateLiteral(["Dinsey food-cone"]))), Math.floor((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(_templateObject104 || (_templateObject104 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"])))) / 2), {
     price: 2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject105 || (_templateObject105 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"]))))
   }) : [];
   return [].concat(src_diet_toConsumableArray(baseMenu), src_diet_toConsumableArray(copiers()), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject106 || (_templateObject106 = src_diet_taggedTemplateLiteral(["jumping horseradish"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject107 || (_templateObject107 = src_diet_taggedTemplateLiteral(["tempura cauliflower"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject108 || (_templateObject108 = src_diet_taggedTemplateLiteral(["sea truffle"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject109 || (_templateObject109 = src_diet_taggedTemplateLiteral(["tempura broccoli"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject110 || (_templateObject110 = src_diet_taggedTemplateLiteral(["Miserable Pie"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject111 || (_templateObject111 = src_diet_taggedTemplateLiteral(["Every Day is Like This Sundae"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject112 || (_templateObject112 = src_diet_taggedTemplateLiteral(["bowl of mummy guts"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject113 || (_templateObject113 = src_diet_taggedTemplateLiteral(["haunted Hell ramen"]))))), src_diet_toConsumableArray(campfireHotdog), src_diet_toConsumableArray(foodCone), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject114 || (_templateObject114 = src_diet_taggedTemplateLiteral(["dirt julep"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject115 || (_templateObject115 = src_diet_taggedTemplateLiteral(["Ambitious Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject116 || (_templateObject116 = src_diet_taggedTemplateLiteral(["Friendly Turkey"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject117 || (_templateObject117 = src_diet_taggedTemplateLiteral(["vintage smart drink"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject118 || (_templateObject118 = src_diet_taggedTemplateLiteral(["Strikes Again Bigmouth"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject119 || (_templateObject119 = src_diet_taggedTemplateLiteral(["Irish Coffee, English Heart"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject120 || (_templateObject120 = src_diet_taggedTemplateLiteral(["Jack-O-Lantern beer"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject121 || (_templateObject121 = src_diet_taggedTemplateLiteral(["Amnesiac Ale"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject122 || (_templateObject122 = src_diet_taggedTemplateLiteral(["mentholated wine"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject123 || (_templateObject123 = src_diet_taggedTemplateLiteral(["Feliz Navidad"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject124 || (_templateObject124 = src_diet_taggedTemplateLiteral(["broberry brogurt"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject125 || (_templateObject125 = src_diet_taggedTemplateLiteral(["haunted martini"]))))), src_diet_toConsumableArray(potion((0,template_string/* $item */.xr)(_templateObject126 || (_templateObject126 = src_diet_taggedTemplateLiteral(["twice-haunted screwdriver"]))), {
@@ -30662,7 +30662,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26200);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("96cd3b24ee1776e5f8bac9c4b9cdf199d07ffd4e"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("b8d38be9c52fbe48ccbff2ee2a8532d5acadb210"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -30730,7 +30730,7 @@ function main() {
 
   (0,session/* startSession */.yj)();
 
-  if (!src_lib/* globalOptions.noBarf */.Xe.noBarf) {
+  if (!src_lib/* globalOptions.noBarf */.Xe.noBarf && !src_lib/* globalOptions.simulateDiet */.Xe.simulateDiet) {
     ensureBarfAccess();
   }
 
@@ -31228,7 +31228,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("96cd3b24ee1776e5f8bac9c4b9cdf199d07ffd4e" === mainSha) {
+    if ("b8d38be9c52fbe48ccbff2ee2a8532d5acadb210" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
