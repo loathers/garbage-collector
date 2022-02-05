@@ -307,7 +307,7 @@ export function main(argString = ""): void {
   }
 
   startSession();
-  if (!globalOptions.noBarf) {
+  if (!globalOptions.noBarf && !globalOptions.simulateDiet) {
     ensureBarfAccess();
   }
   if (globalOptions.simulateDiet) {
