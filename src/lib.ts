@@ -1,6 +1,5 @@
 import { canAdv } from "canadv.ash";
 import {
-  abort,
   availableChoiceOptions,
   cliExecute,
   eat,
@@ -114,7 +113,7 @@ export function expectedEmbezzlerProfit(): number {
 export function safeInterrupt(): void {
   if (get("garbo_interrupt", false)) {
     set("garbo_interrupt", false);
-    abort("User interrupt requested. Stopping Garbage Collector.");
+    throw new Error("User interrupt requested. Stopping Garbage Collector.");
   }
 }
 

@@ -1,6 +1,5 @@
 import { canAdv } from "canadv.ash";
 import {
-  abort,
   booleanModifier,
   chatPrivate,
   cliExecute,
@@ -223,7 +222,7 @@ function faxEmbezzler(): void {
       wait(10);
       if (checkFax()) return;
     }
-    abort("Failed to acquire photocopied Knob Goblin Embezzler.");
+    throw new Error("Failed to acquire photocopied Knob Goblin Embezzler.");
   }
 }
 
