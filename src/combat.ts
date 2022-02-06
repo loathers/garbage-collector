@@ -594,7 +594,7 @@ export function main(): void {
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
-        Macro.step(Macro.load()),
+        Macro.skill($skill`Back-Up to your Last Enemy`).step(Macro.load()),
         Macro.basicCombat()
       )
     )
