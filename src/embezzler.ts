@@ -330,6 +330,13 @@ export const embezzlerSources = [
           ? 1
           : 0)),
     (options: EmbezzlerFightRunOptions) => {
+      visitUrl("inventory.php?ponder=1");
+      if (
+        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !==
+        $monster`Knob Goblin Embezzler`
+      ) {
+        return;
+      }
       adventureMacro($location`The Dire Warren`, options.macro);
     },
     {
