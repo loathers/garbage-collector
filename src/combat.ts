@@ -51,6 +51,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
+import { meatFamiliar } from "./familiar";
 import { digitizedMonstersRemaining } from "./wanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -593,8 +594,9 @@ export function main(): void {
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
-          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler`,
-        Macro.step(Macro.load()),
+          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+          myFamiliar() === meatFamiliar(),
+        Macro.skill($skill`Back-Up to your Last Enemy`).step(Macro.load()),
         Macro.basicCombat()
       )
     )
