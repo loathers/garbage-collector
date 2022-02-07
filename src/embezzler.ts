@@ -60,6 +60,7 @@ import {
 } from "./lib";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
+import * as CombatLoversLocket from "./CLL";
 
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine
@@ -675,6 +676,17 @@ export const embezzlerSources = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       withMacro(options.macro, () => ChateauMantegna.fightPainting());
+    }
+  ),
+  new EmbezzlerFight(
+    "Combat Lover's Locket",
+    () => CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`),
+    () =>
+      CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`)
+        ? 1
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      withMacro(options.macro, () => CombatLoversLocket.reminisce($monster`Knob Goblin Embezzler`));
     }
   ),
   new EmbezzlerFight(
