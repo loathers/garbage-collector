@@ -124,6 +124,7 @@ import {
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
+import * as CombatLoversLocket from "./CLL";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -431,7 +432,17 @@ export function dailyFights(): void {
         }
 
         setLocation(nextFight.location());
-        meatOutfit(true, Requirement.merge(nextFight.requirements), underwater);
+        const CLLRequirement =
+          CombatLoversLocket.have() &&
+          !CombatLoversLocket.unlockedLocketMonsters().includes($monster`Knob Goblin Embezzler`)
+            ? // eslint-disable-next-line libram/verify-constants
+              new Requirement([], { forceEquip: $items`Combat Lover's Locket` })
+            : new Requirement([], {});
+        meatOutfit(
+          true,
+          Requirement.merge(nextFight.requirements).merge(CLLRequirement),
+          underwater
+        );
 
         nextFight.run();
         postCombatActions();
