@@ -124,6 +124,7 @@ import {
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
+import * as CombatLoversLocket from "./CLL";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1170,6 +1171,18 @@ const freeFightSources = [
           }
         ),
       ],
+    }
+  ),
+
+  new FreeFight(
+    () =>
+      CombatLoversLocket.have() &&
+      !!CombatLoversLocket.findFreeFight() &&
+      CombatLoversLocket.reminiscesLeft() > 1,
+    () => {
+      const monster = CombatLoversLocket.findFreeFight();
+      if (!monster) return;
+      withMacro(Macro.basicCombat(), () => CombatLoversLocket.reminisce(monster));
     }
   ),
 

@@ -1,5 +1,6 @@
-import { cliExecute, getLocketMonsters, Monster, toMonster } from "kolmafia";
-import { $item, clamp, get, have as haveItem } from "libram";
+import { cliExecute, getLocketMonsters, itemDropsArray, Monster, toMonster } from "kolmafia";
+import { $item, clamp, get, getModifier, have as haveItem, sumNumbers } from "libram";
+import { garboValue } from "./session";
 
 // eslint-disable-next-line libram/verify-constants
 export const locket = $item`Combat Lover's Locket`;
@@ -57,4 +58,19 @@ export function reminisce(monster: Monster): boolean {
 
   cliExecute(`reminisce ${monster}`);
   return monstersReminisced().includes(monster);
+}
+
+export function findFreeFight(): Monster | null {
+  const valueDrops = (monster: Monster) => {
+    return sumNumbers(
+      itemDropsArray(monster).map(
+        ({ drop, rate }) => garboValue(drop) * rate * (1 + 0.01 * getModifier("Item Drop"))
+      )
+    );
+  };
+  return (
+    availableLocketMonsters()
+      .sort((a, b) => valueDrops(b) - valueDrops(a))
+      .find((monster) => monster.attributes.includes("FREE")) ?? null
+  );
 }
