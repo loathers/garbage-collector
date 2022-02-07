@@ -24,6 +24,7 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   $skill,
   $slot,
   get,
@@ -34,6 +35,7 @@ import {
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./lib";
+import * as CombatLoversLocket from "./CLL";
 
 export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
@@ -195,6 +197,14 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   }
   if (sea) {
     parameters.push("sea");
+  }
+
+  if (
+    myFamiliar() !== $familiar`Pocket Professor` &&
+    CombatLoversLocket.have() &&
+    !CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`)
+  ) {
+    forceEquip.push(CombatLoversLocket.locket);
   }
 
   const bjornAlike = bestBjornalike(forceEquip);
