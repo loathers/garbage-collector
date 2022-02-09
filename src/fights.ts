@@ -1914,8 +1914,9 @@ function getBestItemStealZone(): ItemStealZone | null {
         get("olfactedMonster") === zone.monster ||
         get("_gallapagosMonster") === zone.monster)
   );
-  const canExtinguish = have($item`industrial fire extinguisher`);
-  const vorticesAvail = canExtinguish ? Math.floor(get("_fireExtinguisherCharge") / 10) : 0;
+  const vorticesAvail = have($item`industrial fire extinguisher`)
+    ? Math.floor(get("_fireExtinguisherCharge") / 10)
+    : 0;
   const hugsAvail = have($familiar`XO Skeleton`) ? clamp(11 - get("_xoHugsUsed"), 0, 11) : 0;
   const value = (zone: ItemStealZone): number => {
     // We have to divide hugs by 2 - will likely use a banish as a free run so we will be alternating zones.
