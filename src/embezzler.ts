@@ -649,7 +649,10 @@ export const embezzlerSources = [
     () => CombatLoversLocket.availableLocketMonsters().includes(embezzler),
     () => (CombatLoversLocket.availableLocketMonsters().includes(embezzler) ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
-      withMacro(options.macro, () => CombatLoversLocket.reminisce(embezzler));
+      withMacro(options.macro, () => {
+        CombatLoversLocket.reminisce(embezzler);
+        runCombat();
+      });
     }
   ),
   new EmbezzlerFight(
