@@ -1181,7 +1181,10 @@ const freeFightSources = [
     () => {
       const monster = locketMonster();
       if (!monster) return;
-      withMacro(Macro.basicCombat(), () => CombatLoversLocket.reminisce(monster));
+      withMacro(Macro.basicCombat(), () => {
+        CombatLoversLocket.reminisce(monster);
+        runCombat();
+      });
     }
   ),
 
