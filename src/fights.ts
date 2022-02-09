@@ -1429,12 +1429,10 @@ const freeRunFightSources = [
       try {
         if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
+        const hasXO = myFamiliar() === $familiar`XO Skeleton`;
         Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
-          .externalIf(
-            myFamiliar() === $familiar`XO Skeleton` && get("_xoHugsUsed") < 11,
-            Macro.skill($skill`Hugs and Kisses!`)
-          )
-          .step(itemStealOlfact(best))
+          .externalIf(hasXO && get("_xoHugsUsed") < 11, Macro.skill($skill`Hugs and Kisses!`))
+          .externalIf(hasXO && get("_xoHugsUsed") < 10, Macro.step(itemStealOlfact(best)))
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
@@ -1916,7 +1914,9 @@ function getBestItemStealZone(): ItemStealZone | null {
         get("olfactedMonster") === zone.monster ||
         get("_gallapagosMonster") === zone.monster)
   );
-  const vorticesAvail = Math.floor(get("_fireExtinguisherCharge") / 10);
+  const vorticesAvail = have($item`industrial fire extinguisher`)
+    ? Math.floor(get("_fireExtinguisherCharge") / 10)
+    : 0;
   const hugsAvail = have($familiar`XO Skeleton`) ? clamp(11 - get("_xoHugsUsed"), 0, 11) : 0;
   const value = (zone: ItemStealZone): number => {
     // We have to divide hugs by 2 - will likely use a banish as a free run so we will be alternating zones.
@@ -1947,7 +1947,7 @@ function setupItemStealZones() {
 function itemStealOlfact(best: ItemStealZone) {
   return Macro.externalIf(
     have($skill`Transcendent Olfaction`) &&
-      get("_olfactionsUsed") < 2 &&
+      get("_olfactionsUsed") < 1 &&
       itemStealZones.every((zone) => get("olfactedMonster") !== zone.monster),
     Macro.skill($skill`Transcendent Olfaction`)
   ).externalIf(
