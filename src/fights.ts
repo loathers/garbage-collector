@@ -366,14 +366,25 @@ export function dailyFights(): void {
           }
 
           useFamiliar($familiar`Pocket Professor`);
-          goalMaximize(
-            Requirement.merge([
-              new Requirement(maximizeParameters, {
+          if (!have($item`Pocket Professor memory chip`)) {
+            if (
+              mallPrice($item`box of Familiar Jacks`) <
+              mallPrice($item`Pocket Professor memory chip`)
+            ) {
+              retrieveItem($item`box of Familiar Jacks`);
+              use($item`box of Familiar Jacks`);
+            } else {
+              retrieveItem($item`Pocket Professor memory chip`);
+            }
+          }
+
+          const professorRequirement = have($item`Pocket Professor memory chip`)
+            ? new Requirement(maximizeParameters, {
                 forceEquip: $items`Pocket Professor memory chip`,
-              }),
-              ...fightSource.requirements,
-            ])
-          );
+              })
+            : new Requirement(maximizeParameters, {});
+
+          goalMaximize(Requirement.merge([professorRequirement, ...fightSource.requirements]));
 
           if (get("_pocketProfessorLectures") < pocketProfessorLectures()) {
             const startLectures = get("_pocketProfessorLectures");
