@@ -21106,7 +21106,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("955d6197b50757a8d4bceef82a1a48174caf950f" === mainSha) {
+    if ("72d92328e54054a97b02abb05a5d02fcf923de81" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -21182,7 +21182,7 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 function freeFightOutfit(requirement) {
-  var _requirement$maximize, _requirement$maximize2, _requirement$maximize3, _requirement$maximize4, _requirement$maximize5;
+  var _requirement$maximize, _requirement$maximize2, _requirement$maximize3, _requirement$maximize4, _requirement$maximize5, _finalRequirement$max;
 
   var equipMode = myFamiliar() === $familiar(_templateObject || (_templateObject = _taggedTemplateLiteral(["Machine Elf"]))) ? "dmt" : "free";
   var bjornChoice = pickBjorn(equipMode);
@@ -21214,6 +21214,10 @@ function freeFightOutfit(requirement) {
   if (haveEquipped($item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Crown of Thrones"]))))) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Snow Suit"])))) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+
+  if (((_finalRequirement$max = finalRequirement.maximizeOptions.forceEquip) !== null && _finalRequirement$max !== void 0 ? _finalRequirement$max : []).some(equipment => !haveEquipped(equipment))) {
+    throw new Error("Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?");
+  }
 }
 function refreshLatte() {
   // Refresh unlocked latte ingredients
@@ -21236,7 +21240,7 @@ function tryFillLatte() {
   return numericModifier($item(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Familiar Weight") === 5 && numericModifier($item(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Meat Drop") === 40;
 }
 function meatOutfit(embezzlerUp, requirement, sea) {
-  var _requirement$maximize6, _requirement$maximize7, _requirement$maximize8, _requirement$maximize9;
+  var _requirement$maximize6, _requirement$maximize7, _requirement$maximize8, _requirement$maximize9, _compiledRequirements;
 
   var equipMode = embezzlerUp ? "embezzler" : "barf";
   var bjornChoice = pickBjorn(equipMode);
@@ -21306,6 +21310,10 @@ function meatOutfit(embezzlerUp, requirement, sea) {
 
   if (haveEquipped($item(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")) {
     cliExecute("retrocape robot kill");
+  }
+
+  if (((_compiledRequirements = compiledRequirements.maximizeOptions.forceEquip) !== null && _compiledRequirements !== void 0 ? _compiledRequirements : []).some(equipment => !haveEquipped(equipment))) {
+    throw new Error("Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?");
   }
 
   if (sea) {

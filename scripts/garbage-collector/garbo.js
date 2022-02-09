@@ -30672,7 +30672,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26200);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("955d6197b50757a8d4bceef82a1a48174caf950f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("72d92328e54054a97b02abb05a5d02fcf923de81"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31243,7 +31243,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("955d6197b50757a8d4bceef82a1a48174caf950f" === mainSha) {
+    if ("72d92328e54054a97b02abb05a5d02fcf923de81" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -31326,7 +31326,7 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 function freeFightOutfit(requirement) {
-  var _requirement$maximize, _requirement$maximize2, _requirement$maximize3, _requirement$maximize4, _requirement$maximize5;
+  var _requirement$maximize, _requirement$maximize2, _requirement$maximize3, _requirement$maximize4, _requirement$maximize5, _finalRequirement$max;
 
   var equipMode = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myFamiliar)() === (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$familiar */ .HP)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Machine Elf"]))) ? "dmt" : "free";
   var bjornChoice = (0,_dropsgear__WEBPACK_IMPORTED_MODULE_2__/* .pickBjorn */ .kS)(equipMode);
@@ -31358,6 +31358,10 @@ function freeFightOutfit(requirement) {
   if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.bjornifyFamiliar)(bjornChoice.familiar);
   if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Crown of Thrones"]))))) (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.enthroneFamiliar)(bjornChoice.familiar);
   if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Snow Suit"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .get */ .U2)("snowsuit") !== "nose") (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.cliExecute)("snowsuit nose");
+
+  if (((_finalRequirement$max = finalRequirement.maximizeOptions.forceEquip) !== null && _finalRequirement$max !== void 0 ? _finalRequirement$max : []).some(equipment => !(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)(equipment))) {
+    throw new Error("Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?");
+  }
 }
 function refreshLatte() {
   // Refresh unlocked latte ingredients
@@ -31380,7 +31384,7 @@ function tryFillLatte() {
   return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.numericModifier)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Familiar Weight") === 5 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.numericModifier)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Meat Drop") === 40;
 }
 function meatOutfit(embezzlerUp, requirement, sea) {
-  var _requirement$maximize6, _requirement$maximize7, _requirement$maximize8, _requirement$maximize9;
+  var _requirement$maximize6, _requirement$maximize7, _requirement$maximize8, _requirement$maximize9, _compiledRequirements;
 
   var equipMode = embezzlerUp ? "embezzler" : "barf";
   var bjornChoice = (0,_dropsgear__WEBPACK_IMPORTED_MODULE_2__/* .pickBjorn */ .kS)(equipMode);
@@ -31450,6 +31454,10 @@ function meatOutfit(embezzlerUp, requirement, sea) {
 
   if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && ((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .get */ .U2)("retroCapeSuperhero") !== "robot" || (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .get */ .U2)("retroCapeWashingInstructions") !== "kill")) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.cliExecute)("retrocape robot kill");
+  }
+
+  if (((_compiledRequirements = compiledRequirements.maximizeOptions.forceEquip) !== null && _compiledRequirements !== void 0 ? _compiledRequirements : []).some(equipment => !(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)(equipment))) {
+    throw new Error("Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?");
   }
 
   if (sea) {
