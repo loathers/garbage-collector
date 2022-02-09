@@ -80,7 +80,7 @@ export class StashManager {
         `Stash access is disabled. Ignoring request to borrow "${items
           .map((value) => value.name)
           .join(", ")}" from clan stash.`,
-        "yellow"
+        HIGHLIGHT
       );
       return;
     }
