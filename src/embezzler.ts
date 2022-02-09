@@ -38,6 +38,7 @@ import {
   $skill,
   adventureMacro,
   ChateauMantegna,
+  CombatLoversLocket,
   CrystalBall,
   get,
   have,
@@ -60,7 +61,6 @@ import {
 } from "./lib";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
-import * as CombatLoversLocket from "./CLL";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 

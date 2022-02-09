@@ -13,6 +13,7 @@ import {
   isBanished,
   Item,
   itemAmount,
+  itemDropsArray,
   Location,
   mallPrice,
   maximize,
@@ -67,6 +68,7 @@ import {
   AsdonMartin,
   ChateauMantegna,
   clamp,
+  CombatLoversLocket,
   Counter,
   CrystalBall,
   ensureEffect,
@@ -78,6 +80,7 @@ import {
   Requirement,
   set,
   SourceTerminal,
+  sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
   uneffect,
@@ -124,7 +127,6 @@ import {
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
-import * as CombatLoversLocket from "./CLL";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1175,12 +1177,9 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () =>
-      CombatLoversLocket.have() &&
-      !!CombatLoversLocket.findFreeFight() &&
-      CombatLoversLocket.reminiscesLeft() > 1,
+    () => CombatLoversLocket.have() && !!locketMonster() && CombatLoversLocket.reminiscesLeft() > 1,
     () => {
-      const monster = CombatLoversLocket.findFreeFight();
+      const monster = locketMonster();
       if (!monster) return;
       withMacro(Macro.basicCombat(), () => CombatLoversLocket.reminisce(monster));
     }
@@ -2021,3 +2020,8 @@ export function printEmbezzlerLog(): void {
     HIGHLIGHT
   );
 }
+
+const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+const valueDrops = (monster: Monster) =>
+  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => garboValue(drop) * rate));
+const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);

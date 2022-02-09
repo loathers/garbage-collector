@@ -27,6 +27,7 @@ import {
   $monster,
   $skill,
   $slot,
+  CombatLoversLocket,
   get,
   getKramcoWandererChance,
   have,
@@ -35,7 +36,6 @@ import {
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./lib";
-import * as CombatLoversLocket from "./CLL";
 
 export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
