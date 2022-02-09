@@ -285,7 +285,10 @@ function dailyBuffs(): void {
 }
 
 function configureMisc(): void {
-  if (SongBoom.songChangesLeft() > 0) SongBoom.setSong("Total Eclipse of Your Meat");
+  if (SongBoom.songChangesLeft() > 0) {
+    if (myInebriety() > inebrietyLimit()) SongBoom.setSong("Food Vibrations");
+    else SongBoom.setSong("Total Eclipse of Your Meat");
+  }
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
     SourceTerminal.enquiry($effect`familiar.enq`);
