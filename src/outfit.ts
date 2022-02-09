@@ -200,6 +200,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   }
 
   if (
+    embezzlerUp &&
     myFamiliar() !== $familiar`Pocket Professor` &&
     CombatLoversLocket.have() &&
     !CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`)
