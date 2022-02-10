@@ -203,7 +203,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     embezzlerUp &&
     myFamiliar() !== $familiar`Pocket Professor` &&
     CombatLoversLocket.have() &&
-    !CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`)
+    !CombatLoversLocket.unlockedLocketMonsters().includes($monster`Knob Goblin Embezzler`)
   ) {
     forceEquip.push(CombatLoversLocket.locket);
   }
