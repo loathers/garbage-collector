@@ -3209,11 +3209,6 @@ klona@^2.0.4:
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.5.tgz#d166574d90076395d9963aa7a928fabb8d76afbc"
   integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
 
-kolmafia@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-2.0.0.tgz#2e56dca0a646ca22b24a3104922317cfd8537c2b"
-  integrity sha512-j7CkIwZUkJ6loU1T/50dJZB1xTF1xWiQP40K8mSo8a74uvEISRWad8lZkFxJObADoipmrMC9JMKQis+Esn/2aw==
-
 kolmafia@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-2.1.1.tgz#be5696fbc11a6caedbc9a6dc69b46b0ee73ea8e2"
@@ -3227,14 +3222,14 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.5.tgz#6bf1f2d04cdeb273dd7f1a84e1ddb11b53af9de1"
-  integrity sha512-pjdA36wPK0g9qubbSX0rFe0fSd1TIrjcGPHFVFDcNJ61VuyMbpxpTM8qPRTtZu+nhGGYJ2uqNtIEeu+2+qjCLQ==
+libram@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.6.tgz#c5b2575ad47b21bc1baa91c71efa422ddf55cb56"
+  integrity sha512-1lCoYpSApYm5mlFvyTdeyTm0fXfgNpOWtwM1AcXqUOPudpFI53vwI8BrqCm+5sFNMS0bGWlnu4lvrJWkaObC1Q==
   dependencies:
     "@babel/runtime-corejs3" "^7.14.9"
     core-js "3.15.2"
-    kolmafia "^2.0.0"
+    kolmafia "^2.1.1"
     lodash "^4.17.21"
 
 lines-and-columns@^1.1.6:

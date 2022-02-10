@@ -13,6 +13,7 @@ import {
   isBanished,
   Item,
   itemAmount,
+  itemDropsArray,
   Location,
   mallPrice,
   maximize,
@@ -67,6 +68,7 @@ import {
   AsdonMartin,
   ChateauMantegna,
   clamp,
+  CombatLoversLocket,
   Counter,
   CrystalBall,
   ensureEffect,
@@ -78,6 +80,7 @@ import {
   Requirement,
   set,
   SourceTerminal,
+  sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
   uneffect,
@@ -1184,6 +1187,18 @@ const freeFightSources = [
     }
   ),
 
+  new FreeFight(
+    () => CombatLoversLocket.have() && !!locketMonster() && CombatLoversLocket.reminiscesLeft() > 1,
+    () => {
+      const monster = locketMonster();
+      if (!monster) return;
+      withMacro(Macro.basicCombat(), () => {
+        CombatLoversLocket.reminisce(monster);
+        runCombat();
+      });
+    }
+  ),
+
   // Get a li'l ninja costume for 150% item drop
   new FreeFight(
     () =>
@@ -2019,3 +2034,8 @@ export function printEmbezzlerLog(): void {
     HIGHLIGHT
   );
 }
+
+const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+const valueDrops = (monster: Monster) =>
+  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => garboValue(drop) * rate));
+const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);

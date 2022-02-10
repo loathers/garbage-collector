@@ -24,8 +24,10 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   $skill,
   $slot,
+  CombatLoversLocket,
   get,
   getKramcoWandererChance,
   have,
@@ -205,6 +207,15 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   }
   if (sea) {
     parameters.push("sea");
+  }
+
+  if (
+    embezzlerUp &&
+    myFamiliar() !== $familiar`Pocket Professor` &&
+    CombatLoversLocket.have() &&
+    !CombatLoversLocket.unlockedLocketMonsters().includes($monster`Knob Goblin Embezzler`)
+  ) {
+    forceEquip.push(CombatLoversLocket.locket);
   }
 
   const bjornAlike = bestBjornalike(forceEquip);
