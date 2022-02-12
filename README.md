@@ -4,7 +4,7 @@
   - [Introduction](#introduction)
   - [Setup](#setup)
     - [Set `valueOfAdventure`](#set-valueofadventure)
-    - [Set your Stash and VIP clans](#set-your-stash-and-vip-clans)
+    - [Set your VIP clan](#set-your-vip-clan)
     - [Suggested: Universal Recovery](#suggested-universal-recovery)
   - [Usage](#usage)
     - [`nobarf` flag](#nobarf-flag)
@@ -41,11 +41,13 @@ Before running Garbage Collector, there are a few tasks you must do.
 
 ### Set `valueOfAdventure`
 
-You need to let Garbo know how much it can expect your turns to be worth near the end of the day. One easy way to do this is to set it at 3501 meat manually, then examine your session logs to see how much meat you were actually generating in the last 10-15 turns of the day. To set this, run the following command in the KoLMafia CLI:
+You need to let Garbo know how much it can expect your turns to be worth near the end of the day. One easy way to do this is to set it at 4000 meat manually, then examine your session logs to see how much value you were actually generating in the last 10-15 turns of the day. To set this, run the following command in the KoLMafia CLI:
 
 ```text
-set valueOfAdventure = 3501;
+set valueOfAdventure = 4000;
 ```
+
+Once you're done running Garbo, take a look at your end of day turns and note the average amount of meat the monsters were dropping. Don't forget the 500 meat from the pointer finger ring, if appropriate. Then take a look at the outfit Garbo equipped for you, note any non-meat-generating options and find a maximizer call in your log. The call will specify a bonus for each of these options it's considering. Extract the relevant ones, add them into the total you've had already, and voila - your own `valueOfAdventure`! Common non-meat-generating options that work their way into Garbo outfits include the lucky gold ring, Mr. Cheeng's spectacles, mafia thumb ring, and Crown of Thrones/buddy bjorn.
 
 ### Set your VIP clan
 
