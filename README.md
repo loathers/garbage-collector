@@ -41,7 +41,13 @@ You need to let Garbo know how much it can expect your turns to be worth near th
 set valueOfAdventure = 3501;
 ```
 
-### Set your Stash and VIP clans
+### Set your VIP and stash clans
+
+If you have a VIP Lounge Key, Garbo will try to make use of any VIP furniture to augment its farming. To set your VIP clan, copy the name of your intended VIP clan and run the following code (using BAFH as an example):
+
+```text
+set garbo_vipClan = "Bonus Adventures from Hell"
+```
 
 When at all possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):
 
@@ -49,11 +55,7 @@ When at all possible, Garbo will try to access a friendly clan stash to see if i
 set garbo_stashClan = "Bonus Adventures from Hell"
 ```
 
-Additionally, if you have a VIP Lounge Key, Garbo will try to make use of any VIP furniture to augment its farming. To set your VIP clan, copy the name of your intended VIP clan and run the following code (once again using BAFH as an example):
-
-```text
-set garbo_vipClan = "Bonus Adventures from Hell"
-```
+Both of these are optional - you can skip providing one or both of these clans and Garbo will still run.
 
 ### Suggested: Universal Recovery
 
@@ -100,6 +102,10 @@ Running Garbo `help` will print out simple help documentation and not run any tu
 If you have issues with this script, please post about them in the #garbage-collector channel within the [Ascension Speed Society Discord](https://discord.gg/tbUCRT5), and someone will eventually (at some point) endeavor to solve them. Someday. Maybe.
 
 ## Frequent Questions
+
+> What sort of cool items should I have for Garbo to work its magic?
+
+Garbo is capable of extracting value out of just about any shiny that provides value. However, it is not mandatory to be fully stacked with IotMs to make Garbo worth running. Even a completely IotM-less account with the relevant +meat% skills permed and sporting a set of freely accessible aftercore gear can pull in about 3,850 MPA toward the end of the day. For details of both this setup and what shinies Garbo can make use of, consult the [item write-up]().
 
 > Why is Garbo adventuring outside of Barf Mountain?
 
