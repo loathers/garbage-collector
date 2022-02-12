@@ -105,7 +105,7 @@ If you have issues with this script, please post about them in the #garbage-coll
 
 > What sort of cool items should I have for Garbo to work its magic?
 
-Garbo is capable of extracting value out of just about any shiny that provides value. However, it is not mandatory to be fully stacked with IotMs to make Garbo worth running. Even a completely IotM-less account with the relevant +meat% skills permed and sporting a set of freely accessible aftercore gear can pull in about 3,850 MPA toward the end of the day. For details of both this setup and what shinies Garbo can make use of, consult the [item write-up]().
+Garbo is capable of extracting value out of just about any shiny that provides value. However, it is not mandatory to be fully stacked with IotMs to make Garbo worth running. Even a completely IotM-less account with the relevant +meat% skills permed and sporting a set of freely accessible aftercore gear can pull in about 3,850 MPA toward the end of the day. For details of both this setup and what shinies Garbo can make use of, consult the [item write-up](ITEMS.md).
 
 > Why is Garbo adventuring outside of Barf Mountain?
 
