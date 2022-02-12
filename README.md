@@ -23,6 +23,12 @@ Garbage Collector, or Garbo for short, is a tool that is designed to maximally e
 
 Garbo is minimally configurable to make things simpler for both the users and the developers, and it will always try to make the most profitable decisions possible.
 
+## Is Garbo for me?
+
+Probably! Unlike Volcano farming, a stable 3,450 MPA option which takes a few thousand meat to get permanently set up for, Garbo responds well to various shinies at your disposal. However, it is entirely possible to get respectable results on accounts without a single IotM - a Seal Clubber with Transcendent Olfaction, all the relevant +meat% and +item% skills permed, and a suite of aftercore farmable gear plus a mafia pointer finger ring should be able to still pull in about 4,000 MPA once limited-per-day buffs run out. And the shinier you are, the higher this number grows! High-end users report getting in the range of 6,000 MPA in their end-day turns, and get to have high early meat generation via chained Knob Goblin Embezzler copy fights.
+
+Consult [this page](ITEMS.md) for a list of various items that are useful to have for Garbo, as well as a list of shinies that it supports and extracts value from. The baseline 4,000 MPA setup is detailed there as well, with a matching spreadsheet.
+
 ## Setup
 
 To install the script, use the following command in the KoLMafia CLI.
@@ -41,7 +47,7 @@ You need to let Garbo know how much it can expect your turns to be worth near th
 set valueOfAdventure = 3501;
 ```
 
-### Set your VIP and stash clans
+### Set your VIP clan
 
 If you have a VIP Lounge Key, Garbo will try to make use of any VIP furniture to augment its farming. To set your VIP clan, copy the name of your intended VIP clan and run the following code (using BAFH as an example):
 
@@ -49,13 +55,7 @@ If you have a VIP Lounge Key, Garbo will try to make use of any VIP furniture to
 set garbo_vipClan = "Bonus Adventures from Hell"
 ```
 
-When at all possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):
-
-```text
-set garbo_stashClan = "Bonus Adventures from Hell"
-```
-
-Both of these are optional - you can skip providing one or both of these clans and Garbo will still run.
+This is optional - you can skip providing this clan and Garbo will still run.
 
 ### Suggested: Universal Recovery
 
@@ -103,10 +103,6 @@ If you have issues with this script, please post about them in the #garbage-coll
 
 ## Frequent Questions
 
-> What sort of cool items should I have for Garbo to work its magic?
-
-Garbo is capable of extracting value out of just about any shiny that provides value. However, it is not mandatory to be fully stacked with IotMs to make Garbo worth running. Even a completely IotM-less account with Transcendent Olfaction, the relevant +meat% skills permed, and sporting a set of accessible aftercore gear can pull in about 3,850 MPA toward the end of the day as a Seal Clubber. For details of both this setup and what shinies Garbo can make use of, consult the [item write-up](ITEMS.md).
-
 > Why is Garbo adventuring outside of Barf Mountain?
 
 Garbo will use your resources to earn meat everywhere possible such as the Hidden Bowling Alley, The Haunted Library, The Deep Dark Jungle, or The Ice Hotel. These generally won't cost a turn to do.
@@ -114,6 +110,16 @@ Garbo will use your resources to earn meat everywhere possible such as the Hidde
 > Garbo buys a one-day pass to Dinseylandfill even though I own the charter?
 
 Ensure that ☑️ Have Dinseylandfill is checked in IotM tracking in KolMafia's preferences.
+
+> I'm in a clan with a loaded stash, can Garbo make use of the Pantsgiving that's sitting there waiting for me to pull it?
+
+When possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):
+
+```text
+set garbo_stashClan = "Bonus Adventures from Hell"
+```
+
+Just like `garbo_vipClan`, this is entirely optional.
 
 > Garbo is failing to buy items from the mall?
 

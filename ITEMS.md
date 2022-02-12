@@ -26,9 +26,7 @@ In an ideal world, Garbo is supposed to be a flexible script that operates succe
 
 Those are our best recommendations for a handful of relatively cheap things Garbo uses that you may want to look into purchasing, as they effectively pay for themselves.
 
-It's entirely possible to mount a respectable setup using just these items and relevant permanent skills. The following assumes possession of a SongBoom Boombox on top of a number of the options listed above, and comes in at 4,237 MPA. You are assumed to be a Seal Clubber, for Furious Wallop critical hits, and in possession of Transcendent Olfaction. Without the SongBoom this number falls to about 3,850 MPA, which is still higher than Volcano farming. This does require possession of a number of untradable aftercore items though.
-
-<img src="minimal-garbo.png" alt="low-shiny garbo MPA calculation" width="500"/>
+It's entirely possible to mount a respectable setup using just these items and relevant permanent skills, as shown in [this spreadsheet](https://docs.google.com/spreadsheets/d/1obTfDDqNC1OCik2bLiBNVJSKmwONFbg9Xd1Khs3Nlsc/edit?usp=sharing). You are assumed to be a Seal Clubber, for Furious Wallop critical hits, in possession of Transcendent Olfaction and all relevant +meat% and +item% skills made permanent, and sporting a number of gear options outlined above. This results in 3,998 MPA, which is preferable to Volcano farming. Adding a solitary IotM in SongBoom Boombox to this setup upgrades the MPA to 4,311.
 
 This next table outlines something a bit different -- tradable IOTMs that are commonly availabe in a communal clan stash, but are (almost certainly) not worth purchasing for solo use. If you don't have access to them, that's totally fine -- Garbo will, again, do its best! But if you have any access to possible stash clans, you should make sure your stash clan preferences are set properly so that Garbo can utilize these tradeable tools for profit and value.
 
