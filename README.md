@@ -2,6 +2,7 @@
 
 - [Garbage Collector](#garbage-collector)
   - [Introduction](#introduction)
+  - [Is Garbo for me?](#is-garbo-for-me)
   - [Setup](#setup)
     - [Set `valueOfAdventure`](#set-valueofadventure)
     - [Set your VIP clan](#set-your-vip-clan)
