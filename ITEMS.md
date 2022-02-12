@@ -28,7 +28,7 @@ Those are our best recommendations for a handful of relatively cheap things Garb
 
 It's entirely possible to mount a respectable setup using just these items and relevant permanent skills. The following assumes possession of a SongBoom Boombox on top of a number of the options listed above, and comes in at 4,237 MPA. You are assumed to be a Seal Clubber, for Furious Wallop critical hits, and in possession of Transcendent Olfaction. Without the SongBoom this number falls to about 3,850 MPA, which is still higher than Volcano farming. This does require possession of a number of untradable aftercore items though.
 
-<img src="minimal-garbo.png" alt="low-shiny garbo MPA calculation"/>
+<img src="minimal-garbo.png" alt="low-shiny garbo MPA calculation" width="500"/>
 
 This next table outlines something a bit different -- tradable IOTMs that are commonly availabe in a communal clan stash, but are (almost certainly) not worth purchasing for solo use. If you don't have access to them, that's totally fine -- Garbo will, again, do its best! But if you have any access to possible stash clans, you should make sure your stash clan preferences are set properly so that Garbo can utilize these tradeable tools for profit and value.
 
