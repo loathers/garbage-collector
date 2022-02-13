@@ -49,8 +49,9 @@ set valueOfAdventure = 4000;
 ```
 
 Once you're done running Garbo, you can do the following:
- - Take a look at your end of day turns and note the average amount of meat the monsters were dropping. Add the 500 meat from the pointer finger ring, if appropriate.
- - Then take a look at the outfit Garbo equipped for you, note any non-meat-generating options and find a maximizer call toward the bottom of your log. The call will specify a bonus for each of these options it's considering, which is the MPA bonus the item brings with it in your setup. Common non-meat-generating options that work their way into Garbo outfits include the lucky gold ring, Mr. Cheeng's spectacles, mafia thumb ring, and Crown of Thrones/buddy bjorn.
+
+- Take a look at your end of day turns and note the average amount of meat the monsters were dropping. Add the 500 meat from the pointer finger ring, if appropriate.
+- Then take a look at the outfit Garbo equipped for you, note any non-meat-generating options and find a maximizer call toward the bottom of your log. The call will specify a bonus for each of these options it's considering, which is the MPA bonus the item brings with it in your setup. Common non-meat-generating options that work their way into Garbo outfits include the lucky gold ring, Mr. Cheeng's spectacles, mafia thumb ring, and Crown of Thrones/buddy bjorn.
 
 Add all these together and voila - your own `valueOfAdventure`!
 
