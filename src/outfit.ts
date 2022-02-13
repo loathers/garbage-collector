@@ -89,6 +89,19 @@ export function freeFightOutfit(requirement?: Requirement): void {
   });
   finalRequirement.maximize();
 
+  const missingEquips = () =>
+    (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
+      (equipment) => !haveEquipped(equipment)
+    );
+  if (missingEquips().length > 0) finalRequirement.maximize();
+  if (missingEquips().length > 0) {
+    throw new Error(
+      `Maximizer failed to equip the following equipment: ${missingEquips()
+        .map((equipment) => equipment.name)
+        .join(", ")}. Maybe "refresh all" and try again?`
+    );
+  }
+
   if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
     equip(bjornAlike);
   }
@@ -96,17 +109,6 @@ export function freeFightOutfit(requirement?: Requirement): void {
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
-
-  const missingEquips = (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
-    (equipment) => !haveEquipped(equipment)
-  );
-  if (missingEquips.length > 0) {
-    throw new Error(
-      `Maximizer failed to equip the following equipment: ${missingEquips
-        .map((equipment) => equipment.name)
-        .join(", ")}. Maybe "refresh all" and try again?`
-    );
-  }
 }
 
 export function refreshLatte(): boolean {
@@ -253,6 +255,19 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   );
   compiledRequirements.maximize();
 
+  const missingEquips = () =>
+    (compiledRequirements.maximizeOptions.forceEquip ?? []).filter(
+      (equipment) => !haveEquipped(equipment)
+    );
+  if (missingEquips().length > 0) compiledRequirements.maximize();
+  if (missingEquips().length > 0) {
+    throw new Error(
+      `Maximizer failed to equip the following equipment: ${missingEquips()
+        .map((equipment) => equipment.name)
+        .join(", ")}. Maybe "refresh all" and try again?`
+    );
+  }
+
   if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
     equip(bjornAlike);
   }
@@ -265,17 +280,6 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
   ) {
     cliExecute("retrocape robot kill");
-  }
-
-  const missingEquips = (compiledRequirements.maximizeOptions.forceEquip ?? []).filter(
-    (equipment) => !haveEquipped(equipment)
-  );
-  if (missingEquips.length > 0) {
-    throw new Error(
-      `Maximizer failed to equip the following equipment: ${missingEquips
-        .map((equipment) => equipment.name)
-        .join(", ")}. Maybe "refresh all" and try again?`
-    );
   }
 
   if (sea) {
