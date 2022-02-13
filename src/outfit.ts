@@ -93,12 +93,15 @@ export function freeFightOutfit(requirement?: Requirement): void {
     (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
       (equipment) => !haveEquipped(equipment)
     );
-  if (missingEquips().length > 0) finalRequirement.maximize();
+  if (missingEquips().length > 0) {
+    cliExecute("refresh all");
+    finalRequirement.maximize();
+  }
   if (missingEquips().length > 0) {
     throw new Error(
       `Maximizer failed to equip the following equipment: ${missingEquips()
         .map((equipment) => equipment.name)
-        .join(", ")}. Maybe "refresh all" and try again?`
+        .join(", ")}.`
     );
   }
 
@@ -259,12 +262,15 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     (compiledRequirements.maximizeOptions.forceEquip ?? []).filter(
       (equipment) => !haveEquipped(equipment)
     );
-  if (missingEquips().length > 0) compiledRequirements.maximize();
+  if (missingEquips().length > 0) {
+    cliExecute("refresh all");
+    compiledRequirements.maximize();
+  }
   if (missingEquips().length > 0) {
     throw new Error(
       `Maximizer failed to equip the following equipment: ${missingEquips()
         .map((equipment) => equipment.name)
-        .join(", ")}. Maybe "refresh all" and try again?`
+        .join(", ")}.`
     );
   }
 
