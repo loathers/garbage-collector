@@ -97,13 +97,14 @@ export function freeFightOutfit(requirement?: Requirement): void {
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
 
-  if (
-    (finalRequirement.maximizeOptions.forceEquip ?? []).some(
-      (equipment) => !haveEquipped(equipment)
-    )
-  ) {
+  const missingEquips = (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
+    (equipment) => !haveEquipped(equipment)
+  );
+  if (missingEquips.length > 0) {
     throw new Error(
-      "Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?"
+      `Maximizer failed to equip the following equipment: ${missingEquips
+        .map((equipment) => equipment.name)
+        .join(", ")}. Maybe "refresh all" and try again?`
     );
   }
 }
@@ -299,6 +300,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+
 let cachedUsingPurse: boolean | null = null;
 export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
