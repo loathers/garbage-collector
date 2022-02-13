@@ -26,7 +26,7 @@ Garbo is minimally configurable to make things simpler for both the users and th
 
 ## Is Garbo for me?
 
-Probably! Unlike Volcano farming, a stable 3,450 MPA option which takes a few thousand meat to get permanently set up for, Garbo responds well to various shinies at your disposal. However, it is entirely possible to get respectable results on accounts without a single IotM - a Seal Clubber with Transcendent Olfaction, all the relevant +meat% and +item% skills permed, and a suite of aftercore farmable gear plus a mafia pointer finger ring should be able to still pull in about 4,000 MPA once limited-per-day buffs run out. And the shinier you are, the higher this number grows! High-end users report getting in the range of 6,000 MPA in their end-day turns, and get to have high early meat generation via chained Knob Goblin Embezzler copy fights.
+Probably! Unlike Volcano farming, a stable 3,450 MPA option which takes a few thousand meat to get permanently set up for, Garbo responds well to various shinies at your disposal. However, it is entirely possible to get respectable results on accounts without a single IotM - a Seal Clubber with Transcendent Olfaction, all the relevant +meat% and +item% skills permed, and a suite of aftercore farmable gear plus a mafia pointer finger ring should be able to still pull in about 4,000 MPA once limited-per-day buffs run out. And the shinier you are, the higher this number grows! High-end users report getting in the range of 6,000 MPA in their end-day turns. A solid part of Garbo's daily haul comes from chaining Knob Goblin Embezzlers, and it will happily use any copier or combat replace IotMs you have toward this goal.
 
 Consult [this page](ITEMS.md) for a list of various items that are useful to have for Garbo, as well as a list of shinies that it supports and extracts value from. The baseline 4,000 MPA setup is detailed there as well, with a matching spreadsheet.
 
@@ -48,7 +48,10 @@ You need to let Garbo know how much it can expect your turns to be worth near th
 set valueOfAdventure = 4000;
 ```
 
-Once you're done running Garbo, take a look at your end of day turns and note the average amount of meat the monsters were dropping. Don't forget the 500 meat from the pointer finger ring, if appropriate. Then take a look at the outfit Garbo equipped for you, note any non-meat-generating options and find a maximizer call in your log. The call will specify a bonus for each of these options it's considering. Extract the relevant ones, add them into the total you've had already, and voila - your own `valueOfAdventure`! Common non-meat-generating options that work their way into Garbo outfits include the lucky gold ring, Mr. Cheeng's spectacles, mafia thumb ring, and Crown of Thrones/buddy bjorn.
+Once you're done running Garbo, you can do the following:
+ - Take a look at your end of day turns and note the average amount of meat the monsters were dropping. Add the 500 meat from the pointer finger ring, if appropriate.
+ - Then take a look at the outfit Garbo equipped for you, note any non-meat-generating options and find a maximizer call toward the bottom of your log. The call will specify a bonus for each of these options it's considering, which is the MPA bonus the item brings with it in your setup. Common non-meat-generating options that work their way into Garbo outfits include the lucky gold ring, Mr. Cheeng's spectacles, mafia thumb ring, and Crown of Thrones/buddy bjorn.
+Add all these together and voila - your own `valueOfAdventure`!
 
 ### Set your VIP clan
 
