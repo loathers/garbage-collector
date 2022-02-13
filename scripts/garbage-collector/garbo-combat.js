@@ -21273,7 +21273,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("7261cbeabae7ccd88c54b80ff9a34f21129c28b6" === mainSha) {
+    if ("33cb3af2daa508c332e9b24238fbefa9cf99b1d1" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -21381,9 +21381,10 @@ function freeFightOutfit(requirement) {
   if (haveEquipped($item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Crown of Thrones"]))))) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Snow Suit"])))) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  var missingEquips = ((_finalRequirement$max = finalRequirement.maximizeOptions.forceEquip) !== null && _finalRequirement$max !== void 0 ? _finalRequirement$max : []).filter(equipment => !haveEquipped(equipment));
 
-  if (((_finalRequirement$max = finalRequirement.maximizeOptions.forceEquip) !== null && _finalRequirement$max !== void 0 ? _finalRequirement$max : []).some(equipment => !haveEquipped(equipment))) {
-    throw new Error("Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?");
+  if (missingEquips.length > 0) {
+    throw new Error("Maximizer failed to equip the following equipment: ".concat(missingEquips.map(equipment => equipment.name).join(", "), ". Maybe \"refresh all\" and try again?"));
   }
 }
 function refreshLatte() {
