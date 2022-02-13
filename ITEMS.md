@@ -4,22 +4,31 @@ In an ideal world, Garbo is supposed to be a flexible script that operates succe
 
 ## "Cheap" items worth acquiring (<10 million)
 
-| Item                              | Type      | Notes                                                                                              |
-| --------------------------------- | --------- | -------------------------------------------------------------------------------------------------- |
-| mafia pointer finger ring         | Accessory | Gain meat on critical hits. Bad for embezzlers, but generally worn rest of the Barf day.           |
-| Mr. Cheeng's Spectacles           | Accessory | That 70s Volcano reward. Drops random potions; many are cheap, but some are quite high value.      |
-| mafia thumb ring                  | Accessory | Gives an adventure on turn-taking combats 4% of the time.                                          |
-| lucky gold ring                   | Accessory | Piraterealm reward. Extra funfunds & Freddies; very high MPA accessory                             |
-| belt of loathing                  | Accessory | +10 familiar weight; fantastic Barf accessory if you don't have the above.                         |
-| Cornbeefadon                      | Familiar  | Generates +10 familiar weight +50% meat drop equipment that melts on rollover.                     |
-| Stooper                           | Familiar  | Liver +1, ergo, quite a few extra turns each day                                                   |
-| Gingerbread Mob Hit               | Skill     | 1 Free Insta-kill per day                                                                          |
-| training scroll: Shattering Punch | Skill     | 3 Free Insta-kills per day                                                                         |
-| fishy pipe                        | Item      | Useful with wanderers/backup; synergizes with green taffy for +1 embezzler. Costs 50 sand dollars. |
-| mime army shotglass               | Item      | Your first 1-drunkenness booze item of the day doesn't count                                       |
-| The Jokester's gun                | Item      | 1 Free Insta-kill per day                                                                          |
+| Item                              | Type      | Notes                                                                                                                                                                                                            |
+| --------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mafia pointer finger ring         | Accessory | Gain meat on critical hits. Bad for embezzlers, but generally worn rest of the Barf day. The easiest way to make use of it is to go Seal Clubber for access to Furious Wallop - a guaranteed critical hit skill. |
+| lucky gold ring                   | Accessory | Piraterealm reward. Extra funfunds & Freddies; very high MPA accessory                                                                                                                                           |
+| Mr. Cheeng's Spectacles           | Accessory | That 70s Volcano reward. Drops random potions; many are cheap, but some are quite high value.                                                                                                                    |
+| mafia thumb ring                  | Accessory | Gives an adventure on turn-taking combats 4% of the time.                                                                                                                                                        |
+| belt of loathing                  | Accessory | +10 familiar weight; fantastic Barf accessory if you don't have the above, and generally useful for various aftercore purposes.                                                                                  |
+| crumpled felt fedora              | Hat       | Hobopolis item, gettable for hobo nickels. +10 pounds is phenomenal in this slot.                                                                                                                                |
+| Stephen's lab coat                | Shirt     | Spookyraven Lights Out quest reward. +5 pounds is phenomenal in this slot.                                                                                                                                       |
+| Great Wolf's beastly trousers     | Pants     | Dreadsylvania boss drop. +10 pounds is very good in this slot.                                                                                                                                                   |
+| Hobo Monkey                       | Familiar  | Hobopolis item, gettable for hobo nickels. The best non-Robortender familiar for this sort of farming. Disregard if you own a Robortender.                                                                       |
+| Cornbeefadon                      | Familiar  | Generates +10 familiar weight +50% meat drop equipment (via the Box of Familiar Jacks) that melts on rollover.                                                                                                   |
+| Stooper                           | Familiar  | Liver +1, ergo, quite a few extra turns each day                                                                                                                                                                 |
+| mime army shotglass               | Item      | Your first 1-drunkenness booze item of the day doesn't count                                                                                                                                                     |
+| training scroll: Shattering Punch | Skill     | 3 Free Insta-kills per day                                                                                                                                                                                       |
+| Gingerbread Mob Hit               | Skill     | 1 Free Insta-kill per day                                                                                                                                                                                        |
+| The Jokester's gun                | Weapon    | 1 Free Insta-kill per day                                                                                                                                                                                        |
+| fishy pipe                        | Item      | Useful with wanderers/backup; synergizes with green taffy for +1 embezzler. Costs 50 sand dollars.                                                                                                               |
+| warbear foil hat                  | Hat       | +15 pound hat, specifically optimal for Turtle Tamers with a Robortender.                                                                                                                                        |
 
-Those are our best recommendations for a handful of relatively cheap things Garbo uses that you may want to look into purchasing, as they effectively pay for themselves. This next table outlines something a bit different -- tradable IOTMs that are commonly availabe in a communal clan stash, but are (almost certainly) not worth purchasing for solo use. If you don't have access to them, that's totally fine -- Garbo will, again, do its best! But if you have any access to possible stash clans, you should make sure your stash clan preferences are set properly so that Garbo can utilize these tradeable tools for profit and value.
+Those are our best recommendations for a handful of relatively cheap things Garbo uses that you may want to look into purchasing, as they effectively pay for themselves.
+
+It's entirely possible to mount a respectable setup using just these items and relevant permanent skills, as shown in [this spreadsheet](https://docs.google.com/spreadsheets/d/1obTfDDqNC1OCik2bLiBNVJSKmwONFbg9Xd1Khs3Nlsc/edit?usp=sharing). You are assumed to be a Seal Clubber, for Furious Wallop critical hits, in possession of Transcendent Olfaction and all relevant +meat% and +item% skills made permanent, and sporting a number of gear options outlined above. This results in 3,995 MPA, which is preferable to Volcano farming. Adding a solitary IotM in SongBoom Boombox to this setup upgrades the MPA to 4,307.
+
+This next table outlines something a bit different -- tradable IOTMs that are commonly availabe in a communal clan stash, but are (almost certainly) not worth purchasing for solo use. If you don't have access to them, that's totally fine -- Garbo will, again, do its best! But if you have any access to possible stash clans, you should make sure your stash clan preferences are set properly so that Garbo can utilize these tradeable tools for profit and value.
 
 ## Items worth setting up Stash Clan access for
 

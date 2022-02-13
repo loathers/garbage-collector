@@ -2,9 +2,10 @@
 
 - [Garbage Collector](#garbage-collector)
   - [Introduction](#introduction)
+  - [Is Garbo for me?](#is-garbo-for-me)
   - [Setup](#setup)
     - [Set `valueOfAdventure`](#set-valueofadventure)
-    - [Set your Stash and VIP clans](#set-your-stash-and-vip-clans)
+    - [Set your VIP clan](#set-your-vip-clan)
     - [Suggested: Universal Recovery](#suggested-universal-recovery)
   - [Usage](#usage)
     - [`nobarf` flag](#nobarf-flag)
@@ -23,6 +24,12 @@ Garbage Collector, or Garbo for short, is a tool that is designed to maximally e
 
 Garbo is minimally configurable to make things simpler for both the users and the developers, and it will always try to make the most profitable decisions possible.
 
+## Is Garbo for me?
+
+Probably! Unlike Volcano farming, a stable 3,450 MPA option which takes a few thousand meat to get permanently set up for, Garbo responds well to various shinies at your disposal. However, it is entirely possible to get respectable results on accounts without a single IotM - a Seal Clubber with Transcendent Olfaction, all the relevant +meat% and +item% skills permed, and a suite of aftercore farmable gear plus a mafia pointer finger ring should be able to still pull in about 4,000 MPA once limited-per-day buffs run out. And the shinier you are, the higher this number grows! High-end users report getting in the range of 6,000 MPA in their end-day turns. A solid part of Garbo's daily haul comes from chaining Knob Goblin Embezzlers, and it will happily use any copier or combat replace IotMs you have toward this goal.
+
+Consult [this page](ITEMS.md) for a list of various items that are useful to have for Garbo, as well as a list of shinies that it supports and extracts value from. The baseline 4,000 MPA setup is detailed there as well, with a matching spreadsheet.
+
 ## Setup
 
 To install the script, use the following command in the KoLMafia CLI.
@@ -35,25 +42,28 @@ Before running Garbage Collector, there are a few tasks you must do.
 
 ### Set `valueOfAdventure`
 
-You need to let Garbo know how much it can expect your turns to be worth near the end of the day. One easy way to do this is to set it at 3501 meat manually, then examine your session logs to see how much meat you were actually generating in the last 10-15 turns of the day. To set this, run the following command in the KoLMafia CLI:
+You need to let Garbo know how much it can expect your turns to be worth near the end of the day. One easy way to do this is to set it at 4000 meat manually, then examine your session logs to see how much value you were actually generating in the last 10-15 turns of the day. To set this, run the following command in the KoLMafia CLI:
 
 ```text
-set valueOfAdventure = 3501;
+set valueOfAdventure = 4000;
 ```
 
-### Set your Stash and VIP clans
+Once you're done running Garbo, you can do the following:
 
-When at all possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):
+- Take a look at your end of day turns and note the average amount of meat the monsters were dropping. Add the 500 meat from the pointer finger ring, if appropriate.
+- Then take a look at the outfit Garbo equipped for you, note any non-meat-generating options and find a maximizer call toward the bottom of your log. The call will specify a bonus for each of these options it's considering, which is the MPA bonus the item brings with it in your setup. Common non-meat-generating options that work their way into Garbo outfits include the lucky gold ring, Mr. Cheeng's spectacles, mafia thumb ring, and Crown of Thrones/buddy bjorn.
 
-```text
-set garbo_stashClan = "Bonus Adventures from Hell"
-```
+Add all these together and voila - your own `valueOfAdventure`!
 
-Additionally, if you have a VIP Lounge Key, Garbo will try to make use of any VIP furniture to augment its farming. To set your VIP clan, copy the name of your intended VIP clan and run the following code (once again using BAFH as an example):
+### Set your VIP clan
+
+If you have a VIP Lounge Key, Garbo will try to make use of any VIP furniture to augment its farming. To set your VIP clan, copy the name of your intended VIP clan and run the following code (using BAFH as an example):
 
 ```text
 set garbo_vipClan = "Bonus Adventures from Hell"
 ```
+
+This is optional - you can skip providing this clan and Garbo will still run.
 
 ### Suggested: Universal Recovery
 
@@ -108,6 +118,16 @@ Garbo will use your resources to earn meat everywhere possible such as the Hidde
 > Garbo buys a one-day pass to Dinseylandfill even though I own the charter?
 
 Ensure that ☑️ Have Dinseylandfill is checked in IotM tracking in KolMafia's preferences.
+
+> I'm in a clan with a loaded stash, can Garbo make use of the Pantsgiving that's sitting there waiting for me to pull it?
+
+When possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):
+
+```text
+set garbo_stashClan = "Bonus Adventures from Hell"
+```
+
+Just like `garbo_vipClan`, this is entirely optional.
 
 > Garbo is failing to buy items from the mall?
 
