@@ -13,12 +13,18 @@ import {
   retrieveItem,
   stashAmount,
   takeStash,
+  toItem,
   userConfirm,
   visitUrl,
 } from "kolmafia";
 import { $familiar, $item, $items, $monster, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
 import { HIGHLIGHT } from "./lib";
+
+export const stashItems = get("garboStashItems", "")
+  .split(",")
+  .filter((x) => x)
+  .map((id) => toItem(parseInt(id)));
 
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
   const manager = new StashManager();
@@ -101,6 +107,7 @@ export class StashManager {
                 print(`Took ${fold.name} from stash in ${getClanName()}.`, HIGHLIGHT);
                 if (fold !== item) cliExecute(`fold ${item.name}`);
                 this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
+                stashItems.push(fold);
                 break;
               } else {
                 print(
@@ -158,6 +165,8 @@ export class StashManager {
             enthroneFamiliar($familiar`none`);
           }
           if (putStash(count, item)) {
+            const index = stashItems.indexOf(item);
+            if (index > 0) stashItems.splice(stashItems.indexOf(item), 1);
             print(`Returned ${item.name} to stash in ${getClanName()}.`, HIGHLIGHT);
             this.taken.delete(item);
           } else {
