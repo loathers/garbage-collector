@@ -17,6 +17,7 @@ import {
   myLevel,
   myTurncount,
   print,
+  putStash,
   retrieveItem,
   runChoice,
   setAutoAttack,
@@ -79,7 +80,7 @@ import {
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
-import { stashItems, StashManager, withStash, withVIPClan } from "./clan";
+import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
@@ -326,7 +327,25 @@ export function main(argString = ""): void {
           .join(",")}. Would you like us to return these to the stash now?`
       )
     ) {
-      new StashManager().putBack(...stashItems);
+      const clanIdOrName = get("garbo_stashClan", "none");
+      const parsedClanIdOrName =
+        clanIdOrName !== "none"
+          ? clanIdOrName.match(/^\d+$/)
+            ? parseInt(clanIdOrName)
+            : clanIdOrName
+          : null;
+      const removedItems: Item[] = [];
+      if (parsedClanIdOrName) {
+        for (const item of stashItems) {
+          if (putStash(item, 1)) removedItems.push(item);
+        }
+        for (const item of removedItems) {
+          const index = stashItems.indexOf(item);
+          if (index > -1) {
+            stashItems.splice(index, 1);
+          }
+        }
+      } else throw new Error("Error: No garbo_stashClan set.");
     } else {
       stashItems.splice(0, stashItems.length);
     }
