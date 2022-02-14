@@ -45,6 +45,7 @@ import {
   clamp,
   ensureEffect,
   get,
+  getFoldGroup,
   have,
   haveInCampground,
   property,
@@ -337,6 +338,8 @@ export function main(argString = ""): void {
       const removedItems: Item[] = [];
       if (parsedClanIdOrName) {
         for (const item of stashItems) {
+          if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
+          retrieveItem(item);
           if (putStash(item, 1)) removedItems.push(item);
         }
         for (const item of removedItems) {
