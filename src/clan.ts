@@ -23,7 +23,7 @@ import { HIGHLIGHT } from "./lib";
 
 export const stashItems = get("garboStashItems", "")
   .split(",")
-  .filter((x) => x)
+  .filter((x) => x.trim().length > 0)
   .map((id) => toItem(parseInt(id)));
 
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
