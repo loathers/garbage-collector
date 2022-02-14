@@ -5,6 +5,7 @@ import {
   cliExecute,
   eat,
   getCampground,
+  getClanName,
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
@@ -342,6 +343,7 @@ export function main(argString = ""): void {
           for (const item of [...stashItems]) {
             if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
             retrieveItem(item);
+            print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
             if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
           }
         });
