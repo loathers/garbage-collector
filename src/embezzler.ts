@@ -555,9 +555,15 @@ export const embezzlerSources = [
             ? itemAmount($item`Rain-Doh box full of monster`)
             : 0)
         );
-      } else if (have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`)) {
+      } else if (
+        have($item`Spooky Putty sheet`) ||
+        (have($item`Spooky Putty monster`) && get("spookyPuttyMonster") === embezzler)
+      ) {
         return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky Putty monster`);
-      } else if (have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`)) {
+      } else if (
+        have($item`Rain-Doh black box`) ||
+        (have($item`Rain-Doh box full of monster`) && get("rainDohMonster") === embezzler)
+      ) {
         return 5 - get("_raindohCopiesMade") + itemAmount($item`Rain-Doh box full of monster`);
       }
       return 0;
