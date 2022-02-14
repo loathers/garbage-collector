@@ -335,18 +335,12 @@ export function main(argString = ""): void {
             ? parseInt(clanIdOrName)
             : clanIdOrName
           : null;
-      const removedItems: Item[] = [];
+
       if (parsedClanIdOrName) {
-        for (const item of stashItems) {
+        for (const item of [...stashItems]) {
           if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
           retrieveItem(item);
-          if (putStash(item, 1)) removedItems.push(item);
-        }
-        for (const item of removedItems) {
-          const index = stashItems.indexOf(item);
-          if (index > -1) {
-            stashItems.splice(index, 1);
-          }
+          if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
         }
       } else throw new Error("Error: No garbo_stashClan set.");
     } else {
