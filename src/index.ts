@@ -43,6 +43,7 @@ import {
   adventureMacro,
   adventureMacroAuto,
   clamp,
+  Clan,
   ensureEffect,
   get,
   getFoldGroup,
@@ -337,11 +338,13 @@ export function main(argString = ""): void {
           : null;
 
       if (parsedClanIdOrName) {
-        for (const item of [...stashItems]) {
-          if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
-          retrieveItem(item);
-          if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
-        }
+        Clan.with(parsedClanIdOrName, () => {
+          for (const item of [...stashItems]) {
+            if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
+            retrieveItem(item);
+            if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
+          }
+        });
       } else throw new Error("Error: No garbo_stashClan set.");
     } else {
       stashItems.splice(0, stashItems.length);
