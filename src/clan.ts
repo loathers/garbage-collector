@@ -166,7 +166,7 @@ export class StashManager {
           }
           if (putStash(count, item)) {
             const index = stashItems.indexOf(item);
-            if (index > 0) stashItems.splice(stashItems.indexOf(item), 1);
+            if (index >= 0) stashItems.splice(stashItems.indexOf(item), 1);
             print(`Returned ${item.name} to stash in ${getClanName()}.`, HIGHLIGHT);
             this.taken.delete(item);
           } else {
