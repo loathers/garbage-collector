@@ -679,7 +679,7 @@ function comb(): void {
 }
 
 function getAttuned(): void {
-  if (holiday() === "Generic Summer Holiday") {
+  if (holiday() === "Generic Summer Holiday" && !have($effect`Eldritch Attunement`)) {
     retrieveItem($item`water wings`);
     equip($item`water wings`);
     adv1($location`Generic Summer Holiday Swimming!`);
