@@ -1,4 +1,5 @@
 import {
+  adv1,
   buy,
   changeMcd,
   cliExecute,
@@ -7,6 +8,7 @@ import {
   getCampground,
   getClanLounge,
   haveSkill,
+  holiday,
   inebrietyLimit,
   Item,
   itemAmount,
@@ -45,6 +47,7 @@ import {
   $familiars,
   $item,
   $items,
+  $location,
   $monster,
   $skill,
   $skills,
@@ -104,6 +107,7 @@ export function dailySetup(): void {
   refreshLatte();
   implement();
   comb();
+  getAttuned();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -672,4 +676,12 @@ function comb(): void {
   if (!have($item`Beach Comb`)) return;
   const combs = 11 - get("_freeBeachWalksUsed");
   cliExecute(`combo ${combs}`);
+}
+
+function getAttuned(): void {
+  if (holiday() === "Generic Summer Holiday") {
+    retrieveItem($item`water wings`);
+    equip($item`water wings`);
+    adv1($location`Generic Summer Holiday Swimming!`);
+  }
 }
