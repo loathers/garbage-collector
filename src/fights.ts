@@ -25,6 +25,7 @@ import {
   myLevel,
   myMaxhp,
   myPathId,
+  myThrall,
   numericModifier,
   outfit,
   print,
@@ -62,6 +63,7 @@ import {
   $phylum,
   $skill,
   $slot,
+  $thrall,
   ActionSource,
   adventureMacro,
   adventureMacroAuto,
@@ -1456,6 +1458,7 @@ const freeRunFightSources = [
         if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
         const hasXO = myFamiliar() === $familiar`XO Skeleton`;
+        if (myThrall() !== $thrall`none`) useSkill($skill`Dismiss Pasta Thrall`);
         Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
           .externalIf(hasXO && get("_xoHugsUsed") < 11, Macro.skill($skill`Hugs and Kisses!`))
           .externalIf(hasXO && get("_xoHugsUsed") < 10, Macro.step(itemStealOlfact(best)))
