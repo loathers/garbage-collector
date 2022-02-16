@@ -378,6 +378,7 @@ export function main(argString = ""): void {
           "garboEmbezzlerDate",
           "garboEmbezzlerCount",
           "garboEmbezzlerSources",
+          "spadingData",
         ]),
       ]
         .sort()
