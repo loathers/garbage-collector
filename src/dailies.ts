@@ -1,4 +1,6 @@
 import {
+  autosell,
+  availableAmount,
   buy,
   changeMcd,
   cliExecute,
@@ -108,6 +110,13 @@ export function dailySetup(): void {
     putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`);
   }
   putCloset(itemAmount($item`sand dollar`), $item`sand dollar`);
+  if (!have($item`Kramco Sausage-o-Matic™`)) {
+    const casings = availableAmount($item`magical sausage casing`);
+    if (casings) {
+      retrieveItem($item`magical sausage casing`, casings);
+      autosell($item`magical sausage casing`, casings);
+    }
+  }
   if (myInebriety() > inebrietyLimit()) return;
   retrieveItem($item`seal tooth`);
   retrieveItem($item`The Jokester's gun`);
