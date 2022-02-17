@@ -101,6 +101,9 @@ const UnlockableZones: UnlockableZone[] = [
 function canAdvOrUnlock(loc: Location) {
   const underwater = loc.environment === "underwater";
   const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
+  if (!have($item`repaid diaper`) && have($item`Great Wolf's beastly trousers`)) {
+    skiplist.push($location`The Icy Peak`);
+  }
   const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
   const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
   return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdv(loc, false) || canUnlock);
