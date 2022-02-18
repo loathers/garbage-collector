@@ -80,6 +80,7 @@ import { refreshLatte } from "./outfit";
 import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
 import { garboAverageValue, garboValue } from "./session";
+import { acquire } from "./acquire";
 
 export function dailySetup(): void {
   voterSetup();
@@ -608,7 +609,7 @@ function pantogram(): void {
     return;
   }
   retrieveItem($item`ten-leaf clover`);
-  retrieveItem($item`porquoise`);
+  acquire(1, $item`porquoise`, pantogramValue - mallPrice($item`ten-leaf clover`), true);
   retrieveItem($item`bubblin' crude`);
   const m = new Map([
     [$stat`Muscle`, 1],
