@@ -85,6 +85,7 @@ import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
 import { garboAverageValue, garboValue } from "./session";
 import { acquire } from "./acquire";
+import { estimatedTentacles } from "./fights";
 
 export function dailySetup(): void {
   voterSetup();
@@ -679,7 +680,11 @@ function comb(): void {
 }
 
 function getAttuned(): void {
-  if (holiday() === "Generic Summer Holiday" && !have($effect`Eldritch Attunement`)) {
+  if (
+    holiday() === "Generic Summer Holiday" &&
+    !have($effect`Eldritch Attunement`) &&
+    estimatedTentacles() * get("garbo_valueOfFreeFight", 2000) > get("valueOfAdventure")
+  ) {
     retrieveItem($item`water wings`);
     equip($item`water wings`);
     adv1($location`Generic Summer Holiday Swimming!`);
