@@ -11,6 +11,7 @@ import {
   clamp,
   CrystalBall,
   get,
+  getBanishedMonsters,
   have,
   property,
   Requirement,
@@ -191,6 +192,9 @@ function initializeCrates(): void {
 
 function initializeDireWarren(): void {
   const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
+  const banishedMonsters = getBanishedMonsters();
+  if (options.some((option) => banishedMonsters.get(option) === $monster`fluffy bunny`)) return;
+
   if (!have($item`miniature crystal ball`)) {
     options.push(...$items`Louder Than Bomb, tennis ball`);
   }
