@@ -57,6 +57,7 @@ import {
   get,
   getModifier,
   have,
+  Pantogram,
   property,
   SongBoom,
   SourceTerminal,
@@ -80,6 +81,7 @@ import { refreshLatte } from "./outfit";
 import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
 import { garboAverageValue, garboValue } from "./session";
+import { acquire } from "./acquire";
 
 export function dailySetup(): void {
   voterSetup();
@@ -581,7 +583,7 @@ export function implement(): void {
 }
 
 function pantogram(): void {
-  if (!have($item`portable pantogram`) || have($item`pantogram pants`)) return;
+  if (!Pantogram.have() || Pantogram.havePants()) return;
   let pantogramValue: number;
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
     const expectedBarfTurns = globalOptions.noBarf
@@ -608,15 +610,20 @@ function pantogram(): void {
     return;
   }
   retrieveItem($item`ten-leaf clover`);
-  retrieveItem($item`porquoise`);
+  acquire(1, $item`porquoise`, pantogramValue - mallPrice($item`ten-leaf clover`), true);
   retrieveItem($item`bubblin' crude`);
-  const m = new Map([
-    [$stat`Muscle`, 1],
-    [$stat`Mysticality`, 2],
-    [$stat`Moxie`, 3],
-  ]).get(myPrimestat());
-  visitUrl("inv_use.php?pwd&whichitem=9573");
-  visitUrl(`choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1`);
+  const alignment = (new Map([
+    [$stat`Muscle`, "Muscle"],
+    [$stat`Mysticality`, "Mysticality"],
+    [$stat`Moxie`, "Moxie"],
+  ]).get(myPrimestat()) ?? "Mysticality") as "Muscle" | "Mysticality" | "Moxie";
+  Pantogram.makePants(
+    alignment,
+    "Sleaze Resistance: 2",
+    "HP Regen Max: 15",
+    "Drops Items: true",
+    "Meat Drop: 60"
+  );
 }
 
 function pickCargoPocket(): void {
