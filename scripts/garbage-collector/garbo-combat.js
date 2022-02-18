@@ -20593,7 +20593,7 @@ function proceedWithOrb() {
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4564);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -20723,16 +20723,18 @@ function initializeCrates() {
 
 function initializeDireWarren() {
   var options = $items(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"])));
+  var banishedMonsters = getBanishedMonsters();
+  if (options.some(option => banishedMonsters.get(option) === $monster(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["fluffy bunny"]))))) return;
 
-  if (!have($item(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
-    options.push.apply(options, _toConsumableArray($items(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
+  if (!have($item(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
+    options.push.apply(options, _toConsumableArray($items(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
   }
 
   var banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
   acquire(1, banish, 50000, true);
 
   do {
-    adventureMacro($location(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
+    adventureMacro($location(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
   } while ("fluffy bunny" !== get("lastEncounter"));
 }
 
@@ -21275,7 +21277,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("c90b7a13303f0975fc3bbfcfbaa581dce177dd35" === mainSha) {
+    if ("f3ffb340489e2357e1ae3e40298b1b8a9374c3da" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");

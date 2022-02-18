@@ -3198,6 +3198,7 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* harmony export */   "aY": () => (/* binding */ haveWandererCounter),
 /* harmony export */   "ve": () => (/* binding */ getKramcoWandererChance),
 /* harmony export */   "_D": () => (/* binding */ getFoldGroup),
+/* harmony export */   "$c": () => (/* binding */ getBanishedMonsters),
 /* harmony export */   "N": () => (/* binding */ getAverageAdventures),
 /* harmony export */   "Lo": () => (/* binding */ uneffect),
 /* harmony export */   "cL": () => (/* binding */ questStep),
@@ -3205,7 +3206,7 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* harmony export */   "xI": () => (/* binding */ getSaleValue),
 /* harmony export */   "UL": () => (/* binding */ getTodaysHolidayWanderers)
 /* harmony export */ });
-/* unused harmony exports canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingSpleen, haveCounter, isVoteWandererNow, isWandererNow, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
+/* unused harmony exports canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingSpleen, haveCounter, isVoteWandererNow, isWandererNow, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, canUse, noneToNull, getAverage, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4875);
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_features_array_flat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2580);
@@ -3214,6 +3215,7 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2474);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(678);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8588);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11;
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -3634,7 +3636,7 @@ function getZapGroup(item) {
  */
 
 function getBanishedMonsters() {
-  var banishes = chunk(get("banishedMonsters").split(":"), 3);
+  var banishes = (0,_utils__WEBPACK_IMPORTED_MODULE_5__/* .chunk */ .yo)((0,_property__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("banishedMonsters").split(":"), 3);
   var result = new Map();
 
   var _iterator = _createForOfIteratorHelper(banishes),
@@ -3648,9 +3650,9 @@ function getBanishedMonsters() {
 
       if (foe === undefined || banisher === undefined) break; // toItem doesn"t error if the item doesn"t exist, so we have to use that.
 
-      var banisherItem = toItem(banisher);
-      var banisherObject = [Item.get("none"), null].includes(banisherItem) ? Skill.get(banisher) : banisherItem;
-      result.set(banisherObject, Monster.get(foe));
+      var banisherItem = (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.toItem)(banisher);
+      var banisherObject = [kolmafia__WEBPACK_IMPORTED_MODULE_2__.Item.get("none"), null].includes(banisherItem) ? kolmafia__WEBPACK_IMPORTED_MODULE_2__.Skill.get(banisher) : banisherItem;
+      result.set(banisherObject, kolmafia__WEBPACK_IMPORTED_MODULE_2__.Monster.get(foe));
     }
   } catch (err) {
     _iterator.e(err);
@@ -24003,7 +24005,7 @@ function proceedWithOrb() {
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4564);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -24133,16 +24135,18 @@ function initializeCrates() {
 
 function initializeDireWarren() {
   var options = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"])));
+  var banishedMonsters = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getBanishedMonsters */ .$c)();
+  if (options.some(option => banishedMonsters.get(option) === (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$monster */ .O4)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["fluffy bunny"]))))) return;
 
-  if (!(0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$item */ .xr)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
-    options.push.apply(options, _toConsumableArray((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
+  if (!(0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$item */ .xr)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
+    options.push.apply(options, _toConsumableArray((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
   }
 
   var banish = options.sort((a, b) => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(a) - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(b))[0];
   (0,_acquire__WEBPACK_IMPORTED_MODULE_5__/* .acquire */ .u)(1, banish, 50000, true);
 
   do {
-    (0,libram__WEBPACK_IMPORTED_MODULE_12__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$location */ .PG)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["The Dire Warren"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$monster */ .O4)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["fluffy bunny"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.item(banish)).step((0,_embezzler__WEBPACK_IMPORTED_MODULE_4__/* .embezzlerMacro */ .eT)()));
+    (0,libram__WEBPACK_IMPORTED_MODULE_12__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$location */ .PG)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["The Dire Warren"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$monster */ .O4)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["fluffy bunny"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.item(banish)).step((0,_embezzler__WEBPACK_IMPORTED_MODULE_4__/* .embezzlerMacro */ .eT)()));
   } while ("fluffy bunny" !== (0,libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2)("lastEncounter"));
 }
 
@@ -31041,7 +31045,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("c90b7a13303f0975fc3bbfcfbaa581dce177dd35"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f3ffb340489e2357e1ae3e40298b1b8a9374c3da"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31612,7 +31616,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("c90b7a13303f0975fc3bbfcfbaa581dce177dd35" === mainSha) {
+    if ("f3ffb340489e2357e1ae3e40298b1b8a9374c3da" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
