@@ -1,4 +1,4 @@
-import { equip, mallPrice, retrieveItem, toMonster, useFamiliar, visitUrl } from "kolmafia";
+import { equip, mallPrice, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
@@ -20,6 +20,7 @@ import { freeFightFamiliar } from "./familiar";
 import { ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
+import { acquire } from "./acquire";
 
 export function expectedGregs(): number[] {
   const baseGregs = 3;
@@ -194,7 +195,7 @@ function initializeDireWarren(): void {
     options.push(...$items`Louder Than Bomb, tennis ball`);
   }
   const banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
-  retrieveItem(1, banish);
+  acquire(1, banish, 50000, true);
   do {
     adventureMacro(
       $location`The Dire Warren`,
