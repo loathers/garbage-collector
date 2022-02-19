@@ -530,13 +530,13 @@ function bestFairy() {
 class FreeFight {
   available: () => number | boolean;
   run: () => void;
-  tentacle: () => boolean;
+  tentacle: boolean;
   options: FreeFightOptions;
 
   constructor(
     available: () => number | boolean,
     run: () => void,
-    tentacle: () => boolean,
+    tentacle: boolean,
     options: FreeFightOptions = {}
   ) {
     this.available = available;
@@ -577,15 +577,10 @@ class FreeRunFight extends FreeFight {
   constructor(
     available: () => number | boolean,
     run: (runSource: ActionSource) => void,
-    tentacle: () => boolean,
+    tentacle: boolean,
     options: FreeFightOptions = {}
   ) {
-    super(
-      available,
-      () => null,
-      () => false,
-      options
-    );
+    super(available, () => null, false, options);
     this.freeRun = run;
   }
 
@@ -666,7 +661,7 @@ const freeFightSources = [
       visitUrl("choice.php");
       if (handlingChoice()) throw "Did not get all the way through LOV.";
     },
-    () => false
+    false
   ),
 
   new FreeFight(
@@ -675,7 +670,7 @@ const freeFightSources = [
       !ChateauMantegna.paintingFought() &&
       (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ?? false),
     () => ChateauMantegna.fightPainting(),
-    () => true,
+    true,
     {
       familiar: () =>
         have($familiar`Robortender`) &&
@@ -695,19 +690,19 @@ const freeFightSources = [
       if (!handlingChoice()) throw "No choice?";
       runChoice(haveEldritchEssence ? 2 : 1);
     },
-    () => false
+    false
   ),
 
   new FreeFight(
     () => have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked"),
     () => useSkill($skill`Evoke Eldritch Horror`),
-    () => false
+    false
   ),
 
   new FreeFight(
     () => clamp(3 - get("_lynyrdSnareUses"), 0, 3),
     () => use($item`lynyrd snare`),
-    () => true,
+    true,
     {
       cost: () => mallPrice($item`lynyrd snare`),
     }
@@ -751,7 +746,7 @@ const freeFightSources = [
           runCombat();
         }
       ),
-    () => true,
+    true,
     {
       requirements: () => [new Requirement(["1000 mainstat"], {})],
     }
@@ -790,7 +785,7 @@ const freeFightSources = [
         () => use(figurine)
       );
     },
-    () => true,
+    true,
     {
       requirements: () => [new Requirement(["Club"], {})],
     }
@@ -799,7 +794,7 @@ const freeFightSources = [
   new FreeFight(
     () => clamp(10 - get("_brickoFights"), 0, 10),
     () => use($item`BRICKO ooze`),
-    () => true,
+    true,
     {
       cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
     }
@@ -848,7 +843,7 @@ const freeFightSources = [
         );
       }
     },
-    () => true,
+    true,
     {
       requirements: () => [
         new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
@@ -871,7 +866,7 @@ const freeFightSources = [
       retrieveItem($item`divine champagne popper`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
-    () => true,
+    true,
     {
       requirements: () => [
         new Requirement([], {
@@ -890,7 +885,7 @@ const freeFightSources = [
       retrieveItem($item`Bowl of Scorpions`);
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
-    () => true,
+    true,
     {
       requirements: () => [
         new Requirement([], {
@@ -912,7 +907,7 @@ const freeFightSources = [
       retrieveItem($item`Bowl of Scorpions`);
       adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
     },
-    () => true,
+    true,
     {
       requirements: () => [
         new Requirement([], {
@@ -964,7 +959,7 @@ const freeFightSources = [
         adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
       }
     },
-    () => false,
+    false,
     {
       requirements: () => [
         new Requirement([], {
@@ -991,7 +986,7 @@ const freeFightSources = [
         Macro.if_($monster`drunk pygmy`, pygmyMacro).abort()
       );
     },
-    () => true,
+    true,
     {
       requirements: () => [
         new Requirement([], {
@@ -1018,7 +1013,7 @@ const freeFightSources = [
       runChoice(1);
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
     },
-    () => true,
+    true,
     {
       requirements: () => [
         new Requirement([], {
@@ -1032,7 +1027,7 @@ const freeFightSources = [
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
     () => adv1(determineDraggableZoneAndEnsureAccess(), -1, ""),
-    () => true,
+    true,
     {
       requirements: () => [
         new Requirement([], {
@@ -1050,7 +1045,7 @@ const freeFightSources = [
     () => {
       adventureMacro($location`The Red Zeppelin`, Macro.item($item`glark cable`));
     },
-    () => true
+    true
   ),
 
   // Mushroom garden
@@ -1073,7 +1068,7 @@ const freeFightSources = [
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
-    () => true,
+    true,
     {
       familiar: () => (have($familiar`Robortender`) ? $familiar`Robortender` : null),
     }
@@ -1102,7 +1097,7 @@ const freeFightSources = [
       );
       if (have($item`packet of tall grass seeds`)) use($item`packet of tall grass seeds`);
     },
-    () => true
+    true
   ),
 
   new FreeFight(
@@ -1117,7 +1112,7 @@ const freeFightSources = [
       visitUrl("choice.php");
       if (handlingChoice()) runChoice(-1);
     },
-    () => false,
+    false,
     {
       familiar: () => $familiar`God Lobster`,
       requirements: () => [
@@ -1172,7 +1167,7 @@ const freeFightSources = [
           .basicCombat()
       );
     },
-    () => false, // Marked like this as 2 DMT fights get overriden by tentacles.
+    false, // Marked like this as 2 DMT fights get overriden by tentacles.
     {
       familiar: () => $familiar`Machine Elf`,
     }
@@ -1182,7 +1177,7 @@ const freeFightSources = [
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
     () => Witchess.fightPiece(bestWitchessPiece()),
-    () => true
+    true
   ),
 
   new FreeFight(
@@ -1194,7 +1189,7 @@ const freeFightSources = [
       }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
-    () => false
+    false
   ),
 
   new FreeFight(
@@ -1209,7 +1204,7 @@ const freeFightSources = [
         Macro.trySkill($skill`Feel Pride`).basicCombat()
       );
     },
-    () => true,
+    true,
     {
       requirements: () => [
         new Requirement(
@@ -1237,7 +1232,7 @@ const freeFightSources = [
         runCombat();
       });
     },
-    () => true
+    true
   ),
 
   // Get a li'l ninja costume for 150% item drop
@@ -1253,7 +1248,7 @@ const freeFightSources = [
         $location`Lair of the Ninja Snowmen`,
         Macro.skill($skill`Fire the Jokester's Gun`).abort()
       ),
-    () => true,
+    true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
     }
@@ -1278,7 +1273,7 @@ const freeFightSources = [
         setAutoAttack(0);
       }
     },
-    () => true,
+    true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
     }
@@ -1299,7 +1294,7 @@ const freeRunFightSources = [
       });
       adventureMacro($location`The Black Forest`, runSource.macro);
     },
-    () => false,
+    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
     }
@@ -1316,7 +1311,7 @@ const freeRunFightSources = [
       });
       adventureMacro($location`The Spooky Forest`, runSource.macro);
     },
-    () => false,
+    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
     }
@@ -1330,7 +1325,7 @@ const freeRunFightSources = [
     (runSource: ActionSource) => {
       adventureMacro($location`The Dire Warren`, runSource.macro);
     },
-    () => false,
+    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
     }
@@ -1354,7 +1349,7 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    () => false,
+    false,
     {
       familiar: () => $familiar`Space Jellyfish`,
     }
@@ -1377,7 +1372,7 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    () => false,
+    false,
     {
       familiar: () => $familiar`Space Jellyfish`,
       requirements: () => [new Requirement([], { forceEquip: $items`Powerful Glove` })],
@@ -1395,7 +1390,7 @@ const freeRunFightSources = [
       });
       adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
     },
-    () => false,
+    false,
     {
       noncombat: () => true,
     }
@@ -1420,7 +1415,7 @@ const freeRunFightSources = [
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
     },
-    () => false,
+    false,
     {
       requirements: () => [
         new Requirement([], {
@@ -1439,7 +1434,7 @@ const freeRunFightSources = [
       });
       adventureMacro($location`Gingerbread Train Station`, Macro.abort());
     },
-    () => false,
+    false,
     {
       noncombat: () => true,
     }
@@ -1466,7 +1461,7 @@ const freeRunFightSources = [
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
     },
-    () => false,
+    false,
     {
       requirements: () => [
         new Requirement([], {
@@ -1487,7 +1482,7 @@ const freeRunFightSources = [
       });
       adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
     },
-    () => false,
+    false,
     {
       noncombat: () => true,
     }
@@ -1521,7 +1516,7 @@ const freeRunFightSources = [
         setAutoAttack(0);
       }
     },
-    () => false,
+    false,
     {
       familiar: () =>
         have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11 ? $familiar`XO Skeleton` : null,
@@ -1562,7 +1557,7 @@ const freeRunFightSources = [
         setAutoAttack(0);
       }
     },
-    () => false,
+    false,
     {
       familiar: () => $familiar`XO Skeleton`,
       requirements: () => {
@@ -1586,7 +1581,7 @@ const freeRunFightSources = [
         ).step(runSource.macro)
       );
     },
-    () => false,
+    false,
     {
       familiar: () =>
         have($familiar`Mini-Hipster`) ? $familiar`Mini-Hipster` : $familiar`Artistic Goth Kid`,
@@ -1619,7 +1614,7 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    () => false,
+    false,
     {
       requirements: () => [
         new Requirement([], {
@@ -1649,7 +1644,7 @@ const freeKillSources = [
         use($item`drum machine`)
       );
     },
-    () => true,
+    true,
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
@@ -1664,7 +1659,7 @@ const freeKillSources = [
         use($item`drum machine`)
       );
     },
-    () => true,
+    true,
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
@@ -1680,7 +1675,7 @@ const freeKillSources = [
         use($item`drum machine`)
       );
     },
-    () => true,
+    true,
     {
       familiar: bestFairy,
       requirements: () => [
@@ -1697,7 +1692,7 @@ const freeKillSources = [
         use($item`drum machine`)
       );
     },
-    () => true,
+    true,
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
@@ -1714,7 +1709,7 @@ const freeKillSources = [
         () => use($item`drum machine`)
       );
     },
-    () => true,
+    true,
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
@@ -1729,7 +1724,7 @@ const freeKillSources = [
         use($item`drum machine`)
       );
     },
-    () => true,
+    true,
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
@@ -2113,7 +2108,7 @@ export function estimatedFreeFights(): number {
 
 export function estimatedTentacles(): number {
   return sum(freeFightSources, (source: FreeFight) => {
-    const avail = source.tentacle() ? source.available() : 0;
+    const avail = source.tentacle ? source.available() : 0;
     return typeof avail === "number" ? avail : toInt(avail);
   });
 }
