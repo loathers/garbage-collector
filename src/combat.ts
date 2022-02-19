@@ -152,7 +152,7 @@ export function shouldRedigitize(): boolean {
 
 export class Macro extends StrictMacro {
   submit(): string {
-    print(this.components.join("\n"));
+    print(this.components.join(";"));
     return super.submit();
   }
 
