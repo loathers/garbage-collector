@@ -1,4 +1,5 @@
 import {
+  adv1,
   buy,
   changeMcd,
   cliExecute,
@@ -7,6 +8,7 @@ import {
   getCampground,
   getClanLounge,
   haveSkill,
+  holiday,
   inebrietyLimit,
   Item,
   itemAmount,
@@ -45,6 +47,7 @@ import {
   $familiars,
   $item,
   $items,
+  $location,
   $monster,
   $skill,
   $skills,
@@ -82,6 +85,7 @@ import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
 import { garboAverageValue, garboValue } from "./session";
 import { acquire } from "./acquire";
+import { estimatedTentacles } from "./fights";
 
 export function dailySetup(): void {
   voterSetup();
@@ -104,6 +108,7 @@ export function dailySetup(): void {
   refreshLatte();
   implement();
   comb();
+  getAttuned();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -672,4 +677,16 @@ function comb(): void {
   if (!have($item`Beach Comb`)) return;
   const combs = 11 - get("_freeBeachWalksUsed");
   cliExecute(`combo ${combs}`);
+}
+
+function getAttuned(): void {
+  if (
+    holiday() === "Generic Summer Holiday" &&
+    !have($effect`Eldritch Attunement`) &&
+    estimatedTentacles() * get("garbo_valueOfFreeFight", 2000) > get("valueOfAdventure")
+  ) {
+    retrieveItem($item`water wings`);
+    equip($item`water wings`);
+    adv1($location`Generic Summer Holiday Swimming!`);
+  }
 }
