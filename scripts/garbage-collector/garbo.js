@@ -24554,26 +24554,501 @@ function sinceKolmafiaVersion(majorVersion, minorVersion) {
     throw new KolmafiaVersionError("".concat(getScriptName(), " requires version ").concat(majorVersion, ".").concat(minorVersion, " of kolmafia or higher (current: ").concat(currentMajorVersion, ".").concat(currentMinorVersion, "). Up-to-date builds can be found at https://ci.kolmafia.us/."));
   }
 }
+// EXTERNAL MODULE: ./node_modules/libram/dist/lib.js
+var lib = __webpack_require__(3311);
+// EXTERNAL MODULE: ./node_modules/libram/dist/logger.js
+var logger = __webpack_require__(8685);
+// EXTERNAL MODULE: ./node_modules/libram/dist/utils.js
+var utils = __webpack_require__(8588);
+;// CONCATENATED MODULE: ./node_modules/libram/dist/Clan.js
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _wrapRegExp() { _wrapRegExp = function _wrapRegExp(re, groups) { return new BabelRegExp(re, void 0, groups); }; var _super = RegExp.prototype, _groups = new WeakMap(); function BabelRegExp(re, flags, groups) { var _this = new RegExp(re, flags); return _groups.set(_this, groups || _groups.get(re)), Clan_setPrototypeOf(_this, BabelRegExp.prototype); } function buildGroups(result, re) { var g = _groups.get(re); return Object.keys(g).reduce(function (groups, name) { return groups[name] = result[g[name]], groups; }, Object.create(null)); } return Clan_inherits(BabelRegExp, RegExp), BabelRegExp.prototype.exec = function (str) { var result = _super.exec.call(this, str); return result && (result.groups = buildGroups(result, this)), result; }, BabelRegExp.prototype[Symbol.replace] = function (str, substitution) { if ("string" == typeof substitution) { var groups = _groups.get(this); return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) { return "$" + groups[name]; })); } if ("function" == typeof substitution) { var _this = this; return _super[Symbol.replace].call(this, str, function () { var args = arguments; return "object" != typeof args[args.length - 1] && (args = [].slice.call(args)).push(buildGroups(args, _this)), substitution.apply(this, args); }); } return _super[Symbol.replace].call(this, str, substitution); }, _wrapRegExp.apply(this, arguments); }
+
+function Clan_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Clan_createClass(Constructor, protoProps, staticProps) { if (protoProps) Clan_defineProperties(Constructor.prototype, protoProps); if (staticProps) Clan_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function Clan_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Clan_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) Clan_setPrototypeOf(subClass, superClass); }
+
+function Clan_createSuper(Derived) { var hasNativeReflectConstruct = Clan_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = Clan_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = Clan_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return Clan_possibleConstructorReturn(this, result); }; }
+
+function Clan_possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return Clan_assertThisInitialized(self); }
+
+function Clan_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function Clan_wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; Clan_wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !Clan_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return Clan_construct(Class, arguments, Clan_getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return Clan_setPrototypeOf(Wrapper, Class); }; return Clan_wrapNativeSuper(Class); }
+
+function Clan_construct(Parent, args, Class) { if (Clan_isNativeReflectConstruct()) { Clan_construct = Reflect.construct; } else { Clan_construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) Clan_setPrototypeOf(instance, Class.prototype); return instance; }; } return Clan_construct.apply(null, arguments); }
+
+function Clan_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function Clan_isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+function Clan_setPrototypeOf(o, p) { Clan_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return Clan_setPrototypeOf(o, p); }
+
+function Clan_getPrototypeOf(o) { Clan_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return Clan_getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+  var c = arguments.length,
+      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+      d;
+  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
+    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  }
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+
+var ClanError = /*#__PURE__*/function (_Error) {
+  Clan_inherits(ClanError, _Error);
+
+  var _super = Clan_createSuper(ClanError);
+
+  function ClanError(message, reason) {
+    var _this;
+
+    Clan_classCallCheck(this, ClanError);
+
+    _this = _super.call(this, message);
+
+    _defineProperty(Clan_assertThisInitialized(_this), "reason", void 0);
+
+    _this.reason = reason;
+    Object.setPrototypeOf(Clan_assertThisInitialized(_this), ClanError.prototype);
+    return _this;
+  }
+
+  return Clan_createClass(ClanError);
+}( /*#__PURE__*/Clan_wrapNativeSuper(Error)); // It would be fantastic to have this function properly typed
+// But until someone can work out how to do it, it gets the
+// comment blocks of shame
+
+/* eslint-disable */
+
+function validate(target, propertyName, descriptor) {
+  if (!(descriptor !== null && descriptor !== void 0 && descriptor.value)) return;
+  var method = descriptor.value; // @ts-ignore
+
+  descriptor.value = function () {
+    // @ts-ignore
+    if (this.id !== (0,external_kolmafia_.getClanId)()) {
+      throw new Error("You are no longer a member of this clan");
+    }
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return method.apply(this, args);
+  };
+}
+/* eslint-enable */
+
+
+var clanIdCache = {};
+
+var toPlayerId = player => typeof player === "string" ? (0,external_kolmafia_.getPlayerId)(player) : player;
+
+var LOG_FAX_PATTERN = /*#__PURE__*/_wrapRegExp(/(\d{2}\/\d{2}\/\d{2}, \d{2}:\d{2}(?:AM|PM): )<a [^>]+>([^<]+)<\/a>(?: faxed in a (.*?))<br>/, {
+  monster: 3
+});
+
+var WHITELIST_DEGREE_PATTERN = /*#__PURE__*/_wrapRegExp(/(.*?) \(\xB0(\d+)\)/, {
+  name: 1,
+  degree: 2
+});
+
+var Clan = /*#__PURE__*/function () {
+  function Clan(id, name) {
+    Clan_classCallCheck(this, Clan);
+
+    _defineProperty(this, "id", void 0);
+
+    _defineProperty(this, "name", void 0);
+
+    this.id = id;
+    this.name = name;
+  }
+  /**
+   * Join clan
+   */
+
+
+  Clan_createClass(Clan, [{
+    key: "join",
+    value: function join() {
+      return Clan._join(this.id);
+    }
+  }, {
+    key: "check",
+    value: function check() {
+      return (0,external_kolmafia_.visitUrl)("clan_hall.php").includes("<b>".concat(this.name, "</b>"));
+    }
+    /**
+     * Return the monster that is currently in the current clan's fax machine if any
+     */
+
+  }, {
+    key: "getCurrentFax",
+    value: function getCurrentFax() {
+      var logs = (0,external_kolmafia_.visitUrl)("clan_log.php");
+      var lastFax = logs.match(LOG_FAX_PATTERN);
+      if (!lastFax) return null;
+
+      var _lastFax = _slicedToArray(lastFax, 4),
+          monsterName = _lastFax[3];
+
+      if (!monsterName) return null;
+      return external_kolmafia_.Monster.get(monsterName);
+    }
+    /**
+     * List available ranks (name, degree and id) from the current clan
+     */
+
+  }, {
+    key: "getRanks",
+    value: function getRanks() {
+      var page = (0,external_kolmafia_.visitUrl)("clan_whitelist.php");
+      return (0,external_kolmafia_.xpath)(page, '//select[@name="level"]//option').map(option => {
+        var validHtml = "<select>".concat(option, "</select>");
+        var match = (0,external_kolmafia_.xpath)(validHtml, "//text()")[0].match(WHITELIST_DEGREE_PATTERN);
+        var id = (0,external_kolmafia_.xpath)(validHtml, "//@value")[0];
+        if (!match || !id) return null;
+
+        var _match = _slicedToArray(match, 3),
+            name = _match[1],
+            degree = _match[2];
+
+        return {
+          name: name,
+          degree: Number.parseInt(degree),
+          id: Number.parseInt(id)
+        };
+      }).filter(utils/* notNull */.Nf);
+    }
+    /**
+     * Add a player to the current clan's whitelist.
+     * If the player is already in the whitelist this will change their rank or title.
+     * @param player Player id or name
+     * @param rankName Rank to give the player. If not provided they will be given the lowest rank
+     * @param title Title to give the player. If not provided, will be blank
+     */
+
+  }, {
+    key: "addPlayerToWhitelist",
+    value: function addPlayerToWhitelist(player, rankName) {
+      var title = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+      var playerId = toPlayerId(player);
+      var ranks = this.getRanks();
+      var rank = rankName ? ranks.find(r => r.name === rankName) : ranks.sort((a, b) => a.degree - b.degree)[0];
+      if (!rank) return false;
+      var result = (0,external_kolmafia_.visitUrl)("clan_whitelist.php?action=add&pwd&addwho=".concat(playerId, "&level=").concat(rank.id, "&title=").concat(title));
+      return result.includes("added to whitelist.") || result.includes("That player is already on the whitelist");
+    }
+    /**
+     * Remove a player from the current clan's whitelist
+     * @param player Player id or name
+     */
+
+  }, {
+    key: "removePlayerFromWhitelist",
+    value: function removePlayerFromWhitelist(player) {
+      var playerId = toPlayerId(player);
+      var result = (0,external_kolmafia_.visitUrl)("clan_whitelist.php?action=updatewl&pwd&who=".concat(playerId, "&remove=Remove"));
+      return result.includes("Whitelist updated.");
+    }
+    /**
+     * Return the amount of meat in the current clan's coffer.
+     */
+
+  }, {
+    key: "getMeatInCoffer",
+    value: function getMeatInCoffer() {
+      var page = (0,external_kolmafia_.visitUrl)("clan_stash.php");
+
+      var _ref = page.match(/Your <b>Clan Coffer<\/b> contains ([\d,]+) Meat./) || ["0", "0"],
+          _ref2 = _slicedToArray(_ref, 2),
+          meat = _ref2[1];
+
+      return (0,utils/* parseNumber */.p3)(meat);
+    }
+    /**
+     * Add the given amount of meat to the current clan's coffer.
+     * @param amount Amount of meat to put in coffer
+     */
+
+  }, {
+    key: "putMeatInCoffer",
+    value: function putMeatInCoffer(amount) {
+      var result = (0,external_kolmafia_.visitUrl)("clan_stash.php?pwd&action=contribute&howmuch=".concat(amount));
+      return result.includes("You contributed");
+    }
+  }, {
+    key: "take",
+    value: function take(items) {
+      var map = (0,utils/* arrayToCountedMap */.tv)(items);
+      map.forEach((quantity, item) => {
+        var needed = Math.max(0, quantity - (0,external_kolmafia_.availableAmount)(item));
+
+        if (needed === 0) {
+          return map.set(item, 0);
+        }
+
+        var foldGroup = (0,lib/* getFoldGroup */._D)(item);
+
+        var _iterator = _createForOfIteratorHelper(foldGroup),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var foldable = _step.value;
+            var quantityToFold = Math.min(needed, (0,external_kolmafia_.availableAmount)(foldable));
+
+            for (var _i3 = 0; _i3 < quantityToFold; _i3++) {
+              (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
+              needed--;
+            }
+
+            return map.set(item, needed);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        (0,external_kolmafia_.refreshStash)();
+
+        for (var _i2 = 0, _arr2 = [item].concat(_toConsumableArray(foldGroup)); _i2 < _arr2.length; _i2++) {
+          var matchingItem = _arr2[_i2];
+          var quantityToTake = Math.min(needed, (0,external_kolmafia_.stashAmount)(matchingItem));
+          if (quantityToTake === 0) continue; // If we can't take from the stash, there's no sense in iterating through the whole fold group
+
+          if (!(0,external_kolmafia_.takeStash)(quantityToTake, matchingItem)) return;
+
+          if (matchingItem === item) {
+            needed -= quantityToTake;
+          } else {
+            for (var i = 0; i < quantityToTake; i++) {
+              (0,external_kolmafia_.cliExecute)("fold ".concat(matchingItem.name));
+              needed--;
+            }
+          }
+        }
+      });
+      return Array.isArray(items) ? (0,utils/* countedMapToArray */.Y8)(map) : map;
+    }
+  }, {
+    key: "put",
+    value: function put(items) {
+      var map = (0,utils/* arrayToCountedMap */.tv)(items);
+      if (!this.check()) throw new Error("Wanted to return ".concat((0,utils/* countedMapToString */.N3)(map), " to ").concat(this.name, " but KoLmafia's clan data is out of sync"));
+      map.forEach((quantity, item) => {
+        (0,external_kolmafia_.retrieveItem)(quantity, item);
+        var returned = Math.min(quantity, (0,external_kolmafia_.availableAmount)(item));
+        (0,external_kolmafia_.putStash)(returned, item);
+        map.set(item, quantity - returned);
+      });
+      return Array.isArray(items) ? (0,utils/* countedMapToArray */.Y8)(map) : map;
+    }
+  }, {
+    key: "withStash",
+    value: function withStash(items, callback // eslint-disable-line @typescript-eslint/no-explicit-any
+    ) {
+      var map = (0,utils/* arrayToCountedMap */.tv)(items);
+      return Clan._withStash(() => this.take(map), borrowed => this.put(borrowed), callback);
+    }
+  }], [{
+    key: "_join",
+    value: function _join(id) {
+      var result = (0,external_kolmafia_.visitUrl)("showclan.php?recruiter=1&whichclan=".concat(id, "&pwd&whichclan=").concat(id, "&action=joinclan&apply=Apply+to+this+Clan&confirm=on"));
+
+      if (!result.includes("clanhalltop.gif")) {
+        throw new Error("Could not join clan");
+      }
+
+      return Clan.get();
+    }
+  }, {
+    key: "_withStash",
+    value: function _withStash(borrowFn, // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    returnFn, // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callback) {
+      var borrowed = borrowFn();
+      var map = (0,utils/* arrayToCountedMap */.tv)(borrowed);
+
+      try {
+        return callback(borrowed);
+      } finally {
+        if (map.size > 0) {
+          var returned = (0,utils/* arrayToCountedMap */.tv)(returnFn(borrowed));
+          map.forEach((quantity, item) => {
+            var remaining = quantity - (returned.get(item) || 0);
+
+            if (remaining > 0) {
+              map.set(item, remaining);
+            } else {
+              map.delete(item);
+            }
+          });
+
+          if (map.size > 0) {
+            logger/* default.error */.Z.error("Failed to return <b>".concat((0,utils/* countedMapToString */.N3)(map), "</b> to <b>").concat(this.name, "</b> stash"));
+          }
+        }
+      }
+    }
+    /**
+     * Join a clan and return its instance
+     * @param clanIdOrName Clan id or name
+     */
+
+  }, {
+    key: "join",
+    value: function join(clanIdOrName) {
+      var clanId;
+
+      if (typeof clanIdOrName === "string") {
+        var clanName = clanIdOrName.toLowerCase();
+
+        if (clanName === (0,external_kolmafia_.getClanName)().toLowerCase()) {
+          return Clan.get();
+        }
+
+        if (!(clanName in clanIdCache)) {
+          var clan = Clan.getWhitelisted().find(c => c.name.toLowerCase() === clanName);
+
+          if (!clan) {
+            throw new Error("Player is not whitelisted to clan");
+          }
+
+          clanIdCache[clanName] = clan.id;
+        }
+
+        clanId = clanIdCache[clanName];
+      } else {
+        clanId = clanIdOrName;
+
+        if (clanId === (0,external_kolmafia_.getClanId)()) {
+          return Clan.get();
+        }
+      }
+
+      return Clan._join(clanId);
+    }
+    /**
+     * Execute callback as a member of a clan
+     * and then restore prior membership
+     * @param clanIdOrName Clan id or name
+     */
+
+  }, {
+    key: "with",
+    value: function _with(clanIdOrName, callback) {
+      var startingClan = Clan.get();
+      var clan = Clan.join(clanIdOrName);
+
+      try {
+        return callback(clan);
+      } finally {
+        startingClan.join();
+      }
+    }
+  }, {
+    key: "withStash",
+    value: function withStash(clanIdOrName, items, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+    callback // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+    ) {
+      return Clan._withStash(() => Clan.with(clanIdOrName, clan => clan.take(items)), borrowed => Clan.with(clanIdOrName, clan => clan.put(borrowed)), callback);
+    }
+    /**
+     * Return player's current Clan
+     */
+
+  }, {
+    key: "get",
+    value: function get() {
+      return new Clan((0,external_kolmafia_.getClanId)(), (0,external_kolmafia_.getClanName)());
+    }
+    /**
+     * Get list of clans to which the player is whitelisted
+     */
+
+  }, {
+    key: "getWhitelisted",
+    value: function getWhitelisted() {
+      var page = (0,external_kolmafia_.visitUrl)("clan_signup.php");
+      return (0,external_kolmafia_.xpath)(page, '//select[@name="whichclan"]//option').map(option => {
+        var validHtml = "<select>".concat(option, "</select>");
+        var id = Number.parseInt((0,external_kolmafia_.xpath)(validHtml, "//@value")[0]);
+        var name = (0,external_kolmafia_.xpath)(validHtml, "//text()")[0];
+        return new Clan(id, name);
+      });
+    }
+  }]);
+
+  return Clan;
+}();
+
+__decorate([validate], Clan.prototype, "getCurrentFax", null);
+
+__decorate([validate], Clan.prototype, "getRanks", null);
+
+__decorate([validate], Clan.prototype, "addPlayerToWhitelist", null);
+
+__decorate([validate], Clan.prototype, "removePlayerFromWhitelist", null);
+
+__decorate([validate], Clan.prototype, "getMeatInCoffer", null);
+
+__decorate([validate], Clan.prototype, "putMeatInCoffer", null);
+
+__decorate([validate], Clan.prototype, "take", null);
+
+__decorate([validate], Clan.prototype, "put", null);
+
+__decorate([validate], Clan.prototype, "withStash", null);
 // EXTERNAL MODULE: ./node_modules/libram/dist/property.js + 2 modules
 var property = __webpack_require__(2474);
 // EXTERNAL MODULE: ./node_modules/libram/dist/template-string.js
 var template_string = __webpack_require__(678);
-// EXTERNAL MODULE: ./node_modules/libram/dist/lib.js
-var lib = __webpack_require__(3311);
 // EXTERNAL MODULE: ./node_modules/libram/dist/resources/2016/SourceTerminal.js
 var SourceTerminal = __webpack_require__(1577);
 // EXTERNAL MODULE: ./node_modules/libram/dist/maximize.js
 var maximize = __webpack_require__(9376);
 // EXTERNAL MODULE: ./node_modules/libram/dist/combat.js
 var combat = __webpack_require__(1762);
-// EXTERNAL MODULE: ./node_modules/libram/dist/utils.js
-var utils = __webpack_require__(8588);
 // EXTERNAL MODULE: ./src/combat.ts
 var src_combat = __webpack_require__(4223);
 // EXTERNAL MODULE: ./node_modules/libram/node_modules/core-js/modules/es.object.values.js
 var es_object_values = __webpack_require__(2231);
-// EXTERNAL MODULE: ./node_modules/libram/dist/logger.js
-var logger = __webpack_require__(8685);
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2015/MayoClinic.js
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10;
 
@@ -24629,27 +25104,27 @@ function setMayoMinder(mayo) {
 // EXTERNAL MODULE: ./node_modules/libram/node_modules/core-js/modules/es.object.entries.js
 var es_object_entries = __webpack_require__(4875);
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/Kmail.js
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function Kmail_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = Kmail_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function Kmail_toConsumableArray(arr) { return Kmail_arrayWithoutHoles(arr) || Kmail_iterableToArray(arr) || Kmail_unsupportedIterableToArray(arr) || Kmail_nonIterableSpread(); }
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function Kmail_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function Kmail_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function Kmail_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return Kmail_arrayLikeToArray(arr); }
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function Kmail_slicedToArray(arr, i) { return Kmail_arrayWithHoles(arr) || Kmail_iterableToArrayLimit(arr, i) || Kmail_unsupportedIterableToArray(arr, i) || Kmail_nonIterableRest(); }
 
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function Kmail_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function Kmail_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Kmail_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Kmail_arrayLikeToArray(o, minLen); }
 
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function Kmail_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function Kmail_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function Kmail_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function Kmail_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -24657,7 +25132,7 @@ function Kmail_defineProperties(target, props) { for (var i = 0; i < props.lengt
 
 function Kmail_createClass(Constructor, protoProps, staticProps) { if (protoProps) Kmail_defineProperties(Constructor.prototype, protoProps); if (staticProps) Kmail_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function Kmail_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
@@ -24667,17 +25142,17 @@ var Kmail = /*#__PURE__*/function () {
   function Kmail(rawKmail) {
     Kmail_classCallCheck(this, Kmail);
 
-    _defineProperty(this, "id", void 0);
+    Kmail_defineProperty(this, "id", void 0);
 
-    _defineProperty(this, "date", void 0);
+    Kmail_defineProperty(this, "date", void 0);
 
-    _defineProperty(this, "type", void 0);
+    Kmail_defineProperty(this, "type", void 0);
 
-    _defineProperty(this, "senderId", void 0);
+    Kmail_defineProperty(this, "senderId", void 0);
 
-    _defineProperty(this, "senderName", void 0);
+    Kmail_defineProperty(this, "senderName", void 0);
 
-    _defineProperty(this, "rawMessage", void 0);
+    Kmail_defineProperty(this, "rawMessage", void 0);
 
     var date = new Date(rawKmail.localtime); // Date come from KoL formatted with YY and so will be parsed 19YY, which is wrong.
     // We can safely add 100 because if 19YY was a leap year, 20YY will be too!
@@ -24722,7 +25197,7 @@ var Kmail = /*#__PURE__*/function () {
     key: "items",
     value: function items() {
       return new Map(Object.entries((0,external_kolmafia_.extractItems)(this.rawMessage)).map(_ref => {
-        var _ref2 = _slicedToArray(_ref, 2),
+        var _ref2 = Kmail_slicedToArray(_ref, 2),
             itemName = _ref2[0],
             quantity = _ref2[1];
 
@@ -24801,8 +25276,8 @@ var Kmail = /*#__PURE__*/function () {
     value: function _genericSend(to, message, items, meat, chunkSize, constructUrl, successString) {
       var m = meat;
 
-      var sendableItems = _toConsumableArray((0,utils/* arrayToCountedMap */.tv)(items).entries()).filter(_ref3 => {
-        var _ref4 = _slicedToArray(_ref3, 1),
+      var sendableItems = Kmail_toConsumableArray((0,utils/* arrayToCountedMap */.tv)(items).entries()).filter(_ref3 => {
+        var _ref4 = Kmail_slicedToArray(_ref3, 1),
             item = _ref4[0];
 
         return (0,external_kolmafia_.isGiftable)(item);
@@ -24811,14 +25286,14 @@ var Kmail = /*#__PURE__*/function () {
       var result = true;
       var chunks = (0,utils/* chunk */.yo)(sendableItems, chunkSize); // Split the items to be sent into chunks of max 11 item types
 
-      var _iterator = _createForOfIteratorHelper(chunks.length > 0 ? chunks : [null]),
+      var _iterator = Kmail_createForOfIteratorHelper(chunks.length > 0 ? chunks : [null]),
           _step;
 
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var c = _step.value;
           var itemsQuery = c === null ? [] : c.map((_ref5, index) => {
-            var _ref6 = _slicedToArray(_ref5, 2),
+            var _ref6 = Kmail_slicedToArray(_ref5, 2),
                 item = _ref6[0],
                 quantity = _ref6[1];
 
@@ -25883,481 +26358,6 @@ var Diet = /*#__PURE__*/function () {
 }();
 // EXTERNAL MODULE: ./src/acquire.ts
 var acquire = __webpack_require__(4564);
-;// CONCATENATED MODULE: ./node_modules/libram/dist/Clan.js
-function Clan_toConsumableArray(arr) { return Clan_arrayWithoutHoles(arr) || Clan_iterableToArray(arr) || Clan_unsupportedIterableToArray(arr) || Clan_nonIterableSpread(); }
-
-function Clan_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function Clan_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function Clan_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return Clan_arrayLikeToArray(arr); }
-
-function Clan_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = Clan_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function Clan_slicedToArray(arr, i) { return Clan_arrayWithHoles(arr) || Clan_iterableToArrayLimit(arr, i) || Clan_unsupportedIterableToArray(arr, i) || Clan_nonIterableRest(); }
-
-function Clan_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function Clan_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return Clan_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Clan_arrayLikeToArray(o, minLen); }
-
-function Clan_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function Clan_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function Clan_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _wrapRegExp() { _wrapRegExp = function _wrapRegExp(re, groups) { return new BabelRegExp(re, void 0, groups); }; var _super = RegExp.prototype, _groups = new WeakMap(); function BabelRegExp(re, flags, groups) { var _this = new RegExp(re, flags); return _groups.set(_this, groups || _groups.get(re)), Clan_setPrototypeOf(_this, BabelRegExp.prototype); } function buildGroups(result, re) { var g = _groups.get(re); return Object.keys(g).reduce(function (groups, name) { return groups[name] = result[g[name]], groups; }, Object.create(null)); } return Clan_inherits(BabelRegExp, RegExp), BabelRegExp.prototype.exec = function (str) { var result = _super.exec.call(this, str); return result && (result.groups = buildGroups(result, this)), result; }, BabelRegExp.prototype[Symbol.replace] = function (str, substitution) { if ("string" == typeof substitution) { var groups = _groups.get(this); return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) { return "$" + groups[name]; })); } if ("function" == typeof substitution) { var _this = this; return _super[Symbol.replace].call(this, str, function () { var args = arguments; return "object" != typeof args[args.length - 1] && (args = [].slice.call(args)).push(buildGroups(args, _this)), substitution.apply(this, args); }); } return _super[Symbol.replace].call(this, str, substitution); }, _wrapRegExp.apply(this, arguments); }
-
-function Clan_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function Clan_createClass(Constructor, protoProps, staticProps) { if (protoProps) Clan_defineProperties(Constructor.prototype, protoProps); if (staticProps) Clan_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
-function Clan_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function Clan_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) Clan_setPrototypeOf(subClass, superClass); }
-
-function Clan_createSuper(Derived) { var hasNativeReflectConstruct = Clan_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = Clan_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = Clan_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return Clan_possibleConstructorReturn(this, result); }; }
-
-function Clan_possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return Clan_assertThisInitialized(self); }
-
-function Clan_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function Clan_wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; Clan_wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !Clan_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return Clan_construct(Class, arguments, Clan_getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return Clan_setPrototypeOf(Wrapper, Class); }; return Clan_wrapNativeSuper(Class); }
-
-function Clan_construct(Parent, args, Class) { if (Clan_isNativeReflectConstruct()) { Clan_construct = Reflect.construct; } else { Clan_construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) Clan_setPrototypeOf(instance, Class.prototype); return instance; }; } return Clan_construct.apply(null, arguments); }
-
-function Clan_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function Clan_isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
-
-function Clan_setPrototypeOf(o, p) { Clan_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return Clan_setPrototypeOf(o, p); }
-
-function Clan_getPrototypeOf(o) { Clan_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return Clan_getPrototypeOf(o); }
-
-function Clan_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-  var c = arguments.length,
-      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-      d;
-  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-  }
-  return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-
-
-
-
-
-var ClanError = /*#__PURE__*/function (_Error) {
-  Clan_inherits(ClanError, _Error);
-
-  var _super = Clan_createSuper(ClanError);
-
-  function ClanError(message, reason) {
-    var _this;
-
-    Clan_classCallCheck(this, ClanError);
-
-    _this = _super.call(this, message);
-
-    Clan_defineProperty(Clan_assertThisInitialized(_this), "reason", void 0);
-
-    _this.reason = reason;
-    Object.setPrototypeOf(Clan_assertThisInitialized(_this), ClanError.prototype);
-    return _this;
-  }
-
-  return Clan_createClass(ClanError);
-}( /*#__PURE__*/Clan_wrapNativeSuper(Error)); // It would be fantastic to have this function properly typed
-// But until someone can work out how to do it, it gets the
-// comment blocks of shame
-
-/* eslint-disable */
-
-function validate(target, propertyName, descriptor) {
-  if (!(descriptor !== null && descriptor !== void 0 && descriptor.value)) return;
-  var method = descriptor.value; // @ts-ignore
-
-  descriptor.value = function () {
-    // @ts-ignore
-    if (this.id !== (0,external_kolmafia_.getClanId)()) {
-      throw new Error("You are no longer a member of this clan");
-    }
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return method.apply(this, args);
-  };
-}
-/* eslint-enable */
-
-
-var clanIdCache = {};
-
-var toPlayerId = player => typeof player === "string" ? (0,external_kolmafia_.getPlayerId)(player) : player;
-
-var LOG_FAX_PATTERN = /*#__PURE__*/_wrapRegExp(/(\d{2}\/\d{2}\/\d{2}, \d{2}:\d{2}(?:AM|PM): )<a [^>]+>([^<]+)<\/a>(?: faxed in a (.*?))<br>/, {
-  monster: 3
-});
-
-var WHITELIST_DEGREE_PATTERN = /*#__PURE__*/_wrapRegExp(/(.*?) \(\xB0(\d+)\)/, {
-  name: 1,
-  degree: 2
-});
-
-var Clan = /*#__PURE__*/function () {
-  function Clan(id, name) {
-    Clan_classCallCheck(this, Clan);
-
-    Clan_defineProperty(this, "id", void 0);
-
-    Clan_defineProperty(this, "name", void 0);
-
-    this.id = id;
-    this.name = name;
-  }
-  /**
-   * Join clan
-   */
-
-
-  Clan_createClass(Clan, [{
-    key: "join",
-    value: function join() {
-      return Clan._join(this.id);
-    }
-  }, {
-    key: "check",
-    value: function check() {
-      return (0,external_kolmafia_.visitUrl)("clan_hall.php").includes("<b>".concat(this.name, "</b>"));
-    }
-    /**
-     * Return the monster that is currently in the current clan's fax machine if any
-     */
-
-  }, {
-    key: "getCurrentFax",
-    value: function getCurrentFax() {
-      var logs = (0,external_kolmafia_.visitUrl)("clan_log.php");
-      var lastFax = logs.match(LOG_FAX_PATTERN);
-      if (!lastFax) return null;
-
-      var _lastFax = Clan_slicedToArray(lastFax, 4),
-          monsterName = _lastFax[3];
-
-      if (!monsterName) return null;
-      return external_kolmafia_.Monster.get(monsterName);
-    }
-    /**
-     * List available ranks (name, degree and id) from the current clan
-     */
-
-  }, {
-    key: "getRanks",
-    value: function getRanks() {
-      var page = (0,external_kolmafia_.visitUrl)("clan_whitelist.php");
-      return (0,external_kolmafia_.xpath)(page, '//select[@name="level"]//option').map(option => {
-        var validHtml = "<select>".concat(option, "</select>");
-        var match = (0,external_kolmafia_.xpath)(validHtml, "//text()")[0].match(WHITELIST_DEGREE_PATTERN);
-        var id = (0,external_kolmafia_.xpath)(validHtml, "//@value")[0];
-        if (!match || !id) return null;
-
-        var _match = Clan_slicedToArray(match, 3),
-            name = _match[1],
-            degree = _match[2];
-
-        return {
-          name: name,
-          degree: Number.parseInt(degree),
-          id: Number.parseInt(id)
-        };
-      }).filter(utils/* notNull */.Nf);
-    }
-    /**
-     * Add a player to the current clan's whitelist.
-     * If the player is already in the whitelist this will change their rank or title.
-     * @param player Player id or name
-     * @param rankName Rank to give the player. If not provided they will be given the lowest rank
-     * @param title Title to give the player. If not provided, will be blank
-     */
-
-  }, {
-    key: "addPlayerToWhitelist",
-    value: function addPlayerToWhitelist(player, rankName) {
-      var title = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
-      var playerId = toPlayerId(player);
-      var ranks = this.getRanks();
-      var rank = rankName ? ranks.find(r => r.name === rankName) : ranks.sort((a, b) => a.degree - b.degree)[0];
-      if (!rank) return false;
-      var result = (0,external_kolmafia_.visitUrl)("clan_whitelist.php?action=add&pwd&addwho=".concat(playerId, "&level=").concat(rank.id, "&title=").concat(title));
-      return result.includes("added to whitelist.") || result.includes("That player is already on the whitelist");
-    }
-    /**
-     * Remove a player from the current clan's whitelist
-     * @param player Player id or name
-     */
-
-  }, {
-    key: "removePlayerFromWhitelist",
-    value: function removePlayerFromWhitelist(player) {
-      var playerId = toPlayerId(player);
-      var result = (0,external_kolmafia_.visitUrl)("clan_whitelist.php?action=updatewl&pwd&who=".concat(playerId, "&remove=Remove"));
-      return result.includes("Whitelist updated.");
-    }
-    /**
-     * Return the amount of meat in the current clan's coffer.
-     */
-
-  }, {
-    key: "getMeatInCoffer",
-    value: function getMeatInCoffer() {
-      var page = (0,external_kolmafia_.visitUrl)("clan_stash.php");
-
-      var _ref = page.match(/Your <b>Clan Coffer<\/b> contains ([\d,]+) Meat./) || ["0", "0"],
-          _ref2 = Clan_slicedToArray(_ref, 2),
-          meat = _ref2[1];
-
-      return (0,utils/* parseNumber */.p3)(meat);
-    }
-    /**
-     * Add the given amount of meat to the current clan's coffer.
-     * @param amount Amount of meat to put in coffer
-     */
-
-  }, {
-    key: "putMeatInCoffer",
-    value: function putMeatInCoffer(amount) {
-      var result = (0,external_kolmafia_.visitUrl)("clan_stash.php?pwd&action=contribute&howmuch=".concat(amount));
-      return result.includes("You contributed");
-    }
-  }, {
-    key: "take",
-    value: function take(items) {
-      var map = (0,utils/* arrayToCountedMap */.tv)(items);
-      map.forEach((quantity, item) => {
-        var needed = Math.max(0, quantity - (0,external_kolmafia_.availableAmount)(item));
-
-        if (needed === 0) {
-          return map.set(item, 0);
-        }
-
-        var foldGroup = (0,lib/* getFoldGroup */._D)(item);
-
-        var _iterator = Clan_createForOfIteratorHelper(foldGroup),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var foldable = _step.value;
-            var quantityToFold = Math.min(needed, (0,external_kolmafia_.availableAmount)(foldable));
-
-            for (var _i3 = 0; _i3 < quantityToFold; _i3++) {
-              (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
-              needed--;
-            }
-
-            return map.set(item, needed);
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-
-        (0,external_kolmafia_.refreshStash)();
-
-        for (var _i2 = 0, _arr2 = [item].concat(Clan_toConsumableArray(foldGroup)); _i2 < _arr2.length; _i2++) {
-          var matchingItem = _arr2[_i2];
-          var quantityToTake = Math.min(needed, (0,external_kolmafia_.stashAmount)(matchingItem));
-          if (quantityToTake === 0) continue; // If we can't take from the stash, there's no sense in iterating through the whole fold group
-
-          if (!(0,external_kolmafia_.takeStash)(quantityToTake, matchingItem)) return;
-
-          if (matchingItem === item) {
-            needed -= quantityToTake;
-          } else {
-            for (var i = 0; i < quantityToTake; i++) {
-              (0,external_kolmafia_.cliExecute)("fold ".concat(matchingItem.name));
-              needed--;
-            }
-          }
-        }
-      });
-      return Array.isArray(items) ? (0,utils/* countedMapToArray */.Y8)(map) : map;
-    }
-  }, {
-    key: "put",
-    value: function put(items) {
-      var map = (0,utils/* arrayToCountedMap */.tv)(items);
-      if (!this.check()) throw new Error("Wanted to return ".concat((0,utils/* countedMapToString */.N3)(map), " to ").concat(this.name, " but KoLmafia's clan data is out of sync"));
-      map.forEach((quantity, item) => {
-        (0,external_kolmafia_.retrieveItem)(quantity, item);
-        var returned = Math.min(quantity, (0,external_kolmafia_.availableAmount)(item));
-        (0,external_kolmafia_.putStash)(returned, item);
-        map.set(item, quantity - returned);
-      });
-      return Array.isArray(items) ? (0,utils/* countedMapToArray */.Y8)(map) : map;
-    }
-  }, {
-    key: "withStash",
-    value: function withStash(items, callback // eslint-disable-line @typescript-eslint/no-explicit-any
-    ) {
-      var map = (0,utils/* arrayToCountedMap */.tv)(items);
-      return Clan._withStash(() => this.take(map), borrowed => this.put(borrowed), callback);
-    }
-  }], [{
-    key: "_join",
-    value: function _join(id) {
-      var result = (0,external_kolmafia_.visitUrl)("showclan.php?recruiter=1&whichclan=".concat(id, "&pwd&whichclan=").concat(id, "&action=joinclan&apply=Apply+to+this+Clan&confirm=on"));
-
-      if (!result.includes("clanhalltop.gif")) {
-        throw new Error("Could not join clan");
-      }
-
-      return Clan.get();
-    }
-  }, {
-    key: "_withStash",
-    value: function _withStash(borrowFn, // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    returnFn, // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callback) {
-      var borrowed = borrowFn();
-      var map = (0,utils/* arrayToCountedMap */.tv)(borrowed);
-
-      try {
-        return callback(borrowed);
-      } finally {
-        if (map.size > 0) {
-          var returned = (0,utils/* arrayToCountedMap */.tv)(returnFn(borrowed));
-          map.forEach((quantity, item) => {
-            var remaining = quantity - (returned.get(item) || 0);
-
-            if (remaining > 0) {
-              map.set(item, remaining);
-            } else {
-              map.delete(item);
-            }
-          });
-
-          if (map.size > 0) {
-            logger/* default.error */.Z.error("Failed to return <b>".concat((0,utils/* countedMapToString */.N3)(map), "</b> to <b>").concat(this.name, "</b> stash"));
-          }
-        }
-      }
-    }
-    /**
-     * Join a clan and return its instance
-     * @param clanIdOrName Clan id or name
-     */
-
-  }, {
-    key: "join",
-    value: function join(clanIdOrName) {
-      var clanId;
-
-      if (typeof clanIdOrName === "string") {
-        var clanName = clanIdOrName.toLowerCase();
-
-        if (clanName === (0,external_kolmafia_.getClanName)().toLowerCase()) {
-          return Clan.get();
-        }
-
-        if (!(clanName in clanIdCache)) {
-          var clan = Clan.getWhitelisted().find(c => c.name.toLowerCase() === clanName);
-
-          if (!clan) {
-            throw new Error("Player is not whitelisted to clan");
-          }
-
-          clanIdCache[clanName] = clan.id;
-        }
-
-        clanId = clanIdCache[clanName];
-      } else {
-        clanId = clanIdOrName;
-
-        if (clanId === (0,external_kolmafia_.getClanId)()) {
-          return Clan.get();
-        }
-      }
-
-      return Clan._join(clanId);
-    }
-    /**
-     * Execute callback as a member of a clan
-     * and then restore prior membership
-     * @param clanIdOrName Clan id or name
-     */
-
-  }, {
-    key: "with",
-    value: function _with(clanIdOrName, callback) {
-      var startingClan = Clan.get();
-      var clan = Clan.join(clanIdOrName);
-
-      try {
-        return callback(clan);
-      } finally {
-        startingClan.join();
-      }
-    }
-  }, {
-    key: "withStash",
-    value: function withStash(clanIdOrName, items, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    callback // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    ) {
-      return Clan._withStash(() => Clan.with(clanIdOrName, clan => clan.take(items)), borrowed => Clan.with(clanIdOrName, clan => clan.put(borrowed)), callback);
-    }
-    /**
-     * Return player's current Clan
-     */
-
-  }, {
-    key: "get",
-    value: function get() {
-      return new Clan((0,external_kolmafia_.getClanId)(), (0,external_kolmafia_.getClanName)());
-    }
-    /**
-     * Get list of clans to which the player is whitelisted
-     */
-
-  }, {
-    key: "getWhitelisted",
-    value: function getWhitelisted() {
-      var page = (0,external_kolmafia_.visitUrl)("clan_signup.php");
-      return (0,external_kolmafia_.xpath)(page, '//select[@name="whichclan"]//option').map(option => {
-        var validHtml = "<select>".concat(option, "</select>");
-        var id = Number.parseInt((0,external_kolmafia_.xpath)(validHtml, "//@value")[0]);
-        var name = (0,external_kolmafia_.xpath)(validHtml, "//text()")[0];
-        return new Clan(id, name);
-      });
-    }
-  }]);
-
-  return Clan;
-}();
-
-__decorate([validate], Clan.prototype, "getCurrentFax", null);
-
-__decorate([validate], Clan.prototype, "getRanks", null);
-
-__decorate([validate], Clan.prototype, "addPlayerToWhitelist", null);
-
-__decorate([validate], Clan.prototype, "removePlayerFromWhitelist", null);
-
-__decorate([validate], Clan.prototype, "getMeatInCoffer", null);
-
-__decorate([validate], Clan.prototype, "putMeatInCoffer", null);
-
-__decorate([validate], Clan.prototype, "take", null);
-
-__decorate([validate], Clan.prototype, "put", null);
-
-__decorate([validate], Clan.prototype, "withStash", null);
 // EXTERNAL MODULE: ./src/lib.ts
 var src_lib = __webpack_require__(7442);
 ;// CONCATENATED MODULE: ./src/clan.ts
@@ -26391,6 +26391,7 @@ function clan_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) 
 
 
 
+var stashItems = (0,property/* get */.U2)("garboStashItems", "").split(",").filter(x => x.trim().length > 0).map(id => (0,external_kolmafia_.toItem)(parseInt(id)));
 function withStash(itemsToTake, action) {
   var manager = new StashManager();
 
@@ -26489,6 +26490,7 @@ var StashManager = /*#__PURE__*/function () {
                       (0,external_kolmafia_.print)("Took ".concat(fold.name, " from stash in ").concat((0,external_kolmafia_.getClanName)(), "."), src_lib/* HIGHLIGHT */.X2);
                       if (fold !== item) (0,external_kolmafia_.cliExecute)("fold ".concat(item.name));
                       this.taken.set(item, ((_this$taken$get = this.taken.get(item)) !== null && _this$taken$get !== void 0 ? _this$taken$get : 0) + 1);
+                      stashItems.push(fold);
                       break;
                     } else {
                       (0,external_kolmafia_.print)("Failed to take ".concat(fold.name, " from the stash. Do you have stash access in ").concat((0,external_kolmafia_.getClanName)(), "?"), "red");
@@ -26573,6 +26575,8 @@ var StashManager = /*#__PURE__*/function () {
               }
 
               if ((0,external_kolmafia_.putStash)(count, item)) {
+                var index = stashItems.indexOf(item);
+                if (index >= 0) stashItems.splice(stashItems.indexOf(item), 1);
                 (0,external_kolmafia_.print)("Returned ".concat(item.name, " to stash in ").concat((0,external_kolmafia_.getClanName)(), "."), src_lib/* HIGHLIGHT */.X2);
                 this.taken.delete(item);
               } else {
@@ -31045,7 +31049,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("6e0beca1c2d35dbd864aca0e88a256df19c941eb"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e5517aa962b7daa6e65391e1bc1ec57c18afdba1"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31114,6 +31118,27 @@ function main() {
     _iterator.e(err);
   } finally {
     _iterator.f();
+  }
+
+  if (stashItems.length > 0) {
+    if ((0,external_kolmafia_.userConfirm)("Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ".concat(stashItems.map(item => item.name).join(","), ". Would you like us to return these to the stash now?"))) {
+      var clanIdOrName = (0,property/* get */.U2)("garbo_stashClan", "none");
+      var parsedClanIdOrName = clanIdOrName !== "none" ? clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName : null;
+
+      if (parsedClanIdOrName) {
+        Clan["with"](parsedClanIdOrName, () => {
+          for (var _i = 0, _arr = src_toConsumableArray(stashItems); _i < _arr.length; _i++) {
+            var item = _arr[_i];
+            if ((0,lib/* getFoldGroup */._D)(item).some(item => (0,lib/* have */.lf)(item))) (0,external_kolmafia_.cliExecute)("fold ".concat(item));
+            (0,external_kolmafia_.retrieveItem)(item);
+            (0,external_kolmafia_.print)("Returning ".concat(item, " to ").concat((0,external_kolmafia_.getClanName)(), " stash."), src_lib/* HIGHLIGHT */.X2);
+            if ((0,external_kolmafia_.putStash)(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
+          }
+        });
+      } else throw new Error("Error: No garbo_stashClan set.");
+    } else {
+      stashItems.splice(0, stashItems.length);
+    }
   }
 
   (0,session/* startSession */.yj)();
@@ -31225,14 +31250,14 @@ function main() {
       (0,external_kolmafia_.visitUrl)("guild.php?action=buyskill&skillid=32", true);
     }
 
-    var stashItems = (0,template_string/* $items */.vS)(src_templateObject51 || (src_templateObject51 = src_taggedTemplateLiteral(["repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving"])));
+    var _stashItems = (0,template_string/* $items */.vS)(src_templateObject51 || (src_templateObject51 = src_taggedTemplateLiteral(["repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving"])));
 
     if ((0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() && ((0,external_kolmafia_.myClass)() !== (0,template_string/* $class */._$)(src_templateObject52 || (src_templateObject52 = src_taggedTemplateLiteral(["Seal Clubber"]))) || !(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(src_templateObject53 || (src_templateObject53 = src_taggedTemplateLiteral(["Furious Wallop"])))))) {
-      stashItems.push.apply(stashItems, src_toConsumableArray((0,template_string/* $items */.vS)(src_templateObject54 || (src_templateObject54 = src_taggedTemplateLiteral(["haiku katana, Operation Patriot Shield"])))));
+      _stashItems.push.apply(_stashItems, src_toConsumableArray((0,template_string/* $items */.vS)(src_templateObject54 || (src_templateObject54 = src_taggedTemplateLiteral(["haiku katana, Operation Patriot Shield"])))));
     } // FIXME: Dynamically figure out pointer ring approach.
 
 
-    withStash(stashItems, () => {
+    withStash(_stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
         if (!src_lib/* globalOptions.noDiet */.Xe.noDiet) runDiet(); // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
@@ -31271,6 +31296,7 @@ function main() {
     });
   } finally {
     src_lib/* propertyManager.resetAll */.kr.resetAll();
+    (0,property/* set */.t8)("garboStashItems", stashItems.map(item => (0,external_kolmafia_.toInt)(item).toFixed(0)).join(","));
     (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=".concat(aaBossFlag, "&action=Update"), true);
     if (startingGarden && (0,lib/* have */.lf)(startingGarden)) (0,external_kolmafia_.use)(startingGarden);
     printEmbezzlerLog();
@@ -31616,7 +31642,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("6e0beca1c2d35dbd864aca0e88a256df19c941eb" === mainSha) {
+    if ("e5517aa962b7daa6e65391e1bc1ec57c18afdba1" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
