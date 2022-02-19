@@ -1,4 +1,4 @@
-import { equip, mallPrice, toMonster, useFamiliar, visitUrl } from "kolmafia";
+import { equip, mallPrice, Monster, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
@@ -11,7 +11,6 @@ import {
   clamp,
   CrystalBall,
   get,
-  getBanishedMonsters,
   have,
   property,
   Requirement,
@@ -192,8 +191,15 @@ function initializeCrates(): void {
 
 function initializeDireWarren(): void {
   const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
-  const banishedMonsters = getBanishedMonsters();
-  if (options.some((option) => banishedMonsters.get(option) === $monster`fluffy bunny`)) return;
+  const banishedMonsters = new Map<string, Monster>(
+    get("banishedMonsters")
+      .split(",")
+      .map((tuple) => tuple.split(":") as [string, string, string])
+      .map(([monster, source]) => [source, toMonster(monster)] as [string, Monster])
+  );
+  if (options.some((option) => banishedMonsters.get(option.name) === $monster`fluffy bunny`)) {
+    return;
+  }
 
   if (!have($item`miniature crystal ball`)) {
     options.push(...$items`Louder Than Bomb, tennis ball`);
