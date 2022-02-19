@@ -19063,7 +19063,7 @@ var Macro = /*#__PURE__*/function (_StrictMacro) {
   _createClass(Macro, [{
     key: "submit",
     value: function submit() {
-      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)(this.components.join("\n"));
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)(this.components.join(";"));
       return _get(_getPrototypeOf(Macro.prototype), "submit", this).call(this);
     }
   }, {
@@ -21277,7 +21277,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("2a405c8399443dbd42bd2eb4fcb09cb421d1272c" === mainSha) {
+    if ("6e0beca1c2d35dbd864aca0e88a256df19c941eb" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
