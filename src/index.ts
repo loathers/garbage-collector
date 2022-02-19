@@ -5,6 +5,7 @@ import {
   cliExecute,
   eat,
   getCampground,
+  getClanName,
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
@@ -17,9 +18,11 @@ import {
   myLevel,
   myTurncount,
   print,
+  putStash,
   retrieveItem,
   runChoice,
   setAutoAttack,
+  toInt,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -41,8 +44,10 @@ import {
   adventureMacro,
   adventureMacroAuto,
   clamp,
+  Clan,
   ensureEffect,
   get,
+  getFoldGroup,
   have,
   haveInCampground,
   property,
@@ -78,7 +83,7 @@ import {
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
-import { withStash, withVIPClan } from "./clan";
+import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
@@ -317,6 +322,37 @@ export function main(argString = ""): void {
     }
   }
 
+  if (stashItems.length > 0) {
+    if (
+      userConfirm(
+        `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
+          .map((item) => item.name)
+          .join(",")}. Would you like us to return these to the stash now?`
+      )
+    ) {
+      const clanIdOrName = get("garbo_stashClan", "none");
+      const parsedClanIdOrName =
+        clanIdOrName !== "none"
+          ? clanIdOrName.match(/^\d+$/)
+            ? parseInt(clanIdOrName)
+            : clanIdOrName
+          : null;
+
+      if (parsedClanIdOrName) {
+        Clan.with(parsedClanIdOrName, () => {
+          for (const item of [...stashItems]) {
+            if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
+            retrieveItem(item);
+            print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
+            if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
+          }
+        });
+      } else throw new Error("Error: No garbo_stashClan set.");
+    } else {
+      stashItems.splice(0, stashItems.length);
+    }
+  }
+
   startSession();
   if (!globalOptions.noBarf && !globalOptions.simulateDiet) {
     ensureBarfAccess();
@@ -505,6 +541,7 @@ export function main(argString = ""): void {
     });
   } finally {
     propertyManager.resetAll();
+    set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEmbezzlerLog();
