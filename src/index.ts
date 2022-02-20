@@ -224,6 +224,7 @@ function barfTurn() {
 
   if (myAdventures() === 1) {
     if (
+      have($item`Kramco Sausage-o-Matic™`) &&
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
       get("_sausagesEaten") < 23
     ) {
