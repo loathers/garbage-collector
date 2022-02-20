@@ -138,7 +138,11 @@ function barfTurn() {
     ghostLocation
   ) {
     useFamiliar(freeFightFamiliar());
-    freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
+    freeFightOutfit(
+      new Requirement(ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [], {
+        forceEquip: $items`protonic accelerator pack`,
+      })
+    );
     adventureMacro(ghostLocation, Macro.ghostBustin());
   } else if (
     myInebriety() <= inebrietyLimit() &&
