@@ -3198,7 +3198,6 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* harmony export */   "aY": () => (/* binding */ haveWandererCounter),
 /* harmony export */   "ve": () => (/* binding */ getKramcoWandererChance),
 /* harmony export */   "_D": () => (/* binding */ getFoldGroup),
-/* harmony export */   "$c": () => (/* binding */ getBanishedMonsters),
 /* harmony export */   "N": () => (/* binding */ getAverageAdventures),
 /* harmony export */   "Lo": () => (/* binding */ uneffect),
 /* harmony export */   "cL": () => (/* binding */ questStep),
@@ -3206,7 +3205,7 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* harmony export */   "xI": () => (/* binding */ getSaleValue),
 /* harmony export */   "UL": () => (/* binding */ getTodaysHolidayWanderers)
 /* harmony export */ });
-/* unused harmony exports canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingSpleen, haveCounter, isVoteWandererNow, isWandererNow, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, canUse, noneToNull, getAverage, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
+/* unused harmony exports canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingSpleen, haveCounter, isVoteWandererNow, isWandererNow, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4875);
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_features_array_flat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2580);
@@ -3215,7 +3214,6 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2474);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(678);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8588);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11;
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -3636,7 +3634,7 @@ function getZapGroup(item) {
  */
 
 function getBanishedMonsters() {
-  var banishes = (0,_utils__WEBPACK_IMPORTED_MODULE_5__/* .chunk */ .yo)((0,_property__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("banishedMonsters").split(":"), 3);
+  var banishes = chunk(get("banishedMonsters").split(":"), 3);
   var result = new Map();
 
   var _iterator = _createForOfIteratorHelper(banishes),
@@ -3650,9 +3648,9 @@ function getBanishedMonsters() {
 
       if (foe === undefined || banisher === undefined) break; // toItem doesn"t error if the item doesn"t exist, so we have to use that.
 
-      var banisherItem = (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.toItem)(banisher);
-      var banisherObject = [kolmafia__WEBPACK_IMPORTED_MODULE_2__.Item.get("none"), null].includes(banisherItem) ? kolmafia__WEBPACK_IMPORTED_MODULE_2__.Skill.get(banisher) : banisherItem;
-      result.set(banisherObject, kolmafia__WEBPACK_IMPORTED_MODULE_2__.Monster.get(foe));
+      var banisherItem = toItem(banisher);
+      var banisherObject = [Item.get("none"), null].includes(banisherItem) ? Skill.get(banisher) : banisherItem;
+      result.set(banisherObject, Monster.get(foe));
     }
   } catch (err) {
     _iterator.e(err);
@@ -24011,13 +24009,21 @@ function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableTo
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -24135,8 +24141,17 @@ function initializeCrates() {
 
 function initializeDireWarren() {
   var options = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"])));
-  var banishedMonsters = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getBanishedMonsters */ .$c)();
-  if (options.some(option => banishedMonsters.get(option) === (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$monster */ .O4)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["fluffy bunny"]))))) return;
+  var banishedMonsters = new Map((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2)("banishedMonsters").split(",").map(tuple => tuple.split(":")).map(_ref => {
+    var _ref2 = _slicedToArray(_ref, 2),
+        monster = _ref2[0],
+        source = _ref2[1];
+
+    return [source, (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toMonster)(monster)];
+  }));
+
+  if (options.some(option => banishedMonsters.get(option.name) === (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$monster */ .O4)(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["fluffy bunny"]))))) {
+    return;
+  }
 
   if (!(0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$item */ .xr)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
     options.push.apply(options, _toConsumableArray((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
@@ -31076,7 +31091,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("ef305a9267b16a517664f11a4082f4d61453cc6b"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("3ed291a45c06fe7a79228fbc742cb727cc424d9d"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31669,7 +31684,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("ef305a9267b16a517664f11a4082f4d61453cc6b" === mainSha) {
+    if ("3ed291a45c06fe7a79228fbc742cb727cc424d9d" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
