@@ -23671,7 +23671,7 @@ var EmbezzlerFight = /*#__PURE__*/function () {
 
 function checkUnderwater() {
   // first check to see if underwater even makes sense
-  if (!((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_envyfishEggUsed") || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["envyfish egg"]))))) && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Adventure Underwater") || _outfit__WEBPACK_IMPORTED_MODULE_7__/* .waterBreathingEquipment.some */ .RG.some(libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)) && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Underwater Familiar") || _outfit__WEBPACK_IMPORTED_MODULE_7__/* .familiarWaterBreathingEquipment.some */ .e3.some(libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)) && ((0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Fishy"])))) || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["fishy pipe"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_fishyPipeUsed"))) {
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myLevel)() >= 11 && !((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_envyfishEggUsed") || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["envyfish egg"]))))) && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Adventure Underwater") || _outfit__WEBPACK_IMPORTED_MODULE_7__/* .waterBreathingEquipment.some */ .RG.some(item => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)(item))) && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Underwater Familiar") || _outfit__WEBPACK_IMPORTED_MODULE_7__/* .familiarWaterBreathingEquipment.some */ .e3.some(item => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)(item))) && ((0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Fishy"])))) || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["fishy pipe"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_fishyPipeUsed"))) {
     // then check if the underwater copy makes sense
     if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.mallPrice)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["pulled green taffy"])))) < 10000 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["pulled green taffy"]))))) {
       // unlock the sea
@@ -29155,8 +29155,9 @@ function dailyFights() {
           postCombatActions();
           startWandererCounter();
         }
-      } // REMAINING EMBEZZLER FIGHTS
+      }
 
+      (0,external_kolmafia_.useFamiliar)((0,familiar/* meatFamiliar */.M2)()); // REMAINING EMBEZZLER FIGHTS
 
       var nextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)();
 
@@ -31041,7 +31042,7 @@ function barfTurn() {
   } else {
     // c. set up familiar
     (0,external_kolmafia_.useFamiliar)((0,familiar/* meatFamiliar */.M2)());
-    var location = embezzlerUp ? !(0,property/* get */.U2)("_envyfishEggUsed") && ((0,external_kolmafia_.booleanModifier)("Adventure Underwater") || outfit/* waterBreathingEquipment.some */.RG.some(lib/* have */.lf)) && ((0,external_kolmafia_.booleanModifier)("Underwater Familiar") || outfit/* familiarWaterBreathingEquipment.some */.e3.some(lib/* have */.lf)) && ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(src_templateObject16 || (src_templateObject16 = src_taggedTemplateLiteral(["Fishy"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject17 || (src_templateObject17 = src_taggedTemplateLiteral(["fishy pipe"])))) && !(0,property/* get */.U2)("_fishyPipeUsed")) && !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject18 || (src_templateObject18 = src_taggedTemplateLiteral(["envyfish egg"])))) ? (0,template_string/* $location */.PG)(src_templateObject19 || (src_templateObject19 = src_taggedTemplateLiteral(["The Briny Deeps"]))) : (0,wanderer/* determineDraggableZoneAndEnsureAccess */.x)() : (0,template_string/* $location */.PG)(src_templateObject20 || (src_templateObject20 = src_taggedTemplateLiteral(["Barf Mountain"])));
+    var location = embezzlerUp ? !(0,property/* get */.U2)("_envyfishEggUsed") && (0,external_kolmafia_.myLevel)() >= 11 && ((0,external_kolmafia_.booleanModifier)("Adventure Underwater") || outfit/* waterBreathingEquipment.some */.RG.some(item => (0,lib/* have */.lf)(item))) && ((0,external_kolmafia_.booleanModifier)("Underwater Familiar") || outfit/* familiarWaterBreathingEquipment.some */.e3.some(item => (0,lib/* have */.lf)(item))) && ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(src_templateObject16 || (src_templateObject16 = src_taggedTemplateLiteral(["Fishy"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject17 || (src_templateObject17 = src_taggedTemplateLiteral(["fishy pipe"])))) && !(0,property/* get */.U2)("_fishyPipeUsed")) && !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject18 || (src_templateObject18 = src_taggedTemplateLiteral(["envyfish egg"])))) ? (0,template_string/* $location */.PG)(src_templateObject19 || (src_templateObject19 = src_taggedTemplateLiteral(["The Briny Deeps"]))) : (0,wanderer/* determineDraggableZoneAndEnsureAccess */.x)() : (0,template_string/* $location */.PG)(src_templateObject20 || (src_templateObject20 = src_taggedTemplateLiteral(["Barf Mountain"])));
     var underwater = location === (0,template_string/* $location */.PG)(src_templateObject21 || (src_templateObject21 = src_taggedTemplateLiteral(["The Briny Deeps"])));
 
     if (underwater) {
@@ -31091,7 +31092,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("a67dcd1c327a7966cb581e9214860f7497a77058"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e445d3eda7ef299f3a4f447cc291fff99effe8cf"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31105,7 +31106,7 @@ function main() {
   }
 
   if (!(0,property/* get */.U2)("garbo_skipAscensionCheck", false) && (!(0,property/* get */.U2)("kingLiberated") || (0,external_kolmafia_.myLevel)() < 13)) {
-    var proceedRegardless = (0,external_kolmafia_.userConfirm)("Looks like your ascension may not be done yet. Are you sure you want to garbo?");
+    var proceedRegardless = (0,external_kolmafia_.userConfirm)("Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?");
 
     if (!proceedRegardless) {
       throw new Error("User interrupt requested. Stopping Garbage Collector.");
@@ -31684,7 +31685,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("a67dcd1c327a7966cb581e9214860f7497a77058" === mainSha) {
+    if ("e445d3eda7ef299f3a4f447cc291fff99effe8cf" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
