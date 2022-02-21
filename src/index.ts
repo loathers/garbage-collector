@@ -280,7 +280,7 @@ export function main(argString = ""): void {
 
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
     const proceedRegardless = userConfirm(
-      "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
+      "Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?"
     );
     if (!proceedRegardless) {
       throw new Error("User interrupt requested. Stopping Garbage Collector.");

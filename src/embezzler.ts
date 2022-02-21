@@ -14,6 +14,7 @@ import {
   myFamiliar,
   myHash,
   myInebriety,
+  myLevel,
   myTurncount,
   print,
   retrieveItem,
@@ -190,6 +191,7 @@ export class EmbezzlerFight {
 function checkUnderwater() {
   // first check to see if underwater even makes sense
   if (
+    myLevel() >= 11 &&
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
     (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
     (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
