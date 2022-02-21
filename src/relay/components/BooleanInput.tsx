@@ -6,7 +6,7 @@ function BooleanInput(props: SettingProp): JSX.Element {
 
   return (
     <label className="checkcontainer">
-      <input type="hidden" name={props.name} value={value} />
+      <input type="hidden" name={props.name} value={value.toString()} />
       <div
         className="toggle-track"
         onClick={() => {
