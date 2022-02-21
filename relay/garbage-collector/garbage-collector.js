@@ -8792,7 +8792,7 @@ function BooleanInput(props) {
   }, /*#__PURE__*/react.createElement("input", {
     type: "hidden",
     name: props.name,
-    value: value
+    value: value.toString()
   }), /*#__PURE__*/react.createElement("div", {
     className: "toggle-track",
     onClick: function onClick() {

@@ -21294,7 +21294,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("e445d3eda7ef299f3a4f447cc291fff99effe8cf" === mainSha) {
+    if ("0244a3490912bc07bc23b39fb118c047fe76ee67" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
