@@ -173,6 +173,7 @@ function barfTurn() {
     useFamiliar(meatFamiliar());
     const location = embezzlerUp
       ? !get("_envyfishEggUsed") &&
+        myLevel() >= 11 &&
         (booleanModifier("Adventure Underwater") ||
           waterBreathingEquipment.some((item) => have(item))) &&
         (booleanModifier("Underwater Familiar") ||
