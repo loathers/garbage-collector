@@ -173,8 +173,10 @@ function barfTurn() {
     useFamiliar(meatFamiliar());
     const location = embezzlerUp
       ? !get("_envyfishEggUsed") &&
-        (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
-        (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
+        (booleanModifier("Adventure Underwater") ||
+          waterBreathingEquipment.some((item) => have(item))) &&
+        (booleanModifier("Underwater Familiar") ||
+          familiarWaterBreathingEquipment.some((item) => have(item))) &&
         (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
         !have($item`envyfish egg`)
         ? $location`The Briny Deeps`
