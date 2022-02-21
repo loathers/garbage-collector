@@ -412,6 +412,8 @@ export function dailyFights(): void {
         }
       }
 
+      useFamiliar(meatFamiliar());
+
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getNextEmbezzlerFight();
       while (nextFight !== null) {
