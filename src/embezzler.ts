@@ -193,8 +193,10 @@ function checkUnderwater() {
   if (
     myLevel() >= 11 &&
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
-    (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some((item) => have(item))) &&
-    (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some((item) => have(item))) &&
+    (booleanModifier("Adventure Underwater") ||
+      waterBreathingEquipment.some((item) => have(item))) &&
+    (booleanModifier("Underwater Familiar") ||
+      familiarWaterBreathingEquipment.some((item) => have(item))) &&
     (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
   ) {
     // then check if the underwater copy makes sense
