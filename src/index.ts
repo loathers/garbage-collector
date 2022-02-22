@@ -351,6 +351,13 @@ export function main(argString = ""): void {
           for (const item of [...stashItems]) {
             if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
             retrieveItem(item);
+            if (
+              item === $item`Spooky Putty sheet` &&
+              !have($item`Spooky Putty sheet`) &&
+              have($item`Spooky Putty monster`)
+            ) {
+              continue;
+            }
             print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
             if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
           }
