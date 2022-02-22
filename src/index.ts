@@ -350,10 +350,10 @@ export function main(argString = ""): void {
         Clan.with(parsedClanIdOrName, () => {
           for (const item of [...stashItems]) {
             if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
-            retrieveItem(item);
+            const retrieved = retrieveItem(item);
             if (
               item === $item`Spooky Putty sheet` &&
-              !have($item`Spooky Putty sheet`) &&
+              !retrieved &&
               have($item`Spooky Putty monster`)
             ) {
               continue;
