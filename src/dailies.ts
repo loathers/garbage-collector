@@ -625,7 +625,7 @@ function pantogram(): void {
   Pantogram.makePants(
     alignment,
     "Sleaze Resistance: 2",
-    "HP Regen Max: 15",
+    "MP Regen Max: 15",
     "Drops Items: true",
     "Meat Drop: 60"
   );
