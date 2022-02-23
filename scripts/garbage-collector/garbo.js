@@ -30864,7 +30864,7 @@ function dailies_pantogram() {
   (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(dailies_templateObject125 || (dailies_templateObject125 = dailies_taggedTemplateLiteral(["porquoise"]))), pantogramValue - (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(dailies_templateObject126 || (dailies_templateObject126 = dailies_taggedTemplateLiteral(["ten-leaf clover"])))), true);
   (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject127 || (dailies_templateObject127 = dailies_taggedTemplateLiteral(["bubblin' crude"]))));
   var alignment = (_Map$get = new Map([[(0,template_string/* $stat */.Ri)(dailies_templateObject128 || (dailies_templateObject128 = dailies_taggedTemplateLiteral(["Muscle"]))), "Muscle"], [(0,template_string/* $stat */.Ri)(dailies_templateObject129 || (dailies_templateObject129 = dailies_taggedTemplateLiteral(["Mysticality"]))), "Mysticality"], [(0,template_string/* $stat */.Ri)(dailies_templateObject130 || (dailies_templateObject130 = dailies_taggedTemplateLiteral(["Moxie"]))), "Moxie"]]).get((0,external_kolmafia_.myPrimestat)())) !== null && _Map$get !== void 0 ? _Map$get : "Mysticality";
-  makePants(alignment, "Sleaze Resistance: 2", "HP Regen Max: 15", "Drops Items: true", "Meat Drop: 60");
+  makePants(alignment, "Sleaze Resistance: 2", "MP Regen Max: 15", "Drops Items: true", "Meat Drop: 60");
 }
 
 function pickCargoPocket() {
@@ -31092,7 +31092,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("0244a3490912bc07bc23b39fb118c047fe76ee67"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("ae486a6bb057335bbaba5c0f961694f2194d35bd"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31685,7 +31685,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("0244a3490912bc07bc23b39fb118c047fe76ee67" === mainSha) {
+    if ("ae486a6bb057335bbaba5c0f961694f2194d35bd" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
