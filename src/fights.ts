@@ -74,6 +74,7 @@ import {
   Counter,
   CrystalBall,
   ensureEffect,
+  FindActionSourceConstraints,
   get,
   getTodaysHolidayWanderers,
   have,
@@ -575,21 +576,25 @@ class FreeFight {
 
 class FreeRunFight extends FreeFight {
   freeRun: (runSource: ActionSource) => void;
+  constraints: FindActionSourceConstraints;
 
   constructor(
     available: () => number | boolean,
     run: (runSource: ActionSource) => void,
-    options: FreeFightOptions = {}
+    options: FreeFightOptions = {},
+    freeRunPicker: FindActionSourceConstraints = {}
   ) {
     super(available, () => null, false, options);
     this.freeRun = run;
+    this.constraints = freeRunPicker;
   }
 
   runAll() {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
-      const runSource = tryFindFreeRun({ noFamiliar: () => this.options.familiar !== undefined });
+      const constraints = {noFamiliar: () => this.options.familiar !== undefined, ...this.constraints};
+      const runSource = tryFindFreeRun(constraints);
       if (!runSource) break;
       useFamiliar(
         runSource.constraints.familiar?.() ?? this.options.familiar?.() ?? freeFightFamiliar()
