@@ -26452,7 +26452,7 @@ var StashManager = /*#__PURE__*/function () {
 
     clan_defineProperty(this, "taken", new Map());
 
-    var clanIdOrName = (0,property/* get */.U2)("garbo_stashClan");
+    var clanIdOrName = (0,property/* get */.U2)("garbo_stashClan", "none");
     this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
     this.enabled = 0 !== this.clanIdOrName && "none" !== this.clanIdOrName;
   }
@@ -31092,7 +31092,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("ae486a6bb057335bbaba5c0f961694f2194d35bd"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("526cb25d090357ce6ec9ad0962c62515f0ae3c90"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31685,7 +31685,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("ae486a6bb057335bbaba5c0f961694f2194d35bd" === mainSha) {
+    if ("526cb25d090357ce6ec9ad0962c62515f0ae3c90" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
