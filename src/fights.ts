@@ -579,7 +579,6 @@ class FreeRunFight extends FreeFight {
   constructor(
     available: () => number | boolean,
     run: (runSource: ActionSource) => void,
-    tentacle: boolean,
     options: FreeFightOptions = {}
   ) {
     super(available, () => null, false, options);
@@ -1296,7 +1295,6 @@ const freeRunFightSources = [
       });
       adventureMacro($location`The Black Forest`, runSource.macro);
     },
-    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
     }
@@ -1313,7 +1311,6 @@ const freeRunFightSources = [
       });
       adventureMacro($location`The Spooky Forest`, runSource.macro);
     },
-    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
     }
@@ -1327,7 +1324,6 @@ const freeRunFightSources = [
     (runSource: ActionSource) => {
       adventureMacro($location`The Dire Warren`, runSource.macro);
     },
-    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
     }
@@ -1351,7 +1347,6 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    false,
     {
       familiar: () => $familiar`Space Jellyfish`,
     }
@@ -1374,7 +1369,6 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    false,
     {
       familiar: () => $familiar`Space Jellyfish`,
       requirements: () => [new Requirement([], { forceEquip: $items`Powerful Glove` })],
@@ -1417,7 +1411,6 @@ const freeRunFightSources = [
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
     },
-    false,
     {
       requirements: () => [
         new Requirement([], {
@@ -1463,7 +1456,6 @@ const freeRunFightSources = [
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
     },
-    false,
     {
       requirements: () => [
         new Requirement([], {
@@ -1518,7 +1510,6 @@ const freeRunFightSources = [
         setAutoAttack(0);
       }
     },
-    false,
     {
       familiar: () =>
         have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11 ? $familiar`XO Skeleton` : null,
@@ -1559,7 +1550,6 @@ const freeRunFightSources = [
         setAutoAttack(0);
       }
     },
-    false,
     {
       familiar: () => $familiar`XO Skeleton`,
       requirements: () => {
@@ -1583,7 +1573,6 @@ const freeRunFightSources = [
         ).step(runSource.macro)
       );
     },
-    false,
     {
       familiar: () =>
         have($familiar`Mini-Hipster`) ? $familiar`Mini-Hipster` : $familiar`Artistic Goth Kid`,
@@ -1616,7 +1605,6 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    false,
     {
       requirements: () => [
         new Requirement([], {
