@@ -41,6 +41,7 @@ import {
   takeCloset,
   toInt,
   toItem,
+  toSlot,
   totalTurnsPlayed,
   toUrl,
   use,
@@ -593,7 +594,10 @@ class FreeRunFight extends FreeFight {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
-      const constraints = {noFamiliar: () => this.options.familiar !== undefined, ...this.constraints};
+      const constraints = {
+        noFamiliar: () => this.options.familiar !== undefined,
+        ...this.constraints,
+      };
       const runSource = tryFindFreeRun(constraints);
       if (!runSource) break;
       useFamiliar(
@@ -1286,6 +1290,17 @@ const freeFightSources = [
   ),
 ];
 
+const latteActionSourceFinderConstraints = {
+  allowedAction: (action: ActionSource) => {
+    const forceEquip =
+      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? [];
+    return (
+      forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+      forceEquip.filter((equipment) => toSlot(equipment) === $slot`weapon`).length < 2
+    );
+  },
+};
+
 const freeRunFightSources = [
   // Unlock Latte ingredients
   new FreeRunFight(
@@ -1302,7 +1317,8 @@ const freeRunFightSources = [
     },
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
-    }
+    },
+    latteActionSourceFinderConstraints
   ),
   new FreeRunFight(
     () =>
@@ -1318,7 +1334,8 @@ const freeRunFightSources = [
     },
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
-    }
+    },
+    latteActionSourceFinderConstraints
   ),
   new FreeRunFight(
     () =>
@@ -1331,7 +1348,8 @@ const freeRunFightSources = [
     },
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
-    }
+    },
+    latteActionSourceFinderConstraints
   ),
 
   new FreeRunFight(
