@@ -1292,11 +1292,13 @@ const freeFightSources = [
 
 const latteActionSourceFinderConstraints = {
   allowedAction: (action: ActionSource) => {
-    const forceEquip =
-      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? [];
+    const forceEquipsOtherThanLatte = (
+      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
+    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
     return (
-      forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      forceEquip.filter((equipment) => toSlot(equipment) === $slot`weapon`).length < 2
+      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+      forceEquipsOtherThanLatte.filter((equipment) => toSlot(equipment) === $slot`weapon`).length <
+        2
     );
   },
 };
