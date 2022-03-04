@@ -437,7 +437,7 @@ function checkVolcanoQuest() {
       (entry) =>
         Array.from(volcanoProperties.keys()).includes(entry.item) && entry.price < volcoinoValue
     )
-    .sort((a, b) => b.price - a.price);
+    .sort((a, b) => a.price - b.price);
 
   if (volcanoItems.length) {
     const chosenItem = volcanoItems[0];
