@@ -344,13 +344,13 @@ export function dailyFights(): void {
           {
             property: "_garbo_meatChain",
             maximizeParameters: [], // implicitly maximize against meat
-            macro: firstChainMacro(),
+            macro: firstChainMacro,
             goalMaximize: (requirements: Requirement) => meatOutfit(true, requirements),
           },
           {
             property: "_garbo_weightChain",
             maximizeParameters: ["Familiar Weight"],
-            macro: secondChainMacro(),
+            macro: secondChainMacro,
             goalMaximize: (requirements: Requirement) =>
               maximizeCached(requirements.maximizeParameters, requirements.maximizeOptions),
           },
@@ -393,7 +393,7 @@ export function dailyFights(): void {
           if (get("_pocketProfessorLectures") < pocketProfessorLectures()) {
             const startLectures = get("_pocketProfessorLectures");
             fightSource.run({
-              macro: macro,
+              macro: macro(),
             });
             embezzlerLog.initialEmbezzlersFought +=
               1 + get("_pocketProfessorLectures") - startLectures;
