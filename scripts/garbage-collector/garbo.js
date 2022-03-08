@@ -31310,12 +31310,15 @@ function dailies_pantogram() {
     pantogramValue = (100 + 0.6 * src_lib/* baseMeat */.Vq - bestPantsValue * src_lib/* baseMeat */.Vq / 100) * (0,embezzler/* estimatedTurns */.AN)();
   }
 
-  if (Math.min.apply(Math, dailies_toConsumableArray((0,template_string/* $items */.vS)(dailies_templateObject122 || (dailies_templateObject122 = dailies_taggedTemplateLiteral(["ten-leaf clover, disassembled clover"]))).map(item => (0,external_kolmafia_.mallPrice)(item)))) + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(dailies_templateObject123 || (dailies_templateObject123 = dailies_taggedTemplateLiteral(["porquoise"])))) > pantogramValue) {
+  var cloverPrice = Math.min.apply(Math, dailies_toConsumableArray((0,template_string/* $items */.vS)(dailies_templateObject122 || (dailies_templateObject122 = dailies_taggedTemplateLiteral(["ten-leaf clover, disassembled clover"]))).map(item => (0,external_kolmafia_.mallPrice)(item))));
+
+  if (cloverPrice + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(dailies_templateObject123 || (dailies_templateObject123 = dailies_taggedTemplateLiteral(["porquoise"])))) > pantogramValue) {
     return;
   }
 
-  (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject124 || (dailies_templateObject124 = dailies_taggedTemplateLiteral(["ten-leaf clover"]))));
-  (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(dailies_templateObject125 || (dailies_templateObject125 = dailies_taggedTemplateLiteral(["porquoise"]))), pantogramValue - (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(dailies_templateObject126 || (dailies_templateObject126 = dailies_taggedTemplateLiteral(["ten-leaf clover"])))), true);
+  (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(dailies_templateObject124 || (dailies_templateObject124 = dailies_taggedTemplateLiteral(["porquoise"]))), pantogramValue - cloverPrice, false);
+  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailies_templateObject125 || (dailies_templateObject125 = dailies_taggedTemplateLiteral(["porquoise"]))))) return;
+  (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject126 || (dailies_templateObject126 = dailies_taggedTemplateLiteral(["ten-leaf clover"]))));
   (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject127 || (dailies_templateObject127 = dailies_taggedTemplateLiteral(["bubblin' crude"]))));
   var alignment = (_Map$get = new Map([[(0,template_string/* $stat */.Ri)(dailies_templateObject128 || (dailies_templateObject128 = dailies_taggedTemplateLiteral(["Muscle"]))), "Muscle"], [(0,template_string/* $stat */.Ri)(dailies_templateObject129 || (dailies_templateObject129 = dailies_taggedTemplateLiteral(["Mysticality"]))), "Mysticality"], [(0,template_string/* $stat */.Ri)(dailies_templateObject130 || (dailies_templateObject130 = dailies_taggedTemplateLiteral(["Moxie"]))), "Moxie"]]).get((0,external_kolmafia_.myPrimestat)())) !== null && _Map$get !== void 0 ? _Map$get : "Mysticality";
   makePants(alignment, "Sleaze Resistance: 2", "MP Regen Max: 15", "Drops Items: true", "Meat Drop: 60");
@@ -31546,7 +31549,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1cc848c1c0afed13696824a89f1a61248fb8a828"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("7fa529614923db4ad445954429679b3eef919ac8"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32139,7 +32142,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("1cc848c1c0afed13696824a89f1a61248fb8a828" === mainSha) {
+    if ("7fa529614923db4ad445954429679b3eef919ac8" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
