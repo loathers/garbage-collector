@@ -151,8 +151,12 @@ export function meatMood(urKels = false): Mood {
   return mood;
 }
 
-export function freeFightMood(): Mood {
+export function freeFightMood(...additionalEffects: Effect[]): Mood {
   const mood = new Mood();
+
+  for (const effect of additionalEffects) {
+    mood.effect(effect);
+  }
 
   if (!get("_garbo_defectiveTokenAttempted", false)) {
     set("_garbo_defectiveTokenAttempted", true);
@@ -204,7 +208,7 @@ export function freeFightMood(): Mood {
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
   }
-  shrugBadEffects();
+  shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
@@ -217,9 +221,10 @@ const stings = [
   $effect`Yes, Can Haz`,
 ];
 const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
-function shrugBadEffects() {
-  [...stings, ...textAlteringEffects].forEach((effect) => {
-    if (have(effect)) {
+const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
+function shrugBadEffects(...exclude: Effect[]) {
+  [...stings, ...textAlteringEffects, ...teleportEffects].forEach((effect) => {
+    if (have(effect) && !exclude.includes(effect)) {
       uneffect(effect);
     }
   });
