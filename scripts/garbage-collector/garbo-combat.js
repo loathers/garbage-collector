@@ -4284,7 +4284,7 @@ function reminiscesLeft() {
  */
 
 function monstersReminisced() {
-  return parseLocketProperty().map(id => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toMonster)(parseInt(id)));
+  return parseLocketProperty().map(id => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toMonster)(id));
 }
 /**
  * Fight a Monster using the Combat Lover's Locket
@@ -21803,7 +21803,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("d961e4f6228190bfcdda64e0bae45174f532c6a4" === mainSha) {
+    if ("5ec29714d77b557c4360975c36b36bb0395a31d6" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
