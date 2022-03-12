@@ -45,6 +45,7 @@ import {
   have,
   property,
   Requirement,
+  set,
   SourceTerminal,
   sum,
 } from "libram";
@@ -695,6 +696,10 @@ export const embezzlerSources = [
     () => {
       retrieveItem($item`Eight Days a Week Pill Keeper`);
       cliExecute("pillkeeper semirare");
+      if (!have($effect`Lucky!`)) {
+        set("_freePillKeeperUsed", true);
+        return;
+      }
       adventureMacro($location`Cobb's Knob Treasury`, embezzlerMacro());
     }
   ),
