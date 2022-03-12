@@ -1177,10 +1177,10 @@
     "@babel/helper-validator-option" "^7.14.5"
     "@babel/plugin-transform-typescript" "^7.16.0"
 
-"@babel/runtime-corejs3@^7.14.9":
-  version "7.16.8"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.16.8.tgz#ea533d96eda6fdc76b1812248e9fbd0c11d4a1a7"
-  integrity sha512-3fKhuICS1lMz0plI5ktOE/yEtBRMVxplzRkdn6mJQ197XiY0JnrzYV0+Mxozq3JZ8SBV9Ecurmw1XsGbwOf+Sg==
+"@babel/runtime-corejs3@^7.17.2":
+  version "7.17.2"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.17.2.tgz#fdca2cd05fba63388babe85d349b6801b008fd13"
+  integrity sha512-NcKtr2epxfIrNM4VOmPKO46TvDMCBhgi2CrSHaEarrz+Plk2K5r9QemmOFTGpZaoKnWoGH5MO+CzeRsih/Fcgg==
   dependencies:
     core-js-pure "^3.20.2"
     regenerator-runtime "^0.13.4"
@@ -2148,10 +2148,10 @@ core-js-pure@^3.20.2:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.21.0.tgz#819adc8dfb808205ce25b51d50591becd615db7e"
   integrity sha512-VaJUunCZLnxuDbo1rNOzwbet9E1K9joiXS5+DQMPtgxd24wfsZbJZMMfQLGYMlCUvSxLfsRUUhoOR2x28mFfeg==
 
-core-js@3.15.2:
-  version "3.15.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.15.2.tgz#740660d2ff55ef34ce664d7e2455119c5bdd3d61"
-  integrity sha512-tKs41J7NJVuaya8DxIOCnl8QuPHx5/ZVbFo1oKgVl1qHFBBrDctzQGtuLjPpRdNTWmKPH6oEvgN/MUID+l485Q==
+core-js@^3.21.0:
+  version "3.21.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.21.1.tgz#f2e0ddc1fc43da6f904706e8e955bc19d06a0d94"
+  integrity sha512-FRq5b/VMrWlrmCzwRrpDYNxyHP9BcAZC+xHJaqTgIE5091ZV1NTmyh0sGOg5XqpnHvR0svdy0sv1gWA1zmhxig==
 
 core-js@^3.8.0:
   version "3.19.1"
@@ -3222,13 +3222,13 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.6.6:
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.6.tgz#c5b2575ad47b21bc1baa91c71efa422ddf55cb56"
-  integrity sha512-1lCoYpSApYm5mlFvyTdeyTm0fXfgNpOWtwM1AcXqUOPudpFI53vwI8BrqCm+5sFNMS0bGWlnu4lvrJWkaObC1Q==
+libram@^0.6.8:
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.8.tgz#5e5cc77396446667a22dfbf258bbe1d50e5b571f"
+  integrity sha512-PzbC+T8kG0opzJ2/kxGQ1rAo+o8MTDu/mSHkSSkMi+ruTAnH1MhJXEfimmB8dTJs28ojj8b5jGS1PU1u7q/v6A==
   dependencies:
-    "@babel/runtime-corejs3" "^7.14.9"
-    core-js "3.15.2"
+    "@babel/runtime-corejs3" "^7.17.2"
+    core-js "^3.21.0"
     kolmafia "^2.1.1"
     lodash "^4.17.21"
 
