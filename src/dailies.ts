@@ -437,7 +437,7 @@ function checkVolcanoQuest() {
       (entry) =>
         Array.from(volcanoProperties.keys()).includes(entry.item) && entry.price < volcoinoValue
     )
-    .sort((a, b) => b.price - a.price);
+    .sort((a, b) => a.price - b.price);
 
   if (volcanoItems.length) {
     const chosenItem = volcanoItems[0];
@@ -607,15 +607,15 @@ function pantogram(): void {
         .sort((a, b) => b - a)[0] ?? 0;
     pantogramValue = (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedTurns();
   }
-  if (
-    Math.min(...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item))) +
-      mallPrice($item`porquoise`) >
-    pantogramValue
-  ) {
+  const cloverPrice = Math.min(
+    ...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item))
+  );
+  if (cloverPrice + mallPrice($item`porquoise`) > pantogramValue) {
     return;
   }
+  acquire(1, $item`porquoise`, pantogramValue - cloverPrice, false);
+  if (!have($item`porquoise`)) return;
   retrieveItem($item`ten-leaf clover`);
-  acquire(1, $item`porquoise`, pantogramValue - mallPrice($item`ten-leaf clover`), true);
   retrieveItem($item`bubblin' crude`);
   const alignment = (new Map([
     [$stat`Muscle`, "Muscle"],
@@ -625,7 +625,7 @@ function pantogram(): void {
   Pantogram.makePants(
     alignment,
     "Sleaze Resistance: 2",
-    "HP Regen Max: 15",
+    "MP Regen Max: 15",
     "Drops Items: true",
     "Meat Drop: 60"
   );

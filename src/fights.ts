@@ -41,6 +41,7 @@ import {
   takeCloset,
   toInt,
   toItem,
+  toSlot,
   totalTurnsPlayed,
   toUrl,
   use,
@@ -74,6 +75,7 @@ import {
   Counter,
   CrystalBall,
   ensureEffect,
+  FindActionSourceConstraints,
   get,
   getTodaysHolidayWanderers,
   have,
@@ -153,23 +155,21 @@ const firstChainMacro = () =>
 const secondChainMacro = () =>
   Macro.if_(
     $monster`Knob Goblin Embezzler`,
-    Macro.externalIf(
-      myFamiliar() === $familiar`Pocket Professor`,
-      Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill($skill`Meteor Shower`))
-        .if_(
-          "!hasskill Lecture on Relativity",
-          Macro.externalIf(
-            get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
-            Macro.tryCopier($skill`Digitize`)
-          )
-            .tryCopier($item`Spooky Putty sheet`)
-            .tryCopier($item`Rain-Doh black box`)
-            .tryCopier($item`4-d camera`)
-            .tryCopier($item`unfinished ice sculpture`)
-            .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
+    Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill($skill`Meteor Shower`))
+      .if_(
+        "!hasskill Lecture on Relativity",
+        Macro.externalIf(
+          get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+          Macro.tryCopier($skill`Digitize`)
         )
-        .trySkill($skill`lecture on relativity`)
-    ).meatKill()
+          .tryCopier($item`Spooky Putty sheet`)
+          .tryCopier($item`Rain-Doh black box`)
+          .tryCopier($item`4-d camera`)
+          .tryCopier($item`unfinished ice sculpture`)
+          .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
+      )
+      .trySkill($skill`lecture on relativity`)
+      .meatKill()
   ).abort();
 
 function embezzlerSetup() {
@@ -346,13 +346,13 @@ export function dailyFights(): void {
           {
             property: "_garbo_meatChain",
             maximizeParameters: [], // implicitly maximize against meat
-            macro: firstChainMacro(),
+            macro: firstChainMacro,
             goalMaximize: (requirements: Requirement) => meatOutfit(true, requirements),
           },
           {
             property: "_garbo_weightChain",
             maximizeParameters: ["Familiar Weight"],
-            macro: secondChainMacro(),
+            macro: secondChainMacro,
             goalMaximize: (requirements: Requirement) =>
               maximizeCached(requirements.maximizeParameters, requirements.maximizeOptions),
           },
@@ -395,7 +395,7 @@ export function dailyFights(): void {
           if (get("_pocketProfessorLectures") < pocketProfessorLectures()) {
             const startLectures = get("_pocketProfessorLectures");
             fightSource.run({
-              macro: macro,
+              macro: macro(),
             });
             embezzlerLog.initialEmbezzlersFought +=
               1 + get("_pocketProfessorLectures") - startLectures;
@@ -575,22 +575,28 @@ class FreeFight {
 
 class FreeRunFight extends FreeFight {
   freeRun: (runSource: ActionSource) => void;
+  constraints: FindActionSourceConstraints;
 
   constructor(
     available: () => number | boolean,
     run: (runSource: ActionSource) => void,
-    tentacle: boolean,
-    options: FreeFightOptions = {}
+    options: FreeFightOptions = {},
+    freeRunPicker: FindActionSourceConstraints = {}
   ) {
     super(available, () => null, false, options);
     this.freeRun = run;
+    this.constraints = freeRunPicker;
   }
 
   runAll() {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
     while (this.available()) {
-      const runSource = tryFindFreeRun({ noFamiliar: () => this.options.familiar !== undefined });
+      const constraints = {
+        noFamiliar: () => this.options.familiar !== undefined,
+        ...this.constraints,
+      };
+      const runSource = tryFindFreeRun(constraints);
       if (!runSource) break;
       useFamiliar(
         runSource.constraints.familiar?.() ?? this.options.familiar?.() ?? freeFightFamiliar()
@@ -1229,10 +1235,7 @@ const freeFightSources = [
     () => {
       const monster = locketMonster();
       if (!monster) return;
-      withMacro(Macro.basicCombat(), () => {
-        CombatLoversLocket.reminisce(monster);
-        runCombat();
-      });
+      withMacro(Macro.basicCombat(), () => CombatLoversLocket.reminisce(monster));
     },
     true
   ),
@@ -1282,6 +1285,19 @@ const freeFightSources = [
   ),
 ];
 
+const latteActionSourceFinderConstraints = {
+  allowedAction: (action: ActionSource) => {
+    const forceEquipsOtherThanLatte = (
+      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
+    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
+    return (
+      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+      forceEquipsOtherThanLatte.filter((equipment) => toSlot(equipment) === $slot`weapon`).length <
+        2
+    );
+  },
+};
+
 const freeRunFightSources = [
   // Unlock Latte ingredients
   new FreeRunFight(
@@ -1296,10 +1312,10 @@ const freeRunFightSources = [
       });
       adventureMacro($location`The Black Forest`, runSource.macro);
     },
-    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
-    }
+    },
+    latteActionSourceFinderConstraints
   ),
   new FreeRunFight(
     () =>
@@ -1313,10 +1329,10 @@ const freeRunFightSources = [
       });
       adventureMacro($location`The Spooky Forest`, runSource.macro);
     },
-    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
-    }
+    },
+    latteActionSourceFinderConstraints
   ),
   new FreeRunFight(
     () =>
@@ -1327,10 +1343,10 @@ const freeRunFightSources = [
     (runSource: ActionSource) => {
       adventureMacro($location`The Dire Warren`, runSource.macro);
     },
-    false,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
-    }
+    },
+    latteActionSourceFinderConstraints
   ),
 
   new FreeRunFight(
@@ -1351,7 +1367,6 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    false,
     {
       familiar: () => $familiar`Space Jellyfish`,
     }
@@ -1374,7 +1389,6 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    false,
     {
       familiar: () => $familiar`Space Jellyfish`,
       requirements: () => [new Requirement([], { forceEquip: $items`Powerful Glove` })],
@@ -1417,7 +1431,6 @@ const freeRunFightSources = [
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
     },
-    false,
     {
       requirements: () => [
         new Requirement([], {
@@ -1463,7 +1476,6 @@ const freeRunFightSources = [
         set("_gingerbreadCityTurns", 1 + get("_gingerbreadCityTurns"));
       }
     },
-    false,
     {
       requirements: () => [
         new Requirement([], {
@@ -1518,7 +1530,6 @@ const freeRunFightSources = [
         setAutoAttack(0);
       }
     },
-    false,
     {
       familiar: () =>
         have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11 ? $familiar`XO Skeleton` : null,
@@ -1559,7 +1570,6 @@ const freeRunFightSources = [
         setAutoAttack(0);
       }
     },
-    false,
     {
       familiar: () => $familiar`XO Skeleton`,
       requirements: () => {
@@ -1583,7 +1593,6 @@ const freeRunFightSources = [
         ).step(runSource.macro)
       );
     },
-    false,
     {
       familiar: () =>
         have($familiar`Mini-Hipster`) ? $familiar`Mini-Hipster` : $familiar`Artistic Goth Kid`,
@@ -1616,7 +1625,6 @@ const freeRunFightSources = [
           .step(runSource.macro)
       );
     },
-    false,
     {
       requirements: () => [
         new Requirement([], {

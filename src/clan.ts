@@ -72,7 +72,7 @@ export class StashManager {
   taken = new Map<Item, number>();
 
   constructor() {
-    const clanIdOrName = get("garbo_stashClan");
+    const clanIdOrName = get("garbo_stashClan", "none");
     this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
     this.enabled = 0 !== this.clanIdOrName && "none" !== this.clanIdOrName;
   }
