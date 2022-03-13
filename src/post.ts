@@ -3,6 +3,7 @@ import {
   descToItem,
   getWorkshed,
   Item,
+  logprint,
   myAdventures,
   reverseNumberology,
   runChoice,
@@ -16,6 +17,7 @@ import { garboValue, sessionSinceStart } from "./session";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
+  logprint("DEBUG: garbo recognizes your workshed as the CMC.");
 
   if (
     property.getNumber("_coldMedicineConsults") >= 5 ||
@@ -23,6 +25,7 @@ function coldMedicineCabinet(): void {
   ) {
     return;
   }
+  logprint("DEBUG: garbo plans to visit the cold medicine cabinet.");
   const options = visitUrl("campground.php?action=workshed");
   let i = 0;
   let match;
@@ -41,6 +44,7 @@ function coldMedicineCabinet(): void {
 
   const bestItem = argmax(Array.from(itemChoices.keys()).map((i) => [i, garboValue(i)]));
   const bestChoice = itemChoices.get(bestItem);
+  logprint(`DEBUG: garbo thinks the best item is ${bestItem}, with choice number ${bestChoice}.`);
   if (bestChoice && bestChoice > 0) {
     visitUrl("campground.php?action=workshed");
     runChoice(bestChoice);
