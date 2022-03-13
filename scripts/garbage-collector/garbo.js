@@ -28127,6 +28127,7 @@ function consumeDiet(diet, name) {
         try {
           for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
             var _menuItem = _step3.value;
+            (0,external_kolmafia_.logprint)("Considering item ".concat(_menuItem.item, "."));
 
             if (_menuItem.organ === "booze" && _menuItem.size === 1 && !(0,property/* get */.U2)("_mimeArmyShotglassUsed")) {
               countToConsume = 1;
@@ -28134,6 +28135,7 @@ function consumeDiet(diet, name) {
               countToConsume = Math.min(countToConsume, Math.floor(capacity[_menuItem.organ] / _menuItem.size));
             }
 
+            (0,external_kolmafia_.logprint)("Based on organ size, planning to consume ".concat(countToConsume, "."));
             var cleaning = stomachLiverCleaners.get(_menuItem.item);
 
             if (cleaning) {
@@ -28144,12 +28146,15 @@ function consumeDiet(diet, name) {
               if ((0,external_kolmafia_.myFullness)() + fullness < 0 || (0,external_kolmafia_.myInebriety)() + inebriety < 0) {
                 countToConsume = 0;
               }
+
+              (0,external_kolmafia_.logprint)("Based on organ-cleaning, planning to consume ".concat(countToConsume, "."));
             }
 
             var spleenCleaned = spleenCleaners.get(_menuItem.item);
 
             if (spleenCleaned) {
               countToConsume = Math.min(countToConsume, Math.floor((0,external_kolmafia_.mySpleenUse)() / spleenCleaned));
+              (0,external_kolmafia_.logprint)("Based on organ-cleaning, planning to consume ".concat(countToConsume, "."));
             }
           }
         } catch (err) {
@@ -29269,11 +29274,13 @@ function post_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.sl
 
 function coldMedicineCabinet() {
   if ((0,external_kolmafia_.getWorkshed)() !== (0,template_string/* $item */.xr)(post_templateObject || (post_templateObject = post_taggedTemplateLiteral(["cold medicine cabinet"])))) return;
+  (0,external_kolmafia_.logprint)("DEBUG: garbo recognizes your workshed as the CMC.");
 
   if (property/* getNumber */.Dx("_coldMedicineConsults") >= 5 || property/* getNumber */.Dx("_nextColdMedicineConsult") > (0,external_kolmafia_.totalTurnsPlayed)()) {
     return;
   }
 
+  (0,external_kolmafia_.logprint)("DEBUG: garbo plans to visit the cold medicine cabinet.");
   var options = (0,external_kolmafia_.visitUrl)("campground.php?action=workshed");
   var i = 0;
   var match;
@@ -29293,6 +29300,7 @@ function coldMedicineCabinet() {
 
   var bestItem = (0,src_lib/* argmax */.Eb)(Array.from(itemChoices.keys()).map(i => [i, (0,session/* garboValue */.sf)(i)]));
   var bestChoice = itemChoices.get(bestItem);
+  (0,external_kolmafia_.logprint)("DEBUG: garbo thinks the best item is ".concat(bestItem, ", with choice number ").concat(bestChoice, "."));
 
   if (bestChoice && bestChoice > 0) {
     (0,external_kolmafia_.visitUrl)("campground.php?action=workshed");
@@ -31573,7 +31581,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("3045ea7469fd876113beaa0b4b3b30e3a45831cc"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f3b62bcfe0714cef40445acebaf7d8611e4440d4"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32171,7 +32179,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("3045ea7469fd876113beaa0b4b3b30e3a45831cc" === mainSha) {
+    if ("f3b62bcfe0714cef40445acebaf7d8611e4440d4" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
