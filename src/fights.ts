@@ -4,6 +4,7 @@ import {
   buy,
   cliExecute,
   closetAmount,
+  Effect,
   equip,
   Familiar,
   getAutoAttack,
@@ -52,6 +53,7 @@ import {
 import {
   $class,
   $effect,
+  $effects,
   $familiar,
   $familiars,
   $item,
@@ -88,7 +90,6 @@ import {
   sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
-  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -497,6 +498,7 @@ type FreeFightOptions = {
   familiar?: () => Familiar | null;
   requirements?: () => Requirement[];
   noncombat?: () => boolean;
+  effects?: () => Effect[];
 };
 
 let bestNonCheerleaderFairy: Familiar;
@@ -560,7 +562,8 @@ class FreeFight {
             : freeFightFamiliar()
         );
       }
-      freeFightMood().execute();
+      const effects = this.options.effects?.() ?? [];
+      freeFightMood(...effects).execute();
       freeFightOutfit(
         this.options.requirements ? Requirement.merge(this.options.requirements()) : undefined
       );
@@ -811,7 +814,6 @@ const freeFightSources = [
   new FreeFight(
     () => (wantPills() ? 5 - get("_saberForceUses") : 0),
     () => {
-      ensureEffect($effect`Transpondent`);
       if (have($familiar`Red-Nosed Snapper`)) cliExecute(`snapper ${$phylum`dude`}`);
       setChoice(1387, 3);
       if (
@@ -857,6 +859,7 @@ const freeFightSources = [
         new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
       ],
       familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
+      effects: () => $effects`Transpondent`,
     }
   ),
 
@@ -1658,6 +1661,8 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
     }
   ),
 
@@ -1673,6 +1678,8 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
     }
   ),
 
@@ -1691,6 +1698,8 @@ const freeKillSources = [
       requirements: () => [
         sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })),
       ],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
     }
   ),
 
@@ -1706,6 +1715,8 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
     }
   ),
 
@@ -1723,6 +1734,8 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
     }
   ),
 
@@ -1738,6 +1751,8 @@ const freeKillSources = [
     {
       familiar: bestFairy,
       requirements: () => [sandwormRequirement()],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
     }
   ),
 ];
@@ -1799,16 +1814,12 @@ export function freeFights(): void {
       for (const freeKillSource of freeKillSources) {
         if (freeKillSource.available() && get("garbageChampagneCharge") > 0) {
           // TODO: Add potions that are profitable for free kills.
-          if (have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3) {
-            ensureEffect($effect`Feeling Lost`);
-          }
           ensureEffect($effect`Steely-Eyed Squint`);
         }
 
         freeKillSource.runAll();
       }
     } finally {
-      if (have($effect`Feeling Lost`)) uneffect($effect`Feeling Lost`);
       if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
     }
   }
