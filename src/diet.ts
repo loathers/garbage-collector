@@ -15,6 +15,7 @@ import {
   inebrietyLimit,
   Item,
   itemType,
+  logprint,
   mallPrice,
   myClass,
   myFamiliar,
@@ -725,6 +726,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         "spleen item": spleenLimit() - mySpleenUse(),
       };
       for (const menuItem of menuItems) {
+        logprint(`Considering item ${menuItem.item}.`);
         if (menuItem.organ === "booze" && menuItem.size === 1 && !get("_mimeArmyShotglassUsed")) {
           countToConsume = 1;
         } else if (menuItem.organ && menuItem.size > 0) {
@@ -733,6 +735,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
             Math.floor(capacity[menuItem.organ] / menuItem.size)
           );
         }
+        logprint(`Based on organ size, planning to consume ${countToConsume}.`);
 
         const cleaning = stomachLiverCleaners.get(menuItem.item);
         if (cleaning) {
@@ -740,11 +743,13 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           if (myFullness() + fullness < 0 || myInebriety() + inebriety < 0) {
             countToConsume = 0;
           }
+          logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
         }
 
         const spleenCleaned = spleenCleaners.get(menuItem.item);
         if (spleenCleaned) {
           countToConsume = Math.min(countToConsume, Math.floor(mySpleenUse() / spleenCleaned));
+          logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
         }
       }
 
