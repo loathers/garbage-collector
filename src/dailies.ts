@@ -29,6 +29,7 @@ import {
   putCloset,
   restoreHp,
   retrieveItem,
+  retrievePrice,
   runChoice,
   scrapPockets,
   toInt,
@@ -396,63 +397,39 @@ function checkVolcanoQuest() {
   print("Checking volcano quest", HIGHLIGHT);
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
   const volcoinoValue = garboValue($item`Volcoino`);
-  const volcanoProperties = new Map<Item, number>([
-    [property.getItem("_volcanoItem1") || $item`none`, get("_volcanoItemCount1")],
-    [property.getItem("_volcanoItem2") || $item`none`, get("_volcanoItemCount2")],
-    [property.getItem("_volcanoItem3") || $item`none`, get("_volcanoItemCount3")],
-  ]);
-  const volcanoItems = [
-    {
-      item: $item`New Age healing crystal`,
-      price: 5 * mallPrice($item`New Age healing crystal`),
-      numberNeeded: 5,
-    },
-    {
-      item: $item`SMOOCH bottlecap`,
-      price: 1 * mallPrice($item`SMOOCH bottlecap`),
-      numberNeeded: 1,
-    },
-    {
-      item: $item`gooey lava globs`,
-      price: 5 * mallPrice($item`gooey lava globs`),
-      numberNeeded: 5,
-    },
-    {
-      item: $item`smooth velvet bra`,
-      price:
-        3 * Math.min(mallPrice($item`smooth velvet bra`), 3 * mallPrice($item`unsmoothed velvet`)),
-      numberNeeded:
-        3 * (mallPrice($item`smooth velvet bra`) > 3 * mallPrice($item`unsmoothed velvet`) ? 3 : 1),
-    },
-    {
-      item: $item`SMOOCH bracers`,
-      price: 5 * mallPrice($item`superheated metal`),
-      numberNeeded: 25,
-    },
-    ...(have($item`Clara's bell`) && !get("_claraBellUsed")
-      ? [{ item: $item`fused fuse`, price: get("valueOfAdventure"), numberNeeded: 1 }]
-      : []),
-  ]
-    .filter(
-      (entry) =>
-        Array.from(volcanoProperties.keys()).includes(entry.item) && entry.price < volcoinoValue
-    )
-    .sort((a, b) => a.price - b.price);
-
-  if (volcanoItems.length) {
-    const chosenItem = volcanoItems[0];
-    if (chosenItem.item === $item`fused fuse`) {
-      logMessage("Remember to nab a fused fuse with your stooper!");
-    } else {
-      const choice = 1 + Array.from(volcanoProperties.keys()).indexOf(chosenItem.item);
-      withProperty("autoBuyPriceLimit", Math.round(volcoinoValue / chosenItem.numberNeeded), () =>
-        retrieveItem(chosenItem.item, volcanoProperties.get(chosenItem.item) ?? 0)
+  withProperty("valueOfInventory", 2, () => {
+    const volcanoItemValuer = (item: Item) =>
+      retrievePrice(item) ||
+      (item === $item`fused fuse` && have($item`Clara's bell`) && !get("_claraBellUsed")
+        ? get("valueOfAdventure")
+        : Infinity);
+    const bestItem = [
+      {
+        item: property.getItem("_volcanoItem1") ?? $item`none`,
+        quantity: get("_volcanoItemCount1"),
+      },
+      {
+        item: property.getItem("_volcanoItem2") ?? $item`none`,
+        quantity: get("_volcanoItemCount2"),
+      },
+      {
+        item: property.getItem("_volcanoItem3") ?? $item`none`,
+        quantity: get("_volcanoItemCount3"),
+      },
+    ].sort(
+      (a, b) => a.quantity * volcanoItemValuer(a.item) - b.quantity * volcanoItemValuer(b.item)
+    )[0];
+    if (
+      bestItem.item.tradeable &&
+      bestItem.quantity * volcanoItemValuer(bestItem.item) < volcoinoValue
+    ) {
+      withProperty("autoBuyPriceLimit", volcoinoValue, () =>
+        retrieveItem(bestItem.item, bestItem.quantity)
       );
-      visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-      print(`Alright buddy, turning in ${chosenItem.item.plural} for a volcoino!`, "red");
-      runChoice(choice);
+    } else if (bestItem.item === $item`fused fuse`) {
+      logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
     }
-  }
+  });
 }
 
 function cheat(): void {
