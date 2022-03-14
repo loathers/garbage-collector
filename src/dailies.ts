@@ -459,7 +459,7 @@ function cheat(): void {
   if (!have($item`Deck of Every Card`)) return;
   const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
   if (!cardsLeft) return;
-  const cardsSeen = get("_deckCardsSeen");
+  const cardsSeen = get("_deckCardsSeen").toLowerCase();
   const bestCards = [
     { card: "Ancestral Recall", item: $item`blue mana` },
     { card: "Island", item: $item`blue mana` },
@@ -475,7 +475,7 @@ function cheat(): void {
     { card: "Gift Card", item: $item`gift card` },
     { card: "1952 Mickey Mantle card", item: $item`1952 Mickey Mantle card` },
   ]
-    .filter(({ card }) => !cardsSeen.includes(card))
+    .filter(({ card }) => !cardsSeen.includes(card.toLowerCase()))
     .sort((a, b) => garboValue(b.item) - garboValue(a.item))
     .splice(0, cardsLeft)
     .map(({ card }) => card);
