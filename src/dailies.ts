@@ -461,9 +461,8 @@ function cheat(): void {
   if (!cardsLeft) return;
   const cardsSeen = get("_deckCardsSeen").toLowerCase();
   const bestCards = [
+    { card: "Island", item: $item`blue mana` },
     { card: "Ancestral Recall", item: $item`blue mana` },
-    { card: "Island", item: $item`blue mana` },
-    { card: "Island", item: $item`blue mana` },
     { card: "Plains", item: $item`white mana` },
     { card: "Healing Salve", item: $item`white mana` },
     { card: "Swamp", item: $item`black mana` },
