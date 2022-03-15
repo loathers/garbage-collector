@@ -456,18 +456,30 @@ function checkVolcanoQuest() {
 }
 
 function cheat(): void {
-  if (have($item`Deck of Every Card`)) {
-    [
-      garboValue($item`gift card`) >= garboValue($item`1952 Mickey Mantle card`)
-        ? "Gift Card"
-        : "1952 Mickey Mantle",
-      "Island",
-      "Ancestral Recall",
-    ].forEach((card) => {
-      if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card)) {
-        cliExecute(`cheat ${card}`);
-      }
-    });
+  if (!have($item`Deck of Every Card`)) return;
+  const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
+  if (!cardsLeft) return;
+  const cardsSeen = get("_deckCardsSeen").toLowerCase();
+  const bestCards = [
+    { card: "Island", item: $item`blue mana` },
+    { card: "Ancestral Recall", item: $item`blue mana` },
+    { card: "Plains", item: $item`white mana` },
+    { card: "Healing Salve", item: $item`white mana` },
+    { card: "Swamp", item: $item`black mana` },
+    { card: "Dark Ritual", item: $item`black mana` },
+    { card: "Mountain", item: $item`red mana` },
+    { card: "Lightning bolt", item: $item`red mana` },
+    { card: "Forest", item: $item`green mana` },
+    { card: "Giant Growth", item: $item`green mana` },
+    { card: "Gift Card", item: $item`gift card` },
+    { card: "1952 Mickey Mantle card", item: $item`1952 Mickey Mantle card` },
+  ]
+    .filter(({ card }) => !cardsSeen.includes(card.toLowerCase()))
+    .sort((a, b) => garboValue(b.item) - garboValue(a.item))
+    .splice(0, cardsLeft)
+    .map(({ card }) => card);
+  for (const card of bestCards) {
+    cliExecute(`cheat ${card}`);
   }
 }
 
