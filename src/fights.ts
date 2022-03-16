@@ -661,6 +661,21 @@ function bowlOfScorpionsAvailable() {
 
 const freeFightSources = [
   new FreeFight(
+    () =>
+      have($item`protonic accelerator pack`) &&
+      get("questPAGhost") !== "unstarted" &&
+      get("ghostLocation") !== null,
+    () => {
+      const ghostLocation = get("ghostLocation");
+      if (!ghostLocation) return;
+      adventureMacro(ghostLocation, Macro.ghostBustin());
+    },
+    true,
+    {
+      requirements: () => [new Requirement([], { forceEquip: $items`protonic accelerator pack` })],
+    }
+  ),
+  new FreeFight(
     () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
     () => {
       TunnelOfLove.fightAll(
