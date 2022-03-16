@@ -471,6 +471,9 @@ export function dailyFights(): void {
 
         nextFight = getNextEmbezzlerFight();
 
+        // Ghosts appear very high in the encounter ontology
+        doGhost();
+
         // try to deliver the thesis
         const romanticMonsterImpossible =
           Counter.get("Romantic Monster Window end") === null ||
@@ -1945,6 +1948,16 @@ function doSausage() {
       .abort()
   );
   if (getAutoAttack() !== 0) setAutoAttack(0);
+  postCombatActions();
+}
+
+function doGhost() {
+  if (!have($item`protonic accelerator pack`) || get("questPAGhost") === "unstarted") return;
+  const ghostLocation = get("ghostLocation");
+  if (!ghostLocation) return;
+  useFamiliar(freeFightFamiliar());
+  freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
+  adventureMacro(ghostLocation, Macro.ghostBustin());
   postCombatActions();
 }
 
