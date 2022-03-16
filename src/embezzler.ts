@@ -498,12 +498,7 @@ export const embezzlerSources = [
         ? 1
         : 0,
     (options: EmbezzlerFightRunOptions) => {
-      const run = ltbRun();
-      run.constraints.preparation?.();
-      adventureMacro(
-        $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro ?? embezzlerMacro())
-      );
+      adventureMacro($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
     },
     {
       requirements: [
