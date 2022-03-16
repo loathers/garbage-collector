@@ -488,7 +488,10 @@ export const embezzlerSources = [
   ),
   new EmbezzlerFight(
     "Be Gregarious (Set Up Crystal Ball)",
-    () => get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") === 1,
+    () =>
+      get("beGregariousMonster") === embezzler &&
+      get("beGregariousFightsLeft") === 1 &&
+      !CrystalBall.currentPredictions(true).has($location`The Dire Warren`),
     () =>
       (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
       get("beGregariousCharges") > 0
