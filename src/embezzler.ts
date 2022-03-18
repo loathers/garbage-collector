@@ -488,19 +488,17 @@ export const embezzlerSources = [
   ),
   new EmbezzlerFight(
     "Be Gregarious (Set Up Crystal Ball)",
-    () => get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") === 1,
+    () =>
+      get("beGregariousMonster") === embezzler &&
+      get("beGregariousFightsLeft") === 1 &&
+      !CrystalBall.currentPredictions(true).has($location`The Dire Warren`),
     () =>
       (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
       get("beGregariousCharges") > 0
         ? 1
         : 0,
     (options: EmbezzlerFightRunOptions) => {
-      const run = ltbRun();
-      run.constraints.preparation?.();
-      adventureMacro(
-        $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro ?? embezzlerMacro())
-      );
+      adventureMacro($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
     },
     {
       requirements: [
