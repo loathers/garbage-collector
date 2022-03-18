@@ -21799,7 +21799,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("9e564a174bd3e00fa678830fb92c28417b52ab92" === mainSha) {
+    if ("99399ed212042065d079d53b1335a1190c38d408" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -21885,7 +21885,6 @@ function freeFightOutfit(requirement) {
   var preventEquip = (_requirement$maximize4 = requirement === null || requirement === void 0 ? void 0 : requirement.maximizeOptions.preventEquip) !== null && _requirement$maximize4 !== void 0 ? _requirement$maximize4 : [];
   var preventSlot = (_requirement$maximize5 = requirement === null || requirement === void 0 ? void 0 : requirement.maximizeOptions.preventSlot) !== null && _requirement$maximize5 !== void 0 ? _requirement$maximize5 : [];
   parameters.push(myFamiliar() === $familiar(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Pocket Professor"]))) ? "Familiar Experience" : "Familiar Weight");
-  parameters.push("-tie");
 
   if (have($item(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["vampyric cloake"])))) && get("_vampyreCloakeFormUses") < 10 && forceEquip.every(equip => toSlot(equip) !== $slot(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["back"]))))) {
     forceEquip.push($item(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["vampyric cloake"]))));
@@ -21991,7 +21990,7 @@ function meatOutfit(embezzlerUp, requirement, sea) {
   }
 
   var bjornAlike = bestBjornalike(forceEquip);
-  var compiledRequirements = (requirement !== null && requirement !== void 0 ? requirement : new Requirement([], {})).merge(new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop"), "-tie"].concat(_toConsumableArray(parameters)), {
+  var compiledRequirements = (requirement !== null && requirement !== void 0 ? requirement : new Requirement([], {})).merge(new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(_toConsumableArray(parameters)), {
     forceEquip: forceEquip,
     preventEquip: [].concat(_toConsumableArray(preventEquip), _toConsumableArray(embezzlerUp ? $items(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === $item(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["Buddy Bjorn"]))) ? $item(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["Crown of Thrones"]))) : $item(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["Buddy Bjorn"])))]).filter(item => !forceEquip.includes(item)),
     bonusEquip: new Map([].concat(_toConsumableArray(bonusGear(equipMode)), _toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + valueBjornModifiers(equipMode, bjornChoice.modifier)]]) : []))),
