@@ -29674,9 +29674,7 @@ function dailyFights() {
           src_lib/* embezzlerLog.sources.push */.G.sources.push(nextFight.name);
         }
 
-        nextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)(); // Ghosts appear very high in the encounter ontology
-
-        doGhost(); // try to deliver the thesis
+        nextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)(); // try to deliver the thesis
 
         var romanticMonsterImpossible = get("Romantic Monster Window end") === null || ((_Counter$get = get("Romantic Monster Window begin")) !== null && _Counter$get !== void 0 ? _Counter$get : -1) > 0 || (0,property/* get */.U2)("_romanticFightsLeft") <= 0;
 
@@ -29690,6 +29688,7 @@ function dailyFights() {
           }
         }
 
+        doGhost();
         startWandererCounter();
       }
     });
@@ -31631,7 +31630,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("9dfdbc780cd6644c2652413dffbf271609011f69"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("9e564a174bd3e00fa678830fb92c28417b52ab92"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32229,7 +32228,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("9dfdbc780cd6644c2652413dffbf271609011f69" === mainSha) {
+    if ("9e564a174bd3e00fa678830fb92c28417b52ab92" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
