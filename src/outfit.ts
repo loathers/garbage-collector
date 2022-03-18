@@ -50,7 +50,6 @@ export function freeFightOutfit(requirement?: Requirement): void {
   parameters.push(
     myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
   );
-  parameters.push("-tie");
 
   if (
     have($item`vampyric cloake`) &&
@@ -226,7 +225,6 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       [
         `${((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2)} Meat Drop`,
         `${embezzlerUp ? 0 : 0.72} Item Drop`,
-        "-tie",
         ...parameters,
       ],
       {
