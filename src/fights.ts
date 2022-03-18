@@ -471,9 +471,6 @@ export function dailyFights(): void {
 
         nextFight = getNextEmbezzlerFight();
 
-        // Ghosts appear very high in the encounter ontology
-        doGhost();
-
         // try to deliver the thesis
         const romanticMonsterImpossible =
           Counter.get("Romantic Monster Window end") === null ||
@@ -490,6 +487,7 @@ export function dailyFights(): void {
             deliverThesis();
           }
         }
+        doGhost();
         startWandererCounter();
       }
     });
