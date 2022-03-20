@@ -40,6 +40,14 @@ input.interrupt {
   margin: 10px 0px;
 }
 
+input.interrupt:hover {
+  background-color: #f5867a;
+}
+
+input.interrupt:active {
+  background-color: #f77163;
+}
+
 input[type="submit"] {
   margin: auto;
   display: block;
