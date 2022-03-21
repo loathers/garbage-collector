@@ -64,10 +64,10 @@ import { expectedGregs } from "./extrovermectin";
 import {
   argmax,
   arrayEquals,
-  userConfirmDialog,
   globalOptions,
   HIGHLIGHT,
   realmAvailable,
+  userConfirmDialog,
 } from "./lib";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";

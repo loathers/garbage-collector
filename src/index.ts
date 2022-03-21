@@ -62,7 +62,6 @@ import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   checkGithubVersion,
-  userConfirmDialog,
   embezzlerLog,
   globalOptions,
   HIGHLIGHT,
@@ -73,6 +72,7 @@ import {
   questStep,
   safeRestore,
   setChoice,
+  userConfirmDialog,
 } from "./lib";
 import { meatMood } from "./mood";
 import postCombatActions from "./post";

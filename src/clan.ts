@@ -18,7 +18,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $items, $monster, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
-import { userConfirmDialog, HIGHLIGHT } from "./lib";
+import { HIGHLIGHT, userConfirmDialog } from "./lib";
 
 export const stashItems = get("garboStashItems", "")
   .split(",")

@@ -54,11 +54,11 @@ import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
-  userConfirmDialog,
   globalOptions,
   HIGHLIGHT,
   ltbRun,
   setChoice,
+  userConfirmDialog,
   WISH_VALUE,
 } from "./lib";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
