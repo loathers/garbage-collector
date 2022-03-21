@@ -18,7 +18,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $items, $monster, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
-import { customUserConfirm, HIGHLIGHT } from "./lib";
+import { userConfirmDialog, HIGHLIGHT } from "./lib";
 
 export const stashItems = get("garboStashItems", "")
   .split(",")
@@ -42,7 +42,7 @@ export function withVIPClan<T>(action: () => T): T {
     : clanIdOrNameString;
   if (clanIdOrName === "" && have($item`Clan VIP Lounge key`)) {
     if (
-      customUserConfirm(
+      userConfirmDialog(
         "The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
         true,
         15000

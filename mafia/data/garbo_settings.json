@@ -35,5 +35,10 @@
     "name": "garbo_skipPillCheck",
     "type": "boolean",
     "description": "Should skip prompting you to go acquire distention and synthetic dog hair pills? Set to true if you want to proceed without them, and false if you want to be reminded."
+  },
+  {
+    "name": "garbo_autoUserConfirm",
+    "type": "boolean",
+    "description": "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive."
   }
 ]

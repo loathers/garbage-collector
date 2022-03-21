@@ -64,7 +64,7 @@ import { expectedGregs } from "./extrovermectin";
 import {
   argmax,
   arrayEquals,
-  customUserConfirm,
+  userConfirmDialog,
   globalOptions,
   HIGHLIGHT,
   realmAvailable,
@@ -234,7 +234,7 @@ function pillCheck(): void {
     if (!get("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
       set(
         "garbo_skipPillCheck",
-        customUserConfirm(
+        userConfirmDialog(
           "You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)",
           false,
           15000
@@ -247,7 +247,7 @@ function pillCheck(): void {
     if (!get("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
       set(
         "garbo_skipPillCheck",
-        customUserConfirm(
+        userConfirmDialog(
           "You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)",
           false,
           15000

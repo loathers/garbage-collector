@@ -54,7 +54,7 @@ import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
-  customUserConfirm,
+  userConfirmDialog,
   globalOptions,
   HIGHLIGHT,
   ltbRun,
@@ -729,7 +729,7 @@ export const embezzlerSources = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = customUserConfirm(
+      globalOptions.wishAnswer = userConfirmDialog(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`,
         true
       );
@@ -762,7 +762,7 @@ export const embezzlerSources = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = customUserConfirm(
+      globalOptions.wishAnswer = userConfirmDialog(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`,
         true
       );
