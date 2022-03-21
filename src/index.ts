@@ -26,7 +26,6 @@ import {
   totalTurnsPlayed,
   use,
   useFamiliar,
-  userConfirm,
   visitUrl,
   xpath,
 } from "kolmafia";
@@ -63,6 +62,7 @@ import { freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   checkGithubVersion,
+  customUserConfirm,
   embezzlerLog,
   globalOptions,
   HIGHLIGHT,
@@ -282,8 +282,9 @@ export function main(argString = ""): void {
   }
 
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
-    const proceedRegardless = userConfirm(
-      "Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?"
+    const proceedRegardless = customUserConfirm(
+      "Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
+      true
     );
     if (!proceedRegardless) {
       throw new Error("User interrupt requested. Stopping Garbage Collector.");
@@ -332,10 +333,11 @@ export function main(argString = ""): void {
 
   if (stashItems.length > 0) {
     if (
-      userConfirm(
+      customUserConfirm(
         `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
           .map((item) => item.name)
-          .join(",")}. Would you like us to return these to the stash now?`
+          .join(",")}. Would you like us to return these to the stash now?`,
+        true
       )
     ) {
       const clanIdOrName = get("garbo_stashClan", "none");
@@ -541,7 +543,7 @@ export function main(argString = ""): void {
               availableAmount($item`FunFunds™`) >= 20 &&
               !have($item`one-day ticket to Dinseylandfill`)
             ) {
-              print("Buying a one-day tickets", HIGHLIGHT);
+              print("Buying a one-day ticket", HIGHLIGHT);
               buy(
                 $coinmaster`The Dinsey Company Store`,
                 1,

@@ -30,6 +30,7 @@ import {
   toUrl,
   use,
   useFamiliar,
+  userConfirm,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -313,6 +314,10 @@ export function printHelpMenu(): void {
     +--------------------------+-----------------------------------------------------------------------------------------------+
     |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |
     +--------------------------+-----------------------------------------------------------------------------------------------+
+    |   garbo_autoUserConfirm  | Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow |
+    |                          |  garbo to continue executing. Useful when running garbo inside other scripts or headless.     |
+    |                          |  Use at your own risk.                                                                        |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
     |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |
     +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
 }
@@ -413,4 +418,10 @@ export function getChoiceOption(partialText: string): number {
     }
   }
   return -1;
+}
+
+export function customUserConfirm(msg: string, defaultValue: boolean, timeOut?: number): boolean {
+  if (get("garbo_autoUserConfirm")) return defaultValue;
+  else if (timeOut) return userConfirm(msg, timeOut, defaultValue);
+  return userConfirm(msg);
 }
