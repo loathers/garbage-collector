@@ -1902,7 +1902,8 @@ function deliverThesis(): void {
   if (
     have($item`Powerful Glove`) &&
     !have($effect`Triple-Sized`) &&
-    get("_powerfulGloveBatteryPowerUsed") <= 95
+    get("_powerfulGloveBatteryPowerUsed") <= 95 &&
+    get("_powerfulGloveBatteryPowerUsed") % 10 === 5
   ) {
     cliExecute("checkpoint");
     equip($slot`acc1`, $item`Powerful Glove`);
