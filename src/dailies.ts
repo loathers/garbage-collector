@@ -407,14 +407,17 @@ function checkVolcanoQuest() {
       {
         item: property.getItem("_volcanoItem1") ?? $item`none`,
         quantity: get("_volcanoItemCount1"),
+        choice: 1,
       },
       {
         item: property.getItem("_volcanoItem2") ?? $item`none`,
         quantity: get("_volcanoItemCount2"),
+        choice: 2,
       },
       {
         item: property.getItem("_volcanoItem3") ?? $item`none`,
         quantity: get("_volcanoItemCount3"),
+        choice: 3,
       },
     ].sort(
       (a, b) => a.quantity * volcanoItemValuer(a.item) - b.quantity * volcanoItemValuer(b.item)
@@ -426,6 +429,8 @@ function checkVolcanoQuest() {
       withProperty("autoBuyPriceLimit", volcoinoValue, () =>
         retrieveItem(bestItem.item, bestItem.quantity)
       );
+      visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+      runChoice(bestItem.choice);
     } else if (bestItem.item === $item`fused fuse`) {
       logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
     }
