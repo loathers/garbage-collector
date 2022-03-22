@@ -31175,17 +31175,22 @@ function checkVolcanoQuest() {
 
     var bestItem = [{
       item: (_property$getItem = property/* getItem */.rV("_volcanoItem1")) !== null && _property$getItem !== void 0 ? _property$getItem : (0,template_string/* $item */.xr)(dailies_templateObject76 || (dailies_templateObject76 = dailies_taggedTemplateLiteral(["none"]))),
-      quantity: (0,property/* get */.U2)("_volcanoItemCount1")
+      quantity: (0,property/* get */.U2)("_volcanoItemCount1"),
+      choice: 1
     }, {
       item: (_property$getItem2 = property/* getItem */.rV("_volcanoItem2")) !== null && _property$getItem2 !== void 0 ? _property$getItem2 : (0,template_string/* $item */.xr)(dailies_templateObject77 || (dailies_templateObject77 = dailies_taggedTemplateLiteral(["none"]))),
-      quantity: (0,property/* get */.U2)("_volcanoItemCount2")
+      quantity: (0,property/* get */.U2)("_volcanoItemCount2"),
+      choice: 2
     }, {
       item: (_property$getItem3 = property/* getItem */.rV("_volcanoItem3")) !== null && _property$getItem3 !== void 0 ? _property$getItem3 : (0,template_string/* $item */.xr)(dailies_templateObject78 || (dailies_templateObject78 = dailies_taggedTemplateLiteral(["none"]))),
-      quantity: (0,property/* get */.U2)("_volcanoItemCount3")
+      quantity: (0,property/* get */.U2)("_volcanoItemCount3"),
+      choice: 3
     }].sort((a, b) => a.quantity * volcanoItemValuer(a.item) - b.quantity * volcanoItemValuer(b.item))[0];
 
     if (bestItem.item.tradeable && bestItem.quantity * volcanoItemValuer(bestItem.item) < volcoinoValue) {
       (0,property/* withProperty */.pr)("autoBuyPriceLimit", volcoinoValue, () => (0,external_kolmafia_.retrieveItem)(bestItem.item, bestItem.quantity));
+      (0,external_kolmafia_.visitUrl)("place.php?whichplace=airport_hot&action=airport4_questhub");
+      (0,external_kolmafia_.runChoice)(bestItem.choice);
     } else if (bestItem.item === (0,template_string/* $item */.xr)(dailies_templateObject79 || (dailies_templateObject79 = dailies_taggedTemplateLiteral(["fused fuse"])))) {
       (0,src_lib/* logMessage */.ji)("Grab a fused fused with your clara's bell charge while overdrunk!");
     }
@@ -31631,7 +31636,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("d2ffa21a1f089c20f895bf68960fcc02cac7315a"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("b4441fd5cd82d033126100a57724d6f8b438f8e1"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31851,7 +31856,7 @@ function main() {
 
         dailySetup();
         (0,maximize/* setDefaultMaximizeOptions */._C)({
-          preventEquip: (0,template_string/* $items */.vS)(src_templateObject59 || (src_templateObject59 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball"]))),
+          preventEquip: (0,template_string/* $items */.vS)(src_templateObject59 || (src_templateObject59 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack"]))),
           preventSlot: (0,template_string/* $slots */.ei)(src_templateObject60 || (src_templateObject60 = src_taggedTemplateLiteral(["buddy-bjorn, crown-of-thrones"])))
         }); // 2. do some embezzler stuff
 
@@ -32229,7 +32234,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("d2ffa21a1f089c20f895bf68960fcc02cac7315a" === mainSha) {
+    if ("b4441fd5cd82d033126100a57724d6f8b438f8e1" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
