@@ -1903,7 +1903,8 @@ function deliverThesis(): void {
     have($item`Powerful Glove`) &&
     !have($effect`Triple-Sized`) &&
     get("_powerfulGloveBatteryPowerUsed") <= 95 &&
-    get("_powerfulGloveBatteryPowerUsed") % 10 === 5
+    // We only get triple-sized if it doesn't lose us a replace enemy use
+    (get("_powerfulGloveBatteryPowerUsed") % 10 === 5 || !doingExtrovermectin())
   ) {
     cliExecute("checkpoint");
     equip($slot`acc1`, $item`Powerful Glove`);
