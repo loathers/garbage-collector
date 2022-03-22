@@ -414,7 +414,7 @@ export const embezzlerSources = [
       get("beGregariousMonster") === embezzler &&
       get("beGregariousFightsLeft") > 0 &&
       have($item`Powerful Glove`) &&
-      get("_powerfulGloveBatteryPowerUsed") < 90 &&
+      get("_powerfulGloveBatteryPowerUsed") <= 90 &&
       proceedWithOrb(),
     () =>
       ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
