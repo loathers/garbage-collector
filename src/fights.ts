@@ -676,7 +676,6 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`protonic accelerator pack` })],
-      canOverrideMacro: true,
     }
   ),
   new FreeFight(
