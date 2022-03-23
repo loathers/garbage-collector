@@ -26,6 +26,46 @@ export const stashItems = get("garboStashItems", "")
   .filter((x) => x.trim().length > 0)
   .map((id) => toItem(id));
 
+export function returnPreviouslyStashedItems(): void {
+  if (stashItems.length > 0) {
+    if (
+      userConfirm(
+        `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
+          .map((item) => item.name)
+          .join(",")}. Would you like us to return these to the stash now?`
+      )
+    ) {
+      const clanIdOrName = get("garbo_stashClan", "none");
+      const parsedClanIdOrName =
+        clanIdOrName !== "none"
+          ? clanIdOrName.match(/^\d+$/)
+            ? parseInt(clanIdOrName)
+            : clanIdOrName
+          : null;
+
+      if (parsedClanIdOrName) {
+        Clan.with(parsedClanIdOrName, () => {
+          for (const item of [...stashItems]) {
+            if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
+            const retrieved = retrieveItem(item);
+            if (
+              item === $item`Spooky Putty sheet` &&
+              !retrieved &&
+              have($item`Spooky Putty monster`)
+            ) {
+              continue;
+            }
+            print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
+            if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
+          }
+        });
+      } else print("Uh oh! You don't have a garbo_stashClan set to return items to.", "red");
+    } else {
+      stashItems.splice(0, stashItems.length);
+    }
+  }
+}
+
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
   const manager = new StashManager();
   try {
