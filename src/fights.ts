@@ -500,6 +500,8 @@ type FreeFightOptions = {
   requirements?: () => Requirement[];
   noncombat?: () => boolean;
   effects?: () => Effect[];
+  // True if the macro used by this freeFight can be overridden without causing harm
+  canOverrideMacro?: boolean;
 };
 
 let bestNonCheerleaderFairy: Familiar;
@@ -584,7 +586,7 @@ class FreeRunFight extends FreeFight {
   constructor(
     available: () => number | boolean,
     run: (runSource: ActionSource) => void,
-    options: FreeFightOptions = {},
+    options: FreeFightOptions = { canOverrideMacro: false },
     freeRunPicker: FindActionSourceConstraints = {}
   ) {
     super(available, () => null, false, options);
@@ -674,6 +676,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`protonic accelerator pack` })],
+      canOverrideMacro: true,
     }
   ),
   new FreeFight(
@@ -688,7 +691,10 @@ const freeFightSources = [
       visitUrl("choice.php");
       if (handlingChoice()) throw "Did not get all the way through LOV.";
     },
-    false
+    false,
+    {
+      canOverrideMacro: true,
+    }
   ),
 
   new FreeFight(
@@ -706,6 +712,7 @@ const freeFightSources = [
         )
           ? $familiar`Robortender`
           : null,
+      canOverrideMacro: true,
     }
   ),
 
@@ -723,7 +730,8 @@ const freeFightSources = [
   new FreeFight(
     () => have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked"),
     () => useSkill($skill`Evoke Eldritch Horror`),
-    false
+    false,
+    { canOverrideMacro: true }
   ),
 
   new FreeFight(
@@ -732,6 +740,7 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`lynyrd snare`),
+      canOverrideMacro: true,
     }
   ),
 
@@ -824,6 +833,7 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
+      canOverrideMacro: true,
     }
   ),
 
@@ -1061,6 +1071,7 @@ const freeFightSources = [
           forceEquip: $items`Kramco Sausage-o-Matic™`,
         }),
       ],
+      canOverrideMacro: true,
     }
   ),
 
@@ -1153,6 +1164,7 @@ const freeFightSources = [
           ]),
         }),
       ],
+      canOverrideMacro: true,
     }
   ),
 
@@ -1204,7 +1216,8 @@ const freeFightSources = [
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
     () => Witchess.fightPiece(bestWitchessPiece()),
-    true
+    true,
+    { canOverrideMacro: true }
   ),
 
   new FreeFight(
@@ -1216,7 +1229,8 @@ const freeFightSources = [
       }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
-    false
+    false,
+    { canOverrideMacro: true }
   ),
 
   new FreeFight(
@@ -1246,6 +1260,7 @@ const freeFightSources = [
           }
         ),
       ],
+      canOverrideMacro: true,
     }
   ),
 
@@ -1256,7 +1271,8 @@ const freeFightSources = [
       if (!monster) return;
       withMacro(Macro.basicCombat(), () => CombatLoversLocket.reminisce(monster));
     },
-    true
+    true,
+    { canOverrideMacro: true }
   ),
 
   // Get a li'l ninja costume for 150% item drop
