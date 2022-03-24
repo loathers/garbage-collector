@@ -19,7 +19,7 @@ import {
 import { freeFightFamiliar } from "./familiar";
 import { ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
-import { embezzlerMacro } from "./embezzler";
+import { witchessPieceMacro } from "./embezzler";
 import { acquire } from "./acquire";
 
 export function expectedGregs(): number[] {
@@ -209,7 +209,7 @@ function initializeDireWarren(): void {
   do {
     adventureMacro(
       $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(embezzlerMacro())
+      Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(witchessPieceMacro())
     );
   } while ("fluffy bunny" !== get("lastEncounter"));
 }

@@ -73,16 +73,14 @@ import {
   argmax,
   baseMeat,
   coinmasterPrice,
-  globalOptions,
   HIGHLIGHT,
   leprechaunMultiplier,
   logMessage,
   tryFeast,
 } from "./lib";
 import { withStash } from "./clan";
-import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { estimatedTurns } from "./embezzler";
 import { refreshLatte } from "./outfit";
-import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
 import { garboAverageValue, garboValue } from "./session";
 import { acquire } from "./acquire";
@@ -580,9 +578,7 @@ function pantogram(): void {
   if (!Pantogram.have() || Pantogram.havePants()) return;
   let pantogramValue: number;
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
-    const expectedBarfTurns = globalOptions.noBarf
-      ? 0
-      : estimatedTurns() - digitizedMonstersRemaining() - embezzlerCount();
+    const expectedBarfTurns = 0;
     pantogramValue = 100 * expectedBarfTurns;
   } else {
     const lepMult = leprechaunMultiplier(meatFamiliar());

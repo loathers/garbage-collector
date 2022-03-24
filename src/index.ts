@@ -60,7 +60,7 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
+import { dailyFights, freeFights } from "./fights";
 import {
   checkGithubVersion,
   embezzlerLog,
@@ -554,7 +554,6 @@ export function main(argString = ""): void {
     set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
-    printEmbezzlerLog();
     printGarboSession();
     printLog(HIGHLIGHT);
   }
