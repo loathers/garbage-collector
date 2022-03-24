@@ -93,7 +93,7 @@ import {
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
-import { freeFightFamiliar, meatFamiliar, pocketProfessorLectures } from "./familiar";
+import { freeFightFamiliar, pocketProfessorLectures } from "./familiar";
 import {
   burnLibrams,
   globalOptions,
@@ -108,7 +108,7 @@ import {
   setChoice,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
-import { freeFightOutfit, meatOutfit, tryFillLatte } from "./outfit";
+import { freeFightOutfit, tryFillLatte } from "./outfit";
 import { bathroomFinance, potionSetup } from "./potions";
 import {
   estimatedTurns,
@@ -250,20 +250,11 @@ function startWandererCounter() {
     if (digitizeNeedsStarting) print("Starting digitize counter by visiting the Haunted Kitchen!");
     if (romanceNeedsStarting) print("Starting romance counter by visiting the Haunted Kitchen!");
     do {
-      let run: ActionSource;
-      if (get("beGregariousFightsLeft") > 0) {
-        print("You still have gregs active, so we're going to wear your meat outfit.");
-        run = ltbRun();
-        run.constraints.preparation?.();
-        useFamiliar(meatFamiliar());
-        meatOutfit(true);
-      } else {
-        print("You do not have gregs active, so this is a regular free run.");
-        run = tryFindFreeRun() ?? ltbRun();
-        useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
-        run.constraints.preparation?.();
-        freeFightOutfit(run.constraints.equipmentRequirements?.());
-      }
+      print("You do not have gregs active, so this is a regular free run.");
+      const run = tryFindFreeRun() ?? ltbRun();
+      useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
+      run.constraints.preparation?.();
+      freeFightOutfit(run.constraints.equipmentRequirements?.());
       adventureMacro(
         $location`The Haunted Kitchen`,
         Macro.if_(bestWitchessPiece(), witchessPieceMacro()).step(run.macro)
@@ -365,7 +356,7 @@ export function dailyFights(): void {
         }
       }
 
-      useFamiliar(meatFamiliar());
+      useFamiliar(freeFightFamiliar());
 
       // REMAINING witchessPiece FIGHTS
       let nextFight = getNextwitchessPieceFight();
@@ -387,22 +378,15 @@ export function dailyFights(): void {
           if (weWantToSaberCrates) saberCrateIfSafe();
         }
 
-        const underwater = nextFight.location().environment === "underwater";
-
         const romanticFamiliar = $familiars`Obtuse Angel, Reanimated Reanimator`.find(have);
-        if (
-          romanticFamiliar &&
-          get("_badlyRomanticArrows") === 0 &&
-          nextFight.draggable &&
-          !underwater
-        ) {
+        if (romanticFamiliar && get("_badlyRomanticArrows") === 0) {
           useFamiliar(romanticFamiliar);
         } else {
-          useFamiliar(meatFamiliar());
+          useFamiliar(freeFightFamiliar());
         }
 
         setLocation(nextFight.location());
-        meatOutfit(true, Requirement.merge(nextFight.requirements), underwater);
+        freeFightOutfit(Requirement.merge(nextFight.requirements));
 
         nextFight.run();
         postCombatActions();

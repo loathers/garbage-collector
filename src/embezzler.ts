@@ -1,6 +1,5 @@
 import { canAdv } from "canadv.ash";
 import {
-  booleanModifier,
   chatPrivate,
   cliExecute,
   getCounter,
@@ -9,12 +8,10 @@ import {
   inebrietyLimit,
   itemAmount,
   Location,
-  mallPrice,
   myAdventures,
   myFamiliar,
   myHash,
   myInebriety,
-  myLevel,
   myTurncount,
   print,
   retrieveItem,
@@ -54,7 +51,6 @@ import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import { bestWitchessPiece } from "./fights";
 import { globalOptions, HIGHLIGHT, ltbRun, setChoice, WISH_VALUE } from "./lib";
-import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
 
 const witchessPiece = bestWitchessPiece();
@@ -164,13 +160,7 @@ export class witchessPieceFight {
   }
 
   location(location?: Location): Location {
-    const suggestion =
-      this.draggable &&
-      !location &&
-      checkUnderwater() &&
-      myFamiliar() !== $familiar`Pocket Professor`
-        ? $location`The Briny Deeps`
-        : location;
+    const suggestion = location;
 
     if (
       (this.draggable && !suggestion) ||
@@ -180,32 +170,6 @@ export class witchessPieceFight {
     }
     return suggestion ?? $location`Noob Cave`;
   }
-}
-
-function checkUnderwater() {
-  // first check to see if underwater even makes sense
-  if (
-    myLevel() >= 11 &&
-    !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
-    (booleanModifier("Adventure Underwater") ||
-      waterBreathingEquipment.some((item) => have(item))) &&
-    (booleanModifier("Underwater Familiar") ||
-      familiarWaterBreathingEquipment.some((item) => have(item))) &&
-    (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
-  ) {
-    // then check if the underwater copy makes sense
-    if (mallPrice($item`pulled green taffy`) < 10000 && retrieveItem($item`pulled green taffy`)) {
-      // unlock the sea
-      if (get("questS01OldGuy") === "unstarted") {
-        visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-      }
-      if (!have($effect`Fishy`) && !get("_fishyPipeUsed")) use($item`fishy pipe`);
-
-      return have($effect`Fishy`);
-    }
-  }
-
-  return false;
 }
 
 function checkFax(): boolean {
