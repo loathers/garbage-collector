@@ -234,11 +234,6 @@ function prepFamiliars(): void {
     }
   }
 
-  if (have($item`mumming trunk`) && !get("_mummeryMods").includes("Meat Drop")) {
-    useFamiliar(meatFamiliar());
-    cliExecute("mummery meat");
-  }
-
   if (
     have($item`mumming trunk`) &&
     !get("_mummeryMods").includes("Item Drop") &&
