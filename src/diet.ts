@@ -146,7 +146,7 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
 }
 
 function nonOrganAdventures(): void {
-  useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
+  useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") !== 0, 2 * MPA);
 
   while (get("_loveChocolatesUsed") < 3) {
     const price = have($item`LOV Extraterrestrial Chocolate`) ? 15000 : 20000;
