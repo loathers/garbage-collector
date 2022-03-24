@@ -296,6 +296,8 @@ export function main(argString = ""): void {
     )}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
   }
 
+  globalOptions.noBarf = true;
+
   const args = argString.split(" ");
   for (const arg of args) {
     if (arg.match(/\d+/)) {
@@ -307,8 +309,6 @@ export function main(argString = ""): void {
       }
     } else if (arg.match(/ascend/)) {
       globalOptions.ascending = true;
-    } else if (arg.match(/nobarf/)) {
-      globalOptions.noBarf = true;
     } else if (arg.match(/help/i)) {
       printHelpMenu();
       return;
