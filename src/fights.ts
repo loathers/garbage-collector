@@ -139,11 +139,7 @@ const firstChainMacro = () =>
     $monster`Knob Goblin Embezzler`,
     Macro.if_(
       "!hasskill Lecture on Relativity",
-      Macro.externalIf(
-        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
-        Macro.tryCopier($skill`Digitize`)
-      )
-        .tryCopier($item`Spooky Putty sheet`)
+        Macro.tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)
         .tryCopier($item`4-d camera`)
         .tryCopier($item`unfinished ice sculpture`)
@@ -159,11 +155,7 @@ const secondChainMacro = () =>
     Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill($skill`Meteor Shower`))
       .if_(
         "!hasskill Lecture on Relativity",
-        Macro.externalIf(
-          get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
-          Macro.tryCopier($skill`Digitize`)
-        )
-          .tryCopier($item`Spooky Putty sheet`)
+          Macro.tryCopier($item`Spooky Putty sheet`)
           .tryCopier($item`Rain-Doh black box`)
           .tryCopier($item`4-d camera`)
           .tryCopier($item`unfinished ice sculpture`)
@@ -1061,14 +1053,18 @@ const freeFightSources = [
 
   new FreeFight(
     () => kramcoGuaranteed() && have($item`Kramco Sausage-o-Matic™`),
-    () =>
+    () => {
+      if(SourceTerminal.have() && !SourceTerminal.canDigitize()){
+        SourceTerminal.educate($skill`Digitize`);
+      }
       adventureMacro(
         determineDraggableZoneAndEnsureAccess(),
         Macro.externalIf(
           bestDigitizeTarget() === $monster`sausage goblin`,
-          Macro.skill($skill`Digitize`)
+          Macro.trySkill($skill`Digitize`)
         ).basicCombat()
-      ),
+      )
+    },
     true,
     {
       requirements: () => [
@@ -1218,14 +1214,18 @@ const freeFightSources = [
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
-    () =>
+    () => {
+      if(SourceTerminal.have() && !SourceTerminal.canDigitize()){
+        SourceTerminal.educate($skill`Digitize`);
+      }
       withMacro(
         Macro.externalIf(
           bestWitchessPiece() === bestDigitizeTarget(),
-          Macro.skill($skill`Digitize`)
+          Macro.trySkill($skill`Digitize`)
         ).basicCombat(),
         () => Witchess.fightPiece(bestWitchessPiece())
-      ),
+      )
+    },
     true
   ),
 
@@ -1276,10 +1276,13 @@ const freeFightSources = [
     () => {
       const monster = locketMonster();
       if (!monster) return;
+      if(SourceTerminal.have() && !SourceTerminal.canDigitize()){
+        SourceTerminal.educate($skill`Digitize`);
+      }
       withMacro(
         Macro.externalIf(
-          bestDigitizeTarget() === monster,
-          Macro.skill($skill`Digitize`)
+          bestDigitizeTarget() === monster && get("_sourceTerminalDigitizeMonster") !== monster,
+          Macro.trySkill($skill`Digitize`)
         ).basicCombat(),
         () => CombatLoversLocket.reminisce(monster)
       );
