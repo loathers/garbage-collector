@@ -27687,7 +27687,7 @@ function consumeSafe(qty, item, additionalValue, skipAcquire) {
     (0,acquire/* acquire */.u)(qty, item);
   }
 
-  if ((0,external_kolmafia_.itemType)(item) === "food") eatSafe(qty, item);else if ((0,external_kolmafia_.itemType)(item) === "booze") drinkSafe(qty, item);else if ((0,external_kolmafia_.itemType)(item) === "spleen item") chewSafe(qty, item);else (0,external_kolmafia_.use)(qty, item);
+  if ((0,external_kolmafia_.itemType)(item) === "food" || item === saladFork) eatSafe(qty, item);else if ((0,external_kolmafia_.itemType)(item) === "booze" || item === frostyMug) drinkSafe(qty, item);else if ((0,external_kolmafia_.itemType)(item) === "spleen item") chewSafe(qty, item);else (0,external_kolmafia_.use)(qty, item);
 }
 
 function propTrue(prop) {
@@ -31636,7 +31636,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("a8f15d38cce26945ef889e36cf33834f5473935f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("2fc6c9547f933c27f3441ce701f86005760fe595"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32234,7 +32234,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("a8f15d38cce26945ef889e36cf33834f5473935f" === mainSha) {
+    if ("2fc6c9547f933c27f3441ce701f86005760fe595" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
