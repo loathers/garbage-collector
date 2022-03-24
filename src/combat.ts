@@ -52,7 +52,6 @@ import {
   StrictMacro,
 } from "libram";
 import { meatFamiliar } from "./familiar";
-import { bestDigitizeTarget } from "./fights";
 
 let monsterManuelCached: boolean | undefined = undefined;
 export function monsterManuelAvailable(): boolean {
@@ -471,14 +470,7 @@ export class Macro extends StrictMacro {
   }
 
   basicCombat(): Macro {
-    const target =
-      SourceTerminal.have() && !SourceTerminal.getDigitizeMonster() ? bestDigitizeTarget() : null;
-    return this.externalIf(
-      target !== null,
-      Macro.if_(target ?? $monster`none`, Macro.skill($skill`Digitize`))
-    )
-      .startCombat()
-      .kill();
+    return this.startCombat().kill();
   }
 
   static basicCombat(): Macro {

@@ -1060,8 +1060,15 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => adv1(determineDraggableZoneAndEnsureAccess(), -1, ""),
+    () => kramcoGuaranteed() && have($item`Kramco Sausage-o-Matic™`),
+    () =>
+      adventureMacro(
+        determineDraggableZoneAndEnsureAccess(),
+        Macro.externalIf(
+          bestDigitizeTarget() === $monster`sausage goblin`,
+          Macro.skill($skill`Digitize`)
+        ).basicCombat()
+      ),
     true,
     {
       requirements: () => [
@@ -1211,7 +1218,14 @@ const freeFightSources = [
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
-    () => Witchess.fightPiece(bestWitchessPiece()),
+    () =>
+      withMacro(
+        Macro.externalIf(
+          bestWitchessPiece() === bestDigitizeTarget(),
+          Macro.skill($skill`Digitize`)
+        ).basicCombat(),
+        () => Witchess.fightPiece(bestWitchessPiece())
+      ),
     true
   ),
 
@@ -1262,7 +1276,13 @@ const freeFightSources = [
     () => {
       const monster = locketMonster();
       if (!monster) return;
-      withMacro(Macro.basicCombat(), () => CombatLoversLocket.reminisce(monster));
+      withMacro(
+        Macro.externalIf(
+          bestDigitizeTarget() === monster,
+          Macro.skill($skill`Digitize`)
+        ).basicCombat(),
+        () => CombatLoversLocket.reminisce(monster)
+      );
     },
     true
   ),
@@ -2170,7 +2190,9 @@ export function estimatedTentacles(): number {
   });
 }
 
-export function bestDigitizeTarget(): Monster | null {
+function bestDigitizeTarget(): Monster | null {
+  if (!SourceTerminal.have() || SourceTerminal.getDigitizeMonster()) return null;
+
   if (
     have($item`Kramco Sausage-o-Matic™`) &&
     sum($items`magical sausage, magical sausage casing`, (item) => availableAmount(item)) < 420
