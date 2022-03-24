@@ -46,11 +46,10 @@ import {
   property,
   Requirement,
   set,
-  SourceTerminal,
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { Macro, shouldRedigitize, withMacro } from "./combat";
+import { Macro, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import {
@@ -251,10 +250,6 @@ export const embezzlerMacro = (): Macro =>
           (get("beGregariousMonster") !== embezzler || get("beGregariousFightsLeft") === 0),
         Macro.trySkill($skill`Be Gregarious`)
       )
-      .externalIf(
-        get("_sourceTerminalDigitizeMonster") !== embezzler || shouldRedigitize(),
-        Macro.tryCopier($skill`Digitize`)
-      )
       .tryCopier($item`Spooky Putty sheet`)
       .tryCopier($item`Rain-Doh black box`)
       .tryCopier($item`4-d camera`)
@@ -272,19 +267,6 @@ const wandererFailsafeMacro = () =>
   );
 
 export const embezzlerSources = [
-  new EmbezzlerFight(
-    "Digitize",
-    () =>
-      get("_sourceTerminalDigitizeMonster") === embezzler &&
-      getCounters("Digitize Monster", 0, 0).trim() !== "",
-    () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
-    (options: EmbezzlerFightRunOptions) => {
-      adventureMacro(options.location, wandererFailsafeMacro().step(options.macro));
-    },
-    {
-      draggable: "wanderer",
-    }
-  ),
   new EmbezzlerFight(
     "Guaranteed Romantic Monster",
     () =>

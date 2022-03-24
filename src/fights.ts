@@ -476,6 +476,14 @@ export function dailyFights(): void {
           Counter.get("Romantic Monster Window end") === null ||
           (Counter.get("Romantic Monster Window begin") ?? -1) > 0 ||
           get("_romanticFightsLeft") <= 0;
+        const digitizeReady = Counter.get("Digitize Monster") === 0;
+        if (digitizeReady) {
+          useFamiliar(freeFightFamiliar());
+          freeFightOutfit();
+          adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+          if (getAutoAttack() !== 0) setAutoAttack(0);
+          postCombatActions();
+        }
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
           // Check in case our prof gained enough exp during the profchains
@@ -2160,4 +2168,26 @@ export function estimatedTentacles(): number {
     const avail = source.tentacle ? source.available() : 0;
     return typeof avail === "number" ? avail : toInt(avail);
   });
+}
+
+export function bestDigitizeTarget(): Monster | null {
+  if (
+    have($item`Kramco Sausage-o-Matic™`) &&
+    sum($items`magical sausage, magical sausage casing`, (item) => availableAmount(item)) < 420
+  ) {
+    return $monster`sausage goblin`;
+  }
+
+  for (const piece of $monsters`Witchess Knight, Witchess Bishop, Witchess Pawn`.sort(
+    (a, b) => valueDrops(b) - valueDrops(a)
+  )) {
+    if (
+      Witchess.have() ||
+      (CombatLoversLocket.have() && CombatLoversLocket.availableLocketMonsters().includes(piece))
+    ) {
+      return piece;
+    }
+  }
+
+  return CombatLoversLocket.findMonster(isFree, valueDrops);
 }
