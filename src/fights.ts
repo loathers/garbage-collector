@@ -107,11 +107,10 @@ import {
   safeRestore,
   setChoice,
 } from "./lib";
-import { freeFightMood, meatMood } from "./mood";
+import { freeFightMood } from "./mood";
 import { freeFightOutfit, tryFillLatte } from "./outfit";
-import { bathroomFinance, potionSetup } from "./potions";
+import { bathroomFinance } from "./potions";
 import {
-  estimatedTurns,
   getNextwitchessPieceFight,
   witchessPieceCount,
   witchessPieceMacro,
@@ -161,8 +160,6 @@ const secondChainMacro = () =>
   ).abort();
 
 function witchessPieceSetup() {
-  potionSetup(false);
-  meatMood(true).execute(estimatedTurns());
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
