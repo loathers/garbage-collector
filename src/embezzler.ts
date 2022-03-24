@@ -1,4 +1,3 @@
-import { canAdv } from "canadv.ash";
 import {
   chatPrivate,
   cliExecute,
@@ -14,7 +13,6 @@ import {
   myInebriety,
   myTurncount,
   print,
-  retrieveItem,
   runChoice,
   runCombat,
   toInt,
@@ -42,7 +40,6 @@ import {
   have,
   property,
   Requirement,
-  set,
   sum,
 } from "libram";
 import { acquire } from "./acquire";
@@ -624,38 +621,7 @@ export const witchessPieceSources = [
       withMacro(options.macro, () => use($item`photocopied monster`));
     }
   ),
-  new witchessPieceFight(
-    "Pillkeeper Semirare",
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`),
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`)
-        ? 1
-        : 0,
-    () => {
-      retrieveItem($item`Eight Days a Week Pill Keeper`);
-      cliExecute("pillkeeper semirare");
-      if (!have($effect`Lucky!`)) {
-        set("_freePillKeeperUsed", true);
-        return;
-      }
-      adventureMacro($location`Cobb's Knob Treasury`, witchessPieceMacro());
-    }
-  ),
-  new witchessPieceFight(
-    "Lucky!",
-    () => canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`),
-    () => (canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`) ? 1 : 0),
-    () => {
-      adventureMacro($location`Cobb's Knob Treasury`, witchessPieceMacro());
-    }
-  ),
+
   new witchessPieceFight(
     "Pocket Wish (untapped potential)",
     () => {
