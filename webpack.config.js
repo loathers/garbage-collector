@@ -45,7 +45,7 @@ const sharedConfig = {
 const scriptsConfig = merge(
   {
     entry: {
-      garbo: "./src/index.ts",
+      garboween: "./src/index.ts",
       "garbo-combat": "./src/combat.ts",
     },
     output: {
