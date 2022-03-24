@@ -124,8 +124,8 @@ function consumeSafe(qty: number, item: Item, additionalValue?: number, skipAcqu
   } else if (!skipAcquire) {
     acquire(qty, item);
   }
-  if (itemType(item) === "food") eatSafe(qty, item);
-  else if (itemType(item) === "booze") drinkSafe(qty, item);
+  if (itemType(item) === "food" || item === saladFork) eatSafe(qty, item);
+  else if (itemType(item) === "booze" || item === frostyMug) drinkSafe(qty, item);
   else if (itemType(item) === "spleen item") chewSafe(qty, item);
   else use(qty, item);
 }
@@ -383,7 +383,7 @@ function gregariousCount(): {
 
 function copiers(): MenuItem<Note>[] {
   // assuming embezzler is worth 4 * MPA and a marginal turn is 1 * MPA, the differential is 3 * MPA
-  const embezzlerDifferential = 3 * MPA;
+  const embezzlerDifferential = 25000 - MPA;
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
   const extros =
     myInebriety() > inebrietyLimit()
