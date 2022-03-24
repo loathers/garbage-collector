@@ -1276,6 +1276,9 @@ const freeFightSources = [
     () => {
       const monster = locketMonster();
       if (!monster) return;
+      if(SourceTerminal.have() && !SourceTerminal.canDigitize()){
+        SourceTerminal.educate($skill`Digitize`);
+      }
       withMacro(
         Macro.externalIf(
           bestDigitizeTarget() === monster && get("_sourceTerminalDigitizeMonster") !== monster,
