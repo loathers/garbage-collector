@@ -33,7 +33,6 @@ import {
   useFamiliar,
   userConfirm,
   useSkill,
-  wait,
 } from "kolmafia";
 import {
   $class,
@@ -50,7 +49,6 @@ import {
   get,
   getAverageAdventures,
   have,
-  Kmail,
   maximizeCached,
   MayoClinic,
   MenuItem,
@@ -158,13 +156,7 @@ function nonOrganAdventures(): void {
     const value = clamp(3 - get("_loveChocolatesUsed"), 0, 3) * get("valueOfAdventure");
     if (value < price) break;
     if (!have($item`LOV Extraterrestrial Chocolate`)) {
-      Kmail.send("sellbot", `${$item`LOV Extraterrestrial Chocolate`.name} (1)`, undefined, 20000);
-      wait(11);
-      cliExecute("refresh inventory");
-      if (!have($item`LOV Extraterrestrial Chocolate`)) {
-        print("I'm tired of waiting for sellbot to send me some chocolate", "red");
-        break;
-      }
+      break;
     }
     use($item`LOV Extraterrestrial Chocolate`);
   }
