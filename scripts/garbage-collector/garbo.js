@@ -31636,7 +31636,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26239);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("2fc6c9547f933c27f3441ce701f86005760fe595"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("075300cefc10e601fbfb7a12df55357600972633"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32234,7 +32234,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("2fc6c9547f933c27f3441ce701f86005760fe595" === mainSha) {
+    if ("075300cefc10e601fbfb7a12df55357600972633" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -33178,6 +33178,21 @@ var WandererTarget = /*#__PURE__*/function () {
   return WandererTarget;
 }();
 
+function guzzlrAbandonQuest() {
+  var location = getLocation();
+  var remaningTurns = Math.ceil((100 - (0,property/* get */.U2)("guzzlrDeliveryProgress")) / (10 - (0,property/* get */.U2)("_guzzlrDeliveries")));
+  (0,external_kolmafia_.print)("Got guzzlr quest ".concat(getTier(), " at ").concat(getLocation(), " with remaining turns ").concat(remaningTurns));
+
+  if ( // consider abandoning
+  !location || // if mafia faled to track the location correctly
+  !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+  src_lib/* globalOptions.ascending */.Xe.ascending && wandererTurnsAvailableToday(location) < remaningTurns // or ascending and not enough turns to finish
+  ) {
+    (0,external_kolmafia_.print)("Abandoning...");
+    abandon();
+  }
+}
+
 var wandererTargets = [new WandererTarget("Guzzlr", () => have(), () => getLocation(), () => {
   var tier = getTier();
   var progressPerTurn = 100 / (10 - (0,property/* get */.U2)("_guzzlrDeliveries"));
@@ -33203,6 +33218,8 @@ var wandererTargets = [new WandererTarget("Guzzlr", () => have(), () => getLocat
   // * always prefer 1 plat per day
   // * go for gold if plat unavailable and gold not maxed and bronze is maxed or if both gold and bronze are maxed
   // * go for bronze if plat unavailable and gold is maxed and either gold unavailable or quests are not maxed
+  if (isQuestActive()) guzzlrAbandonQuest();
+
   while (!isQuestActive()) {
     (0,external_kolmafia_.print)("Picking a guzzlr quest");
 
@@ -33216,18 +33233,7 @@ var wandererTargets = [new WandererTarget("Guzzlr", () => have(), () => getLocat
       acceptBronze();
     }
 
-    var location = getLocation();
-    var remaningTurns = Math.ceil((100 - (0,property/* get */.U2)("guzzlrDeliveryProgress")) / (10 - (0,property/* get */.U2)("_guzzlrDeliveries")));
-    (0,external_kolmafia_.print)("Got guzzlr quest ".concat(getTier(), " at ").concat(getLocation(), " with remaining turns ").concat(remaningTurns));
-
-    if ( // consider abandoning
-    !location || // if mafia faled to track the location correctly
-    !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
-    src_lib/* globalOptions.ascending */.Xe.ascending && wandererTurnsAvailableToday(location) < remaningTurns // or ascending and not enough turns to finish
-    ) {
-      (0,external_kolmafia_.print)("Abandoning...");
-      abandon();
-    }
+    guzzlrAbandonQuest();
   } // return true only if it is safe to try get guzzlr
 
 
