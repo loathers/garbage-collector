@@ -188,6 +188,27 @@ class WandererTarget {
   }
 }
 
+function guzzlrAbandonQuest() {
+  const location = Guzzlr.getLocation();
+  const remaningTurns = Math.ceil(
+    (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
+  );
+
+  print(
+    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`
+  );
+
+  if (
+    // consider abandoning
+    !location || // if mafia faled to track the location correctly
+    !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+    (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
+  ) {
+    print("Abandoning...");
+    Guzzlr.abandon();
+  }
+}
+
 const wandererTargets = [
   new WandererTarget(
     "Guzzlr",
@@ -214,6 +235,7 @@ const wandererTargets = [
       // * always prefer 1 plat per day
       // * go for gold if plat unavailable and gold not maxed and bronze is maxed or if both gold and bronze are maxed
       // * go for bronze if plat unavailable and gold is maxed and either gold unavailable or quests are not maxed
+      if (Guzzlr.isQuestActive()) guzzlrAbandonQuest();
       while (!Guzzlr.isQuestActive()) {
         print("Picking a guzzlr quest");
         if (Guzzlr.canPlatinum()) {
@@ -228,24 +250,7 @@ const wandererTargets = [
           // fall back to bronze when can't plat, can't gold, or bronze is not maxed
           Guzzlr.acceptBronze();
         }
-        const location = Guzzlr.getLocation();
-        const remaningTurns = Math.ceil(
-          (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
-        );
-
-        print(
-          `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`
-        );
-
-        if (
-          // consider abandoning
-          !location || // if mafia faled to track the location correctly
-          !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
-          (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
-        ) {
-          print("Abandoning...");
-          Guzzlr.abandon();
-        }
+        guzzlrAbandonQuest();
       }
 
       // return true only if it is safe to try get guzzlr
