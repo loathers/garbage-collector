@@ -268,7 +268,7 @@ function horse(): void {
 }
 
 function dailyBuffs(): void {
-  BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
+  if (have($item`Beach Comb`)) BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
 
   if (
     !get("_clanFortuneBuffUsed") &&
