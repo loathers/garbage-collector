@@ -5,7 +5,6 @@ import {
   cliExecute,
   enthroneFamiliar,
   equip,
-  equippedItem,
   haveEquipped,
   inebrietyLimit,
   Item,
@@ -41,7 +40,7 @@ export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
   const bjornChoice = pickBjorn(equipMode);
 
-  const parameters = requirement?.maximizeParameters ?? [];
+  const parameters = [...(requirement?.maximizeParameters ?? []), "-tie"];
   const forceEquip = requirement?.maximizeOptions.forceEquip ?? [];
   const bonusEquip = requirement?.maximizeOptions.bonusEquip ?? new Map();
   const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
@@ -50,6 +49,7 @@ export function freeFightOutfit(requirement?: Requirement): void {
   parameters.push(
     myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
   );
+  [];
 
   if (
     have($item`vampyric cloake`) &&
@@ -88,10 +88,6 @@ export function freeFightOutfit(requirement?: Requirement): void {
     preventSlot: preventSlot,
   });
   finalRequirement.maximize();
-
-  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
-    equip(bjornAlike);
-  }
 
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
@@ -150,7 +146,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   const equipMode = embezzlerUp ? "embezzler" : "barf";
   const bjornChoice = pickBjorn(equipMode);
 
-  const parameters = requirement?.maximizeParameters ?? [];
+  const parameters = [...(requirement?.maximizeParameters ?? []), "-tie"];
   const forceEquip = requirement?.maximizeOptions.forceEquip ?? [];
   const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
   const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
@@ -252,10 +248,6 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     )
   );
   compiledRequirements.maximize();
-
-  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
-    equip(bjornAlike);
-  }
 
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
