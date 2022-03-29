@@ -454,7 +454,7 @@ function cheat(): void {
     { card: "Forest", item: $item`green mana` },
     { card: "Giant Growth", item: $item`green mana` },
     { card: "Gift Card", item: $item`gift card` },
-    { card: "1952 Mickey Mantle card", item: $item`1952 Mickey Mantle card` },
+    { card: "Mickey", item: $item`1952 Mickey Mantle card` },
   ]
     .filter(({ card }) => !cardsSeen.includes(card.toLowerCase()))
     .sort((a, b) => garboValue(b.item) - garboValue(a.item))
