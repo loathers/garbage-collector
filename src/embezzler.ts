@@ -470,6 +470,7 @@ export const embezzlerSources = [
       // reset the crystal ball prediction by staring longingly at toast
       if (
         get("beGregariousFightsLeft") === 1 &&
+        have($item`miniature crystal ball`) &&
         CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !== embezzler
       ) {
         try {
