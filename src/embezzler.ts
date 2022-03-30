@@ -455,7 +455,7 @@ export const embezzlerSources = [
     "Be Gregarious",
     () =>
       get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > toInt(have($item`miniature crystal ball`)),
+      get("beGregariousFightsLeft") > (have($item`miniature crystal ball`) ? 1 : 0),
     () =>
       get("beGregariousMonster") === embezzler
         ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
