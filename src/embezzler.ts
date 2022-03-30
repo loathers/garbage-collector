@@ -453,7 +453,9 @@ export const embezzlerSources = [
   ),
   new EmbezzlerFight(
     "Be Gregarious",
-    () => get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 1,
+    () =>
+      get("beGregariousMonster") === embezzler &&
+      get("beGregariousFightsLeft") > toInt(have($item`miniature crystal ball`)),
     () =>
       get("beGregariousMonster") === embezzler
         ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
@@ -491,6 +493,7 @@ export const embezzlerSources = [
     () =>
       get("beGregariousMonster") === embezzler &&
       get("beGregariousFightsLeft") === 1 &&
+      have($item`miniature crystal ball`) &&
       !CrystalBall.currentPredictions(true).has($location`The Dire Warren`),
     () =>
       (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
