@@ -77,6 +77,7 @@ import {
   globalOptions,
   HIGHLIGHT,
   logMessage,
+  realmAvailable,
   tryFeast,
 } from "./lib";
 import { withStash } from "./clan";
@@ -367,7 +368,7 @@ function configureVykea() {
 }
 
 function volcanoDailies(): void {
-  if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
+  if (!realmAvailable("hot")) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
   if (!get("_infernoDiscoVisited")) {
@@ -393,16 +394,27 @@ function volcanoDailies(): void {
     }
   }
 }
+
+function volcanoItemValue(item: Item): number {
+  const basePrice = retrievePrice(item);
+  if (basePrice) return basePrice;
+  if (item === $item`fused fuse`) {
+    // Check if clara's bell is available and unused
+    if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) return Infinity;
+    // Check if we can use Clara's bell for Yachtzee
+    // If so, we call the opportunity cost of this about 40k
+    if (realmAvailable("sleaze") && have($item`fishy pipe`) && !get("_fishyPipeUsed")) {
+      return 40000;
+    }
+  }
+  return Infinity;
+}
+
 function checkVolcanoQuest() {
   print("Checking volcano quest", HIGHLIGHT);
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
   const volcoinoValue = garboValue($item`Volcoino`);
   withProperty("valueOfInventory", 2, () => {
-    const volcanoItemValuer = (item: Item) =>
-      retrievePrice(item) ||
-      (item === $item`fused fuse` && have($item`Clara's bell`) && !globalOptions.clarasBellClaimed
-        ? get("valueOfAdventure")
-        : Infinity);
     const bestItem = [
       {
         item: property.getItem("_volcanoItem1") ?? $item`none`,
@@ -420,11 +432,11 @@ function checkVolcanoQuest() {
         choice: 3,
       },
     ].sort(
-      (a, b) => a.quantity * volcanoItemValuer(a.item) - b.quantity * volcanoItemValuer(b.item)
+      (a, b) => a.quantity * volcanoItemValue(a.item) - b.quantity * volcanoItemValue(b.item)
     )[0];
     if (
       bestItem.item.tradeable &&
-      bestItem.quantity * volcanoItemValuer(bestItem.item) < volcoinoValue
+      bestItem.quantity * volcanoItemValue(bestItem.item) < volcoinoValue
     ) {
       withProperty("autoBuyPriceLimit", volcoinoValue, () =>
         retrieveItem(bestItem.item, bestItem.quantity)
