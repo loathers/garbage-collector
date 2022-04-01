@@ -58,6 +58,7 @@ import {
   BeachComb,
   ChateauMantegna,
   ensureEffect,
+  findLeprechaunMultiplier,
   get,
   getModifier,
   have,
@@ -75,7 +76,6 @@ import {
   coinmasterPrice,
   globalOptions,
   HIGHLIGHT,
-  leprechaunMultiplier,
   logMessage,
   tryFeast,
 } from "./lib";
@@ -591,7 +591,7 @@ function pantogram(): void {
       : estimatedTurns() - digitizedMonstersRemaining() - embezzlerCount();
     pantogramValue = 100 * expectedBarfTurns;
   } else {
-    const lepMult = leprechaunMultiplier(meatFamiliar());
+    const lepMult = findLeprechaunMultiplier(meatFamiliar());
     const lepBonus = 2 * lepMult + Math.sqrt(lepMult);
     const totalPantsValue = (pants: Item) =>
       getModifier("Meat Drop", pants) + getModifier("Familiar Weight", pants) * lepBonus;

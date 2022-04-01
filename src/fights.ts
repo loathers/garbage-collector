@@ -78,6 +78,7 @@ import {
   CrystalBall,
   ensureEffect,
   FindActionSourceConstraints,
+  findLeprechaunMultiplier,
   get,
   getTodaysHolidayWanderers,
   have,
@@ -2171,8 +2172,10 @@ function sbbNoncombat(): void {
   const usingClara = have($item`Clara's bell`) && !globalOptions.clarasBellClaimed;
   if (usingClara) {
     useFamiliar(
-      Familiar.all().filter((familiar) => have(familiar) && familiar.underwater)[0] ??
-        $familiar`none`
+      Familiar.all().filter(
+        (familiar) =>
+          have(familiar) && familiar.underwater && findLeprechaunMultiplier(familiar) === 0
+      )[0] ?? $familiar`none`
     );
     const ready =
       new Requirement(["meat", "sea", "-tie"], {}).maximize() && use($item`Clara's bell`);
