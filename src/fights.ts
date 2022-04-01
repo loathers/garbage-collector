@@ -2170,7 +2170,11 @@ function sbbNoncombat(): void {
   const usingClara =
     have($item`Clara's bell`) &&
     !get("_claraBellUsed") &&
-    !["food", "booze"].includes(get("_questPartyFairQuest"));
+    !["food", "booze"].includes(get("_questPartyFairQuest")) &&
+    !get("_volcanoItemRedeemed") &&
+    ![get("_volcanoItem1"), get("_volcanoItem2"), get("_volcanoItem3")].includes(
+      toInt($item`fused fuse`)
+    );
   if (usingClara) {
     useFamiliar(
       Familiar.all().filter((familiar) => have(familiar) && familiar.underwater)[0] ??
