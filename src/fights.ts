@@ -2181,7 +2181,7 @@ function sbbNoncombat(): void {
         $familiar`none`
     );
     const ready =
-      new Requirement(["meat", "underwater", "-tie"], {}).maximize() && use($item`Clara's bell`);
+      new Requirement(["meat", "sea", "-tie"], {}).maximize() && use($item`Clara's bell`);
     if (!ready) return;
     setChoice(918, 2);
     adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
