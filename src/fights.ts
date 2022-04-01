@@ -108,6 +108,7 @@ import {
   mapMonster,
   propertyManager,
   questStep,
+  realmAvailable,
   resetDailyPreference,
   safeRestore,
   setChoice,
@@ -489,6 +490,7 @@ export function dailyFights(): void {
         }
         doGhost();
         startWandererCounter();
+        sbbNoncombat();
       }
     });
   }
@@ -2160,4 +2162,21 @@ export function estimatedTentacles(): number {
     const avail = source.tentacle ? source.available() : 0;
     return typeof avail === "number" ? avail : toInt(avail);
   });
+}
+
+function sbbNoncombat(): void {
+  if (!realmAvailable("sleaze") || !have($effect`Fishy`)) return;
+
+  const usingClara =
+    have($item`Clara's bell`) &&
+    !get("_claraBellUsed") &&
+    !["food", "booze"].includes(get("_questPartyFairQuest"));
+  if (usingClara) {
+    use($item`Clara's bell`);
+    useFamiliar(
+      Familiar.all().filter((familiar) => have(familiar) && familiar.underwater)[0] ??
+        $familiar`none`
+    );
+    new Requirement(["meat", "underwater", "-tie"], {});
+  }
 }
