@@ -29776,7 +29776,9 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
   function FreeRunFight(available, run) {
     var _this;
 
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
+      canOverrideMacro: false
+    };
     var freeRunPicker = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
     fights_classCallCheck(this, FreeRunFight);
@@ -29863,7 +29865,9 @@ var freeFightSources = [new FreeFight(() => (0,lib/* have */.lf)((0,template_str
   fightAll("LOV Epaulettes", "Open Heart Surgery", "LOV Extraterrestrial Chocolate");
   (0,external_kolmafia_.visitUrl)("choice.php");
   if ((0,external_kolmafia_.handlingChoice)()) throw "Did not get all the way through LOV.";
-}, false), new FreeFight(() => {
+}, false, {
+  canOverrideMacro: true
+}), new FreeFight(() => {
   var _ChateauMantegna$pain, _ChateauMantegna$pain2, _ChateauMantegna$pain3;
 
   return ChateauMantegna/* have */.lf() && !ChateauMantegna/* paintingFought */.L0() && ((_ChateauMantegna$pain = (_ChateauMantegna$pain2 = ChateauMantegna/* paintingMonster */.Aq()) === null || _ChateauMantegna$pain2 === void 0 ? void 0 : (_ChateauMantegna$pain3 = _ChateauMantegna$pain2.attributes) === null || _ChateauMantegna$pain3 === void 0 ? void 0 : _ChateauMantegna$pain3.includes("FREE")) !== null && _ChateauMantegna$pain !== void 0 ? _ChateauMantegna$pain : false);
@@ -29872,14 +29876,18 @@ var freeFightSources = [new FreeFight(() => (0,lib/* have */.lf)((0,template_str
     var _ChateauMantegna$pain4;
 
     return phylum === ((_ChateauMantegna$pain4 = ChateauMantegna/* paintingMonster */.Aq()) === null || _ChateauMantegna$pain4 === void 0 ? void 0 : _ChateauMantegna$pain4.phylum);
-  }) ? (0,template_string/* $familiar */.HP)(fights_templateObject117 || (fights_templateObject117 = fights_taggedTemplateLiteral(["Robortender"]))) : null
+  }) ? (0,template_string/* $familiar */.HP)(fights_templateObject117 || (fights_templateObject117 = fights_taggedTemplateLiteral(["Robortender"]))) : null,
+  canOverrideMacro: true
 }), new FreeFight(() => (0,property/* get */.U2)("questL02Larva") !== "unstarted" && !(0,property/* get */.U2)("_eldritchTentacleFought"), () => {
   var haveEldritchEssence = (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(fights_templateObject118 || (fights_templateObject118 = fights_taggedTemplateLiteral(["eldritch essence"])))) !== 0;
   (0,external_kolmafia_.visitUrl)("place.php?whichplace=forestvillage&action=fv_scientist", false);
   if (!(0,external_kolmafia_.handlingChoice)()) throw "No choice?";
   (0,external_kolmafia_.runChoice)(haveEldritchEssence ? 2 : 1);
-}, false), new FreeFight(() => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(fights_templateObject119 || (fights_templateObject119 = fights_taggedTemplateLiteral(["Evoke Eldritch Horror"])))) && !(0,property/* get */.U2)("_eldritchHorrorEvoked"), () => (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(fights_templateObject120 || (fights_templateObject120 = fights_taggedTemplateLiteral(["Evoke Eldritch Horror"])))), false), new FreeFight(() => (0,utils/* clamp */.uZ)(3 - (0,property/* get */.U2)("_lynyrdSnareUses"), 0, 3), () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject121 || (fights_templateObject121 = fights_taggedTemplateLiteral(["lynyrd snare"])))), true, {
-  cost: () => (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(fights_templateObject122 || (fights_templateObject122 = fights_taggedTemplateLiteral(["lynyrd snare"]))))
+}, false), new FreeFight(() => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(fights_templateObject119 || (fights_templateObject119 = fights_taggedTemplateLiteral(["Evoke Eldritch Horror"])))) && !(0,property/* get */.U2)("_eldritchHorrorEvoked"), () => (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(fights_templateObject120 || (fights_templateObject120 = fights_taggedTemplateLiteral(["Evoke Eldritch Horror"])))), false, {
+  canOverrideMacro: true
+}), new FreeFight(() => (0,utils/* clamp */.uZ)(3 - (0,property/* get */.U2)("_lynyrdSnareUses"), 0, 3), () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject121 || (fights_templateObject121 = fights_taggedTemplateLiteral(["lynyrd snare"])))), true, {
+  cost: () => (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(fights_templateObject122 || (fights_templateObject122 = fights_taggedTemplateLiteral(["lynyrd snare"])))),
+  canOverrideMacro: true
 }), new FreeFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(fights_templateObject123 || (fights_templateObject123 = fights_taggedTemplateLiteral(["[glitch season reward name]"])))) && !(0,property/* get */.U2)("_glitchMonsterFights") && (0,property/* get */.U2)("garbo_fightGlitch", false), () => (0,src_combat.withMacro)(src_combat.Macro.trySkill((0,template_string/* $skill */.tm)(fights_templateObject124 || (fights_templateObject124 = fights_taggedTemplateLiteral(["Curse of Marinara"])))).trySkill((0,template_string/* $skill */.tm)(fights_templateObject125 || (fights_templateObject125 = fights_taggedTemplateLiteral(["Conspiratorial Whispers"])))).trySkill((0,template_string/* $skill */.tm)(fights_templateObject126 || (fights_templateObject126 = fights_taggedTemplateLiteral(["Shadow Noodles"])))).externalIf((0,property/* get */.U2)("glitchItemImplementationCount") * (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(fights_templateObject127 || (fights_templateObject127 = fights_taggedTemplateLiteral(["[glitch season reward name]"])))) >= 2000, src_combat.Macro.item([(0,template_string/* $item */.xr)(fights_templateObject128 || (fights_templateObject128 = fights_taggedTemplateLiteral(["gas can"]))), (0,template_string/* $item */.xr)(fights_templateObject129 || (fights_templateObject129 = fights_taggedTemplateLiteral(["gas can"])))])).externalIf((0,property/* get */.U2)("lovebugsUnlocked"), src_combat.Macro.trySkill((0,template_string/* $skill */.tm)(fights_templateObject130 || (fights_templateObject130 = fights_taggedTemplateLiteral(["Summon Love Gnats"])))).trySkill((0,template_string/* $skill */.tm)(fights_templateObject131 || (fights_templateObject131 = fights_taggedTemplateLiteral(["Summon Love Mosquito"]))))).trySkill((0,template_string/* $skill */.tm)(fights_templateObject132 || (fights_templateObject132 = fights_taggedTemplateLiteral(["Micrometeorite"])))).tryItem((0,template_string/* $item */.xr)(fights_templateObject133 || (fights_templateObject133 = fights_taggedTemplateLiteral(["Time-Spinner"])))).tryItem((0,template_string/* $item */.xr)(fights_templateObject134 || (fights_templateObject134 = fights_taggedTemplateLiteral(["little red book"])))).tryItem((0,template_string/* $item */.xr)(fights_templateObject135 || (fights_templateObject135 = fights_taggedTemplateLiteral(["Rain-Doh blue balls"])))).tryItem((0,template_string/* $item */.xr)(fights_templateObject136 || (fights_templateObject136 = fights_taggedTemplateLiteral(["Rain-Doh indigo cup"])))).trySkill((0,template_string/* $skill */.tm)(fights_templateObject137 || (fights_templateObject137 = fights_taggedTemplateLiteral(["Entangling Noodles"])))).trySkill((0,template_string/* $skill */.tm)(fights_templateObject138 || (fights_templateObject138 = fights_taggedTemplateLiteral(["Frost Bite"])))).kill(), () => {
   (0,external_kolmafia_.restoreHp)((0,external_kolmafia_.myMaxhp)());
   if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(fights_templateObject139 || (fights_templateObject139 = fights_taggedTemplateLiteral(["Ruthless Efficiency"]))))) (0,lib/* ensureEffect */.pq)((0,template_string/* $effect */._G)(fights_templateObject140 || (fights_templateObject140 = fights_taggedTemplateLiteral(["Ruthlessly Efficient"]))));
@@ -29904,7 +29912,8 @@ new FreeFight(() => {
 }, true, {
   requirements: () => [new maximize/* Requirement */.nb(["Club"], {})]
 }), new FreeFight(() => (0,utils/* clamp */.uZ)(10 - (0,property/* get */.U2)("_brickoFights"), 0, 10), () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(fights_templateObject157 || (fights_templateObject157 = fights_taggedTemplateLiteral(["BRICKO ooze"])))), true, {
-  cost: () => (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(fights_templateObject158 || (fights_templateObject158 = fights_taggedTemplateLiteral(["BRICKO eye brick"])))) + 2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(fights_templateObject159 || (fights_templateObject159 = fights_taggedTemplateLiteral(["BRICKO brick"]))))
+  cost: () => (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(fights_templateObject158 || (fights_templateObject158 = fights_taggedTemplateLiteral(["BRICKO eye brick"])))) + 2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(fights_templateObject159 || (fights_templateObject159 = fights_taggedTemplateLiteral(["BRICKO brick"])))),
+  canOverrideMacro: true
 }), new FreeFight(() => wantPills() ? 5 - (0,property/* get */.U2)("_saberForceUses") : 0, () => {
   if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(fights_templateObject160 || (fights_templateObject160 = fights_taggedTemplateLiteral(["Red-Nosed Snapper"]))))) (0,external_kolmafia_.cliExecute)("snapper ".concat((0,template_string/* $phylum */.tq)(fights_templateObject161 || (fights_templateObject161 = fights_taggedTemplateLiteral(["dude"])))));
   (0,src_lib/* setChoice */.Y7)(1387, 3);
@@ -30016,7 +30025,8 @@ new FreeFight(() => (0,property/* get */.U2)("questL11Worship") !== "unstarted" 
 }), new FreeFight(() => (0,property/* get */.U2)("_sausageFights") === 0 && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject248 || (_templateObject248 = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))), () => (0,external_kolmafia_.adv1)((0,wanderer/* determineDraggableZoneAndEnsureAccess */.x)(), -1, ""), true, {
   requirements: () => [new maximize/* Requirement */.nb([], {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject249 || (_templateObject249 = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
-  })]
+  })],
+  canOverrideMacro: true
 }), new FreeFight(() => (0,property/* get */.U2)("questL11Ron") === "finished" ? (0,utils/* clamp */.uZ)(5 - (0,property/* get */.U2)("_glarkCableUses"), 0, (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(_templateObject250 || (_templateObject250 = fights_taggedTemplateLiteral(["glark cable"]))))) : 0, () => {
   (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject251 || (_templateObject251 = fights_taggedTemplateLiteral(["The Red Zeppelin"]))), src_combat.Macro.item((0,template_string/* $item */.xr)(_templateObject252 || (_templateObject252 = fights_taggedTemplateLiteral(["glark cable"])))));
 }, true), // Mushroom garden
@@ -30055,7 +30065,8 @@ new FreeFight(() => !(0,extrovermectin/* doingExtrovermectin */.KN)() && ((0,lib
   familiar: () => (0,template_string/* $familiar */.HP)(_templateObject281 || (_templateObject281 = fights_taggedTemplateLiteral(["God Lobster"]))),
   requirements: () => [new maximize/* Requirement */.nb([], {
     bonusEquip: new Map([[(0,template_string/* $item */.xr)(_templateObject282 || (_templateObject282 = fights_taggedTemplateLiteral(["God Lobster's Scepter"]))), 1000], [(0,template_string/* $item */.xr)(_templateObject283 || (_templateObject283 = fights_taggedTemplateLiteral(["God Lobster's Ring"]))), 2000], [(0,template_string/* $item */.xr)(_templateObject284 || (_templateObject284 = fights_taggedTemplateLiteral(["God Lobster's Rod"]))), 3000], [(0,template_string/* $item */.xr)(_templateObject285 || (_templateObject285 = fights_taggedTemplateLiteral(["God Lobster's Robe"]))), 4000], [(0,template_string/* $item */.xr)(_templateObject286 || (_templateObject286 = fights_taggedTemplateLiteral(["God Lobster's Crown"]))), 5000]])
-  })]
+  })],
+  canOverrideMacro: true
 }), new FreeFight(() => (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject287 || (_templateObject287 = fights_taggedTemplateLiteral(["Machine Elf"])))) ? (0,utils/* clamp */.uZ)(5 - (0,property/* get */.U2)("_machineTunnelsAdv"), 0, 5) : 0, () => {
   src_lib/* propertyManager.setChoices */.kr.setChoices({
     1119: 6 // escape DMT
@@ -30082,25 +30093,32 @@ new FreeFight(() => !(0,extrovermectin/* doingExtrovermectin */.KN)() && ((0,lib
 {
   familiar: () => (0,template_string/* $familiar */.HP)(_templateObject307 || (_templateObject307 = fights_taggedTemplateLiteral(["Machine Elf"])))
 }), // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
-new FreeFight(() => Witchess_have() ? (0,utils/* clamp */.uZ)(5 - fightsDone(), 0, 5) : 0, () => fightPiece(bestWitchessPiece()), true), new FreeFight(() => (0,property/* get */.U2)("snojoAvailable") && (0,utils/* clamp */.uZ)(10 - (0,property/* get */.U2)("_snojoFreeFights"), 0, 10), () => {
+new FreeFight(() => Witchess_have() ? (0,utils/* clamp */.uZ)(5 - fightsDone(), 0, 5) : 0, () => fightPiece(bestWitchessPiece()), true, {
+  canOverrideMacro: true
+}), new FreeFight(() => (0,property/* get */.U2)("snojoAvailable") && (0,utils/* clamp */.uZ)(10 - (0,property/* get */.U2)("_snojoFreeFights"), 0, 10), () => {
   if ((0,property/* get */.U2)("snojoSetting") === null) {
     (0,external_kolmafia_.visitUrl)("place.php?whichplace=snojo&action=snojo_controller");
     (0,external_kolmafia_.runChoice)(3);
   }
 
   (0,external_kolmafia_.adv1)((0,template_string/* $location */.PG)(_templateObject308 || (_templateObject308 = fights_taggedTemplateLiteral(["The X-32-F Combat Training Snowman"]))), -1, "");
-}, false), new FreeFight(() => (0,property/* get */.U2)("neverendingPartyAlways") && (0,src_lib/* questStep */.cL)("_questPartyFair") < 999 ? (0,utils/* clamp */.uZ)(10 - (0,property/* get */.U2)("_neverendingPartyFreeTurns"), 0, 10) : 0, () => {
+}, false, {
+  canOverrideMacro: true
+}), new FreeFight(() => (0,property/* get */.U2)("neverendingPartyAlways") && (0,src_lib/* questStep */.cL)("_questPartyFair") < 999 ? (0,utils/* clamp */.uZ)(10 - (0,property/* get */.U2)("_neverendingPartyFreeTurns"), 0, 10) : 0, () => {
   setNepQuestChoicesAndPrepItems();
   (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject309 || (_templateObject309 = fights_taggedTemplateLiteral(["The Neverending Party"]))), src_combat.Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject310 || (_templateObject310 = fights_taggedTemplateLiteral(["Feel Pride"])))).basicCombat());
 }, true, {
   requirements: () => [new maximize/* Requirement */.nb([].concat(fights_toConsumableArray((0,property/* get */.U2)("_questPartyFairQuest") === "trash" ? ["100 Item Drop"] : []), fights_toConsumableArray((0,property/* get */.U2)("_questPartyFairQuest") === "dj" ? ["100 Meat Drop"] : [])), {
     forceEquip: fights_toConsumableArray((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject311 || (_templateObject311 = fights_taggedTemplateLiteral(["January's Garbage Tote"])))) ? (0,template_string/* $items */.vS)(_templateObject312 || (_templateObject312 = fights_taggedTemplateLiteral(["makeshift garbage shirt"]))) : [])
-  })]
+  })],
+  canOverrideMacro: true
 }), new FreeFight(() => CombatLoversLocket/* have */.lf() && !!locketMonster() && CombatLoversLocket/* reminiscesLeft */.oK() > 1, () => {
   var monster = locketMonster();
   if (!monster) return;
   (0,src_combat.withMacro)(src_combat.Macro.basicCombat(), () => CombatLoversLocket/* reminisce */.HZ(monster));
-}, true), // Get a li'l ninja costume for 150% item drop
+}, true, {
+  canOverrideMacro: true
+}), // Get a li'l ninja costume for 150% item drop
 new FreeFight(() => !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject313 || (_templateObject313 = fights_taggedTemplateLiteral(["li'l ninja costume"])))) && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject314 || (_templateObject314 = fights_taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && !(0,property/* get */.U2)("_firedJokestersGun") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject315 || (_templateObject315 = fights_taggedTemplateLiteral(["The Jokester's gun"])))) && (0,src_lib/* questStep */.cL)("questL08Trapper") >= 2, () => (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject316 || (_templateObject316 = fights_taggedTemplateLiteral(["Lair of the Ninja Snowmen"]))), src_combat.Macro.skill((0,template_string/* $skill */.tm)(_templateObject317 || (_templateObject317 = fights_taggedTemplateLiteral(["Fire the Jokester's Gun"])))).abort()), true, {
   requirements: () => [new maximize/* Requirement */.nb([], {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject318 || (_templateObject318 = fights_taggedTemplateLiteral(["The Jokester's gun"])))
@@ -31636,7 +31654,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("21eafeb9e60f4dd4735f7a661f0a86bc7094aa5e"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("6202b7ffd3ef75d950dbc0e715e3bb4301f7cde3"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32234,7 +32252,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("21eafeb9e60f4dd4735f7a661f0a86bc7094aa5e" === mainSha) {
+    if ("6202b7ffd3ef75d950dbc0e715e3bb4301f7cde3" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
