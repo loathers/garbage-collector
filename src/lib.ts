@@ -72,6 +72,7 @@ export const globalOptions: {
   wishAnswer: boolean;
   simulateDiet: boolean;
   noDiet: boolean;
+  clarasBellClaimed: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -82,6 +83,7 @@ export const globalOptions: {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
+  clarasBellClaimed: get("_claraBellUsed"),
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";

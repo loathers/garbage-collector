@@ -1848,6 +1848,7 @@ function setNepQuestChoicesAndPrepItems() {
     visitUrl(toUrl($location`The Neverending Party`));
     if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
       print("Gerald/ine quest!", HIGHLIGHT);
+      globalOptions.clarasBellClaimed = true;
     }
     if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
       runChoice(1); // Accept quest

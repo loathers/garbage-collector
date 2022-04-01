@@ -400,7 +400,7 @@ function checkVolcanoQuest() {
   withProperty("valueOfInventory", 2, () => {
     const volcanoItemValuer = (item: Item) =>
       retrievePrice(item) ||
-      (item === $item`fused fuse` && have($item`Clara's bell`) && !get("_claraBellUsed")
+      (item === $item`fused fuse` && have($item`Clara's bell`) && !globalOptions.clarasBellClaimed
         ? get("valueOfAdventure")
         : Infinity);
     const bestItem = [
@@ -432,6 +432,7 @@ function checkVolcanoQuest() {
       visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
       runChoice(bestItem.choice);
     } else if (bestItem.item === $item`fused fuse`) {
+      globalOptions.clarasBellClaimed = true;
       logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
     }
   });
