@@ -395,8 +395,10 @@ function volcanoDailies(): void {
   }
 }
 
-function volcanoItemValue(item: Item): number {
-  const basePrice = retrievePrice(item);
+type VolcanoItem = { quantity: number; item: Item; choice: number };
+
+function volcanoItemValue({ quantity, item }: VolcanoItem): number {
+  const basePrice = quantity * retrievePrice(item);
   if (basePrice) return basePrice;
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
@@ -404,7 +406,7 @@ function volcanoItemValue(item: Item): number {
     // Check if we can use Clara's bell for Yachtzee
     // If so, we call the opportunity cost of this about 40k
     if (realmAvailable("sleaze") && have($item`fishy pipe`) && !get("_fishyPipeUsed")) {
-      return 40000;
+      return quantity * 40000;
     }
   }
   return Infinity;
@@ -431,13 +433,8 @@ function checkVolcanoQuest() {
         quantity: get("_volcanoItemCount3"),
         choice: 3,
       },
-    ].sort(
-      (a, b) => a.quantity * volcanoItemValue(a.item) - b.quantity * volcanoItemValue(b.item)
-    )[0];
-    if (
-      bestItem.item.tradeable &&
-      bestItem.quantity * volcanoItemValue(bestItem.item) < volcoinoValue
-    ) {
+    ].sort((a, b) => volcanoItemValue(a) - volcanoItemValue(b))[0];
+    if (bestItem.item.tradeable && volcanoItemValue(bestItem) < volcoinoValue) {
       withProperty("autoBuyPriceLimit", volcoinoValue, () =>
         retrieveItem(bestItem.item, bestItem.quantity)
       );
