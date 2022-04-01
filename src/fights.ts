@@ -2172,11 +2172,17 @@ function sbbNoncombat(): void {
     !get("_claraBellUsed") &&
     !["food", "booze"].includes(get("_questPartyFairQuest"));
   if (usingClara) {
-    use($item`Clara's bell`);
     useFamiliar(
       Familiar.all().filter((familiar) => have(familiar) && familiar.underwater)[0] ??
         $familiar`none`
     );
-    new Requirement(["meat", "underwater", "-tie"], {});
+    const ready =
+      new Requirement(["meat", "underwater", "-tie"], {}).maximize() && use($item`Clara's bell`);
+    if (!ready) return;
+    setChoice(918, 2);
+    adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+    if (get("lastEncounter") === "Yacht, See?") {
+      adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+    }
   }
 }
