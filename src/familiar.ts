@@ -148,6 +148,9 @@ function mimicDropValue() {
   );
 }
 
+const gooseExp =
+  $familiar`Grey Goose`.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
+
 export function freeFightFamiliar(canMeatify = false): Familiar {
   if (canMeatify && timeToMeatify()) return $familiar`Grey Goose`;
   const familiarValue: [Familiar, number][] = [];
@@ -166,8 +169,7 @@ export function freeFightFamiliar(canMeatify = false): Familiar {
     $familiar`Grey Goose`.experience < 400 &&
     !get("_meatifyMatterUsed")
   ) {
-    const exp = $familiar`Grey Goose`.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
-    const experienceNeeded = 400 - (globalOptions.ascending ? 25 : exp);
+    const experienceNeeded = 400 - (globalOptions.ascending ? 25 : gooseExp);
     const meatFromCast = 15 ** 4;
     const estimatedExperience = 12;
     familiarValue.push([
