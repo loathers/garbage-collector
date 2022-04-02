@@ -9,7 +9,7 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import { $effect, $familiar, $familiars, $item, $items, get, have, propertyTypes } from "libram";
-import { argmax, fairyMultiplier, leprechaunMultiplier } from "./lib";
+import { argmax, fairyMultiplier, globalOptions, leprechaunMultiplier } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
 let _meatFamiliar: Familiar;
@@ -166,7 +166,8 @@ export function freeFightFamiliar(canMeatify = false): Familiar {
     $familiar`Grey Goose`.experience < 400 &&
     !get("_meatifyMatterUsed")
   ) {
-    const experienceNeededDaily = 400 - 25;
+    const experienceNeededDaily =
+      400 - (globalOptions.ascending ? 25 : $familiar`Grey Goose`.experience);
     const meatFromCast = 15 ** 4;
     const estimatedExperience = 12;
     familiarValue.push([
