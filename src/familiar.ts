@@ -160,6 +160,19 @@ export function freeFightFamiliar(): Familiar {
     familiarValue.push([$familiar`Pocket Professor`, 3000]);
   }
 
+  if (
+    have($familiar`Grey Goose`) &&
+    $familiar`Grey Goose`.experience < 400 &&
+    !get("_meatifyMatterUsed")
+  ) {
+    const experienceNeededDaily = 400 - 25;
+    const meatFromCast = 15 ** 4;
+    const estimatedExperience = 12;
+    familiarValue.push([
+      $familiar`Grey Goose`,
+      meatFromCast / (experienceNeededDaily / estimatedExperience),
+    ]);
+  }
   for (const familiarName of Object.keys(rotatingFamiliars)) {
     const familiar: Familiar = Familiar.get(familiarName);
     if (have(familiar)) {
