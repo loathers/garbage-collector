@@ -410,6 +410,12 @@ export class Macro extends StrictMacro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
       .externalIf(
+        myFamiliar() === $familiar`Grey Goose` &&
+          $familiar`Grey Goose`.experience >= 400 &&
+          !get("_meatifyMatterUsed"),
+        Macro.trySkill($skill`Meatify Matter`)
+      )
+      .externalIf(
         get("cosmicBowlingBallReturnCombats") < 1,
         Macro.trySkill($skill`Bowl Straight Up`)
       )
@@ -558,6 +564,12 @@ export class Macro extends StrictMacro {
     }
 
     return this.tryHaveSkill($skill`Sing Along`)
+      .externalIf(
+        myFamiliar() === $familiar`Grey Goose` &&
+          $familiar`Grey Goose`.experience >= 400 &&
+          !get("_meatifyMatterUsed"),
+        Macro.trySkill($skill`Meatify Matter`)
+      )
       .tryHaveItem($item`Rain-Doh blue balls`)
       .externalIf(get("lovebugsUnlocked"), Macro.trySkill($skill`Summon Love Gnats`))
       .tryHaveSkill(classStun)

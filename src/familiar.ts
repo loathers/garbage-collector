@@ -148,7 +148,8 @@ function mimicDropValue() {
   );
 }
 
-export function freeFightFamiliar(): Familiar {
+export function freeFightFamiliar(canMeatify = false): Familiar {
+  if (canMeatify && timeToMeatify()) return $familiar`Grey Goose`;
   const familiarValue: [Familiar, number][] = [];
 
   if (
@@ -204,4 +205,12 @@ export function freeFightFamiliar(): Familiar {
 
 export function pocketProfessorLectures(): number {
   return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar`Pocket Professor`) + weightAdjustment()));
+}
+
+export function timeToMeatify(): boolean {
+  return (
+    have($familiar`Grey Goose`) &&
+    $familiar`Grey Goose`.experience >= 400 &&
+    !get("_meatifyMatterUsed")
+  );
 }

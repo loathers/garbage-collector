@@ -555,15 +555,7 @@ class FreeFight {
   pickFamiliar(): Familiar {
     const mandatory = this.options.familiar?.();
     if (mandatory) return mandatory;
-    if (
-      this.options.canOverrideMacro &&
-      have($familiar`Grey Goose`) &&
-      $familiar`Grey Goose`.experience >= 400 &&
-      !get("_meatifyMatterUsed")
-    ) {
-      return $familiar`Grey Goose`;
-    }
-    return freeFightFamiliar();
+    return freeFightFamiliar(this.options.canOverrideMacro);
   }
 
   runAll() {
@@ -581,15 +573,7 @@ class FreeFight {
         this.options.requirements ? Requirement.merge(this.options.requirements()) : undefined
       );
       safeRestore();
-      withMacro(
-        Macro.externalIf(
-          myFamiliar() === $familiar`Grey Goose` &&
-            $familiar`Grey Goose`.experience >= 400 &&
-            !get("_meatifyMatterUsed"),
-          Macro.trySkill($skill`Meatify Matter`)
-        ).basicCombat(),
-        this.run
-      );
+      withMacro(Macro.basicCombat(), this.run);
       postCombatActions();
       // Slot in our Professor Thesis if it's become available
       if (thesisReady() && !have($effect`Feeling Lost`)) deliverThesis();
@@ -1970,7 +1954,7 @@ function doSausage() {
   if (!kramcoGuaranteed()) {
     return;
   }
-  useFamiliar(freeFightFamiliar());
+  useFamiliar(freeFightFamiliar(true));
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
   adventureMacroAuto(
     determineDraggableZoneAndEnsureAccess(),
@@ -1986,7 +1970,7 @@ function doGhost() {
   if (!have($item`protonic accelerator pack`) || get("questPAGhost") === "unstarted") return;
   const ghostLocation = get("ghostLocation");
   if (!ghostLocation) return;
-  useFamiliar(freeFightFamiliar());
+  useFamiliar(freeFightFamiliar(true));
   freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
   adventureMacro(ghostLocation, Macro.ghostBustin());
   postCombatActions();
