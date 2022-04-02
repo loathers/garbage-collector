@@ -207,7 +207,7 @@ export function pocketProfessorLectures(): number {
   return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar`Pocket Professor`) + weightAdjustment()));
 }
 
-export function timeToMeatify(): boolean {
+function timeToMeatify(): boolean {
   return (
     have($familiar`Grey Goose`) &&
     $familiar`Grey Goose`.experience >= 400 &&
