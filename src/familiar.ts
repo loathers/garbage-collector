@@ -166,8 +166,8 @@ export function freeFightFamiliar(canMeatify = false): Familiar {
     $familiar`Grey Goose`.experience < 400 &&
     !get("_meatifyMatterUsed")
   ) {
-    const experienceNeededDaily =
-      400 - (globalOptions.ascending ? 25 : $familiar`Grey Goose`.experience);
+    const exp = $familiar`Grey Goose`.experience || have($familiar`Shorter-Order Cook`) ? 100 : 0;
+    const experienceNeededDaily = 400 - (globalOptions.ascending ? 25 : exp);
     const meatFromCast = 15 ** 4;
     const estimatedExperience = 12;
     familiarValue.push([
