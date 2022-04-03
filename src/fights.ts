@@ -409,6 +409,17 @@ export function dailyFights(): void {
           }
           set(property, true);
           postCombatActions();
+          const predictedNextFight = getNextEmbezzlerFight();
+          if (!predictedNextFight?.draggable) doSausage();
+          // Check in case our prof gained enough exp during the profchain
+          if (
+            thesisReady() &&
+            get("beGregariousFightsLeft") <= 0 &&
+            predictedNextFight?.name !== "Orb Prediction"
+          ) {
+            deliverThesis();
+          }
+          doGhost();
           startWandererCounter();
         }
       }
