@@ -172,12 +172,7 @@ export class EmbezzlerFight {
 
   location(location?: Location): Location {
     const suggestion =
-      this.draggable &&
-      !location &&
-      checkUnderwater() &&
-      myFamiliar() !== $familiar`Pocket Professor`
-        ? $location`The Briny Deeps`
-        : location;
+      this.draggable && !location && checkUnderwater() ? $location`The Briny Deeps` : location;
 
     if (
       (this.draggable && !suggestion) ||
@@ -194,6 +189,7 @@ function checkUnderwater() {
   if (
     myLevel() >= 11 &&
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
+    (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
     (booleanModifier("Adventure Underwater") ||
       waterBreathingEquipment.some((item) => have(item))) &&
     (booleanModifier("Underwater Familiar") ||
