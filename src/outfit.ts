@@ -20,6 +20,7 @@ import {
 import {
   $class,
   $familiar,
+  $familiars,
   $item,
   $items,
   $location,
@@ -47,7 +48,9 @@ export function freeFightOutfit(requirement?: Requirement): void {
   const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
 
   parameters.push(
-    myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
+    $familiars`Pocket Professor, Grey Goose`.includes(myFamiliar())
+      ? "Familiar Experience"
+      : "Familiar Weight"
   );
   [];
 

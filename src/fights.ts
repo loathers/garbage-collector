@@ -552,6 +552,12 @@ class FreeFight {
     this.options = options;
   }
 
+  pickFamiliar(): Familiar {
+    const mandatory = this.options.familiar?.();
+    if (mandatory) return mandatory;
+    return freeFightFamiliar(this.options.canOverrideMacro);
+  }
+
   runAll() {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
@@ -559,11 +565,7 @@ class FreeFight {
       voidMonster();
       const noncombat = !!this.options?.noncombat?.();
       if (!noncombat) {
-        useFamiliar(
-          this.options.familiar
-            ? this.options.familiar() ?? freeFightFamiliar()
-            : freeFightFamiliar()
-        );
+        useFamiliar(this.pickFamiliar());
       }
       const effects = this.options.effects?.() ?? [];
       freeFightMood(...effects).execute();
@@ -586,7 +588,7 @@ class FreeRunFight extends FreeFight {
   constructor(
     available: () => number | boolean,
     run: (runSource: ActionSource) => void,
-    options: FreeFightOptions = { canOverrideMacro: false },
+    options: FreeFightOptions = {},
     freeRunPicker: FindActionSourceConstraints = {}
   ) {
     super(available, () => null, false, options);
@@ -1238,11 +1240,9 @@ const freeFightSources = [
         ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
         : 0,
     () => {
+      const constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).step(Macro.load());
       setNepQuestChoicesAndPrepItems();
-      adventureMacro(
-        $location`The Neverending Party`,
-        Macro.trySkill($skill`Feel Pride`).basicCombat()
-      );
+      adventureMacro($location`The Neverending Party`, constructedMacro);
     },
     true,
     {
@@ -1268,7 +1268,7 @@ const freeFightSources = [
     () => {
       const monster = locketMonster();
       if (!monster) return;
-      withMacro(Macro.basicCombat(), () => CombatLoversLocket.reminisce(monster));
+      CombatLoversLocket.reminisce(monster);
     },
     true,
     { canOverrideMacro: true }
@@ -1954,7 +1954,7 @@ function doSausage() {
   if (!kramcoGuaranteed()) {
     return;
   }
-  useFamiliar(freeFightFamiliar());
+  useFamiliar(freeFightFamiliar(true));
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
   adventureMacroAuto(
     determineDraggableZoneAndEnsureAccess(),
@@ -1970,7 +1970,7 @@ function doGhost() {
   if (!have($item`protonic accelerator pack`) || get("questPAGhost") === "unstarted") return;
   const ghostLocation = get("ghostLocation");
   if (!ghostLocation) return;
-  useFamiliar(freeFightFamiliar());
+  useFamiliar(freeFightFamiliar(true));
   freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
   adventureMacro(ghostLocation, Macro.ghostBustin());
   postCombatActions();
