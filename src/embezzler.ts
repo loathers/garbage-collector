@@ -189,7 +189,7 @@ function checkUnderwater() {
   if (
     myLevel() >= 11 &&
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
-    (get("garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
+    (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
     (booleanModifier("Adventure Underwater") ||
       waterBreathingEquipment.some((item) => have(item))) &&
     (booleanModifier("Underwater Familiar") ||
