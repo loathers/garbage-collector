@@ -402,7 +402,7 @@ function volcanoItemValue({ quantity, item }: VolcanoItem): number {
   if (basePrice) return basePrice;
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
-    if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) return Infinity;
+    if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) return Infinity;
     // Check if we can use Clara's bell for Yachtzee
     // If so, we call the opportunity cost of this about 40k
     if (realmAvailable("sleaze") && have($item`fishy pipe`) && !get("_fishyPipeUsed")) {
