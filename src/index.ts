@@ -137,7 +137,7 @@ function barfTurn() {
     get("questPAGhost") !== "unstarted" &&
     ghostLocation
   ) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(
       new Requirement(ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [], {
         forceEquip: $items`protonic accelerator pack`,
@@ -151,11 +151,11 @@ function barfTurn() {
     get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
     get("_voteFreeFights") < 3
   ) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`"I Voted!" sticker` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else if (
@@ -165,7 +165,7 @@ function barfTurn() {
     get("cursedMagnifyingGlassCount") === 13 &&
     get("_voidFreeFights") < 5
   ) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {

@@ -411,6 +411,17 @@ export function dailyFights(): void {
           }
           set(property, true);
           postCombatActions();
+          const predictedNextFight = getNextEmbezzlerFight();
+          if (!predictedNextFight?.draggable) doSausage();
+          // Check in case our prof gained enough exp during the profchain
+          if (
+            thesisReady() &&
+            get("beGregariousFightsLeft") <= 0 &&
+            predictedNextFight?.name !== "Orb Prediction"
+          ) {
+            deliverThesis();
+          }
+          doGhost();
           startWandererCounter();
         }
       }
@@ -503,6 +514,8 @@ type FreeFightOptions = {
   requirements?: () => Requirement[];
   noncombat?: () => boolean;
   effects?: () => Effect[];
+  // True if the macro used by this freeFight can be overridden without causing harm
+  canOverrideMacro?: boolean;
 };
 
 let bestNonCheerleaderFairy: Familiar;
@@ -553,6 +566,12 @@ class FreeFight {
     this.options = options;
   }
 
+  pickFamiliar(): Familiar {
+    const mandatory = this.options.familiar?.();
+    if (mandatory) return mandatory;
+    return freeFightFamiliar(this.options.canOverrideMacro);
+  }
+
   runAll() {
     if (!this.available()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
@@ -560,11 +579,7 @@ class FreeFight {
       voidMonster();
       const noncombat = !!this.options?.noncombat?.();
       if (!noncombat) {
-        useFamiliar(
-          this.options.familiar
-            ? this.options.familiar() ?? freeFightFamiliar()
-            : freeFightFamiliar()
-        );
+        useFamiliar(this.pickFamiliar());
       }
       const effects = this.options.effects?.() ?? [];
       freeFightMood(...effects).execute();
@@ -691,7 +706,10 @@ const freeFightSources = [
       visitUrl("choice.php");
       if (handlingChoice()) throw "Did not get all the way through LOV.";
     },
-    false
+    false,
+    {
+      canOverrideMacro: true,
+    }
   ),
 
   new FreeFight(
@@ -709,6 +727,7 @@ const freeFightSources = [
         )
           ? $familiar`Robortender`
           : null,
+      canOverrideMacro: true,
     }
   ),
 
@@ -726,7 +745,8 @@ const freeFightSources = [
   new FreeFight(
     () => have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked"),
     () => useSkill($skill`Evoke Eldritch Horror`),
-    false
+    false,
+    { canOverrideMacro: true }
   ),
 
   new FreeFight(
@@ -735,6 +755,7 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`lynyrd snare`),
+      canOverrideMacro: true,
     }
   ),
 
@@ -827,6 +848,7 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
+      canOverrideMacro: true,
     }
   ),
 
@@ -1064,6 +1086,7 @@ const freeFightSources = [
           forceEquip: $items`Kramco Sausage-o-Matic™`,
         }),
       ],
+      canOverrideMacro: true,
     }
   ),
 
@@ -1156,6 +1179,7 @@ const freeFightSources = [
           ]),
         }),
       ],
+      canOverrideMacro: true,
     }
   ),
 
@@ -1207,7 +1231,8 @@ const freeFightSources = [
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
     () => Witchess.fightPiece(bestWitchessPiece()),
-    true
+    true,
+    { canOverrideMacro: true }
   ),
 
   new FreeFight(
@@ -1219,7 +1244,8 @@ const freeFightSources = [
       }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
-    false
+    false,
+    { canOverrideMacro: true }
   ),
 
   new FreeFight(
@@ -1228,11 +1254,9 @@ const freeFightSources = [
         ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
         : 0,
     () => {
+      const constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).step(Macro.load());
       setNepQuestChoicesAndPrepItems();
-      adventureMacro(
-        $location`The Neverending Party`,
-        Macro.trySkill($skill`Feel Pride`).basicCombat()
-      );
+      adventureMacro($location`The Neverending Party`, constructedMacro);
     },
     true,
     {
@@ -1249,6 +1273,7 @@ const freeFightSources = [
           }
         ),
       ],
+      canOverrideMacro: true,
     }
   ),
 
@@ -1257,9 +1282,10 @@ const freeFightSources = [
     () => {
       const monster = locketMonster();
       if (!monster) return;
-      withMacro(Macro.basicCombat(), () => CombatLoversLocket.reminisce(monster));
+      CombatLoversLocket.reminisce(monster);
     },
-    true
+    true,
+    { canOverrideMacro: true }
   ),
 
   // Get a li'l ninja costume for 150% item drop
@@ -1943,7 +1969,7 @@ function doSausage() {
   if (!kramcoGuaranteed()) {
     return;
   }
-  useFamiliar(freeFightFamiliar());
+  useFamiliar(freeFightFamiliar(true));
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
   adventureMacroAuto(
     determineDraggableZoneAndEnsureAccess(),
@@ -1959,7 +1985,7 @@ function doGhost() {
   if (!have($item`protonic accelerator pack`) || get("questPAGhost") === "unstarted") return;
   const ghostLocation = get("ghostLocation");
   if (!ghostLocation) return;
-  useFamiliar(freeFightFamiliar());
+  useFamiliar(freeFightFamiliar(true));
   freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
   adventureMacro(ghostLocation, Macro.ghostBustin());
   postCombatActions();

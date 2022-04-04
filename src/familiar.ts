@@ -20,7 +20,7 @@ import {
   have,
   propertyTypes,
 } from "libram";
-import { argmax } from "./lib";
+import { argmax, globalOptions } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
 let _meatFamiliar: Familiar;
@@ -159,7 +159,11 @@ function mimicDropValue() {
   );
 }
 
-export function freeFightFamiliar(): Familiar {
+const gooseExp =
+  $familiar`Grey Goose`.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
+
+export function freeFightFamiliar(canMeatify = false): Familiar {
+  if (canMeatify && timeToMeatify()) return $familiar`Grey Goose`;
   const familiarValue: [Familiar, number][] = [];
 
   if (
@@ -171,6 +175,19 @@ export function freeFightFamiliar(): Familiar {
     familiarValue.push([$familiar`Pocket Professor`, 3000]);
   }
 
+  if (
+    have($familiar`Grey Goose`) &&
+    $familiar`Grey Goose`.experience < 400 &&
+    !get("_meatifyMatterUsed")
+  ) {
+    const experienceNeeded = 400 - (globalOptions.ascending ? 25 : gooseExp);
+    const meatFromCast = 15 ** 4;
+    const estimatedExperience = 12;
+    familiarValue.push([
+      $familiar`Grey Goose`,
+      meatFromCast / (experienceNeeded / estimatedExperience),
+    ]);
+  }
   for (const familiarName of Object.keys(rotatingFamiliars)) {
     const familiar: Familiar = Familiar.get(familiarName);
     if (have(familiar)) {
@@ -202,4 +219,12 @@ export function freeFightFamiliar(): Familiar {
 
 export function pocketProfessorLectures(): number {
   return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar`Pocket Professor`) + weightAdjustment()));
+}
+
+function timeToMeatify(): boolean {
+  return (
+    have($familiar`Grey Goose`) &&
+    $familiar`Grey Goose`.experience >= 400 &&
+    !get("_meatifyMatterUsed")
+  );
 }
