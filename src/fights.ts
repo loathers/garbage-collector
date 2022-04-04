@@ -115,7 +115,7 @@ import {
   setChoice,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
-import { freeFightOutfit, meatOutfit, tryFillLatte } from "./outfit";
+import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
 import { bathroomFinance, potionSetup } from "./potions";
 import {
   embezzlerCount,
@@ -2198,15 +2198,25 @@ function sbbNoncombat(): void {
   const usingClara = have($item`Clara's bell`) && !globalOptions.clarasBellClaimed;
   if (usingClara) {
     globalOptions.clarasBellClaimed = true;
+
     useFamiliar(
-      Familiar.all().filter(
-        (familiar) =>
-          have(familiar) && familiar.underwater && findLeprechaunMultiplier(familiar) === 0
-      )[0] ?? $familiar`none`
+      Familiar.all()
+        .filter(
+          (familiar) => have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
+        )
+        .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a))[0] ??
+        $familiar`none`
     );
-    const ready =
-      new Requirement(["meat", "sea", "-tie"], {}).maximize() && use($item`Clara's bell`);
-    if (!ready) return;
+
+    const underwaterBreathingGear = waterBreathingEquipment.find((item) => have(item));
+    if (!underwaterBreathingGear) return;
+    const equippedOutfit = new Requirement(["meat", "-tie"], {
+      forceEquip: [underwaterBreathingGear],
+    }).maximize();
+
+    const usedBell = use($item`Clara's bell`);
+    if (!equippedOutfit || !usedBell) return;
+
     setChoice(918, 2);
     adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
     if (get("lastEncounter") === "Yacht, See?") {
