@@ -2171,6 +2171,7 @@ function sbbNoncombat(): void {
 
   const usingClara = have($item`Clara's bell`) && !globalOptions.clarasBellClaimed;
   if (usingClara) {
+    globalOptions.clarasBellClaimed = true;
     useFamiliar(
       Familiar.all().filter(
         (familiar) =>
