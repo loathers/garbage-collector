@@ -182,9 +182,10 @@ export function freeFightFamiliar(canMeatify = false): Familiar {
   if (
     have($familiar`Grey Goose`) &&
     $familiar`Grey Goose`.experience < 400 &&
-    !get("_meatifyMatterUsed")
+    !get("_meatifyMatterUsed") &&
+    myInebriety() <= inebrietyLimit()
   ) {
-    const experienceNeeded = 400 - (globalOptions.ascending ? 25 : gooseExp);
+    const experienceNeeded = 400 - (globalOptions.ascending ? gooseExp : 25);
     const meatFromCast = 15 ** 4;
     const expPerTurn =
       estimatedOutfitFamiliarExperienceForGoose() +
