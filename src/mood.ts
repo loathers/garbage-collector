@@ -7,12 +7,10 @@ import {
   haveSkill,
   itemAmount,
   myClass,
-  myEffects,
   myLevel,
   mySpleenUse,
   numericModifier,
   spleenLimit,
-  toSkill,
   use,
   useSkill,
 } from "kolmafia";
@@ -23,7 +21,6 @@ import {
   $item,
   $items,
   $skill,
-  $skills,
   AsdonMartin,
   get,
   have,
@@ -179,15 +176,6 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
     use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
   }
   mood.potion($item`white candy heart`, 30);
-
-  const goodSongs = $skills`Chorale of Companionship, The Ballad of Richie Thingfinder, Ur-Kel's Aria of Annoyance, The Polka of Plenty`;
-  for (const effectName of Object.keys(myEffects())) {
-    const effect = Effect.get(effectName);
-    const skill = toSkill(effect);
-    if (skill.class === $class`Accordion Thief` && skill.buff && !goodSongs.includes(skill)) {
-      cliExecute(`shrug ${effectName}`);
-    }
-  }
 
   if ((get("daycareOpen") || get("_daycareToday")) && !get("_daycareSpa")) {
     cliExecute("daycare mysticality");
