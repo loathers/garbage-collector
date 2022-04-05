@@ -4,11 +4,26 @@ import {
   haveEffect,
   inebrietyLimit,
   Item,
+  myEffects,
   myFamiliar,
   myInebriety,
+  Slot,
+  toEffect,
+  toSlot,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $familiars, $item, $items, get, have, propertyTypes } from "libram";
+import {
+  $effect,
+  $familiar,
+  $familiars,
+  $item,
+  $items,
+  get,
+  getModifier,
+  have,
+  propertyTypes,
+  sum,
+} from "libram";
 import { argmax, fairyMultiplier, globalOptions, leprechaunMultiplier } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
@@ -171,7 +186,20 @@ export function freeFightFamiliar(canMeatify = false): Familiar {
   ) {
     const experienceNeeded = 400 - (globalOptions.ascending ? 25 : gooseExp);
     const meatFromCast = 15 ** 4;
-    const estimatedExperience = 12;
+    const bestFamExpEquips = Item.all()
+      .filter((item) => have(item))
+      .map((item) => ({
+        item,
+        exp: getModifier("Familiar Experience", item),
+      }));
+    const estimatedExperience =
+      sum(Object.keys(myEffects()), (name: string) =>
+        getModifier("Familiar Experience", toEffect(name))
+      ) +
+      sum(
+        Slot.all(),
+        (slot) => bestFamExpEquips.find(({ item }) => toSlot(item) === slot)?.exp ?? 0
+      );
     familiarValue.push([
       $familiar`Grey Goose`,
       meatFromCast / (experienceNeeded / estimatedExperience),
