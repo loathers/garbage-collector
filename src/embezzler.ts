@@ -3,8 +3,6 @@ import {
   booleanModifier,
   chatPrivate,
   cliExecute,
-  getCounter,
-  getCounters,
   haveEquipped,
   inebrietyLimit,
   itemAmount,
@@ -40,6 +38,7 @@ import {
   adventureMacro,
   ChateauMantegna,
   CombatLoversLocket,
+  Counter,
   CrystalBall,
   get,
   have,
@@ -272,7 +271,7 @@ export const embezzlerSources = [
     "Digitize",
     () =>
       get("_sourceTerminalDigitizeMonster") === embezzler &&
-      getCounters("Digitize Monster", 0, 0).trim() !== "",
+      (Counter.get("Digitize Monster") ?? Infinity) <= 0,
     () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
       adventureMacro(options.location, wandererFailsafeMacro().step(options.macro));
@@ -285,10 +284,8 @@ export const embezzlerSources = [
     "Guaranteed Romantic Monster",
     () =>
       get("_romanticFightsLeft") > 0 &&
-      getCounter("Romantic Monster window begin") <= 0 &&
-      getCounter("Romantic Monster window end") <= 0 &&
-      (getCounter("Romantic Monster window end") !== -1 ||
-        getCounters("Romantic Monster window end", -1, -1).trim() !== ""),
+      (Counter.get("Romantic Monster window begin") ?? Infinity) <= 0 &&
+      (Counter.get("Romantic Monster window end") ?? Infinity) <= 0,
     () => 0,
     (options: EmbezzlerFightRunOptions) => {
       adventureMacro(options.location, wandererFailsafeMacro().step(options.macro));
@@ -299,9 +296,9 @@ export const embezzlerSources = [
   ),
   new EmbezzlerFight(
     "Enamorang",
-    () => getCounters("Enamorang", 0, 0).trim() !== "" && get("enamorangMonster") === embezzler,
+    () => (Counter.get("Enamorang") ?? Infinity) <= 0 && get("enamorangMonster") === embezzler,
     () =>
-      (getCounters("Enamorang", 0, 0).trim() !== "" && get("enamorangMonster") === embezzler) ||
+      ((Counter.get("Enamorang") ?? Infinity) <= 0 && get("enamorangMonster") === embezzler) ||
       (have($item`LOV Enamorang`) && !get("_enamorangs"))
         ? 1
         : 0,
