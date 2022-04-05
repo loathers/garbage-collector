@@ -4,13 +4,10 @@ import {
   getClanLounge,
   getWorkshed,
   haveEffect,
-  haveSkill,
   itemAmount,
   myClass,
   myLevel,
-  mySpleenUse,
   numericModifier,
-  spleenLimit,
   use,
   useSkill,
 } from "kolmafia";
@@ -30,9 +27,7 @@ import {
   Witchess,
 } from "libram";
 import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
-import { estimatedTurns } from "./embezzler";
 import { withStash } from "./clan";
-import synthesize from "./synthesis";
 import { usingPurse } from "./outfit";
 
 Mood.setDefaultOptions({
@@ -52,7 +47,7 @@ export function meatMood(urKels = false): Mood {
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
-  const flaskValue = usingPurse() ? 5 : 0.3 * baseMeat;
+  const flaskValue = usingPurse() ? 0.3 * baseMeat : 5;
   mood.potion($item`Flaskfull of Hollow`, flaskValue);
 
   mood.skill($skill`Blood Bond`);
@@ -68,23 +63,12 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`Pride of the Puffin`);
   if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
-  if (haveSkill($skill`Sweet Synthesis`)) {
-    mood.effect($effect`Synthesis: Greed`, () => {
-      if (
-        mySpleenUse() < spleenLimit() &&
-        haveEffect($effect`Synthesis: Greed`) < estimatedTurns()
-      ) {
-        synthesize(1, $effect`Synthesis: Greed`);
-      }
-    });
-  }
-
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View to Some Meat`, () => {
       if (get("_kgbClicksUsed") < 22) {
-        const buffTries = Math.ceil((22 - get("_kgbClicksUsed")) / 3);
+        const buffTries = Math.floor((22 - get("_kgbClicksUsed")) / 3);
         cliExecute(`Briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
       }
     });
