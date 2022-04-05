@@ -193,6 +193,7 @@ export function freeFightFamiliar(canMeatify = false): Familiar {
         exp: getModifier("Familiar Experience", item),
       }));
     const estimatedExperience =
+      1 +
       sum(Object.keys(myEffects()), (name: string) =>
         getModifier("Familiar Experience", toEffect(name))
       ) +
