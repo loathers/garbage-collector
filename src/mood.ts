@@ -4,15 +4,10 @@ import {
   getClanLounge,
   getWorkshed,
   haveEffect,
-  haveSkill,
   itemAmount,
   myClass,
-  myEffects,
   myLevel,
-  mySpleenUse,
   numericModifier,
-  spleenLimit,
-  toSkill,
   use,
   useSkill,
 } from "kolmafia";
@@ -23,7 +18,6 @@ import {
   $item,
   $items,
   $skill,
-  $skills,
   AsdonMartin,
   get,
   have,
@@ -33,9 +27,7 @@ import {
   Witchess,
 } from "libram";
 import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
-import { estimatedTurns } from "./embezzler";
 import { withStash } from "./clan";
-import synthesize from "./synthesis";
 import { usingPurse } from "./outfit";
 
 Mood.setDefaultOptions({
@@ -55,7 +47,7 @@ export function meatMood(urKels = false): Mood {
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
-  const flaskValue = usingPurse() ? 5 : 0.3 * baseMeat;
+  const flaskValue = usingPurse() ? 0.3 * baseMeat : 5;
   mood.potion($item`Flaskfull of Hollow`, flaskValue);
 
   mood.skill($skill`Blood Bond`);
@@ -71,23 +63,12 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`Pride of the Puffin`);
   if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
-  if (haveSkill($skill`Sweet Synthesis`)) {
-    mood.effect($effect`Synthesis: Greed`, () => {
-      if (
-        mySpleenUse() < spleenLimit() &&
-        haveEffect($effect`Synthesis: Greed`) < estimatedTurns()
-      ) {
-        synthesize(1, $effect`Synthesis: Greed`);
-      }
-    });
-  }
-
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View to Some Meat`, () => {
       if (get("_kgbClicksUsed") < 22) {
-        const buffTries = Math.ceil((22 - get("_kgbClicksUsed")) / 3);
+        const buffTries = Math.floor((22 - get("_kgbClicksUsed")) / 3);
         cliExecute(`Briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
       }
     });
@@ -179,15 +160,6 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
     use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
   }
   mood.potion($item`white candy heart`, 30);
-
-  const goodSongs = $skills`Chorale of Companionship, The Ballad of Richie Thingfinder, Ur-Kel's Aria of Annoyance, The Polka of Plenty`;
-  for (const effectName of Object.keys(myEffects())) {
-    const effect = Effect.get(effectName);
-    const skill = toSkill(effect);
-    if (skill.class === $class`Accordion Thief` && skill.buff && !goodSongs.includes(skill)) {
-      cliExecute(`shrug ${effectName}`);
-    }
-  }
 
   if ((get("daycareOpen") || get("_daycareToday")) && !get("_daycareSpa")) {
     cliExecute("daycare mysticality");
