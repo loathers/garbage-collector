@@ -21487,8 +21487,8 @@ function freeFightFamiliar() {
     familiarValue.push([$familiar(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Pocket Professor"]))), 3000]);
   }
 
-  if (have($familiar(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Grey Goose"])))) && $familiar(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Grey Goose"]))).experience < 400 && !get("_meatifyMatterUsed")) {
-    var experienceNeeded = 400 - (globalOptions.ascending ? 25 : gooseExp);
+  if (have($familiar(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Grey Goose"])))) && $familiar(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Grey Goose"]))).experience < 400 && !get("_meatifyMatterUsed") && myInebriety() <= inebrietyLimit()) {
+    var experienceNeeded = 400 - (globalOptions.ascending ? gooseExp : 25);
     var meatFromCast = Math.pow(15, 4);
     var estimatedExperience = 12;
     familiarValue.push([$familiar(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Grey Goose"]))), meatFromCast / (experienceNeeded / estimatedExperience)]);
@@ -21856,7 +21856,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("03bb8447f9db6fe731060c1fbb4780141def3cde" === mainSha) {
+    if ("6cd0cbd6b7bbff069cbcd77558200c5ab5721620" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");

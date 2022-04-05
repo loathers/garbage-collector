@@ -24899,8 +24899,8 @@ function freeFightFamiliar() {
     familiarValue.push([(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Pocket Professor"]))), 3000]);
   }
 
-  if ((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Grey Goose"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Grey Goose"]))).experience < 400 && !(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_meatifyMatterUsed")) {
-    var experienceNeeded = 400 - (_lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.ascending */ .Xe.ascending ? 25 : gooseExp);
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Grey Goose"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Grey Goose"]))).experience < 400 && !(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_meatifyMatterUsed") && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)()) {
+    var experienceNeeded = 400 - (_lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.ascending */ .Xe.ascending ? gooseExp : 25);
     var meatFromCast = Math.pow(15, 4);
     var estimatedExperience = 12;
     familiarValue.push([(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Grey Goose"]))), meatFromCast / (experienceNeeded / estimatedExperience)]);
@@ -31701,7 +31701,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("03bb8447f9db6fe731060c1fbb4780141def3cde"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("6cd0cbd6b7bbff069cbcd77558200c5ab5721620"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32299,7 +32299,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("03bb8447f9db6fe731060c1fbb4780141def3cde" === mainSha) {
+    if ("6cd0cbd6b7bbff069cbcd77558200c5ab5721620" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
