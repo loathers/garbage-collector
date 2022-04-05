@@ -186,25 +186,12 @@ export function freeFightFamiliar(canMeatify = false): Familiar {
   ) {
     const experienceNeeded = 400 - (globalOptions.ascending ? 25 : gooseExp);
     const meatFromCast = 15 ** 4;
-    const bestFamExpEquips = Item.all()
-      .filter((item) => have(item))
-      .map((item) => ({
-        item,
-        exp: getModifier("Familiar Experience", item),
-      }));
-    const estimatedExperience =
-      1 +
+    const expPerTurn =
+      estimatedOutfitFamiliarExperienceForGoose() +
       sum(Object.keys(myEffects()), (name: string) =>
         getModifier("Familiar Experience", toEffect(name))
-      ) +
-      sum(
-        Slot.all(),
-        (slot) => bestFamExpEquips.find(({ item }) => toSlot(item) === slot)?.exp ?? 0
       );
-    familiarValue.push([
-      $familiar`Grey Goose`,
-      meatFromCast / (experienceNeeded / estimatedExperience),
-    ]);
+    familiarValue.push([$familiar`Grey Goose`, meatFromCast / (experienceNeeded / expPerTurn)]);
   }
   for (const familiarName of Object.keys(rotatingFamiliars)) {
     const familiar: Familiar = Familiar.get(familiarName);
@@ -245,4 +232,24 @@ function timeToMeatify(): boolean {
     $familiar`Grey Goose`.experience >= 400 &&
     !get("_meatifyMatterUsed")
   );
+}
+
+let estimatedGooseExp: number | null = null;
+function estimatedOutfitFamiliarExperienceForGoose(): number {
+  if (estimatedGooseExp === null) {
+    const bestFamExpEquips = Item.all()
+      .filter((item) => have(item))
+      .map((item) => ({
+        item,
+        exp: getModifier("Familiar Experience", item),
+      }));
+
+    estimatedGooseExp =
+      1 +
+      sum(
+        Slot.all(),
+        (slot) => bestFamExpEquips.find(({ item }) => toSlot(item) === slot)?.exp ?? 0
+      );
+  }
+  return estimatedGooseExp;
 }
