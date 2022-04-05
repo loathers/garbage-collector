@@ -10,6 +10,7 @@ import {
   getAutoAttack,
   getCampground,
   handlingChoice,
+  haveEquipped,
   inebrietyLimit,
   isBanished,
   Item,
@@ -2213,6 +2214,7 @@ function sbbNoncombat(): void {
     const equippedOutfit = new Requirement(["meat", "-tie"], {
       forceEquip: [underwaterBreathingGear],
     }).maximize();
+    if (haveEquipped($item`The Crown of Ed the Undying`)) cliExecute("edpiece fish");
 
     const usedBell = use($item`Clara's bell`);
     if (!equippedOutfit || !usedBell) return;
