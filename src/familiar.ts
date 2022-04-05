@@ -242,7 +242,8 @@ function estimatedOutfitFamiliarExperienceForGoose(): number {
       .map((item) => ({
         item,
         exp: getModifier("Familiar Experience", item),
-      }));
+      }))
+      .sort((a, b) => b.exp - a.exp);
 
     estimatedGooseExp =
       1 +
