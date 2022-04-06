@@ -3181,6 +3181,48 @@ var StrictMacro = /*#__PURE__*/function (_Macro) {
 
 /***/ }),
 
+/***/ 5632:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "U": () => (/* binding */ get)
+/* harmony export */ });
+/* unused harmony export set */
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * Returns null for counters that do not exist, and otherwise returns the duration of the counter
+ * @param counter The name of the counter in question
+ * @returns null if the counter does not exist; otherwise returns the duration of the counter
+ */
+
+function get(counter) {
+  var value = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getCounter)(counter); //getCounter returns -1 for counters that don't exist, but it also returns -1 for counters whose value is -1
+
+  if (value === -1) {
+    //if we have a counter with value -1, we check to see if that counter exists via getCounters()
+    //We return null if it doesn't exist
+    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getCounters)(counter, -1, -1).trim() === "" ? null : -1;
+  }
+
+  return value;
+}
+/**
+ * Creates a manual counter with specified name and duration
+ * @param counter Name of the counter to manually create
+ * @param duration Duration of counter to manually set
+ * @returns Whether the counter was successfully set
+ */
+
+function set(counter, duration) {
+  cliExecute("counters add ".concat(duration, " ").concat(counter));
+  return get(counter) !== null;
+}
+
+/***/ }),
+
 /***/ 3311:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -24015,13 +24057,14 @@ function usingThumbRing() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(678);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(2474);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(3311);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(1577);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(1762);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(7329);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(9376);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(7975);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(4866);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(8588);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5632);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(1577);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(1762);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(7329);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(9376);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(7975);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(4866);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(8588);
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4564);
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _dropsgear__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5472);
@@ -24261,28 +24304,44 @@ var embezzlerMacro = () => _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_(embezz
 
 var wandererFailsafeMacro = () => _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["backup camera"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_backUpUses") < 11 && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("lastCopyableMonster") === embezzler, _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_("!monsterid ".concat(embezzler.id), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.skill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Back-Up to your Last Enemy"]))))));
 
-var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_sourceTerminalDigitizeMonster") === embezzler && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getCounters)("Digitize Monster", 0, 0).trim() !== "", () => libram__WEBPACK_IMPORTED_MODULE_12__/* .have */ .lf() && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_sourceTerminalDigitizeUses") === 0 ? 1 : 0, options => {
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)(options.location, wandererFailsafeMacro().step(options.macro));
+var embezzlerSources = [new EmbezzlerFight("Digitize", () => {
+  var _Counter$get;
+
+  return (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_sourceTerminalDigitizeMonster") === embezzler && ((_Counter$get = libram__WEBPACK_IMPORTED_MODULE_12__/* .get */ .U("Digitize Monster")) !== null && _Counter$get !== void 0 ? _Counter$get : Infinity) <= 0;
+}, () => libram__WEBPACK_IMPORTED_MODULE_13__/* .have */ .lf() && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_sourceTerminalDigitizeUses") === 0 ? 1 : 0, options => {
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)(options.location, wandererFailsafeMacro().step(options.macro));
 }, {
   draggable: "wanderer"
-}), new EmbezzlerFight("Guaranteed Romantic Monster", () => (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_romanticFightsLeft") > 0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getCounter)("Romantic Monster window begin") <= 0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getCounter)("Romantic Monster window end") <= 0 && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getCounter)("Romantic Monster window end") !== -1 || (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getCounters)("Romantic Monster window end", -1, -1).trim() !== ""), () => 0, options => {
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)(options.location, wandererFailsafeMacro().step(options.macro));
+}), new EmbezzlerFight("Guaranteed Romantic Monster", () => {
+  var _Counter$get2, _Counter$get3;
+
+  return (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_romanticFightsLeft") > 0 && ((_Counter$get2 = libram__WEBPACK_IMPORTED_MODULE_12__/* .get */ .U("Romantic Monster window begin")) !== null && _Counter$get2 !== void 0 ? _Counter$get2 : Infinity) <= 0 && ((_Counter$get3 = libram__WEBPACK_IMPORTED_MODULE_12__/* .get */ .U("Romantic Monster window end")) !== null && _Counter$get3 !== void 0 ? _Counter$get3 : Infinity) <= 0;
+}, () => 0, options => {
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)(options.location, wandererFailsafeMacro().step(options.macro));
 }, {
   draggable: "wanderer"
-}), new EmbezzlerFight("Enamorang", () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getCounters)("Enamorang", 0, 0).trim() !== "" && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("enamorangMonster") === embezzler, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getCounters)("Enamorang", 0, 0).trim() !== "" && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("enamorangMonster") === embezzler || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["LOV Enamorang"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_enamorangs") ? 1 : 0, options => {
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)(options.location, wandererFailsafeMacro().step(embezzlerMacro()));
+}), new EmbezzlerFight("Enamorang", () => {
+  var _Counter$get4;
+
+  return ((_Counter$get4 = libram__WEBPACK_IMPORTED_MODULE_12__/* .get */ .U("Enamorang")) !== null && _Counter$get4 !== void 0 ? _Counter$get4 : Infinity) <= 0 && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("enamorangMonster") === embezzler;
+}, () => {
+  var _Counter$get5;
+
+  return ((_Counter$get5 = libram__WEBPACK_IMPORTED_MODULE_12__/* .get */ .U("Enamorang")) !== null && _Counter$get5 !== void 0 ? _Counter$get5 : Infinity) <= 0 && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("enamorangMonster") === embezzler || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["LOV Enamorang"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_enamorangs") ? 1 : 0;
+}, options => {
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)(options.location, wandererFailsafeMacro().step(embezzlerMacro()));
 }, {
   draggable: "wanderer"
-}), new EmbezzlerFight("Orb Prediction", () => libram__WEBPACK_IMPORTED_MODULE_14__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["The Dire Warren"])))) === embezzler, () => ((0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["miniature crystal ball"])))) ? 1 : 0) * ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousCharges") + ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") > 0 || libram__WEBPACK_IMPORTED_MODULE_14__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["The Dire Warren"])))) === embezzler ? 1 : 0)), options => {
+}), new EmbezzlerFight("Orb Prediction", () => libram__WEBPACK_IMPORTED_MODULE_15__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["The Dire Warren"])))) === embezzler, () => ((0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["miniature crystal ball"])))) ? 1 : 0) * ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousCharges") + ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") > 0 || libram__WEBPACK_IMPORTED_MODULE_15__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["The Dire Warren"])))) === embezzler ? 1 : 0)), options => {
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)("inventory.php?ponder=1");
 
-  if (libram__WEBPACK_IMPORTED_MODULE_14__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["The Dire Warren"])))) !== (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$monster */ .O4)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Knob Goblin Embezzler"])))) {
+  if (libram__WEBPACK_IMPORTED_MODULE_15__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["The Dire Warren"])))) !== (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$monster */ .O4)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Knob Goblin Embezzler"])))) {
     return;
   }
 
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["The Dire Warren"]))), options.macro);
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["The Dire Warren"]))), options.macro);
 }, {
-  requirements: [new libram__WEBPACK_IMPORTED_MODULE_15__/* .Requirement */ .nb([], {
+  requirements: [new libram__WEBPACK_IMPORTED_MODULE_16__/* .Requirement */ .nb([], {
     forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$items */ .vS)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["miniature crystal ball"])))
   })],
   canInitializeWandererCounters: true
@@ -24300,7 +24359,7 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,libram__WEBPACK_
   var weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
   (0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .setChoice */ .Y7)(1387, 2);
   var macro = _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$monster */ .O4)(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["crate"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.externalIf((0,_extrovermectin__WEBPACK_IMPORTED_MODULE_5__/* .crateStrategy */ .Gc)() !== "Saber" && !(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["On the Trail"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_olfactionsUsed") < 2, _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.tryHaveSkill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Transcendent Olfaction"]))))).externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) && weWantToSaberCrates && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_saberForceUses") < 5, _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["Use the Force"]))))).skill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Macrometeorite"]))))).step(options.macro);
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Noob Cave"]))), macro);
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Noob Cave"]))), macro);
 }, {
   gregariousReplace: true
 }), new EmbezzlerFight("Powerful Glove", () => (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousMonster") === embezzler && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") > 0 && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["Powerful Glove"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_powerfulGloveBatteryPowerUsed") <= 90 && proceedWithOrb(), () => ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousMonster") === embezzler && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") > 0 || (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousCharges") > 0) && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["Powerful Glove"])))) ? Math.min((100 - (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_powerfulGloveBatteryPowerUsed")) / 10) : 0, options => {
@@ -24310,9 +24369,9 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,libram__WEBPACK_
   var weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
   (0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .setChoice */ .Y7)(1387, 2);
   var macro = _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$monster */ .O4)(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["crate"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.externalIf((0,_extrovermectin__WEBPACK_IMPORTED_MODULE_5__/* .crateStrategy */ .Gc)() !== "Saber" && !(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["On the Trail"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_olfactionsUsed") < 2, _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.tryHaveSkill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["Transcendent Olfaction"]))))).externalIf((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) && weWantToSaberCrates && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_saberForceUses") < 5, _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["Use the Force"]))))).skill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["CHEAT CODE: Replace Enemy"]))))).step(options.macro);
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["Noob Cave"]))), macro);
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["Noob Cave"]))), macro);
 }, {
-  requirements: [new libram__WEBPACK_IMPORTED_MODULE_15__/* .Requirement */ .nb([], {
+  requirements: [new libram__WEBPACK_IMPORTED_MODULE_16__/* .Requirement */ .nb([], {
     forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$items */ .vS)(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["Powerful Glove"])))
   })],
   gregariousReplace: true
@@ -24321,9 +24380,9 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,libram__WEBPACK_
 
   var run = (0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .ltbRun */ .Pw)();
   (_run$constraints$prep = (_run$constraints = run.constraints).preparation) === null || _run$constraints$prep === void 0 ? void 0 : _run$constraints$prep.call(_run$constraints);
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["The Dire Warren"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$monster */ .O4)(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["fluffy bunny"]))), run.macro).step(options.macro)); // reset the crystal ball prediction by staring longingly at toast
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["The Dire Warren"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$monster */ .O4)(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["fluffy bunny"]))), run.macro).step(options.macro)); // reset the crystal ball prediction by staring longingly at toast
 
-  if ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") === 1 && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["miniature crystal ball"])))) && libram__WEBPACK_IMPORTED_MODULE_14__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["The Dire Warren"])))) !== embezzler) {
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") === 1 && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["miniature crystal ball"])))) && libram__WEBPACK_IMPORTED_MODULE_15__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["The Dire Warren"])))) !== embezzler) {
     try {
       var store = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.toUrl)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["The Shore, Inc. Travel Agency"])))));
 
@@ -24339,17 +24398,17 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,libram__WEBPACK_
   }
 }, {
   canInitializeWandererCounters: true
-}), new EmbezzlerFight("Be Gregarious (Set Up Crystal Ball)", () => (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousMonster") === embezzler && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") === 1 && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["miniature crystal ball"])))) && !libram__WEBPACK_IMPORTED_MODULE_14__/* .currentPredictions */ .o(true).has((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["The Dire Warren"])))), () => (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousMonster") === embezzler && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") > 0 || (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousCharges") > 0 ? 1 : 0, options => {
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["The Dire Warren"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_(embezzler, options.macro).abort());
+}), new EmbezzlerFight("Be Gregarious (Set Up Crystal Ball)", () => (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousMonster") === embezzler && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") === 1 && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["miniature crystal ball"])))) && !libram__WEBPACK_IMPORTED_MODULE_15__/* .currentPredictions */ .o(true).has((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["The Dire Warren"])))), () => (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousMonster") === embezzler && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousFightsLeft") > 0 || (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("beGregariousCharges") > 0 ? 1 : 0, options => {
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["The Dire Warren"]))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_(embezzler, options.macro).abort());
 }, {
-  requirements: [new libram__WEBPACK_IMPORTED_MODULE_15__/* .Requirement */ .nb([], {
+  requirements: [new libram__WEBPACK_IMPORTED_MODULE_16__/* .Requirement */ .nb([], {
     forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$items */ .vS)(_templateObject72 || (_templateObject72 = _taggedTemplateLiteral(["miniature crystal ball"]))).filter(item => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)(item))
   })],
   canInitializeWandererCounters: true
 }), new EmbezzlerFight("Backup", () => (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("lastCopyableMonster") === embezzler && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject73 || (_templateObject73 = _taggedTemplateLiteral(["backup camera"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_backUpUses") < 11, () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject74 || (_templateObject74 = _taggedTemplateLiteral(["backup camera"])))) ? 11 - (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_backUpUses") : 0, options => {
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)(options.location, _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_("!monsterid ".concat(embezzler.id), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.skill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["Back-Up to your Last Enemy"]))))).step(options.macro));
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)(options.location, _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.if_("!monsterid ".concat(embezzler.id), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.skill((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$skill */ .tm)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["Back-Up to your Last Enemy"]))))).step(options.macro));
 }, {
-  requirements: [new libram__WEBPACK_IMPORTED_MODULE_15__/* .Requirement */ .nb([], {
+  requirements: [new libram__WEBPACK_IMPORTED_MODULE_16__/* .Requirement */ .nb([], {
     forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$items */ .vS)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["backup camera"]))),
     bonusEquip: new Map([[(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["backup camera"]))), 5000]])
   })],
@@ -24380,10 +24439,10 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,libram__WEBPACK_
   (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject103 || (_templateObject103 = _taggedTemplateLiteral(["envyfish egg"])))));
 }), new EmbezzlerFight("Screencapped Monster", () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral(["screencapped monster"])))) && libram__WEBPACK_IMPORTED_MODULE_10__/* .getString */ .KF("screencappedMonster") === "Knob Goblin Embezzler", () => libram__WEBPACK_IMPORTED_MODULE_10__/* .getString */ .KF("screencappedMonster") === "Knob Goblin Embezzler" ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.itemAmount)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject105 || (_templateObject105 = _taggedTemplateLiteral(["screencapped monster"])))) : 0, options => {
   (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject106 || (_templateObject106 = _taggedTemplateLiteral(["screencapped monster"])))));
-}), new EmbezzlerFight("Sticky Clay Homunculus", () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject107 || (_templateObject107 = _taggedTemplateLiteral(["sticky clay homunculus"])))) && libram__WEBPACK_IMPORTED_MODULE_10__/* .getString */ .KF("crudeMonster") === "Knob Goblin Embezzler", () => libram__WEBPACK_IMPORTED_MODULE_10__/* .getString */ .KF("crudeMonster") === "Knob Goblin Embezzler" ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.itemAmount)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject108 || (_templateObject108 = _taggedTemplateLiteral(["sticky clay homunculus"])))) : 0, options => (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject109 || (_templateObject109 = _taggedTemplateLiteral(["sticky clay homunculus"])))))), new EmbezzlerFight("Chateau Painting", () => libram__WEBPACK_IMPORTED_MODULE_16__/* .have */ .lf() && !libram__WEBPACK_IMPORTED_MODULE_16__/* .paintingFought */ .L0() && libram__WEBPACK_IMPORTED_MODULE_16__/* .paintingMonster */ .Aq() === embezzler, () => libram__WEBPACK_IMPORTED_MODULE_16__/* .have */ .lf() && !libram__WEBPACK_IMPORTED_MODULE_16__/* .paintingFought */ .L0() && libram__WEBPACK_IMPORTED_MODULE_16__/* .paintingMonster */ .Aq() === embezzler ? 1 : 0, options => {
-  (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => libram__WEBPACK_IMPORTED_MODULE_16__/* .fightPainting */ .OV());
-}), new EmbezzlerFight("Combat Lover's Locket", () => libram__WEBPACK_IMPORTED_MODULE_17__/* .availableLocketMonsters */ .Lk().includes(embezzler), () => libram__WEBPACK_IMPORTED_MODULE_17__/* .availableLocketMonsters */ .Lk().includes(embezzler) ? 1 : 0, options => {
-  (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => libram__WEBPACK_IMPORTED_MODULE_17__/* .reminisce */ .HZ(embezzler));
+}), new EmbezzlerFight("Sticky Clay Homunculus", () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject107 || (_templateObject107 = _taggedTemplateLiteral(["sticky clay homunculus"])))) && libram__WEBPACK_IMPORTED_MODULE_10__/* .getString */ .KF("crudeMonster") === "Knob Goblin Embezzler", () => libram__WEBPACK_IMPORTED_MODULE_10__/* .getString */ .KF("crudeMonster") === "Knob Goblin Embezzler" ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.itemAmount)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject108 || (_templateObject108 = _taggedTemplateLiteral(["sticky clay homunculus"])))) : 0, options => (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject109 || (_templateObject109 = _taggedTemplateLiteral(["sticky clay homunculus"])))))), new EmbezzlerFight("Chateau Painting", () => libram__WEBPACK_IMPORTED_MODULE_17__/* .have */ .lf() && !libram__WEBPACK_IMPORTED_MODULE_17__/* .paintingFought */ .L0() && libram__WEBPACK_IMPORTED_MODULE_17__/* .paintingMonster */ .Aq() === embezzler, () => libram__WEBPACK_IMPORTED_MODULE_17__/* .have */ .lf() && !libram__WEBPACK_IMPORTED_MODULE_17__/* .paintingFought */ .L0() && libram__WEBPACK_IMPORTED_MODULE_17__/* .paintingMonster */ .Aq() === embezzler ? 1 : 0, options => {
+  (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => libram__WEBPACK_IMPORTED_MODULE_17__/* .fightPainting */ .OV());
+}), new EmbezzlerFight("Combat Lover's Locket", () => libram__WEBPACK_IMPORTED_MODULE_18__/* .availableLocketMonsters */ .Lk().includes(embezzler), () => libram__WEBPACK_IMPORTED_MODULE_18__/* .availableLocketMonsters */ .Lk().includes(embezzler) ? 1 : 0, options => {
+  (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => libram__WEBPACK_IMPORTED_MODULE_18__/* .reminisce */ .HZ(embezzler));
 }), new EmbezzlerFight("Fax", () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject110 || (_templateObject110 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_photocopyUsed"), () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_photocopyUsed") ? 1 : 0, options => {
   faxEmbezzler();
   (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject112 || (_templateObject112 = _taggedTemplateLiteral(["photocopied monster"])))));
@@ -24396,9 +24455,9 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => (0,libram__WEBPACK_
     return;
   }
 
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject121 || (_templateObject121 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), embezzlerMacro());
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject121 || (_templateObject121 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), embezzlerMacro());
 }), new EmbezzlerFight("Lucky!", () => (0,canadv_ash__WEBPACK_IMPORTED_MODULE_0__.canAdv)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject122 || (_templateObject122 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), true) && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject123 || (_templateObject123 = _taggedTemplateLiteral(["Lucky!"])))), () => (0,canadv_ash__WEBPACK_IMPORTED_MODULE_0__.canAdv)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject124 || (_templateObject124 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), true) && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject125 || (_templateObject125 = _taggedTemplateLiteral(["Lucky!"])))) ? 1 : 0, () => {
-  (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject126 || (_templateObject126 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), embezzlerMacro());
+  (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject126 || (_templateObject126 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), embezzlerMacro());
 }), // These are very deliberately the last embezzler fights.
 new EmbezzlerFight("11-leaf clover (untapped potential)", () => {
   var potential = Math.floor(embezzlerCount());
@@ -24422,7 +24481,7 @@ new EmbezzlerFight("11-leaf clover (untapped potential)", () => {
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject131 || (_templateObject131 = _taggedTemplateLiteral(["11-leaf clover"]))));
 
   if ((0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject132 || (_templateObject132 = _taggedTemplateLiteral(["Lucky!"]))))) {
-    (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject133 || (_templateObject133 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), embezzlerMacro());
+    (0,libram__WEBPACK_IMPORTED_MODULE_14__/* .adventureMacro */ .Qk)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject133 || (_templateObject133 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), embezzlerMacro());
   }
 
   _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.askedAboutWish */ .Xe.askedAboutWish = false;
@@ -24453,7 +24512,7 @@ new EmbezzlerFight("11-leaf clover (untapped potential)", () => {
   return;
 })];
 function embezzlerCount() {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_18__/* .sum */ .Sm)(embezzlerSources, source => source.potential());
+  return (0,libram__WEBPACK_IMPORTED_MODULE_19__/* .sum */ .Sm)(embezzlerSources, source => source.potential());
 }
 function estimatedTurns() {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
@@ -24514,7 +24573,7 @@ function proceedWithOrb() {
 
   var gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
 
-  if (libram__WEBPACK_IMPORTED_MODULE_14__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject144 || (_templateObject144 = _taggedTemplateLiteral(["Noob Cave"])))) === embezzler && embezzlerSources.filter(source => !gregFightNames.includes(source.name)).find(source => source.available())) {
+  if (libram__WEBPACK_IMPORTED_MODULE_15__/* .currentPredictions */ .o(false).get((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject144 || (_templateObject144 = _taggedTemplateLiteral(["Noob Cave"])))) === embezzler && embezzlerSources.filter(source => !gregFightNames.includes(source.name)).find(source => source.available())) {
     return false;
   }
 
@@ -24958,7 +25017,7 @@ function timeToMeatify() {
 
 /***/ }),
 
-/***/ 7513:
+/***/ 2510:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -28322,36 +28381,8 @@ function runDiet() {
 var familiar = __webpack_require__(9737);
 // EXTERNAL MODULE: ./node_modules/libram/dist/actions/FreeRun.js + 3 modules
 var FreeRun = __webpack_require__(4782);
-;// CONCATENATED MODULE: ./node_modules/libram/dist/counter.js
-
-/**
- * Returns null for counters that do not exist, and otherwise returns the duration of the counter
- * @param counter The name of the counter in question
- * @returns null if the counter does not exist; otherwise returns the duration of the counter
- */
-
-function get(counter) {
-  var value = (0,external_kolmafia_.getCounter)(counter); //getCounter returns -1 for counters that don't exist, but it also returns -1 for counters whose value is -1
-
-  if (value === -1) {
-    //if we have a counter with value -1, we check to see if that counter exists via getCounters()
-    //We return null if it doesn't exist
-    return (0,external_kolmafia_.getCounters)(counter, -1, -1).trim() === "" ? null : -1;
-  }
-
-  return value;
-}
-/**
- * Creates a manual counter with specified name and duration
- * @param counter Name of the counter to manually create
- * @param duration Duration of counter to manually set
- * @returns Whether the counter was successfully set
- */
-
-function set(counter, duration) {
-  cliExecute("counters add ".concat(duration, " ").concat(counter));
-  return get(counter) !== null;
-}
+// EXTERNAL MODULE: ./node_modules/libram/dist/counter.js
+var counter = __webpack_require__(5632);
 // EXTERNAL MODULE: ./node_modules/libram/dist/Copier.js
 var Copier = __webpack_require__(2219);
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2017/TunnelOfLove.js
@@ -29530,8 +29561,8 @@ function startWandererCounter() {
     return;
   }
 
-  var digitizeNeedsStarting = get("Digitize Monster") === null && (0,property/* get */.U2)("_sourceTerminalDigitizeUses") !== 0;
-  var romanceNeedsStarting = (0,property/* get */.U2)("_romanticFightsLeft") > 0 && get("Romantic Monster window begin") === null && get("Romantic Monster window end") === null;
+  var digitizeNeedsStarting = counter/* get */.U("Digitize Monster") === null && (0,property/* get */.U2)("_sourceTerminalDigitizeUses") !== 0;
+  var romanceNeedsStarting = (0,property/* get */.U2)("_romanticFightsLeft") > 0 && counter/* get */.U("Romantic Monster window begin") === null && counter/* get */.U("Romantic Monster window end") === null;
 
   if (digitizeNeedsStarting || romanceNeedsStarting) {
     if (digitizeNeedsStarting) (0,external_kolmafia_.print)("Starting digitize counter by visiting the Haunted Kitchen!");
@@ -29717,7 +29748,7 @@ function dailyFights() {
 
         nextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)(); // try to deliver the thesis
 
-        var romanticMonsterImpossible = get("Romantic Monster Window end") === null || ((_Counter$get = get("Romantic Monster Window begin")) !== null && _Counter$get !== void 0 ? _Counter$get : -1) > 0 || (0,property/* get */.U2)("_romanticFightsLeft") <= 0;
+        var romanticMonsterImpossible = counter/* get */.U("Romantic Monster Window end") === null || ((_Counter$get = counter/* get */.U("Romantic Monster Window begin")) !== null && _Counter$get !== void 0 ? _Counter$get : -1) > 0 || (0,property/* get */.U2)("_romanticFightsLeft") <= 0;
 
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           var _nextFight;
@@ -30088,7 +30119,7 @@ new FreeFight(() => ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_tem
 }, true, {
   familiar: () => (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject263 || (_templateObject263 = fights_taggedTemplateLiteral(["Robortender"])))) ? (0,template_string/* $familiar */.HP)(_templateObject264 || (_templateObject264 = fights_taggedTemplateLiteral(["Robortender"]))) : null
 }), // Portscan and mushroom garden
-new FreeFight(() => !(0,extrovermectin/* doingExtrovermectin */.KN)() && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject265 || (_templateObject265 = fights_taggedTemplateLiteral(["packet of mushroom spores"])))) || (0,external_kolmafia_.getCampground)()["packet of mushroom spores"] !== undefined) && get("portscan.edu") === 0 && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject266 || (_templateObject266 = fights_taggedTemplateLiteral(["Macrometeorite"])))) && (0,property/* get */.U2)("_macrometeoriteUses") < 10, () => {
+new FreeFight(() => !(0,extrovermectin/* doingExtrovermectin */.KN)() && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject265 || (_templateObject265 = fights_taggedTemplateLiteral(["packet of mushroom spores"])))) || (0,external_kolmafia_.getCampground)()["packet of mushroom spores"] !== undefined) && counter/* get */.U("portscan.edu") === 0 && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject266 || (_templateObject266 = fights_taggedTemplateLiteral(["Macrometeorite"])))) && (0,property/* get */.U2)("_macrometeoriteUses") < 10, () => {
   if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject267 || (_templateObject267 = fights_taggedTemplateLiteral(["packet of mushroom spores"]))))) (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(_templateObject268 || (_templateObject268 = fights_taggedTemplateLiteral(["packet of mushroom spores"]))));
 
   if (SourceTerminal/* have */.lf()) {
@@ -31701,7 +31732,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("6cd0cbd6b7bbff069cbcd77558200c5ab5721620"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("08da48db6994793b6d5a7c10bbff0329ee174298"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32299,7 +32330,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("6cd0cbd6b7bbff069cbcd77558200c5ab5721620" === mainSha) {
+    if ("08da48db6994793b6d5a7c10bbff0329ee174298" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -33453,7 +33484,7 @@ module.exports = require("kolmafia");
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 7513);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 2510);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
