@@ -1638,9 +1638,11 @@ function set(counter, duration) {
 /* harmony export */   "cL": () => (/* binding */ questStep),
 /* harmony export */   "pq": () => (/* binding */ ensureEffect),
 /* harmony export */   "xI": () => (/* binding */ getSaleValue),
+/* harmony export */   "q$": () => (/* binding */ findLeprechaunMultiplier),
+/* harmony export */   "gK": () => (/* binding */ findFairyMultiplier),
 /* harmony export */   "UL": () => (/* binding */ getTodaysHolidayWanderers)
 /* harmony export */ });
-/* unused harmony exports isSong, getActiveEffects, getActiveSongs, canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, Wanderer, haveCounter, haveWandererCounter, isVoteWandererNow, isWandererNow, getKramcoWandererChance, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, uneffect, getPlayerFromIdOrName, EnsureError, Environment, findLeprechaunMultiplier, findFairyMultiplier, holidayWanderers */
+/* unused harmony exports isSong, getActiveEffects, getActiveSongs, canRememberSong, getMonsterLocations, getRemainingLiver, getRemainingStomach, getRemainingSpleen, Wanderer, haveCounter, haveWandererCounter, isVoteWandererNow, isWandererNow, getKramcoWandererChance, getFamiliarWandererChance, getWandererChance, isCurrentFamiliar, getZapGroup, getBanishedMonsters, canUse, noneToNull, getAverage, uneffect, getPlayerFromIdOrName, EnsureError, Environment, holidayWanderers */
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4875);
 /* harmony import */ var core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_features_array_flat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2580);
@@ -2282,8 +2284,8 @@ var Environment = {
  */
 
 function findLeprechaunMultiplier(familiar) {
-  if (familiar === $familiar(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Mutant Cactus Bud"])))) return numericModifier(familiar, "Leprechaun Effectiveness", 1, $item(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["none"]))));
-  var meatBonus = numericModifier(familiar, "Meat Drop", 1, $item(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["none"]))));
+  if (familiar === (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Mutant Cactus Bud"])))) return (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.numericModifier)(familiar, "Leprechaun Effectiveness", 1, (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["none"]))));
+  var meatBonus = (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.numericModifier)(familiar, "Meat Drop", 1, (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["none"]))));
   if (meatBonus === 0) return 0;
   return Math.pow(Math.sqrt(meatBonus / 2 + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
@@ -2295,8 +2297,8 @@ function findLeprechaunMultiplier(familiar) {
  */
 
 function findFairyMultiplier(familiar) {
-  if (familiar === $familiar(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Mutant Fire Ant"])))) return numericModifier(familiar, "Fairy Effectiveness", 1, $item(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["none"]))));
-  var itemBonus = numericModifier(familiar, "Item Drop", 1, $item(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["none"]))));
+  if (familiar === (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Mutant Fire Ant"])))) return (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.numericModifier)(familiar, "Fairy Effectiveness", 1, (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["none"]))));
+  var itemBonus = (0,kolmafia__WEBPACK_IMPORTED_MODULE_2__.numericModifier)(familiar, "Item Drop", 1, (0,_template_string__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["none"]))));
   if (itemBonus === 0) return 0;
   return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
@@ -19914,10 +19916,10 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: external "kolmafia"
 var external_kolmafia_ = __webpack_require__(7530);
-// EXTERNAL MODULE: ./node_modules/libram/dist/template-string.js
-var template_string = __webpack_require__(678);
 // EXTERNAL MODULE: ./node_modules/libram/dist/lib.js
 var lib = __webpack_require__(3311);
+// EXTERNAL MODULE: ./node_modules/libram/dist/template-string.js
+var template_string = __webpack_require__(678);
 // EXTERNAL MODULE: ./node_modules/libram/dist/property.js + 2 modules
 var property = __webpack_require__(2474);
 // EXTERNAL MODULE: ./node_modules/libram/dist/utils.js
@@ -20373,9 +20375,9 @@ function valueBjornModifiers(mode, modifiers) {
   var item = (_modifiers$ItemDrop = modifiers["Item Drop"]) !== null && _modifiers$ItemDrop !== void 0 ? _modifiers$ItemDrop : 0;
   var meatValue = (!["dmt", "free"].includes(mode) ? src_lib/* baseMeat */.Vq + mode === "embezzler" ? 750 : 0 : 0) / 100;
   var itemValue = mode === "barf" ? 0.72 : 0;
-  var lepMult = (0,src_lib/* leprechaunMultiplier */.jB)((0,familiar/* meatFamiliar */.M2)());
+  var lepMult = (0,lib/* findLeprechaunMultiplier */.q$)((0,familiar/* meatFamiliar */.M2)());
   var lepBonus = weight * (2 * lepMult + Math.sqrt(lepMult));
-  var fairyMult = (0,src_lib/* fairyMultiplier */.xW)((0,familiar/* meatFamiliar */.M2)());
+  var fairyMult = (0,lib/* findFairyMultiplier */.gK)((0,familiar/* meatFamiliar */.M2)());
   var fairyBonus = weight * (fairyMult + Math.sqrt(fairyMult) / 2);
   var bjornMeatDropValue = meatValue * (meat + lepBonus);
   var bjornItemDropValue = itemValue * (item + fairyBonus);
@@ -20539,7 +20541,7 @@ function bestBjornalike(existingForceEquips) {
     return bjornalikes.find(thing => have(thing) && slots.includes(toSlot(thing)));
   }
 
-  var hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
+  var hasStrongLep = findLeprechaunMultiplier(meatFamiliar()) >= 2;
   var goodRobortHats = $items(dropsgear_templateObject46 || (dropsgear_templateObject46 = dropsgear_taggedTemplateLiteral(["crumpled felt fedora"])));
   if (myClass() === $class(dropsgear_templateObject47 || (dropsgear_templateObject47 = dropsgear_taggedTemplateLiteral(["Turtle Tamer"])))) goodRobortHats.push($item(dropsgear_templateObject48 || (dropsgear_templateObject48 = dropsgear_taggedTemplateLiteral(["warbear foil hat"]))));
 
@@ -21419,9 +21421,9 @@ function meatFamiliar() {
     } else {
       var bestLeps = kolmafia__WEBPACK_IMPORTED_MODULE_0__.Familiar.all() // The commerce ghost canot go underwater in most circumstances, and cannot use an amulet coin
       // We absolutely do not want that
-      .filter(fam => (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)(fam) && fam !== (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Ghost of Crimbo Commerce"])))).sort((a, b) => (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(b) - (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(a));
-      var bestLepMult = (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(bestLeps[0]);
-      _meatFamiliar = bestLeps.filter(familiar => (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .leprechaunMultiplier */ .jB)(familiar) === bestLepMult).sort((a, b) => (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .fairyMultiplier */ .xW)(b) - (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .fairyMultiplier */ .xW)(a))[0];
+      .filter(fam => (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)(fam) && fam !== (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Ghost of Crimbo Commerce"])))).sort((a, b) => (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .findLeprechaunMultiplier */ .q$)(b) - (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .findLeprechaunMultiplier */ .q$)(a));
+      var bestLepMult = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .findLeprechaunMultiplier */ .q$)(bestLeps[0]);
+      _meatFamiliar = bestLeps.filter(familiar => (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .findLeprechaunMultiplier */ .q$)(familiar) === bestLepMult).sort((a, b) => (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .findFairyMultiplier */ .gK)(b) - (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .findFairyMultiplier */ .gK)(a))[0];
     }
   }
 
@@ -21618,8 +21620,6 @@ function timeToMeatify() {
 /* harmony export */   "bb": () => (/* binding */ averageEmbezzlerNet),
 /* harmony export */   "Y7": () => (/* binding */ setChoice),
 /* harmony export */   "Pw": () => (/* binding */ ltbRun),
-/* harmony export */   "jB": () => (/* binding */ leprechaunMultiplier),
-/* harmony export */   "xW": () => (/* binding */ fairyMultiplier),
 /* harmony export */   "e6": () => (/* binding */ realmAvailable)
 /* harmony export */ });
 /* unused harmony exports embezzlerLog, averageTouristNet, expectedEmbezzlerProfit, safeInterrupt, resetDailyPreference, shuffle, mapMonster, argmax, arrayEquals, questStep, tryFeast, coinmasterPrice, kramcoGuaranteed, logMessage, printLog, printHelpMenu, pillkeeperOpportunityCost, burnLibrams, safeRestoreMpTarget, safeRestore, checkGithubVersion, formatNumber, getChoiceOption */
@@ -21630,8 +21630,7 @@ function timeToMeatify() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2474);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2211);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4782);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(678);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -21676,7 +21675,8 @@ var globalOptions = {
   triedToUnlockHiddenTavern: false,
   wishAnswer: false,
   simulateDiet: false,
-  noDiet: false
+  noDiet: false,
+  clarasBellClaimed: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_claraBellUsed")
 };
 var WISH_VALUE = 50000;
 var HIGHLIGHT = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.isDarkMode)() ? "yellow" : "blue";
@@ -21823,22 +21823,6 @@ function coinmasterPrice(item) {
 function kramcoGuaranteed() {
   return have($item(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && getKramcoWandererChance() >= 1;
 }
-function leprechaunMultiplier(familiar) {
-  if (familiar === (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Mutant Cactus Bud"])))) {
-    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.numericModifier)(familiar, "Leprechaun Effectiveness", 1, (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["none"]))));
-  }
-
-  var meatBonus = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.numericModifier)(familiar, "Meat Drop", 1, (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["none"]))));
-  return Math.pow(Math.sqrt(meatBonus / 2 + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
-}
-function fairyMultiplier(familiar) {
-  if (familiar === (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Mutant Fire Ant"])))) {
-    return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.numericModifier)(familiar, "Fairy Effectiveness", 1, (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["none"]))));
-  }
-
-  var itemBonus = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.numericModifier)(familiar, "Item Drop", 1, (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["none"]))));
-  return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
-}
 var log = (/* unused pure expression or super */ null && ([]));
 function logMessage(message) {
   log.push(message);
@@ -21870,7 +21854,7 @@ function printHelpMenu() {
 function pillkeeperOpportunityCost() {
   // Can't fight an embezzler without treasury access
   // If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
-  return canAdv($location(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false) ? ChateauMantegna.have() && !ChateauMantegna.paintingFought() || have($item(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !get("_photocopyUsed") ? 15000 : WISH_VALUE : 0;
+  return canAdv($location(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false) ? ChateauMantegna.have() && !ChateauMantegna.paintingFought() || have($item(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !get("_photocopyUsed") ? 15000 : WISH_VALUE : 0;
 }
 /**
  * Burns existing MP on the mall-optimal libram skill until unable to cast any more.
@@ -21902,8 +21886,8 @@ function safeRestore() {
   var mpTarget = safeRestoreMpTarget();
 
   if (myMp() < mpTarget) {
-    if (have($item(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (have($item(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["magical sausage"])))) || have($item(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["magical sausage casing"]))))) && get("_sausagesEaten") < 23) {
-      eat($item(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["magical sausage"]))));
+    if (have($item(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (have($item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["magical sausage"])))) || have($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["magical sausage casing"]))))) && get("_sausagesEaten") < 23) {
+      eat($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["magical sausage"]))));
     } else restoreMp(mpTarget);
   }
 
@@ -21915,7 +21899,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("53fe1b5bf72e4564211d49e75cc910f8933046aa" === mainSha) {
+    if ("c83f85460afbf7666d118d445ad1d7dd413099c9" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
