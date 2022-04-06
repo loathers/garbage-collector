@@ -68,10 +68,8 @@ export function meatMood(urKels = false): Mood {
   if (have($item`Kremlin's Greatest Briefcase`)) {
     mood.effect($effect`A View to Some Meat`, () => {
       if (get("_kgbClicksUsed") < 22) {
-        const buffTries = Math.floor((22 - get("_kgbClicksUsed")) / 3);
-        if (buffTries) {
-          cliExecute(`Briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
-        }
+        const buffTries = Math.ceil((22 - get("_kgbClicksUsed")) / 3);
+        cliExecute(`Briefcase buff ${new Array<string>(buffTries).fill("meat").join(" ")}`);
       }
     });
   }
