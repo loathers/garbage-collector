@@ -22,6 +22,8 @@ import {
   $slot,
   clamp,
   DaylightShavings,
+  findFairyMultiplier,
+  findLeprechaunMultiplier,
   get,
   getFoldGroup,
   getModifier,
@@ -36,14 +38,7 @@ import {
 } from "libram/dist/resources/2010/CrownOfThrones";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
-import {
-  baseMeat,
-  BonusEquipMode,
-  fairyMultiplier,
-  globalOptions,
-  leprechaunMultiplier,
-  realmAvailable,
-} from "./lib";
+import { baseMeat, BonusEquipMode, globalOptions, realmAvailable } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
 /**
@@ -61,9 +56,9 @@ export function valueBjornModifiers(mode: BonusEquipMode, modifiers: Modifiers):
     (!["dmt", "free"].includes(mode) ? (baseMeat + mode === "embezzler" ? 750 : 0) : 0) / 100;
   const itemValue = mode === "barf" ? 0.72 : 0;
 
-  const lepMult = leprechaunMultiplier(meatFamiliar());
+  const lepMult = findLeprechaunMultiplier(meatFamiliar());
   const lepBonus = weight * (2 * lepMult + Math.sqrt(lepMult));
-  const fairyMult = fairyMultiplier(meatFamiliar());
+  const fairyMult = findFairyMultiplier(meatFamiliar());
   const fairyBonus = weight * (fairyMult + Math.sqrt(fairyMult) / 2);
 
   const bjornMeatDropValue = meatValue * (meat + lepBonus);
@@ -329,7 +324,7 @@ export function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
     return bjornalikes.find((thing) => have(thing) && slots.includes(toSlot(thing)));
   }
 
-  const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
+  const hasStrongLep = findLeprechaunMultiplier(meatFamiliar()) >= 2;
   const goodRobortHats = $items`crumpled felt fedora`;
   if (myClass() === $class`Turtle Tamer`) goodRobortHats.push($item`warbear foil hat`);
   if (numericModifier($item`shining star cap`, "Familiar Weight") === 10) {

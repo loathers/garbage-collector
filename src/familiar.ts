@@ -8,8 +8,19 @@ import {
   myInebriety,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $familiars, $item, $items, get, have, propertyTypes } from "libram";
-import { argmax, fairyMultiplier, globalOptions, leprechaunMultiplier } from "./lib";
+import {
+  $effect,
+  $familiar,
+  $familiars,
+  $item,
+  $items,
+  findFairyMultiplier,
+  findLeprechaunMultiplier,
+  get,
+  have,
+  propertyTypes,
+} from "libram";
+import { argmax, globalOptions } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
 let _meatFamiliar: Familiar;
@@ -28,11 +39,11 @@ export function meatFamiliar(): Familiar {
         // The commerce ghost canot go underwater in most circumstances, and cannot use an amulet coin
         // We absolutely do not want that
         .filter((fam) => have(fam) && fam !== $familiar`Ghost of Crimbo Commerce`)
-        .sort((a, b) => leprechaunMultiplier(b) - leprechaunMultiplier(a));
-      const bestLepMult = leprechaunMultiplier(bestLeps[0]);
+        .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a));
+      const bestLepMult = findLeprechaunMultiplier(bestLeps[0]);
       _meatFamiliar = bestLeps
-        .filter((familiar) => leprechaunMultiplier(familiar) === bestLepMult)
-        .sort((a, b) => fairyMultiplier(b) - fairyMultiplier(a))[0];
+        .filter((familiar) => findLeprechaunMultiplier(familiar) === bestLepMult)
+        .sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a))[0];
     }
   }
   return _meatFamiliar;

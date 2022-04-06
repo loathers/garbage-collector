@@ -10,6 +10,7 @@ import {
   getAutoAttack,
   getCampground,
   handlingChoice,
+  haveEquipped,
   inebrietyLimit,
   isBanished,
   Item,
@@ -78,6 +79,7 @@ import {
   CrystalBall,
   ensureEffect,
   FindActionSourceConstraints,
+  findLeprechaunMultiplier,
   get,
   getTodaysHolidayWanderers,
   have,
@@ -108,12 +110,13 @@ import {
   mapMonster,
   propertyManager,
   questStep,
+  realmAvailable,
   resetDailyPreference,
   safeRestore,
   setChoice,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
-import { freeFightOutfit, meatOutfit, tryFillLatte } from "./outfit";
+import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
 import { bathroomFinance, potionSetup } from "./potions";
 import {
   embezzlerCount,
@@ -497,6 +500,7 @@ export function dailyFights(): void {
           ) {
             deliverThesis();
           }
+          yachtzee();
         }
         doGhost();
         startWandererCounter();
@@ -1872,6 +1876,7 @@ function setNepQuestChoicesAndPrepItems() {
     visitUrl(toUrl($location`The Neverending Party`));
     if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
       print("Gerald/ine quest!", HIGHLIGHT);
+      globalOptions.clarasBellClaimed = true;
     }
     if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
       runChoice(1); // Accept quest
@@ -2186,4 +2191,38 @@ export function estimatedTentacles(): number {
     const avail = source.tentacle ? source.available() : 0;
     return typeof avail === "number" ? avail : toInt(avail);
   });
+}
+
+function yachtzee(): void {
+  if (!realmAvailable("sleaze") || !have($effect`Fishy`)) return;
+
+  const usingClara = have($item`Clara's bell`) && !globalOptions.clarasBellClaimed;
+  if (usingClara) {
+    globalOptions.clarasBellClaimed = true;
+
+    useFamiliar(
+      Familiar.all()
+        .filter(
+          (familiar) => have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
+        )
+        .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a))[0] ??
+        $familiar`none`
+    );
+
+    const underwaterBreathingGear = waterBreathingEquipment.find((item) => have(item));
+    if (!underwaterBreathingGear) return;
+    const equippedOutfit = new Requirement(["meat", "-tie"], {
+      forceEquip: [underwaterBreathingGear],
+    }).maximize();
+    if (haveEquipped($item`The Crown of Ed the Undying`)) cliExecute("edpiece fish");
+
+    const usedBell = use($item`Clara's bell`);
+    if (!equippedOutfit || !usedBell) return;
+
+    setChoice(918, 2);
+    adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+    if (get("lastEncounter") === "Yacht, See?") {
+      adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+    }
+  }
 }

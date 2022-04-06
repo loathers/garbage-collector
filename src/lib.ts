@@ -19,7 +19,6 @@ import {
   myMaxmp,
   myMp,
   myTurncount,
-  numericModifier,
   print,
   printHtml,
   restoreHp,
@@ -34,7 +33,6 @@ import {
   visitUrl,
 } from "kolmafia";
 import {
-  $familiar,
   $item,
   $location,
   $skill,
@@ -72,6 +70,7 @@ export const globalOptions: {
   wishAnswer: boolean;
   simulateDiet: boolean;
   noDiet: boolean;
+  clarasBellClaimed: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -82,6 +81,7 @@ export const globalOptions: {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
+  clarasBellClaimed: get("_claraBellUsed"),
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -242,22 +242,6 @@ export function coinmasterPrice(item: Item): number {
 
 export function kramcoGuaranteed(): boolean {
   return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
-}
-
-export function leprechaunMultiplier(familiar: Familiar): number {
-  if (familiar === $familiar`Mutant Cactus Bud`) {
-    return numericModifier(familiar, "Leprechaun Effectiveness", 1, $item`none`);
-  }
-  const meatBonus = numericModifier(familiar, "Meat Drop", 1, $item`none`);
-  return Math.pow(Math.sqrt(meatBonus / 2 + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
-}
-
-export function fairyMultiplier(familiar: Familiar): number {
-  if (familiar === $familiar`Mutant Fire Ant`) {
-    return numericModifier(familiar, "Fairy Effectiveness", 1, $item`none`);
-  }
-  const itemBonus = numericModifier(familiar, "Item Drop", 1, $item`none`);
-  return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
 
 const log: string[] = [];
