@@ -500,10 +500,10 @@ export function dailyFights(): void {
           ) {
             deliverThesis();
           }
+          yachtzee();
         }
         doGhost();
         startWandererCounter();
-        sbbNoncombat();
       }
     });
   }
@@ -2193,7 +2193,7 @@ export function estimatedTentacles(): number {
   });
 }
 
-function sbbNoncombat(): void {
+function yachtzee(): void {
   if (!realmAvailable("sleaze") || !have($effect`Fishy`)) return;
 
   const usingClara = have($item`Clara's bell`) && !globalOptions.clarasBellClaimed;
