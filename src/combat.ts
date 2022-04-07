@@ -586,13 +586,15 @@ export class Macro extends StrictMacro {
   }
 }
 
-export function withMacro<T>(macro: Macro, action: () => T): T {
+export function withMacro<T>(macro: Macro, action: () => T, tryAuto = false): T {
   if (getAutoAttack() !== 0) setAutoAttack(0);
+  if (tryAuto) macro.setAutoAttack();
   macro.save();
   try {
     return action();
   } finally {
     Macro.clearSaved();
+    if (tryAuto) setAutoAttack(0);
   }
 }
 
