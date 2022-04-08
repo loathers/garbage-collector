@@ -24476,7 +24476,7 @@ new EmbezzlerFight("11-leaf clover (untapped potential)", () => {
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("You have the following embezzler-sources untapped right now:", _lib__WEBPACK_IMPORTED_MODULE_6__/* .HIGHLIGHT */ .X2);
   embezzlerSources.filter(source => source.potential() > 0).map(source => "".concat(source.potential(), " from ").concat(source.name)).forEach(text => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)(text, _lib__WEBPACK_IMPORTED_MODULE_6__/* .HIGHLIGHT */ .X2));
   _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.askedAboutWish */ .Xe.askedAboutWish = true;
-  _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.wishAnswer */ .Xe.wishAnswer = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.userConfirm)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat((0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .averageEmbezzlerNet */ .bb)(), ", so we expect to earn ").concat(profit, " meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?"));
+  _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.wishAnswer */ .Xe.wishAnswer = (0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .userConfirmDialog */ .tq)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat((0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .averageEmbezzlerNet */ .bb)(), ", so we expect to earn ").concat(profit, " meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?"), true);
   return _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.wishAnswer */ .Xe.wishAnswer;
 }, () => 0, () => {
   libram__WEBPACK_IMPORTED_MODULE_10__/* .withProperty */ .pr("autoSatisfyWithCloset", true, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject130 || (_templateObject130 = _taggedTemplateLiteral(["11-leaf clover"])))));
@@ -24497,7 +24497,7 @@ new EmbezzlerFight("11-leaf clover (untapped potential)", () => {
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("You have the following embezzler-sources untapped right now:", _lib__WEBPACK_IMPORTED_MODULE_6__/* .HIGHLIGHT */ .X2);
   embezzlerSources.filter(source => source.potential() > 0).map(source => "".concat(source.potential(), " from ").concat(source.name)).forEach(text => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)(text, _lib__WEBPACK_IMPORTED_MODULE_6__/* .HIGHLIGHT */ .X2));
   _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.askedAboutWish */ .Xe.askedAboutWish = true;
-  _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.wishAnswer */ .Xe.wishAnswer = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.userConfirm)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat((0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .averageEmbezzlerNet */ .bb)(), ", so we expect to earn ").concat(profit, " meat, after the cost of a wish. Should we wish for an Embezzler?"));
+  _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.wishAnswer */ .Xe.wishAnswer = (0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .userConfirmDialog */ .tq)("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat((0,_lib__WEBPACK_IMPORTED_MODULE_6__/* .averageEmbezzlerNet */ .bb)(), ", so we expect to earn ").concat(profit, " meat, after the cost of a wish. Should we wish for an Embezzler?"), true);
   return _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.wishAnswer */ .Xe.wishAnswer;
 }, () => 0, options => {
   (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => {
@@ -26981,7 +26981,7 @@ function withVIPClan(action) {
   var clanIdOrName = clanIdOrNameString.match(/^\d+$/) ? parseInt(clanIdOrNameString) : clanIdOrNameString;
 
   if (clanIdOrName === "" && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(clan_templateObject || (clan_templateObject = clan_taggedTemplateLiteral(["Clan VIP Lounge key"]))))) {
-    if ((0,external_kolmafia_.userConfirm)("The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)", 15000, true)) {
+    if ((0,src_lib/* userConfirmDialog */.tq)("The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)", true, 15000)) {
       clanIdOrName = (0,external_kolmafia_.getClanId)();
       (0,property/* set */.t8)("garbo_vipClan", clanIdOrName);
     }
@@ -27906,13 +27906,13 @@ function nonOrganAdventures() {
 function pillCheck() {
   if (!(0,property/* get */.U2)("_distentionPillUsed")) {
     if (!(0,property/* get */.U2)("garbo_skipPillCheck", false) && !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject42 || (diet_templateObject42 = src_diet_taggedTemplateLiteral(["distention pill"]))), 1)) {
-      (0,property/* set */.t8)("garbo_skipPillCheck", (0,external_kolmafia_.userConfirm)("You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)", 15000, false));
+      (0,property/* set */.t8)("garbo_skipPillCheck", (0,src_lib/* userConfirmDialog */.tq)("You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)", false, 15000));
     }
   }
 
   if (!(0,property/* get */.U2)("_syntheticDogHairPillUsed")) {
     if (!(0,property/* get */.U2)("garbo_skipPillCheck", false) && !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject43 || (diet_templateObject43 = src_diet_taggedTemplateLiteral(["synthetic dog hair pill"]))), 1)) {
-      (0,property/* set */.t8)("garbo_skipPillCheck", (0,external_kolmafia_.userConfirm)("You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)", 15000, false));
+      (0,property/* set */.t8)("garbo_skipPillCheck", (0,src_lib/* userConfirmDialog */.tq)("You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)", false, 15000));
     }
   }
 }
@@ -31781,7 +31781,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("c83f85460afbf7666d118d445ad1d7dd413099c9"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("69334873e2d469bc453d6a8feb762df510a63b64"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -31790,12 +31790,16 @@ function main() {
     (0,property/* set */.t8)("forbiddenStores", forbiddenStores.join(","));
   }
 
+  if ((0,property/* get */.U2)("garbo_autoUserConfirm", false)) {
+    (0,external_kolmafia_.print)("I have set auto-confirm to true and accept all ramifications that come with that.", "red");
+  }
+
   if (!(0,template_string/* $classes */.JT)(src_templateObject41 || (src_templateObject41 = src_taggedTemplateLiteral(["Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger"]))).includes((0,external_kolmafia_.myClass)())) {
     throw new Error("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
   }
 
   if (!(0,property/* get */.U2)("garbo_skipAscensionCheck", false) && (!(0,property/* get */.U2)("kingLiberated") || (0,external_kolmafia_.myLevel)() < 13)) {
-    var proceedRegardless = (0,external_kolmafia_.userConfirm)("Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?");
+    var proceedRegardless = (0,src_lib/* userConfirmDialog */.tq)("Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?", true);
 
     if (!proceedRegardless) {
       throw new Error("User interrupt requested. Stopping Garbage Collector.");
@@ -31853,7 +31857,7 @@ function main() {
   }
 
   if (stashItems.length > 0) {
-    if ((0,external_kolmafia_.userConfirm)("Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ".concat(stashItems.map(item => item.name).join(","), ". Would you like us to return these to the stash now?"))) {
+    if ((0,src_lib/* userConfirmDialog */.tq)("Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ".concat(stashItems.map(item => item.name).join(","), ". Would you like us to return these to the stash now?"), true)) {
       var clanIdOrName = (0,property/* get */.U2)("garbo_stashClan", "none");
       var parsedClanIdOrName = clanIdOrName !== "none" ? clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName : null;
 
@@ -32022,7 +32026,7 @@ function main() {
 
 
             if ((0,property/* get */.U2)("garbo_buyPass", false) && (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(src_templateObject61 || (src_templateObject61 = src_taggedTemplateLiteral(["FunFunds\u2122"])))) >= 20 && !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject62 || (src_templateObject62 = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]))))) {
-              (0,external_kolmafia_.print)("Buying a one-day tickets", src_lib/* HIGHLIGHT */.X2);
+              (0,external_kolmafia_.print)("Buying a one-day ticket", src_lib/* HIGHLIGHT */.X2);
               (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(src_templateObject63 || (src_templateObject63 = src_taggedTemplateLiteral(["The Dinsey Company Store"]))), 1, (0,template_string/* $item */.xr)(src_templateObject64 || (src_templateObject64 = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]))));
             }
           } finally {
@@ -32078,7 +32082,8 @@ function main() {
 /* harmony export */   "Pv": () => (/* binding */ safeRestore),
 /* harmony export */   "ki": () => (/* binding */ checkGithubVersion),
 /* harmony export */   "e6": () => (/* binding */ realmAvailable),
-/* harmony export */   "uf": () => (/* binding */ formatNumber)
+/* harmony export */   "uf": () => (/* binding */ formatNumber),
+/* harmony export */   "tq": () => (/* binding */ userConfirmDialog)
 /* harmony export */ });
 /* unused harmony exports averageTouristNet, getChoiceOption */
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2549);
@@ -32307,7 +32312,7 @@ function printLog(color) {
 }
 function printHelpMenu() {
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.printHtml)("<pre style=\"font-family:consolas;\">\n    +==============+===================================================================================================+\n    |   Argument   |                                            Description                                            |\n    +==============+===================================================================================================+\n    |    nobarf    | garbo will do beginning of the day setup, embezzlers, and various daily flags, but will           |\n    |              |  terminate before normal Barf Mountain turns.                                                     |\n    +--------------+---------------------------------------------------------------------------------------------------+\n    |    ascend    | garbo will operate under the assumption that you're ascending after running it, rather than       |\n    |              |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |\n    +--------------+---------------------------------------------------------------------------------------------------+\n    | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. `garbo 200` will terminate after   |\n    |              |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.       |\n    +------------------------------------------------------------------------------------------------------------------+\n    |   simdiet    | garbo will print out what it computes as an optimal diet and then exit                            |\n    +------------------------------------------------------------------------------------------------------------------+\n    |    nodiet    | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |\n    +--------------+---------------------------------------------------------------------------------------------------+\n    |     Note:    | You can use multiple commands in conjunction, e.g. `garbo nobarf ascend`.                         |\n    +--------------+---------------------------------------------------------------------------------------------------+</pre>");
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.printHtml)("<pre style=\"font-family:consolas;\">\n    +==========================+===============================================================================================+\n    |         Property         |                                          Description                                          |\n    +==========================+===============================================================================================+\n    |     valueOfAdventure     | This is a native mafia property, garbo will make purchasing decisions based on this value.    |\n    |                          | Recommended to be at least 3501.                                                              |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |      garbo_stashClan     | If set, garbo will attempt to switch to this clan to take and return useful clan stash items, |\n    |                          |  i.e. a Haiku Katana or Repaid Diaper.                                                        |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |       garbo_vipClan      | If set, garbo will attempt to switch to this clan to utilize VIP furniture if you have a key. |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    | garbo_skipAscensionCheck | Set to true to skip verifying that your account has broken the prism, otherwise you will be   |\n    |                          |  warned upon starting the script.                                                             |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |  garbo_valueOfFreeFight  | Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)      |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |     garbo_fightGlitch    | Set to true to fight the glitch season reward. You need certain skills, see relay for info.   |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |\n    +--------------------------+-----------------------------------------------------------------------------------------------+</pre>");
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.printHtml)("<pre style=\"font-family:consolas;\">\n    +==========================+===============================================================================================+\n    |         Property         |                                          Description                                          |\n    +==========================+===============================================================================================+\n    |     valueOfAdventure     | This is a native mafia property, garbo will make purchasing decisions based on this value.    |\n    |                          | Recommended to be at least 3501.                                                              |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |      garbo_stashClan     | If set, garbo will attempt to switch to this clan to take and return useful clan stash items, |\n    |                          |  i.e. a Haiku Katana or Repaid Diaper.                                                        |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |       garbo_vipClan      | If set, garbo will attempt to switch to this clan to utilize VIP furniture if you have a key. |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    | garbo_skipAscensionCheck | Set to true to skip verifying that your account has broken the prism, otherwise you will be   |\n    |                          |  warned upon starting the script.                                                             |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |  garbo_valueOfFreeFight  | Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)      |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |     garbo_fightGlitch    | Set to true to fight the glitch season reward. You need certain skills, see relay for info.   |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |   garbo_autoUserConfirm  | **WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no|\n    |                          | in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and|\n    |                          |  potentially destructive.                                                                     |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |\n    +--------------------------+-----------------------------------------------------------------------------------------------+</pre>");
 }
 /**
  * Determines the opportunity cost of not using the Pillkeeper to fight an embezzler
@@ -32362,7 +32367,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("c83f85460afbf7666d118d445ad1d7dd413099c9" === mainSha) {
+    if ("69334873e2d469bc453d6a8feb762df510a63b64" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -32392,6 +32397,23 @@ function getChoiceOption(partialText) {
   }
 
   return -1;
+}
+/**
+ * Confirmation dialog that supports automatic resolution via garbo_autoUserConfirm preference
+ * @param msg string to display in confirmation dialog
+ * @param defaultValue default answer if user doesn't provide one
+ * @param timeOut time to show dialog before submitting default value
+ * @returns answer to confirmation dialog
+ */
+
+function userConfirmDialog(msg, defaultValue, timeOut) {
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("garbo_autoUserConfirm", false)) {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Automatically selected ".concat(defaultValue, " for ").concat(msg), "red");
+    return defaultValue;
+  }
+
+  if (timeOut) return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.userConfirm)(msg, timeOut, defaultValue);
+  return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.userConfirm)(msg);
 }
 
 /***/ }),
