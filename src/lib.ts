@@ -29,6 +29,7 @@ import {
   toUrl,
   use,
   useFamiliar,
+  userConfirm,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -297,6 +298,10 @@ export function printHelpMenu(): void {
     +--------------------------+-----------------------------------------------------------------------------------------------+
     |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |
     +--------------------------+-----------------------------------------------------------------------------------------------+
+    |   garbo_autoUserConfirm  | **WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no|
+    |                          | in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and|
+    |                          |  potentially destructive.                                                                     |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
     |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |
     +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
 }
@@ -397,4 +402,21 @@ export function getChoiceOption(partialText: string): number {
     }
   }
   return -1;
+}
+
+/**
+ * Confirmation dialog that supports automatic resolution via garbo_autoUserConfirm preference
+ * @param msg string to display in confirmation dialog
+ * @param defaultValue default answer if user doesn't provide one
+ * @param timeOut time to show dialog before submitting default value
+ * @returns answer to confirmation dialog
+ */
+export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: number): boolean {
+  if (get("garbo_autoUserConfirm", false)) {
+    print(`Automatically selected ${defaultValue} for ${msg}`, "red");
+    return defaultValue;
+  }
+
+  if (timeOut) return userConfirm(msg, timeOut, defaultValue);
+  return userConfirm(msg);
 }

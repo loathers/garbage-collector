@@ -31,7 +31,6 @@ import {
   turnsPerCast,
   use,
   useFamiliar,
-  userConfirm,
   useSkill,
   wait,
 } from "kolmafia";
@@ -62,7 +61,14 @@ import { acquire } from "./acquire";
 import { withVIPClan } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import { argmax, arrayEquals, globalOptions, HIGHLIGHT, realmAvailable } from "./lib";
+import {
+  argmax,
+  arrayEquals,
+  globalOptions,
+  HIGHLIGHT,
+  realmAvailable,
+  userConfirmDialog,
+} from "./lib";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -228,10 +234,10 @@ function pillCheck(): void {
     if (!get("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
       set(
         "garbo_skipPillCheck",
-        userConfirm(
+        userConfirmDialog(
           "You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)",
-          15000,
-          false
+          false,
+          15000
         )
       );
     }
@@ -241,10 +247,10 @@ function pillCheck(): void {
     if (!get("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
       set(
         "garbo_skipPillCheck",
-        userConfirm(
+        userConfirmDialog(
           "You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)",
-          15000,
-          false
+          false,
+          15000
         )
       );
     }

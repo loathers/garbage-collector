@@ -22,7 +22,6 @@ import {
   toMonster,
   toUrl,
   use,
-  userConfirm,
   visitUrl,
   wait,
 } from "kolmafia";
@@ -58,6 +57,7 @@ import {
   HIGHLIGHT,
   ltbRun,
   setChoice,
+  userConfirmDialog,
   WISH_VALUE,
 } from "./lib";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
@@ -726,8 +726,9 @@ export const embezzlerSources = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = userConfirm(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`
+      globalOptions.wishAnswer = userConfirmDialog(
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`,
+        true
       );
       return globalOptions.wishAnswer;
     },
@@ -758,8 +759,9 @@ export const embezzlerSources = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = userConfirm(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`
+      globalOptions.wishAnswer = userConfirmDialog(
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`,
+        true
       );
       return globalOptions.wishAnswer;
     },
