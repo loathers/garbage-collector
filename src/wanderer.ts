@@ -238,7 +238,10 @@ const wandererTargets = [
       if (Guzzlr.isQuestActive()) guzzlrAbandonQuest();
       while (!Guzzlr.isQuestActive()) {
         print("Picking a guzzlr quest");
-        if (Guzzlr.canPlatinum()) {
+        if (
+          Guzzlr.canPlatinum() &&
+          !(get("garbo_prioritizeCappingGuzzlr", false) && Guzzlr.haveFullPlatinumBonus())
+        ) {
           Guzzlr.acceptPlatinum();
         } else if (
           Guzzlr.canGold() &&
