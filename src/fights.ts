@@ -177,6 +177,7 @@ const secondChainMacro = () =>
   ).abort();
 
 function embezzlerSetup() {
+  setLocation($location`none`);
   potionSetup(false);
   meatMood(true).execute(estimatedTurns());
   safeRestore();
