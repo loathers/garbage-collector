@@ -4,6 +4,7 @@ import {
   cliExecute,
   eat,
   Familiar,
+  getLocketMonsters,
   handlingChoice,
   haveSkill,
   inebrietyLimit,
@@ -35,10 +36,12 @@ import {
 import {
   $item,
   $location,
+  $monster,
   $skill,
   ActionSource,
   bestLibramToCast,
   ChateauMantegna,
+  CombatLoversLocket,
   ensureFreeRun,
   get,
   getKramcoWandererChance,
@@ -306,14 +309,27 @@ export function printHelpMenu(): void {
  * @returns The expected value of using a pillkeeper charge to fight an embezzler
  */
 export function pillkeeperOpportunityCost(): number {
-  // Can't fight an embezzler without treasury access
-  // If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
-  return canAdv($location`Cobb's Knob Treasury`, false)
-    ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
-      (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
-      ? 15000
-      : WISH_VALUE
-    : 0;
+  const alternateUse = [
+    { can: canAdv($location`Cobb's Knob Treasury`), value: 3 * get("valueOfAdventure") },
+    {
+      can: realmAvailable("sleaze"),
+      value: 40000,
+    },
+  ]
+    .filter((x) => x.can)
+    .sort((a, b) => b.value - a.value)[0];
+  const alternateUseValue = alternateUse?.value;
+  if (!alternateUseValue) return 0;
+  const embezzler = $monster`Knob Goblin Embezzler`;
+  const canStartChain = [
+    CombatLoversLocket.have() && getLocketMonsters()[embezzler.name],
+    ChateauMantegna.have() &&
+      ChateauMantegna.paintingMonster() === embezzler &&
+      !ChateauMantegna.paintingFought(),
+    have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
+  ].some((x) => x);
+
+  return canStartChain ? alternateUseValue : WISH_VALUE;
 }
 
 /**
