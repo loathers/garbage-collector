@@ -2197,60 +2197,55 @@ export function estimatedTentacles(): number {
 function yachtzee(): void {
   if (!realmAvailable("sleaze") || !have($effect`Fishy`)) return;
 
-  const usingClara = have($item`Clara's bell`) && !globalOptions.clarasBellClaimed;
-  if (usingClara) {
-    globalOptions.clarasBellClaimed = true;
+  for (const { available, success } of [
+    {
+      available: have($item`Clara's bell`) && !globalOptions.clarasBellClaimed,
+      success: () => {
+        if (use($item`Clara's bell`)) {
+          globalOptions.clarasBellClaimed = true;
+          return true;
+        }
+        return false;
+      },
+    },
+    {
+      available: have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed"),
+      success: () => {
+        if (cliExecute("pillkeeper noncombat") && get("_freePillKeeperUsed")) {
+          // Defense against mis-set counters
+          set("_freePillKeeperUsed", true);
+          return true;
+        }
+        return false;
+      },
+    },
+  ]) {
+    if (available) {
+      useFamiliar(
+        Familiar.all()
+          .filter(
+            (familiar) =>
+              have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
+          )
+          .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a))[0] ??
+          $familiar`none`
+      );
 
-    useFamiliar(
-      Familiar.all()
-        .filter(
-          (familiar) => have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
-        )
-        .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a))[0] ??
-        $familiar`none`
-    );
+      const underwaterBreathingGear = waterBreathingEquipment.find((item) => have(item));
+      if (!underwaterBreathingGear) return;
+      const equippedOutfit = new Requirement(["meat", "-tie"], {
+        forceEquip: [underwaterBreathingGear],
+      }).maximize();
+      if (haveEquipped($item`The Crown of Ed the Undying`)) cliExecute("edpiece fish");
 
-    const underwaterBreathingGear = waterBreathingEquipment.find((item) => have(item));
-    if (!underwaterBreathingGear) return;
-    const equippedOutfit = new Requirement(["meat", "-tie"], {
-      forceEquip: [underwaterBreathingGear],
-    }).maximize();
-    if (haveEquipped($item`The Crown of Ed the Undying`)) cliExecute("edpiece fish");
+      if (!equippedOutfit || !success()) return;
 
-    const usedBell = use($item`Clara's bell`);
-    if (!equippedOutfit || !usedBell) return;
-
-    setChoice(918, 2);
-    adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
-    if (get("lastEncounter") === "Yacht, See?") {
+      setChoice(918, 2);
       adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
-    }
-  } else if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
-    useFamiliar(
-      Familiar.all()
-        .filter(
-          (familiar) => have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
-        )
-        .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a))[0] ??
-        $familiar`none`
-    );
-
-    const underwaterBreathingGear = waterBreathingEquipment.find((item) => have(item));
-    if (!underwaterBreathingGear) return;
-    const equippedOutfit = new Requirement(["meat", "-tie"], {
-      forceEquip: [underwaterBreathingGear],
-    }).maximize();
-    if (haveEquipped($item`The Crown of Ed the Undying`)) cliExecute("edpiece fish");
-
-    // Defense against misset counters
-    const usedPillKeeper = cliExecute("pillkeeper noncombat") && get("_freePillKeeperUsed");
-    set("_freePillKeeperUsed", true);
-    if (!equippedOutfit || !usedPillKeeper) return;
-
-    setChoice(918, 2);
-    adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
-    if (get("lastEncounter") === "Yacht, See?") {
-      adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+      if (get("lastEncounter") === "Yacht, See?") {
+        adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+      }
+      return;
     }
   }
 }
