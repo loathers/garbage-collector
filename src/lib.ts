@@ -309,8 +309,10 @@ export function printHelpMenu(): void {
  * @returns The expected value of using a pillkeeper charge to fight an embezzler
  */
 export function pillkeeperOpportunityCost(): number {
+  const canTreasury = canAdv($location`Cobb's Knob Treasury`, false);
+
   const alternateUse = [
-    { can: canAdv($location`Cobb's Knob Treasury`), value: 3 * get("valueOfAdventure") },
+    { can: canTreasury, value: 3 * get("valueOfAdventure") },
     {
       can: realmAvailable("sleaze"),
       value: 40000,
@@ -319,7 +321,10 @@ export function pillkeeperOpportunityCost(): number {
     .filter((x) => x.can)
     .sort((a, b) => b.value - a.value)[0];
   const alternateUseValue = alternateUse?.value;
+
   if (!alternateUseValue) return 0;
+  if (!canTreasury) return alternateUseValue;
+
   const embezzler = $monster`Knob Goblin Embezzler`;
   const canStartChain = [
     CombatLoversLocket.have() && getLocketMonsters()[embezzler.name],
