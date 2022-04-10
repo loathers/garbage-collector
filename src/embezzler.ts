@@ -3,6 +3,7 @@ import {
   booleanModifier,
   chatPrivate,
   cliExecute,
+  getClanLounge,
   haveEquipped,
   inebrietyLimit,
   itemAmount,
@@ -667,8 +668,16 @@ export const embezzlerSources = [
   ),
   new EmbezzlerFight(
     "Fax",
-    () => have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
-    () => (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed") ? 1 : 0),
+    () =>
+      have($item`Clan VIP Lounge key`) &&
+      !get("_photocopyUsed") &&
+      getClanLounge()["deluxe fax machine"] !== undefined,
+    () =>
+      have($item`Clan VIP Lounge key`) &&
+      !get("_photocopyUsed") &&
+      getClanLounge()["deluxe fax machine"] !== undefined
+        ? 1
+        : 0,
     (options: EmbezzlerFightRunOptions) => {
       faxEmbezzler();
       withMacro(options.macro, () => use($item`photocopied monster`));
