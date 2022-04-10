@@ -1,10 +1,12 @@
 import "core-js/modules/es.object.from-entries";
 import {
   cliExecute,
+  Effect,
   effectModifier,
   haveEffect,
   historicalAge,
   historicalPrice,
+  Item,
   itemAmount,
   itemType,
   mallPrice,
@@ -395,7 +397,7 @@ export function bathroomFinance(embezzlers: number): void {
 
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
   if (touristGross + embezzlerGross > mallPrice(greenspan)) {
-    acquire(1, greenspan, touristGross + embezzlerGross);
+    acquire(1, greenspan, touristGross + embezzlerGross, false);
     if (itemAmount(greenspan) > 0) {
       print(`Using ${greenspan}!`, HIGHLIGHT);
       use(greenspan);

@@ -1,5 +1,6 @@
 import {
   availableAmount,
+  Effect,
   mySpleenUse,
   retrieveItem,
   spleenLimit,

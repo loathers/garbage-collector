@@ -1,5 +1,5 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, myTurncount, print, retrieveItem, use } from "kolmafia";
+import { buy, craftType, Item, Location, myTurncount, print, retrieveItem, use } from "kolmafia";
 import {
   $effect,
   $item,
@@ -101,6 +101,9 @@ const UnlockableZones: UnlockableZone[] = [
 function canAdvOrUnlock(loc: Location) {
   const underwater = loc.environment === "underwater";
   const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
+  if (!have($item`repaid diaper`) && have($item`Great Wolf's beastly trousers`)) {
+    skiplist.push($location`The Icy Peak`);
+  }
   const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
   const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
   return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdv(loc, false) || canUnlock);
@@ -185,6 +188,27 @@ class WandererTarget {
   }
 }
 
+function guzzlrAbandonQuest() {
+  const location = Guzzlr.getLocation();
+  const remaningTurns = Math.ceil(
+    (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
+  );
+
+  print(
+    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`
+  );
+
+  if (
+    // consider abandoning
+    !location || // if mafia faled to track the location correctly
+    !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+    (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
+  ) {
+    print("Abandoning...");
+    Guzzlr.abandon();
+  }
+}
+
 const wandererTargets = [
   new WandererTarget(
     "Guzzlr",
@@ -211,6 +235,7 @@ const wandererTargets = [
       // * always prefer 1 plat per day
       // * go for gold if plat unavailable and gold not maxed and bronze is maxed or if both gold and bronze are maxed
       // * go for bronze if plat unavailable and gold is maxed and either gold unavailable or quests are not maxed
+      if (Guzzlr.isQuestActive()) guzzlrAbandonQuest();
       while (!Guzzlr.isQuestActive()) {
         print("Picking a guzzlr quest");
         if (
@@ -228,24 +253,7 @@ const wandererTargets = [
           // fall back to bronze when can't plat, can't gold, or bronze is not maxed
           Guzzlr.acceptBronze();
         }
-        const location = Guzzlr.getLocation();
-        const remaningTurns = Math.ceil(
-          (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
-        );
-
-        print(
-          `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`
-        );
-
-        if (
-          // consider abandoning
-          !location || // if mafia faled to track the location correctly
-          !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
-          (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
-        ) {
-          print("Abandoning...");
-          Guzzlr.abandon();
-        }
+        guzzlrAbandonQuest();
       }
 
       // return true only if it is safe to try get guzzlr
@@ -326,4 +334,14 @@ const unsupportedChoices = new Map<Location, { [choice: number]: number | string
   [$location`The Hidden Park`, { [789]: 6 }],
   [$location`A Mob of Zeppelin Protesters`, { [1432]: 1, [857]: 2 }],
   [$location`A-Boo Peak`, { [1430]: 2 }],
+  [$location`Sloppy Seconds Diner`, { [919]: 6 }],
+  [$location`VYKEA`, { [1115]: 6 }],
+  [
+    $location`The Castle in the Clouds in the Sky (Basement)`,
+    {
+      [670]: 4,
+      [671]: 4,
+      [672]: 1,
+    },
+  ],
 ]);

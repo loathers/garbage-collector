@@ -1,4 +1,5 @@
 import {
+  adv1,
   buy,
   changeMcd,
   cliExecute,
@@ -7,7 +8,9 @@ import {
   getCampground,
   getClanLounge,
   haveSkill,
+  holiday,
   inebrietyLimit,
+  Item,
   itemAmount,
   itemPockets,
   mallPrice,
@@ -26,6 +29,7 @@ import {
   putCloset,
   restoreHp,
   retrieveItem,
+  retrievePrice,
   runChoice,
   scrapPockets,
   toInt,
@@ -44,6 +48,7 @@ import {
   $familiars,
   $item,
   $items,
+  $location,
   $monster,
   $skill,
   $skills,
@@ -53,9 +58,11 @@ import {
   BeachComb,
   ChateauMantegna,
   ensureEffect,
+  findLeprechaunMultiplier,
   get,
   getModifier,
   have,
+  Pantogram,
   property,
   SongBoom,
   SourceTerminal,
@@ -69,8 +76,8 @@ import {
   coinmasterPrice,
   globalOptions,
   HIGHLIGHT,
-  leprechaunMultiplier,
   logMessage,
+  realmAvailable,
   tryFeast,
 } from "./lib";
 import { withStash } from "./clan";
@@ -79,6 +86,8 @@ import { refreshLatte } from "./outfit";
 import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
 import { garboAverageValue, garboValue } from "./session";
+import { acquire } from "./acquire";
+import { estimatedTentacles } from "./fights";
 
 export function dailySetup(): void {
   voterSetup();
@@ -101,6 +110,7 @@ export function dailySetup(): void {
   refreshLatte();
   implement();
   comb();
+  getAttuned();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -259,7 +269,7 @@ function horse(): void {
 }
 
 function dailyBuffs(): void {
-  BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
+  if (have($item`Beach Comb`)) BeachComb.tryHead($effect`Do I Know You From Somewhere?`);
 
   if (
     !get("_clanFortuneBuffUsed") &&
@@ -284,7 +294,10 @@ function dailyBuffs(): void {
 }
 
 function configureMisc(): void {
-  if (SongBoom.songChangesLeft() > 0) SongBoom.setSong("Total Eclipse of Your Meat");
+  if (SongBoom.songChangesLeft() > 0) {
+    if (myInebriety() > inebrietyLimit()) SongBoom.setSong("Food Vibrations");
+    else SongBoom.setSong("Total Eclipse of Your Meat");
+  }
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
     SourceTerminal.enquiry($effect`familiar.enq`);
@@ -355,7 +368,7 @@ function configureVykea() {
 }
 
 function volcanoDailies(): void {
-  if (!(get("hotAirportAlways") || get("_hotAirportToday"))) return;
+  if (!realmAvailable("hot")) return;
   if (!get("_volcanoItemRedeemed")) checkVolcanoQuest();
 
   if (!get("_infernoDiscoVisited")) {
@@ -381,82 +394,84 @@ function volcanoDailies(): void {
     }
   }
 }
+
+type VolcanoItem = { quantity: number; item: Item; choice: number };
+
+function volcanoItemValue({ quantity, item }: VolcanoItem): number {
+  const basePrice = quantity * retrievePrice(item);
+  if (basePrice) return basePrice;
+  if (item === $item`fused fuse`) {
+    // Check if clara's bell is available and unused
+    if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) return Infinity;
+    // Check if we can use Clara's bell for Yachtzee
+    // If so, we call the opportunity cost of this about 40k
+    if (realmAvailable("sleaze") && have($item`fishy pipe`) && !get("_fishyPipeUsed")) {
+      return quantity * 40000;
+    }
+  }
+  return Infinity;
+}
+
 function checkVolcanoQuest() {
   print("Checking volcano quest", HIGHLIGHT);
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
   const volcoinoValue = garboValue($item`Volcoino`);
-  const volcanoProperties = new Map<Item, number>([
-    [property.getItem("_volcanoItem1") || $item`none`, get("_volcanoItemCount1")],
-    [property.getItem("_volcanoItem2") || $item`none`, get("_volcanoItemCount2")],
-    [property.getItem("_volcanoItem3") || $item`none`, get("_volcanoItemCount3")],
-  ]);
-  const volcanoItems = [
-    {
-      item: $item`New Age healing crystal`,
-      price: 5 * mallPrice($item`New Age healing crystal`),
-      numberNeeded: 5,
-    },
-    {
-      item: $item`SMOOCH bottlecap`,
-      price: 1 * mallPrice($item`SMOOCH bottlecap`),
-      numberNeeded: 1,
-    },
-    {
-      item: $item`gooey lava globs`,
-      price: 5 * mallPrice($item`gooey lava globs`),
-      numberNeeded: 5,
-    },
-    {
-      item: $item`smooth velvet bra`,
-      price:
-        3 * Math.min(mallPrice($item`smooth velvet bra`), 3 * mallPrice($item`unsmoothed velvet`)),
-      numberNeeded:
-        3 * (mallPrice($item`smooth velvet bra`) > 3 * mallPrice($item`unsmoothed velvet`) ? 3 : 1),
-    },
-    {
-      item: $item`SMOOCH bracers`,
-      price: 5 * mallPrice($item`superheated metal`),
-      numberNeeded: 25,
-    },
-    ...(have($item`Clara's bell`) && !get("_claraBellUsed")
-      ? [{ item: $item`fused fuse`, price: get("valueOfAdventure"), numberNeeded: 1 }]
-      : []),
-  ]
-    .filter(
-      (entry) =>
-        Array.from(volcanoProperties.keys()).includes(entry.item) && entry.price < volcoinoValue
-    )
-    .sort((a, b) => b.price - a.price);
-
-  if (volcanoItems.length) {
-    const chosenItem = volcanoItems[0];
-    if (chosenItem.item === $item`fused fuse`) {
-      logMessage("Remember to nab a fused fuse with your stooper!");
-    } else {
-      const choice = 1 + Array.from(volcanoProperties.keys()).indexOf(chosenItem.item);
-      withProperty("autoBuyPriceLimit", Math.round(volcoinoValue / chosenItem.numberNeeded), () =>
-        retrieveItem(chosenItem.item, volcanoProperties.get(chosenItem.item) ?? 0)
+  withProperty("valueOfInventory", 2, () => {
+    const bestItem = [
+      {
+        item: property.getItem("_volcanoItem1") ?? $item`none`,
+        quantity: get("_volcanoItemCount1"),
+        choice: 1,
+      },
+      {
+        item: property.getItem("_volcanoItem2") ?? $item`none`,
+        quantity: get("_volcanoItemCount2"),
+        choice: 2,
+      },
+      {
+        item: property.getItem("_volcanoItem3") ?? $item`none`,
+        quantity: get("_volcanoItemCount3"),
+        choice: 3,
+      },
+    ].sort((a, b) => volcanoItemValue(a) - volcanoItemValue(b))[0];
+    if (bestItem.item.tradeable && volcanoItemValue(bestItem) < volcoinoValue) {
+      withProperty("autoBuyPriceLimit", volcoinoValue, () =>
+        retrieveItem(bestItem.item, bestItem.quantity)
       );
       visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-      print(`Alright buddy, turning in ${chosenItem.item.plural} for a volcoino!`, "red");
-      runChoice(choice);
+      runChoice(bestItem.choice);
+    } else if (bestItem.item === $item`fused fuse`) {
+      globalOptions.clarasBellClaimed = true;
+      logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
     }
-  }
+  });
 }
 
 function cheat(): void {
-  if (have($item`Deck of Every Card`)) {
-    [
-      garboValue($item`gift card`) >= garboValue($item`1952 Mickey Mantle card`)
-        ? "Gift Card"
-        : "1952 Mickey Mantle",
-      "Island",
-      "Ancestral Recall",
-    ].forEach((card) => {
-      if (get("_deckCardsDrawn") <= 10 && !get("_deckCardsSeen").includes(card)) {
-        cliExecute(`cheat ${card}`);
-      }
-    });
+  if (!have($item`Deck of Every Card`)) return;
+  const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
+  if (!cardsLeft) return;
+  const cardsSeen = get("_deckCardsSeen").toLowerCase();
+  const bestCards = [
+    { card: "Island", item: $item`blue mana` },
+    { card: "Ancestral Recall", item: $item`blue mana` },
+    { card: "Plains", item: $item`white mana` },
+    { card: "Healing Salve", item: $item`white mana` },
+    { card: "Swamp", item: $item`black mana` },
+    { card: "Dark Ritual", item: $item`black mana` },
+    { card: "Mountain", item: $item`red mana` },
+    { card: "Lightning bolt", item: $item`red mana` },
+    { card: "Forest", item: $item`green mana` },
+    { card: "Giant Growth", item: $item`green mana` },
+    { card: "Gift Card", item: $item`gift card` },
+    { card: "Mickey", item: $item`1952 Mickey Mantle card` },
+  ]
+    .filter(({ card }) => !cardsSeen.includes(card.toLowerCase()))
+    .sort((a, b) => garboValue(b.item) - garboValue(a.item))
+    .splice(0, cardsLeft)
+    .map(({ card }) => card);
+  for (const card of bestCards) {
+    cliExecute(`cheat ${card}`);
   }
 }
 
@@ -529,7 +544,7 @@ function internetMemeShop(): void {
   };
 
   for (const [property, item] of Object.entries(internetMemeShopProperties)) {
-    if (!get<boolean>(property) && baconValue * coinmasterPrice(item) < garboValue(item)) {
+    if (!get(property, false) && baconValue * coinmasterPrice(item) < garboValue(item)) {
       retrieveItem($item`BACON`, coinmasterPrice(item));
       buy($coinmaster`Internet Meme Shop`, 1, item);
     }
@@ -577,7 +592,7 @@ export function implement(): void {
 }
 
 function pantogram(): void {
-  if (!have($item`portable pantogram`) || have($item`pantogram pants`)) return;
+  if (!Pantogram.have() || Pantogram.havePants()) return;
   let pantogramValue: number;
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
     const expectedBarfTurns = globalOptions.noBarf
@@ -585,7 +600,7 @@ function pantogram(): void {
       : estimatedTurns() - digitizedMonstersRemaining() - embezzlerCount();
     pantogramValue = 100 * expectedBarfTurns;
   } else {
-    const lepMult = leprechaunMultiplier(meatFamiliar());
+    const lepMult = findLeprechaunMultiplier(meatFamiliar());
     const lepBonus = 2 * lepMult + Math.sqrt(lepMult);
     const totalPantsValue = (pants: Item) =>
       getModifier("Meat Drop", pants) + getModifier("Familiar Weight", pants) * lepBonus;
@@ -596,23 +611,28 @@ function pantogram(): void {
         .sort((a, b) => b - a)[0] ?? 0;
     pantogramValue = (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedTurns();
   }
-  if (
-    Math.min(...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item))) +
-      mallPrice($item`porquoise`) >
-    pantogramValue
-  ) {
+  const cloverPrice = Math.min(
+    ...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item))
+  );
+  if (cloverPrice + mallPrice($item`porquoise`) > pantogramValue) {
     return;
   }
+  acquire(1, $item`porquoise`, pantogramValue - cloverPrice, false);
+  if (!have($item`porquoise`)) return;
   retrieveItem($item`ten-leaf clover`);
-  retrieveItem($item`porquoise`);
   retrieveItem($item`bubblin' crude`);
-  const m = new Map([
-    [$stat`Muscle`, 1],
-    [$stat`Mysticality`, 2],
-    [$stat`Moxie`, 3],
-  ]).get(myPrimestat());
-  visitUrl("inv_use.php?pwd&whichitem=9573");
-  visitUrl(`choice.php?whichchoice=1270&pwd&option=1&m=${m}&e=5&s1=5789,1&s2=706,1&s3=24,1`);
+  const alignment = (new Map([
+    [$stat`Muscle`, "Muscle"],
+    [$stat`Mysticality`, "Mysticality"],
+    [$stat`Moxie`, "Moxie"],
+  ]).get(myPrimestat()) ?? "Mysticality") as "Muscle" | "Mysticality" | "Moxie";
+  Pantogram.makePants(
+    alignment,
+    "Sleaze Resistance: 2",
+    "MP Regen Max: 15",
+    "Drops Items: true",
+    "Meat Drop: 60"
+  );
 }
 
 function pickCargoPocket(): void {
@@ -661,4 +681,16 @@ function comb(): void {
   if (!have($item`Beach Comb`)) return;
   const combs = 11 - get("_freeBeachWalksUsed");
   cliExecute(`combo ${combs}`);
+}
+
+function getAttuned(): void {
+  if (
+    holiday() === "Generic Summer Holiday" &&
+    !have($effect`Eldritch Attunement`) &&
+    estimatedTentacles() * get("garbo_valueOfFreeFight", 2000) > get("valueOfAdventure")
+  ) {
+    retrieveItem($item`water wings`);
+    equip($item`water wings`);
+    adv1($location`Generic Summer Holiday Swimming!`);
+  }
 }

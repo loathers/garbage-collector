@@ -5,9 +5,9 @@ import {
   cliExecute,
   enthroneFamiliar,
   equip,
-  equippedItem,
   haveEquipped,
   inebrietyLimit,
+  Item,
   myClass,
   myFamiliar,
   myInebriety,
@@ -20,11 +20,14 @@ import {
 import {
   $class,
   $familiar,
+  $familiars,
   $item,
   $items,
   $location,
+  $monster,
   $skill,
   $slot,
+  CombatLoversLocket,
   get,
   getKramcoWandererChance,
   have,
@@ -38,15 +41,18 @@ export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
   const bjornChoice = pickBjorn(equipMode);
 
-  const parameters = requirement?.maximizeParameters ?? [];
+  const parameters = [...(requirement?.maximizeParameters ?? []), "-tie"];
   const forceEquip = requirement?.maximizeOptions.forceEquip ?? [];
   const bonusEquip = requirement?.maximizeOptions.bonusEquip ?? new Map();
   const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
   const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
 
   parameters.push(
-    myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
+    $familiars`Pocket Professor, Grey Goose`.includes(myFamiliar())
+      ? "Familiar Experience"
+      : "Familiar Weight"
   );
+  [];
 
   if (
     have($item`vampyric cloake`) &&
@@ -86,13 +92,20 @@ export function freeFightOutfit(requirement?: Requirement): void {
   });
   finalRequirement.maximize();
 
-  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
-    equip(bjornAlike);
-  }
-
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+
+  const missingEquips = (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
+    (equipment) => !haveEquipped(equipment)
+  );
+  if (missingEquips.length > 0) {
+    throw new Error(
+      `Maximizer failed to equip the following equipment: ${missingEquips
+        .map((equipment) => equipment.name)
+        .join(", ")}. Maybe "refresh all" and try again?`
+    );
+  }
 }
 
 export function refreshLatte(): boolean {
@@ -136,7 +149,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   const equipMode = embezzlerUp ? "embezzler" : "barf";
   const bjornChoice = pickBjorn(equipMode);
 
-  const parameters = requirement?.maximizeParameters ?? [];
+  const parameters = [...(requirement?.maximizeParameters ?? []), "-tie"];
   const forceEquip = requirement?.maximizeOptions.forceEquip ?? [];
   const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
   const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
@@ -196,6 +209,15 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     parameters.push("sea");
   }
 
+  if (
+    embezzlerUp &&
+    myFamiliar() !== $familiar`Pocket Professor` &&
+    CombatLoversLocket.have() &&
+    !CombatLoversLocket.unlockedLocketMonsters().includes($monster`Knob Goblin Embezzler`)
+  ) {
+    forceEquip.push(CombatLoversLocket.locket);
+  }
+
   const bjornAlike = bestBjornalike(forceEquip);
   const compiledRequirements = (requirement ?? new Requirement([], {})).merge(
     new Requirement(
@@ -230,10 +252,6 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   );
   compiledRequirements.maximize();
 
-  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
-    equip(bjornAlike);
-  }
-
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
@@ -243,6 +261,17 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   ) {
     cliExecute("retrocape robot kill");
   }
+
+  if (
+    (compiledRequirements.maximizeOptions.forceEquip ?? []).some(
+      (equipment) => !haveEquipped(equipment)
+    )
+  ) {
+    throw new Error(
+      "Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?"
+    );
+  }
+
   if (sea) {
     if (!booleanModifier("Adventure Underwater")) {
       for (const airSource of waterBreathingEquipment) {
@@ -266,6 +295,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+
 let cachedUsingPurse: boolean | null = null;
 export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {

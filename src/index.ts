@@ -1,14 +1,15 @@
 import {
-  abort,
   availableAmount,
   booleanModifier,
   buy,
   cliExecute,
   eat,
   getCampground,
+  getClanName,
   getCounters,
   guildStoreAvailable,
   inebrietyLimit,
+  Item,
   itemAmount,
   myAdventures,
   myClass,
@@ -17,18 +18,20 @@ import {
   myLevel,
   myTurncount,
   print,
+  putStash,
   retrieveItem,
   runChoice,
   setAutoAttack,
+  toInt,
   totalTurnsPlayed,
   use,
   useFamiliar,
-  userConfirm,
   visitUrl,
   xpath,
 } from "kolmafia";
 import {
   $class,
+  $classes,
   $coinmaster,
   $effect,
   $item,
@@ -40,8 +43,10 @@ import {
   adventureMacro,
   adventureMacroAuto,
   clamp,
+  Clan,
   ensureEffect,
   get,
+  getFoldGroup,
   have,
   haveInCampground,
   property,
@@ -67,6 +72,7 @@ import {
   questStep,
   safeRestore,
   setChoice,
+  userConfirmDialog,
 } from "./lib";
 import { meatMood } from "./mood";
 import postCombatActions from "./post";
@@ -77,7 +83,7 @@ import {
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
-import { withStash, withVIPClan } from "./clan";
+import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
@@ -131,8 +137,12 @@ function barfTurn() {
     get("questPAGhost") !== "unstarted" &&
     ghostLocation
   ) {
-    useFamiliar(freeFightFamiliar());
-    freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
+    useFamiliar(freeFightFamiliar(true));
+    freeFightOutfit(
+      new Requirement(ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [], {
+        forceEquip: $items`protonic accelerator pack`,
+      })
+    );
     adventureMacro(ghostLocation, Macro.ghostBustin());
   } else if (
     myInebriety() <= inebrietyLimit() &&
@@ -141,11 +151,11 @@ function barfTurn() {
     get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
     get("_voteFreeFights") < 3
   ) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`"I Voted!" sticker` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else if (
@@ -155,7 +165,7 @@ function barfTurn() {
     get("cursedMagnifyingGlassCount") === 13 &&
     get("_voidFreeFights") < 5
   ) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
@@ -163,8 +173,11 @@ function barfTurn() {
     useFamiliar(meatFamiliar());
     const location = embezzlerUp
       ? !get("_envyfishEggUsed") &&
-        (booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(have)) &&
-        (booleanModifier("Underwater Familiar") || familiarWaterBreathingEquipment.some(have)) &&
+        myLevel() >= 11 &&
+        (booleanModifier("Adventure Underwater") ||
+          waterBreathingEquipment.some((item) => have(item))) &&
+        (booleanModifier("Underwater Familiar") ||
+          familiarWaterBreathingEquipment.some((item) => have(item))) &&
         (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
         !have($item`envyfish egg`)
         ? $location`The Briny Deeps`
@@ -218,6 +231,7 @@ function barfTurn() {
 
   if (myAdventures() === 1) {
     if (
+      have($item`Kramco Sausage-o-Matic™`) &&
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
       get("_sausagesEaten") < 23
     ) {
@@ -248,7 +262,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26200);
+  sinceKolmafiaRevision(26321);
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
@@ -256,11 +270,32 @@ export function main(argString = ""): void {
     forbiddenStores.push("3408540");
     set("forbiddenStores", forbiddenStores.join(","));
   }
-  if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
-    const proceedRegardless = userConfirm(
-      "Looks like your ascension may not be done yet. Are you sure you want to garbo?"
+
+  if (get("garbo_autoUserConfirm", false)) {
+    print(
+      "I have set auto-confirm to true and accept all ramifications that come with that.",
+      "red"
     );
-    if (!proceedRegardless) abort();
+  }
+
+  if (
+    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
+      myClass()
+    )
+  ) {
+    throw new Error(
+      "Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes"
+    );
+  }
+
+  if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
+    const proceedRegardless = userConfirmDialog(
+      "Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
+      true
+    );
+    if (!proceedRegardless) {
+      throw new Error("User interrupt requested. Stopping Garbage Collector.");
+    }
   }
 
   if (get("valueOfAdventure") <= 3500) {
@@ -303,8 +338,47 @@ export function main(argString = ""): void {
     }
   }
 
+  if (stashItems.length > 0) {
+    if (
+      userConfirmDialog(
+        `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
+          .map((item) => item.name)
+          .join(",")}. Would you like us to return these to the stash now?`,
+        true
+      )
+    ) {
+      const clanIdOrName = get("garbo_stashClan", "none");
+      const parsedClanIdOrName =
+        clanIdOrName !== "none"
+          ? clanIdOrName.match(/^\d+$/)
+            ? parseInt(clanIdOrName)
+            : clanIdOrName
+          : null;
+
+      if (parsedClanIdOrName) {
+        Clan.with(parsedClanIdOrName, () => {
+          for (const item of [...stashItems]) {
+            if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
+            const retrieved = retrieveItem(item);
+            if (
+              item === $item`Spooky Putty sheet` &&
+              !retrieved &&
+              have($item`Spooky Putty monster`)
+            ) {
+              continue;
+            }
+            print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
+            if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
+          }
+        });
+      } else throw new Error("Error: No garbo_stashClan set.");
+    } else {
+      stashItems.splice(0, stashItems.length);
+    }
+  }
+
   startSession();
-  if (!globalOptions.noBarf) {
+  if (!globalOptions.noBarf && !globalOptions.simulateDiet) {
     ensureBarfAccess();
   }
   if (globalOptions.simulateDiet) {
@@ -364,6 +438,7 @@ export function main(argString = ""): void {
           "garboEmbezzlerDate",
           "garboEmbezzlerCount",
           "garboEmbezzlerSources",
+          "spadingData",
         ]),
       ]
         .sort()
@@ -376,9 +451,9 @@ export function main(argString = ""): void {
       autoSatisfyWithStash: false,
       dontStopForCounters: true,
       maximizerFoldables: true,
-      hpAutoRecovery: 0.0,
+      hpAutoRecovery: -0.05,
       hpAutoRecoveryTarget: 0.0,
-      mpAutoRecovery: 0.0,
+      mpAutoRecovery: -0.05,
       mpAutoRecoveryTarget: 0.0,
       afterAdventureScript: "",
       betweenBattleScript: "",
@@ -451,7 +526,7 @@ export function main(argString = ""): void {
         dailySetup();
 
         setDefaultMaximizeOptions({
-          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball`,
+          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack`,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
@@ -471,11 +546,11 @@ export function main(argString = ""): void {
 
             // buy one-day tickets with FunFunds if user desires
             if (
-              get<boolean>("garbo_buyPass", false) &&
+              get("garbo_buyPass", false) &&
               availableAmount($item`FunFunds™`) >= 20 &&
               !have($item`one-day ticket to Dinseylandfill`)
             ) {
-              print("Buying a one-day tickets", HIGHLIGHT);
+              print("Buying a one-day ticket", HIGHLIGHT);
               buy(
                 $coinmaster`The Dinsey Company Store`,
                 1,
@@ -490,6 +565,7 @@ export function main(argString = ""): void {
     });
   } finally {
     propertyManager.resetAll();
+    set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEmbezzlerLog();

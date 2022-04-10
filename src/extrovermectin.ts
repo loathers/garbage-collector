@@ -1,4 +1,4 @@
-import { equip, mallPrice, retrieveItem, toMonster, useFamiliar, visitUrl } from "kolmafia";
+import { equip, mallPrice, Monster, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
@@ -20,6 +20,7 @@ import { freeFightFamiliar } from "./familiar";
 import { ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
+import { acquire } from "./acquire";
 
 export function expectedGregs(): number[] {
   const baseGregs = 3;
@@ -144,7 +145,7 @@ function initializeCrates(): void {
     if (
       have($skill`Transcendent Olfaction`) &&
       (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate") &&
-      get("_olfactionsUseD") < 2
+      get("_olfactionsUsed") < 2
     ) {
       const run = tryFindFreeRun() ?? ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
@@ -190,11 +191,21 @@ function initializeCrates(): void {
 
 function initializeDireWarren(): void {
   const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
+  const banishedMonsters = new Map<string, Monster>(
+    get("banishedMonsters")
+      .split(",")
+      .map((tuple) => tuple.split(":") as [string, string, string])
+      .map(([monster, source]) => [source, toMonster(monster)] as [string, Monster])
+  );
+  if (options.some((option) => banishedMonsters.get(option.name) === $monster`fluffy bunny`)) {
+    return;
+  }
+
   if (!have($item`miniature crystal ball`)) {
     options.push(...$items`Louder Than Bomb, tennis ball`);
   }
   const banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
-  retrieveItem(1, banish);
+  acquire(1, banish, 50000, true);
   do {
     adventureMacro(
       $location`The Dire Warren`,

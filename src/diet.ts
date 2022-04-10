@@ -6,13 +6,16 @@ import {
   cliExecute,
   drink,
   eat,
+  Element,
   elementalResistance,
   fullnessLimit,
   getClanLounge,
   getProperty,
   haveEffect,
   inebrietyLimit,
+  Item,
   itemType,
+  logprint,
   mallPrice,
   myClass,
   myFamiliar,
@@ -28,7 +31,6 @@ import {
   turnsPerCast,
   use,
   useFamiliar,
-  userConfirm,
   useSkill,
   wait,
 } from "kolmafia";
@@ -59,7 +61,14 @@ import { acquire } from "./acquire";
 import { withVIPClan } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import { argmax, arrayEquals, globalOptions, HIGHLIGHT, realmAvailable } from "./lib";
+import {
+  argmax,
+  arrayEquals,
+  globalOptions,
+  HIGHLIGHT,
+  realmAvailable,
+  userConfirmDialog,
+} from "./lib";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -121,8 +130,8 @@ function consumeSafe(qty: number, item: Item, additionalValue?: number, skipAcqu
   } else if (!skipAcquire) {
     acquire(qty, item);
   }
-  if (itemType(item) === "food") eatSafe(qty, item);
-  else if (itemType(item) === "booze") drinkSafe(qty, item);
+  if (itemType(item) === "food" || item === saladFork) eatSafe(qty, item);
+  else if (itemType(item) === "booze" || item === frostyMug) drinkSafe(qty, item);
   else if (itemType(item) === "spleen item") chewSafe(qty, item);
   else use(qty, item);
 }
@@ -148,7 +157,7 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
 }
 
 function nonOrganAdventures(): void {
-  useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") === 0, 2 * MPA);
+  useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") !== 0, 2 * MPA);
 
   while (get("_loveChocolatesUsed") < 3) {
     const price = have($item`LOV Extraterrestrial Chocolate`) ? 15000 : 20000;
@@ -222,26 +231,26 @@ function nonOrganAdventures(): void {
 
 function pillCheck(): void {
   if (!get("_distentionPillUsed")) {
-    if (!get<boolean>("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
+    if (!get("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
       set(
         "garbo_skipPillCheck",
-        userConfirm(
+        userConfirmDialog(
           "You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)",
-          15000,
-          false
+          false,
+          15000
         )
       );
     }
   }
 
   if (!get("_syntheticDogHairPillUsed")) {
-    if (!get<boolean>("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
+    if (!get("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
       set(
         "garbo_skipPillCheck",
-        userConfirm(
+        userConfirmDialog(
           "You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)",
-          15000,
-          false
+          false,
+          15000
         )
       );
     }
@@ -495,11 +504,12 @@ export function potionMenu(
     ? potion($item`campfire hot dog`, { price: ingredientCost($item`stick of firewood`) })
     : [];
 
-  const foodCone = realmAvailable("stench")
-    ? limitedPotion($item`Dinsey food-cone`, Math.floor(availableAmount($item`FunFunds™`) / 2), {
-        price: 2 * garboValue($item`FunFunds™`),
-      })
-    : [];
+  const foodCone =
+    realmAvailable("stench") || (globalOptions.simulateDiet && !globalOptions.noBarf)
+      ? limitedPotion($item`Dinsey food-cone`, Math.floor(availableAmount($item`FunFunds™`) / 2), {
+          price: 2 * garboValue($item`FunFunds™`),
+        })
+      : [];
 
   return [
     ...baseMenu,
@@ -722,6 +732,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         "spleen item": spleenLimit() - mySpleenUse(),
       };
       for (const menuItem of menuItems) {
+        logprint(`Considering item ${menuItem.item}.`);
         if (menuItem.organ === "booze" && menuItem.size === 1 && !get("_mimeArmyShotglassUsed")) {
           countToConsume = 1;
         } else if (menuItem.organ && menuItem.size > 0) {
@@ -730,6 +741,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
             Math.floor(capacity[menuItem.organ] / menuItem.size)
           );
         }
+        logprint(`Based on organ size, planning to consume ${countToConsume}.`);
 
         const cleaning = stomachLiverCleaners.get(menuItem.item);
         if (cleaning) {
@@ -737,11 +749,13 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           if (myFullness() + fullness < 0 || myInebriety() + inebriety < 0) {
             countToConsume = 0;
           }
+          logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
         }
 
         const spleenCleaned = spleenCleaners.get(menuItem.item);
         if (spleenCleaned) {
           countToConsume = Math.min(countToConsume, Math.floor(mySpleenUse() / spleenCleaned));
+          logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
         }
       }
 

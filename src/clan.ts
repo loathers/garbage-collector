@@ -6,18 +6,24 @@ import {
   getClanId,
   getClanName,
   handlingChoice,
+  Item,
   print,
   putStash,
   refreshStash,
   retrieveItem,
   stashAmount,
   takeStash,
-  userConfirm,
+  toItem,
   visitUrl,
 } from "kolmafia";
 import { $familiar, $item, $items, $monster, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
-import { HIGHLIGHT } from "./lib";
+import { HIGHLIGHT, userConfirmDialog } from "./lib";
+
+export const stashItems = get("garboStashItems", "")
+  .split(",")
+  .filter((x) => x.trim().length > 0)
+  .map((id) => toItem(id));
 
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
   const manager = new StashManager();
@@ -30,13 +36,16 @@ export function withStash<T>(itemsToTake: Item[], action: () => T): T {
 }
 
 export function withVIPClan<T>(action: () => T): T {
-  let clanIdOrName: number | string | undefined = get("garbo_vipClan", undefined);
-  if (!clanIdOrName && have($item`Clan VIP Lounge key`)) {
+  const clanIdOrNameString = get("garbo_vipClan");
+  let clanIdOrName = clanIdOrNameString.match(/^\d+$/)
+    ? parseInt(clanIdOrNameString)
+    : clanIdOrNameString;
+  if (clanIdOrName === "" && have($item`Clan VIP Lounge key`)) {
     if (
-      userConfirm(
+      userConfirmDialog(
         "The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
-        15000,
-        true
+        true,
+        15000
       )
     ) {
       clanIdOrName = getClanId();
@@ -62,9 +71,9 @@ export class StashManager {
   taken = new Map<Item, number>();
 
   constructor() {
-    const clanIdOrName = get<string | number>("garbo_stashClan", "none");
-    this.clanIdOrName = clanIdOrName;
-    this.enabled = 0 !== clanIdOrName && "none" !== clanIdOrName;
+    const clanIdOrName = get("garbo_stashClan", "none");
+    this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
+    this.enabled = 0 !== this.clanIdOrName && "none" !== this.clanIdOrName;
   }
 
   take(...items: Item[]): void {
@@ -76,7 +85,7 @@ export class StashManager {
         `Stash access is disabled. Ignoring request to borrow "${items
           .map((value) => value.name)
           .join(", ")}" from clan stash.`,
-        "yellow"
+        HIGHLIGHT
       );
       return;
     }
@@ -97,6 +106,7 @@ export class StashManager {
                 print(`Took ${fold.name} from stash in ${getClanName()}.`, HIGHLIGHT);
                 if (fold !== item) cliExecute(`fold ${item.name}`);
                 this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
+                stashItems.push(fold);
                 break;
               } else {
                 print(
@@ -154,6 +164,8 @@ export class StashManager {
             enthroneFamiliar($familiar`none`);
           }
           if (putStash(count, item)) {
+            const index = stashItems.indexOf(item);
+            if (index >= 0) stashItems.splice(stashItems.indexOf(item), 1);
             print(`Returned ${item.name} to stash in ${getClanName()}.`, HIGHLIGHT);
             this.taken.delete(item);
           } else {

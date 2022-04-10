@@ -1,14 +1,17 @@
 import { canAdv } from "canadv.ash";
 import {
-  abort,
   availableChoiceOptions,
   cliExecute,
   eat,
+  Familiar,
   handlingChoice,
   haveSkill,
   inebrietyLimit,
   isDarkMode,
+  Item,
+  Location,
   meatDropModifier,
+  Monster,
   mpCost,
   myHp,
   myInebriety,
@@ -16,7 +19,6 @@ import {
   myMaxmp,
   myMp,
   myTurncount,
-  numericModifier,
   print,
   printHtml,
   restoreHp,
@@ -27,11 +29,11 @@ import {
   toUrl,
   use,
   useFamiliar,
+  userConfirm,
   useSkill,
   visitUrl,
 } from "kolmafia";
 import {
-  $familiar,
   $item,
   $location,
   $skill,
@@ -69,6 +71,7 @@ export const globalOptions: {
   wishAnswer: boolean;
   simulateDiet: boolean;
   noDiet: boolean;
+  clarasBellClaimed: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -79,6 +82,7 @@ export const globalOptions: {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
+  clarasBellClaimed: get("_claraBellUsed"),
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -108,9 +112,9 @@ export function expectedEmbezzlerProfit(): number {
 }
 
 export function safeInterrupt(): void {
-  if (get<boolean>("garbo_interrupt", false)) {
+  if (get("garbo_interrupt", false)) {
     set("garbo_interrupt", false);
-    abort("User interrupt requested. Stopping Garbage Collector.");
+    throw new Error("User interrupt requested. Stopping Garbage Collector.");
   }
 }
 
@@ -241,22 +245,6 @@ export function kramcoGuaranteed(): boolean {
   return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
 }
 
-export function leprechaunMultiplier(familiar: Familiar): number {
-  if (familiar === $familiar`Mutant Cactus Bud`) {
-    return numericModifier(familiar, "Leprechaun Effectiveness", 1, $item`none`);
-  }
-  const meatBonus = numericModifier(familiar, "Meat Drop", 1, $item`none`);
-  return Math.pow(Math.sqrt(meatBonus / 2 + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
-}
-
-export function fairyMultiplier(familiar: Familiar): number {
-  if (familiar === $familiar`Mutant Fire Ant`) {
-    return numericModifier(familiar, "Fairy Effectiveness", 1, $item`none`);
-  }
-  const itemBonus = numericModifier(familiar, "Item Drop", 1, $item`none`);
-  return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
-}
-
 const log: string[] = [];
 
 export function logMessage(message: string): void {
@@ -310,6 +298,10 @@ export function printHelpMenu(): void {
     +--------------------------+-----------------------------------------------------------------------------------------------+
     |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |
     +--------------------------+-----------------------------------------------------------------------------------------------+
+    |   garbo_autoUserConfirm  | **WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no|
+    |                          | in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and|
+    |                          |  potentially destructive.                                                                     |
+    +--------------------------+-----------------------------------------------------------------------------------------------+
     |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |
     +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
 }
@@ -356,6 +348,7 @@ export function safeRestore(): void {
   const mpTarget = safeRestoreMpTarget();
   if (myMp() < mpTarget) {
     if (
+      have($item`Kramco Sausage-o-Matic™`) &&
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
       get("_sausagesEaten") < 23
     ) {
@@ -387,10 +380,12 @@ export function checkGithubVersion(): void {
 export function realmAvailable(
   identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
 ): boolean {
-  if (identifier === "fantasy" || identifier === "pirate") {
-    return get(`_${identifier[0]}rToday`) || get(`${identifier[0]}rAlways`);
+  if (identifier === "fantasy") {
+    return get(`_frToday`) || get(`frAlways`);
+  } else if (identifier === "pirate") {
+    return get(`_prToday`) || get(`prAlways`);
   }
-  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
+  return get(`_${identifier}AirportToday`, false) || get(`${identifier}AirportAlways`, false);
 }
 
 export function formatNumber(num: number): string {
@@ -407,4 +402,21 @@ export function getChoiceOption(partialText: string): number {
     }
   }
   return -1;
+}
+
+/**
+ * Confirmation dialog that supports automatic resolution via garbo_autoUserConfirm preference
+ * @param msg string to display in confirmation dialog
+ * @param defaultValue default answer if user doesn't provide one
+ * @param timeOut time to show dialog before submitting default value
+ * @returns answer to confirmation dialog
+ */
+export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: number): boolean {
+  if (get("garbo_autoUserConfirm", false)) {
+    print(`Automatically selected ${defaultValue} for ${msg}`, "red");
+    return defaultValue;
+  }
+
+  if (timeOut) return userConfirm(msg, timeOut, defaultValue);
+  return userConfirm(msg);
 }
