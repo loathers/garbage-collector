@@ -21900,7 +21900,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("69334873e2d469bc453d6a8feb762df510a63b64" === mainSha) {
+    if ("4662c42c5a5c0562e81d1bdb3aa0283aa42dce14" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -22448,7 +22448,7 @@ function isQuestActive() {
  */
 
 function getPlatinum() {
-  return get("guzzlrPlatinumDeliveries");
+  return (0,property/* get */.U2)("guzzlrPlatinumDeliveries");
 }
 /**
  * Platinum deliveries completed today
@@ -22883,7 +22883,7 @@ var wandererTargets = [new WandererTarget("Guzzlr", () => have(), () => getLocat
   while (!isQuestActive()) {
     (0,external_kolmafia_.print)("Picking a guzzlr quest");
 
-    if (canPlatinum()) {
+    if (canPlatinum() && !((0,property/* get */.U2)("garbo_prioritizeCappingGuzzlr", false) && haveFullPlatinumBonus())) {
       acceptPlatinum();
     } else if (canGold() && (haveFullBronzeBonus() || !haveFullGoldBonus())) {
       // if gold is not maxed, do that first since they are limited per day
