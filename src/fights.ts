@@ -2201,10 +2201,8 @@ function yachtzee(): void {
     {
       available: have($item`Clara's bell`) && !globalOptions.clarasBellClaimed,
       success: () => {
-        if (use($item`Clara's bell`)) {
-          globalOptions.clarasBellClaimed = true;
-          return true;
-        }
+        globalOptions.clarasBellClaimed = true;
+        if (use($item`Clara's bell`)) return true;
         return false;
       },
     },
