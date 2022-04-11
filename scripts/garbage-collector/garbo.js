@@ -24445,7 +24445,7 @@ var embezzlerSources = [new EmbezzlerFight("Digitize", () => {
   (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => libram__WEBPACK_IMPORTED_MODULE_17__/* .fightPainting */ .OV());
 }), new EmbezzlerFight("Combat Lover's Locket", () => libram__WEBPACK_IMPORTED_MODULE_18__/* .availableLocketMonsters */ .Lk().includes(embezzler), () => libram__WEBPACK_IMPORTED_MODULE_18__/* .availableLocketMonsters */ .Lk().includes(embezzler) ? 1 : 0, options => {
   (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => libram__WEBPACK_IMPORTED_MODULE_18__/* .reminisce */ .HZ(embezzler));
-}), new EmbezzlerFight("Fax", () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject110 || (_templateObject110 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_photocopyUsed"), () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_photocopyUsed") ? 1 : 0, options => {
+}), new EmbezzlerFight("Fax", () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject110 || (_templateObject110 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_photocopyUsed") && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getClanLounge)()["deluxe fax machine"] !== undefined, () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_photocopyUsed") && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getClanLounge)()["deluxe fax machine"] !== undefined ? 1 : 0, options => {
   faxEmbezzler();
   (0,_combat__WEBPACK_IMPORTED_MODULE_3__.withMacro)(options.macro, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject112 || (_templateObject112 = _taggedTemplateLiteral(["photocopied monster"])))));
 }), new EmbezzlerFight("Pillkeeper Semirare", () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject113 || (_templateObject113 = _taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && (0,canadv_ash__WEBPACK_IMPORTED_MODULE_0__.canAdv)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject114 || (_templateObject114 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), true) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_freePillKeeperUsed") && !(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject115 || (_templateObject115 = _taggedTemplateLiteral(["Lucky!"])))), () => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject116 || (_templateObject116 = _taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && (0,canadv_ash__WEBPACK_IMPORTED_MODULE_0__.canAdv)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject117 || (_templateObject117 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), true) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_freePillKeeperUsed") && !(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject118 || (_templateObject118 = _taggedTemplateLiteral(["Lucky!"])))) ? 1 : 0, () => {
@@ -31807,7 +31807,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("240a3e8b366aec9a7e86a1b79bf52a5b177c015d"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("224e0e7f62de6b5df7aa0dbed288e69203ae1ac1"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32393,7 +32393,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("240a3e8b366aec9a7e86a1b79bf52a5b177c015d" === mainSha) {
+    if ("224e0e7f62de6b5df7aa0dbed288e69203ae1ac1" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
