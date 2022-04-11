@@ -27184,6 +27184,615 @@ var embezzler = __webpack_require__(4936);
 var extrovermectin = __webpack_require__(5836);
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.from-entries.js
 var es_object_from_entries = __webpack_require__(5809);
+// EXTERNAL MODULE: ./node_modules/libram/dist/resources/2017/AsdonMartin.js
+var AsdonMartin = __webpack_require__(7867);
+;// CONCATENATED MODULE: ./node_modules/libram/dist/mood.js
+var mood_templateObject, mood_templateObject2, mood_templateObject3, mood_templateObject4, mood_templateObject5, mood_templateObject6, mood_templateObject7, mood_templateObject8, mood_templateObject9, mood_templateObject10, mood_templateObject11, mood_templateObject12, mood_templateObject13;
+
+function mood_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function mood_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? mood_ownKeys(Object(source), !0).forEach(function (key) { mood_defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : mood_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function mood_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = mood_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function mood_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return mood_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return mood_arrayLikeToArray(o, minLen); }
+
+function mood_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function mood_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function mood_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) mood_setPrototypeOf(subClass, superClass); }
+
+function mood_setPrototypeOf(o, p) { mood_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return mood_setPrototypeOf(o, p); }
+
+function mood_createSuper(Derived) { var hasNativeReflectConstruct = mood_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = mood_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = mood_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return mood_possibleConstructorReturn(this, result); }; }
+
+function mood_possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return mood_assertThisInitialized(self); }
+
+function mood_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function mood_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function mood_getPrototypeOf(o) { mood_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return mood_getPrototypeOf(o); }
+
+function mood_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function mood_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function mood_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function mood_createClass(Constructor, protoProps, staticProps) { if (protoProps) mood_defineProperties(Constructor.prototype, protoProps); if (staticProps) mood_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+
+
+
+
+
+
+
+var MpSource = /*#__PURE__*/function () {
+  function MpSource() {
+    mood_classCallCheck(this, MpSource);
+  }
+
+  mood_createClass(MpSource, [{
+    key: "usesRemaining",
+    value: function usesRemaining() {
+      return null;
+    }
+  }, {
+    key: "availableMpMax",
+    value: function availableMpMax() {
+      return this.availableMpMin();
+    }
+  }]);
+
+  return MpSource;
+}();
+var OscusSoda = /*#__PURE__*/function (_MpSource) {
+  mood_inherits(OscusSoda, _MpSource);
+
+  var _super = mood_createSuper(OscusSoda);
+
+  function OscusSoda() {
+    mood_classCallCheck(this, OscusSoda);
+
+    return _super.apply(this, arguments);
+  }
+
+  mood_createClass(OscusSoda, [{
+    key: "available",
+    value: function available() {
+      return (0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject || (mood_templateObject = mood_taggedTemplateLiteral(["Oscus's neverending soda"]))));
+    }
+  }, {
+    key: "usesRemaining",
+    value: function usesRemaining() {
+      return (0,property/* get */.U2)("oscusSodaUsed") ? 0 : 1;
+    }
+  }, {
+    key: "availableMpMin",
+    value: function availableMpMin() {
+      return this.available() ? 200 : 0;
+    }
+  }, {
+    key: "availableMpMax",
+    value: function availableMpMax() {
+      return this.available() ? 300 : 0;
+    }
+  }, {
+    key: "execute",
+    value: function execute() {
+      (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(mood_templateObject2 || (mood_templateObject2 = mood_taggedTemplateLiteral(["Oscus's neverending soda"]))));
+    }
+  }]);
+
+  return OscusSoda;
+}(MpSource);
+
+mood_defineProperty(OscusSoda, "instance", new OscusSoda());
+
+var MagicalSausages = /*#__PURE__*/function (_MpSource2) {
+  mood_inherits(MagicalSausages, _MpSource2);
+
+  var _super2 = mood_createSuper(MagicalSausages);
+
+  function MagicalSausages() {
+    mood_classCallCheck(this, MagicalSausages);
+
+    return _super2.apply(this, arguments);
+  }
+
+  mood_createClass(MagicalSausages, [{
+    key: "usesRemaining",
+    value: function usesRemaining() {
+      return (0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject3 || (mood_templateObject3 = mood_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) ? 23 - (0,property/* get */.U2)("_sausagesEaten") : 0;
+    }
+  }, {
+    key: "availableMpMin",
+    value: function availableMpMin() {
+      var maxSausages = Math.min(this.usesRemaining(), (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject4 || (mood_templateObject4 = mood_taggedTemplateLiteral(["magical sausage"])))) + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject5 || (mood_templateObject5 = mood_taggedTemplateLiteral(["magical sausage casing"])))));
+      return Math.min((0,external_kolmafia_.myMaxmp)(), 999) * maxSausages;
+    }
+  }, {
+    key: "execute",
+    value: function execute() {
+      var mpSpaceAvailable = (0,external_kolmafia_.myMaxmp)() - (0,external_kolmafia_.myMp)();
+      if (mpSpaceAvailable < 700) return;
+      var maxSausages = Math.min(this.usesRemaining(), (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject6 || (mood_templateObject6 = mood_taggedTemplateLiteral(["magical sausage"])))) + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject7 || (mood_templateObject7 = mood_taggedTemplateLiteral(["magical sausage casing"])))), Math.floor(((0,external_kolmafia_.myMaxmp)() - (0,external_kolmafia_.myMp)()) / Math.min((0,external_kolmafia_.myMaxmp)() - (0,external_kolmafia_.myMp)(), 999)));
+      (0,external_kolmafia_.retrieveItem)(maxSausages, (0,template_string/* $item */.xr)(mood_templateObject8 || (mood_templateObject8 = mood_taggedTemplateLiteral(["magical sausage"]))));
+      (0,external_kolmafia_.eat)(maxSausages, (0,template_string/* $item */.xr)(mood_templateObject9 || (mood_templateObject9 = mood_taggedTemplateLiteral(["magical sausage"]))));
+    }
+  }]);
+
+  return MagicalSausages;
+}(MpSource);
+
+mood_defineProperty(MagicalSausages, "instance", new MagicalSausages());
+
+var MoodElement = /*#__PURE__*/function () {
+  function MoodElement() {
+    mood_classCallCheck(this, MoodElement);
+  }
+
+  mood_createClass(MoodElement, [{
+    key: "mpCostPerTurn",
+    value: function mpCostPerTurn() {
+      return 0;
+    }
+  }, {
+    key: "turnIncrement",
+    value: function turnIncrement() {
+      return 1;
+    }
+  }]);
+
+  return MoodElement;
+}();
+
+var SkillMoodElement = /*#__PURE__*/function (_MoodElement) {
+  mood_inherits(SkillMoodElement, _MoodElement);
+
+  var _super3 = mood_createSuper(SkillMoodElement);
+
+  function SkillMoodElement(skill) {
+    var _this;
+
+    mood_classCallCheck(this, SkillMoodElement);
+
+    _this = _super3.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this), "skill", void 0);
+
+    _this.skill = skill;
+    return _this;
+  }
+
+  mood_createClass(SkillMoodElement, [{
+    key: "mpCostPerTurn",
+    value: function mpCostPerTurn() {
+      var turns = (0,external_kolmafia_.turnsPerCast)(this.skill);
+      return turns > 0 ? (0,external_kolmafia_.mpCost)(this.skill) / turns : 0;
+    }
+  }, {
+    key: "turnIncrement",
+    value: function turnIncrement() {
+      return (0,external_kolmafia_.turnsPerCast)(this.skill);
+    }
+  }, {
+    key: "execute",
+    value: function execute(mood, ensureTurns) {
+      var effect = (0,external_kolmafia_.toEffect)(this.skill);
+      var initialTurns = (0,external_kolmafia_.haveEffect)(effect);
+      if (!(0,external_kolmafia_.haveSkill)(this.skill)) return false;
+      if (initialTurns >= ensureTurns) return true; // Deal with song slots.
+
+      if (mood.options.songSlots.length > 0 && (0,lib/* isSong */.rU)(this.skill) && !(0,lib/* have */.lf)(effect)) {
+        var activeSongs = (0,lib/* getActiveSongs */.b_)();
+
+        var _iterator = mood_createForOfIteratorHelper(activeSongs),
+            _step;
+
+        try {
+          var _loop = function _loop() {
+            var song = _step.value;
+            var slot = mood.options.songSlots.find(slot => slot.includes(song));
+            if (!slot || slot.includes(effect)) (0,external_kolmafia_.cliExecute)("shrug ".concat(song));
+          };
+
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            _loop();
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      }
+
+      var oldRemainingCasts = -1;
+      var remainingCasts = Math.ceil((ensureTurns - (0,external_kolmafia_.haveEffect)(effect)) / (0,external_kolmafia_.turnsPerCast)(this.skill));
+
+      while (remainingCasts > 0 && oldRemainingCasts !== remainingCasts) {
+        var maxCasts = void 0;
+
+        if ((0,external_kolmafia_.hpCost)(this.skill) > 0) {
+          // FIXME: restore HP
+          maxCasts = Math.floor((0,external_kolmafia_.myHp)() / (0,external_kolmafia_.hpCost)(this.skill));
+        } else {
+          var cost = (0,external_kolmafia_.mpCost)(this.skill);
+          maxCasts = Math.floor((0,external_kolmafia_.myMp)() / cost);
+
+          if (maxCasts === 0) {
+            mood.moreMp(cost);
+            maxCasts = Math.floor((0,external_kolmafia_.myMp)() / cost);
+          }
+        }
+
+        var casts = (0,utils/* clamp */.uZ)(remainingCasts, 0, Math.min(100, maxCasts));
+        (0,external_kolmafia_.useSkill)(casts, this.skill);
+        oldRemainingCasts = remainingCasts;
+        remainingCasts = Math.ceil((ensureTurns - (0,external_kolmafia_.haveEffect)(effect)) / (0,external_kolmafia_.turnsPerCast)(this.skill));
+      }
+
+      return (0,external_kolmafia_.haveEffect)(effect) > ensureTurns;
+    }
+  }]);
+
+  return SkillMoodElement;
+}(MoodElement);
+
+var PotionMoodElement = /*#__PURE__*/function (_MoodElement2) {
+  mood_inherits(PotionMoodElement, _MoodElement2);
+
+  var _super4 = mood_createSuper(PotionMoodElement);
+
+  function PotionMoodElement(potion, maxPricePerTurn) {
+    var _this2;
+
+    mood_classCallCheck(this, PotionMoodElement);
+
+    _this2 = _super4.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this2), "potion", void 0);
+
+    mood_defineProperty(mood_assertThisInitialized(_this2), "maxPricePerTurn", void 0);
+
+    _this2.potion = potion;
+    _this2.maxPricePerTurn = maxPricePerTurn;
+    return _this2;
+  }
+
+  mood_createClass(PotionMoodElement, [{
+    key: "execute",
+    value: function execute(mood, ensureTurns) {
+      // FIXME: Smarter buying logic.
+      // FIXME: Allow constructing stuff (e.g. snow cleats)
+      var effect = (0,external_kolmafia_.effectModifier)(this.potion, "Effect");
+      var effectTurns = (0,external_kolmafia_.haveEffect)(effect);
+      var turnsPerUse = (0,external_kolmafia_.numericModifier)(this.potion, "Effect Duration");
+
+      if ((0,external_kolmafia_.mallPrice)(this.potion) > this.maxPricePerTurn * turnsPerUse) {
+        return false;
+      } // integer part
+
+
+      if (effectTurns < ensureTurns) {
+        var uses = Math.floor((ensureTurns - effectTurns) / turnsPerUse);
+        var quantityToBuy = (0,utils/* clamp */.uZ)(uses - (0,external_kolmafia_.availableAmount)(this.potion), 0, 100);
+        (0,external_kolmafia_.buy)(quantityToBuy, this.potion, Math.floor(this.maxPricePerTurn * turnsPerUse));
+        var quantityToUse = (0,utils/* clamp */.uZ)(uses, 0, (0,external_kolmafia_.availableAmount)(this.potion));
+        (0,external_kolmafia_.use)(quantityToUse, this.potion);
+      } // fractional part
+
+
+      var remainingDifference = ensureTurns - (0,external_kolmafia_.haveEffect)(effect);
+
+      if (remainingDifference > 0) {
+        var price = Math.floor(this.maxPricePerTurn * remainingDifference);
+
+        if (price >= (0,external_kolmafia_.mallPrice)(this.potion)) {
+          if ((0,external_kolmafia_.availableAmount)(this.potion) || (0,external_kolmafia_.buy)(1, this.potion, price)) {
+            (0,external_kolmafia_.use)(1, this.potion);
+          }
+        }
+      }
+
+      return (0,external_kolmafia_.haveEffect)(effect) >= ensureTurns;
+    }
+  }]);
+
+  return PotionMoodElement;
+}(MoodElement);
+
+var GenieMoodElement = /*#__PURE__*/function (_MoodElement3) {
+  mood_inherits(GenieMoodElement, _MoodElement3);
+
+  var _super5 = mood_createSuper(GenieMoodElement);
+
+  function GenieMoodElement(effect) {
+    var _this3;
+
+    mood_classCallCheck(this, GenieMoodElement);
+
+    _this3 = _super5.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this3), "effect", void 0);
+
+    _this3.effect = effect;
+    return _this3;
+  }
+
+  mood_createClass(GenieMoodElement, [{
+    key: "execute",
+    value: function execute(mood, ensureTurns) {
+      if ((0,external_kolmafia_.haveEffect)(this.effect) >= ensureTurns) return true;
+      var neededWishes = Math.ceil(((0,external_kolmafia_.haveEffect)(this.effect) - ensureTurns) / 20);
+      var wishesToBuy = (0,utils/* clamp */.uZ)(neededWishes - (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(mood_templateObject10 || (mood_templateObject10 = mood_taggedTemplateLiteral(["pocket wish"])))), 0, 20);
+      (0,external_kolmafia_.buy)(wishesToBuy, (0,template_string/* $item */.xr)(mood_templateObject11 || (mood_templateObject11 = mood_taggedTemplateLiteral(["pocket wish"]))), 50000);
+      var wishesToUse = (0,utils/* clamp */.uZ)(neededWishes, 0, (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(mood_templateObject12 || (mood_templateObject12 = mood_taggedTemplateLiteral(["pocket wish"])))));
+
+      for (; wishesToUse > 0; wishesToUse--) {
+        (0,external_kolmafia_.cliExecute)("genie effect ".concat(this.effect.name));
+      }
+
+      return (0,external_kolmafia_.haveEffect)(this.effect) >= ensureTurns;
+    }
+  }]);
+
+  return GenieMoodElement;
+}(MoodElement);
+
+var CustomMoodElement = /*#__PURE__*/function (_MoodElement4) {
+  mood_inherits(CustomMoodElement, _MoodElement4);
+
+  var _super6 = mood_createSuper(CustomMoodElement);
+
+  function CustomMoodElement(effect, gainEffect) {
+    var _this4;
+
+    mood_classCallCheck(this, CustomMoodElement);
+
+    _this4 = _super6.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this4), "effect", void 0);
+
+    mood_defineProperty(mood_assertThisInitialized(_this4), "gainEffect", void 0);
+
+    _this4.effect = effect;
+    _this4.gainEffect = gainEffect !== null && gainEffect !== void 0 ? gainEffect : () => (0,external_kolmafia_.cliExecute)(effect.default);
+    return _this4;
+  }
+
+  mood_createClass(CustomMoodElement, [{
+    key: "execute",
+    value: function execute(mood, ensureTurns) {
+      var currentTurns = (0,external_kolmafia_.haveEffect)(this.effect);
+      var lastCurrentTurns = -1;
+
+      while (currentTurns < ensureTurns && currentTurns !== lastCurrentTurns) {
+        this.gainEffect();
+        lastCurrentTurns = currentTurns;
+        currentTurns = (0,external_kolmafia_.haveEffect)(this.effect);
+      }
+
+      return (0,external_kolmafia_.haveEffect)(this.effect) > ensureTurns;
+    }
+  }]);
+
+  return CustomMoodElement;
+}(MoodElement);
+
+var AsdonMoodElement = /*#__PURE__*/function (_MoodElement5) {
+  mood_inherits(AsdonMoodElement, _MoodElement5);
+
+  var _super7 = mood_createSuper(AsdonMoodElement);
+
+  function AsdonMoodElement(effect) {
+    var _this5;
+
+    var preferInventory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    mood_classCallCheck(this, AsdonMoodElement);
+
+    _this5 = _super7.call(this);
+
+    mood_defineProperty(mood_assertThisInitialized(_this5), "effect", void 0);
+
+    mood_defineProperty(mood_assertThisInitialized(_this5), "preferInventory", void 0);
+
+    _this5.effect = effect;
+    _this5.preferInventory = preferInventory;
+    return _this5;
+  }
+
+  mood_createClass(AsdonMoodElement, [{
+    key: "execute",
+    value: function execute(mood, ensureTurns) {
+      return AsdonMartin/* drive */.Ag(this.effect, ensureTurns, this.preferInventory);
+    }
+  }]);
+
+  return AsdonMoodElement;
+}(MoodElement);
+/**
+ * Class representing a mood object. Add mood elements using the instance methods, which can be chained.
+ */
+
+
+var Mood = /*#__PURE__*/function () {
+  /**
+   * Construct a new Mood instance.
+   * @param options Options for mood.
+   */
+  function Mood() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    mood_classCallCheck(this, Mood);
+
+    mood_defineProperty(this, "options", void 0);
+
+    mood_defineProperty(this, "elements", []);
+
+    this.options = mood_objectSpread(mood_objectSpread({}, Mood.defaultOptions), options);
+  }
+  /**
+   * Get the MP available for casting skills.
+   */
+
+
+  mood_createClass(Mood, [{
+    key: "availableMp",
+    value: function availableMp() {
+      return (0,utils/* sum */.Sm)(this.options.mpSources, mpSource => mpSource.availableMpMin()) + Math.max((0,external_kolmafia_.myMp)() - this.options.reserveMp, 0);
+    }
+  }, {
+    key: "moreMp",
+    value: function moreMp(minimumTarget) {
+      var _iterator2 = mood_createForOfIteratorHelper(this.options.mpSources),
+          _step2;
+
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var mpSource = _step2.value;
+          var usesRemaining = mpSource.usesRemaining();
+
+          if (usesRemaining !== null && usesRemaining > 0) {
+            mpSource.execute();
+            if ((0,external_kolmafia_.myMp)() >= minimumTarget) break;
+          }
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+    }
+    /**
+     * Add a skill to the mood.
+     * @param skill Skill to add.
+     */
+
+  }, {
+    key: "skill",
+    value: function skill(_skill) {
+      this.elements.push(new SkillMoodElement(_skill));
+      return this;
+    }
+    /**
+     * Add an effect to the mood, with casting based on {effect.default}.
+     * @param effect Effect to add.
+     * @param gainEffect How to gain the effect. Only runs if we don't have the effect.
+     */
+
+  }, {
+    key: "effect",
+    value: function effect(_effect, gainEffect) {
+      var skill = (0,external_kolmafia_.toSkill)(_effect);
+
+      if (!gainEffect && skill !== (0,template_string/* $skill */.tm)(mood_templateObject13 || (mood_templateObject13 = mood_taggedTemplateLiteral(["none"])))) {
+        this.skill(skill);
+      } else {
+        this.elements.push(new CustomMoodElement(_effect, gainEffect));
+      }
+
+      return this;
+    }
+    /**
+     * Add a potion to the mood.
+     * @param potion Potion to add.
+     * @param maxPricePerTurn Maximum price to pay per turn of the effect.
+     */
+
+  }, {
+    key: "potion",
+    value: function potion(_potion, maxPricePerTurn) {
+      this.elements.push(new PotionMoodElement(_potion, maxPricePerTurn));
+      return this;
+    }
+    /**
+     * Add an effect to acquire via pocket wishes to the mood.
+     * @param effect Effect to wish for in the mood.
+     */
+
+  }, {
+    key: "genie",
+    value: function genie(effect) {
+      this.elements.push(new GenieMoodElement(effect));
+      return this;
+    }
+    /**
+     * Add an Asdon Martin driving style to the mood.
+     * @param effect Driving style to add to the mood.
+     */
+
+  }, {
+    key: "drive",
+    value: function drive(effect) {
+      if (Object.values(AsdonMartin/* Driving */.ji).includes(effect) && AsdonMartin/* installed */.bL()) {
+        this.elements.push(new AsdonMoodElement(effect));
+      }
+
+      return this;
+    }
+    /**
+     * Execute the mood, trying to ensure {ensureTurns} of each effect.
+     * @param ensureTurns Turns of each effect to try and achieve.
+     * @returns Whether or not we successfully got this many turns of every effect in the mood.
+     */
+
+  }, {
+    key: "execute",
+    value: function execute() {
+      var ensureTurns = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var availableMp = this.availableMp();
+      var totalMpPerTurn = (0,utils/* sum */.Sm)(this.elements, element => element.mpCostPerTurn());
+      var potentialTurns = Math.floor(availableMp / totalMpPerTurn);
+      var completeSuccess = true;
+
+      var _iterator3 = mood_createForOfIteratorHelper(this.elements),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var element = _step3.value;
+          var elementTurns = ensureTurns;
+
+          if (element.mpCostPerTurn() > 0) {
+            var elementPotentialTurns = Math.floor(potentialTurns / element.turnIncrement()) * element.turnIncrement();
+            elementTurns = Math.min(ensureTurns, elementPotentialTurns);
+          }
+
+          completeSuccess = element.execute(this, elementTurns) && completeSuccess;
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+
+      return completeSuccess;
+    }
+  }], [{
+    key: "setDefaultOptions",
+    value:
+    /**
+     * Set default options for new Mood instances.
+     * @param options Default options for new Mood instances.
+     */
+    function setDefaultOptions(options) {
+      Mood.defaultOptions = mood_objectSpread(mood_objectSpread({}, Mood.defaultOptions), options);
+    }
+  }]);
+
+  return Mood;
+}();
+
+mood_defineProperty(Mood, "defaultOptions", {
+  songSlots: [],
+  mpSources: [MagicalSausages.instance, OscusSoda.instance],
+  reserveMp: 0
+});
 // EXTERNAL MODULE: ./src/outfit.ts
 var outfit = __webpack_require__(1730);
 ;// CONCATENATED MODULE: ./src/potions.ts
@@ -27500,6 +28109,32 @@ function useAsValuable(potion, embezzlers, embezzlersOnly) {
   var total = amountsAcquired.reduce((total, amount) => total + amount, 0);
 
   if (total > 0) {
+    var effect = potion.effect();
+
+    if ((0,lib/* isSong */.rU)(effect) && !(0,lib/* have */.lf)(effect)) {
+      var _iterator2 = potions_createForOfIteratorHelper((0,lib/* getActiveSongs */.b_)()),
+          _step2;
+
+      try {
+        var _loop2 = function _loop2() {
+          var song = _step2.value;
+          var slot = Mood.defaultOptions.songSlots.find(slot => slot.includes(song));
+
+          if (!slot || slot.includes(effect)) {
+            (0,external_kolmafia_.cliExecute)("shrug ".concat(song));
+          }
+        };
+
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          _loop2();
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+    }
+
     (0,external_kolmafia_.print)("Using ".concat(total, " ").concat(potion.potion.plural));
     potion.use(total);
   }
@@ -27548,66 +28183,66 @@ function potionSetup(embezzlersOnly) {
   testPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
   var excludedEffects = new Set();
 
-  var _iterator2 = potions_createForOfIteratorHelper((0,lib/* getActiveEffects */.jC)()),
-      _step2;
-
-  try {
-    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var _mutuallyExclusive$ge2;
-
-      var effect = _step2.value;
-
-      var _iterator4 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
-          _step4;
-
-      try {
-        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-          var excluded = _step4.value;
-          excludedEffects.add(excluded);
-        }
-      } catch (err) {
-        _iterator4.e(err);
-      } finally {
-        _iterator4.f();
-      }
-    }
-  } catch (err) {
-    _iterator2.e(err);
-  } finally {
-    _iterator2.f();
-  }
-
-  var _iterator3 = potions_createForOfIteratorHelper(testPotions),
+  var _iterator3 = potions_createForOfIteratorHelper((0,lib/* getActiveEffects */.jC)()),
       _step3;
 
   try {
     for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-      var potion = _step3.value;
+      var _mutuallyExclusive$ge2;
 
-      var _effect = potion.effect();
+      var effect = _step3.value;
 
-      if (!excludedEffects.has(_effect) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
-        var _mutuallyExclusive$ge3;
+      var _iterator5 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
+          _step5;
 
-        var _iterator5 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
-            _step5;
-
-        try {
-          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-            var _excluded = _step5.value;
-            excludedEffects.add(_excluded);
-          }
-        } catch (err) {
-          _iterator5.e(err);
-        } finally {
-          _iterator5.f();
+      try {
+        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+          var excluded = _step5.value;
+          excludedEffects.add(excluded);
         }
+      } catch (err) {
+        _iterator5.e(err);
+      } finally {
+        _iterator5.f();
       }
     }
   } catch (err) {
     _iterator3.e(err);
   } finally {
     _iterator3.f();
+  }
+
+  var _iterator4 = potions_createForOfIteratorHelper(testPotions),
+      _step4;
+
+  try {
+    for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+      var potion = _step4.value;
+
+      var _effect = potion.effect();
+
+      if (!excludedEffects.has(_effect) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
+        var _mutuallyExclusive$ge3;
+
+        var _iterator6 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
+            _step6;
+
+        try {
+          for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+            var _excluded = _step6.value;
+            excludedEffects.add(_excluded);
+          }
+        } catch (err) {
+          _iterator6.e(err);
+        } finally {
+          _iterator6.f();
+        }
+      }
+    }
+  } catch (err) {
+    _iterator4.e(err);
+  } finally {
+    _iterator4.f();
   }
 }
 /**
@@ -28529,615 +29164,6 @@ function fightPiece(piece) {
 }
 // EXTERNAL MODULE: ./node_modules/libram/dist/resources/2022/CombatLoversLocket.js
 var CombatLoversLocket = __webpack_require__(4866);
-// EXTERNAL MODULE: ./node_modules/libram/dist/resources/2017/AsdonMartin.js
-var AsdonMartin = __webpack_require__(7867);
-;// CONCATENATED MODULE: ./node_modules/libram/dist/mood.js
-var mood_templateObject, mood_templateObject2, mood_templateObject3, mood_templateObject4, mood_templateObject5, mood_templateObject6, mood_templateObject7, mood_templateObject8, mood_templateObject9, mood_templateObject10, mood_templateObject11, mood_templateObject12, mood_templateObject13;
-
-function mood_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function mood_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? mood_ownKeys(Object(source), !0).forEach(function (key) { mood_defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : mood_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function mood_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = mood_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function mood_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return mood_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return mood_arrayLikeToArray(o, minLen); }
-
-function mood_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function mood_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function mood_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) mood_setPrototypeOf(subClass, superClass); }
-
-function mood_setPrototypeOf(o, p) { mood_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return mood_setPrototypeOf(o, p); }
-
-function mood_createSuper(Derived) { var hasNativeReflectConstruct = mood_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = mood_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = mood_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return mood_possibleConstructorReturn(this, result); }; }
-
-function mood_possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return mood_assertThisInitialized(self); }
-
-function mood_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function mood_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function mood_getPrototypeOf(o) { mood_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return mood_getPrototypeOf(o); }
-
-function mood_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function mood_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function mood_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function mood_createClass(Constructor, protoProps, staticProps) { if (protoProps) mood_defineProperties(Constructor.prototype, protoProps); if (staticProps) mood_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
-
-
-
-
-
-
-
-var MpSource = /*#__PURE__*/function () {
-  function MpSource() {
-    mood_classCallCheck(this, MpSource);
-  }
-
-  mood_createClass(MpSource, [{
-    key: "usesRemaining",
-    value: function usesRemaining() {
-      return null;
-    }
-  }, {
-    key: "availableMpMax",
-    value: function availableMpMax() {
-      return this.availableMpMin();
-    }
-  }]);
-
-  return MpSource;
-}();
-var OscusSoda = /*#__PURE__*/function (_MpSource) {
-  mood_inherits(OscusSoda, _MpSource);
-
-  var _super = mood_createSuper(OscusSoda);
-
-  function OscusSoda() {
-    mood_classCallCheck(this, OscusSoda);
-
-    return _super.apply(this, arguments);
-  }
-
-  mood_createClass(OscusSoda, [{
-    key: "available",
-    value: function available() {
-      return (0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject || (mood_templateObject = mood_taggedTemplateLiteral(["Oscus's neverending soda"]))));
-    }
-  }, {
-    key: "usesRemaining",
-    value: function usesRemaining() {
-      return (0,property/* get */.U2)("oscusSodaUsed") ? 0 : 1;
-    }
-  }, {
-    key: "availableMpMin",
-    value: function availableMpMin() {
-      return this.available() ? 200 : 0;
-    }
-  }, {
-    key: "availableMpMax",
-    value: function availableMpMax() {
-      return this.available() ? 300 : 0;
-    }
-  }, {
-    key: "execute",
-    value: function execute() {
-      (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(mood_templateObject2 || (mood_templateObject2 = mood_taggedTemplateLiteral(["Oscus's neverending soda"]))));
-    }
-  }]);
-
-  return OscusSoda;
-}(MpSource);
-
-mood_defineProperty(OscusSoda, "instance", new OscusSoda());
-
-var MagicalSausages = /*#__PURE__*/function (_MpSource2) {
-  mood_inherits(MagicalSausages, _MpSource2);
-
-  var _super2 = mood_createSuper(MagicalSausages);
-
-  function MagicalSausages() {
-    mood_classCallCheck(this, MagicalSausages);
-
-    return _super2.apply(this, arguments);
-  }
-
-  mood_createClass(MagicalSausages, [{
-    key: "usesRemaining",
-    value: function usesRemaining() {
-      return (0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject3 || (mood_templateObject3 = mood_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) ? 23 - (0,property/* get */.U2)("_sausagesEaten") : 0;
-    }
-  }, {
-    key: "availableMpMin",
-    value: function availableMpMin() {
-      var maxSausages = Math.min(this.usesRemaining(), (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject4 || (mood_templateObject4 = mood_taggedTemplateLiteral(["magical sausage"])))) + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject5 || (mood_templateObject5 = mood_taggedTemplateLiteral(["magical sausage casing"])))));
-      return Math.min((0,external_kolmafia_.myMaxmp)(), 999) * maxSausages;
-    }
-  }, {
-    key: "execute",
-    value: function execute() {
-      var mpSpaceAvailable = (0,external_kolmafia_.myMaxmp)() - (0,external_kolmafia_.myMp)();
-      if (mpSpaceAvailable < 700) return;
-      var maxSausages = Math.min(this.usesRemaining(), (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject6 || (mood_templateObject6 = mood_taggedTemplateLiteral(["magical sausage"])))) + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(mood_templateObject7 || (mood_templateObject7 = mood_taggedTemplateLiteral(["magical sausage casing"])))), Math.floor(((0,external_kolmafia_.myMaxmp)() - (0,external_kolmafia_.myMp)()) / Math.min((0,external_kolmafia_.myMaxmp)() - (0,external_kolmafia_.myMp)(), 999)));
-      (0,external_kolmafia_.retrieveItem)(maxSausages, (0,template_string/* $item */.xr)(mood_templateObject8 || (mood_templateObject8 = mood_taggedTemplateLiteral(["magical sausage"]))));
-      (0,external_kolmafia_.eat)(maxSausages, (0,template_string/* $item */.xr)(mood_templateObject9 || (mood_templateObject9 = mood_taggedTemplateLiteral(["magical sausage"]))));
-    }
-  }]);
-
-  return MagicalSausages;
-}(MpSource);
-
-mood_defineProperty(MagicalSausages, "instance", new MagicalSausages());
-
-var MoodElement = /*#__PURE__*/function () {
-  function MoodElement() {
-    mood_classCallCheck(this, MoodElement);
-  }
-
-  mood_createClass(MoodElement, [{
-    key: "mpCostPerTurn",
-    value: function mpCostPerTurn() {
-      return 0;
-    }
-  }, {
-    key: "turnIncrement",
-    value: function turnIncrement() {
-      return 1;
-    }
-  }]);
-
-  return MoodElement;
-}();
-
-var SkillMoodElement = /*#__PURE__*/function (_MoodElement) {
-  mood_inherits(SkillMoodElement, _MoodElement);
-
-  var _super3 = mood_createSuper(SkillMoodElement);
-
-  function SkillMoodElement(skill) {
-    var _this;
-
-    mood_classCallCheck(this, SkillMoodElement);
-
-    _this = _super3.call(this);
-
-    mood_defineProperty(mood_assertThisInitialized(_this), "skill", void 0);
-
-    _this.skill = skill;
-    return _this;
-  }
-
-  mood_createClass(SkillMoodElement, [{
-    key: "mpCostPerTurn",
-    value: function mpCostPerTurn() {
-      var turns = (0,external_kolmafia_.turnsPerCast)(this.skill);
-      return turns > 0 ? (0,external_kolmafia_.mpCost)(this.skill) / turns : 0;
-    }
-  }, {
-    key: "turnIncrement",
-    value: function turnIncrement() {
-      return (0,external_kolmafia_.turnsPerCast)(this.skill);
-    }
-  }, {
-    key: "execute",
-    value: function execute(mood, ensureTurns) {
-      var effect = (0,external_kolmafia_.toEffect)(this.skill);
-      var initialTurns = (0,external_kolmafia_.haveEffect)(effect);
-      if (!(0,external_kolmafia_.haveSkill)(this.skill)) return false;
-      if (initialTurns >= ensureTurns) return true; // Deal with song slots.
-
-      if (mood.options.songSlots.length > 0 && (0,lib/* isSong */.rU)(this.skill) && !(0,lib/* have */.lf)(effect)) {
-        var activeSongs = (0,lib/* getActiveSongs */.b_)();
-
-        var _iterator = mood_createForOfIteratorHelper(activeSongs),
-            _step;
-
-        try {
-          var _loop = function _loop() {
-            var song = _step.value;
-            var slot = mood.options.songSlots.find(slot => slot.includes(song));
-            if (!slot || slot.includes(effect)) (0,external_kolmafia_.cliExecute)("shrug ".concat(song));
-          };
-
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            _loop();
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-      }
-
-      var oldRemainingCasts = -1;
-      var remainingCasts = Math.ceil((ensureTurns - (0,external_kolmafia_.haveEffect)(effect)) / (0,external_kolmafia_.turnsPerCast)(this.skill));
-
-      while (remainingCasts > 0 && oldRemainingCasts !== remainingCasts) {
-        var maxCasts = void 0;
-
-        if ((0,external_kolmafia_.hpCost)(this.skill) > 0) {
-          // FIXME: restore HP
-          maxCasts = Math.floor((0,external_kolmafia_.myHp)() / (0,external_kolmafia_.hpCost)(this.skill));
-        } else {
-          var cost = (0,external_kolmafia_.mpCost)(this.skill);
-          maxCasts = Math.floor((0,external_kolmafia_.myMp)() / cost);
-
-          if (maxCasts === 0) {
-            mood.moreMp(cost);
-            maxCasts = Math.floor((0,external_kolmafia_.myMp)() / cost);
-          }
-        }
-
-        var casts = (0,utils/* clamp */.uZ)(remainingCasts, 0, Math.min(100, maxCasts));
-        (0,external_kolmafia_.useSkill)(casts, this.skill);
-        oldRemainingCasts = remainingCasts;
-        remainingCasts = Math.ceil((ensureTurns - (0,external_kolmafia_.haveEffect)(effect)) / (0,external_kolmafia_.turnsPerCast)(this.skill));
-      }
-
-      return (0,external_kolmafia_.haveEffect)(effect) > ensureTurns;
-    }
-  }]);
-
-  return SkillMoodElement;
-}(MoodElement);
-
-var PotionMoodElement = /*#__PURE__*/function (_MoodElement2) {
-  mood_inherits(PotionMoodElement, _MoodElement2);
-
-  var _super4 = mood_createSuper(PotionMoodElement);
-
-  function PotionMoodElement(potion, maxPricePerTurn) {
-    var _this2;
-
-    mood_classCallCheck(this, PotionMoodElement);
-
-    _this2 = _super4.call(this);
-
-    mood_defineProperty(mood_assertThisInitialized(_this2), "potion", void 0);
-
-    mood_defineProperty(mood_assertThisInitialized(_this2), "maxPricePerTurn", void 0);
-
-    _this2.potion = potion;
-    _this2.maxPricePerTurn = maxPricePerTurn;
-    return _this2;
-  }
-
-  mood_createClass(PotionMoodElement, [{
-    key: "execute",
-    value: function execute(mood, ensureTurns) {
-      // FIXME: Smarter buying logic.
-      // FIXME: Allow constructing stuff (e.g. snow cleats)
-      var effect = (0,external_kolmafia_.effectModifier)(this.potion, "Effect");
-      var effectTurns = (0,external_kolmafia_.haveEffect)(effect);
-      var turnsPerUse = (0,external_kolmafia_.numericModifier)(this.potion, "Effect Duration");
-
-      if ((0,external_kolmafia_.mallPrice)(this.potion) > this.maxPricePerTurn * turnsPerUse) {
-        return false;
-      } // integer part
-
-
-      if (effectTurns < ensureTurns) {
-        var uses = Math.floor((ensureTurns - effectTurns) / turnsPerUse);
-        var quantityToBuy = (0,utils/* clamp */.uZ)(uses - (0,external_kolmafia_.availableAmount)(this.potion), 0, 100);
-        (0,external_kolmafia_.buy)(quantityToBuy, this.potion, Math.floor(this.maxPricePerTurn * turnsPerUse));
-        var quantityToUse = (0,utils/* clamp */.uZ)(uses, 0, (0,external_kolmafia_.availableAmount)(this.potion));
-        (0,external_kolmafia_.use)(quantityToUse, this.potion);
-      } // fractional part
-
-
-      var remainingDifference = ensureTurns - (0,external_kolmafia_.haveEffect)(effect);
-
-      if (remainingDifference > 0) {
-        var price = Math.floor(this.maxPricePerTurn * remainingDifference);
-
-        if (price >= (0,external_kolmafia_.mallPrice)(this.potion)) {
-          if ((0,external_kolmafia_.availableAmount)(this.potion) || (0,external_kolmafia_.buy)(1, this.potion, price)) {
-            (0,external_kolmafia_.use)(1, this.potion);
-          }
-        }
-      }
-
-      return (0,external_kolmafia_.haveEffect)(effect) >= ensureTurns;
-    }
-  }]);
-
-  return PotionMoodElement;
-}(MoodElement);
-
-var GenieMoodElement = /*#__PURE__*/function (_MoodElement3) {
-  mood_inherits(GenieMoodElement, _MoodElement3);
-
-  var _super5 = mood_createSuper(GenieMoodElement);
-
-  function GenieMoodElement(effect) {
-    var _this3;
-
-    mood_classCallCheck(this, GenieMoodElement);
-
-    _this3 = _super5.call(this);
-
-    mood_defineProperty(mood_assertThisInitialized(_this3), "effect", void 0);
-
-    _this3.effect = effect;
-    return _this3;
-  }
-
-  mood_createClass(GenieMoodElement, [{
-    key: "execute",
-    value: function execute(mood, ensureTurns) {
-      if ((0,external_kolmafia_.haveEffect)(this.effect) >= ensureTurns) return true;
-      var neededWishes = Math.ceil(((0,external_kolmafia_.haveEffect)(this.effect) - ensureTurns) / 20);
-      var wishesToBuy = (0,utils/* clamp */.uZ)(neededWishes - (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(mood_templateObject10 || (mood_templateObject10 = mood_taggedTemplateLiteral(["pocket wish"])))), 0, 20);
-      (0,external_kolmafia_.buy)(wishesToBuy, (0,template_string/* $item */.xr)(mood_templateObject11 || (mood_templateObject11 = mood_taggedTemplateLiteral(["pocket wish"]))), 50000);
-      var wishesToUse = (0,utils/* clamp */.uZ)(neededWishes, 0, (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(mood_templateObject12 || (mood_templateObject12 = mood_taggedTemplateLiteral(["pocket wish"])))));
-
-      for (; wishesToUse > 0; wishesToUse--) {
-        (0,external_kolmafia_.cliExecute)("genie effect ".concat(this.effect.name));
-      }
-
-      return (0,external_kolmafia_.haveEffect)(this.effect) >= ensureTurns;
-    }
-  }]);
-
-  return GenieMoodElement;
-}(MoodElement);
-
-var CustomMoodElement = /*#__PURE__*/function (_MoodElement4) {
-  mood_inherits(CustomMoodElement, _MoodElement4);
-
-  var _super6 = mood_createSuper(CustomMoodElement);
-
-  function CustomMoodElement(effect, gainEffect) {
-    var _this4;
-
-    mood_classCallCheck(this, CustomMoodElement);
-
-    _this4 = _super6.call(this);
-
-    mood_defineProperty(mood_assertThisInitialized(_this4), "effect", void 0);
-
-    mood_defineProperty(mood_assertThisInitialized(_this4), "gainEffect", void 0);
-
-    _this4.effect = effect;
-    _this4.gainEffect = gainEffect !== null && gainEffect !== void 0 ? gainEffect : () => (0,external_kolmafia_.cliExecute)(effect.default);
-    return _this4;
-  }
-
-  mood_createClass(CustomMoodElement, [{
-    key: "execute",
-    value: function execute(mood, ensureTurns) {
-      var currentTurns = (0,external_kolmafia_.haveEffect)(this.effect);
-      var lastCurrentTurns = -1;
-
-      while (currentTurns < ensureTurns && currentTurns !== lastCurrentTurns) {
-        this.gainEffect();
-        lastCurrentTurns = currentTurns;
-        currentTurns = (0,external_kolmafia_.haveEffect)(this.effect);
-      }
-
-      return (0,external_kolmafia_.haveEffect)(this.effect) > ensureTurns;
-    }
-  }]);
-
-  return CustomMoodElement;
-}(MoodElement);
-
-var AsdonMoodElement = /*#__PURE__*/function (_MoodElement5) {
-  mood_inherits(AsdonMoodElement, _MoodElement5);
-
-  var _super7 = mood_createSuper(AsdonMoodElement);
-
-  function AsdonMoodElement(effect) {
-    var _this5;
-
-    var preferInventory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-    mood_classCallCheck(this, AsdonMoodElement);
-
-    _this5 = _super7.call(this);
-
-    mood_defineProperty(mood_assertThisInitialized(_this5), "effect", void 0);
-
-    mood_defineProperty(mood_assertThisInitialized(_this5), "preferInventory", void 0);
-
-    _this5.effect = effect;
-    _this5.preferInventory = preferInventory;
-    return _this5;
-  }
-
-  mood_createClass(AsdonMoodElement, [{
-    key: "execute",
-    value: function execute(mood, ensureTurns) {
-      return AsdonMartin/* drive */.Ag(this.effect, ensureTurns, this.preferInventory);
-    }
-  }]);
-
-  return AsdonMoodElement;
-}(MoodElement);
-/**
- * Class representing a mood object. Add mood elements using the instance methods, which can be chained.
- */
-
-
-var Mood = /*#__PURE__*/function () {
-  /**
-   * Construct a new Mood instance.
-   * @param options Options for mood.
-   */
-  function Mood() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    mood_classCallCheck(this, Mood);
-
-    mood_defineProperty(this, "options", void 0);
-
-    mood_defineProperty(this, "elements", []);
-
-    this.options = mood_objectSpread(mood_objectSpread({}, Mood.defaultOptions), options);
-  }
-  /**
-   * Get the MP available for casting skills.
-   */
-
-
-  mood_createClass(Mood, [{
-    key: "availableMp",
-    value: function availableMp() {
-      return (0,utils/* sum */.Sm)(this.options.mpSources, mpSource => mpSource.availableMpMin()) + Math.max((0,external_kolmafia_.myMp)() - this.options.reserveMp, 0);
-    }
-  }, {
-    key: "moreMp",
-    value: function moreMp(minimumTarget) {
-      var _iterator2 = mood_createForOfIteratorHelper(this.options.mpSources),
-          _step2;
-
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var mpSource = _step2.value;
-          var usesRemaining = mpSource.usesRemaining();
-
-          if (usesRemaining !== null && usesRemaining > 0) {
-            mpSource.execute();
-            if ((0,external_kolmafia_.myMp)() >= minimumTarget) break;
-          }
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
-    }
-    /**
-     * Add a skill to the mood.
-     * @param skill Skill to add.
-     */
-
-  }, {
-    key: "skill",
-    value: function skill(_skill) {
-      this.elements.push(new SkillMoodElement(_skill));
-      return this;
-    }
-    /**
-     * Add an effect to the mood, with casting based on {effect.default}.
-     * @param effect Effect to add.
-     * @param gainEffect How to gain the effect. Only runs if we don't have the effect.
-     */
-
-  }, {
-    key: "effect",
-    value: function effect(_effect, gainEffect) {
-      var skill = (0,external_kolmafia_.toSkill)(_effect);
-
-      if (!gainEffect && skill !== (0,template_string/* $skill */.tm)(mood_templateObject13 || (mood_templateObject13 = mood_taggedTemplateLiteral(["none"])))) {
-        this.skill(skill);
-      } else {
-        this.elements.push(new CustomMoodElement(_effect, gainEffect));
-      }
-
-      return this;
-    }
-    /**
-     * Add a potion to the mood.
-     * @param potion Potion to add.
-     * @param maxPricePerTurn Maximum price to pay per turn of the effect.
-     */
-
-  }, {
-    key: "potion",
-    value: function potion(_potion, maxPricePerTurn) {
-      this.elements.push(new PotionMoodElement(_potion, maxPricePerTurn));
-      return this;
-    }
-    /**
-     * Add an effect to acquire via pocket wishes to the mood.
-     * @param effect Effect to wish for in the mood.
-     */
-
-  }, {
-    key: "genie",
-    value: function genie(effect) {
-      this.elements.push(new GenieMoodElement(effect));
-      return this;
-    }
-    /**
-     * Add an Asdon Martin driving style to the mood.
-     * @param effect Driving style to add to the mood.
-     */
-
-  }, {
-    key: "drive",
-    value: function drive(effect) {
-      if (Object.values(AsdonMartin/* Driving */.ji).includes(effect) && AsdonMartin/* installed */.bL()) {
-        this.elements.push(new AsdonMoodElement(effect));
-      }
-
-      return this;
-    }
-    /**
-     * Execute the mood, trying to ensure {ensureTurns} of each effect.
-     * @param ensureTurns Turns of each effect to try and achieve.
-     * @returns Whether or not we successfully got this many turns of every effect in the mood.
-     */
-
-  }, {
-    key: "execute",
-    value: function execute() {
-      var ensureTurns = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      var availableMp = this.availableMp();
-      var totalMpPerTurn = (0,utils/* sum */.Sm)(this.elements, element => element.mpCostPerTurn());
-      var potentialTurns = Math.floor(availableMp / totalMpPerTurn);
-      var completeSuccess = true;
-
-      var _iterator3 = mood_createForOfIteratorHelper(this.elements),
-          _step3;
-
-      try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var element = _step3.value;
-          var elementTurns = ensureTurns;
-
-          if (element.mpCostPerTurn() > 0) {
-            var elementPotentialTurns = Math.floor(potentialTurns / element.turnIncrement()) * element.turnIncrement();
-            elementTurns = Math.min(ensureTurns, elementPotentialTurns);
-          }
-
-          completeSuccess = element.execute(this, elementTurns) && completeSuccess;
-        }
-      } catch (err) {
-        _iterator3.e(err);
-      } finally {
-        _iterator3.f();
-      }
-
-      return completeSuccess;
-    }
-  }], [{
-    key: "setDefaultOptions",
-    value:
-    /**
-     * Set default options for new Mood instances.
-     * @param options Default options for new Mood instances.
-     */
-    function setDefaultOptions(options) {
-      Mood.defaultOptions = mood_objectSpread(mood_objectSpread({}, Mood.defaultOptions), options);
-    }
-  }]);
-
-  return Mood;
-}();
-
-mood_defineProperty(Mood, "defaultOptions", {
-  songSlots: [],
-  mpSources: [MagicalSausages.instance, OscusSoda.instance],
-  reserveMp: 0
-});
 ;// CONCATENATED MODULE: ./src/mood.ts
 var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, src_mood_templateObject11, src_mood_templateObject12, src_mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67;
 
@@ -31781,7 +31807,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("4662c42c5a5c0562e81d1bdb3aa0283aa42dce14"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("240a3e8b366aec9a7e86a1b79bf52a5b177c015d"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32367,7 +32393,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("4662c42c5a5c0562e81d1bdb3aa0283aa42dce14" === mainSha) {
+    if ("240a3e8b366aec9a7e86a1b79bf52a5b177c015d" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
