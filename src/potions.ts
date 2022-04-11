@@ -24,8 +24,11 @@ import {
   clamp,
   get,
   getActiveEffects,
+  getActiveSongs,
   getModifier,
   have,
+  isSong,
+  Mood,
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
@@ -303,6 +306,15 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
 
   const total = amountsAcquired.reduce((total, amount) => total + amount, 0);
   if (total > 0) {
+    const effect = potion.effect();
+    if (isSong(effect) && !have(effect)) {
+      for (const song of getActiveSongs()) {
+        const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
+        if (!slot || slot.includes(effect)) {
+          cliExecute(`shrug ${song}`);
+        }
+      }
+    }
     print(`Using ${total} ${potion.potion.plural}`);
     potion.use(total);
   }
