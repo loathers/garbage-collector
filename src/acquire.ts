@@ -74,7 +74,7 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
       autoBuyPriceLimit: maxPrice,
       valueOfInventory: 1.8,
     },
-    () => retrieveItem(remaining, item)
+    () => retrieveItem(qty, item)
   );
   if (itemAmount(item) < qty && throwOnFail) throw `Mall price too high for ${item.name}.`;
   return itemAmount(item) - startAmount;
