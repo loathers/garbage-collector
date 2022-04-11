@@ -312,7 +312,6 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
         const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
         if (!slot || slot.includes(effect)) {
           cliExecute(`shrug ${song}`);
-          break;
         }
       }
     }
