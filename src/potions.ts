@@ -168,9 +168,10 @@ export class Potion {
   }
 
   doublingValue(embezzlers: number, historical = false): number {
-    return (
+    return Math.min(
       Math.max(this.doubleDuration().net(embezzlers, historical), 0) -
-      Math.max(this.net(embezzlers, historical), 0)
+        Math.max(this.net(embezzlers, historical), 0),
+      this.price(true)
     );
   }
 

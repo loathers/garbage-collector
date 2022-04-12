@@ -358,6 +358,7 @@ function shavingBonus(): Map<Item, number> {
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 
+let cachedUsingThumbRing: boolean | null = null;
 /**
  * Calculates whether we expect to be wearing the thumb ring for most of the farming day.
  * This is used in functions that leverage projected turns; for instance, calculating the
@@ -367,7 +368,8 @@ function shavingBonus(): Map<Item, number> {
 export function usingThumbRing(): boolean {
   if (!have($item`mafia thumb ring`)) {
     return false;
-  } else {
+  }
+  if (cachedUsingThumbRing === null) {
     const gear = bonusAccessories("barf");
     const accessoryBonuses = Array.from(gear.entries()).filter(([item]) => have(item));
 
@@ -395,6 +397,7 @@ export function usingThumbRing(): boolean {
     const bestAccessories = Array.from(accessoryValues.entries())
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
       .map(([item]) => item);
-    return bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
+    cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
   }
+  return cachedUsingThumbRing;
 }
