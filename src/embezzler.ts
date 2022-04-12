@@ -284,7 +284,11 @@ export const embezzlerSources = [
     () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction(options.location, wandererFailsafeMacro().step(options.macro));
+      adventureFunction(
+        options.location,
+        wandererFailsafeMacro().step(options.macro),
+        wandererFailsafeMacro().step(options.macro)
+      );
     },
     {
       draggable: "wanderer",
@@ -299,7 +303,11 @@ export const embezzlerSources = [
     () => 0,
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction(options.location, wandererFailsafeMacro().step(options.macro));
+      adventureFunction(
+        options.location,
+        wandererFailsafeMacro().step(options.macro),
+        wandererFailsafeMacro().step(options.macro)
+      );
     },
     {
       draggable: "wanderer",
@@ -315,7 +323,11 @@ export const embezzlerSources = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction(options.location, wandererFailsafeMacro().step(embezzlerMacro()));
+      adventureFunction(
+        options.location,
+        wandererFailsafeMacro().step(options.macro),
+        wandererFailsafeMacro().step(options.macro)
+      );
     },
     {
       draggable: "wanderer",
@@ -340,7 +352,7 @@ export const embezzlerSources = [
         return;
       }
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`The Dire Warren`, options.macro);
+      adventureFunction($location`The Dire Warren`, options.macro, options.macro);
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
@@ -413,7 +425,7 @@ export const embezzlerSources = [
           .skill($skill`Macrometeorite`)
       ).step(options.macro);
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Noob Cave`, macro);
+      adventureFunction($location`Noob Cave`, macro, macro);
     },
     {
       gregariousReplace: true,
@@ -456,7 +468,7 @@ export const embezzlerSources = [
           .skill($skill`CHEAT CODE: Replace Enemy`)
       ).step(options.macro);
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Noob Cave`, macro);
+      adventureFunction($location`Noob Cave`, macro, macro);
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
@@ -478,6 +490,7 @@ export const embezzlerSources = [
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction(
         $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
         Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro)
       );
       // reset the crystal ball prediction by staring longingly at toast
@@ -537,6 +550,10 @@ export const embezzlerSources = [
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction(
         options.location,
+        Macro.if_(
+          `!monsterid ${embezzler.id}`,
+          Macro.skill($skill`Back-Up to your Last Enemy`)
+        ).step(options.macro),
         Macro.if_(
           `!monsterid ${embezzler.id}`,
           Macro.skill($skill`Back-Up to your Last Enemy`)
@@ -721,7 +738,7 @@ export const embezzlerSources = [
         return;
       }
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Cobb's Knob Treasury`, options.macro);
+      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
   new EmbezzlerFight(
@@ -730,7 +747,7 @@ export const embezzlerSources = [
     () => (canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`) ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Cobb's Knob Treasury`, options.macro);
+      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
   // These are very deliberately the last embezzler fights.
@@ -766,7 +783,7 @@ export const embezzlerSources = [
       use($item`11-leaf clover`);
       if (have($effect`Lucky!`)) {
         const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-        adventureFunction($location`Cobb's Knob Treasury`, options.macro);
+        adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
       }
       globalOptions.askedAboutWish = false;
     }
