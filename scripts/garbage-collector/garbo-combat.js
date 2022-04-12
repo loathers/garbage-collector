@@ -20542,7 +20542,7 @@ function magnifyingGlass() {
   return new Map([[$item(dropsgear_templateObject44 || (dropsgear_templateObject44 = dropsgear_taggedTemplateLiteral(["cursed magnifying glass"]))), get("garbo_valueOfFreeFight", 2000) / 13]]);
 }
 function bonusGear(equipMode) {
-  return new Map([].concat(dropsgear_toConsumableArray(cheeses(equipMode === "embezzler")), dropsgear_toConsumableArray(equipMode !== "embezzler" ? pantsgiving() : []), dropsgear_toConsumableArray(shavingBonus()), dropsgear_toConsumableArray(bonusAccessories(equipMode)), dropsgear_toConsumableArray(pantogramPants()), dropsgear_toConsumableArray(bagOfManyConfections()), dropsgear_toConsumableArray(snowSuit(equipMode)), dropsgear_toConsumableArray(mayflowerBouquet(equipMode)), dropsgear_toConsumableArray(equipMode === "barf" ? magnifyingGlass() : [])));
+  return new Map([].concat(dropsgear_toConsumableArray(cheeses(equipMode === "embezzler")), dropsgear_toConsumableArray(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []), dropsgear_toConsumableArray(shavingBonus()), dropsgear_toConsumableArray(bonusAccessories(equipMode)), dropsgear_toConsumableArray(pantogramPants()), dropsgear_toConsumableArray(bagOfManyConfections()), dropsgear_toConsumableArray(snowSuit(equipMode)), dropsgear_toConsumableArray(mayflowerBouquet(equipMode)), dropsgear_toConsumableArray(equipMode === "barf" ? magnifyingGlass() : [])));
 }
 function bestBjornalike(existingForceEquips) {
   var bjornalikes = $items(dropsgear_templateObject45 || (dropsgear_templateObject45 = dropsgear_taggedTemplateLiteral(["Buddy Bjorn, Crown of Thrones"])));
@@ -21955,7 +21955,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("91fcd9e9b2dc63d0085069507a0e0b11dce9b26c" === mainSha) {
+    if ("f2feefe5d62d4650523311ad782aac117cd3d4ff" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
