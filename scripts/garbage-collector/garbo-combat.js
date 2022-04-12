@@ -20576,6 +20576,8 @@ function shavingBonus() {
   var bonusValue = (baseMeat * 100 + 72 * 50) / 100;
   return new Map([[$item(dropsgear_templateObject56 || (dropsgear_templateObject56 = dropsgear_taggedTemplateLiteral(["Daylight Shavings Helmet"]))), bonusValue]]);
 }
+
+var cachedUsingThumbRing = null;
 /**
  * Calculates whether we expect to be wearing the thumb ring for most of the farming day.
  * This is used in functions that leverage projected turns; for instance, calculating the
@@ -20583,11 +20585,12 @@ function shavingBonus() {
  * @returns boolean of whether we expect to be wearing the thumb ring for much of the day
  */
 
-
 function usingThumbRing() {
   if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dropsgear_templateObject57 || (dropsgear_templateObject57 = dropsgear_taggedTemplateLiteral(["mafia thumb ring"]))))) {
     return false;
-  } else {
+  }
+
+  if (cachedUsingThumbRing === null) {
     var gear = bonusAccessories("barf");
     var accessoryBonuses = Array.from(gear.entries()).filter(_ref => {
       var _ref2 = _slicedToArray(_ref, 1),
@@ -20636,8 +20639,10 @@ function usingThumbRing() {
 
       return item;
     });
-    return bestAccessories.slice(0, 2).includes((0,template_string/* $item */.xr)(dropsgear_templateObject67 || (dropsgear_templateObject67 = dropsgear_taggedTemplateLiteral(["mafia thumb ring"]))));
+    cachedUsingThumbRing = bestAccessories.slice(0, 2).includes((0,template_string/* $item */.xr)(dropsgear_templateObject67 || (dropsgear_templateObject67 = dropsgear_taggedTemplateLiteral(["mafia thumb ring"]))));
   }
+
+  return cachedUsingThumbRing;
 }
 
 /***/ }),
@@ -21631,7 +21636,7 @@ function timeToMeatify() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2474);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2211);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4782);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -21853,9 +21858,20 @@ function printHelpMenu() {
  */
 
 function pillkeeperOpportunityCost() {
-  // Can't fight an embezzler without treasury access
-  // If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
-  return canAdv($location(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false) ? ChateauMantegna.have() && !ChateauMantegna.paintingFought() || have($item(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !get("_photocopyUsed") ? 15000 : WISH_VALUE : 0;
+  var canTreasury = canAdv($location(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Cobb's Knob Treasury"]))), false);
+  var alternateUse = [{
+    can: canTreasury,
+    value: 3 * get("valueOfAdventure")
+  }, {
+    can: realmAvailable("sleaze"),
+    value: 40000
+  }].filter(x => x.can).sort((a, b) => b.value - a.value)[0];
+  var alternateUseValue = alternateUse === null || alternateUse === void 0 ? void 0 : alternateUse.value;
+  if (!alternateUseValue) return 0;
+  if (!canTreasury) return alternateUseValue;
+  var embezzler = $monster(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Knob Goblin Embezzler"])));
+  var canStartChain = [CombatLoversLocket.have() && getLocketMonsters()[embezzler.name], ChateauMantegna.have() && ChateauMantegna.paintingMonster() === embezzler && !ChateauMantegna.paintingFought(), have($item(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Clan VIP Lounge key"])))) && !get("_photocopyUsed")].some(x => x);
+  return canStartChain ? alternateUseValue : WISH_VALUE;
 }
 /**
  * Burns existing MP on the mall-optimal libram skill until unable to cast any more.
@@ -21887,8 +21903,8 @@ function safeRestore() {
   var mpTarget = safeRestoreMpTarget();
 
   if (myMp() < mpTarget) {
-    if (have($item(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (have($item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["magical sausage"])))) || have($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["magical sausage casing"]))))) && get("_sausagesEaten") < 23) {
-      eat($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["magical sausage"]))));
+    if (have($item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (have($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["magical sausage"])))) || have($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["magical sausage casing"]))))) && get("_sausagesEaten") < 23) {
+      eat($item(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["magical sausage"]))));
     } else restoreMp(mpTarget);
   }
 
@@ -21900,7 +21916,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("224e0e7f62de6b5df7aa0dbed288e69203ae1ac1" === mainSha) {
+    if ("989612edc8d7b667f06c80ad1f2b8473e1dc0b96" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
