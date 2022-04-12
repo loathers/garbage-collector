@@ -303,7 +303,7 @@ export function magnifyingGlass(): Map<Item, number> {
 export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
-    ...(equipMode !== "embezzler" ? pantsgiving() : []),
+    ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
     ...shavingBonus(),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
