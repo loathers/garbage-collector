@@ -401,6 +401,7 @@ export function dailyFights(): void {
             const startLectures = get("_pocketProfessorLectures");
             fightSource.run({
               macro: macro(),
+              useAuto: false,
             });
             embezzlerLog.initialEmbezzlersFought +=
               1 + get("_pocketProfessorLectures") - startLectures;

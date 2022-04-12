@@ -586,13 +586,22 @@ export class Macro extends StrictMacro {
   }
 }
 
-export function withMacro<T>(macro: Macro, action: () => T): T {
+/**
+ * Attempt to perform a nonstandard combat-starting Action with a Macro
+ * @param macro The Macro to attempt to use
+ * @param action The combat-starting action to attempt
+ * @param tryAuto Whether or not we should try to resolve the combat with an autoattack; autoattack macros can fail against special monsters, and thus we have to submit a macro with Macro.save() regardless
+ * @returns The output of your specified action function (typically void)
+ */
+export function withMacro<T>(macro: Macro, action: () => T, tryAuto = false): T {
   if (getAutoAttack() !== 0) setAutoAttack(0);
+  if (tryAuto) macro.setAutoAttack();
   macro.save();
   try {
     return action();
   } finally {
     Macro.clearSaved();
+    if (tryAuto) setAutoAttack(0);
   }
 }
 
