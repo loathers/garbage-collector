@@ -6,6 +6,7 @@ import {
   cliExecute,
   drink,
   eat,
+  Effect,
   Element,
   elementalResistance,
   fullnessLimit,
@@ -16,7 +17,6 @@ import {
   Item,
   itemType,
   logprint,
-  mallPrice,
   myClass,
   myFamiliar,
   myFullness,
@@ -25,6 +25,7 @@ import {
   myMaxhp,
   mySpleenUse,
   print,
+  retrievePrice,
   setProperty,
   spleenLimit,
   toItem,
@@ -50,9 +51,9 @@ import {
   getAverageAdventures,
   have,
   Kmail,
+  MenuItem as LibramMenuItem,
   maximizeCached,
   MayoClinic,
-  MenuItem,
   set,
   sum,
   sumNumbers,
@@ -83,11 +84,15 @@ function eatSafe(qty: number, item: Item) {
   if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
     use($item`Universal Seasoning`);
   }
-  if (myLevel() >= 15 && !get("_hungerSauceUsed") && mallPrice($item`Hunger™ Sauce`) < 3 * MPA) {
+  if (
+    myLevel() >= 15 &&
+    !get("_hungerSauceUsed") &&
+    retrievePrice($item`Hunger™ Sauce`) < 3 * MPA
+  ) {
     acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
     use($item`Hunger™ Sauce`);
   }
-  if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
+  if (retrievePrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
     eat($item`fudge spork`);
   }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
@@ -146,12 +151,12 @@ function propTrue(prop: string | boolean) {
 
 function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   if (!propTrue(prop)) {
-    if (mallPrice(item) <= maxPrice) {
+    if (retrievePrice(item) <= maxPrice) {
       acquire(1, item, maxPrice, false);
       if (!have(item)) return;
       use(1, item);
     } else {
-      print(`Skipping ${item.name}; too expensive (${mallPrice(item)} > ${maxPrice}).`);
+      print(`Skipping ${item.name}; too expensive (${retrievePrice(item)} > ${maxPrice}).`);
     }
   }
 }
@@ -186,7 +191,7 @@ function nonOrganAdventures(): void {
   const classChoco = chocos.get(myClass());
   const chocExpVal = (remaining: number, item: Item): number => {
     const advs = [0, 0, 1, 2, 3][remaining + (item === classChoco ? 1 : 0)];
-    return advs * MPA - mallPrice(item);
+    return advs * MPA - retrievePrice(item);
   };
   const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
   for (let i = chocosRemaining; i > 0; i--) {
@@ -198,7 +203,7 @@ function nonOrganAdventures(): void {
     });
     const best = chocoVals.sort((a, b) => b.value - a.value)[0];
     if (best.value > 0) {
-      acquire(1, best.choco, best.value + mallPrice(best.choco), false);
+      acquire(1, best.choco, best.value + retrievePrice(best.choco), false);
       use(1, best.choco);
     } else break;
   }
@@ -214,13 +219,13 @@ function nonOrganAdventures(): void {
     use(1, $item`etched hourglass`);
   }
 
-  if (getProperty("_timesArrowUsed") !== "true" && mallPrice($item`time's arrow`) < 5 * MPA) {
+  if (getProperty("_timesArrowUsed") !== "true" && retrievePrice($item`time's arrow`) < 5 * MPA) {
     acquire(1, $item`time's arrow`, 5 * MPA);
     cliExecute("csend 1 time's arrow to botticelli");
     setProperty("_timesArrowUsed", "true");
   }
 
-  if (have($skill`Ancestral Recall`) && mallPrice($item`blue mana`) < 3 * MPA) {
+  if (have($skill`Ancestral Recall`) && retrievePrice($item`blue mana`) < 3 * MPA) {
     const casts = Math.max(10 - get("_ancestralRecallCasts"), 0);
     acquire(casts, $item`blue mana`, 3 * MPA);
     useSkill(casts, $skill`Ancestral Recall`);
@@ -270,6 +275,23 @@ const stomachLiverCleaners = new Map([
   [$item`cuppa Sobrie tea`, [0, -1]],
 ]);
 
+type MenuItemOptions<T> = {
+  organ?: "food" | "booze" | "spleen item";
+  size?: number;
+  maximum?: number | "auto";
+  additionalValue?: number;
+  effect?: Effect;
+  priceOverride?: number;
+  mayo?: Item;
+  data?: T;
+};
+
+class MenuItem<T> extends LibramMenuItem<T> {
+  constructor(item: Item, options: MenuItemOptions<T> = {}) {
+    super(item, { ...{ priceOverride: retrievePrice(item) }, ...options });
+  }
+}
+
 /**
  * Generate a basic menu of high-yield items to consider
  * @returns basic menu
@@ -308,7 +330,7 @@ function menu(): MenuItem<Note>[] {
     (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
   );
 
-  const mallMin = (items: Item[]) => argmax(items.map((i) => [i, -mallPrice(i)]));
+  const mallMin = (items: Item[]) => argmax(items.map((i) => [i, -retrievePrice(i)]));
 
   return [
     // FOOD
@@ -433,14 +455,14 @@ function countCopies(diet: Diet<Note>): number {
 }
 
 function ingredientCost(item: Item): number {
-  const ingredientMallPrice = mallPrice(item);
+  const ingredientretrievePrice = retrievePrice(item);
   const ingredientAutosellPrice = autosellPrice(item);
 
   if (
     !have(item) ||
-    (item.tradeable && ingredientMallPrice > Math.max(100, 2 * ingredientAutosellPrice))
+    (item.tradeable && ingredientretrievePrice > Math.max(100, 2 * ingredientAutosellPrice))
   ) {
-    return ingredientMallPrice;
+    return ingredientretrievePrice;
   }
   return ingredientAutosellPrice;
 }

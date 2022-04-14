@@ -9,8 +9,8 @@ import {
   Item,
   itemAmount,
   itemType,
-  mallPrice,
   print,
+  retrievePrice,
   setLocation,
   use,
 } from "kolmafia";
@@ -156,7 +156,7 @@ export class Potion {
     // If asked for historical, and age < 14 days, use historical.
     return historical && historicalAge(this.potion) < 14
       ? historicalPrice(this.potion)
-      : mallPrice(this.potion);
+      : retrievePrice(this.potion);
   }
 
   net(embezzlers: number, historical = false): number {
@@ -409,7 +409,7 @@ export function bathroomFinance(embezzlers: number): void {
   const touristGross = averageTouristGross * tourists;
 
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
-  if (touristGross + embezzlerGross > mallPrice(greenspan)) {
+  if (touristGross + embezzlerGross > retrievePrice(greenspan)) {
     acquire(1, greenspan, touristGross + embezzlerGross, false);
     if (itemAmount(greenspan) > 0) {
       print(`Using ${greenspan}!`, HIGHLIGHT);
