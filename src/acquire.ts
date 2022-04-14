@@ -72,7 +72,6 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   withProperties(
     {
       autoBuyPriceLimit: maxPrice,
-      valueOfInventory: 1.8,
     },
     () => retrieveItem(qty, item)
   );

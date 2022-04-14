@@ -416,35 +416,34 @@ function checkVolcanoQuest() {
   print("Checking volcano quest", HIGHLIGHT);
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
   const volcoinoValue = garboValue($item`Volcoino`);
-  withProperty("valueOfInventory", 2, () => {
-    const bestItem = [
-      {
-        item: property.getItem("_volcanoItem1") ?? $item`none`,
-        quantity: get("_volcanoItemCount1"),
-        choice: 1,
-      },
-      {
-        item: property.getItem("_volcanoItem2") ?? $item`none`,
-        quantity: get("_volcanoItemCount2"),
-        choice: 2,
-      },
-      {
-        item: property.getItem("_volcanoItem3") ?? $item`none`,
-        quantity: get("_volcanoItemCount3"),
-        choice: 3,
-      },
-    ].sort((a, b) => volcanoItemValue(a) - volcanoItemValue(b))[0];
-    if (bestItem.item.tradeable && volcanoItemValue(bestItem) < volcoinoValue) {
-      withProperty("autoBuyPriceLimit", volcoinoValue, () =>
-        retrieveItem(bestItem.item, bestItem.quantity)
-      );
-      visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-      runChoice(bestItem.choice);
-    } else if (bestItem.item === $item`fused fuse`) {
-      globalOptions.clarasBellClaimed = true;
-      logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
-    }
-  });
+
+  const bestItem = [
+    {
+      item: property.getItem("_volcanoItem1") ?? $item`none`,
+      quantity: get("_volcanoItemCount1"),
+      choice: 1,
+    },
+    {
+      item: property.getItem("_volcanoItem2") ?? $item`none`,
+      quantity: get("_volcanoItemCount2"),
+      choice: 2,
+    },
+    {
+      item: property.getItem("_volcanoItem3") ?? $item`none`,
+      quantity: get("_volcanoItemCount3"),
+      choice: 3,
+    },
+  ].sort((a, b) => volcanoItemValue(a) - volcanoItemValue(b))[0];
+  if (bestItem.item.tradeable && volcanoItemValue(bestItem) < volcoinoValue) {
+    withProperty("autoBuyPriceLimit", volcoinoValue, () =>
+      retrieveItem(bestItem.item, bestItem.quantity)
+    );
+    visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+    runChoice(bestItem.choice);
+  } else if (bestItem.item === $item`fused fuse`) {
+    globalOptions.clarasBellClaimed = true;
+    logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
+  }
 }
 
 function cheat(): void {
