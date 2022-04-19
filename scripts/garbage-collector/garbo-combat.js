@@ -20881,13 +20881,15 @@ var EmbezzlerFight = /*#__PURE__*/function () {
   }, {
     key: "location",
     value: function location(_location2) {
-      var suggestion = this.draggable && !_location2 && checkUnderwater() ? (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["The Briny Deeps"]))) : _location2;
+      var taffyIsWorthIt = () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.mallPrice)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["pulled green taffy"])))) < 3 * (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("valueOfAdventure") && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["pulled green taffy"]))));
+
+      var suggestion = this.draggable && !_location2 && checkUnderwater() && taffyIsWorthIt() ? (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["The Briny Deeps"]))) : _location2;
 
       if (this.draggable && !suggestion || this.draggable === "backup" && suggestion && suggestion.combatPercent < 100) {
         return (0,_wanderer__WEBPACK_IMPORTED_MODULE_8__/* .determineDraggableZoneAndEnsureAccess */ .x)(this.draggable);
       }
 
-      return suggestion !== null && suggestion !== void 0 ? suggestion : (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Noob Cave"])));
+      return suggestion !== null && suggestion !== void 0 ? suggestion : (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Noob Cave"])));
     }
   }]);
 
@@ -20896,17 +20898,14 @@ var EmbezzlerFight = /*#__PURE__*/function () {
 
 function checkUnderwater() {
   // first check to see if underwater even makes sense
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myLevel)() >= 11 && !((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_envyfishEggUsed") || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["envyfish egg"]))))) && ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_garbo_weightChain", false) || !(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$familiar */ .HP)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Pocket Professor"]))))) && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Adventure Underwater") || _outfit__WEBPACK_IMPORTED_MODULE_7__/* .waterBreathingEquipment.some */ .RG.some(item => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)(item))) && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Underwater Familiar") || _outfit__WEBPACK_IMPORTED_MODULE_7__/* .familiarWaterBreathingEquipment.some */ .e3.some(item => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)(item))) && ((0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Fishy"])))) || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["fishy pipe"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_fishyPipeUsed"))) {
-    // then check if the underwater copy makes sense
-    if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.mallPrice)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["pulled green taffy"])))) < 10000 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.retrieveItem)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["pulled green taffy"]))))) {
-      // unlock the sea
-      if ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("questS01OldGuy") === "unstarted") {
-        (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)("place.php?whichplace=sea_oldman&action=oldman_oldman");
-      }
-
-      if (!(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Fishy"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_fishyPipeUsed")) (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["fishy pipe"]))));
-      return (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Fishy"]))));
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myLevel)() >= 11 && !((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_envyfishEggUsed") || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["envyfish egg"]))))) && ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_garbo_weightChain", false) || !(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$familiar */ .HP)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Pocket Professor"]))))) && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Adventure Underwater") || _outfit__WEBPACK_IMPORTED_MODULE_7__/* .waterBreathingEquipment.some */ .RG.some(item => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)(item))) && ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Underwater Familiar") || _outfit__WEBPACK_IMPORTED_MODULE_7__/* .familiarWaterBreathingEquipment.some */ .e3.some(item => (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)(item))) && ((0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Fishy"])))) || (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["fishy pipe"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_fishyPipeUsed"))) {
+    // unlock the sea
+    if ((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("questS01OldGuy") === "unstarted") {
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)("place.php?whichplace=sea_oldman&action=oldman_oldman");
     }
+
+    if (!(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Fishy"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_fishyPipeUsed")) (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.use)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["fishy pipe"]))));
+    return (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$effect */ ._G)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Fishy"]))));
   }
 
   return false;
@@ -21955,7 +21954,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("f2feefe5d62d4650523311ad782aac117cd3d4ff" === mainSha) {
+    if ("fad1074ae04bfd56f7af6ee2ac671f023a1d7076" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
