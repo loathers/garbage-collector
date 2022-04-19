@@ -367,13 +367,13 @@ export const embezzlerSources = [
     "Time-Spinner",
     () =>
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren`.some((location) =>
+      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some((location) =>
         location.combatQueue.includes(embezzler.name)
       ) &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren`.some(
+      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
         (location) =>
           location.combatQueue.includes(embezzler.name) || get("beGregariousCharges") > 0
       )
