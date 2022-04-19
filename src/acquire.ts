@@ -1,18 +1,18 @@
 import {
-  buy,
   cliExecute,
   closetAmount,
   Item,
   itemAmount,
   mallPrice,
   print,
+  retrieveItem,
   shopAmount,
   storageAmount,
   takeCloset,
   takeShop,
   takeStorage,
 } from "kolmafia";
-import { get } from "libram";
+import { get, withProperty } from "libram";
 
 const priceCaps: { [index: string]: number } = {
   "cuppa Voraci tea": 200000,
@@ -69,7 +69,7 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
 
   if (maxPrice <= 0) throw `buying disabled for ${item.name}.`;
 
-  buy(remaining, item, maxPrice);
+  withProperty("autoBuyPriceLimit", maxPrice, () => retrieveItem(qty, item));
   if (itemAmount(item) < qty && throwOnFail) throw `Mall price too high for ${item.name}.`;
   return itemAmount(item) - startAmount;
 }

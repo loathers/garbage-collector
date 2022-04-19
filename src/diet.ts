@@ -25,6 +25,7 @@ import {
   myMaxhp,
   mySpleenUse,
   print,
+  retrievePrice,
   setProperty,
   spleenLimit,
   toItem,
@@ -610,7 +611,7 @@ export function computeDiet(): {
   pantsgiving: () => Diet<Note>;
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
-
+  MenuItem.defaultPriceFunction = (item: Item) => retrievePrice(item);
   const orEmpty = (diet: Diet<Note>) =>
     diet.expectedValue(MPA, "net") < 0 ? new Diet<Note>() : diet;
   const fullDietPlanner = (menu: MenuItem<Note>[]) => orEmpty(Diet.plan(MPA, menu));
