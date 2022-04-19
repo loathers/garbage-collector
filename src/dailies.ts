@@ -35,6 +35,7 @@ import {
   toInt,
   toItem,
   toSlot,
+  toUrl,
   use,
   useFamiliar,
   useSkill,
@@ -99,6 +100,7 @@ export function dailySetup(): void {
   prepFamiliars();
   dailyBuffs();
   configureMisc();
+  nepQuest();
   volcanoDailies();
   cheat();
   tomeSummons();
@@ -363,6 +365,23 @@ function configureVykea() {
       const level = vykeas.sort((a, b) => vykeaProfit(...b) - vykeaProfit(...a))[0][0];
       retrieveItem($item`VYKEA hex key`);
       cliExecute(`create level ${level} couch`);
+    }
+  }
+}
+
+function nepQuest(): void {
+  if (!(get("neverendingPartyAlways") || get("_neverendingPartyToday"))) return;
+
+  if (get("_questPartyFair") === "unstarted") {
+    visitUrl(toUrl($location`The Neverending Party`));
+    if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
+      print("Gerald/ine quest!", HIGHLIGHT);
+      globalOptions.clarasBellClaimed = true;
+    }
+    if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
+      runChoice(1); // Accept quest
+    } else {
+      runChoice(2); // Decline quest
     }
   }
 }
