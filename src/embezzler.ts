@@ -180,8 +180,14 @@ export class EmbezzlerFight {
   }
 
   location(location?: Location): Location {
+    const taffyIsWorthIt = () =>
+      mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure") &&
+      retrieveItem($item`pulled green taffy`);
+
     const suggestion =
-      this.draggable && !location && checkUnderwater() ? $location`The Briny Deeps` : location;
+      this.draggable && !location && checkUnderwater() && taffyIsWorthIt()
+        ? $location`The Briny Deeps`
+        : location;
 
     if (
       (this.draggable && !suggestion) ||
@@ -205,16 +211,13 @@ function checkUnderwater() {
       familiarWaterBreathingEquipment.some((item) => have(item))) &&
     (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
   ) {
-    // then check if the underwater copy makes sense
-    if (mallPrice($item`pulled green taffy`) < 10000 && retrieveItem($item`pulled green taffy`)) {
-      // unlock the sea
-      if (get("questS01OldGuy") === "unstarted") {
-        visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-      }
-      if (!have($effect`Fishy`) && !get("_fishyPipeUsed")) use($item`fishy pipe`);
-
-      return have($effect`Fishy`);
+    // unlock the sea
+    if (get("questS01OldGuy") === "unstarted") {
+      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
     }
+    if (!have($effect`Fishy`) && !get("_fishyPipeUsed")) use($item`fishy pipe`);
+
+    return have($effect`Fishy`);
   }
 
   return false;
