@@ -206,7 +206,10 @@ function checkUnderwater() {
     (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
   ) {
     // then check if the underwater copy makes sense
-    if (mallPrice($item`pulled green taffy`) < 10000 && retrieveItem($item`pulled green taffy`)) {
+    if (
+      mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure") &&
+      retrieveItem($item`pulled green taffy`)
+    ) {
       // unlock the sea
       if (get("questS01OldGuy") === "unstarted") {
         visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
