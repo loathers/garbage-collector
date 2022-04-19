@@ -374,15 +374,16 @@ function nepQuest(): void {
 
   if (get("_questPartyFair") === "unstarted") {
     visitUrl(toUrl($location`The Neverending Party`));
-    if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
-      print("Gerald/ine quest!", HIGHLIGHT);
-      globalOptions.clarasBellClaimed = true;
-    }
     if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
       runChoice(1); // Accept quest
     } else {
       runChoice(2); // Decline quest
     }
+  }
+
+  if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
+    print("Gerald/ine quest!", HIGHLIGHT);
+    globalOptions.clarasBellClaimed = true;
   }
 }
 
