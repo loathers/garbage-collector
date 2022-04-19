@@ -11,14 +11,7 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, $location, get, getRemainingStomach, property } from "libram";
-import {
-  AloeGuvnor,
-  have,
-  isFull,
-  PitcherPlant,
-  StealingMagnolia,
-} from "libram/dist/resources/2013/Florist";
+import { $item, $location, FloristFriar, get, getRemainingStomach, property } from "libram";
 import { computeDiet, consumeDiet } from "./diet";
 import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
 import { garboValue, sessionSinceStart } from "./session";
@@ -60,8 +53,12 @@ function coldMedicineCabinet(): void {
 }
 
 function floristFriars(): void {
-  if (!have() || myLocation() !== $location`Barf Mountain` || isFull()) return;
-  [StealingMagnolia, AloeGuvnor, PitcherPlant].forEach((flower) => flower.plant());
+  if (!FloristFriar.have() || myLocation() !== $location`Barf Mountain` || FloristFriar.isFull()) {
+    return;
+  }
+  [FloristFriar.StealingMagnolia, FloristFriar.AloeGuvnor, FloristFriar.PitcherPlant].forEach(
+    (flower) => flower.plant()
+  );
 }
 
 function horseradish(): void {
