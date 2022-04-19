@@ -20870,6 +20870,7 @@ var EmbezzlerFight = /*#__PURE__*/function () {
       var _options$macro;
 
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      if (!this.available()) return;
       var fightMacro = (_options$macro = options.macro) !== null && _options$macro !== void 0 ? _options$macro : embezzlerMacro();
 
       if (this.draggable) {
@@ -21954,7 +21955,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("1488f25e0fb27f5d70c16138b063c5df270b9838" === mainSha) {
+    if ("606d994d197408136c9b984a0be4a168548c6c2e" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
