@@ -300,10 +300,7 @@ export const embezzlerSources = [
   ),
   new EmbezzlerFight(
     "Guaranteed Romantic Monster",
-    () =>
-      get("_romanticFightsLeft") > 0 &&
-      Counter.get("Romantic Monster window begin") <= 0 &&
-      Counter.get("Romantic Monster window end") <= 0,
+    () => get("_romanticFightsLeft") > 0 && Counter.get("Romantic Monster window end") <= 0,
     () => 0,
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
