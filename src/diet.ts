@@ -622,8 +622,8 @@ export function computeDiet(): {
       : Infinity;
     const itemRetrievePrice = retrievePrice(item);
     const regularPrice =
-      itemRetrievePrice > 0 ? itemRetrievePrice : item.tradeable ? mallPrice(item) : Infinity;
-    return Math.min(coinmasterPrice, regularPrice);
+      itemRetrievePrice > 0 ? itemRetrievePrice : item.tradeable ? mallPrice(item) : 0;
+    return Math.min(coinmasterPrice, regularPrice) || Math.max(coinmasterPrice, regularPrice);
   };
   const orEmpty = (diet: Diet<Note>) =>
     diet.expectedValue(MPA, "net") < 0 ? new Diet<Note>() : diet;
