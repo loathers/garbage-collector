@@ -399,7 +399,7 @@ type VolcanoItem = { quantity: number; item: Item; choice: number };
 
 function volcanoItemValue({ quantity, item }: VolcanoItem): number {
   const basePrice = quantity * retrievePrice(item);
-  if (basePrice) return basePrice;
+  if (basePrice > 0) return basePrice;
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
     if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) return Infinity;
