@@ -284,11 +284,11 @@ function startWandererCounter() {
     return;
   }
   const digitizeNeedsStarting =
-    Counter.get("Digitize Monster") === null && get("_sourceTerminalDigitizeUses") !== 0;
+    Counter.get("Digitize Monster") === Infinity && get("_sourceTerminalDigitizeUses") !== 0;
   const romanceNeedsStarting =
     get("_romanticFightsLeft") > 0 &&
-    Counter.get("Romantic Monster window begin") === null &&
-    Counter.get("Romantic Monster window end") === null;
+    Counter.get("Romantic Monster window begin") === Infinity &&
+    Counter.get("Romantic Monster window end") === Infinity;
   if (digitizeNeedsStarting || romanceNeedsStarting) {
     if (digitizeNeedsStarting) print("Starting digitize counter by visiting the Haunted Kitchen!");
     if (romanceNeedsStarting) print("Starting romance counter by visiting the Haunted Kitchen!");
