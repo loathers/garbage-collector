@@ -620,7 +620,9 @@ export function computeDiet(): {
     const coinmasterPrice = coinmaster
       ? garboValue(coinmaster.item) * sellPrice(coinmaster, item)
       : Infinity;
-    const regularPrice = retrievePrice(item) || item.tradeable ? mallPrice(item) : 0;
+    const itemRetrievePrice = retrievePrice(item);
+    const regularPrice =
+      itemRetrievePrice > 0 ? itemRetrievePrice : item.tradeable ? mallPrice(item) : Infinity;
     return Math.min(coinmasterPrice, regularPrice);
   };
   const orEmpty = (diet: Diet<Note>) =>
