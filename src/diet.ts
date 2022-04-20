@@ -4,6 +4,7 @@ import {
   buy,
   chew,
   cliExecute,
+  Coinmaster,
   drink,
   eat,
   Element,
@@ -13,6 +14,7 @@ import {
   getProperty,
   haveEffect,
   inebrietyLimit,
+  isAccessible,
   Item,
   itemType,
   logprint,
@@ -25,6 +27,9 @@ import {
   myMaxhp,
   mySpleenUse,
   print,
+  retrievePrice,
+  sellPrice,
+  sellsItem,
   setProperty,
   spleenLimit,
   toItem,
@@ -839,6 +844,17 @@ export function runDiet(): void {
     if (myFamiliar() === $familiar`Stooper`) {
       useFamiliar($familiar`none`);
     }
+
+    MenuItem.defaultPriceFunction = (item: Item) => {
+      const coinmaster = Coinmaster.all().find((cm) => isAccessible(cm) && sellsItem(cm, item));
+      const coinmasterPrice = coinmaster
+        ? garboValue(coinmaster.item) * sellPrice(coinmaster, item)
+        : Infinity;
+      const itemRetrievePrice = retrievePrice(item);
+      const regularPrice =
+        itemRetrievePrice > 0 ? itemRetrievePrice : item.tradeable ? mallPrice(item) : 0;
+      return Math.min(coinmasterPrice, regularPrice);
+    };
 
     const dietBuilder = computeDiet();
 
