@@ -31389,7 +31389,7 @@ function volcanoItemValue(_ref3) {
   var quantity = _ref3.quantity,
       item = _ref3.item;
   var basePrice = quantity * (0,external_kolmafia_.retrievePrice)(item);
-  if (basePrice) return basePrice;
+  if (basePrice > 0) return basePrice;
 
   if (item === (0,template_string/* $item */.xr)(dailies_templateObject74 || (dailies_templateObject74 = dailies_taggedTemplateLiteral(["fused fuse"])))) {
     // Check if clara's bell is available and unused
@@ -31875,7 +31875,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("606d994d197408136c9b984a0be4a168548c6c2e"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("9e6d445576a2439ec2d0af308bb0b9929d1ae5a9"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32473,7 +32473,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("606d994d197408136c9b984a0be4a168548c6c2e" === mainSha) {
+    if ("9e6d445576a2439ec2d0af308bb0b9929d1ae5a9" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
