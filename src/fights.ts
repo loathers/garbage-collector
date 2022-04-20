@@ -489,9 +489,9 @@ export function dailyFights(): void {
 
         // try to deliver the thesis
         const romanticMonsterImpossible =
-          Counter.get("Romantic Monster Window end") === Infinity ||
-          (Counter.get("Romantic Monster Window begin") > 0 &&
-            Counter.get("Romantic Monster Window Begin") !== Infinity) ||
+          Counter.get("Romantic Monster window end") === Infinity ||
+          (Counter.get("Romantic Monster window begin") > 0 &&
+            Counter.get("Romantic Monster window begin") !== Infinity) ||
           get("_romanticFightsLeft") <= 0;
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
