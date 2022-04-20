@@ -4,7 +4,6 @@ import {
   buy,
   chew,
   cliExecute,
-  Coinmaster,
   drink,
   eat,
   Element,
@@ -14,8 +13,8 @@ import {
   getProperty,
   haveEffect,
   inebrietyLimit,
-  isAccessible,
   Item,
+  itemAmount,
   itemType,
   logprint,
   mallPrice,
@@ -28,7 +27,6 @@ import {
   mySpleenUse,
   print,
   retrievePrice,
-  sellPrice,
   sellsItem,
   setProperty,
   spleenLimit,
@@ -42,6 +40,7 @@ import {
 import {
   $class,
   $classes,
+  $coinmaster,
   $effect,
   $element,
   $familiar,
@@ -547,6 +546,12 @@ export function potionMenu(
     ...potion($item`haunted martini`),
     ...potion($item`twice-haunted screwdriver`, { price: twiceHauntedPrice }),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
+    ...(realmAvailable("sleaze") &&
+    sellsItem($coinmaster`Broden's Frozen Brogurts`, $item`broberry brogurt`)
+      ? limitedPotion($item`broberry brogurt`, Math.floor(itemAmount($item`Beach Buck`) / 10), {
+          price: 10 * garboValue($item`Beach Buck`),
+        })
+      : []),
 
     // SPLEEN POTIONS
     ...potion($item`cute mushroom`),
@@ -846,14 +851,8 @@ export function runDiet(): void {
     }
 
     MenuItem.defaultPriceFunction = (item: Item) => {
-      const coinmaster = Coinmaster.all().find((cm) => isAccessible(cm) && sellsItem(cm, item));
-      const coinmasterPrice = coinmaster
-        ? garboValue(coinmaster.item) * sellPrice(coinmaster, item)
-        : Infinity;
       const itemRetrievePrice = retrievePrice(item);
-      const regularPrice =
-        itemRetrievePrice > 0 ? itemRetrievePrice : item.tradeable ? mallPrice(item) : 0;
-      return Math.min(coinmasterPrice, regularPrice);
+      return itemRetrievePrice > 0 ? itemRetrievePrice : item.tradeable ? mallPrice(item) : 0;
     };
 
     const dietBuilder = computeDiet();
