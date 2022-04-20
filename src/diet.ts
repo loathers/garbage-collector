@@ -4,6 +4,7 @@ import {
   buy,
   chew,
   cliExecute,
+  Coinmaster,
   drink,
   eat,
   Element,
@@ -13,6 +14,7 @@ import {
   getProperty,
   haveEffect,
   inebrietyLimit,
+  isAccessible,
   Item,
   itemType,
   logprint,
@@ -26,6 +28,8 @@ import {
   mySpleenUse,
   print,
   retrievePrice,
+  sellPrice,
+  sellsItem,
   setProperty,
   spleenLimit,
   toItem,
@@ -611,7 +615,14 @@ export function computeDiet(): {
   pantsgiving: () => Diet<Note>;
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
-  MenuItem.defaultPriceFunction = (item: Item) => retrievePrice(item);
+  MenuItem.defaultPriceFunction = (item: Item) => {
+    const coinmaster = Coinmaster.all().find((cm) => isAccessible(cm) && sellsItem(cm, item));
+    const coinmasterPrice = coinmaster
+      ? garboValue(coinmaster.item) * sellPrice(coinmaster, item)
+      : Infinity;
+    const regularPrice = retrievePrice(item) || mallPrice(item) || Infinity;
+    return Math.min(coinmasterPrice, regularPrice);
+  };
   const orEmpty = (diet: Diet<Note>) =>
     diet.expectedValue(MPA, "net") < 0 ? new Diet<Note>() : diet;
   const fullDietPlanner = (menu: MenuItem<Note>[]) => orEmpty(Diet.plan(MPA, menu));
