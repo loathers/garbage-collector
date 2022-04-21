@@ -284,8 +284,7 @@ export const embezzlerSources = [
   new EmbezzlerFight(
     "Digitize",
     () =>
-      get("_sourceTerminalDigitizeMonster") === embezzler &&
-      (Counter.get("Digitize Monster") ?? Infinity) <= 0,
+      get("_sourceTerminalDigitizeMonster") === embezzler && Counter.get("Digitize Monster") <= 0,
     () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
@@ -303,8 +302,8 @@ export const embezzlerSources = [
     "Guaranteed Romantic Monster",
     () =>
       get("_romanticFightsLeft") > 0 &&
-      (Counter.get("Romantic Monster window begin") ?? Infinity) <= 0 &&
-      (Counter.get("Romantic Monster window end") ?? Infinity) <= 0,
+      Counter.get("Romantic Monster window begin") <= 0 &&
+      Counter.get("Romantic Monster window end") <= 0,
     () => 0,
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
@@ -320,9 +319,9 @@ export const embezzlerSources = [
   ),
   new EmbezzlerFight(
     "Enamorang",
-    () => (Counter.get("Enamorang") ?? Infinity) <= 0 && get("enamorangMonster") === embezzler,
+    () => Counter.get("Enamorang") <= 0 && get("enamorangMonster") === embezzler,
     () =>
-      ((Counter.get("Enamorang") ?? Infinity) <= 0 && get("enamorangMonster") === embezzler) ||
+      (Counter.get("Enamorang") <= 0 && get("enamorangMonster") === embezzler) ||
       (have($item`LOV Enamorang`) && !get("_enamorangs"))
         ? 1
         : 0,
