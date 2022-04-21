@@ -827,6 +827,32 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         ],
         ...mayoActions,
         ...speakeasyDrinks,
+        [
+          $item`broberry brogurt`,
+          (countToConsume: number, menuItem: MenuItem<Note>) => {
+            const amountNeeded = countToConsume - availableAmount($item`broberry brogurt`);
+            if (amountNeeded > 0) {
+              const coinmasterPrice =
+                realmAvailable("sleaze") &&
+                sellsItem($coinmaster`Broden's Frozen Brogurt`, $item`broberry brogurt`)
+                  ? 10 * garboValue($item`Beach Buck`)
+                  : Infinity;
+              const regularPrice = mallPrice($item`broberry brogurt`);
+              if (coinmasterPrice < regularPrice) {
+                const amountToBuy = Math.min(
+                  amountNeeded,
+                  Math.floor(itemAmount($item`Beach Buck`))
+                );
+                buy($coinmaster`Broden's Frozen Brogurt`, amountToBuy, $item`broberry brogurt`);
+              }
+              buy(
+                countToConsume - availableAmount($item`broberry brogurt`),
+                $item`broberry brogurt`
+              );
+            }
+            consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+          },
+        ],
       ]);
 
       for (const menuItem of menuItems) {
