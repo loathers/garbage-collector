@@ -547,7 +547,7 @@ export function potionMenu(
     ...potion($item`twice-haunted screwdriver`, { price: twiceHauntedPrice }),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
     ...(realmAvailable("sleaze") &&
-    sellsItem($coinmaster`Broden's Frozen Brogurts`, $item`broberry brogurt`)
+    sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`)
       ? limitedPotion($item`broberry brogurt`, Math.floor(itemAmount($item`Beach Buck`) / 10), {
           price: 10 * garboValue($item`Beach Buck`),
         })
@@ -834,7 +834,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
             if (amountNeeded > 0) {
               const coinmasterPrice =
                 realmAvailable("sleaze") &&
-                sellsItem($coinmaster`Broden's Frozen Brogurt`, $item`broberry brogurt`)
+                sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`)
                   ? 10 * garboValue($item`Beach Buck`)
                   : Infinity;
               const regularPrice = mallPrice($item`broberry brogurt`);
@@ -843,7 +843,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
                   amountNeeded,
                   Math.floor(itemAmount($item`Beach Buck`))
                 );
-                buy($coinmaster`Broden's Frozen Brogurt`, amountToBuy, $item`broberry brogurt`);
+                buy($coinmaster`The Frozen Brogurt Stand`, amountToBuy, $item`broberry brogurt`);
               }
               buy(
                 countToConsume - availableAmount($item`broberry brogurt`),
