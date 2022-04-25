@@ -435,7 +435,7 @@ function checkVolcanoQuest() {
         quantity: get("_volcanoItemCount3"),
         choice: 3,
       },
-    ].sort((a, b) => volcanoItemValue(a) - volcanoItemValue(b))[0];
+    ].reduce((a, b) => (volcanoItemValue(a) < volcanoItemValue(b) ? a : b));
     if (bestItem.item.tradeable && volcanoItemValue(bestItem) < volcoinoValue) {
       withProperty("autoBuyPriceLimit", volcoinoValue, () =>
         retrieveItem(bestItem.item, bestItem.quantity)
