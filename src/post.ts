@@ -76,6 +76,7 @@ export default function postCombatActions(skipDiet = false): void {
   if (!skipDiet) horseradish();
   coldMedicineCabinet();
   safeInterrupt();
+  if (!myAdventures()) throw new Error("Out of adventures!");
   safeRestore();
   updateMallPrices();
 }
