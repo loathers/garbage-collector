@@ -31907,7 +31907,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1e74442045f8217eef6a54e762ef4bdaf27d11d0"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("194d2adae7a54d950b8fa9607790f44c6e0ba27a"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32068,8 +32068,9 @@ function main() {
       autoGarish: true,
       allowNonMoodBurning: !src_lib/* globalOptions.ascending */.Xe.ascending,
       allowSummonBurning: true,
-      libramSkillsSoftcore: "none" // Don't cast librams when mana burning, handled manually based on sale price
-
+      libramSkillsSoftcore: "none",
+      // Don't cast librams when mana burning, handled manually based on sale price
+      valueOfInventory: 2
     });
     var bestHalloweiner = 0;
 
@@ -32505,7 +32506,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("1e74442045f8217eef6a54e762ef4bdaf27d11d0" === mainSha) {
+    if ("194d2adae7a54d950b8fa9607790f44c6e0ba27a" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
