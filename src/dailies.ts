@@ -399,7 +399,7 @@ type VolcanoItem = { quantity: number; item: Item; choice: number };
 
 function volcanoItemValue({ quantity, item }: VolcanoItem): number {
   const basePrice = quantity * retrievePrice(item);
-  if (basePrice > 0) return basePrice;
+  if (basePrice >= 0) return basePrice;
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
     if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) return Infinity;
@@ -436,15 +436,15 @@ function checkVolcanoQuest() {
         choice: 3,
       },
     ].reduce((a, b) => (volcanoItemValue(a) < volcanoItemValue(b) ? a : b));
-    if (bestItem.item.tradeable && volcanoItemValue(bestItem) < volcoinoValue) {
+    if (bestItem.item === $item`fused fuse`) {
+      globalOptions.clarasBellClaimed = true;
+      logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
+    } else if (volcanoItemValue(bestItem) < volcoinoValue) {
       withProperty("autoBuyPriceLimit", volcoinoValue, () =>
         retrieveItem(bestItem.item, bestItem.quantity)
       );
       visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
       runChoice(bestItem.choice);
-    } else if (bestItem.item === $item`fused fuse`) {
-      globalOptions.clarasBellClaimed = true;
-      logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
     }
   });
 }
