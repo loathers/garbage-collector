@@ -23,7 +23,7 @@ const priceCaps: { [index: string]: number } = {
   "mojo filter": 10000,
   "Ol' Scratch's salad fork": 200000,
   "Frosty's frosty mug": 200000,
-  "sweet tooth": 200000,
+  "sweet tooth": 250000,
 };
 
 export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
