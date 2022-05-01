@@ -124,6 +124,7 @@ const specialValueLookup = new Map<Item, () => number>([
         ...$items`Alewife™ Ale, bazookafish bubble gum, beefy fish meat, eel battery, glistening fish meat, ink bladder, pufferfish spine, shark cartilage, slick fish meat, slug of rum, slug of shochu, slug of vodka, temporary teardrop tattoo`
       ),
   ],
+  [$item`fake hand`, () => 50000],
 ]);
 
 function printSession(session: Session): void {
