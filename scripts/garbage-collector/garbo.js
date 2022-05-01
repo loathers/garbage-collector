@@ -31907,7 +31907,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("43a6242e507f40c96ac44d2b23bad9bbfc072c99"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("7355e266f9999a9f7beb69b88c3bd7a3e43462b2"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32506,7 +32506,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("43a6242e507f40c96ac44d2b23bad9bbfc072c99" === mainSha) {
+    if ("7355e266f9999a9f7beb69b88c3bd7a3e43462b2" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -32583,8 +32583,6 @@ function userConfirmDialog(msg, defaultValue, timeOut) {
 /* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9737);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7442);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69;
-
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -32710,7 +32708,13 @@ function meatOutfit(embezzlerUp, requirement, sea) {
   }
 
   if (sea) {
-    parameters.push("sea");
+    if (!(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myFamiliar)().underwater) {
+      var familiarEquip = familiarWaterBreathingEquipment.find(item => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)(item));
+      if (familiarEquip) forceEquip.push(familiarEquip);
+    }
+
+    var airEquip = waterBreathingEquipment.find(item => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)(item) && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.canEquip)(item));
+    if (airEquip) forceEquip.push(airEquip);else parameters.push("sea");
   }
 
   if (embezzlerUp && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myFamiliar)() !== (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$familiar */ .HP)(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["Pocket Professor"]))) && libram__WEBPACK_IMPORTED_MODULE_9__/* .have */ .lf() && !libram__WEBPACK_IMPORTED_MODULE_9__/* .unlockedLocketMonsters */ .SA().includes((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$monster */ .O4)(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["Knob Goblin Embezzler"]))))) {
@@ -32737,48 +32741,7 @@ function meatOutfit(embezzlerUp, requirement, sea) {
     throw new Error("Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?");
   }
 
-  if (sea) {
-    if (!(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Adventure Underwater")) {
-      var _iterator = _createForOfIteratorHelper(waterBreathingEquipment),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var airSource = _step.value;
-
-          if ((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)(airSource)) {
-            if (airSource === (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["The Crown of Ed the Undying"])))) (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.cliExecute)("edpiece fish");
-            (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.equip)(airSource);
-            break;
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    }
-
-    if (!(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.booleanModifier)("Underwater Familiar")) {
-      var _iterator2 = _createForOfIteratorHelper(familiarWaterBreathingEquipment),
-          _step2;
-
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var _airSource = _step2.value;
-
-          if ((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)(_airSource)) {
-            (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.equip)(_airSource);
-            break;
-          }
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
-    }
-  }
+  if (sea && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["The Crown of Ed the Undying"]))))) (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.cliExecute)("edpiece fish");
 }
 var waterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$items */ .vS)(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank"])));
 var familiarWaterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$items */ .vS)(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["das boot, little bitty bathysphere"])));
