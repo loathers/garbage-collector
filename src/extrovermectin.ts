@@ -5,6 +5,7 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
   $slot,
   adventureMacro,
@@ -98,7 +99,7 @@ export function saberCrateIfSafe(): void {
     adventureMacro(
       $location`Noob Cave`,
       Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
-        .if_($monster`time-spinner prank`, Macro.kill())
+        .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
         .if_($monster`sausage goblin`, Macro.kill())
         .ifHolidayWanderer(run.macro)
         .abort()
@@ -174,7 +175,7 @@ function initializeCrates(): void {
       adventureMacro(
         $location`Noob Cave`,
         Macro.if_($monster`crate`, macro)
-          .if_($monster`time-spinner prank`, Macro.kill())
+          .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
           .ifHolidayWanderer(run.macro)
           .abort()
       );
