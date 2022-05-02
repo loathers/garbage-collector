@@ -43,7 +43,6 @@ import {
   $skill,
   $slot,
   $thralls,
-  clamp,
   get,
   getTodaysHolidayWanderers,
   have,
@@ -138,8 +137,8 @@ export function maxPassiveDamage(): number {
 }
 
 export function shouldRedigitize(): boolean {
-  const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
-  const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
+  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
+  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
   // triangular number * 10 - 3
   const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
   // Redigitize if fewer adventures than this digitize usage.
