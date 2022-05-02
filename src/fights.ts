@@ -20,6 +20,7 @@ import {
   mallPrice,
   maximize,
   Monster,
+  myAdventures,
   myAscensions,
   myClass,
   myFamiliar,
@@ -433,7 +434,7 @@ export function dailyFights(): void {
 
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getNextEmbezzlerFight();
-      while (nextFight !== null) {
+      while (nextFight !== null && myAdventures()) {
         print(`Running fight ${nextFight.name}`);
         const startTurns = totalTurnsPlayed();
 

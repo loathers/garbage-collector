@@ -169,7 +169,7 @@ export class EmbezzlerFight {
   }
 
   run(options: { macro?: Macro; location?: Location; useAuto?: boolean } = {}): void {
-    if (!this.available()) return;
+    if (!this.available() || !myAdventures()) return;
     const fightMacro = options.macro ?? embezzlerMacro();
     if (this.draggable) {
       this.execute(
