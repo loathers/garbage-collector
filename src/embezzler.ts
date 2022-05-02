@@ -261,7 +261,7 @@ export const embezzlerMacro = (): Macro =>
         Macro.trySkill($skill`Be Gregarious`)
       )
       .externalIf(
-        get("_sourceTerminalDigitizeMonster") !== embezzler || shouldRedigitize(),
+        SourceTerminal.getDigitizeMonster() !== embezzler || shouldRedigitize(),
         Macro.tryCopier($skill`Digitize`)
       )
       .tryCopier($item`Spooky Putty sheet`)
@@ -285,7 +285,7 @@ export const embezzlerSources = [
     "Digitize",
     () =>
       get("_sourceTerminalDigitizeMonster") === embezzler && Counter.get("Digitize Monster") <= 0,
-    () => (SourceTerminal.have() && get("_sourceTerminalDigitizeUses") === 0 ? 1 : 0),
+    () => (SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction(

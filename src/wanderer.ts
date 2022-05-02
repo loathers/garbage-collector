@@ -1,5 +1,5 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, myTurncount, print, retrieveItem, use } from "kolmafia";
+import { buy, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
 import {
   $effect,
   $item,
@@ -7,6 +7,7 @@ import {
   $locations,
   $skill,
   clamp,
+  Counter,
   get,
   Guzzlr,
   have,
@@ -29,20 +30,19 @@ function untangleDigitizes(turnCount: number, chunks: number): number {
 export function digitizedMonstersRemaining(): number {
   if (!SourceTerminal.have()) return 0;
 
-  const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
-  if (digitizesLeft === 3) return untangleDigitizes(estimatedTurns(), 3);
+  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
+  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
+    return untangleDigitizes(estimatedTurns(), SourceTerminal.getMaximumDigitizeUses());
+  }
 
-  const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
+  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
 
-  const relayArray = get("relayCounters").match(/(\d+):Digitize Monster/);
-  const nextDigitizeEncounter = relayArray ? parseInt(relayArray[1]) : myTurncount();
-
-  const turnsLeftAtNextMonster = estimatedTurns() - (nextDigitizeEncounter - myTurncount());
+  const turnsLeftAtNextMonster = estimatedTurns() - Counter.get("Digitize Monster");
   if (turnsLeftAtNextMonster <= 0) return 0;
   const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
   return (
     untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
-    get("_sourceTerminalDigitizeMonsterCount")
+    SourceTerminal.getDigitizeMonsterCount()
   );
 }
 

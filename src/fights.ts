@@ -143,7 +143,7 @@ const firstChainMacro = () =>
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.externalIf(
-        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        SourceTerminal.getDigitizeMonster() !== $monster`Knob Goblin Embezzler`,
         Macro.tryCopier($skill`Digitize`)
       )
         .tryCopier($item`Spooky Putty sheet`)
@@ -284,7 +284,7 @@ function startWandererCounter() {
     return;
   }
   const digitizeNeedsStarting =
-    Counter.get("Digitize Monster") === Infinity && get("_sourceTerminalDigitizeUses") !== 0;
+    Counter.get("Digitize Monster") === Infinity && SourceTerminal.getDigitizeUses() !== 0;
   const romanceNeedsStarting =
     get("_romanticFightsLeft") > 0 &&
     Counter.get("Romantic Monster window begin") === Infinity &&

@@ -283,9 +283,10 @@ function dailyBuffs(): void {
     cliExecute("summon Preternatural Greed");
   }
 
-  while (SourceTerminal.have() && SourceTerminal.getEnhanceUses() < 3) {
-    cliExecute("terminal enhance meat.enh");
+  while (SourceTerminal.have() && SourceTerminal.enhanceUsesRemaining() > 0) {
+    SourceTerminal.enhance($effect`meat.enh`);
   }
+
   if (!get("_madTeaParty")) {
     retrieveItem($item`filthy knitted dread sack`);
     ensureEffect($effect`Down the Rabbit Hole`);
