@@ -24293,7 +24293,7 @@ var EmbezzlerFight = /*#__PURE__*/function () {
       var _options$macro;
 
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      if (!this.available()) return;
+      if (!this.available() || !(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myAdventures)()) return;
       var fightMacro = (_options$macro = options.macro) !== null && _options$macro !== void 0 ? _options$macro : embezzlerMacro();
 
       if (this.draggable) {
@@ -29807,7 +29807,7 @@ function dailyFights() {
 
       var nextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)();
 
-      while (nextFight !== null) {
+      while (nextFight !== null && (0,external_kolmafia_.myAdventures)()) {
         (0,external_kolmafia_.print)("Running fight ".concat(nextFight.name));
         var startTurns = (0,external_kolmafia_.totalTurnsPlayed)();
 
@@ -31907,7 +31907,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1f37a5f78e3d685ac9abfaef23ab6687aaf36f50"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e83f33b60a41a59f8e06d834788121e0fd508411"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32506,7 +32506,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("1f37a5f78e3d685ac9abfaef23ab6687aaf36f50" === mainSha) {
+    if ("e83f33b60a41a59f8e06d834788121e0fd508411" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
