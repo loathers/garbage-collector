@@ -61,6 +61,7 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
+
   if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
@@ -160,6 +161,8 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
     use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
   }
   mood.potion($item`white candy heart`, 30);
+
+  mood.skill($skill`Curiosity of Br'er Tarrypin`);
 
   if ((get("daycareOpen") || get("_daycareToday")) && !get("_daycareSpa")) {
     cliExecute("daycare mysticality");
