@@ -21343,7 +21343,7 @@ function saberCrateIfSafe() {
       preventEquip: $items(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
     }).merge((_run$constraints$equi = (_run$constraints$equi2 = (_run$constraints3 = run.constraints).equipmentRequirements) === null || _run$constraints$equi2 === void 0 ? void 0 : _run$constraints$equi2.call(_run$constraints3)) !== null && _run$constraints$equi !== void 0 ? _run$constraints$equi : new Requirement([], {})).maximize();
     setChoice(1387, 2);
-    adventureMacro($location(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Noob Cave"]))), Macro.if_($monster(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["crate"]))), Macro.skill($skill(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Use the Force"]))))).if_($monster(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["time-spinner prank"]))), Macro.kill()).if_($monster(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["sausage goblin"]))), Macro.kill()).ifHolidayWanderer(run.macro).abort());
+    adventureMacro($location(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Noob Cave"]))), Macro.if_($monster(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["crate"]))), Macro.skill($skill(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Use the Force"]))))).if_($monsters(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["giant rubber spider, time-spinner prank"]))), Macro.kill()).if_($monster(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["sausage goblin"]))), Macro.kill()).ifHolidayWanderer(run.macro).abort());
   } while (["Puttin' it on Wax", "Wooof! Wooooooof!", "Playing Fetch*", "Your Dog Found Something Again"].includes(get("lastEncounter")));
 }
 /**
@@ -21382,7 +21382,7 @@ function initializeCrates() {
       new Requirement(["100 Monster Level"], {
         forceEquip: $items(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["latte lovers member's mug, Fourth of May Cosplay Saber"]))).filter(item => have(item))
       }).merge((_run$constraints$equi3 = (_run$constraints$equi4 = (_run$constraints6 = run.constraints).equipmentRequirements) === null || _run$constraints$equi4 === void 0 ? void 0 : _run$constraints$equi4.call(_run$constraints6)) !== null && _run$constraints$equi3 !== void 0 ? _run$constraints$equi3 : new Requirement([], {})).maximize();
-      adventureMacro($location(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Noob Cave"]))), Macro.if_($monster(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["crate"]))), macro).if_($monster(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["time-spinner prank"]))), Macro.kill()).ifHolidayWanderer(run.macro).abort());
+      adventureMacro($location(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Noob Cave"]))), Macro.if_($monster(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["crate"]))), macro).if_($monsters(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["giant rubber spider, time-spinner prank"]))), Macro.kill()).ifHolidayWanderer(run.macro).abort());
       visitUrl("desc_effect.php?whicheffect=".concat($effect(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["On the Trail"]))).descid));
     } else if (crateStrategy() === "Saber" && (get("_saberForceMonster") !== $monster(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["crate"]))) || get("_saberForceMonsterCount") === 0) && get("_saberForceUses") < 5) {
       saberCrateIfSafe();
@@ -21795,7 +21795,10 @@ function mapMonster(location, monster) {
     mapPage = visitUrl(toUrl(location), false, true);
     if (mapPage.includes("Leading Yourself Right to Them")) break; // Time-pranks can show up here, annoyingly
 
-    if (mapPage.includes("<!-- MONSTERID: 1965 -->")) runCombat(Macro.attack().repeat().toString());
+    if (mapPage.includes("<!-- MONSTERID: 1965 -->") || mapPage.includes("<!-- MONSTERID: 1622  -->")) {
+      runCombat(Macro.attack().repeat().toString());
+    }
+
     if (handlingChoice()) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw "Map the monsters unsuccessful?";
     if (tries === 9) throw "Stuck trying to Map the monsters.";
@@ -21965,7 +21968,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("7d9292d49b27e44aff98f1155b559528cb05d11f" === mainSha) {
+    if ("b340cb0b7c3f1b270f74e0bb05a52c5d08b24d48" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
