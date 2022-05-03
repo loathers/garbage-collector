@@ -653,7 +653,7 @@ const pygmyMacro = Macro.if_(
     Macro.trySkill($skill`Feel Hatred`).item($item`divine champagne popper`)
   )
   .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
-  .if_($monster`time-spinner prank`, Macro.basicCombat())
+  .if_($monsters`giant rubber spider, time-spinner prank`, Macro.basicCombat())
   .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`))
   .ifHolidayWanderer(Macro.basicCombat())
   .abort();
@@ -868,7 +868,9 @@ const freeFightSources = [
           (getBestItemStealZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
       ) {
         withMacro(
-          Macro.if_($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`),
+          Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill()).skill(
+            $skill`Use the Force`
+          ),
           () => {
             mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
             runCombat();
@@ -894,7 +896,7 @@ const freeFightSources = [
               $monster`dog-alien`,
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
             )
-            .if_($monster`time-spinner prank`, Macro.kill())
+            .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
             .skill($skill`Use the Force`)
         );
       }
@@ -1965,7 +1967,9 @@ function deliverThesis(): void {
 
   adventureMacro(
     thesisLocation,
-    Macro.if_($monster`time-spinner prank`, Macro.basicCombat()).skill($skill`deliver your thesis!`)
+    Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.basicCombat()).skill(
+      $skill`deliver your thesis!`
+    )
   );
   postCombatActions();
 }
