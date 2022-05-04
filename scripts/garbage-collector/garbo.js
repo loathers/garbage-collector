@@ -29245,7 +29245,7 @@ function fightPiece(piece) {
 // EXTERNAL MODULE: ./node_modules/libram/dist/resources/2022/CombatLoversLocket.js
 var CombatLoversLocket = __webpack_require__(4866);
 ;// CONCATENATED MODULE: ./src/mood.ts
-var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, src_mood_templateObject11, src_mood_templateObject12, src_mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67;
+var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, src_mood_templateObject11, src_mood_templateObject12, src_mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67, mood_templateObject68;
 
 function mood_toConsumableArray(arr) { return mood_arrayWithoutHoles(arr) || mood_iterableToArray(arr) || src_mood_unsupportedIterableToArray(arr) || mood_nonIterableSpread(); }
 
@@ -29379,40 +29379,41 @@ function freeFightMood() {
   }
 
   mood.potion((0,template_string/* $item */.xr)(mood_templateObject54 || (mood_templateObject54 = src_mood_taggedTemplateLiteral(["white candy heart"]))), 30);
+  mood.skill((0,template_string/* $skill */.tm)(mood_templateObject55 || (mood_templateObject55 = src_mood_taggedTemplateLiteral(["Curiosity of Br'er Tarrypin"]))));
 
   if (((0,property/* get */.U2)("daycareOpen") || (0,property/* get */.U2)("_daycareToday")) && !(0,property/* get */.U2)("_daycareSpa")) {
     (0,external_kolmafia_.cliExecute)("daycare mysticality");
   }
 
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject55 || (mood_templateObject55 = src_mood_taggedTemplateLiteral(["redwood rain stick"])))) && !(0,property/* get */.U2)("_redwoodRainStickUsed")) {
-    (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(mood_templateObject56 || (mood_templateObject56 = src_mood_taggedTemplateLiteral(["redwood rain stick"]))));
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject56 || (mood_templateObject56 = src_mood_taggedTemplateLiteral(["redwood rain stick"])))) && !(0,property/* get */.U2)("_redwoodRainStickUsed")) {
+    (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(mood_templateObject57 || (mood_templateObject57 = src_mood_taggedTemplateLiteral(["redwood rain stick"]))));
   }
 
   var beachHeadsUsed = (0,property/* get */.U2)("_beachHeadsUsed");
 
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject57 || (mood_templateObject57 = src_mood_taggedTemplateLiteral(["Beach Comb"])))) && !beachHeadsUsed.toString().split(",").includes("10")) {
-    mood.effect((0,template_string/* $effect */._G)(mood_templateObject58 || (mood_templateObject58 = src_mood_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))));
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject58 || (mood_templateObject58 = src_mood_taggedTemplateLiteral(["Beach Comb"])))) && !beachHeadsUsed.toString().split(",").includes("10")) {
+    mood.effect((0,template_string/* $effect */._G)(mood_templateObject59 || (mood_templateObject59 = src_mood_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))));
   }
 
   if (Witchess_have() && !(0,property/* get */.U2)("_witchessBuff")) {
-    mood.effect((0,template_string/* $effect */._G)(mood_templateObject59 || (mood_templateObject59 = src_mood_taggedTemplateLiteral(["Puzzle Champ"]))));
+    mood.effect((0,template_string/* $effect */._G)(mood_templateObject60 || (mood_templateObject60 = src_mood_taggedTemplateLiteral(["Puzzle Champ"]))));
   }
 
   if ((0,src_lib/* questStep */.cL)("questL06Friar") === 999 && !(0,property/* get */.U2)("friarsBlessingReceived")) {
     (0,external_kolmafia_.cliExecute)("friars familiar");
   }
 
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject60 || (mood_templateObject60 = src_mood_taggedTemplateLiteral(["The Legendary Beat"])))) && !(0,property/* get */.U2)("_legendaryBeat")) {
-    (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(mood_templateObject61 || (mood_templateObject61 = src_mood_taggedTemplateLiteral(["The Legendary Beat"]))));
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(mood_templateObject61 || (mood_templateObject61 = src_mood_taggedTemplateLiteral(["The Legendary Beat"])))) && !(0,property/* get */.U2)("_legendaryBeat")) {
+    (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(mood_templateObject62 || (mood_templateObject62 = src_mood_taggedTemplateLiteral(["The Legendary Beat"]))));
   }
 
   shrugBadEffects.apply(void 0, additionalEffects);
-  if ((0,external_kolmafia_.getWorkshed)() === (0,template_string/* $item */.xr)(mood_templateObject62 || (mood_templateObject62 = src_mood_taggedTemplateLiteral(["Asdon Martin keyfob"])))) mood.drive(AsdonMartin/* Driving.Observantly */.ji.Observantly);
+  if ((0,external_kolmafia_.getWorkshed)() === (0,template_string/* $item */.xr)(mood_templateObject63 || (mood_templateObject63 = src_mood_taggedTemplateLiteral(["Asdon Martin keyfob"])))) mood.drive(AsdonMartin/* Driving.Observantly */.ji.Observantly);
   return mood;
 }
-var stings = [].concat(mood_toConsumableArray((0,template_string/* $effects */.lh)(mood_templateObject63 || (mood_templateObject63 = src_mood_taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [(0,template_string/* $effect */._G)(mood_templateObject64 || (mood_templateObject64 = src_mood_taggedTemplateLiteral(["Burning, Man"]))), (0,template_string/* $effect */._G)(mood_templateObject65 || (mood_templateObject65 = src_mood_taggedTemplateLiteral(["Yes, Can Haz"])))]);
-var textAlteringEffects = (0,template_string/* $effects */.lh)(mood_templateObject66 || (mood_templateObject66 = src_mood_taggedTemplateLiteral(["Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo"])));
-var teleportEffects = (0,template_string/* $effects */.lh)(mood_templateObject67 || (mood_templateObject67 = src_mood_taggedTemplateLiteral(["Teleportitis, Feeling Lost, Funday!"])));
+var stings = [].concat(mood_toConsumableArray((0,template_string/* $effects */.lh)(mood_templateObject64 || (mood_templateObject64 = src_mood_taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [(0,template_string/* $effect */._G)(mood_templateObject65 || (mood_templateObject65 = src_mood_taggedTemplateLiteral(["Burning, Man"]))), (0,template_string/* $effect */._G)(mood_templateObject66 || (mood_templateObject66 = src_mood_taggedTemplateLiteral(["Yes, Can Haz"])))]);
+var textAlteringEffects = (0,template_string/* $effects */.lh)(mood_templateObject67 || (mood_templateObject67 = src_mood_taggedTemplateLiteral(["Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo"])));
+var teleportEffects = (0,template_string/* $effects */.lh)(mood_templateObject68 || (mood_templateObject68 = src_mood_taggedTemplateLiteral(["Teleportitis, Feeling Lost, Funday!"])));
 
 function shrugBadEffects() {
   for (var _len2 = arguments.length, exclude = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
@@ -31423,8 +31424,8 @@ function volcanoDailies() {
 function volcanoItemValue(_ref3) {
   var quantity = _ref3.quantity,
       item = _ref3.item;
-  var basePrice = quantity * (0,external_kolmafia_.retrievePrice)(item);
-  if (basePrice > 0) return basePrice;
+  var basePrice = (0,external_kolmafia_.retrievePrice)(item, quantity);
+  if (basePrice >= 0) return basePrice;
 
   if (item === (0,template_string/* $item */.xr)(dailies_templateObject75 || (dailies_templateObject75 = dailies_taggedTemplateLiteral(["fused fuse"])))) {
     // Check if clara's bell is available and unused
@@ -31442,35 +31443,33 @@ function volcanoItemValue(_ref3) {
 }
 
 function checkVolcanoQuest() {
+  var _property$getItem, _property$getItem2, _property$getItem3;
+
   (0,external_kolmafia_.print)("Checking volcano quest", src_lib/* HIGHLIGHT */.X2);
   (0,external_kolmafia_.visitUrl)("place.php?whichplace=airport_hot&action=airport4_questhub");
   var volcoinoValue = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailies_templateObject78 || (dailies_templateObject78 = dailies_taggedTemplateLiteral(["Volcoino"]))));
-  (0,property/* withProperty */.pr)("valueOfInventory", 2, () => {
-    var _property$getItem, _property$getItem2, _property$getItem3;
+  var bestItem = [{
+    item: (_property$getItem = property/* getItem */.rV("_volcanoItem1")) !== null && _property$getItem !== void 0 ? _property$getItem : (0,template_string/* $item */.xr)(dailies_templateObject79 || (dailies_templateObject79 = dailies_taggedTemplateLiteral(["none"]))),
+    quantity: (0,property/* get */.U2)("_volcanoItemCount1"),
+    choice: 1
+  }, {
+    item: (_property$getItem2 = property/* getItem */.rV("_volcanoItem2")) !== null && _property$getItem2 !== void 0 ? _property$getItem2 : (0,template_string/* $item */.xr)(dailies_templateObject80 || (dailies_templateObject80 = dailies_taggedTemplateLiteral(["none"]))),
+    quantity: (0,property/* get */.U2)("_volcanoItemCount2"),
+    choice: 2
+  }, {
+    item: (_property$getItem3 = property/* getItem */.rV("_volcanoItem3")) !== null && _property$getItem3 !== void 0 ? _property$getItem3 : (0,template_string/* $item */.xr)(dailies_templateObject81 || (dailies_templateObject81 = dailies_taggedTemplateLiteral(["none"]))),
+    quantity: (0,property/* get */.U2)("_volcanoItemCount3"),
+    choice: 3
+  }].reduce((a, b) => volcanoItemValue(a) < volcanoItemValue(b) ? a : b);
 
-    var bestItem = [{
-      item: (_property$getItem = property/* getItem */.rV("_volcanoItem1")) !== null && _property$getItem !== void 0 ? _property$getItem : (0,template_string/* $item */.xr)(dailies_templateObject79 || (dailies_templateObject79 = dailies_taggedTemplateLiteral(["none"]))),
-      quantity: (0,property/* get */.U2)("_volcanoItemCount1"),
-      choice: 1
-    }, {
-      item: (_property$getItem2 = property/* getItem */.rV("_volcanoItem2")) !== null && _property$getItem2 !== void 0 ? _property$getItem2 : (0,template_string/* $item */.xr)(dailies_templateObject80 || (dailies_templateObject80 = dailies_taggedTemplateLiteral(["none"]))),
-      quantity: (0,property/* get */.U2)("_volcanoItemCount2"),
-      choice: 2
-    }, {
-      item: (_property$getItem3 = property/* getItem */.rV("_volcanoItem3")) !== null && _property$getItem3 !== void 0 ? _property$getItem3 : (0,template_string/* $item */.xr)(dailies_templateObject81 || (dailies_templateObject81 = dailies_taggedTemplateLiteral(["none"]))),
-      quantity: (0,property/* get */.U2)("_volcanoItemCount3"),
-      choice: 3
-    }].sort((a, b) => volcanoItemValue(a) - volcanoItemValue(b))[0];
-
-    if (bestItem.item.tradeable && volcanoItemValue(bestItem) < volcoinoValue) {
-      (0,property/* withProperty */.pr)("autoBuyPriceLimit", volcoinoValue, () => (0,external_kolmafia_.retrieveItem)(bestItem.item, bestItem.quantity));
-      (0,external_kolmafia_.visitUrl)("place.php?whichplace=airport_hot&action=airport4_questhub");
-      (0,external_kolmafia_.runChoice)(bestItem.choice);
-    } else if (bestItem.item === (0,template_string/* $item */.xr)(dailies_templateObject82 || (dailies_templateObject82 = dailies_taggedTemplateLiteral(["fused fuse"])))) {
-      src_lib/* globalOptions.clarasBellClaimed */.Xe.clarasBellClaimed = true;
-      (0,src_lib/* logMessage */.ji)("Grab a fused fused with your clara's bell charge while overdrunk!");
-    }
-  });
+  if (bestItem.item === (0,template_string/* $item */.xr)(dailies_templateObject82 || (dailies_templateObject82 = dailies_taggedTemplateLiteral(["fused fuse"])))) {
+    src_lib/* globalOptions.clarasBellClaimed */.Xe.clarasBellClaimed = true;
+    (0,src_lib/* logMessage */.ji)("Grab a fused fused with your clara's bell charge while overdrunk!");
+  } else if (volcanoItemValue(bestItem) < volcoinoValue) {
+    (0,property/* withProperty */.pr)("autoBuyPriceLimit", volcoinoValue, () => (0,external_kolmafia_.retrieveItem)(bestItem.item, bestItem.quantity));
+    (0,external_kolmafia_.visitUrl)("place.php?whichplace=airport_hot&action=airport4_questhub");
+    (0,external_kolmafia_.runChoice)(bestItem.choice);
+  }
 }
 
 function cheat() {
@@ -31912,7 +31911,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("dc22bb34f6e0223faa63763a9cae6e8b78424792"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("675e3f3f0ffac70ef1155e9c28b0cb165c968c28"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32514,7 +32513,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("dc22bb34f6e0223faa63763a9cae6e8b78424792" === mainSha) {
+    if ("675e3f3f0ffac70ef1155e9c28b0cb165c968c28" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
