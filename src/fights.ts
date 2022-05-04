@@ -46,7 +46,6 @@ import {
   toItem,
   toSlot,
   totalTurnsPlayed,
-  toUrl,
   use,
   useFamiliar,
   useSkill,
@@ -1878,18 +1877,6 @@ export function freeFights(): void {
 }
 
 function setNepQuestChoicesAndPrepItems() {
-  if (get("_questPartyFair") === "unstarted") {
-    visitUrl(toUrl($location`The Neverending Party`));
-    if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
-      print("Gerald/ine quest!", HIGHLIGHT);
-      globalOptions.clarasBellClaimed = true;
-    }
-    if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
-      runChoice(1); // Accept quest
-    } else {
-      runChoice(2); // Decline quest
-    }
-  }
   const quest = get("_questPartyFairQuest");
 
   if (quest === "food") {
