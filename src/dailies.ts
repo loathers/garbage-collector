@@ -399,8 +399,8 @@ function volcanoDailies(): void {
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
 function volcanoItemValue({ quantity, item }: VolcanoItem): number {
-  const basePrice = quantity * retrievePrice(item);
-  if (basePrice > 0) return basePrice;
+  const basePrice = retrievePrice(item, quantity);
+  if (basePrice >= 0) return basePrice;
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
     if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) return Infinity;
@@ -419,35 +419,33 @@ function checkVolcanoQuest() {
   print("Checking volcano quest", HIGHLIGHT);
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
   const volcoinoValue = garboValue($item`Volcoino`);
-  withProperty("valueOfInventory", 2, () => {
-    const bestItem = [
-      {
-        item: property.getItem("_volcanoItem1") ?? $item`none`,
-        quantity: get("_volcanoItemCount1"),
-        choice: 1,
-      },
-      {
-        item: property.getItem("_volcanoItem2") ?? $item`none`,
-        quantity: get("_volcanoItemCount2"),
-        choice: 2,
-      },
-      {
-        item: property.getItem("_volcanoItem3") ?? $item`none`,
-        quantity: get("_volcanoItemCount3"),
-        choice: 3,
-      },
-    ].sort((a, b) => volcanoItemValue(a) - volcanoItemValue(b))[0];
-    if (bestItem.item.tradeable && volcanoItemValue(bestItem) < volcoinoValue) {
-      withProperty("autoBuyPriceLimit", volcoinoValue, () =>
-        retrieveItem(bestItem.item, bestItem.quantity)
-      );
-      visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
-      runChoice(bestItem.choice);
-    } else if (bestItem.item === $item`fused fuse`) {
-      globalOptions.clarasBellClaimed = true;
-      logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
-    }
-  });
+  const bestItem = [
+    {
+      item: property.getItem("_volcanoItem1") ?? $item`none`,
+      quantity: get("_volcanoItemCount1"),
+      choice: 1,
+    },
+    {
+      item: property.getItem("_volcanoItem2") ?? $item`none`,
+      quantity: get("_volcanoItemCount2"),
+      choice: 2,
+    },
+    {
+      item: property.getItem("_volcanoItem3") ?? $item`none`,
+      quantity: get("_volcanoItemCount3"),
+      choice: 3,
+    },
+  ].reduce((a, b) => (volcanoItemValue(a) < volcanoItemValue(b) ? a : b));
+  if (bestItem.item === $item`fused fuse`) {
+    globalOptions.clarasBellClaimed = true;
+    logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
+  } else if (volcanoItemValue(bestItem) < volcoinoValue) {
+    withProperty("autoBuyPriceLimit", volcoinoValue, () =>
+      retrieveItem(bestItem.item, bestItem.quantity)
+    );
+    visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+    runChoice(bestItem.choice);
+  }
 }
 
 function cheat(): void {
