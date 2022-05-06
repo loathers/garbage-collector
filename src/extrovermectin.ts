@@ -18,7 +18,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { ltbRun, setChoice } from "./lib";
+import { latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";
@@ -63,9 +63,14 @@ export function doingExtrovermectin(): boolean {
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   if (!doingExtrovermectin()) return null;
-  if (have($skill`Transcendent Olfaction`)) return "Sniff";
+  if (
+    have($skill`Transcendent Olfaction`) &&
+    (property.getString("olfactedMonster") === "crate" || get("_olfactionsUsed") < 2)
+  ) {
+    return "Sniff";
+  }
   if (have($item`miniature crystal ball`)) return "Orb";
-  if (have($item`Fourth of May Cosplay Saber`)) return "Saber";
+  if (have($item`Fourth of May Cosplay Saber`) && get("_saberForceUses") < 5) return "Saber";
   return null;
 }
 
@@ -142,11 +147,13 @@ function initializeCrates(): void {
     }
     // if we have olfaction, that's our primary method for ensuring crates
     if (
-      have($skill`Transcendent Olfaction`) &&
-      (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate") &&
-      get("_olfactionsUsed") < 2
+      (crateStrategy() === "Sniff" && property.getString("olfactedMonster") === "crate") ||
+      (crateStrategy() === "Orb" &&
+        ((get("_gallapagosMonster") !== $monster`crate` &&
+          have($skill`Gallapagosian Mating Call`)) ||
+          (have($item`latte lovers member's mug`) && !get("_latteCopyUsed"))))
     ) {
-      const run = tryFindFreeRun() ?? ltbRun();
+      const run = tryFindFreeRun(latteActionSourceFinderConstraints) ?? ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
 
       // Sniff the crate in as many ways as humanly possible
