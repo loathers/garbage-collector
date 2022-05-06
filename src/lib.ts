@@ -27,6 +27,7 @@ import {
   runChoice,
   runCombat,
   todayToString,
+  toSlot,
   toUrl,
   use,
   useFamiliar,
@@ -39,6 +40,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slot,
   ActionSource,
   bestLibramToCast,
   ChateauMantegna,
@@ -446,3 +448,16 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   if (timeOut) return userConfirm(msg, timeOut, defaultValue);
   return userConfirm(msg);
 }
+
+export const latteActionSourceFinderConstraints = {
+  allowedAction: (action: ActionSource): boolean => {
+    const forceEquipsOtherThanLatte = (
+      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
+    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
+    return (
+      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+      forceEquipsOtherThanLatte.filter((equipment) => toSlot(equipment) === $slot`weapon`).length <
+        2
+    );
+  },
+};
