@@ -922,17 +922,6 @@ function proceedWithOrb(): boolean {
   // If we can't possibly use orb, return true
   if (!have($item`miniature crystal ball`) || strat === "Saber") return true;
 
-  // If we're sniffing and an Embezzler is in the queue already, return true
-  if (
-    strat === "Sniff" &&
-    $location`Noob Cave`.combatQueue
-      .split(";")
-      .map((monster) => toMonster(monster))
-      .includes(embezzler)
-  ) {
-    return true;
-  }
-
   // If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (

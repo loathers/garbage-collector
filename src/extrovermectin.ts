@@ -125,7 +125,7 @@ export function saberCrateIfSafe(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    [undefined, $monster`Knob Goblin Embezzler`].includes(
+    [undefined, $monster`crate`].includes(
       CrystalBall.currentPredictions(false).get($location`Noob Cave`)
     ) &&
     !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
