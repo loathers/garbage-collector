@@ -129,8 +129,7 @@ export function equipOrbIfDesired(): void {
       CrystalBall.currentPredictions(false).get($location`Noob Cave`)
     ) &&
     !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
-    (crateStrategy() !== "Sniff" ||
-      !$location`Noob Cave`.combatQueue.includes($monster`Knob Goblin Embezzler`.name))
+    crateStrategy() !== "Sniff"
   ) {
     equip($slot`familiar`, $item`miniature crystal ball`);
   }

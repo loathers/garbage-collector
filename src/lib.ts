@@ -451,6 +451,7 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
 
 export const latteActionSourceFinderConstraints = {
   allowedAction: (action: ActionSource): boolean => {
+    if (!have($item`latte lovers member's mug`)) return true;
     const forceEquipsOtherThanLatte = (
       action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
     ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
