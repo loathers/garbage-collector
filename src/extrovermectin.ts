@@ -120,14 +120,12 @@ export function saberCrateIfSafe(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    CrystalBall.currentPredictions(false).get($location`Noob Cave`) ===
-      $monster`Knob Goblin Embezzler` &&
+    [undefined, $monster`Knob Goblin Embezzler`].includes(
+      CrystalBall.currentPredictions(false).get($location`Noob Cave`)
+    ) &&
     !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
     (crateStrategy() !== "Sniff" ||
-      !$location`Noob Cave`.combatQueue
-        .split(";")
-        .map((monster) => toMonster(monster))
-        .includes($monster`Knob Goblin Embezzler`))
+      !$location`Noob Cave`.combatQueue.includes($monster`Knob Goblin Embezzler`.name))
   ) {
     equip($slot`familiar`, $item`miniature crystal ball`);
   }
