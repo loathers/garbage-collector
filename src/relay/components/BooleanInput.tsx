@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 
 function BooleanInput(props: SettingProp): JSX.Element {
-  const [value, setValue] = useState(props.value === true);
+  const [value, setValue] = useState(props.value === true || props.value === "true");
 
   return (
     <label className="checkcontainer">

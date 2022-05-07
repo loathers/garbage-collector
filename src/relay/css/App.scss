@@ -18,6 +18,7 @@ $speed: 0.4s;
 #notificationsContainer {
   position: absolute;
   width: 100%;
+  z-index: 999;
 }
 
 img {
