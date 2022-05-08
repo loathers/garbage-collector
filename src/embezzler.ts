@@ -362,35 +362,6 @@ export const embezzlerSources = [
     }
   ),
   new EmbezzlerFight(
-    "Time-Spinner",
-    () =>
-      have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some((location) =>
-        location.combatQueue.includes(embezzler.name)
-      ) &&
-      get("_timeSpinnerMinutesUsed") <= 7,
-    () =>
-      have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) =>
-          location.combatQueue.includes(embezzler.name) || get("beGregariousCharges") > 0
-      )
-        ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      withMacro(
-        options.macro,
-        () => {
-          visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
-          runChoice(1);
-          visitUrl(`choice.php?whichchoice=1196&monid=${embezzler.id}&option=1`);
-          runCombat();
-        },
-        options.useAuto
-      );
-    }
-  ),
-  new EmbezzlerFight(
     "Macrometeorite",
     () =>
       get("beGregariousMonster") === embezzler &&
@@ -538,6 +509,35 @@ export const embezzlerSources = [
         }),
       ],
       canInitializeWandererCounters: true,
+    }
+  ),
+  new EmbezzlerFight(
+    "Time-Spinner",
+    () =>
+      have($item`Time-Spinner`) &&
+      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some((location) =>
+        location.combatQueue.includes(embezzler.name)
+      ) &&
+      get("_timeSpinnerMinutesUsed") <= 7,
+    () =>
+      have($item`Time-Spinner`) &&
+      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
+        (location) =>
+          location.combatQueue.includes(embezzler.name) || get("beGregariousCharges") > 0
+      )
+        ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      withMacro(
+        options.macro,
+        () => {
+          visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
+          runChoice(1);
+          visitUrl(`choice.php?whichchoice=1196&monid=${embezzler.id}&option=1`);
+          runCombat();
+        },
+        options.useAuto
+      );
     }
   ),
   new EmbezzlerFight(
