@@ -92,6 +92,7 @@ import {
   sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
+  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -761,6 +762,7 @@ const freeFightSources = [
         }
       }
       useSkill($skill`Evoke Eldritch Horror`);
+      if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
     },
     false,
     { canOverrideMacro: true }
