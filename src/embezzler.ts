@@ -9,7 +9,6 @@ import {
   itemAmount,
   Location,
   mallPrice,
-  Monster,
   myAdventures,
   myFamiliar,
   myHash,
@@ -21,8 +20,6 @@ import {
   runChoice,
   runCombat,
   toInt,
-  toLocation,
-  toMonster,
   toUrl,
   use,
   visitUrl,
@@ -53,7 +50,7 @@ import {
 import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
-import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
+import { crateStrategy, equipOrbIfDesired, ponderPrediction } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
   globalOptions,
@@ -934,17 +931,4 @@ function proceedWithOrb(): boolean {
   }
 
   return true;
-}
-
-function ponderPrediction(location: Location): Monster | null {
-  visitUrl("inventory.php?ponder=1", false);
-  const parsedProp = new Map(
-    get("crystalBallPredictions")
-      .split("|")
-      .map((element) => element.split(":") as [string, string, string])
-      .map(
-        ([, location, monster]) => [toLocation(location), toMonster(monster)] as [Location, Monster]
-      )
-  );
-  return parsedProp.get(location) ?? null;
 }
