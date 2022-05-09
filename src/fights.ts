@@ -750,8 +750,11 @@ const freeFightSources = [
     () => have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked"),
     () => {
       if (!have($effect`Crappily Disguised as a Waiter`)) {
+        const expectedIchors = 6;
+        const rate = 1 / 100;
         const value =
-          (6 * garboValue($item`eldritch ichor`)) / 100 - mallPrice($item`crappy waiter disguise`);
+          expectedIchors * garboValue($item`eldritch ichor`) * rate -
+          mallPrice($item`crappy waiter disguise`);
         if (value > 0) {
           retrieveItem($item`crappy waiter disguise`);
           use($item`crappy waiter disguise`);
