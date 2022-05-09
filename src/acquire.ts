@@ -2,17 +2,22 @@ import {
   buy,
   cliExecute,
   closetAmount,
+  Coinmaster,
   Item,
   itemAmount,
   mallPrice,
   print,
+  retrieveItem,
+  sellPrice,
+  sellsItem,
   shopAmount,
   storageAmount,
   takeCloset,
   takeShop,
   takeStorage,
 } from "kolmafia";
-import { get } from "libram";
+import { get, withProperty } from "libram";
+import { garboValue } from "./session";
 
 const priceCaps: { [index: string]: number } = {
   "cuppa Voraci tea": 200000,
@@ -65,11 +70,14 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
     if (!takeShop(getMall, item) && throwOnFail) logError(item, "shop");
   }
   remaining -= getMall;
-  if (remaining <= 0) return qty;
-
-  if (maxPrice <= 0) throw `buying disabled for ${item.name}.`;
-
-  buy(remaining, item, maxPrice);
-  if (itemAmount(item) < qty && throwOnFail) throw `Mall price too high for ${item.name}.`;
+  const coinmaster = Coinmaster.all().find((cm) => sellsItem(cm, item));
+  const coinmasterPrice = coinmaster
+    ? garboValue(coinmaster.item) * sellPrice(coinmaster, item)
+    : 0;
+  if (coinmaster && coinmasterPrice > mallPrice(item)) {
+    buy(item, remaining, maxPrice);
+  } else {
+    withProperty("autoBuyPriceLimit", maxPrice, () => retrieveItem(item, qty));
+  }
   return itemAmount(item) - startAmount;
 }
