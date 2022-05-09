@@ -9,6 +9,7 @@ import {
   itemAmount,
   Location,
   mallPrice,
+  Monster,
   myAdventures,
   myFamiliar,
   myHash,
@@ -20,6 +21,7 @@ import {
   runChoice,
   runCombat,
   toInt,
+  toLocation,
   toMonster,
   toUrl,
   use,
@@ -40,7 +42,6 @@ import {
   ChateauMantegna,
   CombatLoversLocket,
   Counter,
-  CrystalBall,
   get,
   have,
   property,
@@ -339,20 +340,17 @@ export const embezzlerSources = [
   ),
   new EmbezzlerFight(
     "Orb Prediction",
-    () => CrystalBall.currentPredictions(false).get($location`The Dire Warren`) === embezzler,
+    () => ponderPrediction($location`The Dire Warren`) === embezzler,
     () =>
       (have($item`miniature crystal ball`) ? 1 : 0) *
       (get("beGregariousCharges") +
         (get("beGregariousFightsLeft") > 0 ||
-        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) === embezzler
+        ponderPrediction($location`The Dire Warren`) === embezzler
           ? 1
           : 0)),
     (options: EmbezzlerFightRunOptions) => {
       visitUrl("inventory.php?ponder=1");
-      if (
-        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !==
-        $monster`Knob Goblin Embezzler`
-      ) {
+      if (ponderPrediction($location`The Dire Warren`) !== $monster`Knob Goblin Embezzler`) {
         return;
       }
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
@@ -498,21 +496,20 @@ export const embezzlerSources = [
         Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro)
       );
       // reset the crystal ball prediction by staring longingly at toast
-      if (
-        get("beGregariousFightsLeft") === 1 &&
-        have($item`miniature crystal ball`) &&
-        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !== embezzler
-      ) {
-        try {
-          const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
-          if (!store.includes("Check out the gift shop")) {
-            print("Unable to stare longingly at toast");
+      if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
+        const warrenPrediction = ponderPrediction($location`The Dire Warren`);
+        if (warrenPrediction && warrenPrediction !== embezzler) {
+          try {
+            const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+            if (!store.includes("Check out the gift shop")) {
+              print("Unable to stare longingly at toast");
+            }
+            runChoice(4);
+          } catch {
+            // orb reseting raises a mafia error
           }
-          runChoice(4);
-        } catch {
-          // orb reseting raises a mafia error
+          visitUrl("main.php");
         }
-        visitUrl("main.php");
       }
     },
     {
@@ -525,7 +522,7 @@ export const embezzlerSources = [
       get("beGregariousMonster") === embezzler &&
       get("beGregariousFightsLeft") === 1 &&
       have($item`miniature crystal ball`) &&
-      !CrystalBall.currentPredictions(true).has($location`The Dire Warren`),
+      !ponderPrediction($location`The Dire Warren`),
     () =>
       (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
       get("beGregariousCharges") > 0
@@ -939,7 +936,7 @@ function proceedWithOrb(): boolean {
   // If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (
-    CrystalBall.currentPredictions(false).get($location`Noob Cave`) === embezzler &&
+    ponderPrediction($location`Noob Cave`) === embezzler &&
     embezzlerSources
       .filter((source) => !gregFightNames.includes(source.name))
       .find((source) => source.available())
@@ -948,4 +945,17 @@ function proceedWithOrb(): boolean {
   }
 
   return true;
+}
+
+function ponderPrediction(location: Location): Monster | null {
+  visitUrl("inventory.php?ponder=1");
+  const parsedProp = new Map(
+    get("crystalBallPredictions")
+      .split("|")
+      .map((element) => element.split(":") as [string, string, string])
+      .map(
+        ([, location, monster]) => [toLocation(location), toMonster(monster)] as [Location, Monster]
+      )
+  );
+  return parsedProp.get(location) ?? null;
 }
