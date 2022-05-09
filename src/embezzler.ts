@@ -496,21 +496,20 @@ export const embezzlerSources = [
         Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro)
       );
       // reset the crystal ball prediction by staring longingly at toast
-      if (
-        get("beGregariousFightsLeft") === 1 &&
-        have($item`miniature crystal ball`) &&
-        (ponderPrediction($location`The Dire Warren`) ?? embezzler !== embezzler)
-      ) {
-        try {
-          const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
-          if (!store.includes("Check out the gift shop")) {
-            print("Unable to stare longingly at toast");
+      if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
+        const warrenPrediction = ponderPrediction($location`The Dire Warren`);
+        if (warrenPrediction && warrenPrediction !== embezzler) {
+          try {
+            const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+            if (!store.includes("Check out the gift shop")) {
+              print("Unable to stare longingly at toast");
+            }
+            runChoice(4);
+          } catch {
+            // orb reseting raises a mafia error
           }
-          runChoice(4);
-        } catch {
-          // orb reseting raises a mafia error
+          visitUrl("main.php");
         }
-        visitUrl("main.php");
       }
     },
     {
