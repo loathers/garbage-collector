@@ -19476,7 +19476,9 @@ module.exports = stubFalse;
 /* harmony export */ });
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2474);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2474);
+/* harmony import */ var _session__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(742);
+
 
 
 var priceCaps = {
@@ -19505,7 +19507,7 @@ function acquire(qty, item, maxPrice) {
     throw "Failed to remove ".concat(target, " from ").concat(source);
   };
 
-  if ((0,libram__WEBPACK_IMPORTED_MODULE_1__/* .get */ .U2)("autoSatisfyWithCloset")) {
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("autoSatisfyWithCloset")) {
     var getCloset = Math.min(remaining, (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.closetAmount)(item));
     if (!(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.takeCloset)(getCloset, item) && throwOnFail) logError(item, "closet");
     remaining -= getCloset;
@@ -19527,10 +19529,15 @@ function acquire(qty, item, maxPrice) {
   }
 
   remaining -= getMall;
-  if (remaining <= 0) return qty;
-  if (maxPrice <= 0) throw "buying disabled for ".concat(item.name, ".");
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.buy)(remaining, item, maxPrice);
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)(item) < qty && throwOnFail) throw "Mall price too high for ".concat(item.name, ".");
+  var coinmaster = kolmafia__WEBPACK_IMPORTED_MODULE_0__.Coinmaster.all().find(cm => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.sellsItem)(cm, item));
+  var coinmasterPrice = coinmaster ? (0,_session__WEBPACK_IMPORTED_MODULE_1__/* .garboValue */ .sf)(coinmaster.item) * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.sellPrice)(coinmaster, item) : 0;
+
+  if (coinmaster && coinmasterPrice > (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(item)) {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.buy)(item, remaining, maxPrice);
+  } else {
+    (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .withProperty */ .pr)("autoBuyPriceLimit", maxPrice, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.retrieveItem)(item, qty));
+  }
+
   return (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)(item) - startAmount;
 }
 
@@ -21968,7 +21975,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("629ad3716faac093577286959b1f5ece862e95d6" === mainSha) {
+    if ("f6ae3dc7b7114e4c0212735e662de6514245fefa" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
