@@ -948,7 +948,7 @@ function proceedWithOrb(): boolean {
 }
 
 function ponderPrediction(location: Location): Monster | null {
-  visitUrl("inventory.php?ponder=1");
+  visitUrl("inventory.php?ponder=1", false);
   const parsedProp = new Map(
     get("crystalBallPredictions")
       .split("|")
