@@ -21255,7 +21255,7 @@ function proceedWithOrb() {
 function ponderPrediction(location) {
   var _parsedProp$get;
 
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)("inventory.php?ponder=1");
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.visitUrl)("inventory.php?ponder=1", false);
   var parsedProp = new Map((0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("crystalBallPredictions").split("|").map(element => element.split(":")).map(_ref => {
     var _ref2 = _slicedToArray(_ref, 3),
         location = _ref2[1],
@@ -22000,7 +22000,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("75760d4dbf2c6147755866c8e8f6eabdfebc5689" === mainSha) {
+    if ("66be8cb612b6479d263ddad47fa6d4034bfbf314" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
