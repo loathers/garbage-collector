@@ -233,7 +233,19 @@ function barfTurn() {
       !embezzlerUp &&
       have($familiar`Space Jellyfish`) &&
       get(`_spaceJellyfishDrops`) < 5 &&
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
       myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns <= 25 &&
+=======
+      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns < 20 &&
+>>>>>>> a34da19 (We don't need to clamp when considering the usage of jellyfish)
+=======
+      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns < 25 &&
+>>>>>>> 6818b2f (Start collecting stench jellies earlier at EoD)
+=======
+      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns <= 25 &&
+>>>>>>> c4561e1 (Correct minor off-by-one error when starting jelly fishing earlier)
       myInebriety() <= inebrietyLimit()
     ) {
       useFamiliar($familiar`Space Jellyfish`);

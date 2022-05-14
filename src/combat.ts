@@ -289,10 +289,20 @@ export class Macro extends StrictMacro {
       )
       .externalIf(
         myFamiliar() === $familiar`Space Jellyfish`,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6b0d297 (All barf tourists are stench-aligned)
         Macro.if_(
           $monsters`angry tourist, garbage tourist, horrible tourist family`,
           Macro.trySkill($skill`Extract Jelly`)
         )
+<<<<<<< HEAD
+=======
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Extract Jelly`))
+>>>>>>> 3226157 (EoD support of Space Jellyfish)
+=======
+>>>>>>> 6b0d297 (All barf tourists are stench-aligned)
       )
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
       .meatStasis(willCrit)
