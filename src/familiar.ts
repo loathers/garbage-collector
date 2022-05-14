@@ -230,7 +230,7 @@ export function timeToMeatify(): boolean {
   else if (!globalOptions.ascending || myAdventures() > 50) return false;
 
   // Check Wanderers
-  const F = get("_sausageFights");
+  // const F = get("_sausageFights");
   const totalTurns = totalTurnsPlayed();
 
   const nextProtonicGhost = (have($item`protonic accelerator pack`)) ? Math.max(0, get("nextParanormalActivity") - totalTurns) : Infinity;
