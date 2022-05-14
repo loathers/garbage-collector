@@ -286,6 +286,10 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Feel Nostalgic`)
         )
       )
+      .externalIf(
+        myFamiliar() === $familiar`Space Jellyfish`,
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Extract Jelly`))
+      )
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
       .meatStasis(willCrit)
       .externalIf(
