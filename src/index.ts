@@ -34,6 +34,7 @@ import {
   $classes,
   $coinmaster,
   $effect,
+  $familiar,
   $item,
   $items,
   $location,
@@ -58,7 +59,7 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
-import { freeFightFamiliar, meatFamiliar } from "./familiar";
+import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
 import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   checkGithubVersion,
@@ -193,6 +194,8 @@ function barfTurn() {
       }
       retrieveItem($item`pulled green taffy`);
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
+    } else if (!embezzlerUp && timeToMeatify()) {
+      useFamiliar($familiar`Grey Goose`);
     }
 
     // d. get dressed
