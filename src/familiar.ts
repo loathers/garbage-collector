@@ -224,7 +224,7 @@ export function pocketProfessorLectures(): number {
   return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar`Pocket Professor`) + weightAdjustment()));
 }
 
-function timeToMeatify(): boolean {
+export function timeToMeatify(): boolean {
   if (!have($familiar`Grey Goose`) || get("_meatifyMatterUsed") || myInebriety() > inebrietyLimit()) return false;
   else if ($familiar`Grey Goose`.experience >= 400) return true;
   else if (!globalOptions.ascending) return false;
