@@ -4,8 +4,10 @@ import {
   haveEffect,
   inebrietyLimit,
   Item,
+  myAdventures,
   myFamiliar,
   myInebriety,
+  totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
 import {
@@ -223,9 +225,33 @@ export function pocketProfessorLectures(): number {
 }
 
 function timeToMeatify(): boolean {
-  return (
-    have($familiar`Grey Goose`) &&
-    $familiar`Grey Goose`.experience >= 400 &&
-    !get("_meatifyMatterUsed")
-  );
+  if (!have($familiar`Grey Goose`) || get("_meatifyMatterUsed") || myInebriety() > inebrietyLimit()) return false;
+  else if ($familiar`Grey Goose`.experience >= 400) return true;
+  else if (!globalOptions.ascending) return false;
+  
+  //Check Wanderers
+  const F = get("_sausageFights");
+  const totalTurns = totalTurnsPlayed();
+
+  const nextProtonicGhost = (have($item`protonic accelerator pack`)) ? Math.max(0, get("nextParanormalActivity") - totalTurns) : Infinity;
+  const nextVoteMonster = (have($item`"I Voted!" sticker`) && get("_voteFreeFights") < 3) ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
+  const nextSausageGoblin = (have($item`Kramco Sausage-o-Matic™`)) ? Math.max(0, 4 + 3 * F + Math.pow(Math.max(0, F-5), 3) + get("_lastSausageMonsterTurn") - totalTurns) : Infinity;
+  const nextVoidMonster = (have($item`cursed magnifying glass`) && get("_voidFreeFights") < 5) ? -get("cursedMagnifyingGlassCount") % 13 : Infinity;	
+
+  //If any of the above are 0, then
+  //(1) We should be fighting a free fight
+  //(2) We meatify if Grey Goose is sufficiently heavy and we don't have another free wanderer in our remaining turns
+  
+  const freeFightNow = (nextProtonicGhost === 0 || nextVoteMonster === 0 || nextSausageGoblin === 0 || nextVoidMonster === 0);  
+  const delay = [
+    (nextProtonicGhost === 0) ? 50 : nextProtonicGhost,
+    (nextVoteMonster === 0) ? ((get("_voteFreeFights") < 2) ? 11 : Infinity) : nextVoteMonster,
+    (nextSausageGoblin === 0) ? 7 + 3 * F + Math.pow(Math.max(0, F-4), 3) : nextSausageGoblin,
+    (nextVoidMonster === 0) ? 13 : nextVoidMonster,
+  ].reduce((a, b) => (a < b) ? a : b);	
+
+  if (delay < myAdventures()) return false; //We can wait for the next free fight
+  else if (freeFightNow || $familiar`Grey Goose`.experience >= 121) return true;
+  
+  return false;
 }
