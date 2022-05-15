@@ -242,7 +242,7 @@ export function timeToMeatify(): boolean {
     get("latteModifier").split(",").includes("Meat Drop: 40");
 
   const nextProtonicGhost = have($item`protonic accelerator pack`)
-    ? Math.max(0, get("nextParanormalActivity") - totalTurns)
+    ? Math.max(1, get("nextParanormalActivity") - totalTurns)
     : Infinity;
   const nextVoteMonster =
     have($item`"I Voted!" sticker`) && get("_voteFreeFights") < 3
@@ -259,9 +259,9 @@ export function timeToMeatify(): boolean {
   // (1) We should be fighting a free fight
   // (2) We meatify if Grey Goose is sufficiently heavy and we don't have another free wanderer in our remaining turns
 
-  const freeFightNow = nextProtonicGhost === 0 || nextVoteMonster === 0 || nextVoidMonster === 0;
+  const freeFightNow = get("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
   const delay = [
-    nextProtonicGhost === 0 ? 50 : nextProtonicGhost,
+    nextProtonicGhost,
     nextVoteMonster === 0 ? (get("_voteFreeFights") < 2 ? 11 : Infinity) : nextVoteMonster,
     nextVoidMonster === 0 ? 13 : nextVoidMonster,
   ].reduce((a, b) => (a < b ? a : b));
