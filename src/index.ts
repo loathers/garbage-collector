@@ -194,7 +194,7 @@ function barfTurn() {
       }
       retrieveItem($item`pulled green taffy`);
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
-    } else if (timeToMeatify()) {
+    } else if (!embezzlerUp && timeToMeatify()) {
       useFamiliar($familiar`Grey Goose`);
     }
 
