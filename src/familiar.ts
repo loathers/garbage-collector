@@ -229,27 +229,23 @@ export function timeToMeatify(): boolean {
   else if ($familiar`Grey Goose`.experience >= 400) return true;
   else if (!globalOptions.ascending || myAdventures() > 50) return false;
 
-  // Check Wanderers
-  // const F = get("_sausageFights");
+  // Check Wanderers  
   const totalTurns = totalTurnsPlayed();
   const baseMeat = (have($item`SongBoom™ BoomBox`)) ? 275 : 250;
   const usingLatte = (have($item`latte lovers member's mug`) && get("latteModifier").split(",").includes("Meat Drop: 40")) ? true : false;
 
   const nextProtonicGhost = (have($item`protonic accelerator pack`)) ? Math.max(0, get("nextParanormalActivity") - totalTurns) : Infinity;
-  const nextVoteMonster = (have($item`"I Voted!" sticker`) && get("_voteFreeFights") < 3) ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
-  // const nextSausageGoblin = (have($item`Kramco Sausage-o-Matic™`)) ? Math.max(0, 4 + 3 * F + Math.pow(Math.max(0, F-5), 3) + get("_lastSausageMonsterTurn") - totalTurns) : Infinity;
+  const nextVoteMonster = (have($item`"I Voted!" sticker`) && get("_voteFreeFights") < 3) ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;  
   const nextVoidMonster = (have($item`cursed magnifying glass`) && get("_voidFreeFights") < 5 && get("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6)) ? -get("cursedMagnifyingGlassCount") % 13 : Infinity;
 
   // If any of the above are 0, then
   // (1) We should be fighting a free fight
   // (2) We meatify if Grey Goose is sufficiently heavy and we don't have another free wanderer in our remaining turns
-
-  // const freeFightNow = (nextProtonicGhost === 0 || nextVoteMonster === 0 || nextSausageGoblin === 0 || nextVoidMonster === 0);
+  
   const freeFightNow = (nextProtonicGhost === 0 || nextVoteMonster === 0 || nextVoidMonster === 0);
   const delay = [
     (nextProtonicGhost === 0) ? 50 : nextProtonicGhost,
-    (nextVoteMonster === 0) ? ((get("_voteFreeFights") < 2) ? 11 : Infinity) : nextVoteMonster,
-    // (nextSausageGoblin === 0) ? 7 + 3 * F + Math.pow(Math.max(0, F-4), 3) : nextSausageGoblin,
+    (nextVoteMonster === 0) ? ((get("_voteFreeFights") < 2) ? 11 : Infinity) : nextVoteMonster,    
     (nextVoidMonster === 0) ? 13 : nextVoidMonster,
   ].reduce((a, b) => (a < b) ? a : b);
 
