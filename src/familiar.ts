@@ -233,7 +233,7 @@ export function timeToMeatify(): boolean {
   // const F = get("_sausageFights");
   const totalTurns = totalTurnsPlayed();
   const baseMeat = (have($item`SongBoom™ BoomBox`)) ? 275 : 250;
-  const usingLatte = (have($item`latte lovers member's mug`) && get("latteModifier").split(",").includes("Meat Drop\: 40")) ? true : false;
+  const usingLatte = (have($item`latte lovers member's mug`) && get("latteModifier").split(",").includes("Meat Drop: 40")) ? true : false;
 
   const nextProtonicGhost = (have($item`protonic accelerator pack`)) ? Math.max(0, get("nextParanormalActivity") - totalTurns) : Infinity;
   const nextVoteMonster = (have($item`"I Voted!" sticker`) && get("_voteFreeFights") < 3) ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
@@ -253,7 +253,7 @@ export function timeToMeatify(): boolean {
     (nextVoidMonster === 0) ? 13 : nextVoidMonster,
   ].reduce((a, b) => (a < b) ? a : b);
 
-  if (delay < myAdventures()) return false; //We can wait for the next free fight
+  if (delay < myAdventures()) return false; // We can wait for the next free fight
   else if (freeFightNow || $familiar`Grey Goose`.experience >= 121) return true;
 
   return false;
