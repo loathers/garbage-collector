@@ -34,6 +34,7 @@ import {
   $classes,
   $coinmaster,
   $effect,
+  $familiar,
   $item,
   $items,
   $location,
