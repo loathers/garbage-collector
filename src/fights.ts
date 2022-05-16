@@ -7,6 +7,7 @@ import {
   Effect,
   equip,
   Familiar,
+  gametimeToInt,
   getAutoAttack,
   getCampground,
   handlingChoice,
@@ -42,7 +43,6 @@ import {
   setLocation,
   stashAmount,
   takeCloset,
-  todayToString,
   toInt,
   toItem,
   toSlot,
@@ -2249,16 +2249,23 @@ function yachtzee(): void {
       if (!equippedOutfit || !success()) return;
 
       const lastUMDDate = property.getString("umdLastObtained");
-      const today = todayToString().slice(0,4) + "-" + todayToString().slice(4,6) + "-" + todayToString().slice(6);
-      const getUMD = (!get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
-                      mallPrice($item`Ultimate Mind Destroyer`) >= 2000 * (1 + numericModifier("meat drop") / 100) &&
-                      (lastUMDDate === "" ||
-                       lastUMDDate === null ||
-                       (Date.parse(today) - Date.parse(lastUMDDate)) / (1000 * 60 * 60 * 24) >= 7.0));
+      const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5; // Import today from ./lib once the PR is merged
+      const getUMD =
+        !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
+        garboValue($item`Ultimate Mind Destroyer`) >=
+          2000 * (1 + numericModifier("meat drop") / 100) &&
+        (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1000 * 60 * 60 * 24 * 7);
 
       if (getUMD) setChoice(918, 1);
       else setChoice(918, 2);
+
       adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+      if (
+        visitUrl("forestvillage.php").includes("friarcottage.gif") &&
+        !get("_floristPlantsUsed").split(",").includes("Crookweed")
+      ) {
+        cliExecute("florist plant Crookweed");
+      }
       if (get("lastEncounter") === "Yacht, See?") {
         adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
       }
