@@ -271,6 +271,7 @@ function felizValue(): number {
 function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
     const roboDrinks = {
+      "Drive-by shooting": { priceCap: 50000, mandatory: true },
       Newark: {
         priceCap: 0.25 * newarkValue() * estimatedTurns(),
         mandatory: false,
@@ -282,8 +283,7 @@ function prepFamiliars(): void {
           : 0,
         mandatory: false,
       },
-      "Single entendre": { priceCap: 25000, mandatory: true },
-      "Drive-by shooting": { priceCap: 50000, mandatory: true },
+      "Single entendre": { priceCap: 0.15 * 0.839 * 200 * 3 * estimatedTurns(), mandatory: false },
     };
     for (const [drinkName, { priceCap, mandatory }] of Object.entries(roboDrinks)) {
       if (get("_roboDrinks").toLowerCase().includes(drinkName.toLowerCase())) continue;
