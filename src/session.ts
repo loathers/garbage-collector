@@ -1,6 +1,16 @@
-import { Coinmaster, Item, print, sellPrice, toInt } from "kolmafia";
-import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
-import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
+import {
+  Coinmaster,
+  inebrietyLimit,
+  Item,
+  myAdventures,
+  myInebriety,
+  print,
+  sellPrice,
+  todayToString,
+  toInt,
+} from "kolmafia";
+import { $item, $items, get, getSaleValue, property, Session, set, sumNumbers } from "libram";
+import { formatNumber, globalOptions, HIGHLIGHT, resetDailyPreference } from "./lib";
 
 function currency(...items: Item[]): () => number {
   const unitCost: [Item, number][] = items.map((i) => {
@@ -218,4 +228,26 @@ export function printGarboSession(): void {
 
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
+
+  if (
+    myInebriety() <= inebrietyLimit() &&
+    get("_garboVOACheckpointDate") === todayToString() &&
+    myAdventures() <= globalOptions.saveTurns
+  ) {
+    const MPA =
+      (property.getNumber("_garbo25AdvMeatCheckpoint") -
+        property.getNumber("_garbo75AdvMeatCheckpoint")) /
+      50;
+    const IPA =
+      (property.getNumber("_garbo25AdvItemsCheckpoint") -
+        property.getNumber("_garbo75AdvItemsCheckpoint")) /
+      50;
+    const totalMPA = MPA + IPA;
+    print(
+      `Marginal MPA: ${formatNumber(Math.round(MPA * 100) / 100)} (meat) + ${formatNumber(
+        Math.round(IPA * 100) / 100
+      )} (items) = ${formatNumber(Math.round(totalMPA * 100) / 100)} (total)`,
+      HIGHLIGHT
+    );
+  }
 }

@@ -22,6 +22,7 @@ import {
   retrieveItem,
   runChoice,
   setAutoAttack,
+  todayToString,
   toInt,
   totalTurnsPlayed,
   use,
@@ -88,7 +89,13 @@ import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
-import { garboAverageValue, printGarboSession, startSession } from "./session";
+import {
+  garboAverageValue,
+  garboValue,
+  printGarboSession,
+  sessionSinceStart,
+  startSession,
+} from "./session";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -242,7 +249,17 @@ function barfTurn() {
       );
       eat(available, $item`magical sausage`);
     }
+  } else if (myAdventures() === 75 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
+    const { meat, items } = sessionSinceStart().value(garboValue);
+    set("_garbo75AdvMeatCheckpoint", meat);
+    set("_garbo75AdvItemsCheckpoint", items);
+    set("_garboVOACheckpointDate", todayToString());
+  } else if (myAdventures() === 25 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
+    const { meat, items } = sessionSinceStart().value(garboValue);
+    set("_garbo25AdvMeatCheckpoint", meat);
+    set("_garbo25AdvItemsCheckpoint", items);
   }
+
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler") {
     if (embezzlerUp) {
       embezzlerLog.digitizedEmbezzlersFought++;
