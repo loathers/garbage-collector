@@ -6,6 +6,7 @@ import {
   equip,
   familiarEquippedEquipment,
   fileToBuffer,
+  gametimeToInt,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -33,7 +34,6 @@ import {
   retrievePrice,
   runChoice,
   scrapPockets,
-  todayToString,
   toInt,
   toItem,
   toSlot,
@@ -230,9 +230,11 @@ function configureGear(): void {
   }
 }
 
+const today = Date.now() - gametimeToInt();
+
 function newarkValue(): number {
-  const lastCalculated = Date.parse(get("garbo_newarkValueDate", "")) || 0;
-  if (!get("garbo_newarkValue", 0) || Date.now() - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+  const lastCalculated = get("garbo_newarkValueDate", 0);
+  if (!get("garbo_newarkValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
     const newarkDrops = (
       JSON.parse(fileToBuffer("garbo_robo_drinks_data.JSON")) as {
         Newark: string[];
@@ -243,14 +245,14 @@ function newarkValue(): number {
       "garbo_newarkValue",
       (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
     );
-    set("garbo_newarkValueDate", todayToString());
+    set("garbo_newarkValueDate", today);
   }
   return get("garbo_newarkValue", 0);
 }
 
 function felizValue(): number {
-  const lastCalculated = Date.parse(get("garbo_felizValueDate", "")) || 0;
-  if (!get("garbo_felizValue", 0) || Date.now() - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+  const lastCalculated = get("garbo_felizValueDate", 0);
+  if (!get("garbo_felizValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
     const newarkDrops = (
       JSON.parse(fileToBuffer("garbo_robo_drinks_data.JSON")) as {
         Newark: string[];
@@ -261,7 +263,7 @@ function felizValue(): number {
       "garbo_felizValue",
       (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
     );
-    set("garbo_felizValueDate", todayToString());
+    set("garbo_felizValueDate", today);
   }
   return get("garbo_felizValue", 0);
 }
