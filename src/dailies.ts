@@ -5,6 +5,7 @@ import {
   cliExecute,
   equip,
   familiarEquippedEquipment,
+  fileToBuffer,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -32,6 +33,7 @@ import {
   retrievePrice,
   runChoice,
   scrapPockets,
+  todayToString,
   toInt,
   toItem,
   toSlot,
@@ -65,8 +67,10 @@ import {
   have,
   Pantogram,
   property,
+  set,
   SongBoom,
   SourceTerminal,
+  sum,
   uneffect,
   withProperty,
 } from "libram";
@@ -226,13 +230,67 @@ function configureGear(): void {
   }
 }
 
+function newarkValue(): number {
+  const lastCalculated = Date.parse(get("garbo_newarkValueDate", "")) || 0;
+  if (!get("garbo_newarkValue", 0) || Date.now() - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+    const newarkDrops = (
+      JSON.parse(fileToBuffer("garbo_robo_drinks_data.JSON")) as {
+        Newark: string[];
+        "Feliz Navidad": string[];
+      }
+    )["Newark"];
+    set(
+      "garbo_newarkValue",
+      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
+    );
+    set("garbo_newarkValueDate", todayToString());
+  }
+  return get("garbo_newarkValue", 0);
+}
+
+function felizValue(): number {
+  const lastCalculated = Date.parse(get("garbo_felizValueDate", "")) || 0;
+  if (!get("garbo_felizValue", 0) || Date.now() - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+    const newarkDrops = (
+      JSON.parse(fileToBuffer("garbo_robo_drinks_data.JSON")) as {
+        Newark: string[];
+        "Feliz Navidad": string[];
+      }
+    )["Feliz Navidad"];
+    set(
+      "garbo_felizValue",
+      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
+    );
+    set("garbo_felizValueDate", todayToString());
+  }
+  return get("garbo_felizValue", 0);
+}
+
 function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
-    for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, Bloody Nora`) {
-      if (get("_roboDrinks").includes(drink.name)) continue;
+    const roboDrinks = {
+      Newark: {
+        priceCap: 0.25 * newarkValue() * estimatedTurns(),
+        isMandatory: false,
+      },
+      "Feliz Navidad": { priceCap: 0.25 * felizValue() * estimatedTurns(), isMandatory: false },
+      "Bloody Nora": {
+        priceCap: get("_envyfishEggUsed")
+          ? (750 + baseMeat) * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
+          : 0,
+        isMandatory: false,
+      },
+      "Single entendre": { priceCap: 25000, isMandatory: true },
+      "Drive-by shooting": { priceCap: 50000, isMandatory: true },
+    };
+    for (const [drinkName, { priceCap, isMandatory }] of Object.entries(roboDrinks)) {
+      if (get("_roboDrinks").includes(drinkName)) continue;
       useFamiliar($familiar`Robortender`);
-      if (itemAmount(drink) === 0) retrieveItem(1, drink);
-      print(`Feeding robortender ${drink}.`, HIGHLIGHT);
+      const drink = toItem(drinkName);
+      withProperty("autoBuyPriceLimit", priceCap, () => retrieveItem(1, drink));
+      if (isMandatory && !have(toItem(drinkName))) {
+        throw new Error(`The price of ${drinkName} is too damn high!`);
+      }
       visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
     }
   }
