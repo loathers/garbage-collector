@@ -42,6 +42,7 @@ import {
   setLocation,
   stashAmount,
   takeCloset,
+  todayToString,
   toInt,
   toItem,
   toSlot,
@@ -2247,7 +2248,16 @@ function yachtzee(): void {
 
       if (!equippedOutfit || !success()) return;
 
-      setChoice(918, 2);
+      const lastUMDDate = property.getString("umdLastObtained");
+      const today = todayToString().slice(0,4) + "-" + todayToString().slice(4,6) + "-" + todayToString().slice(6);
+      const getUMD = (!get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
+                      mallPrice($item`Ultimate Mind Destroyer`) >= 2000 * (1 + numericModifier("meat drop") / 100) &&
+                      (lastUMDDate === "" ||
+                       lastUMDDate === null ||
+                       (Date.parse(today) - Date.parse(lastUMDDate)) / (1000 * 60 * 60 * 24) >= 7.0));
+
+      if (getUMD) setChoice(918, 1);
+      else setChoice(918, 2);
       adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
       if (get("lastEncounter") === "Yacht, See?") {
         adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
