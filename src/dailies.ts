@@ -271,24 +271,24 @@ function prepFamiliars(): void {
     const roboDrinks = {
       Newark: {
         priceCap: 0.25 * newarkValue() * estimatedTurns(),
-        isMandatory: false,
+        mandatory: false,
       },
-      "Feliz Navidad": { priceCap: 0.25 * felizValue() * estimatedTurns(), isMandatory: false },
+      "Feliz Navidad": { priceCap: 0.25 * felizValue() * estimatedTurns(), mandatory: false },
       "Bloody Nora": {
         priceCap: get("_envyfishEggUsed")
           ? (750 + baseMeat) * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
           : 0,
-        isMandatory: false,
+        mandatory: false,
       },
-      "Single entendre": { priceCap: 25000, isMandatory: true },
-      "Drive-by shooting": { priceCap: 50000, isMandatory: true },
+      "Single entendre": { priceCap: 25000, mandatory: true },
+      "Drive-by shooting": { priceCap: 50000, mandatory: true },
     };
-    for (const [drinkName, { priceCap, isMandatory }] of Object.entries(roboDrinks)) {
+    for (const [drinkName, { priceCap, mandatory }] of Object.entries(roboDrinks)) {
       if (get("_roboDrinks").toLowerCase().includes(drinkName.toLowerCase())) continue;
       useFamiliar($familiar`Robortender`);
       const drink = toItem(drinkName);
       withProperty("autoBuyPriceLimit", priceCap, () => retrieveItem(1, drink));
-      if (isMandatory && !have(toItem(drinkName))) {
+      if (mandatory && !have(toItem(drinkName))) {
         throw new Error(`The price of ${drinkName} is too damn high!`);
       }
       visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
