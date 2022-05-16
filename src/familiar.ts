@@ -250,8 +250,8 @@ export function timeToMeatify(): boolean {
       : Infinity;
   const nextVoidMonster =
     have($item`cursed magnifying glass`) &&
-      get("_voidFreeFights") < 5 &&
-      get("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6)
+    get("_voidFreeFights") < 5 &&
+    get("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6)
       ? -get("cursedMagnifyingGlassCount") % 13
       : Infinity;
 
@@ -259,7 +259,8 @@ export function timeToMeatify(): boolean {
   // (1) We should be fighting a free fight
   // (2) We meatify if Grey Goose is sufficiently heavy and we don't have another free wanderer in our remaining turns
 
-  const freeFightNow = get("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
+  const freeFightNow =
+    get("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
   const delay = [
     nextProtonicGhost,
     nextVoteMonster === 0 ? (get("_voteFreeFights") < 2 ? 11 : Infinity) : nextVoteMonster,
