@@ -250,8 +250,8 @@ export function timeToMeatify(): boolean {
       : Infinity;
   const nextVoidMonster =
     have($item`cursed magnifying glass`) &&
-    get("_voidFreeFights") < 5 &&
-    get("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6)
+      get("_voidFreeFights") < 5 &&
+      get("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6)
       ? -get("cursedMagnifyingGlassCount") % 13
       : Infinity;
 
