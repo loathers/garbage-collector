@@ -40,6 +40,7 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
   $slot,
   $thralls,
@@ -50,7 +51,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { meatFamiliar } from "./familiar";
+import { meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./wanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -286,6 +287,13 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Feel Nostalgic`)
         )
       )
+      .externalIf(
+        myFamiliar() === $familiar`Space Jellyfish`,
+        Macro.if_(
+          $monsters`angry tourist, garbage tourist, horrible tourist family`,
+          Macro.trySkill($skill`Extract Jelly`)
+        )
+      )
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
       .meatStasis(willCrit)
       .externalIf(
@@ -409,9 +417,7 @@ export class Macro extends StrictMacro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
       .externalIf(
-        myFamiliar() === $familiar`Grey Goose` &&
-          $familiar`Grey Goose`.experience >= 400 &&
-          !get("_meatifyMatterUsed"),
+        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
         Macro.trySkill($skill`Meatify Matter`)
       )
       .externalIf(
@@ -564,9 +570,7 @@ export class Macro extends StrictMacro {
 
     return this.tryHaveSkill($skill`Sing Along`)
       .externalIf(
-        myFamiliar() === $familiar`Grey Goose` &&
-          $familiar`Grey Goose`.experience >= 400 &&
-          !get("_meatifyMatterUsed"),
+        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
         Macro.trySkill($skill`Meatify Matter`)
       )
       .tryHaveItem($item`Rain-Doh blue balls`)

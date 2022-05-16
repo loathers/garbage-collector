@@ -18,7 +18,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { ltbRun, setChoice } from "./lib";
+import { globalOptions, ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";
@@ -58,7 +58,11 @@ export function expectedGregs(): number[] {
 }
 
 export function doingExtrovermectin(): boolean {
-  return get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
+  return (
+    get("beGregariousCharges") > 0 ||
+    get("beGregariousFightsLeft") > 0 ||
+    (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted"))
+  );
 }
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
@@ -191,13 +195,17 @@ function initializeCrates(): void {
 }
 
 function initializeDireWarren(): void {
-  const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
+  visitUrl("museum.php?action=icehouse");
+
   const banishedMonsters = new Map<string, Monster>(
     get("banishedMonsters")
       .split(",")
       .map((tuple) => tuple.split(":") as [string, string, string])
       .map(([monster, source]) => [source, toMonster(monster)] as [string, Monster])
   );
+  if (banishedMonsters.get("ice house") === $monster`fluffy bunny`) return;
+
+  const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
   if (options.some((option) => banishedMonsters.get(option.name) === $monster`fluffy bunny`)) {
     return;
   }
