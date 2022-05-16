@@ -284,7 +284,7 @@ function prepFamiliars(): void {
       "Drive-by shooting": { priceCap: 50000, isMandatory: true },
     };
     for (const [drinkName, { priceCap, isMandatory }] of Object.entries(roboDrinks)) {
-      if (get("_roboDrinks").includes(drinkName)) continue;
+      if (get("_roboDrinks").toLowerCase().includes(drinkName.toLowerCase())) continue;
       useFamiliar($familiar`Robortender`);
       const drink = toItem(drinkName);
       withProperty("autoBuyPriceLimit", priceCap, () => retrieveItem(1, drink));
