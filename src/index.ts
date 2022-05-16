@@ -206,11 +206,11 @@ function barfTurn() {
       myInebriety() > inebrietyLimit() &&
       globalOptions.ascending &&
       clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
-      availableAmount($item`Map to Safety Shelter Grimace Prime`)
+        availableAmount($item`Map to Safety Shelter Grimace Prime`)
     ) {
       const choiceToSet =
         availableAmount($item`distention pill`) <
-          availableAmount($item`synthetic dog hair pill`) +
+        availableAmount($item`synthetic dog hair pill`) +
           availableAmount($item`Map to Safety Shelter Grimace Prime`)
           ? 1
           : 2;
