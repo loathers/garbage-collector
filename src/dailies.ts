@@ -253,7 +253,7 @@ function newarkValue(): number {
 function felizValue(): number {
   const lastCalculated = get("garbo_felizValueDate", 0);
   if (!get("garbo_felizValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
-    const newarkDrops = (
+    const felizDrops = (
       JSON.parse(fileToBuffer("garbo_robo_drinks_data.JSON")) as {
         Newark: string[];
         "Feliz Navidad": string[];
@@ -261,7 +261,7 @@ function felizValue(): number {
     )["Feliz Navidad"];
     set(
       "garbo_felizValue",
-      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
+      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0)
     );
     set("garbo_felizValueDate", today);
   }
