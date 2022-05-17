@@ -6,7 +6,6 @@ import {
   equip,
   familiarEquippedEquipment,
   fileToBuffer,
-  gametimeToInt,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -83,6 +82,7 @@ import {
   HIGHLIGHT,
   logMessage,
   realmAvailable,
+  today,
   tryFeast,
 } from "./lib";
 import { withStash } from "./clan";
@@ -229,8 +229,6 @@ function configureGear(): void {
     cliExecute("bastille myst brutalist gesture");
   }
 }
-
-const today = Date.now() - gametimeToInt();
 
 function newarkValue(): number {
   const lastCalculated = get("garbo_newarkValueDate", 0);

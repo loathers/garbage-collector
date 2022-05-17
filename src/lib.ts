@@ -4,6 +4,7 @@ import {
   cliExecute,
   eat,
   Familiar,
+  gametimeToInt,
   getLocketMonsters,
   handlingChoice,
   haveSkill,
@@ -446,3 +447,5 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   if (timeOut) return userConfirm(msg, timeOut, defaultValue);
   return userConfirm(msg);
 }
+
+export const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5;
