@@ -938,7 +938,7 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
   if (copy) return copy;
   const chainStart = chainStarters.find((fight) => fight.available());
   if (chainStart) return chainStart;
-  return null;
+  return conditional ?? null;
 }
 
 /**
