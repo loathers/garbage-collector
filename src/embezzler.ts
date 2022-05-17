@@ -920,13 +920,24 @@ export function estimatedTurns(): number {
  * @returns the next available embezzler fight
  */
 export function getNextEmbezzlerFight(): EmbezzlerFight | null {
-  for (const fight of embezzlerSources) {
-    if (fight.available()) {
-      print(`getNextEmbezzlerFight(): Next fight ${fight.name}`);
-      return fight;
-    }
+  const wanderer = wanderSources.find((fight) => fight.available());
+  if (wanderer) return wanderer;
+  const conditional = conditionalSources.find((fight) => fight.available());
+  if (conditional) {
+    const leftoverReplacers =
+      (have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0) +
+      (have($item`Powerful Glove`)
+        ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10)
+        : 0);
+    // we don't want to reset our orb with a gregarious fight; that defeats the purpose
+    const skip =
+      conditional.name === "Be Gregarious" && crateStrategy() === "Orb" && leftoverReplacers;
+    if (!skip) return conditional;
   }
-  print(`getNextEmbezzlerFight(): No next fight`);
+  const copy = copySources.find((fight) => fight.available());
+  if (copy) return copy;
+  const chainStart = chainStarters.find((fight) => fight.available());
+  if (chainStart) return chainStart;
   return null;
 }
 
