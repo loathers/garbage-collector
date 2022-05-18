@@ -217,7 +217,9 @@ function printMarginalSession(): void {
       print(`Outliers:`, HIGHLIGHT);
       let outlierItems = 0;
       for (const detail of outlierItemDetails) {
-        print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
+        if (detail.value >= 1000) {
+          print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
+        }
         outlierItems += detail.value;
       }
       print(
