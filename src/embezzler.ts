@@ -345,95 +345,6 @@ export const chainStarters = [
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
-  new EmbezzlerFight(
-    "Lucky!",
-    () => canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`),
-    () => (canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`) ? 1 : 0),
-    (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
-    }
-  ),
-  // These are very deliberately the last embezzler fights.
-  new EmbezzlerFight(
-    "11-leaf clover (untapped potential)",
-    () => {
-      const potential = Math.floor(embezzlerCount());
-      if (potential < 1) return false;
-      if (!canAdv($location`Cobb's Knob Treasury`, true)) return false;
-      // Don't use clovers if wishes are available and cheaper
-      if (get("_genieFightsUsed") < 3 && mallPrice($item`11-leaf clover`) >= WISH_VALUE) {
-        return false;
-      }
-      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
-      const profit = (potential + 1) * averageEmbezzlerNet() - mallPrice($item`11-leaf clover`);
-      if (profit < 0) return false;
-      print(`You have the following embezzler-sources untapped right now:`, HIGHLIGHT);
-      embezzlerSources
-        .filter((source) => source.potential() > 0)
-        .map((source) => `${source.potential()} from ${source.name}`)
-        .forEach((text) => print(text, HIGHLIGHT));
-      globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = userConfirmDialog(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`,
-        true
-      );
-      return globalOptions.wishAnswer;
-    },
-    () => 0,
-    (options: EmbezzlerFightRunOptions) => {
-      property.withProperty("autoSatisfyWithCloset", true, () =>
-        retrieveItem($item`11-leaf clover`)
-      );
-      use($item`11-leaf clover`);
-      if (have($effect`Lucky!`)) {
-        const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-        adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
-      }
-      globalOptions.askedAboutWish = false;
-    }
-  ),
-  new EmbezzlerFight(
-    "Pocket Wish (untapped potential)",
-    () => {
-      const potential = Math.floor(embezzlerCount());
-      if (potential < 1) return false;
-      if (get("_genieFightsUsed") >= 3) return false;
-      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
-      const profit = (potential + 1) * averageEmbezzlerNet() - WISH_VALUE;
-      if (profit < 0) return false;
-      print(`You have the following embezzler-sources untapped right now:`, HIGHLIGHT);
-      embezzlerSources
-        .filter((source) => source.potential() > 0)
-        .map((source) => `${source.potential()} from ${source.name}`)
-        .forEach((text) => print(text, HIGHLIGHT));
-      globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = userConfirmDialog(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`,
-        true
-      );
-      return globalOptions.wishAnswer;
-    },
-    () => 0,
-    (options: EmbezzlerFightRunOptions) => {
-      withMacro(
-        options.macro,
-        () => {
-          acquire(1, $item`pocket wish`, WISH_VALUE);
-          visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
-          visitUrl(
-            "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
-            true,
-            true
-          );
-          visitUrl("main.php", false);
-          runCombat();
-          globalOptions.askedAboutWish = false;
-        },
-        options.useAuto
-      );
-    }
-  ),
 ];
 
 export const copySources = [
@@ -580,6 +491,15 @@ export const copySources = [
 ];
 
 export const wanderSources = [
+  new EmbezzlerFight(
+    "Lucky!",
+    () => canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`),
+    () => (canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`) ? 1 : 0),
+    (options: EmbezzlerFightRunOptions) => {
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
+    }
+  ),
   new EmbezzlerFight(
     "Digitize",
     () =>
@@ -872,11 +792,95 @@ export const fakeSources = [
   ),
 ];
 
+export const emergencyChainStarters = [
+  // These are very deliberately the last embezzler fights.
+  new EmbezzlerFight(
+    "11-leaf clover (untapped potential)",
+    () => {
+      const potential = Math.floor(embezzlerCount());
+      if (potential < 1) return false;
+      if (!canAdv($location`Cobb's Knob Treasury`, true)) return false;
+      // Don't use clovers if wishes are available and cheaper
+      if (get("_genieFightsUsed") < 3 && mallPrice($item`11-leaf clover`) >= WISH_VALUE) {
+        return false;
+      }
+      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
+      const profit = (potential + 1) * averageEmbezzlerNet() - mallPrice($item`11-leaf clover`);
+      if (profit < 0) return false;
+      print(`You have the following embezzler-sources untapped right now:`, HIGHLIGHT);
+      embezzlerSources
+        .filter((source) => source.potential() > 0)
+        .map((source) => `${source.potential()} from ${source.name}`)
+        .forEach((text) => print(text, HIGHLIGHT));
+      globalOptions.askedAboutWish = true;
+      globalOptions.wishAnswer = userConfirmDialog(
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`,
+        true
+      );
+      return globalOptions.wishAnswer;
+    },
+    () => 0,
+    (options: EmbezzlerFightRunOptions) => {
+      property.withProperty("autoSatisfyWithCloset", true, () =>
+        retrieveItem($item`11-leaf clover`)
+      );
+      use($item`11-leaf clover`);
+      if (have($effect`Lucky!`)) {
+        const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+        adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
+      }
+      globalOptions.askedAboutWish = false;
+    }
+  ),
+  new EmbezzlerFight(
+    "Pocket Wish (untapped potential)",
+    () => {
+      const potential = Math.floor(embezzlerCount());
+      if (potential < 1) return false;
+      if (get("_genieFightsUsed") >= 3) return false;
+      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
+      const profit = (potential + 1) * averageEmbezzlerNet() - WISH_VALUE;
+      if (profit < 0) return false;
+      print(`You have the following embezzler-sources untapped right now:`, HIGHLIGHT);
+      embezzlerSources
+        .filter((source) => source.potential() > 0)
+        .map((source) => `${source.potential()} from ${source.name}`)
+        .forEach((text) => print(text, HIGHLIGHT));
+      globalOptions.askedAboutWish = true;
+      globalOptions.wishAnswer = userConfirmDialog(
+        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`,
+        true
+      );
+      return globalOptions.wishAnswer;
+    },
+    () => 0,
+    (options: EmbezzlerFightRunOptions) => {
+      withMacro(
+        options.macro,
+        () => {
+          acquire(1, $item`pocket wish`, WISH_VALUE);
+          visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
+          visitUrl(
+            "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
+            true,
+            true
+          );
+          visitUrl("main.php", false);
+          runCombat();
+          globalOptions.askedAboutWish = false;
+        },
+        options.useAuto
+      );
+    }
+  ),
+];
+
 export const embezzlerSources = [
   ...wanderSources,
   ...conditionalSources,
   ...copySources,
   ...chainStarters,
+  ...emergencyChainStarters,
   ...fakeSources,
 ];
 
@@ -938,7 +942,7 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
   if (copy) return copy;
   const chainStart = chainStarters.find((fight) => fight.available());
   if (chainStart) return chainStart;
-  return conditional ?? null;
+  return conditional ?? emergencyChainStarters.find((fight) => fight.available()) ?? null;
 }
 
 /**
