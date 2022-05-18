@@ -212,14 +212,12 @@ function printMarginalSession(): void {
     if (marginalSession) {
       const { meat, items, itemDetails } = marginalSession.value(garboValue);
       const outlierItemDetails = itemDetails
-        .filter((detail) => detail.quantity === 1)
+        .filter((detail) => detail.quantity === 1 && detail.value >= 1000)
         .sort((a, b) => b.value - a.value);
       print(`Outliers:`, HIGHLIGHT);
       let outlierItems = 0;
       for (const detail of outlierItemDetails) {
-        if (detail.value >= 1000) {
-          print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
-        }
+        print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
         outlierItems += detail.value;
       }
       print(
