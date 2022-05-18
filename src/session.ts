@@ -211,8 +211,14 @@ function printMarginalSession(): void {
   if (myInebriety() <= inebrietyLimit() && myAdventures() <= globalOptions.saveTurns) {
     if (marginalSession) {
       const { meat, items, itemDetails } = marginalSession.value(garboValue);
+      const overallItemDetails = sessionSinceStart().value(garboValue).itemDetails;
       const outlierItemDetails = itemDetails
-        .filter((detail) => detail.quantity === 1 && detail.value >= 1000)
+        .filter(
+          (detail) =>
+            detail.quantity === 1 &&
+            detail.value >= 1000 &&
+            overallItemDetails.some((d) => d.item === detail.item && d.quantity === detail.quantity)
+        )
         .sort((a, b) => b.value - a.value);
       print(`Outliers:`, HIGHLIGHT);
       let outlierItems = 0;
@@ -221,7 +227,7 @@ function printMarginalSession(): void {
         outlierItems += detail.value;
       }
       print(
-        `Marginal raw MPA/IPA/total MPA (incl. outliers): ${formatNumber(
+        `Marginal raw MPA/IPA/total MPA (w/ outliers): ${formatNumber(
           Math.round((meat * 100) / 50) / 100
         )} + ${formatNumber(Math.round(((items - outlierItems) * 100) / 50) / 100)} (${formatNumber(
           Math.round((items * 100) / 50) / 100
