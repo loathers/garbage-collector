@@ -94,6 +94,8 @@ import {
   garboValue,
   printGarboSession,
   sessionSinceStart,
+  setMarginalSessionDiff,
+  startMarginalSession,
   startSession,
 } from "./session";
 
@@ -250,11 +252,13 @@ function barfTurn() {
       eat(available, $item`magical sausage`);
     }
   } else if (myAdventures() === 75 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
+    startMarginalSession();
     const { meat, items } = sessionSinceStart().value(garboValue);
     set("_garbo75AdvMeatCheckpoint", meat);
     set("_garbo75AdvItemsCheckpoint", items);
     set("_garboVOACheckpointDate", todayToString());
   } else if (myAdventures() === 25 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
+    setMarginalSessionDiff();
     const { meat, items } = sessionSinceStart().value(garboValue);
     set("_garbo25AdvMeatCheckpoint", meat);
     set("_garbo25AdvItemsCheckpoint", items);

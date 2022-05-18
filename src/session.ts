@@ -193,9 +193,67 @@ export function sessionSinceStart(): Session {
   return Session.current();
 }
 
+let marginalSession: Session | null = null;
+export function startMarginalSession(): void {
+  marginalSession = Session.current();
+}
+
+export function setMarginalSessionDiff(): void {
+  if (marginalSession) marginalSession = Session.current().diff(marginalSession);
+}
+
 export function valueSession(): void {
   printSession(Session.current());
   Session.current().toFile("test.json");
+}
+
+function printMarginalSession(): void {
+  if (myInebriety() <= inebrietyLimit() && myAdventures() <= globalOptions.saveTurns) {
+    if (marginalSession) {
+      const { meat, items, itemDetails } = marginalSession.value(garboValue);
+      const outlierItemDetails = itemDetails
+        .filter((detail) => detail.quantity === 1)
+        .sort((a, b) => b.value - a.value);
+      print(`Outliers:`, HIGHLIGHT);
+      let outlierItems = 0;
+      for (const detail of outlierItemDetails) {
+        print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
+        outlierItems += detail.value;
+      }
+      print(
+        `Marginal MPA (excluding outliers): ${formatNumber(
+          Math.round(meat * 2) / 100
+        )} (meat) + ${formatNumber(
+          Math.round((items - outlierItems) * 2) / 100
+        )} (items) = ${formatNumber(Math.round((meat + items - outlierItems) * 2) / 100)} (total)`,
+        HIGHLIGHT
+      );
+      print(
+        `Marginal MPA (including outliers): ${formatNumber(
+          Math.round(meat * 2) / 100
+        )} (meat) + ${formatNumber(Math.round(items * 2) / 100)} (items) = ${formatNumber(
+          Math.round((meat + items) * 2) / 100
+        )} (total)`,
+        HIGHLIGHT
+      );
+    } else if (get("_garboVOACheckpointDate") === todayToString()) {
+      const MPA =
+        (property.getNumber("_garbo25AdvMeatCheckpoint") -
+          property.getNumber("_garbo75AdvMeatCheckpoint")) /
+        50;
+      const IPA =
+        (property.getNumber("_garbo25AdvItemsCheckpoint") -
+          property.getNumber("_garbo75AdvItemsCheckpoint")) /
+        50;
+      const totalMPA = MPA + IPA;
+      print(
+        `Marginal MPA: ${formatNumber(Math.round(MPA * 100) / 100)} (meat) + ${formatNumber(
+          Math.round(IPA * 100) / 100
+        )} (items) = ${formatNumber(Math.round(totalMPA * 100) / 100)} (total)`,
+        HIGHLIGHT
+      );
+    }
+  }
 }
 
 export function printGarboSession(): void {
@@ -229,25 +287,5 @@ export function printGarboSession(): void {
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
 
-  if (
-    myInebriety() <= inebrietyLimit() &&
-    get("_garboVOACheckpointDate") === todayToString() &&
-    myAdventures() <= globalOptions.saveTurns
-  ) {
-    const MPA =
-      (property.getNumber("_garbo25AdvMeatCheckpoint") -
-        property.getNumber("_garbo75AdvMeatCheckpoint")) /
-      50;
-    const IPA =
-      (property.getNumber("_garbo25AdvItemsCheckpoint") -
-        property.getNumber("_garbo75AdvItemsCheckpoint")) /
-      50;
-    const totalMPA = MPA + IPA;
-    print(
-      `Marginal MPA: ${formatNumber(Math.round(MPA * 100) / 100)} (meat) + ${formatNumber(
-        Math.round(IPA * 100) / 100
-      )} (items) = ${formatNumber(Math.round(totalMPA * 100) / 100)} (total)`,
-      HIGHLIGHT
-    );
-  }
+  printMarginalSession();
 }
