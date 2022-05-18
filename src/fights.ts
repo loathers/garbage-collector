@@ -92,6 +92,7 @@ import {
   sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
+  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
@@ -748,7 +749,21 @@ const freeFightSources = [
 
   new FreeFight(
     () => have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked"),
-    () => useSkill($skill`Evoke Eldritch Horror`),
+    () => {
+      if (!have($effect`Crappily Disguised as a Waiter`)) {
+        const expectedIchors = 1;
+        const rate = 11 / 200;
+        const value =
+          expectedIchors * garboValue($item`eldritch ichor`) * rate -
+          mallPrice($item`crappy waiter disguise`);
+        if (value > 0) {
+          retrieveItem($item`crappy waiter disguise`);
+          use($item`crappy waiter disguise`);
+        }
+      }
+      useSkill($skill`Evoke Eldritch Horror`);
+      if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
+    },
     false,
     { canOverrideMacro: true }
   ),
