@@ -1,5 +1,15 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
+import {
+  buy,
+  craftType,
+  Item,
+  Location,
+  print,
+  retrieveItem,
+  toLocation,
+  use,
+  visitUrl,
+} from "kolmafia";
 import {
   $effect,
   $item,
@@ -14,6 +24,7 @@ import {
   questStep,
   SourceTerminal,
 } from "libram";
+import { withVIPClan } from "./clan";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
 import { garboValue } from "./session";
@@ -98,22 +109,23 @@ const UnlockableZones: UnlockableZone[] = [
   },
 ];
 
-function canAdvOrUnlock(loc: Location) {
+function canAdvOrUnlock(loc: Location, useUnlocks: boolean) {
   const underwater = loc.environment === "underwater";
   const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
   if (!have($item`repaid diaper`) && have($item`Great Wolf's beastly trousers`)) {
     skiplist.push($location`The Icy Peak`);
   }
   const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
-  const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
+  const canUnlock =
+    useUnlocks && UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
   return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdv(loc, false) || canUnlock);
 }
 
-function unlock(loc: Location) {
+function unlock(loc: Location, useUnlocks: boolean) {
   const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
   if (!unlockableZone) return canAdv(loc, false);
   if (unlockableZone.available()) return true;
-  if (buy(1, unlockableZone.unlocker, WANDERER_PRICE_THRESHOLD) === 0) return false;
+  if (useUnlocks && buy(1, unlockableZone.unlocker, WANDERER_PRICE_THRESHOLD) === 0) return false;
   return use(unlockableZone.unlocker);
 }
 
@@ -154,6 +166,7 @@ class WandererTarget {
   location: () => Location | null;
   value: () => number;
   prepareTurn: () => boolean;
+  useUnlocks: boolean;
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it
@@ -170,7 +183,8 @@ class WandererTarget {
     location: () => Location | null,
     value: () => number,
     prepareWanderer: () => boolean = () => true,
-    prepareTurn: () => boolean = () => true
+    prepareTurn: () => boolean = () => true,
+    useUnlocks = false
   ) {
     this.name = name;
     this.available = available;
@@ -178,6 +192,7 @@ class WandererTarget {
     this.value = value;
     this.location = location;
     this.prepareTurn = prepareTurn;
+    this.useUnlocks = useUnlocks;
   }
 
   computeCachedValue() {
@@ -200,13 +215,64 @@ function guzzlrAbandonQuest() {
 
   if (
     // consider abandoning
-    !location || // if mafia faled to track the location correctly
-    !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+    !location || // if mafia failed to track the location correctly
+    !canAdvOrUnlock(location, true) || // or the zone is marked as "generally cannot adv"
     (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();
   }
+}
+
+// NOTE: This list is in Priority Order as well.
+const ALL_FISH = ["carp", "cod", "hatchetfish", "bass", "trout", "tuna"] as const;
+type FishTuple = typeof ALL_FISH;
+type Fish = FishTuple[number];
+
+function fishLocations(): { [fish in Fish]: Location | null } {
+  const locations: { [fish in Fish]: Location | null } = {
+    carp: null,
+    cod: null,
+    trout: null,
+    bass: null,
+    hatchetfish: null,
+    tuna: null,
+  };
+
+  if (have($item`Clan VIP Lounge key`)) {
+    const floundryPage = visitUrl("clan_viplounge.php?action=floundry");
+    for (const fish of ALL_FISH) {
+      const regexp = /<b>${fish}:<\/b> ([A-Za-z\- ]+)<br>/;
+      const match = regexp.exec(floundryPage);
+      if (match && match[1]) {
+        const fishLocation = toLocation(match[1]);
+        if (fishLocation !== $location`none`) {
+          locations[fish] = fishLocation;
+        }
+      }
+    }
+  }
+
+  return locations;
+}
+
+function fishTargets(): WandererTarget[] {
+  if (have($item`Clan VIP Lounge key`)) {
+    return withVIPClan<WandererTarget[]>(() => {
+      const locations = fishLocations();
+      let value = 8;
+      return ALL_FISH.map((fish) => {
+        value -= 1;
+        return new WandererTarget(
+          `Fish ${fish}`,
+          () => locations[fish] !== null,
+          () => locations[fish],
+          () => value
+        );
+      });
+    });
+  }
+  return [];
 }
 
 const wandererTargets = [
@@ -277,14 +343,16 @@ const wandererTargets = [
         }
       }
       return have(guzzlrBooze);
-    }
+    },
+    true // allow guzzlr to use unlockers
   ),
   new WandererTarget(
     "Coinspiracy",
     () => realmAvailable("spooky") && get("lovebugsUnlocked"),
     () => $location`The Deep Dark Jungle`,
-    () => 2 // slightly higher value
+    () => 8 // slightly higher value
   ),
+  ...fishTargets(),
   new WandererTarget(
     "Default",
     () => true, // can always do default
@@ -305,8 +373,8 @@ export function determineDraggableZoneAndEnsureAccess(type: DraggableFight = "wa
     return (
       location &&
       canWander(location, type) &&
-      canAdvOrUnlock(location) &&
-      unlock(location) &&
+      canAdvOrUnlock(location, prospect.target.useUnlocks) &&
+      unlock(location, prospect.target.useUnlocks) &&
       prospect.target.prepareTurn()
     );
   }) || { target: wandererTargets[wandererTargets.length - 1], value: 1 };
