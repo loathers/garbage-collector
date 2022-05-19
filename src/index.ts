@@ -197,6 +197,7 @@ function barfTurn() {
     } else if (!embezzlerUp && timeToMeatify()) {
       useFamiliar($familiar`Grey Goose`);
     } else if (
+      !embezzlerUp &&
       have($familiar`Space Jellyfish`) &&
       get(`_spaceJellyfishDrops`) < 5 &&
       myAdventures() + globalOptions.saveTurns < 20 &&
