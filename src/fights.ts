@@ -1417,7 +1417,21 @@ const freeRunFightSources = [
     },
     latteActionSourceFinderConstraints
   ),
-
+  new FreeRunFight(
+    () =>
+      have($familiar`Space Jellyfish`) &&
+      get("_spaceJellyfishDrops") < 5 &&
+      getStenchLocation() !== $location`none`,
+    (runSource: ActionSource) => {
+      adventureMacro(
+        getStenchLocation(),
+        Macro.trySkill($skill`Extract Jelly`).step(runSource.macro)
+      );
+    },
+    {
+      familiar: () => $familiar`Space Jellyfish`,
+    }
+  ),
   new FreeRunFight(
     () =>
       !doingExtrovermectin() &&
@@ -1456,22 +1470,6 @@ const freeRunFightSources = [
         )
           .trySkill($skill`Extract Jelly`)
           .step(runSource.macro)
-      );
-    },
-    {
-      familiar: () => $familiar`Space Jellyfish`,
-      requirements: () => [new Requirement([], { forceEquip: $items`Powerful Glove` })],
-    }
-  ),
-  new FreeRunFight(
-    () =>
-      have($familiar`Space Jellyfish`) &&
-      get("_spaceJellyfishDrops") < 5 &&
-      getStenchLocation() !== $location`none`,
-    (runSource: ActionSource) => {
-      adventureMacro(
-        getStenchLocation(),
-        Macro.trySkill($skill`Extract Jelly`).step(runSource.macro)
       );
     },
     {
