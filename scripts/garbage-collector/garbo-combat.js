@@ -21475,7 +21475,7 @@ function intializeExtrovermectinZones() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2474);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7442);
 /* harmony import */ var _session__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(742);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -21666,9 +21666,13 @@ function freeFightFamiliar() {
     familiarValue.push([$familiar(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["Stocking Mimic"]))), mimicValue]);
   }
 
-  if (have($familiar(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([$familiar(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["Robortender"]))), 200]);
+  if (have($familiar(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["Obtuse Angel"]))))) {
+    familiarValue.push([$familiar(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["Obtuse Angel"]))), 0.02 * garboValue($item(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["time's arrow"]))))]);
+  }
 
-  var _iterator = _createForOfIteratorHelper($familiars(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
+  if (have($familiar(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["Robortender"]))))) familiarValue.push([$familiar(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["Robortender"]))), 200]);
+
+  var _iterator = _createForOfIteratorHelper($familiars(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun"])))),
       _step;
 
   try {
@@ -21682,31 +21686,31 @@ function freeFightFamiliar() {
     _iterator.f();
   }
 
-  familiarValue.push([$familiar(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["none"]))), 0]);
+  familiarValue.push([$familiar(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["none"]))), 0]);
   return argmax(familiarValue);
 }
 function pocketProfessorLectures() {
-  return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["Pocket Professor"])))) + weightAdjustment()));
+  return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["Pocket Professor"])))) + weightAdjustment()));
 }
 function timeToMeatify() {
-  if (!(0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["Grey Goose"])))) || (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_meatifyMatterUsed") || (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() > (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)()) {
+  if (!(0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["Grey Goose"])))) || (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_meatifyMatterUsed") || (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() > (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)()) {
     return false;
-  } else if ((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Grey Goose"]))).experience >= 400) return true;else if (!_lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.ascending */ .Xe.ascending || (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() > 50) return false; // Check Wanderers
+  } else if ((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Grey Goose"]))).experience >= 400) return true;else if (!_lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.ascending */ .Xe.ascending || (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() > 50) return false; // Check Wanderers
 
 
   var totalTurns = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.totalTurnsPlayed)();
-  var baseMeat = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["SongBoom\u2122 BoomBox"])))) ? 275 : 250;
-  var usingLatte = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("latteModifier").split(",").includes("Meat Drop: 40");
-  var nextProtonicGhost = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["protonic accelerator pack"])))) ? Math.max(1, (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("nextParanormalActivity") - totalTurns) : Infinity;
-  var nextVoteMonster = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["\"I Voted!\" sticker"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_voteFreeFights") < 3 ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
-  var nextVoidMonster = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["cursed magnifying glass"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_voidFreeFights") < 5 && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6) ? -(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("cursedMagnifyingGlassCount") % 13 : Infinity; // If any of the above are 0, then
+  var baseMeat = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["SongBoom\u2122 BoomBox"])))) ? 275 : 250;
+  var usingLatte = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("latteModifier").split(",").includes("Meat Drop: 40");
+  var nextProtonicGhost = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["protonic accelerator pack"])))) ? Math.max(1, (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("nextParanormalActivity") - totalTurns) : Infinity;
+  var nextVoteMonster = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["\"I Voted!\" sticker"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_voteFreeFights") < 3 ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
+  var nextVoidMonster = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["cursed magnifying glass"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_voidFreeFights") < 5 && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6) ? -(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("cursedMagnifyingGlassCount") % 13 : Infinity; // If any of the above are 0, then
   // (1) We should be fighting a free fight
   // (2) We meatify if Grey Goose is sufficiently heavy and we don't have another free wanderer in our remaining turns
 
   var freeFightNow = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
   var delay = [nextProtonicGhost, nextVoteMonster === 0 ? (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U2)("_voteFreeFights") < 2 ? 11 : Infinity : nextVoteMonster, nextVoidMonster === 0 ? 13 : nextVoidMonster].reduce((a, b) => a < b ? a : b);
   if (delay < (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)()) return false; // We can wait for the next free fight
-  else if (freeFightNow || (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["Grey Goose"]))).experience >= 121) return true;
+  else if (freeFightNow || (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$familiar */ .HP)(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["Grey Goose"]))).experience >= 121) return true;
   return false;
 }
 
@@ -22019,7 +22023,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("fd532d7b86dba3304855bb5263d27991fe0c2d96" === mainSha) {
+    if ("2af99f131bcf18c25db0bc0275bcd076e0e2ac4f" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
