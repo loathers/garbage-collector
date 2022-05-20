@@ -209,6 +209,10 @@ export function freeFightFamiliar(canMeatify = false): Familiar {
     familiarValue.push([$familiar`Stocking Mimic`, mimicValue]);
   }
 
+  if (have($familiar`Obtuse Angel`)) {
+    familiarValue.push([$familiar`Obtuse Angel`, 0.02 * garboValue($item`time's arrow`)]);
+  }
+
   if (have($familiar`Robortender`)) familiarValue.push([$familiar`Robortender`, 200]);
 
   for (const familiar of $familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`) {
