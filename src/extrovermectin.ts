@@ -152,7 +152,7 @@ function initializeCrates(): void {
     }
     // if we have olfaction, that's our primary method for ensuring crates
     if (
-      (crateStrategy() === "Sniff" && property.getString("olfactedMonster") === "crate") ||
+      (crateStrategy() === "Sniff" && property.getString("olfactedMonster") !== "crate") ||
       (crateStrategy() === "Orb" &&
         ((get("_gallapagosMonster") !== $monster`crate` &&
           have($skill`Gallapagosian Mating Call`)) ||
@@ -225,7 +225,7 @@ function initializeDireWarren(): void {
   } while ("fluffy bunny" !== get("lastEncounter"));
 }
 
-export function intializeExtrovermectinZones(): void {
+export function initializeExtrovermectinZones(): void {
   if (get("beGregariousFightsLeft") === 0) {
     if (hasMonsterReplacers()) initializeCrates();
     initializeDireWarren();

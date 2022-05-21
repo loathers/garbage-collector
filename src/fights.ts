@@ -132,7 +132,7 @@ import postCombatActions from "./post";
 import {
   crateStrategy,
   doingExtrovermectin,
-  intializeExtrovermectinZones,
+  initializeExtrovermectinZones,
   saberCrateIfSafe,
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
@@ -275,7 +275,7 @@ function embezzlerSetup() {
   }
 
   if (doingExtrovermectin()) {
-    intializeExtrovermectinZones();
+    initializeExtrovermectinZones();
   }
 }
 
