@@ -20911,6 +20911,7 @@ var EmbezzlerFight = /*#__PURE__*/function () {
 
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       if (!this.available() || !(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myAdventures)()) return;
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Now running Embezzler fight: ".concat(this.name, ". Stay tuned for details."));
       var fightMacro = (_options$macro = options.macro) !== null && _options$macro !== void 0 ? _options$macro : embezzlerMacro();
 
       if (this.draggable) {
@@ -21215,7 +21216,6 @@ function getNextEmbezzlerFight() {
       var fight = _step.value;
 
       if (fight.available()) {
-        print("getNextEmbezzlerFight(): Next fight ".concat(fight.name));
         return fight;
       }
     }
@@ -21225,7 +21225,6 @@ function getNextEmbezzlerFight() {
     _iterator.f();
   }
 
-  print("getNextEmbezzlerFight(): No next fight");
   return null;
 }
 /**
@@ -22023,7 +22022,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("2af99f131bcf18c25db0bc0275bcd076e0e2ac4f" === mainSha) {
+    if ("3e5285bafee4b07bd3e181f0acfdd3cb465a79a4" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");

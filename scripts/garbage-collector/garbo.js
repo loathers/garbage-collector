@@ -24313,6 +24313,7 @@ var EmbezzlerFight = /*#__PURE__*/function () {
 
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       if (!this.available() || !(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myAdventures)()) return;
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Now running Embezzler fight: ".concat(this.name, ". Stay tuned for details."));
       var fightMacro = (_options$macro = options.macro) !== null && _options$macro !== void 0 ? _options$macro : embezzlerMacro();
 
       if (this.draggable) {
@@ -24617,7 +24618,6 @@ function getNextEmbezzlerFight() {
       var fight = _step.value;
 
       if (fight.available()) {
-        (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("getNextEmbezzlerFight(): Next fight ".concat(fight.name));
         return fight;
       }
     }
@@ -24627,7 +24627,6 @@ function getNextEmbezzlerFight() {
     _iterator.f();
   }
 
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("getNextEmbezzlerFight(): No next fight");
   return null;
 }
 /**
@@ -29497,13 +29496,11 @@ function post_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.sl
 
 function coldMedicineCabinet() {
   if ((0,external_kolmafia_.getWorkshed)() !== (0,template_string/* $item */.xr)(post_templateObject || (post_templateObject = post_taggedTemplateLiteral(["cold medicine cabinet"])))) return;
-  (0,external_kolmafia_.logprint)("DEBUG: garbo recognizes your workshed as the CMC.");
 
   if (property/* getNumber */.Dx("_coldMedicineConsults") >= 5 || property/* getNumber */.Dx("_nextColdMedicineConsult") > (0,external_kolmafia_.totalTurnsPlayed)()) {
     return;
   }
 
-  (0,external_kolmafia_.logprint)("DEBUG: garbo plans to visit the cold medicine cabinet.");
   var options = (0,external_kolmafia_.visitUrl)("campground.php?action=workshed");
   var i = 0;
   var match;
@@ -29523,7 +29520,6 @@ function coldMedicineCabinet() {
 
   var bestItem = (0,src_lib/* argmax */.Eb)(Array.from(itemChoices.keys()).map(i => [i, (0,session/* garboValue */.sf)(i)]));
   var bestChoice = itemChoices.get(bestItem);
-  (0,external_kolmafia_.logprint)("DEBUG: garbo thinks the best item is ".concat(bestItem, ", with choice number ").concat(bestChoice, "."));
 
   if (bestChoice && bestChoice > 0) {
     (0,external_kolmafia_.visitUrl)("campground.php?action=workshed");
@@ -29901,10 +29897,6 @@ function dailyFights() {
         (0,external_kolmafia_.print)("Finished ".concat(nextFight.name));
 
         if ((0,external_kolmafia_.totalTurnsPlayed)() - startTurns === 1 && (0,property/* get */.U2)("lastCopyableMonster") === (0,template_string/* $monster */.O4)(fights_templateObject81 || (fights_templateObject81 = fights_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) && (nextFight.wrongEncounterName || (0,property/* get */.U2)("lastEncounter") === "Knob Goblin Embezzler")) {
-          if (nextFight.wrongEncounterName) {
-            (0,external_kolmafia_.print)("fight ".concat(nextFight.name, " reports wrong encounter!"));
-          }
-
           src_lib/* embezzlerLog.initialEmbezzlersFought */.G.initialEmbezzlersFought++;
           src_lib/* embezzlerLog.sources.push */.G.sources.push(nextFight.name);
         }
@@ -31986,7 +31978,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("2af99f131bcf18c25db0bc0275bcd076e0e2ac4f"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("3e5285bafee4b07bd3e181f0acfdd3cb465a79a4"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32588,7 +32580,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("2af99f131bcf18c25db0bc0275bcd076e0e2ac4f" === mainSha) {
+    if ("3e5285bafee4b07bd3e181f0acfdd3cb465a79a4" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
