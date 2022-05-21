@@ -2256,7 +2256,7 @@ function yachtzee(): void {
           2000 * (1 + numericModifier("meat drop") / 100) &&
         (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1000 * 60 * 60 * 24 * 7);
 
-     setChoice(918, getUMD ? 1 : 2);
+      setChoice(918, getUMD ? 1 : 2);
 
       adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
       if (
