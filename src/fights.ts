@@ -1005,15 +1005,8 @@ const freeFightSources = [
       const drunksCanAppear =
         get("_drunkPygmyBanishes") === 10 ||
         (saberedMonster === $monster`drunk pygmy` && get("_saberForceMonsterCount"));
-      const remainingSaberPygmies =
-        (saberedMonster === $monster`drunk pygmy` ? get("_saberForceMonsterCount") : 0) +
-        2 * clamp(5 - get("_saberForceUses"), 0, 5);
       return (
-        get("questL11Worship") !== "unstarted" &&
-        rightTime &&
-        !wrongPygmySabered &&
-        drunksCanAppear &&
-        remainingSaberPygmies
+        get("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && drunksCanAppear
       );
     },
     () => {
