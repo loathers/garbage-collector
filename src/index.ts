@@ -60,7 +60,7 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
-import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
+import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
   checkGithubVersion,
   embezzlerLog,
@@ -232,7 +232,9 @@ function barfTurn() {
     }
   }
 
-  if (myAdventures() === 1) {
+  if (myAdventures() === 1 && myInebriety() <= inebrietyLimit()) {
+    deliverThesisIfAble();
+
     if (
       have($item`Kramco Sausage-o-Matic™`) &&
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&

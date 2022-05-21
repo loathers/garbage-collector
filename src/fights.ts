@@ -417,14 +417,6 @@ export function dailyFights(): void {
           postCombatActions();
           const predictedNextFight = getNextEmbezzlerFight();
           if (!predictedNextFight?.draggable) doSausage();
-          // Check in case our prof gained enough exp during the profchain
-          if (
-            thesisReady() &&
-            get("beGregariousFightsLeft") <= 0 &&
-            predictedNextFight?.name !== "Orb Prediction"
-          ) {
-            deliverThesis();
-          }
           doGhost();
           startWandererCounter();
         }
@@ -488,7 +480,6 @@ export function dailyFights(): void {
 
         nextFight = getNextEmbezzlerFight();
 
-        // try to deliver the thesis
         const romanticMonsterImpossible =
           Counter.get("Romantic Monster Window end") === Infinity ||
           (Counter.get("Romantic Monster Window begin") > 0 &&
@@ -496,14 +487,6 @@ export function dailyFights(): void {
           get("_romanticFightsLeft") <= 0;
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
-          // Check in case our prof gained enough exp during the profchains
-          if (
-            thesisReady() &&
-            get("beGregariousFightsLeft") <= 0 &&
-            nextFight?.name !== "Orb Prediction"
-          ) {
-            deliverThesis();
-          }
           yachtzee();
         }
         doGhost();
@@ -595,7 +578,7 @@ class FreeFight {
       withMacro(Macro.basicCombat(), this.run);
       postCombatActions();
       // Slot in our Professor Thesis if it's become available
-      if (thesisReady() && !have($effect`Feeling Lost`)) deliverThesis();
+      if (!have($effect`Feeling Lost`)) deliverThesisIfAble();
     }
   }
 }
@@ -1928,7 +1911,8 @@ function thesisReady(): boolean {
   );
 }
 
-function deliverThesis(): void {
+export function deliverThesisIfAble(): void {
+  if (!thesisReady()) return;
   const thesisInNEP =
     (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
     questStep("_questPartyFair") < 999;
