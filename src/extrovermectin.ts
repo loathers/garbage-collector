@@ -1,13 +1,4 @@
-import {
-  equip,
-  handlingChoice,
-  mallPrice,
-  Monster,
-  runChoice,
-  toMonster,
-  useFamiliar,
-  visitUrl,
-} from "kolmafia";
+import { equip, mallPrice, Monster, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
@@ -201,7 +192,6 @@ function initializeCrates(): void {
 
 function initializeDireWarren(): void {
   visitUrl("museum.php?action=icehouse");
-  if (handlingChoice()) runChoice(2);
 
   const banishedMonsters = new Map<string, Monster>(
     get("banishedMonsters")
