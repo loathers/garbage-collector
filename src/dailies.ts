@@ -79,12 +79,14 @@ import {
   argmax,
   baseMeat,
   coinmasterPrice,
+  garbageTouristRatio,
   globalOptions,
   HIGHLIGHT,
   logMessage,
   realmAvailable,
   today,
   tryFeast,
+  turnsToNC,
   userConfirmDialog,
 } from "./lib";
 import { withStash } from "./clan";
@@ -247,7 +249,7 @@ function newarkValue(): number {
     );
     set("garbo_newarkValueDate", today);
   }
-  return get("garbo_newarkValue", 0);
+  return get("garbo_newarkValue", 0) * 0.25 * estimatedTurns();
 }
 
 function felizValue(): number {
@@ -265,25 +267,49 @@ function felizValue(): number {
     );
     set("garbo_felizValueDate", today);
   }
-  return get("garbo_felizValue", 0);
+  return get("garbo_felizValue", 0) * 0.25 * estimatedTurns();
+}
+
+function drivebyValue(): number {
+  const embezzlers = embezzlerCount();
+  const tourists = ((estimatedTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+  const marginalRoboWeight = 50;
+  const meatPercentDelta =
+    Math.sqrt(220 * 2 * marginalRoboWeight) -
+    Math.sqrt(220 * 2 * marginalRoboWeight) +
+    2 * marginalRoboWeight;
+  return (meatPercentDelta / 100) * ((750 + baseMeat) * embezzlers + baseMeat * tourists);
+}
+
+function entendreValue(): number {
+  const embezzlers = embezzlerCount();
+  const tourists = ((estimatedTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+  const marginalRoboWeight = 50;
+  const itemPercent = Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
+  const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
+  const meatStackDropRate = 0.3 * 4; // 4 stacks each with a 30% drop chance
+  return (
+    (itemPercent / 100) *
+    (meatStackDropRate * embezzlers + garbageBagsDropRate * tourists * garbageTouristRatio)
+  );
 }
 
 function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
     const roboDrinks = {
-      "Drive-by shooting": { priceCap: 50000, mandatory: true },
+      "Drive-by shooting": { priceCap: drivebyValue(), mandatory: true },
       Newark: {
-        priceCap: 0.25 * newarkValue() * estimatedTurns(),
+        priceCap: newarkValue(),
         mandatory: false,
       },
-      "Feliz Navidad": { priceCap: 0.25 * felizValue() * estimatedTurns(), mandatory: false },
+      "Feliz Navidad": { priceCap: felizValue(), mandatory: false },
       "Bloody Nora": {
         priceCap: get("_envyfishEggUsed")
           ? (750 + baseMeat) * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
           : 0,
         mandatory: false,
       },
-      "Single entendre": { priceCap: 0.15 * 0.839 * 200 * 3 * estimatedTurns(), mandatory: false },
+      "Single entendre": { priceCap: entendreValue(), mandatory: false },
     };
     for (const [drinkName, { priceCap, mandatory }] of Object.entries(roboDrinks)) {
       if (get("_roboDrinks").toLowerCase().includes(drinkName.toLowerCase())) continue;
