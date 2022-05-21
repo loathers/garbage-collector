@@ -73,7 +73,7 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { meatFamiliar } from "./familiar";
+import { calculateMeatFamiliar, meatFamiliar } from "./familiar";
 import {
   argmax,
   baseMeat,
@@ -287,11 +287,17 @@ function prepFamiliars(): void {
       if (get("_roboDrinks").toLowerCase().includes(drinkName.toLowerCase())) continue;
       useFamiliar($familiar`Robortender`);
       const drink = toItem(drinkName);
-      withProperty("autoBuyPriceLimit", priceCap, () => retrieveItem(1, drink));
-      if (mandatory && !have(toItem(drinkName))) {
-        throw new Error(`The price of ${drinkName} is too damn high!`);
+      if (retrievePrice(drink) > priceCap) {
+        if (mandatory) {
+          calculateMeatFamiliar();
+          break;
+        }
+        continue;
       }
-      visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
+      withProperty("autoBuyPriceLimit", priceCap, () => retrieveItem(1, drink));
+      if (have(drink)) {
+        visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
+      }
     }
   }
 
