@@ -1,4 +1,13 @@
-import { equip, mallPrice, Monster, toMonster, useFamiliar, visitUrl } from "kolmafia";
+import {
+  equip,
+  handlingChoice,
+  mallPrice,
+  Monster,
+  runChoice,
+  toMonster,
+  useFamiliar,
+  visitUrl,
+} from "kolmafia";
 import {
   $effect,
   $item,
@@ -191,13 +200,18 @@ function initializeCrates(): void {
 }
 
 function initializeDireWarren(): void {
-  const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
+  visitUrl("museum.php?action=icehouse");
+  if (handlingChoice()) runChoice(2);
+
   const banishedMonsters = new Map<string, Monster>(
     get("banishedMonsters")
       .split(",")
       .map((tuple) => tuple.split(":") as [string, string, string])
       .map(([monster, source]) => [source, toMonster(monster)] as [string, Monster])
   );
+  if (banishedMonsters.get("ice house") === $monster`fluffy bunny`) return;
+
+  const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
   if (options.some((option) => banishedMonsters.get(option.name) === $monster`fluffy bunny`)) {
     return;
   }
