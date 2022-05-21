@@ -232,7 +232,7 @@ function barfTurn() {
     }
   }
 
-  if (myAdventures() === 1 && myInebriety() <= inebrietyLimit()) {
+  if (myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
     deliverThesisIfAble();
 
     if (
