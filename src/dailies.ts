@@ -1,4 +1,5 @@
 import {
+  abort,
   adv1,
   buy,
   changeMcd,
@@ -84,6 +85,7 @@ import {
   realmAvailable,
   today,
   tryFeast,
+  userConfirmDialog,
 } from "./lib";
 import { withStash } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
@@ -290,6 +292,16 @@ function prepFamiliars(): void {
       if (retrievePrice(drink) > priceCap) {
         if (mandatory) {
           calculateMeatFamiliar();
+          if (
+            !userConfirmDialog(
+              `Garbo cannot find a reasonably priced drive-by-shooting (price cap: ${priceCap}), and will not be using your robortender. Is that cool with you?`,
+              true
+            )
+          ) {
+            abort(
+              "Alright, then, I guess you should try to find a reasonbly priced drive-by-shooting. Or do different things with your day."
+            );
+          }
           break;
         }
         continue;
