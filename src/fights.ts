@@ -1255,7 +1255,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       get("neverendingPartyAlways") && questStep("_questPartyFair") < 999
-        ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
+        ? clamp(10 - get("_neverendingPartyFreeTurns") - (get("_thesisDelivered") ? 0 : 1), 0, 10)
         : 0,
     () => {
       const constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).step(Macro.load());
