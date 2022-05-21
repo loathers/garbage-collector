@@ -479,9 +479,6 @@ export function dailyFights(): void {
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
-          if (nextFight.wrongEncounterName) {
-            print(`fight ${nextFight.name} reports wrong encounter!`);
-          }
           embezzlerLog.initialEmbezzlersFought++;
           embezzlerLog.sources.push(nextFight.name);
         }
