@@ -446,3 +446,13 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   if (timeOut) return userConfirm(msg, timeOut, defaultValue);
   return userConfirm(msg);
 }
+
+export const steveAdventures: Map<Location, number[]> = new Map([
+  [$location`The Haunted Bedroom`, [1, 3, 1]],
+  [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
+  [$location`The Haunted Conservatory`, [1, 2, 2]],
+  [$location`The Haunted Billiards Room`, [1, 2, 2]],
+  [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
+  [$location`The Haunted Boiler Room`, [1, 2, 2]],
+  [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
+]);
