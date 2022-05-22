@@ -200,7 +200,7 @@ function barfTurn() {
       !embezzlerUp &&
       have($familiar`Space Jellyfish`) &&
       get(`_spaceJellyfishDrops`) < 5 &&
-      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns < 20 &&
+      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns < 25 &&
       myInebriety() <= inebrietyLimit()
     ) {
       useFamiliar($familiar`Space Jellyfish`);
