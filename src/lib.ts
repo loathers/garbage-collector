@@ -463,7 +463,7 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
 export const turnsToNC =
-  (27 * garbageTourists) / barfTourists +
+  (27 * barfTourists) / (garbageTourists + angryTourists + 3 * touristFamilies) +
   1 * touristFamilyRatio +
   2 * (1 - touristFamilyRatio) * touristFamilyRatio +
   3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
