@@ -103,7 +103,8 @@ function yachtzeeChainDiet(): boolean {
     (spleenLimit() - mySpleenUse());
   let pickleJuiceToDrink = clamp(Math.ceil(spleenToClean / 5), 0, pickleJuice);
   let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
-  let extrosToChew = 2;
+  let extrosToChew = -extros / 2;
+  let synthToUse = -synth;
 
   // If we need spleen cleansers but their prices are unreasonable, just return
   const maxSliderPrice = 150000,
@@ -145,6 +146,9 @@ function yachtzeeChainDiet(): boolean {
   // Acquire everything we need before using stuff
   let stenchJelliesToUse = yachtzeeTurns - currentJellyCharges;
   acquire(stenchJelliesToUse, $item`stench jelly`, (2 * jelliesBulkPrice) / yachtzeeTurns);
+  if (extrosToChew > 0) {
+    acquire(extrosToChew, $item`Extrovermectin™`, 100000);
+  }
   if (pickleJuiceToDrink > 0) {
     acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice);
   }
@@ -155,18 +159,24 @@ function yachtzeeChainDiet(): boolean {
   if (filters > 0) acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`));
 
   // Crude diet
-  // 1) Fill spleen to capacity
-  // 2) While we have liver space and
+  // 1) Fill spleen to capacity with jellies
+  // 2) While we have liver space drink pickle juice and refill our spleen with jellies
+  // 3) While we have stomach space drink pickle juice and refill our spleen with jellies
   if (mySpleenUse() < spleenLimit()) {
     while (extrosToChew > 0 && mySpleenUse() + 2 <= spleenLimit()) {
       chew(1, $item`Extrovermectin™`);
       extrosToChew--;
+    }
+    while (synthToUse > 0 && mySpleenUse() < spleenLimit()) {
+      cliExecute("synthesis meat");
+      synthToUse--;
     }
     const n = clamp(spleenLimit() - mySpleenUse(), 0, stenchJelliesToUse);
     chew(n, $item`stench jelly`);
     stenchJelliesToUse -= n;
     set("_stenchJellyCharges", get("_stenchJellyCharges") + n);
   }
+  if (filters > 0) use(filters, $item`mojo filter`);
 
   if (pickleJuiceToDrink > 0) {
     for (const song of getActiveSongs()) {
@@ -201,6 +211,10 @@ function yachtzeeChainDiet(): boolean {
         chew(1, $item`Extrovermectin™`);
         extrosToChew--;
       }
+      while (synthToUse > 0 && mySpleenUse() < spleenLimit()) {
+        cliExecute("synthesis meat");
+        synthToUse--;
+      }
       const m = clamp(5 * n, 0, stenchJelliesToUse);
       chew(m, $item`stench jelly`);
       stenchJelliesToUse -= m;
@@ -221,6 +235,10 @@ function yachtzeeChainDiet(): boolean {
       while (extrosToChew > 0 && mySpleenUse() + 2 <= spleenLimit()) {
         chew(1, $item`Extrovermectin™`);
         extrosToChew--;
+      }
+      while (synthToUse > 0 && mySpleenUse() < spleenLimit()) {
+        cliExecute("synthesis meat");
+        synthToUse--;
       }
       const m = clamp(5 * n, 0, stenchJelliesToUse);
       chew(m, $item`stench jelly`);
