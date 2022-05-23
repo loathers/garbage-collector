@@ -231,6 +231,14 @@ function barfTurn() {
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
     } else if (!embezzlerUp && timeToMeatify()) {
       useFamiliar($familiar`Grey Goose`);
+    } else if (
+      !embezzlerUp &&
+      have($familiar`Space Jellyfish`) &&
+      get(`_spaceJellyfishDrops`) < 5 &&
+      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns <= 25 &&
+      myInebriety() <= inebrietyLimit()
+    ) {
+      useFamiliar($familiar`Space Jellyfish`);
     }
 
     // d. get dressed
