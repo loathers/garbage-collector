@@ -171,6 +171,7 @@ export class EmbezzlerFight {
 
   run(options: { macro?: Macro; location?: Location; useAuto?: boolean } = {}): void {
     if (!this.available() || !myAdventures()) return;
+    print(`Now running Embezzler fight: ${this.name}. Stay tuned for details.`);
     const fightMacro = options.macro ?? embezzlerMacro();
     if (this.draggable) {
       this.execute(
@@ -905,11 +906,9 @@ export function estimatedTurns(): number {
 export function getNextEmbezzlerFight(): EmbezzlerFight | null {
   for (const fight of embezzlerSources) {
     if (fight.available()) {
-      print(`getNextEmbezzlerFight(): Next fight ${fight.name}`);
       return fight;
     }
   }
-  print(`getNextEmbezzlerFight(): No next fight`);
   return null;
 }
 
