@@ -7,6 +7,7 @@ import {
   Effect,
   equip,
   Familiar,
+  gametimeToInt,
   getAutoAttack,
   getCampground,
   handlingChoice,
@@ -2228,8 +2229,23 @@ function yachtzee(): void {
 
       if (!equippedOutfit || !success()) return;
 
-      setChoice(918, 2);
+      const lastUMDDate = property.getString("umdLastObtained");
+      const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5; // Import today from ./lib once the PR is merged
+      const getUMD =
+        !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
+        garboValue($item`Ultimate Mind Destroyer`) >=
+          2000 * (1 + numericModifier("meat drop") / 100) &&
+        (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1000 * 60 * 60 * 24 * 7);
+
+      setChoice(918, getUMD ? 1 : 2);
+
       adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+      if (
+        visitUrl("forestvillage.php").includes("friarcottage.gif") &&
+        !get("_floristPlantsUsed").split(",").includes("Crookweed")
+      ) {
+        cliExecute("florist plant Crookweed");
+      }
       if (get("lastEncounter") === "Yacht, See?") {
         adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
       }
