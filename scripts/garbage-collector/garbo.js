@@ -29848,12 +29848,7 @@ function dailyFights() {
           (0,property/* set */.t8)(_property, true);
           postCombatActions();
           var predictedNextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)();
-          if (!(predictedNextFight !== null && predictedNextFight !== void 0 && predictedNextFight.draggable)) doSausage(); // Check in case our prof gained enough exp during the profchain
-
-          if (thesisReady() && (0,property/* get */.U2)("beGregariousFightsLeft") <= 0 && (predictedNextFight === null || predictedNextFight === void 0 ? void 0 : predictedNextFight.name) !== "Orb Prediction") {
-            deliverThesis();
-          }
-
+          if (!(predictedNextFight !== null && predictedNextFight !== void 0 && predictedNextFight.draggable)) doSausage();
           doGhost();
           startWandererCounter();
         }
@@ -29901,19 +29896,11 @@ function dailyFights() {
           src_lib/* embezzlerLog.sources.push */.G.sources.push(nextFight.name);
         }
 
-        nextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)(); // try to deliver the thesis
-
+        nextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)();
         var romanticMonsterImpossible = counter/* get */.U2("Romantic Monster Window end") === Infinity || counter/* get */.U2("Romantic Monster Window begin") > 0 && counter/* get */.U2("Romantic Monster window begin") !== Infinity || (0,property/* get */.U2)("_romanticFightsLeft") <= 0;
 
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
-          var _nextFight;
-
-          doSausage(); // Check in case our prof gained enough exp during the profchains
-
-          if (thesisReady() && (0,property/* get */.U2)("beGregariousFightsLeft") <= 0 && ((_nextFight = nextFight) === null || _nextFight === void 0 ? void 0 : _nextFight.name) !== "Orb Prediction") {
-            deliverThesis();
-          }
-
+          doSausage();
           yachtzee();
         }
 
@@ -29996,7 +29983,7 @@ var FreeFight = /*#__PURE__*/function () {
         (0,src_combat.withMacro)(src_combat.Macro.basicCombat(), this.run);
         postCombatActions(); // Slot in our Professor Thesis if it's become available
 
-        if (thesisReady() && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(fights_templateObject95 || (fights_templateObject95 = fights_taggedTemplateLiteral(["Feeling Lost"]))))) deliverThesis();
+        if (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(fights_templateObject95 || (fights_templateObject95 = fights_taggedTemplateLiteral(["Feeling Lost"]))))) deliverThesisIfAble();
       }
     }
   }]);
@@ -30352,7 +30339,7 @@ new FreeFight(() => Witchess_have() ? (0,utils/* clamp */.uZ)(5 - fightsDone(), 
   (0,external_kolmafia_.adv1)((0,template_string/* $location */.PG)(_templateObject316 || (_templateObject316 = fights_taggedTemplateLiteral(["The X-32-F Combat Training Snowman"]))), -1, "");
 }, false, {
   canOverrideMacro: true
-}), new FreeFight(() => (0,property/* get */.U2)("neverendingPartyAlways") && (0,src_lib/* questStep */.cL)("_questPartyFair") < 999 ? (0,utils/* clamp */.uZ)(10 - (0,property/* get */.U2)("_neverendingPartyFreeTurns"), 0, 10) : 0, () => {
+}), new FreeFight(() => (0,property/* get */.U2)("neverendingPartyAlways") && (0,src_lib/* questStep */.cL)("_questPartyFair") < 999 ? (0,utils/* clamp */.uZ)(10 - (0,property/* get */.U2)("_neverendingPartyFreeTurns") - ((0,property/* get */.U2)("_thesisDelivered") ? 0 : 1), 0, 10) : 0, () => {
   var constructedMacro = src_combat.Macro.tryHaveSkill((0,template_string/* $skill */.tm)(_templateObject317 || (_templateObject317 = fights_taggedTemplateLiteral(["Feel Pride"])))).step(src_combat.Macro.load());
   setNepQuestChoicesAndPrepItems();
   (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject318 || (_templateObject318 = fights_taggedTemplateLiteral(["The Neverending Party"]))), constructedMacro);
@@ -30727,7 +30714,8 @@ function thesisReady() {
   return !(0,property/* get */.U2)("_thesisDelivered") && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject458 || (_templateObject458 = fights_taggedTemplateLiteral(["Pocket Professor"])))) && (0,template_string/* $familiar */.HP)(_templateObject459 || (_templateObject459 = fights_taggedTemplateLiteral(["Pocket Professor"]))).experience >= 400;
 }
 
-function deliverThesis() {
+function deliverThesisIfAble() {
+  if (!thesisReady()) return;
   var thesisInNEP = ((0,property/* get */.U2)("neverendingPartyAlways") || (0,property/* get */.U2)("_neverEndingPartyToday")) && (0,src_lib/* questStep */.cL)("_questPartyFair") < 999;
   (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(_templateObject460 || (_templateObject460 = fights_taggedTemplateLiteral(["Pocket Professor"]))));
   freeFightMood().execute();
@@ -31954,7 +31942,9 @@ function barfTurn() {
     }
   }
 
-  if ((0,external_kolmafia_.myAdventures)() === 1) {
+  if ((0,external_kolmafia_.myAdventures)() === 1 + src_lib/* globalOptions.saveTurns */.Xe.saveTurns && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)()) {
+    deliverThesisIfAble();
+
     if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject36 || (src_templateObject36 = src_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject37 || (src_templateObject37 = src_taggedTemplateLiteral(["magical sausage"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject38 || (src_templateObject38 = src_taggedTemplateLiteral(["magical sausage casing"]))))) && (0,property/* get */.U2)("_sausagesEaten") < 23) {
       var available = (0,utils/* clamp */.uZ)(23 - (0,property/* get */.U2)("_sausagesEaten"), 0, (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(src_templateObject39 || (src_templateObject39 = src_taggedTemplateLiteral(["magical sausage"])))) + (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(src_templateObject40 || (src_templateObject40 = src_taggedTemplateLiteral(["magical sausage casing"])))));
       (0,external_kolmafia_.eat)(available, (0,template_string/* $item */.xr)(src_templateObject41 || (src_templateObject41 = src_taggedTemplateLiteral(["magical sausage"]))));
@@ -31978,7 +31968,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("1d18bffaed58ea12f14af36754b28e40772ac7b6"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("0e4ad9231a43002f84d9ff3c9aa9737de1e837e2"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32580,7 +32570,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("1d18bffaed58ea12f14af36754b28e40772ac7b6" === mainSha) {
+    if ("0e4ad9231a43002f84d9ff3c9aa9737de1e837e2" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
