@@ -912,7 +912,7 @@ const freeFightSources = [
         );
       }
     },
-    true,
+    false,
     {
       requirements: () => [
         new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
