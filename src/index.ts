@@ -3,6 +3,7 @@ import {
   booleanModifier,
   buy,
   cliExecute,
+  currentRound,
   eat,
   getCampground,
   getClanName,
@@ -21,9 +22,11 @@ import {
   putStash,
   retrieveItem,
   runChoice,
+  runCombat,
   setAutoAttack,
   toInt,
   totalTurnsPlayed,
+  toUrl,
   use,
   useFamiliar,
   visitUrl,
@@ -73,6 +76,7 @@ import {
   questStep,
   safeRestore,
   setChoice,
+  steveAdventures,
   userConfirmDialog,
 } from "./lib";
 import { meatMood } from "./mood";
@@ -90,6 +94,7 @@ import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
+import { canAdv } from "canadv.ash";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -121,13 +126,43 @@ function barfTurn() {
 
   tryFillLatte();
 
+  const steveRoom = get("nextSpookyravenStephenRoom");
+  const ghostLocation = get("ghostLocation");
+  if (
+    totalTurnsPlayed() % 37 === 0 &&
+    totalTurnsPlayed() !== get("lastLightsOutTurn") &&
+    steveRoom &&
+    steveRoom !== ghostLocation &&
+    canAdv(steveRoom)
+  ) {
+    const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
+    if (fightingSteve) {
+      useFamiliar(meatFamiliar());
+      meatOutfit(true);
+    }
+    const plan = steveAdventures.get(steveRoom);
+    if (plan) {
+      withMacro(
+        Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abort(),
+        () => {
+          visitUrl(toUrl(steveRoom));
+          for (const choiceValue of plan) {
+            runChoice(choiceValue);
+          }
+          if (fightingSteve || currentRound()) runCombat();
+        },
+        true
+      );
+    }
+  }
+
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
 
   // a. set up mood stuff
   meatMood().execute(estimatedTurns());
 
   safeRestore(); // get enough mp to use summer siesta and enough hp to not get our ass kicked
-  const ghostLocation = get("ghostLocation");
+
   // b. check for wanderers, and do them
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
     meatOutfit(true);
