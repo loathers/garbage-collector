@@ -25,6 +25,18 @@ import {
 import { argmax, globalOptions } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
+export function calculateMeatFamiliar(): void {
+  const bestLeps = Familiar.all()
+    // The commerce ghost canot go underwater in most circumstances, and cannot use an amulet coin
+    // We absolutely do not want that
+    .filter((fam) => have(fam) && fam !== $familiar`Ghost of Crimbo Commerce`)
+    .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a));
+  const bestLepMult = findLeprechaunMultiplier(bestLeps[0]);
+  _meatFamiliar = bestLeps
+    .filter((familiar) => findLeprechaunMultiplier(familiar) === bestLepMult)
+    .reduce((a, b) => (findFairyMultiplier(a) > findFairyMultiplier(b) ? a : b));
+}
+
 let _meatFamiliar: Familiar;
 export function meatFamiliar(): Familiar {
   if (!_meatFamiliar) {
@@ -37,15 +49,7 @@ export function meatFamiliar(): Familiar {
     } else if (have($familiar`Robortender`)) {
       _meatFamiliar = $familiar`Robortender`;
     } else {
-      const bestLeps = Familiar.all()
-        // The commerce ghost canot go underwater in most circumstances, and cannot use an amulet coin
-        // We absolutely do not want that
-        .filter((fam) => have(fam) && fam !== $familiar`Ghost of Crimbo Commerce`)
-        .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a));
-      const bestLepMult = findLeprechaunMultiplier(bestLeps[0]);
-      _meatFamiliar = bestLeps
-        .filter((familiar) => findLeprechaunMultiplier(familiar) === bestLepMult)
-        .sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a))[0];
+      calculateMeatFamiliar();
     }
   }
   return _meatFamiliar;
