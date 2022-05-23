@@ -40,6 +40,7 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
   $slot,
   $thralls,
@@ -284,6 +285,13 @@ export class Macro extends StrictMacro {
         Macro.if_(
           `!monsterid ${$monster`garbage tourist`.id}`,
           Macro.trySkill($skill`Feel Nostalgic`)
+        )
+      )
+      .externalIf(
+        myFamiliar() === $familiar`Space Jellyfish`,
+        Macro.if_(
+          $monsters`angry tourist, garbage tourist, horrible tourist family`,
+          Macro.trySkill($skill`Extract Jelly`)
         )
       )
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))

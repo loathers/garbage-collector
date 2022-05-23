@@ -7,6 +7,7 @@ import {
   Effect,
   equip,
   Familiar,
+  gametimeToInt,
   getAutoAttack,
   getCampground,
   handlingChoice,
@@ -417,14 +418,6 @@ export function dailyFights(): void {
           postCombatActions();
           const predictedNextFight = getNextEmbezzlerFight();
           if (!predictedNextFight?.draggable) doSausage();
-          // Check in case our prof gained enough exp during the profchain
-          if (
-            thesisReady() &&
-            get("beGregariousFightsLeft") <= 0 &&
-            predictedNextFight?.name !== "Orb Prediction"
-          ) {
-            deliverThesis();
-          }
           doGhost();
           startWandererCounter();
         }
@@ -479,16 +472,12 @@ export function dailyFights(): void {
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
-          if (nextFight.wrongEncounterName) {
-            print(`fight ${nextFight.name} reports wrong encounter!`);
-          }
           embezzlerLog.initialEmbezzlersFought++;
           embezzlerLog.sources.push(nextFight.name);
         }
 
         nextFight = getNextEmbezzlerFight();
 
-        // try to deliver the thesis
         const romanticMonsterImpossible =
           Counter.get("Romantic Monster Window end") === Infinity ||
           (Counter.get("Romantic Monster Window begin") > 0 &&
@@ -496,14 +485,6 @@ export function dailyFights(): void {
           get("_romanticFightsLeft") <= 0;
         if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
           doSausage();
-          // Check in case our prof gained enough exp during the profchains
-          if (
-            thesisReady() &&
-            get("beGregariousFightsLeft") <= 0 &&
-            nextFight?.name !== "Orb Prediction"
-          ) {
-            deliverThesis();
-          }
           yachtzee();
         }
         doGhost();
@@ -595,7 +576,7 @@ class FreeFight {
       withMacro(Macro.basicCombat(), this.run);
       postCombatActions();
       // Slot in our Professor Thesis if it's become available
-      if (thesisReady() && !have($effect`Feeling Lost`)) deliverThesis();
+      if (!have($effect`Feeling Lost`)) deliverThesisIfAble();
     }
   }
 }
@@ -915,7 +896,7 @@ const freeFightSources = [
         );
       }
     },
-    true,
+    false,
     {
       requirements: () => [
         new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
@@ -1272,7 +1253,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       get("neverendingPartyAlways") && questStep("_questPartyFair") < 999
-        ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
+        ? clamp(10 - get("_neverendingPartyFreeTurns") - (get("_thesisDelivered") ? 0 : 1), 0, 10)
         : 0,
     () => {
       const constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).step(Macro.load());
@@ -1417,7 +1398,21 @@ const freeRunFightSources = [
     },
     latteActionSourceFinderConstraints
   ),
-
+  new FreeRunFight(
+    () =>
+      have($familiar`Space Jellyfish`) &&
+      get("_spaceJellyfishDrops") < 5 &&
+      getStenchLocation() !== $location`none`,
+    (runSource: ActionSource) => {
+      adventureMacro(
+        getStenchLocation(),
+        Macro.trySkill($skill`Extract Jelly`).step(runSource.macro)
+      );
+    },
+    {
+      familiar: () => $familiar`Space Jellyfish`,
+    }
+  ),
   new FreeRunFight(
     () =>
       !doingExtrovermectin() &&
@@ -1928,7 +1923,8 @@ function thesisReady(): boolean {
   );
 }
 
-function deliverThesis(): void {
+export function deliverThesisIfAble(): void {
+  if (!thesisReady()) return;
   const thesisInNEP =
     (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
     questStep("_questPartyFair") < 999;
@@ -2247,8 +2243,23 @@ function yachtzee(): void {
 
       if (!equippedOutfit || !success()) return;
 
-      setChoice(918, 2);
+      const lastUMDDate = property.getString("umdLastObtained");
+      const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5; // Import today from ./lib once the PR is merged
+      const getUMD =
+        !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
+        garboValue($item`Ultimate Mind Destroyer`) >=
+          2000 * (1 + numericModifier("meat drop") / 100) &&
+        (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1000 * 60 * 60 * 24 * 7);
+
+      setChoice(918, getUMD ? 1 : 2);
+
       adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+      if (
+        visitUrl("forestvillage.php").includes("friarcottage.gif") &&
+        !get("_floristPlantsUsed").split(",").includes("Crookweed")
+      ) {
+        cliExecute("florist plant Crookweed");
+      }
       if (get("lastEncounter") === "Yacht, See?") {
         adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
       }
