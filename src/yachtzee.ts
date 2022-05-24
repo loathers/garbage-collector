@@ -119,6 +119,7 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
   const remainingMenu = new Array<dietEntry<void>>();
 
   // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
+  // We also assume the only non-zero fullness/drunkenness entries are the sliders and pickle juices
   // This makes it trivial to plan the diet
   // First, lay out all the spleen cleansers
   for (const entry of menu) {
@@ -129,9 +130,10 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
     }
   }
 
-  // Next, greedily inject spleen items into the schedule with the ordering:
+  // Then, greedily inject spleen items into the schedule with the ordering:
   // 1) Front to back of the schedule
   // 2) Large spleen cleansers to small spleen cleansers
+  // This works because stench jellies are of size 1, so we can always pack efficiently using the greedy approach
   remainingMenu.sort((left, right) => {
     return right.spleen - left.spleen;
   });
@@ -150,7 +152,7 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
     dietSchedule.splice(idx, 0, entry);
   }
 
-  // Combine clustered entries where possible
+  // Next, combine clustered entries where possible (this is purely for aesthetic reasons)
   let idx = 0;
   while (idx < dietSchedule.length - 1) {
     if ((dietSchedule.at(idx)?.name ?? "left") === (dietSchedule.at(idx + 1)?.name ?? "right")) {
@@ -169,6 +171,23 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
         )
       );
     } else idx++;
+  }
+
+  // Print diet schedule
+  for (const entry of dietSchedule) print(`Using ${entry.quantity} ${entry.name}`);
+
+  // Finally, run a check to ensure everything is fine
+  let fullness = myFullness();
+  let drunkenness = myInebriety();
+  let spleenUse = mySpleenUse();
+  for (const entry of dietSchedule) {
+    if (entry.name === "Invalid Entry") throw "Error in diet schedule: Invalid entry found";
+    fullness += entry.fullness;
+    drunkenness += entry.drunkenness;
+    spleenUse += entry.spleen;
+    if (fullness > fullnessLimit()) throw "Error in diet schedule: Overeating";
+    else if (drunkenness > inebrietyLimit()) throw "Error in diet schedule: Overdrinking";
+    else if (spleenUse > spleenLimit()) throw "Error in diet schedule: Overuse of spleen";
   }
 
   return dietSchedule;
