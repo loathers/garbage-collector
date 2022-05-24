@@ -449,12 +449,7 @@ export function dailyFights(): void {
         const underwater = nextFight.location().environment === "underwater";
 
         const romanticFamiliar = $familiars`Obtuse Angel, Reanimated Reanimator`.find(have);
-        if (
-          romanticFamiliar &&
-          get("_badlyRomanticArrows") === 0 &&
-          nextFight.draggable &&
-          !underwater
-        ) {
+        if (romanticFamiliar && get("_badlyRomanticArrows") === 0 && !underwater) {
           useFamiliar(romanticFamiliar);
         } else {
           useFamiliar(meatFamiliar());
