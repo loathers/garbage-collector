@@ -335,13 +335,8 @@ function yachtzeeChainDiet(): boolean {
 
   set("_garboYachtzeeChainDieted", true);
 
-  // Checks
-  if (slidersToEat > 0) throw `We still have ${slidersToEat} sliders to eat!`;
-  else if (pickleJuiceToDrink > 0) {
-    throw `We still have ${pickleJuiceToDrink} pickle juice to drink!`;
-  } else if (stenchJelliesToUse > 0) {
-    throw `We still have ${stenchJelliesToUse} stench jellies to use!`;
-  } else if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
+  // Final checks
+  if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
     throw `We only got ${haveEffect($effect`Fishy`)}/${yachtzeeTurns} turns of fishy!`;
   } else if (property.getNumber("_stenchJellyCharges") < yachtzeeTurns) {
     throw `We only got ${property.getNumber(
