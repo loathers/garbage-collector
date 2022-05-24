@@ -44,7 +44,9 @@ import {
   set,
 } from "libram";
 import { acquire } from "./acquire";
+import { runDiet } from "./diet";
 import { hasMonsterReplacers } from "./extrovermectin";
+import { globalOptions } from "./lib";
 import { meatMood } from "./mood";
 import { garboValue } from "./session";
 
@@ -161,7 +163,7 @@ function yachtzeeChainDiet(): boolean {
   // Crude diet
   // 1) Fill spleen to capacity with jellies
   // 2) While we have liver space drink pickle juice and refill our spleen with jellies
-  // 3) While we have stomach space drink pickle juice and refill our spleen with jellies
+  // 3) While we have stomach space eat sliders and refill our spleen with jellies
   if (mySpleenUse() < spleenLimit()) {
     while (extrosToChew > 0 && mySpleenUse() + 2 <= spleenLimit()) {
       chew(1, $item`Extrovermectin™`);
@@ -337,7 +339,7 @@ function yachtzeeChainBuffs(): void {
   }
 }
 
-export function yachtzeeChain(): void {
+function _yachtzeeChain(): void {
   if (!have($item`fishy pipe`)) return;
   // hard require fishy pipe to run this chain
   else if (!have($familiar`Urchin Urchin`)) return;
@@ -377,4 +379,10 @@ export function yachtzeeChain(): void {
   }
   set("choiceAdventure918", "");
   set("_garboYachtzeeChainCompleted", true);
+}
+
+export function yachtzeeChain(): void {
+  if (!globalOptions.yachtzeeChain) return;
+  _yachtzeeChain();
+  if (!globalOptions.noDiet) runDiet();
 }
