@@ -100,9 +100,11 @@ import {
   printGarboSession,
   sessionSinceStart,
   setMarginalSessionDiff,
+  startBarfSession,
   startMarginalSession,
   startSession,
 } from "./session";
+import { canAdv } from "canadv.ash";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -607,6 +609,7 @@ export function main(argString = ""): void {
         if (!globalOptions.noBarf) {
           // 3. burn turns at barf
           potionSetup(false);
+          startBarfSession();
           try {
             while (canContinue()) {
               barfTurn();

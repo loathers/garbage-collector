@@ -202,6 +202,11 @@ export function setMarginalSessionDiff(): void {
   if (marginalSession) marginalSession = Session.current().diff(marginalSession);
 }
 
+let barfSession: Session | null = null;
+export function startBarfSession(): void {
+  barfSession = Session.current();
+}
+
 export function valueSession(): void {
   printSession(Session.current());
   Session.current().toFile("test.json");
@@ -209,15 +214,15 @@ export function valueSession(): void {
 
 function printMarginalSession(): void {
   if (myInebriety() <= inebrietyLimit() && myAdventures() <= globalOptions.saveTurns) {
-    if (marginalSession) {
+    if (marginalSession && barfSession) {
       const { meat, items, itemDetails } = marginalSession.value(garboValue);
-      const overallItemDetails = sessionSinceStart().value(garboValue).itemDetails;
+      const barfItemDetails = Session.current().diff(barfSession).value(garboValue).itemDetails;
       const outlierItemDetails = itemDetails
         .filter(
           (detail) =>
             detail.quantity === 1 &&
             detail.value >= 1000 &&
-            overallItemDetails.some((d) => d.item === detail.item && d.quantity === detail.quantity)
+            barfItemDetails.some((d) => d.item === detail.item && d.quantity === detail.quantity)
         )
         .sort((a, b) => b.value - a.value);
       print(`Outliers:`, HIGHLIGHT);
@@ -227,13 +232,15 @@ function printMarginalSession(): void {
         outlierItems += detail.value;
       }
       print(
-        `Marginal raw MPA/IPA/total MPA (w/ outliers): ${formatNumber(
-          Math.round((meat * 100) / 50) / 100
-        )} + ${formatNumber(Math.round(((items - outlierItems) * 100) / 50) / 100)} (${formatNumber(
+        `Marginal MPA: ${formatNumber(Math.round((meat * 100) / 50) / 100)} [raw] + ${formatNumber(
+          Math.round(((items - outlierItems) * 100) / 50) / 100
+        )} [items] (${formatNumber(
           Math.round((items * 100) / 50) / 100
-        )}) = ${formatNumber(
+        )} [outliers]) = ${formatNumber(
           Math.round(((meat + items - outlierItems) * 100) / 50) / 100
-        )} (${formatNumber(Math.round(((meat + items) * 100) / 50) / 100)})`,
+        )} [total] (${formatNumber(
+          Math.round(((meat + items) * 100) / 50) / 100
+        )} [total w/ outliers])`,
         HIGHLIGHT
       );
     } else if (get("_garboVOACheckpointDate") === todayToString()) {
@@ -247,9 +254,9 @@ function printMarginalSession(): void {
         50;
       const totalMPA = MPA + IPA;
       print(
-        `Marginal MPA: ${formatNumber(Math.round(MPA * 100) / 100)} (meat) + ${formatNumber(
+        `Marginal MPA: ${formatNumber(Math.round(MPA * 100) / 100)} [raw] + ${formatNumber(
           Math.round(IPA * 100) / 100
-        )} (items) = ${formatNumber(Math.round(totalMPA * 100) / 100)} (total)`,
+        )} [items] = ${formatNumber(Math.round(totalMPA * 100) / 100)} [total]`,
         HIGHLIGHT
       );
     }
