@@ -202,11 +202,6 @@ export function setMarginalSessionDiff(): void {
   if (marginalSession) marginalSession = Session.current().diff(marginalSession);
 }
 
-let barfSession: Session | null = null;
-export function startBarfSession(): void {
-  barfSession = Session.current();
-}
-
 export function valueSession(): void {
   printSession(Session.current());
   Session.current().toFile("test.json");
@@ -214,15 +209,15 @@ export function valueSession(): void {
 
 function printMarginalSession(): void {
   if (myInebriety() <= inebrietyLimit() && myAdventures() <= globalOptions.saveTurns) {
-    if (marginalSession && barfSession) {
+    if (marginalSession) {
       const { meat, items, itemDetails } = marginalSession.value(garboValue);
-      const barfItemDetails = Session.current().diff(barfSession).value(garboValue).itemDetails;
+      const overallItemDetails = sessionSinceStart().value(garboValue).itemDetails;
       const outlierItemDetails = itemDetails
         .filter(
           (detail) =>
             detail.quantity === 1 &&
             detail.value >= 1000 &&
-            barfItemDetails.some((d) => d.item === detail.item && d.quantity === detail.quantity)
+            overallItemDetails.some((d) => d.item === detail.item && d.quantity === detail.quantity)
         )
         .sort((a, b) => b.value - a.value);
       print(`Outliers:`, HIGHLIGHT);
