@@ -31311,7 +31311,7 @@ function newarkValue() {
   var lastCalculated = (0,property/* get */.U2)("garbo_newarkValueDate", 0);
 
   if (!(0,property/* get */.U2)("garbo_newarkValue", 0) || src_lib/* today */.Lg - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
-    var newarkDrops = JSON.parse((0,external_kolmafia_.fileToBuffer)("garbo_robo_drinks_data.JSON"))["Newark"];
+    var newarkDrops = JSON.parse((0,external_kolmafia_.fileToBuffer)("garbo_robo_drinks_data.json"))["Newark"];
     (0,property/* set */.t8)("garbo_newarkValue", ((0,utils/* sum */.Sm)(newarkDrops, name => (0,session/* garboValue */.sf)((0,external_kolmafia_.toItem)(name))) / newarkDrops.length).toFixed(0));
     (0,property/* set */.t8)("garbo_newarkValueDate", src_lib/* today */.Lg);
   }
@@ -31323,7 +31323,7 @@ function felizValue() {
   var lastCalculated = (0,property/* get */.U2)("garbo_felizValueDate", 0);
 
   if (!(0,property/* get */.U2)("garbo_felizValue", 0) || src_lib/* today */.Lg - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
-    var felizDrops = JSON.parse((0,external_kolmafia_.fileToBuffer)("garbo_robo_drinks_data.JSON"))["Feliz Navidad"];
+    var felizDrops = JSON.parse((0,external_kolmafia_.fileToBuffer)("garbo_robo_drinks_data.json"))["Feliz Navidad"];
     (0,property/* set */.t8)("garbo_felizValue", ((0,utils/* sum */.Sm)(felizDrops, name => (0,session/* garboValue */.sf)((0,external_kolmafia_.toItem)(name))) / felizDrops.length).toFixed(0));
     (0,property/* set */.t8)("garbo_felizValueDate", src_lib/* today */.Lg);
   }
@@ -32113,7 +32113,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("99efc1bd35dcf69ed991d6b0470b727c7f1522cc"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("2421da07630f808325410c2c7d5eb6caec6818f9"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32719,7 +32719,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("99efc1bd35dcf69ed991d6b0470b727c7f1522cc" === mainSha) {
+    if ("2421da07630f808325410c2c7d5eb6caec6818f9" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
