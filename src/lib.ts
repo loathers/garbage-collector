@@ -450,7 +450,6 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   return userConfirm(msg);
 }
 
-
 export const latteActionSourceFinderConstraints = {
   allowedAction: (action: ActionSource): boolean => {
     if (!have($item`latte lovers member's mug`)) return true;
