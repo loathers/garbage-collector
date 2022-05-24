@@ -326,6 +326,7 @@ function yachtzeeChainDiet(): boolean {
     }),
   ];
 
+  // Run diet scheduler and consume stuff
   for (const entry of yachtzeeDietScheduler(dietArray)) entry.action(entry.quantity);
 
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
@@ -336,7 +337,7 @@ function yachtzeeChainDiet(): boolean {
   set("_garboYachtzeeChainDieted", true);
 
   // Final checks
-  if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
+  if (haveEffect($effect`Fishy`) + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     throw `We only got ${haveEffect($effect`Fishy`)}/${yachtzeeTurns} turns of fishy!`;
   } else if (property.getNumber("_stenchJellyCharges") < yachtzeeTurns) {
     throw `We only got ${property.getNumber(
