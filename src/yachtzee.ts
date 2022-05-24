@@ -276,7 +276,7 @@ function yachtzeeChainDiet(): boolean {
   const pickleJuiceExcessCost = pickleJuicePrice > 60000 ? pickleJuicePrice - 60000 : 0;
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
-  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 2 * 3 * VOA
+  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
   const extroValuePerSpleen = 6 * VOA - extroPrice / 2;
   const jellyValuePerSpleen =
     (earlyMeatDropsEstimate * 2000) / 100 -
@@ -326,8 +326,7 @@ function yachtzeeChainDiet(): boolean {
     }),
   ];
 
-  const dietSchedule = yachtzeeDietScheduler(dietArray);
-  for (const entry of dietSchedule) entry.action(entry.quantity);
+  for (const entry of yachtzeeDietScheduler(dietArray)) entry.action(entry.quantity);
 
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     use(1, $item`fish juice box`);
@@ -435,7 +434,10 @@ function _yachtzeeChain(): void {
   maximize("meat", false);
 
   putCloset(myMeat() - 3000000);
-  if (!yachtzeeChainDiet()) return;
+  if (!yachtzeeChainDiet()) {
+    takeCloset(myClosetMeat());
+    return;
+  }
   yachtzeeChainBuffs();
   takeCloset(myClosetMeat());
 
