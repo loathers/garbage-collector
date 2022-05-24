@@ -238,7 +238,7 @@ function newarkValue(): number {
   const lastCalculated = get("garbo_newarkValueDate", 0);
   if (!get("garbo_newarkValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
     const newarkDrops = (
-      JSON.parse(fileToBuffer("garbo_robo_drinks_data.JSON")) as {
+      JSON.parse(fileToBuffer("garbo_robo_drinks_data.json")) as {
         Newark: string[];
         "Feliz Navidad": string[];
       }
@@ -256,7 +256,7 @@ function felizValue(): number {
   const lastCalculated = get("garbo_felizValueDate", 0);
   if (!get("garbo_felizValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
     const felizDrops = (
-      JSON.parse(fileToBuffer("garbo_robo_drinks_data.JSON")) as {
+      JSON.parse(fileToBuffer("garbo_robo_drinks_data.json")) as {
         Newark: string[];
         "Feliz Navidad": string[];
       }
