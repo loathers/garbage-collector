@@ -7,6 +7,7 @@ import {
   equip,
   familiarEquippedEquipment,
   fileToBuffer,
+  gamedayToInt,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -142,6 +143,8 @@ export function postFreeFightDailySetup(): void {
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
 
+  // We do this funny logic on annoyed snake & slime blob because they both suck for profits
+  // And because we don't want to lock people out of grabbing an outfit
   const voterValueTable = [
     {
       monster: $monster`terrible mutant`,
@@ -157,11 +160,11 @@ function voterSetup(): void {
     },
     {
       monster: $monster`annoyed snake`,
-      value: 25 * 0.5 + 25,
+      value: gamedayToInt(),
     },
     {
       monster: $monster`slime blob`,
-      value: 20 * 0.4 + 50 * 0.2 + 250 * 0.01,
+      value: 95 - gamedayToInt(),
     },
   ];
 
