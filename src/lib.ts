@@ -4,6 +4,7 @@ import {
   cliExecute,
   eat,
   Familiar,
+  gametimeToInt,
   getLocketMonsters,
   handlingChoice,
   haveSkill,
@@ -446,3 +447,33 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   if (timeOut) return userConfirm(msg, timeOut, defaultValue);
   return userConfirm(msg);
 }
+
+export const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5;
+
+// Barf setup info
+const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
+const gallapagosCopies = have($skill`Gallapagosian Mating Call`) ? 1 : 0;
+const garbageTourists = 1 + olfactionCopies + gallapagosCopies,
+  touristFamilies = 1,
+  angryTourists = 1;
+const barfTourists = garbageTourists + touristFamilies + angryTourists;
+export const garbageTouristRatio = garbageTourists / barfTourists;
+const touristFamilyRatio = touristFamilies / barfTourists;
+// 30 tourists till NC, with families counting as 3
+// Estimate number of turns till the counter hits 27
+// then estimate the expected number of turns required to hit a counter of >= 30
+export const turnsToNC =
+  (27 * barfTourists) / (garbageTourists + angryTourists + 3 * touristFamilies) +
+  1 * touristFamilyRatio +
+  2 * (1 - touristFamilyRatio) * touristFamilyRatio +
+  3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
+
+export const steveAdventures: Map<Location, number[]> = new Map([
+  [$location`The Haunted Bedroom`, [1, 3, 1]],
+  [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
+  [$location`The Haunted Conservatory`, [1, 2, 2]],
+  [$location`The Haunted Billiards Room`, [1, 2, 2]],
+  [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
+  [$location`The Haunted Boiler Room`, [1, 2, 2]],
+  [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
+]);
