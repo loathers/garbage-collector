@@ -232,13 +232,15 @@ function printMarginalSession(): void {
         outlierItems += detail.value;
       }
       print(
-        `Marginal raw MPA/IPA/total MPA (w/ outliers): ${formatNumber(
-          Math.round((meat * 100) / 50) / 100
-        )} + ${formatNumber(Math.round(((items - outlierItems) * 100) / 50) / 100)} (${formatNumber(
+        `Marginal MPA: ${formatNumber(Math.round((meat * 100) / 50) / 100)} [raw] + ${formatNumber(
+          Math.round(((items - outlierItems) * 100) / 50) / 100
+        )} [items] (${formatNumber(
           Math.round((items * 100) / 50) / 100
-        )}) = ${formatNumber(
+        )} [outliers]) = ${formatNumber(
           Math.round(((meat + items - outlierItems) * 100) / 50) / 100
-        )} (${formatNumber(Math.round(((meat + items) * 100) / 50) / 100)})`,
+        )} [total] (${formatNumber(
+          Math.round(((meat + items) * 100) / 50) / 100
+        )} [total w/ outliers])`,
         HIGHLIGHT
       );
     } else if (get("_garboVOACheckpointDate") === todayToString()) {
@@ -252,9 +254,9 @@ function printMarginalSession(): void {
         50;
       const totalMPA = MPA + IPA;
       print(
-        `Marginal MPA: ${formatNumber(Math.round(MPA * 100) / 100)} (meat) + ${formatNumber(
+        `Marginal MPA: ${formatNumber(Math.round(MPA * 100) / 100)} [raw] + ${formatNumber(
           Math.round(IPA * 100) / 100
-        )} (items) = ${formatNumber(Math.round(totalMPA * 100) / 100)} (total)`,
+        )} [items] = ${formatNumber(Math.round(totalMPA * 100) / 100)} [total]`,
         HIGHLIGHT
       );
     }
