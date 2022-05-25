@@ -20,10 +20,8 @@ import {
   mySpleenUse,
   numericModifier,
   print,
-  putCloset,
   retrievePrice,
   spleenLimit,
-  takeCloset,
   use,
   useFamiliar,
   useSkill,
@@ -143,11 +141,11 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
     let spleenUse = mySpleenUse();
     while (
       idx < dietSchedule.length &&
-      ((dietSchedule.at(idx)?.spleen ?? 0) >= 0 || // We only insert if there's a cleanser immediately after where we want to insert
+      (dietSchedule[idx].spleen >= 0 || // We only insert if there's a cleanser immediately after where we want to insert
         spleenUse + entry.spleen > spleenLimit() || // But don't insert if we will overshoot our spleen limit
-        spleenUse + (dietSchedule.at(idx)?.spleen ?? 0) >= 0) // And cluster spleen cleansers (continue if the next cleanser can still clean our spleen)
+        (idx > 0 && dietSchedule[idx - 1].spleen < 0 && spleenUse + dietSchedule[idx].spleen >= 0)) // And cluster spleen cleansers (continue if the next cleanser can still clean our spleen)
     ) {
-      spleenUse += dietSchedule.at(idx++)?.spleen ?? 0;
+      spleenUse += dietSchedule[idx++].spleen ?? 0;
     }
     dietSchedule.splice(idx, 0, entry);
   }
@@ -155,21 +153,8 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
   // Next, combine clustered entries where possible (this is purely for aesthetic reasons)
   let idx = 0;
   while (idx < dietSchedule.length - 1) {
-    if ((dietSchedule.at(idx)?.name ?? "left") === (dietSchedule.at(idx + 1)?.name ?? "right")) {
-      dietSchedule.splice(
-        idx,
-        2,
-        combineDietEntries(
-          dietSchedule.at(idx) ??
-            new dietEntry<void>("Invalid Entry", 0, 0, 0, 0, (n: number) => {
-              n;
-            }),
-          dietSchedule.at(idx + 1) ??
-            new dietEntry<void>("Invalid Entry", 0, 0, 0, 0, (n: number) => {
-              n;
-            })
-        )
-      );
+    if (dietSchedule[idx].name === dietSchedule[idx + 1].name) {
+      dietSchedule.splice(idx, 2, combineDietEntries(dietSchedule[idx], dietSchedule[idx + 1]));
     } else idx++;
   }
 
@@ -181,7 +166,6 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
   let drunkenness = myInebriety();
   let spleenUse = mySpleenUse();
   for (const entry of dietSchedule) {
-    if (entry.name === "Invalid Entry") throw "Error in diet schedule: Invalid entry found";
     fullness += entry.fullness;
     drunkenness += entry.drunkenness;
     spleenUse += entry.spleen;
@@ -326,8 +310,16 @@ function yachtzeeChainDiet(): boolean {
     }),
   ];
 
+  print(`Current Organ Usage:`, "purple");
+  print(`Fullness: ${myFullness()}/${fullnessLimit()}`, "purple");
+  print(`Drunkenness: ${myInebriety()}/${inebrietyLimit()}`, "purple");
+  print(`Spleen Use: ${mySpleenUse()}/${spleenLimit()}`, "purple");
+
   // Run diet scheduler and consume stuff
-  for (const entry of yachtzeeDietScheduler(dietArray)) entry.action(entry.quantity);
+  print("Scheduling diet", "purple");
+  const dietSchedule = yachtzeeDietScheduler(dietArray);
+  print("Executing diet", "purple");
+  for (const entry of dietSchedule) entry.action(entry.quantity);
 
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     use(1, $item`fish juice box`);
@@ -382,10 +374,14 @@ function getMeatBuff(it: Item, duration: number): boolean {
   const currentPrice = retrievePrice(it);
 
   if (currentPrice <= maxPrice) {
-    print(`Actual cost of ${it} (${currentPrice}) is cheaper than effective cost (${maxPrice})`);
+    print(
+      `Actual cost of ${it} (${currentPrice}) is cheaper than effective cost (${maxPrice})`,
+      "green"
+    );
   } else {
     print(
-      `Actual cost of ${it} (${currentPrice}) is more expensive than effective cost (${maxPrice})`
+      `Actual cost of ${it} (${currentPrice}) is more expensive than effective cost (${maxPrice})`,
+      "darkorange"
     );
     return false;
   }
@@ -429,13 +425,13 @@ function _yachtzeeChain(): void {
   useFamiliar($familiar`Urchin Urchin`);
   maximize("meat", false);
 
-  putCloset(myMeat() - 3000000);
+  cliExecute(`closet put ${myMeat() - 3000000} meat`);
   if (!yachtzeeChainDiet()) {
-    takeCloset(myClosetMeat());
+    cliExecute(`closet take ${myClosetMeat()} meat`);
     return;
   }
   yachtzeeChainBuffs();
-  takeCloset(myClosetMeat());
+  cliExecute(`closet take ${myClosetMeat()} meat`);
 
   let jellyTurns = property.getNumber("_stenchJellyCharges");
   let fishyTurns = haveEffect($effect`Fishy`);
@@ -460,6 +456,7 @@ function _yachtzeeChain(): void {
 
 export function yachtzeeChain(): void {
   if (!globalOptions.yachtzeeChain) return;
+  print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
   if (!globalOptions.noDiet) runDiet();
 }
