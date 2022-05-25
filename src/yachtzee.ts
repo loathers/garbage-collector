@@ -207,6 +207,7 @@ function yachtzeeChainDiet(): boolean {
     if (currentJellyCharges > 0) {
       throw "Unexpected error: We have some stench jelly charges, but cannot continue filling up to the optimum amount due to a previous abort";
     }
+    print("We were unable to generate enough organ space for optimal yachtzee chaining", "red");
     return false;
   }
 
@@ -271,30 +272,15 @@ function yachtzeeChainDiet(): boolean {
       pickleJuiceToDrink * pickleJuiceExcessCost) /
       yachtzeeTurns;
 
-  if (jellyValuePerSpleen < extroValuePerSpleen) return false; // We should do extros instead since they are more valuable
+  print(`Early Meat Drop Modifier: ${earlyMeatDropsEstimate}%`);
+  print(`Extro value per spleen: ${extroValuePerSpleen}`);
+  print(`Jelly value per spleen: ${jellyValuePerSpleen}`);
+  if (jellyValuePerSpleen < extroValuePerSpleen) {
+    print("Running extros is more profitable than chaining yachtzees", "red");
+    return false; // We should do extros instead since they are more valuable
+  }
 
-  // Acquire everything we need before using stuff
-  const stenchJelliesToUse = yachtzeeTurns - currentJellyCharges;
-  acquire(stenchJelliesToUse, $item`stench jelly`, (2 * jelliesBulkPrice) / yachtzeeTurns);
-  if (extrosToChew > 0) {
-    acquire(extrosToChew, $item`Extrovermectin™`, 100000);
-  }
-  if (pickleJuiceToDrink > 0) {
-    acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice);
-  }
-  if (slidersToEat > 0) acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice);
-  if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
-    acquire(1, $item`fish juice box`, 2 * fishJuiceBoxPrice);
-  }
-  if (filters > 0) acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`));
-
-  if (!get("_milkOfMagnesiumUsed")) {
-    acquire(1, $item`milk of magnesium`, 10000);
-    use(1, $item`milk of magnesium`);
-  }
-  if (!get("_distentionPillUsed") && have($item`distention pill`)) {
-    use(1, $item`distention pill`);
-  }
+  // Schedule our diet first
   const dietArray = [
     new dietEntry(`extra-greasy slider`, slidersToEat, 5, 0, -5, (n: number) => {
       eat(n, $item`extra-greasy slider`);
@@ -318,17 +304,37 @@ function yachtzeeChainDiet(): boolean {
     }),
   ];
 
-  print(`Current Organ Usage:`, "purple");
-  print(`Fullness: ${myFullness()}/${fullnessLimit()}`, "purple");
-  print(`Drunkenness: ${myInebriety()}/${inebrietyLimit()}`, "purple");
-  print(`Spleen Use: ${mySpleenUse()}/${spleenLimit()}`, "purple");
-
   // Run diet scheduler and consume stuff
   print("Scheduling diet", "purple");
   const dietSchedule = yachtzeeDietScheduler(dietArray);
+
+  // Acquire everything we need before using stuff
+  const stenchJelliesToUse = yachtzeeTurns - currentJellyCharges;
+  acquire(stenchJelliesToUse, $item`stench jelly`, (2 * jelliesBulkPrice) / yachtzeeTurns);
+  if (extrosToChew > 0) {
+    acquire(extrosToChew, $item`Extrovermectin™`, 100000);
+  }
+  if (pickleJuiceToDrink > 0) {
+    acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice);
+  }
+  if (slidersToEat > 0) acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice);
+  if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
+    acquire(1, $item`fish juice box`, 2 * fishJuiceBoxPrice);
+  }
+  if (filters > 0) acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`));
+
+  // Now execute the diet
   print("Executing diet", "purple");
+  if (!get("_milkOfMagnesiumUsed")) {
+    acquire(1, $item`milk of magnesium`, 10000);
+    use(1, $item`milk of magnesium`);
+  }
+  if (!get("_distentionPillUsed") && have($item`distention pill`)) {
+    use(1, $item`distention pill`);
+  }
   for (const entry of dietSchedule) entry.action(entry.quantity);
 
+  // Get fishy turns
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     use(1, $item`fish juice box`);
   }
@@ -431,8 +437,8 @@ function _yachtzeeChain(): void {
   // Consider only allowing yachtzee chain to be run if
   // 1) globalOptions.ascending
   // 2) haveEffect($effect`Synthesis: Greed`) - 100 > myAdventures() + (fullnessLimit() - myFullness()) * 6.5 + (inebrietyLimit() - myInebriety()) * 7.5;
-  // This is likely the most optimal configuration for everyone, since we would otherwise have high demand for jellies
-  // using less optimal configurations, eading to decreased profits for everyone
+  // This is likely the most optimal configuration for everyone, since we would otherwise
+  // have high demand for jellies using less optimal configurations, leading to decreased profits for everyone
 
   meatMood(false).execute(estimatedTurns());
   useFamiliar($familiar`Urchin Urchin`);
