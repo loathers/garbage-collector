@@ -378,6 +378,8 @@ export function main(argString = ""): void {
       globalOptions.simulateDiet = true;
     } else if (arg.match(/nodiet/)) {
       globalOptions.noDiet = true;
+    } else if (arg.match(/yachtzeechain/)) {
+      globalOptions.yachtzeeChain = true;
     } else if (arg.match(/version/i)) {
       checkGithubVersion();
       return;
