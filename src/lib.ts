@@ -36,6 +36,7 @@ import {
   visitUrl,
 } from "kolmafia";
 import {
+  $effect,
   $item,
   $location,
   $monster,
@@ -369,6 +370,11 @@ export function safeRestoreMpTarget(): number {
 }
 
 export function safeRestore(): void {
+  if (have($effect`Beaten Up`)) {
+    throw new Error(
+      "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready."
+    );
+  }
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
   }
