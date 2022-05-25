@@ -29885,7 +29885,7 @@ function dailyFights() {
         var underwater = nextFight.location().environment === "underwater";
         var romanticFamiliar = (0,template_string/* $familiars */.LG)(fights_templateObject80 || (fights_templateObject80 = fights_taggedTemplateLiteral(["Obtuse Angel, Reanimated Reanimator"]))).find(lib/* have */.lf);
 
-        if (romanticFamiliar && (0,property/* get */.U2)("_badlyRomanticArrows") === 0 && nextFight.draggable && !underwater) {
+        if (romanticFamiliar && (0,property/* get */.U2)("_badlyRomanticArrows") === 0 && !underwater) {
           (0,external_kolmafia_.useFamiliar)(romanticFamiliar);
         } else {
           (0,external_kolmafia_.useFamiliar)((0,familiar/* meatFamiliar */.M2)());
@@ -32111,7 +32111,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("abe71449e93b51eb33cb385415ec50217e414fb9"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("024f0ba58c5334e0b55859bc89d313f821d7a1d2"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32721,7 +32721,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("abe71449e93b51eb33cb385415ec50217e414fb9" === mainSha) {
+    if ("024f0ba58c5334e0b55859bc89d313f821d7a1d2" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
