@@ -43,6 +43,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { runDiet } from "./diet";
+import { estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
 import { globalOptions } from "./lib";
 import { meatMood } from "./mood";
@@ -287,6 +288,13 @@ function yachtzeeChainDiet(): boolean {
   }
   if (filters > 0) acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`));
 
+  if (!get("_milkOfMagnesiumUsed")) {
+    acquire(1, $item`milk of magnesium`, 10000);
+    use(1, $item`milk of magnesium`);
+  }
+  if (!get("_distentionPillUsed") && have($item`distention pill`)) {
+    use(1, $item`distention pill`);
+  }
   const dietArray = [
     new dietEntry(`extra-greasy slider`, slidersToEat, 5, 0, -5, (n: number) => {
       eat(n, $item`extra-greasy slider`);
@@ -426,7 +434,7 @@ function _yachtzeeChain(): void {
   // This is likely the most optimal configuration for everyone, since we would otherwise have high demand for jellies
   // using less optimal configurations, eading to decreased profits for everyone
 
-  meatMood(false);
+  meatMood(false).execute(estimatedTurns());
   useFamiliar($familiar`Urchin Urchin`);
   maximize("meat", false);
 
