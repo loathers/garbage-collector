@@ -621,6 +621,7 @@ export const conditionalSources = [
       ).step(options.macro);
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`Noob Cave`, macro, macro);
+      if (ponderPrediction($location`Noob Cave`) === embezzler) toasterGaze();
     },
     {
       gregariousReplace: true,
@@ -664,6 +665,7 @@ export const conditionalSources = [
       ).step(options.macro);
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`Noob Cave`, macro, macro);
+      if (ponderPrediction($location`Noob Cave`) === embezzler) toasterGaze();
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
@@ -691,18 +693,7 @@ export const conditionalSources = [
       // reset the crystal ball prediction by staring longingly at toast
       if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
         const warrenPrediction = ponderPrediction($location`The Dire Warren`);
-        if (warrenPrediction && warrenPrediction !== embezzler) {
-          try {
-            const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
-            if (!store.includes("Check out the gift shop")) {
-              print("Unable to stare longingly at toast");
-            }
-            runChoice(4);
-          } catch {
-            // orb reseting raises a mafia error
-          }
-          visitUrl("main.php");
-        }
+        if (warrenPrediction !== embezzler) toasterGaze();
       }
     },
     {
@@ -967,4 +958,17 @@ function proceedWithOrb(): boolean {
   }
 
   return true;
+}
+
+function toasterGaze(): void {
+  try {
+    const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+    if (!store.includes("Check out the gift shop")) {
+      print("Unable to stare longingly at toast");
+    }
+    runChoice(4);
+  } catch {
+    // orb reseting raises a mafia error
+  }
+  visitUrl("main.php");
 }
