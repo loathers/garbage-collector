@@ -31254,7 +31254,9 @@ function postFreeFightDailySetup() {
 }
 
 function voterSetup() {
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailies_templateObject14 || (dailies_templateObject14 = dailies_taggedTemplateLiteral(["\"I Voted!\" sticker"])))) || !((0,property/* get */.U2)("voteAlways") || (0,property/* get */.U2)("_voteToday"))) return;
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailies_templateObject14 || (dailies_templateObject14 = dailies_taggedTemplateLiteral(["\"I Voted!\" sticker"])))) || !((0,property/* get */.U2)("voteAlways") || (0,property/* get */.U2)("_voteToday"))) return; // We do this funny logic on annoyed snake & slime blob because they both suck for profits
+  // And because we don't want to lock people out of grabbing an outfit
+
   var voterValueTable = [{
     monster: (0,template_string/* $monster */.O4)(dailies_templateObject15 || (dailies_templateObject15 = dailies_taggedTemplateLiteral(["terrible mutant"]))),
     value: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailies_templateObject16 || (dailies_templateObject16 = dailies_taggedTemplateLiteral(["glob of undifferentiated tissue"])))) + 10
@@ -31266,10 +31268,10 @@ function voterSetup() {
     value: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailies_templateObject20 || (dailies_templateObject20 = dailies_taggedTemplateLiteral(["absentee voter ballot"])))) * 0.05 + 75 * 0.25 + 50
   }, {
     monster: (0,template_string/* $monster */.O4)(dailies_templateObject21 || (dailies_templateObject21 = dailies_taggedTemplateLiteral(["annoyed snake"]))),
-    value: 25 * 0.5 + 25
+    value: (0,external_kolmafia_.gamedayToInt)()
   }, {
     monster: (0,template_string/* $monster */.O4)(dailies_templateObject22 || (dailies_templateObject22 = dailies_taggedTemplateLiteral(["slime blob"]))),
-    value: 20 * 0.4 + 50 * 0.2 + 250 * 0.01
+    value: 95 - (0,external_kolmafia_.gamedayToInt)()
   }];
   (0,external_kolmafia_.visitUrl)("place.php?whichplace=town_right&action=townright_vote");
   var votingMonsterPriority = voterValueTable.sort((a, b) => b.value - a.value).map(element => element.monster.name);
@@ -32113,7 +32115,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("2421da07630f808325410c2c7d5eb6caec6818f9"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("701cda5c805a8b4a9286e383d61f3838ee0b7f0c"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32719,7 +32721,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("2421da07630f808325410c2c7d5eb6caec6818f9" === mainSha) {
+    if ("701cda5c805a8b4a9286e383d61f3838ee0b7f0c" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
