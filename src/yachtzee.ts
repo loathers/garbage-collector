@@ -240,11 +240,14 @@ function yachtzeeChainDiet(): boolean {
   // If we need spleen cleansers but their prices are unreasonable, just return
   const maxSliderPrice = 150000,
     maxPickleJuicePrice = 150000;
-  if (slidersToEat > 0 && retrievePrice($item`extra-greasy slider`) > maxSliderPrice) return false;
-  else if (
+  if (slidersToEat > 0 && retrievePrice($item`extra-greasy slider`) > maxSliderPrice) {
+    print("Sliders are way too overpriced for us to clean spleens for jellies", "red");
+    return false;
+  } else if (
     pickleJuiceToDrink > 0 &&
     retrievePrice($item`jar of fermented pickle juice`) > maxPickleJuicePrice
   ) {
+    print("Pickle juices are way too overpriced for us to clean spleens for jellies", "red");
     return false;
   }
 
