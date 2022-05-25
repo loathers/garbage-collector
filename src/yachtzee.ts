@@ -15,7 +15,6 @@ import {
   myFullness,
   myInebriety,
   myLevel,
-  myLocation,
   myMeat,
   mySpleenUse,
   numericModifier,
@@ -25,6 +24,7 @@ import {
   use,
   useFamiliar,
   useSkill,
+  visitUrl,
 } from "kolmafia";
 import {
   $effect,
@@ -448,6 +448,7 @@ function _yachtzeeChain(): void {
 
   let jellyTurns = property.getNumber("_stenchJellyCharges");
   let fishyTurns = haveEffect($effect`Fishy`);
+  let plantCrookweed = true;
   set("choiceAdventure918", 2);
   while (Math.min(jellyTurns, fishyTurns) > 0) {
     adv1($location`The Sunken Party Yacht`, -1, "");
@@ -457,11 +458,13 @@ function _yachtzeeChain(): void {
       set("_stenchJellyCharges", property.getNumber("_stenchJellyCharges") - 1);
     }
     if (
-      myLocation().environment === "underwater" &&
-      !property.getString("_floristPlantsUsed").includes("Crookweed")
+      plantCrookweed &&
+      visitUrl("forestvillage.php").includes("friarcottage.gif") &&
+      !get("_floristPlantsUsed").split(",").includes("Crookweed")
     ) {
       cliExecute("florist plant Crookweed");
     }
+    plantCrookweed = false;
   }
   set("choiceAdventure918", "");
   set("_garboYachtzeeChainCompleted", true);
