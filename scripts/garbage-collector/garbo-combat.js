@@ -21746,7 +21746,7 @@ function timeToMeatify() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4782);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3311);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(678);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -22009,6 +22009,10 @@ function safeRestoreMpTarget() {
   return Math.min(myMaxmp(), 200);
 }
 function safeRestore() {
+  if (have($effect(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Beaten Up"]))))) {
+    throw new Error("Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.");
+  }
+
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
   }
@@ -22016,8 +22020,8 @@ function safeRestore() {
   var mpTarget = safeRestoreMpTarget();
 
   if (myMp() < mpTarget) {
-    if (have($item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (have($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["magical sausage"])))) || have($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["magical sausage casing"]))))) && get("_sausagesEaten") < 23) {
-      eat($item(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["magical sausage"]))));
+    if (have($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (have($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["magical sausage"])))) || have($item(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["magical sausage casing"]))))) && get("_sausagesEaten") < 23) {
+      eat($item(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["magical sausage"]))));
     } else restoreMp(mpTarget);
   }
 
@@ -22029,7 +22033,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("53077a24768556ad27d33dee2e4f99df896f8e8c" === mainSha) {
+    if ("abe71449e93b51eb33cb385415ec50217e414fb9" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -22079,8 +22083,8 @@ function userConfirmDialog(msg, defaultValue, timeOut) {
 }
 var today = Date.now() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.gametimeToInt)() - 1000 * 60 * 3.5; // Barf setup info
 
-var olfactionCopies = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$skill */ .tm)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Transcendent Olfaction"])))) ? 3 : 0;
-var gallapagosCopies = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$skill */ .tm)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))) ? 1 : 0;
+var olfactionCopies = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$skill */ .tm)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["Transcendent Olfaction"])))) ? 3 : 0;
+var gallapagosCopies = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$skill */ .tm)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))) ? 1 : 0;
 var garbageTourists = 1 + olfactionCopies + gallapagosCopies,
     touristFamilies = 1,
     angryTourists = 1;
@@ -22091,7 +22095,7 @@ var touristFamilyRatio = touristFamilies / barfTourists; // 30 tourists till NC,
 // then estimate the expected number of turns required to hit a counter of >= 30
 
 var turnsToNC = 27 * barfTourists / (garbageTourists + angryTourists + 3 * touristFamilies) + 1 * touristFamilyRatio + 2 * (1 - touristFamilyRatio) * touristFamilyRatio + 3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
-var steveAdventures = new Map([[(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["The Haunted Bedroom"]))), [1, 3, 1]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["The Haunted Nursery"]))), [1, 2, 2, 1, 1]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["The Haunted Conservatory"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["The Haunted Billiards Room"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["The Haunted Wine Cellar"]))), [1, 2, 2, 3]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["The Haunted Boiler Room"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["The Haunted Laboratory"]))), [1, 1, 3, 1, 1]]]);
+var steveAdventures = new Map([[(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["The Haunted Bedroom"]))), [1, 3, 1]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["The Haunted Nursery"]))), [1, 2, 2, 1, 1]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["The Haunted Conservatory"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["The Haunted Billiards Room"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["The Haunted Wine Cellar"]))), [1, 2, 2, 3]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["The Haunted Boiler Room"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["The Haunted Laboratory"]))), [1, 1, 3, 1, 1]]]);
 
 /***/ }),
 
