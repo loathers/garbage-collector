@@ -420,6 +420,11 @@ function _yachtzeeChain(): void {
   // If we have used our fishy pipe and have no fishy turns left, we're probably done
   else if (get("_garboYachtzeeChainCompleted")) return;
   else if (!get("sleazeAirportAlways") && !get("_sleazeAirportToday")) return;
+  // Consider only allowing yachtzee chain to be run if
+  // 1) globalOptions.ascending
+  // 2) haveEffect($effect`Synthesis: Greed`) - 100 > myAdventures() + (fullnessLimit() - myFullness()) * 6.5 + (inebrietyLimit() - myInebriety()) * 7.5;
+  // This is likely the most optimal configuration for everyone, since we would otherwise have high demand for jellies
+  // using less optimal configurations, eading to decreased profits for everyone
 
   meatMood(false);
   useFamiliar($familiar`Urchin Urchin`);
