@@ -32115,7 +32115,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("701cda5c805a8b4a9286e383d61f3838ee0b7f0c"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("53077a24768556ad27d33dee2e4f99df896f8e8c"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32721,7 +32721,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("701cda5c805a8b4a9286e383d61f3838ee0b7f0c" === mainSha) {
+    if ("53077a24768556ad27d33dee2e4f99df896f8e8c" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -33185,7 +33185,7 @@ function printGarboSession() {
 
   for (var _i2 = 0, _arr2 = [].concat(_toConsumableArray(winners), _toConsumableArray(losers)); _i2 < _arr2.length; _i2++) {
     var detail = _arr2[_i2];
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("".concat(detail.quantity, " ").concat(detail.item, " worth ").concat(detail.value, " total"), _lib__WEBPACK_IMPORTED_MODULE_1__/* .HIGHLIGHT */ .X2);
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("".concat(detail.quantity, " ").concat(detail.item, " worth ").concat(detail.value.toFixed(0), " total"), _lib__WEBPACK_IMPORTED_MODULE_1__/* .HIGHLIGHT */ .X2);
   }
 
   (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .set */ .t8)("garboResultsMeat", totalMeat);

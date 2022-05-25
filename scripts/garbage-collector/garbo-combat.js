@@ -22029,7 +22029,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("701cda5c805a8b4a9286e383d61f3838ee0b7f0c" === mainSha) {
+    if ("53077a24768556ad27d33dee2e4f99df896f8e8c" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -22479,7 +22479,7 @@ function printGarboSession() {
 
   for (var _i2 = 0, _arr2 = [].concat(_toConsumableArray(winners), _toConsumableArray(losers)); _i2 < _arr2.length; _i2++) {
     var detail = _arr2[_i2];
-    print("".concat(detail.quantity, " ").concat(detail.item, " worth ").concat(detail.value, " total"), HIGHLIGHT);
+    print("".concat(detail.quantity, " ").concat(detail.item, " worth ").concat(detail.value.toFixed(0), " total"), HIGHLIGHT);
   }
 
   set("garboResultsMeat", totalMeat);
