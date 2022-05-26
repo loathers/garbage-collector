@@ -271,8 +271,8 @@ function yachtzeeChainDiet(): boolean {
   const pickleJuiceExcessCost = pickleJuicePrice > 60000 ? pickleJuicePrice - 60000 : 0;
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
-  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
-  const extroValuePerSpleen = 6 * VOA - extroPrice / 2;
+  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3.5 * VOA
+  const extroValuePerSpleen = 7 * VOA - extroPrice / 2;
   const jellyValuePerSpleen =
     (earlyMeatDropsEstimate * 2000) / 100 -
     (jelliesBulkPrice +
