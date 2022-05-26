@@ -86,6 +86,7 @@ import {
   maximizeCached,
   property,
   Requirement,
+  Robortender,
   set,
   SourceTerminal,
   sum,
@@ -1017,8 +1018,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
-      CrystalBall.currentPredictions(false).get($location`The Hidden Bowling Alley`) ===
-        $monster`drunk pygmy` &&
+      CrystalBall.ponder().get($location`The Hidden Bowling Alley`) === $monster`drunk pygmy` &&
       get("_drunkPygmyBanishes") >= 11,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
@@ -1275,7 +1275,7 @@ const freeFightSources = [
       CombatLoversLocket.reminisce(monster);
     },
     true,
-    { canOverrideMacro: true }
+    { canOverrideMacro: true, familiar: () => $familiars`Robortender`.find(have) ?? null }
   ),
 
   // Get a li'l ninja costume for 150% item drop
@@ -2157,7 +2157,10 @@ export function printEmbezzlerLog(): void {
 
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
-  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => garboValue(drop) * rate));
+  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => garboValue(drop) * rate)) +
+  (have($familiar`Robortender`)
+    ? Robortender.dropChance() * garboValue(Robortender.dropFrom(monster))
+    : 0);
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 
 export function estimatedFreeFights(): number {
