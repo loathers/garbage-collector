@@ -2233,10 +2233,7 @@ function killRobortCreaturesForFree() {
 
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
-  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => (garboValue(drop) * rate) / 100)) +
-  (have($familiar`Robortender`)
-    ? Robortender.dropChance() * garboValue(Robortender.dropFrom(monster))
-    : 0);
+  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => (garboValue(drop) * rate) / 100));
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 
 export function estimatedFreeFights(): number {
