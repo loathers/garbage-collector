@@ -47,7 +47,9 @@ import { estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
 import { globalOptions, safeRestore } from "./lib";
 import { meatMood } from "./mood";
+import { potionSetup } from "./potions";
 import { garboValue } from "./session";
+import synthesize from "./synthesis";
 
 class dietEntry<T> {
   name: string;
@@ -131,7 +133,7 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
 
   // Then, greedily inject spleen items into the schedule with the ordering:
   // 1) Front to back of the schedule
-  // 2) Large spleen cleansers to small spleen cleansers
+  // 2) Large spleen damagers to small spleen damagers
   // This works because stench jellies are of size 1, so we can always pack efficiently using the greedy approach
   remainingMenu.sort((left, right) => {
     return right.spleen - left.spleen;
@@ -160,7 +162,8 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
   }
 
   // Print diet schedule
-  for (const entry of dietSchedule) print(`Using ${entry.quantity} ${entry.name}`);
+  print("Diet schedule:", "blue");
+  for (const entry of dietSchedule) print(`Use ${entry.quantity} ${entry.name}`, "blue");
 
   // Finally, run a check to ensure everything is fine
   let fullness = myFullness();
@@ -200,7 +203,7 @@ function yachtzeeChainDiet(): boolean {
       ? -Math.ceil(reqSynthTurns - haveEffect($effect`Synthesis: Greed`)) / 30
       : 0;
   const filters = 3 - get(`currentMojoFilters`);
-  const extros = hasMonsterReplacers() ? -4 : 0; // save some spleen for macroed embezzlies
+  const extros = hasMonsterReplacers() ? -(4 - Math.min(4, 2 * get("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
   const availableSpleen =
     spleenLimit() - mySpleenUse() + 5 * sliders + 5 * pickleJuice + synth + filters + extros;
   if (!get("_stenchJellyCharges")) set("_stenchJellyCharges", 0);
@@ -302,7 +305,7 @@ function yachtzeeChainDiet(): boolean {
       chew(n, $item`Extrovermectin™`);
     }),
     new dietEntry("synthesis", synthToUse, 0, 0, 1, (n: number) => {
-      for (let i = 0; i < n; i++) cliExecute("synthesis meat");
+      synthesize(n, $effect`Synthesis: Greed`);
     }),
     new dietEntry(`mojo filter`, filters, 0, 0, -1, (n: number) => {
       use(n, $item`mojo filter`);
@@ -455,6 +458,7 @@ function _yachtzeeChain(): void {
   // have high demand for jellies using less optimal configurations, leading to decreased profits for everyone
 
   meatMood(false).execute(estimatedTurns());
+  potionSetup(false);
   useFamiliar($familiar`Urchin Urchin`);
   maximize("meat", false);
 
