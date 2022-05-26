@@ -503,6 +503,6 @@ export function yachtzeeChain(): void {
   set("_garboYachtzeeChainCompleted", true);
   if (!globalOptions.noDiet) {
     runDiet();
-    prepFamiliars(); // Recompute with
+    prepFamiliars(); // Recompute robo drinks' worth after diet is finally consumed
   }
 }
