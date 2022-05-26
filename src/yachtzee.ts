@@ -319,7 +319,13 @@ function yachtzeeChainDiet(): boolean {
 
   // Acquire everything we need before using stuff
   const stenchJelliesToUse = yachtzeeTurns - currentJellyCharges;
-  acquire(stenchJelliesToUse, $item`stench jelly`, (2 * jelliesBulkPrice) / yachtzeeTurns);
+  acquire(
+    stenchJelliesToUse,
+    $item`stench jelly`,
+    (2 * jelliesBulkPrice) / yachtzeeTurns,
+    true,
+    1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
+  );
   if (extrosToChew > 0) {
     acquire(extrosToChew, $item`Extrovermectin™`, 100000);
   }

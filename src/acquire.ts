@@ -31,14 +31,22 @@ const priceCaps: { [index: string]: number } = {
   "sweet tooth": 250000,
 };
 
-export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
+export function acquire(
+  qty: number,
+  item: Item,
+  maxPrice?: number,
+  throwOnFail = true,
+  maxAggregateCost?: number
+): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (!item.tradeable || (maxPrice !== undefined && maxPrice <= 0)) return 0;
   if (maxPrice === undefined) throw `No price cap for ${item.name}.`;
 
   print(`Trying to acquire ${qty} ${item.plural}; max price ${maxPrice.toFixed(0)}.`, "green");
 
-  if (qty * mallPrice(item) > 1000000) throw "Aggregate cost too high! Probably a bug.";
+  if (qty * mallPrice(item) > (maxAggregateCost ?? 1000000)) {
+    throw "Aggregate cost too high! Probably a bug.";
+  }
 
   const startAmount = itemAmount(item);
 
