@@ -430,12 +430,10 @@ export function main(argString = ""): void {
   if (globalOptions.simulateDiet) {
     propertyManager.set({
       logPreferenceChange: true,
-      battleAction: "custom combat script",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
       autoSatisfyWithCoinmasters: true,
       autoSatisfyWithStash: false,
-      dontStopForCounters: true,
       maximizerFoldables: true,
       autoTuxedo: true,
       autoPinkyRing: true,
