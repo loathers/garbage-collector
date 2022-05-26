@@ -435,7 +435,6 @@ function _yachtzeeChain(): void {
   // We definitely need to be able to eat sliders and drink pickle juice
   else if (get("fishyPipeUsed") && !have($effect`Fishy`)) return;
   // If we have used our fishy pipe and have no fishy turns left, we're probably done
-  else if (get("_garboYachtzeeChainCompleted")) return;
   else if (!get("sleazeAirportAlways") && !get("_sleazeAirportToday")) return;
   // Consider only allowing yachtzee chain to be run if
   // 1) globalOptions.ascending
@@ -476,12 +475,13 @@ function _yachtzeeChain(): void {
     plantCrookweed = false;
   }
   set("choiceAdventure918", "");
-  set("_garboYachtzeeChainCompleted", true);
 }
 
 export function yachtzeeChain(): void {
   if (!globalOptions.yachtzeeChain) return;
+  else if (get("_garboYachtzeeChainCompleted")) return;
   print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
   if (!globalOptions.noDiet) runDiet();
+  set("_garboYachtzeeChainCompleted", true);
 }
