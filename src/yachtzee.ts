@@ -42,6 +42,7 @@ import {
   set,
 } from "libram";
 import { acquire } from "./acquire";
+import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
 import { estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
@@ -499,6 +500,9 @@ export function yachtzeeChain(): void {
   else if (get("_garboYachtzeeChainCompleted")) return;
   print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
-  if (!globalOptions.noDiet) runDiet();
   set("_garboYachtzeeChainCompleted", true);
+  if (!globalOptions.noDiet) {
+    runDiet();
+    prepFamiliars(); // Recompute with
+  }
 }

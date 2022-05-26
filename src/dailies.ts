@@ -297,7 +297,7 @@ function entendreValue(): number {
   );
 }
 
-function prepFamiliars(): void {
+export function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
     const roboDrinks = {
       "Drive-by shooting": { priceCap: drivebyValue(), mandatory: true },
