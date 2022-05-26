@@ -35,6 +35,7 @@ import {
   userConfirm,
   useSkill,
   visitUrl,
+  weaponHands,
 } from "kolmafia";
 import {
   $item,
@@ -55,6 +56,7 @@ import {
   property,
   set,
   SongBoom,
+  sum,
 } from "libram";
 
 export const embezzlerLog: {
@@ -458,8 +460,7 @@ export const latteActionSourceFinderConstraints = {
     ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
     return (
       forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      forceEquipsOtherThanLatte.filter((equipment) => toSlot(equipment) === $slot`weapon`).length <
-        2
+      sum(forceEquipsOtherThanLatte, weaponHands) < 2
     );
   },
 };
