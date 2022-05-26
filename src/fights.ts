@@ -2160,22 +2160,23 @@ export function printEmbezzlerLog(): void {
     HIGHLIGHT
   );
 }
-type FreeKill = { source?: Item; skill: Skill; used: () => boolean };
+type FreeKill = { source?: Item; macro: Skill | Item; used: () => boolean };
 const freeKills: FreeKill[] = [
   {
     source: $item`The Jokester's gun`,
-    skill: $skill`Fire the Jokester's Gun`,
+    macro: $skill`Fire the Jokester's Gun`,
     used: () => get("_firedJokestersGun"),
   },
   {
     source: $item`Lil' Doctor™ bag`,
-    skill: $skill`Chest X-Ray`,
+    macro: $skill`Chest X-Ray`,
     used: () => get("_chestXRayUsed") >= 3,
   },
-  { skill: $skill`Shattering Punch`, used: () => get("_shatteringPunchUsed") >= 3 },
-  { skill: $skill`Gingerbread Mob Hit`, used: () => get("_gingerbreadMobHitUsed") },
+  { macro: $skill`Shattering Punch`, used: () => get("_shatteringPunchUsed") >= 3 },
+  { macro: $skill`Gingerbread Mob Hit`, used: () => get("_gingerbreadMobHitUsed") },
+  { macro: $item`replica bat-oomerang`, used: () => get("_usedReplicaBatoomerang") >= 3 },
 ];
-const isAvailable = ({ source, skill, used }: FreeKill) => have(source ?? skill) && !used();
+const isAvailable = ({ source, macro, used }: FreeKill) => have(source ?? macro) && !used();
 const toRequirement = ({ source }: FreeKill) =>
   source ? new Requirement([], { forceEquip: [source] }) : new Requirement([], {});
 function findFreeKill() {
@@ -2199,7 +2200,7 @@ function killRobortCreaturesForFree() {
     }
     freeFightOutfit(toRequirement(freeKill));
     withMacro(
-      Macro.skill(freeKill.skill),
+      freeKill.macro instanceof Item ? Macro.item(freeKill.macro) : Macro.skill(freeKill.macro),
       () => {
         mapMonster($location`The Copperhead Club`, $monster`Mob Penguin Capo`);
         runCombat();
@@ -2226,7 +2227,11 @@ function killRobortCreaturesForFree() {
 
     freeFightOutfit(toRequirement(freeKill));
     withMacro(
-      isFree(roboTarget) ? Macro.basicCombat() : Macro.skill(freeKill.skill),
+      isFree(roboTarget)
+        ? Macro.basicCombat()
+        : freeKill.macro instanceof Item
+        ? Macro.item(freeKill.macro)
+        : Macro.skill(freeKill.macro),
       () => CombatLoversLocket.reminisce(roboTarget),
       true
     );
