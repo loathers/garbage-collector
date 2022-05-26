@@ -2157,7 +2157,7 @@ export function printEmbezzlerLog(): void {
 
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
-  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => garboValue(drop) * rate)) +
+  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => (garboValue(drop) * rate) / 100)) +
   (have($familiar`Robortender`)
     ? Robortender.dropChance() * garboValue(Robortender.dropFrom(monster))
     : 0);
