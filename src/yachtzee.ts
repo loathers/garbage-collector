@@ -194,7 +194,11 @@ function yachtzeeChainDiet(): boolean {
   // Plan our diet (positive values give space, negative values take space)
   const sliders = Math.floor((fullnessLimit() - myFullness()) / 5);
   const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
-  const synth = haveEffect($effect`Synthesis: Greed`) < 30 ? -1 : 0;
+  const reqSynthTurns = 150; // We will be left with (150 - yachtzeeTurns) after chaining
+  const synth =
+    haveEffect($effect`Synthesis: Greed`) < reqSynthTurns
+      ? -Math.ceil(reqSynthTurns - haveEffect($effect`Synthesis: Greed`)) / 30
+      : 0;
   const filters = 3 - get(`currentMojoFilters`);
   const extros = hasMonsterReplacers() ? -4 : 0; // save some spleen for macroed embezzlies
   const availableSpleen =
