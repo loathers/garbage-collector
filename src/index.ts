@@ -428,7 +428,22 @@ export function main(argString = ""): void {
     ensureBarfAccess();
   }
   if (globalOptions.simulateDiet) {
+    propertyManager.set({
+      logPreferenceChange: true,
+      battleAction: "custom combat script",
+      autoSatisfyWithMall: true,
+      autoSatisfyWithNPCs: true,
+      autoSatisfyWithCoinmasters: true,
+      autoSatisfyWithStash: false,
+      dontStopForCounters: true,
+      maximizerFoldables: true,
+      autoTuxedo: true,
+      autoPinkyRing: true,
+      autoGarish: true,
+      valueOfInventory: 2,
+    });
     runDiet();
+    propertyManager.resetAll();
     return;
   }
 
