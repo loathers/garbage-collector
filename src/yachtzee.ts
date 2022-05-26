@@ -214,6 +214,8 @@ function yachtzeeChainDiet(): boolean {
   const yachtzeeTurns =
     availableSpleen + currentJellyCharges >= maxYachtzeeTurns ? maxYachtzeeTurns : 30;
 
+  print(`Trying to run ${yachtzeeTurns} turns of Yachtzee`, "purple");
+
   // Compute prices to make sure everything is worth it
   const fishJuiceBoxPrice = retrievePrice($item`fish juice box`);
   const jelliesBulkPrice = retrievePrice($item`stench jelly`, yachtzeeTurns);
