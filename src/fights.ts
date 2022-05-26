@@ -2200,7 +2200,10 @@ function killRobortCreaturesForFree() {
     freeFightOutfit(toRequirement(freeKill));
     withMacro(
       Macro.skill(freeKill.skill),
-      () => mapMonster($location`The Copperhead Club`, $monster`Mob Penguin Capo`),
+      () => {
+        mapMonster($location`The Copperhead Club`, $monster`Mob Penguin Capo`);
+        runCombat();
+      },
       true
     );
     freeKill = findFreeKill();
