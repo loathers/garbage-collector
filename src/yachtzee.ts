@@ -45,7 +45,7 @@ import { acquire } from "./acquire";
 import { runDiet } from "./diet";
 import { estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
-import { globalOptions } from "./lib";
+import { globalOptions, safeRestore } from "./lib";
 import { meatMood } from "./mood";
 import { garboValue } from "./session";
 
@@ -298,7 +298,7 @@ function yachtzeeChainDiet(): boolean {
       chew(n, $item`Extrovermectin™`);
     }),
     new dietEntry("synthesis", synthToUse, 0, 0, 1, (n: number) => {
-      for (let i = 0; i < n; i++) cliExecute("synthesize meat");
+      for (let i = 0; i < n; i++) cliExecute("synthesis meat");
     }),
     new dietEntry(`mojo filter`, filters, 0, 0, -1, (n: number) => {
       use(n, $item`mojo filter`);
@@ -455,6 +455,7 @@ function _yachtzeeChain(): void {
   }
   yachtzeeChainBuffs();
   cliExecute(`closet take ${myClosetMeat()} meat`);
+  safeRestore();
 
   let jellyTurns = property.getNumber("_stenchJellyCharges");
   let fishyTurns = haveEffect($effect`Fishy`);
