@@ -58,7 +58,7 @@ class dietEntry<T> {
   fullness: number;
   drunkenness: number;
   spleen: number;
-  action: (n: number) => T;
+  action: (n: number, name?: string) => T;
 
   constructor(
     name: string,
@@ -66,7 +66,7 @@ class dietEntry<T> {
     fullness: number,
     drunkenness: number,
     spleen: number,
-    action: (n: number) => T
+    action: (n: number, name?: string) => T
   ) {
     this.name = name;
     this.quantity = quantity;
@@ -77,11 +77,43 @@ class dietEntry<T> {
   }
 }
 
+class dietPref {
+  pref: string;
+  originalPref: string;
+
+  constructor() {
+    this.originalPref = property.getString("_garboYachtzeeChainDiet");
+    this.pref = "";
+  }
+
+  public reset() {
+    this.originalPref = "";
+    this.pref = "";
+  }
+
+  public add(n: number, name?: string) {
+    if (!name) throw "Diet pref must have a name";
+    for (let i = 0; i < n; i++) {
+      this.pref.concat(name ?? "").concat(",");
+    }
+  }
+
+  public set() {
+    set("_garboYachtzeeChainDiet", this.originalPref.concat(this.pref));
+  }
+}
+
 function castOde(turns: number): boolean {
   if (!have($skill`The Ode to Booze`)) return false;
   for (const song of getActiveSongs()) {
     const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
-    if (!slot && song !== $effect`Ode to Booze`) {
+    if (
+      !slot &&
+      song !== $effect`Ode to Booze` &&
+      song !== $effect`Polka of Plenty` &&
+      song !== $effect`Chorale of Companionship` &&
+      song !== $effect`The Ballad of Richie Thingfinder`
+    ) {
       cliExecute(`shrug ${song}`);
     }
   }
@@ -90,9 +122,82 @@ function castOde(turns: number): boolean {
   cliExecute(`shrug phat loot`);
 
   while (haveEffect($effect`Ode to Booze`) < turns) {
-    useSkill($skill`The Ode to Booze`);
+    if (!useSkill($skill`The Ode to Booze`)) throw "Failed to cast Ode to Booze";
   }
   return true;
+}
+
+function executeNextDietStep(): void {
+  if (get("stenchJellyUsed")) return;
+
+  const sliderEntry = new dietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
+    eat(n, $item`extra-greasy slider`);
+  });
+  const pickleJuiceEntry = new dietEntry(
+    `jar of fermented pickle juice`,
+    0,
+    0,
+    5,
+    -5,
+    (n: number) => {
+      castOde(5 * n);
+      drink(n, $item`jar of fermented pickle juice`);
+    }
+  );
+  const extroEntry = new dietEntry(`Extrovermectin™`, 0, 0, 0, 2, (n: number) => {
+    chew(n, $item`Extrovermectin™`);
+  });
+  const synthEntry = new dietEntry("synthesis", 0, 0, 0, 1, (n: number) => {
+    synthesize(n, $effect`Synthesis: Greed`);
+  });
+  const filterEntry = new dietEntry(`mojo filter`, 0, 0, 0, -1, (n: number) => {
+    use(n, $item`mojo filter`);
+  });
+  const cologneEntry = new dietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
+    use(n, $item`beggin' cologne`);
+  });
+  const dietSchedule = [
+    sliderEntry,
+    pickleJuiceEntry,
+    extroEntry,
+    synthEntry,
+    filterEntry,
+    cologneEntry,
+  ];
+
+  const dp = new dietPref();
+  dp.reset();
+
+  const dietString = property.getString("_garboYachtzeeChainDiet").split(",");
+  let stenchJellyConsumed = false;
+  for (const name of dietString) {
+    if (name === "stench jelly") {
+      use(1, $item`stench jelly`);
+      set("stenchJellyUsed", true);
+      stenchJellyConsumed = true;
+      set("_garboYachtzeeChainDiet", "");
+    } else if (!stenchJellyConsumed) {
+      dietSchedule.forEach((entry) => {
+        if (entry.name === name) {
+          if (myFullness() + entry.fullness > fullnessLimit()) {
+            throw `consuming ${entry.name} will exceed our fullness limit`;
+          } else if (myInebriety() + entry.drunkenness > inebrietyLimit()) {
+            throw `consuming ${entry.name} will exceed our inebriety limit`;
+          } else if (mySpleenUse() + entry.spleen > spleenLimit()) {
+            throw `consuming ${entry.name} will exceed our spleen limit`;
+          }
+          entry.action(1);
+        }
+      });
+    } else {
+      dp.add(1, name);
+    }
+  }
+  dp.set();
+
+  if (!stenchJellyConsumed) {
+    throw "We completed our entire diet but failed to get a stench jelly charge";
+  }
 }
 
 function splitDietEntry(entry: dietEntry<void>): Array<dietEntry<void>> {
@@ -119,7 +224,7 @@ function combineDietEntries(left: dietEntry<void>, right: dietEntry<void>): diet
 function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<void>> {
   const dietSchedule = new Array<dietEntry<void>>();
   const remainingMenu = new Array<dietEntry<void>>();
-
+  const jellies = new Array<dietEntry<void>>();
   // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
   // We also assume the only non-zero fullness/drunkenness entries are the sliders and pickle juices
   // This makes it trivial to plan the diet
@@ -127,6 +232,8 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
   for (const entry of menu) {
     if (entry.spleen < 0) {
       for (const splitEntry of splitDietEntry(entry)) dietSchedule.push(splitEntry);
+    } else if (entry.name === "Stench Jelly") {
+      for (const splitEntry of splitDietEntry(entry)) jellies.push(splitEntry);
     } else {
       for (const splitEntry of splitDietEntry(entry)) remainingMenu.push(splitEntry);
     }
@@ -140,18 +247,23 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
     return right.spleen - left.spleen;
   });
 
-  for (const entry of remainingMenu) {
-    let idx = 0;
-    let spleenUse = mySpleenUse();
-    while (
-      idx < dietSchedule.length &&
-      (dietSchedule[idx].spleen >= 0 || // We only insert if there's a cleanser immediately after where we want to insert
-        spleenUse + entry.spleen > spleenLimit() || // But don't insert if we will overshoot our spleen limit
-        (idx > 0 && dietSchedule[idx - 1].spleen < 0 && spleenUse + dietSchedule[idx].spleen >= 0)) // And cluster spleen cleansers (continue if the next cleanser can still clean our spleen)
-    ) {
-      spleenUse += dietSchedule[idx++].spleen ?? 0;
+  // Schedule jellies last so we definitely get spleen buffs first (e.g. synth and cologne)
+  for (const spleeners of [remainingMenu, jellies]) {
+    for (const entry of spleeners) {
+      let idx = 0;
+      let spleenUse = mySpleenUse();
+      while (
+        idx < dietSchedule.length &&
+        (dietSchedule[idx].spleen >= 0 || // We only insert if there's a cleanser immediately after where we want to insert
+          spleenUse + entry.spleen > spleenLimit() || // But don't insert if we will overshoot our spleen limit
+          (idx > 0 &&
+            dietSchedule[idx - 1].spleen < 0 &&
+            spleenUse + dietSchedule[idx].spleen >= 0)) // And cluster spleen cleansers (continue if the next cleanser can still clean our spleen)
+      ) {
+        spleenUse += dietSchedule[idx++].spleen ?? 0;
+      }
+      dietSchedule.splice(idx, 0, entry);
     }
-    dietSchedule.splice(idx, 0, entry);
   }
 
   // Next, combine clustered entries where possible (this is purely for aesthetic reasons)
@@ -183,7 +295,7 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
 }
 
 function yachtzeeChainDiet(): boolean {
-  if (get("_garboYachtzeeChainDieted")) return true;
+  if (get("_garboYachtzeeChainDietPlanned")) return true;
 
   // Plan for Yachtzee Chain
   // 1) Fish Juice Box + Fishy Pipe for 30 turns of Fishy and Really Deep Breath (so we can ignore underwater gear)
@@ -205,22 +317,28 @@ function yachtzeeChainDiet(): boolean {
       : 0;
   const filters = 3 - get(`currentMojoFilters`);
   const extros = hasMonsterReplacers() ? -(4 - Math.min(4, 2 * get("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
-  const availableSpleen =
+  let availableSpleen =
     spleenLimit() - mySpleenUse() + 5 * sliders + 5 * pickleJuice + synth + filters + extros;
-  if (!get("_stenchJellyCharges")) set("_stenchJellyCharges", 0);
-  const currentJellyCharges = property.getNumber("_stenchJellyCharges") ?? 0; // This should always be zero unless we crashed out
+  if (!get("_stenchJellyChargeTarget")) set("_stenchJellyChargeTarget", 0);
+  const currentJellyChargeTarget = property.getNumber("_stenchJellyChargeTarget") ?? 0; // This should always be zero unless we crashed out
 
-  // If currentJellyCharges > 0, then we were in the middle of prepping for yachtzee
-  if (availableSpleen + currentJellyCharges < 30) {
-    if (currentJellyCharges > 0) {
-      throw "Unexpected error: We have some stench jelly charges, but cannot continue filling up to the optimum amount due to a previous abort";
-    }
+  // If currentJellyChargeTarget > 0, then we were in the middle of prepping for yachtzee
+  if (availableSpleen + currentJellyChargeTarget < 30) {
     print("We were unable to generate enough organ space for optimal yachtzee chaining", "red");
     return false;
   }
 
   const yachtzeeTurns =
-    availableSpleen + currentJellyCharges >= maxYachtzeeTurns ? maxYachtzeeTurns : 30;
+    availableSpleen + currentJellyChargeTarget >= maxYachtzeeTurns ? maxYachtzeeTurns : 30;
+
+  let cologne = 0;
+  if (
+    availableSpleen + currentJellyChargeTarget >= yachtzeeTurns + 1 &&
+    haveEffect($effect`Eau d' Clochard`) < yachtzeeTurns
+  ) {
+    cologne = 1;
+    availableSpleen -= 1;
+  }
 
   print(`Trying to run ${yachtzeeTurns} turns of Yachtzee`, "purple");
 
@@ -237,7 +355,7 @@ function yachtzeeChainDiet(): boolean {
   // 2) Our stomach can be used for horseradish buffs
   const spleenToClean =
     yachtzeeTurns -
-    currentJellyCharges -
+    currentJellyChargeTarget -
     filters -
     synth -
     extros -
@@ -294,35 +412,62 @@ function yachtzeeChainDiet(): boolean {
   }
 
   // Schedule our diet first
+  const dp = new dietPref();
   const dietArray = [
-    new dietEntry(`extra-greasy slider`, slidersToEat, 5, 0, -5, (n: number) => {
-      eat(n, $item`extra-greasy slider`);
+    new dietEntry(`extra-greasy slider`, slidersToEat, 5, 0, -5, (n: number, name?: string) => {
+      dp.add(n, name);
     }),
-    new dietEntry(`jar of fermented pickle juice`, pickleJuiceToDrink, 0, 5, -5, (n: number) => {
-      castOde(n * 5);
-      drink(n, $item`jar of fermented pickle juice`);
+    new dietEntry(
+      `jar of fermented pickle juice`,
+      pickleJuiceToDrink,
+      0,
+      5,
+      -5,
+      (n: number, name?: string) => {
+        dp.add(n, name);
+      }
+    ),
+    new dietEntry(`Extrovermectin™`, extrosToChew, 0, 0, 2, (n: number, name?: string) => {
+      dp.add(n, name);
     }),
-    new dietEntry(`Extrovermectin™`, extrosToChew, 0, 0, 2, (n: number) => {
-      chew(n, $item`Extrovermectin™`);
+    new dietEntry("synthesis", synthToUse, 0, 0, 1, (n: number, name?: string) => {
+      dp.add(n, name);
     }),
-    new dietEntry("synthesis", synthToUse, 0, 0, 1, (n: number) => {
-      synthesize(n, $effect`Synthesis: Greed`);
+    new dietEntry(`mojo filter`, filters, 0, 0, -1, (n: number, name?: string) => {
+      dp.add(n, name);
     }),
-    new dietEntry(`mojo filter`, filters, 0, 0, -1, (n: number) => {
-      use(n, $item`mojo filter`);
-    }),
-    new dietEntry(`stench jelly`, yachtzeeTurns - currentJellyCharges, 0, 0, 1, (n: number) => {
-      chew(n, $item`stench jelly`);
-      set("_stenchJellyCharges", property.getNumber("_stenchJellyCharges") + n);
+    new dietEntry(
+      `stench jelly`,
+      yachtzeeTurns - currentJellyChargeTarget,
+      0,
+      0,
+      1,
+      (n: number, name?: string) => {
+        dp.add(n, name);
+        set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
+      }
+    ),
+    new dietEntry(`beggin' cologne`, cologne, 0, 0, 1, (n: number, name?: string) => {
+      dp.add(n, name);
     }),
   ];
 
-  // Run diet scheduler and consume stuff
+  // Run diet scheduler
   print("Scheduling diet", "purple");
   const dietSchedule = yachtzeeDietScheduler(dietArray);
 
-  // Acquire everything we need before using stuff
-  const stenchJelliesToUse = yachtzeeTurns - currentJellyCharges;
+  // Now execute the diet
+  for (const entry of dietSchedule) entry.action(entry.quantity, entry.name);
+  dp.set();
+
+  if (property.getNumber("_stenchJellyChargeTarget") < yachtzeeTurns) {
+    throw `We are only able to obtain up to ${property.getNumber(
+      "_stenchJellyChargeTarget"
+    )}/${yachtzeeTurns} turns of jelly charges!`;
+  }
+
+  // Acquire everything we need
+  const stenchJelliesToUse = yachtzeeTurns - currentJellyChargeTarget;
   acquire(
     stenchJelliesToUse,
     $item`stench jelly`,
@@ -340,10 +485,24 @@ function yachtzeeChainDiet(): boolean {
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     acquire(1, $item`fish juice box`, 2 * fishJuiceBoxPrice);
   }
+  if (cologne > 0) acquire(cologne, $item`beggin' cologne`, 100000);
   if (filters > 0) acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`));
 
-  // Now execute the diet
-  print("Executing diet", "purple");
+  // Get fishy turns
+  print("Getting fishy turns", "purple");
+  if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
+    use(1, $item`fish juice box`);
+  }
+  if (!get("fishyPipeUsed")) use(1, $item`fishy pipe`);
+
+  // Final checks
+  if (haveEffect($effect`Fishy`) + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
+    throw `We only got ${haveEffect($effect`Fishy`)}/${yachtzeeTurns} turns of fishy!`;
+  }
+
+  set("_garboYachtzeeChainDietPlanned", true);
+
+  print("Executing buffing diet", "purple");
   if (!get("_milkOfMagnesiumUsed")) {
     acquire(1, $item`milk of magnesium`, 10000);
     use(1, $item`milk of magnesium`);
@@ -351,38 +510,14 @@ function yachtzeeChainDiet(): boolean {
   if (!get("_distentionPillUsed") && have($item`distention pill`)) {
     use(1, $item`distention pill`);
   }
-  for (const entry of dietSchedule) entry.action(entry.quantity);
-
-  // Get fishy turns
-  if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
-    use(1, $item`fish juice box`);
-  }
-  if (!get("fishyPipeUsed")) use(1, $item`fishy pipe`);
-
-  set("_garboYachtzeeChainDieted", true);
-
-  // Final checks
-  if (haveEffect($effect`Fishy`) + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
-    throw `We only got ${haveEffect($effect`Fishy`)}/${yachtzeeTurns} turns of fishy!`;
-  } else if (property.getNumber("_stenchJellyCharges") < yachtzeeTurns) {
-    throw `We only got ${property.getNumber(
-      "_stenchJellyCharges"
-    )}/${yachtzeeTurns} turns of jelly charges!`;
-  }
-
   // Roughly worth it to use these up to the max values set (I think)
   while (
-    myFullness() < fullnessLimit() &&
+    myFullness() + 1 + sliders < fullnessLimit() &&
     haveEffect($effect`Kicked in the Sinuses`) < yachtzeeTurns
   ) {
     acquire(1, $item`jumping horseradish`, 20000);
     if (have($item`jumping horseradish`)) eat(1, $item`jumping horseradish`);
     else break;
-  }
-
-  if (mySpleenUse() < spleenLimit() && haveEffect($effect`Eau d' Clochard`) < yachtzeeTurns) {
-    acquire(1, $item`beggin' cologne`, 100000);
-    if (have($item`beggin' cologne`)) chew(1, $item`beggin' cologne`);
   }
 
   if (!get(`_freePillKeeperUsed`) && haveEffect($effect`Frosty`) < yachtzeeTurns) {
@@ -414,7 +549,7 @@ function getMeatBuff(it: Item, duration: number): boolean {
   } else {
     print(
       `Actual cost of ${it} (${currentPrice}) is more expensive than effective cost (${maxPrice})`,
-      "darkorange"
+      "orange"
     );
     return false;
   }
@@ -430,7 +565,7 @@ function getMeatBuff(it: Item, duration: number): boolean {
 
 function yachtzeeChainBuffs(): void {
   const yachtzeeTurns = Math.min(
-    property.getNumber("_stenchJellyCharges"),
+    property.getNumber("_stenchJellyChargeTarget"),
     haveEffect($effect`Fishy`)
   );
 
@@ -472,16 +607,18 @@ function _yachtzeeChain(): void {
   cliExecute(`closet take ${myClosetMeat()} meat`);
   safeRestore();
 
-  let jellyTurns = property.getNumber("_stenchJellyCharges");
+  let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
   let fishyTurns = haveEffect($effect`Fishy`);
   let plantCrookweed = true;
   set("choiceAdventure918", 2);
   while (Math.min(jellyTurns, fishyTurns) > 0) {
+    executeNextDietStep();
     adv1($location`The Sunken Party Yacht`, -1, "");
     if (haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
-      set("_stenchJellyCharges", property.getNumber("_stenchJellyCharges") - 1);
+      set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") - 1);
+      set("stenchJellyUsed", false);
     }
     if (
       plantCrookweed &&
