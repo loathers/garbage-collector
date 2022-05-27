@@ -320,21 +320,19 @@ function yachtzeeChainDiet(): boolean {
   const extros = hasMonsterReplacers() ? -(4 - Math.min(4, 2 * get("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
   let availableSpleen =
     spleenLimit() - mySpleenUse() + 5 * sliders + 5 * pickleJuice + synth + filters + extros;
-  if (!get("_stenchJellyChargeTarget")) set("_stenchJellyChargeTarget", 0);
-  const currentJellyChargeTarget = property.getNumber("_stenchJellyChargeTarget") ?? 0; // This should always be zero unless we crashed out
+  set("_stenchJellyChargeTarget", 0);
 
   // If currentJellyChargeTarget > 0, then we were in the middle of prepping for yachtzee
-  if (availableSpleen + currentJellyChargeTarget < 30) {
+  if (availableSpleen < 30) {
     print("We were unable to generate enough organ space for optimal yachtzee chaining", "red");
     return false;
   }
 
-  const yachtzeeTurns =
-    availableSpleen + currentJellyChargeTarget >= maxYachtzeeTurns ? maxYachtzeeTurns : 30;
+  const yachtzeeTurns = availableSpleen >= maxYachtzeeTurns ? maxYachtzeeTurns : 30;
 
   let cologne = 0;
   if (
-    availableSpleen + currentJellyChargeTarget >= yachtzeeTurns + 1 &&
+    availableSpleen >= yachtzeeTurns + 1 &&
     haveEffect($effect`Eau d' Clochard`) < yachtzeeTurns
   ) {
     cologne = 1;
@@ -354,13 +352,7 @@ function yachtzeeChainDiet(): boolean {
   // We prefer using pickle juice to cleanse our spleen for stench jellies since
   // 1) It's cheaper
   // 2) Our stomach can be used for horseradish buffs
-  const spleenToClean =
-    yachtzeeTurns -
-    currentJellyChargeTarget -
-    filters -
-    synth -
-    extros -
-    (spleenLimit() - mySpleenUse());
+  const spleenToClean = yachtzeeTurns - filters - synth - extros - (spleenLimit() - mySpleenUse());
   const pickleJuiceToDrink = clamp(Math.ceil(spleenToClean / 5), 0, pickleJuice);
   const slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
   const extrosToChew = -extros / 2;
@@ -437,17 +429,10 @@ function yachtzeeChainDiet(): boolean {
     new dietEntry(`mojo filter`, filters, 0, 0, -1, (n: number, name?: string) => {
       dp.add(n, name);
     }),
-    new dietEntry(
-      `stench jelly`,
-      yachtzeeTurns - currentJellyChargeTarget,
-      0,
-      0,
-      1,
-      (n: number, name?: string) => {
-        dp.add(n, name);
-        set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
-      }
-    ),
+    new dietEntry(`stench jelly`, yachtzeeTurns, 0, 0, 1, (n: number, name?: string) => {
+      dp.add(n, name);
+      set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
+    }),
     new dietEntry(`beggin' cologne`, cologne, 0, 0, 1, (n: number, name?: string) => {
       dp.add(n, name);
     }),
@@ -468,9 +453,8 @@ function yachtzeeChainDiet(): boolean {
   }
 
   // Acquire everything we need
-  const stenchJelliesToUse = yachtzeeTurns - currentJellyChargeTarget;
   acquire(
-    stenchJelliesToUse,
+    yachtzeeTurns,
     $item`stench jelly`,
     (2 * jelliesBulkPrice) / yachtzeeTurns,
     true,
