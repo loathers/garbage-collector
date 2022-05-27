@@ -95,7 +95,7 @@ import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } fro
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { canAdv } from "canadv.ash";
-import { yachtzeeChain } from "./yachtzee";
+import { yachtzeeChain, yachtzeeChainDiet } from "./yachtzee";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -387,7 +387,9 @@ export function main(argString = ""): void {
     }
   }
 
-  if (globalOptions.noDiet) globalOptions.yachtzeeChain = false;
+  if (globalOptions.noDiet || get("_garboYachtzeeChainCompleted") || !yachtzeeChainDiet(true)) {
+    globalOptions.yachtzeeChain = false;
+  }
 
   if (stashItems.length > 0) {
     if (

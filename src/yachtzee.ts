@@ -295,7 +295,7 @@ function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<vo
   return dietSchedule;
 }
 
-function yachtzeeChainDiet(): boolean {
+export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (get("_garboYachtzeeChainDietPlanned")) return true;
 
   // Plan for Yachtzee Chain
@@ -406,6 +406,7 @@ function yachtzeeChainDiet(): boolean {
 
   // Schedule our diet first
   const dp = new dietPref();
+  dp.reset();
   const dietArray = [
     new dietEntry(`extra-greasy slider`, slidersToEat, 5, 0, -5, (n: number, name?: string) => {
       dp.add(n, name);
@@ -445,6 +446,8 @@ function yachtzeeChainDiet(): boolean {
   // Now execute the diet
   for (const entry of dietSchedule) entry.action(entry.quantity, entry.name);
   dp.set();
+
+  if (simOnly) return true;
 
   if (property.getNumber("_stenchJellyChargeTarget") < yachtzeeTurns) {
     throw `We are only able to obtain up to ${property.getNumber(
