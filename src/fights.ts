@@ -615,6 +615,7 @@ class FreeRunFight extends FreeFight {
             : []),
         ])
       );
+      freeFightMood(...(this.options.effects?.() ?? []));
       safeRestore();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
       postCombatActions();
