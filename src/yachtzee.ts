@@ -171,7 +171,8 @@ function executeNextDietStep(): void {
   const dietString = property.getString("_garboYachtzeeChainDiet").split(",");
   let stenchJellyConsumed = false;
   for (const name of dietString) {
-    if (name === "stench jelly") {
+    if (name.length === 0) continue;
+    else if (name === "stench jelly") {
       use(1, $item`stench jelly`);
       set("stenchJellyUsed", true);
       stenchJellyConsumed = true;
