@@ -4,6 +4,7 @@ import {
   buy,
   cliExecute,
   closetAmount,
+  create,
   Effect,
   equip,
   Familiar,
@@ -100,7 +101,12 @@ import {
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
-import { freeFightFamiliar, meatFamiliar, pocketProfessorLectures } from "./familiar";
+import {
+  calculateMeatFamiliar,
+  freeFightFamiliar,
+  meatFamiliar,
+  pocketProfessorLectures,
+} from "./familiar";
 import {
   burnLibrams,
   embezzlerLog,
@@ -118,6 +124,7 @@ import {
   resetDailyPreference,
   safeRestore,
   setChoice,
+  userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
@@ -1813,6 +1820,20 @@ export function freeFights(): void {
     1324: 5, // Fight a random partier
   });
 
+  const stashRun = stashAmount($item`navel ring of navel gazing`)
+    ? $items`navel ring of navel gazing`
+    : stashAmount($item`Greatest American Pants`)
+    ? $items`Greatest American Pants`
+    : [];
+  refreshStash();
+  withStash(stashRun, () => {
+    for (const freeRunFightSource of freeRunFightSources) {
+      freeRunFightSource.runAll();
+    }
+  });
+
+  killRobortCreaturesForFree();
+
   //  Use free fights on melanges if we have Tote/Squint and prices are reasonable.
   const canSquint =
     have($effect`Steely-Eyed Squint`) ||
@@ -1835,20 +1856,6 @@ export function freeFights(): void {
       if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
     }
   }
-
-  const stashRun = stashAmount($item`navel ring of navel gazing`)
-    ? $items`navel ring of navel gazing`
-    : stashAmount($item`Greatest American Pants`)
-    ? $items`Greatest American Pants`
-    : [];
-  refreshStash();
-  withStash(stashRun, () => {
-    for (const freeRunFightSource of freeRunFightSources) {
-      freeRunFightSource.runAll();
-    }
-  });
-
-  killRobortCreaturesForFree();
 
   if (
     canAdv($location`The Red Zeppelin`, false) &&
@@ -2188,6 +2195,7 @@ function killRobortCreaturesForFree() {
   if (!have($familiar`Robortender`)) return;
   useFamiliar($familiar`Robortender`);
 
+  const currentHeads = availableAmount($item`fish head`);
   let freeKill = findFreeKill();
   while (
     freeKill &&
@@ -2239,6 +2247,19 @@ function killRobortCreaturesForFree() {
       true
     );
     freeKill = findFreeKill();
+  }
+
+  if (
+    !Robortender.currentDrinks().includes($item`drive-by shooting`) &&
+    availableAmount($item`fish head`) > currentHeads &&
+    userConfirmDialog(
+      "Garbo managed to rustle up a fish head, would you like it to use it to make a drive-by shooting so you can benefit from your robortender? Sorry for flip-flopping on this, life is hard.",
+      true
+    )
+  ) {
+    if (!have($item`drive-by shooting`)) create($item`drive-by shooting`);
+    Robortender.feed($item`drive-by shooting`);
+    calculateMeatFamiliar();
   }
 }
 
