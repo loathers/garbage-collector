@@ -83,6 +83,6 @@ jobs:
           git add images/
           git add dependencies.txt
           {
-            git commit -m "${{github.event.commits[0][message]}}"
+            git commit -m "${{github.event.commits[0].message}}"
             git push origin release
           } || exit 0
