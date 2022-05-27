@@ -387,6 +387,8 @@ export function main(argString = ""): void {
     }
   }
 
+  if (globalOptions.noDiet) globalOptions.yachtzeeChain = false;
+
   if (stashItems.length > 0) {
     if (
       userConfirmDialog(
