@@ -2226,7 +2226,9 @@ function killRobortCreaturesForFree() {
       useFamiliar($familiar`Robortender`);
     }
 
-    freeFightOutfit(toRequirement(freeKill));
+    freeFightOutfit(
+      roboTarget.attributes.includes("FREE") ? new Requirement([], {}) : toRequirement(freeKill)
+    );
     withMacro(
       isFree(roboTarget)
         ? Macro.basicCombat()
