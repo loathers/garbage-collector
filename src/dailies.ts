@@ -1,10 +1,13 @@
 import {
+  abort,
   adv1,
   buy,
   changeMcd,
   cliExecute,
   equip,
   familiarEquippedEquipment,
+  fileToBuffer,
+  gamedayToInt,
   getCampground,
   getClanLounge,
   haveSkill,
@@ -65,21 +68,27 @@ import {
   have,
   Pantogram,
   property,
+  set,
   SongBoom,
   SourceTerminal,
+  sum,
   uneffect,
   withProperty,
 } from "libram";
-import { meatFamiliar } from "./familiar";
+import { calculateMeatFamiliar, meatFamiliar } from "./familiar";
 import {
   argmax,
   baseMeat,
   coinmasterPrice,
+  garbageTouristRatio,
   globalOptions,
   HIGHLIGHT,
   logMessage,
   realmAvailable,
+  today,
   tryFeast,
+  turnsToNC,
+  userConfirmDialog,
 } from "./lib";
 import { withStash } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
@@ -134,6 +143,8 @@ export function postFreeFightDailySetup(): void {
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
 
+  // We do this funny logic on annoyed snake & slime blob because they both suck for profits
+  // And because we don't want to lock people out of grabbing an outfit
   const voterValueTable = [
     {
       monster: $monster`terrible mutant`,
@@ -149,11 +160,11 @@ function voterSetup(): void {
     },
     {
       monster: $monster`annoyed snake`,
-      value: 25 * 0.5 + 25,
+      value: gamedayToInt(),
     },
     {
       monster: $monster`slime blob`,
-      value: 20 * 0.4 + 50 * 0.2 + 250 * 0.01,
+      value: 95 - gamedayToInt(),
     },
   ];
 
@@ -226,14 +237,108 @@ function configureGear(): void {
   }
 }
 
+function newarkValue(): number {
+  const lastCalculated = get("garbo_newarkValueDate", 0);
+  if (!get("garbo_newarkValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+    const newarkDrops = (
+      JSON.parse(fileToBuffer("garbo_robo_drinks_data.json")) as {
+        Newark: string[];
+        "Feliz Navidad": string[];
+      }
+    )["Newark"];
+    set(
+      "garbo_newarkValue",
+      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
+    );
+    set("garbo_newarkValueDate", today);
+  }
+  return get("garbo_newarkValue", 0) * 0.25 * estimatedTurns();
+}
+
+function felizValue(): number {
+  const lastCalculated = get("garbo_felizValueDate", 0);
+  if (!get("garbo_felizValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+    const felizDrops = (
+      JSON.parse(fileToBuffer("garbo_robo_drinks_data.json")) as {
+        Newark: string[];
+        "Feliz Navidad": string[];
+      }
+    )["Feliz Navidad"];
+    set(
+      "garbo_felizValue",
+      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0)
+    );
+    set("garbo_felizValueDate", today);
+  }
+  return get("garbo_felizValue", 0) * 0.25 * estimatedTurns();
+}
+
+function drivebyValue(): number {
+  const embezzlers = embezzlerCount();
+  const tourists = ((estimatedTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+  const marginalRoboWeight = 50;
+  const meatPercentDelta =
+    Math.sqrt(220 * 2 * marginalRoboWeight) -
+    Math.sqrt(220 * 2 * marginalRoboWeight) +
+    2 * marginalRoboWeight;
+  return (meatPercentDelta / 100) * ((750 + baseMeat) * embezzlers + baseMeat * tourists);
+}
+
+function entendreValue(): number {
+  const embezzlers = embezzlerCount();
+  const tourists = ((estimatedTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+  const marginalRoboWeight = 50;
+  const itemPercent = Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
+  const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
+  const meatStackDropRate = 0.3 * 4; // 4 stacks each with a 30% drop chance
+  return (
+    (itemPercent / 100) *
+    (meatStackDropRate * embezzlers + garbageBagsDropRate * tourists * garbageTouristRatio)
+  );
+}
+
 function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
-    for (const drink of $items`Newark, drive-by shooting, Feliz Navidad, single entendre, Bloody Nora`) {
-      if (get("_roboDrinks").includes(drink.name)) continue;
+    const roboDrinks = {
+      "Drive-by shooting": { priceCap: drivebyValue(), mandatory: true },
+      Newark: {
+        priceCap: newarkValue(),
+        mandatory: false,
+      },
+      "Feliz Navidad": { priceCap: felizValue(), mandatory: false },
+      "Bloody Nora": {
+        priceCap: get("_envyfishEggUsed")
+          ? (750 + baseMeat) * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
+          : 0,
+        mandatory: false,
+      },
+      "Single entendre": { priceCap: entendreValue(), mandatory: false },
+    };
+    for (const [drinkName, { priceCap, mandatory }] of Object.entries(roboDrinks)) {
+      if (get("_roboDrinks").toLowerCase().includes(drinkName.toLowerCase())) continue;
       useFamiliar($familiar`Robortender`);
-      if (itemAmount(drink) === 0) retrieveItem(1, drink);
-      print(`Feeding robortender ${drink}.`, HIGHLIGHT);
-      visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
+      const drink = toItem(drinkName);
+      if (retrievePrice(drink) > priceCap) {
+        if (mandatory) {
+          calculateMeatFamiliar();
+          if (
+            !userConfirmDialog(
+              `Garbo cannot find a reasonably priced drive-by-shooting (price cap: ${priceCap}), and will not be using your robortender. Is that cool with you?`,
+              true
+            )
+          ) {
+            abort(
+              "Alright, then, I guess you should try to find a reasonbly priced drive-by-shooting. Or do different things with your day."
+            );
+          }
+          break;
+        }
+        continue;
+      }
+      withProperty("autoBuyPriceLimit", priceCap, () => retrieveItem(1, drink));
+      if (have(drink)) {
+        visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
+      }
     }
   }
 
