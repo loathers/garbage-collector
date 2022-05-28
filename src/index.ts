@@ -387,14 +387,6 @@ export function main(argString = ""): void {
     }
   }
 
-  if (
-    globalOptions.noDiet ||
-    get("_garboYachtzeeChainCompleted") ||
-    (!get("_garboYachtzeeChainDietPlanned") && !yachtzeeChainDiet(true))
-  ) {
-    globalOptions.yachtzeeChain = false;
-  }
-
   if (stashItems.length > 0) {
     if (
       userConfirmDialog(
@@ -578,6 +570,15 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
+        if (
+          globalOptions.noDiet ||
+          get("_garboYachtzeeChainCompleted") ||
+          (!get("_garboYachtzeeChainDietPlanned") && !yachtzeeChainDiet(true))
+        ) {
+          print("We should not be yachtzee chaining", "red");
+          globalOptions.yachtzeeChain = false;
+        }
+
         if (
           !globalOptions.noDiet &&
           (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted"))

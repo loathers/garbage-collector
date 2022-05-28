@@ -82,7 +82,9 @@ class dietPref {
   originalPref: string;
 
   constructor() {
-    this.originalPref = property.getString("_garboYachtzeeChainDiet");
+    this.originalPref = !get("_garboYachtzeeChainDiet")
+      ? ""
+      : property.getString("_garboYachtzeeChainDiet");
     this.pref = "";
   }
 
@@ -94,7 +96,7 @@ class dietPref {
   public add(n: number, name?: string) {
     if (!name) throw "Diet pref must have a name";
     for (let i = 0; i < n; i++) {
-      this.pref.concat(name ?? "").concat(",");
+      this.pref = this.pref.concat(name ?? "").concat(",");
     }
   }
 
@@ -399,7 +401,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   print(`Early Meat Drop Modifier: ${earlyMeatDropsEstimate}%`);
   print(`Extro value per spleen: ${extroValuePerSpleen}`);
   print(`Jelly value per spleen: ${jellyValuePerSpleen}`);
-  if (jellyValuePerSpleen < extroValuePerSpleen) {
+  if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly) {
     print("Running extros is more profitable than chaining yachtzees", "red");
     return false; // We should do extros instead since they are more valuable
   }
@@ -432,7 +434,9 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     }),
     new dietEntry(`stench jelly`, yachtzeeTurns, 0, 0, 1, (n: number, name?: string) => {
       dp.add(n, name);
-      set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
+      if (!simOnly) {
+        set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
+      }
     }),
     new dietEntry(`beggin' cologne`, cologne, 0, 0, 1, (n: number, name?: string) => {
       dp.add(n, name);
