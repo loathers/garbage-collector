@@ -77,7 +77,8 @@ class dietEntry<T> {
   }
 }
 
-class dietPref {
+class dietUtils {
+  dietArray: Array<dietEntry<void>>;
   pref: string;
   originalPref: string;
 
@@ -86,23 +87,74 @@ class dietPref {
       ? ""
       : property.getString("_garboYachtzeeChainDiet");
     this.pref = "";
+    this.dietArray = [
+      new dietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
+        eat(n, $item`extra-greasy slider`);
+      }),
+      new dietEntry(`jar of fermented pickle juice`, 0, 0, 5, -5, (n: number) => {
+        castOde(5 * n);
+        drink(n, $item`jar of fermented pickle juice`);
+      }),
+      new dietEntry(`Extrovermectin™`, 0, 0, 0, 2, (n: number) => {
+        chew(n, $item`Extrovermectin™`);
+      }),
+      new dietEntry("synthesis", 0, 0, 0, 1, (n: number) => {
+        synthesize(n, $effect`Synthesis: Greed`);
+      }),
+      new dietEntry(`mojo filter`, 0, 0, 0, -1, (n: number) => {
+        use(n, $item`mojo filter`);
+      }),
+      new dietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
+        chew(n, $item`beggin' cologne`);
+      }),
+    ];
   }
 
-  public reset() {
+  public setDietEntry(name: string, qty?: number, action?: (n: number, name?: string) => void) {
+    this.dietArray.forEach((entry) => {
+      if (entry.name === name) {
+        if (qty) entry.quantity = qty;
+        if (action) entry.action = action;
+      }
+    });
+  }
+
+  public resetDietPref() {
     this.originalPref = "";
     this.pref = "";
   }
 
-  public add(n: number, name?: string) {
+  public addToPref(n: number, name?: string) {
     if (!name) throw "Diet pref must have a name";
     for (let i = 0; i < n; i++) {
       this.pref = this.pref.concat(name ?? "").concat(",");
     }
   }
 
-  public set() {
+  public setDietPref() {
     set("_garboYachtzeeChainDiet", this.originalPref.concat(this.pref));
   }
+}
+
+function splitDietEntry(entry: dietEntry<void>): Array<dietEntry<void>> {
+  const entries = new Array<dietEntry<void>>();
+  for (let i = 0; i < entry.quantity; i++) {
+    entries.push(
+      new dietEntry(entry.name, 1, entry.fullness, entry.drunkenness, entry.spleen, entry.action)
+    );
+  }
+  return entries;
+}
+
+function combineDietEntries(left: dietEntry<void>, right: dietEntry<void>): dietEntry<void> {
+  return new dietEntry(
+    left.name,
+    left.quantity + right.quantity,
+    left.fullness,
+    left.drunkenness,
+    left.spleen,
+    left.action
+  );
 }
 
 function castOde(turns: number): boolean {
@@ -132,44 +184,8 @@ function castOde(turns: number): boolean {
 function executeNextDietStep(): void {
   if (property.getBoolean("stenchJellyUsed")) return;
   print("Executing next diet steps", "blue");
-
-  const sliderEntry = new dietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
-    eat(n, $item`extra-greasy slider`);
-  });
-  const pickleJuiceEntry = new dietEntry(
-    `jar of fermented pickle juice`,
-    0,
-    0,
-    5,
-    -5,
-    (n: number) => {
-      castOde(5 * n);
-      drink(n, $item`jar of fermented pickle juice`);
-    }
-  );
-  const extroEntry = new dietEntry(`Extrovermectin™`, 0, 0, 0, 2, (n: number) => {
-    chew(n, $item`Extrovermectin™`);
-  });
-  const synthEntry = new dietEntry("synthesis", 0, 0, 0, 1, (n: number) => {
-    synthesize(n, $effect`Synthesis: Greed`);
-  });
-  const filterEntry = new dietEntry(`mojo filter`, 0, 0, 0, -1, (n: number) => {
-    use(n, $item`mojo filter`);
-  });
-  const cologneEntry = new dietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
-    chew(n, $item`beggin' cologne`);
-  });
-  const dietSchedule = [
-    sliderEntry,
-    pickleJuiceEntry,
-    extroEntry,
-    synthEntry,
-    filterEntry,
-    cologneEntry,
-  ];
-
-  const dp = new dietPref();
-  dp.reset();
+  const dietUtil = new dietUtils();
+  dietUtil.resetDietPref();
 
   const dietString = property.getString("_garboYachtzeeChainDiet").split(",");
   let stenchJellyConsumed = false;
@@ -181,7 +197,7 @@ function executeNextDietStep(): void {
       stenchJellyConsumed = true;
       set("_garboYachtzeeChainDiet", "");
     } else if (!stenchJellyConsumed) {
-      dietSchedule.forEach((entry) => {
+      dietUtil.dietArray.forEach((entry) => {
         if (entry.name === name) {
           if (myFullness() + entry.fullness > fullnessLimit()) {
             throw `consuming ${entry.name} will exceed our fullness limit`;
@@ -194,35 +210,14 @@ function executeNextDietStep(): void {
         }
       });
     } else {
-      dp.add(1, name);
+      dietUtil.addToPref(1, name);
     }
   }
-  dp.set();
+  dietUtil.setDietPref();
 
   if (!stenchJellyConsumed) {
     throw "We completed our entire diet but failed to get a stench jelly charge";
   }
-}
-
-function splitDietEntry(entry: dietEntry<void>): Array<dietEntry<void>> {
-  const entries = new Array<dietEntry<void>>();
-  for (let i = 0; i < entry.quantity; i++) {
-    entries.push(
-      new dietEntry(entry.name, 1, entry.fullness, entry.drunkenness, entry.spleen, entry.action)
-    );
-  }
-  return entries;
-}
-
-function combineDietEntries(left: dietEntry<void>, right: dietEntry<void>): dietEntry<void> {
-  return new dietEntry(
-    left.name,
-    left.quantity + right.quantity,
-    left.fullness,
-    left.drunkenness,
-    left.spleen,
-    left.action
-  );
 }
 
 function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<void>> {
@@ -408,49 +403,31 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   }
 
   // Schedule our diet first
-  const dp = new dietPref();
-  dp.reset();
-  const dietArray = [
-    new dietEntry(`extra-greasy slider`, slidersToEat, 5, 0, -5, (n: number, name?: string) => {
-      dp.add(n, name);
-    }),
-    new dietEntry(
-      `jar of fermented pickle juice`,
-      pickleJuiceToDrink,
-      0,
-      5,
-      -5,
-      (n: number, name?: string) => {
-        dp.add(n, name);
-      }
-    ),
-    new dietEntry(`Extrovermectin™`, extrosToChew, 0, 0, 2, (n: number, name?: string) => {
-      dp.add(n, name);
-    }),
-    new dietEntry("synthesis", synthToUse, 0, 0, 1, (n: number, name?: string) => {
-      dp.add(n, name);
-    }),
-    new dietEntry(`mojo filter`, filters, 0, 0, -1, (n: number, name?: string) => {
-      dp.add(n, name);
-    }),
-    new dietEntry(`stench jelly`, yachtzeeTurns, 0, 0, 1, (n: number, name?: string) => {
-      dp.add(n, name);
-      if (!simOnly) {
-        set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
-      }
-    }),
-    new dietEntry(`beggin' cologne`, cologne, 0, 0, 1, (n: number, name?: string) => {
-      dp.add(n, name);
-    }),
-  ];
+  const dietUtil = new dietUtils();
+  dietUtil.resetDietPref();
+  const addPref = (n: number, name?: string) => {
+    dietUtil.addToPref(n, name);
+  };
+  dietUtil.setDietEntry(`extra-greasy slider`, slidersToEat, addPref);
+  dietUtil.setDietEntry(`jar of fermented pickle juice`, pickleJuiceToDrink, addPref);
+  dietUtil.setDietEntry(`Extrovermectin™`, extrosToChew, addPref);
+  dietUtil.setDietEntry(`synthesis`, synthToUse, addPref);
+  dietUtil.setDietEntry(`mojo filter`, filters, addPref);
+  dietUtil.setDietEntry(`beggin' cologne`, cologne, addPref);
+  dietUtil.setDietEntry(`stench jelly`, yachtzeeTurns, (n: number, name?: string) => {
+    dietUtil.addToPref(n, name);
+    if (!simOnly) {
+      set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
+    }
+  });
 
   // Run diet scheduler
   print("Scheduling diet", "purple");
-  const dietSchedule = yachtzeeDietScheduler(dietArray);
+  const dietSchedule = yachtzeeDietScheduler(dietUtil.dietArray);
 
   // Now execute the diet
   for (const entry of dietSchedule) entry.action(entry.quantity, entry.name);
-  dp.set();
+  dietUtil.setDietPref();
 
   if (simOnly) return true;
 
