@@ -111,7 +111,11 @@ class DietUtils {
     if (action) this.dietArray.forEach((entry) => (entry.action = action));
   }
 
-  public setDietEntry(name: string, qty?: number, action?: (n: number, name?: string) => void) {
+  public setDietEntry(
+    name: string,
+    qty?: number,
+    action?: (n: number, name?: string) => void
+  ): void {
     this.dietArray.forEach((entry) => {
       if (entry.name === name) {
         if (qty) entry.quantity = qty;
@@ -120,19 +124,19 @@ class DietUtils {
     });
   }
 
-  public resetDietPref() {
+  public resetDietPref(): void {
     this.originalPref = "";
     this.pref = "";
   }
 
-  public addToPref(n: number, name?: string) {
+  public addToPref(n: number, name?: string): void {
     if (!name) throw "Diet pref must have a name";
     for (let i = 0; i < n; i++) {
       this.pref = this.pref.concat(name ?? "").concat(",");
     }
   }
 
-  public setDietPref() {
+  public setDietPref(): void {
     set("_garboYachtzeeChainDiet", this.originalPref.concat(this.pref));
   }
 }
@@ -494,7 +498,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   return true;
 }
 
-function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number) {
+function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
   const effectiveYachtzeeTurns = Math.max(
     Math.min(yachtzeeTurns - haveEffect(potion.effect()), potion.effectDuration()),
     0
@@ -512,7 +516,7 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number) {
   return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
 }
 
-function yachtzeePotionSetup(yachtzeeTurns: number) {
+function yachtzeePotionSetup(yachtzeeTurns: number): void {
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
     const doublingPotions = farmingPotions
       .filter(
@@ -526,15 +530,18 @@ function yachtzeePotionSetup(yachtzeeTurns: number) {
           yachtzeePotionProfits(right.doubleDuration(), yachtzeeTurns) -
           yachtzeePotionProfits(left.doubleDuration(), yachtzeeTurns)
       );
-    const bestPotion = doublingPotions.length > 0 ? doublingPotions[0] : undefined;
+    const bestPotion = doublingPotions.length > 0 ? doublingPotions[0].doubleDuration() : undefined;
     if (bestPotion) {
+      const profit = yachtzeePotionProfits(bestPotion, yachtzeeTurns);
       print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
-      cliExecute("pillkeeper extend");
-      acquire(
-        1,
-        bestPotion.potion,
-        yachtzeePotionProfits(bestPotion, yachtzeeTurns) + bestPotion.price(true)
+      print(
+        `Expected to profit ${profit} meat from using 1 ${
+          bestPotion.potion
+        } @ price ${bestPotion.price(true)} meat}`,
+        "blue"
       );
+      cliExecute("pillkeeper extend");
+      acquire(1, bestPotion.potion, profit + bestPotion.price(true));
       bestPotion.use(1);
     }
   }
@@ -562,8 +569,14 @@ function yachtzeePotionSetup(yachtzeeTurns: number) {
     if (haveEffect(effect) >= yachtzeeTurns) continue;
     if (!excludedEffects.has(effect)) {
       while (haveEffect(effect) < yachtzeeTurns) {
-        const value = yachtzeePotionProfits(potion, yachtzeeTurns);
-        if (value < 0) break;
+        const profit = yachtzeePotionProfits(potion, yachtzeeTurns);
+        if (profit < 0) break;
+        print(
+          `Expected to profit ${profit} meat from using 1 ${potion.potion} @ price ${potion.price(
+            true
+          )} meat}`,
+          "blue"
+        );
         acquire(
           1,
           potion.potion,
