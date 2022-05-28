@@ -5,11 +5,10 @@ import {
   cliExecute,
   drink,
   eat,
-  effectModifier,
+  Effect,
   fullnessLimit,
   haveEffect,
   inebrietyLimit,
-  Item,
   maximize,
   myClosetMeat,
   myFullness,
@@ -30,13 +29,14 @@ import {
   $effect,
   $familiar,
   $item,
-  $items,
   $location,
   $skill,
   clamp,
   get,
+  getActiveEffects,
   getActiveSongs,
   have,
+  isSong,
   Mood,
   property,
   set,
@@ -48,11 +48,11 @@ import { estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
 import { globalOptions, safeRestore } from "./lib";
 import { meatMood } from "./mood";
-import { potionSetup } from "./potions";
+import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
 
-class dietEntry<T> {
+class DietEntry<T> {
   name: string;
   quantity: number;
   fullness: number;
@@ -77,8 +77,8 @@ class dietEntry<T> {
   }
 }
 
-class dietUtils {
-  dietArray: Array<dietEntry<void>>;
+class DietUtils {
+  dietArray: Array<DietEntry<void>>;
   pref: string;
   originalPref: string;
 
@@ -88,23 +88,23 @@ class dietUtils {
       : property.getString("_garboYachtzeeChainDiet");
     this.pref = "";
     this.dietArray = [
-      new dietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
+      new DietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
         eat(n, $item`extra-greasy slider`);
       }),
-      new dietEntry(`jar of fermented pickle juice`, 0, 0, 5, -5, (n: number) => {
+      new DietEntry(`jar of fermented pickle juice`, 0, 0, 5, -5, (n: number) => {
         castOde(5 * n);
         drink(n, $item`jar of fermented pickle juice`);
       }),
-      new dietEntry(`Extrovermectin™`, 0, 0, 0, 2, (n: number) => {
+      new DietEntry(`Extrovermectin™`, 0, 0, 0, 2, (n: number) => {
         chew(n, $item`Extrovermectin™`);
       }),
-      new dietEntry("synthesis", 0, 0, 0, 1, (n: number) => {
+      new DietEntry("synthesis", 0, 0, 0, 1, (n: number) => {
         synthesize(n, $effect`Synthesis: Greed`);
       }),
-      new dietEntry(`mojo filter`, 0, 0, 0, -1, (n: number) => {
+      new DietEntry(`mojo filter`, 0, 0, 0, -1, (n: number) => {
         use(n, $item`mojo filter`);
       }),
-      new dietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
+      new DietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
         chew(n, $item`beggin' cologne`);
       }),
     ];
@@ -137,18 +137,18 @@ class dietUtils {
   }
 }
 
-function splitDietEntry(entry: dietEntry<void>): Array<dietEntry<void>> {
-  const entries = new Array<dietEntry<void>>();
+function splitDietEntry(entry: DietEntry<void>): Array<DietEntry<void>> {
+  const entries = new Array<DietEntry<void>>();
   for (let i = 0; i < entry.quantity; i++) {
     entries.push(
-      new dietEntry(entry.name, 1, entry.fullness, entry.drunkenness, entry.spleen, entry.action)
+      new DietEntry(entry.name, 1, entry.fullness, entry.drunkenness, entry.spleen, entry.action)
     );
   }
   return entries;
 }
 
-function combineDietEntries(left: dietEntry<void>, right: dietEntry<void>): dietEntry<void> {
-  return new dietEntry(
+function combineDietEntries(left: DietEntry<void>, right: DietEntry<void>): DietEntry<void> {
+  return new DietEntry(
     left.name,
     left.quantity + right.quantity,
     left.fullness,
@@ -185,7 +185,7 @@ function castOde(turns: number): boolean {
 function executeNextDietStep(): void {
   if (property.getBoolean("stenchJellyUsed")) return;
   print("Executing next diet steps", "blue");
-  const dietUtil = new dietUtils();
+  const dietUtil = new DietUtils();
   dietUtil.resetDietPref();
 
   const dietString = property.getString("_garboYachtzeeChainDiet").split(",");
@@ -221,10 +221,10 @@ function executeNextDietStep(): void {
   }
 }
 
-function yachtzeeDietScheduler(menu: Array<dietEntry<void>>): Array<dietEntry<void>> {
-  const dietSchedule = new Array<dietEntry<void>>();
-  const remainingMenu = new Array<dietEntry<void>>();
-  const jellies = new Array<dietEntry<void>>();
+function yachtzeeDietScheduler(menu: Array<DietEntry<void>>): Array<DietEntry<void>> {
+  const dietSchedule = new Array<DietEntry<void>>();
+  const remainingMenu = new Array<DietEntry<void>>();
+  const jellies = new Array<DietEntry<void>>();
   // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
   // We also assume the only non-zero fullness/drunkenness entries are the sliders and pickle juices
   // This makes it trivial to plan the diet
@@ -407,7 +407,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const addPref = (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
   };
-  const dietUtil = new dietUtils(addPref);
+  const dietUtil = new DietUtils(addPref);
   dietUtil.resetDietPref();
   dietUtil.setDietEntry(`extra-greasy slider`, slidersToEat);
   dietUtil.setDietEntry(`jar of fermented pickle juice`, pickleJuiceToDrink);
@@ -491,58 +491,85 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     else break;
   }
 
-  if (!get(`_freePillKeeperUsed`) && haveEffect($effect`Frosty`) < yachtzeeTurns) {
-    acquire(1, $item`frost flower`, 200000);
-    if (have($item`frost flower`)) {
+  return true;
+}
+
+function yachtzeePotionValue(potion: Potion, yachtzeeTurns: number) {
+  const effectiveYachtzeeTurns = Math.max(yachtzeeTurns - haveEffect(potion.effect()), 0);
+  const embezzlerTurns = Math.max(potion.effectDuration() - effectiveYachtzeeTurns, 0);
+  const embezzlerValue = embezzlerTurns > 0 ? potion.gross(embezzlerTurns) : 0;
+  const yachtzeeValue =
+    (effectiveYachtzeeTurns * 2000 * (potion.meatDrop() + 2.5 * potion.familiarWeight())) / 100;
+
+  return yachtzeeValue + embezzlerValue - potion.price(true);
+}
+
+function yachtzeePotionSetup(yachtzeeTurns: number) {
+  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
+    const doublingPotions = farmingPotions
+      .filter(
+        (potion) =>
+          haveEffect(potion.effect()) < yachtzeeTurns &&
+          yachtzeePotionValue(potion.doubleDuration(), yachtzeeTurns) > 0
+      )
+      .sort(
+        (left, right) =>
+          yachtzeePotionValue(right.doubleDuration(), yachtzeeTurns) -
+          yachtzeePotionValue(left.doubleDuration(), yachtzeeTurns)
+      );
+    const bestPotion = doublingPotions.length > 0 ? doublingPotions[0] : undefined;
+    if (bestPotion) {
+      print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
       cliExecute("pillkeeper extend");
-      use(1, $item`frost flower`);
+      acquire(1, bestPotion.potion, yachtzeePotionValue(bestPotion, yachtzeeTurns));
+      bestPotion.use(1);
     }
   }
 
-  return true;
-}
+  const excludedEffects = new Set<Effect>();
+  for (const effect of getActiveEffects()) {
+    for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+      excludedEffects.add(excluded);
+    }
+  }
 
-function getMeatBuff(it: Item, duration: number): boolean {
-  const eff = effectModifier(it, "effect");
-  if (haveEffect(eff) >= duration) return true;
-
-  const effectDuration = numericModifier(it, "effect duration");
-  const familiarWeight = numericModifier(eff, "Familiar Weight");
-  const meatDrop = numericModifier(eff, "Meat Drop") + 2.5 * familiarWeight;
-  const maxPrice = Math.round((meatDrop / 100) * Math.min(1.5 * duration, effectDuration) * 2000);
-  const currentPrice = retrievePrice(it);
-
-  if (currentPrice <= maxPrice) {
-    print(
-      `Actual cost of ${it} (${currentPrice}) is cheaper than effective cost (${maxPrice})`,
-      "green"
+  const testPotions = farmingPotions
+    .filter(
+      (potion) =>
+        haveEffect(potion.effect()) < yachtzeeTurns &&
+        yachtzeePotionValue(potion, yachtzeeTurns) > 0
+    )
+    .sort(
+      (left, right) =>
+        yachtzeePotionValue(right, yachtzeeTurns) - yachtzeePotionValue(left, yachtzeeTurns)
     );
-  } else {
-    print(
-      `Actual cost of ${it} (${currentPrice}) is more expensive than effective cost (${maxPrice})`,
-      "orange"
-    );
-    return false;
+
+  for (const potion of testPotions) {
+    const effect = potion.effect();
+    if (haveEffect(effect) >= yachtzeeTurns) continue;
+    if (!excludedEffects.has(effect)) {
+      while (haveEffect(effect) < yachtzeeTurns) {
+        const value = yachtzeePotionValue(potion, yachtzeeTurns);
+        if (value < 0) break;
+        acquire(1, potion.potion, value, false);
+        if (!have(potion.potion)) break;
+        if (isSong(effect) && !have(effect)) {
+          for (const song of getActiveSongs()) {
+            const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
+            if (!slot || slot.includes(effect)) {
+              cliExecute(`shrug ${song}`);
+            }
+          }
+        }
+        if (!potion.use(1)) break;
+      }
+      if (!haveEffect(effect)) continue;
+      for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+        excludedEffects.add(excluded);
+      }
+    }
   }
 
-  while (haveEffect(eff) < duration) {
-    acquire(1, it, maxPrice);
-    if (!have(it)) return false;
-    use(1, it);
-  }
-
-  return true;
-}
-
-function yachtzeeChainBuffs(): void {
-  const yachtzeeTurns = Math.min(
-    property.getNumber("_stenchJellyChargeTarget"),
-    haveEffect($effect`Fishy`)
-  );
-
-  for (const it of $items`Mick's IcyVapoHotness Inhaler, Smoldering Clover™ candle, Meat-inflating powder, Polka Pop, Daily Affirmation: Always be Collecting, cuppa Chari tea, airborne mutagen, Gene Tonic: Constellation, patent avarice tonic, blue grass, begpwnia, resolution: be wealthier, pink-frosted astral cupcake, salt wages, blackberry polite, Gene Tonic: Humanoid, shark cartilage, cranberry cordial, resolution: be luckier, baggie of powdered sugar, Friendliness Beverage, disintegrating spiky collar, Daily Affirmation: Work For Hours a Week, Stephen's secret formula, irradiated pet snacks, Gene Tonic: Fish, Gene Tonic: Construct, resolution: be kinder, sugar bunny, green candy heart, half-orchid, gingerbread spice latte`) {
-    getMeatBuff(it, yachtzeeTurns);
-  }
   if (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`)) {
     use(1, $item`Platinum Yendorian Express Card`);
   }
@@ -565,7 +592,7 @@ function _yachtzeeChain(): void {
   // have high demand for jellies using less optimal configurations, leading to decreased profits for everyone
 
   meatMood(false).execute(estimatedTurns());
-  potionSetup(false);
+  potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   useFamiliar($familiar`Urchin Urchin`);
   maximize("meat", false);
 
@@ -574,12 +601,12 @@ function _yachtzeeChain(): void {
     cliExecute(`closet take ${myClosetMeat()} meat`);
     return;
   }
-  yachtzeeChainBuffs();
+  let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
+  let fishyTurns = haveEffect($effect`Fishy`);
+  yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   cliExecute(`closet take ${myClosetMeat()} meat`);
   safeRestore();
 
-  let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
-  let fishyTurns = haveEffect($effect`Fishy`);
   let plantCrookweed = true;
   set("choiceAdventure918", 2);
   while (Math.min(jellyTurns, fishyTurns) > 0) {
