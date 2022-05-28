@@ -82,7 +82,7 @@ class dietUtils {
   pref: string;
   originalPref: string;
 
-  constructor() {
+  constructor(action?: (n: number, name?: string) => void) {
     this.originalPref = !get("_garboYachtzeeChainDiet")
       ? ""
       : property.getString("_garboYachtzeeChainDiet");
@@ -108,6 +108,7 @@ class dietUtils {
         chew(n, $item`beggin' cologne`);
       }),
     ];
+    if (action) this.dietArray.forEach((entry) => (entry.action = action));
   }
 
   public setDietEntry(name: string, qty?: number, action?: (n: number, name?: string) => void) {
@@ -403,17 +404,17 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   }
 
   // Schedule our diet first
-  const dietUtil = new dietUtils();
-  dietUtil.resetDietPref();
   const addPref = (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
   };
-  dietUtil.setDietEntry(`extra-greasy slider`, slidersToEat, addPref);
-  dietUtil.setDietEntry(`jar of fermented pickle juice`, pickleJuiceToDrink, addPref);
-  dietUtil.setDietEntry(`Extrovermectin™`, extrosToChew, addPref);
-  dietUtil.setDietEntry(`synthesis`, synthToUse, addPref);
-  dietUtil.setDietEntry(`mojo filter`, filters, addPref);
-  dietUtil.setDietEntry(`beggin' cologne`, cologne, addPref);
+  const dietUtil = new dietUtils(addPref);
+  dietUtil.resetDietPref();
+  dietUtil.setDietEntry(`extra-greasy slider`, slidersToEat);
+  dietUtil.setDietEntry(`jar of fermented pickle juice`, pickleJuiceToDrink);
+  dietUtil.setDietEntry(`Extrovermectin™`, extrosToChew);
+  dietUtil.setDietEntry(`synthesis`, synthToUse);
+  dietUtil.setDietEntry(`mojo filter`, filters);
+  dietUtil.setDietEntry(`beggin' cologne`, cologne);
   dietUtil.setDietEntry(`stench jelly`, yachtzeeTurns, (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
     if (!simOnly) {
