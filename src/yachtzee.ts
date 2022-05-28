@@ -44,9 +44,9 @@ import {
 import { acquire } from "./acquire";
 import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
-import { estimatedTurns } from "./embezzler";
+import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
-import { globalOptions, safeRestore } from "./lib";
+import { baseMeat, globalOptions, safeRestore, turnsToNC } from "./lib";
 import { meatMood } from "./mood";
 import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
 import { garboValue } from "./session";
@@ -499,12 +499,17 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number) {
     Math.min(yachtzeeTurns - haveEffect(potion.effect()), potion.effectDuration()),
     0
   );
-  const embezzlerTurns = Math.max(potion.effectDuration() - effectiveYachtzeeTurns, 0);
+  const embezzlerTurns = Math.min(
+    embezzlerCount(),
+    Math.max(potion.effectDuration() - effectiveYachtzeeTurns, 0)
+  );
+  const barfTurns = Math.max(potion.effectDuration() - effectiveYachtzeeTurns - embezzlerTurns, 0);
   const embezzlerValue = embezzlerTurns > 0 ? potion.gross(embezzlerTurns) : 0;
   const yachtzeeValue =
     (effectiveYachtzeeTurns * 2000 * (potion.meatDrop() + 2.5 * potion.familiarWeight())) / 100;
+  const barfValue = (barfTurns * baseMeat * turnsToNC) / (turnsToNC + 1);
 
-  return yachtzeeValue + embezzlerValue - potion.price(true);
+  return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
 }
 
 function yachtzeePotionSetup(yachtzeeTurns: number) {
