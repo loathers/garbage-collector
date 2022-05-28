@@ -3,6 +3,7 @@ import {
   booleanModifier,
   buy,
   cliExecute,
+  currentRound,
   eat,
   getCampground,
   getClanName,
@@ -21,9 +22,11 @@ import {
   putStash,
   retrieveItem,
   runChoice,
+  runCombat,
   setAutoAttack,
   toInt,
   totalTurnsPlayed,
+  toUrl,
   use,
   useFamiliar,
   visitUrl,
@@ -60,7 +63,7 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
-import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
+import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
   checkGithubVersion,
   embezzlerLog,
@@ -73,6 +76,7 @@ import {
   questStep,
   safeRestore,
   setChoice,
+  steveAdventures,
   userConfirmDialog,
 } from "./lib";
 import { meatMood } from "./mood";
@@ -90,6 +94,7 @@ import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
+import { canAdv } from "canadv.ash";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -112,14 +117,42 @@ function ensureBarfAccess() {
 
 function barfTurn() {
   const startTurns = totalTurnsPlayed();
-  if (have($effect`Beaten Up`)) {
-    throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
-  }
+
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
 
   tryFillLatte();
+
+  const steveRoom = get("nextSpookyravenStephenRoom");
+  const ghostLocation = get("ghostLocation");
+  if (
+    totalTurnsPlayed() % 37 === 0 &&
+    totalTurnsPlayed() !== get("lastLightsOutTurn") &&
+    steveRoom &&
+    steveRoom !== ghostLocation &&
+    canAdv(steveRoom)
+  ) {
+    const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
+    if (fightingSteve) {
+      useFamiliar(meatFamiliar());
+      meatOutfit(true);
+    }
+    const plan = steveAdventures.get(steveRoom);
+    if (plan) {
+      withMacro(
+        Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abort(),
+        () => {
+          visitUrl(toUrl(steveRoom));
+          for (const choiceValue of plan) {
+            runChoice(choiceValue);
+          }
+          if (fightingSteve || currentRound()) runCombat();
+        },
+        true
+      );
+    }
+  }
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
 
@@ -127,7 +160,7 @@ function barfTurn() {
   meatMood().execute(estimatedTurns());
 
   safeRestore(); // get enough mp to use summer siesta and enough hp to not get our ass kicked
-  const ghostLocation = get("ghostLocation");
+
   // b. check for wanderers, and do them
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
     meatOutfit(true);
@@ -240,7 +273,9 @@ function barfTurn() {
     }
   }
 
-  if (myAdventures() === 1) {
+  if (myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
+    deliverThesisIfAble();
+
     if (
       have($item`Kramco Sausage-o-Matic™`) &&
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
@@ -393,7 +428,20 @@ export function main(argString = ""): void {
     ensureBarfAccess();
   }
   if (globalOptions.simulateDiet) {
+    propertyManager.set({
+      logPreferenceChange: true,
+      autoSatisfyWithMall: true,
+      autoSatisfyWithNPCs: true,
+      autoSatisfyWithCoinmasters: true,
+      autoSatisfyWithStash: false,
+      maximizerFoldables: true,
+      autoTuxedo: true,
+      autoPinkyRing: true,
+      autoGarish: true,
+      valueOfInventory: 2,
+    });
     runDiet();
+    propertyManager.resetAll();
     return;
   }
 
