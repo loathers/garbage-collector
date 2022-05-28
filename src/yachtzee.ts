@@ -509,6 +509,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number) {
     const doublingPotions = farmingPotions
       .filter(
         (potion) =>
+          potion.canDouble &&
           haveEffect(potion.effect()) < yachtzeeTurns &&
           yachtzeePotionValue(potion.doubleDuration(), yachtzeeTurns) > 0
       )
