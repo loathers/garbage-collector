@@ -169,6 +169,7 @@ function initializeCrates(): void {
         forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter((item) =>
           have(item)
         ),
+        preventEquip: $items`carnivorous potted plant`,
       })
         .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
         .maximize();
