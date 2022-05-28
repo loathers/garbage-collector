@@ -388,6 +388,14 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const slidersExcessCost = slidersPrice > 70000 ? slidersPrice - 70000 : 0;
   const pickleJuiceExcessCost = pickleJuicePrice > 60000 ? pickleJuicePrice - 60000 : 0;
 
+  // Yachtzee has higher base meat than KGEs
+  // thus some potions which aren't profitable for KGEs are profitable for yachtzees
+  // Prior to entering this function, we should already have triggered potionSetup()
+  // This means that any further buffs are purely profitable only for yachtzees
+  // If running simOnly, there's a possibility that potionSetup() hasn't been run
+  // However, this means that higherBaseMeatProfits would try to account for the lower earlyMeatDropsEstimate
+  const higherBaseMeatProfits = yachtzeePotionSetup(yachtzeeTurns, true);
+
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
   // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3.5 * VOA
   const extroValuePerSpleen = 7 * VOA - extroPrice / 2;
@@ -396,7 +404,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     (jelliesBulkPrice +
       fishJuiceBoxPrice +
       slidersToEat * slidersExcessCost +
-      pickleJuiceToDrink * pickleJuiceExcessCost) /
+      pickleJuiceToDrink * pickleJuiceExcessCost +
+      higherBaseMeatProfits) /
       yachtzeeTurns;
 
   print(`Early Meat Drop Modifier: ${earlyMeatDropsEstimate}%`);
@@ -510,13 +519,14 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
   const barfTurns = Math.max(potion.effectDuration() - effectiveYachtzeeTurns - embezzlerTurns, 0);
   const embezzlerValue = embezzlerTurns > 0 ? potion.gross(embezzlerTurns) : 0;
   const yachtzeeValue =
-    (effectiveYachtzeeTurns * 2000 * (potion.meatDrop() + 2.5 * potion.familiarWeight())) / 100;
+    (effectiveYachtzeeTurns * 2000 * (potion.meatDrop() + 2.5 * potion.familiarWeight())) / 100; // Every 1lbs of lep ~ 2.5% meat drop
   const barfValue = (barfTurns * baseMeat * turnsToNC) / (turnsToNC + 1);
 
   return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
 }
 
-function yachtzeePotionSetup(yachtzeeTurns: number): void {
+function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
+  let totalProfits = 0;
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
     const doublingPotions = farmingPotions
       .filter(
@@ -533,16 +543,18 @@ function yachtzeePotionSetup(yachtzeeTurns: number): void {
     const bestPotion = doublingPotions.length > 0 ? doublingPotions[0].doubleDuration() : undefined;
     if (bestPotion) {
       const profit = yachtzeePotionProfits(bestPotion, yachtzeeTurns);
+      const price = bestPotion.price(true);
+      totalProfits += profit;
       print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
       print(
-        `Expected to profit ${profit} meat from using 1 ${
-          bestPotion.potion
-        } @ price ${bestPotion.price(true)} meat}`,
+        `Expected to profit ${profit} meat from using 1 ${bestPotion.potion} @ price ${price} meat}`,
         "blue"
       );
-      cliExecute("pillkeeper extend");
-      acquire(1, bestPotion.potion, profit + bestPotion.price(true));
-      bestPotion.use(1);
+      if (!simOnly) {
+        cliExecute("pillkeeper extend");
+        acquire(1, bestPotion.potion, profit + price);
+        bestPotion.use(1);
+      }
     }
   }
 
@@ -566,43 +578,44 @@ function yachtzeePotionSetup(yachtzeeTurns: number): void {
 
   for (const potion of testPotions) {
     const effect = potion.effect();
+    const price = potion.price(true);
     if (haveEffect(effect) >= yachtzeeTurns) continue;
     if (!excludedEffects.has(effect)) {
       while (haveEffect(effect) < yachtzeeTurns) {
         const profit = yachtzeePotionProfits(potion, yachtzeeTurns);
         if (profit < 0) break;
+        totalProfits += profit;
         print(
-          `Expected to profit ${profit} meat from using 1 ${potion.potion} @ price ${potion.price(
-            true
-          )} meat}`,
+          `Expected to profit ${profit} meat from using 1 ${potion.potion} @ price ${price} meat}`,
           "blue"
         );
-        acquire(
-          1,
-          potion.potion,
-          yachtzeePotionProfits(potion, yachtzeeTurns) + potion.price(true)
-        );
-        if (!have(potion.potion)) break;
-        if (isSong(effect) && !have(effect)) {
-          for (const song of getActiveSongs()) {
-            const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
-            if (!slot || slot.includes(effect)) {
-              cliExecute(`shrug ${song}`);
+        if (!simOnly) {
+          acquire(1, potion.potion, profit + price);
+          if (!have(potion.potion)) break;
+          if (isSong(effect) && !have(effect)) {
+            for (const song of getActiveSongs()) {
+              const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
+              if (!slot || slot.includes(effect)) {
+                cliExecute(`shrug ${song}`);
+              }
             }
           }
-        }
-        if (!potion.use(1)) break;
+          if (!potion.use(1)) break;
+        } else break;
       }
-      if (!haveEffect(effect)) continue;
-      for (const excluded of mutuallyExclusive.get(effect) ?? []) {
-        excludedEffects.add(excluded);
+      if (haveEffect(effect) || simOnly) {
+        for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+          excludedEffects.add(excluded);
+        }
       }
     }
   }
 
-  if (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`)) {
+  if (!simOnly && have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`)) {
     use(1, $item`Platinum Yendorian Express Card`);
   }
+
+  return totalProfits;
 }
 
 function _yachtzeeChain(): void {
