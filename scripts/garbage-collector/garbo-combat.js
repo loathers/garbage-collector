@@ -21287,7 +21287,7 @@ function ponderPrediction(location) {
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4564);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -21411,11 +21411,12 @@ function initializeCrates() {
       useFamiliar((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints4 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints4)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : freeFightFamiliar());
       (_run$constraints$prep2 = (_run$constraints5 = run.constraints).preparation) === null || _run$constraints$prep2 === void 0 ? void 0 : _run$constraints$prep2.call(_run$constraints5);
       new Requirement(["100 Monster Level"], {
-        forceEquip: $items(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["latte lovers member's mug, Fourth of May Cosplay Saber"]))).filter(item => have(item))
+        forceEquip: $items(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["latte lovers member's mug, Fourth of May Cosplay Saber"]))).filter(item => have(item)),
+        preventEquip: $items(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["carnivorous potted plant"])))
       }).merge((_run$constraints$equi3 = (_run$constraints$equi4 = (_run$constraints6 = run.constraints).equipmentRequirements) === null || _run$constraints$equi4 === void 0 ? void 0 : _run$constraints$equi4.call(_run$constraints6)) !== null && _run$constraints$equi3 !== void 0 ? _run$constraints$equi3 : new Requirement([], {})).maximize();
-      adventureMacro($location(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Noob Cave"]))), Macro.if_($monster(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["crate"]))), macro).if_($monsters(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["giant rubber spider, time-spinner prank"]))), Macro.kill()).ifHolidayWanderer(run.macro).abort());
-      visitUrl("desc_effect.php?whicheffect=".concat($effect(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["On the Trail"]))).descid));
-    } else if (crateStrategy() === "Saber" && (get("_saberForceMonster") !== $monster(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["crate"]))) || get("_saberForceMonsterCount") === 0) && get("_saberForceUses") < 5) {
+      adventureMacro($location(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Noob Cave"]))), Macro.if_($monster(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["crate"]))), macro).if_($monsters(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["giant rubber spider, time-spinner prank"]))), Macro.kill()).ifHolidayWanderer(run.macro).abort());
+      visitUrl("desc_effect.php?whicheffect=".concat($effect(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["On the Trail"]))).descid));
+    } else if (crateStrategy() === "Saber" && (get("_saberForceMonster") !== $monster(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["crate"]))) || get("_saberForceMonsterCount") === 0) && get("_saberForceUses") < 5) {
       saberCrateIfSafe();
     } else break; // we can break the loop if there's nothing to do
 
@@ -21432,22 +21433,22 @@ function initializeDireWarren() {
 
     return [source, toMonster(monster)];
   }));
-  if (banishedMonsters.get("ice house") === $monster(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["fluffy bunny"])))) return;
-  var options = $items(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"])));
+  if (banishedMonsters.get("ice house") === $monster(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["fluffy bunny"])))) return;
+  var options = $items(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"])));
 
-  if (options.some(option => banishedMonsters.get(option.name) === $monster(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["fluffy bunny"]))))) {
+  if (options.some(option => banishedMonsters.get(option.name) === $monster(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["fluffy bunny"]))))) {
     return;
   }
 
-  if (!have($item(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
-    options.push.apply(options, _toConsumableArray($items(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
+  if (!have($item(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
+    options.push.apply(options, _toConsumableArray($items(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
   }
 
   var banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
   acquire(1, banish, 50000, true);
 
   do {
-    adventureMacro($location(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
+    adventureMacro($location(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
   } while ("fluffy bunny" !== get("lastEncounter"));
 }
 
@@ -22033,7 +22034,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("fcda35d8cda7c35cba1aba7fdcbbbe599838387d" === mainSha) {
+    if ("29042594bfe4b51c8cec51a0615c261fafeaf5ba" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
