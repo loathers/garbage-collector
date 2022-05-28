@@ -494,8 +494,11 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   return true;
 }
 
-function yachtzeePotionValue(potion: Potion, yachtzeeTurns: number) {
-  const effectiveYachtzeeTurns = Math.max(yachtzeeTurns - haveEffect(potion.effect()), 0);
+function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number) {
+  const effectiveYachtzeeTurns = Math.max(
+    Math.min(yachtzeeTurns - haveEffect(potion.effect()), potion.effectDuration()),
+    0
+  );
   const embezzlerTurns = Math.max(potion.effectDuration() - effectiveYachtzeeTurns, 0);
   const embezzlerValue = embezzlerTurns > 0 ? potion.gross(embezzlerTurns) : 0;
   const yachtzeeValue =
@@ -511,18 +514,22 @@ function yachtzeePotionSetup(yachtzeeTurns: number) {
         (potion) =>
           potion.canDouble &&
           haveEffect(potion.effect()) < yachtzeeTurns &&
-          yachtzeePotionValue(potion.doubleDuration(), yachtzeeTurns) > 0
+          yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0
       )
       .sort(
         (left, right) =>
-          yachtzeePotionValue(right.doubleDuration(), yachtzeeTurns) -
-          yachtzeePotionValue(left.doubleDuration(), yachtzeeTurns)
+          yachtzeePotionProfits(right.doubleDuration(), yachtzeeTurns) -
+          yachtzeePotionProfits(left.doubleDuration(), yachtzeeTurns)
       );
     const bestPotion = doublingPotions.length > 0 ? doublingPotions[0] : undefined;
     if (bestPotion) {
       print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
       cliExecute("pillkeeper extend");
-      acquire(1, bestPotion.potion, yachtzeePotionValue(bestPotion, yachtzeeTurns));
+      acquire(
+        1,
+        bestPotion.potion,
+        yachtzeePotionProfits(bestPotion, yachtzeeTurns) + bestPotion.price(true)
+      );
       bestPotion.use(1);
     }
   }
@@ -538,11 +545,11 @@ function yachtzeePotionSetup(yachtzeeTurns: number) {
     .filter(
       (potion) =>
         haveEffect(potion.effect()) < yachtzeeTurns &&
-        yachtzeePotionValue(potion, yachtzeeTurns) > 0
+        yachtzeePotionProfits(potion, yachtzeeTurns) > 0
     )
     .sort(
       (left, right) =>
-        yachtzeePotionValue(right, yachtzeeTurns) - yachtzeePotionValue(left, yachtzeeTurns)
+        yachtzeePotionProfits(right, yachtzeeTurns) - yachtzeePotionProfits(left, yachtzeeTurns)
     );
 
   for (const potion of testPotions) {
@@ -550,9 +557,13 @@ function yachtzeePotionSetup(yachtzeeTurns: number) {
     if (haveEffect(effect) >= yachtzeeTurns) continue;
     if (!excludedEffects.has(effect)) {
       while (haveEffect(effect) < yachtzeeTurns) {
-        const value = yachtzeePotionValue(potion, yachtzeeTurns);
+        const value = yachtzeePotionProfits(potion, yachtzeeTurns);
         if (value < 0) break;
-        acquire(1, potion.potion, value, false);
+        acquire(
+          1,
+          potion.potion,
+          yachtzeePotionProfits(potion, yachtzeeTurns) + potion.price(true)
+        );
         if (!have(potion.potion)) break;
         if (isSong(effect) && !have(effect)) {
           for (const song of getActiveSongs()) {
