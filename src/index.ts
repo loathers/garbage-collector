@@ -387,7 +387,11 @@ export function main(argString = ""): void {
     }
   }
 
-  if (globalOptions.noDiet || get("_garboYachtzeeChainCompleted") || !yachtzeeChainDiet(true)) {
+  if (
+    globalOptions.noDiet ||
+    get("_garboYachtzeeChainCompleted") ||
+    (!get("_garboYachtzeeChainDietPlanned") && !yachtzeeChainDiet(true))
+  ) {
     globalOptions.yachtzeeChain = false;
   }
 
