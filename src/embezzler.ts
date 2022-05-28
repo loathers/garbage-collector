@@ -889,7 +889,7 @@ export function estimatedTurns(): number {
   const inebrietyAdventures = (inebrietyLimit() - myInebriety()) * 7;
   const adventuresAfterChaining =
     globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted")
-      ? fullnessAdventures + inebrietyAdventures
+      ? Math.max(fullnessAdventures + inebrietyAdventures - 30, 0)
       : 0;
 
   let turns;
