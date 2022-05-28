@@ -124,13 +124,14 @@ function castOde(turns: number): boolean {
   cliExecute(`shrug phat loot`);
 
   while (haveEffect($effect`Ode to Booze`) < turns) {
-    if (!useSkill($skill`The Ode to Booze`)) throw "Failed to cast Ode to Booze";
+    useSkill($skill`The Ode to Booze`);
   }
   return true;
 }
 
 function executeNextDietStep(): void {
-  if (get("stenchJellyUsed")) return;
+  if (property.getBoolean("stenchJellyUsed")) return;
+  print("Executing next diet steps", "blue");
 
   const sliderEntry = new dietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
     eat(n, $item`extra-greasy slider`);
@@ -156,7 +157,7 @@ function executeNextDietStep(): void {
     use(n, $item`mojo filter`);
   });
   const cologneEntry = new dietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
-    use(n, $item`beggin' cologne`);
+    chew(n, $item`beggin' cologne`);
   });
   const dietSchedule = [
     sliderEntry,
@@ -174,8 +175,8 @@ function executeNextDietStep(): void {
   let stenchJellyConsumed = false;
   for (const name of dietString) {
     if (name.length === 0) continue;
-    else if (name === "stench jelly") {
-      use(1, $item`stench jelly`);
+    else if (!stenchJellyConsumed && name === "stench jelly") {
+      chew(1, $item`stench jelly`);
       set("stenchJellyUsed", true);
       stenchJellyConsumed = true;
       set("_garboYachtzeeChainDiet", "");
@@ -605,6 +606,7 @@ function _yachtzeeChain(): void {
   set("choiceAdventure918", 2);
   while (Math.min(jellyTurns, fishyTurns) > 0) {
     executeNextDietStep();
+    if (!property.getBoolean("stenchJellyUsed")) throw "We did not use stench jellies";
     adv1($location`The Sunken Party Yacht`, -1, "");
     if (haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
