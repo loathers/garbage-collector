@@ -16,6 +16,7 @@ import {
   myLevel,
   myMeat,
   mySpleenUse,
+  myTurncount,
   numericModifier,
   print,
   retrievePrice,
@@ -240,7 +241,7 @@ function yachtzeeDietScheduler(menu: Array<DietEntry<void>>): Array<DietEntry<vo
   for (const entry of menu) {
     if (entry.spleen < 0) {
       for (const splitEntry of splitDietEntry(entry)) dietSchedule.push(splitEntry);
-    } else if (entry.name === "Stench Jelly") {
+    } else if (entry.name === "stench jelly") {
       for (const splitEntry of splitDietEntry(entry)) jellies.push(splitEntry);
     } else {
       for (const splitEntry of splitDietEntry(entry)) remainingMenu.push(splitEntry);
@@ -303,7 +304,7 @@ function yachtzeeDietScheduler(menu: Array<DietEntry<void>>): Array<DietEntry<vo
 }
 
 export function yachtzeeChainDiet(simOnly?: boolean): boolean {
-  if (get("_garboYachtzeeChainDietPlanned")) return true;
+  if (property.getBoolean("_garboYachtzeeChainDietPlanned")) return true;
 
   // Plan for Yachtzee Chain
   // 1) Fish Juice Box + Fishy Pipe for 30 turns of Fishy and Really Deep Breath (so we can ignore underwater gear)
@@ -498,11 +499,11 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   set("_garboYachtzeeChainDietPlanned", true);
 
   print("Executing buffing diet", "purple");
-  if (!get("_milkOfMagnesiumUsed")) {
+  if (!property.getBoolean("_milkOfMagnesiumUsed")) {
     acquire(1, $item`milk of magnesium`, 10000);
     use(1, $item`milk of magnesium`);
   }
-  if (!get("_distentionPillUsed") && have($item`distention pill`)) {
+  if (!property.getBoolean("_distentionPillUsed") && have($item`distention pill`)) {
     use(1, $item`distention pill`);
   }
   // Roughly worth it to use these up to the max values set (I think)
@@ -548,13 +549,14 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
 
 function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
-  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
+  if (have($item`Eight Days a Week Pill Keeper`) && !property.getBoolean("_freePillKeeperUsed")) {
     const doublingPotions = farmingPotions
       .filter(
         (potion) =>
           potion.canDouble &&
           haveEffect(potion.effect()) < yachtzeeTurns &&
-          yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0
+          yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 &&
+          potion.price(true) < myMeat()
       )
       .sort(
         (left, right) =>
@@ -585,6 +587,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
       excludedEffects.add(excluded);
     }
   }
+  excludedEffects.add($effect`Braaaaaains`); // Doesn't seem like we can wish for this
 
   const testPotions = farmingPotions
     .filter(
@@ -600,9 +603,12 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   for (const potion of testPotions) {
     const effect = potion.effect();
     const price = potion.price(true);
-    if (haveEffect(effect) >= yachtzeeTurns) continue;
+    if (haveEffect(effect) >= yachtzeeTurns || price > myMeat()) continue;
     if (!excludedEffects.has(effect)) {
+      let tries = 0;
       while (haveEffect(effect) < yachtzeeTurns) {
+        tries++;
+        print(`Considering effect ${effect} from source ${potion.potion}`, "blue");
         const profit = yachtzeePotionProfits(potion, yachtzeeTurns);
         if (profit < 0) break;
         totalProfits += profit;
@@ -621,7 +627,9 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
               }
             }
           }
-          if (!potion.use(1)) break;
+          if (!potion.use(1) || tries >= 5 * Math.ceil(yachtzeeTurns / potion.effectDuration())) {
+            break;
+          }
         } else break;
       }
       if (haveEffect(effect) || simOnly) {
@@ -646,9 +654,14 @@ function _yachtzeeChain(): void {
   // also hard require urchin urchin for now
   else if (myLevel() <= 13 || !canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
-  else if (get("fishyPipeUsed") && !have($effect`Fishy`)) return;
+  else if (property.getBoolean("fishyPipeUsed") && !have($effect`Fishy`)) return;
   // If we have used our fishy pipe and have no fishy turns left, we're probably done
-  else if (!get("sleazeAirportAlways") && !get("_sleazeAirportToday")) return;
+  else if (
+    !property.getBoolean("sleazeAirportAlways") &&
+    !property.getBoolean("_sleazeAirportToday")
+  ) {
+    return;
+  }
   // Consider only allowing yachtzee chain to be run if
   // 1) globalOptions.ascending
   // 2) haveEffect($effect`Synthesis: Greed`) - 100 > myAdventures() + (fullnessLimit() - myFullness()) * 6.5 + (inebrietyLimit() - myInebriety()) * 7.5;
@@ -660,13 +673,16 @@ function _yachtzeeChain(): void {
   useFamiliar($familiar`Urchin Urchin`);
   maximize("meat", false);
 
-  cliExecute(`closet put ${myMeat() - 3000000} meat`);
+  cliExecute(`closet put ${myMeat() - 5000000} meat`);
   if (!yachtzeeChainDiet()) {
     cliExecute(`closet take ${myClosetMeat()} meat`);
     return;
   }
   let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
-  let fishyTurns = haveEffect($effect`Fishy`);
+  let fishyTurns =
+    haveEffect($effect`Fishy`) +
+    (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`) ? 5 : 0);
+  let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   cliExecute(`closet take ${myClosetMeat()} meat`);
   safeRestore();
@@ -677,9 +693,10 @@ function _yachtzeeChain(): void {
     executeNextDietStep();
     if (!property.getBoolean("stenchJellyUsed")) throw "We did not use stench jellies";
     adv1($location`The Sunken Party Yacht`, -1, "");
-    if (haveEffect($effect`Fishy`) < fishyTurns) {
+    if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
+      turncount = myTurncount();
       set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") - 1);
       set("stenchJellyUsed", false);
     }
@@ -697,7 +714,7 @@ function _yachtzeeChain(): void {
 
 export function yachtzeeChain(): void {
   if (!globalOptions.yachtzeeChain) return;
-  else if (get("_garboYachtzeeChainCompleted")) return;
+  else if (property.getBoolean("_garboYachtzeeChainCompleted")) return;
   print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
   set("_garboYachtzeeChainCompleted", true);

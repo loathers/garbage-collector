@@ -95,7 +95,7 @@ import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } fro
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { canAdv } from "canadv.ash";
-import { yachtzeeChain, yachtzeeChainDiet } from "./yachtzee";
+import { yachtzeeChain } from "./yachtzee";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -570,18 +570,14 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        if (
-          globalOptions.noDiet ||
-          get("_garboYachtzeeChainCompleted") ||
-          (!get("_garboYachtzeeChainDietPlanned") && !yachtzeeChainDiet(true))
-        ) {
+        if (globalOptions.noDiet || property.getBoolean("_garboYachtzeeChainCompleted")) {
           print("We should not be yachtzee chaining", "red");
           globalOptions.yachtzeeChain = false;
         }
 
         if (
           !globalOptions.noDiet &&
-          (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted"))
+          (!globalOptions.yachtzeeChain || property.getBoolean("_garboYachtzeeChainCompleted"))
         ) {
           runDiet();
         }
