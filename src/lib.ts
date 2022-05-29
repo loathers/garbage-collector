@@ -28,12 +28,14 @@ import {
   runChoice,
   runCombat,
   todayToString,
+  toSlot,
   toUrl,
   use,
   useFamiliar,
   userConfirm,
   useSkill,
   visitUrl,
+  weaponHands,
 } from "kolmafia";
 import {
   $effect,
@@ -41,6 +43,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slot,
   ActionSource,
   bestLibramToCast,
   ChateauMantegna,
@@ -54,6 +57,7 @@ import {
   property,
   set,
   SongBoom,
+  sum,
 } from "libram";
 
 export const embezzlerLog: {
@@ -453,6 +457,19 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   if (timeOut) return userConfirm(msg, timeOut, defaultValue);
   return userConfirm(msg);
 }
+
+export const latteActionSourceFinderConstraints = {
+  allowedAction: (action: ActionSource): boolean => {
+    if (!have($item`latte lovers member's mug`)) return true;
+    const forceEquipsOtherThanLatte = (
+      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
+    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
+    return (
+      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+      sum(forceEquipsOtherThanLatte, weaponHands) < 2
+    );
+  },
+};
 
 export const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5;
 
