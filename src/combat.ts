@@ -5,7 +5,6 @@ import {
   Familiar,
   familiarWeight,
   getAutoAttack,
-  getCounters,
   haveEquipped,
   haveSkill,
   hippyStoneBroken,
@@ -44,6 +43,7 @@ import {
   $skill,
   $slot,
   $thralls,
+  Counter,
   get,
   getTodaysHolidayWanderers,
   have,
@@ -259,7 +259,10 @@ export class Macro extends StrictMacro {
           get("_meteorShowerUses") < 5,
         Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
       )
-      .trySkill($skill`Bowl Straight Up`)
+      .externalIf(
+        get("cosmicBowlingBallReturnCombats") < 1,
+        Macro.trySkill($skill`Bowl Straight Up`)
+      )
       .externalIf(
         have($skill`Transcendent Olfaction`) &&
           property.getString("olfactedMonster") !== "garbage tourist" &&
@@ -274,7 +277,7 @@ export class Macro extends StrictMacro {
       .externalIf(
         !get("_latteCopyUsed") &&
           (get("_latteMonster") !== $monster`garbage tourist` ||
-            getCounters("Latte Monster", 0, 30).trim() === "") &&
+            Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Offer Latte to Opponent`))
       )
