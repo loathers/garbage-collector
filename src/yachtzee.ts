@@ -40,11 +40,12 @@ import {
   Mood,
   property,
   set,
+  sum,
 } from "libram";
 import { acquire } from "./acquire";
 import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
-import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
 import { baseMeat, globalOptions, safeRestore, turnsToNC } from "./lib";
 import { meatMood } from "./mood";
@@ -106,6 +107,9 @@ class DietUtils {
       }),
       new DietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
         chew(n, $item`beggin' cologne`);
+      }),
+      new DietEntry(`stench jelly`, 0, 0, 0, 1, (n: number) => {
+        chew(n, $item`stench jelly`);
       }),
     ];
     if (action) this.dietArray.forEach((entry) => (entry.action = action));
@@ -342,7 +346,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     availableSpleen -= 1;
   }
 
-  print(`Trying to run ${yachtzeeTurns} turns of Yachtzee`, "purple");
+  if (simOnly) print(`We can potentially run ${yachtzeeTurns} for yachtzee`, "purple");
+  else print(`Trying to run ${yachtzeeTurns} turns of Yachtzee`, "purple");
 
   // Compute prices to make sure everything is worth it
   const fishJuiceBoxPrice = retrievePrice($item`fish juice box`);
@@ -411,6 +416,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   print(`Early Meat Drop Modifier: ${earlyMeatDropsEstimate}%`);
   print(`Extro value per spleen: ${extroValuePerSpleen}`);
   print(`Jelly value per spleen: ${jellyValuePerSpleen}`);
+  if (simOnly) {
+    print(
+      `Jelly value estimates are wildly off for simulations because we have not properly buffed up yet`,
+      "orange"
+    );
+  }
   if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly) {
     print("Running extros is more profitable than chaining yachtzees", "red");
     return false; // We should do extros instead since they are more valuable
@@ -508,12 +519,22 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 }
 
 function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
+  const ignoredSources = [
+    "Orb Prediction",
+    "Pillkeeper Semirare",
+    "Lucky!",
+    "11-leaf clover (untapped potential)",
+  ];
+  const embezzlers = sum(
+    embezzlerSources.filter((source: EmbezzlerFight) => !ignoredSources.includes(source.name)),
+    (source: EmbezzlerFight) => source.potential()
+  );
   const effectiveYachtzeeTurns = Math.max(
     Math.min(yachtzeeTurns - haveEffect(potion.effect()), potion.effectDuration()),
     0
   );
   const embezzlerTurns = Math.min(
-    embezzlerCount(),
+    embezzlers,
     Math.max(potion.effectDuration() - effectiveYachtzeeTurns, 0)
   );
   const barfTurns = Math.max(potion.effectDuration() - effectiveYachtzeeTurns - embezzlerTurns, 0);
