@@ -10,7 +10,6 @@ import {
   itemAmount,
   Location,
   mallPrice,
-  Monster,
   myAdventures,
   myFamiliar,
   myFullness,
@@ -23,8 +22,6 @@ import {
   runChoice,
   runCombat,
   toInt,
-  toLocation,
-  toMonster,
   toUrl,
   use,
   visitUrl,
@@ -55,7 +52,7 @@ import {
 import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
-import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
+import { crateStrategy, equipOrbIfDesired, ponderPrediction } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
   globalOptions,
@@ -284,86 +281,76 @@ const wandererFailsafeMacro = () =>
     Macro.if_(`!monsterid ${embezzler.id}`, Macro.skill($skill`Back-Up to your Last Enemy`))
   );
 
-export const embezzlerSources = [
+export const chainStarters = [
   new EmbezzlerFight(
-    "Digitize",
+    "Chateau Painting",
     () =>
-      get("_sourceTerminalDigitizeMonster") === embezzler && Counter.get("Digitize Monster") <= 0,
-    () => (SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0),
-    (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction(
-        options.location,
-        wandererFailsafeMacro().step(options.macro),
-        wandererFailsafeMacro().step(options.macro)
-      );
-    },
-    {
-      draggable: "wanderer",
-    }
-  ),
-  new EmbezzlerFight(
-    "Guaranteed Romantic Monster",
+      ChateauMantegna.have() &&
+      !ChateauMantegna.paintingFought() &&
+      ChateauMantegna.paintingMonster() === embezzler,
     () =>
-      get("_romanticFightsLeft") > 0 &&
-      Counter.get("Romantic Monster window begin") <= 0 &&
-      Counter.get("Romantic Monster window end") <= 0,
-    () => 0,
-    (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction(
-        options.location,
-        wandererFailsafeMacro().step(options.macro),
-        wandererFailsafeMacro().step(options.macro)
-      );
-    },
-    {
-      draggable: "wanderer",
-    }
-  ),
-  new EmbezzlerFight(
-    "Enamorang",
-    () => Counter.get("Enamorang") <= 0 && get("enamorangMonster") === embezzler,
-    () =>
-      (Counter.get("Enamorang") <= 0 && get("enamorangMonster") === embezzler) ||
-      (have($item`LOV Enamorang`) && !get("_enamorangs"))
+      ChateauMantegna.have() &&
+      !ChateauMantegna.paintingFought() &&
+      ChateauMantegna.paintingMonster() === embezzler
         ? 1
         : 0,
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction(
-        options.location,
-        wandererFailsafeMacro().step(options.macro),
-        wandererFailsafeMacro().step(options.macro)
-      );
-    },
-    {
-      draggable: "wanderer",
+      withMacro(options.macro, () => ChateauMantegna.fightPainting(), options.useAuto);
     }
   ),
   new EmbezzlerFight(
-    "Orb Prediction",
-    () => ponderPrediction($location`The Dire Warren`) === embezzler,
-    () =>
-      (have($item`miniature crystal ball`) ? 1 : 0) *
-      (get("beGregariousCharges") +
-        (get("beGregariousFightsLeft") > 0 ||
-        ponderPrediction($location`The Dire Warren`) === embezzler
-          ? 1
-          : 0)),
+    "Combat Lover's Locket",
+    () => CombatLoversLocket.availableLocketMonsters().includes(embezzler),
+    () => (CombatLoversLocket.availableLocketMonsters().includes(embezzler) ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
-      visitUrl("inventory.php?ponder=1");
-      if (ponderPrediction($location`The Dire Warren`) !== $monster`Knob Goblin Embezzler`) {
+      withMacro(options.macro, () => CombatLoversLocket.reminisce(embezzler), options.useAuto);
+    }
+  ),
+  new EmbezzlerFight(
+    "Fax",
+    () =>
+      have($item`Clan VIP Lounge key`) &&
+      !get("_photocopyUsed") &&
+      getClanLounge()["deluxe fax machine"] !== undefined,
+    () =>
+      have($item`Clan VIP Lounge key`) &&
+      !get("_photocopyUsed") &&
+      getClanLounge()["deluxe fax machine"] !== undefined
+        ? 1
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      faxEmbezzler();
+      withMacro(options.macro, () => use($item`photocopied monster`), options.useAuto);
+    }
+  ),
+  new EmbezzlerFight(
+    "Pillkeeper Semirare",
+    () =>
+      have($item`Eight Days a Week Pill Keeper`) &&
+      canAdv($location`Cobb's Knob Treasury`, true) &&
+      !get("_freePillKeeperUsed") &&
+      !have($effect`Lucky!`),
+    () =>
+      have($item`Eight Days a Week Pill Keeper`) &&
+      canAdv($location`Cobb's Knob Treasury`, true) &&
+      !get("_freePillKeeperUsed") &&
+      !have($effect`Lucky!`)
+        ? 1
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      retrieveItem($item`Eight Days a Week Pill Keeper`);
+      cliExecute("pillkeeper semirare");
+      if (!have($effect`Lucky!`)) {
+        set("_freePillKeeperUsed", true);
         return;
       }
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`The Dire Warren`, options.macro, options.macro);
-    },
-    {
-      requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
-      canInitializeWandererCounters: true,
+      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
+];
+
+export const copySources = [
   new EmbezzlerFight(
     "Time-Spinner",
     () =>
@@ -391,189 +378,6 @@ export const embezzlerSources = [
         },
         options.useAuto
       );
-    }
-  ),
-  new EmbezzlerFight(
-    "Macrometeorite",
-    () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > 0 &&
-      have($skill`Meteor Lore`) &&
-      get("_macrometeoriteUses") < 10 &&
-      proceedWithOrb(),
-    () =>
-      ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-        get("beGregariousCharges") > 0) &&
-      have($skill`Meteor Lore`)
-        ? 10 - get("_macrometeoriteUses")
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      equipOrbIfDesired();
-
-      const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
-      const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
-      const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
-      setChoice(1387, 2);
-
-      const macro = Macro.if_(
-        $monster`crate`,
-        Macro.externalIf(
-          crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
-          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
-        )
-          .externalIf(
-            haveEquipped($item`Fourth of May Cosplay Saber`) &&
-              weWantToSaberCrates &&
-              get("_saberForceUses") < 5,
-            Macro.trySkill($skill`Use the Force`)
-          )
-          .skill($skill`Macrometeorite`)
-      ).step(options.macro);
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Noob Cave`, macro, macro);
-    },
-    {
-      gregariousReplace: true,
-    }
-  ),
-  new EmbezzlerFight(
-    "Powerful Glove",
-    () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > 0 &&
-      have($item`Powerful Glove`) &&
-      get("_powerfulGloveBatteryPowerUsed") <= 90 &&
-      proceedWithOrb(),
-    () =>
-      ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-        get("beGregariousCharges") > 0) &&
-      have($item`Powerful Glove`)
-        ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      equipOrbIfDesired();
-
-      const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
-      const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
-      const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
-      setChoice(1387, 2);
-
-      const macro = Macro.if_(
-        $monster`crate`,
-        Macro.externalIf(
-          crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
-          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
-        )
-          .externalIf(
-            haveEquipped($item`Fourth of May Cosplay Saber`) &&
-              weWantToSaberCrates &&
-              get("_saberForceUses") < 5,
-            Macro.trySkill($skill`Use the Force`)
-          )
-          .skill($skill`CHEAT CODE: Replace Enemy`)
-      ).step(options.macro);
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Noob Cave`, macro, macro);
-    },
-    {
-      requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
-      gregariousReplace: true,
-    }
-  ),
-  new EmbezzlerFight(
-    "Be Gregarious",
-    () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > (have($item`miniature crystal ball`) ? 1 : 0),
-    () =>
-      get("beGregariousMonster") === embezzler
-        ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      const run = ltbRun();
-      run.constraints.preparation?.();
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction(
-        $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
-        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro)
-      );
-      // reset the crystal ball prediction by staring longingly at toast
-      if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
-        const warrenPrediction = ponderPrediction($location`The Dire Warren`);
-        if (warrenPrediction && warrenPrediction !== embezzler) {
-          try {
-            const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
-            if (!store.includes("Check out the gift shop")) {
-              print("Unable to stare longingly at toast");
-            }
-            runChoice(4);
-          } catch {
-            // orb reseting raises a mafia error
-          }
-          visitUrl("main.php");
-        }
-      }
-    },
-    {
-      canInitializeWandererCounters: true,
-    }
-  ),
-  new EmbezzlerFight(
-    "Be Gregarious (Set Up Crystal Ball)",
-    () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") === 1 &&
-      have($item`miniature crystal ball`) &&
-      !ponderPrediction($location`The Dire Warren`),
-    () =>
-      (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-      get("beGregariousCharges") > 0
-        ? 1
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      adventureMacro($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
-    },
-    {
-      requirements: [
-        new Requirement([], {
-          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-        }),
-      ],
-      canInitializeWandererCounters: true,
-    }
-  ),
-  new EmbezzlerFight(
-    "Backup",
-    () =>
-      get("lastCopyableMonster") === embezzler &&
-      have($item`backup camera`) &&
-      get("_backUpUses") < 11,
-    () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
-    (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction(
-        options.location,
-        Macro.if_(
-          `!monsterid ${embezzler.id}`,
-          Macro.skill($skill`Back-Up to your Last Enemy`)
-        ).step(options.macro),
-        Macro.if_(
-          `!monsterid ${embezzler.id}`,
-          Macro.skill($skill`Back-Up to your Last Enemy`)
-        ).step(options.macro)
-      );
-    },
-    {
-      requirements: [
-        new Requirement([], {
-          forceEquip: $items`backup camera`,
-          bonusEquip: new Map([[$item`backup camera`, 5000]]),
-        }),
-      ],
-      draggable: "backup",
-      wrongEncounterName: true,
-      canInitializeWandererCounters: true,
     }
   ),
   new EmbezzlerFight(
@@ -687,72 +491,9 @@ export const embezzlerSources = [
     (options: EmbezzlerFightRunOptions) =>
       withMacro(options.macro, () => use($item`sticky clay homunculus`), options.useAuto)
   ),
-  new EmbezzlerFight(
-    "Chateau Painting",
-    () =>
-      ChateauMantegna.have() &&
-      !ChateauMantegna.paintingFought() &&
-      ChateauMantegna.paintingMonster() === embezzler,
-    () =>
-      ChateauMantegna.have() &&
-      !ChateauMantegna.paintingFought() &&
-      ChateauMantegna.paintingMonster() === embezzler
-        ? 1
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      withMacro(options.macro, () => ChateauMantegna.fightPainting(), options.useAuto);
-    }
-  ),
-  new EmbezzlerFight(
-    "Combat Lover's Locket",
-    () => CombatLoversLocket.availableLocketMonsters().includes(embezzler),
-    () => (CombatLoversLocket.availableLocketMonsters().includes(embezzler) ? 1 : 0),
-    (options: EmbezzlerFightRunOptions) => {
-      withMacro(options.macro, () => CombatLoversLocket.reminisce(embezzler), options.useAuto);
-    }
-  ),
-  new EmbezzlerFight(
-    "Fax",
-    () =>
-      have($item`Clan VIP Lounge key`) &&
-      !get("_photocopyUsed") &&
-      getClanLounge()["deluxe fax machine"] !== undefined,
-    () =>
-      have($item`Clan VIP Lounge key`) &&
-      !get("_photocopyUsed") &&
-      getClanLounge()["deluxe fax machine"] !== undefined
-        ? 1
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      faxEmbezzler();
-      withMacro(options.macro, () => use($item`photocopied monster`), options.useAuto);
-    }
-  ),
-  new EmbezzlerFight(
-    "Pillkeeper Semirare",
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`),
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
-      !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`)
-        ? 1
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      retrieveItem($item`Eight Days a Week Pill Keeper`);
-      cliExecute("pillkeeper semirare");
-      if (!have($effect`Lucky!`)) {
-        set("_freePillKeeperUsed", true);
-        return;
-      }
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
-    }
-  ),
+];
+
+export const wanderSources = [
   new EmbezzlerFight(
     "Lucky!",
     () => canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`),
@@ -762,6 +503,290 @@ export const embezzlerSources = [
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
+  new EmbezzlerFight(
+    "Digitize",
+    () =>
+      get("_sourceTerminalDigitizeMonster") === embezzler && Counter.get("Digitize Monster") <= 0,
+    () => (SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0),
+    (options: EmbezzlerFightRunOptions) => {
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction(
+        options.location,
+        wandererFailsafeMacro().step(options.macro),
+        wandererFailsafeMacro().step(options.macro)
+      );
+    },
+    {
+      draggable: "wanderer",
+    }
+  ),
+  new EmbezzlerFight(
+    "Guaranteed Romantic Monster",
+    () =>
+      get("_romanticFightsLeft") > 0 &&
+      Counter.get("Romantic Monster window begin") <= 0 &&
+      Counter.get("Romantic Monster window end") <= 0,
+    () => 0,
+    (options: EmbezzlerFightRunOptions) => {
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction(
+        options.location,
+        wandererFailsafeMacro().step(options.macro),
+        wandererFailsafeMacro().step(options.macro)
+      );
+    },
+    {
+      draggable: "wanderer",
+    }
+  ),
+  new EmbezzlerFight(
+    "Enamorang",
+    () => Counter.get("Enamorang") <= 0 && get("enamorangMonster") === embezzler,
+    () =>
+      (Counter.get("Enamorang") <= 0 && get("enamorangMonster") === embezzler) ||
+      (have($item`LOV Enamorang`) && !get("_enamorangs"))
+        ? 1
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction(
+        options.location,
+        wandererFailsafeMacro().step(options.macro),
+        wandererFailsafeMacro().step(options.macro)
+      );
+    },
+    {
+      draggable: "wanderer",
+    }
+  ),
+];
+
+export const conditionalSources = [
+  new EmbezzlerFight(
+    "Orb Prediction",
+    () => ponderPrediction($location`The Dire Warren`) === embezzler,
+    () =>
+      (have($item`miniature crystal ball`) ? 1 : 0) *
+      (get("beGregariousCharges") +
+        (get("beGregariousFightsLeft") > 0 ||
+        ponderPrediction($location`The Dire Warren`) === embezzler
+          ? 1
+          : 0)),
+    (options: EmbezzlerFightRunOptions) => {
+      visitUrl("inventory.php?ponder=1");
+      if (ponderPrediction($location`The Dire Warren`) !== $monster`Knob Goblin Embezzler`) {
+        return;
+      }
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction($location`The Dire Warren`, options.macro, options.macro);
+    },
+    {
+      requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
+      canInitializeWandererCounters: true,
+    }
+  ),
+  new EmbezzlerFight(
+    "Macrometeorite",
+    () =>
+      get("beGregariousMonster") === embezzler &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($skill`Meteor Lore`) &&
+      get("_macrometeoriteUses") < 10 &&
+      proceedWithOrb(),
+    () =>
+      ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
+      have($skill`Meteor Lore`)
+        ? 10 - get("_macrometeoriteUses")
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      equipOrbIfDesired();
+
+      const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
+      const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
+      const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+      setChoice(1387, 2);
+
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
+          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
+        )
+          .externalIf(
+            haveEquipped($item`Fourth of May Cosplay Saber`) &&
+              weWantToSaberCrates &&
+              get("_saberForceUses") < 5,
+            Macro.trySkill($skill`Use the Force`)
+          )
+          .skill($skill`Macrometeorite`)
+      ).step(options.macro);
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction($location`Noob Cave`, macro, macro);
+      if (ponderPrediction($location`Noob Cave`) === embezzler) toasterGaze();
+    },
+    {
+      gregariousReplace: true,
+    }
+  ),
+  new EmbezzlerFight(
+    "Powerful Glove",
+    () =>
+      get("beGregariousMonster") === embezzler &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($item`Powerful Glove`) &&
+      get("_powerfulGloveBatteryPowerUsed") <= 90 &&
+      proceedWithOrb(),
+    () =>
+      ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
+      have($item`Powerful Glove`)
+        ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      equipOrbIfDesired();
+
+      const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
+      const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
+      const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+      setChoice(1387, 2);
+
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
+          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
+        )
+          .externalIf(
+            haveEquipped($item`Fourth of May Cosplay Saber`) &&
+              weWantToSaberCrates &&
+              get("_saberForceUses") < 5,
+            Macro.trySkill($skill`Use the Force`)
+          )
+          .skill($skill`CHEAT CODE: Replace Enemy`)
+      ).step(options.macro);
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction($location`Noob Cave`, macro, macro);
+      if (ponderPrediction($location`Noob Cave`) === embezzler) toasterGaze();
+    },
+    {
+      requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
+      gregariousReplace: true,
+    }
+  ),
+  new EmbezzlerFight(
+    "Be Gregarious",
+    () =>
+      get("beGregariousMonster") === embezzler &&
+      get("beGregariousFightsLeft") > (have($item`miniature crystal ball`) ? 1 : 0),
+    () =>
+      get("beGregariousMonster") === embezzler
+        ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      const run = ltbRun();
+      run.constraints.preparation?.();
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
+        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro)
+      );
+      // reset the crystal ball prediction by staring longingly at toast
+      if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
+        const warrenPrediction = ponderPrediction($location`The Dire Warren`);
+        if (warrenPrediction !== embezzler) toasterGaze();
+      }
+    },
+    {
+      canInitializeWandererCounters: true,
+    }
+  ),
+  new EmbezzlerFight(
+    "Be Gregarious (Set Up Crystal Ball)",
+    () =>
+      get("beGregariousMonster") === embezzler &&
+      get("beGregariousFightsLeft") === 1 &&
+      have($item`miniature crystal ball`) &&
+      !ponderPrediction($location`The Dire Warren`),
+    () =>
+      (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
+      get("beGregariousCharges") > 0
+        ? 1
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      adventureMacro($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
+    },
+    {
+      requirements: [
+        new Requirement([], {
+          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
+        }),
+      ],
+      canInitializeWandererCounters: true,
+    }
+  ),
+  new EmbezzlerFight(
+    "Backup",
+    () =>
+      get("lastCopyableMonster") === embezzler &&
+      have($item`backup camera`) &&
+      get("_backUpUses") < 11,
+    () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
+    (options: EmbezzlerFightRunOptions) => {
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction(
+        options.location,
+        Macro.if_(
+          `!monsterid ${embezzler.id}`,
+          Macro.skill($skill`Back-Up to your Last Enemy`)
+        ).step(options.macro),
+        Macro.if_(
+          `!monsterid ${embezzler.id}`,
+          Macro.skill($skill`Back-Up to your Last Enemy`)
+        ).step(options.macro)
+      );
+    },
+    {
+      requirements: [
+        new Requirement([], {
+          forceEquip: $items`backup camera`,
+          bonusEquip: new Map([[$item`backup camera`, 5000]]),
+        }),
+      ],
+      draggable: "backup",
+      wrongEncounterName: true,
+      canInitializeWandererCounters: true,
+    }
+  ),
+];
+
+export const fakeSources = [
+  new EmbezzlerFight(
+    "Professor MeatChain",
+    () => false,
+    () =>
+      have($familiar`Pocket Professor`) && !get("_garbo_meatChain", false)
+        ? Math.max(10 - get("_pocketProfessorLectures"), 0)
+        : 0,
+    () => {
+      return;
+    }
+  ),
+  new EmbezzlerFight(
+    "Professor WeightChain",
+    () => false,
+    () =>
+      have($familiar`Pocket Professor`) && !get("_garbo_weightChain", false)
+        ? Math.min(15 - get("_pocketProfessorLectures"), 5)
+        : 0,
+    () => {
+      return;
+    }
+  ),
+];
+
+export const emergencyChainStarters = [
   // These are very deliberately the last embezzler fights.
   new EmbezzlerFight(
     "11-leaf clover (untapped potential)",
@@ -842,28 +867,15 @@ export const embezzlerSources = [
       );
     }
   ),
-  new EmbezzlerFight(
-    "Professor MeatChain",
-    () => false,
-    () =>
-      have($familiar`Pocket Professor`) && !get("_garbo_meatChain", false)
-        ? Math.max(10 - get("_pocketProfessorLectures"), 0)
-        : 0,
-    () => {
-      return;
-    }
-  ),
-  new EmbezzlerFight(
-    "Professor WeightChain",
-    () => false,
-    () =>
-      have($familiar`Pocket Professor`) && !get("_garbo_weightChain", false)
-        ? Math.min(15 - get("_pocketProfessorLectures"), 5)
-        : 0,
-    () => {
-      return;
-    }
-  ),
+];
+
+export const embezzlerSources = [
+  ...wanderSources,
+  ...conditionalSources,
+  ...copySources,
+  ...chainStarters,
+  ...emergencyChainStarters,
+  ...fakeSources,
 ];
 
 export function embezzlerCount(): number {
@@ -915,12 +927,25 @@ export function estimatedTurns(): number {
  * @returns the next available embezzler fight
  */
 export function getNextEmbezzlerFight(): EmbezzlerFight | null {
-  for (const fight of embezzlerSources) {
-    if (fight.available()) {
-      return fight;
-    }
+  const wanderer = wanderSources.find((fight) => fight.available());
+  if (wanderer) return wanderer;
+  const conditional = conditionalSources.find((fight) => fight.available());
+  if (conditional) {
+    const leftoverReplacers =
+      (have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0) +
+      (have($item`Powerful Glove`)
+        ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10)
+        : 0);
+    // we don't want to reset our orb with a gregarious fight; that defeats the purpose
+    const skip =
+      conditional.name === "Be Gregarious" && crateStrategy() === "Orb" && leftoverReplacers;
+    if (!skip) return conditional;
   }
-  return null;
+  const copy = copySources.find((fight) => fight.available());
+  if (copy) return copy;
+  const chainStart = chainStarters.find((fight) => fight.available());
+  if (chainStart) return chainStart;
+  return conditional ?? emergencyChainStarters.find((fight) => fight.available()) ?? null;
 }
 
 /**
@@ -931,17 +956,6 @@ function proceedWithOrb(): boolean {
   const strat = crateStrategy();
   // If we can't possibly use orb, return true
   if (!have($item`miniature crystal ball`) || strat === "Saber") return true;
-
-  // If we're sniffing and an Embezzler is in the queue already, return true
-  if (
-    strat === "Sniff" &&
-    $location`Noob Cave`.combatQueue
-      .split(";")
-      .map((monster) => toMonster(monster))
-      .includes(embezzler)
-  ) {
-    return true;
-  }
 
   // If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
@@ -957,15 +971,15 @@ function proceedWithOrb(): boolean {
   return true;
 }
 
-function ponderPrediction(location: Location): Monster | null {
-  visitUrl("inventory.php?ponder=1", false);
-  const parsedProp = new Map(
-    get("crystalBallPredictions")
-      .split("|")
-      .map((element) => element.split(":") as [string, string, string])
-      .map(
-        ([, location, monster]) => [toLocation(location), toMonster(monster)] as [Location, Monster]
-      )
-  );
-  return parsedProp.get(location) ?? null;
+function toasterGaze(): void {
+  try {
+    const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+    if (!store.includes("Check out the gift shop")) {
+      print("Unable to stare longingly at toast");
+    }
+    runChoice(4);
+  } catch {
+    // orb reseting raises a mafia error
+  }
+  visitUrl("main.php");
 }

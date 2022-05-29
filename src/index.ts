@@ -431,7 +431,20 @@ export function main(argString = ""): void {
     ensureBarfAccess();
   }
   if (globalOptions.simulateDiet) {
+    propertyManager.set({
+      logPreferenceChange: true,
+      autoSatisfyWithMall: true,
+      autoSatisfyWithNPCs: true,
+      autoSatisfyWithCoinmasters: true,
+      autoSatisfyWithStash: false,
+      maximizerFoldables: true,
+      autoTuxedo: true,
+      autoPinkyRing: true,
+      autoGarish: true,
+      valueOfInventory: 2,
+    });
     runDiet();
+    propertyManager.resetAll();
     return;
   }
 

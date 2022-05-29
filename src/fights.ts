@@ -45,7 +45,6 @@ import {
   takeCloset,
   toInt,
   toItem,
-  toSlot,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -107,6 +106,7 @@ import {
   globalOptions,
   HIGHLIGHT,
   kramcoGuaranteed,
+  latteActionSourceFinderConstraints,
   logMessage,
   ltbRun,
   mapMonster,
@@ -133,7 +133,7 @@ import postCombatActions from "./post";
 import {
   crateStrategy,
   doingExtrovermectin,
-  intializeExtrovermectinZones,
+  initializeExtrovermectinZones,
   saberCrateIfSafe,
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
@@ -276,7 +276,7 @@ function embezzlerSetup() {
   }
 
   if (doingExtrovermectin()) {
-    intializeExtrovermectinZones();
+    initializeExtrovermectinZones();
   }
 }
 
@@ -636,7 +636,7 @@ const pygmyMacro = Macro.if_(
 
 function getStenchLocation() {
   return (
-    $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
+    $locations`Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
       (l) => canAdv(l, false)
     ) || $location`none`
   );
@@ -981,15 +981,8 @@ const freeFightSources = [
       const drunksCanAppear =
         get("_drunkPygmyBanishes") === 10 ||
         (saberedMonster === $monster`drunk pygmy` && get("_saberForceMonsterCount"));
-      const remainingSaberPygmies =
-        (saberedMonster === $monster`drunk pygmy` ? get("_saberForceMonsterCount") : 0) +
-        2 * clamp(5 - get("_saberForceUses"), 0, 5);
       return (
-        get("questL11Worship") !== "unstarted" &&
-        rightTime &&
-        !wrongPygmySabered &&
-        drunksCanAppear &&
-        remainingSaberPygmies
+        get("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && drunksCanAppear
       );
     },
     () => {
@@ -1329,19 +1322,6 @@ const freeFightSources = [
     }
   ),
 ];
-
-const latteActionSourceFinderConstraints = {
-  allowedAction: (action: ActionSource) => {
-    const forceEquipsOtherThanLatte = (
-      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
-    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
-    return (
-      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      forceEquipsOtherThanLatte.filter((equipment) => toSlot(equipment) === $slot`weapon`).length <
-        2
-    );
-  },
-};
 
 const freeRunFightSources = [
   // Unlock Latte ingredients
