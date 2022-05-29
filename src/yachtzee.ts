@@ -409,7 +409,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     (jelliesBulkPrice +
       fishJuiceBoxPrice +
       slidersToEat * slidersExcessCost +
-      pickleJuiceToDrink * pickleJuiceExcessCost +
+      pickleJuiceToDrink * pickleJuiceExcessCost -
       higherBaseMeatProfits) /
       yachtzeeTurns;
 
