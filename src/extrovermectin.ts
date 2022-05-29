@@ -1,13 +1,4 @@
-import {
-  equip,
-  Location,
-  mallPrice,
-  Monster,
-  toLocation,
-  toMonster,
-  useFamiliar,
-  visitUrl,
-} from "kolmafia";
+import { equip, mallPrice, Monster, toMonster, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
@@ -19,6 +10,7 @@ import {
   $slot,
   adventureMacro,
   clamp,
+  CrystalBall,
   get,
   have,
   property,
@@ -133,7 +125,7 @@ export function saberCrateIfSafe(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    [null, $monster`crate`].includes(ponderPrediction($location`Noob Cave`)) &&
+    [undefined, $monster`crate`].includes(CrystalBall.ponder().get($location`Noob Cave`)) &&
     !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
     crateStrategy() !== "Sniff"
   ) {
@@ -235,17 +227,4 @@ export function initializeExtrovermectinZones(): void {
     if (hasMonsterReplacers()) initializeCrates();
     initializeDireWarren();
   }
-}
-
-export function ponderPrediction(location: Location): Monster | null {
-  visitUrl("inventory.php?ponder=1", false);
-  const parsedProp = new Map(
-    get("crystalBallPredictions")
-      .split("|")
-      .map((element) => element.split(":") as [string, string, string])
-      .map(
-        ([, location, monster]) => [toLocation(location), toMonster(monster)] as [Location, Monster]
-      )
-  );
-  return parsedProp.get(location) ?? null;
 }

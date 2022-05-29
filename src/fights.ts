@@ -4,6 +4,7 @@ import {
   buy,
   cliExecute,
   closetAmount,
+  create,
   Effect,
   equip,
   Familiar,
@@ -41,6 +42,7 @@ import {
   runCombat,
   setAutoAttack,
   setLocation,
+  Skill,
   stashAmount,
   takeCloset,
   toInt,
@@ -86,6 +88,7 @@ import {
   maximizeCached,
   property,
   Requirement,
+  Robortender,
   set,
   SourceTerminal,
   sum,
@@ -98,7 +101,12 @@ import {
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
-import { freeFightFamiliar, meatFamiliar, pocketProfessorLectures } from "./familiar";
+import {
+  calculateMeatFamiliar,
+  freeFightFamiliar,
+  meatFamiliar,
+  pocketProfessorLectures,
+} from "./familiar";
 import {
   burnLibrams,
   embezzlerLog,
@@ -116,6 +124,7 @@ import {
   resetDailyPreference,
   safeRestore,
   setChoice,
+  userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
@@ -613,6 +622,7 @@ class FreeRunFight extends FreeFight {
             : []),
         ])
       );
+      freeFightMood(...(this.options.effects?.() ?? []));
       safeRestore();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
       postCombatActions();
@@ -1017,8 +1027,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
-      CrystalBall.currentPredictions(false).get($location`The Hidden Bowling Alley`) ===
-        $monster`drunk pygmy` &&
+      CrystalBall.ponder().get($location`The Hidden Bowling Alley`) === $monster`drunk pygmy` &&
       get("_drunkPygmyBanishes") >= 11,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
@@ -1275,7 +1284,10 @@ const freeFightSources = [
       CombatLoversLocket.reminisce(monster);
     },
     true,
-    { canOverrideMacro: true }
+    {
+      canOverrideMacro: true,
+      familiar: () => $familiars`Robortender`.find(have) ?? null,
+    }
   ),
 
   // Get a li'l ninja costume for 150% item drop
@@ -1808,21 +1820,6 @@ export function freeFights(): void {
     1324: 5, // Fight a random partier
   });
 
-  if (
-    canAdv($location`The Red Zeppelin`, false) &&
-    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
-  ) {
-    buy(
-      clamp(5 - get("_glarkCableUses"), 0, 5),
-      $item`glark cable`,
-      get("garbo_valueOfFreeFight", 2000)
-    );
-  }
-
-  for (const freeFightSource of freeFightSources) {
-    freeFightSource.runAll();
-  }
-
   const stashRun = stashAmount($item`navel ring of navel gazing`)
     ? $items`navel ring of navel gazing`
     : stashAmount($item`Greatest American Pants`)
@@ -1835,7 +1832,7 @@ export function freeFights(): void {
     }
   });
 
-  tryFillLatte();
+  killRobortCreaturesForFree();
 
   //  Use free fights on melanges if we have Tote/Squint and prices are reasonable.
   const canSquint =
@@ -1859,6 +1856,23 @@ export function freeFights(): void {
       if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
     }
   }
+
+  if (
+    canAdv($location`The Red Zeppelin`, false) &&
+    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
+  ) {
+    buy(
+      clamp(5 - get("_glarkCableUses"), 0, 5),
+      $item`glark cable`,
+      get("garbo_valueOfFreeFight", 2000)
+    );
+  }
+
+  for (const freeFightSource of freeFightSources) {
+    freeFightSource.runAll();
+  }
+
+  tryFillLatte();
 }
 
 function setNepQuestChoicesAndPrepItems() {
@@ -2154,10 +2168,104 @@ export function printEmbezzlerLog(): void {
     HIGHLIGHT
   );
 }
+type FreeKill = { source?: Item; macro: Skill | Item; used: () => boolean };
+const freeKills: FreeKill[] = [
+  {
+    source: $item`The Jokester's gun`,
+    macro: $skill`Fire the Jokester's Gun`,
+    used: () => get("_firedJokestersGun"),
+  },
+  {
+    source: $item`Lil' Doctor™ bag`,
+    macro: $skill`Chest X-Ray`,
+    used: () => get("_chestXRayUsed") >= 3,
+  },
+  { macro: $skill`Shattering Punch`, used: () => get("_shatteringPunchUsed") >= 3 },
+  { macro: $skill`Gingerbread Mob Hit`, used: () => get("_gingerbreadMobHitUsed") },
+  { macro: $item`replica bat-oomerang`, used: () => get("_usedReplicaBatoomerang") >= 3 },
+];
+const isAvailable = ({ source, macro, used }: FreeKill) => have(source ?? macro) && !used();
+const toRequirement = ({ source }: FreeKill) =>
+  source ? new Requirement([], { forceEquip: [source] }) : new Requirement([], {});
+function findFreeKill() {
+  return freeKills.find(isAvailable) ?? null;
+}
+
+function killRobortCreaturesForFree() {
+  if (!have($familiar`Robortender`)) return;
+  useFamiliar($familiar`Robortender`);
+
+  const currentHeads = availableAmount($item`fish head`);
+  let freeKill = findFreeKill();
+  while (
+    freeKill &&
+    canAdv($location`The Copperhead Club`) &&
+    have($skill`Comprehensive Cartography`) &&
+    get("_monstersMapped") < 3
+  ) {
+    if (have($effect`Crappily Disguised as a Waiter`)) {
+      setChoice(855, 4);
+      adventureMacro($location`The Copperhead Club`, Macro.abort());
+    }
+    freeFightOutfit(toRequirement(freeKill));
+    withMacro(
+      freeKill.macro instanceof Item ? Macro.item(freeKill.macro) : Macro.skill(freeKill.macro),
+      () => {
+        mapMonster($location`The Copperhead Club`, $monster`Mob Penguin Capo`);
+        runCombat();
+      },
+      true
+    );
+    freeKill = findFreeKill();
+  }
+
+  while (freeKill && CombatLoversLocket.have() && CombatLoversLocket.reminiscesLeft()) {
+    const roboTarget = CombatLoversLocket.findMonster(
+      () => true,
+      (monster: Monster) =>
+        valueDrops(monster) + garboValue(Robortender.dropFrom(monster)) * Robortender.dropChance()
+    );
+
+    if (!roboTarget) break;
+    const regularTarget = CombatLoversLocket.findMonster(() => true, valueDrops);
+    if (regularTarget === roboTarget) {
+      useFamiliar(freeFightFamiliar());
+    } else {
+      useFamiliar($familiar`Robortender`);
+    }
+
+    freeFightOutfit(
+      roboTarget.attributes.includes("FREE") ? new Requirement([], {}) : toRequirement(freeKill)
+    );
+    withMacro(
+      isFree(roboTarget)
+        ? Macro.basicCombat()
+        : freeKill.macro instanceof Item
+        ? Macro.item(freeKill.macro)
+        : Macro.skill(freeKill.macro),
+      () => CombatLoversLocket.reminisce(roboTarget),
+      true
+    );
+    freeKill = findFreeKill();
+  }
+
+  if (
+    !Robortender.currentDrinks().includes($item`drive-by shooting`) &&
+    availableAmount($item`fish head`) > currentHeads &&
+    userConfirmDialog(
+      "Garbo managed to rustle up a fish head, would you like it to use it to make a drive-by shooting so you can benefit from your robortender? Sorry for flip-flopping on this, life is hard.",
+      true
+    )
+  ) {
+    if (!have($item`drive-by shooting`)) create($item`drive-by shooting`);
+    Robortender.feed($item`drive-by shooting`);
+    calculateMeatFamiliar();
+  }
+}
 
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
-  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => garboValue(drop) * rate));
+  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => (garboValue(drop) * rate) / 100));
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 
 export function estimatedFreeFights(): number {
