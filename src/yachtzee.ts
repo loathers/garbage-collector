@@ -549,6 +549,8 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
 
 function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
+  const excludedEffects = new Set<Effect>();
+
   if (have($item`Eight Days a Week Pill Keeper`) && !property.getBoolean("_freePillKeeperUsed")) {
     const doublingPotions = farmingPotions
       .filter(
@@ -577,11 +579,10 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
         cliExecute("pillkeeper extend");
         acquire(1, bestPotion.potion, profit + price);
         bestPotion.use(1);
-      }
+      } else excludedEffects.add(bestPotion.effect());
     }
   }
 
-  const excludedEffects = new Set<Effect>();
   for (const effect of getActiveEffects()) {
     for (const excluded of mutuallyExclusive.get(effect) ?? []) {
       excludedEffects.add(excluded);
