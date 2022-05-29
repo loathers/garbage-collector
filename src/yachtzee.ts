@@ -503,9 +503,9 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     acquire(1, $item`fish juice box`, 2 * fishJuiceBoxPrice, true);
   }
-  if (cologne > 0) acquire(cologne, $item`beggin' cologne`, colognePrice, true);
+  if (cologne > 0) acquire(cologne, $item`beggin' cologne`, 2 * colognePrice, true);
   if (filters > 0) acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`), true);
-  if (horseradishes > 0) acquire(horseradishes, $item`jumping horseradish`, 20000, true);
+  if (horseradishes > 0) acquire(horseradishes, $item`jumping horseradish`, 60000, true);
 
   // Get fishy turns
   print("Getting fishy turns", "purple");
