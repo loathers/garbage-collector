@@ -306,11 +306,15 @@ function barfTurn() {
     set("_garbo75AdvMeatCheckpoint", meat);
     set("_garbo75AdvItemsCheckpoint", items);
     set("_garboVOACheckpointDate", todayToString());
+    set("_garbo25AdvMeatCheckpoint", "");
+    set("_garbo25AdvItemsCheckpoint", "");
   } else if (myAdventures() === 25 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
-    setMarginalSessionDiff();
-    const { meat, items } = sessionSinceStart().value(garboValue);
-    set("_garbo25AdvMeatCheckpoint", meat);
-    set("_garbo25AdvItemsCheckpoint", items);
+    if (!get("_garbo25AdvMeatCheckpoint") && !get("_garbo25AdvItemsCheckpoint")) {
+      setMarginalSessionDiff();
+      const { meat, items } = sessionSinceStart().value(garboValue);
+      set("_garbo25AdvMeatCheckpoint", meat);
+      set("_garbo25AdvItemsCheckpoint", items);
+    }
   }
 
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler") {
