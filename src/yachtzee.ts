@@ -610,7 +610,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
       totalProfits += profit;
       print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
       print(
-        `Expected to profit ${profit} meat from doubling 1 ${bestPotion.potion} @ price ${price} meat}`,
+        `Expected to profit ${profit} meat from doubling 1 ${bestPotion.potion} @ price ${price} meat`,
         "blue"
       );
       if (!simOnly) {
@@ -652,7 +652,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
         if (profit < 0) break;
         totalProfits += profit;
         print(
-          `Expected to profit ${profit} meat from using 1 ${potion.potion} @ price ${price} meat}`,
+          `Expected to profit ${profit} meat from using 1 ${potion.potion} @ price ${price} meat`,
           "blue"
         );
         if (!simOnly) {
@@ -701,7 +701,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
     const profit = greenspanValue - price;
     if (profit > 0) {
       print(
-        `Expected to profit ${profit} meat from using 1 Uncle Greenspan's Bathroom Finance Guide @ price ${price} meat}`,
+        `Expected to profit ${profit} meat from using 1 Uncle Greenspan's Bathroom Finance Guide @ price ${price} meat`,
         "blue"
       );
       acquire(1, $item`Uncle Greenspan's Bathroom Finance Guide`, greenspanValue);
