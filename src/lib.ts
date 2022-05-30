@@ -275,24 +275,32 @@ export function printLog(color: string): void {
 
 export function printHelpMenu(): void {
   printHtml(`<pre style="font-family:consolas;">
-    +==============+===================================================================================================+
-    |   Argument   |                                            Description                                            |
-    +==============+===================================================================================================+
-    |    nobarf    | garbo will do beginning of the day setup, embezzlers, and various daily flags, but will           |
-    |              |  terminate before normal Barf Mountain turns.                                                     |
-    +--------------+---------------------------------------------------------------------------------------------------+
-    |    ascend    | garbo will operate under the assumption that you're ascending after running it, rather than       |
-    |              |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |
-    +--------------+---------------------------------------------------------------------------------------------------+
-    | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
-    |              |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.       |
-    +------------------------------------------------------------------------------------------------------------------+
-    |   simdiet    | garbo will print out what it computes as an optimal diet and then exit                            |
-    +------------------------------------------------------------------------------------------------------------------+
-    |    nodiet    | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |
-    +--------------+---------------------------------------------------------------------------------------------------+
-    |     Note:    | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
-    +--------------+---------------------------------------------------------------------------------------------------+</pre>`);
+    +================+===================================================================================================+
+    |    Argument    |                                            Description                                            |
+    +================+===================================================================================================+
+    |     nobarf     | garbo will do beginning of the day setup, embezzlers, and various daily flags, but will           |
+    |                |  terminate before normal Barf Mountain turns.                                                     |
+    +----------------+---------------------------------------------------------------------------------------------------+
+    |     ascend     | garbo will operate under the assumption that you're ascending after running it, rather than       |
+    |                |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |
+    +----------------+---------------------------------------------------------------------------------------------------+
+    |                | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
+    |  &lt;somenumber&gt;  |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified            |
+    |                |  number of turns remain (e.g. \`garbo -20\` will leave you with 20 turns at the end of the day).    |
+    +----------------+---------------------------------------------------------------------------------------------------+
+    |    simdiet     | garbo will print out what it computes as an optimal diet and then exit                            |
+    +----------------+---------------------------------------------------------------------------------------------------+
+    |     nodiet     | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |
+    +----------------+---------------------------------------------------------------------------------------------------+
+    |                | *EXPERIMENTAL* garbo only diets after free fights, and attempts to estimate if Yachtzee! chaining |
+    |                |   is profitable for you - if so, it consumes a specific diet which uses ~30-40 spleen; if not it  |
+    | yachtzeechain  |   automatically continues with the regular diet. Requires Spring Break Beach access (it will not  |
+    |                |   grab a one-day pass for you, but will make an attempt if one is used), a fishy pipe and an      |
+    |                |   Urchin urchin familiar. Sweet Synthesis is strongly recommended, as with access to other meat%  |
+    |                |   buffs from Source Terminal, Fortune Teller, KGB and the meat% demon. Having PYEC is a big plus. |
+    +----------------+---------------------------------------------------------------------------------------------------+
+    |      Note:     | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
+    +----------------+---------------------------------------------------------------------------------------------------+</pre>`);
   printHtml(`<pre style="font-family:consolas;">
     +==========================+===============================================================================================+
     |         Property         |                                          Description                                          |
