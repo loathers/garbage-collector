@@ -22,6 +22,7 @@ import {
   print,
   retrievePrice,
   spleenLimit,
+  toInt,
   use,
   useFamiliar,
   useSkill,
@@ -568,15 +569,29 @@ const expectedEmbezzlers = sum(
 );
 
 function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
+  // If we have an unused PYEC then
+  // 1) We if don't have an effect, +5 to gained effect duration
+  // 2) If we already have an effect, +5 to existing effect duration
+  // This means that the first use of a potion that we don't already have an effect of is more valuable than the next use
+  const PYECOffset =
+    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`) ? 5 : 0;
+  const existingOffset = haveEffect(potion.effect()) ? PYECOffset : 0;
+  const extraOffset = PYECOffset - existingOffset;
   const effectiveYachtzeeTurns = Math.max(
-    Math.min(yachtzeeTurns - haveEffect(potion.effect()), potion.effectDuration()),
+    Math.min(
+      yachtzeeTurns - haveEffect(potion.effect()) - existingOffset,
+      potion.effectDuration() + extraOffset
+    ),
     0
   );
   const embezzlerTurns = Math.min(
     expectedEmbezzlers,
-    Math.max(potion.effectDuration() - effectiveYachtzeeTurns, 0)
+    Math.max(potion.effectDuration() + extraOffset - effectiveYachtzeeTurns, 0)
   );
-  const barfTurns = Math.max(potion.effectDuration() - effectiveYachtzeeTurns - embezzlerTurns, 0);
+  const barfTurns = Math.max(
+    potion.effectDuration() + extraOffset - effectiveYachtzeeTurns - embezzlerTurns,
+    0
+  );
   const embezzlerValue = embezzlerTurns > 0 ? potion.gross(embezzlerTurns) : 0;
   const yachtzeeValue =
     (effectiveYachtzeeTurns * 2000 * (potion.meatDrop() + 2.5 * potion.familiarWeight())) / 100; // Every 1lbs of lep ~ 2.5% meat drop
@@ -587,6 +602,8 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
 
 function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
+  const PYECOffset =
+    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`) ? 5 : 0;
   const excludedEffects = new Set<Effect>();
 
   if (have($item`Eight Days a Week Pill Keeper`) && !property.getBoolean("_freePillKeeperUsed")) {
@@ -594,7 +611,8 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
       .filter(
         (potion) =>
           potion.canDouble &&
-          haveEffect(potion.effect()) < yachtzeeTurns &&
+          haveEffect(potion.effect()) + PYECOffset * toInt(haveEffect(potion.effect()) > 0) <
+            yachtzeeTurns &&
           yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 &&
           potion.price(true) < myMeat()
       )
@@ -631,8 +649,8 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   const testPotions = farmingPotions
     .filter(
       (potion) =>
-        haveEffect(potion.effect()) < yachtzeeTurns &&
-        yachtzeePotionProfits(potion, yachtzeeTurns) > 0
+        haveEffect(potion.effect()) + PYECOffset * toInt(haveEffect(potion.effect()) > 0) <
+          yachtzeeTurns && yachtzeePotionProfits(potion, yachtzeeTurns) > 0
     )
     .sort(
       (left, right) =>
@@ -642,22 +660,39 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   for (const potion of testPotions) {
     const effect = potion.effect();
     const price = potion.price(true);
-    if (haveEffect(effect) >= yachtzeeTurns || price > myMeat()) continue;
+    if (
+      haveEffect(effect) + PYECOffset * toInt(haveEffect(effect) > 0) >= yachtzeeTurns ||
+      price > myMeat()
+    ) {
+      continue;
+    }
     if (!excludedEffects.has(effect)) {
       let tries = 0;
-      while (haveEffect(effect) < yachtzeeTurns) {
+      while (haveEffect(effect) + PYECOffset * toInt(haveEffect(effect) > 0) < yachtzeeTurns) {
         tries++;
         print(`Considering effect ${effect} from source ${potion.potion}`, "blue");
         const profit = yachtzeePotionProfits(potion, yachtzeeTurns);
         if (profit < 0) break;
-        totalProfits += profit;
+        const nPotions = have(effect)
+          ? clamp(
+              Math.floor(
+                (yachtzeeTurns - haveEffect(effect) - PYECOffset) / potion.effectDuration()
+              ),
+              1,
+              Math.max(1, yachtzeeTurns - PYECOffset)
+            )
+          : 1;
+
+        totalProfits += nPotions * profit;
         print(
-          `Expected to profit ${profit} meat from using 1 ${potion.potion} @ price ${price} meat`,
+          `Expected to profit ${nPotions * profit} meat from using ${nPotions} ${
+            potion.potion
+          } @ price ${price} meat each`,
           "blue"
         );
         if (!simOnly) {
-          acquire(1, potion.potion, profit + price);
-          if (!have(potion.potion)) break;
+          acquire(nPotions, potion.potion, profit + price);
+          if (itemAmount(potion.potion) < 1) break;
           if (isSong(effect) && !have(effect)) {
             for (const song of getActiveSongs()) {
               const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
@@ -666,12 +701,15 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
               }
             }
           }
-          if (!potion.use(1) || tries >= 5 * Math.ceil(yachtzeeTurns / potion.effectDuration())) {
+          if (
+            !potion.use(Math.min(itemAmount(potion.potion), nPotions)) ||
+            tries >= 5 * Math.ceil(yachtzeeTurns / potion.effectDuration())
+          ) {
             break;
           }
         } else break;
       }
-      if (haveEffect(effect) || simOnly) {
+      if (have(effect) || simOnly) {
         for (const excluded of mutuallyExclusive.get(effect) ?? []) {
           excludedEffects.add(excluded);
         }
