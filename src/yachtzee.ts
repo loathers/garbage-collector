@@ -9,6 +9,7 @@ import {
   fullnessLimit,
   haveEffect,
   inebrietyLimit,
+  itemAmount,
   maximize,
   myClosetMeat,
   myFullness,
@@ -493,19 +494,51 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     true,
     1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
   );
+  if (itemAmount($item`stench jelly`) < yachtzeeTurns) {
+    throw "Failed to acquire sufficient stench jellies";
+  }
   if (extrosToChew > 0) {
     acquire(extrosToChew, $item`Extrovermectin™`, 100000, true);
+    if (itemAmount($item`Extrovermectin™`) < extrosToChew) {
+      throw "Failed to acquire sufficient Extrovermectins™";
+    }
   }
   if (pickleJuiceToDrink > 0) {
     acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice, true);
+    if (itemAmount($item`jar of fermented pickle juice`) < pickleJuiceToDrink) {
+      throw "Failed to acquire sufficient jars of fermented pickle juice";
+    }
   }
-  if (slidersToEat > 0) acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice, true);
+  if (slidersToEat > 0) {
+    acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice, true);
+    if (itemAmount($item`extra-greasy slider`) < slidersToEat) {
+      throw "Failed to acquire sufficient extra-greasy sliders";
+    }
+  }
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     acquire(1, $item`fish juice box`, 2 * fishJuiceBoxPrice, true);
+    if (itemAmount($item`fish juice box`) < 1) {
+      throw "Failed to acquire sufficient fish juice boxes";
+    }
   }
-  if (cologne > 0) acquire(cologne, $item`beggin' cologne`, 2 * colognePrice, true);
-  if (filters > 0) acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`), true);
-  if (horseradishes > 0) acquire(horseradishes, $item`jumping horseradish`, 60000, true);
+  if (cologne > 0) {
+    acquire(cologne, $item`beggin' cologne`, 2 * colognePrice, true);
+    if (itemAmount($item`beggin' cologne`) < cologne) {
+      throw "Failed to acquire sufficient beggin' colognes";
+    }
+  }
+  if (filters > 0) {
+    acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`), true);
+    if (itemAmount($item`mojo filter`) < filters) {
+      throw "Failed to acquire sufficient mojo filters";
+    }
+  }
+  if (horseradishes > 0) {
+    acquire(horseradishes, $item`jumping horseradish`, 60000, true);
+    if (itemAmount($item`jumping horseradish`) < horseradishes) {
+      throw "Failed to acquire sufficient jumping horseradishes";
+    }
+  }
 
   // Get fishy turns
   print("Getting fishy turns", "purple");
@@ -646,9 +679,11 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
     }
   }
 
-  executeNextDietStep(true);
-  if (!simOnly && have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`)) {
-    use(1, $item`Platinum Yendorian Express Card`);
+  if (!simOnly) {
+    executeNextDietStep(true);
+    if (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`)) {
+      use(1, $item`Platinum Yendorian Express Card`);
+    }
   }
 
   // Uncle Greenspan's may be cost effective
@@ -705,7 +740,8 @@ function _yachtzeeChain(): void {
   useFamiliar($familiar`Urchin Urchin`);
   maximize("meat", false);
 
-  cliExecute(`closet put ${myMeat() - 5000000} meat`);
+  const meatLimit = 5000000;
+  if (myMeat() > meatLimit) cliExecute(`closet put ${myMeat() - meatLimit} meat`);
   if (!yachtzeeChainDiet()) {
     cliExecute(`closet take ${myClosetMeat()} meat`);
     return;
