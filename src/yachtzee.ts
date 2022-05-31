@@ -242,7 +242,7 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
   dietUtil.setDietPref();
 
   if (!stenchJellyConsumed) {
-    throw "We completed our entire diet but failed to get a stench jelly charge";
+    throw new Error("We completed our entire diet but failed to get a stench jelly charge");
   }
 }
 
@@ -313,9 +313,9 @@ function yachtzeeDietScheduler(menu: Array<DietEntry<void>>): Array<DietEntry<vo
     fullness += entry.fullness;
     drunkenness += entry.drunkenness;
     spleenUse += entry.spleen;
-    if (fullness > fullnessLimit()) throw "Error in diet schedule: Overeating";
-    else if (drunkenness > inebrietyLimit()) throw "Error in diet schedule: Overdrinking";
-    else if (spleenUse > spleenLimit()) throw "Error in diet schedule: Overuse of spleen";
+    if (fullness > fullnessLimit()) throw new Error("Error in diet schedule: Overeating");
+    else if (drunkenness > inebrietyLimit()) throw new Error("Error in diet schedule: Overdrinking");
+    else if (spleenUse > spleenLimit()) throw new Error("Error in diet schedule: Overuse of spleen");
   }
 
   return dietSchedule;
@@ -797,7 +797,7 @@ function _yachtzeeChain(): void {
   set("choiceAdventure918", 2);
   while (Math.min(jellyTurns, fishyTurns) > 0) {
     executeNextDietStep();
-    if (!property.getBoolean("stenchJellyUsed")) throw "We did not use stench jellies";
+    if (!("stenchJellyUsed", false)) throw new Error("We did not use stench jellies");
     adv1($location`The Sunken Party Yacht`, -1, "");
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
