@@ -24461,6 +24461,7 @@ var conditionalSources = [new EmbezzlerFight("Orb Prediction", () => libram__WEB
 
   var adventureFunction = options.useAuto ? libram__WEBPACK_IMPORTED_MODULE_15__/* .adventureMacroAuto */ .Ao : libram__WEBPACK_IMPORTED_MODULE_15__/* .adventureMacro */ .Qk;
   adventureFunction((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$location */ .PG)(_templateObject89 || (_templateObject89 = _taggedTemplateLiteral(["The Dire Warren"]))), options.macro, options.macro);
+  toasterGaze();
 }, {
   requirements: [new libram__WEBPACK_IMPORTED_MODULE_18__/* .Requirement */ .nb([], {
     forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$items */ .vS)(_templateObject90 || (_templateObject90 = _taggedTemplateLiteral(["miniature crystal ball"])))
@@ -32281,7 +32282,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26321);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("9ba7d02ffd80deb4b96b6adba24aaefc06643495"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("40fc9717d7d90c48782c3d9e41520d11dffd667b"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32906,7 +32907,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("9ba7d02ffd80deb4b96b6adba24aaefc06643495" === mainSha) {
+    if ("40fc9717d7d90c48782c3d9e41520d11dffd667b" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
