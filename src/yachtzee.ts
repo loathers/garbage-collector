@@ -50,7 +50,7 @@ import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
 import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
-import { baseMeat, globalOptions, safeRestore, turnsToNC } from "./lib";
+import { baseMeat, globalOptions, realmAvailable, safeRestore, turnsToNC } from "./lib";
 import { meatMood } from "./mood";
 import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
 import { garboValue } from "./session";
@@ -197,7 +197,7 @@ function castOde(turns: number): boolean {
 }
 
 function executeNextDietStep(stopBeforeJellies?: boolean): void {
-  if (get("stenchJellyUsed", false)) return;
+  if (get("_stenchJellyUsed", false)) return;
   print("Executing next diet steps", "blue");
   const dietUtil = new DietUtils();
   dietUtil.resetDietPref();
@@ -210,7 +210,7 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
       if (stopBeforeJellies) dietUtil.addToPref(1, name);
       else {
         chew(1, $item`stench jelly`);
-        set("stenchJellyUsed", true);
+        set("_stenchJellyUsed", true);
       }
       stenchJellyConsumed = true;
     } else if (!stenchJellyConsumed) {
@@ -314,8 +314,11 @@ function yachtzeeDietScheduler(menu: Array<DietEntry<void>>): Array<DietEntry<vo
     drunkenness += entry.drunkenness;
     spleenUse += entry.spleen;
     if (fullness > fullnessLimit()) throw new Error("Error in diet schedule: Overeating");
-    else if (drunkenness > inebrietyLimit()) throw new Error("Error in diet schedule: Overdrinking");
-    else if (spleenUse > spleenLimit()) throw new Error("Error in diet schedule: Overuse of spleen");
+    else if (drunkenness > inebrietyLimit()) {
+      throw new Error("Error in diet schedule: Overdrinking");
+    } else if (spleenUse > spleenLimit()) {
+      throw new Error("Error in diet schedule: Overuse of spleen");
+    }
   }
 
   return dietSchedule;
@@ -331,13 +334,14 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // 4) Find meat and famwt buff that makes sense for a 2k base drop
   // 5) Plant underwater friar's plant if possible
 
-  const havePYECCharge = have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`);
+  const havePYECCharge =
+    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false);
   const maxYachtzeeTurns = havePYECCharge ? 35 : 30;
 
   // Plan our diet (positive values give space, negative values take space)
   const sliders = Math.floor((fullnessLimit() - myFullness()) / 5);
   const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
-  const reqSynthTurns = 150; // We will be left with (150 - yachtzeeTurns) after chaining
+  const reqSynthTurns = 30; // We will be left with (30 - yachtzeeTurns) after chaining
   const synth =
     haveEffect($effect`Synthesis: Greed`) < reqSynthTurns
       ? -Math.ceil(reqSynthTurns - haveEffect($effect`Synthesis: Greed`)) / 30
@@ -546,7 +550,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     use(1, $item`fish juice box`);
   }
-  if (!get("fishyPipeUsed")) use(1, $item`fishy pipe`);
+  if (!get("fishyPipeUsed", false)) use(1, $item`fishy pipe`);
 
   // Final checks
   if (haveEffect($effect`Fishy`) + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
@@ -574,7 +578,7 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
   // 2) If we already have an effect, +5 to existing effect duration
   // This means that the first use of a potion that we don't already have an effect of is more valuable than the next use
   const PYECOffset =
-    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`) ? 5 : 0;
+    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false) ? 5 : 0;
   const existingOffset = haveEffect(potion.effect()) ? PYECOffset : 0;
   const extraOffset = PYECOffset - existingOffset;
   const effectiveYachtzeeTurns = Math.max(
@@ -603,10 +607,10 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
 function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
   const PYECOffset =
-    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`) ? 5 : 0;
+    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false) ? 5 : 0;
   const excludedEffects = new Set<Effect>();
 
-  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
+  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed", false)) {
     const doublingPotions = farmingPotions
       .filter(
         (potion) =>
@@ -719,7 +723,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
 
   if (!simOnly) {
     executeNextDietStep(true);
-    if (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`)) {
+    if (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false)) {
       use(1, $item`Platinum Yendorian Express Card`);
     }
   }
@@ -757,9 +761,9 @@ function _yachtzeeChain(): void {
   // hard require fishy pipe to run this chain
   if (!have($familiar`Urchin Urchin`)) return;
   // also hard require urchin urchin for now
-   if (myLevel() <= 13 || !canInteract()) return;
+  if (myLevel() <= 13 || !canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
-  if (get("fishyPipeUsed") && !have($effect`Fishy`)) return;
+  if (get("fishyPipeUsed", false) && !have($effect`Fishy`)) return;
   // If we have used our fishy pipe and have no fishy turns left, we're probably done
   if (!realmAvailable("sleaze")) return;
   // Consider only allowing yachtzee chain to be run if
@@ -782,7 +786,7 @@ function _yachtzeeChain(): void {
   let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
   let fishyTurns =
     haveEffect($effect`Fishy`) +
-    (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`) ? 5 : 0);
+    (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false) ? 5 : 0);
   let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   cliExecute(`closet take ${myClosetMeat()} meat`);
@@ -792,19 +796,19 @@ function _yachtzeeChain(): void {
   set("choiceAdventure918", 2);
   while (Math.min(jellyTurns, fishyTurns) > 0) {
     executeNextDietStep();
-    if (!("stenchJellyUsed", false)) throw new Error("We did not use stench jellies");
+    if (!get("_stenchJellyUsed", false)) throw new Error("We did not use stench jellies");
     adv1($location`The Sunken Party Yacht`, -1, "");
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
       turncount = myTurncount();
       set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") - 1);
-      set("stenchJellyUsed", false);
+      set("_stenchJellyUsed", false);
     }
     if (
       plantCrookweed &&
       visitUrl("forestvillage.php").includes("friarcottage.gif") &&
-      !get("_floristPlantsUsed").split(",").includes("Crookweed")
+      !property.getString("_floristPlantsUsed").split(",").includes("Crookweed")
     ) {
       cliExecute("florist plant Crookweed");
     }
@@ -815,7 +819,7 @@ function _yachtzeeChain(): void {
 
 export function yachtzeeChain(): void {
   if (!globalOptions.yachtzeeChain) return;
-if get("_garboYachtzeeChainCompleted", false)) return;
+  if (get("_garboYachtzeeChainCompleted", false)) return;
   print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
   set("_garboYachtzeeChainCompleted", true);
