@@ -590,7 +590,7 @@ export function main(argString = ""): void {
 
         if (
           !globalOptions.noDiet &&
-          (!globalOptions.yachtzeeChain ||get("_garboYachtzeeChainCompleted", false))
+          (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
         ) {
           runDiet();
         }
