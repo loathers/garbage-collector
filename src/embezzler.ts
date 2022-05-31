@@ -580,6 +580,7 @@ export const conditionalSources = [
       }
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`The Dire Warren`, options.macro, options.macro);
+      toasterGaze();
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
