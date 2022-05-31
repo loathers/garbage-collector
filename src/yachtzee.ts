@@ -197,7 +197,7 @@ function castOde(turns: number): boolean {
 }
 
 function executeNextDietStep(stopBeforeJellies?: boolean): void {
-  if (property.getBoolean("stenchJellyUsed")) return;
+  if (get("stenchJellyUsed", false)) return;
   print("Executing next diet steps", "blue");
   const dietUtil = new DietUtils();
   dietUtil.resetDietPref();
@@ -322,7 +322,7 @@ function yachtzeeDietScheduler(menu: Array<DietEntry<void>>): Array<DietEntry<vo
 }
 
 export function yachtzeeChainDiet(simOnly?: boolean): boolean {
-  if (property.getBoolean("_garboYachtzeeChainDietPlanned")) return true;
+  if (get("_garboYachtzeeChainDietPlanned", false)) return true;
 
   // Plan for Yachtzee Chain
   // 1) Fish Juice Box + Fishy Pipe for 30 turns of Fishy and Really Deep Breath (so we can ignore underwater gear)
@@ -606,7 +606,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
     have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`) ? 5 : 0;
   const excludedEffects = new Set<Effect>();
 
-  if (have($item`Eight Days a Week Pill Keeper`) && !property.getBoolean("_freePillKeeperUsed")) {
+  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
     const doublingPotions = farmingPotions
       .filter(
         (potion) =>
@@ -755,18 +755,13 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
 function _yachtzeeChain(): void {
   if (!have($item`fishy pipe`)) return;
   // hard require fishy pipe to run this chain
-  else if (!have($familiar`Urchin Urchin`)) return;
+  if (!have($familiar`Urchin Urchin`)) return;
   // also hard require urchin urchin for now
-  else if (myLevel() <= 13 || !canInteract()) return;
+   if (myLevel() <= 13 || !canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
-  else if (property.getBoolean("fishyPipeUsed") && !have($effect`Fishy`)) return;
+  if (get("fishyPipeUsed") && !have($effect`Fishy`)) return;
   // If we have used our fishy pipe and have no fishy turns left, we're probably done
-  else if (
-    !property.getBoolean("sleazeAirportAlways") &&
-    !property.getBoolean("_sleazeAirportToday")
-  ) {
-    return;
-  }
+  if (!realmAvailable("sleaze")) return;
   // Consider only allowing yachtzee chain to be run if
   // 1) globalOptions.ascending
   // 2) haveEffect($effect`Synthesis: Greed`) - 100 > myAdventures() + (fullnessLimit() - myFullness()) * 6.5 + (inebrietyLimit() - myInebriety()) * 7.5;
@@ -820,7 +815,7 @@ function _yachtzeeChain(): void {
 
 export function yachtzeeChain(): void {
   if (!globalOptions.yachtzeeChain) return;
-  else if (property.getBoolean("_garboYachtzeeChainCompleted")) return;
+if get("_garboYachtzeeChainCompleted", false)) return;
   print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
   set("_garboYachtzeeChainCompleted", true);

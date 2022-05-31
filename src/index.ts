@@ -583,14 +583,14 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        if (globalOptions.noDiet || property.getBoolean("_garboYachtzeeChainCompleted")) {
+        if (globalOptions.noDiet || get("_garboYachtzeeChainCompleted", false)) {
           print("We should not be yachtzee chaining", "red");
           globalOptions.yachtzeeChain = false;
         }
 
         if (
           !globalOptions.noDiet &&
-          (!globalOptions.yachtzeeChain || property.getBoolean("_garboYachtzeeChainCompleted"))
+          (!globalOptions.yachtzeeChain ||get("_garboYachtzeeChainCompleted", false))
         ) {
           runDiet();
         }

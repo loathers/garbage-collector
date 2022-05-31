@@ -52,7 +52,7 @@ function horseradish(): void {
     getRemainingStomach() > 0 &&
     !(
       globalOptions.noDiet ||
-      (globalOptions.yachtzeeChain && !get(`"_garboYachtzeeChainCompleted"`))
+      (globalOptions.yachtzeeChain && !get(`"_garboYachtzeeChainCompleted", false`))
     )
   ) {
     consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING");
