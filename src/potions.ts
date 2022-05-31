@@ -334,7 +334,7 @@ export const farmingPotions = [
         canDouble: false,
         duration: 20,
         use: (quantity: number) =>
-          new Array(quantity).every(() => cliExecute(`genie effect ${effect}`)),
+          new Array(quantity).fill(0).every(() => cliExecute(`genie effect ${effect}`)),
       })
   ),
 ];

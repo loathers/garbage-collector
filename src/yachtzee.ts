@@ -648,7 +648,6 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
       excludedEffects.add(excluded);
     }
   }
-  excludedEffects.add($effect`Braaaaaains`); // Doesn't seem like we can wish for this
 
   const testPotions = farmingPotions
     .filter(
