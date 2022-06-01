@@ -309,11 +309,12 @@ function barfTurn() {
     set("_garbo25AdvMeatCheckpoint", "");
     set("_garbo25AdvItemsCheckpoint", "");
   } else if (myAdventures() === 25 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
-    if (!get("_garbo25AdvMeatCheckpoint") && !get("_garbo25AdvItemsCheckpoint")) {
+    if (!get("_garboVOACheckpointSet", false)) {
       setMarginalSessionDiff();
       const { meat, items } = sessionSinceStart().value(garboValue);
       set("_garbo25AdvMeatCheckpoint", meat);
       set("_garbo25AdvItemsCheckpoint", items);
+      set("_garboVOACheckpointSet", true);
     }
   }
 
