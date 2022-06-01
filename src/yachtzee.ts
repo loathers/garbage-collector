@@ -840,6 +840,7 @@ export function yachtzeeChain(): void {
   print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
   set("_garboYachtzeeChainCompleted", true);
+  globalOptions.yachtzeeChain = false;
   if (!globalOptions.noDiet) {
     runDiet();
     prepFamiliars(); // Recompute robo drinks' worth after diet is finally consumed
