@@ -32,6 +32,7 @@ import {
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $skill,
   clamp,
@@ -46,6 +47,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
+import { withStash } from "./clan";
 import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
 import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
@@ -334,8 +336,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // 4) Find meat and famwt buff that makes sense for a 2k base drop
   // 5) Plant underwater friar's plant if possible
 
-  const havePYECCharge =
-    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false);
+  const havePYECCharge = get("_PYECAvailable", false);
   const maxYachtzeeTurns = havePYECCharge ? 35 : 30;
 
   // Plan our diet (positive values give space, negative values take space)
@@ -577,8 +578,7 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
   // 1) We if don't have an effect, +5 to gained effect duration
   // 2) If we already have an effect, +5 to existing effect duration
   // This means that the first use of a potion that we don't already have an effect of is more valuable than the next use
-  const PYECOffset =
-    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false) ? 5 : 0;
+  const PYECOffset = get("_PYECAvailable", false) ? 5 : 0;
   const existingOffset = haveEffect(potion.effect()) ? PYECOffset : 0;
   const extraOffset = PYECOffset - existingOffset;
   const effectiveYachtzeeTurns = Math.max(
@@ -606,8 +606,7 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
 
 function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
-  const PYECOffset =
-    have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false) ? 5 : 0;
+  const PYECOffset = get("_PYECAvailable", false) ? 5 : 0;
   const excludedEffects = new Set<Effect>();
 
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed", false)) {
@@ -722,9 +721,18 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
 
   if (!simOnly) {
     executeNextDietStep(true);
-    if (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false)) {
-      use(1, $item`Platinum Yendorian Express Card`);
+    if (get("_PYECAvailable", false)) {
+      if (have($item`Platinum Yendorian Express Card`)) {
+        use(1, $item`Platinum Yendorian Express Card`);
+      } else {
+        withStash($items`Platinum Yendorian Express Card`, () => {
+          if (have($item`Platinum Yendorian Express Card`)) {
+            use(1, $item`Platinum Yendorian Express Card`);
+          }
+        });
+      }
     }
+    set("_PYECAvailable", false);
   }
 
   // Uncle Greenspan's may be cost effective
@@ -771,6 +779,16 @@ function _yachtzeeChain(): void {
   // This is likely the most optimal configuration for everyone, since we would otherwise
   // have high demand for jellies using less optimal configurations, leading to decreased profits for everyone
 
+  set(
+    "_PYECAvailable",
+    get(`expressCardUsed`, false)
+      ? false
+      : have($item`Platinum Yendorian Express Card`)
+      ? true
+      : withStash($items`Platinum Yendorian Express Card`, () => {
+          return have($item`Platinum Yendorian Express Card`);
+        })
+  );
   meatMood(false).execute(estimatedTurns());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   useFamiliar($familiar`Urchin Urchin`);
