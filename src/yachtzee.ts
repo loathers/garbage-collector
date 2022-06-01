@@ -801,9 +801,7 @@ function _yachtzeeChain(): void {
     return;
   }
   let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
-  let fishyTurns =
-    haveEffect($effect`Fishy`) +
-    (have($item`Platinum Yendorian Express Card`) && !get(`expressCardUsed`, false) ? 5 : 0);
+  let fishyTurns = haveEffect($effect`Fishy`) + (get("_PYECAvailable", false) ? 5 : 0);
   let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   cliExecute(`closet take ${myClosetMeat()} meat`);
