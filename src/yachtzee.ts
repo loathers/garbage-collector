@@ -142,7 +142,7 @@ class DietUtils {
   }
 
   public addToPref(n: number, name?: string): void {
-    if (!name) throw "Diet pref must have a name";
+    if (!name) throw new Error("Diet pref must have a name");
     for (let i = 0; i < n; i++) {
       this.pref = this.pref.concat(name ?? "").concat(",");
     }
@@ -219,11 +219,11 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
       dietUtil.dietArray.forEach((entry) => {
         if (entry.name === name) {
           if (myFullness() + entry.fullness > fullnessLimit()) {
-            throw `consuming ${entry.name} will exceed our fullness limit`;
+            throw new Error(`consuming ${entry.name} will exceed our fullness limit`);
           } else if (myInebriety() + entry.drunkenness > inebrietyLimit()) {
-            throw `consuming ${entry.name} will exceed our inebriety limit`;
+            throw new Error(`consuming ${entry.name} will exceed our inebriety limit`);
           } else if (mySpleenUse() + entry.spleen > spleenLimit()) {
-            throw `consuming ${entry.name} will exceed our spleen limit`;
+            throw new Error(`consuming ${entry.name} will exceed our spleen limit`);
           }
           if (entry.fullness > 0) {
             if (!property.getBoolean("_milkOfMagnesiumUsed")) {
@@ -487,9 +487,11 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (simOnly) return true;
 
   if (property.getNumber("_stenchJellyChargeTarget") < yachtzeeTurns) {
-    throw `We are only able to obtain up to ${property.getNumber(
-      "_stenchJellyChargeTarget"
-    )}/${yachtzeeTurns} turns of jelly charges!`;
+    throw new Error(
+      `We are only able to obtain up to ${property.getNumber(
+        "_stenchJellyChargeTarget"
+      )}/${yachtzeeTurns} turns of jelly charges!`
+    );
   }
 
   // Acquire everything we need
@@ -501,48 +503,48 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
   );
   if (itemAmount($item`stench jelly`) < yachtzeeTurns) {
-    throw "Failed to acquire sufficient stench jellies";
+    throw new Error("Failed to acquire sufficient stench jellies");
   }
   if (extrosToChew > 0) {
     acquire(extrosToChew, $item`Extrovermectin™`, 100000, true);
     if (itemAmount($item`Extrovermectin™`) < extrosToChew) {
-      throw "Failed to acquire sufficient Extrovermectins™";
+      throw new Error("Failed to acquire sufficient Extrovermectins™");
     }
   }
   if (pickleJuiceToDrink > 0) {
     acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice, true);
     if (itemAmount($item`jar of fermented pickle juice`) < pickleJuiceToDrink) {
-      throw "Failed to acquire sufficient jars of fermented pickle juice";
+      throw new Error("Failed to acquire sufficient jars of fermented pickle juice");
     }
   }
   if (slidersToEat > 0) {
     acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice, true);
     if (itemAmount($item`extra-greasy slider`) < slidersToEat) {
-      throw "Failed to acquire sufficient extra-greasy sliders";
+      throw new Error("Failed to acquire sufficient extra-greasy sliders");
     }
   }
   if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
     acquire(1, $item`fish juice box`, 2 * fishJuiceBoxPrice, true);
     if (itemAmount($item`fish juice box`) < 1) {
-      throw "Failed to acquire sufficient fish juice boxes";
+      throw new Error("Failed to acquire sufficient fish juice boxes");
     }
   }
   if (cologne > 0) {
     acquire(cologne, $item`beggin' cologne`, 2 * colognePrice, true);
     if (itemAmount($item`beggin' cologne`) < cologne) {
-      throw "Failed to acquire sufficient beggin' colognes";
+      throw new Error("Failed to acquire sufficient beggin' colognes");
     }
   }
   if (filters > 0) {
     acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`), true);
     if (itemAmount($item`mojo filter`) < filters) {
-      throw "Failed to acquire sufficient mojo filters";
+      throw new Error("Failed to acquire sufficient mojo filters");
     }
   }
   if (horseradishes > 0) {
     acquire(horseradishes, $item`jumping horseradish`, 60000, true);
     if (itemAmount($item`jumping horseradish`) < horseradishes) {
-      throw "Failed to acquire sufficient jumping horseradishes";
+      throw new Error("Failed to acquire sufficient jumping horseradishes");
     }
   }
 
@@ -555,7 +557,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   // Final checks
   if (haveEffect($effect`Fishy`) + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
-    throw `We only got ${haveEffect($effect`Fishy`)}/${yachtzeeTurns} turns of fishy!`;
+    throw new Error(`We only got ${haveEffect($effect`Fishy`)}/${yachtzeeTurns} turns of fishy!`);
   }
 
   set("_garboYachtzeeChainDietPlanned", true);
