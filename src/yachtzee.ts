@@ -1003,10 +1003,16 @@ function bestYachtzeeFamiliar(): Familiar {
         (breathesUnderwater(fam) || haveUnderwaterFamEquipment)
     )
     .reduce((left, right) =>
-      leprechaunMeatBonus(findLeprechaunMultiplier(left) * famWt) +
-        (breathesUnderwater(left) ? 50 : 0) >
-      leprechaunMeatBonus(findLeprechaunMultiplier(right) * famWt) +
-        (breathesUnderwater(right) ? 50 : 0)
+      leprechaunMeatBonus(
+        findLeprechaunMultiplier(left) *
+          (famWt + (breathesUnderwater(left) ? (have($item`amulet coin`) ? 10 : 5) : 0))
+      ) +
+        (breathesUnderwater(left) && have($item`amulet coin`) ? 50 : 0) >
+      leprechaunMeatBonus(
+        findLeprechaunMultiplier(right) *
+          (famWt + (breathesUnderwater(right) ? (have($item`amulet coin`) ? 10 : 5) : 0))
+      ) +
+        (breathesUnderwater(right) && have($item`amulet coin`) ? 50 : 0)
         ? left
         : right
     );
