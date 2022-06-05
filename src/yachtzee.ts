@@ -55,7 +55,6 @@ import {
   set,
   sum,
 } from "libram";
-import { item } from "libram/dist/resources/2016/SourceTerminal";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { prepFamiliars } from "./dailies";
@@ -353,17 +352,16 @@ function yachtzeeBuffValue(obj: Item | Effect): number {
   return (2000 * (getModifier("Meat Drop", obj) + getModifier("Familiar Weight", obj) * 2.5)) / 100;
 }
 
-function getBestWaterBreathingEquipment(): { it: Item; cost: number } {
-  const waterBreathingEquipmentCosts = waterBreathingEquipment.map((it) =>
-    have(it)
-      ? {
-          it: item,
-          cost: canEquip(item) ? yachtzeeBuffValue(equippedItem(toSlot(it))) : Infinity,
-        }
-      : { it: item, cost: Infinity }
-  );
+function getBestWaterBreathingEquipment(yachtzeeTurns: number): { item: Item; cost: number } {
+  const waterBreathingEquipmentCosts = waterBreathingEquipment.map((it) => ({
+    item: it,
+    cost:
+      have(it) && canEquip(it)
+        ? yachtzeeTurns * yachtzeeBuffValue(equippedItem(toSlot(it)))
+        : Infinity,
+  }));
   const bestWaterBreathingEquipment = waterBreathingEquipment.some((item) => haveEquipped(item))
-    ? { it: $item`none`, cost: 0 }
+    ? { item: $item`none`, cost: 0 }
     : waterBreathingEquipmentCosts.reduce((left, right) => (left.cost < right.cost ? left : right));
   return bestWaterBreathingEquipment;
 }
@@ -371,28 +369,29 @@ function getBestWaterBreathingEquipment(): { it: Item; cost: number } {
 function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   // Returns the lowest cost for fishy
   // Assume we already maximized for meat
-  const bestWaterBreathingEquipment = getBestWaterBreathingEquipment();
+  const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(yachtzeeTurns);
 
   if (
     setup &&
     !have($effect`Really Deep Breath`) &&
-    bestWaterBreathingEquipment.it !== $item`none`
+    bestWaterBreathingEquipment.item !== $item`none`
   ) {
-    equip(bestWaterBreathingEquipment.it);
+    equip(bestWaterBreathingEquipment.item);
   }
   // If we already have fishy, then we longer need to consider the cost of obtaining it
   if (haveEffect($effect`Fishy`) >= yachtzeeTurns) return 0;
 
   const havePYECCharge = get("_PYECAvailable", false);
+  const haveFishyPipe = have($item`fishy pipe`) && !get("_fishyPipeUsed", false);
   let costOfLosingBuffs = 0;
   getActiveEffects().forEach(
     (eff: Effect) =>
       (costOfLosingBuffs +=
         yachtzeeBuffValue(eff) > 0
-          ? haveEffect(eff) === 1 && havePYECCharge
-            ? 6 * yachtzeeBuffValue(eff)
+          ? haveEffect(eff) <= 1 + toInt(haveFishyPipe) && havePYECCharge
+            ? (6 + toInt(haveFishyPipe)) * yachtzeeBuffValue(eff)
             : haveEffect(eff) + 5 * toInt(havePYECCharge) < yachtzeeTurns
-            ? yachtzeeBuffValue(eff)
+            ? (1 + toInt(haveFishyPipe)) * yachtzeeBuffValue(eff)
             : 0
           : 0)
   );
@@ -410,7 +409,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
       name: "cuppa Gill tea",
       cost: garboValue($item`cuppa Gill tea`) + bestWaterBreathingEquipment.cost,
       action: () => {
-        equip(bestWaterBreathingEquipment.it);
+        equip(bestWaterBreathingEquipment.item);
         if (
           equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
           get(`edPiece`) !== "fish"
@@ -426,7 +425,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
       name: "powdered candy sushi set",
       cost: garboValue($item`powdered candy sushi set`) + bestWaterBreathingEquipment.cost,
       action: () => {
-        equip(bestWaterBreathingEquipment.it);
+        equip(bestWaterBreathingEquipment.item);
         if (
           equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
           get(`edPiece`) !== "fish"
@@ -448,7 +447,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
       name: "concentrated fish broth",
       cost: garboValue($item`concentrated fish broth`) + bestWaterBreathingEquipment.cost,
       action: () => {
-        equip(bestWaterBreathingEquipment.it);
+        equip(bestWaterBreathingEquipment.item);
         if (
           equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
           get(`edPiece`) !== "fish"
@@ -473,13 +472,14 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
           ? Infinity
           : bestWaterBreathingEquipment.cost,
       action: () => {
-        equip(bestWaterBreathingEquipment.it);
+        equip(bestWaterBreathingEquipment.item);
         if (
           equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
           get(`edPiece`) !== "fish"
         ) {
           cliExecute("edpiece fish");
         }
+        cliExecute("skate lutz");
       },
     },
     {
@@ -491,7 +491,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
           costOfLosingBuffs
         : Infinity,
       action: () => {
-        equip(bestWaterBreathingEquipment.it);
+        equip(bestWaterBreathingEquipment.item);
         if (
           equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
           get(`edPiece`) !== "fish"
@@ -504,27 +504,31 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
             throw new Error("Unable to get 11-leaf clover for fishy!");
           }
           use(1, $item`11-leaf clover`);
+          if (haveFishyPipe) use(1, $item`fishy pipe`);
           adv1($location`The Brinier Deepers`, -1, "");
-          if (!have($effect`Fishy`)) throw new Error("Failed to get fishy from clover adv");
+          if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
+            throw new Error("Failed to get fishy from clover adv");
+          }
         }
       },
     },
   ];
 
-  print("Cost of Fishy sources:", "blue");
-  fishySources.forEach((source) => {
-    print(`${source.name} (${source.cost})`, "blue");
-  });
   const bestFishySource = fishySources.reduce((left, right) => {
     return left.cost < right.cost ? left : right;
   });
-  if (setup) {
+  if (!setup) {
+    print("Cost of Fishy sources:", "blue");
+    fishySources.forEach((source) => {
+      print(`${source.name} (${source.cost})`, "blue");
+    });
+  } else {
     bestFishySource.action();
   }
   return bestFishySource.cost;
 }
 
-export function yachtzeeChainDiet(simOnly?: boolean): boolean {
+function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (get("_garboYachtzeeChainDietPlanned", false)) return true;
 
   // Plan for Yachtzee Chain
@@ -1016,8 +1020,10 @@ function _yachtzeeChain(): void {
     executeNextDietStep();
     if (!get("_stenchJellyUsed", false)) throw new Error("We did not use stench jellies");
     if (!have($effect`Really Deep Breath`)) {
-      const bestWaterBreathingEquipment = getBestWaterBreathingEquipment();
-      if (bestWaterBreathingEquipment.it !== $item`none`) equip(bestWaterBreathingEquipment.it);
+      const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(
+        Math.min(jellyTurns, fishyTurns)
+      );
+      if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
     }
     adv1($location`The Sunken Party Yacht`, -1, "");
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
