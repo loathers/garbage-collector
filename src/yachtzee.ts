@@ -996,6 +996,7 @@ function bestYachtzeeFamiliar(): Familiar {
   const bestUnderwaterFamiliar = Familiar.all()
     .filter(
       (fam) =>
+        have(fam) &&
         findLeprechaunMultiplier(fam) > 0 &&
         fam !== $familiar`Ghost of Crimbo Commerce` &&
         fam !== $familiar`Robortender` &&
@@ -1011,6 +1012,19 @@ function bestYachtzeeFamiliar(): Familiar {
     );
   if (!bestUnderwaterFamiliar) return $familiar`none`;
   return bestUnderwaterFamiliar;
+}
+
+function setBestYachtzeeFamiliar() {
+  if (bestYachtzeeFamiliar() === myFamiliar()) return;
+  useFamiliar(bestYachtzeeFamiliar());
+  if (breathesUnderwater(myFamiliar())) maximize("meat", false);
+  else {
+    maximize("meat, -familiar", false);
+    equip(
+      $slot`familiar`,
+      familiarWaterBreathingEquipment.reduce((a, b) => (have(a) ? a : b))
+    );
+  }
 }
 
 function _yachtzeeChain(): void {
@@ -1030,15 +1044,8 @@ function _yachtzeeChain(): void {
   );
   meatMood(false).execute(estimatedTurns());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
-  useFamiliar(bestYachtzeeFamiliar());
-  if (breathesUnderwater(myFamiliar())) maximize("meat", false);
-  else {
-    maximize("meat, -familiar", false);
-    equip(
-      $slot`familiar`,
-      familiarWaterBreathingEquipment.reduce((a, b) => (have(a) ? a : b))
-    );
-  }
+  maximize("meat", false);
+  setBestYachtzeeFamiliar();
 
   const meatLimit = 5000000;
   if (myMeat() > meatLimit) cliExecute(`closet put ${myMeat() - meatLimit} meat`);
@@ -1065,15 +1072,7 @@ function _yachtzeeChain(): void {
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
     }
     // Switch familiars in case changes in fam weight from buffs means our current familiar is no longer optimal
-    useFamiliar(bestYachtzeeFamiliar());
-    if (breathesUnderwater(myFamiliar())) maximize("meat", false);
-    else {
-      maximize("meat, -familiar", false);
-      equip(
-        $slot`familiar`,
-        familiarWaterBreathingEquipment.reduce((a, b) => (have(a) ? a : b))
-      );
-    }
+    setBestYachtzeeFamiliar();
     adv1($location`The Sunken Party Yacht`, -1, "");
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
