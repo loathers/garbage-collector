@@ -41,6 +41,7 @@ import {
   ChateauMantegna,
   CombatLoversLocket,
   Counter,
+  CrystalBall,
   get,
   have,
   property,
@@ -52,7 +53,7 @@ import {
 import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
-import { crateStrategy, equipOrbIfDesired, ponderPrediction } from "./extrovermectin";
+import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
   globalOptions,
@@ -564,21 +565,24 @@ export const wanderSources = [
 export const conditionalSources = [
   new EmbezzlerFight(
     "Orb Prediction",
-    () => ponderPrediction($location`The Dire Warren`) === embezzler,
+    () => CrystalBall.ponder().get($location`The Dire Warren`) === embezzler,
     () =>
       (have($item`miniature crystal ball`) ? 1 : 0) *
       (get("beGregariousCharges") +
         (get("beGregariousFightsLeft") > 0 ||
-        ponderPrediction($location`The Dire Warren`) === embezzler
+        CrystalBall.ponder().get($location`The Dire Warren`) === embezzler
           ? 1
           : 0)),
     (options: EmbezzlerFightRunOptions) => {
       visitUrl("inventory.php?ponder=1");
-      if (ponderPrediction($location`The Dire Warren`) !== $monster`Knob Goblin Embezzler`) {
+      if (
+        CrystalBall.ponder().get($location`The Dire Warren`) !== $monster`Knob Goblin Embezzler`
+      ) {
         return;
       }
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`The Dire Warren`, options.macro, options.macro);
+      toasterGaze();
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
@@ -623,7 +627,7 @@ export const conditionalSources = [
       ).step(options.macro);
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`Noob Cave`, macro, macro);
-      if (ponderPrediction($location`Noob Cave`) === embezzler) toasterGaze();
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
     {
       gregariousReplace: true,
@@ -667,7 +671,7 @@ export const conditionalSources = [
       ).step(options.macro);
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`Noob Cave`, macro, macro);
-      if (ponderPrediction($location`Noob Cave`) === embezzler) toasterGaze();
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
@@ -694,7 +698,7 @@ export const conditionalSources = [
       );
       // reset the crystal ball prediction by staring longingly at toast
       if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
-        const warrenPrediction = ponderPrediction($location`The Dire Warren`);
+        const warrenPrediction = CrystalBall.ponder().get($location`The Dire Warren`);
         if (warrenPrediction !== embezzler) toasterGaze();
       }
     },
@@ -708,7 +712,7 @@ export const conditionalSources = [
       get("beGregariousMonster") === embezzler &&
       get("beGregariousFightsLeft") === 1 &&
       have($item`miniature crystal ball`) &&
-      !ponderPrediction($location`The Dire Warren`),
+      !CrystalBall.ponder().get($location`The Dire Warren`),
     () =>
       (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
       get("beGregariousCharges") > 0
@@ -960,7 +964,7 @@ function proceedWithOrb(): boolean {
   // If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (
-    ponderPrediction($location`Noob Cave`) === embezzler &&
+    CrystalBall.ponder().get($location`Noob Cave`) === embezzler &&
     embezzlerSources
       .filter((source) => !gregFightNames.includes(source.name))
       .find((source) => source.available())
