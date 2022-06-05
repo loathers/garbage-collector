@@ -21,7 +21,6 @@ import {
   get,
   have,
   propertyTypes,
-  Robortender,
 } from "libram";
 import { argmax, globalOptions } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
@@ -280,24 +279,5 @@ export function timeToMeatify(): boolean {
   // We can wait for the next free fight
   else if (freeFightNow || $familiar`Grey Goose`.experience >= 121) return true;
 
-  return false;
-}
-
-export function breathesUnderwater(fam: Familiar): boolean {
-  // Only consider familiars that can naturally breathe underwater without equipment
-  // (thus, ignore Dancing Frog and Reagnimated Gnome since they require familiar equipment to breathe underwater
-  // but we consider robort if the correct drinks have been fed to it)
-  const underwaterFamiliars = $familiars`none, Barrrnacle, Emo Squid, Cuddlefish, Imitation Crab, Magic Dragonfish, Midget Clownfish, Rock Lobster, Urchin Urchin, Grouper Groupie, Squamous Gibberer, Adorable Space Buddy, Space Jellyfish, Robortender, God Lobster, Red-Nosed Snapper`;
-  for (const f of underwaterFamiliars) {
-    if (
-      f === $familiar`Robortender` &&
-      !Robortender.currentDrinks().some((drink) =>
-        $items`Bloody Nora, low tide martini`.includes(drink)
-      )
-    ) {
-      continue;
-    }
-    if (fam === f) return true;
-  }
   return false;
 }
