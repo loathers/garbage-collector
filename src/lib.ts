@@ -294,11 +294,11 @@ export function printHelpMenu(): void {
     |     nodiet     | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |
     +----------------+---------------------------------------------------------------------------------------------------+
     |                | *EXPERIMENTAL* garbo only diets after free fights, and attempts to estimate if Yachtzee! chaining |
-    |                |   is profitable for you - if so, it consumes a specific diet which uses ~30-40 spleen; if not it  |
+    |                |   is profitable for you - if so, it consumes a specific diet which uses ~30-41 spleen; if not it  |
     | yachtzeechain  |   automatically continues with the regular diet. Requires Spring Break Beach access (it will not  |
-    |                |   grab a one-day pass for you, but will make an attempt if one is used), a fishy pipe and an      |
-    |                |   Urchin urchin familiar. Sweet Synthesis is strongly recommended, as with access to other meat%  |
-    |                |   buffs from Source Terminal, Fortune Teller, KGB and the meat% demon. Having PYEC is a big plus. |
+    |                |   grab a one-day pass for you, but will make an attempt if one is used) and an Urchin urchin      |
+    |                |   familiar. Sweet Synthesis is strongly recommended, as with access to other meat% buffs from     |
+    |                |   Source Terminal, Fortune Teller, KGB and the summoning chamber. Having a PYEC is a big plus.    |
     +----------------+---------------------------------------------------------------------------------------------------+
     |      Note:     | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
     +----------------+---------------------------------------------------------------------------------------------------+</pre>`);

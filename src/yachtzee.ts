@@ -1,6 +1,7 @@
 import { canAdv } from "canadv.ash";
 import {
   adv1,
+  availableAmount,
   canEquip,
   canInteract,
   chew,
@@ -381,28 +382,43 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   // If we already have fishy, then we longer need to consider the cost of obtaining it
   if (haveEffect($effect`Fishy`) >= yachtzeeTurns) return 0;
 
+  // Compute the cost of losing buffs if we spend turns getting fishy using clovers
   const havePYECCharge = get("_PYECAvailable", false);
   const haveFishyPipe = have($item`fishy pipe`) && !get("_fishyPipeUsed", false);
   let costOfLosingBuffs = 0;
   getActiveEffects().forEach(
     (eff: Effect) =>
       (costOfLosingBuffs +=
-        yachtzeeBuffValue(eff) > 0
-          ? haveEffect(eff) <= 1 + toInt(haveFishyPipe) && havePYECCharge
-            ? (6 + toInt(haveFishyPipe)) * yachtzeeBuffValue(eff)
-            : haveEffect(eff) + 5 * toInt(havePYECCharge) < yachtzeeTurns
-            ? (1 + toInt(haveFishyPipe)) * yachtzeeBuffValue(eff)
-            : 0
-          : 0)
+        yachtzeeBuffValue(eff) > 0 // We only consider buffs that affect our meat% and fam wt
+          ? haveEffect(eff) <= 1 + toInt(haveFishyPipe) && havePYECCharge // If we lose all the turns of our buff
+            ? (6 + toInt(haveFishyPipe)) * yachtzeeBuffValue(eff) // we also lose the potential of extending it with PYEC (e.g. $effect`smart drunk`)
+            : haveEffect(eff) + 5 * toInt(havePYECCharge) < yachtzeeTurns // Else if we don't have enough turns of the buff to cover yachtzeeTurns
+            ? (1 + toInt(haveFishyPipe)) * yachtzeeBuffValue(eff) // we lose that many turns worth of value of the buff (e.g. $effect`Puzzle Champ`)
+            : 0 // Else, we could potentially lose value from not having enough buffs for embezzlers, but that's out of scope for now
+          : 0) // Buffs that don't affect our meat% and fam wt are not considered
   );
   const fishySources = [
     {
       name: "fish juice box",
-      cost: garboValue($item`fish juice box`),
+      cost: garboValue($item`fish juice box`) + toInt(!haveFishyPipe) * Infinity,
       action: () => {
         acquire(1, $item`fish juice box`, 1.2 * garboValue($item`fish juice box`));
         if (!have($item`fish juice box`)) throw new Error("Unable to obtain fish juice box");
         use(1, $item`fish juice box`);
+        if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
+      },
+    },
+    {
+      name: "2x fish juice box",
+      cost: 2 * garboValue($item`fish juice box`),
+      action: () => {
+        acquire(2, $item`fish juice box`, 1.2 * garboValue($item`fish juice box`));
+        if (availableAmount($item`fish juice box`) < 2) {
+          throw new Error("Unable to obtain sufficient fish juice boxes");
+        }
+        use(2, $item`fish juice box`);
       },
     },
     {
@@ -747,12 +763,6 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Get fishy turns
   print("Getting fishy turns", "purple");
   optimizeForFishy(yachtzeeTurns, true);
-  if (
-    !get("fishyPipeUsed", false) &&
-    haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns
-  ) {
-    use(1, $item`fishy pipe`);
-  }
 
   // Final checks
   if (haveEffect($effect`Fishy`) + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
@@ -965,20 +975,11 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
 }
 
 function _yachtzeeChain(): void {
-  if (!have($item`fishy pipe`)) return;
-  // hard require fishy pipe to run this chain
   if (!have($familiar`Urchin Urchin`)) return;
-  // also hard require urchin urchin for now
+  // Hard require an urchin urchin for now
   if (myLevel() <= 13 || !canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
-  if (get("fishyPipeUsed", false) && !have($effect`Fishy`)) return;
-  // If we have used our fishy pipe and have no fishy turns left, we're probably done
   if (!realmAvailable("sleaze")) return;
-  // Consider only allowing yachtzee chain to be run if
-  // 1) globalOptions.ascending
-  // 2) haveEffect($effect`Synthesis: Greed`) - 100 > myAdventures() + (fullnessLimit() - myFullness()) * 6.5 + (inebrietyLimit() - myInebriety()) * 7.5;
-  // This is likely the most optimal configuration for everyone, since we would otherwise
-  // have high demand for jellies using less optimal configurations, leading to decreased profits for everyone
 
   set(
     "_PYECAvailable",
