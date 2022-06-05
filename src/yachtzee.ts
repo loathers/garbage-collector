@@ -400,14 +400,18 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   const fishySources = [
     {
       name: "fish juice box",
-      cost: garboValue($item`fish juice box`) + toInt(!haveFishyPipe) * Infinity,
+      cost:
+        garboValue($item`fish juice box`) +
+        toInt(
+          !haveFishyPipe &&
+            haveEffect($effect`Fishy`) + 20 + 5 * toInt(havePYECCharge) < yachtzeeTurns
+        ) *
+          Infinity,
       action: () => {
         acquire(1, $item`fish juice box`, 1.2 * garboValue($item`fish juice box`));
         if (!have($item`fish juice box`)) throw new Error("Unable to obtain fish juice box");
         use(1, $item`fish juice box`);
-        if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
-          use(1, $item`fishy pipe`);
-        }
+        use(1, $item`fishy pipe`);
       },
     },
     {
@@ -765,7 +769,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   optimizeForFishy(yachtzeeTurns, true);
 
   // Final checks
-  if (haveEffect($effect`Fishy`) + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
+  if (haveEffect($effect`Fishy`) + 5 * toInt(havePYECCharge) < yachtzeeTurns) {
     throw new Error(`We only got ${haveEffect($effect`Fishy`)}/${yachtzeeTurns} turns of fishy!`);
   }
 
@@ -789,7 +793,7 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
   // 1) We if don't have an effect, +5 to gained effect duration
   // 2) If we already have an effect, +5 to existing effect duration
   // This means that the first use of a potion that we don't already have an effect of is more valuable than the next use
-  const PYECOffset = get("_PYECAvailable", false) ? 5 : 0;
+  const PYECOffset = 5 * toInt(get("_PYECAvailable", false));
   const existingOffset = haveEffect(potion.effect()) ? PYECOffset : 0;
   const extraOffset = PYECOffset - existingOffset;
   const effectiveYachtzeeTurns = Math.max(
@@ -817,7 +821,7 @@ function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
 
 function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
-  const PYECOffset = get("_PYECAvailable", false) ? 5 : 0;
+  const PYECOffset = 5 * toInt(get("_PYECAvailable", false));
   const excludedEffects = new Set<Effect>();
 
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed", false)) {
@@ -1003,7 +1007,7 @@ function _yachtzeeChain(): void {
     return;
   }
   let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
-  let fishyTurns = haveEffect($effect`Fishy`) + (get("_PYECAvailable", false) ? 5 : 0);
+  let fishyTurns = haveEffect($effect`Fishy`) + 5 * toInt(get("_PYECAvailable", false));
   let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   cliExecute(`closet take ${myClosetMeat()} meat`);
