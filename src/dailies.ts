@@ -35,6 +35,7 @@ import {
   retrievePrice,
   runChoice,
   scrapPockets,
+  toInt,
   toItem,
   toSlot,
   toUrl,
@@ -67,7 +68,6 @@ import {
   have,
   Pantogram,
   property,
-  Robortender,
   set,
   SongBoom,
   SourceTerminal,
@@ -336,7 +336,9 @@ export function prepFamiliars(): void {
         continue;
       }
       withProperty("autoBuyPriceLimit", priceCap, () => retrieveItem(1, drink));
-      if (have(drink)) Robortender.feed(drink);
+      if (have(drink)) {
+        visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
+      }
     }
   }
 
