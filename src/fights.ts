@@ -1685,16 +1685,49 @@ function sandwormRequirement() {
     have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
       ? { forceEquip: $items`broken champagne bottle` }
       : {}
+  ).merge(
+    new Requirement(
+      [],
+      have($item`Lil' Doctor™ bag`) && get("_otoscopeUsed") < 3
+        ? { forceEquip: $items`Lil' Doctor™ bag` }
+        : {}
+    )
   );
 }
 
 const freeKillSources = [
+  // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
+  new FreeFight(
+    () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
+    () => {
+      ensureBeachAccess();
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .trySkill($skill`Chest X-Ray`),
+        () => use($item`drum machine`)
+      );
+    },
+    true,
+    {
+      familiar: bestFairy,
+      requirements: () => [
+        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })),
+      ],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
+    }
+  ),
+
   new FreeFight(
     () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
     () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Gingerbread Mob Hit`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .trySkill($skill`Gingerbread Mob Hit`),
+        () => use($item`drum machine`)
       );
     },
     true,
@@ -1710,8 +1743,11 @@ const freeKillSources = [
     () => (have($skill`Shattering Punch`) ? clamp(3 - get("_shatteringPunchUsed"), 0, 3) : 0),
     () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Shattering Punch`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .trySkill($skill`Shattering Punch`),
+        () => use($item`drum machine`)
       );
     },
     true,
@@ -1723,32 +1759,15 @@ const freeKillSources = [
     }
   ),
 
-  // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
-  new FreeFight(
-    () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
-    () => {
-      ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Chest X-Ray`), () =>
-        use($item`drum machine`)
-      );
-    },
-    true,
-    {
-      familiar: bestFairy,
-      requirements: () => [
-        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })),
-      ],
-      effects: () =>
-        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
-    }
-  ),
-
   new FreeFight(
     () => (have($item`replica bat-oomerang`) ? clamp(3 - get("_usedReplicaBatoomerang"), 0, 3) : 0),
     () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).item($item`replica bat-oomerang`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .item($item`replica bat-oomerang`),
+        () => use($item`drum machine`)
       );
     },
     true,
@@ -1766,7 +1785,9 @@ const freeKillSources = [
       ensureBeachAccess();
       AsdonMartin.fillTo(100);
       withMacro(
-        Macro.trySkill($skill`Sing Along`).skill($skill`Asdon Martin: Missile Launcher`),
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .skill($skill`Asdon Martin: Missile Launcher`),
         () => use($item`drum machine`)
       );
     },
@@ -1783,8 +1804,11 @@ const freeKillSources = [
     () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
     () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).skill($skill`Shocking Lick`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .skill($skill`Shocking Lick`),
+        () => use($item`drum machine`)
       );
     },
     true,
