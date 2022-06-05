@@ -368,7 +368,7 @@ function getBestWaterBreathingEquipment(yachtzeeTurns: number): { item: Item; co
 
 function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   // Returns the lowest cost for fishy
-  // Assume we already maximized for meat
+  // Assume we already maximized for meat; this returns the cost of swapping out meat% equips for underwater breathing equips
   const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(yachtzeeTurns);
 
   if (
@@ -723,12 +723,6 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
     acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice, true);
     if (itemAmount($item`extra-greasy slider`) < slidersToEat) {
       throw new Error("Failed to acquire sufficient extra-greasy sliders");
-    }
-  }
-  if (haveEffect($effect`Fishy`) + 20 + (havePYECCharge ? 5 : 0) < yachtzeeTurns) {
-    acquire(1, $item`fish juice box`, 2 * fishyCost, true);
-    if (itemAmount($item`fish juice box`) < 1) {
-      throw new Error("Failed to acquire sufficient fish juice boxes");
     }
   }
   if (cologne > 0) {
