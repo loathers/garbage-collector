@@ -51,6 +51,7 @@ import {
   ensureFreeRun,
   get,
   getKramcoWandererChance,
+  getTodaysHolidayWanderers,
   have,
   Macro,
   PropertiesManager,
@@ -510,3 +511,13 @@ export const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Boiler Room`, [1, 2, 2]],
   [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
 ]);
+
+export function dogOrHolidayWanderer(extraEncounters: string[] = []): boolean {
+  return [
+    ...extraEncounters,
+    "Wooof! Wooooooof!",
+    "Playing Fetch*",
+    "Your Dog Found Something Again",
+    ...getTodaysHolidayWanderers().map((monster) => monster.name),
+  ].includes(get("lastEncounter"));
+}
