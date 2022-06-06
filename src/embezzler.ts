@@ -51,7 +51,7 @@ import {
 import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
-import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
+import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
   globalOptions,
@@ -563,7 +563,10 @@ export const wanderSources = [
 export const conditionalSources = [
   new EmbezzlerFight(
     "Orb Prediction",
-    () => CrystalBall.ponder().get($location`The Dire Warren`) === embezzler,
+    () =>
+      have($item`miniature crystal ball`) &&
+      !get("_garbo_doneGregging", false) &&
+      CrystalBall.ponder().get($location`The Dire Warren`) === embezzler,
     () =>
       (have($item`miniature crystal ball`) ? 1 : 0) *
       (get("beGregariousCharges") +
@@ -581,6 +584,7 @@ export const conditionalSources = [
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`The Dire Warren`, options.macro, options.macro);
       toasterGaze();
+      if (!doingExtrovermectin()) set("_garbo_doneGregging", true);
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
