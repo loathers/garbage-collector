@@ -1038,9 +1038,11 @@ export function bestYachtzeeFamiliar(): Familiar {
   print(`Familiar bonus meat%:`, "blue");
   sortedUnderwaterFamiliars.forEach((fam) => {
     print(
-      `${fam} (${leprechaunMeatBonus(
-        findLeprechaunMultiplier(fam) *
-          (famWt + (fam.underwater ? (have($item`amulet coin`) ? 10 : 5) : famEquipWeightPenalty))
+      `${fam} (${(
+        leprechaunMeatBonus(
+          findLeprechaunMultiplier(fam) *
+            (famWt + (fam.underwater ? (have($item`amulet coin`) ? 10 : 5) : famEquipWeightPenalty))
+        ) + (fam.underwater && have($item`amulet coin`) ? 50 : 0)
       ).toFixed(2)}%)`,
       "blue"
     );
