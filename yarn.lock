@@ -2812,6 +2812,17 @@ libram@^0.6.12:
     kolmafia "^2.1.1"
     lodash "^4.17.21"
 
+libram@^0.6.13:
+  version "0.6.13"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.6.13.tgz#e1593ce4f27484176bc1ea6f80570cff0af7d1bc"
+  integrity sha512-z+ABMcf/AYxikVYZ2Hd+ijmF6C50/MMcoYVe1nObe1EJCjenlopOTPhsfjKo6QFCoffgk8xuyHBT7RukxpzDHA==
+  dependencies:
+    "@babel/runtime-corejs3" "^7.17.2"
+    core-js "^3.21.0"
+    kolmafia "^2.1.1"
+    libram "^0.6.12"
+    lodash "^4.17.21"
+
 loader-runner@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-4.2.0.tgz#d7022380d66d14c5fb1d496b89864ebcfd478384"
