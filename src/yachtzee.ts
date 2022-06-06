@@ -407,11 +407,10 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
       name: "fish juice box",
       cost:
         garboValue($item`fish juice box`) +
-        toInt(
-          !haveFishyPipe &&
-            haveEffect($effect`Fishy`) + 20 + 5 * toInt(havePYECCharge) < yachtzeeTurns
-        ) *
-          Infinity,
+        (!haveFishyPipe &&
+        haveEffect($effect`Fishy`) + 20 + 5 * toInt(havePYECCharge) < yachtzeeTurns
+          ? Infinity
+          : 0),
       action: () => {
         acquire(1, $item`fish juice box`, 1.2 * garboValue($item`fish juice box`));
         if (!have($item`fish juice box`)) throw new Error("Unable to obtain fish juice box");
@@ -542,12 +541,12 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   const bestFishySource = fishySources.reduce((left, right) => {
     return left.cost < right.cost ? left : right;
   });
-  if (!setup) {
-    print("Cost of Fishy sources:", "blue");
-    fishySources.forEach((source) => {
-      print(`${source.name} (${source.cost})`, "blue");
-    });
-  } else {
+
+  print("Cost of Fishy sources:", "blue");
+  fishySources.forEach((source) => {
+    print(`${source.name} (${source.cost})`, "blue");
+  });
+  if (setup) {
     bestFishySource.action();
   }
   return bestFishySource.cost;
@@ -1125,14 +1124,14 @@ function _yachtzeeChain(): void {
   while (Math.min(jellyTurns, fishyTurns) > 0) {
     executeNextDietStep();
     if (!get("_stenchJellyUsed", false)) throw new Error("We did not use stench jellies");
+    // Switch familiars in case changes in fam weight from buffs means our current familiar is no longer optimal
+    setBestYachtzeeFamiliar();
     if (!have($effect`Really Deep Breath`)) {
       const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(
         Math.min(jellyTurns, fishyTurns)
       );
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
     }
-    // Switch familiars in case changes in fam weight from buffs means our current familiar is no longer optimal
-    setBestYachtzeeFamiliar();
     adv1($location`The Sunken Party Yacht`, -1, "");
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
