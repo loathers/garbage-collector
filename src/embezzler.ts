@@ -948,7 +948,7 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
 function proceedWithOrb(): boolean {
   const strat = crateStrategy();
   // If we can't possibly use orb, return true
-  if (!have($item`miniature crystal ball`) || strat === "Saber") return true;
+  if (!have($item`miniature crystal ball`) || strat !== "Orb") return true;
 
   // If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
