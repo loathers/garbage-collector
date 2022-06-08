@@ -60,6 +60,7 @@ import {
   set,
   SongBoom,
   sum,
+  uneffect,
 } from "libram";
 
 export const embezzlerLog: {
@@ -376,10 +377,19 @@ export function safeRestoreMpTarget(): number {
 }
 
 export function safeRestore(): void {
+  const validReasonsToBeBeatenUp = [
+    "Poetic Justice",
+    "Lost and Found",
+    "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl",
+  ];
   if (have($effect`Beaten Up`)) {
-    throw new Error(
-      "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready."
-    );
+    if (validReasonsToBeBeatenUp.includes(get("lastEncounter"))) {
+      uneffect($effect`Beaten Up`);
+    } else {
+      throw new Error(
+        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready."
+      );
+    }
   }
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
@@ -532,7 +542,7 @@ export const juneCleaverChoiceValues = {
   1474: { 1: () => 0, 2: () => getSaleValue($item`guilty sprout`), 3: () => 0 },
   1475: { 1: () => getSaleValue($item`mother's necklace`), 2: () => 0, 3: () => 0 },
 } as const;
-export const juneCleaverChoices = [1467,1468,1469,1470,1471,1472,1473,1474,1475] as const;
+export const juneCleaverChoices = [1467, 1468, 1469, 1470, 1471, 1472, 1473, 1474, 1475] as const;
 
 export function bestJuneCleaverOption(id: keyof typeof juneCleaverChoiceValues): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
@@ -540,5 +550,3 @@ export function bestJuneCleaverOption(id: keyof typeof juneCleaverChoiceValues):
     .map((option) => ({ option, value: juneCleaverChoiceValues[id][option]() }))
     .sort((a, b) => b.value - a.value)[0].option;
 }
-
-
