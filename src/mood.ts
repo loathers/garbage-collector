@@ -58,7 +58,7 @@ Mood.setDefaultOptions({
   songSlots: [
     $effects`Polka of Plenty`,
     $effects`Fat Leon's Phat Loot Lyric, Ur-Kel's Aria of Annoyance`,
-    $effects`Chorale of Companionship`,
+    $effects`Chorale of Companionship, Paul's Passionate Pop Song`,
     $effects`The Ballad of Richie Thingfinder`,
   ],
   mpSources: [OscusSoda.instance, MagicalSausages.instance, MpRestoreItem.instance],
@@ -82,6 +82,7 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`The Polka of Plenty`);
   mood.skill($skill`Disco Leer`);
   mood.skill(urKels ? $skill`Ur-Kel's Aria of Annoyance` : $skill`Fat Leon's Phat Loot Lyric`);
+  if (!have($effect`Chorale of Companionship`)) mood.skill($skill`Paul's Passionate Pop Song`);
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
