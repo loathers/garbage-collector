@@ -1117,6 +1117,9 @@ function _yachtzeeChain(): void {
   let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   cliExecute(`closet take ${myClosetMeat()} meat`);
+  if (haveEffect($effect`Beaten Up`)) {
+    cliExecute("hottub");
+  }
   safeRestore();
 
   let plantCrookweed = true;
