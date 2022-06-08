@@ -29,6 +29,7 @@ import {
   getModifier,
   have,
   Modifiers,
+  sum,
   sumNumbers,
 } from "libram";
 import {
@@ -38,7 +39,15 @@ import {
 } from "libram/dist/resources/2010/CrownOfThrones";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, BonusEquipMode, globalOptions, realmAvailable } from "./lib";
+import {
+  baseMeat,
+  bestJuneCleaverOption,
+  BonusEquipMode,
+  globalOptions,
+  juneCleaverChoices,
+  juneCleaverChoiceValues,
+  realmAvailable,
+} from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
 /**
@@ -311,6 +320,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
     ...(equipMode === "barf" ? magnifyingGlass() : []),
+    ...juneCleaver(),
   ]);
 }
 
@@ -400,4 +410,20 @@ export function usingThumbRing(): boolean {
     cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
   }
   return cachedUsingThumbRing;
+}
+
+function juneCleaverInterval(): number {
+  return [1, 6, 10, 12, 15, 20][get("_juneCleaverEncounters", 0)] ?? 30;
+}
+
+let juneCleaverEV: number | null = null;
+function juneCleaver(): Map<Item, number> {
+  if (!have($item`June cleaver`)) return new Map();
+  if (!juneCleaverEV) {
+    juneCleaverEV =
+      sum([...juneCleaverChoices], (choice: typeof juneCleaverChoices[number]) =>
+        juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]()
+      ) / juneCleaverChoices.length;
+  }
+  return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / juneCleaverInterval()]]);
 }
