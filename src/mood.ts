@@ -8,6 +8,7 @@ import {
   myClass,
   myLevel,
   numericModifier,
+  restoreMp,
   use,
   useSkill,
 } from "kolmafia";
@@ -21,7 +22,10 @@ import {
   AsdonMartin,
   get,
   have,
+  MagicalSausages,
   Mood,
+  MpSource,
+  OscusSoda,
   set,
   uneffect,
   Witchess,
@@ -30,6 +34,26 @@ import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
+class MpRestoreItem implements MpSource {
+  static instance = new MpRestoreItem();
+
+  usesRemaining(): number {
+    return Infinity;
+  }
+
+  availableMpMin(): number {
+    return Infinity;
+  }
+
+  availableMpMax(): number {
+    return Infinity;
+  }
+
+  execute(): void {
+    restoreMp(100);
+  }
+}
+
 Mood.setDefaultOptions({
   songSlots: [
     $effects`Polka of Plenty`,
@@ -37,6 +61,7 @@ Mood.setDefaultOptions({
     $effects`Chorale of Companionship`,
     $effects`The Ballad of Richie Thingfinder`,
   ],
+  mpSources: [OscusSoda.instance, MagicalSausages.instance, MpRestoreItem.instance],
 });
 
 export function meatMood(urKels = false): Mood {
