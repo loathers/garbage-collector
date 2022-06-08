@@ -2237,7 +2237,7 @@ function killRobortCreaturesForFree() {
     freeKill = findFreeKill();
   }
 
-  while (freeKill && CombatLoversLocket.have() && CombatLoversLocket.reminiscesLeft()) {
+  while (freeKill && CombatLoversLocket.have() && CombatLoversLocket.reminiscesLeft() > 1) {
     const roboTarget = CombatLoversLocket.findMonster(
       () => true,
       (monster: Monster) =>
