@@ -404,8 +404,8 @@ export const copySources = [
           6 -
           get("spookyPuttyCopiesMade") -
           get("_raindohCopiesMade") +
-          (itemAmount($item`Spooky Putty monster`) ? 1 : 0) +
-          (itemAmount($item`Rain-Doh box full of monster`) ? 1 : 0)
+          itemAmount($item`Spooky Putty monster`) +
+          itemAmount($item`Rain-Doh box full of monster`)
         );
       } else if (havePutty) {
         if (puttyLocked) return 0;
