@@ -385,30 +385,33 @@ export const copySources = [
       (have($item`Spooky Putty monster`) && get("spookyPuttyMonster") === embezzler) ||
       (have($item`Rain-Doh box full of monster`) && get("rainDohMonster") === embezzler),
     () => {
-      if (
-        (have($item`Spooky Putty sheet`) ||
-          (have($item`Spooky Putty monster`) && get("spookyPuttyMonster") === embezzler)) &&
-        (have($item`Rain-Doh black box`) ||
-          (have($item`Rain-Doh box full of monster`) && get("rainDohMonster") === embezzler))
-      ) {
+      const havePutty = have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`);
+      const haveRainDoh =
+        have($item`Rain-Doh black box`) || have($item`Rain-Doh box full of monster`);
+      const puttyLocked =
+        have($item`Spooky Putty monster`) && get("spookyPuttyMonster") !== embezzler;
+      const rainDohLocked =
+        have($item`Rain-Doh box full of monster`) && get("rainDohMonster") !== embezzler;
+
+      if (havePutty && haveRainDoh) {
+        if (puttyLocked && rainDohLocked) return 0;
+        else if (puttyLocked) {
+          return 5 - get("_raindohCopiesMade") + itemAmount($item`Rain-Doh box full of monster`);
+        } else if (rainDohLocked) {
+          return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky Putty monster`);
+        }
         return (
           6 -
           get("spookyPuttyCopiesMade") -
           get("_raindohCopiesMade") +
-          (get("spookyPuttyMonster") === embezzler ? itemAmount($item`Spooky Putty monster`) : 0) +
-          (get("rainDohMonster") === embezzler
-            ? itemAmount($item`Rain-Doh box full of monster`)
-            : 0)
+          itemAmount($item`Spooky Putty monster`) +
+          itemAmount($item`Rain-Doh box full of monster`)
         );
-      } else if (
-        have($item`Spooky Putty sheet`) ||
-        (have($item`Spooky Putty monster`) && get("spookyPuttyMonster") === embezzler)
-      ) {
+      } else if (havePutty) {
+        if (puttyLocked) return 0;
         return 5 - get("spookyPuttyCopiesMade") + itemAmount($item`Spooky Putty monster`);
-      } else if (
-        have($item`Rain-Doh black box`) ||
-        (have($item`Rain-Doh box full of monster`) && get("rainDohMonster") === embezzler)
-      ) {
+      } else if (haveRainDoh) {
+        if (rainDohLocked) return 0;
         return 5 - get("_raindohCopiesMade") + itemAmount($item`Rain-Doh box full of monster`);
       }
       return 0;
