@@ -36,6 +36,10 @@ class Mood extends LibramMood {
     super.moreMp(minimumTarget);
     restoreMp(minimumTarget);
   }
+
+  availableMp(): number {
+    return Infinity;
+  }
 }
 
 Mood.setDefaultOptions({
