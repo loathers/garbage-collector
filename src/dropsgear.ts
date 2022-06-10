@@ -28,6 +28,7 @@ import {
   getFoldGroup,
   getModifier,
   have,
+  JuneCleaver,
   Modifiers,
   sum,
   sumNumbers,
@@ -44,7 +45,6 @@ import {
   bestJuneCleaverOption,
   BonusEquipMode,
   globalOptions,
-  juneCleaverChoices,
   juneCleaverChoiceValues,
   realmAvailable,
 } from "./lib";
@@ -412,18 +412,14 @@ export function usingThumbRing(): boolean {
   return cachedUsingThumbRing;
 }
 
-function juneCleaverInterval(): number {
-  return [1, 6, 10, 12, 15, 20][get("_juneCleaverEncounters", 0)] ?? 30;
-}
-
 let juneCleaverEV: number | null = null;
 function juneCleaver(): Map<Item, number> {
   if (!have($item`June cleaver`)) return new Map();
   if (!juneCleaverEV) {
     juneCleaverEV =
-      sum([...juneCleaverChoices], (choice: typeof juneCleaverChoices[number]) =>
+      sum([...JuneCleaver.choices], (choice: typeof JuneCleaver.choices[number]) =>
         juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]()
-      ) / juneCleaverChoices.length;
+      ) / JuneCleaver.choices.length;
   }
-  return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / juneCleaverInterval()]]);
+  return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / JuneCleaver.getInterval()]]);
 }

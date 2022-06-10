@@ -54,6 +54,7 @@ import {
   getSaleValue,
   getTodaysHolidayWanderers,
   have,
+  JuneCleaver,
   Macro,
   PropertiesManager,
   property,
@@ -542,9 +543,8 @@ export const juneCleaverChoiceValues = {
   1474: { 1: () => 0, 2: () => getSaleValue($item`guilty sprout`), 3: () => 0 },
   1475: { 1: () => getSaleValue($item`mother's necklace`), 2: () => 0, 3: () => 0 },
 } as const;
-export const juneCleaverChoices = [1467, 1468, 1469, 1470, 1471, 1472, 1473, 1474, 1475] as const;
 
-export function bestJuneCleaverOption(id: keyof typeof juneCleaverChoiceValues): 1 | 2 | 3 {
+export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
   return options
     .map((option) => ({ option, value: juneCleaverChoiceValues[id][option]() }))

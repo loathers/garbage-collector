@@ -53,6 +53,7 @@ import {
   getFoldGroup,
   have,
   haveInCampground,
+  JuneCleaver,
   property,
   Requirement,
   set,
@@ -70,7 +71,6 @@ import {
   embezzlerLog,
   globalOptions,
   HIGHLIGHT,
-  juneCleaverChoices,
   kramcoGuaranteed,
   printHelpMenu,
   printLog,
@@ -550,10 +550,10 @@ export function main(argString = ""): void {
       1341: 1, // Cure her poison
     });
 
-    if (have($item`June cleaver`)) {
+    if (JuneCleaver.have()) {
       propertyManager.setChoices(
         Object.fromEntries(
-          juneCleaverChoices.map((choice) => [choice, bestJuneCleaverOption(choice)])
+          JuneCleaver.choices.map((choice) => [choice, bestJuneCleaverOption(choice)])
         )
       );
     }
