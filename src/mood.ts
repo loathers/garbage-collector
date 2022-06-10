@@ -26,7 +26,7 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
+import { baseMeat, questStep, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
@@ -41,7 +41,7 @@ Mood.setDefaultOptions({
 
 export function meatMood(urKels = false): Mood {
   // Reserve the amount of MP we try to restore before each fight.
-  const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
+  const mood = new Mood();
 
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
@@ -61,8 +61,6 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
-
-  if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
