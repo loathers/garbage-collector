@@ -53,6 +53,7 @@ import {
   getFoldGroup,
   have,
   haveInCampground,
+  JuneCleaver,
   property,
   Requirement,
   set,
@@ -65,6 +66,7 @@ import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
 import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
+  bestJuneCleaverOption,
   checkGithubVersion,
   embezzlerLog,
   globalOptions,
@@ -308,7 +310,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26321);
+  sinceKolmafiaRevision(26487);
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
@@ -547,6 +549,14 @@ export function main(argString = ""): void {
       1108: bestHalloweiner,
       1341: 1, // Cure her poison
     });
+
+    if (JuneCleaver.have()) {
+      propertyManager.setChoices(
+        Object.fromEntries(
+          JuneCleaver.choices.map((choice) => [choice, bestJuneCleaverOption(choice)])
+        )
+      );
+    }
 
     safeRestore();
 

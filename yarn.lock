@@ -2167,10 +2167,10 @@ eslint-config-prettier@^8.3.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.3.0.tgz#f7471b20b6fe8a9a9254cc684454202886a2dd7a"
   integrity sha512-BgZuLUSeKzvlL/VUjx/Yb787VQ26RU3gGjA3iiFvdsp/2bMfVIWUVP7tjxtjS0e+HP409cPlPvNkQloz8C91ew==
 
-eslint-plugin-libram@^0.2.10:
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-libram/-/eslint-plugin-libram-0.2.10.tgz#a1fb2fdcffbb28ad1a337e57e2300e82f2d8679c"
-  integrity sha512-CF/RTi9zdLeBF50hh9mnL2UZA+YHt77eRXqh3DVgRSaTtixJWXVYYleMo0fnkfIokm1dnvMeRgzdL3RkC/AkHw==
+eslint-plugin-libram@^0.2.12:
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-libram/-/eslint-plugin-libram-0.2.12.tgz#cd00bd482bff04f86c492c40af36b89d81e592da"
+  integrity sha512-Tdd04lG0XOe+ULdtf1RxzsHFbiegJMyydVFPy0V0/EEThp8tzJtPW5A48UlzNfxZ/lY3/DIX5MI/Cfa+1SEuSQ==
   dependencies:
     html-entities "^2.3.2"
     requireindex "~1.1.0"
