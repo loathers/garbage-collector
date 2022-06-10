@@ -126,9 +126,9 @@ export function saberCrateIfSafe(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    [undefined, $monster`crate`].includes(CrystalBall.ponder().get($location`Noob Cave`)) &&
     !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
-    crateStrategy() !== "Sniff"
+    crateStrategy() !== "Sniff" &&
+    [undefined, $monster`crate`].includes(CrystalBall.ponder().get($location`Noob Cave`))
   ) {
     equip($slot`familiar`, $item`miniature crystal ball`);
   }
