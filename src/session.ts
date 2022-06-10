@@ -6,7 +6,6 @@ import {
   myInebriety,
   print,
   sellPrice,
-  todayToString,
   toInt,
 } from "kolmafia";
 import { $item, $items, get, getSaleValue, property, Session, set, sumNumbers } from "libram";
@@ -243,7 +242,7 @@ function printMarginalSession(): void {
         )} [total w/ outliers])`,
         HIGHLIGHT
       );
-    } else if (get("_garboVOACheckpointDate") === todayToString()) {
+    } else if (get("_garboVOACheckpointSet", false)) {
       const MPA =
         (property.getNumber("_garbo25AdvMeatCheckpoint") -
           property.getNumber("_garbo75AdvMeatCheckpoint")) /
