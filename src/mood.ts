@@ -8,6 +8,7 @@ import {
   myClass,
   myLevel,
   numericModifier,
+  restoreMp,
   use,
   useSkill,
 } from "kolmafia";
@@ -21,7 +22,7 @@ import {
   AsdonMartin,
   get,
   have,
-  Mood,
+  Mood as LibramMood,
   set,
   uneffect,
   Witchess,
@@ -29,6 +30,13 @@ import {
 import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
+
+class Mood extends LibramMood {
+  moreMp(minimumTarget: number): void {
+    super.moreMp(minimumTarget);
+    restoreMp(minimumTarget);
+  }
+}
 
 Mood.setDefaultOptions({
   songSlots: [
