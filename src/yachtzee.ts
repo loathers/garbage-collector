@@ -1069,12 +1069,12 @@ function setBestYachtzeeFamiliar() {
     have($effect`Driving Waterproofly`) ||
     have($effect`Wet Willied`)
   ) {
-    maximize("meat, -equip anemoney clip", false);
+    maximize("meat, -equip anemoney clip, -equip cheap sunglasses", false);
   } else {
     if (!familiarWaterBreathingEquipment.some((it) => have(it))) {
       useFamiliar($familiar`none`);
     } else {
-      maximize("meat, -familiar, -equip anemoney clip", false);
+      maximize("meat, -familiar, -equip anemoney clip, -equip cheap sunglasses", false);
       equip(
         $slot`familiar`,
         familiarWaterBreathingEquipment
@@ -1104,7 +1104,7 @@ function _yachtzeeChain(): void {
   );
   meatMood(false).execute(estimatedTurns());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
-  maximize("meat, -equip anemoney clip", false);
+  maximize("meat, -equip anemoney clip, -equip cheap sunglasses", false);
   setBestYachtzeeFamiliar();
 
   const meatLimit = 5000000;
