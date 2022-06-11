@@ -1,6 +1,7 @@
 import {
   cliExecute,
   descToItem,
+  equip,
   getWorkshed,
   Item,
   myAdventures,
@@ -9,9 +10,31 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, get, getRemainingStomach, property } from "libram";
+import {
+  $effect,
+  $item,
+  $location,
+  $slot,
+  adventureMacro,
+  get,
+  getRemainingStomach,
+  JuneCleaver,
+  Macro,
+  property,
+  uneffect,
+  withProperty,
+} from "libram";
 import { computeDiet, consumeDiet } from "./diet";
-import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
+import {
+  argmax,
+  bestJuneCleaverOption,
+  globalOptions,
+  juneCleaverChoiceValues,
+  safeInterrupt,
+  safeRestore,
+  setChoice,
+  valueJuneCleaverOption,
+} from "./lib";
 import { garboValue, sessionSinceStart } from "./session";
 
 function coldMedicineCabinet(): void {
@@ -67,7 +90,43 @@ function updateMallPrices(): void {
   sessionSinceStart().value(garboValue);
 }
 
+let juneCleaverSkipChoices: typeof JuneCleaver.choices[number][] | null;
+function skipJuneCleaverChoices(): void {
+  if (!juneCleaverSkipChoices) {
+    juneCleaverSkipChoices = [...JuneCleaver.choices]
+      .sort(
+        (a, b) =>
+          valueJuneCleaverOption(juneCleaverChoiceValues[a][bestJuneCleaverOption(a)]) -
+          valueJuneCleaverOption(juneCleaverChoiceValues[b][bestJuneCleaverOption(b)])
+      )
+      .splice(0, 3);
+  }
+
+  if (JuneCleaver.skipsRemaining()) {
+    for (const choice of juneCleaverSkipChoices) {
+      setChoice(choice, 4);
+    }
+  } else {
+    for (const choice of juneCleaverSkipChoices) {
+      setChoice(choice, bestJuneCleaverOption(choice));
+    }
+  }
+}
+function juneCleave(): void {
+  if (get("_juneCleaverFightsLeft") === 0) {
+    equip($slot`weapon`, $item`June cleaver`);
+    skipJuneCleaverChoices();
+    withProperty("recoveryScript", "", () => {
+      adventureMacro($location`Noob Cave`, Macro.abort());
+      if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
+        uneffect($effect`Beaten Up`);
+      }
+    });
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
+  juneCleave();
   numberology();
   if (!skipDiet) horseradish();
   coldMedicineCabinet();

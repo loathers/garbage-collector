@@ -378,13 +378,8 @@ export function safeRestoreMpTarget(): number {
 }
 
 export function safeRestore(): void {
-  const validReasonsToBeBeatenUp = [
-    "Poetic Justice",
-    "Lost and Found",
-    "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl",
-  ];
   if (have($effect`Beaten Up`)) {
-    if (validReasonsToBeBeatenUp.includes(get("lastEncounter"))) {
+    if (get("lastEncounter") === "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl") {
       uneffect($effect`Beaten Up`);
     } else {
       throw new Error(

@@ -414,7 +414,9 @@ export function usingThumbRing(): boolean {
 
 let juneCleaverEV: number | null = null;
 function juneCleaver(): Map<Item, number> {
-  if (!have($item`June cleaver`)) return new Map();
+  if (!have($item`June cleaver`) || get("_juneCleaverFightsLeft") > estimatedTurns()) {
+    return new Map();
+  }
   if (!juneCleaverEV) {
     juneCleaverEV =
       JuneCleaver.choices.reduce(
