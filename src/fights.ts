@@ -739,6 +739,7 @@ const freeFightSources = [
           use($item`crappy waiter disguise`);
         }
       }
+      propertyManager.set({ recoveryScript: "" });
       useSkill($skill`Evoke Eldritch Horror`);
       if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
     },
