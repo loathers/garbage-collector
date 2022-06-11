@@ -30,7 +30,6 @@ import {
   have,
   JuneCleaver,
   Modifiers,
-  sum,
   sumNumbers,
 } from "libram";
 import {
@@ -47,6 +46,7 @@ import {
   globalOptions,
   juneCleaverChoiceValues,
   realmAvailable,
+  valueJuneCleaverOption,
 } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
@@ -417,8 +417,11 @@ function juneCleaver(): Map<Item, number> {
   if (!have($item`June cleaver`)) return new Map();
   if (!juneCleaverEV) {
     juneCleaverEV =
-      sum([...JuneCleaver.choices], (choice: typeof JuneCleaver.choices[number]) =>
-        juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]()
+      JuneCleaver.choices.reduce(
+        (total, choice) =>
+          total +
+          valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]),
+        0
       ) / JuneCleaver.choices.length;
   }
   return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / JuneCleaver.getInterval()]]);

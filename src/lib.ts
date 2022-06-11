@@ -51,7 +51,6 @@ import {
   ensureFreeRun,
   get,
   getKramcoWandererChance,
-  getSaleValue,
   getTodaysHolidayWanderers,
   have,
   JuneCleaver,
@@ -63,6 +62,7 @@ import {
   sum,
   uneffect,
 } from "libram";
+import { garboValue } from "./session";
 
 export const embezzlerLog: {
   initialEmbezzlersFought: number;
@@ -526,27 +526,34 @@ export function dogOrHolidayWanderer(extraEncounters: string[] = []): boolean {
 
 export const juneCleaverChoiceValues = {
   1467: {
-    1: () => 0,
-    2: () => 0,
-    3: () => 5 * get("valueOfAdventure"),
+    1: 0,
+    2: 0,
+    3: 5 * get("valueOfAdventure"),
   },
-  1468: { 1: () => 0, 2: () => 5, 3: () => 0 },
-  1469: { 1: () => 0, 2: () => getSaleValue($item`Dad's brandy`), 3: () => 1500 },
-  1470: { 1: () => 0, 2: () => getSaleValue($item`teacher's pen`), 3: () => 0 },
-  1471: { 1: () => getSaleValue($item`savings bond`), 2: () => 250, 3: () => 0 },
+  1468: { 1: 0, 2: 5, 3: 0 },
+  1469: { 1: 0, 2: $item`Dad's brandy`, 3: 1500 },
+  1470: { 1: 0, 2: $item`teacher's pen`, 3: 0 },
+  1471: { 1: $item`savings bond`, 2: 250, 3: 0 },
   1472: {
-    1: () => getSaleValue($item`trampled ticket stub`),
-    2: () => getSaleValue($item`fire-roasted lake trout`),
-    3: () => 0,
+    1: $item`trampled ticket stub`,
+    2: $item`fire-roasted lake trout`,
+    3: 0,
   },
-  1473: { 1: () => getSaleValue($item`gob of wet hair`), 2: () => 0, 3: () => 0 },
-  1474: { 1: () => 0, 2: () => getSaleValue($item`guilty sprout`), 3: () => 0 },
-  1475: { 1: () => getSaleValue($item`mother's necklace`), 2: () => 0, 3: () => 0 },
+  1473: { 1: $item`gob of wet hair`, 2: 0, 3: 0 },
+  1474: { 1: 0, 2: $item`guilty sprout`, 3: 0 },
+  1475: { 1: $item`mother's necklace`, 2: 0, 3: 0 },
 } as const;
+
+export function valueJuneCleaverOption(result: Item | number): number {
+  return result instanceof Item ? garboValue(result) : result;
+}
 
 export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
   return options
-    .map((option) => ({ option, value: juneCleaverChoiceValues[id][option]() }))
+    .map((option) => ({
+      option,
+      value: valueJuneCleaverOption(juneCleaverChoiceValues[id][option]),
+    }))
     .sort((a, b) => b.value - a.value)[0].option;
 }
