@@ -20817,7 +20817,7 @@ function juneCleaver() {
   if (!have($item(dropsgear_templateObject68 || (dropsgear_templateObject68 = dropsgear_taggedTemplateLiteral(["June cleaver"]))))) return new Map();
 
   if (!juneCleaverEV) {
-    juneCleaverEV = sum(dropsgear_toConsumableArray(JuneCleaver.choices), choice => juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]()) / JuneCleaver.choices.length;
+    juneCleaverEV = JuneCleaver.choices.reduce((total, choice) => total + valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]), 0) / JuneCleaver.choices.length;
   }
 
   return new Map([[$item(dropsgear_templateObject69 || (dropsgear_templateObject69 = dropsgear_taggedTemplateLiteral(["June cleaver"]))), juneCleaverEV / JuneCleaver.getInterval()]]);
@@ -21854,17 +21854,18 @@ function timeToMeatify() {
 /* harmony export */   "e6": () => (/* binding */ realmAvailable),
 /* harmony export */   "tq": () => (/* binding */ userConfirmDialog)
 /* harmony export */ });
-/* unused harmony exports embezzlerLog, averageTouristNet, expectedEmbezzlerProfit, safeInterrupt, resetDailyPreference, shuffle, mapMonster, argmax, arrayEquals, questStep, tryFeast, coinmasterPrice, kramcoGuaranteed, logMessage, printLog, printHelpMenu, pillkeeperOpportunityCost, burnLibrams, safeRestoreMpTarget, safeRestore, checkGithubVersion, formatNumber, getChoiceOption, latteActionSourceFinderConstraints, today, garbageTouristRatio, turnsToNC, steveAdventures, dogOrHolidayWanderer, juneCleaverChoiceValues, bestJuneCleaverOption */
+/* unused harmony exports embezzlerLog, averageTouristNet, expectedEmbezzlerProfit, safeInterrupt, resetDailyPreference, shuffle, mapMonster, argmax, arrayEquals, questStep, tryFeast, coinmasterPrice, kramcoGuaranteed, logMessage, printLog, printHelpMenu, pillkeeperOpportunityCost, burnLibrams, safeRestoreMpTarget, safeRestore, checkGithubVersion, formatNumber, getChoiceOption, latteActionSourceFinderConstraints, today, garbageTouristRatio, turnsToNC, steveAdventures, dogOrHolidayWanderer, juneCleaverChoiceValues, valueJuneCleaverOption, bestJuneCleaverOption */
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2549);
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(canadv_ash__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2474);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2211);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4782);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3311);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(678);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(8588);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2474);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2211);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(4782);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3311);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(678);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(8588);
+/* harmony import */ var _session__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(742);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -21896,6 +21897,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 var embezzlerLog = {
   initialEmbezzlersFought: 0,
   digitizedEmbezzlersFought: 0,
@@ -21911,12 +21913,12 @@ var globalOptions = {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
-  clarasBellClaimed: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_claraBellUsed")
+  clarasBellClaimed: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_claraBellUsed")
 };
 var WISH_VALUE = 50000;
 var HIGHLIGHT = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.isDarkMode)() ? "yellow" : "blue";
-var propertyManager = new libram__WEBPACK_IMPORTED_MODULE_2__/* .PropertiesManager */ .Jr();
-var baseMeat = libram__WEBPACK_IMPORTED_MODULE_3__/* .have */ .lf() && (libram__WEBPACK_IMPORTED_MODULE_3__/* .songChangesLeft */ .ib() > 0 || libram__WEBPACK_IMPORTED_MODULE_3__/* .song */ .K_() === "Total Eclipse of Your Meat" && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.inebrietyLimit)()) ? 275 : 250;
+var propertyManager = new libram__WEBPACK_IMPORTED_MODULE_3__/* .PropertiesManager */ .Jr();
+var baseMeat = libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf() && (libram__WEBPACK_IMPORTED_MODULE_4__/* .songChangesLeft */ .ib() > 0 || libram__WEBPACK_IMPORTED_MODULE_4__/* .song */ .K_() === "Total Eclipse of Your Meat" && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.inebrietyLimit)()) ? 275 : 250;
 function averageEmbezzlerNet() {
   return (baseMeat + 750) * (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.meatDropModifier)() / 100;
 }
@@ -22026,14 +22028,14 @@ function tryFeast(familiar) {
   }
 }
 var ltbRun = () => {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .ensureFreeRun */ .K)({
+  return (0,libram__WEBPACK_IMPORTED_MODULE_8__/* .ensureFreeRun */ .K)({
     requireUnlimited: () => true,
     noFamiliar: () => true,
     noRequirements: () => true,
     maximumCost: () => {
       var _get;
 
-      return (_get = (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("autoBuyPriceLimit")) !== null && _get !== void 0 ? _get : 20000;
+      return (_get = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("autoBuyPriceLimit")) !== null && _get !== void 0 ? _get : 20000;
     }
   });
 };
@@ -22158,7 +22160,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("2cfb32ebd23c58127c42c1cabed8b9a04ee5b334" === mainSha) {
+    if ("0fc54ee7daaafbd4b12da3283a7f5c2cec519acc" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -22168,12 +22170,12 @@ function checkGithubVersion() {
 }
 function realmAvailable(identifier) {
   if (identifier === "fantasy") {
-    return (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_frToday") || (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("frAlways");
+    return (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_frToday") || (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("frAlways");
   } else if (identifier === "pirate") {
-    return (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_prToday") || (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("prAlways");
+    return (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_prToday") || (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("prAlways");
   }
 
-  return (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_".concat(identifier, "AirportToday"), false) || (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("".concat(identifier, "AirportAlways"), false);
+  return (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_".concat(identifier, "AirportToday"), false) || (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("".concat(identifier, "AirportAlways"), false);
 }
 function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -22198,7 +22200,7 @@ function getChoiceOption(partialText) {
  */
 
 function userConfirmDialog(msg, defaultValue, timeOut) {
-  if ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("garbo_autoUserConfirm", false)) {
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("garbo_autoUserConfirm", false)) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Automatically selected ".concat(defaultValue, " for ").concat(msg), "red");
     return defaultValue;
   }
@@ -22210,15 +22212,15 @@ var latteActionSourceFinderConstraints = {
   allowedAction: action => {
     var _action$constraints$e, _action$constraints, _action$constraints$e2;
 
-    if (!(0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["latte lovers member's mug"]))))) return true;
-    var forceEquipsOtherThanLatte = ((_action$constraints$e = action === null || action === void 0 ? void 0 : (_action$constraints = action.constraints) === null || _action$constraints === void 0 ? void 0 : (_action$constraints$e2 = _action$constraints.equipmentRequirements) === null || _action$constraints$e2 === void 0 ? void 0 : _action$constraints$e2.call(_action$constraints).maximizeOptions.forceEquip) !== null && _action$constraints$e !== void 0 ? _action$constraints$e : []).filter(equipment => equipment !== (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["latte lovers member's mug"]))));
-    return forceEquipsOtherThanLatte.every(equipment => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.toSlot)(equipment) !== (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$slot */ .Jh)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["off-hand"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .sum */ .Sm)(forceEquipsOtherThanLatte, kolmafia__WEBPACK_IMPORTED_MODULE_1__.weaponHands) < 2;
+    if (!(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["latte lovers member's mug"]))))) return true;
+    var forceEquipsOtherThanLatte = ((_action$constraints$e = action === null || action === void 0 ? void 0 : (_action$constraints = action.constraints) === null || _action$constraints === void 0 ? void 0 : (_action$constraints$e2 = _action$constraints.equipmentRequirements) === null || _action$constraints$e2 === void 0 ? void 0 : _action$constraints$e2.call(_action$constraints).maximizeOptions.forceEquip) !== null && _action$constraints$e !== void 0 ? _action$constraints$e : []).filter(equipment => equipment !== (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["latte lovers member's mug"]))));
+    return forceEquipsOtherThanLatte.every(equipment => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.toSlot)(equipment) !== (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$slot */ .Jh)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["off-hand"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_12__/* .sum */ .Sm)(forceEquipsOtherThanLatte, kolmafia__WEBPACK_IMPORTED_MODULE_1__.weaponHands) < 2;
   }
 };
 var today = Date.now() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.gametimeToInt)() - 1000 * 60 * 3.5; // Barf setup info
 
-var olfactionCopies = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$skill */ .tm)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Transcendent Olfaction"])))) ? 3 : 0;
-var gallapagosCopies = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$skill */ .tm)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))) ? 1 : 0;
+var olfactionCopies = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$skill */ .tm)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Transcendent Olfaction"])))) ? 3 : 0;
+var gallapagosCopies = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$skill */ .tm)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))) ? 1 : 0;
 var garbageTourists = 1 + olfactionCopies + gallapagosCopies,
     touristFamilies = 1,
     angryTourists = 1;
@@ -22229,63 +22231,66 @@ var touristFamilyRatio = touristFamilies / barfTourists; // 30 tourists till NC,
 // then estimate the expected number of turns required to hit a counter of >= 30
 
 var turnsToNC = 27 * barfTourists / (garbageTourists + angryTourists + 3 * touristFamilies) + 1 * touristFamilyRatio + 2 * (1 - touristFamilyRatio) * touristFamilyRatio + 3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
-var steveAdventures = new Map([[(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["The Haunted Bedroom"]))), [1, 3, 1]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["The Haunted Nursery"]))), [1, 2, 2, 1, 1]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["The Haunted Conservatory"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["The Haunted Billiards Room"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["The Haunted Wine Cellar"]))), [1, 2, 2, 3]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["The Haunted Boiler Room"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$location */ .PG)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["The Haunted Laboratory"]))), [1, 1, 3, 1, 1]]]);
+var steveAdventures = new Map([[(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$location */ .PG)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["The Haunted Bedroom"]))), [1, 3, 1]], [(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$location */ .PG)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["The Haunted Nursery"]))), [1, 2, 2, 1, 1]], [(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$location */ .PG)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["The Haunted Conservatory"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$location */ .PG)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["The Haunted Billiards Room"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$location */ .PG)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["The Haunted Wine Cellar"]))), [1, 2, 2, 3]], [(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$location */ .PG)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["The Haunted Boiler Room"]))), [1, 2, 2]], [(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$location */ .PG)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["The Haunted Laboratory"]))), [1, 1, 3, 1, 1]]]);
 function dogOrHolidayWanderer() {
   var extraEncounters = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   return [].concat(_toConsumableArray(extraEncounters), ["Wooof! Wooooooof!", "Playing Fetch*", "Your Dog Found Something Again"], _toConsumableArray(getTodaysHolidayWanderers().map(monster => monster.name))).includes(get("lastEncounter"));
 }
 var juneCleaverChoiceValues = {
   1467: {
-    1: () => 0,
-    2: () => 0,
-    3: () => 5 * (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("valueOfAdventure")
+    1: 0,
+    2: 0,
+    3: 5 * (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("valueOfAdventure")
   },
   1468: {
-    1: () => 0,
-    2: () => 5,
-    3: () => 0
+    1: 0,
+    2: 5,
+    3: 0
   },
   1469: {
-    1: () => 0,
-    2: () => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getSaleValue */ .xI)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Dad's brandy"])))),
-    3: () => 1500
+    1: 0,
+    2: (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Dad's brandy"]))),
+    3: 1500
   },
   1470: {
-    1: () => 0,
-    2: () => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getSaleValue */ .xI)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["teacher's pen"])))),
-    3: () => 0
+    1: 0,
+    2: (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["teacher's pen"]))),
+    3: 0
   },
   1471: {
-    1: () => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getSaleValue */ .xI)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["savings bond"])))),
-    2: () => 250,
-    3: () => 0
+    1: (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["savings bond"]))),
+    2: 250,
+    3: 0
   },
   1472: {
-    1: () => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getSaleValue */ .xI)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["trampled ticket stub"])))),
-    2: () => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getSaleValue */ .xI)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["fire-roasted lake trout"])))),
-    3: () => 0
+    1: (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["trampled ticket stub"]))),
+    2: (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["fire-roasted lake trout"]))),
+    3: 0
   },
   1473: {
-    1: () => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getSaleValue */ .xI)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["gob of wet hair"])))),
-    2: () => 0,
-    3: () => 0
+    1: (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["gob of wet hair"]))),
+    2: 0,
+    3: 0
   },
   1474: {
-    1: () => 0,
-    2: () => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getSaleValue */ .xI)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["guilty sprout"])))),
-    3: () => 0
+    1: 0,
+    2: (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["guilty sprout"]))),
+    3: 0
   },
   1475: {
-    1: () => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .getSaleValue */ .xI)((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .$item */ .xr)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["mother's necklace"])))),
-    2: () => 0,
-    3: () => 0
+    1: (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["mother's necklace"]))),
+    2: 0,
+    3: 0
   }
 };
+function valueJuneCleaverOption(result) {
+  return result instanceof Item ? garboValue(result) : result;
+}
 function bestJuneCleaverOption(id) {
   var options = [1, 2, 3];
   return options.map(option => ({
     option: option,
-    value: juneCleaverChoiceValues[id][option]()
+    value: valueJuneCleaverOption(juneCleaverChoiceValues[id][option])
   })).sort((a, b) => b.value - a.value)[0].option;
 }
 
