@@ -1,6 +1,7 @@
 import {
   cliExecute,
   descToItem,
+  equip,
   getWorkshed,
   Item,
   myAdventures,
@@ -9,7 +10,19 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, get, getRemainingStomach, property } from "libram";
+import {
+  $effect,
+  $item,
+  $location,
+  $slot,
+  adventureMacro,
+  get,
+  getRemainingStomach,
+  Macro,
+  property,
+  uneffect,
+  withProperty,
+} from "libram";
 import { computeDiet, consumeDiet } from "./diet";
 import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
 import { garboValue, sessionSinceStart } from "./session";
@@ -67,7 +80,20 @@ function updateMallPrices(): void {
   sessionSinceStart().value(garboValue);
 }
 
+function juneCleave(): void {
+  if (get("_juneCleaverFightsLeft") === 0) {
+    equip($slot`weapon`, $item`June cleaver`);
+    withProperty("recoveryScript", "", () => {
+      adventureMacro($location`Noob Cave`, Macro.abort());
+      if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
+        uneffect($effect`Beaten Up`);
+      }
+    });
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
+  juneCleave();
   numberology();
   if (!skipDiet) horseradish();
   coldMedicineCabinet();
