@@ -190,12 +190,12 @@ const secondChainMacro = () =>
 function embezzlerSetup() {
   setLocation($location`none`);
   potionSetup(false);
+  maximize("MP", false);
   meatMood(true).execute(estimatedTurns());
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
-      maximize("MP", false);
       burnLibrams();
       use($item`Platinum Yendorian Express Card`);
     }
@@ -204,7 +204,6 @@ function embezzlerSetup() {
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
-    maximize("MP", false);
     burnLibrams();
     use($item`License to Chill`);
   }
