@@ -34,7 +34,7 @@ import {
 } from "libram";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { meatFamiliar } from "./familiar";
-import { baseMeat } from "./lib";
+import { baseMeat, propertyManager } from "./lib";
 
 export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
@@ -94,6 +94,7 @@ export function freeFightOutfit(requirement?: Requirement): void {
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  if (haveEquipped($item`June cleaver`)) propertyManager.set({ recoveryScript: "" });
 
   const missingEquips = (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
     (equipment) => !haveEquipped(equipment)
@@ -266,6 +267,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   ) {
     cliExecute("retrocape robot kill");
   }
+  if (haveEquipped($item`June cleaver`)) propertyManager.set({ recoveryScript: "" });
 
   if (
     (compiledRequirements.maximizeOptions.forceEquip ?? []).some(

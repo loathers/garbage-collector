@@ -392,6 +392,7 @@ export function safeRestore(): void {
       );
     }
   }
+  propertyManager.reset("recoveryScript");
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
   }
