@@ -20814,7 +20814,9 @@ function usingThumbRing() {
 var juneCleaverEV = null;
 
 function juneCleaver() {
-  if (!have($item(dropsgear_templateObject68 || (dropsgear_templateObject68 = dropsgear_taggedTemplateLiteral(["June cleaver"]))))) return new Map();
+  if (!have($item(dropsgear_templateObject68 || (dropsgear_templateObject68 = dropsgear_taggedTemplateLiteral(["June cleaver"])))) || get("_juneCleaverFightsLeft") > estimatedTurns()) {
+    return new Map();
+  }
 
   if (!juneCleaverEV) {
     juneCleaverEV = JuneCleaver.choices.reduce((total, choice) => total + valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]), 0) / JuneCleaver.choices.length;
@@ -22130,10 +22132,8 @@ function safeRestoreMpTarget() {
   return Math.min(myMaxmp(), 200);
 }
 function safeRestore() {
-  var validReasonsToBeBeatenUp = ["Poetic Justice", "Lost and Found", "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl"];
-
   if (have($effect(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Beaten Up"]))))) {
-    if (validReasonsToBeBeatenUp.includes(get("lastEncounter"))) {
+    if (get("lastEncounter") === "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl") {
       uneffect($effect(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Beaten Up"]))));
     } else {
       throw new Error("Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.");
@@ -22160,7 +22160,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("0fc54ee7daaafbd4b12da3283a7f5c2cec519acc" === mainSha) {
+    if ("fcbedad4efe0ce7cb11785befc5279f4f07466d5" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");

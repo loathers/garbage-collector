@@ -6275,9 +6275,10 @@ function findMonster(criteria) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "lf": () => (/* binding */ have),
 /* harmony export */   "ZS": () => (/* binding */ getInterval),
+/* harmony export */   "ZF": () => (/* binding */ skipsRemaining),
 /* harmony export */   "Zg": () => (/* binding */ choices)
 /* harmony export */ });
-/* unused harmony exports cleaver, getSkippedInterval, damage, skipsRemaining, queue, choicesAvailable */
+/* unused harmony exports cleaver, getSkippedInterval, damage, queue, choicesAvailable */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2474);
@@ -6319,7 +6320,7 @@ function damage(element) {
  */
 
 function skipsRemaining() {
-  return 5 - get("_juneCleaverSkips");
+  return 5 - (0,_property__WEBPACK_IMPORTED_MODULE_1__/* .get */ .U2)("_juneCleaverSkips");
 }
 var choices = [1467, 1468, 1469, 1470, 1471, 1472, 1473, 1474, 1475];
 /**
@@ -24289,7 +24290,9 @@ function usingThumbRing() {
 var juneCleaverEV = null;
 
 function juneCleaver() {
-  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dropsgear_templateObject68 || (dropsgear_templateObject68 = dropsgear_taggedTemplateLiteral(["June cleaver"]))))) return new Map();
+  if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dropsgear_templateObject68 || (dropsgear_templateObject68 = dropsgear_taggedTemplateLiteral(["June cleaver"])))) || (0,property/* get */.U2)("_juneCleaverFightsLeft") > (0,embezzler/* estimatedTurns */.AN)()) {
+    return new Map();
+  }
 
   if (!juneCleaverEV) {
     juneCleaverEV = JuneCleaver/* choices.reduce */.Zg.reduce((total, choice) => total + (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[choice][(0,src_lib/* bestJuneCleaverOption */.cR)(choice)]), 0) / JuneCleaver/* choices.length */.Zg.length;
@@ -29777,7 +29780,21 @@ var external_canadv_ash_ = __webpack_require__(2549);
 // EXTERNAL MODULE: ./src/wanderer.ts + 1 modules
 var wanderer = __webpack_require__(5444);
 ;// CONCATENATED MODULE: ./src/post.ts
-var post_templateObject, post_templateObject2;
+var post_templateObject, post_templateObject2, post_templateObject3, post_templateObject4, post_templateObject5, post_templateObject6;
+
+function post_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = post_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function post_toConsumableArray(arr) { return post_arrayWithoutHoles(arr) || post_iterableToArray(arr) || post_unsupportedIterableToArray(arr) || post_nonIterableSpread(); }
+
+function post_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function post_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return post_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return post_arrayLikeToArray(o, minLen); }
+
+function post_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function post_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return post_arrayLikeToArray(arr); }
+
+function post_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function post_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -29836,8 +29853,61 @@ function updateMallPrices() {
   (0,session/* sessionSinceStart */.Td)().value(session/* garboValue */.sf);
 }
 
+var juneCleaverSkipChoices;
+
+function skipJuneCleaverChoices() {
+  if (!juneCleaverSkipChoices) {
+    juneCleaverSkipChoices = post_toConsumableArray(JuneCleaver/* choices */.Zg).sort((a, b) => (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[a][(0,src_lib/* bestJuneCleaverOption */.cR)(a)]) - (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[b][(0,src_lib/* bestJuneCleaverOption */.cR)(b)])).splice(0, 3);
+  }
+
+  if (JuneCleaver/* skipsRemaining */.ZF()) {
+    var _iterator = post_createForOfIteratorHelper(juneCleaverSkipChoices),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var choice = _step.value;
+        (0,src_lib/* setChoice */.Y7)(choice, 4);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  } else {
+    var _iterator2 = post_createForOfIteratorHelper(juneCleaverSkipChoices),
+        _step2;
+
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var _choice = _step2.value;
+        (0,src_lib/* setChoice */.Y7)(_choice, (0,src_lib/* bestJuneCleaverOption */.cR)(_choice));
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+  }
+}
+
+function juneCleave() {
+  if ((0,property/* get */.U2)("_juneCleaverFightsLeft") === 0) {
+    (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(post_templateObject3 || (post_templateObject3 = post_taggedTemplateLiteral(["weapon"]))), (0,template_string/* $item */.xr)(post_templateObject4 || (post_templateObject4 = post_taggedTemplateLiteral(["June cleaver"]))));
+    skipJuneCleaverChoices();
+    (0,property/* withProperty */.pr)("recoveryScript", "", () => {
+      (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(post_templateObject5 || (post_templateObject5 = post_taggedTemplateLiteral(["Noob Cave"]))), combat/* Macro.abort */.LE.abort());
+
+      if (["Poetic Justice", "Lost and Found"].includes((0,property/* get */.U2)("lastEncounter"))) {
+        (0,lib/* uneffect */.Lo)((0,template_string/* $effect */._G)(post_templateObject6 || (post_templateObject6 = post_taggedTemplateLiteral(["Beaten Up"]))));
+      }
+    });
+  }
+}
+
 function postCombatActions() {
   var skipDiet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  juneCleave();
   numberology();
   if (!skipDiet) horseradish();
   coldMedicineCabinet();
@@ -32483,7 +32553,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26487);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("0fc54ee7daaafbd4b12da3283a7f5c2cec519acc"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("fcbedad4efe0ce7cb11785befc5279f4f07466d5"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -33095,10 +33165,8 @@ function safeRestoreMpTarget() {
   return Math.min((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myMaxmp)(), 200);
 }
 function safeRestore() {
-  var validReasonsToBeBeatenUp = ["Poetic Justice", "Lost and Found", "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl"];
-
   if ((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effect */ ._G)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Beaten Up"]))))) {
-    if (validReasonsToBeBeatenUp.includes((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("lastEncounter"))) {
+    if ((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("lastEncounter") === "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl") {
       (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .uneffect */ .Lo)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effect */ ._G)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Beaten Up"]))));
     } else {
       throw new Error("Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.");
@@ -33125,7 +33193,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("0fc54ee7daaafbd4b12da3283a7f5c2cec519acc" === mainSha) {
+    if ("fcbedad4efe0ce7cb11785befc5279f4f07466d5" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
