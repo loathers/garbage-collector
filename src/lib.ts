@@ -544,12 +544,16 @@ export const juneCleaverChoiceValues = {
   1475: { 1: $item`mother's necklace`, 2: 0, 3: 0 },
 } as const;
 
-const valueOption = (result: Item | number) =>
-  result instanceof Item ? garboValue(result) : result;
+export function valueJuneCleaverOption(result: Item | number): number {
+  return result instanceof Item ? garboValue(result) : result;
+}
 
 export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
   return options
-    .map((option) => ({ option, value: valueOption(juneCleaverChoiceValues[id][option]) }))
+    .map((option) => ({
+      option,
+      value: valueJuneCleaverOption(juneCleaverChoiceValues[id][option]),
+    }))
     .sort((a, b) => b.value - a.value)[0].option;
 }
