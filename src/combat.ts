@@ -252,6 +252,10 @@ export class Macro extends StrictMacro {
       shouldRedigitize(),
       Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`))
     )
+      .externalIf(
+        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
+        Macro.trySkill($skill`Meatify Matter`)
+      )
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
