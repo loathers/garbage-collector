@@ -310,6 +310,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
+  print("This is such a cool local change!");
   sinceKolmafiaRevision(26487);
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
