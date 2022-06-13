@@ -102,7 +102,7 @@ function skipJuneCleaverChoices(): void {
       .splice(0, 3);
   }
 
-  if (JuneCleaver.skipsRemaining()) {
+  if (JuneCleaver.skipsRemaining() > 0) {
     for (const choice of juneCleaverSkipChoices) {
       setChoice(choice, 4);
     }
