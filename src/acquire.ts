@@ -79,5 +79,7 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   } else {
     withProperty("autoBuyPriceLimit", maxPrice, () => retrieveItem(item, qty));
   }
+  if (itemAmount(item) < qty && throwOnFail) logError(item, "purchase");
+
   return itemAmount(item) - startAmount;
 }
