@@ -29860,7 +29860,7 @@ function skipJuneCleaverChoices() {
     juneCleaverSkipChoices = post_toConsumableArray(JuneCleaver/* choices */.Zg).sort((a, b) => (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[a][(0,src_lib/* bestJuneCleaverOption */.cR)(a)]) - (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[b][(0,src_lib/* bestJuneCleaverOption */.cR)(b)])).splice(0, 3);
   }
 
-  if (JuneCleaver/* skipsRemaining */.ZF()) {
+  if (JuneCleaver/* skipsRemaining */.ZF() > 0) {
     var _iterator = post_createForOfIteratorHelper(juneCleaverSkipChoices),
         _step;
 
@@ -29892,7 +29892,7 @@ function skipJuneCleaverChoices() {
 }
 
 function juneCleave() {
-  if ((0,property/* get */.U2)("_juneCleaverFightsLeft") === 0) {
+  if ((0,property/* get */.U2)("_juneCleaverFightsLeft") <= 0) {
     (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(post_templateObject3 || (post_templateObject3 = post_taggedTemplateLiteral(["weapon"]))), (0,template_string/* $item */.xr)(post_templateObject4 || (post_templateObject4 = post_taggedTemplateLiteral(["June cleaver"]))));
     skipJuneCleaverChoices();
     (0,property/* withProperty */.pr)("recoveryScript", "", () => {
@@ -32553,7 +32553,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26487);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("fcbedad4efe0ce7cb11785befc5279f4f07466d5"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("0bdc3e533d86033dfbeded88a3a1a4fd8f67e796"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -33193,7 +33193,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("fcbedad4efe0ce7cb11785befc5279f4f07466d5" === mainSha) {
+    if ("0bdc3e533d86033dfbeded88a3a1a4fd8f67e796" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
