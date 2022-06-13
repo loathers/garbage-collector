@@ -113,7 +113,7 @@ function skipJuneCleaverChoices(): void {
   }
 }
 function juneCleave(): void {
-  if (get("_juneCleaverFightsLeft") === 0) {
+  if (get("_juneCleaverFightsLeft") <= 0) {
     equip($slot`weapon`, $item`June cleaver`);
     skipJuneCleaverChoices();
     withProperty("recoveryScript", "", () => {
