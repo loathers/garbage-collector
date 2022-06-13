@@ -34,7 +34,7 @@ const priceCaps: { [index: string]: number } = {
 export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (!item.tradeable || (maxPrice !== undefined && maxPrice <= 0)) return 0;
-  if (maxPrice === undefined) throw `No price cap for ${item.name}.`;
+  if (maxPrice === undefined) throw new Error(`No price cap for ${item.name}.`);
 
   print(`Trying to acquire ${qty} ${item.plural}; max price ${maxPrice.toFixed(0)}.`, "green");
 
@@ -46,7 +46,7 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   if (remaining <= 0) return qty;
 
   const logError = (target: Item, source: string) => {
-    throw `Failed to remove ${target} from ${source}`;
+    throw new Error(`Failed to remove ${target} from ${source}`);
   };
 
   if (get("autoSatisfyWithCloset")) {
@@ -79,7 +79,9 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   } else {
     withProperty("autoBuyPriceLimit", maxPrice, () => retrieveItem(item, qty));
   }
-  if (itemAmount(item) < qty && throwOnFail) logError(item, "purchase");
+  if (itemAmount(item) < qty && throwOnFail) {
+    throw new Error(`Failed to purchase sufficient quantities of ${item} from the mall.`);
+  }
 
   return itemAmount(item) - startAmount;
 }
