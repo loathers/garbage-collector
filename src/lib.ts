@@ -293,14 +293,14 @@ export function printHelpMenu(): void {
       updatedDescriptions.push(description);
     }
   });
-  const rows = [];
-  for (let i = 0; i < helpData.length; i++) {
+  const rows: string[] = [];
+  tableItems.forEach((tableItem, index) =>
     rows.push(
-      `<tr><td width=200><pre> ${tableItems[i]}</pre></td><td width=600><pre>${
-        updatedDescriptions[i] ?? ``
+      `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${
+        updatedDescriptions[index] ?? ``
       }</pre></td></tr>`
-    );
-  }
+    )
+  );
   printHtml(`<table border=2 width=800 style="font-family:monospace;">${rows.join(``)}</table>`);
 }
 
