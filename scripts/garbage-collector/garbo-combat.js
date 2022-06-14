@@ -19618,7 +19618,7 @@ function acquire(qty, item, maxPrice) {
   var throwOnFail = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (!item.tradeable || maxPrice !== undefined && maxPrice <= 0) return 0;
-  if (maxPrice === undefined) throw "No price cap for ".concat(item.name, ".");
+  if (maxPrice === undefined) throw new Error("No price cap for ".concat(item.name, "."));
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Trying to acquire ".concat(qty, " ").concat(item.plural, "; max price ").concat(maxPrice.toFixed(0), "."), "green");
   if (qty * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(item) > 1000000) throw "Aggregate cost too high! Probably a bug.";
   var startAmount = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)(item);
@@ -19626,7 +19626,7 @@ function acquire(qty, item, maxPrice) {
   if (remaining <= 0) return qty;
 
   var logError = (target, source) => {
-    throw "Failed to remove ".concat(target, " from ").concat(source);
+    throw new Error("Failed to remove ".concat(target, " from ").concat(source));
   };
 
   if ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("autoSatisfyWithCloset")) {
@@ -19658,6 +19658,10 @@ function acquire(qty, item, maxPrice) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.buy)(item, remaining, maxPrice);
   } else {
     (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .withProperty */ .pr)("autoBuyPriceLimit", maxPrice, () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.retrieveItem)(item, qty));
+  }
+
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)(item) < qty && throwOnFail) {
+    throw new Error("Failed to purchase sufficient quantities of ".concat(item, " from the mall."));
   }
 
   return (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)(item) - startAmount;
@@ -22160,7 +22164,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("0bdc3e533d86033dfbeded88a3a1a4fd8f67e796" === mainSha) {
+    if ("e833009810f0a075db36b18cd3691bb5f89bd4a7" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
