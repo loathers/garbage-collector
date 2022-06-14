@@ -278,13 +278,14 @@ export function printLog(color: string): void {
 
 export function printHelpMenu(): void {
   const helpData = Object.entries(JSON.parse(fileToBuffer("garbo_help.json")));
+  const tdMaxWidth = 82;
   let rows = ``;
   Object.values(helpData).forEach((value) => {
     const key = value[0];
     const valArray = (value[1] as string).split(` `);
     const val = [``];
     valArray.forEach((element) => {
-      if (val[val.length - 1].length + element.length <= 82) {
+      if (val[val.length - 1].length + element.length <= tdMaxWidth) {
         val[val.length - 1] = `${val[val.length - 1]} ${element}`;
       } else {
         val[val.length - 1] = `${val[val.length - 1]}\n`;
