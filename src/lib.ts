@@ -279,7 +279,7 @@ export function printLog(color: string): void {
 export function printHelpMenu(): void {
   const helpData = Object.entries(JSON.parse(fileToBuffer("garbo_help.json")));
   let rows = ``;
-  Object.entries(helpData).forEach(([, value]) => {
+  Object.values(helpData).forEach((value) => {
     const key = value[0];
     const valArray = (value[1] as string).split(` `);
     const val = [``];
