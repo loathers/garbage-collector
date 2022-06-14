@@ -295,7 +295,7 @@ export function printHelpMenu(): void {
       val.join(` `) ?? ``
     }</pre></td></tr>`;
   });
-  printHtml(`<table border=2 width=800 style="font-family:consolas;">${rows}</table>`);
+  printHtml(`<table border=2 width=800 style="font-family:monospace;">${rows}</table>`);
 }
 
 /**
