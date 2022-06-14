@@ -280,9 +280,22 @@ export function printHelpMenu(): void {
   const helpData = Object.entries(JSON.parse(fileToBuffer("garbo_help.json")));
   let rows = ``;
   Object.entries(helpData).forEach(([, value]) => {
-    rows = `${rows}<tr><td width=25%>${value[0]}</td><td width=75%>${value[1]}</td></tr>`;
+    const key = value[0];
+    const valArray = (value[1] as string).split(` `);
+    const val = [``];
+    valArray.forEach((element) => {
+      if (val[val.length - 1].length + element.length <= 82) {
+        val[val.length - 1] = `${val[val.length - 1]} ${element}`;
+      } else {
+        val[val.length - 1] = `${val[val.length - 1]}\n`;
+        val.push(element);
+      }
+    });
+    rows = `${rows}<tr><td width=200><pre> ${key}</pre></td><td width=600><pre>${
+      val.join(` `) ?? ``
+    }</pre></td></tr>`;
   });
-  printHtml(`<pre><table border=2 width=800>${rows}</table></pre>`);
+  printHtml(`<table border=2 width=800 style="font-family:consolas;">${rows}</table>`);
 }
 
 /**
