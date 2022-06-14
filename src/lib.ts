@@ -283,23 +283,16 @@ export function printHelpMenu(): void {
   type tableData = { tableItem: string; description: string };
   const helpData: tableData[] = JSON.parse(fileToBuffer("garbo_help.json"));
   const tableMaxCharWidth = 82;
-  const tableItems = helpData.map((x) => x.tableItem);
-  const descriptions = helpData.map((x) => x.description);
-  const updatedDescriptions: string[] = [];
-  descriptions.forEach((description) => {
-    if (description.length > tableMaxCharWidth) {
-      updatedDescriptions.push(description.replace(/(.{82}\s)/g, `$&\n`));
-    } else {
-      updatedDescriptions.push(description);
-    }
-  });
-  const tableRows: string[] = [];
-  tableItems.forEach((tableItem, index) =>
-    tableRows.push(
-      `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${
-        updatedDescriptions[index] ?? ``
-      }</pre></td></tr>`
-    )
+  const tableEntries = helpData.map((data) => ({
+    description:
+      data.description.length > tableMaxCharWidth
+        ? data.description.replace(/(.{82}\s)/g, `$&\n`)
+        : data.description,
+    tableItem: data.tableItem,
+  }));
+  const tableRows = tableEntries.map(
+    ({ tableItem, description }) =>
+      `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${description}</pre></td></tr>`
   );
   printHtml(
     `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`
