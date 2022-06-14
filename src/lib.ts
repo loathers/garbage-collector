@@ -276,27 +276,32 @@ export function printLog(color: string): void {
   }
 }
 
+/**
+ * Prints Garbo's help menu to the GCLI.
+ */
 export function printHelpMenu(): void {
-  const helpData = Object.entries(JSON.parse(fileToBuffer("garbo_help.json")));
-  const tdMaxWidth = 82;
-  let rows = ``;
-  Object.values(helpData).forEach((value) => {
-    const key = value[0];
-    const valArray = (value[1] as string).split(` `);
-    const val = [``];
-    valArray.forEach((element) => {
-      if (val[val.length - 1].length + element.length <= tdMaxWidth) {
-        val[val.length - 1] = `${val[val.length - 1]} ${element}`;
-      } else {
-        val[val.length - 1] = `${val[val.length - 1]}\n`;
-        val.push(element);
-      }
-    });
-    rows = `${rows}<tr><td width=200><pre> ${key}</pre></td><td width=600><pre>${
-      val.join(` `) ?? ``
-    }</pre></td></tr>`;
+  type tableData = { tableItem: string; description: string };
+  const helpData: tableData[] = JSON.parse(fileToBuffer("garbo_help.json"));
+  const tableMaxCharWidth = 82;
+  const tableItems = helpData.map((x) => x.tableItem);
+  const descriptions = helpData.map((x) => x.description);
+  const updatedDescriptions: string[] = [];
+  descriptions.forEach((description) => {
+    if (description.length > tableMaxCharWidth) {
+      updatedDescriptions.push(description.replace(/(.{82}\s)/g, `$&\n`));
+    } else {
+      updatedDescriptions.push(description);
+    }
   });
-  printHtml(`<table border=2 width=800 style="font-family:monospace;">${rows}</table>`);
+  const rows = [];
+  for (let i = 0; i < helpData.length; i++) {
+    rows.push(
+      `<tr><td width=200><pre> ${tableItems[i]}</pre></td><td width=600><pre>${
+        updatedDescriptions[i] ?? ``
+      }</pre></td></tr>`
+    );
+  }
+  printHtml(`<table border=2 width=800 style="font-family:monospace;">${rows.join(``)}</table>`);
 }
 
 /**
