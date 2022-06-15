@@ -46,7 +46,6 @@ import {
   $location,
   $skill,
   $slot,
-  $slots,
   adventureMacro,
   clamp,
   findLeprechaunMultiplier,
@@ -1058,32 +1057,18 @@ export function bestYachtzeeFamiliar(): Familiar {
 
 const maximizeMeat = () =>
   new Requirement(["meat"], {
-    preventSlot: $slots`familiar`,
-    preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™`,
+    preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
   }).maximize();
 
-function setBestYachtzeeFamiliar() {
-  if (
-    bestYachtzeeFamiliar() === myFamiliar() &&
-    (myFamiliar().underwater ||
-      have($effect`Driving Waterproofly`) ||
-      have($effect`Wet Willied`) ||
-      familiarWaterBreathingEquipment.some((it) => haveEquipped(it)))
-  ) {
-    return;
-  }
+function prepareOutfitAndFamiliar() {
   useFamiliar(bestYachtzeeFamiliar());
+  maximizeMeat();
   if (
-    myFamiliar().underwater ||
-    have($effect`Driving Waterproofly`) ||
-    have($effect`Wet Willied`)
+    !(myFamiliar().underwater || have($effect`Driving Waterproofly`) || have($effect`Wet Willied`))
   ) {
-    maximizeMeat();
-  } else {
     if (!familiarWaterBreathingEquipment.some((it) => have(it))) {
       useFamiliar($familiar`none`);
     } else {
-      maximizeMeat();
       equip(
         $slot`familiar`,
         familiarWaterBreathingEquipment
@@ -1114,7 +1099,7 @@ function _yachtzeeChain(): void {
   meatMood(false).execute(estimatedTurns());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
-  setBestYachtzeeFamiliar();
+  prepareOutfitAndFamiliar();
 
   const meatLimit = 5000000;
   if (myMeat() > meatLimit) cliExecute(`closet put ${myMeat() - meatLimit} meat`);
@@ -1138,7 +1123,7 @@ function _yachtzeeChain(): void {
     executeNextDietStep();
     if (!get("_stenchJellyUsed", false)) throw new Error("We did not use stench jellies");
     // Switch familiars in case changes in fam weight from buffs means our current familiar is no longer optimal
-    setBestYachtzeeFamiliar();
+    prepareOutfitAndFamiliar();
     if (!have($effect`Really Deep Breath`)) {
       const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(
         Math.min(jellyTurns, fishyTurns)
