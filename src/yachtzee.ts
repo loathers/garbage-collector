@@ -18,7 +18,6 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
-  maximize,
   myClosetMeat,
   myFamiliar,
   myFullness,
@@ -47,6 +46,7 @@ import {
   $location,
   $skill,
   $slot,
+  $slots,
   adventureMacro,
   clamp,
   findLeprechaunMultiplier,
@@ -59,6 +59,7 @@ import {
   Macro,
   Mood,
   property,
+  Requirement,
   set,
   sum,
   uneffect,
@@ -1056,10 +1057,10 @@ export function bestYachtzeeFamiliar(): Familiar {
 }
 
 const maximizeMeat = () =>
-  maximize(
-    "meat, -familiar, -equip anemoney clip, -equip cursed magnifying glass, -equip Kramco Sausage-o-Matic™",
-    false
-  );
+  new Requirement(["meat"], {
+    preventSlot: $slots`familiar`,
+    preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™`,
+  }).maximize();
 
 function setBestYachtzeeFamiliar() {
   if (
@@ -1112,7 +1113,7 @@ function _yachtzeeChain(): void {
   );
   meatMood(false).execute(estimatedTurns());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
-  maximize("meat, -equip anemoney clip, -equip cheap sunglasses", false);
+  maximizeMeat();
   setBestYachtzeeFamiliar();
 
   const meatLimit = 5000000;
