@@ -1054,6 +1054,8 @@ export function bestYachtzeeFamiliar(): Familiar {
   return sortedUnderwaterFamiliars[0];
 }
 
+const maximizeMeat = () => maximize("meat, -familiar, -equip anemoney clip, -equip cursed magnifying glass, -equip Kramco Sausage-o-Matic™", false);
+
 function setBestYachtzeeFamiliar() {
   if (
     bestYachtzeeFamiliar() === myFamiliar() &&
@@ -1070,12 +1072,12 @@ function setBestYachtzeeFamiliar() {
     have($effect`Driving Waterproofly`) ||
     have($effect`Wet Willied`)
   ) {
-    maximize("meat, -equip anemoney clip, -equip cheap sunglasses", false);
+    maximizeMeat();
   } else {
     if (!familiarWaterBreathingEquipment.some((it) => have(it))) {
       useFamiliar($familiar`none`);
     } else {
-      maximize("meat, -familiar, -equip anemoney clip, -equip cheap sunglasses", false);
+      maximizeMeat()
       equip(
         $slot`familiar`,
         familiarWaterBreathingEquipment
