@@ -1,6 +1,5 @@
 import { canAdv } from "canadv.ash";
 import {
-  adv1,
   availableAmount,
   canEquip,
   canInteract,
@@ -48,6 +47,7 @@ import {
   $location,
   $skill,
   $slot,
+  adventureMacro,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -56,6 +56,7 @@ import {
   getModifier,
   have,
   isSong,
+  Macro,
   Mood,
   property,
   set,
@@ -530,7 +531,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
           }
           use(1, $item`11-leaf clover`);
           if (haveFishyPipe) use(1, $item`fishy pipe`);
-          adv1($location`The Brinier Deepers`, -1, "");
+          adventureMacro($location`The Brinier Deepers`, Macro.abort());
           if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
             throw new Error("Failed to get fishy from clover adv");
           }
@@ -1136,7 +1137,7 @@ function _yachtzeeChain(): void {
       );
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
     }
-    adv1($location`The Sunken Party Yacht`, -1, "");
+    adventureMacro($location`The Sunken Party Yacht`, Macro.abort());
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
