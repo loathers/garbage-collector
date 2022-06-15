@@ -1977,7 +1977,7 @@ export function deliverThesisIfAble(): void {
   postCombatActions();
 }
 
-function doSausage() {
+export function doSausage(): void {
   if (!kramcoGuaranteed()) {
     return;
   }

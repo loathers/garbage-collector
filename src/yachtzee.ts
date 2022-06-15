@@ -69,6 +69,7 @@ import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
 import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
+import { doSausage } from "./fights";
 import { baseMeat, globalOptions, realmAvailable, safeRestore, turnsToNC } from "./lib";
 import { meatMood } from "./mood";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
@@ -1054,7 +1055,11 @@ export function bestYachtzeeFamiliar(): Familiar {
   return sortedUnderwaterFamiliars[0];
 }
 
-const maximizeMeat = () => maximize("meat, -familiar, -equip anemoney clip, -equip cursed magnifying glass, -equip Kramco Sausage-o-Matic™", false);
+const maximizeMeat = () =>
+  maximize(
+    "meat, -familiar, -equip anemoney clip, -equip cursed magnifying glass, -equip Kramco Sausage-o-Matic™",
+    false
+  );
 
 function setBestYachtzeeFamiliar() {
   if (
@@ -1077,7 +1082,7 @@ function setBestYachtzeeFamiliar() {
     if (!familiarWaterBreathingEquipment.some((it) => have(it))) {
       useFamiliar($familiar`none`);
     } else {
-      maximizeMeat()
+      maximizeMeat();
       equip(
         $slot`familiar`,
         familiarWaterBreathingEquipment
@@ -1155,6 +1160,8 @@ function _yachtzeeChain(): void {
       cliExecute("florist plant Crookweed");
     }
     plantCrookweed = false;
+
+    doSausage();
   }
   set("choiceAdventure918", "");
 }
