@@ -286,9 +286,10 @@ export function printHelpMenu(): void {
   const helpData: tableData[] = JSON.parse(fileToBuffer("garbo_help.json"));
   const tableMaxCharWidth = 82;
   const tableRows = helpData.map(({ tableItem, description }) => {
-    const croppedDescription = data.description.length > tableMaxCharWidth
-        ? data.description.replace(/(.{82}\s)/g, `$&\n`)
-        : data.description;
+    const croppedDescription =
+      description.length > tableMaxCharWidth
+        ? description.replace(/(.{82}\s)/g, `$&\n`)
+        : description;
     return `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${croppedDescription}</pre></td></tr>`;
   });
   printHtml(
