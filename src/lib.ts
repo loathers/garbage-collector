@@ -4,6 +4,7 @@ import {
   cliExecute,
   eat,
   Familiar,
+  fileToBuffer,
   gametimeToInt,
   getLocketMonsters,
   handlingChoice,
@@ -277,61 +278,23 @@ export function printLog(color: string): void {
   }
 }
 
+/**
+ * Prints Garbo's help menu to the GCLI.
+ */
 export function printHelpMenu(): void {
-  printHtml(`<pre style="font-family:consolas;">
-    +================+===================================================================================================+
-    |    Argument    |                                            Description                                            |
-    +================+===================================================================================================+
-    |     nobarf     | garbo will do beginning of the day setup, embezzlers, and various daily flags, but will           |
-    |                |  terminate before normal Barf Mountain turns.                                                     |
-    +----------------+---------------------------------------------------------------------------------------------------+
-    |     ascend     | garbo will operate under the assumption that you're ascending after running it, rather than       |
-    |                |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |
-    +----------------+---------------------------------------------------------------------------------------------------+
-    |                | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
-    |  &lt;somenumber&gt;  |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified            |
-    |                |  number of turns remain (e.g. \`garbo -20\` will leave you with 20 turns at the end of the day).    |
-    +----------------+---------------------------------------------------------------------------------------------------+
-    |    simdiet     | garbo will print out what it computes as an optimal diet and then exit                            |
-    +----------------+---------------------------------------------------------------------------------------------------+
-    |     nodiet     | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |
-    +----------------+---------------------------------------------------------------------------------------------------+
-    |                | *EXPERIMENTAL* garbo only diets after free fights, and attempts to estimate if Yachtzee! chaining |
-    |                |   is profitable for you - if so, it consumes a specific diet which uses ~30-41 spleen; if not it  |
-    | yachtzeechain  |   automatically continues with the regular diet. Requires Spring Break Beach access (it will not  |
-    |                |   grab a one-day pass for you, but will make an attempt if one is used). Sweet Synthesis is       |
-    |                |   strongly recommended, as with access to other meat% buffs from Source Terminal, Fortune Teller, |
-    |                |   KGB and the summoning chamber. Having access to a PYEC (on hand or in the clan stash) is a plus.|
-    +----------------+---------------------------------------------------------------------------------------------------+
-    |      Note:     | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
-    +----------------+---------------------------------------------------------------------------------------------------+</pre>`);
-  printHtml(`<pre style="font-family:consolas;">
-    +==========================+===============================================================================================+
-    |         Property         |                                          Description                                          |
-    +==========================+===============================================================================================+
-    |     valueOfAdventure     | This is a native mafia property, garbo will make purchasing decisions based on this value.    |
-    |                          | Recommended to be at least 3501.                                                              |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |      garbo_stashClan     | If set, garbo will attempt to switch to this clan to take and return useful clan stash items, |
-    |                          |  i.e. a Haiku Katana or Repaid Diaper.                                                        |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |       garbo_vipClan      | If set, garbo will attempt to switch to this clan to utilize VIP furniture if you have a key. |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    | garbo_skipAscensionCheck | Set to true to skip verifying that your account has broken the prism, otherwise you will be   |
-    |                          |  warned upon starting the script.                                                             |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |  garbo_valueOfFreeFight  | Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)      |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |     garbo_fightGlitch    | Set to true to fight the glitch season reward. You need certain skills, see relay for info.   |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |   garbo_autoUserConfirm  | **WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no|
-    |                          | in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and|
-    |                          |  potentially destructive.                                                                     |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |
-    +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
+  type tableData = { tableItem: string; description: string };
+  const helpData: tableData[] = JSON.parse(fileToBuffer("garbo_help.json"));
+  const tableMaxCharWidth = 82;
+  const tableRows = helpData.map(({ tableItem, description }) => {
+    const croppedDescription =
+      description.length > tableMaxCharWidth
+        ? description.replace(/(.{82}\s)/g, `$&\n`)
+        : description;
+    return `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${croppedDescription}</pre></td></tr>`;
+  });
+  printHtml(
+    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`
+  );
 }
 
 /**
