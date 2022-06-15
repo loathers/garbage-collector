@@ -4808,6 +4808,7 @@ function mergeModifiers() {
 __webpack_require__.d(__webpack_exports__, {
   "Jr": () => (/* binding */ PropertiesManager),
   "U2": () => (/* binding */ get),
+  "Pf": () => (/* binding */ getBoolean),
   "rV": () => (/* binding */ getItem),
   "Dx": () => (/* binding */ getNumber),
   "KF": () => (/* binding */ getString),
@@ -4816,7 +4817,7 @@ __webpack_require__.d(__webpack_exports__, {
   "pr": () => (/* binding */ withProperty)
 });
 
-// UNUSED EXPORTS: getBoolean, getBounty, getClass, getCoinmaster, getCommaSeparated, getEffect, getElement, getFamiliar, getLocation, getMonster, getPhylum, getServant, getSkill, getSlot, getStat, getThrall, setProperties, withChoices, withProperties
+// UNUSED EXPORTS: getBounty, getClass, getCoinmaster, getCommaSeparated, getEffect, getElement, getFamiliar, getLocation, getMonster, getPhylum, getServant, getSkill, getSlot, getStat, getThrall, setProperties, withChoices, withProperties
 
 // EXTERNAL MODULE: ./node_modules/libram/node_modules/core-js/modules/es.object.entries.js
 var es_object_entries = __webpack_require__(4875);
@@ -23088,11 +23089,16 @@ var priceCaps = {
 };
 function acquire(qty, item, maxPrice) {
   var throwOnFail = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+  var maxAggregateCost = arguments.length > 4 ? arguments[4] : undefined;
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (!item.tradeable || maxPrice !== undefined && maxPrice <= 0) return 0;
   if (maxPrice === undefined) throw new Error("No price cap for ".concat(item.name, "."));
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Trying to acquire ".concat(qty, " ").concat(item.plural, "; max price ").concat(maxPrice.toFixed(0), "."), "green");
-  if (qty * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(item) > 1000000) throw "Aggregate cost too high! Probably a bug.";
+
+  if (qty * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(item) > (maxAggregateCost !== null && maxAggregateCost !== void 0 ? maxAggregateCost : 1000000)) {
+    throw "Aggregate cost too high! Probably a bug.";
+  }
+
   var startAmount = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)(item);
   var remaining = qty - startAmount;
   if (remaining <= 0) return qty;
@@ -24808,10 +24814,14 @@ function estimatedTurns() {
   var sausageAdventures = (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$item */ .xr)(_templateObject144 || (_templateObject144 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) ? Math.min(potentialSausages, 23 - (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_sausagesEaten")) : 0;
   var thesisAdventures = (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_9__/* .$familiar */ .HP)(_templateObject145 || (_templateObject145 = _taggedTemplateLiteral(["Pocket Professor"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_thesisDelivered") ? 11 : 0;
   var nightcapAdventures = _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.ascending */ .Xe.ascending && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.inebrietyLimit)() ? 60 : 0;
-  var thumbRingMultiplier = (0,_dropsgear__WEBPACK_IMPORTED_MODULE_4__/* .usingThumbRing */ .uv)() ? 1 / 0.96 : 1;
+  var thumbRingMultiplier = (0,_dropsgear__WEBPACK_IMPORTED_MODULE_4__/* .usingThumbRing */ .uv)() ? 1 / 0.96 : 1; // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
+
+  var fullnessAdventures = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.fullnessLimit)() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myFullness)()) * 8;
+  var inebrietyAdventures = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.inebrietyLimit)() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myInebriety)()) * 7;
+  var adventuresAfterChaining = _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.yachtzeeChain */ .Xe.yachtzeeChain && !(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .get */ .U2)("_garboYachtzeeChainCompleted") ? Math.max(fullnessAdventures + inebrietyAdventures - 30, 0) : 0;
   var turns;
   if (_lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.stopTurncount */ .Xe.stopTurncount) turns = _lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.stopTurncount */ .Xe.stopTurncount - (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myTurncount)();else if (_lib__WEBPACK_IMPORTED_MODULE_6__/* .globalOptions.noBarf */ .Xe.noBarf) turns = embezzlerCount();else {
-    turns = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myAdventures)() + sausageAdventures + pantsgivingAdventures + nightcapAdventures + thesisAdventures) * thumbRingMultiplier;
+    turns = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.myAdventures)() + sausageAdventures + pantsgivingAdventures + nightcapAdventures + thesisAdventures + adventuresAfterChaining) * thumbRingMultiplier;
   }
   return turns;
 }
@@ -24885,11 +24895,11 @@ function toasterGaze() {
 /* harmony export */   "s2": () => (/* binding */ expectedGregs),
 /* harmony export */   "KN": () => (/* binding */ doingExtrovermectin),
 /* harmony export */   "Gc": () => (/* binding */ crateStrategy),
+/* harmony export */   "bh": () => (/* binding */ hasMonsterReplacers),
 /* harmony export */   "OL": () => (/* binding */ saberCrateIfSafe),
 /* harmony export */   "H1": () => (/* binding */ equipOrbIfDesired),
 /* harmony export */   "Zz": () => (/* binding */ initializeExtrovermectinZones)
 /* harmony export */ });
-/* unused harmony export hasMonsterReplacers */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3311);
@@ -24952,7 +24962,7 @@ function expectedGregs() {
   return gregs;
 }
 function doingExtrovermectin() {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2)("beGregariousCharges") > 0 || (0,libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2)("beGregariousFightsLeft") > 0;
+  return (0,libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2)("beGregariousCharges") > 0 || (0,libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2)("beGregariousFightsLeft") > 0 || _lib__WEBPACK_IMPORTED_MODULE_2__/* .globalOptions.yachtzeeChain */ .Xe.yachtzeeChain && !(0,libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2)("_garboYachtzeeChainCompleted");
 }
 function crateStrategy() {
   if (!doingExtrovermectin()) return null;
@@ -25333,7 +25343,7 @@ function timeToMeatify() {
 
 /***/ }),
 
-/***/ 2389:
+/***/ 2141:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -28472,7 +28482,7 @@ var farmingPotions = [].concat(potions_toConsumableArray(external_kolmafia_.Item
   effect: effect,
   canDouble: false,
   duration: 20,
-  use: quantity => new Array(quantity).every(() => (0,external_kolmafia_.cliExecute)("genie effect ".concat(effect)))
+  use: quantity => new Array(quantity).fill(0).every(() => (0,external_kolmafia_.cliExecute)("genie effect ".concat(effect)))
 }))));
 function doublingPotions(embezzlers) {
   return farmingPotions.filter(potion => potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5).map(potion => {
@@ -29842,7 +29852,7 @@ function coldMedicineCabinet() {
 }
 
 function horseradish() {
-  if ((0,lib/* getRemainingStomach */.ex)() > 0 && !src_lib/* globalOptions.noDiet */.Xe.noDiet) {
+  if ((0,lib/* getRemainingStomach */.ex)() > 0 && !src_lib/* globalOptions.noDiet */.Xe.noDiet && (!src_lib/* globalOptions.yachtzeeChain */.Xe.yachtzeeChain || (0,property/* get */.U2)("_garboYachtzeeChainCompleted", false))) {
     consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING");
   }
 }
@@ -32357,6 +32367,1099 @@ function getAttuned() {
     (0,external_kolmafia_.adv1)((0,template_string/* $location */.PG)(dailies_templateObject136 || (dailies_templateObject136 = dailies_taggedTemplateLiteral(["Generic Summer Holiday Swimming!"]))));
   }
 }
+;// CONCATENATED MODULE: ./src/yachtzee.ts
+var yachtzee_templateObject, yachtzee_templateObject2, yachtzee_templateObject3, yachtzee_templateObject4, yachtzee_templateObject5, yachtzee_templateObject6, yachtzee_templateObject7, yachtzee_templateObject8, yachtzee_templateObject9, yachtzee_templateObject10, yachtzee_templateObject11, yachtzee_templateObject12, yachtzee_templateObject13, yachtzee_templateObject14, yachtzee_templateObject15, yachtzee_templateObject16, yachtzee_templateObject17, yachtzee_templateObject18, yachtzee_templateObject19, yachtzee_templateObject20, yachtzee_templateObject21, yachtzee_templateObject22, yachtzee_templateObject23, yachtzee_templateObject24, yachtzee_templateObject25, yachtzee_templateObject26, yachtzee_templateObject27, yachtzee_templateObject28, yachtzee_templateObject29, yachtzee_templateObject30, yachtzee_templateObject31, yachtzee_templateObject32, yachtzee_templateObject33, yachtzee_templateObject34, yachtzee_templateObject35, yachtzee_templateObject36, yachtzee_templateObject37, yachtzee_templateObject38, yachtzee_templateObject39, yachtzee_templateObject40, yachtzee_templateObject41, yachtzee_templateObject42, yachtzee_templateObject43, yachtzee_templateObject44, yachtzee_templateObject45, yachtzee_templateObject46, yachtzee_templateObject47, yachtzee_templateObject48, yachtzee_templateObject49, yachtzee_templateObject50, yachtzee_templateObject51, yachtzee_templateObject52, yachtzee_templateObject53, yachtzee_templateObject54, yachtzee_templateObject55, yachtzee_templateObject56, yachtzee_templateObject57, yachtzee_templateObject58, yachtzee_templateObject59, yachtzee_templateObject60, yachtzee_templateObject61, yachtzee_templateObject62, yachtzee_templateObject63, yachtzee_templateObject64, yachtzee_templateObject65, yachtzee_templateObject66, yachtzee_templateObject67, yachtzee_templateObject68, yachtzee_templateObject69, yachtzee_templateObject70, yachtzee_templateObject71, yachtzee_templateObject72, yachtzee_templateObject73, yachtzee_templateObject74, yachtzee_templateObject75, yachtzee_templateObject76, yachtzee_templateObject77, yachtzee_templateObject78, yachtzee_templateObject79, yachtzee_templateObject80, yachtzee_templateObject81, yachtzee_templateObject82, yachtzee_templateObject83, yachtzee_templateObject84, yachtzee_templateObject85, yachtzee_templateObject86, yachtzee_templateObject87, yachtzee_templateObject88, yachtzee_templateObject89, yachtzee_templateObject90, yachtzee_templateObject91, yachtzee_templateObject92, yachtzee_templateObject93, yachtzee_templateObject94, yachtzee_templateObject95, yachtzee_templateObject96, yachtzee_templateObject97, yachtzee_templateObject98, yachtzee_templateObject99, yachtzee_templateObject100, yachtzee_templateObject101, yachtzee_templateObject102, yachtzee_templateObject103, yachtzee_templateObject104, yachtzee_templateObject105, yachtzee_templateObject106, yachtzee_templateObject107, yachtzee_templateObject108, yachtzee_templateObject109, yachtzee_templateObject110, yachtzee_templateObject111, yachtzee_templateObject112, yachtzee_templateObject113, yachtzee_templateObject114, yachtzee_templateObject115, yachtzee_templateObject116, yachtzee_templateObject117, yachtzee_templateObject118, yachtzee_templateObject119, yachtzee_templateObject120, yachtzee_templateObject121, yachtzee_templateObject122, yachtzee_templateObject123, yachtzee_templateObject124, yachtzee_templateObject125, yachtzee_templateObject126, yachtzee_templateObject127, yachtzee_templateObject128, yachtzee_templateObject129, yachtzee_templateObject130, yachtzee_templateObject131, yachtzee_templateObject132, yachtzee_templateObject133, yachtzee_templateObject134, yachtzee_templateObject135, yachtzee_templateObject136, yachtzee_templateObject137, yachtzee_templateObject138, yachtzee_templateObject139, yachtzee_templateObject140, yachtzee_templateObject141, yachtzee_templateObject142;
+
+function yachtzee_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = yachtzee_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function yachtzee_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return yachtzee_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return yachtzee_arrayLikeToArray(o, minLen); }
+
+function yachtzee_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function yachtzee_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function yachtzee_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function yachtzee_createClass(Constructor, protoProps, staticProps) { if (protoProps) yachtzee_defineProperties(Constructor.prototype, protoProps); if (staticProps) yachtzee_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function yachtzee_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function yachtzee_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var YachtzeeDietEntry = /*#__PURE__*/yachtzee_createClass(function YachtzeeDietEntry(name, quantity, fullness, drunkenness, spleen, action) {
+  yachtzee_classCallCheck(this, YachtzeeDietEntry);
+
+  yachtzee_defineProperty(this, "name", void 0);
+
+  yachtzee_defineProperty(this, "quantity", void 0);
+
+  yachtzee_defineProperty(this, "fullness", void 0);
+
+  yachtzee_defineProperty(this, "drunkenness", void 0);
+
+  yachtzee_defineProperty(this, "spleen", void 0);
+
+  yachtzee_defineProperty(this, "action", void 0);
+
+  this.name = name;
+  this.quantity = quantity;
+  this.fullness = fullness;
+  this.drunkenness = drunkenness;
+  this.spleen = spleen;
+  this.action = action;
+});
+
+var YachtzeeDietUtils = /*#__PURE__*/function () {
+  function YachtzeeDietUtils(action) {
+    yachtzee_classCallCheck(this, YachtzeeDietUtils);
+
+    yachtzee_defineProperty(this, "dietArray", void 0);
+
+    yachtzee_defineProperty(this, "pref", void 0);
+
+    yachtzee_defineProperty(this, "originalPref", void 0);
+
+    this.originalPref = !(0,property/* get */.U2)("_garboYachtzeeChainDiet") ? "" : property/* getString */.KF("_garboYachtzeeChainDiet");
+    this.pref = "";
+    this.dietArray = [new YachtzeeDietEntry("extra-greasy slider", 0, 5, 0, -5, n => {
+      (0,external_kolmafia_.eat)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject || (yachtzee_templateObject = yachtzee_taggedTemplateLiteral(["extra-greasy slider"]))));
+    }), new YachtzeeDietEntry("jar of fermented pickle juice", 0, 0, 5, -5, n => {
+      castOde(5 * n);
+      (0,external_kolmafia_.drink)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject2 || (yachtzee_templateObject2 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"]))));
+    }), new YachtzeeDietEntry("Extrovermectin\u2122", 0, 0, 0, 2, n => {
+      (0,external_kolmafia_.chew)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject3 || (yachtzee_templateObject3 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"]))));
+    }), new YachtzeeDietEntry("synthesis", 0, 0, 0, 1, n => {
+      synthesize(n, (0,template_string/* $effect */._G)(yachtzee_templateObject4 || (yachtzee_templateObject4 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"]))));
+    }), new YachtzeeDietEntry("mojo filter", 0, 0, 0, -1, n => {
+      (0,external_kolmafia_.use)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject5 || (yachtzee_templateObject5 = yachtzee_taggedTemplateLiteral(["mojo filter"]))));
+    }), new YachtzeeDietEntry("beggin' cologne", 0, 0, 0, 1, n => {
+      (0,external_kolmafia_.chew)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject6 || (yachtzee_templateObject6 = yachtzee_taggedTemplateLiteral(["beggin' cologne"]))));
+    }), new YachtzeeDietEntry("stench jelly", 0, 0, 0, 1, n => {
+      (0,external_kolmafia_.chew)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject7 || (yachtzee_templateObject7 = yachtzee_taggedTemplateLiteral(["stench jelly"]))));
+    }), new YachtzeeDietEntry("jumping horseradish", 0, 1, 0, 0, n => {
+      (0,external_kolmafia_.eat)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject8 || (yachtzee_templateObject8 = yachtzee_taggedTemplateLiteral(["jumping horseradish"]))));
+    })];
+    if (action) this.dietArray.forEach(entry => entry.action = action);
+  }
+
+  yachtzee_createClass(YachtzeeDietUtils, [{
+    key: "setDietEntry",
+    value: function setDietEntry(name, qty, action) {
+      this.dietArray.forEach(entry => {
+        if (entry.name === name) {
+          if (qty) entry.quantity = qty;
+          if (action) entry.action = action;
+        }
+      });
+    }
+  }, {
+    key: "resetDietPref",
+    value: function resetDietPref() {
+      this.originalPref = "";
+      this.pref = "";
+    }
+  }, {
+    key: "addToPref",
+    value: function addToPref(n, name) {
+      if (!name) throw new Error("Diet pref must have a name");
+
+      for (var i = 0; i < n; i++) {
+        this.pref = this.pref.concat(name !== null && name !== void 0 ? name : "").concat(",");
+      }
+    }
+  }, {
+    key: "setDietPref",
+    value: function setDietPref() {
+      (0,property/* set */.t8)("_garboYachtzeeChainDiet", this.originalPref.concat(this.pref));
+    }
+  }]);
+
+  return YachtzeeDietUtils;
+}();
+
+function splitDietEntry(entry) {
+  var entries = new Array();
+
+  for (var i = 0; i < entry.quantity; i++) {
+    entries.push(new YachtzeeDietEntry(entry.name, 1, entry.fullness, entry.drunkenness, entry.spleen, entry.action));
+  }
+
+  return entries;
+}
+
+function combineDietEntries(left, right) {
+  return new YachtzeeDietEntry(left.name, left.quantity + right.quantity, left.fullness, left.drunkenness, left.spleen, left.action);
+}
+
+function castOde(turns) {
+  if (!(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(yachtzee_templateObject9 || (yachtzee_templateObject9 = yachtzee_taggedTemplateLiteral(["The Ode to Booze"]))))) return false;
+
+  var _iterator = yachtzee_createForOfIteratorHelper((0,lib/* getActiveSongs */.b_)()),
+      _step;
+
+  try {
+    var _loop = function _loop() {
+      var song = _step.value;
+      var slot = Mood.defaultOptions.songSlots.find(slot => slot.includes(song));
+
+      if (!slot && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject12 || (yachtzee_templateObject12 = yachtzee_taggedTemplateLiteral(["Ode to Booze"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject13 || (yachtzee_templateObject13 = yachtzee_taggedTemplateLiteral(["Polka of Plenty"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject14 || (yachtzee_templateObject14 = yachtzee_taggedTemplateLiteral(["Chorale of Companionship"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject15 || (yachtzee_templateObject15 = yachtzee_taggedTemplateLiteral(["The Ballad of Richie Thingfinder"])))) {
+        (0,external_kolmafia_.cliExecute)("shrug ".concat(song));
+      }
+    };
+
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      _loop();
+    } // Shrug default Mood songs
+
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+
+  (0,external_kolmafia_.cliExecute)("shrug ur-kel");
+  (0,external_kolmafia_.cliExecute)("shrug phat loot");
+
+  while ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject10 || (yachtzee_templateObject10 = yachtzee_taggedTemplateLiteral(["Ode to Booze"])))) < turns) {
+    (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(yachtzee_templateObject11 || (yachtzee_templateObject11 = yachtzee_taggedTemplateLiteral(["The Ode to Booze"]))));
+  }
+
+  return true;
+}
+
+function executeNextDietStep(stopBeforeJellies) {
+  if ((0,property/* get */.U2)("_stenchJellyUsed", false)) return;
+  (0,external_kolmafia_.print)("Executing next diet steps", "blue");
+  var dietUtil = new YachtzeeDietUtils();
+  dietUtil.resetDietPref();
+  var dietString = property/* getString */.KF("_garboYachtzeeChainDiet").split(",");
+  var stenchJellyConsumed = false;
+
+  var _iterator2 = yachtzee_createForOfIteratorHelper(dietString),
+      _step2;
+
+  try {
+    var _loop2 = function _loop2() {
+      var name = _step2.value;
+      if (name.length === 0) return "continue";else if (!stenchJellyConsumed && name === "stench jelly") {
+        if (stopBeforeJellies) dietUtil.addToPref(1, name);else {
+          (0,external_kolmafia_.chew)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject16 || (yachtzee_templateObject16 = yachtzee_taggedTemplateLiteral(["stench jelly"]))));
+          (0,property/* set */.t8)("_stenchJellyUsed", true);
+        }
+        stenchJellyConsumed = true;
+      } else if (!stenchJellyConsumed) {
+        dietUtil.dietArray.forEach(entry => {
+          if (entry.name === name) {
+            if ((0,external_kolmafia_.myFullness)() + entry.fullness > (0,external_kolmafia_.fullnessLimit)()) {
+              throw new Error("consuming ".concat(entry.name, " will exceed our fullness limit"));
+            } else if ((0,external_kolmafia_.myInebriety)() + entry.drunkenness > (0,external_kolmafia_.inebrietyLimit)()) {
+              throw new Error("consuming ".concat(entry.name, " will exceed our inebriety limit"));
+            } else if ((0,external_kolmafia_.mySpleenUse)() + entry.spleen > (0,external_kolmafia_.spleenLimit)()) {
+              throw new Error("consuming ".concat(entry.name, " will exceed our spleen limit"));
+            }
+
+            if (entry.fullness > 0) {
+              if (!property/* getBoolean */.Pf("_milkOfMagnesiumUsed")) {
+                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject17 || (yachtzee_templateObject17 = yachtzee_taggedTemplateLiteral(["milk of magnesium"]))), 10000);
+                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject18 || (yachtzee_templateObject18 = yachtzee_taggedTemplateLiteral(["milk of magnesium"]))));
+              }
+
+              if (!property/* getBoolean */.Pf("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject19 || (yachtzee_templateObject19 = yachtzee_taggedTemplateLiteral(["distention pill"]))))) {
+                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject20 || (yachtzee_templateObject20 = yachtzee_taggedTemplateLiteral(["distention pill"]))));
+              }
+            }
+
+            entry.action(1);
+          }
+        });
+      } else {
+        dietUtil.addToPref(1, name);
+      }
+    };
+
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var _ret = _loop2();
+
+      if (_ret === "continue") continue;
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+
+  dietUtil.setDietPref();
+
+  if (!stenchJellyConsumed) {
+    throw new Error("We completed our entire diet but failed to get a stench jelly charge");
+  }
+}
+
+function yachtzeeDietScheduler(menu) {
+  var dietSchedule = new Array();
+  var remainingMenu = new Array();
+  var jellies = new Array(); // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
+  // Assume all fullness/drunkenness > 0 non-spleen cleansers are inserted for buffs
+  // This makes it trivial to plan the diet
+  // First, lay out all the spleen cleansers
+
+  var _iterator3 = yachtzee_createForOfIteratorHelper(menu),
+      _step3;
+
+  try {
+    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+      var _entry3 = _step3.value;
+
+      if (_entry3.spleen < 0) {
+        var _iterator5 = yachtzee_createForOfIteratorHelper(splitDietEntry(_entry3)),
+            _step5;
+
+        try {
+          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+            var splitEntry = _step5.value;
+            dietSchedule.push(splitEntry);
+          }
+        } catch (err) {
+          _iterator5.e(err);
+        } finally {
+          _iterator5.f();
+        }
+      } else if (_entry3.name === "stench jelly") {
+        var _iterator6 = yachtzee_createForOfIteratorHelper(splitDietEntry(_entry3)),
+            _step6;
+
+        try {
+          for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+            var _splitEntry = _step6.value;
+            jellies.push(_splitEntry);
+          }
+        } catch (err) {
+          _iterator6.e(err);
+        } finally {
+          _iterator6.f();
+        }
+      } else if (_entry3.fullness > 0 || _entry3.drunkenness > 0) {
+        var _iterator7 = yachtzee_createForOfIteratorHelper(splitDietEntry(_entry3)),
+            _step7;
+
+        try {
+          for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+            var _splitEntry2 = _step7.value;
+            dietSchedule.splice(0, 0, _splitEntry2);
+          }
+        } catch (err) {
+          _iterator7.e(err);
+        } finally {
+          _iterator7.f();
+        }
+      } else {
+        var _iterator8 = yachtzee_createForOfIteratorHelper(splitDietEntry(_entry3)),
+            _step8;
+
+        try {
+          for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+            var _splitEntry3 = _step8.value;
+            remainingMenu.push(_splitEntry3);
+          }
+        } catch (err) {
+          _iterator8.e(err);
+        } finally {
+          _iterator8.f();
+        }
+      }
+    } // Then, greedily inject spleen items into the schedule with the ordering:
+    // 1) Front to back of the schedule
+    // 2) Large spleen damagers to small spleen damagers
+    // This works because stench jellies are of size 1, so we can always pack efficiently using the greedy approach
+
+  } catch (err) {
+    _iterator3.e(err);
+  } finally {
+    _iterator3.f();
+  }
+
+  remainingMenu.sort((left, right) => {
+    return right.spleen - left.spleen;
+  }); // Schedule jellies last so we definitely get spleen buffs first (e.g. synth and cologne)
+
+  for (var _i = 0, _arr = [remainingMenu, jellies]; _i < _arr.length; _i++) {
+    var spleeners = _arr[_i];
+
+    var _iterator4 = yachtzee_createForOfIteratorHelper(spleeners),
+        _step4;
+
+    try {
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var entry = _step4.value;
+        var _idx = 0;
+
+        var _spleenUse = (0,external_kolmafia_.mySpleenUse)();
+
+        while (_idx < dietSchedule.length && (dietSchedule[_idx].spleen >= 0 || // We only insert if there's a cleanser immediately after where we want to insert
+        _spleenUse + entry.spleen > (0,external_kolmafia_.spleenLimit)() || // But don't insert if we will overshoot our spleen limit
+        _idx > 0 && dietSchedule[_idx - 1].spleen < 0 && _spleenUse + dietSchedule[_idx].spleen >= 0) // And cluster spleen cleansers (continue if the next cleanser can still clean our spleen)
+        ) {
+          var _dietSchedule$_idx$sp;
+
+          _spleenUse += (_dietSchedule$_idx$sp = dietSchedule[_idx++].spleen) !== null && _dietSchedule$_idx$sp !== void 0 ? _dietSchedule$_idx$sp : 0;
+        }
+
+        dietSchedule.splice(_idx, 0, entry);
+      }
+    } catch (err) {
+      _iterator4.e(err);
+    } finally {
+      _iterator4.f();
+    }
+  } // Next, combine clustered entries where possible (this is purely for aesthetic reasons)
+
+
+  var idx = 0;
+
+  while (idx < dietSchedule.length - 1) {
+    if (dietSchedule[idx].name === dietSchedule[idx + 1].name) {
+      dietSchedule.splice(idx, 2, combineDietEntries(dietSchedule[idx], dietSchedule[idx + 1]));
+    } else idx++;
+  } // Print diet schedule
+
+
+  (0,external_kolmafia_.print)("Diet schedule:", "blue");
+
+  for (var _i2 = 0, _dietSchedule = dietSchedule; _i2 < _dietSchedule.length; _i2++) {
+    var _entry = _dietSchedule[_i2];
+    (0,external_kolmafia_.print)("Use ".concat(_entry.quantity, " ").concat(_entry.name), "blue");
+  } // Finally, run a check to ensure everything is fine
+
+
+  var fullness = (0,external_kolmafia_.myFullness)();
+  var drunkenness = (0,external_kolmafia_.myInebriety)();
+  var spleenUse = (0,external_kolmafia_.mySpleenUse)();
+
+  for (var _i3 = 0, _dietSchedule2 = dietSchedule; _i3 < _dietSchedule2.length; _i3++) {
+    var _entry2 = _dietSchedule2[_i3];
+    fullness += _entry2.fullness;
+    drunkenness += _entry2.drunkenness;
+    spleenUse += _entry2.spleen;
+    if (fullness > (0,external_kolmafia_.fullnessLimit)()) throw new Error("Error in diet schedule: Overeating");else if (drunkenness > (0,external_kolmafia_.inebrietyLimit)()) {
+      throw new Error("Error in diet schedule: Overdrinking");
+    } else if (spleenUse > (0,external_kolmafia_.spleenLimit)()) {
+      throw new Error("Error in diet schedule: Overuse of spleen");
+    }
+  }
+
+  return dietSchedule;
+}
+
+function yachtzeeBuffValue(obj) {
+  return 2000 * ((0,modifier/* get */.U)("Meat Drop", obj) + (0,modifier/* get */.U)("Familiar Weight", obj) * 2.5) / 100;
+}
+
+function getBestWaterBreathingEquipment(yachtzeeTurns) {
+  var waterBreathingEquipmentCosts = outfit/* waterBreathingEquipment.map */.RG.map(it => ({
+    item: it,
+    cost: (0,lib/* have */.lf)(it) && (0,external_kolmafia_.canEquip)(it) ? yachtzeeTurns * yachtzeeBuffValue((0,external_kolmafia_.equippedItem)((0,external_kolmafia_.toSlot)(it))) : Infinity
+  }));
+  var bestWaterBreathingEquipment = outfit/* waterBreathingEquipment.some */.RG.some(item => (0,external_kolmafia_.haveEquipped)(item)) ? {
+    item: (0,template_string/* $item */.xr)(yachtzee_templateObject21 || (yachtzee_templateObject21 = yachtzee_taggedTemplateLiteral(["none"]))),
+    cost: 0
+  } : waterBreathingEquipmentCosts.reduce((left, right) => left.cost < right.cost ? left : right);
+  return bestWaterBreathingEquipment;
+}
+
+function optimizeForFishy(yachtzeeTurns, setup) {
+  // Returns the lowest cost for fishy
+  // Assume we already maximized for meat; this returns the cost of swapping out meat% equips for underwater breathing equips
+  var bestWaterBreathingEquipment = getBestWaterBreathingEquipment(yachtzeeTurns);
+
+  if (setup && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject22 || (yachtzee_templateObject22 = yachtzee_taggedTemplateLiteral(["Really Deep Breath"])))) && bestWaterBreathingEquipment.item !== (0,template_string/* $item */.xr)(yachtzee_templateObject23 || (yachtzee_templateObject23 = yachtzee_taggedTemplateLiteral(["none"])))) {
+    (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+  } // If we already have fishy, then we longer need to consider the cost of obtaining it
+
+
+  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject24 || (yachtzee_templateObject24 = yachtzee_taggedTemplateLiteral(["Fishy"])))) >= yachtzeeTurns) return 0; // Compute the cost of losing buffs if we spend turns getting fishy using clovers
+
+  var havePYECCharge = (0,property/* get */.U2)("_PYECAvailable", false);
+  var haveFishyPipe = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject25 || (yachtzee_templateObject25 = yachtzee_taggedTemplateLiteral(["fishy pipe"])))) && !(0,property/* get */.U2)("_fishyPipeUsed", false);
+  var costOfLosingBuffs = 0;
+  (0,lib/* getActiveEffects */.jC)().forEach(eff => costOfLosingBuffs += yachtzeeBuffValue(eff) > 0 // We only consider buffs that affect our meat% and fam wt
+  ? (0,external_kolmafia_.haveEffect)(eff) <= 1 + (0,external_kolmafia_.toInt)(haveFishyPipe) && havePYECCharge // If we lose all the turns of our buff
+  ? (6 + (0,external_kolmafia_.toInt)(haveFishyPipe)) * yachtzeeBuffValue(eff) // we also lose the potential of extending it with PYEC (e.g. $effect`smart drunk`)
+  : (0,external_kolmafia_.haveEffect)(eff) + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns // Else if we don't have enough turns of the buff to cover yachtzeeTurns
+  ? (1 + (0,external_kolmafia_.toInt)(haveFishyPipe)) * yachtzeeBuffValue(eff) // we lose that many turns worth of value of the buff (e.g. $effect`Puzzle Champ`)
+  : 0 // Else, we could potentially lose value from not having enough buffs for embezzlers, but that's out of scope for now
+  : 0 // Buffs that don't affect our meat% and fam wt are not considered
+  );
+  var fishySources = [{
+    name: "fish juice box",
+    cost: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject26 || (yachtzee_templateObject26 = yachtzee_taggedTemplateLiteral(["fish juice box"])))) + (!haveFishyPipe && (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject27 || (yachtzee_templateObject27 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 20 + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns ? Infinity : 0),
+    action: () => {
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject28 || (yachtzee_templateObject28 = yachtzee_taggedTemplateLiteral(["fish juice box"]))), 1.2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject29 || (yachtzee_templateObject29 = yachtzee_taggedTemplateLiteral(["fish juice box"])))));
+      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject30 || (yachtzee_templateObject30 = yachtzee_taggedTemplateLiteral(["fish juice box"]))))) throw new Error("Unable to obtain fish juice box");
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject31 || (yachtzee_templateObject31 = yachtzee_taggedTemplateLiteral(["fish juice box"]))));
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject32 || (yachtzee_templateObject32 = yachtzee_taggedTemplateLiteral(["fishy pipe"]))));
+    }
+  }, {
+    name: "2x fish juice box",
+    cost: 2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject33 || (yachtzee_templateObject33 = yachtzee_taggedTemplateLiteral(["fish juice box"])))),
+    action: () => {
+      (0,acquire/* acquire */.u)(2, (0,template_string/* $item */.xr)(yachtzee_templateObject34 || (yachtzee_templateObject34 = yachtzee_taggedTemplateLiteral(["fish juice box"]))), 1.2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject35 || (yachtzee_templateObject35 = yachtzee_taggedTemplateLiteral(["fish juice box"])))));
+
+      if ((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject36 || (yachtzee_templateObject36 = yachtzee_taggedTemplateLiteral(["fish juice box"])))) < 2) {
+        throw new Error("Unable to obtain sufficient fish juice boxes");
+      }
+
+      (0,external_kolmafia_.use)(2, (0,template_string/* $item */.xr)(yachtzee_templateObject37 || (yachtzee_templateObject37 = yachtzee_taggedTemplateLiteral(["fish juice box"]))));
+    }
+  }, {
+    name: "cuppa Gill tea",
+    cost: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject38 || (yachtzee_templateObject38 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"])))) + bestWaterBreathingEquipment.cost,
+    action: () => {
+      (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+
+      if ((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject39 || (yachtzee_templateObject39 = yachtzee_taggedTemplateLiteral(["hat"])))) === (0,template_string/* $item */.xr)(yachtzee_templateObject40 || (yachtzee_templateObject40 = yachtzee_taggedTemplateLiteral(["The Crown of Ed the Undying"]))) && (0,property/* get */.U2)("edPiece") !== "fish") {
+        (0,external_kolmafia_.cliExecute)("edpiece fish");
+      }
+
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject41 || (yachtzee_templateObject41 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))), 1.2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject42 || (yachtzee_templateObject42 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"])))));
+      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject43 || (yachtzee_templateObject43 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))))) throw new Error("Unable to obtain cuppa Gill tea");
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject44 || (yachtzee_templateObject44 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))));
+    }
+  }, {
+    name: "powdered candy sushi set",
+    cost: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject45 || (yachtzee_templateObject45 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"])))) + bestWaterBreathingEquipment.cost,
+    action: () => {
+      (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+
+      if ((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject46 || (yachtzee_templateObject46 = yachtzee_taggedTemplateLiteral(["hat"])))) === (0,template_string/* $item */.xr)(yachtzee_templateObject47 || (yachtzee_templateObject47 = yachtzee_taggedTemplateLiteral(["The Crown of Ed the Undying"]))) && (0,property/* get */.U2)("edPiece") !== "fish") {
+        (0,external_kolmafia_.cliExecute)("edpiece fish");
+      }
+
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject48 || (yachtzee_templateObject48 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))), 1.2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject49 || (yachtzee_templateObject49 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"])))));
+
+      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject50 || (yachtzee_templateObject50 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))))) {
+        throw new Error("Unable to obtain powdered candy sushi set");
+      }
+
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject51 || (yachtzee_templateObject51 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))));
+    }
+  }, {
+    name: "concentrated fish broth",
+    cost: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject52 || (yachtzee_templateObject52 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"])))) + bestWaterBreathingEquipment.cost,
+    action: () => {
+      (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+
+      if ((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject53 || (yachtzee_templateObject53 = yachtzee_taggedTemplateLiteral(["hat"])))) === (0,template_string/* $item */.xr)(yachtzee_templateObject54 || (yachtzee_templateObject54 = yachtzee_taggedTemplateLiteral(["The Crown of Ed the Undying"]))) && (0,property/* get */.U2)("edPiece") !== "fish") {
+        (0,external_kolmafia_.cliExecute)("edpiece fish");
+      }
+
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject55 || (yachtzee_templateObject55 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))), 1.2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject56 || (yachtzee_templateObject56 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"])))));
+
+      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject57 || (yachtzee_templateObject57 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))))) {
+        throw new Error("Unable to obtain concentrated fish broth");
+      }
+
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject58 || (yachtzee_templateObject58 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))));
+    }
+  }, {
+    name: "Lutz, the Ice Skate",
+    cost: (0,property/* get */.U2)("_skateBuff1", false) || property/* getString */.KF("skateParkStatus") !== "ice" ? Infinity : bestWaterBreathingEquipment.cost,
+    action: () => {
+      (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+
+      if ((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject59 || (yachtzee_templateObject59 = yachtzee_taggedTemplateLiteral(["hat"])))) === (0,template_string/* $item */.xr)(yachtzee_templateObject60 || (yachtzee_templateObject60 = yachtzee_taggedTemplateLiteral(["The Crown of Ed the Undying"]))) && (0,property/* get */.U2)("edPiece") !== "fish") {
+        (0,external_kolmafia_.cliExecute)("edpiece fish");
+      }
+
+      (0,external_kolmafia_.cliExecute)("skate lutz");
+    }
+  }, {
+    name: "The Haggling",
+    cost: (0,external_canadv_ash_.canAdv)((0,template_string/* $location */.PG)(yachtzee_templateObject61 || (yachtzee_templateObject61 = yachtzee_taggedTemplateLiteral(["The Brinier Deepers"])))) ? ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject62 || (yachtzee_templateObject62 = yachtzee_taggedTemplateLiteral(["Lucky!"])))) ? 0 : (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject63 || (yachtzee_templateObject63 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))))) + (0,property/* get */.U2)("valueOfAdventure") + bestWaterBreathingEquipment.cost + costOfLosingBuffs : Infinity,
+    action: () => {
+      (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+
+      if ((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject64 || (yachtzee_templateObject64 = yachtzee_taggedTemplateLiteral(["hat"])))) === (0,template_string/* $item */.xr)(yachtzee_templateObject65 || (yachtzee_templateObject65 = yachtzee_taggedTemplateLiteral(["The Crown of Ed the Undying"]))) && (0,property/* get */.U2)("edPiece") !== "fish") {
+        (0,external_kolmafia_.cliExecute)("edpiece fish");
+      }
+
+      if (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject66 || (yachtzee_templateObject66 = yachtzee_taggedTemplateLiteral(["Lucky!"]))))) {
+        (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject67 || (yachtzee_templateObject67 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))), 1.2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject68 || (yachtzee_templateObject68 = yachtzee_taggedTemplateLiteral(["11-leaf clover"])))));
+
+        if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject69 || (yachtzee_templateObject69 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))))) {
+          throw new Error("Unable to get 11-leaf clover for fishy!");
+        }
+
+        (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject70 || (yachtzee_templateObject70 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))));
+        if (haveFishyPipe) (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject71 || (yachtzee_templateObject71 = yachtzee_taggedTemplateLiteral(["fishy pipe"]))));
+        (0,external_kolmafia_.adv1)((0,template_string/* $location */.PG)(yachtzee_templateObject72 || (yachtzee_templateObject72 = yachtzee_taggedTemplateLiteral(["The Brinier Deepers"]))), -1, "");
+
+        if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject73 || (yachtzee_templateObject73 = yachtzee_taggedTemplateLiteral(["Fishy"])))) < yachtzeeTurns) {
+          throw new Error("Failed to get fishy from clover adv");
+        }
+      }
+    }
+  }];
+  var bestFishySource = fishySources.reduce((left, right) => {
+    return left.cost < right.cost ? left : right;
+  });
+  (0,external_kolmafia_.print)("Cost of Fishy sources:", "blue");
+  fishySources.forEach(source => {
+    (0,external_kolmafia_.print)("".concat(source.name, " (").concat(source.cost, ")"), "blue");
+  });
+
+  if (setup) {
+    bestFishySource.action();
+  }
+
+  return bestFishySource.cost;
+}
+
+function yachtzeeChainDiet(simOnly) {
+  if ((0,property/* get */.U2)("_garboYachtzeeChainDietPlanned", false)) return true; // Plan for Yachtzee Chain
+  // 1) Fish Juice Box + Fishy Pipe for 30 turns of Fishy and Really Deep Breath (so we can ignore underwater gear)
+  // 2) PYEC to extend Fishy + Really Deep Breath if possible
+  // 3) Chew 30 (or 35 with PYEC) Stench Jellies (ensure that we have enough organ space)
+  // 4) Find meat and famwt buff that makes sense for a 2k base drop
+  // 5) Plant underwater friar's plant if possible
+
+  var havePYECCharge = (0,property/* get */.U2)("_PYECAvailable", false);
+  var maxYachtzeeTurns = havePYECCharge ? 35 : 30; // Plan our diet (positive values give space, negative values take space)
+
+  var sliders = Math.floor(((0,external_kolmafia_.fullnessLimit)() - (0,external_kolmafia_.myFullness)()) / 5);
+  var pickleJuice = Math.floor(((0,external_kolmafia_.inebrietyLimit)() - (0,external_kolmafia_.myInebriety)()) / 5);
+  var reqSynthTurns = 30; // We will be left with (30 - yachtzeeTurns) after chaining
+
+  var synth = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject74 || (yachtzee_templateObject74 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"])))) < reqSynthTurns ? -Math.ceil(reqSynthTurns - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject75 || (yachtzee_templateObject75 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"]))))) / 30 : 0;
+  var filters = 3 - (0,property/* get */.U2)("currentMojoFilters");
+  var extros = (0,extrovermectin/* hasMonsterReplacers */.bh)() ? -(4 - Math.min(4, 2 * (0,property/* get */.U2)("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
+
+  var availableSpleen = (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)() + 5 * sliders + 5 * pickleJuice + synth + filters + extros;
+  (0,property/* set */.t8)("_stenchJellyChargeTarget", 0); // If currentJellyChargeTarget > 0, then we were in the middle of prepping for yachtzee
+
+  if (availableSpleen < 30) {
+    (0,external_kolmafia_.print)("We were unable to generate enough organ space for optimal yachtzee chaining", "red");
+    return false;
+  }
+
+  var yachtzeeTurns = availableSpleen >= maxYachtzeeTurns ? maxYachtzeeTurns : 30;
+  if (simOnly) (0,external_kolmafia_.print)("We can potentially run ".concat(yachtzeeTurns, " for yachtzee"), "purple");else (0,external_kolmafia_.print)("Trying to run ".concat(yachtzeeTurns, " turns of Yachtzee"), "purple"); // Compute prices to make sure everything is worth it
+
+  var fishyCost = optimizeForFishy(yachtzeeTurns);
+  var jelliesBulkPrice = (0,external_kolmafia_.retrievePrice)((0,template_string/* $item */.xr)(yachtzee_templateObject76 || (yachtzee_templateObject76 = yachtzee_taggedTemplateLiteral(["stench jelly"]))), yachtzeeTurns);
+  var extroPrice = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject77 || (yachtzee_templateObject77 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"]))));
+  var VOA = (0,property/* get */.U2)("valueOfAdventure");
+  var slidersPrice = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject78 || (yachtzee_templateObject78 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"]))));
+  var pickleJuicePrice = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject79 || (yachtzee_templateObject79 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"]))));
+  var colognePrice = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject80 || (yachtzee_templateObject80 = yachtzee_taggedTemplateLiteral(["beggin' cologne"])))); // We prefer using pickle juice to cleanse our spleen for stench jellies since
+  // 1) It's cheaper
+  // 2) Our stomach can be used for horseradish buffs
+
+  var spleenToClean = yachtzeeTurns - filters - synth - extros - ((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)());
+  var pickleJuiceToDrink = (0,utils/* clamp */.uZ)(Math.ceil(spleenToClean / 5), 0, pickleJuice);
+  var slidersToEat = (0,utils/* clamp */.uZ)(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
+  var extrosToChew = -extros / 2;
+  var synthToUse = -synth; // If we need spleen cleansers but their prices are unreasonable, just return
+
+  var maxSliderPrice = 150000,
+      maxPickleJuicePrice = 150000;
+
+  if (slidersToEat > 0 && (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject81 || (yachtzee_templateObject81 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"])))) > maxSliderPrice) {
+    (0,external_kolmafia_.print)("Sliders are way too overpriced for us to clean spleens for jellies", "red");
+    return false;
+  } else if (pickleJuiceToDrink > 0 && (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject82 || (yachtzee_templateObject82 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"])))) > maxPickleJuicePrice) {
+    (0,external_kolmafia_.print)("Pickle juices are way too overpriced for us to clean spleens for jellies", "red");
+    return false;
+  }
+
+  var earlyMeatDropsEstimate = !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject83 || (yachtzee_templateObject83 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"])))) && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(yachtzee_templateObject84 || (yachtzee_templateObject84 = yachtzee_taggedTemplateLiteral(["Sweet Synthesis"])))) ? (0,external_kolmafia_.numericModifier)("Meat Drop") + 300 : (0,external_kolmafia_.numericModifier)("Meat Drop"); // Some iffy calculations here
+  // If the best diet (at current prices) includes sliders and pickle juice (s+pj), no issues there
+  // However, if the best diet does not include s+pj, then we need to compute the loss of switching
+  // from the best diet to s+pj, and add it to our jellyValuePerSpleen calculations
+  // Let's just say (for now) that sliders are at best worth 70k and pickle juices are worth 60k
+
+  var slidersExcessCost = slidersPrice > 70000 ? slidersPrice - 70000 : 0;
+  var pickleJuiceExcessCost = pickleJuicePrice > 60000 ? pickleJuicePrice - 60000 : 0; // Yachtzee has higher base meat than KGEs
+  // thus some potions which aren't profitable for KGEs are profitable for yachtzees
+  // Prior to entering this function, we should already have triggered potionSetup()
+  // This means that any further buffs are purely profitable only for yachtzees
+  // If running simOnly, there's a possibility that potionSetup() hasn't been run
+  // However, this means that higherBaseMeatProfits would try to account for the lower earlyMeatDropsEstimate
+
+  var higherBaseMeatProfits = yachtzeePotionSetup(yachtzeeTurns, true); // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
+  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3.5 * VOA
+
+  var extroValuePerSpleen = 7 * VOA - extroPrice / 2;
+  var jellyValuePerSpleen = earlyMeatDropsEstimate * 2000 / 100 - (jelliesBulkPrice + fishyCost + slidersToEat * slidersExcessCost + pickleJuiceToDrink * pickleJuiceExcessCost - higherBaseMeatProfits) / yachtzeeTurns;
+  (0,external_kolmafia_.print)("Early Meat Drop Modifier: ".concat(earlyMeatDropsEstimate, "%"));
+  (0,external_kolmafia_.print)("Extro value per spleen: ".concat(extroValuePerSpleen));
+  (0,external_kolmafia_.print)("Jelly value per spleen: ".concat(jellyValuePerSpleen));
+
+  if (simOnly) {
+    (0,external_kolmafia_.print)("Jelly value estimates are wildly off for simulations because we have not properly buffed up yet", "orange");
+  }
+
+  if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly) {
+    (0,external_kolmafia_.print)("Running extros is more profitable than chaining yachtzees", "red");
+    return false; // We should do extros instead since they are more valuable
+  } // Schedule our diet first
+
+
+  var cologne = availableSpleen >= yachtzeeTurns + 1 && (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject85 || (yachtzee_templateObject85 = yachtzee_taggedTemplateLiteral(["Eau d' Clochard"])))) < yachtzeeTurns && colognePrice < yachtzeeTurns * 2000 + (60 - yachtzeeTurns) * (src_lib/* baseMeat */.Vq + 750) ? 1 : 0;
+  if (cologne > 0) availableSpleen -= 1;
+  var horseradishes = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject86 || (yachtzee_templateObject86 = yachtzee_taggedTemplateLiteral(["Kicked in the Sinuses"])))) < 30 && (0,external_kolmafia_.myFullness)() + 1 + sliders < (0,external_kolmafia_.fullnessLimit)() ? 1 : 0;
+
+  var addPref = (n, name) => {
+    dietUtil.addToPref(n, name);
+  };
+
+  var dietUtil = new YachtzeeDietUtils(addPref);
+  dietUtil.resetDietPref();
+  dietUtil.setDietEntry("extra-greasy slider", slidersToEat);
+  dietUtil.setDietEntry("jar of fermented pickle juice", pickleJuiceToDrink);
+  dietUtil.setDietEntry("Extrovermectin\u2122", extrosToChew);
+  dietUtil.setDietEntry("synthesis", synthToUse);
+  dietUtil.setDietEntry("mojo filter", filters);
+  dietUtil.setDietEntry("beggin' cologne", cologne);
+  dietUtil.setDietEntry("jumping horseradish", horseradishes);
+  dietUtil.setDietEntry("stench jelly", yachtzeeTurns, (n, name) => {
+    dietUtil.addToPref(n, name);
+
+    if (!simOnly) {
+      (0,property/* set */.t8)("_stenchJellyChargeTarget", property/* getNumber */.Dx("_stenchJellyChargeTarget") + n);
+    }
+  }); // Run diet scheduler
+
+  (0,external_kolmafia_.print)("Scheduling diet", "purple");
+  var dietSchedule = yachtzeeDietScheduler(dietUtil.dietArray); // Now execute the diet
+
+  var _iterator9 = yachtzee_createForOfIteratorHelper(dietSchedule),
+      _step9;
+
+  try {
+    for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+      var entry = _step9.value;
+      entry.action(entry.quantity, entry.name);
+    }
+  } catch (err) {
+    _iterator9.e(err);
+  } finally {
+    _iterator9.f();
+  }
+
+  dietUtil.setDietPref();
+  if (simOnly) return true;
+
+  if (property/* getNumber */.Dx("_stenchJellyChargeTarget") < yachtzeeTurns) {
+    throw new Error("We are only able to obtain up to ".concat(property/* getNumber */.Dx("_stenchJellyChargeTarget"), "/").concat(yachtzeeTurns, " turns of jelly charges!"));
+  } // Acquire everything we need
+
+
+  (0,acquire/* acquire */.u)(yachtzeeTurns, (0,template_string/* $item */.xr)(yachtzee_templateObject87 || (yachtzee_templateObject87 = yachtzee_taggedTemplateLiteral(["stench jelly"]))), 2 * jelliesBulkPrice / yachtzeeTurns, true, 1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
+  );
+
+  if ((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject88 || (yachtzee_templateObject88 = yachtzee_taggedTemplateLiteral(["stench jelly"])))) < yachtzeeTurns) {
+    throw new Error("Failed to acquire sufficient stench jellies");
+  }
+
+  if (extrosToChew > 0) {
+    (0,acquire/* acquire */.u)(extrosToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject89 || (yachtzee_templateObject89 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"]))), 100000, true);
+
+    if ((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject90 || (yachtzee_templateObject90 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"])))) < extrosToChew) {
+      throw new Error("Failed to acquire sufficient Extrovermectins™");
+    }
+  }
+
+  if (pickleJuiceToDrink > 0) {
+    (0,acquire/* acquire */.u)(pickleJuiceToDrink, (0,template_string/* $item */.xr)(yachtzee_templateObject91 || (yachtzee_templateObject91 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"]))), maxPickleJuicePrice, true);
+
+    if ((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject92 || (yachtzee_templateObject92 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"])))) < pickleJuiceToDrink) {
+      throw new Error("Failed to acquire sufficient jars of fermented pickle juice");
+    }
+  }
+
+  if (slidersToEat > 0) {
+    (0,acquire/* acquire */.u)(slidersToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject93 || (yachtzee_templateObject93 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"]))), maxSliderPrice, true);
+
+    if ((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject94 || (yachtzee_templateObject94 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"])))) < slidersToEat) {
+      throw new Error("Failed to acquire sufficient extra-greasy sliders");
+    }
+  }
+
+  if (cologne > 0) {
+    (0,acquire/* acquire */.u)(cologne, (0,template_string/* $item */.xr)(yachtzee_templateObject95 || (yachtzee_templateObject95 = yachtzee_taggedTemplateLiteral(["beggin' cologne"]))), 2 * colognePrice, true);
+
+    if ((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject96 || (yachtzee_templateObject96 = yachtzee_taggedTemplateLiteral(["beggin' cologne"])))) < cologne) {
+      throw new Error("Failed to acquire sufficient beggin' colognes");
+    }
+  }
+
+  if (filters > 0) {
+    (0,acquire/* acquire */.u)(filters, (0,template_string/* $item */.xr)(yachtzee_templateObject97 || (yachtzee_templateObject97 = yachtzee_taggedTemplateLiteral(["mojo filter"]))), 2 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject98 || (yachtzee_templateObject98 = yachtzee_taggedTemplateLiteral(["mojo filter"])))), true);
+
+    if ((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject99 || (yachtzee_templateObject99 = yachtzee_taggedTemplateLiteral(["mojo filter"])))) < filters) {
+      throw new Error("Failed to acquire sufficient mojo filters");
+    }
+  }
+
+  if (horseradishes > 0) {
+    (0,acquire/* acquire */.u)(horseradishes, (0,template_string/* $item */.xr)(yachtzee_templateObject100 || (yachtzee_templateObject100 = yachtzee_taggedTemplateLiteral(["jumping horseradish"]))), 60000, true);
+
+    if ((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject101 || (yachtzee_templateObject101 = yachtzee_taggedTemplateLiteral(["jumping horseradish"])))) < horseradishes) {
+      throw new Error("Failed to acquire sufficient jumping horseradishes");
+    }
+  } // Get fishy turns
+
+
+  (0,external_kolmafia_.print)("Getting fishy turns", "purple");
+  optimizeForFishy(yachtzeeTurns, true); // Final checks
+
+  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject102 || (yachtzee_templateObject102 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns) {
+    throw new Error("We only got ".concat((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject103 || (yachtzee_templateObject103 = yachtzee_taggedTemplateLiteral(["Fishy"])))), "/").concat(yachtzeeTurns, " turns of fishy!"));
+  }
+
+  (0,property/* set */.t8)("_garboYachtzeeChainDietPlanned", true);
+  return true;
+}
+
+var ignoredSources = ["Orb Prediction", "Pillkeeper Semirare", "Lucky!", "11-leaf clover (untapped potential)"];
+var expectedEmbezzlers = (0,utils/* sum */.Sm)(embezzler/* embezzlerSources.filter */.Fn.filter(source => !ignoredSources.includes(source.name)), source => source.potential());
+
+function yachtzeePotionProfits(potion, yachtzeeTurns) {
+  // If we have an unused PYEC then
+  // 1) We if don't have an effect, +5 to gained effect duration
+  // 2) If we already have an effect, +5 to existing effect duration
+  // This means that the first use of a potion that we don't already have an effect of is more valuable than the next use
+  var PYECOffset = 5 * (0,external_kolmafia_.toInt)((0,property/* get */.U2)("_PYECAvailable", false));
+  var existingOffset = (0,external_kolmafia_.haveEffect)(potion.effect()) ? PYECOffset : 0;
+  var extraOffset = PYECOffset - existingOffset;
+  var effectiveYachtzeeTurns = Math.max(Math.min(yachtzeeTurns - (0,external_kolmafia_.haveEffect)(potion.effect()) - existingOffset, potion.effectDuration() + extraOffset), 0);
+  var embezzlerTurns = Math.min(expectedEmbezzlers, Math.max(potion.effectDuration() + extraOffset - effectiveYachtzeeTurns, 0));
+  var barfTurns = Math.max(potion.effectDuration() + extraOffset - effectiveYachtzeeTurns - embezzlerTurns, 0);
+  var embezzlerValue = embezzlerTurns > 0 ? potion.gross(embezzlerTurns) : 0;
+  var yachtzeeValue = effectiveYachtzeeTurns * 2000 * (potion.meatDrop() + 2.5 * potion.familiarWeight()) / 100; // Every 1lbs of lep ~ 2.5% meat drop
+
+  var barfValue = barfTurns * src_lib/* baseMeat */.Vq * src_lib/* turnsToNC */.zr / (src_lib/* turnsToNC */.zr + 1);
+  return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
+}
+
+function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
+  var totalProfits = 0;
+  var PYECOffset = 5 * (0,external_kolmafia_.toInt)((0,property/* get */.U2)("_PYECAvailable", false));
+  var excludedEffects = new Set();
+
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject104 || (yachtzee_templateObject104 = yachtzee_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,property/* get */.U2)("_freePillKeeperUsed", false)) {
+    var doublingPotions = farmingPotions.filter(potion => potion.canDouble && (0,external_kolmafia_.haveEffect)(potion.effect()) + PYECOffset * (0,external_kolmafia_.toInt)((0,external_kolmafia_.haveEffect)(potion.effect()) > 0) < yachtzeeTurns && yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 && potion.price(true) < (0,external_kolmafia_.myMeat)()).sort((left, right) => yachtzeePotionProfits(right.doubleDuration(), yachtzeeTurns) - yachtzeePotionProfits(left.doubleDuration(), yachtzeeTurns));
+    var bestPotion = doublingPotions.length > 0 ? doublingPotions[0].doubleDuration() : undefined;
+
+    if (bestPotion) {
+      var profit = yachtzeePotionProfits(bestPotion, yachtzeeTurns);
+      var price = bestPotion.price(true);
+      totalProfits += profit;
+      (0,external_kolmafia_.print)("Determined that ".concat(bestPotion.potion, " was the best potion to double"), "blue");
+      (0,external_kolmafia_.print)("Expected to profit ".concat(profit, " meat from doubling 1 ").concat(bestPotion.potion, " @ price ").concat(price, " meat"), "blue");
+
+      if (!simOnly) {
+        (0,external_kolmafia_.cliExecute)("pillkeeper extend");
+        (0,acquire/* acquire */.u)(1, bestPotion.potion, profit + price);
+        bestPotion.use(1);
+      } else excludedEffects.add(bestPotion.effect());
+    }
+  }
+
+  var _iterator10 = yachtzee_createForOfIteratorHelper((0,lib/* getActiveEffects */.jC)()),
+      _step10;
+
+  try {
+    for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+      var _mutuallyExclusive$ge;
+
+      var effect = _step10.value;
+
+      var _iterator12 = yachtzee_createForOfIteratorHelper((_mutuallyExclusive$ge = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge !== void 0 ? _mutuallyExclusive$ge : []),
+          _step12;
+
+      try {
+        for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
+          var excluded = _step12.value;
+          excludedEffects.add(excluded);
+        }
+      } catch (err) {
+        _iterator12.e(err);
+      } finally {
+        _iterator12.f();
+      }
+    }
+  } catch (err) {
+    _iterator10.e(err);
+  } finally {
+    _iterator10.f();
+  }
+
+  var testPotions = farmingPotions.filter(potion => (0,external_kolmafia_.haveEffect)(potion.effect()) + PYECOffset * (0,external_kolmafia_.toInt)((0,external_kolmafia_.haveEffect)(potion.effect()) > 0) < yachtzeeTurns && yachtzeePotionProfits(potion, yachtzeeTurns) > 0).sort((left, right) => yachtzeePotionProfits(right, yachtzeeTurns) - yachtzeePotionProfits(left, yachtzeeTurns));
+
+  var _iterator11 = yachtzee_createForOfIteratorHelper(testPotions),
+      _step11;
+
+  try {
+    for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
+      var potion = _step11.value;
+
+      var _effect = potion.effect();
+
+      var _price2 = potion.price(true);
+
+      if ((0,external_kolmafia_.haveEffect)(_effect) + PYECOffset * (0,external_kolmafia_.toInt)((0,external_kolmafia_.haveEffect)(_effect) > 0) >= yachtzeeTurns || _price2 > (0,external_kolmafia_.myMeat)()) {
+        continue;
+      }
+
+      if (!excludedEffects.has(_effect)) {
+        var tries = 0;
+
+        while ((0,external_kolmafia_.haveEffect)(_effect) + PYECOffset * (0,external_kolmafia_.toInt)((0,external_kolmafia_.haveEffect)(_effect) > 0) < yachtzeeTurns) {
+          tries++;
+          (0,external_kolmafia_.print)("Considering effect ".concat(_effect, " from source ").concat(potion.potion), "blue");
+
+          var _profit2 = yachtzeePotionProfits(potion, yachtzeeTurns);
+
+          if (_profit2 < 0) break;
+          var nPotions = (0,lib/* have */.lf)(_effect) ? (0,utils/* clamp */.uZ)(Math.floor((yachtzeeTurns - (0,external_kolmafia_.haveEffect)(_effect) - PYECOffset) / potion.effectDuration()), 1, Math.max(1, yachtzeeTurns - PYECOffset)) : 1;
+          totalProfits += nPotions * _profit2;
+          (0,external_kolmafia_.print)("Expected to profit ".concat(nPotions * _profit2, " meat from using ").concat(nPotions, " ").concat(potion.potion, " @ price ").concat(_price2, " meat each"), "blue");
+
+          if (!simOnly) {
+            (0,acquire/* acquire */.u)(nPotions, potion.potion, _profit2 + _price2);
+            if ((0,external_kolmafia_.itemAmount)(potion.potion) < 1) break;
+
+            if ((0,lib/* isSong */.rU)(_effect) && !(0,lib/* have */.lf)(_effect)) {
+              var _iterator13 = yachtzee_createForOfIteratorHelper((0,lib/* getActiveSongs */.b_)()),
+                  _step13;
+
+              try {
+                var _loop3 = function _loop3() {
+                  var song = _step13.value;
+                  var slot = Mood.defaultOptions.songSlots.find(slot => slot.includes(song));
+
+                  if (!slot || slot.includes(_effect)) {
+                    (0,external_kolmafia_.cliExecute)("shrug ".concat(song));
+                  }
+                };
+
+                for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
+                  _loop3();
+                }
+              } catch (err) {
+                _iterator13.e(err);
+              } finally {
+                _iterator13.f();
+              }
+            }
+
+            if (!potion.use(Math.min((0,external_kolmafia_.itemAmount)(potion.potion), nPotions)) || tries >= 5 * Math.ceil(yachtzeeTurns / potion.effectDuration())) {
+              break;
+            }
+          } else break;
+        }
+
+        if ((0,lib/* have */.lf)(_effect) || simOnly) {
+          var _mutuallyExclusive$ge2;
+
+          var _iterator14 = yachtzee_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
+              _step14;
+
+          try {
+            for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
+              var _excluded = _step14.value;
+              excludedEffects.add(_excluded);
+            }
+          } catch (err) {
+            _iterator14.e(err);
+          } finally {
+            _iterator14.f();
+          }
+        }
+      }
+    }
+  } catch (err) {
+    _iterator11.e(err);
+  } finally {
+    _iterator11.f();
+  }
+
+  if (!simOnly) {
+    executeNextDietStep(true);
+
+    if ((0,property/* get */.U2)("_PYECAvailable", false)) {
+      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject105 || (yachtzee_templateObject105 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))))) {
+        (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject106 || (yachtzee_templateObject106 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+      } else {
+        withStash((0,template_string/* $items */.vS)(yachtzee_templateObject107 || (yachtzee_templateObject107 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))), () => {
+          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject108 || (yachtzee_templateObject108 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))))) {
+            (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject109 || (yachtzee_templateObject109 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+          }
+        });
+      }
+    }
+
+    (0,property/* set */.t8)("_PYECAvailable", false);
+  } // Uncle Greenspan's may be cost effective
+
+
+  if (!simOnly && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject110 || (yachtzee_templateObject110 = yachtzee_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) {
+    var yachtzeeFactor = yachtzeeTurns * (yachtzeeTurns + 1);
+    var embezzlerFactor = Math.min(100, expectedEmbezzlers + yachtzeeTurns) * (Math.min(100, expectedEmbezzlers + yachtzeeTurns) + 1);
+    var greenspanValue = (2000 * yachtzeeFactor + (src_lib/* baseMeat */.Vq + 750) * (embezzlerFactor - yachtzeeFactor) + src_lib/* baseMeat */.Vq * (10100 - embezzlerFactor)) / 100;
+
+    var _price = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject111 || (yachtzee_templateObject111 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))));
+
+    var _profit = greenspanValue - _price;
+
+    if (_profit > 0) {
+      (0,external_kolmafia_.print)("Expected to profit ".concat(_profit, " meat from using 1 Uncle Greenspan's Bathroom Finance Guide @ price ").concat(_price, " meat"), "blue");
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject112 || (yachtzee_templateObject112 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))), greenspanValue);
+
+      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject113 || (yachtzee_templateObject113 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))))) {
+        (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject114 || (yachtzee_templateObject114 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))));
+      }
+    }
+  }
+
+  return totalProfits;
+}
+
+function leprechaunMeatBonus(wt) {
+  return 2 * wt + Math.sqrt(220 * wt) - 6;
+}
+
+function bestYachtzeeFamiliar() {
+  var haveUnderwaterFamEquipment = outfit/* familiarWaterBreathingEquipment.some */.e3.some(item => (0,lib/* have */.lf)(item));
+  var famWt = (0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)() - (0,external_kolmafia_.numericModifier)((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject115 || (yachtzee_templateObject115 = yachtzee_taggedTemplateLiteral(["familiar"])))), "Familiar Weight"); // Assumptions - if we don't have the amulet coin, we'll at least have the default familiar equipment (+5lbs)
+
+  var famEquipWeightPenalty = (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject116 || (yachtzee_templateObject116 = yachtzee_taggedTemplateLiteral(["Driving Waterproofly"])))) || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject117 || (yachtzee_templateObject117 = yachtzee_taggedTemplateLiteral(["Wet Willied"])))) ? 0 : haveUnderwaterFamEquipment ? (0,external_kolmafia_.numericModifier)(outfit/* familiarWaterBreathingEquipment.filter */.e3.filter(item => (0,lib/* have */.lf)(item)).reduce((left, right) => (0,external_kolmafia_.numericModifier)(left, "Familiar Weight") > (0,external_kolmafia_.numericModifier)(right, "Familiar Weight") ? left : right), "Familiar Weight") : -Infinity;
+  var sortedUnderwaterFamiliars = external_kolmafia_.Familiar.all().filter(fam => (0,lib/* have */.lf)(fam) && (0,lib/* findLeprechaunMultiplier */.q$)(fam) > 0 && fam !== (0,template_string/* $familiar */.HP)(yachtzee_templateObject118 || (yachtzee_templateObject118 = yachtzee_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))) && fam !== (0,template_string/* $familiar */.HP)(yachtzee_templateObject119 || (yachtzee_templateObject119 = yachtzee_taggedTemplateLiteral(["Robortender"]))) && (fam.underwater || haveUnderwaterFamEquipment)).sort((left, right) => leprechaunMeatBonus((0,lib/* findLeprechaunMultiplier */.q$)(right) * (famWt + (right.underwater ? (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject120 || (yachtzee_templateObject120 = yachtzee_taggedTemplateLiteral(["amulet coin"])))) ? 10 : 5 : famEquipWeightPenalty))) + (right.underwater && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject121 || (yachtzee_templateObject121 = yachtzee_taggedTemplateLiteral(["amulet coin"])))) ? 50 : 0) - leprechaunMeatBonus((0,lib/* findLeprechaunMultiplier */.q$)(left) * (famWt + (left.underwater ? (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject122 || (yachtzee_templateObject122 = yachtzee_taggedTemplateLiteral(["amulet coin"])))) ? 10 : 5 : famEquipWeightPenalty))) - (left.underwater && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject123 || (yachtzee_templateObject123 = yachtzee_taggedTemplateLiteral(["amulet coin"])))) ? 50 : 0));
+  (0,external_kolmafia_.print)("Familiar bonus meat%:", "blue");
+  sortedUnderwaterFamiliars.forEach(fam => {
+    (0,external_kolmafia_.print)("".concat(fam, " (").concat((leprechaunMeatBonus((0,lib/* findLeprechaunMultiplier */.q$)(fam) * (famWt + (fam.underwater ? (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject124 || (yachtzee_templateObject124 = yachtzee_taggedTemplateLiteral(["amulet coin"])))) ? 10 : 5 : famEquipWeightPenalty))) + (fam.underwater && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject125 || (yachtzee_templateObject125 = yachtzee_taggedTemplateLiteral(["amulet coin"])))) ? 50 : 0)).toFixed(2), "%)"), "blue");
+  });
+  if (sortedUnderwaterFamiliars.length === 0) return (0,template_string/* $familiar */.HP)(yachtzee_templateObject126 || (yachtzee_templateObject126 = yachtzee_taggedTemplateLiteral(["none"])));
+  (0,external_kolmafia_.print)("Best Familiar: ".concat(sortedUnderwaterFamiliars[0]), "blue");
+  return sortedUnderwaterFamiliars[0];
+}
+
+function setBestYachtzeeFamiliar() {
+  if (bestYachtzeeFamiliar() === (0,external_kolmafia_.myFamiliar)() && ((0,external_kolmafia_.myFamiliar)().underwater || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject127 || (yachtzee_templateObject127 = yachtzee_taggedTemplateLiteral(["Driving Waterproofly"])))) || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject128 || (yachtzee_templateObject128 = yachtzee_taggedTemplateLiteral(["Wet Willied"])))) || outfit/* familiarWaterBreathingEquipment.some */.e3.some(it => (0,external_kolmafia_.haveEquipped)(it)))) {
+    return;
+  }
+
+  (0,external_kolmafia_.useFamiliar)(bestYachtzeeFamiliar());
+
+  if ((0,external_kolmafia_.myFamiliar)().underwater || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject129 || (yachtzee_templateObject129 = yachtzee_taggedTemplateLiteral(["Driving Waterproofly"])))) || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject130 || (yachtzee_templateObject130 = yachtzee_taggedTemplateLiteral(["Wet Willied"]))))) {
+    (0,external_kolmafia_.maximize)("meat, -equip anemoney clip, -equip cheap sunglasses", false);
+  } else {
+    if (!outfit/* familiarWaterBreathingEquipment.some */.e3.some(it => (0,lib/* have */.lf)(it))) {
+      (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(yachtzee_templateObject131 || (yachtzee_templateObject131 = yachtzee_taggedTemplateLiteral(["none"]))));
+    } else {
+      (0,external_kolmafia_.maximize)("meat, -familiar, -equip anemoney clip, -equip cheap sunglasses", false);
+      (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(yachtzee_templateObject132 || (yachtzee_templateObject132 = yachtzee_taggedTemplateLiteral(["familiar"]))), outfit/* familiarWaterBreathingEquipment.filter */.e3.filter(it => (0,lib/* have */.lf)(it)).reduce((a, b) => (0,external_kolmafia_.numericModifier)(a, "Familiar Weight") > (0,external_kolmafia_.numericModifier)(b, "Familiar Weight") ? a : b));
+    }
+  }
+}
+
+function _yachtzeeChain() {
+  if ((0,external_kolmafia_.myLevel)() <= 13 || !(0,external_kolmafia_.canInteract)()) return; // We definitely need to be able to eat sliders and drink pickle juice
+
+  if (!(0,src_lib/* realmAvailable */.e6)("sleaze")) return;
+  (0,property/* set */.t8)("_PYECAvailable", (0,property/* get */.U2)("expressCardUsed", false) ? false : (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject133 || (yachtzee_templateObject133 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) ? true : withStash((0,template_string/* $items */.vS)(yachtzee_templateObject134 || (yachtzee_templateObject134 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))), () => {
+    return (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject135 || (yachtzee_templateObject135 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+  }));
+  meatMood(false).execute((0,embezzler/* estimatedTurns */.AN)());
+  potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
+
+  (0,external_kolmafia_.maximize)("meat, -equip anemoney clip, -equip cheap sunglasses", false);
+  setBestYachtzeeFamiliar();
+  var meatLimit = 5000000;
+  if ((0,external_kolmafia_.myMeat)() > meatLimit) (0,external_kolmafia_.cliExecute)("closet put ".concat((0,external_kolmafia_.myMeat)() - meatLimit, " meat"));
+
+  if (!yachtzeeChainDiet()) {
+    (0,external_kolmafia_.cliExecute)("closet take ".concat((0,external_kolmafia_.myClosetMeat)(), " meat"));
+    return;
+  }
+
+  var jellyTurns = property/* getNumber */.Dx("_stenchJellyChargeTarget");
+  var fishyTurns = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject136 || (yachtzee_templateObject136 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 5 * (0,external_kolmafia_.toInt)((0,property/* get */.U2)("_PYECAvailable", false));
+  var turncount = (0,external_kolmafia_.myTurncount)();
+  yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
+  (0,external_kolmafia_.cliExecute)("closet take ".concat((0,external_kolmafia_.myClosetMeat)(), " meat"));
+
+  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject137 || (yachtzee_templateObject137 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))))) {
+    (0,lib/* uneffect */.Lo)((0,template_string/* $effect */._G)(yachtzee_templateObject138 || (yachtzee_templateObject138 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))));
+  }
+
+  (0,src_lib/* safeRestore */.Pv)();
+  var plantCrookweed = true;
+  (0,property/* set */.t8)("choiceAdventure918", 2);
+
+  while (Math.min(jellyTurns, fishyTurns) > 0) {
+    executeNextDietStep();
+    if (!(0,property/* get */.U2)("_stenchJellyUsed", false)) throw new Error("We did not use stench jellies"); // Switch familiars in case changes in fam weight from buffs means our current familiar is no longer optimal
+
+    setBestYachtzeeFamiliar();
+
+    if (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject139 || (yachtzee_templateObject139 = yachtzee_taggedTemplateLiteral(["Really Deep Breath"]))))) {
+      var bestWaterBreathingEquipment = getBestWaterBreathingEquipment(Math.min(jellyTurns, fishyTurns));
+      if (bestWaterBreathingEquipment.item !== (0,template_string/* $item */.xr)(yachtzee_templateObject140 || (yachtzee_templateObject140 = yachtzee_taggedTemplateLiteral(["none"])))) (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+    }
+
+    (0,external_kolmafia_.adv1)((0,template_string/* $location */.PG)(yachtzee_templateObject141 || (yachtzee_templateObject141 = yachtzee_taggedTemplateLiteral(["The Sunken Party Yacht"]))), -1, "");
+
+    if ((0,external_kolmafia_.myTurncount)() > turncount || (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject142 || (yachtzee_templateObject142 = yachtzee_taggedTemplateLiteral(["Fishy"])))) < fishyTurns) {
+      fishyTurns -= 1;
+      jellyTurns -= 1;
+      turncount = (0,external_kolmafia_.myTurncount)();
+      (0,property/* set */.t8)("_stenchJellyChargeTarget", property/* getNumber */.Dx("_stenchJellyChargeTarget") - 1);
+      (0,property/* set */.t8)("_stenchJellyUsed", false);
+    }
+
+    if (plantCrookweed && (0,external_kolmafia_.visitUrl)("forestvillage.php").includes("friarcottage.gif") && !property/* getString */.KF("_floristPlantsUsed").split(",").includes("Crookweed")) {
+      (0,external_kolmafia_.cliExecute)("florist plant Crookweed");
+    }
+
+    plantCrookweed = false;
+  }
+
+  (0,property/* set */.t8)("choiceAdventure918", "");
+}
+
+function yachtzeeChain() {
+  if (!src_lib/* globalOptions.yachtzeeChain */.Xe.yachtzeeChain) return;
+  if ((0,property/* get */.U2)("_garboYachtzeeChainCompleted", false)) return;
+  (0,external_kolmafia_.print)("Running Yachtzee Chain", "purple");
+
+  _yachtzeeChain();
+
+  (0,property/* set */.t8)("_garboYachtzeeChainCompleted", true);
+  src_lib/* globalOptions.yachtzeeChain */.Xe.yachtzeeChain = false;
+
+  if (!src_lib/* globalOptions.noDiet */.Xe.noDiet) {
+    runDiet();
+    prepFamiliars(); // Recompute robo drinks' worth after diet is finally consumed
+  }
+}
 ;// CONCATENATED MODULE: ./src/index.ts
 var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35, src_templateObject36, src_templateObject37, src_templateObject38, src_templateObject39, src_templateObject40, src_templateObject41, src_templateObject42, src_templateObject43, src_templateObject44, src_templateObject45, src_templateObject46, src_templateObject47, src_templateObject48, src_templateObject49, src_templateObject50, src_templateObject51, src_templateObject52, src_templateObject53, src_templateObject54, src_templateObject55, src_templateObject56, src_templateObject57, src_templateObject58, src_templateObject59, src_templateObject60, src_templateObject61, src_templateObject62, src_templateObject63, src_templateObject64, src_templateObject65, src_templateObject66, src_templateObject67, src_templateObject68;
 
@@ -32383,6 +33486,7 @@ function src_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof 
 function src_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function src_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 
 
 
@@ -32557,7 +33661,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26487);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e833009810f0a075db36b18cd3691bb5f89bd4a7"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("67f1cde9636efd536285847439869db954d2962a"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -32618,6 +33722,8 @@ function main() {
         src_lib/* globalOptions.simulateDiet */.Xe.simulateDiet = true;
       } else if (arg.match(/nodiet/)) {
         src_lib/* globalOptions.noDiet */.Xe.noDiet = true;
+      } else if (arg.match(/yachtzeechain/)) {
+        src_lib/* globalOptions.yachtzeeChain */.Xe.yachtzeeChain = true;
       } else if (arg.match(/version/i)) {
         (0,src_lib/* checkGithubVersion */.ki)();
         return;
@@ -32796,7 +33902,15 @@ function main() {
     withStash(_stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        if (!src_lib/* globalOptions.noDiet */.Xe.noDiet) runDiet(); // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+        if (src_lib/* globalOptions.noDiet */.Xe.noDiet || (0,property/* get */.U2)("_garboYachtzeeChainCompleted", false)) {
+          (0,external_kolmafia_.print)("We should not be yachtzee chaining", "red");
+          src_lib/* globalOptions.yachtzeeChain */.Xe.yachtzeeChain = false;
+        }
+
+        if (!src_lib/* globalOptions.noDiet */.Xe.noDiet && (!src_lib/* globalOptions.yachtzeeChain */.Xe.yachtzeeChain || (0,property/* get */.U2)("_garboYachtzeeChainCompleted", false))) {
+          runDiet();
+        } // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+
 
         dailySetup();
         (0,maximize/* setDefaultMaximizeOptions */._C)({
@@ -32807,6 +33921,7 @@ function main() {
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
 
+        yachtzeeChain();
         dailyFights();
 
         if (!src_lib/* globalOptions.noBarf */.Xe.noBarf) {
@@ -32952,7 +34067,8 @@ var globalOptions = {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
-  clarasBellClaimed: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_claraBellUsed")
+  clarasBellClaimed: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_claraBellUsed"),
+  yachtzeeChain: false
 };
 var WISH_VALUE = 50000;
 var HIGHLIGHT = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.isDarkMode)() ? "yellow" : "blue";
@@ -33122,7 +34238,7 @@ function printLog(color) {
   }
 }
 function printHelpMenu() {
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.printHtml)("<pre style=\"font-family:consolas;\">\n    +==============+===================================================================================================+\n    |   Argument   |                                            Description                                            |\n    +==============+===================================================================================================+\n    |    nobarf    | garbo will do beginning of the day setup, embezzlers, and various daily flags, but will           |\n    |              |  terminate before normal Barf Mountain turns.                                                     |\n    +--------------+---------------------------------------------------------------------------------------------------+\n    |    ascend    | garbo will operate under the assumption that you're ascending after running it, rather than       |\n    |              |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |\n    +--------------+---------------------------------------------------------------------------------------------------+\n    | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. `garbo 200` will terminate after   |\n    |              |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.       |\n    +------------------------------------------------------------------------------------------------------------------+\n    |   simdiet    | garbo will print out what it computes as an optimal diet and then exit                            |\n    +------------------------------------------------------------------------------------------------------------------+\n    |    nodiet    | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |\n    +--------------+---------------------------------------------------------------------------------------------------+\n    |     Note:    | You can use multiple commands in conjunction, e.g. `garbo nobarf ascend`.                         |\n    +--------------+---------------------------------------------------------------------------------------------------+</pre>");
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.printHtml)("<pre style=\"font-family:consolas;\">\n    +================+===================================================================================================+\n    |    Argument    |                                            Description                                            |\n    +================+===================================================================================================+\n    |     nobarf     | garbo will do beginning of the day setup, embezzlers, and various daily flags, but will           |\n    |                |  terminate before normal Barf Mountain turns.                                                     |\n    +----------------+---------------------------------------------------------------------------------------------------+\n    |     ascend     | garbo will operate under the assumption that you're ascending after running it, rather than       |\n    |                |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |\n    +----------------+---------------------------------------------------------------------------------------------------+\n    |                | garbo will terminate after the specified number of turns, e.g. `garbo 200` will terminate after   |\n    |  &lt;somenumber&gt;  |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified            |\n    |                |  number of turns remain (e.g. `garbo -20` will leave you with 20 turns at the end of the day).    |\n    +----------------+---------------------------------------------------------------------------------------------------+\n    |    simdiet     | garbo will print out what it computes as an optimal diet and then exit                            |\n    +----------------+---------------------------------------------------------------------------------------------------+\n    |     nodiet     | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |\n    +----------------+---------------------------------------------------------------------------------------------------+\n    |                | *EXPERIMENTAL* garbo only diets after free fights, and attempts to estimate if Yachtzee! chaining |\n    |                |   is profitable for you - if so, it consumes a specific diet which uses ~30-41 spleen; if not it  |\n    | yachtzeechain  |   automatically continues with the regular diet. Requires Spring Break Beach access (it will not  |\n    |                |   grab a one-day pass for you, but will make an attempt if one is used). Sweet Synthesis is       |\n    |                |   strongly recommended, as with access to other meat% buffs from Source Terminal, Fortune Teller, |\n    |                |   KGB and the summoning chamber. Having access to a PYEC (on hand or in the clan stash) is a plus.|\n    +----------------+---------------------------------------------------------------------------------------------------+\n    |      Note:     | You can use multiple commands in conjunction, e.g. `garbo nobarf ascend`.                         |\n    +----------------+---------------------------------------------------------------------------------------------------+</pre>");
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.printHtml)("<pre style=\"font-family:consolas;\">\n    +==========================+===============================================================================================+\n    |         Property         |                                          Description                                          |\n    +==========================+===============================================================================================+\n    |     valueOfAdventure     | This is a native mafia property, garbo will make purchasing decisions based on this value.    |\n    |                          | Recommended to be at least 3501.                                                              |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |      garbo_stashClan     | If set, garbo will attempt to switch to this clan to take and return useful clan stash items, |\n    |                          |  i.e. a Haiku Katana or Repaid Diaper.                                                        |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |       garbo_vipClan      | If set, garbo will attempt to switch to this clan to utilize VIP furniture if you have a key. |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    | garbo_skipAscensionCheck | Set to true to skip verifying that your account has broken the prism, otherwise you will be   |\n    |                          |  warned upon starting the script.                                                             |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |  garbo_valueOfFreeFight  | Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)      |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |     garbo_fightGlitch    | Set to true to fight the glitch season reward. You need certain skills, see relay for info.   |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |   garbo_autoUserConfirm  | **WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no|\n    |                          | in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and|\n    |                          |  potentially destructive.                                                                     |\n    +--------------------------+-----------------------------------------------------------------------------------------------+\n    |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |\n    +--------------------------+-----------------------------------------------------------------------------------------------+</pre>");
 }
 /**
@@ -33197,7 +34313,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("e833009810f0a075db36b18cd3691bb5f89bd4a7" === mainSha) {
+    if ("67f1cde9636efd536285847439869db954d2962a" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -34420,7 +35536,7 @@ module.exports = require("kolmafia");
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 2389);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 2141);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
