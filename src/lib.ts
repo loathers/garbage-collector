@@ -86,6 +86,7 @@ export const globalOptions: {
   simulateDiet: boolean;
   noDiet: boolean;
   clarasBellClaimed: boolean;
+  yachtzeeChain: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -97,6 +98,7 @@ export const globalOptions: {
   simulateDiet: false,
   noDiet: false,
   clarasBellClaimed: get("_claraBellUsed"),
+  yachtzeeChain: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";

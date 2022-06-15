@@ -99,6 +99,10 @@ _EXPERIMENTAL_ Garbo will not eat or drink anything as part of the run (includin
 
 Garbo will list the optimal diet it plans to consume computed from your defined mpa and current prices, and then exit.
 
+### `yachtzeechain` flag
+
+_EXPERIMENTAL_ Garbo will attempt to chain the Yachtzee! NC after all the free fights are completed, just before it attempts embezzlers. This command cannot be run in conjuction with the `nodiet` flag. Refer to `help` for more info on the requirements needed to run this.
+
 ### Turncount
 
 Garbo can run for a specified number of turns, or run until you have a specified number of turns remaining. To run for `N` turns, run `garbo N`. To run until `M` turns are remaining, run `garbo -M`.

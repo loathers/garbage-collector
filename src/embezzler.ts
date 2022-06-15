@@ -3,6 +3,7 @@ import {
   booleanModifier,
   chatPrivate,
   cliExecute,
+  fullnessLimit,
   getClanLounge,
   haveEquipped,
   inebrietyLimit,
@@ -11,6 +12,7 @@ import {
   mallPrice,
   myAdventures,
   myFamiliar,
+  myFullness,
   myHash,
   myInebriety,
   myLevel,
@@ -905,6 +907,14 @@ export function estimatedTurns(): number {
   const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
+  // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
+  const fullnessAdventures = (fullnessLimit() - myFullness()) * 8;
+  const inebrietyAdventures = (inebrietyLimit() - myInebriety()) * 7;
+  const adventuresAfterChaining =
+    globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted")
+      ? Math.max(fullnessAdventures + inebrietyAdventures - 30, 0)
+      : 0;
+
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
   else if (globalOptions.noBarf) turns = embezzlerCount();
@@ -914,7 +924,8 @@ export function estimatedTurns(): number {
         sausageAdventures +
         pantsgivingAdventures +
         nightcapAdventures +
-        thesisAdventures) *
+        thesisAdventures +
+        adventuresAfterChaining) *
       thumbRingMultiplier;
   }
 

@@ -97,6 +97,7 @@ import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } fro
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { canAdv } from "canadv.ash";
+import { yachtzeeChain } from "./yachtzee";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -377,6 +378,8 @@ export function main(argString = ""): void {
       globalOptions.simulateDiet = true;
     } else if (arg.match(/nodiet/)) {
       globalOptions.noDiet = true;
+    } else if (arg.match(/yachtzeechain/)) {
+      globalOptions.yachtzeeChain = true;
     } else if (arg.match(/version/i)) {
       checkGithubVersion();
       return;
@@ -590,7 +593,17 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        if (!globalOptions.noDiet) runDiet();
+        if (globalOptions.noDiet || get("_garboYachtzeeChainCompleted", false)) {
+          print("We should not be yachtzee chaining", "red");
+          globalOptions.yachtzeeChain = false;
+        }
+
+        if (
+          !globalOptions.noDiet &&
+          (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
+        ) {
+          runDiet();
+        }
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
@@ -603,6 +616,7 @@ export function main(argString = ""): void {
         // 2. do some embezzler stuff
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
+        yachtzeeChain();
         dailyFights();
 
         if (!globalOptions.noBarf) {

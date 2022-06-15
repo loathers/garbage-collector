@@ -71,7 +71,11 @@ function coldMedicineCabinet(): void {
 }
 
 function horseradish(): void {
-  if (getRemainingStomach() > 0 && !globalOptions.noDiet) {
+  if (
+    getRemainingStomach() > 0 &&
+    !globalOptions.noDiet &&
+    (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
+  ) {
     consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING");
   }
 }
