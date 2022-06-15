@@ -19,7 +19,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
+import { globalOptions, latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";
@@ -59,7 +59,11 @@ export function expectedGregs(): number[] {
 }
 
 export function doingExtrovermectin(): boolean {
-  return get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
+  return (
+    get("beGregariousCharges") > 0 ||
+    get("beGregariousFightsLeft") > 0 ||
+    (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted"))
+  );
 }
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
