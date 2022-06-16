@@ -1062,8 +1062,8 @@ const maximizeMeat = () =>
       ...(myFamiliar().underwater ||
       have($effect`Driving Waterproofly`) ||
       have($effect`Wet Willied`)
-        ? ["underwater familiar"]
-        : []),
+        ? []
+        : ["underwater familiar"]),
     ],
     {
       preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
