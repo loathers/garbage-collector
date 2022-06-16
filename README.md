@@ -12,6 +12,7 @@
     - [`ascend` flag](#ascend-flag)
     - [`nodiet` flag](#nodiet-flag)
     - [`simdiet` flag](#simdiet-flag)
+    - [`yachtzeechain` flag](#yachtzeechain-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)

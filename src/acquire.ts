@@ -45,7 +45,7 @@ export function acquire(
   print(`Trying to acquire ${qty} ${item.plural}; max price ${maxPrice.toFixed(0)}.`, "green");
 
   if (qty * mallPrice(item) > (maxAggregateCost ?? 1000000)) {
-    throw "Aggregate cost too high! Probably a bug.";
+    throw new Error("Aggregate cost too high! Probably a bug.");
   }
 
   const startAmount = itemAmount(item);
