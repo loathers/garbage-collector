@@ -1,6 +1,5 @@
 import { canAdv } from "canadv.ash";
 import {
-  adv1,
   availableAmount,
   canEquip,
   canInteract,
@@ -19,7 +18,6 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
-  maximize,
   myFamiliar,
   myFullness,
   myInebriety,
@@ -47,6 +45,7 @@ import {
   $location,
   $skill,
   $slot,
+  adventureMacro,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -55,8 +54,10 @@ import {
   getModifier,
   have,
   isSong,
+  Macro,
   Mood,
   property,
+  Requirement,
   set,
   sum,
   uneffect,
@@ -67,6 +68,7 @@ import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
 import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
+import { doSausage } from "./fights";
 import { baseMeat, globalOptions, realmAvailable, safeRestore, turnsToNC } from "./lib";
 import { meatMood } from "./mood";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
@@ -542,7 +544,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
           }
           use(1, $item`11-leaf clover`);
           if (haveFishyPipe) use(1, $item`fishy pipe`);
-          adv1($location`The Brinier Deepers`, -1, "");
+          adventureMacro($location`The Brinier Deepers`, Macro.abort());
           if (get("lastAdventure") !== "The Brinier Deepers") {
             print(
               "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
@@ -1066,38 +1068,30 @@ export function bestYachtzeeFamiliar(): Familiar {
   return sortedUnderwaterFamiliars[0];
 }
 
-function setBestYachtzeeFamiliar() {
-  if (
-    bestYachtzeeFamiliar() === myFamiliar() &&
-    (myFamiliar().underwater ||
+const maximizeMeat = () =>
+  new Requirement(
+    [
+      "meat",
+      ...(myFamiliar().underwater ||
       have($effect`Driving Waterproofly`) ||
-      have($effect`Wet Willied`) ||
-      familiarWaterBreathingEquipment.some((it) => haveEquipped(it)))
-  ) {
-    return;
-  }
+      have($effect`Wet Willied`)
+        ? []
+        : ["underwater familiar"]),
+    ],
+    {
+      preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
+    }
+  ).maximize();
+
+function prepareOutfitAndFamiliar() {
   useFamiliar(bestYachtzeeFamiliar());
   if (
-    myFamiliar().underwater ||
-    have($effect`Driving Waterproofly`) ||
-    have($effect`Wet Willied`)
+    !get("_feastedFamiliars").includes(myFamiliar().name) &&
+    get("_feastedFamiliars").split(",").length < 5
   ) {
-    maximize("meat, -equip anemoney clip, -equip cheap sunglasses", false);
-  } else {
-    if (!familiarWaterBreathingEquipment.some((it) => have(it))) {
-      useFamiliar($familiar`none`);
-    } else {
-      maximize("meat, -familiar, -equip anemoney clip, -equip cheap sunglasses", false);
-      equip(
-        $slot`familiar`,
-        familiarWaterBreathingEquipment
-          .filter((it) => have(it))
-          .reduce((a, b) =>
-            numericModifier(a, "Familiar Weight") > numericModifier(b, "Familiar Weight") ? a : b
-          )
-      );
-    }
+    withStash($items`moveable feast`, () => use($item`moveable feast`));
   }
+  maximizeMeat();
 }
 
 function _yachtzeeChain(): void {
@@ -1117,8 +1111,8 @@ function _yachtzeeChain(): void {
   );
   meatMood(false).execute(estimatedTurns());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
-  maximize("meat, -equip anemoney clip, -equip cheap sunglasses", false);
-  setBestYachtzeeFamiliar();
+  maximizeMeat();
+  prepareOutfitAndFamiliar();
 
   const meatLimit = 5000000;
   if (myMeat() > meatLimit) {
@@ -1157,14 +1151,14 @@ function _yachtzeeChain(): void {
     executeNextDietStep();
     if (!get("_stenchJellyUsed", false)) throw new Error("We did not use stench jellies");
     // Switch familiars in case changes in fam weight from buffs means our current familiar is no longer optimal
-    setBestYachtzeeFamiliar();
+    prepareOutfitAndFamiliar();
     if (!have($effect`Really Deep Breath`)) {
       const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(
         Math.min(jellyTurns, fishyTurns)
       );
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
     }
-    adv1($location`The Sunken Party Yacht`, -1, "");
+    adventureMacro($location`The Sunken Party Yacht`, Macro.abort());
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
@@ -1180,6 +1174,8 @@ function _yachtzeeChain(): void {
       cliExecute("florist plant Crookweed");
     }
     plantCrookweed = false;
+
+    doSausage();
   }
   set("choiceAdventure918", "");
 }
