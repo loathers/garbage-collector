@@ -99,6 +99,22 @@ class YachtzeeDietEntry<T> {
   }
 }
 
+function ensureConsumable(
+  name: string,
+  n: number,
+  fullness: number,
+  inebriety: number,
+  spleenUse: number
+): void {
+  if (myFullness() + n * fullness > fullnessLimit()) {
+    throw new Error(`Eating ${n} ${name} exceeds our stomach capacity!`);
+  } else if (myInebriety() + n * inebriety > inebrietyLimit()) {
+    throw new Error(`Drinking ${n} ${name} exceeds our liver capacity!`);
+  } else if (mySpleenUse() + n * spleenUse > spleenLimit()) {
+    throw new Error(`Using ${n} ${name} exceeds our spleen capacity!`);
+  }
+}
+
 class YachtzeeDietUtils {
   dietArray: Array<YachtzeeDietEntry<void>>;
   pref: string;
@@ -111,28 +127,35 @@ class YachtzeeDietUtils {
     this.pref = "";
     this.dietArray = [
       new YachtzeeDietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
+        ensureConsumable(`extra-greasy slider`, n, 5, 0, -5);
         eat(n, $item`extra-greasy slider`);
       }),
       new YachtzeeDietEntry(`jar of fermented pickle juice`, 0, 0, 5, -5, (n: number) => {
+        ensureConsumable(`jar of fermented pickle juice`, n, 0, 5, -5);
         castOde(5 * n);
         drink(n, $item`jar of fermented pickle juice`);
       }),
       new YachtzeeDietEntry(`Extrovermectin™`, 0, 0, 0, 2, (n: number) => {
+        ensureConsumable(`Extrovermectin™`, n, 0, 0, 2);
         chew(n, $item`Extrovermectin™`);
       }),
       new YachtzeeDietEntry("synthesis", 0, 0, 0, 1, (n: number) => {
+        ensureConsumable(`synthesis`, n, 0, 0, 1);
         synthesize(n, $effect`Synthesis: Greed`);
       }),
       new YachtzeeDietEntry(`mojo filter`, 0, 0, 0, -1, (n: number) => {
         use(n, $item`mojo filter`);
       }),
       new YachtzeeDietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
+        ensureConsumable(`beggin' cologne`, n, 0, 0, 1);
         chew(n, $item`beggin' cologne`);
       }),
       new YachtzeeDietEntry(`stench jelly`, 0, 0, 0, 1, (n: number) => {
+        ensureConsumable(`stench jelly`, n, 0, 0, 1);
         chew(n, $item`stench jelly`);
       }),
       new YachtzeeDietEntry(`jumping horseradish`, 0, 1, 0, 0, (n: number) => {
+        ensureConsumable(`jumping horseradish`, n, 1, 0, 0);
         eat(n, $item`jumping horseradish`);
       }),
     ];
@@ -1041,12 +1064,12 @@ function setBestYachtzeeFamiliar() {
     have($effect`Driving Waterproofly`) ||
     have($effect`Wet Willied`)
   ) {
-    maximize(`meat, -equip anemoney clip, -equip cheap sunglasses`, false);
+    maximize("meat, -equip anemoney clip, -equip cheap sunglasses", false);
   } else {
     if (!familiarWaterBreathingEquipment.some((it) => have(it))) {
       useFamiliar($familiar`none`);
     } else {
-      maximize(`meat, -familiar, -equip anemoney clip, -equip cheap sunglasses`, false);
+      maximize("meat, -familiar, -equip anemoney clip, -equip cheap sunglasses", false);
       equip(
         $slot`familiar`,
         familiarWaterBreathingEquipment
@@ -1076,7 +1099,7 @@ function _yachtzeeChain(): void {
   );
   meatMood(false).execute(estimatedTurns());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
-  maximize(`meat, -equip anemoney clip, -equip cheap sunglasses`, false);
+  maximize("meat, -equip anemoney clip, -equip cheap sunglasses", false);
   setBestYachtzeeFamiliar();
 
   const meatLimit = 5000000;
