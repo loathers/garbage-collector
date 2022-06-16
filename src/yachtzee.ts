@@ -693,7 +693,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Schedule our diet first
   const horseradishes =
     haveEffect($effect`Kicked in the Sinuses`) < 30 &&
-    myFullness() + 1 + slidersToEat * 5 < fullnessLimit() + toInt(haveDistentionPill)
+    myFullness() + 1 + slidersToEat * 5 <= fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
 
