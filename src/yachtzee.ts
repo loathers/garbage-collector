@@ -584,7 +584,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
   const extrosToChew = -extros / 2;
   const synthToUse = -synth;
-  cologne = -cologne;
+  const cologneToChew = -cologne;
 
   // If we need spleen cleansers but their prices are unreasonable, just return
   const maxSliderPrice = 150000,
@@ -619,7 +619,9 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // This means that any further buffs are purely profitable only for yachtzees
   // If running simOnly, there's a possibility that potionSetup() hasn't been run
   // However, this means that higherBaseMeatProfits would try to account for the lower earlyMeatDropsEstimate
-  const higherBaseMeatProfits = yachtzeePotionSetup(yachtzeeTurns, true);
+  const higherBaseMeatProfits =
+    yachtzeePotionSetup(yachtzeeTurns, true) +
+    cologneToChew * ((yachtzeeTurns + 60 + 5 * toInt(havePYECCharge)) * 1000 - colognePrice);
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
   // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3.5 * VOA
@@ -664,7 +666,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   dietUtil.setDietEntry(`Extrovermectin™`, extrosToChew);
   dietUtil.setDietEntry(`synthesis`, synthToUse);
   dietUtil.setDietEntry(`mojo filter`, filters);
-  dietUtil.setDietEntry(`beggin' cologne`, cologne);
+  dietUtil.setDietEntry(`beggin' cologne`, cologneToChew);
   dietUtil.setDietEntry(`jumping horseradish`, horseradishes);
   dietUtil.setDietEntry(`stench jelly`, yachtzeeTurns, (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
@@ -720,9 +722,9 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
       throw new Error("Failed to acquire sufficient extra-greasy sliders");
     }
   }
-  if (cologne > 0) {
-    acquire(cologne, $item`beggin' cologne`, 2 * colognePrice, true);
-    if (itemAmount($item`beggin' cologne`) < cologne) {
+  if (cologneToChew > 0) {
+    acquire(cologneToChew, $item`beggin' cologne`, 2 * colognePrice, true);
+    if (itemAmount($item`beggin' cologne`) < cologneToChew) {
       throw new Error("Failed to acquire sufficient beggin' colognes");
     }
   }
