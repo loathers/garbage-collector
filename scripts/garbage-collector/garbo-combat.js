@@ -19623,7 +19623,7 @@ function acquire(qty, item, maxPrice) {
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Trying to acquire ".concat(qty, " ").concat(item.plural, "; max price ").concat(maxPrice.toFixed(0), "."), "green");
 
   if (qty * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(item) > (maxAggregateCost !== null && maxAggregateCost !== void 0 ? maxAggregateCost : 1000000)) {
-    throw "Aggregate cost too high! Probably a bug.";
+    throw new Error("Aggregate cost too high! Probably a bug.");
   }
 
   var startAmount = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)(item);
@@ -22186,7 +22186,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("b21fac1f12f3b0134dbce5c1a700172d334d0f41" === mainSha) {
+    if ("4c1e7f0e5f96c016c4689ec10cf945822a81756f" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
