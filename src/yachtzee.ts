@@ -303,6 +303,9 @@ function yachtzeeDietScheduler(
   const dietSchedule = new Array<YachtzeeDietEntry<void>>();
   const remainingMenu = new Array<YachtzeeDietEntry<void>>();
   const jellies = new Array<YachtzeeDietEntry<void>>();
+  const haveDistentionPill =
+    !property.getBoolean("_distentionPillUsed") && have($item`distention pill`);
+
   // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
   // Assume all fullness/drunkenness > 0 non-spleen cleansers are inserted for buffs
   // This makes it trivial to plan the diet
@@ -355,7 +358,7 @@ function yachtzeeDietScheduler(
   }
 
   // Print diet schedule
-  print(`Fullness:    ${myFullness()}/${fullnessLimit()}`, "blue");
+  print(`Fullness:    ${myFullness()}/${fullnessLimit() + toInt(haveDistentionPill)}`, "blue");
   print(`Drunkenness: ${myInebriety()}/${inebrietyLimit()}`, "blue");
   print(`Spleen Use:  ${mySpleenUse()}/${spleenLimit()}`, "blue");
   print("Diet schedule:", "blue");
@@ -369,11 +372,24 @@ function yachtzeeDietScheduler(
     fullness += entry.quantity * entry.fullness;
     drunkenness += entry.quantity * entry.drunkenness;
     spleenUse += entry.quantity * entry.spleen;
-    if (fullness > fullnessLimit()) throw new Error("Error in diet schedule: Overeating");
-    else if (drunkenness > inebrietyLimit()) {
-      throw new Error("Error in diet schedule: Overdrinking");
+    if (fullness > fullnessLimit() + toInt(haveDistentionPill)) {
+      throw new Error(
+        `Error in diet schedule: Overeating ${entry.quantity} ${entry.name} to ${fullness}/${
+          fullnessLimit() + toInt(haveDistentionPill)
+        }`
+      );
+    } else if (drunkenness > inebrietyLimit()) {
+      throw new Error(
+        `Error in diet schedule: Overdrinking ${entry.quantity} ${
+          entry.name
+        } to ${drunkenness}/${inebrietyLimit()}`
+      );
     } else if (spleenUse > spleenLimit()) {
-      throw new Error("Error in diet schedule: Overuse of spleen");
+      throw new Error(
+        `Error in diet schedule: Overspleening ${entry.quantity} ${
+          entry.name
+        } to ${spleenUse}/${spleenLimit()}`
+      );
     }
   }
 
@@ -561,9 +577,11 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const havePYECCharge = get("_PYECAvailable", false);
   const maxYachtzeeTurns = havePYECCharge ? 35 : 30;
+  const haveDistentionPill =
+    !property.getBoolean("_distentionPillUsed") && have($item`distention pill`);
 
   // Plan our diet (positive values give space, negative values take space)
-  const sliders = Math.floor((fullnessLimit() - myFullness()) / 5);
+  const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
   const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
   const synth =
@@ -675,7 +693,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Schedule our diet first
   const horseradishes =
     haveEffect($effect`Kicked in the Sinuses`) < 30 &&
-    myFullness() + 1 + slidersToEat < fullnessLimit()
+    myFullness() + 1 + slidersToEat * 5 < fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
 
