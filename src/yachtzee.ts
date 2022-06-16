@@ -1056,29 +1056,23 @@ export function bestYachtzeeFamiliar(): Familiar {
 }
 
 const maximizeMeat = () =>
-  new Requirement(["meat"], {
-    preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
-  }).maximize();
+  new Requirement(
+    [
+      "meat",
+      ...(myFamiliar().underwater ||
+      have($effect`Driving Waterproofly`) ||
+      have($effect`Wet Willied`)
+        ? ["underwater familiar"]
+        : []),
+    ],
+    {
+      preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
+    }
+  ).maximize();
 
 function prepareOutfitAndFamiliar() {
   useFamiliar(bestYachtzeeFamiliar());
   maximizeMeat();
-  if (
-    !(myFamiliar().underwater || have($effect`Driving Waterproofly`) || have($effect`Wet Willied`))
-  ) {
-    if (!familiarWaterBreathingEquipment.some((it) => have(it))) {
-      useFamiliar($familiar`none`);
-    } else {
-      equip(
-        $slot`familiar`,
-        familiarWaterBreathingEquipment
-          .filter((it) => have(it))
-          .reduce((a, b) =>
-            numericModifier(a, "Familiar Weight") > numericModifier(b, "Familiar Weight") ? a : b
-          )
-      );
-    }
-  }
 }
 
 function _yachtzeeChain(): void {
