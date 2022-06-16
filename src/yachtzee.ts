@@ -1072,6 +1072,12 @@ const maximizeMeat = () =>
 
 function prepareOutfitAndFamiliar() {
   useFamiliar(bestYachtzeeFamiliar());
+  if (
+    !get("_feastedFamiliars").includes(myFamiliar().name) &&
+    get("_feastedFamiliars").split(",").length < 5
+  ) {
+    withStash($items`moveable feast`, () => use($item`moveable feast`));
+  }
   maximizeMeat();
 }
 
