@@ -15,7 +15,6 @@ import {
   myFullness,
   myHash,
   myInebriety,
-  myLevel,
   myTurncount,
   print,
   retrieveItem,
@@ -45,6 +44,7 @@ import {
   get,
   have,
   property,
+  questStep,
   Requirement,
   set,
   SourceTerminal,
@@ -63,7 +63,7 @@ import {
   userConfirmDialog,
   WISH_VALUE,
 } from "./lib";
-import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
+import { waterBreathingEquipment } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
@@ -205,19 +205,13 @@ export class EmbezzlerFight {
 function checkUnderwater() {
   // first check to see if underwater even makes sense
   if (
-    myLevel() >= 11 &&
+    questStep("questS01OldGuy") === 0 &&
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
     (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
     (booleanModifier("Adventure Underwater") ||
       waterBreathingEquipment.some((item) => have(item))) &&
-    (booleanModifier("Underwater Familiar") ||
-      familiarWaterBreathingEquipment.some((item) => have(item))) &&
     (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
   ) {
-    // unlock the sea
-    if (get("questS01OldGuy") === "unstarted") {
-      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-    }
     if (!have($effect`Fishy`) && !get("_fishyPipeUsed")) use($item`fishy pipe`);
 
     return have($effect`Fishy`);
