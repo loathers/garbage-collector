@@ -205,7 +205,7 @@ export class EmbezzlerFight {
 function checkUnderwater() {
   // first check to see if underwater even makes sense
   if (
-    questStep("questS01OldGuy") === 0 &&
+    questStep("questS01OldGuy") >= 0 &&
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
     (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
     (booleanModifier("Adventure Underwater") ||
