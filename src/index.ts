@@ -575,6 +575,11 @@ export function main(argString = ""): void {
       visitUrl("shop.php?whichshop=armory&action=talk");
       runChoice(1);
     }
+
+    // unlock the sea
+    if (myLevel() >= 11 && questStep("questS01OldGuy") === -1) {
+      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+    }
     if (
       myClass() === $class`Seal Clubber` &&
       !have($skill`Furious Wallop`) &&
