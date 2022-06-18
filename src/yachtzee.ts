@@ -437,6 +437,12 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   // If we already have fishy, then we longer need to consider the cost of obtaining it
   if (haveEffect($effect`Fishy`) >= yachtzeeTurns) return 0;
 
+  // Restore here if we potentially need to visit an adventure.php zone to grab fishy turns
+  if (haveEffect($effect`Beaten Up`)) {
+    uneffect($effect`Beaten Up`);
+  }
+  safeRestore();
+
   // Compute the cost of losing buffs if we spend turns getting fishy using clovers
   const havePYECCharge = get("_PYECAvailable", false);
   const haveFishyPipe = have($item`fishy pipe`) && !get("_fishyPipeUsed", false);
@@ -543,17 +549,17 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
             throw new Error("Unable to get 11-leaf clover for fishy!");
           }
           use(1, $item`11-leaf clover`);
-          if (haveFishyPipe) use(1, $item`fishy pipe`);
-          adventureMacro($location`The Brinier Deepers`, Macro.abort());
-          if (get("lastAdventure") !== "The Brinier Deepers") {
-            print(
-              "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
-              "red"
-            );
-          }
-          if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
-            throw new Error("Failed to get fishy from clover adv");
-          }
+        }
+        if (haveFishyPipe) use(1, $item`fishy pipe`);
+        adventureMacro($location`The Brinier Deepers`, Macro.abort());
+        if (get("lastAdventure") !== "The Brinier Deepers") {
+          print(
+            "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
+            "red"
+          );
+        }
+        if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
+          throw new Error("Failed to get fishy from clover adv");
         }
       },
     },
@@ -1086,8 +1092,8 @@ const maximizeMeat = () =>
 function prepareOutfitAndFamiliar() {
   useFamiliar(bestYachtzeeFamiliar());
   if (
-    !get("_feastedFamiliars").includes(myFamiliar().name) &&
-    get("_feastedFamiliars").split(",").length < 5
+    !get("_feastedFamiliars").includes(myFamiliar().toString()) &&
+    get("_feastedFamiliars").split(";").length < 5
   ) {
     withStash($items`moveable feast`, () => use($item`moveable feast`));
   }
