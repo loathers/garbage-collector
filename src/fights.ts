@@ -1866,7 +1866,7 @@ export function freeFights(): void {
   ) {
     try {
       for (const freeKillSource of freeKillSources) {
-        if (freeKillSource.available() && get("garbageChampagneCharge") > 0) {
+        if (freeKillSource.isAvailable() && get("garbageChampagneCharge") > 0) {
           // TODO: Add potions that are profitable for free kills.
           ensureEffect($effect`Steely-Eyed Squint`);
         }
