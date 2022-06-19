@@ -241,6 +241,13 @@ const standardFamiliars: () => GeneralFamiliar[] = () => [
         (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
   },
   {
+    familiar: $familiar`Shorter-Order Cook`,
+    expectedValue:
+      garboAverageValue(
+        ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`
+      ) / 11,
+  },
+  {
     familiar: $familiar`Robortender`,
     expectedValue: 200,
   },
