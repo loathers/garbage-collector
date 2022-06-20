@@ -554,10 +554,15 @@ class FreeFight {
     return freeFightFamiliar(this.options.canOverrideMacro);
   }
 
+  isAvailable(): boolean {
+    const avail = this.available();
+    return typeof avail === "number" ? avail > 0 : avail;
+  }
+
   runAll() {
-    if (!this.available()) return;
+    if (!this.isAvailable()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
-    while (this.available()) {
+    while (this.isAvailable()) {
       voidMonster();
       const noncombat = !!this.options?.noncombat?.();
       if (!noncombat) {
@@ -593,9 +598,9 @@ class FreeRunFight extends FreeFight {
   }
 
   runAll() {
-    if (!this.available()) return;
+    if (!this.isAvailable()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
-    while (this.available()) {
+    while (this.isAvailable()) {
       const constraints = {
         noFamiliar: () => this.options.familiar !== undefined,
         ...this.constraints,
@@ -1861,7 +1866,7 @@ export function freeFights(): void {
   ) {
     try {
       for (const freeKillSource of freeKillSources) {
-        if (freeKillSource.available() && get("garbageChampagneCharge") > 0) {
+        if (freeKillSource.isAvailable() && get("garbageChampagneCharge") > 0) {
           // TODO: Add potions that are profitable for free kills.
           ensureEffect($effect`Steely-Eyed Squint`);
         }
