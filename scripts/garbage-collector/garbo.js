@@ -30331,12 +30331,18 @@ var FreeFight = /*#__PURE__*/function () {
       return (0,familiar/* freeFightFamiliar */.Vo)(this.options.canOverrideMacro);
     }
   }, {
+    key: "isAvailable",
+    value: function isAvailable() {
+      var avail = this.available();
+      return typeof avail === "number" ? avail > 0 : avail;
+    }
+  }, {
     key: "runAll",
     value: function runAll() {
-      if (!this.available()) return;
+      if (!this.isAvailable()) return;
       if ((this.options.cost ? this.options.cost() : 0) > (0,property/* get */.U2)("garbo_valueOfFreeFight", 2000)) return;
 
-      while (this.available()) {
+      while (this.isAvailable()) {
         var _this$options2, _this$options2$noncom, _this$options$effects, _this$options$effects2, _this$options3;
 
         voidMonster();
@@ -30390,7 +30396,7 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
     value: function runAll() {
       var _this2 = this;
 
-      if (!this.available()) return;
+      if (!this.isAvailable()) return;
       if ((this.options.cost ? this.options.cost() : 0) > (0,property/* get */.U2)("garbo_valueOfFreeFight", 2000)) return;
 
       var _loop = function _loop() {
@@ -30411,7 +30417,7 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
         postCombatActions();
       };
 
-      while (this.available()) {
+      while (this.isAvailable()) {
         var _ret = _loop();
 
         if (_ret === "break") break;
@@ -31013,7 +31019,7 @@ function freeFights() {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
           var freeKillSource = _step2.value;
 
-          if (freeKillSource.available() && (0,property/* get */.U2)("garbageChampagneCharge") > 0) {
+          if (freeKillSource.isAvailable() && (0,property/* get */.U2)("garbageChampagneCharge") > 0) {
             // TODO: Add potions that are profitable for free kills.
             (0,lib/* ensureEffect */.pq)((0,template_string/* $effect */._G)(_templateObject462 || (_templateObject462 = fights_taggedTemplateLiteral(["Steely-Eyed Squint"]))));
           }
@@ -33687,7 +33693,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26487);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("b0384c4a787cb685481dbf20e6820ca5da0526bb"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e2a692a0aedfd99b352be2146a9d09ba40ddaac0"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -34355,7 +34361,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("b0384c4a787cb685481dbf20e6820ca5da0526bb" === mainSha) {
+    if ("e2a692a0aedfd99b352be2146a9d09ba40ddaac0" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
