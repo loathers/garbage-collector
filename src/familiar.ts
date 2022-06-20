@@ -56,6 +56,7 @@ export function meatFamiliar(): Familiar {
 type GeneralFamiliar = {
   familiar: Familiar;
   expectedValue: number;
+  leprechaunMultiplier: number;
 };
 
 type StandardDropFamiliar = {
@@ -76,7 +77,7 @@ function valueStandardDropFamiliar({
   const expectedTurns = expected[get(pref)];
   if (!have(familiar) || !expectedTurns) return null;
   const expectedValue = garboValue(drop) / expectedTurns + (additionalValue ?? 0);
-  return { familiar, expectedValue };
+  return { familiar, expectedValue, leprechaunMultiplier: findLeprechaunMultiplier(familiar) };
 }
 
 // 5, 10, 15, 20, 25 +5/turn: 5.29, 4.52, 3.91, 3.42, 3.03
@@ -225,41 +226,46 @@ function valueExperienceFamiliar({
   const currentExp = familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
   const experienceNeeded = 400 - (globalOptions.ascending ? currentExp : baseExp);
   const estimatedExperience = 12;
-  return { familiar, expectedValue: useValue / (experienceNeeded / estimatedExperience) };
+  return {
+    familiar,
+    expectedValue: useValue / (experienceNeeded / estimatedExperience),
+    leprechaunMultiplier: findLeprechaunMultiplier(familiar),
+  };
 }
 
-const standardFamiliars: () => GeneralFamiliar[] = () => [
-  {
-    familiar: $familiar`Obtuse Angel`,
-    expectedValue: 0.02 * garboValue($item`time's arrow`),
-  },
-  {
-    familiar: $familiar`Stocking Mimic`,
-    expectedValue:
-      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 +
-      (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
-        (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
-  },
-  {
-    familiar: $familiar`Shorter-Order Cook`,
-    expectedValue:
-      garboAverageValue(
-        ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`
-      ) / 11,
-  },
-  {
-    familiar: $familiar`Robortender`,
-    expectedValue: 200,
-  },
-  ...$familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`.map((familiar) => ({
-    familiar,
-    expectedValue: 0,
-  })),
-  {
-    familiar: $familiar`none`,
-    expectedValue: 0,
-  },
-];
+const standardFamiliars: () => GeneralFamiliar[] = () =>
+  [
+    {
+      familiar: $familiar`Obtuse Angel`,
+      expectedValue: 0.02 * garboValue($item`time's arrow`),
+    },
+    {
+      familiar: $familiar`Stocking Mimic`,
+      expectedValue:
+        garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 +
+        (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
+          (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
+    },
+    {
+      familiar: $familiar`Shorter-Order Cook`,
+      expectedValue:
+        garboAverageValue(
+          ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`
+        ) / 11,
+    },
+    {
+      familiar: $familiar`Robortender`,
+      expectedValue: 200,
+    },
+    ...$familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`.map((familiar) => ({
+      familiar,
+      expectedValue: 0,
+    })),
+    {
+      familiar: $familiar`none`,
+      expectedValue: 0,
+    },
+  ].map((x) => ({ ...x, leprechaunMultiplier: findLeprechaunMultiplier(x.familiar) }));
 
 function filterNull<T>(arr: (T | null)[]): T[] {
   return arr.filter((x) => x !== null) as T[];
@@ -270,6 +276,7 @@ export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
     return {
       familiar: $familiar`Grey Goose`,
       expectedValue: (familiarWeight($familiar`Grey Goose`) - 5) ** 4,
+      leprechaunMultiplier: 0,
     };
   }
 
