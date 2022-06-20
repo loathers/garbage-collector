@@ -253,7 +253,7 @@ const standardFamiliars: () => GeneralFamiliar[] = () => [
   },
   ...$familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`.map((familiar) => ({
     familiar,
-    expectedValue: 1,
+    expectedValue: 0,
   })),
   {
     familiar: $familiar`none`,
@@ -279,7 +279,14 @@ export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
     ...filterNull(rotatingFamiliars.map(valueStandardDropFamiliar)),
   ];
 
-  return familiars.reduce((a, b) => (a.expectedValue > b.expectedValue ? a : b));
+  const compareFams = (a: GeneralFamiliar, b: GeneralFamiliar) => {
+    if (a.expectedValue === b.expectedValue) {
+      return findLeprechaunMultiplier(a.familiar) > findLeprechaunMultiplier(b.familiar);
+    }
+    return a.expectedValue > b.expectedValue;
+  };
+
+  return familiars.reduce((a, b) => (compareFams(a, b) ? a : b));
 }
 
 export function freeFightFamiliar(canMeatify = false): Familiar {
