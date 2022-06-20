@@ -1,11 +1,9 @@
 import {
   Familiar,
   familiarWeight,
-  haveEffect,
   inebrietyLimit,
   Item,
   myAdventures,
-  myFamiliar,
   myInebriety,
   totalTurnsPlayed,
   weightAdjustment,
@@ -22,7 +20,7 @@ import {
   have,
   propertyTypes,
 } from "libram";
-import { argmax, globalOptions } from "./lib";
+import { globalOptions } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
 export function calculateMeatFamiliar(): void {
@@ -55,177 +53,237 @@ export function meatFamiliar(): Familiar {
   return _meatFamiliar;
 }
 
-function myFamiliarWeight(familiar: Familiar | null = null) {
-  if (familiar === null) familiar = myFamiliar();
-  return familiarWeight(familiar) + weightAdjustment();
+type GeneralFamiliar = {
+  familiar: Familiar;
+  expectedValue: number;
+};
+
+type StandardDropFamiliar = {
+  familiar: Familiar;
+  expected: number[];
+  drop: Item;
+  pref: propertyTypes.NumericProperty;
+  additionalValue?: number;
+};
+
+function valueStandardDropFamiliar({
+  familiar,
+  expected,
+  drop,
+  pref,
+  additionalValue,
+}: StandardDropFamiliar): GeneralFamiliar | null {
+  const expectedTurns = expected[get(pref)];
+  if (!have(familiar) || !expectedTurns) return null;
+  const expectedValue = garboValue(drop) / expectedTurns + (additionalValue ?? 0);
+  return { familiar, expectedValue };
 }
 
 // 5, 10, 15, 20, 25 +5/turn: 5.29, 4.52, 3.91, 3.42, 3.03
-const rotatingFamiliars: {
-  [index: string]: { expected: number[]; drop: Item; pref: propertyTypes.NumericProperty };
-} = {
-  "Fist Turkey": {
+const rotatingFamiliars: StandardDropFamiliar[] = [
+  {
+    familiar: $familiar`Fist Turkey`,
     expected: [3.91, 4.52, 4.52, 5.29, 5.29],
     drop: $item`Ambitious Turkey`,
     pref: "_turkeyBooze",
   },
-  "Llama Lama": {
+  {
+    familiar: $familiar`Llama Lama`,
     expected: [3.42, 3.91, 4.52, 5.29, 5.29],
     drop: $item`llama lama gong`,
     pref: "_gongDrops",
   },
-  "Astral Badger": {
+  {
+    familiar: $familiar`Astral Badger`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`astral mushroom`,
     pref: "_astralDrops",
   },
-  "Li'l Xenomorph": {
+  {
+    familiar: $familiar`Li'l Xenomorph`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`transporter transponder`,
     pref: "_transponderDrops",
   },
-  "Rogue Program": {
+  {
+    familiar: $familiar`Rogue Program`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`Game Grid token`,
     pref: "_tokenDrops",
   },
-  "Bloovian Groose": {
+  {
+    familiar: $familiar`Bloovian Groose`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`groose grease`,
     pref: "_grooseDrops",
   },
-  "Baby Sandworm": {
+  {
+    familiar: $familiar`Baby Sandworm`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`agua de vida`,
     pref: "_aguaDrops",
   },
-  "Green Pixie": {
+  {
+    familiar: $familiar`Green Pixie`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`tiny bottle of absinthe`,
     pref: "_absintheDrops",
   },
-  "Blavious Kloop": {
+  {
+    familiar: $familiar`Blavious Kloop`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`devilish folio`,
     pref: "_kloopDrops",
   },
-  "Galloping Grill": {
+  {
+    familiar: $familiar`Galloping Grill`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`hot ashes`,
     pref: "_hotAshesDrops",
   },
-  "Grim Brother": {
+  {
+    familiar: $familiar`Grim Brother`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`grim fairy tale`,
     pref: "_grimFairyTaleDrops",
   },
-  "Golden Monkey": {
+  {
+    familiar: $familiar`Golden Monkey`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`powdered gold`,
     pref: "_powderedGoldDrops",
   },
-  "Unconscious Collective": {
+  {
+    familiar: $familiar`Unconscious Collective`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`Unconscious Collective Dream Jar`,
     pref: "_dreamJarDrops",
   },
-  "Ms. Puck Man": {
+  {
+    familiar: $familiar`Ms. Puck Man`,
     expected: Array($familiar`Ms. Puck Man`.dropsLimit).fill(12.85),
     drop: $item`power pill`,
     pref: "_powerPillDrops",
+    additionalValue: garboValue($item`yellow pixel`),
   },
-  "Puck Man": {
+  {
+    familiar: $familiar`Puck Man`,
     expected: Array($familiar`Puck Man`.dropsLimit).fill(12.85),
     drop: $item`power pill`,
     pref: "_powerPillDrops",
+    additionalValue: garboValue($item`yellow pixel`),
   },
-  "Adventurous Spelunker": {
+  {
+    familiar: $familiar`Adventurous Spelunker`,
     expected: [7.0],
     drop: $item`Tales of Spelunking`,
     pref: "_spelunkingTalesDrops",
   },
-  "Angry Jung Man": {
+  {
+    familiar: $familiar`Angry Jung Man`,
     expected: [30.0],
     drop: $item`psychoanalytic jar`,
     pref: "_jungDrops",
   },
-  "Grimstone Golem": {
+  {
+    familiar: $familiar`Grimstone Golem`,
     expected: [45.0],
     drop: $item`grimstone mask`,
     pref: "_grimstoneMaskDrops",
   },
+];
+
+type ExperienceFamiliar = {
+  familiar: Familiar;
+  used: propertyTypes.BooleanProperty;
+  useValue: number;
+  baseExp: number;
 };
 
-let savedMimicDropValue: number | null = null;
-function mimicDropValue() {
-  return (
-    savedMimicDropValue ??
-    (savedMimicDropValue =
-      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / (6.29 * 0.95 + 1 * 0.05))
-  );
+const experienceFamiliars: ExperienceFamiliar[] = [
+  {
+    familiar: $familiar`Pocket Professor`,
+    used: "_thesisDelivered",
+    useValue: 11 * get("valueOfAdventure"),
+    baseExp: 200,
+  },
+  {
+    familiar: $familiar`Grey Goose`,
+    used: "_meatifyMatterUsed",
+    useValue: 15 ** 4,
+    baseExp: 25,
+  },
+];
+
+function valueExperienceFamiliar({
+  familiar,
+  used,
+  useValue,
+  baseExp,
+}: ExperienceFamiliar): GeneralFamiliar | null {
+  if (!have(familiar) || get(used)) return null;
+  const currentExp = familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
+  const experienceNeeded = 400 - (globalOptions.ascending ? currentExp : baseExp);
+  const estimatedExperience = 12;
+  return { familiar, expectedValue: useValue / (experienceNeeded / estimatedExperience) };
 }
 
-const gooseExp =
-  $familiar`Grey Goose`.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
+const standardFamiliars: () => GeneralFamiliar[] = () => [
+  {
+    familiar: $familiar`Obtuse Angel`,
+    expectedValue: 0.02 * garboValue($item`time's arrow`),
+  },
+  {
+    familiar: $familiar`Stocking Mimic`,
+    expectedValue:
+      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 +
+      (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
+        (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
+  },
+  {
+    familiar: $familiar`Shorter-Order Cook`,
+    expectedValue:
+      garboAverageValue(
+        ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`
+      ) / 11,
+  },
+  {
+    familiar: $familiar`Robortender`,
+    expectedValue: 200,
+  },
+  ...$familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`.map((familiar) => ({
+    familiar,
+    expectedValue: 1,
+  })),
+  {
+    familiar: $familiar`none`,
+    expectedValue: 0,
+  },
+];
+
+function filterNull<T>(arr: (T | null)[]): T[] {
+  return arr.filter((x) => x !== null) as T[];
+}
+
+export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
+  if (canMeatify && timeToMeatify()) {
+    return {
+      familiar: $familiar`Grey Goose`,
+      expectedValue: (familiarWeight($familiar`Grey Goose`) - 5) ** 4,
+    };
+  }
+
+  const familiars = [
+    ...standardFamiliars(),
+    ...filterNull(experienceFamiliars.map(valueExperienceFamiliar)),
+    ...filterNull(rotatingFamiliars.map(valueStandardDropFamiliar)),
+  ];
+
+  return familiars.reduce((a, b) => (a.expectedValue > b.expectedValue ? a : b));
+}
 
 export function freeFightFamiliar(canMeatify = false): Familiar {
-  if (canMeatify && timeToMeatify()) return $familiar`Grey Goose`;
-  const familiarValue: [Familiar, number][] = [];
-
-  if (
-    have($familiar`Pocket Professor`) &&
-    $familiar`Pocket Professor`.experience < 400 &&
-    !get("_thesisDelivered")
-  ) {
-    // Estimate based on value to charge thesis.
-    familiarValue.push([$familiar`Pocket Professor`, 3000]);
-  }
-
-  if (
-    have($familiar`Grey Goose`) &&
-    $familiar`Grey Goose`.experience < 400 &&
-    !get("_meatifyMatterUsed") &&
-    myInebriety() <= inebrietyLimit()
-  ) {
-    const experienceNeeded = 400 - (globalOptions.ascending ? gooseExp : 25);
-    const meatFromCast = 15 ** 4;
-    const estimatedExperience = 12;
-    familiarValue.push([
-      $familiar`Grey Goose`,
-      meatFromCast / (experienceNeeded / estimatedExperience),
-    ]);
-  }
-  for (const familiarName of Object.keys(rotatingFamiliars)) {
-    const familiar: Familiar = Familiar.get(familiarName);
-    if (have(familiar)) {
-      const { expected, drop, pref } = rotatingFamiliars[familiarName];
-      const dropsAlready = get(pref);
-      if (dropsAlready >= expected.length) continue;
-      const value = garboValue(drop) / expected[dropsAlready];
-      familiarValue.push([familiar, value]);
-    }
-  }
-
-  if (have($familiar`Stocking Mimic`)) {
-    const mimicWeight = myFamiliarWeight($familiar`Stocking Mimic`);
-    const actionPercentage = 1 / 3 + (haveEffect($effect`Jingle Jangle Jingle`) ? 0.1 : 0);
-    const mimicValue = mimicDropValue() + ((mimicWeight * actionPercentage * 1) / 4) * 10 * 4 * 1.2;
-    familiarValue.push([$familiar`Stocking Mimic`, mimicValue]);
-  }
-
-  if (have($familiar`Obtuse Angel`)) {
-    familiarValue.push([$familiar`Obtuse Angel`, 0.02 * garboValue($item`time's arrow`)]);
-  }
-
-  if (have($familiar`Robortender`)) familiarValue.push([$familiar`Robortender`, 200]);
-
-  for (const familiar of $familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`) {
-    if (have(familiar)) familiarValue.push([familiar, 1]);
-  }
-
-  familiarValue.push([$familiar`none`, 0]);
-
-  return argmax(familiarValue);
+  return freeFightFamiliarData(canMeatify).familiar;
 }
 
 export function pocketProfessorLectures(): number {
