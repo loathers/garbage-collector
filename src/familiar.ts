@@ -25,6 +25,7 @@ import {
   findFairyMultiplier,
   findLeprechaunMultiplier,
   get,
+  getActiveEffects,
   have,
   propertyTypes,
 } from "libram";
@@ -373,6 +374,10 @@ let nonLepOutfitMeatPercent: number | null = null;
 let nonLepOutfitFamWeight: number | null = null;
 
 export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
+  let buffFamWeight = 0;
+  for (const eff in getActiveEffects()) {
+    buffFamWeight += numericModifier(eff, "Familiar Weight");
+  }
   const barf = loc === $location`Barf Mountain`;
   const dropFamiliars = rotatingFamiliars
     .map((fam): GeneralFamiliar => {
@@ -409,8 +414,10 @@ export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
         }
         additionalValue =
           (toInt(barf) *
-            fam.leprechaunMultiplier *
-            (lepOutfitMeatPercent + 2.5 * lepOutfitFamWeight) *
+            (lepOutfitMeatPercent +
+              fam.leprechaunMultiplier *
+                2.5 *
+                (familiarWeight(fam.familiar) + buffFamWeight + lepOutfitFamWeight)) *
             baseMeat) /
           100;
       } else {
@@ -427,8 +434,10 @@ export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
         }
         additionalValue =
           (toInt(barf) *
-            fam.leprechaunMultiplier *
-            (nonLepOutfitMeatPercent + 2.5 * nonLepOutfitFamWeight) *
+            (nonLepOutfitMeatPercent +
+              fam.leprechaunMultiplier *
+                2.5 *
+                (familiarWeight(fam.familiar) + buffFamWeight + nonLepOutfitFamWeight)) *
             baseMeat) /
           100;
       }
