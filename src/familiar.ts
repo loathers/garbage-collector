@@ -372,12 +372,37 @@ let lepOutfitMeatPercent: number | null = null;
 let lepOutfitFamWeight: number | null = null;
 let nonLepOutfitMeatPercent: number | null = null;
 let nonLepOutfitFamWeight: number | null = null;
+let passiveSkillFamWeight = -1;
 
 export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
-  let buffFamWeight = 0;
-  for (const eff in getActiveEffects()) {
+  let buffFamWeight = passiveSkillFamWeight < 0 ? 0 : passiveSkillFamWeight;
+  getActiveEffects().forEach((eff) => {
     buffFamWeight += numericModifier(eff, "Familiar Weight");
+  });
+
+  if (passiveSkillFamWeight < 0) {
+    passiveSkillFamWeight = weightAdjustment() - buffFamWeight;
+    for (const slot of $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`) {
+      passiveSkillFamWeight -= numericModifier(equippedItem(slot), "Familiar Weight");
+    }
+    buffFamWeight += passiveSkillFamWeight;
   }
+
+  // Compute optimal outfit for robort (rather than a generic lep) if we have one
+  if (have($familiar`Robortender`)) {
+    print("Computing leprechaun outfits for the first time...", "blue");
+    useFamiliar($familiar`Robortender`);
+    meatOutfit(false, undefined, false);
+    lepOutfitMeatPercent = 0;
+    lepOutfitFamWeight = 0;
+    for (const slot of $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`) {
+      lepOutfitMeatPercent += numericModifier(equippedItem(slot), "Meat Drop");
+      lepOutfitFamWeight += numericModifier(equippedItem(slot), "Familiar Weight");
+    }
+    print(`lepOutfitMeatPercent: ${lepOutfitMeatPercent}%`, "blue");
+    print(`lepOutfitFamWeight: ${lepOutfitFamWeight}%`, "blue");
+  }
+
   const barf = loc === $location`Barf Mountain`;
   const dropFamiliars = rotatingFamiliars
     .map((fam): GeneralFamiliar => {
@@ -411,13 +436,22 @@ export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
             lepOutfitMeatPercent += numericModifier(equippedItem(slot), "Meat Drop");
             lepOutfitFamWeight += numericModifier(equippedItem(slot), "Familiar Weight");
           }
+          print(`lepOutfitMeatPercent: ${lepOutfitMeatPercent}%`, "blue");
+          print(`lepOutfitFamWeight: ${lepOutfitFamWeight}%`, "blue");
         }
         additionalValue =
           (toInt(barf) *
             (lepOutfitMeatPercent +
-              fam.leprechaunMultiplier *
-                2.5 *
-                (familiarWeight(fam.familiar) + buffFamWeight + lepOutfitFamWeight)) *
+              numericModifier(
+                fam.familiar,
+                "Meat Drop",
+                familiarWeight(fam.familiar) + buffFamWeight + lepOutfitFamWeight,
+                underwater && !fam.familiar.underwater
+                  ? have($item`das boot`)
+                    ? $item`das boot`
+                    : $item`little bitty bathysphere`
+                  : $item`none` // Don't double-count +meat% from amulet coin - it is already accounted for in OutfitMeatPercent, nor the +lbs which is in OutfitFamWeight
+              )) *
             baseMeat) /
           100;
       } else {
@@ -432,14 +466,7 @@ export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
             nonLepOutfitFamWeight += numericModifier(equippedItem(slot), "Familiar Weight");
           }
         }
-        additionalValue =
-          (toInt(barf) *
-            (nonLepOutfitMeatPercent +
-              fam.leprechaunMultiplier *
-                2.5 *
-                (familiarWeight(fam.familiar) + buffFamWeight + nonLepOutfitFamWeight)) *
-            baseMeat) /
-          100;
+        additionalValue = (toInt(barf) * nonLepOutfitMeatPercent * baseMeat) / 100;
       }
       return {
         familiar: fam.familiar,
@@ -450,8 +477,35 @@ export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
     })
     .sort((left, right) => right.marginalValue - left.marginalValue);
 
+  const nominalOutfitValue = ((lepOutfitMeatPercent ?? 0) * baseMeat) / 100;
   print("Considering Marginal Familiars:", "blue");
   dropFamiliars.forEach((fam) => {
-    print(`${fam.familiar}: ${fam.marginalValue.toFixed(2)}`, "blue");
+    const lepValue =
+      fam.leprechaunMultiplier > 0
+        ? (numericModifier(
+            fam.familiar,
+            "Meat Drop",
+            familiarWeight(fam.familiar) + buffFamWeight + (lepOutfitFamWeight ?? 0),
+            underwater && !fam.familiar.underwater
+              ? have($item`das boot`)
+                ? $item`das boot`
+                : $item`little bitty bathysphere`
+              : $item`none` // Don't double-count +meat% from amulet coin - it is already accounted for in OutfitMeatPercent, nor the +lbs which is in OutfitFamWeight
+          ) *
+            baseMeat) /
+          100
+        : 0;
+    const outfitValue =
+      fam.leprechaunMultiplier > 0
+        ? 0
+        : ((nonLepOutfitMeatPercent ?? 0) * baseMeat) / 100 - nominalOutfitValue;
+    print(
+      `${fam.familiar}: ${(fam.marginalValue - nominalOutfitValue).toFixed(
+        2
+      )} - ${fam.expectedValue.toFixed(2)} (drop value) + ${lepValue.toFixed(
+        2
+      )} (lep value) + ${outfitValue.toFixed(2)} (outfit value)`,
+      "blue"
+    );
   });
 }
