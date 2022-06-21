@@ -320,7 +320,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
     ...(equipMode === "barf" ? magnifyingGlass() : []),
-    ...juneCleaver(),
+    ...juneCleaver(equipMode),
   ]);
 }
 
@@ -413,7 +413,7 @@ export function usingThumbRing(): boolean {
 }
 
 let juneCleaverEV: number | null = null;
-function juneCleaver(): Map<Item, number> {
+function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
   if (!have($item`June cleaver`) || get("_juneCleaverFightsLeft") > estimatedTurns()) {
     return new Map();
   }
@@ -426,5 +426,7 @@ function juneCleaver(): Map<Item, number> {
         0
       ) / JuneCleaver.choices.length;
   }
-  return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / JuneCleaver.getInterval()]]);
+
+  const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
+  return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / interval]]);
 }
