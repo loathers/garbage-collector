@@ -1003,33 +1003,12 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   return totalProfits;
 }
 
-function leprechaunMeatBonus(wt: number): number {
-  return 2 * wt + Math.sqrt(220 * wt) - 6;
-}
-
 export function bestYachtzeeFamiliar(): Familiar {
   const haveUnderwaterFamEquipment = familiarWaterBreathingEquipment.some((item) => have(item));
   const famWt =
     familiarWeight(myFamiliar()) +
     weightAdjustment() -
     numericModifier(equippedItem($slot`familiar`), "Familiar Weight");
-
-  // Assumptions - if we don't have the amulet coin, we'll at least have the default familiar equipment (+5lbs)
-  const famEquipWeightPenalty =
-    have($effect`Driving Waterproofly`) || have($effect`Wet Willied`)
-      ? 0
-      : haveUnderwaterFamEquipment
-      ? numericModifier(
-          familiarWaterBreathingEquipment
-            .filter((item) => have(item))
-            .reduce((left, right) =>
-              numericModifier(left, "Familiar Weight") > numericModifier(right, "Familiar Weight")
-                ? left
-                : right
-            ),
-          "Familiar Weight"
-        )
-      : -Infinity;
 
   const sortedUnderwaterFamiliars = Familiar.all()
     .filter(
@@ -1042,28 +1021,46 @@ export function bestYachtzeeFamiliar(): Familiar {
     )
     .sort(
       (left, right) =>
-        leprechaunMeatBonus(
-          findLeprechaunMultiplier(right) *
-            (famWt +
-              (right.underwater ? (have($item`amulet coin`) ? 10 : 5) : famEquipWeightPenalty))
-        ) +
-        (right.underwater && have($item`amulet coin`) ? 50 : 0) -
-        leprechaunMeatBonus(
-          findLeprechaunMultiplier(left) *
-            (famWt +
-              (left.underwater ? (have($item`amulet coin`) ? 10 : 5) : famEquipWeightPenalty))
+        numericModifier(
+          right,
+          "meat drop",
+          famWt,
+          right.underwater || have($effect`Driving Waterproofly`) || have($effect`Wet Willied`)
+            ? have($item`amulet coin`)
+              ? $item`amulet coin`
+              : $item`filthy child leash`
+            : have($item`das boot`)
+            ? $item`das boot`
+            : $item`little bitty bathysphere`
         ) -
-        (left.underwater && have($item`amulet coin`) ? 50 : 0)
+        numericModifier(
+          left,
+          "meat drop",
+          famWt,
+          left.underwater || have($effect`Driving Waterproofly`) || have($effect`Wet Willied`)
+            ? have($item`amulet coin`)
+              ? $item`amulet coin`
+              : $item`filthy child leash`
+            : have($item`das boot`)
+            ? $item`das boot`
+            : $item`little bitty bathysphere`
+        )
     );
 
   print(`Familiar bonus meat%:`, "blue");
   sortedUnderwaterFamiliars.forEach((fam) => {
     print(
-      `${fam} (${(
-        leprechaunMeatBonus(
-          findLeprechaunMultiplier(fam) *
-            (famWt + (fam.underwater ? (have($item`amulet coin`) ? 10 : 5) : famEquipWeightPenalty))
-        ) + (fam.underwater && have($item`amulet coin`) ? 50 : 0)
+      `${fam} (${numericModifier(
+        fam,
+        "meat drop",
+        famWt,
+        fam.underwater || have($effect`Driving Waterproofly`) || have($effect`Wet Willied`)
+          ? have($item`amulet coin`)
+            ? $item`amulet coin`
+            : $item`filthy child leash`
+          : have($item`das boot`)
+          ? $item`das boot`
+          : $item`little bitty bathysphere`
       ).toFixed(2)}%)`,
       "blue"
     );
