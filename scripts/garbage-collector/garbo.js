@@ -24184,7 +24184,7 @@ function magnifyingGlass() {
   return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject44 || (dropsgear_templateObject44 = dropsgear_taggedTemplateLiteral(["cursed magnifying glass"]))), (0,property/* get */.U2)("garbo_valueOfFreeFight", 2000) / 13]]);
 }
 function bonusGear(equipMode) {
-  return new Map([].concat(dropsgear_toConsumableArray(cheeses(equipMode === "embezzler")), dropsgear_toConsumableArray(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []), dropsgear_toConsumableArray(shavingBonus()), dropsgear_toConsumableArray(bonusAccessories(equipMode)), dropsgear_toConsumableArray(pantogramPants()), dropsgear_toConsumableArray(bagOfManyConfections()), dropsgear_toConsumableArray(snowSuit(equipMode)), dropsgear_toConsumableArray(mayflowerBouquet(equipMode)), dropsgear_toConsumableArray(equipMode === "barf" ? magnifyingGlass() : []), dropsgear_toConsumableArray(juneCleaver())));
+  return new Map([].concat(dropsgear_toConsumableArray(cheeses(equipMode === "embezzler")), dropsgear_toConsumableArray(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []), dropsgear_toConsumableArray(shavingBonus()), dropsgear_toConsumableArray(bonusAccessories(equipMode)), dropsgear_toConsumableArray(pantogramPants()), dropsgear_toConsumableArray(bagOfManyConfections()), dropsgear_toConsumableArray(snowSuit(equipMode)), dropsgear_toConsumableArray(mayflowerBouquet(equipMode)), dropsgear_toConsumableArray(equipMode === "barf" ? magnifyingGlass() : []), dropsgear_toConsumableArray(juneCleaver(equipMode))));
 }
 function bestBjornalike(existingForceEquips) {
   var bjornalikes = (0,template_string/* $items */.vS)(dropsgear_templateObject45 || (dropsgear_templateObject45 = dropsgear_taggedTemplateLiteral(["Buddy Bjorn, Crown of Thrones"])));
@@ -24300,7 +24300,7 @@ function usingThumbRing() {
 }
 var juneCleaverEV = null;
 
-function juneCleaver() {
+function juneCleaver(equipMode) {
   if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(dropsgear_templateObject68 || (dropsgear_templateObject68 = dropsgear_taggedTemplateLiteral(["June cleaver"])))) || (0,property/* get */.U2)("_juneCleaverFightsLeft") > (0,embezzler/* estimatedTurns */.AN)()) {
     return new Map();
   }
@@ -24309,7 +24309,8 @@ function juneCleaver() {
     juneCleaverEV = JuneCleaver/* choices.reduce */.Zg.reduce((total, choice) => total + (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[choice][(0,src_lib/* bestJuneCleaverOption */.cR)(choice)]), 0) / JuneCleaver/* choices.length */.Zg.length;
   }
 
-  return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject69 || (dropsgear_templateObject69 = dropsgear_taggedTemplateLiteral(["June cleaver"]))), juneCleaverEV / JuneCleaver/* getInterval */.ZS()]]);
+  var interval = equipMode === "embezzler" ? 30 : JuneCleaver/* getInterval */.ZS();
+  return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject69 || (dropsgear_templateObject69 = dropsgear_taggedTemplateLiteral(["June cleaver"]))), juneCleaverEV / interval]]);
 }
 
 /***/ }),
@@ -33693,7 +33694,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26487);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("e2a692a0aedfd99b352be2146a9d09ba40ddaac0"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("87aa55b3e3c55279e7cc244252383e89a72a082e"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -34361,7 +34362,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("e2a692a0aedfd99b352be2146a9d09ba40ddaac0" === mainSha) {
+    if ("87aa55b3e3c55279e7cc244252383e89a72a082e" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
