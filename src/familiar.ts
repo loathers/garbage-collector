@@ -1,11 +1,17 @@
 import {
+  equippedItem,
   Familiar,
   familiarWeight,
   inebrietyLimit,
   Item,
+  Location,
   myAdventures,
   myInebriety,
+  numericModifier,
+  print,
+  toInt,
   totalTurnsPlayed,
+  useFamiliar,
   weightAdjustment,
 } from "kolmafia";
 import {
@@ -14,13 +20,16 @@ import {
   $familiars,
   $item,
   $items,
+  $location,
+  $slots,
   findFairyMultiplier,
   findLeprechaunMultiplier,
   get,
   have,
   propertyTypes,
 } from "libram";
-import { globalOptions } from "./lib";
+import { baseMeat, globalOptions } from "./lib";
+import { meatOutfit } from "./outfit";
 import { garboAverageValue, garboValue } from "./session";
 
 export function calculateMeatFamiliar(): void {
@@ -56,6 +65,7 @@ export function meatFamiliar(): Familiar {
 type GeneralFamiliar = {
   familiar: Familiar;
   expectedValue: number;
+  leprechaunMultiplier: number;
 };
 
 type StandardDropFamiliar = {
@@ -76,7 +86,7 @@ function valueStandardDropFamiliar({
   const expectedTurns = expected[get(pref)];
   if (!have(familiar) || !expectedTurns) return null;
   const expectedValue = garboValue(drop) / expectedTurns + (additionalValue ?? 0);
-  return { familiar, expectedValue };
+  return { familiar, expectedValue, leprechaunMultiplier: findLeprechaunMultiplier(familiar) };
 }
 
 // 5, 10, 15, 20, 25 +5/turn: 5.29, 4.52, 3.91, 3.42, 3.03
@@ -225,41 +235,46 @@ function valueExperienceFamiliar({
   const currentExp = familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
   const experienceNeeded = 400 - (globalOptions.ascending ? currentExp : baseExp);
   const estimatedExperience = 12;
-  return { familiar, expectedValue: useValue / (experienceNeeded / estimatedExperience) };
+  return {
+    familiar,
+    expectedValue: useValue / (experienceNeeded / estimatedExperience),
+    leprechaunMultiplier: findLeprechaunMultiplier(familiar),
+  };
 }
 
-const standardFamiliars: () => GeneralFamiliar[] = () => [
-  {
-    familiar: $familiar`Obtuse Angel`,
-    expectedValue: 0.02 * garboValue($item`time's arrow`),
-  },
-  {
-    familiar: $familiar`Stocking Mimic`,
-    expectedValue:
-      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 +
-      (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
-        (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
-  },
-  {
-    familiar: $familiar`Shorter-Order Cook`,
-    expectedValue:
-      garboAverageValue(
-        ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`
-      ) / 11,
-  },
-  {
-    familiar: $familiar`Robortender`,
-    expectedValue: 200,
-  },
-  ...$familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`.map((familiar) => ({
-    familiar,
-    expectedValue: 1,
-  })),
-  {
-    familiar: $familiar`none`,
-    expectedValue: 0,
-  },
-];
+const standardFamiliars: () => GeneralFamiliar[] = () =>
+  [
+    {
+      familiar: $familiar`Obtuse Angel`,
+      expectedValue: 0.02 * garboValue($item`time's arrow`),
+    },
+    {
+      familiar: $familiar`Stocking Mimic`,
+      expectedValue:
+        garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 +
+        (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
+          (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
+    },
+    {
+      familiar: $familiar`Shorter-Order Cook`,
+      expectedValue:
+        garboAverageValue(
+          ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`
+        ) / 11,
+    },
+    {
+      familiar: $familiar`Robortender`,
+      expectedValue: 200,
+    },
+    ...$familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`.map((familiar) => ({
+      familiar,
+      expectedValue: 0,
+    })),
+    {
+      familiar: $familiar`none`,
+      expectedValue: 0,
+    },
+  ].map((x) => ({ ...x, leprechaunMultiplier: findLeprechaunMultiplier(x.familiar) }));
 
 function filterNull<T>(arr: (T | null)[]): T[] {
   return arr.filter((x) => x !== null) as T[];
@@ -270,6 +285,7 @@ export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
     return {
       familiar: $familiar`Grey Goose`,
       expectedValue: (familiarWeight($familiar`Grey Goose`) - 5) ** 4,
+      leprechaunMultiplier: 0,
     };
   }
 
@@ -279,7 +295,14 @@ export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
     ...filterNull(rotatingFamiliars.map(valueStandardDropFamiliar)),
   ];
 
-  return familiars.reduce((a, b) => (a.expectedValue > b.expectedValue ? a : b));
+  const compareFams = (a: GeneralFamiliar, b: GeneralFamiliar) => {
+    if (a.expectedValue === b.expectedValue) {
+      return findLeprechaunMultiplier(a.familiar) > findLeprechaunMultiplier(b.familiar);
+    }
+    return a.expectedValue > b.expectedValue;
+  };
+
+  return familiars.reduce((a, b) => (compareFams(a, b) ? a : b));
 }
 
 export function freeFightFamiliar(canMeatify = false): Familiar {
@@ -338,4 +361,88 @@ export function timeToMeatify(): boolean {
   else if (freeFightNow || $familiar`Grey Goose`.experience >= 121) return true;
 
   return false;
+}
+
+type MarginalFamiliar = GeneralFamiliar & {
+  marginalValue: number;
+};
+
+let lepOutfitMeatPercent: number | null = null;
+let lepOutfitFamWeight: number | null = null;
+let nonLepOutfitMeatPercent: number | null = null;
+let nonLepOutfitFamWeight: number | null = null;
+
+export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
+  const barf = loc === $location`Barf Mountain`;
+  const dropFamiliars = rotatingFamiliars
+    .map((fam): GeneralFamiliar => {
+      return {
+        familiar: fam.familiar,
+        expectedValue: garboValue(fam.drop) / (fam.expected[get(fam.pref)] ?? Infinity),
+        leprechaunMultiplier: findLeprechaunMultiplier(fam.familiar),
+      };
+    })
+    .concat(standardFamiliars())
+    .concat({
+      familiar: $familiar`Space Jellyfish`,
+      expectedValue: barf
+        ? garboValue($item`stench jelly`) /
+          (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20)
+        : 0,
+      leprechaunMultiplier: 0,
+    })
+    .filter((fam) => have(fam.familiar) && (!underwater || fam.familiar.underwater))
+    .map((fam): MarginalFamiliar => {
+      const isLep = fam.leprechaunMultiplier > 0;
+      let additionalValue = 0;
+      if (isLep) {
+        if (!lepOutfitMeatPercent || !lepOutfitFamWeight) {
+          print("Computing leprechaun outfits for the first time...", "blue");
+          useFamiliar(fam.familiar);
+          meatOutfit(false, undefined, false);
+          lepOutfitMeatPercent = 0;
+          lepOutfitFamWeight = 0;
+          for (const slot of $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`) {
+            lepOutfitMeatPercent += numericModifier(equippedItem(slot), "Meat Drop");
+            lepOutfitFamWeight += numericModifier(equippedItem(slot), "Familiar Weight");
+          }
+        }
+        additionalValue =
+          (toInt(barf) *
+            fam.leprechaunMultiplier *
+            (lepOutfitMeatPercent + 2.5 * lepOutfitFamWeight) *
+            baseMeat) /
+          100;
+      } else {
+        if (!nonLepOutfitMeatPercent || !nonLepOutfitFamWeight) {
+          print("Computing non-leprechaun outfits for the first time...", "blue");
+          useFamiliar(fam.familiar);
+          meatOutfit(false, undefined, false);
+          nonLepOutfitMeatPercent = 0;
+          nonLepOutfitFamWeight = 0;
+          for (const slot of $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`) {
+            nonLepOutfitMeatPercent += numericModifier(equippedItem(slot), "Meat Drop");
+            nonLepOutfitFamWeight += numericModifier(equippedItem(slot), "Familiar Weight");
+          }
+        }
+        additionalValue =
+          (toInt(barf) *
+            fam.leprechaunMultiplier *
+            (nonLepOutfitMeatPercent + 2.5 * nonLepOutfitFamWeight) *
+            baseMeat) /
+          100;
+      }
+      return {
+        familiar: fam.familiar,
+        expectedValue: fam.expectedValue,
+        leprechaunMultiplier: fam.leprechaunMultiplier,
+        marginalValue: fam.expectedValue + additionalValue,
+      };
+    })
+    .sort((left, right) => right.marginalValue - left.marginalValue);
+
+  print("Considering Marginal Familiars:", "blue");
+  dropFamiliars.forEach((fam) => {
+    print(`${fam.familiar}: ${fam.marginalValue.toFixed(2)}`, "blue");
+  });
 }
