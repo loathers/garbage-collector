@@ -1098,6 +1098,16 @@ function prepareOutfitAndFamiliar() {
     withStash($items`moveable feast`, () => use($item`moveable feast`));
   }
   maximizeMeat();
+  if (!myFamiliar().underwater) {
+    equip(
+      $slot`familiar`,
+      familiarWaterBreathingEquipment
+        .filter((it) => have(it))
+        .reduce((a, b) =>
+          numericModifier(a, "Familiar Weight") > numericModifier(b, "Familiar Weight") ? a : b
+        )
+    );
+  }
 }
 
 function _yachtzeeChain(): void {
