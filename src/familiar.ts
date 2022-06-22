@@ -1,11 +1,17 @@
 import {
+  Effect,
+  equippedItem,
   Familiar,
   familiarWeight,
   inebrietyLimit,
   Item,
+  Location,
   myAdventures,
   myInebriety,
+  numericModifier,
+  Slot,
   totalTurnsPlayed,
+  useFamiliar,
   weightAdjustment,
 } from "kolmafia";
 import {
@@ -14,13 +20,20 @@ import {
   $familiars,
   $item,
   $items,
+  $location,
+  $slots,
   findFairyMultiplier,
   findLeprechaunMultiplier,
   get,
+  getActiveEffects,
+  getModifier,
   have,
   propertyTypes,
+  sum,
 } from "libram";
-import { globalOptions } from "./lib";
+import { bonusGear } from "./dropsgear";
+import { baseMeat, globalOptions } from "./lib";
+import { meatOutfit } from "./outfit";
 import { garboAverageValue, garboValue } from "./session";
 
 export function calculateMeatFamiliar(): void {
@@ -298,6 +311,72 @@ export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
 
 export function freeFightFamiliar(canMeatify = false): Familiar {
   return freeFightFamiliarData(canMeatify).familiar;
+}
+
+type MarginalFamiliar = GeneralFamiliar & { outfitValue: number };
+const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
+const cachedOutfits = new Map<number, { weight: number; meat: number; bonus: number }>();
+
+function cacheOutfit(
+  mult: number,
+  familiar: Familiar
+): { weight: number; meat: number; bonus: number } {
+  useFamiliar(familiar);
+  meatOutfit(false, undefined, false);
+  const outfit = outfitSlots.map((slot) => equippedItem(slot));
+  const bonuses = bonusGear("barf");
+  const values = {
+    weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
+    meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
+    bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
+  };
+  cachedOutfits.set(mult, values);
+  return values;
+}
+
+export function setMarginalFamiliar(location: Location) {
+  const underwater = location.environment === "underwater";
+  const buffWeight = sum(getActiveEffects(), (ef: Effect) => getModifier("Familiar Weight", ef));
+  const outfitWeight = sum(outfitSlots, (slot: Slot) =>
+    getModifier("Familiar Weight", equippedItem(slot))
+  );
+  const passiveWeight = weightAdjustment() - buffWeight - outfitWeight;
+
+  const barf = location === $location`Barf Mountain`;
+  const dropFamiliars: MarginalFamiliar[] = [
+    ...filterNull(rotatingFamiliars.map(valueStandardDropFamiliar)),
+    ...standardFamiliars(),
+    {
+      familiar: $familiar`Space Jellyfish`,
+      expectedValue: barf
+        ? garboValue($item`stench jelly`) /
+          (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20)
+        : 0,
+      leprechaunMultiplier: 0,
+    },
+  ]
+    .filter((f) => !underwater || f.familiar.underwater)
+    .map(({ familiar, expectedValue, leprechaunMultiplier }) => {
+      const { meat, weight, bonus } =
+        cachedOutfits.get(leprechaunMultiplier) ?? cacheOutfit(leprechaunMultiplier, familiar);
+
+      return {
+        familiar,
+        expectedValue,
+        leprechaunMultiplier,
+        outfitValue:
+          bonus +
+          ((meat +
+            numericModifier(
+              familiar,
+              "Meat Drop",
+              weight + passiveWeight + familiarWeight(familiar),
+              $item`none`
+            )) *
+            baseMeat) /
+            100,
+      };
+    });
 }
 
 export function pocketProfessorLectures(): number {
