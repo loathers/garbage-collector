@@ -63,7 +63,7 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
-import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
+import { freeFightFamiliar, meatFamiliar, setMarginalFamiliar, timeToMeatify } from "./familiar";
 import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
   bestJuneCleaverOption,
@@ -206,8 +206,6 @@ function barfTurn() {
     freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
-    // c. set up familiar
-    useFamiliar(meatFamiliar());
     const location = embezzlerUp
       ? !get("_envyfishEggUsed") &&
         myLevel() >= 11 &&
@@ -223,6 +221,7 @@ function barfTurn() {
 
     const underwater = location === $location`The Briny Deeps`;
 
+    // c. set up familiar
     if (underwater) {
       // now fight one underwater
       if (get("questS01OldGuy") === "unstarted") {
@@ -230,6 +229,7 @@ function barfTurn() {
       }
       retrieveItem($item`pulled green taffy`);
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
+      useFamiliar(meatFamiliar());
     } else if (!embezzlerUp && timeToMeatify()) {
       useFamiliar($familiar`Grey Goose`);
     } else if (
@@ -240,6 +240,8 @@ function barfTurn() {
       myInebriety() <= inebrietyLimit()
     ) {
       useFamiliar($familiar`Space Jellyfish`);
+    } else {
+      setMarginalFamiliar(location, underwater);
     }
 
     // d. get dressed

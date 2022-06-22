@@ -520,4 +520,6 @@ export function setMarginalFamiliar(loc: Location, underwater: boolean): void {
       "blue"
     );
   });
+
+  useFamiliar(dropFamiliars[0].familiar);
 }
