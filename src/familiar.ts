@@ -245,6 +245,7 @@ function valueExperienceFamiliar({
 
 const meatBonusFamiliar = () => {
   const pick = meatFamiliar();
+  // Robo is already in there
   if (pick === $familiar`Robortender`) return [];
   return [
     {
@@ -276,7 +277,7 @@ const standardFamiliars: () => GeneralFamiliar[] = () =>
     },
     {
       familiar: $familiar`Robortender`,
-      expectedValue: 200,
+      expectedValue: garboValue($item`elemental sugarcube`) / 5,
     },
     ...meatBonusFamiliar(),
     {
