@@ -16,7 +16,6 @@ import {
 import {
   $effect,
   $familiar,
-  $familiars,
   $item,
   $items,
   $slots,
@@ -244,6 +243,17 @@ function valueExperienceFamiliar({
   };
 }
 
+const meatBonusFamiliar = () => {
+  const pick = meatFamiliar();
+  if (pick === $familiar`Robortender`) return [];
+  return [
+    {
+      familiar: pick,
+      expectedValue: pick === $familiar`Hobo Monkey` ? 75 : 0,
+    },
+  ];
+};
+
 const standardFamiliars: () => GeneralFamiliar[] = () =>
   [
     {
@@ -268,10 +278,7 @@ const standardFamiliars: () => GeneralFamiliar[] = () =>
       familiar: $familiar`Robortender`,
       expectedValue: 200,
     },
-    ...$familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`.map((familiar) => ({
-      familiar,
-      expectedValue: 0,
-    })),
+    ...meatBonusFamiliar(),
     {
       familiar: $familiar`none`,
       expectedValue: 0,
