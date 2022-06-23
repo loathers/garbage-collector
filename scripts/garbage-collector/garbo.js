@@ -33023,9 +33023,9 @@ function yachtzeeChainDiet(simOnly) {
   // However, this means that higherBaseMeatProfits would try to account for the lower earlyMeatDropsEstimate
 
   var higherBaseMeatProfits = yachtzeePotionSetup(yachtzeeTurns, true) + cologneToChew * ((yachtzeeTurns + 60 + 5 * (0,external_kolmafia_.toInt)(havePYECCharge)) * 1000 - colognePrice); // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
-  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3.5 * VOA
+  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
 
-  var extroValuePerSpleen = 7 * VOA - extroPrice / 2;
+  var extroValuePerSpleen = 6 * VOA - extroPrice / 2;
   var jellyValuePerSpleen = earlyMeatDropsEstimate * 2000 / 100 - (jelliesBulkPrice + fishyCost + slidersToEat * slidersExcessCost + pickleJuiceToDrink * pickleJuiceExcessCost - higherBaseMeatProfits) / yachtzeeTurns;
   (0,external_kolmafia_.print)("Early Meat Drop Modifier: ".concat(earlyMeatDropsEstimate, "%"));
   (0,external_kolmafia_.print)("Extro value per spleen: ".concat(extroValuePerSpleen));
@@ -33697,7 +33697,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26487);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("493529031ed068b8d33effa2ac02e1ebcdc6a084"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("98f724c2cba0916cb6064c0bffad1b67aa24af96"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -34365,7 +34365,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("493529031ed068b8d33effa2ac02e1ebcdc6a084" === mainSha) {
+    if ("98f724c2cba0916cb6064c0bffad1b67aa24af96" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
