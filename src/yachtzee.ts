@@ -673,8 +673,8 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
     cologneToChew * ((yachtzeeTurns + 60 + 5 * toInt(havePYECCharge)) * 1000 - colognePrice);
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
-  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3.5 * VOA
-  const extroValuePerSpleen = 7 * VOA - extroPrice / 2;
+  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
+  const extroValuePerSpleen = 6 * VOA - extroPrice / 2;
   const jellyValuePerSpleen =
     (earlyMeatDropsEstimate * 2000) / 100 -
     (jelliesBulkPrice +
