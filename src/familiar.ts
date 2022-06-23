@@ -5,7 +5,6 @@ import {
   familiarWeight,
   inebrietyLimit,
   Item,
-  Location,
   myAdventures,
   myInebriety,
   numericModifier,
@@ -20,7 +19,6 @@ import {
   $familiars,
   $item,
   $items,
-  $location,
   $slots,
   findFairyMultiplier,
   findLeprechaunMultiplier,
@@ -334,49 +332,49 @@ function cacheOutfit(
   return values;
 }
 
-export function setMarginalFamiliar(location: Location) {
-  const underwater = location.environment === "underwater";
+export function setMarginalFamiliar(): void {
   const buffWeight = sum(getActiveEffects(), (ef: Effect) => getModifier("Familiar Weight", ef));
   const outfitWeight = sum(outfitSlots, (slot: Slot) =>
     getModifier("Familiar Weight", equippedItem(slot))
   );
   const passiveWeight = weightAdjustment() - buffWeight - outfitWeight;
 
-  const barf = location === $location`Barf Mountain`;
   const dropFamiliars: MarginalFamiliar[] = [
     ...filterNull(rotatingFamiliars.map(valueStandardDropFamiliar)),
     ...standardFamiliars(),
     {
       familiar: $familiar`Space Jellyfish`,
-      expectedValue: barf
-        ? garboValue($item`stench jelly`) /
-          (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20)
-        : 0,
+      expectedValue:
+        garboValue($item`stench jelly`) /
+        (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
       leprechaunMultiplier: 0,
     },
-  ]
-    .filter((f) => !underwater || f.familiar.underwater)
-    .map(({ familiar, expectedValue, leprechaunMultiplier }) => {
-      const { meat, weight, bonus } =
-        cachedOutfits.get(leprechaunMultiplier) ?? cacheOutfit(leprechaunMultiplier, familiar);
+  ].map(({ familiar, expectedValue, leprechaunMultiplier }) => {
+    const { meat, weight, bonus } =
+      cachedOutfits.get(leprechaunMultiplier) ?? cacheOutfit(leprechaunMultiplier, familiar);
 
-      return {
-        familiar,
-        expectedValue,
-        leprechaunMultiplier,
-        outfitValue:
-          bonus +
-          ((meat +
-            numericModifier(
-              familiar,
-              "Meat Drop",
-              weight + passiveWeight + familiarWeight(familiar),
-              $item`none`
-            )) *
-            baseMeat) /
-            100,
-      };
-    });
+    return {
+      familiar,
+      expectedValue,
+      leprechaunMultiplier,
+      outfitValue:
+        bonus +
+        ((meat +
+          numericModifier(
+            familiar,
+            "Meat Drop",
+            weight + passiveWeight + familiarWeight(familiar),
+            $item`none`
+          )) *
+          baseMeat) /
+          100,
+    };
+  });
+
+  const finalFamiliarChoice = dropFamiliars.reduce((a, b) =>
+    a.expectedValue + a.outfitValue - b.expectedValue - b.outfitValue ? a : b
+  ).familiar;
+  useFamiliar(finalFamiliarChoice);
 }
 
 export function pocketProfessorLectures(): number {
