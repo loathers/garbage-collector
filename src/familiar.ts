@@ -363,7 +363,7 @@ export function setMarginalFamiliar(): void {
           numericModifier(
             familiar,
             "Meat Drop",
-            weight + passiveWeight + familiarWeight(familiar),
+            weight + passiveWeight + buffWeight + familiarWeight(familiar),
             $item`none`
           )) *
           baseMeat) /
