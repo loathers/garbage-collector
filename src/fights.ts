@@ -2207,11 +2207,11 @@ const freeKills: FreeKill[] = [
   { macro: $skill`Gingerbread Mob Hit`, used: () => get("_gingerbreadMobHitUsed") },
   { macro: $item`replica bat-oomerang`, used: () => get("_usedReplicaBatoomerang") >= 3 },
 ];
-const isAvailable = ({ source, macro, used }: FreeKill) => have(source ?? macro) && !used();
+const canUseSource = ({ source, macro, used }: FreeKill) => have(source ?? macro) && !used();
 const toRequirement = ({ source }: FreeKill) =>
   source ? new Requirement([], { forceEquip: [source] }) : new Requirement([], {});
 function findFreeKill() {
-  return freeKills.find(isAvailable) ?? null;
+  return freeKills.find(canUseSource) ?? null;
 }
 
 function killRobortCreaturesForFree() {
