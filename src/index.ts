@@ -230,19 +230,11 @@ function barfTurn() {
       retrieveItem($item`pulled green taffy`);
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
       useFamiliar(meatFamiliar());
-    } else if (!embezzlerUp && timeToMeatify()) {
-      useFamiliar($familiar`Grey Goose`);
-    } else if (
-      !embezzlerUp &&
-      have($familiar`Space Jellyfish`) &&
-      get(`_spaceJellyfishDrops`) < 5 &&
-      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns <= 25 &&
-      myInebriety() <= inebrietyLimit()
-    ) {
-      useFamiliar($familiar`Space Jellyfish`);
-    } else {
-      setMarginalFamiliar(location, underwater);
-    }
+    } else if (!embezzlerUp) {
+      if (timeToMeatify()) {
+        useFamiliar($familiar`Grey Goose`);
+      } else setMarginalFamiliar(location);
+    } else useFamiliar(meatFamiliar());
 
     // d. get dressed
     meatOutfit(embezzlerUp, undefined, underwater);
