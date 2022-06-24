@@ -31312,7 +31312,7 @@ var freeKills = [{
   used: () => (0,property/* get */.U2)("_usedReplicaBatoomerang") >= 3
 }];
 
-var isAvailable = _ref2 => {
+var canUseSource = _ref2 => {
   var source = _ref2.source,
       macro = _ref2.macro,
       used = _ref2.used;
@@ -31329,7 +31329,7 @@ var toRequirement = _ref3 => {
 function findFreeKill() {
   var _freeKills$find;
 
-  return (_freeKills$find = freeKills.find(isAvailable)) !== null && _freeKills$find !== void 0 ? _freeKills$find : null;
+  return (_freeKills$find = freeKills.find(canUseSource)) !== null && _freeKills$find !== void 0 ? _freeKills$find : null;
 }
 
 function killRobortCreaturesForFree() {
@@ -33697,7 +33697,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26487);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("98f724c2cba0916cb6064c0bffad1b67aa24af96"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("66612d63a806257b50a467e02c357ccf4dcdab15"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -34365,7 +34365,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("98f724c2cba0916cb6064c0bffad1b67aa24af96" === mainSha) {
+    if ("66612d63a806257b50a467e02c357ccf4dcdab15" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
