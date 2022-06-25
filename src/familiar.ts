@@ -11,7 +11,6 @@ import {
   numericModifier,
   print,
   Slot,
-  toInt,
   totalTurnsPlayed,
   useFamiliar,
   weightAdjustment,
@@ -19,7 +18,6 @@ import {
 import {
   $effect,
   $familiar,
-  $familiars,
   $item,
   $items,
   $location,
@@ -250,6 +248,18 @@ function valueExperienceFamiliar({
   };
 }
 
+const meatBonusFamiliar = () => {
+  const pick = meatFamiliar();
+  // Robo is already in there
+  if (pick === $familiar`Robortender`) return [];
+  return [
+    {
+      familiar: pick,
+      expectedValue: pick === $familiar`Hobo Monkey` ? 75 : 0,
+    },
+  ];
+};
+
 const standardFamiliars: () => GeneralFamiliar[] = () =>
   [
     {
@@ -281,10 +291,7 @@ const standardFamiliars: () => GeneralFamiliar[] = () =>
           ? get("garbo_newarkValue", 0) * 0.25
           : 0),
     },
-    ...$familiars`Hobo Monkey, Cat Burglar, Urchin Urchin, Leprechaun`.map((familiar) => ({
-      familiar,
-      expectedValue: 0,
-    })),
+    ...meatBonusFamiliar(),
     {
       familiar: $familiar`none`,
       expectedValue: 0,
@@ -448,13 +455,15 @@ export function setMarginalFamiliar(loc: Location): void {
   ]
     .filter((fam) => have(fam.familiar))
     .map((fam): MarginalFamiliar => {
-      const { meat } =
+      const { meat, bonus } =
         cachedOutfits.get(fam.leprechaunMultiplier) ??
         cacheOutfit(fam.leprechaunMultiplier, fam.familiar);
-      const additionalValue =
-        (toInt(barf) * (meat + getFamModifier(fam, "Meat Drop")) * locBaseMeat +
-          getFamModifier(fam, "Item Drop") * 0.15 * 3 * 200) /
-        100;
+      const additionalValue = barf
+        ? ((meat + getFamModifier(fam, "Meat Drop")) * locBaseMeat +
+            getFamModifier(fam, "Item Drop") * 0.15 * 3 * 200) /
+            100 +
+          bonus
+        : 0;
       return {
         ...fam,
         marginalValue: fam.expectedValue + additionalValue,
@@ -462,22 +471,26 @@ export function setMarginalFamiliar(loc: Location): void {
     })
     .sort((left, right) => right.marginalValue - left.marginalValue);
 
-  let nominalOutfitValue: number | null = null;
-  cachedOutfits.forEach((value) => {
-    if (!nominalOutfitValue || (value.meat * locBaseMeat) / 100 < nominalOutfitValue) {
-      nominalOutfitValue = (value.meat * locBaseMeat) / 100;
-    }
-  });
+  const nominalOutfitValue = dropFamiliars
+    .map((fam) => {
+      const { meat, bonus } =
+        cachedOutfits.get(fam.leprechaunMultiplier) ??
+        cacheOutfit(fam.leprechaunMultiplier, fam.familiar);
+      return (meat * locBaseMeat) / 100 + bonus;
+    })
+    .reduce((a, b) => {
+      return a < b ? a : b;
+    });
 
   print("Considering Marginal Familiars:", "blue");
   dropFamiliars.forEach((fam) => {
-    const { meat } =
+    const { meat, bonus } =
       cachedOutfits.get(fam.leprechaunMultiplier) ??
       cacheOutfit(fam.leprechaunMultiplier, fam.familiar);
 
     const lepValue = (getFamModifier(fam, "Meat Drop") * locBaseMeat) / 100;
-    const outfitValue = (meat * locBaseMeat) / 100 - (nominalOutfitValue ?? 0);
-    const fairyValue = (toInt(barf) * getFamModifier(fam, "Item Drop") * 0.15 * 3 * 200) / 100;
+    const outfitValue = (meat * locBaseMeat) / 100 + bonus - (nominalOutfitValue ?? 0);
+    const fairyValue = barf ? (getFamModifier(fam, "Item Drop") * 0.15 * 3 * 200) / 100 : 0;
     print(
       `${fam.familiar}: ${(fam.marginalValue - (nominalOutfitValue ?? 0)).toFixed(
         2
