@@ -501,5 +501,21 @@ export function setMarginalFamiliar(loc: Location): void {
     );
   });
 
+  if (dropFamiliars[0].familiar !== meatFamiliar()) {
+    const dropFam = dropFamiliars[0].familiar;
+    const meatFam = meatFamiliar();
+    const dropFamEV = dropFamiliars[0].marginalValue;
+    const meatFamEV = sum(dropFamiliars, (fam) => {
+      return fam.familiar === meatFam ? fam.marginalValue : 0;
+    });
+    print(
+      `Determined that ${dropFam} (EV: ${dropFamEV})} is better than your meat familiar ${meatFam} (EV: ${meatFamEV})`,
+      "blue"
+    );
+    print(
+      `To always use your meat familiar, type "set garboIgnoreMarginalFamiliars=true" in your CLI.`,
+      "blue"
+    );
+  }
   useFamiliar(dropFamiliars[0].familiar);
 }
