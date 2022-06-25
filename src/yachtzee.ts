@@ -18,6 +18,7 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
+  maximize,
   myFamiliar,
   myFullness,
   myInebriety,
@@ -68,7 +69,14 @@ import { runDiet } from "./diet";
 import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
 import { doSausage } from "./fights";
-import { baseMeat, globalOptions, realmAvailable, safeRestore, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  burnLibrams,
+  globalOptions,
+  realmAvailable,
+  safeRestore,
+  turnsToNC,
+} from "./lib";
 import { meatMood } from "./mood";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
 import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
@@ -959,16 +967,30 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   if (!simOnly) {
     executeNextDietStep(true);
     if (get("_PYECAvailable", false)) {
+      maximize("MP", false);
       if (have($item`Platinum Yendorian Express Card`)) {
-        use(1, $item`Platinum Yendorian Express Card`);
+        burnLibrams(200);
+        use($item`Platinum Yendorian Express Card`);
       } else {
         withStash($items`Platinum Yendorian Express Card`, () => {
           if (have($item`Platinum Yendorian Express Card`)) {
-            use(1, $item`Platinum Yendorian Express Card`);
+            burnLibrams(200);
+            use($item`Platinum Yendorian Express Card`);
           }
         });
       }
     }
+    if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+      burnLibrams(200);
+      use($item`License to Chill`);
+    }
+    if (!get("_bagOTricksUsed")) {
+      withStash($items`Bag o' Tricks`, () => {
+        burnLibrams(200);
+        use($item`Bag o' Tricks`);
+      });
+    }
+    burnLibrams(200);
     set("_PYECAvailable", false);
   }
 
@@ -1098,6 +1120,8 @@ function _yachtzeeChain(): void {
           return have($item`Platinum Yendorian Express Card`);
         })
   );
+
+  maximize("MP", false);
   meatMood(false).execute(estimatedTurns());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
