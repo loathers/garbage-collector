@@ -56,7 +56,6 @@ import {
   isSong,
   Macro,
   Mood,
-  property,
   Requirement,
   set,
   sum,
@@ -123,9 +122,7 @@ class YachtzeeDietUtils {
   originalPref: string;
 
   constructor(action?: (n: number, name?: string) => void) {
-    this.originalPref = !get("_garboYachtzeeChainDiet")
-      ? ""
-      : property.getString("_garboYachtzeeChainDiet");
+    this.originalPref = !get("_garboYachtzeeChainDiet") ? "" : get("_garboYachtzeeChainDiet");
     this.pref = "";
     this.dietArray = [
       new YachtzeeDietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
@@ -255,7 +252,7 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
   const dietUtil = new YachtzeeDietUtils();
   dietUtil.resetDietPref();
 
-  const dietString = property.getString("_garboYachtzeeChainDiet").split(",");
+  const dietString = get("_garboYachtzeeChainDiet").split(",");
   let stenchJellyConsumed = false;
   for (const name of dietString) {
     if (name.length === 0) continue;
@@ -277,11 +274,11 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
             throw new Error(`consuming ${entry.name} will exceed our spleen limit`);
           }
           if (entry.fullness > 0) {
-            if (!property.getBoolean("_milkOfMagnesiumUsed")) {
+            if (!get("_milkOfMagnesiumUsed")) {
               acquire(1, $item`milk of magnesium`, 10000);
               use(1, $item`milk of magnesium`);
             }
-            if (!property.getBoolean("_distentionPillUsed") && have($item`distention pill`)) {
+            if (!get("_distentionPillUsed") && have($item`distention pill`)) {
               use(1, $item`distention pill`);
             }
           }
@@ -305,8 +302,7 @@ function yachtzeeDietScheduler(
   const dietSchedule = new Array<YachtzeeDietEntry<void>>();
   const remainingMenu = new Array<YachtzeeDietEntry<void>>();
   const jellies = new Array<YachtzeeDietEntry<void>>();
-  const haveDistentionPill =
-    !property.getBoolean("_distentionPillUsed") && have($item`distention pill`);
+  const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
 
   // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
   // Assume all fullness/drunkenness > 0 non-spleen cleansers are inserted for buffs
@@ -429,7 +425,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     equip(bestWaterBreathingEquipment.item);
     if (
       equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
-      get(`edPiece`) !== "fish"
+      get("edPiece") !== "fish"
     ) {
       cliExecute("edpiece fish");
     }
@@ -527,7 +523,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     {
       name: "Lutz, the Ice Skate",
       cost:
-        get("_skateBuff1", false) || property.getString("skateParkStatus") !== "ice"
+        get("_skateBuff1", false) || get("skateParkStatus") !== "ice"
           ? Infinity
           : bestWaterBreathingEquipment.cost,
       action: () => {
@@ -585,8 +581,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const havePYECCharge = get("_PYECAvailable", false);
   const maxYachtzeeTurns = havePYECCharge ? 35 : 30;
-  const haveDistentionPill =
-    !property.getBoolean("_distentionPillUsed") && have($item`distention pill`);
+  const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
 
   // Plan our diet (positive values give space, negative values take space)
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
@@ -596,7 +591,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
     haveEffect($effect`Synthesis: Greed`) < reqSynthTurns
       ? -Math.ceil((reqSynthTurns - haveEffect($effect`Synthesis: Greed`)) / 30)
       : 0;
-  const filters = 3 - get(`currentMojoFilters`);
+  const filters = 3 - get("currentMojoFilters");
   const extros = hasMonsterReplacers() ? -(4 - Math.min(4, 2 * get("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
   let cologne = 0;
   const availableSpleen = // Spleen available for ingesting jellies
@@ -720,7 +715,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   dietUtil.setDietEntry(`stench jelly`, yachtzeeTurns, (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
     if (!simOnly) {
-      set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
+      set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
     }
   });
 
@@ -734,10 +729,11 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   if (simOnly) return true;
 
-  if (property.getNumber("_stenchJellyChargeTarget") < yachtzeeTurns) {
+  if (get("_stenchJellyChargeTarget", 0) < yachtzeeTurns) {
     throw new Error(
-      `We are only able to obtain up to ${property.getNumber(
-        "_stenchJellyChargeTarget"
+      `We are only able to obtain up to ${get(
+        "_stenchJellyChargeTarget",
+        0
       )}/${yachtzeeTurns} turns of jelly charges!`
     );
   }
@@ -1094,7 +1090,7 @@ function _yachtzeeChain(): void {
 
   set(
     "_PYECAvailable",
-    get(`expressCardUsed`, false)
+    get("expressCardUsed")
       ? false
       : have($item`Platinum Yendorian Express Card`)
       ? true
@@ -1127,7 +1123,7 @@ function _yachtzeeChain(): void {
     set("_yachtzeeChainClosetedMeat", 0);
     return;
   }
-  let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
+  let jellyTurns = get("_stenchJellyChargeTarget", 0);
   let fishyTurns = haveEffect($effect`Fishy`) + 5 * toInt(get("_PYECAvailable", false));
   let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
@@ -1156,13 +1152,13 @@ function _yachtzeeChain(): void {
       fishyTurns -= 1;
       jellyTurns -= 1;
       turncount = myTurncount();
-      set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") - 1);
+      set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) - 1);
       set("_stenchJellyUsed", false);
     }
     if (
       plantCrookweed &&
       visitUrl("forestvillage.php").includes("friarcottage.gif") &&
-      !property.getString("_floristPlantsUsed").split(",").includes("Crookweed")
+      !get("_floristPlantsUsed").split(",").includes("Crookweed")
     ) {
       cliExecute("florist plant Crookweed");
     }
