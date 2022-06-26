@@ -489,10 +489,10 @@ export function setMarginalFamiliar(loc: Location): void {
       cacheOutfit(fam.leprechaunMultiplier, fam.familiar);
 
     const lepValue = (getFamModifier(fam, "Meat Drop") * locBaseMeat) / 100;
-    const outfitValue = (meat * locBaseMeat) / 100 + bonus - (nominalOutfitValue ?? 0);
+    const outfitValue = (meat * locBaseMeat) / 100 + bonus - nominalOutfitValue;
     const fairyValue = barf ? (getFamModifier(fam, "Item Drop") * 0.15 * 3 * 200) / 100 : 0;
     print(
-      `${fam.familiar}: ${(fam.marginalValue - (nominalOutfitValue ?? 0)).toFixed(
+      `${fam.familiar}: ${(fam.marginalValue - nominalOutfitValue).toFixed(
         2
       )} - ${fam.expectedValue.toFixed(2)} (drop) + ${lepValue.toFixed(
         2
@@ -504,9 +504,9 @@ export function setMarginalFamiliar(loc: Location): void {
   if (dropFamiliars[0].familiar !== meatFamiliar()) {
     const dropFam = dropFamiliars[0].familiar;
     const meatFam = meatFamiliar();
-    const dropFamEV = dropFamiliars[0].marginalValue;
+    const dropFamEV = dropFamiliars[0].marginalValue - nominalOutfitValue;
     const meatFamEV = sum(dropFamiliars, (fam) => {
-      return fam.familiar === meatFam ? fam.marginalValue : 0;
+      return fam.familiar === meatFam ? fam.marginalValue - nominalOutfitValue : 0;
     });
     print(
       `Determined that ${dropFam} (EV: ${dropFamEV})} is better than your meat familiar ${meatFam} (EV: ${meatFamEV})`,
