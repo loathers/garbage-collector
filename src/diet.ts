@@ -14,6 +14,7 @@ import {
   haveEffect,
   inebrietyLimit,
   Item,
+  itemAmount,
   itemType,
   logprint,
   mallPrice,
@@ -25,18 +26,20 @@ import {
   myMaxhp,
   mySpleenUse,
   print,
+  retrievePrice,
+  sellsItem,
   setProperty,
   spleenLimit,
   toItem,
   turnsPerCast,
   use,
   useFamiliar,
-  userConfirm,
   useSkill,
 } from "kolmafia";
 import {
   $class,
   $classes,
+  $coinmaster,
   $effect,
   $element,
   $familiar,
@@ -56,8 +59,16 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { withVIPClan } from "./clan";
-import { estimatedTurns } from "./embezzler";
-import { argmax, arrayEquals, globalOptions, HIGHLIGHT, realmAvailable } from "./lib";
+import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { expectedGregs } from "./extrovermectin";
+import {
+  argmax,
+  arrayEquals,
+  globalOptions,
+  HIGHLIGHT,
+  realmAvailable,
+  userConfirmDialog,
+} from "./lib";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -217,10 +228,10 @@ function pillCheck(): void {
     if (!get("garbo_skipPillCheck", false) && !have($item`distention pill`, 1)) {
       set(
         "garbo_skipPillCheck",
-        userConfirm(
+        userConfirmDialog(
           "You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)",
-          15000,
-          false
+          false,
+          15000
         )
       );
     }
@@ -230,10 +241,10 @@ function pillCheck(): void {
     if (!get("garbo_skipPillCheck", false) && !have($item`synthetic dog hair pill`, 1)) {
       set(
         "garbo_skipPillCheck",
-        userConfirm(
+        userConfirmDialog(
           "You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)",
-          15000,
-          false
+          false,
+          15000
         )
       );
     }
@@ -454,6 +465,12 @@ export function potionMenu(
     ...potion($item`haunted martini`),
     ...potion($item`twice-haunted screwdriver`, { price: twiceHauntedPrice }),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
+    ...(realmAvailable("sleaze") &&
+    sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`)
+      ? limitedPotion($item`broberry brogurt`, Math.floor(itemAmount($item`Beach Buck`) / 10), {
+          price: 10 * garboValue($item`Beach Buck`),
+        })
+      : []),
 
     // SPLEEN POTIONS
     ...potion($item`cute mushroom`),
@@ -724,6 +741,32 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         ],
         ...mayoActions,
         ...speakeasyDrinks,
+        [
+          $item`broberry brogurt`,
+          (countToConsume: number, menuItem: MenuItem<Note>) => {
+            const amountNeeded = countToConsume - availableAmount($item`broberry brogurt`);
+            if (amountNeeded > 0) {
+              const coinmasterPrice =
+                realmAvailable("sleaze") &&
+                sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`)
+                  ? 10 * garboValue($item`Beach Buck`)
+                  : Infinity;
+              const regularPrice = mallPrice($item`broberry brogurt`);
+              if (coinmasterPrice < regularPrice) {
+                const amountToBuy = Math.min(
+                  amountNeeded,
+                  Math.floor(itemAmount($item`Beach Buck`))
+                );
+                buy($coinmaster`The Frozen Brogurt Stand`, amountToBuy, $item`broberry brogurt`);
+              }
+              buy(
+                countToConsume - availableAmount($item`broberry brogurt`),
+                $item`broberry brogurt`
+              );
+            }
+            consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+          },
+        ],
       ]);
 
       for (const menuItem of menuItems) {
@@ -746,6 +789,11 @@ export function runDiet(): void {
     if (myFamiliar() === $familiar`Stooper`) {
       useFamiliar($familiar`none`);
     }
+
+    MenuItem.defaultPriceFunction = (item: Item) => {
+      const itemRetrievePrice = retrievePrice(item);
+      return itemRetrievePrice > 0 ? itemRetrievePrice : item.tradeable ? mallPrice(item) : 0;
+    };
 
     const dietBuilder = computeDiet();
 

@@ -5,7 +5,6 @@ import {
   Familiar,
   familiarWeight,
   getAutoAttack,
-  getCounters,
   haveEquipped,
   haveSkill,
   hippyStoneBroken,
@@ -40,10 +39,11 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
   $slot,
   $thralls,
-  clamp,
+  Counter,
   get,
   getTodaysHolidayWanderers,
   have,
@@ -51,7 +51,8 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { meatFamiliar } from "./familiar";
+import { meatFamiliar, timeToMeatify } from "./familiar";
+import { digitizedMonstersRemaining } from "./wanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
 export function monsterManuelAvailable(): boolean {
@@ -137,8 +138,8 @@ export function maxPassiveDamage(): number {
 }
 
 export function shouldRedigitize(): boolean {
-  const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
-  const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
+  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
+  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
   // triangular number * 10 - 3
   const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
   // Redigitize if fewer adventures than this digitize usage.
@@ -247,8 +248,15 @@ export class Macro extends StrictMacro {
 
     const willCrit = sealClubberSetup || opsSetup || katanaSetup || capeSetup;
 
-    return this.tryHaveSkill($skill`Sing Along`)
-      .trySkill($skill`Bowl Straight Up`)
+    return this.externalIf(
+        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
+        Macro.trySkill($skill`Meatify Matter`)
+      )
+      .tryHaveSkill($skill`Sing Along`)
+      .externalIf(
+        get("cosmicBowlingBallReturnCombats") < 1,
+        Macro.trySkill($skill`Bowl Straight Up`)
+      )
       .externalIf(
         have($skill`Transcendent Olfaction`) &&
           property.getString("olfactedMonster") !== "garbage tourist" &&
@@ -263,7 +271,7 @@ export class Macro extends StrictMacro {
       .externalIf(
         !get("_latteCopyUsed") &&
           (get("_latteMonster") !== $monster`garbage tourist` ||
-            getCounters("Latte Monster", 0, 30).trim() === "") &&
+            Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Offer Latte to Opponent`))
       )
@@ -274,6 +282,13 @@ export class Macro extends StrictMacro {
         Macro.if_(
           `!monsterid ${$monster`garbage tourist`.id}`,
           Macro.trySkill($skill`Feel Nostalgic`)
+        )
+      )
+      .externalIf(
+        myFamiliar() === $familiar`Space Jellyfish`,
+        Macro.if_(
+          $monsters`angry tourist, garbage tourist, horrible tourist family`,
+          Macro.trySkill($skill`Extract Jelly`)
         )
       )
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
@@ -398,6 +413,10 @@ export class Macro extends StrictMacro {
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
+      .externalIf(
+        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
+        Macro.trySkill($skill`Meatify Matter`)
+      )
       .externalIf(
         get("cosmicBowlingBallReturnCombats") < 1,
         Macro.trySkill($skill`Bowl Straight Up`)
@@ -547,6 +566,10 @@ export class Macro extends StrictMacro {
     }
 
     return this.tryHaveSkill($skill`Sing Along`)
+      .externalIf(
+        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
+        Macro.trySkill($skill`Meatify Matter`)
+      )
       .tryHaveItem($item`Rain-Doh blue balls`)
       .externalIf(get("lovebugsUnlocked"), Macro.trySkill($skill`Summon Love Gnats`))
       .tryHaveSkill(classStun)
@@ -563,13 +586,22 @@ export class Macro extends StrictMacro {
   }
 }
 
-export function withMacro<T>(macro: Macro, action: () => T): T {
+/**
+ * Attempt to perform a nonstandard combat-starting Action with a Macro
+ * @param macro The Macro to attempt to use
+ * @param action The combat-starting action to attempt
+ * @param tryAuto Whether or not we should try to resolve the combat with an autoattack; autoattack macros can fail against special monsters, and thus we have to submit a macro with Macro.save() regardless
+ * @returns The output of your specified action function (typically void)
+ */
+export function withMacro<T>(macro: Macro, action: () => T, tryAuto = false): T {
   if (getAutoAttack() !== 0) setAutoAttack(0);
+  if (tryAuto) macro.setAutoAttack();
   macro.save();
   try {
     return action();
   } finally {
     Macro.clearSaved();
+    if (tryAuto) setAutoAttack(0);
   }
 }
 

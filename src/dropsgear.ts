@@ -22,10 +22,13 @@ import {
   $slot,
   clamp,
   DaylightShavings,
+  findFairyMultiplier,
+  findLeprechaunMultiplier,
   get,
   getFoldGroup,
   getModifier,
   have,
+  JuneCleaver,
   Modifiers,
   sumNumbers,
 } from "libram";
@@ -38,11 +41,12 @@ import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
+  bestJuneCleaverOption,
   BonusEquipMode,
-  fairyMultiplier,
   globalOptions,
-  leprechaunMultiplier,
+  juneCleaverChoiceValues,
   realmAvailable,
+  valueJuneCleaverOption,
 } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 
@@ -61,9 +65,9 @@ export function valueBjornModifiers(mode: BonusEquipMode, modifiers: Modifiers):
     (!["dmt", "free"].includes(mode) ? (baseMeat + mode === "embezzler" ? 750 : 0) : 0) / 100;
   const itemValue = mode === "barf" ? 0.72 : 0;
 
-  const lepMult = leprechaunMultiplier(meatFamiliar());
+  const lepMult = findLeprechaunMultiplier(meatFamiliar());
   const lepBonus = weight * (2 * lepMult + Math.sqrt(lepMult));
-  const fairyMult = fairyMultiplier(meatFamiliar());
+  const fairyMult = findFairyMultiplier(meatFamiliar());
   const fairyBonus = weight * (fairyMult + Math.sqrt(fairyMult) / 2);
 
   const bjornMeatDropValue = meatValue * (meat + lepBonus);
@@ -308,7 +312,7 @@ export function magnifyingGlass(): Map<Item, number> {
 export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
-    ...(equipMode !== "embezzler" ? pantsgiving() : []),
+    ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
     ...shavingBonus(),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
@@ -316,6 +320,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
     ...(equipMode === "barf" ? magnifyingGlass() : []),
+    ...juneCleaver(equipMode),
   ]);
 }
 
@@ -329,7 +334,7 @@ export function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
     return bjornalikes.find((thing) => have(thing) && slots.includes(toSlot(thing)));
   }
 
-  const hasStrongLep = leprechaunMultiplier(meatFamiliar()) >= 2;
+  const hasStrongLep = findLeprechaunMultiplier(meatFamiliar()) >= 2;
   const goodRobortHats = $items`crumpled felt fedora`;
   if (myClass() === $class`Turtle Tamer`) goodRobortHats.push($item`warbear foil hat`);
   if (numericModifier($item`shining star cap`, "Familiar Weight") === 10) {
@@ -363,6 +368,7 @@ function shavingBonus(): Map<Item, number> {
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 
+let cachedUsingThumbRing: boolean | null = null;
 /**
  * Calculates whether we expect to be wearing the thumb ring for most of the farming day.
  * This is used in functions that leverage projected turns; for instance, calculating the
@@ -372,7 +378,8 @@ function shavingBonus(): Map<Item, number> {
 export function usingThumbRing(): boolean {
   if (!have($item`mafia thumb ring`)) {
     return false;
-  } else {
+  }
+  if (cachedUsingThumbRing === null) {
     const gear = bonusAccessories("barf");
     const accessoryBonuses = Array.from(gear.entries()).filter(([item]) => have(item));
 
@@ -400,6 +407,26 @@ export function usingThumbRing(): boolean {
     const bestAccessories = Array.from(accessoryValues.entries())
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
       .map(([item]) => item);
-    return bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
+    cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
   }
+  return cachedUsingThumbRing;
+}
+
+let juneCleaverEV: number | null = null;
+function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
+  if (!have($item`June cleaver`) || get("_juneCleaverFightsLeft") > estimatedTurns()) {
+    return new Map();
+  }
+  if (!juneCleaverEV) {
+    juneCleaverEV =
+      JuneCleaver.choices.reduce(
+        (total, choice) =>
+          total +
+          valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]),
+        0
+      ) / JuneCleaver.choices.length;
+  }
+
+  const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
+  return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / interval]]);
 }

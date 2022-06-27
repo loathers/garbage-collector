@@ -2,17 +2,22 @@ import {
   buy,
   cliExecute,
   closetAmount,
+  Coinmaster,
   Item,
   itemAmount,
   mallPrice,
   print,
+  retrieveItem,
+  sellPrice,
+  sellsItem,
   shopAmount,
   storageAmount,
   takeCloset,
   takeShop,
   takeStorage,
 } from "kolmafia";
-import { get } from "libram";
+import { get, withProperty } from "libram";
+import { garboValue } from "./session";
 
 const priceCaps: { [index: string]: number } = {
   "cuppa Voraci tea": 200000,
@@ -23,17 +28,25 @@ const priceCaps: { [index: string]: number } = {
   "mojo filter": 10000,
   "Ol' Scratch's salad fork": 200000,
   "Frosty's frosty mug": 200000,
-  "sweet tooth": 200000,
+  "sweet tooth": 250000,
 };
 
-export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail = true): number {
+export function acquire(
+  qty: number,
+  item: Item,
+  maxPrice?: number,
+  throwOnFail = true,
+  maxAggregateCost?: number
+): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if (!item.tradeable || (maxPrice !== undefined && maxPrice <= 0)) return 0;
-  if (maxPrice === undefined) throw `No price cap for ${item.name}.`;
+  if (maxPrice === undefined) throw new Error(`No price cap for ${item.name}.`);
 
   print(`Trying to acquire ${qty} ${item.plural}; max price ${maxPrice.toFixed(0)}.`, "green");
 
-  if (qty * mallPrice(item) > 1000000) throw "Aggregate cost too high! Probably a bug.";
+  if (qty * mallPrice(item) > (maxAggregateCost ?? 1000000)) {
+    throw new Error("Aggregate cost too high! Probably a bug.");
+  }
 
   const startAmount = itemAmount(item);
 
@@ -41,7 +54,7 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
   if (remaining <= 0) return qty;
 
   const logError = (target: Item, source: string) => {
-    throw `Failed to remove ${target} from ${source}`;
+    throw new Error(`Failed to remove ${target} from ${source}`);
   };
 
   if (get("autoSatisfyWithCloset")) {
@@ -65,11 +78,18 @@ export function acquire(qty: number, item: Item, maxPrice?: number, throwOnFail 
     if (!takeShop(getMall, item) && throwOnFail) logError(item, "shop");
   }
   remaining -= getMall;
-  if (remaining <= 0) return qty;
+  const coinmaster = Coinmaster.all().find((cm) => sellsItem(cm, item));
+  const coinmasterPrice = coinmaster
+    ? garboValue(coinmaster.item) * sellPrice(coinmaster, item)
+    : 0;
+  if (coinmaster && coinmasterPrice > mallPrice(item)) {
+    buy(item, remaining, maxPrice);
+  } else {
+    withProperty("autoBuyPriceLimit", maxPrice, () => retrieveItem(item, qty));
+  }
+  if (itemAmount(item) < qty && throwOnFail) {
+    throw new Error(`Failed to purchase sufficient quantities of ${item} from the mall.`);
+  }
 
-  if (maxPrice <= 0) throw `buying disabled for ${item.name}.`;
-
-  buy(remaining, item, maxPrice);
-  if (itemAmount(item) < qty && throwOnFail) throw `Mall price too high for ${item.name}.`;
   return itemAmount(item) - startAmount;
 }

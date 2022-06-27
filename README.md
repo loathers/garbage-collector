@@ -12,6 +12,7 @@
     - [`ascend` flag](#ascend-flag)
     - [`nodiet` flag](#nodiet-flag)
     - [`simdiet` flag](#simdiet-flag)
+    - [`yachtzeechain` flag](#yachtzeechain-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)
@@ -98,6 +99,10 @@ _EXPERIMENTAL_ Garbo will not eat or drink anything as part of the run (includin
 ### `simdiet` flag
 
 Garbo will list the optimal diet it plans to consume computed from your defined mpa and current prices, and then exit.
+
+### `yachtzeechain` flag
+
+_EXPERIMENTAL_ Garbo will attempt to chain the Yachtzee! NC after all the free fights are completed, just before it attempts embezzlers. This command cannot be run in conjuction with the `nodiet` flag. Refer to `help` for more info on the requirements needed to run this.
 
 ### Turncount
 

@@ -1,23 +1,44 @@
 import {
   cliExecute,
   descToItem,
+  equip,
   getWorkshed,
   Item,
-  logprint,
   myAdventures,
   reverseNumberology,
   runChoice,
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, get, getRemainingStomach, property } from "libram";
+import {
+  $effect,
+  $item,
+  $location,
+  $slot,
+  adventureMacro,
+  get,
+  getRemainingStomach,
+  JuneCleaver,
+  Macro,
+  property,
+  uneffect,
+  withProperty,
+} from "libram";
 import { computeDiet, consumeDiet } from "./diet";
-import { argmax, globalOptions, safeInterrupt, safeRestore } from "./lib";
+import {
+  argmax,
+  bestJuneCleaverOption,
+  globalOptions,
+  juneCleaverChoiceValues,
+  safeInterrupt,
+  safeRestore,
+  setChoice,
+  valueJuneCleaverOption,
+} from "./lib";
 import { garboValue, sessionSinceStart } from "./session";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
-  logprint("DEBUG: garbo recognizes your workshed as the CMC.");
 
   if (
     property.getNumber("_coldMedicineConsults") >= 5 ||
@@ -25,7 +46,6 @@ function coldMedicineCabinet(): void {
   ) {
     return;
   }
-  logprint("DEBUG: garbo plans to visit the cold medicine cabinet.");
   const options = visitUrl("campground.php?action=workshed");
   let i = 0;
   let match;
@@ -44,7 +64,6 @@ function coldMedicineCabinet(): void {
 
   const bestItem = argmax(Array.from(itemChoices.keys()).map((i) => [i, garboValue(i)]));
   const bestChoice = itemChoices.get(bestItem);
-  logprint(`DEBUG: garbo thinks the best item is ${bestItem}, with choice number ${bestChoice}.`);
   if (bestChoice && bestChoice > 0) {
     visitUrl("campground.php?action=workshed");
     runChoice(bestChoice);
@@ -52,7 +71,11 @@ function coldMedicineCabinet(): void {
 }
 
 function horseradish(): void {
-  if (getRemainingStomach() > 0 && !globalOptions.noDiet) {
+  if (
+    getRemainingStomach() > 0 &&
+    !globalOptions.noDiet &&
+    (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
+  ) {
     consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING");
   }
 }
@@ -71,7 +94,43 @@ function updateMallPrices(): void {
   sessionSinceStart().value(garboValue);
 }
 
+let juneCleaverSkipChoices: typeof JuneCleaver.choices[number][] | null;
+function skipJuneCleaverChoices(): void {
+  if (!juneCleaverSkipChoices) {
+    juneCleaverSkipChoices = [...JuneCleaver.choices]
+      .sort(
+        (a, b) =>
+          valueJuneCleaverOption(juneCleaverChoiceValues[a][bestJuneCleaverOption(a)]) -
+          valueJuneCleaverOption(juneCleaverChoiceValues[b][bestJuneCleaverOption(b)])
+      )
+      .splice(0, 3);
+  }
+
+  if (JuneCleaver.skipsRemaining() > 0) {
+    for (const choice of juneCleaverSkipChoices) {
+      setChoice(choice, 4);
+    }
+  } else {
+    for (const choice of juneCleaverSkipChoices) {
+      setChoice(choice, bestJuneCleaverOption(choice));
+    }
+  }
+}
+function juneCleave(): void {
+  if (get("_juneCleaverFightsLeft") <= 0) {
+    equip($slot`weapon`, $item`June cleaver`);
+    skipJuneCleaverChoices();
+    withProperty("recoveryScript", "", () => {
+      adventureMacro($location`Noob Cave`, Macro.abort());
+      if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
+        uneffect($effect`Beaten Up`);
+      }
+    });
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
+  juneCleave();
   numberology();
   if (!skipDiet) horseradish();
   coldMedicineCabinet();

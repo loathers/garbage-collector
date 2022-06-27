@@ -4,6 +4,9 @@ import {
   cliExecute,
   eat,
   Familiar,
+  fileToBuffer,
+  gametimeToInt,
+  getLocketMonsters,
   handlingChoice,
   haveSkill,
   inebrietyLimit,
@@ -19,7 +22,6 @@ import {
   myMaxmp,
   myMp,
   myTurncount,
-  numericModifier,
   print,
   printHtml,
   restoreHp,
@@ -27,30 +29,41 @@ import {
   runChoice,
   runCombat,
   todayToString,
+  toSlot,
   toUrl,
   use,
   useFamiliar,
+  userConfirm,
   useSkill,
   visitUrl,
+  weaponHands,
 } from "kolmafia";
 import {
-  $familiar,
+  $effect,
   $item,
   $location,
+  $monster,
   $skill,
+  $slot,
   ActionSource,
   bestLibramToCast,
   ChateauMantegna,
+  CombatLoversLocket,
   ensureFreeRun,
   get,
   getKramcoWandererChance,
+  getTodaysHolidayWanderers,
   have,
+  JuneCleaver,
   Macro,
   PropertiesManager,
   property,
   set,
   SongBoom,
+  sum,
+  uneffect,
 } from "libram";
+import { garboValue } from "./session";
 
 export const embezzlerLog: {
   initialEmbezzlersFought: number;
@@ -72,6 +85,8 @@ export const globalOptions: {
   wishAnswer: boolean;
   simulateDiet: boolean;
   noDiet: boolean;
+  clarasBellClaimed: boolean;
+  yachtzeeChain: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -82,6 +97,8 @@ export const globalOptions: {
   wishAnswer: false,
   simulateDiet: false,
   noDiet: false,
+  clarasBellClaimed: get("_claraBellUsed"),
+  yachtzeeChain: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -164,7 +181,12 @@ export function mapMonster(location: Location, monster: Monster): void {
     mapPage = visitUrl(toUrl(location), false, true);
     if (mapPage.includes("Leading Yourself Right to Them")) break;
     // Time-pranks can show up here, annoyingly
-    if (mapPage.includes("<!-- MONSTERID: 1965 -->")) runCombat(Macro.attack().repeat().toString());
+    if (
+      mapPage.includes("<!-- MONSTERID: 1965 -->") ||
+      mapPage.includes("<!-- MONSTERID: 1622  -->")
+    ) {
+      runCombat(Macro.attack().repeat().toString());
+    }
     if (handlingChoice()) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
     if (tries === 9) throw `Stuck trying to Map the monsters.`;
@@ -244,22 +266,6 @@ export function kramcoGuaranteed(): boolean {
   return have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
 }
 
-export function leprechaunMultiplier(familiar: Familiar): number {
-  if (familiar === $familiar`Mutant Cactus Bud`) {
-    return numericModifier(familiar, "Leprechaun Effectiveness", 1, $item`none`);
-  }
-  const meatBonus = numericModifier(familiar, "Meat Drop", 1, $item`none`);
-  return Math.pow(Math.sqrt(meatBonus / 2 + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
-}
-
-export function fairyMultiplier(familiar: Familiar): number {
-  if (familiar === $familiar`Mutant Fire Ant`) {
-    return numericModifier(familiar, "Fairy Effectiveness", 1, $item`none`);
-  }
-  const itemBonus = numericModifier(familiar, "Item Drop", 1, $item`none`);
-  return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
-}
-
 const log: string[] = [];
 
 export function logMessage(message: string): void {
@@ -272,49 +278,23 @@ export function printLog(color: string): void {
   }
 }
 
+/**
+ * Prints Garbo's help menu to the GCLI.
+ */
 export function printHelpMenu(): void {
-  printHtml(`<pre style="font-family:consolas;">
-    +==============+===================================================================================================+
-    |   Argument   |                                            Description                                            |
-    +==============+===================================================================================================+
-    |    nobarf    | garbo will do beginning of the day setup, embezzlers, and various daily flags, but will           |
-    |              |  terminate before normal Barf Mountain turns.                                                     |
-    +--------------+---------------------------------------------------------------------------------------------------+
-    |    ascend    | garbo will operate under the assumption that you're ascending after running it, rather than       |
-    |              |  experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.      |
-    +--------------+---------------------------------------------------------------------------------------------------+
-    | &lt;somenumber&gt; | garbo will terminate after the specified number of turns, e.g. \`garbo 200\` will terminate after   |
-    |              |  200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.       |
-    +------------------------------------------------------------------------------------------------------------------+
-    |   simdiet    | garbo will print out what it computes as an optimal diet and then exit                            |
-    +------------------------------------------------------------------------------------------------------------------+
-    |    nodiet    | *EXPERIMENTAL* garbo will not eat or drink anything as a part of its run (including pantsgiving)  |
-    +--------------+---------------------------------------------------------------------------------------------------+
-    |     Note:    | You can use multiple commands in conjunction, e.g. \`garbo nobarf ascend\`.                         |
-    +--------------+---------------------------------------------------------------------------------------------------+</pre>`);
-  printHtml(`<pre style="font-family:consolas;">
-    +==========================+===============================================================================================+
-    |         Property         |                                          Description                                          |
-    +==========================+===============================================================================================+
-    |     valueOfAdventure     | This is a native mafia property, garbo will make purchasing decisions based on this value.    |
-    |                          | Recommended to be at least 3501.                                                              |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |      garbo_stashClan     | If set, garbo will attempt to switch to this clan to take and return useful clan stash items, |
-    |                          |  i.e. a Haiku Katana or Repaid Diaper.                                                        |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |       garbo_vipClan      | If set, garbo will attempt to switch to this clan to utilize VIP furniture if you have a key. |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    | garbo_skipAscensionCheck | Set to true to skip verifying that your account has broken the prism, otherwise you will be   |
-    |                          |  warned upon starting the script.                                                             |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |  garbo_valueOfFreeFight  | Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)      |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |     garbo_fightGlitch    | Set to true to fight the glitch season reward. You need certain skills, see relay for info.   |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |       garbo_buyPass      | Set to true to buy a dinsey day pass with FunFunds at the end of the day, if possible.        |
-    +--------------------------+-----------------------------------------------------------------------------------------------+
-    |           Note:          | You can manually set these properties, but it's recommended that you use the relay interface. |
-    +--------------------------+-----------------------------------------------------------------------------------------------+</pre>`);
+  type tableData = { tableItem: string; description: string };
+  const helpData: tableData[] = JSON.parse(fileToBuffer("garbo_help.json"));
+  const tableMaxCharWidth = 82;
+  const tableRows = helpData.map(({ tableItem, description }) => {
+    const croppedDescription =
+      description.length > tableMaxCharWidth
+        ? description.replace(/(.{82}\s)/g, `$&\n`)
+        : description;
+    return `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${croppedDescription}</pre></td></tr>`;
+  });
+  printHtml(
+    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`
+  );
 }
 
 /**
@@ -322,14 +302,32 @@ export function printHelpMenu(): void {
  * @returns The expected value of using a pillkeeper charge to fight an embezzler
  */
 export function pillkeeperOpportunityCost(): number {
-  // Can't fight an embezzler without treasury access
-  // If we have no other way to start a chain, returns 50k to represent the cost of a pocket wish
-  return canAdv($location`Cobb's Knob Treasury`, false)
-    ? (ChateauMantegna.have() && !ChateauMantegna.paintingFought()) ||
-      (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"))
-      ? 15000
-      : WISH_VALUE
-    : 0;
+  const canTreasury = canAdv($location`Cobb's Knob Treasury`, false);
+
+  const alternateUse = [
+    { can: canTreasury, value: 3 * get("valueOfAdventure") },
+    {
+      can: realmAvailable("sleaze"),
+      value: 40000,
+    },
+  ]
+    .filter((x) => x.can)
+    .sort((a, b) => b.value - a.value)[0];
+  const alternateUseValue = alternateUse?.value;
+
+  if (!alternateUseValue) return 0;
+  if (!canTreasury) return alternateUseValue;
+
+  const embezzler = $monster`Knob Goblin Embezzler`;
+  const canStartChain = [
+    CombatLoversLocket.have() && getLocketMonsters()[embezzler.name],
+    ChateauMantegna.have() &&
+      ChateauMantegna.paintingMonster() === embezzler &&
+      !ChateauMantegna.paintingFought(),
+    have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
+  ].some((x) => x);
+
+  return canStartChain ? alternateUseValue : WISH_VALUE;
 }
 
 /**
@@ -353,6 +351,15 @@ export function safeRestoreMpTarget(): number {
 }
 
 export function safeRestore(): void {
+  if (have($effect`Beaten Up`)) {
+    if (get("lastEncounter") === "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl") {
+      uneffect($effect`Beaten Up`);
+    } else {
+      throw new Error(
+        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready."
+      );
+    }
+  }
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
   }
@@ -413,4 +420,108 @@ export function getChoiceOption(partialText: string): number {
     }
   }
   return -1;
+}
+
+/**
+ * Confirmation dialog that supports automatic resolution via garbo_autoUserConfirm preference
+ * @param msg string to display in confirmation dialog
+ * @param defaultValue default answer if user doesn't provide one
+ * @param timeOut time to show dialog before submitting default value
+ * @returns answer to confirmation dialog
+ */
+export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: number): boolean {
+  if (get("garbo_autoUserConfirm", false)) {
+    print(`Automatically selected ${defaultValue} for ${msg}`, "red");
+    return defaultValue;
+  }
+
+  if (timeOut) return userConfirm(msg, timeOut, defaultValue);
+  return userConfirm(msg);
+}
+
+export const latteActionSourceFinderConstraints = {
+  allowedAction: (action: ActionSource): boolean => {
+    if (!have($item`latte lovers member's mug`)) return true;
+    const forceEquipsOtherThanLatte = (
+      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
+    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
+    return (
+      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+      sum(forceEquipsOtherThanLatte, weaponHands) < 2
+    );
+  },
+};
+
+export const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5;
+
+// Barf setup info
+const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
+const gallapagosCopies = have($skill`Gallapagosian Mating Call`) ? 1 : 0;
+const garbageTourists = 1 + olfactionCopies + gallapagosCopies,
+  touristFamilies = 1,
+  angryTourists = 1;
+const barfTourists = garbageTourists + touristFamilies + angryTourists;
+export const garbageTouristRatio = garbageTourists / barfTourists;
+const touristFamilyRatio = touristFamilies / barfTourists;
+// 30 tourists till NC, with families counting as 3
+// Estimate number of turns till the counter hits 27
+// then estimate the expected number of turns required to hit a counter of >= 30
+export const turnsToNC =
+  (27 * barfTourists) / (garbageTourists + angryTourists + 3 * touristFamilies) +
+  1 * touristFamilyRatio +
+  2 * (1 - touristFamilyRatio) * touristFamilyRatio +
+  3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
+
+export const steveAdventures: Map<Location, number[]> = new Map([
+  [$location`The Haunted Bedroom`, [1, 3, 1]],
+  [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
+  [$location`The Haunted Conservatory`, [1, 2, 2]],
+  [$location`The Haunted Billiards Room`, [1, 2, 2]],
+  [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
+  [$location`The Haunted Boiler Room`, [1, 2, 2]],
+  [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
+]);
+
+export function dogOrHolidayWanderer(extraEncounters: string[] = []): boolean {
+  return [
+    ...extraEncounters,
+    "Wooof! Wooooooof!",
+    "Playing Fetch*",
+    "Your Dog Found Something Again",
+    ...getTodaysHolidayWanderers().map((monster) => monster.name),
+  ].includes(get("lastEncounter"));
+}
+
+export const juneCleaverChoiceValues = {
+  1467: {
+    1: 0,
+    2: 0,
+    3: 5 * get("valueOfAdventure"),
+  },
+  1468: { 1: 0, 2: 5, 3: 0 },
+  1469: { 1: 0, 2: $item`Dad's brandy`, 3: 1500 },
+  1470: { 1: 0, 2: $item`teacher's pen`, 3: 0 },
+  1471: { 1: $item`savings bond`, 2: 250, 3: 0 },
+  1472: {
+    1: $item`trampled ticket stub`,
+    2: $item`fire-roasted lake trout`,
+    3: 0,
+  },
+  1473: { 1: $item`gob of wet hair`, 2: 0, 3: 0 },
+  1474: { 1: 0, 2: $item`guilty sprout`, 3: 0 },
+  1475: { 1: $item`mother's necklace`, 2: 0, 3: 0 },
+} as const;
+
+export function valueJuneCleaverOption(result: Item | number): number {
+  return result instanceof Item ? garboValue(result) : result;
+}
+
+export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
+  const options = [1, 2, 3] as const;
+  return options
+    .map((option) => ({
+      option,
+      value: valueJuneCleaverOption(juneCleaverChoiceValues[id][option]),
+    }))
+    .sort((a, b) => b.value - a.value)[0].option;
 }

@@ -1,25 +1,26 @@
 import {
   chatPrivate,
   cliExecute,
-  getCounter,
-  getCounters,
+  fullnessLimit,
+  getClanLounge,
   haveEquipped,
   inebrietyLimit,
   itemAmount,
   Location,
+  mallPrice,
   myAdventures,
   myFamiliar,
+  myFullness,
   myHash,
   myInebriety,
   myTurncount,
   print,
+  retrieveItem,
   runChoice,
   runCombat,
   toInt,
-  toMonster,
   toUrl,
   use,
-  userConfirm,
   visitUrl,
   wait,
 } from "kolmafia";
@@ -33,21 +34,33 @@ import {
   $monster,
   $skill,
   adventureMacro,
+  adventureMacroAuto,
   ChateauMantegna,
   CombatLoversLocket,
+  Counter,
   CrystalBall,
   get,
   have,
   property,
+  questStep,
   Requirement,
   sum,
 } from "libram";
 import { acquire } from "./acquire";
 import { Macro, withMacro } from "./combat";
 import { usingThumbRing } from "./dropsgear";
-import { crateStrategy, equipOrbIfDesired } from "./extrovermectin";
+import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import { bestWitchessPiece } from "./fights";
-import { globalOptions, HIGHLIGHT, ltbRun, setChoice, WISH_VALUE } from "./lib";
+import {
+  averageEmbezzlerNet,
+  globalOptions,
+  HIGHLIGHT,
+  ltbRun,
+  setChoice,
+  userConfirmDialog,
+  WISH_VALUE,
+} from "./lib";
+import { waterBreathingEquipment } from "./outfit";
 import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
 
 const witchessPiece = bestWitchessPiece();
@@ -72,10 +85,12 @@ interface witchessPieceFightConfigOptions {
 class witchessPieceFightRunOptions {
   #macro: Macro;
   #location?: Location;
+  #useAuto: boolean;
 
-  constructor(macro: Macro, location?: Location) {
+  constructor(macro: Macro, location?: Location, useAuto = true) {
     this.#macro = macro;
     this.#location = location;
+    this.#useAuto = useAuto;
   }
 
   get macro(): Macro {
@@ -88,6 +103,10 @@ class witchessPieceFightRunOptions {
     } else {
       return this.#location;
     }
+  }
+
+  get useAuto(): boolean {
+    return this.#useAuto;
   }
 }
 
@@ -147,17 +166,25 @@ export class witchessPieceFight {
     this.wrongEncounterName = options.wrongEncounterName ?? this.gregariousReplace;
   }
 
-  run(options: { macro?: Macro; location?: Location } = {}): void {
+  run(options: { macro?: Macro; location?: Location; useAuto?: boolean} = {}): void {
+		if (!this.available() || !myAdventures()) return;
     const fightMacro = options.macro ?? witchessPieceMacro();
     if (this.draggable) {
-      this.execute(new witchessPieceFightRunOptions(fightMacro, this.location(options.location)));
+      this.execute(new witchessPieceFightRunOptions(fightMacro, this.location(options.location), options.useAuto));
     } else {
-      this.execute(new witchessPieceFightRunOptions(fightMacro));
+      this.execute(new witchessPieceFightRunOptions(fightMacro, undefined, options.useAuto));
     }
   }
 
   location(location?: Location): Location {
-    const suggestion = location;
+    const taffyIsWorthIt = () =>
+      mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure") &&
+      retrieveItem($item`pulled green taffy`);
+
+    const suggestion =
+      this.draggable && !location && checkUnderwater() && taffyIsWorthIt()
+        ? $location`The Briny Deeps`
+        : location;
 
     if (
       (this.draggable && !suggestion) ||
@@ -167,6 +194,24 @@ export class witchessPieceFight {
     }
     return suggestion ?? $location`Noob Cave`;
   }
+}
+
+function checkUnderwater() {
+  // first check to see if underwater even makes sense
+  if (
+    questStep("questS01OldGuy") >= 0 &&
+    !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
+    (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
+    (booleanModifier("Adventure Underwater") ||
+      waterBreathingEquipment.some((item) => have(item))) &&
+    (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
+  ) {
+    if (!have($effect`Fishy`) && !get("_fishyPipeUsed")) use($item`fishy pipe`);
+
+    return have($effect`Fishy`);
+  }
+
+  return false;
 }
 
 function checkFax(): boolean {
@@ -226,10 +271,8 @@ export const witchessPieceSources = [
     "Guaranteed Romantic Monster",
     () =>
       get("_romanticFightsLeft") > 0 &&
-      getCounter("Romantic Monster window begin") <= 0 &&
-      getCounter("Romantic Monster window end") <= 0 &&
-      (getCounter("Romantic Monster window end") !== -1 ||
-        getCounters("Romantic Monster window end", -1, -1).trim() !== ""),
+      Counter.get("Romantic Monster window begin") <= 0 &&
+      Counter.get("Romantic Monster window end") <= 0,
     () => 0,
     (options: witchessPieceFightRunOptions) => {
       adventureMacro(options.location, wandererFailsafeMacro().step(options.macro));
@@ -255,20 +298,26 @@ export const witchessPieceSources = [
   ),
   new witchessPieceFight(
     "Orb Prediction",
-    () => CrystalBall.currentPredictions(false).get($location`The Dire Warren`) === witchessPiece,
+    () => 
+		have($item`miniature crystal ball`) &&
+		!get("_garbo_doneGregging", false) &&
+		CrystalBall.ponder().get($location`The Dire Warren`) === witchessPiece,
     () =>
       (have($item`miniature crystal ball`) ? 1 : 0) *
       (get("beGregariousCharges") +
         (get("beGregariousFightsLeft") > 0 ||
-        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) === witchessPiece
+        CrystalBall.ponder().get($location`The Dire Warren`) === witchessPiece
           ? 1
           : 0)),
     (options: witchessPieceFightRunOptions) => {
       visitUrl("inventory.php?ponder=1");
-      if (CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !== witchessPiece) {
+      if (CrystalBall.ponder().get($location`The Dire Warren`) !== witchessPiece) {
         return;
       }
-      adventureMacro($location`The Dire Warren`, options.macro);
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction($location`The Dire Warren`, options.macro, options.macro);
+      toasterGaze();
+      if (!doingExtrovermectin()) set("_garbo_doneGregging", true);
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
@@ -336,7 +385,9 @@ export const witchessPieceSources = [
           )
           .skill($skill`Macrometeorite`)
       ).step(options.macro);
-      adventureMacro($location`Noob Cave`, macro);
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction($location`Noob Cave`, macro, macro);
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
     {
       gregariousReplace: true,
@@ -378,7 +429,9 @@ export const witchessPieceSources = [
           )
           .skill($skill`CHEAT CODE: Replace Enemy`)
       ).step(options.macro);
-      adventureMacro($location`Noob Cave`, macro);
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction($location`Noob Cave`, macro, macro);
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
@@ -387,7 +440,8 @@ export const witchessPieceSources = [
   ),
   new witchessPieceFight(
     "Be Gregarious",
-    () => get("beGregariousMonster") === witchessPiece && get("beGregariousFightsLeft") > 1,
+    () => get("beGregariousMonster") === witchessPiece && 
+		get("beGregariousFightsLeft") > (have($item`miniature crystal ball`) ? 1 : 0),
     () =>
       get("beGregariousMonster") === witchessPiece
         ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
@@ -395,25 +449,16 @@ export const witchessPieceSources = [
     (options: witchessPieceFightRunOptions) => {
       const run = ltbRun();
       run.constraints.preparation?.();
-      adventureMacro(
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction(
         $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
         Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro)
       );
       // reset the crystal ball prediction by staring longingly at toast
-      if (
-        get("beGregariousFightsLeft") === 1 &&
-        CrystalBall.currentPredictions(false).get($location`The Dire Warren`) !== witchessPiece
-      ) {
-        try {
-          const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
-          if (!store.includes("Check out the gift shop")) {
-            print("Unable to stare longingly at toast");
-          }
-          runChoice(4);
-        } catch {
-          // orb reseting raises a mafia error
-        }
-        visitUrl("main.php");
+      if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
+        const warrenPrediction = CrystalBall.ponder().get($location`The Dire Warren`);
+        if (warrenPrediction !== witchessPiece) toasterGaze();
       }
     },
     {
@@ -425,7 +470,8 @@ export const witchessPieceSources = [
     () =>
       get("beGregariousMonster") === witchessPiece &&
       get("beGregariousFightsLeft") === 1 &&
-      !CrystalBall.currentPredictions(true).has($location`The Dire Warren`),
+      have($item`miniature crystal ball`) &&
+      !CrystalBall.ponder().get($location`The Dire Warren`),
     () =>
       (get("beGregariousMonster") === witchessPiece && get("beGregariousFightsLeft") > 0) ||
       get("beGregariousCharges") > 0
@@ -451,10 +497,15 @@ export const witchessPieceSources = [
       get("_backUpUses") < 11,
     () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
     (options: witchessPieceFightRunOptions) => {
-      adventureMacro(
+      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      adventureFunction(
         options.location,
         Macro.if_(
           `!monsterid ${witchessPiece.id}`,
+          Macro.skill($skill`Back-Up to your Last Enemy`)
+        ).step(options.macro),
+        Macro.if_(
+          `!monsterid ${embezzler.id}`,
           Macro.skill($skill`Back-Up to your Last Enemy`)
         ).step(options.macro)
       );
@@ -700,6 +751,14 @@ export function estimatedTurns(): number {
   const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
+  // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
+  const fullnessAdventures = (fullnessLimit() - myFullness()) * 8;
+  const inebrietyAdventures = (inebrietyLimit() - myInebriety()) * 7;
+  const adventuresAfterChaining =
+    globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted")
+      ? Math.max(fullnessAdventures + inebrietyAdventures - 30, 0)
+      : 0;
+
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
   else if (globalOptions.noBarf) turns = witchessPieceCount();
@@ -709,7 +768,8 @@ export function estimatedTurns(): number {
         sausageAdventures +
         pantsgivingAdventures +
         nightcapAdventures +
-        thesisAdventures) *
+        thesisAdventures +
+        adventuresAfterChaining) *
       thumbRingMultiplier;
   }
 
@@ -764,4 +824,17 @@ function proceedWithOrb(): boolean {
   }
 
   return true;
+}
+
+function toasterGaze(): void {
+  try {
+    const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+    if (!store.includes("Check out the gift shop")) {
+      print("Unable to stare longingly at toast");
+    }
+    runChoice(4);
+  } catch {
+    // orb reseting raises a mafia error
+  }
+  visitUrl("main.php");
 }

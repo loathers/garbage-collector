@@ -18,6 +18,7 @@ $speed: 0.4s;
 #notificationsContainer {
   position: absolute;
   width: 100%;
+  z-index: 999;
 }
 
 img {
@@ -38,6 +39,14 @@ input.interrupt {
   background-color: #f1948a;
   color: darkred;
   margin: 10px 0px;
+}
+
+input.interrupt:hover {
+  background-color: #f5867a;
+}
+
+input.interrupt:active {
+  background-color: #f77163;
 }
 
 input[type="submit"] {

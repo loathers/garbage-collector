@@ -1,11 +1,9 @@
 import { canAdv } from "canadv.ash";
 import {
   bjornifyFamiliar,
-  booleanModifier,
+  canEquip,
   cliExecute,
   enthroneFamiliar,
-  equip,
-  equippedItem,
   haveEquipped,
   inebrietyLimit,
   Item,
@@ -21,6 +19,7 @@ import {
 import {
   $class,
   $familiar,
+  $familiars,
   $item,
   $items,
   $location,
@@ -41,15 +40,18 @@ export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
   const bjornChoice = pickBjorn(equipMode);
 
-  const parameters = requirement?.maximizeParameters ?? [];
+  const parameters = [...(requirement?.maximizeParameters ?? []), "-tie"];
   const forceEquip = requirement?.maximizeOptions.forceEquip ?? [];
   const bonusEquip = requirement?.maximizeOptions.bonusEquip ?? new Map();
   const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
   const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
 
   parameters.push(
-    myFamiliar() === $familiar`Pocket Professor` ? "Familiar Experience" : "Familiar Weight"
+    $familiars`Pocket Professor, Grey Goose`.includes(myFamiliar())
+      ? "Familiar Experience"
+      : "Familiar Weight"
   );
+  [];
 
   if (
     have($item`vampyric cloake`) &&
@@ -88,10 +90,6 @@ export function freeFightOutfit(requirement?: Requirement): void {
     preventSlot: preventSlot,
   });
   finalRequirement.maximize();
-
-  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
-    equip(bjornAlike);
-  }
 
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
@@ -150,7 +148,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   const equipMode = embezzlerUp ? "embezzler" : "barf";
   const bjornChoice = pickBjorn(equipMode);
 
-  const parameters = requirement?.maximizeParameters ?? [];
+  const parameters = [...(requirement?.maximizeParameters ?? []), "-tie"];
   const forceEquip = requirement?.maximizeOptions.forceEquip ?? [];
   const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
   const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
@@ -207,7 +205,13 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     if (!have($item`quake of arrows`)) retrieveItem($item`quake of arrows`);
   }
   if (sea) {
-    parameters.push("sea");
+    if (!myFamiliar().underwater) {
+      const familiarEquip = familiarWaterBreathingEquipment.find((item) => have(item));
+      if (familiarEquip) forceEquip.push(familiarEquip);
+    }
+    const airEquip = waterBreathingEquipment.find((item) => have(item) && canEquip(item));
+    if (airEquip) forceEquip.push(airEquip);
+    else parameters.push("sea");
   }
 
   if (
@@ -253,10 +257,6 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   );
   compiledRequirements.maximize();
 
-  if (bjornAlike && have(bjornAlike) && equippedItem(toSlot(bjornAlike)) === $item`none`) {
-    equip(bjornAlike);
-  }
-
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
@@ -277,25 +277,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     );
   }
 
-  if (sea) {
-    if (!booleanModifier("Adventure Underwater")) {
-      for (const airSource of waterBreathingEquipment) {
-        if (have(airSource)) {
-          if (airSource === $item`The Crown of Ed the Undying`) cliExecute("edpiece fish");
-          equip(airSource);
-          break;
-        }
-      }
-    }
-    if (!booleanModifier("Underwater Familiar")) {
-      for (const airSource of familiarWaterBreathingEquipment) {
-        if (have(airSource)) {
-          equip(airSource);
-          break;
-        }
-      }
-    }
-  }
+  if (sea && haveEquipped($item`The Crown of Ed the Undying`)) cliExecute("edpiece fish");
 }
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;

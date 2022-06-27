@@ -124,6 +124,7 @@ const specialValueLookup = new Map<Item, () => number>([
         ...$items`Alewife™ Ale, bazookafish bubble gum, beefy fish meat, eel battery, glistening fish meat, ink bladder, pufferfish spine, shark cartilage, slick fish meat, slug of rum, slug of shochu, slug of vodka, temporary teardrop tattoo`
       ),
   ],
+  [$item`fake hand`, () => 50000],
 ]);
 
 function printSession(session: Session): void {
@@ -209,7 +210,7 @@ export function printGarboSession(): void {
   const winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
   print(`Extreme Items:`, HIGHLIGHT);
   for (const detail of [...winners, ...losers]) {
-    print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
+    print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
   }
 
   set("garboResultsMeat", totalMeat);
