@@ -1,5 +1,5 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, myTurncount, print, retrieveItem, use } from "kolmafia";
+import { buy, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
 import {
   $effect,
   $item,
@@ -7,6 +7,7 @@ import {
   $locations,
   $skill,
   clamp,
+  Counter,
   get,
   Guzzlr,
   have,
@@ -29,20 +30,19 @@ function untangleDigitizes(turnCount: number, chunks: number): number {
 export function digitizedMonstersRemaining(): number {
   if (!SourceTerminal.have()) return 0;
 
-  const digitizesLeft = clamp(3 - get("_sourceTerminalDigitizeUses"), 0, 3);
-  if (digitizesLeft === 3) return untangleDigitizes(estimatedTurns(), 3);
+  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
+  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
+    return untangleDigitizes(estimatedTurns(), SourceTerminal.getMaximumDigitizeUses());
+  }
 
-  const monsterCount = get("_sourceTerminalDigitizeMonsterCount") + 1;
+  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
 
-  const relayArray = get("relayCounters").match(/(\d+):Digitize Monster/);
-  const nextDigitizeEncounter = relayArray ? parseInt(relayArray[1]) : myTurncount();
-
-  const turnsLeftAtNextMonster = estimatedTurns() - (nextDigitizeEncounter - myTurncount());
+  const turnsLeftAtNextMonster = estimatedTurns() - Counter.get("Digitize Monster");
   if (turnsLeftAtNextMonster <= 0) return 0;
   const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
   return (
     untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
-    get("_sourceTerminalDigitizeMonsterCount")
+    SourceTerminal.getDigitizeMonsterCount()
   );
 }
 
@@ -188,6 +188,27 @@ class WandererTarget {
   }
 }
 
+function guzzlrAbandonQuest() {
+  const location = Guzzlr.getLocation();
+  const remaningTurns = Math.ceil(
+    (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
+  );
+
+  print(
+    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`
+  );
+
+  if (
+    // consider abandoning
+    !location || // if mafia faled to track the location correctly
+    !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+    (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
+  ) {
+    print("Abandoning...");
+    Guzzlr.abandon();
+  }
+}
+
 const wandererTargets = [
   new WandererTarget(
     "Guzzlr",
@@ -214,9 +235,13 @@ const wandererTargets = [
       // * always prefer 1 plat per day
       // * go for gold if plat unavailable and gold not maxed and bronze is maxed or if both gold and bronze are maxed
       // * go for bronze if plat unavailable and gold is maxed and either gold unavailable or quests are not maxed
+      if (Guzzlr.isQuestActive()) guzzlrAbandonQuest();
       while (!Guzzlr.isQuestActive()) {
         print("Picking a guzzlr quest");
-        if (Guzzlr.canPlatinum()) {
+        if (
+          Guzzlr.canPlatinum() &&
+          !(get("garbo_prioritizeCappingGuzzlr", false) && Guzzlr.haveFullPlatinumBonus())
+        ) {
           Guzzlr.acceptPlatinum();
         } else if (
           Guzzlr.canGold() &&
@@ -228,24 +253,7 @@ const wandererTargets = [
           // fall back to bronze when can't plat, can't gold, or bronze is not maxed
           Guzzlr.acceptBronze();
         }
-        const location = Guzzlr.getLocation();
-        const remaningTurns = Math.ceil(
-          (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
-        );
-
-        print(
-          `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`
-        );
-
-        if (
-          // consider abandoning
-          !location || // if mafia faled to track the location correctly
-          !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
-          (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
-        ) {
-          print("Abandoning...");
-          Guzzlr.abandon();
-        }
+        guzzlrAbandonQuest();
       }
 
       // return true only if it is safe to try get guzzlr
@@ -327,4 +335,14 @@ const unsupportedChoices = new Map<Location, { [choice: number]: number | string
   [$location`A Mob of Zeppelin Protesters`, { [1432]: 1, [857]: 2 }],
   [$location`A-Boo Peak`, { [1430]: 2 }],
   [$location`Sloppy Seconds Diner`, { [919]: 6 }],
+  [$location`VYKEA`, { [1115]: 6 }],
+  [
+    $location`The Castle in the Clouds in the Sky (Basement)`,
+    {
+      [670]: 4,
+      [671]: 4,
+      [672]: 1,
+    },
+  ],
+  [$location`The Copperhead Club`, { [855]: 4 }],
 ]);

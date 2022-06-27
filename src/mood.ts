@@ -4,15 +4,10 @@ import {
   getClanLounge,
   getWorkshed,
   haveEffect,
-  haveSkill,
   itemAmount,
   myClass,
-  myEffects,
   myLevel,
-  mySpleenUse,
   numericModifier,
-  spleenLimit,
-  toSkill,
   use,
   useSkill,
 } from "kolmafia";
@@ -23,7 +18,6 @@ import {
   $item,
   $items,
   $skill,
-  $skills,
   AsdonMartin,
   get,
   have,
@@ -33,9 +27,7 @@ import {
   Witchess,
 } from "libram";
 import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
-import { estimatedTurns } from "./embezzler";
 import { withStash } from "./clan";
-import synthesize from "./synthesis";
 import { usingPurse } from "./outfit";
 
 Mood.setDefaultOptions({
@@ -55,7 +47,7 @@ export function meatMood(urKels = false): Mood {
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
-  const flaskValue = usingPurse() ? 5 : 0.3 * baseMeat;
+  const flaskValue = usingPurse() ? 0.3 * baseMeat : 5;
   mood.potion($item`Flaskfull of Hollow`, flaskValue);
 
   mood.skill($skill`Blood Bond`);
@@ -69,18 +61,8 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
-  if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
-  if (haveSkill($skill`Sweet Synthesis`)) {
-    mood.effect($effect`Synthesis: Greed`, () => {
-      if (
-        mySpleenUse() < spleenLimit() &&
-        haveEffect($effect`Synthesis: Greed`) < estimatedTurns()
-      ) {
-        synthesize(1, $effect`Synthesis: Greed`);
-      }
-    });
-  }
+  if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
@@ -180,14 +162,7 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   }
   mood.potion($item`white candy heart`, 30);
 
-  const goodSongs = $skills`Chorale of Companionship, The Ballad of Richie Thingfinder, Ur-Kel's Aria of Annoyance, The Polka of Plenty`;
-  for (const effectName of Object.keys(myEffects())) {
-    const effect = Effect.get(effectName);
-    const skill = toSkill(effect);
-    if (skill.class === $class`Accordion Thief` && skill.buff && !goodSongs.includes(skill)) {
-      cliExecute(`shrug ${effectName}`);
-    }
-  }
+  mood.skill($skill`Curiosity of Br'er Tarrypin`);
 
   if ((get("daycareOpen") || get("_daycareToday")) && !get("_daycareSpa")) {
     cliExecute("daycare mysticality");

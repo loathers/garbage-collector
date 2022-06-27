@@ -3,6 +3,7 @@ import {
   booleanModifier,
   buy,
   cliExecute,
+  currentRound,
   eat,
   getCampground,
   getClanName,
@@ -21,12 +22,13 @@ import {
   putStash,
   retrieveItem,
   runChoice,
+  runCombat,
   setAutoAttack,
   toInt,
   totalTurnsPlayed,
+  toUrl,
   use,
   useFamiliar,
-  userConfirm,
   visitUrl,
   xpath,
 } from "kolmafia";
@@ -35,6 +37,7 @@ import {
   $classes,
   $coinmaster,
   $effect,
+  $familiar,
   $item,
   $items,
   $location,
@@ -50,6 +53,7 @@ import {
   getFoldGroup,
   have,
   haveInCampground,
+  JuneCleaver,
   property,
   Requirement,
   set,
@@ -59,9 +63,10 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
-import { freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, freeFights } from "./fights";
+import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
+import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
+  bestJuneCleaverOption,
   checkGithubVersion,
   embezzlerLog,
   globalOptions,
@@ -73,6 +78,8 @@ import {
   questStep,
   safeRestore,
   setChoice,
+  steveAdventures,
+  userConfirmDialog,
 } from "./lib";
 import { meatMood } from "./mood";
 import postCombatActions from "./post";
@@ -89,6 +96,8 @@ import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
+import { canAdv } from "canadv.ash";
+import { yachtzeeChain } from "./yachtzee";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -111,14 +120,42 @@ function ensureBarfAccess() {
 
 function barfTurn() {
   const startTurns = totalTurnsPlayed();
-  if (have($effect`Beaten Up`)) {
-    throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
-  }
+
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
 
   tryFillLatte();
+
+  const steveRoom = get("nextSpookyravenStephenRoom");
+  const ghostLocation = get("ghostLocation");
+  if (
+    totalTurnsPlayed() % 37 === 0 &&
+    totalTurnsPlayed() !== get("lastLightsOutTurn") &&
+    steveRoom &&
+    steveRoom !== ghostLocation &&
+    canAdv(steveRoom)
+  ) {
+    const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
+    if (fightingSteve) {
+      useFamiliar(meatFamiliar());
+      meatOutfit(true);
+    }
+    const plan = steveAdventures.get(steveRoom);
+    if (plan) {
+      withMacro(
+        Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abort(),
+        () => {
+          visitUrl(toUrl(steveRoom));
+          for (const choiceValue of plan) {
+            runChoice(choiceValue);
+          }
+          if (fightingSteve || currentRound()) runCombat();
+        },
+        true
+      );
+    }
+  }
 
   const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
 
@@ -126,7 +163,7 @@ function barfTurn() {
   meatMood().execute(estimatedTurns());
 
   safeRestore(); // get enough mp to use summer siesta and enough hp to not get our ass kicked
-  const ghostLocation = get("ghostLocation");
+
   // b. check for wanderers, and do them
   if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
     meatOutfit(true);
@@ -137,7 +174,7 @@ function barfTurn() {
     get("questPAGhost") !== "unstarted" &&
     ghostLocation
   ) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(
       new Requirement(ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [], {
         forceEquip: $items`protonic accelerator pack`,
@@ -151,11 +188,11 @@ function barfTurn() {
     get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
     get("_voteFreeFights") < 3
   ) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`"I Voted!" sticker` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else if (
@@ -165,7 +202,7 @@ function barfTurn() {
     get("cursedMagnifyingGlassCount") === 13 &&
     get("_voidFreeFights") < 5
   ) {
-    useFamiliar(freeFightFamiliar());
+    useFamiliar(freeFightFamiliar(true));
     freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
@@ -193,6 +230,16 @@ function barfTurn() {
       }
       retrieveItem($item`pulled green taffy`);
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
+    } else if (!embezzlerUp && timeToMeatify()) {
+      useFamiliar($familiar`Grey Goose`);
+    } else if (
+      !embezzlerUp &&
+      have($familiar`Space Jellyfish`) &&
+      get(`_spaceJellyfishDrops`) < 5 &&
+      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns <= 25 &&
+      myInebriety() <= inebrietyLimit()
+    ) {
+      useFamiliar($familiar`Space Jellyfish`);
     }
 
     // d. get dressed
@@ -229,7 +276,9 @@ function barfTurn() {
     }
   }
 
-  if (myAdventures() === 1) {
+  if (myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
+    deliverThesisIfAble();
+
     if (
       have($item`Kramco Sausage-o-Matic™`) &&
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
@@ -262,13 +311,20 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26239);
+  sinceKolmafiaRevision(26487);
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
     // Van & Duffel's Baleet Shop
     forbiddenStores.push("3408540");
     set("forbiddenStores", forbiddenStores.join(","));
+  }
+
+  if (get("garbo_autoUserConfirm", false)) {
+    print(
+      "I have set auto-confirm to true and accept all ramifications that come with that.",
+      "red"
+    );
   }
 
   if (
@@ -282,8 +338,9 @@ export function main(argString = ""): void {
   }
 
   if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
-    const proceedRegardless = userConfirm(
-      "Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?"
+    const proceedRegardless = userConfirmDialog(
+      "Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
+      true
     );
     if (!proceedRegardless) {
       throw new Error("User interrupt requested. Stopping Garbage Collector.");
@@ -316,6 +373,8 @@ export function main(argString = ""): void {
       globalOptions.simulateDiet = true;
     } else if (arg.match(/nodiet/)) {
       globalOptions.noDiet = true;
+    } else if (arg.match(/yachtzeechain/)) {
+      globalOptions.yachtzeeChain = true;
     } else if (arg.match(/version/i)) {
       checkGithubVersion();
       return;
@@ -327,10 +386,11 @@ export function main(argString = ""): void {
 
   if (stashItems.length > 0) {
     if (
-      userConfirm(
+      userConfirmDialog(
         `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
           .map((item) => item.name)
-          .join(",")}. Would you like us to return these to the stash now?`
+          .join(",")}. Would you like us to return these to the stash now?`,
+        true
       )
     ) {
       const clanIdOrName = get("garbo_stashClan", "none");
@@ -368,7 +428,20 @@ export function main(argString = ""): void {
     ensureBarfAccess();
   }
   if (globalOptions.simulateDiet) {
+    propertyManager.set({
+      logPreferenceChange: true,
+      autoSatisfyWithMall: true,
+      autoSatisfyWithNPCs: true,
+      autoSatisfyWithCoinmasters: true,
+      autoSatisfyWithStash: false,
+      maximizerFoldables: true,
+      autoTuxedo: true,
+      autoPinkyRing: true,
+      autoGarish: true,
+      valueOfInventory: 2,
+    });
     runDiet();
+    propertyManager.resetAll();
     return;
   }
 
@@ -453,6 +526,7 @@ export function main(argString = ""): void {
       allowNonMoodBurning: !globalOptions.ascending,
       allowSummonBurning: true,
       libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
+      valueOfInventory: 2,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -474,6 +548,14 @@ export function main(argString = ""): void {
       1341: 1, // Cure her poison
     });
 
+    if (JuneCleaver.have()) {
+      propertyManager.setChoices(
+        Object.fromEntries(
+          JuneCleaver.choices.map((choice) => [choice, bestJuneCleaverOption(choice)])
+        )
+      );
+    }
+
     safeRestore();
 
     if (questStep("questM23Meatsmith") === -1) {
@@ -487,6 +569,11 @@ export function main(argString = ""): void {
     if (questStep("questM25Armorer") === -1) {
       visitUrl("shop.php?whichshop=armory&action=talk");
       runChoice(1);
+    }
+
+    // unlock the sea
+    if (myLevel() >= 11 && questStep("questS01OldGuy") === -1) {
+      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
     }
     if (
       myClass() === $class`Seal Clubber` &&
@@ -506,7 +593,17 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        if (!globalOptions.noDiet) runDiet();
+        if (globalOptions.noDiet || get("_garboYachtzeeChainCompleted", false)) {
+          print("We should not be yachtzee chaining", "red");
+          globalOptions.yachtzeeChain = false;
+        }
+
+        if (
+          !globalOptions.noDiet &&
+          (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
+        ) {
+          runDiet();
+        }
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
@@ -519,6 +616,7 @@ export function main(argString = ""): void {
         // 2. do some embezzler stuff
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
+        yachtzeeChain();
         dailyFights();
 
         if (!globalOptions.noBarf) {
@@ -536,7 +634,7 @@ export function main(argString = ""): void {
               availableAmount($item`FunFunds™`) >= 20 &&
               !have($item`one-day ticket to Dinseylandfill`)
             ) {
-              print("Buying a one-day tickets", HIGHLIGHT);
+              print("Buying a one-day ticket", HIGHLIGHT);
               buy(
                 $coinmaster`The Dinsey Company Store`,
                 1,

@@ -1,23 +1,25 @@
-import { equip, mallPrice, Monster, toMonster, useFamiliar, visitUrl } from "kolmafia";
+import { equip, mallPrice, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
   $slot,
   adventureMacro,
   clamp,
   CrystalBall,
   get,
+  getBanishedMonsters,
   have,
   property,
   Requirement,
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { ltbRun, setChoice } from "./lib";
+import { globalOptions, latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { witchessPieceMacro } from "./embezzler";
 import { acquire } from "./acquire";
@@ -57,14 +59,23 @@ export function expectedGregs(): number[] {
 }
 
 export function doingExtrovermectin(): boolean {
-  return get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
+  return (
+    get("beGregariousCharges") > 0 ||
+    get("beGregariousFightsLeft") > 0 ||
+    (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted"))
+  );
 }
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   if (!doingExtrovermectin()) return null;
-  if (have($skill`Transcendent Olfaction`)) return "Sniff";
+  if (
+    have($skill`Transcendent Olfaction`) &&
+    (property.getString("olfactedMonster") === "crate" || get("_olfactionsUsed") < 2)
+  ) {
+    return "Sniff";
+  }
   if (have($item`miniature crystal ball`)) return "Orb";
-  if (have($item`Fourth of May Cosplay Saber`)) return "Saber";
+  if (have($item`Fourth of May Cosplay Saber`) && get("_saberForceUses") < 5) return "Saber";
   return null;
 }
 
@@ -98,7 +109,7 @@ export function saberCrateIfSafe(): void {
     adventureMacro(
       $location`Noob Cave`,
       Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
-        .if_($monster`time-spinner prank`, Macro.kill())
+        .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
         .if_($monster`sausage goblin`, Macro.kill())
         .ifHolidayWanderer(run.macro)
         .abort()
@@ -119,14 +130,9 @@ export function saberCrateIfSafe(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    CrystalBall.currentPredictions(false).get($location`Noob Cave`) ===
-      $monster`Knob Goblin Embezzler` &&
     !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
-    (crateStrategy() !== "Sniff" ||
-      !$location`Noob Cave`.combatQueue
-        .split(";")
-        .map((monster) => toMonster(monster))
-        .includes($monster`Knob Goblin Embezzler`))
+    crateStrategy() !== "Sniff" &&
+    [undefined, $monster`crate`].includes(CrystalBall.ponder().get($location`Noob Cave`))
   ) {
     equip($slot`familiar`, $item`miniature crystal ball`);
   }
@@ -143,11 +149,13 @@ function initializeCrates(): void {
     }
     // if we have olfaction, that's our primary method for ensuring crates
     if (
-      have($skill`Transcendent Olfaction`) &&
-      (!have($effect`On the Trail`) || property.getString("olfactedMonster") !== "crate") &&
-      get("_olfactionsUsed") < 2
+      (crateStrategy() === "Sniff" && property.getString("olfactedMonster") !== "crate") ||
+      (crateStrategy() === "Orb" &&
+        ((get("_gallapagosMonster") !== $monster`crate` &&
+          have($skill`Gallapagosian Mating Call`)) ||
+          (have($item`latte lovers member's mug`) && !get("_latteCopyUsed"))))
     ) {
-      const run = tryFindFreeRun() ?? ltbRun();
+      const run = tryFindFreeRun(latteActionSourceFinderConstraints) ?? ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
 
       // Sniff the crate in as many ways as humanly possible
@@ -168,13 +176,14 @@ function initializeCrates(): void {
         forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter((item) =>
           have(item)
         ),
+        preventEquip: $items`carnivorous potted plant`,
       })
         .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
         .maximize();
       adventureMacro(
         $location`Noob Cave`,
         Macro.if_($monster`crate`, macro)
-          .if_($monster`time-spinner prank`, Macro.kill())
+          .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
           .ifHolidayWanderer(run.macro)
           .abort()
       );
@@ -190,16 +199,16 @@ function initializeCrates(): void {
 }
 
 function initializeDireWarren(): void {
+  visitUrl("museum.php?action=icehouse");
+
+  const banishedMonsters = getBanishedMonsters();
+  if (banishedMonsters.get($item`ice house`) === $monster`fluffy bunny`) return;
+
   const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
-  const banishedMonsters = new Map<string, Monster>(
-    get("banishedMonsters")
-      .split(",")
-      .map((tuple) => tuple.split(":") as [string, string, string])
-      .map(([monster, source]) => [source, toMonster(monster)] as [string, Monster])
-  );
-  if (options.some((option) => banishedMonsters.get(option.name) === $monster`fluffy bunny`)) {
+  if (options.some((option) => banishedMonsters.get(option) === $monster`fluffy bunny`)) {
     return;
   }
+  if (banishedMonsters.get($skill`Furious Wallop`) === $monster`fluffy bunny`) return;
 
   if (!have($item`miniature crystal ball`)) {
     options.push(...$items`Louder Than Bomb, tennis ball`);
@@ -214,7 +223,7 @@ function initializeDireWarren(): void {
   } while ("fluffy bunny" !== get("lastEncounter"));
 }
 
-export function intializeExtrovermectinZones(): void {
+export function initializeExtrovermectinZones(): void {
   if (get("beGregariousFightsLeft") === 0) {
     if (hasMonsterReplacers()) initializeCrates();
     initializeDireWarren();
