@@ -59,7 +59,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { withVIPClan } from "./clan";
-import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import {
   argmax,
