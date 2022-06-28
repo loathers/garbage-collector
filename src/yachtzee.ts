@@ -66,7 +66,7 @@ import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
-import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
+import { estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
 import { doSausage } from "./fights";
 import { baseMeat, globalOptions, realmAvailable, safeRestore, turnsToNC } from "./lib";
@@ -809,10 +809,7 @@ const ignoredSources = [
   "Lucky!",
   "11-leaf clover (untapped potential)",
 ];
-const expectedEmbezzlers = sum(
-  embezzlerSources.filter((source: EmbezzlerFight) => !ignoredSources.includes(source.name)),
-  (source: EmbezzlerFight) => source.potential()
-);
+const expectedEmbezzlers = 0;
 
 function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
   // If we have an unused PYEC then
