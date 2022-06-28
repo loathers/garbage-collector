@@ -64,7 +64,7 @@ import {
 import { Macro, withMacro } from "./combat";
 import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
-import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
+import { dailyFights, deliverThesisIfAble, freeFights } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
