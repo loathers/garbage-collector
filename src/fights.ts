@@ -87,6 +87,7 @@ import {
   get,
   have,
   maximizeCached,
+  property,
   Requirement,
   Robortender,
   set,
@@ -363,7 +364,7 @@ export function dailyFights(): void {
           }
           set(property, true);
           postCombatActions();
-          const predictedNextFight = getNextEmbezzlerFight();
+          const predictedNextFight = getNextwitchessPieceFight();
           if (!predictedNextFight?.draggable) doSausage();
           doGhost();
           startWandererCounter();
@@ -391,6 +392,8 @@ export function dailyFights(): void {
           const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
           if (weWantToSaberCrates) saberCrateIfSafe();
         }
+
+        const underwater = nextFight.location().environment === "underwater";
 
         const romanticFamiliar = $familiars`Obtuse Angel, Reanimated Reanimator`.find(have);
         if (romanticFamiliar && get("_badlyRomanticArrows") === 0 && !underwater) {
