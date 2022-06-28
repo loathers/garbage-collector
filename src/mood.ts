@@ -37,6 +37,7 @@ Mood.setDefaultOptions({
     $effects`Chorale of Companionship`,
     $effects`The Ballad of Richie Thingfinder`,
   ],
+  useNativeRestores: true,
 });
 
 export function meatMood(urKels = false): Mood {
