@@ -1,8 +1,10 @@
 import {
+  booleanModifier,
   chatPrivate,
   cliExecute,
   fullnessLimit,
   getClanLounge,
+  getCounters,
   haveEquipped,
   inebrietyLimit,
   itemAmount,
@@ -19,8 +21,10 @@ import {
   runChoice,
   runCombat,
   toInt,
+  toMonster,
   toUrl,
   use,
+  userConfirm,
   visitUrl,
   wait,
 } from "kolmafia";
@@ -44,6 +48,7 @@ import {
   property,
   questStep,
   Requirement,
+  set,
   sum,
 } from "libram";
 import { acquire } from "./acquire";
@@ -387,7 +392,7 @@ export const witchessPieceSources = [
       ).step(options.macro);
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`Noob Cave`, macro, macro);
-      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
+      if (CrystalBall.ponder().get($location`Noob Cave`) === witchessPiece) toasterGaze();
     },
     {
       gregariousReplace: true,
@@ -431,7 +436,7 @@ export const witchessPieceSources = [
       ).step(options.macro);
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`Noob Cave`, macro, macro);
-      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
+      if (CrystalBall.ponder().get($location`Noob Cave`) === witchessPiece) toasterGaze();
     },
     {
       requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
@@ -502,10 +507,6 @@ export const witchessPieceSources = [
         options.location,
         Macro.if_(
           `!monsterid ${witchessPiece.id}`,
-          Macro.skill($skill`Back-Up to your Last Enemy`)
-        ).step(options.macro),
-        Macro.if_(
-          `!monsterid ${embezzler.id}`,
           Macro.skill($skill`Back-Up to your Last Enemy`)
         ).step(options.macro)
       );
@@ -815,7 +816,7 @@ function proceedWithOrb(): boolean {
   // If we're using orb, we have a KGE prediction, and we can reset it, return false
   const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
   if (
-    CrystalBall.currentPredictions(false).get($location`Noob Cave`) === witchessPiece &&
+    CrystalBall.ponder().get($location`Noob Cave`) === witchessPiece &&
     witchessPieceSources
       .filter((source) => !gregFightNames.includes(source.name))
       .find((source) => source.available())
