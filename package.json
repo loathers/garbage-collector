@@ -6,14 +6,10 @@
   "main": "KoLmafia/scripts/garbage-collector/garbo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "yarn run build:types && yarn run build:js",
-    "build:types": "tsc",
-    "build:js": "webpack",
+    "build": "yarn node build.mjs",
     "deploy": "copyfiles --up 1 --exclude \"**/dependencies.txt\" \"KoLmafia/**/*\" \"mafia/**/*\"",
     "lint": "eslint src && prettier --check .",
-    "lint:fix": "eslint src --fix && prettier --check --write .",
-    "watch": "yarn run build:types && yarn run watch:js",
-    "watch:js": "webpack --watch --progress"
+    "lint:fix": "eslint src --fix && prettier --check --write ."
   },
   "author": "",
   "license": "MIT",
@@ -35,22 +31,21 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
+    "@types/mini-css-extract-plugin": "^2.0.1",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "babel-loader": "^9.1.2",
+    "babel-plugin-transform-scss": "^1.1.0",
     "copyfiles": "^2.4.1",
-    "css-loader": "^6.2.0",
+    "esbuild": "^0.14.48",
+    "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-libram": "^0.2.31",
     "mini-css-extract-plugin": "^2.1.0",
     "prettier": "^2.3.1",
-    "sass": "^1.49.11",
-    "sass-loader": "^13.3.2",
-    "typescript": "^4.0.3",
-    "webpack": "^5.88.1",
-    "webpack-cli": "^4.2.0"
+    "typescript": "^4.0.3"
   }
 }
