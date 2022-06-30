@@ -16,8 +16,8 @@ Promise.all([
     plugins: [babel()],
     outdir: "KoLmafia/scripts/garbage-collector",
     define: {
-      "process.env.GITHUB_SHA": "CustomBuild",
-      "process.env.GITHUB_REPOSITORY": "CustomBuild",
+      "process.env.GITHUB_SHA": "\"CustomBuild\"",
+      "process.env.GITHUB_REPOSITORY": "\"CustomBuild\"",
     },
   }),
   build({
