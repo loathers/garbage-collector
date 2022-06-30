@@ -14,7 +14,7 @@ Promise.all([
     target: "rhino1.7.14",
     external: ["kolmafia", "canadv.ash"],
     plugins: [babel()],
-    outdir: "KoLmafia2/scripts/garbage-collector",
+    outdir: "KoLmafia/scripts/garbage-collector",
     define: {
       "process.env.GITHUB_SHA": "CustomBuild",
       "process.env.GITHUB_REPOSITORY": "CustomBuild",
@@ -22,16 +22,17 @@ Promise.all([
   }),
   build({
     entryPoints: ["src/relay_garbo.ts"],
-    outdir: "KoLmafia2/relay",
+    outdir: "KoLmafia/relay",
     platform: "node",
     target: "rhino1.7.14",
     plugins: [babel()],
   }),
   build({
     bundle: true,
-    entryPoints: ["relay/index.ts"],
-    loader: { ".tsx": "tsx" },
-    outfile: "KoLmafia2/relay/garbage-collector/garbage-collector.js",
+    entryPoints: {
+      "garbage-collector": "relay/index.ts",
+    },
+    outdir: "KoLmafia/relay/garbage-collector",
     plugins: [babel()],
   }),
 ]).catch((e) => {
