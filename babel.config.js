@@ -3,7 +3,7 @@
 module.exports = function (api) {
   api.cache(true);
   return {
-    exclude: ["App.css"],
+    exclude: [],
     presets: [
       "@babel/preset-typescript",
       "@babel/preset-react",
