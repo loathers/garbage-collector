@@ -201,12 +201,9 @@ function voterSetup(): void {
   ];
 
   const bestVotes = voteLocalPriorityArr.sort((a, b) => b[1] - a[1]);
-  const firstInit = bestVotes[0][0];
-  const secondInit = bestVotes[1][0];
+  const init = bestVotes[0][0];
 
-  visitUrl(
-    `choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${firstInit}&local[]=${secondInit}`
-  );
+  visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
 }
 
 function configureGear(): void {
