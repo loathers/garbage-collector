@@ -256,6 +256,13 @@ function castOde(turns: number): boolean {
 
   shrugIrrelevantSongs();
 
+  // If we have the polka of plenty skill, we can re-buff up later
+  // Else, get rid of chorale which is the most inefficient song
+  if (getActiveSongs.length === (have($skill`Mariachi Memory`) ? 4 : 3)) {
+    if (have($skill`The Polka of Plenty`)) cliExecute(`shrug ${$effect`Polka of Plenty`}`);
+    else cliExecute(`shrug ${$effect`Chorale of Companionship`}`);
+  }
+
   while (haveEffect($effect`Ode to Booze`) < turns) {
     useSkill($skill`The Ode to Booze`);
   }
@@ -1201,6 +1208,15 @@ function _yachtzeeChain(): void {
         Math.min(jellyTurns, fishyTurns)
       );
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
+    }
+    if (!have($effect`Polka of Plenty`)) {
+      if (have($effect`Ode to Booze`)) cliExecute(`shrug ${$effect`Ode to Booze`}`);
+      if (
+        getActiveSongs().length < (have($skill`Mariachi Memory`) ? 4 : 3) &&
+        have($skill`The Polka of Plenty`)
+      ) {
+        useSkill($skill`The Polka of Plenty`);
+      }
     }
     adventureMacro($location`The Sunken Party Yacht`, Macro.abort());
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
