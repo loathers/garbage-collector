@@ -81,7 +81,7 @@ import {
   turnsToNC,
 } from "./lib";
 import { meatMood } from "./mood";
-import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
+import { familiarWaterBreathingEquipment, useUPCs, waterBreathingEquipment } from "./outfit";
 import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -1119,16 +1119,7 @@ function stickerSetup(expectedYachts: number) {
     ((75 - embezzlerOpportunityCost) * Math.min(20, expectedEmbezzlers) * (750 + baseMeat)) / 100;
   if (3 * mallPrice(UPC) < value) {
     acquire(3, UPC, value / 3, false);
-    for (let slotNumber = 1; slotNumber++; slotNumber <= 3) {
-      const slot = toSlot(`sticker${slotNumber}`);
-      const sticker = equippedItem(slot);
-      if (sticker === UPC) continue;
-      visitUrl("bedazzle.php");
-      if (sticker !== $item`none`) {
-        visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
-      }
-      visitUrl(`bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`);
-    }
+    useUPCs();
   }
 }
 

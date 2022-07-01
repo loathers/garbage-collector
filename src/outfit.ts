@@ -213,21 +213,11 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   }
 
   if (embezzlerUp) {
-    const UPC = $item`scratch 'n' sniff UPC sticker`;
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
     const value = ((75 - currentWeapon) * (750 + baseMeat)) / 100;
-    if (value * 30 < mallPrice(UPC)) {
-      acquire(3, UPC, value * 30);
-      for (let slotNumber = 1; slotNumber++; slotNumber <= 3) {
-        const slot = toSlot(`sticker${slotNumber}`);
-        const sticker = equippedItem(slot);
-        if (sticker === UPC) continue;
-        visitUrl("bedazzle.php");
-        if (sticker !== $item`none`) {
-          visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
-        }
-        visitUrl(`bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`);
-      }
+    if (value * 30 < mallPrice($item`scratch 'n' sniff UPC sticker`)) {
+      acquire(3, $item`scratch 'n' sniff UPC sticker`, value * 30);
+      useUPCs();
     }
   }
 
@@ -334,4 +324,18 @@ export function usingPurse(): boolean {
       !canAdv($location`The Black Forest`, false);
   }
   return cachedUsingPurse;
+}
+
+export function useUPCs(): void {
+  const UPC = $item`scratch 'n' sniff UPC sticker`;
+  for (let slotNumber = 1; slotNumber++; slotNumber <= 3) {
+    const slot = toSlot(`sticker${slotNumber}`);
+    const sticker = equippedItem(slot);
+    if (sticker === UPC) continue;
+    visitUrl("bedazzle.php");
+    if (sticker !== $item`none`) {
+      visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
+    }
+    visitUrl(`bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`);
+  }
 }
