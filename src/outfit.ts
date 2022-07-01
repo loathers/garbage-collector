@@ -17,7 +17,6 @@ import {
   toInt,
   toSlot,
   totalTurnsPlayed,
-  use,
   visitUrl,
 } from "kolmafia";
 import {
@@ -343,7 +342,7 @@ export function usingPurse(): boolean {
 export function useUPCs(): void {
   const UPC = $item`scratch 'n' sniff UPC sticker`;
   if ($items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`.every((i) => !have(i))) {
-    use(UPC);
+    visitUrl(`bedazzle.php?action=juststick&sticker=${toInt(UPC)}&pwd`);
   }
   for (let slotNumber = 1; slotNumber <= 3; slotNumber++) {
     const slot = toSlot(`sticker${slotNumber}`);
