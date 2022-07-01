@@ -39,8 +39,10 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
+import { embezzlerCount } from "./embezzler";
 import { meatFamiliar } from "./familiar";
-import { baseMeat } from "./lib";
+import { baseMeat, globalOptions } from "./lib";
+import { digitizedMonstersRemaining } from "./wanderer";
 
 export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
@@ -215,7 +217,10 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   if (embezzlerUp) {
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
     const value = ((75 - currentWeapon) * (750 + baseMeat)) / 100;
-    if (value * 30 > mallPrice($item`scratch 'n' sniff UPC sticker`)) {
+    const embezzlers = globalOptions.ascending
+      ? 30
+      : Math.min(30, embezzlerCount() || digitizedMonstersRemaining());
+    if (value * embezzlers > mallPrice($item`scratch 'n' sniff UPC sticker`)) {
       acquire(3, $item`scratch 'n' sniff UPC sticker`, value * 30);
       useUPCs();
     }
