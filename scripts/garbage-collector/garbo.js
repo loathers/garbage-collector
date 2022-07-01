@@ -32550,9 +32550,7 @@ function combineDietEntries(left, right) {
   return new YachtzeeDietEntry(left.name, left.quantity + right.quantity, left.fullness, left.drunkenness, left.spleen, left.action);
 }
 
-function castOde(turns) {
-  if (!(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(yachtzee_templateObject9 || (yachtzee_templateObject9 = yachtzee_taggedTemplateLiteral(["The Ode to Booze"]))))) return false;
-
+function shrugIrrelevantSongs() {
   var _iterator = yachtzee_createForOfIteratorHelper((0,lib/* getActiveSongs */.b_)()),
       _step;
 
@@ -32561,7 +32559,7 @@ function castOde(turns) {
       var song = _step.value;
       var slot = Mood.defaultOptions.songSlots.find(slot => slot.includes(song));
 
-      if (!slot && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject12 || (yachtzee_templateObject12 = yachtzee_taggedTemplateLiteral(["Ode to Booze"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject13 || (yachtzee_templateObject13 = yachtzee_taggedTemplateLiteral(["Polka of Plenty"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject14 || (yachtzee_templateObject14 = yachtzee_taggedTemplateLiteral(["Chorale of Companionship"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject15 || (yachtzee_templateObject15 = yachtzee_taggedTemplateLiteral(["The Ballad of Richie Thingfinder"])))) {
+      if (!slot && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject9 || (yachtzee_templateObject9 = yachtzee_taggedTemplateLiteral(["Ode to Booze"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject10 || (yachtzee_templateObject10 = yachtzee_taggedTemplateLiteral(["Polka of Plenty"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject11 || (yachtzee_templateObject11 = yachtzee_taggedTemplateLiteral(["Chorale of Companionship"]))) && song !== (0,template_string/* $effect */._G)(yachtzee_templateObject12 || (yachtzee_templateObject12 = yachtzee_taggedTemplateLiteral(["The Ballad of Richie Thingfinder"])))) {
         (0,external_kolmafia_.cliExecute)("shrug ".concat(song));
       }
     };
@@ -32578,9 +32576,14 @@ function castOde(turns) {
 
   (0,external_kolmafia_.cliExecute)("shrug ur-kel");
   (0,external_kolmafia_.cliExecute)("shrug phat loot");
+}
 
-  while ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject10 || (yachtzee_templateObject10 = yachtzee_taggedTemplateLiteral(["Ode to Booze"])))) < turns) {
-    (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(yachtzee_templateObject11 || (yachtzee_templateObject11 = yachtzee_taggedTemplateLiteral(["The Ode to Booze"]))));
+function castOde(turns) {
+  if (!(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(yachtzee_templateObject13 || (yachtzee_templateObject13 = yachtzee_taggedTemplateLiteral(["The Ode to Booze"]))))) return false;
+  shrugIrrelevantSongs();
+
+  while ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject14 || (yachtzee_templateObject14 = yachtzee_taggedTemplateLiteral(["Ode to Booze"])))) < turns) {
+    (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(yachtzee_templateObject15 || (yachtzee_templateObject15 = yachtzee_taggedTemplateLiteral(["The Ode to Booze"]))));
   }
 
   return true;
@@ -33196,6 +33199,7 @@ function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
   var totalProfits = 0;
   var PYECOffset = 5 * (0,external_kolmafia_.toInt)((0,property/* get */.U2)("_PYECAvailable", false));
   var excludedEffects = new Set();
+  shrugIrrelevantSongs();
 
   if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject99 || (yachtzee_templateObject99 = yachtzee_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,property/* get */.U2)("_freePillKeeperUsed", false)) {
     var doublingPotions = farmingPotions.filter(potion => potion.canDouble && (0,external_kolmafia_.haveEffect)(potion.effect()) + PYECOffset * (0,external_kolmafia_.toInt)((0,external_kolmafia_.haveEffect)(potion.effect()) > 0) < yachtzeeTurns && yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 && potion.price(true) < (0,external_kolmafia_.myMeat)()).sort((left, right) => yachtzeePotionProfits(right.doubleDuration(), yachtzeeTurns) - yachtzeePotionProfits(left.doubleDuration(), yachtzeeTurns));
@@ -33730,7 +33734,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26487);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("31bd5d89df77824e5a370fa99b6950077e801836"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("faaa30261d01a4f54fc07d6953c810eff14d27ff"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -34398,7 +34402,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("31bd5d89df77824e5a370fa99b6950077e801836" === mainSha) {
+    if ("faaa30261d01a4f54fc07d6953c810eff14d27ff" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
