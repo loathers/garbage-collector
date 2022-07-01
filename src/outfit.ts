@@ -215,6 +215,9 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     }
   }
 
+  const stickerSlots = $slots`sticker1, sticker2, sticker3`;
+  const UPC = $item`scratch 'n' sniff UPC sticker`;
+
   if (embezzlerUp) {
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
     const embezzlers = globalOptions.ascending
@@ -222,13 +225,17 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       : Math.min(30, embezzlerCount() || digitizedMonstersRemaining());
 
     const addedValueOfFullSword = (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
-    if (addedValueOfFullSword > mallPrice($item`scratch 'n' sniff UPC sticker`)) {
-      acquire(3, $item`scratch 'n' sniff UPC sticker`, addedValueOfFullSword / 3);
+    if (addedValueOfFullSword > mallPrice(UPC)) {
+      acquire(
+        3 - stickerSlots.filter((sticker) => sticker === UPC).length,
+        UPC,
+        addedValueOfFullSword / 3
+      );
       useUPCs();
     }
   }
 
-  if ($slots`sticker1, sticker2, sticker3`.map((s) => equippedItem(s)).includes($item`none`)) {
+  if (stickerSlots.map((s) => equippedItem(s)).includes($item`none`)) {
     preventEquip.push(...$items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`);
   }
 
