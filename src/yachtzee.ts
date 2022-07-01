@@ -253,10 +253,11 @@ function castOde(turns: number): boolean {
 
   shrugIrrelevantSongs();
 
-  // This is the most inefficient song out of all those that we run
-  // and we can usually buff this ourselves after shrugging (no need to buy recordings)
+  // If we have the polka of plenty skill, we can re-buff up later
+  // Else, get rid of chorale which is the most inefficient song
   if (getActiveSongs.length === (have($skill`Mariachi Memory`) ? 4 : 3)) {
-    cliExecute(`shrug ${$effect`Polka of Plenty`}`);
+    if (have($skill`The Polka of Plenty`)) cliExecute(`shrug ${$effect`Polka of Plenty`}`);
+    else cliExecute(`shrug ${$effect`Chorale of Companionship`}`);
   }
 
   while (haveEffect($effect`Ode to Booze`) < turns) {
