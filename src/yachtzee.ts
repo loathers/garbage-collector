@@ -1122,11 +1122,13 @@ function stickerSetup(expectedYachts: number) {
     for (let slotNumber = 1; slotNumber++; slotNumber <= 3) {
       const slot = toSlot(`sticker${slotNumber}`);
       const sticker = equippedItem(slot);
-      if (sticker === UPC || sticker === $item`none`) continue;
+      if (sticker === UPC) continue;
       visitUrl("bedazzle.php");
-      visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
+      if (sticker !== $item`none`) {
+        visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
+      }
+      visitUrl(`bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`);
     }
-    cliExecute("sticker upc, upc, upc");
   }
 }
 

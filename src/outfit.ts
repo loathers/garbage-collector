@@ -14,6 +14,7 @@ import {
   myInebriety,
   numericModifier,
   retrieveItem,
+  toInt,
   toSlot,
   totalTurnsPlayed,
   visitUrl,
@@ -36,6 +37,7 @@ import {
   have,
   Requirement,
 } from "libram";
+import { acquire } from "./acquire";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { meatFamiliar } from "./familiar";
 import { baseMeat } from "./lib";
@@ -213,16 +215,19 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   if (embezzlerUp) {
     const UPC = $item`scratch 'n' sniff UPC sticker`;
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
-    const value = (75 - currentWeapon) * (750 + baseMeat) / 100;
+    const value = ((75 - currentWeapon) * (750 + baseMeat)) / 100;
     if (value * 30 < mallPrice(UPC)) {
+      acquire(3, UPC, value * 30);
       for (let slotNumber = 1; slotNumber++; slotNumber <= 3) {
         const slot = toSlot(`sticker${slotNumber}`);
         const sticker = equippedItem(slot);
-        if (sticker === UPC || sticker === $item`none`) continue;
+        if (sticker === UPC) continue;
         visitUrl("bedazzle.php");
-        visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
+        if (sticker !== $item`none`) {
+          visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
+        }
+        visitUrl(`bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`);
       }
-      cliExecute("sticker upc, upc, upc");
     }
   }
 
