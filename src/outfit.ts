@@ -215,7 +215,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   if (embezzlerUp) {
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
     const value = ((75 - currentWeapon) * (750 + baseMeat)) / 100;
-    if (value * 30 < mallPrice($item`scratch 'n' sniff UPC sticker`)) {
+    if (value * 30 > mallPrice($item`scratch 'n' sniff UPC sticker`)) {
       acquire(3, $item`scratch 'n' sniff UPC sticker`, value * 30);
       useUPCs();
     }
@@ -328,7 +328,7 @@ export function usingPurse(): boolean {
 
 export function useUPCs(): void {
   const UPC = $item`scratch 'n' sniff UPC sticker`;
-  for (let slotNumber = 1; slotNumber++; slotNumber <= 3) {
+  for (let slotNumber = 1; slotNumber <= 3; slotNumber++) {
     const slot = toSlot(`sticker${slotNumber}`);
     const sticker = equippedItem(slot);
     if (sticker === UPC) continue;
