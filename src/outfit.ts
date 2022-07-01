@@ -4,6 +4,7 @@ import {
   canEquip,
   cliExecute,
   enthroneFamiliar,
+  equippedItem,
   haveEquipped,
   inebrietyLimit,
   Item,
@@ -26,6 +27,7 @@ import {
   $monster,
   $skill,
   $slot,
+  $slots,
   CombatLoversLocket,
   get,
   getKramcoWandererChance,
@@ -205,6 +207,11 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       forceEquip.push($item`Kramco Sausage-o-Matic™`);
     }
   }
+
+  if ($slots`sticker1, sticker2, sticker3`.map((s) => equippedItem(s)).includes($item`none`)) {
+    preventEquip.push(...$items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`);
+  }
+
   if (myFamiliar() === $familiar`Obtuse Angel`) {
     forceEquip.push($item`quake of arrows`);
     if (!have($item`quake of arrows`)) retrieveItem($item`quake of arrows`);
