@@ -233,8 +233,7 @@ function combineDietEntries(
   );
 }
 
-function castOde(turns: number): boolean {
-  if (!have($skill`The Ode to Booze`)) return false;
+function shrugIrrelevantSongs(): void {
   for (const song of getActiveSongs()) {
     const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
     if (
@@ -250,6 +249,12 @@ function castOde(turns: number): boolean {
   // Shrug default Mood songs
   cliExecute(`shrug ur-kel`);
   cliExecute(`shrug phat loot`);
+}
+
+function castOde(turns: number): boolean {
+  if (!have($skill`The Ode to Booze`)) return false;
+
+  shrugIrrelevantSongs();
 
   while (haveEffect($effect`Ode to Booze`) < turns) {
     useSkill($skill`The Ode to Booze`);
@@ -856,6 +861,8 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
   const PYECOffset = 5 * toInt(get("_PYECAvailable", false));
   const excludedEffects = new Set<Effect>();
+
+  shrugIrrelevantSongs();
 
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed", false)) {
     const doublingPotions = farmingPotions
