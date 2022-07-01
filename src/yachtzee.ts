@@ -18,6 +18,7 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
+  mallPrice,
   maximize,
   myFamiliar,
   myFullness,
@@ -46,6 +47,7 @@ import {
   $location,
   $skill,
   $slot,
+  $slots,
   adventureMacro,
   clamp,
   findLeprechaunMultiplier,
@@ -68,6 +70,7 @@ import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
 import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
+import { meatFamiliar } from "./familiar";
 import { doSausage } from "./fights";
 import {
   baseMeat,
@@ -1105,6 +1108,28 @@ function prepareOutfitAndFamiliar() {
   }
 }
 
+function stickerSetup(expectedYachts: number) {
+  const currentStickers = $slots`sticker1, sticker2, sticker3`.map((s) => equippedItem(s));
+  const UPC = $item`scratch 'n' sniff UPC sticker`;
+  if (currentStickers.every((sticker) => sticker === UPC)) return;
+  const yachtOpportunityCost = 25 * findLeprechaunMultiplier(bestYachtzeeFamiliar());
+  const embezzlerOpportunityCost = 25 * findLeprechaunMultiplier(meatFamiliar());
+  const value =
+    ((75 - yachtOpportunityCost) * expectedYachts * 2000) / 100 +
+    ((75 - embezzlerOpportunityCost) * Math.min(20, expectedEmbezzlers) * (750 + baseMeat)) / 100;
+  if (3 * mallPrice(UPC) < value) {
+    acquire(3, UPC, value / 3, false);
+    for (let slotNumber = 1; slotNumber++; slotNumber <= 3) {
+      const slot = toSlot(`sticker${slotNumber}`);
+      const sticker = equippedItem(slot);
+      if (sticker === UPC || sticker === $item`none`) continue;
+      visitUrl("bedazzle.php");
+      visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
+    }
+    cliExecute("sticker upc, upc, upc");
+  }
+}
+
 function _yachtzeeChain(): void {
   if (myLevel() <= 13 || !canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
@@ -1151,6 +1176,7 @@ function _yachtzeeChain(): void {
   let fishyTurns = haveEffect($effect`Fishy`) + 5 * toInt(get("_PYECAvailable", false));
   let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
+  stickerSetup(Math.min(jellyTurns, fishyTurns));
   cliExecute(`closet take ${get("_yachtzeeChainClosetedMeat")} meat`);
   set("_yachtzeeChainClosetedMeat", 0);
   if (haveEffect($effect`Beaten Up`)) {
