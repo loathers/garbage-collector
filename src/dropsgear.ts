@@ -438,7 +438,7 @@ function stickers(equipMode: BonusEquipMode): Map<Item, number> {
   if (equipMode === "embezzler") return new Map();
 
   const cost = sumNumbers(
-    $slots`sticker1, sticker2, sticker3`.map((s) => mallPrice(equippedItem(s)) / 30)
+    $slots`sticker1, sticker2, sticker3`.map((s) => mallPrice(equippedItem(s)) / 20)
   );
   return new Map([
     [$item`scratch 'n' sniff sword`, -1 * cost],

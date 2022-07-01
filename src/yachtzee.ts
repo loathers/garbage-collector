@@ -1121,11 +1121,11 @@ function stickerSetup(expectedYachts: number) {
   if (currentStickers.every((sticker) => sticker === UPC)) return;
   const yachtOpportunityCost = 25 * findLeprechaunMultiplier(bestYachtzeeFamiliar());
   const embezzlerOpportunityCost = 25 * findLeprechaunMultiplier(meatFamiliar());
-  const value =
+  const addedValueOfFullSword =
     ((75 - yachtOpportunityCost) * expectedYachts * 2000) / 100 +
     ((75 - embezzlerOpportunityCost) * Math.min(20, expectedEmbezzlers) * (750 + baseMeat)) / 100;
-  if (3 * mallPrice(UPC) < value) {
-    acquire(3, UPC, value / 3, false);
+  if (mallPrice(UPC) < addedValueOfFullSword / 3) {
+    acquire(3, UPC, addedValueOfFullSword / 3, false);
     useUPCs();
   }
 }

@@ -217,12 +217,13 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
 
   if (embezzlerUp) {
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
-    const value = ((75 - currentWeapon) * (750 + baseMeat)) / 100;
     const embezzlers = globalOptions.ascending
-      ? 30
+      ? 20
       : Math.min(30, embezzlerCount() || digitizedMonstersRemaining());
-    if (value * embezzlers > mallPrice($item`scratch 'n' sniff UPC sticker`)) {
-      acquire(3, $item`scratch 'n' sniff UPC sticker`, value * 30);
+
+    const addedValueOfFullSword = (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
+    if (addedValueOfFullSword > mallPrice($item`scratch 'n' sniff UPC sticker`)) {
+      acquire(3, $item`scratch 'n' sniff UPC sticker`, addedValueOfFullSword / 3);
       useUPCs();
     }
   }
