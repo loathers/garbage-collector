@@ -8,6 +8,7 @@ import {
   haveEquipped,
   inebrietyLimit,
   Item,
+  mallPrice,
   myClass,
   myFamiliar,
   myInebriety,
@@ -29,6 +30,7 @@ import {
   $slot,
   $slots,
   CombatLoversLocket,
+  findLeprechaunMultiplier,
   get,
   getKramcoWandererChance,
   have,
@@ -205,6 +207,22 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`)
     ) {
       forceEquip.push($item`Kramco Sausage-o-Matic™`);
+    }
+  }
+
+  if (embezzlerUp) {
+    const UPC = $item`scratch 'n' sniff UPC sticker`;
+    const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
+    const value = (75 - currentWeapon) * (750 + baseMeat) / 100;
+    if (value * 30 < mallPrice(UPC)) {
+      for (let slotNumber = 1; slotNumber++; slotNumber <= 3) {
+        const slot = toSlot(`sticker${slotNumber}`);
+        const sticker = equippedItem(slot);
+        if (sticker === UPC || sticker === $item`none`) continue;
+        visitUrl("bedazzle.php");
+        visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
+      }
+      cliExecute("sticker upc, upc, upc");
     }
   }
 
