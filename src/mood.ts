@@ -41,7 +41,7 @@ Mood.setDefaultOptions({
   useNativeRestores: true,
 });
 
-export function meatMood(urKels = false): Mood {
+export function meatMood(urKels = false, meat = baseMeat): Mood {
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
@@ -63,6 +63,18 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
+
+  const mmjCost =
+    (100 -
+      (have($skill`Five Finger Discount`) ? 5 : 0) -
+      (have($item`Travoltan trousers`) ? 5 : 0)) *
+    (200 / (1.5 * myLevel() + 5));
+  const genericManaPotionCost = garboValue($item`generic mana potion`) * (200 / (2.5 * myLevel()));
+  const mpRestorerCost = Math.min(mmjCost, genericManaPotionCost);
+
+  if (myClass() !== $class`Pastamancer` && 0.1 * meat * 10 > mpRestorerCost) {
+    mood.skill($skill`Bind Lasagmbie`);
+  }
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
@@ -203,20 +215,4 @@ function shrugBadEffects(...exclude: Effect[]) {
       uneffect(effect);
     }
   });
-}
-
-export function lagsambieMood(meat: number): Mood {
-  const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
-  const mmjCost =
-    (100 -
-      (have($skill`Five Finger Discount`) ? 5 : 0) -
-      (have($item`Travoltan trousers`) ? 5 : 0)) *
-    (200 / (1.5 * myLevel() + 5));
-  const genericManaPotionCost = garboValue($item`generic mana potion`) * (200 / (2.5 * myLevel()));
-  const mpRestorerCost = Math.min(mmjCost, genericManaPotionCost);
-
-  if (myClass() !== $class`Pastamancer` && 0.1 * meat * 10 > mpRestorerCost) {
-    mood.skill($skill`Bind Lasagmbie`);
-  }
-  return mood;
 }

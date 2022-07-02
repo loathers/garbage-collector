@@ -127,14 +127,13 @@ import {
   setChoice,
   userConfirmDialog,
 } from "./lib";
-import { freeFightMood, lagsambieMood, meatMood } from "./mood";
+import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
 import { bathroomFinance, potionSetup } from "./potions";
 import {
   embezzlerCount,
   embezzlerMacro,
   embezzlerSources,
-  estimatedTurns,
   getNextEmbezzlerFight,
 } from "./embezzler";
 import { canAdv } from "canadv.ash";
@@ -192,8 +191,7 @@ function embezzlerSetup() {
   setLocation($location`none`);
   potionSetup(false);
   maximize("MP", false);
-  meatMood(true).execute(estimatedTurns());
-  lagsambieMood(750 + baseMeat).execute(embezzlerCount());
+  meatMood(true, 750 + baseMeat).execute(embezzlerCount());
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {

@@ -66,7 +66,6 @@ import { runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
 import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
-  baseMeat,
   bestJuneCleaverOption,
   checkGithubVersion,
   embezzlerLog,
@@ -82,7 +81,7 @@ import {
   steveAdventures,
   userConfirmDialog,
 } from "./lib";
-import { lagsambieMood, meatMood } from "./mood";
+import { meatMood } from "./mood";
 import postCombatActions from "./post";
 import {
   familiarWaterBreathingEquipment,
@@ -162,7 +161,6 @@ function barfTurn() {
 
   // a. set up mood stuff
   meatMood().execute(estimatedTurns());
-  lagsambieMood(baseMeat).execute(estimatedTurns());
 
   safeRestore(); // get enough mp to use summer siesta and enough hp to not get our ass kicked
 

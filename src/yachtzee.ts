@@ -66,7 +66,7 @@ import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
-import { embezzlerCount, EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
+import { embezzlerCount, EmbezzlerFight, embezzlerSources } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
 import { doSausage } from "./fights";
 import {
@@ -77,7 +77,7 @@ import {
   safeRestore,
   turnsToNC,
 } from "./lib";
-import { lagsambieMood, meatMood } from "./mood";
+import { meatMood } from "./mood";
 import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
 import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
 import { garboValue } from "./session";
@@ -1136,8 +1136,7 @@ function _yachtzeeChain(): void {
   );
 
   maximize("MP", false);
-  meatMood(false).execute(estimatedTurns());
-  lagsambieMood(750 + baseMeat).execute(embezzlerCount());
+  meatMood(false, 750 + baseMeat).execute(embezzlerCount());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
@@ -1171,7 +1170,7 @@ function _yachtzeeChain(): void {
   if (haveEffect($effect`Beaten Up`)) {
     uneffect($effect`Beaten Up`);
   }
-  lagsambieMood(2000).execute(Math.min(jellyTurns, fishyTurns));
+  meatMood(false, 2000).execute(Math.min(jellyTurns, fishyTurns));
   safeRestore();
 
   let plantCrookweed = true;
