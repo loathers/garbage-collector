@@ -63,8 +63,6 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
 
-  if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
-
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
@@ -204,4 +202,18 @@ function shrugBadEffects(...exclude: Effect[]) {
       uneffect(effect);
     }
   });
+}
+
+const mmjCost =
+  100 - (have($skill`Five Finger Discount`) ? 5 : 0) - (have($item`Travoltan trousers`) ? 5 : 0);
+
+export function lagsambieMood(meat: number): Mood {
+  const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
+  if (
+    myClass() !== $class`Pastamancer` &&
+    0.1 * meat * 10 > mmjCost * (200 / (1.5 * myLevel() + 5))
+  ) {
+    mood.skill($skill`Bind Lasagmbie`);
+  }
+  return mood;
 }

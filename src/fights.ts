@@ -107,6 +107,7 @@ import {
   pocketProfessorLectures,
 } from "./familiar";
 import {
+  baseMeat,
   burnLibrams,
   dogOrHolidayWanderer,
   embezzlerLog,
@@ -126,7 +127,7 @@ import {
   setChoice,
   userConfirmDialog,
 } from "./lib";
-import { freeFightMood, meatMood } from "./mood";
+import { freeFightMood, lagsambieMood, meatMood } from "./mood";
 import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
 import { bathroomFinance, potionSetup } from "./potions";
 import {
@@ -192,6 +193,7 @@ function embezzlerSetup() {
   potionSetup(false);
   maximize("MP", false);
   meatMood(true).execute(estimatedTurns());
+  lagsambieMood(750 + baseMeat).execute(embezzlerCount());
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
