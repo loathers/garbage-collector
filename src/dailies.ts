@@ -178,7 +178,7 @@ function voterSetup(): void {
     ["Meat Drop: +30", 10],
     ["Item Drop: +15", 9],
     ["Familiar Experience: +2", 8],
-    ["Adventures: +1", 7],
+    ["Adventures: +1", globalOptions.ascending ? -2 : 7],
     ["Monster Level: +10", 5],
     [`${myPrimestat()} Percent: +25`, 3],
     [`Experience (${myPrimestat()}): +4`, 2],
