@@ -29,6 +29,7 @@ import {
 import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
+import { garboValue } from "./session";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -204,15 +205,17 @@ function shrugBadEffects(...exclude: Effect[]) {
   });
 }
 
-const mmjCost =
-  100 - (have($skill`Five Finger Discount`) ? 5 : 0) - (have($item`Travoltan trousers`) ? 5 : 0);
-
 export function lagsambieMood(meat: number): Mood {
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
-  if (
-    myClass() !== $class`Pastamancer` &&
-    0.1 * meat * 10 > mmjCost * (200 / (1.5 * myLevel() + 5))
-  ) {
+  const mmjCost =
+    (100 -
+      (have($skill`Five Finger Discount`) ? 5 : 0) -
+      (have($item`Travoltan trousers`) ? 5 : 0)) *
+    (200 / (1.5 * myLevel() + 5));
+  const genericManaPotionCost = garboValue($item`generic mana potion`) * (200 / (2.5 * myLevel()));
+  const mpRestorerCost = Math.min(mmjCost, genericManaPotionCost);
+
+  if (myClass() !== $class`Pastamancer` && 0.1 * meat * 10 > mpRestorerCost) {
     mood.skill($skill`Bind Lasagmbie`);
   }
   return mood;
