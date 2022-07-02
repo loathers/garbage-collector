@@ -1,6 +1,7 @@
 import { canAdv } from "canadv.ash";
 import {
   bjornifyFamiliar,
+  buy,
   canEquip,
   cliExecute,
   enthroneFamiliar,
@@ -37,7 +38,6 @@ import {
   have,
   Requirement,
 } from "libram";
-import { acquire } from "./acquire";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { embezzlerCount } from "./embezzler";
 import { meatFamiliar } from "./familiar";
@@ -226,7 +226,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     const addedValueOfFullSword = (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
     if (addedValueOfFullSword > mallPrice(UPC)) {
       const needed = 3 - stickerSlots.filter((sticker) => equippedItem(sticker) === UPC).length;
-      if (needed) acquire(needed, UPC, addedValueOfFullSword / 3, false);
+      if (needed) buy(needed, UPC, addedValueOfFullSword / 3);
       useUPCs();
     }
   }
