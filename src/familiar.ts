@@ -446,10 +446,11 @@ export function setMarginalFamiliar(loc: Location): void {
     ...standardFamiliars(),
     {
       familiar: $familiar`Space Jellyfish`,
-      expectedValue: barf
-        ? garboValue($item`stench jelly`) /
-          (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20)
-        : 0,
+      expectedValue:
+        barf && myInebriety() <= inebrietyLimit()
+          ? garboValue($item`stench jelly`) /
+            (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20)
+          : 0,
       leprechaunMultiplier: 0,
     },
   ]
