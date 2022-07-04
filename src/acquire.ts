@@ -19,7 +19,7 @@ import {
 import { get, withProperty } from "libram";
 import { garboValue } from "./session";
 
-const priceCaps: { [index: string]: number } = {
+export const priceCaps: { [index: string]: number } = {
   "cuppa Voraci tea": 200000,
   "cuppa Sobrie tea": 200000,
   "potion of the field gar": 50000,
