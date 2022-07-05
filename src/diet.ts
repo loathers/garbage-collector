@@ -637,7 +637,7 @@ export function computeDiet(): {
           menu().filter(
             (menuItem) =>
               !priceCaps[menuItem.item.name] ||
-              priceCaps[menuItem.item.name] >= garboValue(menuItem.item)
+              priceCaps[menuItem.item.name] >= mallPrice(menuItem.item)
           ),
           fullDietPlanner
         )
