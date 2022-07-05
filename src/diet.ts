@@ -363,6 +363,11 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`potion of the field gar`, { maximum: 1 }),
     ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<Note>(item)),
     new MenuItem($item`sweet tooth`, { size: -1, organ: "food", maximum: 1 }),
+    new MenuItem($item`designer sweatpants`, {
+      size: -1,
+      organ: "booze",
+      maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed", 0), Math.floor(get("sweat", 0) / 25)),
+    }),
   ];
 }
 
@@ -852,6 +857,10 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
             }
             consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
           },
+        ],
+        [
+          $item`designer sweatpants`,
+          (countToConsume: number) => useSkill($skill`Sweat Out Some Booze`, countToConsume),
         ],
       ]);
 
