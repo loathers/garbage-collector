@@ -66,7 +66,7 @@ import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
-import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
+import { embezzlerCount, EmbezzlerFight, embezzlerSources } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
 import { doSausage } from "./fights";
 import {
@@ -1136,7 +1136,7 @@ function _yachtzeeChain(): void {
   );
 
   maximize("MP", false);
-  meatMood(false).execute(estimatedTurns());
+  meatMood(false, 750 + baseMeat).execute(embezzlerCount());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
@@ -1170,6 +1170,7 @@ function _yachtzeeChain(): void {
   if (haveEffect($effect`Beaten Up`)) {
     uneffect($effect`Beaten Up`);
   }
+  meatMood(false, 2000).execute(Math.min(jellyTurns, fishyTurns));
   safeRestore();
 
   let plantCrookweed = true;
