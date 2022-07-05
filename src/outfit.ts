@@ -220,11 +220,11 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   if (embezzlerUp) {
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
     const embezzlers = globalOptions.ascending
-      ? 20
-      : Math.min(30, embezzlerCount() || digitizedMonstersRemaining());
+      ? Math.min(20, embezzlerCount() || digitizedMonstersRemaining())
+      : 20;
 
     const addedValueOfFullSword = (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
-    if (addedValueOfFullSword > mallPrice(UPC)) {
+    if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
       const needed = 3 - stickerSlots.filter((sticker) => equippedItem(sticker) === UPC).length;
       if (needed) buy(needed, UPC, addedValueOfFullSword / 3);
       useUPCs();
