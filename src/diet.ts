@@ -870,7 +870,11 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         ],
         [
           $item`designer sweatpants`,
-          (countToConsume: number) => useSkill($skill`Sweat Out Some Booze`, countToConsume),
+          (countToConsume: number) => {
+            for (let n = 1; n <= countToConsume; n++) {
+              useSkill($skill`Sweat Out Some Booze`);
+            }
+          },
         ],
       ]);
 

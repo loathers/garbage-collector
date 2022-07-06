@@ -90,7 +90,9 @@ function fillSweatyLiver(): void {
 
   const sweatNeeded = 25 * castsWanted;
   if (get("sweat", 0) >= sweatNeeded) {
-    useSkill($skill`Sweat Out Some Booze`, castsWanted);
+    while (get("_sweatOutSomeBoozeUsed", 0) < 3) {
+      useSkill($skill`Sweat Out Some Booze`);
+    }
     consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
   }
 }
