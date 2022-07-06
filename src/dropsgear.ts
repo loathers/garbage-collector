@@ -149,7 +149,7 @@ function sweatpants(equipMode: BonusEquipMode) {
 
   const bestPerfectDrink =
     $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`.sort(
-      (a, b) => mallPrice(b) - mallPrice(a)
+      (a, b) => mallPrice(a) - mallPrice(b)
     )[0];
   const perfectDrinkValuePerDrunk =
     ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - mallPrice(bestPerfectDrink)) / 3;
