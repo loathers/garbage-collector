@@ -139,10 +139,11 @@ function pantsgiving() {
 function sweatpants(equipMode: BonusEquipMode) {
   if (!have($item`designer sweatpants`) || equipMode === "embezzler") return new Map();
 
-  const sweatTarget =
-    75 - 25 * get("_sweatOutSomeBoozeUsed", 0) + (!globalOptions.ascending ? 75 : 0);
+  const needSweat =
+    (!globalOptions.ascending && get("sweat", 0) < 75) ||
+    get("sweat", 0) < 25 * (3 - get("_sweatOutSomeBoozeUsed", 0));
 
-  if (sweatTarget <= 0) return new Map();
+  if (!needSweat) return new Map();
 
   const VOA = get("valueOfAdventure");
 
