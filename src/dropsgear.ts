@@ -25,6 +25,7 @@ import {
   findFairyMultiplier,
   findLeprechaunMultiplier,
   get,
+  getAverageAdventures,
   getFoldGroup,
   getModifier,
   have,
@@ -133,6 +134,28 @@ function pantsgiving() {
   const pantsgivingBonus = fullnessValue / (turns * 0.9);
   pantsgivingBonuses.set(turns, pantsgivingBonus);
   return new Map<Item, number>([[$item`Pantsgiving`, pantsgivingBonus]]);
+}
+
+function sweatpants(equipMode: BonusEquipMode) {
+  if (!have($item`designer sweatpants`) || equipMode === "embezzler") return new Map();
+
+  const sweatTarget =
+    75 - 25 * get("_sweatOutSomeBoozeUsed", 0) + (!globalOptions.ascending ? 75 : 0);
+
+  if (sweatTarget <= 0) return new Map();
+
+  const VOA = get("valueOfAdventure");
+
+  const bestPerfectDrink =
+    $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`.sort(
+      (a, b) => mallPrice(b) - mallPrice(a)
+    )[0];
+  const perfectDrinkValuePerDrunk =
+    ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - mallPrice(bestPerfectDrink)) / 3;
+  const splendidMartiniValuePerDrunk = (getAverageAdventures($item`splendid martini`) + 2) * VOA;
+
+  const bonus = (Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2) / 25;
+  return new Map([[$item`designer sweatpants`, bonus]]);
 }
 
 const bestAdventuresFromPants =
@@ -313,6 +336,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
     ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
+    ...sweatpants(equipMode),
     ...shavingBonus(),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
