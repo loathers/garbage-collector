@@ -709,7 +709,7 @@ function itemPriority<T>(menuItems: MenuItem<T>[]) {
   }
   if (menuItem.item === $item`spaghetti breakfast`) return 200;
   if (
-    $items`pocket wish, toasted brie`.includes(menuItem.item) ||
+    $items`pocket wish, toasted brie, designer sweatpants`.includes(menuItem.item) ||
     spleenCleaners.get(menuItem.item) ||
     stomachLiverCleaners.get(menuItem.item)
   ) {
