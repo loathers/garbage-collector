@@ -273,6 +273,7 @@ const stomachLiverCleaners = new Map([
   [$item`spice melange`, [-3, -3]],
   [$item`synthetic dog hair pill`, [0, -1]],
   [$item`cuppa Sobrie tea`, [0, -1]],
+  [$item`designer sweatpants`, [0, -1]],
 ]);
 
 export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
@@ -712,7 +713,7 @@ function itemPriority<T>(menuItems: MenuItem<T>[]) {
   }
   if (menuItem.item === $item`spaghetti breakfast`) return 200;
   if (
-    $items`pocket wish, toasted brie, designer sweatpants`.includes(menuItem.item) ||
+    $items`pocket wish, toasted brie`.includes(menuItem.item) ||
     spleenCleaners.get(menuItem.item) ||
     stomachLiverCleaners.get(menuItem.item)
   ) {
