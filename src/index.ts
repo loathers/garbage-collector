@@ -12,6 +12,7 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
+  maximize,
   myAdventures,
   myClass,
   myGardenType,
@@ -627,6 +628,8 @@ export function main(argString = ""): void {
         if (!globalOptions.noBarf) {
           // 3. burn turns at barf
           potionSetup(false);
+          maximize("MP", false);
+          meatMood().execute(estimatedTurns());
           try {
             while (canContinue()) {
               barfTurn();
