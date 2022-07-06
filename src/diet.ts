@@ -52,6 +52,7 @@ import {
   Diet,
   get,
   getAverageAdventures,
+  getRemainingLiver,
   have,
   Kmail,
   maximizeCached,
@@ -274,6 +275,9 @@ const stomachLiverCleaners = new Map([
   [$item`cuppa Sobrie tea`, [0, -1]],
 ]);
 
+export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
+  argmax(items.map((i) => [i, -mallPrice(i)]));
+
 /**
  * Generate a basic menu of high-yield items to consider
  * @returns basic menu
@@ -302,7 +306,8 @@ function menu(): MenuItem<Note>[] {
    *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
    */
   const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
-  const smallEpics = $items`meteoreo, ice rice`.concat([$item`Tea, Earl Grey, Hot`]);
+  // eslint-disable-next-line libram/verify-constants
+  const smallEpics = $items`meteoreo, ice rice, Tea\, Earl Grey\, Hot`;
 
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
     have(item)
@@ -311,8 +316,6 @@ function menu(): MenuItem<Note>[] {
   const limitedItems = [...boxingDayCareItems, ...pilsners].map(
     (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
   );
-
-  const mallMin = (items: Item[]) => argmax(items.map((i) => [i, -mallPrice(i)]));
 
   return [
     // FOOD
@@ -635,7 +638,7 @@ export function computeDiet(): {
   const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) =>
     orEmpty(Diet.plan(MPA, menu, { food: 1 }));
   const sweatpantsDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu, { booze: inebrietyLimit() - myInebriety() }));
+    orEmpty(Diet.plan(MPA, menu, { booze: getRemainingLiver() }));
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {

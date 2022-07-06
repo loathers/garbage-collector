@@ -38,6 +38,7 @@ import {
   FamiliarRider,
   pickRider,
 } from "libram/dist/resources/2010/CrownOfThrones";
+import { mallMin } from "./diet";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import {
@@ -147,10 +148,9 @@ function sweatpants(equipMode: BonusEquipMode) {
 
   const VOA = get("valueOfAdventure");
 
-  const bestPerfectDrink =
-    $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`.sort(
-      (a, b) => mallPrice(a) - mallPrice(b)
-    )[0];
+  const bestPerfectDrink = mallMin(
+    $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`
+  );
   const perfectDrinkValuePerDrunk =
     ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - mallPrice(bestPerfectDrink)) / 3;
   const splendidMartiniValuePerDrunk = (getAverageAdventures($item`splendid martini`) + 2) * VOA;
