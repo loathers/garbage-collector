@@ -89,7 +89,7 @@ function fillSweatyLiver(): void {
   if (castsWanted <= 0 || !have($item`designer sweatpants`)) return;
 
   const sweatNeeded = 25 * castsWanted;
-  if (get("sweat", 0) > sweatNeeded) {
+  if (get("sweat", 0) >= sweatNeeded) {
     useSkill($skill`Sweat Out Some Booze`, castsWanted);
     consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
   }
