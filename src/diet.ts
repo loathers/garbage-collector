@@ -623,6 +623,7 @@ export function computeDiet(): {
   diet: () => Diet<Note>;
   shotglass: () => Diet<Note>;
   pantsgiving: () => Diet<Note>;
+  sweatpants: () => Diet<Note>;
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
@@ -633,6 +634,8 @@ export function computeDiet(): {
     orEmpty(Diet.plan(MPA, menu, { booze: 1 }));
   const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) =>
     orEmpty(Diet.plan(MPA, menu, { food: 1 }));
+  const sweatpantsDietPlanner = (menu: MenuItem<Note>[]) =>
+    orEmpty(Diet.plan(MPA, menu, { booze: inebrietyLimit() - myInebriety() }));
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
@@ -651,10 +654,17 @@ export function computeDiet(): {
           pantsgivingDietPlanner
         )
       ),
+    sweatpants: () =>
+      sweatpantsDietPlanner(
+        balanceMenu(
+          menu().filter((menuItem) => itemType(menuItem.item) === "booze" && menuItem.size <= 3),
+          sweatpantsDietPlanner
+        )
+      ),
   };
 }
 
-type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING";
+type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING" | "SWEATPANTS";
 
 function printDiet(diet: Diet<Note>, name: DietName) {
   print(`===== ${name} DIET =====`);
