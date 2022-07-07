@@ -47,7 +47,6 @@ import {
   Skill,
   stashAmount,
   takeCloset,
-  toEffect,
   toInt,
   toItem,
   totalTurnsPlayed,
