@@ -6,6 +6,7 @@ import {
   cliExecute,
   drink,
   eat,
+  effectModifier,
   Element,
   elementalResistance,
   fullnessLimit,
@@ -25,6 +26,7 @@ import {
   myLevel,
   myMaxhp,
   mySpleenUse,
+  numericModifier,
   print,
   retrievePrice,
   sellsItem,
@@ -68,6 +70,7 @@ import { expectedGregs } from "./extrovermectin";
 import {
   argmax,
   arrayEquals,
+  baseMeat,
   globalOptions,
   HIGHLIGHT,
   realmAvailable,
@@ -364,6 +367,47 @@ function menu(): MenuItem<Note>[] {
     ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<Note>(item)),
     new MenuItem($item`sweet tooth`, { size: -1, organ: "food", maximum: 1 }),
   ];
+}
+
+export function bestConsumable(
+  organType: "booze" | "food" | "spleen",
+  restrictList?: Item | Item[]
+) {
+  let organMenu = potionMenu(menu(), 0, 0);
+  if (restrictList) {
+    if (restrictList instanceof Item) {
+      organMenu = organMenu.filter(
+        (menuItem) => itemType(menuItem.item) === organType && restrictList
+      );
+    } else {
+      organMenu = organMenu.filter(
+        (menuItem) => itemType(menuItem.item) === organType && !restrictList.includes(menuItem.item)
+      );
+    }
+  } else {
+    organMenu = organMenu.filter((menuItem) => itemType(menuItem.item) === organType);
+  }
+  const organList = Array.from(organMenu.values()).map((consumable) => {
+    const edible = consumable.item;
+    const buff = effectModifier(edible, "Effect");
+    const turnsPerUse = numericModifier(edible, "Effect Duration");
+    const meatDrop = numericModifier(buff, "Meat Drop");
+    const famWeight = numericModifier(buff, "Familiar Weight");
+    const buffValue = ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) / 100;
+    const advValue = getAverageAdventures(edible) * get("valueOfAdventure");
+    const organSpace =
+      organType === "booze"
+        ? edible.inebriety
+        : organType === "food"
+        ? edible.fullness
+        : edible.spleen;
+    return {
+      edible: edible,
+      value: (buffValue + advValue - mallPrice(edible)) / organSpace,
+    };
+  });
+  const best = organList.sort((a, b) => b.value - a.value)[0];
+  return best;
 }
 
 function gregariousCount(): {

@@ -6,7 +6,6 @@ import {
   closetAmount,
   create,
   Effect,
-  effectModifier,
   equip,
   Familiar,
   gametimeToInt,
@@ -150,6 +149,7 @@ import {
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
+import { bestConsumable } from "./diet";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1546,21 +1546,7 @@ const freeRunFightSources = [
         1209: 2, // enter the gallery at Upscale Midnight
         1214: 1, // get High-End ginger wine
       });
-      const boozes = $items`elemental caipiroska, moreltini, Dreadsylvanian grimlet, Hodgman's blanket, Sacramento wine, iced plum wine, splendid martini, Eye and a Twist, jar of fermented pickle juice, dirt julep, Ambitious Turkey, Friendly Turkey`;
-      const boozeVals = Array.from(boozes.values()).map((drink) => {
-        const buff = effectModifier(drink, "Effect");
-        const turnsPerUse = numericModifier(drink, "Effect Duration");
-        const meatDrop = numericModifier(buff, "Meat Drop");
-        const famWeight = numericModifier(buff, "Familiar Weight");
-        const buffValue =
-          ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) / 100;
-        const advValue = getAverageAdventures(drink) * get("valueOfAdventure");
-        return {
-          booze: drink,
-          value: (buffValue + advValue - mallPrice(drink)) / drink.inebriety,
-        };
-      });
-      const best = boozeVals.sort((a, b) => b.value - a.value)[0];
+      const best = bestConsumable("booze", $item`high-end ginger wine`);
       const gingerWineValue =
         (0.5 * 30 * (baseMeat + 750) +
           getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /
