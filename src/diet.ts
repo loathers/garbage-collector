@@ -307,7 +307,6 @@ function menu(): MenuItem<Note>[] {
    *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
    */
   const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
-  // eslint-disable-next-line libram/verify-constants
   const smallEpics = [...$items`meteoreo, ice rice`, $item`Tea, Earl Grey, Hot`];
 
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
