@@ -1687,7 +1687,7 @@ const freeRunFightSources = [
     (runSource: ActionSource) => {
       adventureMacro(
         $location`Cobb's Knob Menagerie, Level 1`,
-        Macro.if_($monster`QuickBASIC Elemental`, Macro.basicCombat())
+        Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
           .if_($monster`BASIC Elemental`, Macro.trySkill($skill`Summon Mayfly Swarm`))
           .step(runSource.macro)
       );

@@ -30,6 +30,7 @@ import {
   toUrl,
   use,
   useFamiliar,
+  useSkill,
   visitUrl,
   xpath,
 } from "kolmafia";
@@ -63,7 +64,7 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro, withMacro } from "./combat";
-import { runDiet } from "./diet";
+import { computeDiet, consumeDiet, runDiet } from "./diet";
 import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
 import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
@@ -292,6 +293,13 @@ function barfTurn() {
       );
       eat(available, $item`magical sausage`);
     }
+
+    if (have($item`designer sweatpants`) && myAdventures() === 1 + globalOptions.saveTurns) {
+      while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25) {
+        useSkill($skill`Sweat Out Some Booze`);
+      }
+      consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
+    }
   }
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler") {
     if (embezzlerUp) {
@@ -312,7 +320,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26487);
+  sinceKolmafiaRevision(26542);
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {

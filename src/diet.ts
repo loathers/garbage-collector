@@ -54,6 +54,7 @@ import {
   Diet,
   get,
   getAverageAdventures,
+  getRemainingLiver,
   have,
   Kmail,
   maximizeCached,
@@ -275,7 +276,11 @@ const stomachLiverCleaners = new Map([
   [$item`spice melange`, [-3, -3]],
   [$item`synthetic dog hair pill`, [0, -1]],
   [$item`cuppa Sobrie tea`, [0, -1]],
+  [$item`designer sweatpants`, [0, -1]],
 ]);
+
+export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
+  argmax(items.map((i) => [i, -mallPrice(i)]));
 
 /**
  * Generate a basic menu of high-yield items to consider
@@ -305,7 +310,7 @@ function menu(): MenuItem<Note>[] {
    *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
    */
   const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
-  const smallEpics = $items`meteoreo, ice rice`.concat([$item`Tea, Earl Grey, Hot`]);
+  const smallEpics = [...$items`meteoreo, ice rice`, $item`Tea, Earl Grey, Hot`];
 
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
     have(item)
@@ -314,8 +319,6 @@ function menu(): MenuItem<Note>[] {
   const limitedItems = [...boxingDayCareItems, ...pilsners].map(
     (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
   );
-
-  const mallMin = (items: Item[]) => argmax(items.map((i) => [i, -mallPrice(i)]));
 
   return [
     // FOOD
@@ -366,6 +369,11 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`potion of the field gar`, { maximum: 1 }),
     ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<Note>(item)),
     new MenuItem($item`sweet tooth`, { size: -1, organ: "food", maximum: 1 }),
+    new MenuItem($item`designer sweatpants`, {
+      size: -1,
+      organ: "booze",
+      maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed", 0), Math.floor(get("sweat", 0) / 25)),
+    }),
   ];
 }
 
@@ -657,6 +665,7 @@ export function computeDiet(): {
   diet: () => Diet<Note>;
   shotglass: () => Diet<Note>;
   pantsgiving: () => Diet<Note>;
+  sweatpants: () => Diet<Note>;
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
@@ -667,6 +676,8 @@ export function computeDiet(): {
     orEmpty(Diet.plan(MPA, menu, { booze: 1 }));
   const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) =>
     orEmpty(Diet.plan(MPA, menu, { food: 1 }));
+  const sweatpantsDietPlanner = (menu: MenuItem<Note>[]) =>
+    orEmpty(Diet.plan(MPA, menu, { booze: getRemainingLiver() }));
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
@@ -685,10 +696,17 @@ export function computeDiet(): {
           pantsgivingDietPlanner
         )
       ),
+    sweatpants: () =>
+      sweatpantsDietPlanner(
+        balanceMenu(
+          menu().filter((menuItem) => itemType(menuItem.item) === "booze" && menuItem.size <= 3),
+          sweatpantsDietPlanner
+        )
+      ),
   };
 }
 
-type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING";
+type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING" | "SWEATPANTS";
 
 function printDiet(diet: Diet<Note>, name: DietName) {
   print(`===== ${name} DIET =====`);
@@ -890,6 +908,14 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
               );
             }
             consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+          },
+        ],
+        [
+          $item`designer sweatpants`,
+          (countToConsume: number) => {
+            for (let n = 1; n <= countToConsume; n++) {
+              useSkill($skill`Sweat Out Some Booze`);
+            }
           },
         ],
       ]);
