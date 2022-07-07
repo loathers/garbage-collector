@@ -1552,21 +1552,27 @@ const freeRunFightSources = [
         const turnsPerUse = numericModifier(drink, "Effect Duration");
         const meatDrop = numericModifier(buff, "Meat Drop");
         const famWeight = numericModifier(buff, "Familiar Weight");
-        const buffValue = ((meatDrop + famWeight*25/10) * turnsPerUse * (baseMeat+750)) / 100;
-        const advValue = (getAverageAdventures(drink) * get("valueOfAdventure"))
+        const buffValue =
+          ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) / 100;
+        const advValue = getAverageAdventures(drink) * get("valueOfAdventure");
         return {
           booze: drink,
-          value: ( buffValue + advValue - mallPrice(drink)) / drink.inebriety,
-        }
+          value: (buffValue + advValue - mallPrice(drink)) / drink.inebriety,
+        };
       });
       const best = boozeVals.sort((a, b) => b.value - a.value)[0];
-      const gingerWineValue = ((.5*30*(baseMeat+750)) + (getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure"))) / 2;
+      const gingerWineValue =
+        (0.5 * 30 * (baseMeat + 750) +
+          getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /
+        2;
       const valueDif = gingerWineValue - best.value;
-      if(availableAmount($item`sprinkles`) < 5 || (valueDif > (garboValue($item`gingerbread cigarette`) * 5))){
+      if (
+        availableAmount($item`sprinkles`) < 5 ||
+        valueDif * 2 > garboValue($item`gingerbread cigarette`) * 5
+      ) {
         outfit(`gingerbread best`);
         adventureMacro($location`Gingerbread Upscale Retail District`, Macro.abort());
-      }
-      else {
+      } else {
         adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
       }
     },
