@@ -1557,13 +1557,13 @@ const freeRunFightSources = [
         const advValue = (getAverageAdventures(drink) * get("valueOfAdventure"))
         return {
           booze: drink,
-          value: (garboValue(drink) + buffValue + advValue) / drink.inebriety,
+          value: (mallPrice(drink) + buffValue + advValue) / drink.inebriety,
         }
       });
       const best = boozeVals.sort((a, b) => b.value - a.value)[0];
       const gingerWineValue = ((.5*30*(baseMeat+750)) + (getAverageAdventures($item`High-end ginger wine`) * get("valueOfAdventure"))) / 2;
       const valueDif = gingerWineValue - best.value;
-      if(availableAmount($item`sprinkles`) < 5 || (valueDif > 0)){
+      if(availableAmount($item`sprinkles`) < 5 || (valueDif > (garboValue($item`gingerbread cigarette`) * 5))){
         outfit(`gingerbread best`);
         adventureMacro($location`Gingerbread Upscale Retail District`, Macro.abort());
       }
