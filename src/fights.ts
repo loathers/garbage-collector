@@ -1553,7 +1553,7 @@ const freeRunFightSources = [
         const turnsPerUse = numericModifier(drink, "Effect Duration");
         const meatDrop = numericModifier(buff, "Meat Drop");
         const famWeight = numericModifier(buff, "Familiar Weight");
-        const buffValue = ((meatDrop + famWeight*25/10) * turnsPerUse * (baseMeat+750));
+        const buffValue = ((meatDrop + famWeight*25/10) * turnsPerUse * (baseMeat+750)) / 100;
         const advValue = (getAverageAdventures(drink) * get("valueOfAdventure"))
         return {
           booze: drink,
