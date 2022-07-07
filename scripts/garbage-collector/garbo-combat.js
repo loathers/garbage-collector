@@ -20508,7 +20508,7 @@ var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/session.ts
 var session = __webpack_require__(742);
 ;// CONCATENATED MODULE: ./src/dropsgear.ts
-var dropsgear_templateObject, dropsgear_templateObject2, dropsgear_templateObject3, dropsgear_templateObject4, dropsgear_templateObject5, dropsgear_templateObject6, dropsgear_templateObject7, dropsgear_templateObject8, dropsgear_templateObject9, dropsgear_templateObject10, dropsgear_templateObject11, dropsgear_templateObject12, dropsgear_templateObject13, dropsgear_templateObject14, dropsgear_templateObject15, dropsgear_templateObject16, dropsgear_templateObject17, dropsgear_templateObject18, dropsgear_templateObject19, dropsgear_templateObject20, dropsgear_templateObject21, dropsgear_templateObject22, dropsgear_templateObject23, dropsgear_templateObject24, dropsgear_templateObject25, dropsgear_templateObject26, dropsgear_templateObject27, dropsgear_templateObject28, dropsgear_templateObject29, dropsgear_templateObject30, dropsgear_templateObject31, dropsgear_templateObject32, dropsgear_templateObject33, dropsgear_templateObject34, dropsgear_templateObject35, dropsgear_templateObject36, dropsgear_templateObject37, dropsgear_templateObject38, dropsgear_templateObject39, dropsgear_templateObject40, dropsgear_templateObject41, dropsgear_templateObject42, dropsgear_templateObject43, dropsgear_templateObject44, dropsgear_templateObject45, dropsgear_templateObject46, dropsgear_templateObject47, dropsgear_templateObject48, dropsgear_templateObject49, dropsgear_templateObject50, dropsgear_templateObject51, dropsgear_templateObject52, dropsgear_templateObject53, dropsgear_templateObject54, dropsgear_templateObject55, dropsgear_templateObject56, dropsgear_templateObject57, dropsgear_templateObject58, dropsgear_templateObject59, dropsgear_templateObject60, dropsgear_templateObject61, dropsgear_templateObject62, dropsgear_templateObject63, dropsgear_templateObject64, dropsgear_templateObject65, dropsgear_templateObject66, dropsgear_templateObject67, dropsgear_templateObject68, dropsgear_templateObject69;
+var dropsgear_templateObject, dropsgear_templateObject2, dropsgear_templateObject3, dropsgear_templateObject4, dropsgear_templateObject5, dropsgear_templateObject6, dropsgear_templateObject7, dropsgear_templateObject8, dropsgear_templateObject9, dropsgear_templateObject10, dropsgear_templateObject11, dropsgear_templateObject12, dropsgear_templateObject13, dropsgear_templateObject14, dropsgear_templateObject15, dropsgear_templateObject16, dropsgear_templateObject17, dropsgear_templateObject18, dropsgear_templateObject19, dropsgear_templateObject20, dropsgear_templateObject21, dropsgear_templateObject22, dropsgear_templateObject23, dropsgear_templateObject24, dropsgear_templateObject25, dropsgear_templateObject26, dropsgear_templateObject27, dropsgear_templateObject28, dropsgear_templateObject29, dropsgear_templateObject30, dropsgear_templateObject31, dropsgear_templateObject32, dropsgear_templateObject33, dropsgear_templateObject34, dropsgear_templateObject35, dropsgear_templateObject36, dropsgear_templateObject37, dropsgear_templateObject38, dropsgear_templateObject39, dropsgear_templateObject40, dropsgear_templateObject41, dropsgear_templateObject42, dropsgear_templateObject43, dropsgear_templateObject44, dropsgear_templateObject45, dropsgear_templateObject46, dropsgear_templateObject47, dropsgear_templateObject48, dropsgear_templateObject49, dropsgear_templateObject50, dropsgear_templateObject51, dropsgear_templateObject52, dropsgear_templateObject53, dropsgear_templateObject54, dropsgear_templateObject55, dropsgear_templateObject56, dropsgear_templateObject57, dropsgear_templateObject58, dropsgear_templateObject59, dropsgear_templateObject60, dropsgear_templateObject61, dropsgear_templateObject62, dropsgear_templateObject63, dropsgear_templateObject64, dropsgear_templateObject65, dropsgear_templateObject66, dropsgear_templateObject67, dropsgear_templateObject68, dropsgear_templateObject69, dropsgear_templateObject70, dropsgear_templateObject71, dropsgear_templateObject72;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = dropsgear_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -20711,7 +20711,7 @@ function magnifyingGlass() {
   return new Map([[$item(dropsgear_templateObject44 || (dropsgear_templateObject44 = dropsgear_taggedTemplateLiteral(["cursed magnifying glass"]))), get("garbo_valueOfFreeFight", 2000) / 13]]);
 }
 function bonusGear(equipMode) {
-  return new Map([].concat(dropsgear_toConsumableArray(cheeses(equipMode === "embezzler")), dropsgear_toConsumableArray(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []), dropsgear_toConsumableArray(shavingBonus()), dropsgear_toConsumableArray(bonusAccessories(equipMode)), dropsgear_toConsumableArray(pantogramPants()), dropsgear_toConsumableArray(bagOfManyConfections()), dropsgear_toConsumableArray(snowSuit(equipMode)), dropsgear_toConsumableArray(mayflowerBouquet(equipMode)), dropsgear_toConsumableArray(equipMode === "barf" ? magnifyingGlass() : []), dropsgear_toConsumableArray(juneCleaver(equipMode))));
+  return new Map([].concat(dropsgear_toConsumableArray(cheeses(equipMode === "embezzler")), dropsgear_toConsumableArray(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []), dropsgear_toConsumableArray(shavingBonus()), dropsgear_toConsumableArray(bonusAccessories(equipMode)), dropsgear_toConsumableArray(pantogramPants()), dropsgear_toConsumableArray(bagOfManyConfections()), dropsgear_toConsumableArray(snowSuit(equipMode)), dropsgear_toConsumableArray(mayflowerBouquet(equipMode)), dropsgear_toConsumableArray(equipMode === "barf" ? magnifyingGlass() : []), dropsgear_toConsumableArray(juneCleaver(equipMode)), dropsgear_toConsumableArray(stickers(equipMode))));
 }
 function bestBjornalike(existingForceEquips) {
   var bjornalikes = $items(dropsgear_templateObject45 || (dropsgear_templateObject45 = dropsgear_taggedTemplateLiteral(["Buddy Bjorn, Crown of Thrones"])));
@@ -20838,6 +20838,12 @@ function juneCleaver(equipMode) {
 
   var interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
   return new Map([[$item(dropsgear_templateObject69 || (dropsgear_templateObject69 = dropsgear_taggedTemplateLiteral(["June cleaver"]))), juneCleaverEV / interval]]);
+}
+
+function stickers(equipMode) {
+  if (equipMode === "embezzler") return new Map();
+  var cost = sumNumbers($slots(dropsgear_templateObject70 || (dropsgear_templateObject70 = dropsgear_taggedTemplateLiteral(["sticker1, sticker2, sticker3"]))).map(s => mallPrice(equippedItem(s)) / 20));
+  return new Map([[$item(dropsgear_templateObject71 || (dropsgear_templateObject71 = dropsgear_taggedTemplateLiteral(["scratch 'n' sniff sword"]))), -1 * cost], [$item(dropsgear_templateObject72 || (dropsgear_templateObject72 = dropsgear_taggedTemplateLiteral(["scratch 'n' sniff crossbow"]))), -1 * cost]]);
 }
 
 /***/ }),
@@ -22186,7 +22192,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("24e251c3cb81cfd559c555aa1c73ce4eb1215a97" === mainSha) {
+    if ("19bcc1d0637fd05093d110c8554920a3704851f6" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -22329,16 +22335,18 @@ function bestJuneCleaverOption(id) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "RG": () => (/* binding */ waterBreathingEquipment)
 /* harmony export */ });
-/* unused harmony exports freeFightOutfit, refreshLatte, tryFillLatte, meatOutfit, familiarWaterBreathingEquipment, usingPurse */
+/* unused harmony exports freeFightOutfit, refreshLatte, tryFillLatte, meatOutfit, familiarWaterBreathingEquipment, usingPurse, useUPCs */
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2549);
 /* harmony import */ var canadv_ash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(canadv_ash__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(678);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(678);
 /* harmony import */ var _dropsgear__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5472);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9737);
-/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7442);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69;
+/* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4936);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9737);
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7442);
+/* harmony import */ var _wanderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5444);
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -22353,6 +22361,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
 
 
 
@@ -22470,9 +22480,28 @@ function meatOutfit(embezzlerUp, requirement, sea) {
     }
   }
 
-  if (myFamiliar() === $familiar(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Obtuse Angel"])))) {
-    forceEquip.push($item(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["quake of arrows"]))));
-    if (!have($item(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["quake of arrows"]))))) retrieveItem($item(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["quake of arrows"]))));
+  var stickerSlots = $slots(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["sticker1, sticker2, sticker3"])));
+  var UPC = $item(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["scratch 'n' sniff UPC sticker"])));
+
+  if (embezzlerUp) {
+    var currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
+    var embezzlers = globalOptions.ascending ? Math.min(20, embezzlerCount() || digitizedMonstersRemaining()) : 20;
+    var addedValueOfFullSword = embezzlers * ((75 - currentWeapon) * (750 + baseMeat)) / 100;
+
+    if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
+      var needed = 3 - stickerSlots.filter(sticker => equippedItem(sticker) === UPC).length;
+      if (needed) buy(needed, UPC, addedValueOfFullSword / 3);
+      useUPCs();
+    }
+  }
+
+  if (stickerSlots.map(s => equippedItem(s)).includes($item(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["none"]))))) {
+    preventEquip.push.apply(preventEquip, _toConsumableArray($items(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["scratch 'n' sniff sword, scratch 'n' sniff crossbow"])))));
+  }
+
+  if (myFamiliar() === $familiar(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["Obtuse Angel"])))) {
+    forceEquip.push($item(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["quake of arrows"]))));
+    if (!have($item(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["quake of arrows"]))))) retrieveItem($item(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["quake of arrows"]))));
   }
 
   if (sea) {
@@ -22485,23 +22514,23 @@ function meatOutfit(embezzlerUp, requirement, sea) {
     if (airEquip) forceEquip.push(airEquip);else parameters.push("sea");
   }
 
-  if (embezzlerUp && myFamiliar() !== $familiar(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["Pocket Professor"]))) && CombatLoversLocket.have() && !CombatLoversLocket.unlockedLocketMonsters().includes($monster(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["Knob Goblin Embezzler"]))))) {
+  if (embezzlerUp && myFamiliar() !== $familiar(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["Pocket Professor"]))) && CombatLoversLocket.have() && !CombatLoversLocket.unlockedLocketMonsters().includes($monster(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["Knob Goblin Embezzler"]))))) {
     forceEquip.push(CombatLoversLocket.locket);
   }
 
   var bjornAlike = bestBjornalike(forceEquip);
   var compiledRequirements = (requirement !== null && requirement !== void 0 ? requirement : new Requirement([], {})).merge(new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(_toConsumableArray(parameters)), {
     forceEquip: forceEquip,
-    preventEquip: [].concat(_toConsumableArray(preventEquip), _toConsumableArray(embezzlerUp ? $items(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === $item(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["Buddy Bjorn"]))) ? $item(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["Crown of Thrones"]))) : $item(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["Buddy Bjorn"])))]).filter(item => !forceEquip.includes(item)),
+    preventEquip: [].concat(_toConsumableArray(preventEquip), _toConsumableArray(embezzlerUp ? $items(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === $item(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["Buddy Bjorn"]))) ? $item(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["Crown of Thrones"]))) : $item(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["Buddy Bjorn"])))]).filter(item => !forceEquip.includes(item)),
     bonusEquip: new Map([].concat(_toConsumableArray(bonusGear(equipMode)), _toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + valueBjornModifiers(equipMode, bjornChoice.modifier)]]) : []))),
     preventSlot: preventSlot
   }));
   compiledRequirements.maximize();
-  if (haveEquipped($item(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) bjornifyFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["Crown of Thrones"]))))) enthroneFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["Snow Suit"])))) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  if (haveEquipped($item(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) bjornifyFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["Crown of Thrones"]))))) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["Snow Suit"])))) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
 
-  if (haveEquipped($item(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")) {
+  if (haveEquipped($item(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")) {
     cliExecute("retrocape robot kill");
   }
 
@@ -22522,17 +22551,37 @@ function meatOutfit(embezzlerUp, requirement, sea) {
     throw new Error("Maximizer failed to equip the following equipment: ".concat(missingEquips().map(equipment => equipment.name).join(", "), ".?"));
   }
 
-  if (sea && haveEquipped($item(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["The Crown of Ed the Undying"]))))) cliExecute("edpiece fish");
+  if (sea && haveEquipped($item(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["The Crown of Ed the Undying"]))))) cliExecute("edpiece fish");
 }
-var waterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$items */ .vS)(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank"])));
-var familiarWaterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$items */ .vS)(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["das boot, little bitty bathysphere"])));
+var waterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank"])));
+var familiarWaterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["das boot, little bitty bathysphere"])));
 var cachedUsingPurse = null;
 function usingPurse() {
   if (cachedUsingPurse === null) {
-    cachedUsingPurse = !have($item(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["latte lovers member's mug"])))) || !have($familiar(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["Robortender"])))) || !canAdv($location(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["The Black Forest"]))), false);
+    cachedUsingPurse = !have($item(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["latte lovers member's mug"])))) || !have($familiar(_templateObject72 || (_templateObject72 = _taggedTemplateLiteral(["Robortender"])))) || !canAdv($location(_templateObject73 || (_templateObject73 = _taggedTemplateLiteral(["The Black Forest"]))), false);
   }
 
   return cachedUsingPurse;
+}
+function useUPCs() {
+  var UPC = $item(_templateObject74 || (_templateObject74 = _taggedTemplateLiteral(["scratch 'n' sniff UPC sticker"])));
+
+  if ($items(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["scratch 'n' sniff sword, scratch 'n' sniff crossbow"]))).every(i => !have(i))) {
+    visitUrl("bedazzle.php?action=juststick&sticker=".concat(toInt(UPC), "&pwd"));
+  }
+
+  for (var slotNumber = 1; slotNumber <= 3; slotNumber++) {
+    var slot = toSlot("sticker".concat(slotNumber));
+    var sticker = equippedItem(slot);
+    if (sticker === UPC) continue;
+    visitUrl("bedazzle.php");
+
+    if (sticker !== $item(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["none"])))) {
+      visitUrl("bedazzle.php?action=peel&pwd&slot=".concat(slotNumber));
+    }
+
+    visitUrl("bedazzle.php?action=stick&pwd&slot=".concat(slotNumber, "&sticker=").concat(toInt(UPC)));
+  }
 }
 
 /***/ }),
