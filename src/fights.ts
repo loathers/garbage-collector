@@ -13,6 +13,7 @@ import {
   getCampground,
   handlingChoice,
   haveEquipped,
+  haveOutfit,
   inebrietyLimit,
   isBanished,
   Item,
@@ -1506,7 +1507,7 @@ const freeRunFightSources = [
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) >= 10 &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 &&
-      availableAmount($item`sprinkles`) > 5,
+      (availableAmount($item`sprinkles`) > 5 || haveOutfit(`gingerbread best`)),
     (runSource: ActionSource) => {
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
@@ -1535,13 +1536,22 @@ const freeRunFightSources = [
     () =>
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) === 19 &&
-      availableAmount($item`sprinkles`) > 5,
+      (availableAmount($item`sprinkles`) > 5 || haveOutfit(`gingerbread best`)),
     () => {
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
         1215: 1, // Gingerbread Civic Center advance clock
+        1209: 2, //enter the gallery at Upscale Midnight
+        1214: 1, //get High-End ginger wine
       });
-      adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+      if(availableAmount($item`sprinkles`) < 5 || ((.5*30*(baseMeat+750)) - 5*garboValue($item`gingerbread cigarette`) > 0)){
+        outfit(`gingerbread best`);
+        adventureMacro($location`Gingerbread Upscale Retail District`, Macro.abort());
+      }
+      else {
+        adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+      }
+      
     },
     false,
     {
