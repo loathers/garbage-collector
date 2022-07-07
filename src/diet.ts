@@ -77,6 +77,7 @@ import {
   realmAvailable,
   userConfirmDialog,
 } from "./lib";
+import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -330,6 +331,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`extra-greasy slider`),
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
+    new MenuItem($item`green hamhock`),
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -343,6 +345,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`jar of fermented pickle juice`),
     new MenuItem(mallMin(complexMushroomWines)),
     new MenuItem(mallMin(perfectDrinks)),
+    new MenuItem($item`green eggnog`),
 
     // SPLEEN
     new MenuItem($item`octolus oculus`),
@@ -975,6 +978,8 @@ export function runDiet(): void {
       }
 
       consumeDiet(dietBuilder.diet(), "FULL");
+
+      shrugBadEffects();
     }
   });
 }

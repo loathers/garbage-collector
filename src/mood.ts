@@ -209,7 +209,7 @@ const stings = [
 ];
 const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
 const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
-function shrugBadEffects(...exclude: Effect[]) {
+export function shrugBadEffects(...exclude: Effect[]): void {
   [...stings, ...textAlteringEffects, ...teleportEffects].forEach((effect) => {
     if (have(effect) && !exclude.includes(effect)) {
       uneffect(effect);
