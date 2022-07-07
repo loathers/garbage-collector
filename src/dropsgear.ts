@@ -1,4 +1,5 @@
 import {
+  equippedItem,
   fullnessLimit,
   getWorkshed,
   haveEffect,
@@ -20,6 +21,7 @@ import {
   $location,
   $skill,
   $slot,
+  $slots,
   clamp,
   DaylightShavings,
   findFairyMultiplier,
@@ -321,6 +323,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
     ...mayflowerBouquet(equipMode),
     ...(equipMode === "barf" ? magnifyingGlass() : []),
     ...juneCleaver(equipMode),
+    ...stickers(equipMode),
   ]);
 }
 
@@ -429,4 +432,16 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
 
   const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
   return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / interval]]);
+}
+
+function stickers(equipMode: BonusEquipMode): Map<Item, number> {
+  if (equipMode === "embezzler") return new Map();
+
+  const cost = sumNumbers(
+    $slots`sticker1, sticker2, sticker3`.map((s) => mallPrice(equippedItem(s)) / 20)
+  );
+  return new Map([
+    [$item`scratch 'n' sniff sword`, -1 * cost],
+    [$item`scratch 'n' sniff crossbow`, -1 * cost],
+  ]);
 }
