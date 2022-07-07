@@ -372,12 +372,12 @@ function menu(): MenuItem<Note>[] {
 export function bestConsumable(
   organType: "booze" | "food" | "spleen",
   restrictList?: Item | Item[]
-) {
+): { edible: Item; value: number } {
   let organMenu = potionMenu(menu(), 0, 0);
   if (restrictList) {
     if (restrictList instanceof Item) {
       organMenu = organMenu.filter(
-        (menuItem) => itemType(menuItem.item) === organType && restrictList
+        (menuItem) => itemType(menuItem.item) === organType && restrictList !== menuItem.item
       );
     } else {
       organMenu = organMenu.filter(
@@ -387,7 +387,7 @@ export function bestConsumable(
   } else {
     organMenu = organMenu.filter((menuItem) => itemType(menuItem.item) === organType);
   }
-  const organList = Array.from(organMenu.values()).map((consumable) => {
+  const organList = organMenu.map((consumable) => {
     const edible = consumable.item;
     const buff = effectModifier(edible, "Effect");
     const turnsPerUse = numericModifier(edible, "Effect Duration");
