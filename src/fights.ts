@@ -1568,7 +1568,7 @@ const freeRunFightSources = [
       }
       else {
         adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
-      } 
+      }
     },
     false,
     {
