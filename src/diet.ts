@@ -6,7 +6,6 @@ import {
   cliExecute,
   drink,
   eat,
-  effectModifier,
   Element,
   elementalResistance,
   fullnessLimit,
@@ -26,7 +25,6 @@ import {
   myLevel,
   myMaxhp,
   mySpleenUse,
-  numericModifier,
   print,
   retrievePrice,
   sellsItem,
@@ -54,6 +52,7 @@ import {
   Diet,
   get,
   getAverageAdventures,
+  getModifier,
   getRemainingLiver,
   have,
   Kmail,
@@ -399,10 +398,10 @@ export function bestConsumable(
   }
   const organList = organMenu.map((consumable) => {
     const edible = consumable.item;
-    const buff = effectModifier(edible, "Effect");
-    const turnsPerUse = numericModifier(edible, "Effect Duration");
-    const meatDrop = numericModifier(buff, "Meat Drop");
-    const famWeight = numericModifier(buff, "Familiar Weight");
+    const buff = getModifier("Effect", edible);
+    const turnsPerUse = getModifier("Effect Duration", edible);
+    const meatDrop = getModifier("Meat Drop", buff);
+    const famWeight = getModifier("Familiar Weight", buff);
     const buffValue = ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) / 100;
     const advValue = getAverageAdventures(edible) * get("valueOfAdventure");
     const organSpace = consumable.size;
