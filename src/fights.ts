@@ -6,6 +6,7 @@ import {
   closetAmount,
   create,
   Effect,
+  effectModifier,
   equip,
   Familiar,
   gametimeToInt,
@@ -46,6 +47,7 @@ import {
   Skill,
   stashAmount,
   takeCloset,
+  toEffect,
   toInt,
   toItem,
   totalTurnsPlayed,
@@ -84,6 +86,7 @@ import {
   FindActionSourceConstraints,
   findLeprechaunMultiplier,
   get,
+  getAverageAdventures,
   have,
   maximizeCached,
   property,
@@ -1544,7 +1547,23 @@ const freeRunFightSources = [
         1209: 2, //enter the gallery at Upscale Midnight
         1214: 1, //get High-End ginger wine
       });
-      if(availableAmount($item`sprinkles`) < 5 || ((.5*30*(baseMeat+750)) - 5*garboValue($item`gingerbread cigarette`) > 0)){
+      const boozes = $items`elemental caiproska, moreltini, Dreadsylvanian grimlet, Hodgman's blanket, Sacramento wine, iced plum wine, splendid martini, Eye and a Twist, jar of fermented pickle juice, dirt julep, ambitious turkey, friendly turkey`;
+      const boozeVals = Array.from(boozes.values()).map((drink) => {
+        const buff = effectModifier(drink, "Effect");
+        const turnsPerUse = numericModifier(drink, "Effect Duration");
+        const meatDrop = numericModifier(buff, "Meat Drop");
+        const famWeight = numericModifier(buff, "Familiar Weight");
+        const buffValue = ((meatDrop + famWeight*25/10) * turnsPerUse * (baseMeat+750));
+        const advValue = (getAverageAdventures(drink) * get("valueOfAdventure"))
+        return {
+          booze: drink,
+          value: (garboValue(drink) + buffValue + advValue) / drink.inebriety,
+        }
+      });
+      const best = boozeVals.sort((a, b) => b.value - a.value)[0];
+      const gingerWineValue = ((.5*30*(baseMeat+750)) + (getAverageAdventures($item`High-end ginger wine`) * get("valueOfAdventure"))) / 2;
+      const valueDif = gingerWineValue - best.value;
+      if(availableAmount($item`sprinkles`) < 5 || (valueDif > 0)){
         outfit(`gingerbread best`);
         adventureMacro($location`Gingerbread Upscale Retail District`, Macro.abort());
       }
