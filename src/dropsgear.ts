@@ -27,6 +27,7 @@ import {
   findFairyMultiplier,
   findLeprechaunMultiplier,
   get,
+  getAverageAdventures,
   getFoldGroup,
   getModifier,
   have,
@@ -39,6 +40,7 @@ import {
   FamiliarRider,
   pickRider,
 } from "libram/dist/resources/2010/CrownOfThrones";
+import { mallMin } from "./diet";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import {
@@ -135,6 +137,28 @@ function pantsgiving() {
   const pantsgivingBonus = fullnessValue / (turns * 0.9);
   pantsgivingBonuses.set(turns, pantsgivingBonus);
   return new Map<Item, number>([[$item`Pantsgiving`, pantsgivingBonus]]);
+}
+
+function sweatpants(equipMode: BonusEquipMode) {
+  if (!have($item`designer sweatpants`) || equipMode === "embezzler") return new Map();
+
+  const needSweat =
+    (!globalOptions.ascending && get("sweat", 0) < 75) ||
+    get("sweat", 0) < 25 * (3 - get("_sweatOutSomeBoozeUsed", 0));
+
+  if (!needSweat) return new Map();
+
+  const VOA = get("valueOfAdventure");
+
+  const bestPerfectDrink = mallMin(
+    $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`
+  );
+  const perfectDrinkValuePerDrunk =
+    ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - mallPrice(bestPerfectDrink)) / 3;
+  const splendidMartiniValuePerDrunk = (getAverageAdventures($item`splendid martini`) + 2) * VOA;
+
+  const bonus = (Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2) / 25;
+  return new Map([[$item`designer sweatpants`, bonus]]);
 }
 
 const bestAdventuresFromPants =
@@ -315,6 +339,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
     ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
+    ...sweatpants(equipMode),
     ...shavingBonus(),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
