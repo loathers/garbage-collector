@@ -545,6 +545,7 @@ export function potionMenu(
     ...potion($item`broberry brogurt`),
     ...potion($item`haunted martini`),
     ...potion($item`twice-haunted screwdriver`, { price: twiceHauntedPrice }),
+    ...limitedPotion($item`high-end ginger wine`, availableAmount($item`high-end ginger wine`)),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
     ...(realmAvailable("sleaze") &&
     sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`)
