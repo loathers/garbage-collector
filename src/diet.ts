@@ -371,21 +371,20 @@ function menu(): MenuItem<Note>[] {
 
 export function bestConsumable(
   organType: "booze" | "food" | "spleen",
-  restrictList?: Item | Item[]
+  restrictList?: Item | Item[],
+  maxSize?: number
 ): { edible: Item; value: number } {
-  let organMenu = potionMenu(menu(), 0, 0);
+  const fullMenu = potionMenu(menu(), 0, 0);
+  let organMenu = fullMenu.filter((menuItem) => itemType(menuItem.item) === organType);
   if (restrictList) {
     if (restrictList instanceof Item) {
-      organMenu = organMenu.filter(
-        (menuItem) => itemType(menuItem.item) === organType && restrictList !== menuItem.item
-      );
+      organMenu = organMenu.filter((menuItem) => restrictList !== menuItem.item);
     } else {
-      organMenu = organMenu.filter(
-        (menuItem) => itemType(menuItem.item) === organType && !restrictList.includes(menuItem.item)
-      );
+      organMenu = organMenu.filter((menuItem) => !restrictList.includes(menuItem.item));
     }
-  } else {
-    organMenu = organMenu.filter((menuItem) => itemType(menuItem.item) === organType);
+  }
+  if (maxSize) {
+    organMenu = organMenu.filter((MenuItem) => MenuItem.size <= maxSize);
   }
   const organList = organMenu.map((consumable) => {
     const edible = consumable.item;
@@ -395,12 +394,7 @@ export function bestConsumable(
     const famWeight = numericModifier(buff, "Familiar Weight");
     const buffValue = ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) / 100;
     const advValue = getAverageAdventures(edible) * get("valueOfAdventure");
-    const organSpace =
-      organType === "booze"
-        ? edible.inebriety
-        : organType === "food"
-        ? edible.fullness
-        : edible.spleen;
+    const organSpace = consumable.size;
     return {
       edible: edible,
       value: (buffValue + advValue - mallPrice(edible)) / organSpace,
