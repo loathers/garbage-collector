@@ -1544,10 +1544,10 @@ const freeRunFightSources = [
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
         1215: 1, // Gingerbread Civic Center advance clock
-        1209: 2, //enter the gallery at Upscale Midnight
-        1214: 1, //get High-End ginger wine
+        1209: 2, // enter the gallery at Upscale Midnight
+        1214: 1, // get High-End ginger wine
       });
-      const boozes = $items`elemental caiproska, moreltini, Dreadsylvanian grimlet, Hodgman's blanket, Sacramento wine, iced plum wine, splendid martini, Eye and a Twist, jar of fermented pickle juice, dirt julep, ambitious turkey, friendly turkey`;
+      const boozes = $items`elemental caipiroska, moreltini, Dreadsylvanian grimlet, Hodgman's blanket, Sacramento wine, iced plum wine, splendid martini, Eye and a Twist, jar of fermented pickle juice, dirt julep, Ambitious Turkey, Friendly Turkey`;
       const boozeVals = Array.from(boozes.values()).map((drink) => {
         const buff = effectModifier(drink, "Effect");
         const turnsPerUse = numericModifier(drink, "Effect Duration");
@@ -1557,11 +1557,11 @@ const freeRunFightSources = [
         const advValue = (getAverageAdventures(drink) * get("valueOfAdventure"))
         return {
           booze: drink,
-          value: (mallPrice(drink) + buffValue + advValue) / drink.inebriety,
+          value: ( buffValue + advValue - mallPrice(drink)) / drink.inebriety,
         }
       });
       const best = boozeVals.sort((a, b) => b.value - a.value)[0];
-      const gingerWineValue = ((.5*30*(baseMeat+750)) + (getAverageAdventures($item`High-end ginger wine`) * get("valueOfAdventure"))) / 2;
+      const gingerWineValue = ((.5*30*(baseMeat+750)) + (getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure"))) / 2;
       const valueDif = gingerWineValue - best.value;
       if(availableAmount($item`sprinkles`) < 5 || (valueDif > (garboValue($item`gingerbread cigarette`) * 5))){
         outfit(`gingerbread best`);
@@ -1569,8 +1569,7 @@ const freeRunFightSources = [
       }
       else {
         adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
-      }
-      
+      } 
     },
     false,
     {
