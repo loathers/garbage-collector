@@ -84,7 +84,6 @@ import {
 import { meatMood } from "./mood";
 import { familiarWaterBreathingEquipment, useUPCs, waterBreathingEquipment } from "./outfit";
 import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
-import { garboValue } from "./session";
 import synthesize from "./synthesis";
 
 class YachtzeeDietEntry<T> {
@@ -482,13 +481,13 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     {
       name: "fish juice box",
       cost:
-        garboValue($item`fish juice box`) +
+        mallPrice($item`fish juice box`) +
         (!haveFishyPipe &&
         haveEffect($effect`Fishy`) + 20 + 5 * toInt(havePYECCharge) < yachtzeeTurns
           ? Infinity
           : 0),
       action: () => {
-        acquire(1, $item`fish juice box`, 1.2 * garboValue($item`fish juice box`));
+        acquire(1, $item`fish juice box`, 1.2 * mallPrice($item`fish juice box`));
         if (!have($item`fish juice box`)) throw new Error("Unable to obtain fish juice box");
         use(1, $item`fish juice box`);
         use(1, $item`fishy pipe`);
@@ -496,9 +495,9 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     },
     {
       name: "2x fish juice box",
-      cost: 2 * garboValue($item`fish juice box`),
+      cost: 2 * mallPrice($item`fish juice box`),
       action: () => {
-        acquire(2, $item`fish juice box`, 1.2 * garboValue($item`fish juice box`));
+        acquire(2, $item`fish juice box`, 1.2 * mallPrice($item`fish juice box`));
         if (availableAmount($item`fish juice box`) < 2) {
           throw new Error("Unable to obtain sufficient fish juice boxes");
         }
@@ -507,21 +506,21 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     },
     {
       name: "cuppa Gill tea",
-      cost: garboValue($item`cuppa Gill tea`) + bestWaterBreathingEquipment.cost,
+      cost: mallPrice($item`cuppa Gill tea`) + bestWaterBreathingEquipment.cost,
       action: () => {
-        acquire(1, $item`cuppa Gill tea`, 1.2 * garboValue($item`cuppa Gill tea`));
+        acquire(1, $item`cuppa Gill tea`, 1.2 * mallPrice($item`cuppa Gill tea`));
         if (!have($item`cuppa Gill tea`)) throw new Error("Unable to obtain cuppa Gill tea");
         use(1, $item`cuppa Gill tea`);
       },
     },
     {
       name: "powdered candy sushi set",
-      cost: garboValue($item`powdered candy sushi set`) + bestWaterBreathingEquipment.cost,
+      cost: mallPrice($item`powdered candy sushi set`) + bestWaterBreathingEquipment.cost,
       action: () => {
         acquire(
           1,
           $item`powdered candy sushi set`,
-          1.2 * garboValue($item`powdered candy sushi set`)
+          1.2 * mallPrice($item`powdered candy sushi set`)
         );
         if (!have($item`powdered candy sushi set`)) {
           throw new Error("Unable to obtain powdered candy sushi set");
@@ -531,13 +530,9 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     },
     {
       name: "concentrated fish broth",
-      cost: garboValue($item`concentrated fish broth`) + bestWaterBreathingEquipment.cost,
+      cost: mallPrice($item`concentrated fish broth`) + bestWaterBreathingEquipment.cost,
       action: () => {
-        acquire(
-          1,
-          $item`concentrated fish broth`,
-          1.2 * garboValue($item`concentrated fish broth`)
-        );
+        acquire(1, $item`concentrated fish broth`, 1.2 * mallPrice($item`concentrated fish broth`));
         if (!have($item`concentrated fish broth`)) {
           throw new Error("Unable to obtain concentrated fish broth");
         }
@@ -557,14 +552,14 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     {
       name: "The Haggling",
       cost: canAdv($location`The Brinier Deepers`)
-        ? (have($effect`Lucky!`) ? 0 : garboValue($item`11-leaf clover`)) +
+        ? (have($effect`Lucky!`) ? 0 : mallPrice($item`11-leaf clover`)) +
           get("valueOfAdventure") +
           bestWaterBreathingEquipment.cost +
           costOfLosingBuffs
         : Infinity,
       action: () => {
         if (!have($effect`Lucky!`)) {
-          acquire(1, $item`11-leaf clover`, 1.2 * garboValue($item`11-leaf clover`));
+          acquire(1, $item`11-leaf clover`, 1.2 * mallPrice($item`11-leaf clover`));
           if (!have($item`11-leaf clover`)) {
             throw new Error("Unable to get 11-leaf clover for fishy!");
           }
@@ -637,11 +632,11 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Compute prices to make sure everything is worth it
   const fishyCost = optimizeForFishy(yachtzeeTurns);
   const jelliesBulkPrice = retrievePrice($item`stench jelly`, yachtzeeTurns);
-  const extroPrice = garboValue($item`Extrovermectin™`);
+  const extroPrice = mallPrice($item`Extrovermectin™`);
   const VOA = get("valueOfAdventure");
-  const slidersPrice = garboValue($item`extra-greasy slider`);
-  const pickleJuicePrice = garboValue($item`jar of fermented pickle juice`);
-  const colognePrice = garboValue($item`beggin' cologne`);
+  const slidersPrice = mallPrice($item`extra-greasy slider`);
+  const pickleJuicePrice = mallPrice($item`jar of fermented pickle juice`);
+  const colognePrice = mallPrice($item`beggin' cologne`);
 
   // We prefer using pickle juice to cleanse our spleen for stench jellies since
   // 1) It's cheaper
@@ -657,12 +652,12 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // If we need spleen cleansers but their prices are unreasonable, just return
   const maxSliderPrice = 150000,
     maxPickleJuicePrice = 150000;
-  if (slidersToEat > 0 && garboValue($item`extra-greasy slider`) > maxSliderPrice) {
+  if (slidersToEat > 0 && mallPrice($item`extra-greasy slider`) > maxSliderPrice) {
     print("Sliders are way too overpriced for us to clean spleens for jellies", "red");
     return false;
   } else if (
     pickleJuiceToDrink > 0 &&
-    garboValue($item`jar of fermented pickle juice`) > maxPickleJuicePrice
+    mallPrice($item`jar of fermented pickle juice`) > maxPickleJuicePrice
   ) {
     print("Pickle juices are way too overpriced for us to clean spleens for jellies", "red");
     return false;
@@ -798,7 +793,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
     }
   }
   if (filters > 0) {
-    acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`), true);
+    acquire(filters, $item`mojo filter`, 2 * mallPrice($item`mojo filter`), true);
     if (itemAmount($item`mojo filter`) < filters) {
       throw new Error("Failed to acquire sufficient mojo filters");
     }
