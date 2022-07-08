@@ -149,7 +149,7 @@ function juneCleave(): void {
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
-  if (!skipDiet) {
+  if (!skipDiet && !globalOptions.noDiet) {
     fillPantsgivingFullness();
     fillSweatyLiver();
   }
