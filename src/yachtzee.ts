@@ -1023,7 +1023,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
         (baseMeat + 750) * (embezzlerFactor - yachtzeeFactor) +
         baseMeat * (10100 - embezzlerFactor)) /
       100;
-    const price = garboValue($item`Uncle Greenspan's Bathroom Finance Guide`);
+    const price = mallPrice($item`Uncle Greenspan's Bathroom Finance Guide`);
     const profit = greenspanValue - price;
     if (profit > 0) {
       print(
