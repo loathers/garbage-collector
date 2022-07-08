@@ -29424,7 +29424,7 @@ function postCombatActions() {
   juneCleave();
   numberology();
 
-  if (!skipDiet) {
+  if (!skipDiet && !src_lib/* globalOptions.noDiet */.Xe.noDiet) {
     fillPantsgivingFullness();
     fillSweatyLiver();
   }
@@ -33272,7 +33272,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26542);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("07261fc4b632a587a307e9061b9d41f035b96bd8"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("966a95bc98181f77ff1674b92eb0b62ee382a56e"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -33942,7 +33942,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("07261fc4b632a587a307e9061b9d41f035b96bd8" === mainSha) {
+    if ("966a95bc98181f77ff1674b92eb0b62ee382a56e" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
