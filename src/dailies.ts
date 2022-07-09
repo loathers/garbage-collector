@@ -10,6 +10,7 @@ import {
   gamedayToInt,
   getCampground,
   getClanLounge,
+  handlingChoice,
   haveSkill,
   holiday,
   inebrietyLimit,
@@ -22,6 +23,7 @@ import {
   myClass,
   myHp,
   myInebriety,
+  myLevel,
   myMaxhp,
   myPrimestat,
   myThrall,
@@ -123,6 +125,7 @@ export function dailySetup(): void {
   comb();
   getAttuned();
   jickjar();
+  seaJelly();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -823,4 +826,14 @@ function jickjar(): void {
   if (get("_jickJarAvailable") === "true") {
     visitUrl("showplayer.php?who=1&action=jung&whichperson=jick");
   }
+}
+
+function seaJelly(): void {
+  if (myLevel() < 11) return;
+  if (!have($familiar`space jellyfish`)) return;
+  if (get("_seaJellyHarvested") === true) return;
+  useFamiliar($familiar`space jellyfish`);
+  visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+  visitUrl("place.php?whichplace=thesea&action=thesea_left2");
+  runChoice(1);
 }
