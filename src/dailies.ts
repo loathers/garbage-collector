@@ -122,6 +122,7 @@ export function dailySetup(): void {
   implement();
   comb();
   getAttuned();
+  pocketWishes();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -814,4 +815,10 @@ function getAttuned(): void {
     equip($item`water wings`);
     adv1($location`Generic Summer Holiday Swimming!`);
   }
+}
+
+function pocketWishes(): void {
+  if (!have($item`genie bottle`)) return;
+  let wishes = 3 - get("_genieWishesUsed");
+  while (wishes-- > 0) cliExecute("try; genie wish pocket");
 }
