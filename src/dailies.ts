@@ -122,6 +122,7 @@ export function dailySetup(): void {
   implement();
   comb();
   getAttuned();
+  rainbowGravitation();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -814,4 +815,15 @@ function getAttuned(): void {
     equip($item`water wings`);
     adv1($location`Generic Summer Holiday Swimming!`);
   }
+}
+
+function rainbowGravitation(): void {
+  const summonsLeft = 3 - get("prismaticSummons");
+  if (!have($skill`Rainbow Gravitation`) || summonsLeft <= 0) return;
+  const wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
+  const wadValue = wads.map((wad) => garboValue(wad)).reduce((prev, cur) => prev + cur, 0);
+  const prismaticValue = garboValue($item`prismatic wad`);
+  if (prismaticValue < wadValue) return;
+  wads.forEach((wad) => retrieveItem(wad, summonsLeft));
+  useSkill($skill`Rainbow Gravitation`, summonsLeft);
 }
