@@ -30399,7 +30399,7 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
   var gingerWineValue = (0.5 * 30 * (src_lib/* baseMeat */.Vq + 750) + (0,lib/* getAverageAdventures */.N)((0,template_string/* $item */.xr)(_templateObject372 || (_templateObject372 = fights_taggedTemplateLiteral(["high-end ginger wine"])))) * (0,property/* get */.U2)("valueOfAdventure")) / 2;
   var valueDif = gingerWineValue - best.value;
 
-  if ((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(_templateObject373 || (_templateObject373 = fights_taggedTemplateLiteral(["sprinkles"])))) < 5 || valueDif * 2 > (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject374 || (_templateObject374 = fights_taggedTemplateLiteral(["gingerbread cigarette"])))) * 5 && (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(_templateObject375 || (_templateObject375 = fights_taggedTemplateLiteral(["high-end ginger wine"])))) < 11) {
+  if ((0,external_kolmafia_.haveOutfit)("gingerbread best") && ((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(_templateObject373 || (_templateObject373 = fights_taggedTemplateLiteral(["sprinkles"])))) < 5 || valueDif * 2 > (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject374 || (_templateObject374 = fights_taggedTemplateLiteral(["gingerbread cigarette"])))) * 5 && (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(_templateObject375 || (_templateObject375 = fights_taggedTemplateLiteral(["high-end ginger wine"])))) < 11)) {
     (0,external_kolmafia_.outfit)("gingerbread best");
     (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(_templateObject376 || (_templateObject376 = fights_taggedTemplateLiteral(["Gingerbread Upscale Retail District"]))), src_combat.Macro.abort());
   } else {
@@ -33322,7 +33322,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26542);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("b51d8d1bf571c08d627b07a53dbaa62cfb933069"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("6c853e235af162fa8a3076f4be20304319f27b3d"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -33992,7 +33992,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("b51d8d1bf571c08d627b07a53dbaa62cfb933069" === mainSha) {
+    if ("6c853e235af162fa8a3076f4be20304319f27b3d" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
