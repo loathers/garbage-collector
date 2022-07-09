@@ -820,5 +820,7 @@ function getAttuned(): void {
 function jickjar(): void {
   if (!have($item`psychoanalytic jar`)) return;
   if (get("_jickJarAvailable") === "unknown") visitUrl("showplayer.php?who=1");
-  if (get("_jickJarAvailable") === "true") visitUrl("showplayer.php?who=1&action=jung&whichperson=jick");
+  if (get("_jickJarAvailable") === "true") {
+    visitUrl("showplayer.php?who=1&action=jung&whichperson=jick");
+  }
 }
