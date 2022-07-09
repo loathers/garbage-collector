@@ -1553,9 +1553,10 @@ const freeRunFightSources = [
         2;
       const valueDif = gingerWineValue - best.value;
       if (
-        availableAmount($item`sprinkles`) < 5 ||
-        (valueDif * 2 > garboValue($item`gingerbread cigarette`) * 5 &&
-          itemAmount($item`high-end ginger wine`) < 11)
+        haveOutfit("gingerbread best") &&
+        (availableAmount($item`sprinkles`) < 5 ||
+          (valueDif * 2 > garboValue($item`gingerbread cigarette`) * 5 &&
+            itemAmount($item`high-end ginger wine`) < 11))
       ) {
         outfit("gingerbread best");
         adventureMacro($location`Gingerbread Upscale Retail District`, Macro.abort());
