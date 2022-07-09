@@ -13,6 +13,7 @@ import {
   getCampground,
   handlingChoice,
   haveEquipped,
+  haveOutfit,
   inebrietyLimit,
   isBanished,
   Item,
@@ -83,6 +84,7 @@ import {
   FindActionSourceConstraints,
   findLeprechaunMultiplier,
   get,
+  getAverageAdventures,
   have,
   maximizeCached,
   property,
@@ -147,6 +149,7 @@ import {
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
+import { bestConsumable } from "./diet";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1506,7 +1509,7 @@ const freeRunFightSources = [
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) >= 10 &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 &&
-      availableAmount($item`sprinkles`) > 5,
+      (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     (runSource: ActionSource) => {
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
@@ -1535,13 +1538,30 @@ const freeRunFightSources = [
     () =>
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) === 19 &&
-      availableAmount($item`sprinkles`) > 5,
+      (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     () => {
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
         1215: 1, // Gingerbread Civic Center advance clock
+        1209: 2, // enter the gallery at Upscale Midnight
+        1214: 1, // get High-End ginger wine
       });
-      adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+      const best = bestConsumable("booze", $item`high-end ginger wine`);
+      const gingerWineValue =
+        (0.5 * 30 * (baseMeat + 750) +
+          getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /
+        2;
+      const valueDif = gingerWineValue - best.value;
+      if (
+        availableAmount($item`sprinkles`) < 5 ||
+        (valueDif * 2 > garboValue($item`gingerbread cigarette`) * 5 &&
+          itemAmount($item`high-end ginger wine`) < 11)
+      ) {
+        outfit("gingerbread best");
+        adventureMacro($location`Gingerbread Upscale Retail District`, Macro.abort());
+      } else {
+        adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+      }
     },
     false,
     {

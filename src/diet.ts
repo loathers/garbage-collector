@@ -52,6 +52,7 @@ import {
   Diet,
   get,
   getAverageAdventures,
+  getModifier,
   getRemainingLiver,
   have,
   Kmail,
@@ -69,6 +70,7 @@ import { expectedGregs } from "./extrovermectin";
 import {
   argmax,
   arrayEquals,
+  baseMeat,
   globalOptions,
   HIGHLIGHT,
   realmAvailable,
@@ -377,6 +379,41 @@ function menu(): MenuItem<Note>[] {
   ];
 }
 
+export function bestConsumable(
+  organType: "booze" | "food" | "spleen",
+  restrictList?: Item | Item[],
+  maxSize?: number
+): { edible: Item; value: number } {
+  const fullMenu = potionMenu(menu(), 0, 0);
+  let organMenu = fullMenu.filter((menuItem) => itemType(menuItem.item) === organType);
+  if (restrictList) {
+    if (restrictList instanceof Item) {
+      organMenu = organMenu.filter((menuItem) => restrictList !== menuItem.item);
+    } else {
+      organMenu = organMenu.filter((menuItem) => !restrictList.includes(menuItem.item));
+    }
+  }
+  if (maxSize) {
+    organMenu = organMenu.filter((MenuItem) => MenuItem.size <= maxSize);
+  }
+  const organList = organMenu.map((consumable) => {
+    const edible = consumable.item;
+    const buff = getModifier("Effect", edible);
+    const turnsPerUse = getModifier("Effect Duration", edible);
+    const meatDrop = getModifier("Meat Drop", buff);
+    const famWeight = getModifier("Familiar Weight", buff);
+    const buffValue = ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) / 100;
+    const advValue = getAverageAdventures(edible) * get("valueOfAdventure");
+    const organSpace = consumable.size;
+    return {
+      edible: edible,
+      value: (buffValue + advValue - mallPrice(edible)) / organSpace,
+    };
+  });
+  const best = organList.sort((a, b) => b.value - a.value)[0];
+  return best;
+}
+
 function gregariousCount(): {
   expectedGregariousFights: number[];
   marginalGregariousFights: number;
@@ -556,6 +593,7 @@ export function potionMenu(
     ...potion($item`broberry brogurt`),
     ...potion($item`haunted martini`),
     ...potion($item`twice-haunted screwdriver`, { price: twiceHauntedPrice }),
+    ...limitedPotion($item`high-end ginger wine`, availableAmount($item`high-end ginger wine`)),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
     ...(realmAvailable("sleaze") &&
     sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`)
