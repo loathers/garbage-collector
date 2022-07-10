@@ -296,6 +296,18 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
         set("_stenchJellyUsed", true);
       }
       stenchJellyConsumed = true;
+    } else if (!stenchJellyConsumed && name === "toast with stench jelly") {
+      if (stopBeforeJellies) dietUtil.addToPref(1, name);
+      else {
+        const VOA = get("valueOfAdventure");
+        if (mallPrice($item`munchies pill`) < 3 * VOA) {
+          acquire(1, $item`munchies pill`, 3 * VOA, false);
+          use(Math.min(1, itemAmount($item`munchies pill`)), $item`munchies pill`);
+        }
+        eat(1, $item`toast with stench jelly`);
+        set("_stenchJellyUsed", true);
+      }
+      stenchJellyConsumed = true;
     } else if (!stenchJellyConsumed) {
       dietUtil.dietArray.forEach((entry) => {
         if (entry.name === name) {
