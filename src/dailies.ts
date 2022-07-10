@@ -10,7 +10,6 @@ import {
   gamedayToInt,
   getCampground,
   getClanLounge,
-  handlingChoice,
   haveSkill,
   holiday,
   inebrietyLimit,
@@ -837,9 +836,9 @@ function unlockSea(): void {
 
 function seaJelly(): void {
   if (!have($item`little bitty bathysphere`)) return;
-  if (!have($familiar`space jellyfish`)) return;
+  if (!have($familiar`Space Jellyfish`)) return;
   if (get("_seaJellyHarvested") === true) return;
-  useFamiliar($familiar`space jellyfish`);
+  useFamiliar($familiar`Space Jellyfish`);
   visitUrl("place.php?whichplace=thesea&action=thesea_left2");
   runChoice(1);
 }
