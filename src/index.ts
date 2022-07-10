@@ -293,14 +293,19 @@ function barfTurn() {
       );
       eat(available, $item`magical sausage`);
     }
-
-    if (have($item`designer sweatpants`) && myAdventures() === 1 + globalOptions.saveTurns) {
-      while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25) {
-        useSkill($skill`Sweat Out Some Booze`);
-      }
-      consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
-    }
   }
+
+  if (
+    have($item`designer sweatpants`) &&
+    myAdventures() === 1 + globalOptions.saveTurns &&
+    !globalOptions.noDiet
+  ) {
+    while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25 && myInebriety() > 0) {
+      useSkill($skill`Sweat Out Some Booze`);
+    }
+    consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
+  }
+
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler") {
     if (embezzlerUp) {
       embezzlerLog.digitizedEmbezzlersFought++;
