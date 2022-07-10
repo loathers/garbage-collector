@@ -125,6 +125,7 @@ export function dailySetup(): void {
   comb();
   getAttuned();
   jickjar();
+  unlockSea();
   seaJelly();
 
   retrieveItem($item`Half a Purse`);
@@ -828,12 +829,17 @@ function jickjar(): void {
   }
 }
 
-function seaJelly(): void {
+function unlockSea(): void {
   if (myLevel() < 11) return;
+  if (have($item`little bitty bathysphere`)) return;
+  visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+}
+
+function seaJelly(): void {
+  if (!have($item`little bitty bathysphere`)) return;
   if (!have($familiar`space jellyfish`)) return;
   if (get("_seaJellyHarvested") === true) return;
   useFamiliar($familiar`space jellyfish`);
-  visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
   visitUrl("place.php?whichplace=thesea&action=thesea_left2");
   runChoice(1);
 }
