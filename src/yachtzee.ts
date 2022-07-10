@@ -672,7 +672,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // 2) Our stomach can be used for horseradish buffs
   const spleenToClean =
     yachtzeeTurns - filters - synth - extros - cologne - (spleenLimit() - mySpleenUse());
-  const pickleJuiceToDrink = clamp(Math.ceil(spleenToClean / 5), 0, pickleJuice);
+  let pickleJuiceToDrink = clamp(Math.ceil(spleenToClean / 5), 0, pickleJuice);
   let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
   const extrosToChew = -extros / 2;
   const synthToUse = -synth;
@@ -681,17 +681,30 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   // Compare jellies + sliders vs toasts
   const jellyPrice = mallPrice($item`stench jelly`);
-  const jellyCosts = jellyPrice + slidersPrice / 5;
+  const jellySlidersCosts = jellyPrice + slidersPrice / 5;
+  const jellyPickleCosts = jellyPrice + pickleJuicePrice / 5;
   const toastPrice = Math.min(
     mallPrice($item`toast with stench jelly`),
     jellyPrice + mallPrice($item`toast`)
   );
   const toastCosts = toastPrice + (31.5 / 5 - 3) * VOA;
   let toastsToEat = 0;
-  if (toastCosts < jellyCosts) {
+  if (toastCosts < jellySlidersCosts) {
     toastsToEat = 5 * slidersToEat;
     jelliesToChew -= 5 * slidersToEat;
     slidersToEat = 0;
+  }
+  if (toastCosts < jellyPickleCosts) {
+    while (
+      pickleJuiceToDrink > 0 &&
+      jelliesToChew >= 5 &&
+      myFullness() + slidersToEat * 5 + toastsToEat <=
+        fullnessLimit() + toInt(haveDistentionPill) - 1
+    ) {
+      toastsToEat += 5;
+      jelliesToChew -= 5;
+      pickleJuiceToDrink -= 1;
+    }
   }
 
   const jelliesBulkPrice = retrievePrice($item`stench jelly`, jelliesToChew);
