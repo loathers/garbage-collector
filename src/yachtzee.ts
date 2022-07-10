@@ -165,6 +165,15 @@ class YachtzeeDietUtils {
         ensureConsumable(`stench jelly`, n, 0, 0, 1);
         chew(n, $item`stench jelly`);
       }),
+      new YachtzeeDietEntry(`toast with stench jelly`, 0, 1, 0, 0, (n: number) => {
+        ensureConsumable(`toast with stench jelly`, n, 1, 0, 0);
+        const VOA = get("valueOfAdventure");
+        if (mallPrice($item`munchies pill`) < 3 * VOA) {
+          acquire(n, $item`munchies pill`, 3 * VOA, false);
+          use(Math.min(n, itemAmount($item`munchies pill`)), $item`munchies pill`);
+        }
+        eat(n, $item`toast with stench jelly`);
+      }),
       new YachtzeeDietEntry(`jumping horseradish`, 0, 1, 0, 0, (n: number) => {
         ensureConsumable(`jumping horseradish`, n, 1, 0, 0);
         eat(n, $item`jumping horseradish`);
@@ -327,6 +336,7 @@ function yachtzeeDietScheduler(
   const remainingMenu = new Array<YachtzeeDietEntry<void>>();
   const jellies = new Array<YachtzeeDietEntry<void>>();
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
+  const toasts = new Array<YachtzeeDietEntry<void>>();
 
   // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
   // Assume all fullness/drunkenness > 0 non-spleen cleansers are inserted for buffs
@@ -337,11 +347,18 @@ function yachtzeeDietScheduler(
       for (const splitEntry of splitDietEntry(entry)) dietSchedule.push(splitEntry);
     } else if (entry.name === "stench jelly") {
       for (const splitEntry of splitDietEntry(entry)) jellies.push(splitEntry);
+    } else if (entry.name === "toast with stench jelly") {
+      for (const splitEntry of splitDietEntry(entry)) toasts.push(splitEntry);
     } else if (entry.fullness > 0 || entry.drunkenness > 0) {
       for (const splitEntry of splitDietEntry(entry)) dietSchedule.splice(0, 0, splitEntry);
     } else {
       for (const splitEntry of splitDietEntry(entry)) remainingMenu.push(splitEntry);
     }
+  }
+
+  // Place toasts at the back of our schedule
+  for (const toast of toasts) {
+    dietSchedule.push(toast);
   }
 
   // Then, greedily inject spleen items into the schedule with the ordering:
@@ -596,7 +613,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   return bestFishySource.cost;
 }
 
-function yachtzeeChainDiet(simOnly?: boolean): boolean {
+export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (get("_garboYachtzeeChainDietPlanned", false)) return true;
 
   const havePYECCharge = get("_PYECAvailable", false);
@@ -632,7 +649,6 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   // Compute prices to make sure everything is worth it
   const fishyCost = optimizeForFishy(yachtzeeTurns);
-  const jelliesBulkPrice = retrievePrice($item`stench jelly`, yachtzeeTurns);
   const extroPrice = mallPrice($item`Extrovermectin™`);
   const VOA = get("valueOfAdventure");
   const slidersPrice = mallPrice($item`extra-greasy slider`);
@@ -645,10 +661,28 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const spleenToClean =
     yachtzeeTurns - filters - synth - extros - cologne - (spleenLimit() - mySpleenUse());
   const pickleJuiceToDrink = clamp(Math.ceil(spleenToClean / 5), 0, pickleJuice);
-  const slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
+  let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
   const extrosToChew = -extros / 2;
   const synthToUse = -synth;
   const cologneToChew = -cologne;
+  let jelliesToChew = yachtzeeTurns;
+
+  // Compare jellies + sliders vs toasts
+  const jellyPrice = mallPrice($item`stench jelly`);
+  const jellyCosts = jellyPrice + slidersPrice / 5;
+  const toastPrice = Math.min(
+    mallPrice($item`toast with stench jelly`),
+    jellyPrice + mallPrice($item`toast`)
+  );
+  const toastCosts = toastPrice + (31.5 / 5 - 3) * VOA;
+  let toastsToEat = 0;
+  if (toastCosts < jellyCosts) {
+    toastsToEat = 5 * slidersToEat;
+    jelliesToChew -= 5 * slidersToEat;
+    slidersToEat = 0;
+  }
+
+  const jelliesBulkPrice = retrievePrice($item`stench jelly`, jelliesToChew);
 
   // If we need spleen cleansers but their prices are unreasonable, just return
   const maxSliderPrice = 150000,
@@ -664,10 +698,16 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
     return false;
   }
 
+  const horseradishes =
+    haveEffect($effect`Kicked in the Sinuses`) < 30 &&
+    myFullness() + 1 + slidersToEat * 5 + toastsToEat <= fullnessLimit() + toInt(haveDistentionPill)
+      ? 1
+      : 0;
+
   const earlyMeatDropsEstimate =
-    !have($effect`Synthesis: Greed`) && have($skill`Sweet Synthesis`)
-      ? numericModifier("Meat Drop") + 300
-      : numericModifier("Meat Drop");
+    numericModifier("Meat Drop") +
+    (!have($effect`Synthesis: Greed`) && have($skill`Sweet Synthesis`) ? 300 : 0) +
+    (visitUrl("forestvillage.php").includes("friarcottage.gif") ? 60 : 0);
 
   // Some iffy calculations here
   // If the best diet (at current prices) includes sliders and pickle juice (s+pj), no issues there
@@ -685,7 +725,8 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // However, this means that higherBaseMeatProfits would try to account for the lower earlyMeatDropsEstimate
   const higherBaseMeatProfits =
     yachtzeePotionSetup(yachtzeeTurns, true) +
-    cologneToChew * ((yachtzeeTurns + 60 + 5 * toInt(havePYECCharge)) * 1000 - colognePrice);
+    cologneToChew * ((yachtzeeTurns + 60 + 5 * toInt(havePYECCharge)) * 1000 - colognePrice) +
+    (horseradishes > 0 ? yachtzeeTurns * 1000 : 0);
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
   // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
@@ -693,6 +734,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const jellyValuePerSpleen =
     (earlyMeatDropsEstimate * 2000) / 100 -
     (jelliesBulkPrice +
+      toastsToEat * toastPrice +
       fishyCost +
       slidersToEat * slidersExcessCost +
       pickleJuiceToDrink * pickleJuiceExcessCost -
@@ -714,11 +756,6 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   }
 
   // Schedule our diet first
-  const horseradishes =
-    haveEffect($effect`Kicked in the Sinuses`) < 30 &&
-    myFullness() + 1 + slidersToEat * 5 <= fullnessLimit() + toInt(haveDistentionPill)
-      ? 1
-      : 0;
 
   const addPref = (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
@@ -732,7 +769,13 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   dietUtil.setDietEntry(`mojo filter`, filters);
   dietUtil.setDietEntry(`beggin' cologne`, cologneToChew);
   dietUtil.setDietEntry(`jumping horseradish`, horseradishes);
-  dietUtil.setDietEntry(`stench jelly`, yachtzeeTurns, (n: number, name?: string) => {
+  dietUtil.setDietEntry(`stench jelly`, jelliesToChew, (n: number, name?: string) => {
+    dietUtil.addToPref(n, name);
+    if (!simOnly) {
+      set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
+    }
+  });
+  dietUtil.setDietEntry(`toast with stench jelly`, toastsToEat, (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
     if (!simOnly) {
       set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
@@ -760,14 +803,24 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   // Acquire everything we need
   acquire(
-    yachtzeeTurns,
+    jelliesToChew,
     $item`stench jelly`,
-    (2 * jelliesBulkPrice) / yachtzeeTurns,
+    (2 * jelliesBulkPrice) / jelliesToChew,
     true,
     1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
   );
-  if (itemAmount($item`stench jelly`) < yachtzeeTurns) {
+  if (itemAmount($item`stench jelly`) < jelliesToChew) {
     throw new Error("Failed to acquire sufficient stench jellies");
+  }
+  acquire(
+    toastsToEat,
+    $item`toast with stench jelly`,
+    2 * toastPrice,
+    true,
+    1.2 * toastPrice * toastsToEat
+  );
+  if (itemAmount($item`toast with stench jelly`) < toastsToEat) {
+    throw new Error("Failed to acquire sufficient toasts with stench jelly");
   }
   if (extrosToChew > 0) {
     acquire(extrosToChew, $item`Extrovermectin™`, 100000, true);
