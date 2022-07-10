@@ -123,6 +123,7 @@ export function dailySetup(): void {
   comb();
   getAttuned();
   rainbowGravitation();
+  jickjar();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -826,4 +827,12 @@ function rainbowGravitation(): void {
   if (prismaticValue < wadValue) return;
   wads.forEach((wad) => retrieveItem(wad, summonsLeft));
   useSkill($skill`Rainbow Gravitation`, summonsLeft);
+}
+
+function jickjar(): void {
+  if (!have($item`psychoanalytic jar`)) return;
+  if (get("_jickJarAvailable") === "unknown") visitUrl("showplayer.php?who=1");
+  if (get("_jickJarAvailable") === "true") {
+    visitUrl("showplayer.php?who=1&action=jung&whichperson=jick");
+  }
 }
