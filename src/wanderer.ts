@@ -1,5 +1,5 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
+import { buy, craftType, Item, Location, numericModifier, print, retrieveItem, runChoice, use, visitUrl } from "kolmafia";
 import {
   $effect,
   $item,
@@ -279,6 +279,33 @@ const wandererTargets = [
       return have(guzzlrBooze);
     }
   ),
+  new WandererTarget(
+    "CIOrder",
+    () => realmAvailable("spooky") && (get("questESpOutOfOrder") === "started" || get("questESpOutOfOrder") === "step1" || get("_questESp") === "questESPOutOfOrder"),
+    () => $location`deep dark jungle`,
+    () => {
+      const coinspiracyValue = garboValue($item`coinspiracy`);
+      const curInit = numericModifier("initiative");
+      const progressPerTurn = 5000 / curInit;
+      return coinspiracyValue * 30 / progressPerTurn;
+    },
+    () => {
+      if (get("questESpOutOfOrder") === "unstarted" && get("_questESp") === "questESPOutOfOrder"){
+        visitUrl(`place.php?whichplace=airport_spooky&action=airport2_radio`);
+        runChoice(1); //accept quest
+      }
+      return (get("questESpOutOfOrder") === "started" || get("questESpOutOfOrder") === "step1") && have($item`gps-tracking watch`);
+    }
+  ),
+  /*new WandererTarget(
+    "CIGore",
+    () => realmAvailable("spooky") && (get("questESpGore") === "started" || get("questESpGore") === "step1"),
+    () => $location`Secret government laboratory`,
+    () => {
+      const coinspiracyValue = garboValue($item`coinspiracy`);
+      return
+    }
+  ),*/
   new WandererTarget(
     "Coinspiracy",
     () => realmAvailable("spooky") && get("lovebugsUnlocked"),
