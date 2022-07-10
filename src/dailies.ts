@@ -821,7 +821,7 @@ function rainbowGravitation(): void {
   const summonsLeft = 3 - get("prismaticSummons");
   if (!have($skill`Rainbow Gravitation`) || summonsLeft <= 0) return;
   const wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
-  const wadValue = wads.map((wad) => garboValue(wad)).reduce((prev, cur) => prev + cur, 0);
+  const wadValue =sum(wads, garboValue);
   const prismaticValue = garboValue($item`prismatic wad`);
   if (prismaticValue < wadValue) return;
   wads.forEach((wad) => retrieveItem(wad, summonsLeft));
