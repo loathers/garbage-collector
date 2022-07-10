@@ -122,6 +122,7 @@ export function dailySetup(): void {
   implement();
   comb();
   getAttuned();
+  jickjar();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -813,5 +814,13 @@ function getAttuned(): void {
     retrieveItem($item`water wings`);
     equip($item`water wings`);
     adv1($location`Generic Summer Holiday Swimming!`);
+  }
+}
+
+function jickjar(): void {
+  if (!have($item`psychoanalytic jar`)) return;
+  if (get("_jickJarAvailable") === "unknown") visitUrl("showplayer.php?who=1");
+  if (get("_jickJarAvailable") === "true") {
+    visitUrl("showplayer.php?who=1&action=jung&whichperson=jick");
   }
 }
