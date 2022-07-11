@@ -137,36 +137,36 @@ class YachtzeeDietUtils {
     this.originalPref = !get("_garboYachtzeeChainDiet") ? "" : get("_garboYachtzeeChainDiet");
     this.pref = "";
     this.dietArray = [
-      new YachtzeeDietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
-        ensureConsumable(`extra-greasy slider`, n, 5, 0, -5);
+      new YachtzeeDietEntry("extra-greasy slider", 0, 5, 0, -5, (n: number) => {
+        ensureConsumable("extra-greasy slider", n, 5, 0, -5);
         eat(n, $item`extra-greasy slider`);
       }),
-      new YachtzeeDietEntry(`jar of fermented pickle juice`, 0, 0, 5, -5, (n: number) => {
-        ensureConsumable(`jar of fermented pickle juice`, n, 0, 5, -5);
+      new YachtzeeDietEntry("jar of fermented pickle juice", 0, 0, 5, -5, (n: number) => {
+        ensureConsumable("jar of fermented pickle juice", n, 0, 5, -5);
         castOde(5 * n);
         drink(n, $item`jar of fermented pickle juice`);
       }),
-      new YachtzeeDietEntry(`Extrovermectin™`, 0, 0, 0, 2, (n: number) => {
-        ensureConsumable(`Extrovermectin™`, n, 0, 0, 2);
+      new YachtzeeDietEntry("Extrovermectin™", 0, 0, 0, 2, (n: number) => {
+        ensureConsumable("Extrovermectin™", n, 0, 0, 2);
         chew(n, $item`Extrovermectin™`);
       }),
       new YachtzeeDietEntry("synthesis", 0, 0, 0, 1, (n: number) => {
-        ensureConsumable(`synthesis`, n, 0, 0, 1);
+        ensureConsumable("synthesis", n, 0, 0, 1);
         synthesize(n, $effect`Synthesis: Greed`);
       }),
-      new YachtzeeDietEntry(`mojo filter`, 0, 0, 0, -1, (n: number) => {
+      new YachtzeeDietEntry("mojo filter", 0, 0, 0, -1, (n: number) => {
         use(n, $item`mojo filter`);
       }),
-      new YachtzeeDietEntry(`beggin' cologne`, 0, 0, 0, 1, (n: number) => {
-        ensureConsumable(`beggin' cologne`, n, 0, 0, 1);
+      new YachtzeeDietEntry("beggin' cologne", 0, 0, 0, 1, (n: number) => {
+        ensureConsumable("beggin' cologne", n, 0, 0, 1);
         chew(n, $item`beggin' cologne`);
       }),
-      new YachtzeeDietEntry(`stench jelly`, 0, 0, 0, 1, (n: number) => {
-        ensureConsumable(`stench jelly`, n, 0, 0, 1);
+      new YachtzeeDietEntry("stench jelly", 0, 0, 0, 1, (n: number) => {
+        ensureConsumable("stench jelly", n, 0, 0, 1);
         chew(n, $item`stench jelly`);
       }),
-      new YachtzeeDietEntry(`toast with stench jelly`, 0, 1, 0, 0, (n: number) => {
-        ensureConsumable(`toast with stench jelly`, n, 1, 0, 0);
+      new YachtzeeDietEntry("toast with stench jelly", 0, 1, 0, 0, (n: number) => {
+        ensureConsumable("toast with stench jelly", n, 1, 0, 0);
         const VOA = get("valueOfAdventure");
         if (mallPrice($item`munchies pill`) < 3 * VOA) {
           acquire(n, $item`munchies pill`, 3 * VOA, false);
@@ -174,8 +174,8 @@ class YachtzeeDietUtils {
         }
         eat(n, $item`toast with stench jelly`);
       }),
-      new YachtzeeDietEntry(`jumping horseradish`, 0, 1, 0, 0, (n: number) => {
-        ensureConsumable(`jumping horseradish`, n, 1, 0, 0);
+      new YachtzeeDietEntry("jumping horseradish", 0, 1, 0, 0, (n: number) => {
+        ensureConsumable("jumping horseradish", n, 1, 0, 0);
         eat(n, $item`jumping horseradish`);
       }),
     ];
@@ -257,8 +257,8 @@ function shrugIrrelevantSongs(): void {
     }
   }
   // Shrug default Mood songs
-  cliExecute(`shrug ur-kel`);
-  cliExecute(`shrug phat loot`);
+  cliExecute("shrug ur-kel");
+  cliExecute("shrug phat loot");
 }
 
 function castOde(turns: number): boolean {
@@ -289,22 +289,15 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
   let stenchJellyConsumed = false;
   for (const name of dietString) {
     if (name.length === 0) continue;
-    else if (!stenchJellyConsumed && name === "stench jelly") {
+    else if (!stenchJellyConsumed && name.includes("stench jelly")) {
       if (stopBeforeJellies) dietUtil.addToPref(1, name);
       else {
-        chew(1, $item`stench jelly`);
-        set("_stenchJellyUsed", true);
-      }
-      stenchJellyConsumed = true;
-    } else if (!stenchJellyConsumed && name === "toast with stench jelly") {
-      if (stopBeforeJellies) dietUtil.addToPref(1, name);
-      else {
-        const VOA = get("valueOfAdventure");
-        if (mallPrice($item`munchies pill`) < 3 * VOA) {
-          acquire(1, $item`munchies pill`, 3 * VOA, false);
-          use(Math.min(1, itemAmount($item`munchies pill`)), $item`munchies pill`);
+        const entry = dietUtil.dietArray.find((entry) => entry.name === name);
+        if (entry) {
+          entry.action(1);
+        } else {
+          throw new Error(`Could not find ${name} in dietArray`);
         }
-        eat(1, $item`toast with stench jelly`);
         set("_stenchJellyUsed", true);
       }
       stenchJellyConsumed = true;
@@ -787,20 +780,20 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   };
   const dietUtil = new YachtzeeDietUtils(addPref);
   dietUtil.resetDietPref();
-  dietUtil.setDietEntry(`extra-greasy slider`, slidersToEat);
-  dietUtil.setDietEntry(`jar of fermented pickle juice`, pickleJuiceToDrink);
-  dietUtil.setDietEntry(`Extrovermectin™`, extrosToChew);
-  dietUtil.setDietEntry(`synthesis`, synthToUse);
-  dietUtil.setDietEntry(`mojo filter`, filters);
-  dietUtil.setDietEntry(`beggin' cologne`, cologneToChew);
-  dietUtil.setDietEntry(`jumping horseradish`, horseradishes);
-  dietUtil.setDietEntry(`stench jelly`, jelliesToChew, (n: number, name?: string) => {
+  dietUtil.setDietEntry("extra-greasy slider", slidersToEat);
+  dietUtil.setDietEntry("jar of fermented pickle juice", pickleJuiceToDrink);
+  dietUtil.setDietEntry("Extrovermectin™", extrosToChew);
+  dietUtil.setDietEntry("synthesis", synthToUse);
+  dietUtil.setDietEntry("mojo filter", filters);
+  dietUtil.setDietEntry("beggin' cologne", cologneToChew);
+  dietUtil.setDietEntry("jumping horseradish", horseradishes);
+  dietUtil.setDietEntry("stench jelly", jelliesToChew, (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
     if (!simOnly) {
       set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
     }
   });
-  dietUtil.setDietEntry(`toast with stench jelly`, toastsToEat, (n: number, name?: string) => {
+  dietUtil.setDietEntry("toast with stench jelly", toastsToEat, (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
     if (!simOnly) {
       set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
