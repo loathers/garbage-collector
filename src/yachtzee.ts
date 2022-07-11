@@ -698,7 +698,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     while (
       pickleJuiceToDrink > 0 &&
       jelliesToChew >= 5 &&
-      myFullness() + slidersToEat * 5 + toastsToEat <=
+      myFullness() + slidersToEat * 5 + toastsToEat + 5 <=
         fullnessLimit() + toInt(haveDistentionPill) - 1
     ) {
       toastsToEat += 5;
