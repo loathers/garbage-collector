@@ -827,9 +827,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     true,
     1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
   );
-  if (itemAmount($item`stench jelly`) < jelliesToChew) {
-    throw new Error("Failed to acquire sufficient stench jellies");
-  }
   acquire(
     toastsToEat,
     $item`toast with stench jelly`,
@@ -837,45 +834,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     true,
     1.2 * toastPrice * toastsToEat
   );
-  if (itemAmount($item`toast with stench jelly`) < toastsToEat) {
-    throw new Error("Failed to acquire sufficient toasts with stench jelly");
-  }
-  if (extrosToChew > 0) {
-    acquire(extrosToChew, $item`Extrovermectin™`, 100000, true);
-    if (itemAmount($item`Extrovermectin™`) < extrosToChew) {
-      throw new Error("Failed to acquire sufficient Extrovermectins™");
-    }
-  }
-  if (pickleJuiceToDrink > 0) {
-    acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice, true);
-    if (itemAmount($item`jar of fermented pickle juice`) < pickleJuiceToDrink) {
-      throw new Error("Failed to acquire sufficient jars of fermented pickle juice");
-    }
-  }
-  if (slidersToEat > 0) {
-    acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice, true);
-    if (itemAmount($item`extra-greasy slider`) < slidersToEat) {
-      throw new Error("Failed to acquire sufficient extra-greasy sliders");
-    }
-  }
-  if (cologneToChew > 0) {
-    acquire(cologneToChew, $item`beggin' cologne`, 2 * colognePrice, true);
-    if (itemAmount($item`beggin' cologne`) < cologneToChew) {
-      throw new Error("Failed to acquire sufficient beggin' colognes");
-    }
-  }
-  if (filters > 0) {
-    acquire(filters, $item`mojo filter`, 2 * mallPrice($item`mojo filter`), true);
-    if (itemAmount($item`mojo filter`) < filters) {
-      throw new Error("Failed to acquire sufficient mojo filters");
-    }
-  }
-  if (horseradishes > 0) {
-    acquire(horseradishes, $item`jumping horseradish`, 60000, true);
-    if (itemAmount($item`jumping horseradish`) < horseradishes) {
-      throw new Error("Failed to acquire sufficient jumping horseradishes");
-    }
-  }
+  acquire(toastsToEat, $item`munchies pill`, 3 * VOA, false);
+  acquire(extrosToChew, $item`Extrovermectin™`, 100000);
+  acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice);
+  acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice);
+  acquire(cologneToChew, $item`beggin' cologne`, 2 * colognePrice);
+  acquire(filters, $item`mojo filter`, 2 * mallPrice($item`mojo filter`));
+  acquire(horseradishes, $item`jumping horseradish`, 60000);
 
   // Get fishy turns
   print("Getting fishy turns", "purple");
