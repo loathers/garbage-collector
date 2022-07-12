@@ -509,7 +509,7 @@ export function setMarginalFamiliar(loc: Location): void {
           let expectedAdventures = 0;
           for (let idx = pIdx; idx < 5; idx++) {
             if (dropVal / (idx + 1) + additionalValue > meatFamEV) {
-              expectedAdventures += rotFam.expected[idx];
+              expectedAdventures += idx + 1;
             } else break;
           }
           if (dropVal / 20 + additionalValue > meatFamEV) expectedAdventures += Infinity;
