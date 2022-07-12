@@ -1,11 +1,13 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, numericModifier, print, retrieveItem, runChoice, use, visitUrl } from "kolmafia";
+import { buy, craftType, equippedItem, familiarWeight, Item, Location, myFamiliar, numericModifier, print, retrieveItem, runChoice, toItem, toLocation, use, visitUrl, weightAdjustment } from "kolmafia";
 import {
   $effect,
+  $familiars,
   $item,
   $location,
   $locations,
   $skill,
+  $slot,
   clamp,
   Counter,
   get,
@@ -14,6 +16,7 @@ import {
   questStep,
   SourceTerminal,
 } from "libram";
+import { acquire } from "./acquire";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
 import { garboValue } from "./session";
@@ -297,20 +300,59 @@ const wandererTargets = [
       return (get("questESpOutOfOrder") === "started" || get("questESpOutOfOrder") === "step1") && have($item`gps-tracking watch`);
     }
   ),
-  /*new WandererTarget(
+/* TODO - Actual reward is 500 + 500*(quests completed this ascension), but there is currently no mafia tracking for this, and actual turns to complete is 15 + 5*(quests completed today)  
+  new WandererTarget(
+    "DocBag",
+    () => have($item`lil' doctor bag`) && get("questDoctorBag") !== "unstarted",
+    () => toLocation(get("questDoctorBagLocation")),
+    () => 500 / 20, 
+    () => get("questDoctorBag") === "step1",
+    () => {
+      acquire(1, toItem(get("questDoctorBagItem")));
+      return have(toItem(get("questDoctorBagItem")));
+    }
+  ),*/
+  new WandererTarget(
+    "DinseySexism",
+    () => (get("stenchAirportAlways") || get("_stenchAirportToday")) && get("questEStSocialJusticeI") !== "unstarted",
+    () => $location`Pirates of the Garbage Barges`,
+    () => garboValue($item`FunFunds™`) * 3 / 15,
+  ),
+  new WandererTarget(
+    "DinseyRacism",
+    () => (get("stenchAirportAlways") || get("_stenchAirportToday")) && get("questEStSocialJusticeII") !== "unstarted",
+    () => $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`,
+    () => garboValue($item`FunFunds™`) * 3 / 15,
+  ),
+  new WandererTarget(
+    "DinseyFun",
+    () => (get("stenchAirportAlways") || get("_stenchAirportToday")) && get("questEStZippityDooDah") !== "unstarted",
+    () => $location`The Toxic Teacups`,
+    () => garboValue($item`FunFunds™`) * 3 / 15,
+  ),
+  new WandererTarget(
+    "DinseyTrash",
+    () => (get("stenchAirportAlways") || get("_stenchAirportToday")) && get("questEStFishTrash") !== "unstarted",
+    () => $location`Pirates of the Garbage Barges`,
+    () => garboValue($item`FunFunds™`) * 3 / 15,
+  ),
+  new WandererTarget(
     "CIGore",
     () => realmAvailable("spooky") && (get("questESpGore") === "started" || get("questESpGore") === "step1"),
     () => $location`Secret government laboratory`,
     () => {
       const coinspiracyValue = garboValue($item`coinspiracy`);
-      return
+      const equipFams = $familiars`Trick-or-Treating Tot, Disembodied Hand, Left-Hand Man`;
+      const curMeat = numericModifier("meat drop") - numericModifier(myFamiliar(), "meat drop", familiarWeight(myFamiliar()) + weightAdjustment(), equipFams.includes(myFamiliar()) ? $item`none` : equippedItem($slot`familiar`));
+      const progressPerTurn = 5555/curMeat; //Exact count not known, this is best guess
+      return coinspiracyValue * 20 / progressPerTurn;
     }
-  ),*/
+  ),
   new WandererTarget(
     "Coinspiracy",
     () => realmAvailable("spooky") && get("lovebugsUnlocked"),
     () => $location`The Deep Dark Jungle`,
-    () => 2 // slightly higher value
+    () => 3 // slightly higher value
   ),
   new WandererTarget(
     "Default",

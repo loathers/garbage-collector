@@ -70,7 +70,9 @@ import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from 
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
+  dinseyActiveQuest,
   embezzlerLog,
+  getDinseyQuest,
   globalOptions,
   HIGHLIGHT,
   kramcoGuaranteed,
@@ -97,9 +99,10 @@ import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
-import { garboAverageValue, printGarboSession, startSession } from "./session";
+import { garboAverageValue, garboValue, printGarboSession, startSession } from "./session";
 import { canAdv } from "canadv.ash";
 import { yachtzeeChain } from "./yachtzee";
+import { acquire } from "./acquire";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -117,6 +120,14 @@ function ensureBarfAccess() {
     visitUrl("place.php?whichplace=airport_stench&action=airport3_tunnels");
     runChoice(6);
     cliExecute("refresh inv");
+  }
+  getDinseyQuest();
+  if (dinseyActiveQuest().name === "fuel"){
+    acquire(20, $item`toxic globules`, garboValue($item`FunFunds™`)*3/20);
+    if(have($item`toxic globule`, 20)){
+      visitUrl("place.php?whichplace=airport_stench&action=airport3_kiosk");
+		  runChoice(3);
+    }
   }
 }
 
