@@ -483,21 +483,61 @@ export function setMarginalFamiliar(loc: Location): void {
       return a < b ? a : b;
     });
 
-  if (dropFamiliars[0].familiar !== meatFamiliar()) {
-    const dropFam = dropFamiliars[0].familiar;
-    const meatFam = meatFamiliar();
-    const dropFamEV = dropFamiliars[0].marginalValue - nominalOutfitValue;
-    const meatFamEV = sum(dropFamiliars, (fam) => {
-      return fam.familiar === meatFam ? fam.marginalValue - nominalOutfitValue : 0;
-    });
-    print(
-      `Determined that ${dropFam} (EV: ${dropFamEV}) is better than your meat familiar ${meatFam} (EV: ${meatFamEV})`,
-      "blue"
-    );
-    print(
-      `To always use your meat familiar, type "set garboIgnoreMarginalFamiliars=true" in your CLI.`,
-      "blue"
-    );
-  }
-  useFamiliar(dropFamiliars[0].familiar);
+  const meatFam = meatFamiliar();
+  const meatFamEV = sum(dropFamiliars, (fam) => {
+    return fam.familiar === meatFam ? fam.marginalValue - nominalOutfitValue : 0;
+  });
+  const shouldRunDropFams =
+    sum(
+      dropFamiliars.map((fam) => {
+        const rotFam = rotatingFamiliars.reduce((a, b) => (a.familiar === fam.familiar ? a : b));
+        const additionalValue = fam.marginalValue - fam.expectedValue;
+        if (rotFam.familiar === fam.familiar) {
+          const pIdx = get(rotFam.pref);
+          const dropVal = garboValue(rotFam.drop);
+          let expectedAdventures = 0;
+          for (let idx = pIdx; idx < rotFam.expected.length; idx++) {
+            if (dropVal / rotFam.expected[idx] + additionalValue > meatFamEV) {
+              expectedAdventures += rotFam.expected[idx];
+            } else break;
+          }
+          return expectedAdventures;
+        } else if (fam.familiar === $familiar`Space Jellyfish`) {
+          const pIdx = get("_spaceJellyfishDrops");
+          const dropVal =
+            barf && myInebriety() < inebrietyLimit() ? garboValue($item`stench jelly`) : 0;
+          let expectedAdventures = 0;
+          for (let idx = pIdx; idx < 5; idx++) {
+            if (dropVal / (idx + 1) + additionalValue > meatFamEV) {
+              expectedAdventures += rotFam.expected[idx];
+            } else break;
+          }
+          if (dropVal / 20 + additionalValue > meatFamEV) expectedAdventures += Infinity;
+          return expectedAdventures;
+        } else {
+          return 0;
+        }
+      }),
+      (val) => {
+        return val;
+      }
+    ) <= myAdventures();
+
+  if (shouldRunDropFams) {
+    if (dropFamiliars[0].familiar !== meatFamiliar()) {
+      const dropFam = dropFamiliars[0].familiar;
+      const dropFamEV = (dropFamiliars[0].marginalValue - nominalOutfitValue).toFixed(2);
+      print(
+        `Determined that ${dropFam} (EV: ${dropFamEV})} is better than your meat familiar ${meatFam} (EV: ${meatFamEV.toFixed(
+          2
+        )})`,
+        "blue"
+      );
+      print(
+        `To always use your meat familiar, type "set garboIgnoreMarginalFamiliars=true" in your CLI.`,
+        "blue"
+      );
+    }
+    useFamiliar(dropFamiliars[0].familiar);
+  } else useFamiliar(meatFam);
 }
