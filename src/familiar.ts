@@ -491,13 +491,17 @@ export function setMarginalFamiliar(loc: Location): void {
     sum(
       dropFamiliars.map((fam) => {
         const rotFam = rotatingFamiliars.reduce((a, b) => (a.familiar === fam.familiar ? a : b));
-        const additionalValue = fam.marginalValue - fam.expectedValue;
+        const { meat, bonus } =
+          cachedOutfits.get(fam.leprechaunMultiplier) ??
+          cacheOutfit(fam.leprechaunMultiplier, fam.familiar);
+
+        const outfitValue = (meat * locBaseMeat) / 100 + bonus - nominalOutfitValue;
         if (rotFam.familiar === fam.familiar) {
           const pIdx = get(rotFam.pref);
           const dropVal = garboValue(rotFam.drop);
           let expectedAdventures = 0;
           for (let idx = pIdx; idx < rotFam.expected.length; idx++) {
-            if (dropVal / rotFam.expected[idx] + additionalValue > meatFamEV) {
+            if (dropVal / rotFam.expected[idx] + outfitValue > meatFamEV) {
               expectedAdventures += rotFam.expected[idx];
             } else break;
           }
@@ -505,14 +509,14 @@ export function setMarginalFamiliar(loc: Location): void {
         } else if (fam.familiar === $familiar`Space Jellyfish`) {
           const pIdx = get("_spaceJellyfishDrops");
           const dropVal =
-            barf && myInebriety() < inebrietyLimit() ? garboValue($item`stench jelly`) : 0;
+            barf && myInebriety() <= inebrietyLimit() ? garboValue($item`stench jelly`) : 0;
           let expectedAdventures = 0;
           for (let idx = pIdx; idx < 5; idx++) {
-            if (dropVal / (idx + 1) + additionalValue > meatFamEV) {
+            if (dropVal / (idx + 1) + outfitValue > meatFamEV) {
               expectedAdventures += idx + 1;
             } else break;
           }
-          if (dropVal / 20 + additionalValue > meatFamEV) expectedAdventures += Infinity;
+          if (dropVal / 20 + outfitValue > meatFamEV) expectedAdventures += Infinity;
           return expectedAdventures;
         } else {
           return 0;
@@ -521,7 +525,8 @@ export function setMarginalFamiliar(loc: Location): void {
       (val) => {
         return val;
       }
-    ) >= myAdventures();
+    ) >=
+    myAdventures() - globalOptions.saveTurns;
 
   if (shouldRunDropFams) {
     if (dropFamiliars[0].familiar !== meatFamiliar()) {
