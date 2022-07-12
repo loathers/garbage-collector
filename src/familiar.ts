@@ -521,7 +521,7 @@ export function setMarginalFamiliar(loc: Location): void {
       (val) => {
         return val;
       }
-    ) <= myAdventures();
+    ) >= myAdventures();
 
   if (shouldRunDropFams) {
     if (dropFamiliars[0].familiar !== meatFamiliar()) {
