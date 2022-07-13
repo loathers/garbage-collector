@@ -668,11 +668,16 @@ export function computeDiet(): {
   shotglass: () => Diet<Note>;
   pantsgiving: () => Diet<Note>;
   sweatpants: () => Diet<Note>;
+  stooper: () => Diet<Note>;
+  nightcap: () => Diet<Note>;
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
   const orEmpty = (diet: Diet<Note>) =>
     diet.expectedValue(MPA, "net") < 0 ? new Diet<Note>() : diet;
+
+  const DRUNK_FACTOR = 0.75;
+
   const fullDietPlanner = (menu: MenuItem<Note>[]) => orEmpty(Diet.plan(MPA, menu));
   const shotglassDietPlanner = (menu: MenuItem<Note>[]) =>
     orEmpty(Diet.plan(MPA, menu, { booze: 1 }));
@@ -680,7 +685,14 @@ export function computeDiet(): {
     orEmpty(Diet.plan(MPA, menu, { food: 1 }));
   const sweatpantsDietPlanner = (menu: MenuItem<Note>[]) =>
     orEmpty(Diet.plan(MPA, menu, { booze: getRemainingLiver() }));
-  // const shotglassFilter = (menuItem: MenuItem)
+  const stooperDietPlanner = (menu: MenuItem<Note>[]) =>
+    orEmpty(Diet.plan(DRUNK_FACTOR * MPA, menu, { booze: 1 }));
+  const nightcapDietPlanner = (menu: MenuItem<Note>[]) => {
+    for (const menuItem of menu) {
+      menuItem.size = 1;
+    }
+    return orEmpty(Diet.plan(DRUNK_FACTOR * MPA, menu, { booze: 1 }));
+  };
 
   return {
     diet: () => fullDietPlanner(balanceMenu(menu(), fullDietPlanner)),
@@ -705,10 +717,23 @@ export function computeDiet(): {
           sweatpantsDietPlanner
         )
       ),
+    stooper: () =>
+      stooperDietPlanner(
+        menu().filter((menuItem) => itemType(menuItem.item) === "booze" && menuItem.size === 1)
+      ),
+    nightcap: () =>
+      nightcapDietPlanner(menu().filter((menuItem) => itemType(menuItem.item) === "booze")),
   };
 }
 
-type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING" | "SWEATPANTS";
+type DietName =
+  | "FULL"
+  | "SHOTGLASS"
+  | "PANTSGIVING"
+  | "REMAINING"
+  | "SWEATPANTS"
+  | "STOOPER"
+  | "NIGHTCAP";
 
 function printDiet(diet: Diet<Note>, name: DietName) {
   print(`===== ${name} DIET =====`);
@@ -981,4 +1006,23 @@ export function runDiet(): void {
       shrugBadEffects();
     }
   });
+}
+
+export function runNightcap(): void {
+  if (getRemainingLiver() === 0) {
+    withVIPClan(() => {
+      const dietBuilder = computeDiet();
+
+      if (have($familiar`Stooper`)) {
+        if (myFamiliar() !== $familiar`Stooper`) {
+          useFamiliar($familiar`Stooper`);
+        }
+        if (getRemainingLiver() === 1) {
+          consumeDiet(dietBuilder.shotglass(), "STOOPER");
+        }
+      }
+
+      consumeDiet(dietBuilder.nightcap(), "NIGHTCAP");
+    });
+  }
 }

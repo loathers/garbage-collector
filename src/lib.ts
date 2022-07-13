@@ -87,6 +87,8 @@ export const globalOptions: {
   noDiet: boolean;
   clarasBellClaimed: boolean;
   yachtzeeChain: boolean;
+  nightcap: boolean;
+  overdrunk: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -99,6 +101,8 @@ export const globalOptions: {
   noDiet: false,
   clarasBellClaimed: get("_claraBellUsed"),
   yachtzeeChain: false,
+  nightcap: false,
+  overdrunk: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";

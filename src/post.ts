@@ -27,7 +27,7 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { computeDiet, consumeDiet } from "./diet";
+import { computeDiet, consumeDiet, runNightcap } from "./diet";
 import {
   argmax,
   bestJuneCleaverOption,
@@ -149,7 +149,10 @@ function juneCleave(): void {
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
-  if (!skipDiet && !globalOptions.noDiet) {
+
+  skipDiet ||= globalOptions.noDiet;
+
+  if (!skipDiet) {
     fillPantsgivingFullness();
     fillSweatyLiver();
   }
@@ -157,4 +160,7 @@ export default function postCombatActions(skipDiet = false): void {
   safeInterrupt();
   safeRestore();
   updateMallPrices();
+  if (myAdventures() === 0 && globalOptions.nightcap && globalOptions.overdrunk && !skipDiet) {
+    runNightcap();
+  }
 }

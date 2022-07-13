@@ -64,7 +64,7 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro, withMacro } from "./combat";
-import { computeDiet, consumeDiet, runDiet } from "./diet";
+import { computeDiet, consumeDiet, runDiet, runNightcap } from "./diet";
 import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
 import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
@@ -394,6 +394,10 @@ export function main(argString = ""): void {
       globalOptions.noDiet = true;
     } else if (arg.match(/yachtzeechain/)) {
       globalOptions.yachtzeeChain = true;
+    } else if (arg.match(/nightcap/)) {
+      globalOptions.nightcap = true;
+    } else if (arg.match(/overdrunk/)) {
+      globalOptions.overdrunk = true;
     } else if (arg.match(/version/i)) {
       checkGithubVersion();
       return;
@@ -647,6 +651,10 @@ export function main(argString = ""): void {
             while (canContinue()) {
               barfTurn();
               postCombatActions();
+            }
+
+            if (globalOptions.nightcap && !globalOptions.overdrunk) {
+              runNightcap();
             }
 
             // buy one-day tickets with FunFunds if user desires
