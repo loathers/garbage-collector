@@ -483,55 +483,68 @@ export function setMarginalFamiliar(loc: Location): void {
       return a < b ? a : b;
     });
 
+  let nonJellyExpectedAdv = 0;
   const meatFam = meatFamiliar();
   const meatFamEV = sum(dropFamiliars, (fam) => {
     return fam.familiar === meatFam ? fam.marginalValue - nominalOutfitValue : 0;
   });
   const shouldRunDropFams =
-    sum(
-      dropFamiliars.map((fam) => {
-        const rotFam = rotatingFamiliars.reduce((a, b) => (a.familiar === fam.familiar ? a : b));
-        const { meat, bonus } =
-          cachedOutfits.get(fam.leprechaunMultiplier) ??
-          cacheOutfit(fam.leprechaunMultiplier, fam.familiar);
+    Math.round(
+      sum(
+        dropFamiliars.map((fam) => {
+          const rotFam = rotatingFamiliars.reduce((a, b) => (a.familiar === fam.familiar ? a : b));
+          const { meat, bonus } =
+            cachedOutfits.get(fam.leprechaunMultiplier) ??
+            cacheOutfit(fam.leprechaunMultiplier, fam.familiar);
 
-        const outfitValue = (meat * locBaseMeat) / 100 + bonus - nominalOutfitValue;
-        if (rotFam.familiar === fam.familiar) {
-          const pIdx = get(rotFam.pref);
-          const dropVal = garboValue(rotFam.drop);
-          let expectedAdventures = 0;
-          for (let idx = pIdx; idx < rotFam.expected.length; idx++) {
-            if (dropVal / rotFam.expected[idx] + outfitValue > meatFamEV) {
-              expectedAdventures += rotFam.expected[idx];
-            } else break;
+          const outfitValue = (meat * locBaseMeat) / 100 + bonus - nominalOutfitValue;
+          if (rotFam.familiar === fam.familiar) {
+            const pIdx = get(rotFam.pref);
+            const dropVal = garboValue(rotFam.drop);
+            let expectedAdventures = 0;
+            for (let idx = pIdx; idx < rotFam.expected.length; idx++) {
+              if (dropVal / rotFam.expected[idx] + outfitValue > meatFamEV) {
+                expectedAdventures += rotFam.expected[idx];
+              } else break;
+            }
+            nonJellyExpectedAdv += expectedAdventures;
+            return expectedAdventures;
+          } else if (fam.familiar === $familiar`Space Jellyfish`) {
+            const pIdx = get("_spaceJellyfishDrops");
+            const dropVal =
+              barf && myInebriety() <= inebrietyLimit() ? garboValue($item`stench jelly`) : 0;
+            let expectedAdventures = 0;
+            for (let idx = pIdx; idx < 5; idx++) {
+              if (dropVal / (idx + 1) + outfitValue > meatFamEV) {
+                expectedAdventures += idx + 1;
+              } else break;
+            }
+            if (dropVal / 20 + outfitValue > meatFamEV) expectedAdventures += Infinity;
+            return expectedAdventures;
+          } else {
+            return 0;
           }
-          return expectedAdventures;
-        } else if (fam.familiar === $familiar`Space Jellyfish`) {
-          const pIdx = get("_spaceJellyfishDrops");
-          const dropVal =
-            barf && myInebriety() <= inebrietyLimit() ? garboValue($item`stench jelly`) : 0;
-          let expectedAdventures = 0;
-          for (let idx = pIdx; idx < 5; idx++) {
-            if (dropVal / (idx + 1) + outfitValue > meatFamEV) {
-              expectedAdventures += idx + 1;
-            } else break;
-          }
-          if (dropVal / 20 + outfitValue > meatFamEV) expectedAdventures += Infinity;
-          return expectedAdventures;
-        } else {
-          return 0;
+        }),
+        (val) => {
+          return val;
         }
-      }),
-      (val) => {
-        return val;
-      }
+      )
     ) >=
     myAdventures() - globalOptions.saveTurns;
 
   if (shouldRunDropFams) {
-    if (dropFamiliars[0].familiar !== meatFamiliar()) {
-      const dropFam = dropFamiliars[0].familiar;
-      const dropFamEV = (dropFamiliars[0].marginalValue - nominalOutfitValue).toFixed(2);
+    const idx =
+      globalOptions.ascending &&
+      nonJellyExpectedAdv < 30 && // Assume 30 overdrunk barf adventures
+      myInebriety() <= inebrietyLimit() &&
+      dropFamiliars[idx].familiar !== meatFamiliar()
+        ? dropFamiliars.findIndex((fam) => {
+            fam.familiar === $familiar`Space Jellyfish`;
+          }) ?? 0
+        : 0;
+    if (dropFamiliars[idx].familiar !== meatFamiliar()) {
+      const dropFam = dropFamiliars[idx].familiar;
+      const dropFamEV = (dropFamiliars[idx].marginalValue - nominalOutfitValue).toFixed(2);
       print(
         `Determined that ${dropFam} (EV: ${dropFamEV})} is better than your meat familiar ${meatFam} (EV: ${meatFamEV.toFixed(
           2
@@ -543,6 +556,6 @@ export function setMarginalFamiliar(loc: Location): void {
         "blue"
       );
     }
-    useFamiliar(dropFamiliars[0].familiar);
+    useFamiliar(dropFamiliars[idx].familiar);
   } else useFamiliar(meatFam);
 }
