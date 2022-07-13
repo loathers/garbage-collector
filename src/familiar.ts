@@ -533,13 +533,17 @@ export function setMarginalFamiliar(loc: Location): void {
     myAdventures() - globalOptions.saveTurns;
 
   if (shouldRunDropFams) {
+    const jellyfishEV =
+      dropFamiliars.filter((fam) => fam.familiar === $familiar`Space Jellyfish`)[0].marginalValue -
+        nominalOutfitValue ?? 0;
     const idx =
       globalOptions.ascending &&
       nonJellyExpectedAdv < 30 && // Assume 30 overdrunk barf adventures
       myInebriety() <= inebrietyLimit() &&
-      dropFamiliars[idx].familiar !== meatFamiliar()
+      jellyfishEV > meatFamEV &&
+      dropFamiliars[0].familiar !== meatFamiliar()
         ? dropFamiliars.findIndex((fam) => {
-            fam.familiar === $familiar`Space Jellyfish`;
+            fam.familiar === (jellyfishEV > meatFamEV ? $familiar`Space Jellyfish` : meatFam);
           }) ?? 0
         : 0;
     if (dropFamiliars[idx].familiar !== meatFamiliar()) {
