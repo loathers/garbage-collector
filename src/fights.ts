@@ -13,6 +13,7 @@ import {
   getCampground,
   handlingChoice,
   haveEquipped,
+  haveOutfit,
   inebrietyLimit,
   isBanished,
   Item,
@@ -83,6 +84,7 @@ import {
   FindActionSourceConstraints,
   findLeprechaunMultiplier,
   get,
+  getAverageAdventures,
   have,
   maximizeCached,
   property,
@@ -107,6 +109,7 @@ import {
   pocketProfessorLectures,
 } from "./familiar";
 import {
+  baseMeat,
   burnLibrams,
   dogOrHolidayWanderer,
   embezzlerLog,
@@ -133,7 +136,6 @@ import {
   embezzlerCount,
   embezzlerMacro,
   embezzlerSources,
-  estimatedTurns,
   getNextEmbezzlerFight,
 } from "./embezzler";
 import { canAdv } from "canadv.ash";
@@ -147,6 +149,7 @@ import {
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
+import { bestConsumable } from "./diet";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -190,12 +193,12 @@ const secondChainMacro = () =>
 function embezzlerSetup() {
   setLocation($location`none`);
   potionSetup(false);
-  meatMood(true).execute(estimatedTurns());
+  maximize("MP", false);
+  meatMood(true, 750 + baseMeat).execute(embezzlerCount());
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
     if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
-      maximize("MP", false);
       burnLibrams();
       use($item`Platinum Yendorian Express Card`);
     }
@@ -204,7 +207,6 @@ function embezzlerSetup() {
     }
   });
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
-    maximize("MP", false);
     burnLibrams();
     use($item`License to Chill`);
   }
@@ -554,10 +556,15 @@ class FreeFight {
     return freeFightFamiliar(this.options.canOverrideMacro);
   }
 
+  isAvailable(): boolean {
+    const avail = this.available();
+    return typeof avail === "number" ? avail > 0 : avail;
+  }
+
   runAll() {
-    if (!this.available()) return;
+    if (!this.isAvailable()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
-    while (this.available()) {
+    while (this.isAvailable()) {
       voidMonster();
       const noncombat = !!this.options?.noncombat?.();
       if (!noncombat) {
@@ -593,9 +600,9 @@ class FreeRunFight extends FreeFight {
   }
 
   runAll() {
-    if (!this.available()) return;
+    if (!this.isAvailable()) return;
     if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
-    while (this.available()) {
+    while (this.isAvailable()) {
       const constraints = {
         noFamiliar: () => this.options.familiar !== undefined,
         ...this.constraints,
@@ -1502,7 +1509,7 @@ const freeRunFightSources = [
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) >= 10 &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 &&
-      availableAmount($item`sprinkles`) > 5,
+      (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     (runSource: ActionSource) => {
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
@@ -1531,13 +1538,31 @@ const freeRunFightSources = [
     () =>
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) === 19 &&
-      availableAmount($item`sprinkles`) > 5,
+      (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     () => {
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
         1215: 1, // Gingerbread Civic Center advance clock
+        1209: 2, // enter the gallery at Upscale Midnight
+        1214: 1, // get High-End ginger wine
       });
-      adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+      const best = bestConsumable("booze", $item`high-end ginger wine`);
+      const gingerWineValue =
+        (0.5 * 30 * (baseMeat + 750) +
+          getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /
+        2;
+      const valueDif = gingerWineValue - best.value;
+      if (
+        haveOutfit("gingerbread best") &&
+        (availableAmount($item`sprinkles`) < 5 ||
+          (valueDif * 2 > garboValue($item`gingerbread cigarette`) * 5 &&
+            itemAmount($item`high-end ginger wine`) < 11))
+      ) {
+        outfit("gingerbread best");
+        adventureMacro($location`Gingerbread Upscale Retail District`, Macro.abort());
+      } else {
+        adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+      }
     },
     false,
     {
@@ -1663,7 +1688,7 @@ const freeRunFightSources = [
     (runSource: ActionSource) => {
       adventureMacro(
         $location`Cobb's Knob Menagerie, Level 1`,
-        Macro.if_($monster`QuickBASIC Elemental`, Macro.basicCombat())
+        Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
           .if_($monster`BASIC Elemental`, Macro.trySkill($skill`Summon Mayfly Swarm`))
           .step(runSource.macro)
       );
@@ -1861,7 +1886,7 @@ export function freeFights(): void {
   ) {
     try {
       for (const freeKillSource of freeKillSources) {
-        if (freeKillSource.available() && get("garbageChampagneCharge") > 0) {
+        if (freeKillSource.isAvailable() && get("garbageChampagneCharge") > 0) {
           // TODO: Add potions that are profitable for free kills.
           ensureEffect($effect`Steely-Eyed Squint`);
         }
@@ -2202,11 +2227,11 @@ const freeKills: FreeKill[] = [
   { macro: $skill`Gingerbread Mob Hit`, used: () => get("_gingerbreadMobHitUsed") },
   { macro: $item`replica bat-oomerang`, used: () => get("_usedReplicaBatoomerang") >= 3 },
 ];
-const isAvailable = ({ source, macro, used }: FreeKill) => have(source ?? macro) && !used();
+const canUseSource = ({ source, macro, used }: FreeKill) => have(source ?? macro) && !used();
 const toRequirement = ({ source }: FreeKill) =>
   source ? new Requirement([], { forceEquip: [source] }) : new Requirement([], {});
 function findFreeKill() {
-  return freeKills.find(isAvailable) ?? null;
+  return freeKills.find(canUseSource) ?? null;
 }
 
 function killRobortCreaturesForFree() {

@@ -1,17 +1,21 @@
 import { canAdv } from "canadv.ash";
 import {
   bjornifyFamiliar,
+  buy,
   canEquip,
   cliExecute,
   enthroneFamiliar,
+  equippedItem,
   haveEquipped,
   inebrietyLimit,
   Item,
+  mallPrice,
   myClass,
   myFamiliar,
   myInebriety,
   numericModifier,
   retrieveItem,
+  toInt,
   toSlot,
   totalTurnsPlayed,
   visitUrl,
@@ -26,15 +30,19 @@ import {
   $monster,
   $skill,
   $slot,
+  $slots,
   CombatLoversLocket,
+  findLeprechaunMultiplier,
   get,
   getKramcoWandererChance,
   have,
   Requirement,
 } from "libram";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
+import { embezzlerCount } from "./embezzler";
 import { meatFamiliar } from "./familiar";
-import { baseMeat } from "./lib";
+import { baseMeat, globalOptions } from "./lib";
+import { digitizedMonstersRemaining } from "./wanderer";
 
 export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
@@ -95,14 +103,19 @@ export function freeFightOutfit(requirement?: Requirement): void {
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
 
-  const missingEquips = (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
-    (equipment) => !haveEquipped(equipment)
-  );
-  if (missingEquips.length > 0) {
+  const missingEquips = () =>
+    (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
+      (equipment) => !haveEquipped(equipment)
+    );
+  if (missingEquips().length > 0) {
+    cliExecute("refresh all");
+    new Requirement([], { forceUpdate: true }).merge(finalRequirement).maximize();
+  }
+  if (missingEquips().length > 0) {
     throw new Error(
-      `Maximizer failed to equip the following equipment: ${missingEquips
+      `Maximizer failed to equip the following equipment: ${missingEquips()
         .map((equipment) => equipment.name)
-        .join(", ")}. Maybe "refresh all" and try again?`
+        .join(", ")}.?`
     );
   }
 }
@@ -200,6 +213,28 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       forceEquip.push($item`Kramco Sausage-o-Matic™`);
     }
   }
+
+  const stickerSlots = $slots`sticker1, sticker2, sticker3`;
+  const UPC = $item`scratch 'n' sniff UPC sticker`;
+
+  if (embezzlerUp) {
+    const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
+    const embezzlers = globalOptions.ascending
+      ? Math.min(20, embezzlerCount() || digitizedMonstersRemaining())
+      : 20;
+
+    const addedValueOfFullSword = (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
+    if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
+      const needed = 3 - stickerSlots.filter((sticker) => equippedItem(sticker) === UPC).length;
+      if (needed) buy(needed, UPC, addedValueOfFullSword / 3);
+      useUPCs();
+    }
+  }
+
+  if (stickerSlots.map((s) => equippedItem(s)).includes($item`none`)) {
+    preventEquip.push(...$items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`);
+  }
+
   if (myFamiliar() === $familiar`Obtuse Angel`) {
     forceEquip.push($item`quake of arrows`);
     if (!have($item`quake of arrows`)) retrieveItem($item`quake of arrows`);
@@ -267,13 +302,20 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     cliExecute("retrocape robot kill");
   }
 
-  if (
-    (compiledRequirements.maximizeOptions.forceEquip ?? []).some(
+  const missingEquips = () =>
+    (compiledRequirements.maximizeOptions.forceEquip ?? []).filter(
       (equipment) => !haveEquipped(equipment)
-    )
-  ) {
+    );
+
+  if (missingEquips().length > 0) {
+    cliExecute("refresh all");
+    new Requirement([], { forceUpdate: true }).merge(compiledRequirements).maximize();
+  }
+  if (missingEquips().length > 0) {
     throw new Error(
-      "Maximizer failed to equip desired equipment. Maybe try 'refresh all' and run again?"
+      `Maximizer failed to equip the following equipment: ${missingEquips()
+        .map((equipment) => equipment.name)
+        .join(", ")}.?`
     );
   }
 
@@ -292,4 +334,21 @@ export function usingPurse(): boolean {
       !canAdv($location`The Black Forest`, false);
   }
   return cachedUsingPurse;
+}
+
+export function useUPCs(): void {
+  const UPC = $item`scratch 'n' sniff UPC sticker`;
+  if ($items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`.every((i) => !have(i))) {
+    visitUrl(`bedazzle.php?action=juststick&sticker=${toInt(UPC)}&pwd`);
+  }
+  for (let slotNumber = 1; slotNumber <= 3; slotNumber++) {
+    const slot = toSlot(`sticker${slotNumber}`);
+    const sticker = equippedItem(slot);
+    if (sticker === UPC) continue;
+    visitUrl("bedazzle.php");
+    if (sticker !== $item`none`) {
+      visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
+    }
+    visitUrl(`bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`);
+  }
 }

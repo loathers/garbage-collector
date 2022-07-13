@@ -5,6 +5,7 @@ import {
   getWorkshed,
   haveEffect,
   itemAmount,
+  mallPrice,
   myClass,
   myLevel,
   numericModifier,
@@ -37,9 +38,10 @@ Mood.setDefaultOptions({
     $effects`Chorale of Companionship`,
     $effects`The Ballad of Richie Thingfinder`,
   ],
+  useNativeRestores: true,
 });
 
-export function meatMood(urKels = false): Mood {
+export function meatMood(urKels = false, meat = baseMeat): Mood {
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
@@ -62,7 +64,17 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
 
-  if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
+  const mmjCost =
+    (100 -
+      (have($skill`Five Finger Discount`) ? 5 : 0) -
+      (have($item`Travoltan trousers`) ? 5 : 0)) *
+    (200 / (1.5 * myLevel() + 5));
+  const genericManaPotionCost = mallPrice($item`generic mana potion`) * (200 / (2.5 * myLevel()));
+  const mpRestorerCost = Math.min(mmjCost, genericManaPotionCost);
+
+  if (myClass() !== $class`Pastamancer` && 0.1 * meat * 10 > mpRestorerCost) {
+    mood.skill($skill`Bind Lasagmbie`);
+  }
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
@@ -197,7 +209,7 @@ const stings = [
 ];
 const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
 const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
-function shrugBadEffects(...exclude: Effect[]) {
+export function shrugBadEffects(...exclude: Effect[]): void {
   [...stings, ...textAlteringEffects, ...teleportEffects].forEach((effect) => {
     if (have(effect) && !exclude.includes(effect)) {
       uneffect(effect);

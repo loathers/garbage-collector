@@ -1,4 +1,5 @@
 import {
+  equippedItem,
   fullnessLimit,
   getWorkshed,
   haveEffect,
@@ -20,11 +21,13 @@ import {
   $location,
   $skill,
   $slot,
+  $slots,
   clamp,
   DaylightShavings,
   findFairyMultiplier,
   findLeprechaunMultiplier,
   get,
+  getAverageAdventures,
   getFoldGroup,
   getModifier,
   have,
@@ -37,6 +40,7 @@ import {
   FamiliarRider,
   pickRider,
 } from "libram/dist/resources/2010/CrownOfThrones";
+import { mallMin } from "./diet";
 import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import {
@@ -133,6 +137,28 @@ function pantsgiving() {
   const pantsgivingBonus = fullnessValue / (turns * 0.9);
   pantsgivingBonuses.set(turns, pantsgivingBonus);
   return new Map<Item, number>([[$item`Pantsgiving`, pantsgivingBonus]]);
+}
+
+function sweatpants(equipMode: BonusEquipMode) {
+  if (!have($item`designer sweatpants`) || equipMode === "embezzler") return new Map();
+
+  const needSweat =
+    (!globalOptions.ascending && get("sweat", 0) < 75) ||
+    get("sweat", 0) < 25 * (3 - get("_sweatOutSomeBoozeUsed", 0));
+
+  if (!needSweat) return new Map();
+
+  const VOA = get("valueOfAdventure");
+
+  const bestPerfectDrink = mallMin(
+    $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`
+  );
+  const perfectDrinkValuePerDrunk =
+    ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - mallPrice(bestPerfectDrink)) / 3;
+  const splendidMartiniValuePerDrunk = (getAverageAdventures($item`splendid martini`) + 2) * VOA;
+
+  const bonus = (Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2) / 25;
+  return new Map([[$item`designer sweatpants`, bonus]]);
 }
 
 const bestAdventuresFromPants =
@@ -313,6 +339,7 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
     ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
+    ...sweatpants(equipMode),
     ...shavingBonus(),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
@@ -320,7 +347,8 @@ export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
     ...snowSuit(equipMode),
     ...mayflowerBouquet(equipMode),
     ...(equipMode === "barf" ? magnifyingGlass() : []),
-    ...juneCleaver(),
+    ...juneCleaver(equipMode),
+    ...stickers(equipMode),
   ]);
 }
 
@@ -413,7 +441,7 @@ export function usingThumbRing(): boolean {
 }
 
 let juneCleaverEV: number | null = null;
-function juneCleaver(): Map<Item, number> {
+function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
   if (!have($item`June cleaver`) || get("_juneCleaverFightsLeft") > estimatedTurns()) {
     return new Map();
   }
@@ -426,5 +454,19 @@ function juneCleaver(): Map<Item, number> {
         0
       ) / JuneCleaver.choices.length;
   }
-  return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / JuneCleaver.getInterval()]]);
+
+  const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
+  return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / interval]]);
+}
+
+function stickers(equipMode: BonusEquipMode): Map<Item, number> {
+  if (equipMode === "embezzler") return new Map();
+
+  const cost = sumNumbers(
+    $slots`sticker1, sticker2, sticker3`.map((s) => mallPrice(equippedItem(s)) / 20)
+  );
+  return new Map([
+    [$item`scratch 'n' sniff sword`, -1 * cost],
+    [$item`scratch 'n' sniff crossbow`, -1 * cost],
+  ]);
 }

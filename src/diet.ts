@@ -52,6 +52,8 @@ import {
   Diet,
   get,
   getAverageAdventures,
+  getModifier,
+  getRemainingLiver,
   have,
   Kmail,
   maximizeCached,
@@ -68,11 +70,13 @@ import { expectedGregs } from "./extrovermectin";
 import {
   argmax,
   arrayEquals,
+  baseMeat,
   globalOptions,
   HIGHLIGHT,
   realmAvailable,
   userConfirmDialog,
 } from "./lib";
+import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -272,7 +276,11 @@ const stomachLiverCleaners = new Map([
   [$item`spice melange`, [-3, -3]],
   [$item`synthetic dog hair pill`, [0, -1]],
   [$item`cuppa Sobrie tea`, [0, -1]],
+  [$item`designer sweatpants`, [0, -1]],
 ]);
+
+export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
+  argmax(items.map((i) => [i, -mallPrice(i)]));
 
 /**
  * Generate a basic menu of high-yield items to consider
@@ -302,7 +310,7 @@ function menu(): MenuItem<Note>[] {
    *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
    */
   const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
-  const smallEpics = $items`meteoreo, ice rice`.concat([$item`Tea, Earl Grey, Hot`]);
+  const smallEpics = [...$items`meteoreo, ice rice`, $item`Tea, Earl Grey, Hot`];
 
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
     have(item)
@@ -311,8 +319,6 @@ function menu(): MenuItem<Note>[] {
   const limitedItems = [...boxingDayCareItems, ...pilsners].map(
     (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
   );
-
-  const mallMin = (items: Item[]) => argmax(items.map((i) => [i, -mallPrice(i)]));
 
   return [
     // FOOD
@@ -324,6 +330,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`extra-greasy slider`),
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
+    new MenuItem($item`green hamhock`),
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -337,6 +344,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`jar of fermented pickle juice`),
     new MenuItem(mallMin(complexMushroomWines)),
     new MenuItem(mallMin(perfectDrinks)),
+    new MenuItem($item`green eggnog`),
 
     // SPLEEN
     new MenuItem($item`octolus oculus`),
@@ -363,7 +371,47 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`potion of the field gar`, { maximum: 1 }),
     ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<Note>(item)),
     new MenuItem($item`sweet tooth`, { size: -1, organ: "food", maximum: 1 }),
+    new MenuItem($item`designer sweatpants`, {
+      size: -1,
+      organ: "booze",
+      maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed", 0), Math.floor(get("sweat", 0) / 25)),
+    }),
   ];
+}
+
+export function bestConsumable(
+  organType: "booze" | "food" | "spleen",
+  restrictList?: Item | Item[],
+  maxSize?: number
+): { edible: Item; value: number } {
+  const fullMenu = potionMenu(menu(), 0, 0);
+  let organMenu = fullMenu.filter((menuItem) => itemType(menuItem.item) === organType);
+  if (restrictList) {
+    if (restrictList instanceof Item) {
+      organMenu = organMenu.filter((menuItem) => restrictList !== menuItem.item);
+    } else {
+      organMenu = organMenu.filter((menuItem) => !restrictList.includes(menuItem.item));
+    }
+  }
+  if (maxSize) {
+    organMenu = organMenu.filter((MenuItem) => MenuItem.size <= maxSize);
+  }
+  const organList = organMenu.map((consumable) => {
+    const edible = consumable.item;
+    const buff = getModifier("Effect", edible);
+    const turnsPerUse = getModifier("Effect Duration", edible);
+    const meatDrop = getModifier("Meat Drop", buff);
+    const famWeight = getModifier("Familiar Weight", buff);
+    const buffValue = ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) / 100;
+    const advValue = getAverageAdventures(edible) * get("valueOfAdventure");
+    const organSpace = consumable.size;
+    return {
+      edible: edible,
+      value: (buffValue + advValue - mallPrice(edible)) / organSpace,
+    };
+  });
+  const best = organList.sort((a, b) => b.value - a.value)[0];
+  return best;
 }
 
 function gregariousCount(): {
@@ -545,6 +593,7 @@ export function potionMenu(
     ...potion($item`broberry brogurt`),
     ...potion($item`haunted martini`),
     ...potion($item`twice-haunted screwdriver`, { price: twiceHauntedPrice }),
+    ...limitedPotion($item`high-end ginger wine`, availableAmount($item`high-end ginger wine`)),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
     ...(realmAvailable("sleaze") &&
     sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`)
@@ -618,6 +667,7 @@ export function computeDiet(): {
   diet: () => Diet<Note>;
   shotglass: () => Diet<Note>;
   pantsgiving: () => Diet<Note>;
+  sweatpants: () => Diet<Note>;
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
@@ -628,6 +678,8 @@ export function computeDiet(): {
     orEmpty(Diet.plan(MPA, menu, { booze: 1 }));
   const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) =>
     orEmpty(Diet.plan(MPA, menu, { food: 1 }));
+  const sweatpantsDietPlanner = (menu: MenuItem<Note>[]) =>
+    orEmpty(Diet.plan(MPA, menu, { booze: getRemainingLiver() }));
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
@@ -646,10 +698,17 @@ export function computeDiet(): {
           pantsgivingDietPlanner
         )
       ),
+    sweatpants: () =>
+      sweatpantsDietPlanner(
+        balanceMenu(
+          menu().filter((menuItem) => itemType(menuItem.item) === "booze" && menuItem.size <= 3),
+          sweatpantsDietPlanner
+        )
+      ),
   };
 }
 
-type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING";
+type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING" | "SWEATPANTS";
 
 function printDiet(diet: Diet<Note>, name: DietName) {
   print(`===== ${name} DIET =====`);
@@ -853,6 +912,14 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
             consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
           },
         ],
+        [
+          $item`designer sweatpants`,
+          (countToConsume: number) => {
+            for (let n = 1; n <= countToConsume; n++) {
+              useSkill($skill`Sweat Out Some Booze`);
+            }
+          },
+        ],
       ]);
 
       for (const menuItem of menuItems) {
@@ -910,6 +977,8 @@ export function runDiet(): void {
       }
 
       consumeDiet(dietBuilder.diet(), "FULL");
+
+      shrugBadEffects();
     }
   });
 }

@@ -1,6 +1,7 @@
 import { canAdv } from "canadv.ash";
 import {
   availableAmount,
+  buy,
   canEquip,
   canInteract,
   chew,
@@ -18,6 +19,8 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
+  mallPrice,
+  maximize,
   myFamiliar,
   myFullness,
   myInebriety,
@@ -45,6 +48,7 @@ import {
   $location,
   $skill,
   $slot,
+  $slots,
   adventureMacro,
   clamp,
   findLeprechaunMultiplier,
@@ -56,7 +60,6 @@ import {
   isSong,
   Macro,
   Mood,
-  property,
   Requirement,
   set,
   sum,
@@ -66,12 +69,20 @@ import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { prepFamiliars } from "./dailies";
 import { runDiet } from "./diet";
-import { EmbezzlerFight, embezzlerSources, estimatedTurns } from "./embezzler";
+import { embezzlerCount, EmbezzlerFight, embezzlerSources } from "./embezzler";
 import { hasMonsterReplacers } from "./extrovermectin";
+import { meatFamiliar } from "./familiar";
 import { doSausage } from "./fights";
-import { baseMeat, globalOptions, realmAvailable, safeRestore, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  burnLibrams,
+  globalOptions,
+  realmAvailable,
+  safeRestore,
+  turnsToNC,
+} from "./lib";
 import { meatMood } from "./mood";
-import { familiarWaterBreathingEquipment, waterBreathingEquipment } from "./outfit";
+import { familiarWaterBreathingEquipment, useUPCs, waterBreathingEquipment } from "./outfit";
 import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -123,9 +134,7 @@ class YachtzeeDietUtils {
   originalPref: string;
 
   constructor(action?: (n: number, name?: string) => void) {
-    this.originalPref = !get("_garboYachtzeeChainDiet")
-      ? ""
-      : property.getString("_garboYachtzeeChainDiet");
+    this.originalPref = !get("_garboYachtzeeChainDiet") ? "" : get("_garboYachtzeeChainDiet");
     this.pref = "";
     this.dietArray = [
       new YachtzeeDietEntry(`extra-greasy slider`, 0, 5, 0, -5, (n: number) => {
@@ -225,8 +234,7 @@ function combineDietEntries(
   );
 }
 
-function castOde(turns: number): boolean {
-  if (!have($skill`The Ode to Booze`)) return false;
+function shrugIrrelevantSongs(): void {
   for (const song of getActiveSongs()) {
     const slot = Mood.defaultOptions.songSlots.find((slot) => slot.includes(song));
     if (
@@ -242,6 +250,19 @@ function castOde(turns: number): boolean {
   // Shrug default Mood songs
   cliExecute(`shrug ur-kel`);
   cliExecute(`shrug phat loot`);
+}
+
+function castOde(turns: number): boolean {
+  if (!have($skill`The Ode to Booze`)) return false;
+
+  shrugIrrelevantSongs();
+
+  // If we have the polka of plenty skill, we can re-buff up later
+  // Else, get rid of chorale which is the most inefficient song
+  if (getActiveSongs.length === (have($skill`Mariachi Memory`) ? 4 : 3)) {
+    if (have($skill`The Polka of Plenty`)) cliExecute(`shrug ${$effect`Polka of Plenty`}`);
+    else cliExecute(`shrug ${$effect`Chorale of Companionship`}`);
+  }
 
   while (haveEffect($effect`Ode to Booze`) < turns) {
     useSkill($skill`The Ode to Booze`);
@@ -255,7 +276,7 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
   const dietUtil = new YachtzeeDietUtils();
   dietUtil.resetDietPref();
 
-  const dietString = property.getString("_garboYachtzeeChainDiet").split(",");
+  const dietString = get("_garboYachtzeeChainDiet").split(",");
   let stenchJellyConsumed = false;
   for (const name of dietString) {
     if (name.length === 0) continue;
@@ -277,11 +298,11 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
             throw new Error(`consuming ${entry.name} will exceed our spleen limit`);
           }
           if (entry.fullness > 0) {
-            if (!property.getBoolean("_milkOfMagnesiumUsed")) {
+            if (!get("_milkOfMagnesiumUsed")) {
               acquire(1, $item`milk of magnesium`, 10000);
               use(1, $item`milk of magnesium`);
             }
-            if (!property.getBoolean("_distentionPillUsed") && have($item`distention pill`)) {
+            if (!get("_distentionPillUsed") && have($item`distention pill`)) {
               use(1, $item`distention pill`);
             }
           }
@@ -305,8 +326,7 @@ function yachtzeeDietScheduler(
   const dietSchedule = new Array<YachtzeeDietEntry<void>>();
   const remainingMenu = new Array<YachtzeeDietEntry<void>>();
   const jellies = new Array<YachtzeeDietEntry<void>>();
-  const haveDistentionPill =
-    !property.getBoolean("_distentionPillUsed") && have($item`distention pill`);
+  const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
 
   // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
   // Assume all fullness/drunkenness > 0 non-spleen cleansers are inserted for buffs
@@ -429,7 +449,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     equip(bestWaterBreathingEquipment.item);
     if (
       equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
-      get(`edPiece`) !== "fish"
+      get("edPiece") !== "fish"
     ) {
       cliExecute("edpiece fish");
     }
@@ -462,13 +482,13 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     {
       name: "fish juice box",
       cost:
-        garboValue($item`fish juice box`) +
+        mallPrice($item`fish juice box`) +
         (!haveFishyPipe &&
         haveEffect($effect`Fishy`) + 20 + 5 * toInt(havePYECCharge) < yachtzeeTurns
           ? Infinity
           : 0),
       action: () => {
-        acquire(1, $item`fish juice box`, 1.2 * garboValue($item`fish juice box`));
+        acquire(1, $item`fish juice box`, 1.2 * mallPrice($item`fish juice box`));
         if (!have($item`fish juice box`)) throw new Error("Unable to obtain fish juice box");
         use(1, $item`fish juice box`);
         use(1, $item`fishy pipe`);
@@ -476,9 +496,9 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     },
     {
       name: "2x fish juice box",
-      cost: 2 * garboValue($item`fish juice box`),
+      cost: 2 * mallPrice($item`fish juice box`),
       action: () => {
-        acquire(2, $item`fish juice box`, 1.2 * garboValue($item`fish juice box`));
+        acquire(2, $item`fish juice box`, 1.2 * mallPrice($item`fish juice box`));
         if (availableAmount($item`fish juice box`) < 2) {
           throw new Error("Unable to obtain sufficient fish juice boxes");
         }
@@ -487,21 +507,21 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     },
     {
       name: "cuppa Gill tea",
-      cost: garboValue($item`cuppa Gill tea`) + bestWaterBreathingEquipment.cost,
+      cost: mallPrice($item`cuppa Gill tea`) + bestWaterBreathingEquipment.cost,
       action: () => {
-        acquire(1, $item`cuppa Gill tea`, 1.2 * garboValue($item`cuppa Gill tea`));
+        acquire(1, $item`cuppa Gill tea`, 1.2 * mallPrice($item`cuppa Gill tea`));
         if (!have($item`cuppa Gill tea`)) throw new Error("Unable to obtain cuppa Gill tea");
         use(1, $item`cuppa Gill tea`);
       },
     },
     {
       name: "powdered candy sushi set",
-      cost: garboValue($item`powdered candy sushi set`) + bestWaterBreathingEquipment.cost,
+      cost: mallPrice($item`powdered candy sushi set`) + bestWaterBreathingEquipment.cost,
       action: () => {
         acquire(
           1,
           $item`powdered candy sushi set`,
-          1.2 * garboValue($item`powdered candy sushi set`)
+          1.2 * mallPrice($item`powdered candy sushi set`)
         );
         if (!have($item`powdered candy sushi set`)) {
           throw new Error("Unable to obtain powdered candy sushi set");
@@ -511,13 +531,9 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     },
     {
       name: "concentrated fish broth",
-      cost: garboValue($item`concentrated fish broth`) + bestWaterBreathingEquipment.cost,
+      cost: mallPrice($item`concentrated fish broth`) + bestWaterBreathingEquipment.cost,
       action: () => {
-        acquire(
-          1,
-          $item`concentrated fish broth`,
-          1.2 * garboValue($item`concentrated fish broth`)
-        );
+        acquire(1, $item`concentrated fish broth`, 1.2 * mallPrice($item`concentrated fish broth`));
         if (!have($item`concentrated fish broth`)) {
           throw new Error("Unable to obtain concentrated fish broth");
         }
@@ -527,7 +543,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     {
       name: "Lutz, the Ice Skate",
       cost:
-        get("_skateBuff1", false) || property.getString("skateParkStatus") !== "ice"
+        get("_skateBuff1", false) || get("skateParkStatus") !== "ice"
           ? Infinity
           : bestWaterBreathingEquipment.cost,
       action: () => {
@@ -537,14 +553,14 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     {
       name: "The Haggling",
       cost: canAdv($location`The Brinier Deepers`)
-        ? (have($effect`Lucky!`) ? 0 : garboValue($item`11-leaf clover`)) +
+        ? (have($effect`Lucky!`) ? 0 : mallPrice($item`11-leaf clover`)) +
           get("valueOfAdventure") +
           bestWaterBreathingEquipment.cost +
           costOfLosingBuffs
         : Infinity,
       action: () => {
         if (!have($effect`Lucky!`)) {
-          acquire(1, $item`11-leaf clover`, 1.2 * garboValue($item`11-leaf clover`));
+          acquire(1, $item`11-leaf clover`, 1.2 * mallPrice($item`11-leaf clover`));
           if (!have($item`11-leaf clover`)) {
             throw new Error("Unable to get 11-leaf clover for fishy!");
           }
@@ -585,8 +601,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const havePYECCharge = get("_PYECAvailable", false);
   const maxYachtzeeTurns = havePYECCharge ? 35 : 30;
-  const haveDistentionPill =
-    !property.getBoolean("_distentionPillUsed") && have($item`distention pill`);
+  const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
 
   // Plan our diet (positive values give space, negative values take space)
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
@@ -596,7 +611,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
     haveEffect($effect`Synthesis: Greed`) < reqSynthTurns
       ? -Math.ceil((reqSynthTurns - haveEffect($effect`Synthesis: Greed`)) / 30)
       : 0;
-  const filters = 3 - get(`currentMojoFilters`);
+  const filters = 3 - get("currentMojoFilters");
   const extros = hasMonsterReplacers() ? -(4 - Math.min(4, 2 * get("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
   let cologne = 0;
   const availableSpleen = // Spleen available for ingesting jellies
@@ -618,11 +633,11 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Compute prices to make sure everything is worth it
   const fishyCost = optimizeForFishy(yachtzeeTurns);
   const jelliesBulkPrice = retrievePrice($item`stench jelly`, yachtzeeTurns);
-  const extroPrice = garboValue($item`Extrovermectin™`);
+  const extroPrice = mallPrice($item`Extrovermectin™`);
   const VOA = get("valueOfAdventure");
-  const slidersPrice = garboValue($item`extra-greasy slider`);
-  const pickleJuicePrice = garboValue($item`jar of fermented pickle juice`);
-  const colognePrice = garboValue($item`beggin' cologne`);
+  const slidersPrice = mallPrice($item`extra-greasy slider`);
+  const pickleJuicePrice = mallPrice($item`jar of fermented pickle juice`);
+  const colognePrice = mallPrice($item`beggin' cologne`);
 
   // We prefer using pickle juice to cleanse our spleen for stench jellies since
   // 1) It's cheaper
@@ -638,12 +653,12 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // If we need spleen cleansers but their prices are unreasonable, just return
   const maxSliderPrice = 150000,
     maxPickleJuicePrice = 150000;
-  if (slidersToEat > 0 && garboValue($item`extra-greasy slider`) > maxSliderPrice) {
+  if (slidersToEat > 0 && mallPrice($item`extra-greasy slider`) > maxSliderPrice) {
     print("Sliders are way too overpriced for us to clean spleens for jellies", "red");
     return false;
   } else if (
     pickleJuiceToDrink > 0 &&
-    garboValue($item`jar of fermented pickle juice`) > maxPickleJuicePrice
+    mallPrice($item`jar of fermented pickle juice`) > maxPickleJuicePrice
   ) {
     print("Pickle juices are way too overpriced for us to clean spleens for jellies", "red");
     return false;
@@ -673,8 +688,8 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
     cologneToChew * ((yachtzeeTurns + 60 + 5 * toInt(havePYECCharge)) * 1000 - colognePrice);
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
-  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3.5 * VOA
-  const extroValuePerSpleen = 7 * VOA - extroPrice / 2;
+  // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
+  const extroValuePerSpleen = 6 * VOA - extroPrice / 2;
   const jellyValuePerSpleen =
     (earlyMeatDropsEstimate * 2000) / 100 -
     (jelliesBulkPrice +
@@ -720,7 +735,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
   dietUtil.setDietEntry(`stench jelly`, yachtzeeTurns, (n: number, name?: string) => {
     dietUtil.addToPref(n, name);
     if (!simOnly) {
-      set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") + n);
+      set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
     }
   });
 
@@ -734,10 +749,11 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   if (simOnly) return true;
 
-  if (property.getNumber("_stenchJellyChargeTarget") < yachtzeeTurns) {
+  if (get("_stenchJellyChargeTarget", 0) < yachtzeeTurns) {
     throw new Error(
-      `We are only able to obtain up to ${property.getNumber(
-        "_stenchJellyChargeTarget"
+      `We are only able to obtain up to ${get(
+        "_stenchJellyChargeTarget",
+        0
       )}/${yachtzeeTurns} turns of jelly charges!`
     );
   }
@@ -778,7 +794,7 @@ function yachtzeeChainDiet(simOnly?: boolean): boolean {
     }
   }
   if (filters > 0) {
-    acquire(filters, $item`mojo filter`, 2 * garboValue($item`mojo filter`), true);
+    acquire(filters, $item`mojo filter`, 2 * mallPrice($item`mojo filter`), true);
     if (itemAmount($item`mojo filter`) < filters) {
       throw new Error("Failed to acquire sufficient mojo filters");
     }
@@ -849,6 +865,8 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
   const PYECOffset = 5 * toInt(get("_PYECAvailable", false));
   const excludedEffects = new Set<Effect>();
+
+  shrugIrrelevantSongs();
 
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed", false)) {
     const doublingPotions = farmingPotions
@@ -934,7 +952,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
           "blue"
         );
         if (!simOnly) {
-          acquire(nPotions, potion.potion, profit + price);
+          acquire(nPotions, potion.potion, profit + price, false);
           if (itemAmount(potion.potion) < 1) break;
           if (isSong(effect) && !have(effect)) {
             for (const song of getActiveSongs()) {
@@ -963,16 +981,30 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   if (!simOnly) {
     executeNextDietStep(true);
     if (get("_PYECAvailable", false)) {
+      maximize("MP", false);
       if (have($item`Platinum Yendorian Express Card`)) {
-        use(1, $item`Platinum Yendorian Express Card`);
+        burnLibrams(200);
+        use($item`Platinum Yendorian Express Card`);
       } else {
         withStash($items`Platinum Yendorian Express Card`, () => {
           if (have($item`Platinum Yendorian Express Card`)) {
-            use(1, $item`Platinum Yendorian Express Card`);
+            burnLibrams(200);
+            use($item`Platinum Yendorian Express Card`);
           }
         });
       }
     }
+    if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+      burnLibrams(200);
+      use($item`License to Chill`);
+    }
+    if (!get("_bagOTricksUsed")) {
+      withStash($items`Bag o' Tricks`, () => {
+        burnLibrams(200);
+        use($item`Bag o' Tricks`);
+      });
+    }
+    burnLibrams(200);
     set("_PYECAvailable", false);
   }
 
@@ -994,7 +1026,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
         `Expected to profit ${profit} meat from using 1 Uncle Greenspan's Bathroom Finance Guide @ price ${price} meat`,
         "blue"
       );
-      acquire(1, $item`Uncle Greenspan's Bathroom Finance Guide`, greenspanValue);
+      acquire(1, $item`Uncle Greenspan's Bathroom Finance Guide`, greenspanValue, false);
       if (have($item`Uncle Greenspan's Bathroom Finance Guide`)) {
         use(1, $item`Uncle Greenspan's Bathroom Finance Guide`);
       }
@@ -1003,8 +1035,15 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   return totalProfits;
 }
 
-function leprechaunMeatBonus(wt: number): number {
-  return 2 * wt + Math.sqrt(220 * wt) - 6;
+function bestFamUnderwaterGear(fam: Familiar): Item {
+  // Returns best familiar gear for yachtzee chaining
+  return fam.underwater || have($effect`Driving Waterproofly`) || have($effect`Wet Willied`)
+    ? have($item`amulet coin`)
+      ? $item`amulet coin`
+      : $item`filthy child leash`
+    : have($item`das boot`)
+    ? $item`das boot`
+    : $item`little bitty bathysphere`;
 }
 
 export function bestYachtzeeFamiliar(): Familiar {
@@ -1013,23 +1052,6 @@ export function bestYachtzeeFamiliar(): Familiar {
     familiarWeight(myFamiliar()) +
     weightAdjustment() -
     numericModifier(equippedItem($slot`familiar`), "Familiar Weight");
-
-  // Assumptions - if we don't have the amulet coin, we'll at least have the default familiar equipment (+5lbs)
-  const famEquipWeightPenalty =
-    have($effect`Driving Waterproofly`) || have($effect`Wet Willied`)
-      ? 0
-      : haveUnderwaterFamEquipment
-      ? numericModifier(
-          familiarWaterBreathingEquipment
-            .filter((item) => have(item))
-            .reduce((left, right) =>
-              numericModifier(left, "Familiar Weight") > numericModifier(right, "Familiar Weight")
-                ? left
-                : right
-            ),
-          "Familiar Weight"
-        )
-      : -Infinity;
 
   const sortedUnderwaterFamiliars = Familiar.all()
     .filter(
@@ -1042,29 +1064,16 @@ export function bestYachtzeeFamiliar(): Familiar {
     )
     .sort(
       (left, right) =>
-        leprechaunMeatBonus(
-          findLeprechaunMultiplier(right) *
-            (famWt +
-              (right.underwater ? (have($item`amulet coin`) ? 10 : 5) : famEquipWeightPenalty))
-        ) +
-        (right.underwater && have($item`amulet coin`) ? 50 : 0) -
-        leprechaunMeatBonus(
-          findLeprechaunMultiplier(left) *
-            (famWt +
-              (left.underwater ? (have($item`amulet coin`) ? 10 : 5) : famEquipWeightPenalty))
-        ) -
-        (left.underwater && have($item`amulet coin`) ? 50 : 0)
+        numericModifier(right, "Meat Drop", famWt, bestFamUnderwaterGear(right)) -
+        numericModifier(left, "Meat Drop", famWt, bestFamUnderwaterGear(left))
     );
 
   print(`Familiar bonus meat%:`, "blue");
   sortedUnderwaterFamiliars.forEach((fam) => {
     print(
-      `${fam} (${(
-        leprechaunMeatBonus(
-          findLeprechaunMultiplier(fam) *
-            (famWt + (fam.underwater ? (have($item`amulet coin`) ? 10 : 5) : famEquipWeightPenalty))
-        ) + (fam.underwater && have($item`amulet coin`) ? 50 : 0)
-      ).toFixed(2)}%)`,
+      `${fam} (${numericModifier(fam, "Meat Drop", famWt, bestFamUnderwaterGear(fam)).toFixed(
+        2
+      )}%)`,
       "blue"
     );
   });
@@ -1098,6 +1107,32 @@ function prepareOutfitAndFamiliar() {
     withStash($items`moveable feast`, () => use($item`moveable feast`));
   }
   maximizeMeat();
+  if (!myFamiliar().underwater) {
+    equip(
+      $slot`familiar`,
+      familiarWaterBreathingEquipment
+        .filter((it) => have(it))
+        .reduce((a, b) =>
+          numericModifier(a, "Familiar Weight") > numericModifier(b, "Familiar Weight") ? a : b
+        )
+    );
+  }
+}
+
+function stickerSetup(expectedYachts: number) {
+  const currentStickers = $slots`sticker1, sticker2, sticker3`.map((s) => equippedItem(s));
+  const UPC = $item`scratch 'n' sniff UPC sticker`;
+  if (currentStickers.every((sticker) => sticker === UPC)) return;
+  const yachtOpportunityCost = 25 * findLeprechaunMultiplier(bestYachtzeeFamiliar());
+  const embezzlerOpportunityCost = 25 * findLeprechaunMultiplier(meatFamiliar());
+  const addedValueOfFullSword =
+    ((75 - yachtOpportunityCost) * expectedYachts * 2000) / 100 +
+    ((75 - embezzlerOpportunityCost) * Math.min(20, expectedEmbezzlers) * (750 + baseMeat)) / 100;
+  if (mallPrice(UPC) < addedValueOfFullSword / 3) {
+    const needed = 3 - currentStickers.filter((sticker) => sticker === UPC).length;
+    if (needed) buy(needed, UPC, addedValueOfFullSword / 3);
+    useUPCs();
+  }
 }
 
 function _yachtzeeChain(): void {
@@ -1107,7 +1142,7 @@ function _yachtzeeChain(): void {
 
   set(
     "_PYECAvailable",
-    get(`expressCardUsed`, false)
+    get("expressCardUsed")
       ? false
       : have($item`Platinum Yendorian Express Card`)
       ? true
@@ -1115,7 +1150,9 @@ function _yachtzeeChain(): void {
           return have($item`Platinum Yendorian Express Card`);
         })
   );
-  meatMood(false).execute(estimatedTurns());
+
+  maximize("MP", false);
+  meatMood(false, 750 + baseMeat).execute(embezzlerCount());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
@@ -1140,15 +1177,17 @@ function _yachtzeeChain(): void {
     set("_yachtzeeChainClosetedMeat", 0);
     return;
   }
-  let jellyTurns = property.getNumber("_stenchJellyChargeTarget");
+  let jellyTurns = get("_stenchJellyChargeTarget", 0);
   let fishyTurns = haveEffect($effect`Fishy`) + 5 * toInt(get("_PYECAvailable", false));
   let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
+  stickerSetup(Math.min(jellyTurns, fishyTurns));
   cliExecute(`closet take ${get("_yachtzeeChainClosetedMeat")} meat`);
   set("_yachtzeeChainClosetedMeat", 0);
   if (haveEffect($effect`Beaten Up`)) {
     uneffect($effect`Beaten Up`);
   }
+  meatMood(false, 2000).execute(Math.min(jellyTurns, fishyTurns));
   safeRestore();
 
   let plantCrookweed = true;
@@ -1164,18 +1203,27 @@ function _yachtzeeChain(): void {
       );
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
     }
+    if (!have($effect`Polka of Plenty`)) {
+      if (have($effect`Ode to Booze`)) cliExecute(`shrug ${$effect`Ode to Booze`}`);
+      if (
+        getActiveSongs().length < (have($skill`Mariachi Memory`) ? 4 : 3) &&
+        have($skill`The Polka of Plenty`)
+      ) {
+        useSkill($skill`The Polka of Plenty`);
+      }
+    }
     adventureMacro($location`The Sunken Party Yacht`, Macro.abort());
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
       turncount = myTurncount();
-      set("_stenchJellyChargeTarget", property.getNumber("_stenchJellyChargeTarget") - 1);
+      set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) - 1);
       set("_stenchJellyUsed", false);
     }
     if (
       plantCrookweed &&
       visitUrl("forestvillage.php").includes("friarcottage.gif") &&
-      !property.getString("_floristPlantsUsed").split(",").includes("Crookweed")
+      !get("_floristPlantsUsed").split(",").includes("Crookweed")
     ) {
       cliExecute("florist plant Crookweed");
     }

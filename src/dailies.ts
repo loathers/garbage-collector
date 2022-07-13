@@ -122,6 +122,8 @@ export function dailySetup(): void {
   implement();
   comb();
   getAttuned();
+  rainbowGravitation();
+  jickjar();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -178,7 +180,7 @@ function voterSetup(): void {
     ["Meat Drop: +30", 10],
     ["Item Drop: +15", 9],
     ["Familiar Experience: +2", 8],
-    ["Adventures: +1", 7],
+    ["Adventures: +1", globalOptions.ascending ? -2 : 7],
     ["Monster Level: +10", 5],
     [`${myPrimestat()} Percent: +25`, 3],
     [`Experience (${myPrimestat()}): +4`, 2],
@@ -201,12 +203,9 @@ function voterSetup(): void {
   ];
 
   const bestVotes = voteLocalPriorityArr.sort((a, b) => b[1] - a[1]);
-  const firstInit = bestVotes[0][0];
-  const secondInit = bestVotes[1][0];
+  const init = bestVotes[0][0];
 
-  visitUrl(
-    `choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${firstInit}&local[]=${secondInit}`
-  );
+  visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
 }
 
 function configureGear(): void {
@@ -816,5 +815,24 @@ function getAttuned(): void {
     retrieveItem($item`water wings`);
     equip($item`water wings`);
     adv1($location`Generic Summer Holiday Swimming!`);
+  }
+}
+
+function rainbowGravitation(): void {
+  const summonsLeft = 3 - get("prismaticSummons");
+  if (!have($skill`Rainbow Gravitation`) || summonsLeft <= 0) return;
+  const wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
+  const wadValue = sum(wads, garboValue);
+  const prismaticValue = garboValue($item`prismatic wad`);
+  if (prismaticValue < wadValue) return;
+  wads.forEach((wad) => retrieveItem(wad, summonsLeft));
+  useSkill($skill`Rainbow Gravitation`, summonsLeft);
+}
+
+function jickjar(): void {
+  if (!have($item`psychoanalytic jar`)) return;
+  if (get("_jickJarAvailable") === "unknown") visitUrl("showplayer.php?who=1");
+  if (get("_jickJarAvailable") === "true") {
+    visitUrl("showplayer.php?who=1&action=jung&whichperson=jick");
   }
 }

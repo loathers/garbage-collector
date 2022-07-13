@@ -8,16 +8,19 @@ import {
   reverseNumberology,
   runChoice,
   totalTurnsPlayed,
+  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
   $effect,
   $item,
   $location,
+  $skill,
   $slot,
   adventureMacro,
   get,
   getRemainingStomach,
+  have,
   JuneCleaver,
   Macro,
   property,
@@ -70,13 +73,27 @@ function coldMedicineCabinet(): void {
   }
 }
 
-function horseradish(): void {
+function fillPantsgivingFullness(): void {
   if (
     getRemainingStomach() > 0 &&
-    !globalOptions.noDiet &&
     (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
   ) {
     consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING");
+  }
+}
+
+function fillSweatyLiver(): void {
+  if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
+
+  const castsWanted = 3 - get("_sweatOutSomeBoozeUsed", 0);
+  if (castsWanted <= 0 || !have($item`designer sweatpants`)) return;
+
+  const sweatNeeded = 25 * castsWanted;
+  if (get("sweat", 0) >= sweatNeeded) {
+    while (get("_sweatOutSomeBoozeUsed", 0) < 3) {
+      useSkill($skill`Sweat Out Some Booze`);
+    }
+    consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
   }
 }
 
@@ -132,7 +149,10 @@ function juneCleave(): void {
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
-  if (!skipDiet) horseradish();
+  if (!skipDiet && !globalOptions.noDiet) {
+    fillPantsgivingFullness();
+    fillSweatyLiver();
+  }
   coldMedicineCabinet();
   safeInterrupt();
   safeRestore();
