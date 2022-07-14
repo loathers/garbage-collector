@@ -168,8 +168,8 @@ class YachtzeeDietUtils {
       new YachtzeeDietEntry("toast with stench jelly", 0, 1, 0, 0, (n: number) => {
         ensureConsumable("toast with stench jelly", n, 1, 0, 0);
         const VOA = get("valueOfAdventure");
-        if (mallPrice($item`munchies pill`) < 3 * VOA) {
-          acquire(n, $item`munchies pill`, 3 * VOA, false);
+        if (garboValue($item`munchies pill`) < 2.66 * VOA) {
+          acquire(n, $item`munchies pill`, 2.66 * VOA, false); // We should have already acquired this earlier (this is just a failsafe)
           use(Math.min(n, itemAmount($item`munchies pill`)), $item`munchies pill`);
         }
         eat(n, $item`toast with stench jelly`);
@@ -284,6 +284,7 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
   print("Executing next diet steps", "blue");
   const dietUtil = new YachtzeeDietUtils();
   dietUtil.resetDietPref();
+  const VOA = get("valueOfAdventure");
 
   const dietString = get("_garboYachtzeeChainDiet").split(",");
   let stenchJellyConsumed = false;
@@ -296,7 +297,7 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
         if (entry) {
           if (entry.fullness > 0) {
             if (!get("_milkOfMagnesiumUsed")) {
-              acquire(1, $item`milk of magnesium`, 10000);
+              acquire(1, $item`milk of magnesium`, 5 * VOA);
               use(1, $item`milk of magnesium`);
             }
             if (!get("_distentionPillUsed") && have($item`distention pill`)) {
@@ -322,7 +323,7 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
           }
           if (entry.fullness > 0) {
             if (!get("_milkOfMagnesiumUsed")) {
-              acquire(1, $item`milk of magnesium`, 10000);
+              acquire(1, $item`milk of magnesium`, 5 * VOA);
               use(1, $item`milk of magnesium`);
             }
             if (!get("_distentionPillUsed") && have($item`distention pill`)) {
@@ -843,7 +844,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     true,
     1.2 * toastPrice * toastsToEat
   );
-  acquire(toastsToEat, $item`munchies pill`, 3 * VOA, false);
+  acquire(toastsToEat, $item`munchies pill`, 2.66 * VOA, false);
   acquire(extrosToChew, $item`Extrovermectin™`, 100000);
   acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice);
   acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice);
