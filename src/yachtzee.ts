@@ -294,6 +294,15 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
       else {
         const entry = dietUtil.dietArray.find((entry) => entry.name === name);
         if (entry) {
+          if (entry.fullness > 0) {
+            if (!get("_milkOfMagnesiumUsed")) {
+              acquire(1, $item`milk of magnesium`, 10000);
+              use(1, $item`milk of magnesium`);
+            }
+            if (!get("_distentionPillUsed") && have($item`distention pill`)) {
+              use(1, $item`distention pill`);
+            }
+          }
           entry.action(1);
         } else {
           throw new Error(`Could not find ${name} in dietArray`);
