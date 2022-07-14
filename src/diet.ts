@@ -689,6 +689,7 @@ export function computeDiet(): {
     orEmpty(Diet.plan(DRUNK_FACTOR * MPA, menu, { booze: 1 }));
   const nightcapDietPlanner = (menu: MenuItem<Note>[]) => {
     for (const menuItem of menu) {
+      menuItem.additionalValue = DRUNK_FACTOR * MPA * menuItem.size;
       menuItem.size = 1;
     }
     return orEmpty(Diet.plan(DRUNK_FACTOR * MPA, menu, { booze: 1 }));
