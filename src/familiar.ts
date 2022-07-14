@@ -545,7 +545,7 @@ export function setMarginalFamiliar(loc: Location): void {
         ? dropFamiliars.findIndex(
             (fam) =>
               fam.familiar === (jellyfishEV > meatFamEV ? $familiar`Space Jellyfish` : meatFam)
-          ) ?? 0
+          )
         : 0;
     if (dropFamiliars[idx].familiar !== meatFamiliar()) {
       const dropFam = dropFamiliars[idx].familiar;
