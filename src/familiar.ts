@@ -540,7 +540,6 @@ export function setMarginalFamiliar(loc: Location): void {
       globalOptions.ascending &&
       nonJellyExpectedAdv < 30 && // Assume 30 overdrunk barf adventures
       myInebriety() <= inebrietyLimit() &&
-      jellyfishEV > meatFamEV &&
       dropFamiliars[0].familiar !== meatFamiliar()
         ? dropFamiliars.findIndex(
             (fam) =>
