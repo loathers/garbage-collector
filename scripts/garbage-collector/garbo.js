@@ -32074,8 +32074,9 @@ var YachtzeeDietUtils = /*#__PURE__*/function () {
       ensureConsumable("toast with stench jelly", n, 1, 0, 0);
       var VOA = (0,property/* get */.U2)("valueOfAdventure");
 
-      if ((0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject8 || (yachtzee_templateObject8 = yachtzee_taggedTemplateLiteral(["munchies pill"])))) < 3 * VOA) {
-        (0,acquire/* acquire */.u)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject9 || (yachtzee_templateObject9 = yachtzee_taggedTemplateLiteral(["munchies pill"]))), 3 * VOA, false);
+      if ((0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject8 || (yachtzee_templateObject8 = yachtzee_taggedTemplateLiteral(["munchies pill"])))) < 2.66 * VOA) {
+        (0,acquire/* acquire */.u)(n, (0,template_string/* $item */.xr)(yachtzee_templateObject9 || (yachtzee_templateObject9 = yachtzee_taggedTemplateLiteral(["munchies pill"]))), 2.66 * VOA, false); // We should have already acquired this earlier (this is just a failsafe)
+
         (0,external_kolmafia_.use)(Math.min(n, (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject10 || (yachtzee_templateObject10 = yachtzee_taggedTemplateLiteral(["munchies pill"]))))), (0,template_string/* $item */.xr)(yachtzee_templateObject11 || (yachtzee_templateObject11 = yachtzee_taggedTemplateLiteral(["munchies pill"]))));
       }
 
@@ -32185,6 +32186,7 @@ function executeNextDietStep(stopBeforeJellies) {
   (0,external_kolmafia_.print)("Executing next diet steps", "blue");
   var dietUtil = new YachtzeeDietUtils();
   dietUtil.resetDietPref();
+  var VOA = (0,property/* get */.U2)("valueOfAdventure");
   var dietString = (0,property/* get */.U2)("_garboYachtzeeChainDiet").split(",");
   var stenchJellyConsumed = false;
 
@@ -32201,7 +32203,7 @@ function executeNextDietStep(stopBeforeJellies) {
           if (entry) {
             if (entry.fullness > 0) {
               if (!(0,property/* get */.U2)("_milkOfMagnesiumUsed")) {
-                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject25 || (yachtzee_templateObject25 = yachtzee_taggedTemplateLiteral(["milk of magnesium"]))), 10000);
+                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject25 || (yachtzee_templateObject25 = yachtzee_taggedTemplateLiteral(["milk of magnesium"]))), 5 * VOA);
                 (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject26 || (yachtzee_templateObject26 = yachtzee_taggedTemplateLiteral(["milk of magnesium"]))));
               }
 
@@ -32231,7 +32233,7 @@ function executeNextDietStep(stopBeforeJellies) {
 
             if (entry.fullness > 0) {
               if (!(0,property/* get */.U2)("_milkOfMagnesiumUsed")) {
-                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject29 || (yachtzee_templateObject29 = yachtzee_taggedTemplateLiteral(["milk of magnesium"]))), 10000);
+                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject29 || (yachtzee_templateObject29 = yachtzee_taggedTemplateLiteral(["milk of magnesium"]))), 5 * VOA);
                 (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject30 || (yachtzee_templateObject30 = yachtzee_taggedTemplateLiteral(["milk of magnesium"]))));
               }
 
@@ -32769,7 +32771,7 @@ function yachtzeeChainDiet(simOnly) {
   (0,acquire/* acquire */.u)(jelliesToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject97 || (yachtzee_templateObject97 = yachtzee_taggedTemplateLiteral(["stench jelly"]))), 2 * jelliesBulkPrice / jelliesToChew, true, 1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
   );
   (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject98 || (yachtzee_templateObject98 = yachtzee_taggedTemplateLiteral(["toast with stench jelly"]))), 2 * toastPrice, true, 1.2 * toastPrice * toastsToEat);
-  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject99 || (yachtzee_templateObject99 = yachtzee_taggedTemplateLiteral(["munchies pill"]))), 3 * VOA, false);
+  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject99 || (yachtzee_templateObject99 = yachtzee_taggedTemplateLiteral(["munchies pill"]))), 2.66 * VOA, false);
   (0,acquire/* acquire */.u)(extrosToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject100 || (yachtzee_templateObject100 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"]))), 100000);
   (0,acquire/* acquire */.u)(pickleJuiceToDrink, (0,template_string/* $item */.xr)(yachtzee_templateObject101 || (yachtzee_templateObject101 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"]))), maxPickleJuicePrice);
   (0,acquire/* acquire */.u)(slidersToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject102 || (yachtzee_templateObject102 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"]))), maxSliderPrice);
@@ -33380,7 +33382,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26542);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("db231299ba55738c065a58a877dec89eebc9da8c"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("cac8945a09c5d41e1247884cbd292445071f6e25"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -34050,7 +34052,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("db231299ba55738c065a58a877dec89eebc9da8c" === mainSha) {
+    if ("cac8945a09c5d41e1247884cbd292445071f6e25" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
