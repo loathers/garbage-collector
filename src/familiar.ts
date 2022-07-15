@@ -538,6 +538,7 @@ export function setMarginalFamiliar(loc: Location): void {
         nominalOutfitValue ?? 0;
     const idx =
       globalOptions.ascending &&
+      have($item`Drunkula's wineglass`) &&
       nonJellyExpectedAdv < 30 && // Assume 30 overdrunk barf adventures
       myInebriety() <= inebrietyLimit() &&
       dropFamiliars[0].familiar !== meatFamiliar()
