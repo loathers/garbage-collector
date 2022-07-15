@@ -172,7 +172,9 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     if (
       have($item`protonic accelerator pack`) &&
       get("questPAGhost") === "unstarted" &&
-      get("nextParanormalActivity") <= totalTurnsPlayed()
+      get("nextParanormalActivity") <= totalTurnsPlayed() &&
+      !preventEquip.includes($item`protonic accelerator pack`) &&
+      !preventSlot.includes($slot`back`)
     ) {
       forceEquip.push($item`protonic accelerator pack`);
     }
@@ -208,7 +210,9 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     if (
       getKramcoWandererChance() > 0.05 &&
       have($item`Kramco Sausage-o-Matic™`) &&
-      forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`)
+      forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+      !preventEquip.includes($item`Kramco Sausage-o-Matic™`) &&
+      !preventSlot.includes($slot`off-hand`)
     ) {
       forceEquip.push($item`Kramco Sausage-o-Matic™`);
     }
