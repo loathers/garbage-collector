@@ -99,7 +99,7 @@ export function barfFamiliar(): Familiar {
   if (timeToMeatify()) return $familiar`Grey Goose`;
   if (get("garboIgnoreMarginalFamiliars", false)) return meatFamiliar();
 
-  const baseMenu = menu();
+  const baseMenu = menu(false);
 
   if (have($familiar`Space Jellyfish`) && myInebriety() <= inebrietyLimit()) {
     baseMenu.push({

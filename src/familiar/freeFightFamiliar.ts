@@ -6,11 +6,11 @@ import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
-export function menu(): GeneralFamiliar[] {
+export function menu(includeExperienceFamiliars = true): GeneralFamiliar[] {
   const familiarMenu = [
     ...getConstantValueFamiliars(),
     ...getDropFamiliars(),
-    ...getExperienceFamiliars(),
+    ...(includeExperienceFamiliars ? getExperienceFamiliars() : []),
   ];
 
   const meatFam = meatFamiliar();
