@@ -72,26 +72,9 @@ function getCachedOutfitValues(fam: Familiar) {
   return values;
 }
 
-function marginalMenu() {
-  const familiarMenu = menu();
-
-  if (have($familiar`Space Jellyfish`) && myInebriety() <= inebrietyLimit()) {
-    familiarMenu.push({
-      familiar: $familiar`Space Jellyfish`,
-      expectedValue:
-        garboValue($item`stench jelly`) /
-        (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
-      leprechaunMultiplier: 0,
-      limit: "none",
-    });
-  }
-
-  return familiarMenu;
-}
-
 type MarginalFamiliar = GeneralFamiliar & { outfitValue: number };
 
-function marginalizeFamiliar(f: GeneralFamiliar): MarginalFamiliar {
+function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const currentOutfitWeight = sum(outfitSlots, (slot: Slot) =>
     getModifier("Familiar Weight", equippedItem(slot))
   );
@@ -116,7 +99,20 @@ function marginalizeFamiliar(f: GeneralFamiliar): MarginalFamiliar {
 export function chooseBarfFamiliar(): Familiar {
   if (get("garboIgnoreMarginalFamiliars", false)) return MeatFamiliar.familiar();
 
-  const fullMenu = marginalMenu().map(marginalizeFamiliar);
+  const baseMenu = menu();
+
+  if (have($familiar`Space Jellyfish`) && myInebriety() <= inebrietyLimit()) {
+    baseMenu.push({
+      familiar: $familiar`Space Jellyfish`,
+      expectedValue:
+        garboValue($item`stench jelly`) /
+        (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
+      leprechaunMultiplier: 0,
+      limit: "none",
+    });
+  }
+
+  const fullMenu = baseMenu.map(calculateOutfitValue);
 
   const meatFamiliar = fullMenu.find(({ familiar }) => familiar === MeatFamiliar.familiar());
 
