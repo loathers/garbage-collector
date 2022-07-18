@@ -208,7 +208,6 @@ function barfTurn() {
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
     // c. set up familiar
-    useFamiliar(meatFamiliar());
     const location = embezzlerUp
       ? !get("_envyfishEggUsed") &&
         myLevel() >= 11 &&

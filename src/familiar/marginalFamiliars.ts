@@ -26,7 +26,6 @@ import {
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
 import { estimatedTurns } from "../embezzler";
-import { estimatedFreeFights } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
 import { meatOutfit } from "../outfit";
 import { garboValue } from "../session";
@@ -132,7 +131,7 @@ export function barfFamiliar(): Familiar {
       )
     );
 
-    if (turnsNeeded < estimatedTurns() + estimatedFreeFights()) {
+    if (turnsNeeded < estimatedTurns()) {
       return meatFamiliar();
     }
   }
