@@ -1,5 +1,4 @@
 import {
-  Effect,
   equippedItem,
   Familiar,
   familiarWeight,
@@ -18,7 +17,6 @@ import {
   $slots,
   findLeprechaunMultiplier,
   get,
-  getActiveEffects,
   getModifier,
   have,
   Requirement,
@@ -26,11 +24,13 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
+import { estimatedTurns } from "../embezzler";
+import { estimatedFreeFights } from "../fights";
+import { baseMeat } from "../lib";
 import { meatOutfit } from "../outfit";
 import { garboValue } from "../session";
-import getConstantValueFamiliars from "./constantValueFamiliars";
-import getDropFamiliars from "./dropFamiliars";
-import getExperienceFamiliars from "./experienceFamiliars";
+import { getAllDrops } from "./dropFamiliars";
+import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { menu } from "./freeFightFamiliar";
 import { GeneralFamiliar } from "./lib";
 import MeatFamiliar from "./meatFamiliar";
@@ -38,6 +38,7 @@ import MeatFamiliar from "./meatFamiliar";
 type CachedOutfit = {
   weight: number;
   meat: number;
+  item: number;
   bonus: number;
 };
 
@@ -63,6 +64,7 @@ function getCachedOutfitValues(fam: Familiar) {
   const values = {
     weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
     meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
+    item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
     bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
   };
   outfitCache.set(lepMult, values);
@@ -73,38 +75,89 @@ function marginalMenu() {
   const familiarMenu = menu();
 
   if (have($familiar`Space Jellyfish`) && myInebriety() <= inebrietyLimit()) {
-    const jellyfishEntry = {
+    familiarMenu.push({
       familiar: $familiar`Space Jellyfish`,
       expectedValue:
         garboValue($item`stench jelly`) /
         (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
       leprechaunMultiplier: 0,
       limit: "none",
-    };
-
-    familiarMenu.push(jellyfishEntry);
+    });
   }
 
   return familiarMenu;
 }
 
-type MarginalFamiliar = GeneralFamiliar & { marginalValue: number };
-export function setBarfFamiliar(): void {
-  if (get("garboIgnoreMarginalFamiliars", false)) useFamiliar(MeatFamiliar.familiar());
+type MarginalFamiliar = GeneralFamiliar & { outfitValue: number };
 
-  const effectWeight = sum(getActiveEffects(), (eff: Effect) =>
-    getModifier("Familiar Weight", eff)
-  );
-  const outfitWeight = sum(outfitSlots, (slot: Slot) =>
+function marginalizeFamiliar(f: GeneralFamiliar): MarginalFamiliar {
+  const currentOutfitWeight = sum(outfitSlots, (slot: Slot) =>
     getModifier("Familiar Weight", equippedItem(slot))
   );
-  const passiveSkillWeight = weightAdjustment() - effectWeight - outfitWeight;
+  const passiveWeight = weightAdjustment() - currentOutfitWeight;
 
   const familiarModifier = (familiar: Familiar, modifier: NumericModifier) => {
-    const outfitWeight = getCachedOutfitValues(familiar).weight;
+    const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
 
-    const totalWeight = familiarWeight(familiar) + passiveSkillWeight + effectWeight + outfitWeight;
+    const totalWeight = familiarWeight(familiar) + passiveWeight + cachedOutfitWeight;
 
     return numericModifier(familiar, modifier, totalWeight, $item`none`);
   };
+
+  const outfit = getCachedOutfitValues(f.familiar);
+  const outfitValue =
+    outfit.bonus +
+    ((outfit.meat + familiarModifier(f.familiar, "Meat Drop")) * baseMeat) / 100 +
+    (outfit.item + familiarModifier(f.familiar, "Item Drop")) * 0.72;
+
+  return { ...f, outfitValue };
+}
+export function chooseBarfFamiliar(): Familiar {
+  if (get("garboIgnoreMarginalFamiliars", false)) useFamiliar(MeatFamiliar.familiar());
+
+  const fullMenu = marginalMenu().map(marginalizeFamiliar);
+
+  const meatFamiliar = fullMenu.find(({ familiar }) => familiar === MeatFamiliar.familiar());
+
+  if (!meatFamiliar) throw new Error("Something went wrong when initializing familiars!");
+
+  const viableMenu = fullMenu.filter(
+    ({ expectedValue, outfitValue }) =>
+      expectedValue + outfitValue > meatFamiliar.expectedValue + meatFamiliar.outfitValue
+  );
+
+  if (viableMenu.every(({ limit }) => limit !== "none")) {
+    const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
+      turnsNeededForFamiliar(option, meatFamiliar.expectedValue + meatFamiliar.outfitValue)
+    );
+
+    if (turnsNeeded < estimatedTurns() + estimatedFreeFights()) {
+      return MeatFamiliar.familiar();
+    }
+  }
+
+  return viableMenu.reduce((a, b) =>
+    a.expectedValue + a.outfitValue > b.expectedValue + b.outfitValue ? a : b
+  ).familiar;
+}
+
+function turnsNeededForFamiliar(
+  { familiar, limit, outfitValue }: MarginalFamiliar,
+  baselineToCompareAgainst: number
+): number {
+  switch (limit) {
+    case "drops":
+      return sum(
+        getAllDrops(familiar).filter(
+          (x) => x.expectedValue + outfitValue > baselineToCompareAgainst
+        ),
+        ({ expectedTurns }) => expectedTurns
+      );
+
+    case "experience":
+      return getExperienceFamiliarLimit(familiar);
+
+    case "none":
+      return 0;
+  }
 }

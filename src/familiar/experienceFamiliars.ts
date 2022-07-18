@@ -1,5 +1,6 @@
 import { Familiar } from "kolmafia";
 import { $familiar, findLeprechaunMultiplier, get, have, propertyTypes } from "libram";
+import { familiar } from "libram/dist/resources/2009/Bandersnatch";
 import { globalOptions } from "../lib";
 import { GeneralFamiliar } from "./lib";
 
@@ -45,4 +46,11 @@ export default function getExperienceFamiliars(): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(({ used, familiar }) => have(familiar) && !get(used) && familiar.experience <= 400)
     .map(valueExperienceFamiliar);
+}
+
+export function getExperienceFamiliarLimit(fam: Familiar): number {
+  const target = experienceFamiliars.find(({ familiar }) => familiar === fam);
+  if (!have(fam) || !target) return 0;
+
+  return (400 - familiar.experience) / 5;
 }
