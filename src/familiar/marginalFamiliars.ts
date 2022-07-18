@@ -33,7 +33,7 @@ import { garboValue } from "../session";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { menu } from "./freeFightFamiliar";
-import { GeneralFamiliar } from "./lib";
+import { GeneralFamiliar, timeToMeatify } from "./lib";
 import MeatFamiliar from "./meatFamiliar";
 
 type CachedOutfit = {
@@ -97,6 +97,7 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   return { ...f, outfitValue };
 }
 export function chooseBarfFamiliar(): Familiar {
+  if (timeToMeatify()) return $familiar`Grey Goose`;
   if (get("garboIgnoreMarginalFamiliars", false)) return MeatFamiliar.familiar();
 
   const baseMenu = menu();
