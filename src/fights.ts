@@ -106,7 +106,7 @@ import {
   freeFightFamiliar,
   meatFamiliar,
   pocketProfessorLectures,
-  setBestLeprechaun,
+  setBestLeprechaunAsMeatFamiliar,
 } from "./familiar";
 import {
   baseMeat,
@@ -2307,7 +2307,7 @@ function killRobortCreaturesForFree() {
   ) {
     if (!have($item`drive-by shooting`)) create($item`drive-by shooting`);
     Robortender.feed($item`drive-by shooting`);
-    setBestLeprechaun();
+    setBestLeprechaunAsMeatFamiliar();
   }
 }
 

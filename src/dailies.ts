@@ -75,7 +75,7 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { meatFamiliar, setBestLeprechaun } from "./familiar";
+import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "./familiar";
 import {
   argmax,
   baseMeat,
@@ -319,7 +319,7 @@ export function prepFamiliars(): void {
       const drink = toItem(drinkName);
       if (retrievePrice(drink) > priceCap) {
         if (mandatory) {
-          setBestLeprechaun();
+          setBestLeprechaunAsMeatFamiliar();
           if (
             !userConfirmDialog(
               `Garbo cannot find a reasonably priced drive-by-shooting (price cap: ${priceCap}), and will not be using your robortender. Is that cool with you?`,

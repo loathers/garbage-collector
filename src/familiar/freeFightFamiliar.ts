@@ -4,7 +4,7 @@ import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
-import MeatFamiliar from "./meatFamiliar";
+import { meatFamiliar } from "./meatFamiliar";
 
 export function menu(): GeneralFamiliar[] {
   const familiarMenu = [
@@ -13,13 +13,13 @@ export function menu(): GeneralFamiliar[] {
     ...getExperienceFamiliars(),
   ];
 
-  const meatFamiliar = MeatFamiliar.familiar();
+  const meatFam = meatFamiliar();
 
-  if (familiarMenu.every(({ familiar }) => familiar !== meatFamiliar)) {
+  if (familiarMenu.every(({ familiar }) => familiar !== meatFam)) {
     familiarMenu.push({
-      familiar: meatFamiliar,
+      familiar: meatFam,
       expectedValue: 0,
-      leprechaunMultiplier: findLeprechaunMultiplier(meatFamiliar),
+      leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
       limit: "none",
     });
   }

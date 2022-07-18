@@ -56,5 +56,6 @@ export default function getConstantValueFamiliars(): GeneralFamiliar[] {
       familiar,
       expectedValue: value(),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar),
+      limit: "none",
     }));
 }

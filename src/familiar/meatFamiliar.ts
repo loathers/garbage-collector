@@ -23,7 +23,7 @@ function findBestLeprechaun(): Familiar {
   return findBestLeprechauns().sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a))[0];
 }
 
-export function setBestLeprechaun(): void {
+export function setBestLeprechaunAsMeatFamiliar(): void {
   fam = findBestLeprechaun();
 }
 
@@ -38,7 +38,7 @@ export function meatFamiliar(): Familiar {
     } else if (have($familiar`Robortender`)) {
       fam = $familiar`Robortender`;
     } else {
-      setBestLeprechaun();
+      setBestLeprechaunAsMeatFamiliar();
     }
   }
   return fam;
