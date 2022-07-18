@@ -143,10 +143,10 @@ export function barfFamiliar(): Familiar {
   );
 
   print(
-    HIGHLIGHT,
     `Choosing to use ${best.familiar} (expected value of ${
       best.expectedValue + best.outfitValue - meatFamiliarEntry.outfitValue
-    }) over ${meatFamiliarEntry.familiar} (expected value of ${meatFamiliarEntry.expectedValue}).`
+    }) over ${meatFamiliarEntry.familiar} (expected value of ${meatFamiliarEntry.expectedValue}).`,
+    HIGHLIGHT
   );
 
   return best.familiar;
