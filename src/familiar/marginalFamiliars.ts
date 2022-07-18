@@ -6,6 +6,7 @@ import {
   Item,
   myInebriety,
   numericModifier,
+  print,
   Slot,
   useFamiliar,
   weightAdjustment,
@@ -26,7 +27,7 @@ import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
 import { estimatedTurns } from "../embezzler";
 import { estimatedFreeFights } from "../fights";
-import { baseMeat } from "../lib";
+import { baseMeat, HIGHLIGHT } from "../lib";
 import { meatOutfit } from "../outfit";
 import { garboValue } from "../session";
 import { getAllDrops } from "./dropFamiliars";
@@ -113,7 +114,7 @@ function marginalizeFamiliar(f: GeneralFamiliar): MarginalFamiliar {
   return { ...f, outfitValue };
 }
 export function chooseBarfFamiliar(): Familiar {
-  if (get("garboIgnoreMarginalFamiliars", false)) useFamiliar(MeatFamiliar.familiar());
+  if (get("garboIgnoreMarginalFamiliars", false)) return MeatFamiliar.familiar();
 
   const fullMenu = marginalMenu().map(marginalizeFamiliar);
 
@@ -136,9 +137,18 @@ export function chooseBarfFamiliar(): Familiar {
     }
   }
 
-  return viableMenu.reduce((a, b) =>
+  const best = viableMenu.reduce((a, b) =>
     a.expectedValue + a.outfitValue > b.expectedValue + b.outfitValue ? a : b
-  ).familiar;
+  );
+
+  print(
+    HIGHLIGHT,
+    `Choosing to use ${best.familiar} (expected value of ${
+      best.expectedValue + best.outfitValue - meatFamiliar.outfitValue
+    }) over ${meatFamiliar.familiar} (expected value of ${meatFamiliar.expectedValue}).`
+  );
+
+  return best.familiar;
 }
 
 function turnsNeededForFamiliar(
