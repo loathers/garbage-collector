@@ -34,7 +34,7 @@ import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
-import MeatFamiliar from "./meatFamiliar";
+import { meatFamiliar } from "./meatFamiliar";
 
 type CachedOutfit = {
   weight: number;
@@ -96,9 +96,9 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
 
   return { ...f, outfitValue };
 }
-export function chooseBarfFamiliar(): Familiar {
+export function barfFamiliar(): Familiar {
   if (timeToMeatify()) return $familiar`Grey Goose`;
-  if (get("garboIgnoreMarginalFamiliars", false)) return MeatFamiliar.familiar();
+  if (get("garboIgnoreMarginalFamiliars", false)) return meatFamiliar();
 
   const baseMenu = menu();
 
@@ -115,26 +115,29 @@ export function chooseBarfFamiliar(): Familiar {
 
   const fullMenu = baseMenu.map(calculateOutfitValue);
 
-  const meatFamiliar = fullMenu.find(({ familiar }) => familiar === MeatFamiliar.familiar());
+  const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meatFamiliar());
 
-  if (!meatFamiliar) throw new Error("Something went wrong when initializing familiars!");
+  if (!meatFamiliarEntry) throw new Error("Something went wrong when initializing familiars!");
 
   const viableMenu = fullMenu.filter(
     ({ expectedValue, outfitValue }) =>
-      expectedValue + outfitValue > meatFamiliar.expectedValue + meatFamiliar.outfitValue
+      expectedValue + outfitValue > meatFamiliarEntry.expectedValue + meatFamiliarEntry.outfitValue
   );
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {
     const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
-      turnsNeededForFamiliar(option, meatFamiliar.expectedValue + meatFamiliar.outfitValue)
+      turnsNeededForFamiliar(
+        option,
+        meatFamiliarEntry.expectedValue + meatFamiliarEntry.outfitValue
+      )
     );
 
     if (turnsNeeded < estimatedTurns() + estimatedFreeFights()) {
-      return meatFamiliar.familiar;
+      return meatFamiliar();
     }
   }
 
-  if (viableMenu.length === 0) meatFamiliar.familiar;
+  if (viableMenu.length === 0) meatFamiliar();
 
   const best = viableMenu.reduce((a, b) =>
     a.expectedValue + a.outfitValue > b.expectedValue + b.outfitValue ? a : b
@@ -143,8 +146,8 @@ export function chooseBarfFamiliar(): Familiar {
   print(
     HIGHLIGHT,
     `Choosing to use ${best.familiar} (expected value of ${
-      best.expectedValue + best.outfitValue - meatFamiliar.outfitValue
-    }) over ${meatFamiliar.familiar} (expected value of ${meatFamiliar.expectedValue}).`
+      best.expectedValue + best.outfitValue - meatFamiliarEntry.outfitValue
+    }) over ${meatFamiliarEntry.familiar} (expected value of ${meatFamiliarEntry.expectedValue}).`
   );
 
   return best.familiar;

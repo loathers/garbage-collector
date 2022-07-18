@@ -1,4 +1,12 @@
-import { Familiar, inebrietyLimit, myAdventures, myInebriety, totalTurnsPlayed } from "kolmafia";
+import {
+  Familiar,
+  familiarWeight,
+  inebrietyLimit,
+  myAdventures,
+  myInebriety,
+  totalTurnsPlayed,
+  weightAdjustment,
+} from "kolmafia";
 import { $familiar, $item, get, have } from "libram";
 import { globalOptions } from "../lib";
 
@@ -57,4 +65,8 @@ export function timeToMeatify(): boolean {
   else if (freeFightNow || $familiar`Grey Goose`.experience >= 121) return true;
 
   return false;
+}
+
+export function pocketProfessorLectures(): number {
+  return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar`Pocket Professor`) + weightAdjustment()));
 }
