@@ -79,6 +79,7 @@ function marginalMenu() {
         garboValue($item`stench jelly`) /
         (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
       leprechaunMultiplier: 0,
+      limit: "none",
     };
 
     familiarMenu.push(jellyfishEntry);

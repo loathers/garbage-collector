@@ -37,6 +37,7 @@ function valueExperienceFamiliar({
     familiar,
     expectedValue: useValue / (experienceNeeded / estimatedExperience),
     leprechaunMultiplier: findLeprechaunMultiplier(familiar),
+    limit: "experience",
   };
 }
 

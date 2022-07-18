@@ -16,13 +16,12 @@ export function menu(): GeneralFamiliar[] {
   const meatFamiliar = MeatFamiliar.familiar();
 
   if (familiarMenu.every(({ familiar }) => familiar !== meatFamiliar)) {
-    const meatFamiliarEntry = {
+    familiarMenu.push({
       familiar: meatFamiliar,
       expectedValue: 0,
       leprechaunMultiplier: findLeprechaunMultiplier(meatFamiliar),
-    };
-
-    familiarMenu.push(meatFamiliarEntry);
+      limit: "none",
+    });
   }
 
   return familiarMenu;
@@ -34,6 +33,7 @@ export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
       familiar: $familiar`Grey Goose`,
       expectedValue: (familiarWeight($familiar`Grey Goose`) - 5) ** 4,
       leprechaunMultiplier: 0,
+      limit: "experience",
     };
   }
 

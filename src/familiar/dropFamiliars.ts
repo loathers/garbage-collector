@@ -20,7 +20,12 @@ function valueStandardDropFamiliar({
 }: StandardDropFamiliar): GeneralFamiliar {
   const expectedTurns = expected[get(pref)] || Infinity;
   const expectedValue = garboValue(drop) / expectedTurns + (additionalValue ?? 0);
-  return { familiar, expectedValue, leprechaunMultiplier: findLeprechaunMultiplier(familiar) };
+  return {
+    familiar,
+    expectedValue,
+    leprechaunMultiplier: findLeprechaunMultiplier(familiar),
+    limit: "drops",
+  };
 }
 
 const rotatingFamiliars: StandardDropFamiliar[] = [
@@ -143,4 +148,22 @@ export default function getDropFamiliars(): GeneralFamiliar[] {
       ({ familiar, expectedValue, leprechaunMultiplier }) =>
         have(familiar) && (expectedValue || leprechaunMultiplier)
     );
+}
+
+export function getAllDrops(fam: Familiar): { expectedValue: number; expectedTurns: number }[] {
+  const target = rotatingFamiliars.find(({ familiar }) => familiar === fam);
+  if (!have(fam) || !target) return [];
+
+  const current = get(target.pref);
+  const returnValue = [];
+
+  for (let i = current; i < target.expected.length; i++) {
+    const turns = target.expected[i];
+    returnValue.push({
+      expectedValue: garboValue(target.drop) / turns + (target.additionalValue ?? 0),
+      expectedTurns: turns,
+    });
+  }
+
+  return returnValue;
 }

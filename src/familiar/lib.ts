@@ -6,6 +6,7 @@ export type GeneralFamiliar = {
   familiar: Familiar;
   expectedValue: number;
   leprechaunMultiplier: number;
+  limit: "drops" | "experience" | "none";
 };
 
 export function timeToMeatify(): boolean {
