@@ -103,10 +103,10 @@ import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import {
-  calculateMeatFamiliar,
   freeFightFamiliar,
   meatFamiliar,
   pocketProfessorLectures,
+  setBestLeprechaun,
 } from "./familiar";
 import {
   baseMeat,
@@ -2307,7 +2307,7 @@ function killRobortCreaturesForFree() {
   ) {
     if (!have($item`drive-by shooting`)) create($item`drive-by shooting`);
     Robortender.feed($item`drive-by shooting`);
-    calculateMeatFamiliar();
+    setBestLeprechaun();
   }
 }
 
