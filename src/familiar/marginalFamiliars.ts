@@ -133,9 +133,11 @@ export function chooseBarfFamiliar(): Familiar {
     );
 
     if (turnsNeeded < estimatedTurns() + estimatedFreeFights()) {
-      return MeatFamiliar.familiar();
+      return meatFamiliar.familiar;
     }
   }
+
+  if (viableMenu.length === 0) meatFamiliar.familiar;
 
   const best = viableMenu.reduce((a, b) =>
     a.expectedValue + a.outfitValue > b.expectedValue + b.outfitValue ? a : b
