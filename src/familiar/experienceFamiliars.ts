@@ -44,7 +44,7 @@ function valueExperienceFamiliar({
 
 export default function getExperienceFamiliars(): GeneralFamiliar[] {
   return experienceFamiliars
-    .filter(({ used, familiar }) => have(familiar) && !get(used) && familiar.experience <= 400)
+    .filter(({ used, familiar }) => have(familiar) && !get(used) && familiar.experience < 400)
     .map(valueExperienceFamiliar);
 }
 
