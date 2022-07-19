@@ -131,12 +131,10 @@ export function barfFamiliar(): Familiar {
       )
     );
 
-    if (turnsNeeded < estimatedTurns()) {
-      return meatFamiliar();
-    }
+    if (turnsNeeded < estimatedTurns()) return meatFamiliar();
   }
 
-  if (viableMenu.length === 0) meatFamiliar();
+  if (viableMenu.length === 0) return meatFamiliar();
 
   const best = viableMenu.reduce((a, b) =>
     a.expectedValue + a.outfitValue > b.expectedValue + b.outfitValue ? a : b
