@@ -97,7 +97,7 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
 }
 export function barfFamiliar(): Familiar {
   if (timeToMeatify()) return $familiar`Grey Goose`;
-  if (get("garboIgnoreMarginalFamiliars", false)) return meatFamiliar();
+  if (get("garbo_IgnoreMarginalFamiliars", false)) return meatFamiliar();
 
   const baseMenu = menu(false);
 
@@ -143,7 +143,13 @@ export function barfFamiliar(): Familiar {
   );
 
   print(
-    `Choosing to use ${best.familiar} (expected value of ${best.expectedValue} from familiar and ${best.outfitValue} from outfit) over ${meatFamiliarEntry.familiar} (expected value of ${meatFamiliarEntry.expectedValue} from familiar and ${meatFamiliarEntry.outfitValue} from outfit).`,
+    `Choosing to use ${best.familiar} (expected value of ${best.expectedValue.toFixed(
+      1
+    )} from familiar and ${best.outfitValue.toFixed(1)} from outfit) over ${
+      meatFamiliarEntry.familiar
+    } (expected value of ${meatFamiliarEntry.expectedValue.toFixed(
+      1
+    )} from familiar and ${meatFamiliarEntry.outfitValue.toFixed(1)} from outfit).`,
     HIGHLIGHT
   );
 
