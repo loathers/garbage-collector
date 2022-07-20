@@ -179,8 +179,8 @@ function voterSetup(): void {
     const ballotValue = sum(
       Object.values(availableInitiatives)
         .sort((a, b) => b - a)
-        .slice(2),
-      (val) => val
+        .slice(1),
+      (val) => 2 * val
     );
 
     if (ballotValue > mallPrice($item`absentee voter ballot`)) {
