@@ -183,10 +183,11 @@ function voterSetup(): void {
       (val) => 2 * val
     );
 
-    if (ballotValue > mallPrice($item`absentee voter ballot`)) {
-      acquire(1, $item`absentee voter ballot`, ballotValue);
-      if (itemAmount($item`absentee voter ballot`) > 0) use(1, $item`absentee voter ballot`);
-      else return;
+    if (
+      ballotValue > mallPrice($item`absentee voter ballot`) &&
+      acquire(1, $item`absentee voter ballot`, ballotValue)
+    ) {
+      use(1, $item`absentee voter ballot`);
     } else return;
   }
 
