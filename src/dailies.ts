@@ -165,16 +165,14 @@ function voterSetup(): void {
     ]);
 
     const availableInitiatives: Map<string, number> = new Map(
-      Object.keys(votingBoothInitiatives(myClass(), myPathId(), myDaycount())).map((s) => {
-        return [s, 0];
+      Object.keys(votingBoothInitiatives(myClass(), myPathId(), myDaycount())).map((init) => {
+        let val = 0;
+        valuableInitiatives.forEach((value, key) => {
+          if (init.includes(key)) val = value;
+        });
+        return [init, val];
       })
     );
-
-    for (const init in Object.keys(availableInitiatives)) {
-      valuableInitiatives.forEach((value, key) => {
-        if (init.includes(key)) availableInitiatives.set(init, value);
-      });
-    }
 
     const ballotValue = sum(
       Object.values(availableInitiatives)
