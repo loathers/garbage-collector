@@ -148,28 +148,31 @@ export function postFreeFightDailySetup(): void {
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`)) return;
 
-  if (!get("voteAlways") && !get("_voteToday")) {
-    const valuableInitiatives: Map<string, number> = new Map([
-      [
-        "Meat Drop: +30",
-        0.3 *
-          ((baseMeat + 750) * embezzlerCount() + baseMeat * (estimatedTurns() - embezzlerCount())),
-      ],
-      [
-        "Item Drop: +15",
-        0.15 *
-          (4 * 100 * 0.3 * embezzlerCount() +
-            3 * 200 * 0.15 * (estimatedTurns() - embezzlerCount())),
-      ],
-      ["Adventures: +1", globalOptions.ascending ? 0 : get("valueOfAdventure")],
-    ]);
+  const initPriority: Map<string, number> = new Map([
+    [
+      "Meat Drop: +30",
+      0.3 *
+        ((baseMeat + 750) * embezzlerCount() + baseMeat * (estimatedTurns() - embezzlerCount())),
+    ],
+    [
+      "Item Drop: +15",
+      0.15 *
+        (4 * 100 * 0.3 * embezzlerCount() + 3 * 200 * 0.15 * (estimatedTurns() - embezzlerCount())),
+    ],
+    ["Adventures: +1", globalOptions.ascending ? 0 : get("valueOfAdventure")],
+    ["Familiar Experience: +2", 0],
+    ["Monster Level: +10", -1],
+    [`${myPrimestat()} Percent: +25`, -2],
+    [`Experience (${myPrimestat()}): +4`, -3],
+    ["Meat Drop: -30", -10],
+    ["Item Drop: -15", -10],
+    ["Familiar Experience: -2", -10],
+  ]);
 
+  if (!get("voteAlways") && !get("_voteToday")) {
     const availableInitiatives: Map<string, number> = new Map(
       Object.keys(votingBoothInitiatives(myClass(), myPathId(), myDaycount())).map((init) => {
-        let val = 0;
-        valuableInitiatives.forEach((value, key) => {
-          if (init.includes(key)) val = value;
-        });
+        const val = initPriority.get(init) ?? 0;
         return [init, val];
       })
     );
@@ -219,19 +222,6 @@ function voterSetup(): void {
   const votingMonsterPriority = voterValueTable
     .sort((a, b) => b.value - a.value)
     .map((element) => element.monster.name);
-
-  const initPriority = new Map<string, number>([
-    ["Meat Drop: +30", 10],
-    ["Item Drop: +15", 9],
-    ["Familiar Experience: +2", 8],
-    ["Adventures: +1", globalOptions.ascending ? -2 : 7],
-    ["Monster Level: +10", 5],
-    [`${myPrimestat()} Percent: +25`, 3],
-    [`Experience (${myPrimestat()}): +4`, 2],
-    ["Meat Drop: -30", -2],
-    ["Item Drop: -15", -2],
-    ["Familiar Experience: -2", -2],
-  ]);
 
   const monsterVote =
     votingMonsterPriority.indexOf(get("_voteMonster1")) <
