@@ -815,9 +815,10 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         const cleaning = stomachLiverCleaners.get(menuItem.item);
         if (cleaning) {
           const [fullness, inebriety] = cleaning;
-          if (myFullness() + fullness < 0 || myInebriety() + inebriety < 0) {
-            countToConsume = 0;
-          }
+          countToConsume = Math.min(
+            fullness < 0 ? Math.floor(-myFullness() / fullness) : quantity,
+            inebriety < 0 ? Math.floor(-myInebriety() / inebriety) : quantity
+          );
           logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
         }
 
