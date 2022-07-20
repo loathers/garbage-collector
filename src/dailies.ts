@@ -148,7 +148,7 @@ export function postFreeFightDailySetup(): void {
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`)) return;
 
-  if (!get("voteAlways") && get("_voteToday")) {
+  if (!get("voteAlways") && !get("_voteToday")) {
     const valuableInitiatives: Map<string, number> = new Map([
       [
         "Meat Drop: +30",
@@ -163,11 +163,13 @@ function voterSetup(): void {
       ],
       ["Adventures: +1", globalOptions.ascending ? 0 : get("valueOfAdventure")],
     ]);
+
     const availableInitiatives: Map<string, number> = new Map(
       Object.keys(votingBoothInitiatives(myClass(), myPathId(), myDaycount())).map((s) => {
         return [s, 0];
       })
     );
+
     for (const init in Object.keys(availableInitiatives)) {
       valuableInitiatives.forEach((value, key) => {
         if (init.includes(key)) availableInitiatives.set(init, value);
