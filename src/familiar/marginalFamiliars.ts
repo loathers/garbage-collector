@@ -131,6 +131,29 @@ export function barfFamiliar(): Familiar {
     (f) => totalFamiliarValue(f) > totalFamiliarValue(meatFamiliarEntry)
   );
 
+  function turnsNeededForFamiliar(
+    { familiar, limit, outfitValue }: MarginalFamiliar,
+    baselineToCompareAgainst: number
+  ): number {
+    switch (limit) {
+      case "drops":
+        return sum(
+          getAllDrops(familiar).filter(
+            ({ expectedValue }) =>
+              outfitValue + familiarAbilityValue(familiar) + expectedValue >
+              baselineToCompareAgainst
+          ),
+          ({ expectedTurns }) => expectedTurns
+        );
+
+      case "experience":
+        return getExperienceFamiliarLimit(familiar);
+
+      case "none":
+        return 0;
+    }
+  }
+
   if (viableMenu.every(({ limit }) => limit !== "none")) {
     const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
       turnsNeededForFamiliar(
@@ -159,25 +182,4 @@ export function barfFamiliar(): Familiar {
   );
 
   return best.familiar;
-}
-
-function turnsNeededForFamiliar(
-  { familiar, limit, outfitValue }: MarginalFamiliar,
-  baselineToCompareAgainst: number
-): number {
-  switch (limit) {
-    case "drops":
-      return sum(
-        getAllDrops(familiar).filter(
-          (x) => x.expectedValue + outfitValue > baselineToCompareAgainst
-        ),
-        ({ expectedTurns }) => expectedTurns
-      );
-
-    case "experience":
-      return getExperienceFamiliarLimit(familiar);
-
-    case "none":
-      return 0;
-  }
 }
