@@ -74,6 +74,23 @@ function getCachedOutfitValues(fam: Familiar) {
   return values;
 }
 
+let passiveWeight = 0;
+function familiarModifier(familiar: Familiar, modifier: NumericModifier): number {
+  const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
+  const totalWeight = familiarWeight(familiar) + passiveWeight + cachedOutfitWeight;
+  return numericModifier(familiar, modifier, totalWeight, $item`none`);
+}
+
+function familiarAbilityValue(familiar: Familiar) {
+  return (
+    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE +
+    familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE
+  );
+}
+function totalFamiliarValue({ expectedValue, outfitValue, familiar }: MarginalFamiliar) {
+  return expectedValue + outfitValue + familiarAbilityValue(familiar);
+}
+
 type MarginalFamiliar = GeneralFamiliar & { outfitWeight: number; outfitValue: number };
 
 function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
@@ -109,23 +126,8 @@ export function barfFamiliar(): Familiar {
   const currentOutfitWeight = sum(outfitSlots, (slot: Slot) =>
     getModifier("Familiar Weight", equippedItem(slot))
   );
-  const passiveWeight = weightAdjustment() - currentOutfitWeight;
 
-  const familiarModifier = (familiar: Familiar, modifier: NumericModifier) => {
-    const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
-
-    const totalWeight = familiarWeight(familiar) + passiveWeight + cachedOutfitWeight;
-
-    return numericModifier(familiar, modifier, totalWeight, $item`none`);
-  };
-
-  const familiarAbilityValue = (familiar: Familiar) =>
-    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE +
-    familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE;
-
-  const totalFamiliarValue = ({ expectedValue, outfitValue, familiar }: MarginalFamiliar) => {
-    return expectedValue + outfitValue + familiarAbilityValue(familiar);
-  };
+  passiveWeight = weightAdjustment() - currentOutfitWeight;
 
   const viableMenu = fullMenu.filter(
     (f) => totalFamiliarValue(f) > totalFamiliarValue(meatFamiliarEntry)
