@@ -23268,10 +23268,7 @@ function consumeDiet(diet, name) {
                   fullness = _cleaning[0],
                   inebriety = _cleaning[1];
 
-              if (myFullness() + fullness < 0 || myInebriety() + inebriety < 0) {
-                countToConsume = 0;
-              }
-
+              countToConsume = Math.min(fullness < 0 ? Math.floor(-myFullness() / fullness) : quantity, inebriety < 0 ? Math.floor(-myInebriety() / inebriety) : quantity);
               logprint("Based on organ-cleaning, planning to consume ".concat(countToConsume, "."));
             }
 
@@ -25543,7 +25540,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("cac8945a09c5d41e1247884cbd292445071f6e25" === mainSha) {
+    if ("a012c440b17176aa7bdfae15aeadfde04f0dfa3d" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
