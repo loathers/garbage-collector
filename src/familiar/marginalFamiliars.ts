@@ -172,7 +172,7 @@ export function barfFamiliar(): Familiar {
   const familiarPrintout = (x: MarginalFamiliar) =>
     `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(
       x.familiar
-    )} from familiar abilities and ${x.outfitValue.toFixed(1)} from outfit)`;
+    ).toFixed(1)} from familiar abilities and ${x.outfitValue.toFixed(1)} from outfit)`;
 
   print(
     `Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${
