@@ -35,6 +35,9 @@ import { menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
+const ITEM_DROP_VALUE = 0.72;
+const MEAT_DROP_VALUE = baseMeat / 100;
+
 type CachedOutfit = {
   weight: number;
   meat: number;
@@ -71,29 +74,14 @@ function getCachedOutfitValues(fam: Familiar) {
   return values;
 }
 
-type MarginalFamiliar = GeneralFamiliar & { outfitValue: number };
+type MarginalFamiliar = GeneralFamiliar & { outfitWeight: number; outfitValue: number };
 
 function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
-  const currentOutfitWeight = sum(outfitSlots, (slot: Slot) =>
-    getModifier("Familiar Weight", equippedItem(slot))
-  );
-  const passiveWeight = weightAdjustment() - currentOutfitWeight;
-
-  const familiarModifier = (familiar: Familiar, modifier: NumericModifier) => {
-    const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
-
-    const totalWeight = familiarWeight(familiar) + passiveWeight + cachedOutfitWeight;
-
-    return numericModifier(familiar, modifier, totalWeight, $item`none`);
-  };
-
   const outfit = getCachedOutfitValues(f.familiar);
-  const outfitValue =
-    outfit.bonus +
-    ((outfit.meat + familiarModifier(f.familiar, "Meat Drop")) * baseMeat) / 100 +
-    (outfit.item + familiarModifier(f.familiar, "Item Drop")) * 0.72;
+  const outfitValue = outfit.bonus + outfit.meat * MEAT_DROP_VALUE + outfit.item * ITEM_DROP_VALUE;
+  const outfitWeight = outfit.weight;
 
-  return { ...f, outfitValue };
+  return { ...f, outfitValue, outfitWeight };
 }
 export function barfFamiliar(): Familiar {
   if (timeToMeatify()) return $familiar`Grey Goose`;
@@ -118,9 +106,29 @@ export function barfFamiliar(): Familiar {
 
   if (!meatFamiliarEntry) throw new Error("Something went wrong when initializing familiars!");
 
+  const currentOutfitWeight = sum(outfitSlots, (slot: Slot) =>
+    getModifier("Familiar Weight", equippedItem(slot))
+  );
+  const passiveWeight = weightAdjustment() - currentOutfitWeight;
+
+  const familiarModifier = (familiar: Familiar, modifier: NumericModifier) => {
+    const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
+
+    const totalWeight = familiarWeight(familiar) + passiveWeight + cachedOutfitWeight;
+
+    return numericModifier(familiar, modifier, totalWeight, $item`none`);
+  };
+
+  const familiarAbilityValue = (familiar: Familiar) =>
+    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE +
+    familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE;
+
+  const totalFamiliarValue = ({ expectedValue, outfitValue, familiar }: MarginalFamiliar) => {
+    return expectedValue + outfitValue + familiarAbilityValue(familiar);
+  };
+
   const viableMenu = fullMenu.filter(
-    ({ expectedValue, outfitValue }) =>
-      expectedValue + outfitValue > meatFamiliarEntry.expectedValue + meatFamiliarEntry.outfitValue
+    (f) => totalFamiliarValue(f) > totalFamiliarValue(meatFamiliarEntry)
   );
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {
@@ -136,18 +144,17 @@ export function barfFamiliar(): Familiar {
 
   if (viableMenu.length === 0) return meatFamiliar();
 
-  const best = viableMenu.reduce((a, b) =>
-    a.expectedValue + a.outfitValue > b.expectedValue + b.outfitValue ? a : b
-  );
+  const best = viableMenu.reduce((a, b) => (totalFamiliarValue(a) > totalFamiliarValue(b) ? a : b));
+
+  const familiarPrintout = (x: MarginalFamiliar) =>
+    `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(
+      x.familiar
+    )} from familiar abilities and ${x.outfitValue.toFixed(1)} from outfit)`;
 
   print(
-    `Choosing to use ${best.familiar} (expected value of ${best.expectedValue.toFixed(
-      1
-    )} from familiar and ${best.outfitValue.toFixed(1)} from outfit) over ${
+    `Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${
       meatFamiliarEntry.familiar
-    } (expected value of ${meatFamiliarEntry.expectedValue.toFixed(
-      1
-    )} from familiar and ${meatFamiliarEntry.outfitValue.toFixed(1)} from outfit).`,
+    } ${familiarPrintout(meatFamiliarEntry)}.`,
     HIGHLIGHT
   );
 
