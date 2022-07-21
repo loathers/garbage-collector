@@ -74,10 +74,16 @@ function getCachedOutfitValues(fam: Familiar) {
   return values;
 }
 
-let passiveWeight = 0;
+type MarginalFamiliar = GeneralFamiliar & { outfitWeight: number; outfitValue: number };
+
+const passiveWeight = () =>
+  weightAdjustment() -
+  sum(outfitSlots, (slot: Slot) => getModifier("Familiar Weight", equippedItem(slot)));
+
 function familiarModifier(familiar: Familiar, modifier: NumericModifier): number {
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
-  const totalWeight = familiarWeight(familiar) + passiveWeight + cachedOutfitWeight;
+  const totalWeight = familiarWeight(familiar) + passiveWeight() + cachedOutfitWeight;
+
   return numericModifier(familiar, modifier, totalWeight, $item`none`);
 }
 
@@ -87,11 +93,32 @@ function familiarAbilityValue(familiar: Familiar) {
     familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE
   );
 }
+
 function totalFamiliarValue({ expectedValue, outfitValue, familiar }: MarginalFamiliar) {
   return expectedValue + outfitValue + familiarAbilityValue(familiar);
 }
 
-type MarginalFamiliar = GeneralFamiliar & { outfitWeight: number; outfitValue: number };
+function turnsNeededForFamiliar(
+  { familiar, limit, outfitValue }: MarginalFamiliar,
+  baselineToCompareAgainst: number
+): number {
+  switch (limit) {
+    case "drops":
+      return sum(
+        getAllDrops(familiar).filter(
+          ({ expectedValue }) =>
+            outfitValue + familiarAbilityValue(familiar) + expectedValue > baselineToCompareAgainst
+        ),
+        ({ expectedTurns }) => expectedTurns
+      );
+
+    case "experience":
+      return getExperienceFamiliarLimit(familiar);
+
+    case "none":
+      return 0;
+  }
+}
 
 function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfit = getCachedOutfitValues(f.familiar);
@@ -123,38 +150,9 @@ export function barfFamiliar(): Familiar {
 
   if (!meatFamiliarEntry) throw new Error("Something went wrong when initializing familiars!");
 
-  const currentOutfitWeight = sum(outfitSlots, (slot: Slot) =>
-    getModifier("Familiar Weight", equippedItem(slot))
-  );
-
-  passiveWeight = weightAdjustment() - currentOutfitWeight;
-
   const viableMenu = fullMenu.filter(
     (f) => totalFamiliarValue(f) > totalFamiliarValue(meatFamiliarEntry)
   );
-
-  function turnsNeededForFamiliar(
-    { familiar, limit, outfitValue }: MarginalFamiliar,
-    baselineToCompareAgainst: number
-  ): number {
-    switch (limit) {
-      case "drops":
-        return sum(
-          getAllDrops(familiar).filter(
-            ({ expectedValue }) =>
-              outfitValue + familiarAbilityValue(familiar) + expectedValue >
-              baselineToCompareAgainst
-          ),
-          ({ expectedTurns }) => expectedTurns
-        );
-
-      case "experience":
-        return getExperienceFamiliarLimit(familiar);
-
-      case "none":
-        return 0;
-    }
-  }
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {
     const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
