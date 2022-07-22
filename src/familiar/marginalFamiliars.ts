@@ -76,13 +76,13 @@ function getCachedOutfitValues(fam: Familiar) {
 
 type MarginalFamiliar = GeneralFamiliar & { outfitWeight: number; outfitValue: number };
 
-const passiveWeight = () =>
+const nonOutfitWeightBonus = () =>
   weightAdjustment() -
   sum(outfitSlots, (slot: Slot) => getModifier("Familiar Weight", equippedItem(slot)));
 
 function familiarModifier(familiar: Familiar, modifier: NumericModifier): number {
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
-  const totalWeight = familiarWeight(familiar) + passiveWeight() + cachedOutfitWeight;
+  const totalWeight = familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
 
   return numericModifier(familiar, modifier, totalWeight, $item`none`);
 }
@@ -100,14 +100,15 @@ function totalFamiliarValue({ expectedValue, outfitValue, familiar }: MarginalFa
 
 function turnsNeededForFamiliar(
   { familiar, limit, outfitValue }: MarginalFamiliar,
-  baselineToCompareAgainst: number
+  baselineToCompareAgainst: MarginalFamiliar
 ): number {
   switch (limit) {
     case "drops":
       return sum(
         getAllDrops(familiar).filter(
           ({ expectedValue }) =>
-            outfitValue + familiarAbilityValue(familiar) + expectedValue > baselineToCompareAgainst
+            outfitValue + familiarAbilityValue(familiar) + expectedValue >
+            totalFamiliarValue(baselineToCompareAgainst)
         ),
         ({ expectedTurns }) => expectedTurns
       );
@@ -156,10 +157,7 @@ export function barfFamiliar(): Familiar {
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {
     const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
-      turnsNeededForFamiliar(
-        option,
-        meatFamiliarEntry.expectedValue + meatFamiliarEntry.outfitValue
-      )
+      turnsNeededForFamiliar(option, meatFamiliarEntry)
     );
 
     if (turnsNeeded < estimatedTurns()) return meatFamiliar();
