@@ -1,5 +1,5 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
+import { buy, craftType, Item, Location, print, retrieveItem, toInt, use } from "kolmafia";
 import {
   $effect,
   $item,
@@ -15,7 +15,7 @@ import {
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
-import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
+import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable, setChoice } from "./lib";
 import { garboValue } from "./session";
 
 export type DraggableFight = "backup" | "wanderer";
@@ -279,12 +279,29 @@ const wandererTargets = [
       return have(guzzlrBooze);
     }
   ),
+  // Elemental Airport Currency drops.
+  // TODO: Unknown drop rate, using 20% because w/e
+  // No reason to do fun funds as we're spending turns in barf
+  new WandererTarget(
+    "Wal-Mart",
+    () => realmAvailable("cold") && get("lovebugsUnlocked") && toInt(get("_lovebugsWalmart")) < 5,
+    () => $location`VYKEA`,
+    () => (garboValue($item`one-day ticket to The Glaciest`) / 50) * 0.2
+  ),
+  new WandererTarget(
+    "Beach Buck",
+    () => realmAvailable("sleaze") && get("lovebugsUnlocked"), // no known cap
+    () => $location`The Fun-Guy Mansion`,
+    () => (garboValue($item`one-day ticket to Spring Break Beach`) / 100) * 0.2
+  ),
   new WandererTarget(
     "Coinspiracy",
-    () => realmAvailable("spooky") && get("lovebugsUnlocked"),
+    () =>
+      realmAvailable("spooky") && get("lovebugsUnlocked") && toInt(get("_lovebugsCoinspiracy")) < 5,
     () => $location`The Deep Dark Jungle`,
-    () => 2 // slightly higher value
+    () => (garboValue($item`karma shawarma`) / 7) * 0.2
   ),
+  // Default wanderer zone
   new WandererTarget(
     "Default",
     () => true, // can always do default
