@@ -796,7 +796,12 @@ const freeFightSources = [
           if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
           retrieveItem($item`[glitch season reward name]`);
-          if (get("glitchItemImplementationCount") >= 1000) retrieveItem($item`gas can`, 2);
+          if (
+            get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
+            2000
+          ) {
+            retrieveItem($item`gas can`, 2);
+          }
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
         }
