@@ -15,7 +15,7 @@ import {
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
-import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable, setChoice } from "./lib";
+import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
 import { garboValue } from "./session";
 
 export type DraggableFight = "backup" | "wanderer";
