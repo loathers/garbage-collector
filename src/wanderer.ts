@@ -1,5 +1,5 @@
 import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, print, retrieveItem, toInt, use } from "kolmafia";
+import { buy, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
 import {
   $effect,
   $item,
