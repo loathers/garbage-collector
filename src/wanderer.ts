@@ -280,26 +280,26 @@ const wandererTargets = [
     }
   ),
   // Elemental Airport Currency drops.
-  // TODO: Unknown drop rate, using 10% from a quick log search
+  // TODO: Unknown drop rate, using 5% from a quick log search
+  // The wiki appears to be wrong about the max coinspiracy drops
   // No reason to do fun funds as we're spending turns in barf
   new WandererTarget(
     "Wal-Mart",
-    () => realmAvailable("cold") && get("lovebugsUnlocked") && toInt(get("_lovebugsWalmart")) < 5,
+    () => realmAvailable("cold") && get("lovebugsUnlocked"),
     () => $location`VYKEA`,
-    () => garboValue($item`Wal-Mart gift certificate`) * 0.1
+    () => garboValue($item`Wal-Mart gift certificate`) * 0.05
   ),
   new WandererTarget(
     "Beach Buck",
-    () => realmAvailable("sleaze") && get("lovebugsUnlocked"), // no known cap
+    () => realmAvailable("sleaze") && get("lovebugsUnlocked"),
     () => $location`The Fun-Guy Mansion`,
-    () => garboValue($item`Beach Buck`) * 0.1
+    () => garboValue($item`Beach Buck`) * 0.05
   ),
   new WandererTarget(
     "Coinspiracy",
-    () =>
-      realmAvailable("spooky") && get("lovebugsUnlocked") && toInt(get("_lovebugsCoinspiracy")) < 5,
+    () => realmAvailable("spooky") && get("lovebugsUnlocked"),
     () => $location`The Deep Dark Jungle`,
-    () => garboValue($item`Coinspiracy`) * 0.1
+    () => garboValue($item`Coinspiracy`) * 0.05
   ),
   // Default wanderer zone
   new WandererTarget(
