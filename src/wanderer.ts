@@ -286,20 +286,20 @@ const wandererTargets = [
     "Wal-Mart",
     () => realmAvailable("cold") && get("lovebugsUnlocked") && toInt(get("_lovebugsWalmart")) < 5,
     () => $location`VYKEA`,
-    () => (garboValue($item`one-day ticket to The Glaciest`) / 50) * 0.2
+    () => garboValue($item`Wal-Mart gift certificate`) * 0.2
   ),
   new WandererTarget(
     "Beach Buck",
     () => realmAvailable("sleaze") && get("lovebugsUnlocked"), // no known cap
     () => $location`The Fun-Guy Mansion`,
-    () => (garboValue($item`one-day ticket to Spring Break Beach`) / 100) * 0.2
+    () => garboValue($item`Beach Buck`) * 0.2
   ),
   new WandererTarget(
     "Coinspiracy",
     () =>
       realmAvailable("spooky") && get("lovebugsUnlocked") && toInt(get("_lovebugsCoinspiracy")) < 5,
     () => $location`The Deep Dark Jungle`,
-    () => (garboValue($item`karma shawarma`) / 7) * 0.2
+    () => garboValue($item`Coinspiracy`) * 0.2
   ),
   // Default wanderer zone
   new WandererTarget(
