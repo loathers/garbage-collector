@@ -284,7 +284,7 @@ const wandererTargets = [
   // The wiki appears to be wrong about the max coinspiracy drops
   // No reason to do fun funds as we're spending turns in barf
   new WandererTarget(
-    "Wal-Mart",
+    "Wal-Mart gift certificate",
     () => realmAvailable("cold") && get("lovebugsUnlocked"),
     () => $location`VYKEA`,
     () => garboValue($item`Wal-Mart gift certificate`) * 0.05
