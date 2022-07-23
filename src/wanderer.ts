@@ -280,26 +280,26 @@ const wandererTargets = [
     }
   ),
   // Elemental Airport Currency drops.
-  // TODO: Unknown drop rate, using 20% because w/e
+  // TODO: Unknown drop rate, using 10% from a quick log search
   // No reason to do fun funds as we're spending turns in barf
   new WandererTarget(
     "Wal-Mart",
     () => realmAvailable("cold") && get("lovebugsUnlocked") && toInt(get("_lovebugsWalmart")) < 5,
     () => $location`VYKEA`,
-    () => garboValue($item`Wal-Mart gift certificate`) * 0.2
+    () => garboValue($item`Wal-Mart gift certificate`) * 0.1
   ),
   new WandererTarget(
     "Beach Buck",
     () => realmAvailable("sleaze") && get("lovebugsUnlocked"), // no known cap
     () => $location`The Fun-Guy Mansion`,
-    () => garboValue($item`Beach Buck`) * 0.2
+    () => garboValue($item`Beach Buck`) * 0.1
   ),
   new WandererTarget(
     "Coinspiracy",
     () =>
       realmAvailable("spooky") && get("lovebugsUnlocked") && toInt(get("_lovebugsCoinspiracy")) < 5,
     () => $location`The Deep Dark Jungle`,
-    () => garboValue($item`Coinspiracy`) * 0.2
+    () => garboValue($item`Coinspiracy`) * 0.1
   ),
   // Default wanderer zone
   new WandererTarget(
