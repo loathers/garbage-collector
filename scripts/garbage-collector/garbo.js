@@ -19445,7 +19445,7 @@ function findBestLeprechauns() {
   var bestLepMult = (0,lib/* findLeprechaunMultiplier */.q$)(validFamiliars[0]);
   var firstBadLeprechaun = validFamiliars.findIndex(f => (0,lib/* findLeprechaunMultiplier */.q$)(f) < bestLepMult);
   if (firstBadLeprechaun === -1) return validFamiliars;
-  return validFamiliars.slice(0, firstBadLeprechaun - 1);
+  return validFamiliars.slice(0, firstBadLeprechaun);
 }
 
 function findBestLeprechaun() {
@@ -24441,7 +24441,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26542);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("de3fc14fe308895dc4f11db36773e8ce32801f9c"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("ef5e41ed75f0072bb75f3610ea3791e6fcbc8224"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25111,7 +25111,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("de3fc14fe308895dc4f11db36773e8ce32801f9c" === mainSha) {
+    if ("ef5e41ed75f0072bb75f3610ea3791e6fcbc8224" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
