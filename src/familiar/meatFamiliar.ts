@@ -16,7 +16,7 @@ function findBestLeprechauns(): Familiar[] {
   );
 
   if (firstBadLeprechaun === -1) return validFamiliars;
-  return validFamiliars.slice(0, firstBadLeprechaun - 1);
+  return validFamiliars.slice(0, firstBadLeprechaun);
 }
 
 function findBestLeprechaun(): Familiar {
