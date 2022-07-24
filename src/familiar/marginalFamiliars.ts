@@ -132,7 +132,10 @@ export function barfFamiliar(): Familiar {
   if (timeToMeatify()) return $familiar`Grey Goose`;
   if (get("garbo_IgnoreMarginalFamiliars", false)) return meatFamiliar();
 
-  const baseMenu = menu(false, true);
+  // Right now, this menu lies, and says that we cannot customize the macro used.
+  // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
+  // Some day, I hope to right this wrong.
+  const baseMenu = menu(false);
 
   if (have($familiar`Space Jellyfish`) && myInebriety() <= inebrietyLimit()) {
     baseMenu.push({
