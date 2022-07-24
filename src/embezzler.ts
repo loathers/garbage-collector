@@ -898,7 +898,12 @@ export function estimatedTurns(): number {
     ? Math.min(potentialSausages, 23 - get("_sausagesEaten"))
     : 0;
   const thesisAdventures = have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
-  const nightcapAdventures = globalOptions.ascending && myInebriety() <= inebrietyLimit() ? 60 : 0;
+  const nightcapAdventures =
+    globalOptions.ascending &&
+    myInebriety() <= inebrietyLimit() &&
+    have($item`Drunkula's wineglass`)
+      ? 60
+      : 0;
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
   // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
