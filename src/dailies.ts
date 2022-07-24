@@ -160,13 +160,13 @@ function voterSetup(): void {
         (4 * 100 * 0.3 * embezzlerCount() + 3 * 200 * 0.15 * (estimatedTurns() - embezzlerCount())),
     ],
     ["Adventures: +1", globalOptions.ascending ? 0 : get("valueOfAdventure")],
-    ["Familiar Experience: +2", 0],
-    ["Monster Level: +10", -1],
-    [`${myPrimestat()} Percent: +25`, -2],
-    [`Experience (${myPrimestat()}): +4`, -3],
-    ["Meat Drop: -30", -10],
-    ["Item Drop: -15", -10],
-    ["Familiar Experience: -2", -10],
+    ["Familiar Experience: +2", 8],
+    ["Monster Level: +10", 5],
+    [`${myPrimestat()} Percent: +25`, 3],
+    [`Experience (${myPrimestat()}): +4`, 2],
+    ["Meat Drop: -30", -2],
+    ["Item Drop: -15", -2],
+    ["Familiar Experience: -2", -2],
   ]);
 
   if (!get("voteAlways") && !get("_voteToday")) {
