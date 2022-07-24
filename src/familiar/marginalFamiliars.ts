@@ -154,9 +154,8 @@ export function barfFamiliar(): Familiar {
 
   if (!meatFamiliarEntry) throw new Error("Something went wrong when initializing familiars!");
 
-  const viableMenu = fullMenu.filter(
-    (f) => totalFamiliarValue(f) > totalFamiliarValue(meatFamiliarEntry)
-  );
+  const meatFamiliarValue = totalFamiliarValue(meatFamiliarEntry);
+  const viableMenu = fullMenu.filter((f) => totalFamiliarValue(f) > meatFamiliarValue);
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {
     const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
