@@ -7,7 +7,7 @@ import {
   totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
-import { $familiar, $item, get, have } from "libram";
+import { $effect, $familiar, $item, get, have } from "libram";
 import { globalOptions } from "../lib";
 
 export type GeneralFamiliar = {
@@ -69,4 +69,13 @@ export function timeToMeatify(): boolean {
 
 export function pocketProfessorLectures(): number {
   return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar`Pocket Professor`) + weightAdjustment()));
+}
+
+export function canOpenRedPresent(): boolean {
+  return (
+    have($familiar`Crimbo Shrub`) &&
+    !have($effect`Everything Looks Red`) &&
+    get("shrubGifts") === "meat" &&
+    myInebriety() <= inebrietyLimit()
+  );
 }

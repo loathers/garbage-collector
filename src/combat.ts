@@ -51,7 +51,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { meatFamiliar, timeToMeatify } from "./familiar";
+import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./wanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -174,6 +174,17 @@ export class Macro extends StrictMacro {
     return new Macro().tryHaveItem(item);
   }
 
+  familiarActions(): Macro {
+    return this.externalIf(
+      myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
+      Macro.trySkill($skill`Meatify Matter`)
+    ).externalIf(canOpenRedPresent(), Macro.trySkill($skill`Open a Big Red Present`));
+  }
+
+  static familiarActions(): Macro {
+    return new Macro().familiarActions();
+  }
+
   tryCopier(itemOrSkill: Item | Skill): Macro {
     switch (itemOrSkill) {
       case $item`Spooky Putty sheet`:
@@ -252,10 +263,7 @@ export class Macro extends StrictMacro {
       shouldRedigitize(),
       Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`))
     )
-      .externalIf(
-        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
-        Macro.trySkill($skill`Meatify Matter`)
-      )
+      .familiarActions()
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
@@ -423,10 +431,7 @@ export class Macro extends StrictMacro {
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
-      .externalIf(
-        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
-        Macro.trySkill($skill`Meatify Matter`)
-      )
+      .familiarActions()
       .externalIf(
         get("cosmicBowlingBallReturnCombats") < 1,
         Macro.trySkill($skill`Bowl Straight Up`)
@@ -576,10 +581,7 @@ export class Macro extends StrictMacro {
     }
 
     return this.tryHaveSkill($skill`Sing Along`)
-      .externalIf(
-        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
-        Macro.trySkill($skill`Meatify Matter`)
-      )
+      .familiarActions()
       .tryHaveItem($item`Rain-Doh blue balls`)
       .externalIf(get("lovebugsUnlocked"), Macro.trySkill($skill`Summon Love Gnats`))
       .tryHaveSkill(classStun)

@@ -11,6 +11,7 @@ import {
   getCampground,
   getClanLounge,
   haveSkill,
+  hippyStoneBroken,
   holiday,
   inebrietyLimit,
   Item,
@@ -60,6 +61,7 @@ import {
   $thrall,
   BeachComb,
   ChateauMantegna,
+  CrimboShrub,
   ensureEffect,
   findLeprechaunMultiplier,
   get,
@@ -363,6 +365,8 @@ export function prepFamiliars(): void {
       }
     });
   }
+
+  configureShrub();
 }
 
 function horse(): void {
@@ -835,4 +839,17 @@ function jickjar(): void {
   if (get("_jickJarAvailable") === "true") {
     visitUrl("showplayer.php?who=1&action=jung&whichperson=jick");
   }
+}
+
+function configureShrub(): void {
+  if (!CrimboShrub.have()) return;
+
+  if (!have($item`box of old Crimbo decorations`)) useFamiliar($familiar`Crimbo Shrub`);
+
+  CrimboShrub.decorate(
+    myPrimestat().toString(),
+    "Stench Damage",
+    hippyStoneBroken() ? "PvP Fights" : "HP Regen",
+    "Red Ray"
+  );
 }
