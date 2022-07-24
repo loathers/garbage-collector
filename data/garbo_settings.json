@@ -45,5 +45,10 @@
     "name": "garbo_autoUserConfirm",
     "type": "boolean",
     "description": "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive."
+  },
+  {
+    "name": "garbo_IgnoreMarginalFamiliars",
+    "type": "boolean",
+    "description": "Should garbo use only your meat familiar throughout your barf-turns, or should it also use drops familiars to maximize profit?"
   }
 ]
