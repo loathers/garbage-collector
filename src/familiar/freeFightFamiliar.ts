@@ -1,17 +1,38 @@
 import { Familiar, familiarWeight } from "kolmafia";
 import { $familiar, findLeprechaunMultiplier } from "libram";
+import { canOpenRedPresent } from ".";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
-export function menu(includeExperienceFamiliars = true): GeneralFamiliar[] {
+export function menu(includeExperienceFamiliars = true, canChooseMacro = false): GeneralFamiliar[] {
   const familiarMenu = [
     ...getConstantValueFamiliars(),
     ...getDropFamiliars(),
     ...(includeExperienceFamiliars ? getExperienceFamiliars() : []),
   ];
+
+  if (canChooseMacro) {
+    if (timeToMeatify()) {
+      familiarMenu.push({
+        familiar: $familiar`Grey Goose`,
+        expectedValue: (familiarWeight($familiar`Grey Goose`) - 5) ** 4,
+        leprechaunMultiplier: 0,
+        limit: "experience",
+      });
+    }
+
+    if (canOpenRedPresent()) {
+      familiarMenu.push({
+        familiar: $familiar`Crimbo Shrub`,
+        expectedValue: 2500,
+        leprechaunMultiplier: 0,
+        limit: "none",
+      });
+    }
+  }
 
   const meatFam = meatFamiliar();
 
@@ -27,16 +48,7 @@ export function menu(includeExperienceFamiliars = true): GeneralFamiliar[] {
   return familiarMenu;
 }
 
-export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
-  if (canMeatify && timeToMeatify()) {
-    return {
-      familiar: $familiar`Grey Goose`,
-      expectedValue: (familiarWeight($familiar`Grey Goose`) - 5) ** 4,
-      leprechaunMultiplier: 0,
-      limit: "experience",
-    };
-  }
-
+export function freeFightFamiliarData(canChooseMacro = false): GeneralFamiliar {
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a.expectedValue === b.expectedValue) {
       return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
@@ -44,9 +56,9 @@ export function freeFightFamiliarData(canMeatify = false): GeneralFamiliar {
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return menu().reduce(compareFamiliars);
+  return menu(canChooseMacro).reduce(compareFamiliars);
 }
 
-export function freeFightFamiliar(canMeatify = false): Familiar {
-  return freeFightFamiliarData(canMeatify).familiar;
+export function freeFightFamiliar(canChooseMacro = false): Familiar {
+  return freeFightFamiliarData(canChooseMacro).familiar;
 }
