@@ -18,7 +18,7 @@ export function menu(includeExperienceFamiliars = true, canChooseMacro = false):
     if (timeToMeatify()) {
       familiarMenu.push({
         familiar: $familiar`Grey Goose`,
-        expectedValue: (familiarWeight($familiar`Grey Goose`) - 5) ** 4,
+        expectedValue: (Math.max(familiarWeight($familiar`Grey Goose`) - 5), 0) ** 4,
         leprechaunMultiplier: 0,
         limit: "experience",
       });
