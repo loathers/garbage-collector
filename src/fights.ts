@@ -103,10 +103,10 @@ import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import {
-  calculateMeatFamiliar,
   freeFightFamiliar,
   meatFamiliar,
   pocketProfessorLectures,
+  setBestLeprechaunAsMeatFamiliar,
 } from "./familiar";
 import {
   baseMeat,
@@ -2182,7 +2182,7 @@ function voidMonster(): void {
     return;
   }
 
-  useFamiliar(freeFightFamiliar());
+  useFamiliar(freeFightFamiliar(true));
   freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
   adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   postCombatActions();
@@ -2307,7 +2307,7 @@ function killRobortCreaturesForFree() {
   ) {
     if (!have($item`drive-by shooting`)) create($item`drive-by shooting`);
     Robortender.feed($item`drive-by shooting`);
-    calculateMeatFamiliar();
+    setBestLeprechaunAsMeatFamiliar();
   }
 }
 
