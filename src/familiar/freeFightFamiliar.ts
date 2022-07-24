@@ -56,7 +56,7 @@ export function freeFightFamiliarData(canChooseMacro = false): GeneralFamiliar {
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return menu(canChooseMacro).reduce(compareFamiliars);
+  return menu(true, canChooseMacro).reduce(compareFamiliars);
 }
 
 export function freeFightFamiliar(canChooseMacro = false): Familiar {
