@@ -25,7 +25,6 @@ import {
   runChoice,
   runCombat,
   setAutoAttack,
-  todayToString,
   toInt,
   totalTurnsPlayed,
   toUrl,
@@ -99,12 +98,9 @@ import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } fro
 import { potionSetup } from "./potions";
 import {
   garboAverageValue,
-  garboValue,
   printGarboSession,
-  sessionSinceStart,
-  setMarginalSessionDiff,
-  startMarginalSession,
   startSession,
+  trackBarfSessionStatistics,
 } from "./session";
 import { canAdv } from "canadv.ash";
 import { yachtzeeChain } from "./yachtzee";
@@ -130,6 +126,7 @@ function ensureBarfAccess() {
 
 function barfTurn() {
   const startTurns = totalTurnsPlayed();
+  trackBarfSessionStatistics();
 
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
@@ -232,6 +229,7 @@ function barfTurn() {
 
     const underwater = location === $location`The Briny Deeps`;
 
+    // c. set up familiar
     if (underwater) {
       // now fight one underwater
       if (get("questS01OldGuy") === "unstarted") {
@@ -290,22 +288,6 @@ function barfTurn() {
         itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
       );
       eat(available, $item`magical sausage`);
-    }
-  } else if (myAdventures() === 75 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
-    startMarginalSession();
-    const { meat, items } = sessionSinceStart().value(garboValue);
-    set("_garbo75AdvMeatCheckpoint", meat);
-    set("_garbo75AdvItemsCheckpoint", items);
-    set("_garboVOACheckpointDate", todayToString());
-    set("_garbo25AdvMeatCheckpoint", "");
-    set("_garbo25AdvItemsCheckpoint", "");
-  } else if (myAdventures() === 25 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
-    if (!get("_garboVOACheckpointSet", false)) {
-      setMarginalSessionDiff();
-      const { meat, items } = sessionSinceStart().value(garboValue);
-      set("_garbo25AdvMeatCheckpoint", meat);
-      set("_garbo25AdvItemsCheckpoint", items);
-      set("_garboVOACheckpointSet", true);
     }
   }
 
