@@ -1,12 +1,5 @@
 import { Familiar, inebrietyLimit, Item, myInebriety } from "kolmafia";
-import {
-  $familiar,
-  $item,
-  findLeprechaunMultiplier,
-  get,
-  have,
-  propertyTypes,
-} from "libram";
+import { $familiar, $item, findLeprechaunMultiplier, get, have, propertyTypes } from "libram";
 import { garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
 
