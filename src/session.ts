@@ -277,7 +277,7 @@ function printMarginalSession(): void {
       numTrackedItemTurns &&
       numTrackedItemTurns >= Math.max(50, meatTurns)
     ) {
-      const { items, itemDetails } = marginalSession.value(garboValue);
+      const { items, itemDetails } = Session.current().diff(marginalSession).value(garboValue);
       const barfItemDetails = Session.current().diff(barfSession).value(garboValue).itemDetails;
       const outlierItemDetails = itemDetails
         .filter(
