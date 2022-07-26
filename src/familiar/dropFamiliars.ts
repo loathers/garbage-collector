@@ -1,5 +1,12 @@
-import { Familiar, Item } from "kolmafia";
-import { $familiar, $item, findLeprechaunMultiplier, get, have, propertyTypes } from "libram";
+import { Familiar, inebrietyLimit, Item, myInebriety } from "kolmafia";
+import {
+  $familiar,
+  $item,
+  findLeprechaunMultiplier,
+  get,
+  have,
+  propertyTypes,
+} from "libram";
 import { garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
 
@@ -27,6 +34,13 @@ function valueStandardDropFamiliar({
     limit: "drops",
   };
 }
+
+const jellyfish: StandardDropFamiliar = {
+  familiar: $familiar`Space Jellyfish`,
+  expected: [1, 2, 3, 4, 5],
+  drop: $item`stench jelly`,
+  pref: "_spaceJellyfishDrops",
+};
 
 const rotatingFamiliars: StandardDropFamiliar[] = [
   {
@@ -141,8 +155,12 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
   },
 ];
 
-export default function getDropFamiliars(): GeneralFamiliar[] {
-  return rotatingFamiliars
+export default function getDropFamiliars(purpose: "barf" | "free" = "free"): GeneralFamiliar[] {
+  const familiarPool = rotatingFamiliars;
+  if (purpose === "barf" && myInebriety() <= inebrietyLimit()) {
+    familiarPool.push(jellyfish);
+  }
+  return familiarPool
     .map(valueStandardDropFamiliar)
     .filter(
       ({ familiar, expectedValue, leprechaunMultiplier }) =>
@@ -151,7 +169,10 @@ export default function getDropFamiliars(): GeneralFamiliar[] {
 }
 
 export function getAllDrops(fam: Familiar): { expectedValue: number; expectedTurns: number }[] {
-  const target = rotatingFamiliars.find(({ familiar }) => familiar === fam);
+  const target =
+    fam === $familiar`Space Jellyfish`
+      ? jellyfish
+      : rotatingFamiliars.find(({ familiar }) => familiar === fam);
   if (!have(fam) || !target) return [];
 
   const current = get(target.pref);

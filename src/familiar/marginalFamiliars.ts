@@ -135,14 +135,12 @@ export function barfFamiliar(): Familiar {
   // Right now, this menu lies, and says that we cannot customize the macro used.
   // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
   // Some day, I hope to right this wrong.
-  const baseMenu = menu(false);
+  const baseMenu = menu("barf", false);
 
   if (have($familiar`Space Jellyfish`) && myInebriety() <= inebrietyLimit()) {
     baseMenu.push({
       familiar: $familiar`Space Jellyfish`,
-      expectedValue:
-        garboValue($item`stench jelly`) /
-        (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
+      expectedValue: garboValue($item`stench jelly`) / 20,
       leprechaunMultiplier: 0,
       limit: "none",
     });

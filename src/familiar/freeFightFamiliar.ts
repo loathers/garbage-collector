@@ -7,11 +7,11 @@ import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
-export function menu(includeExperienceFamiliars = true, canChooseMacro = false): GeneralFamiliar[] {
+export function menu(purpose: "free" | "barf" = "free", canChooseMacro = false): GeneralFamiliar[] {
   const familiarMenu = [
     ...getConstantValueFamiliars(),
-    ...getDropFamiliars(),
-    ...(includeExperienceFamiliars ? getExperienceFamiliars() : []),
+    ...getDropFamiliars(purpose),
+    ...(purpose === "free" ? getExperienceFamiliars() : []),
   ];
 
   if (canChooseMacro) {
@@ -56,7 +56,7 @@ export function freeFightFamiliarData(canChooseMacro = false): GeneralFamiliar {
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return menu(true, canChooseMacro).reduce(compareFamiliars);
+  return menu("free", canChooseMacro).reduce(compareFamiliars);
 }
 
 export function freeFightFamiliar(canChooseMacro = false): Familiar {
