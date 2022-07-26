@@ -12,6 +12,7 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
+  maximize,
   myAdventures,
   myClass,
   myGardenType,
@@ -30,6 +31,7 @@ import {
   toUrl,
   use,
   useFamiliar,
+  useSkill,
   visitUrl,
   xpath,
 } from "kolmafia";
@@ -38,7 +40,6 @@ import {
   $classes,
   $coinmaster,
   $effect,
-  $familiar,
   $item,
   $items,
   $location,
@@ -54,6 +55,7 @@ import {
   getFoldGroup,
   have,
   haveInCampground,
+  JuneCleaver,
   property,
   Requirement,
   set,
@@ -62,10 +64,11 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro, withMacro } from "./combat";
-import { runDiet } from "./diet";
-import { freeFightFamiliar, meatFamiliar, timeToMeatify } from "./familiar";
+import { computeDiet, consumeDiet, runDiet } from "./diet";
+import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
 import {
+  bestJuneCleaverOption,
   checkGithubVersion,
   embezzlerLog,
   globalOptions,
@@ -100,11 +103,11 @@ import {
   printGarboSession,
   sessionSinceStart,
   setMarginalSessionDiff,
-  startBarfSession,
   startMarginalSession,
   startSession,
 } from "./session";
 import { canAdv } from "canadv.ash";
+import { yachtzeeChain } from "./yachtzee";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -127,9 +130,7 @@ function ensureBarfAccess() {
 
 function barfTurn() {
   const startTurns = totalTurnsPlayed();
-  if (have($effect`Beaten Up`)) {
-    throw "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.";
-  }
+
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
   }
@@ -216,7 +217,6 @@ function barfTurn() {
     adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
   } else {
     // c. set up familiar
-    useFamiliar(meatFamiliar());
     const location = embezzlerUp
       ? !get("_envyfishEggUsed") &&
         myLevel() >= 11 &&
@@ -239,17 +239,8 @@ function barfTurn() {
       }
       retrieveItem($item`pulled green taffy`);
       if (!have($effect`Fishy`)) use($item`fishy pipe`);
-    } else if (!embezzlerUp && timeToMeatify()) {
-      useFamiliar($familiar`Grey Goose`);
-    } else if (
-      !embezzlerUp &&
-      have($familiar`Space Jellyfish`) &&
-      get(`_spaceJellyfishDrops`) < 5 &&
-      myAdventures() - digitizedMonstersRemaining() - globalOptions.saveTurns <= 25 &&
-      myInebriety() <= inebrietyLimit()
-    ) {
-      useFamiliar($familiar`Space Jellyfish`);
-    }
+    } else if (embezzlerUp) useFamiliar(meatFamiliar());
+    else useFamiliar(barfFamiliar());
 
     // d. get dressed
     meatOutfit(embezzlerUp, undefined, underwater);
@@ -318,6 +309,17 @@ function barfTurn() {
     }
   }
 
+  if (
+    have($item`designer sweatpants`) &&
+    myAdventures() === 1 + globalOptions.saveTurns &&
+    !globalOptions.noDiet
+  ) {
+    while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25 && myInebriety() > 0) {
+      useSkill($skill`Sweat Out Some Booze`);
+    }
+    consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
+  }
+
   if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler") {
     if (embezzlerUp) {
       embezzlerLog.digitizedEmbezzlersFought++;
@@ -337,7 +339,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26321);
+  sinceKolmafiaRevision(26542);
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
   const forbiddenStores = property.getString("forbiddenStores").split(",");
   if (!forbiddenStores.includes("3408540")) {
@@ -404,6 +406,8 @@ export function main(argString = ""): void {
       globalOptions.simulateDiet = true;
     } else if (arg.match(/nodiet/)) {
       globalOptions.noDiet = true;
+    } else if (arg.match(/yachtzeechain/)) {
+      globalOptions.yachtzeeChain = true;
     } else if (arg.match(/version/i)) {
       checkGithubVersion();
       return;
@@ -457,7 +461,20 @@ export function main(argString = ""): void {
     ensureBarfAccess();
   }
   if (globalOptions.simulateDiet) {
+    propertyManager.set({
+      logPreferenceChange: true,
+      autoSatisfyWithMall: true,
+      autoSatisfyWithNPCs: true,
+      autoSatisfyWithCoinmasters: true,
+      autoSatisfyWithStash: false,
+      maximizerFoldables: true,
+      autoTuxedo: true,
+      autoPinkyRing: true,
+      autoGarish: true,
+      valueOfInventory: 2,
+    });
     runDiet();
+    propertyManager.resetAll();
     return;
   }
 
@@ -564,6 +581,14 @@ export function main(argString = ""): void {
       1341: 1, // Cure her poison
     });
 
+    if (JuneCleaver.have()) {
+      propertyManager.setChoices(
+        Object.fromEntries(
+          JuneCleaver.choices.map((choice) => [choice, bestJuneCleaverOption(choice)])
+        )
+      );
+    }
+
     safeRestore();
 
     if (questStep("questM23Meatsmith") === -1) {
@@ -577,6 +602,11 @@ export function main(argString = ""): void {
     if (questStep("questM25Armorer") === -1) {
       visitUrl("shop.php?whichshop=armory&action=talk");
       runChoice(1);
+    }
+
+    // unlock the sea
+    if (myLevel() >= 11 && questStep("questS01OldGuy") === -1) {
+      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
     }
     if (
       myClass() === $class`Seal Clubber` &&
@@ -596,7 +626,17 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        if (!globalOptions.noDiet) runDiet();
+        if (globalOptions.noDiet || get("_garboYachtzeeChainCompleted", false)) {
+          print("We should not be yachtzee chaining", "red");
+          globalOptions.yachtzeeChain = false;
+        }
+
+        if (
+          !globalOptions.noDiet &&
+          (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
+        ) {
+          runDiet();
+        }
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
@@ -609,12 +649,14 @@ export function main(argString = ""): void {
         // 2. do some embezzler stuff
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
+        yachtzeeChain();
         dailyFights();
 
         if (!globalOptions.noBarf) {
           // 3. burn turns at barf
           potionSetup(false);
-          startBarfSession();
+          maximize("MP", false);
+          meatMood().execute(estimatedTurns());
           try {
             while (canContinue()) {
               barfTurn();

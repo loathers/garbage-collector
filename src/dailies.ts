@@ -7,9 +7,11 @@ import {
   equip,
   familiarEquippedEquipment,
   fileToBuffer,
+  gamedayToInt,
   getCampground,
   getClanLounge,
   haveSkill,
+  hippyStoneBroken,
   holiday,
   inebrietyLimit,
   Item,
@@ -34,7 +36,6 @@ import {
   retrievePrice,
   runChoice,
   scrapPockets,
-  toInt,
   toItem,
   toSlot,
   toUrl,
@@ -60,6 +61,7 @@ import {
   $thrall,
   BeachComb,
   ChateauMantegna,
+  CrimboShrub,
   ensureEffect,
   findLeprechaunMultiplier,
   get,
@@ -67,6 +69,7 @@ import {
   have,
   Pantogram,
   property,
+  Robortender,
   set,
   SongBoom,
   SourceTerminal,
@@ -74,7 +77,7 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { calculateMeatFamiliar, meatFamiliar } from "./familiar";
+import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "./familiar";
 import {
   argmax,
   baseMeat,
@@ -121,6 +124,8 @@ export function dailySetup(): void {
   implement();
   comb();
   getAttuned();
+  rainbowGravitation();
+  jickjar();
 
   retrieveItem($item`Half a Purse`);
   if (have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000)) {
@@ -142,6 +147,8 @@ export function postFreeFightDailySetup(): void {
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
 
+  // We do this funny logic on annoyed snake & slime blob because they both suck for profits
+  // And because we don't want to lock people out of grabbing an outfit
   const voterValueTable = [
     {
       monster: $monster`terrible mutant`,
@@ -157,11 +164,11 @@ function voterSetup(): void {
     },
     {
       monster: $monster`annoyed snake`,
-      value: 25 * 0.5 + 25,
+      value: gamedayToInt(),
     },
     {
       monster: $monster`slime blob`,
-      value: 20 * 0.4 + 50 * 0.2 + 250 * 0.01,
+      value: 95 - gamedayToInt(),
     },
   ];
 
@@ -175,7 +182,7 @@ function voterSetup(): void {
     ["Meat Drop: +30", 10],
     ["Item Drop: +15", 9],
     ["Familiar Experience: +2", 8],
-    ["Adventures: +1", 7],
+    ["Adventures: +1", globalOptions.ascending ? -2 : 7],
     ["Monster Level: +10", 5],
     [`${myPrimestat()} Percent: +25`, 3],
     [`Experience (${myPrimestat()}): +4`, 2],
@@ -198,12 +205,9 @@ function voterSetup(): void {
   ];
 
   const bestVotes = voteLocalPriorityArr.sort((a, b) => b[1] - a[1]);
-  const firstInit = bestVotes[0][0];
-  const secondInit = bestVotes[1][0];
+  const init = bestVotes[0][0];
 
-  visitUrl(
-    `choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${firstInit}&local[]=${secondInit}`
-  );
+  visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
 }
 
 function configureGear(): void {
@@ -294,7 +298,7 @@ function entendreValue(): number {
   );
 }
 
-function prepFamiliars(): void {
+export function prepFamiliars(): void {
   if (have($familiar`Robortender`)) {
     const roboDrinks = {
       "Drive-by shooting": { priceCap: drivebyValue(), mandatory: true },
@@ -317,7 +321,7 @@ function prepFamiliars(): void {
       const drink = toItem(drinkName);
       if (retrievePrice(drink) > priceCap) {
         if (mandatory) {
-          calculateMeatFamiliar();
+          setBestLeprechaunAsMeatFamiliar();
           if (
             !userConfirmDialog(
               `Garbo cannot find a reasonably priced drive-by-shooting (price cap: ${priceCap}), and will not be using your robortender. Is that cool with you?`,
@@ -333,9 +337,7 @@ function prepFamiliars(): void {
         continue;
       }
       withProperty("autoBuyPriceLimit", priceCap, () => retrieveItem(1, drink));
-      if (have(drink)) {
-        visitUrl(`inventory.php?action=robooze&which=1&whichitem=${toInt(drink)}`);
-      }
+      if (have(drink)) Robortender.feed(drink);
     }
   }
 
@@ -363,6 +365,8 @@ function prepFamiliars(): void {
       }
     });
   }
+
+  configureShrub();
 }
 
 function horse(): void {
@@ -816,4 +820,36 @@ function getAttuned(): void {
     equip($item`water wings`);
     adv1($location`Generic Summer Holiday Swimming!`);
   }
+}
+
+function rainbowGravitation(): void {
+  const summonsLeft = 3 - get("prismaticSummons");
+  if (!have($skill`Rainbow Gravitation`) || summonsLeft <= 0) return;
+  const wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
+  const wadValue = sum(wads, garboValue);
+  const prismaticValue = garboValue($item`prismatic wad`);
+  if (prismaticValue < wadValue) return;
+  wads.forEach((wad) => retrieveItem(wad, summonsLeft));
+  useSkill($skill`Rainbow Gravitation`, summonsLeft);
+}
+
+function jickjar(): void {
+  if (!have($item`psychoanalytic jar`)) return;
+  if (get("_jickJarAvailable") === "unknown") visitUrl("showplayer.php?who=1");
+  if (get("_jickJarAvailable") === "true") {
+    visitUrl("showplayer.php?who=1&action=jung&whichperson=jick");
+  }
+}
+
+function configureShrub(): void {
+  if (!CrimboShrub.have()) return;
+
+  if (!have($item`box of old Crimbo decorations`)) useFamiliar($familiar`Crimbo Shrub`);
+
+  CrimboShrub.decorate(
+    myPrimestat().toString(),
+    "Stench Damage",
+    hippyStoneBroken() ? "PvP Fights" : "HP Regen",
+    "Red Ray"
+  );
 }

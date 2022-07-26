@@ -279,12 +279,29 @@ const wandererTargets = [
       return have(guzzlrBooze);
     }
   ),
+  // Elemental Airport Currency drops.
+  // TODO: Unknown drop rate, using 5% from a quick log search
+  // The wiki appears to be wrong about the max coinspiracy drops
+  // No reason to do fun funds as we're spending turns in barf
+  new WandererTarget(
+    "Wal-Mart gift certificate",
+    () => realmAvailable("cold") && get("lovebugsUnlocked"),
+    () => $location`VYKEA`,
+    () => garboValue($item`Wal-Mart gift certificate`) * 0.05
+  ),
+  new WandererTarget(
+    "Beach Buck",
+    () => realmAvailable("sleaze") && get("lovebugsUnlocked"),
+    () => $location`The Fun-Guy Mansion`,
+    () => garboValue($item`Beach Buck`) * 0.05
+  ),
   new WandererTarget(
     "Coinspiracy",
     () => realmAvailable("spooky") && get("lovebugsUnlocked"),
     () => $location`The Deep Dark Jungle`,
-    () => 2 // slightly higher value
+    () => garboValue($item`Coinspiracy`) * 0.05
   ),
+  // Default wanderer zone
   new WandererTarget(
     "Default",
     () => true, // can always do default
@@ -344,4 +361,5 @@ const unsupportedChoices = new Map<Location, { [choice: number]: number | string
       [672]: 1,
     },
   ],
+  [$location`The Copperhead Club`, { [855]: 4 }],
 ]);

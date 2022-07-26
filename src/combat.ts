@@ -5,7 +5,6 @@ import {
   Familiar,
   familiarWeight,
   getAutoAttack,
-  getCounters,
   haveEquipped,
   haveSkill,
   hippyStoneBroken,
@@ -44,6 +43,7 @@ import {
   $skill,
   $slot,
   $thralls,
+  Counter,
   get,
   getTodaysHolidayWanderers,
   have,
@@ -51,7 +51,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { meatFamiliar, timeToMeatify } from "./familiar";
+import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./wanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -174,6 +174,17 @@ export class Macro extends StrictMacro {
     return new Macro().tryHaveItem(item);
   }
 
+  familiarActions(): Macro {
+    return this.externalIf(
+      myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
+      Macro.trySkill($skill`Meatify Matter`)
+    ).externalIf(canOpenRedPresent(), Macro.trySkill($skill`Open a Big Red Present`));
+  }
+
+  static familiarActions(): Macro {
+    return new Macro().familiarActions();
+  }
+
   tryCopier(itemOrSkill: Item | Skill): Macro {
     switch (itemOrSkill) {
       case $item`Spooky Putty sheet`:
@@ -252,6 +263,7 @@ export class Macro extends StrictMacro {
       shouldRedigitize(),
       Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`))
     )
+      .familiarActions()
       .tryHaveSkill($skill`Sing Along`)
       .externalIf(
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
@@ -259,7 +271,10 @@ export class Macro extends StrictMacro {
           get("_meteorShowerUses") < 5,
         Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
       )
-      .trySkill($skill`Bowl Straight Up`)
+      .externalIf(
+        get("cosmicBowlingBallReturnCombats") < 1,
+        Macro.trySkill($skill`Bowl Straight Up`)
+      )
       .externalIf(
         have($skill`Transcendent Olfaction`) &&
           property.getString("olfactedMonster") !== "garbage tourist" &&
@@ -274,7 +289,7 @@ export class Macro extends StrictMacro {
       .externalIf(
         !get("_latteCopyUsed") &&
           (get("_latteMonster") !== $monster`garbage tourist` ||
-            getCounters("Latte Monster", 0, 30).trim() === "") &&
+            Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Offer Latte to Opponent`))
       )
@@ -416,10 +431,7 @@ export class Macro extends StrictMacro {
   startCombat(): Macro {
     return this.tryHaveSkill($skill`Sing Along`)
       .tryHaveSkill($skill`Curse of Weaksauce`)
-      .externalIf(
-        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
-        Macro.trySkill($skill`Meatify Matter`)
-      )
+      .familiarActions()
       .externalIf(
         get("cosmicBowlingBallReturnCombats") < 1,
         Macro.trySkill($skill`Bowl Straight Up`)
@@ -569,10 +581,7 @@ export class Macro extends StrictMacro {
     }
 
     return this.tryHaveSkill($skill`Sing Along`)
-      .externalIf(
-        myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
-        Macro.trySkill($skill`Meatify Matter`)
-      )
+      .familiarActions()
       .tryHaveItem($item`Rain-Doh blue balls`)
       .externalIf(get("lovebugsUnlocked"), Macro.trySkill($skill`Summon Love Gnats`))
       .tryHaveSkill(classStun)

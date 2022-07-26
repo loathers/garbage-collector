@@ -43,7 +43,7 @@ const mutuallyExclusiveList: Effect[][] = [
   $effects`Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue`,
   $effects`Cupcake of Choice, The Cupcake of Wrath, Shiny Happy Cupcake, Your Cupcake Senses Are Tingling, Tiny Bubbles in the Cupcake`,
 ];
-const mutuallyExclusive = new Map<Effect, Effect[]>();
+export const mutuallyExclusive = new Map<Effect, Effect[]>();
 for (const effectGroup of mutuallyExclusiveList) {
   for (const effect of effectGroup) {
     mutuallyExclusive.set(effect, [
@@ -53,7 +53,7 @@ for (const effectGroup of mutuallyExclusiveList) {
   }
 }
 
-interface PotionOptions {
+export interface PotionOptions {
   providesDoubleDuration?: boolean;
   canDouble?: boolean;
   considerBarf?: boolean;
@@ -322,7 +322,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   return total;
 }
 
-const farmingPotions = [
+export const farmingPotions = [
   ...Item.all()
     .filter((item) => item.tradeable && !banned.includes(item) && itemType(item) === "potion")
     .map((item) => new Potion(item))
@@ -334,7 +334,7 @@ const farmingPotions = [
         canDouble: false,
         duration: 20,
         use: (quantity: number) =>
-          new Array(quantity).every(() => cliExecute(`genie effect ${effect}`)),
+          new Array(quantity).fill(0).every(() => cliExecute(`genie effect ${effect}`)),
       })
   ),
 ];

@@ -284,7 +284,7 @@ export function printGarboSession(): void {
   const winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
   print(`Extreme Items:`, HIGHLIGHT);
   for (const detail of [...winners, ...losers]) {
-    print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
+    print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
   }
 
   set("garboResultsMeat", totalMeat);
