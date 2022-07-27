@@ -211,7 +211,7 @@ export function trackBarfSessionStatistics(): void {
   // Start barfSession if we have not done so
   if (!barfSession) {
     barfSession = Session.current();
-    barfSessionStartTurns = myAdventures();
+    barfSessionStartTurns = totalTurnsPlayed();
   }
 
   // Start tracking items if at least one of these is true
