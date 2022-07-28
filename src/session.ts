@@ -200,6 +200,7 @@ export function valueSession(): void {
 }
 
 let marginalSession: Session | null = null;
+let marginalSessionDiff: Session | null = null;
 let barfSession: Session | null = null;
 let barfSessionStartTurns = totalTurnsPlayed();
 let continueMeatTracking = true;
@@ -220,14 +221,16 @@ export function trackBarfSessionStatistics(): void {
   if (
     !marginalSession &&
     (totalTurnsPlayed() - barfSessionStartTurns >= 100 ||
-      (myAdventures() <= 200 + globalOptions.saveTurns && myAdventures() > globalOptions.saveTurns))
+      (myAdventures() <= 200 + 25 + globalOptions.saveTurns &&
+        myAdventures() > globalOptions.saveTurns + 25))
   ) {
     marginalSession = Session.current();
-    numTrackedItemTurns = myAdventures() - globalOptions.saveTurns;
+    numTrackedItemTurns = myAdventures() - globalOptions.saveTurns - 25;
   }
 
   // Start tracking meat if we have less than 75 turns left
   // Also create a backup tracker for items
+
   if (
     (!get("_garboMarginalMeatCheckpoint") || !get("_garboMarginalMeatTurns")) &&
     myAdventures() - 25 - globalOptions.saveTurns <= 50 &&
@@ -253,6 +256,7 @@ export function trackBarfSessionStatistics(): void {
     const itemDiff = items - get("_garboMarginalItemCheckpoint", 0);
     setProperty("_garboMarginalMeatValue", meatDiff.toFixed(0));
     setProperty("_garboMarginalItemValue", itemDiff.toFixed(0));
+    if (marginalSession) marginalSessionDiff = Session.current().diff(marginalSession);
   }
 }
 
@@ -272,12 +276,12 @@ function printMarginalSession(): void {
 
     // Only evaluate item outliers if we have run a good number of turns (to reduce variance)
     if (
-      marginalSession &&
+      marginalSessionDiff &&
       barfSession &&
       numTrackedItemTurns &&
       numTrackedItemTurns >= Math.max(50, meatTurns)
     ) {
-      const { items, itemDetails } = Session.current().diff(marginalSession).value(garboValue);
+      const { items, itemDetails } = marginalSessionDiff.value(garboValue);
       const barfItemDetails = Session.current().diff(barfSession).value(garboValue).itemDetails;
       const outlierItemDetails = itemDetails
         .filter(
