@@ -178,7 +178,10 @@ export class Macro extends StrictMacro {
     return this.externalIf(
       myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
       Macro.trySkill($skill`Meatify Matter`)
-    ).externalIf(canOpenRedPresent(), Macro.trySkill($skill`Open a Big Red Present`));
+    ).externalIf(
+      canOpenRedPresent() && myFamiliar() === $familiar`Crimbo Shrub`,
+      Macro.trySkill($skill`Open a Big Red Present`)
+    );
   }
 
   static familiarActions(): Macro {
