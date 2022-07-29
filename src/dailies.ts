@@ -21,9 +21,11 @@ import {
   maximize,
   meatPockets,
   myClass,
+  myDaycount,
   myHp,
   myInebriety,
   myMaxhp,
+  myPathId,
   myPrimestat,
   myThrall,
   pickedPockets,
@@ -43,6 +45,7 @@ import {
   useFamiliar,
   useSkill,
   visitUrl,
+  votingBoothInitiatives,
 } from "kolmafia";
 import {
   $class,
@@ -145,7 +148,53 @@ export function postFreeFightDailySetup(): void {
 }
 
 function voterSetup(): void {
-  if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
+  if (have($item`"I Voted!" sticker`)) return;
+
+  const initPriority: Map<string, number> = new Map([
+    [
+      "Meat Drop: +30",
+      0.3 *
+        ((baseMeat + 750) * embezzlerCount() + baseMeat * (estimatedTurns() - embezzlerCount())),
+    ],
+    [
+      "Item Drop: +15",
+      0.15 *
+        (4 * 100 * 0.3 * embezzlerCount() + 3 * 200 * 0.15 * (estimatedTurns() - embezzlerCount())),
+    ],
+    ["Adventures: +1", globalOptions.ascending ? 0 : get("valueOfAdventure")],
+    ["Familiar Experience: +2", 8],
+    ["Monster Level: +10", 5],
+    [`${myPrimestat()} Percent: +25`, 3],
+    [`Experience (${myPrimestat()}): +4`, 2],
+    ["Meat Drop: -30", -2],
+    ["Item Drop: -15", -2],
+    ["Familiar Experience: -2", -2],
+  ]);
+
+  if (!get("voteAlways") && !get("_voteToday")) {
+    const availableInitiatives: Map<string, number> = new Map(
+      Object.keys(votingBoothInitiatives(myClass(), myPathId(), myDaycount())).map((init) => {
+        const val = initPriority.get(init) ?? 0;
+        return [init, val];
+      })
+    );
+
+    const ballotValue =
+      sum(
+        Object.values(availableInitiatives)
+          .sort((a, b) => b - a)
+          .slice(1),
+        (val) => 2 * val
+      ) +
+      3 * get("garbo_valueOfFreeFight", 2000);
+
+    if (
+      ballotValue > mallPrice($item`absentee voter ballot`) &&
+      acquire(1, $item`absentee voter ballot`, ballotValue)
+    ) {
+      use(1, $item`absentee voter ballot`);
+    } else return;
+  }
 
   // We do this funny logic on annoyed snake & slime blob because they both suck for profits
   // And because we don't want to lock people out of grabbing an outfit
@@ -177,19 +226,6 @@ function voterSetup(): void {
   const votingMonsterPriority = voterValueTable
     .sort((a, b) => b.value - a.value)
     .map((element) => element.monster.name);
-
-  const initPriority = new Map<string, number>([
-    ["Meat Drop: +30", 10],
-    ["Item Drop: +15", 9],
-    ["Familiar Experience: +2", 8],
-    ["Adventures: +1", globalOptions.ascending ? -2 : 7],
-    ["Monster Level: +10", 5],
-    [`${myPrimestat()} Percent: +25`, 3],
-    [`Experience (${myPrimestat()}): +4`, 2],
-    ["Meat Drop: -30", -2],
-    ["Item Drop: -15", -2],
-    ["Familiar Experience: -2", -2],
-  ]);
 
   const monsterVote =
     votingMonsterPriority.indexOf(get("_voteMonster1")) <
