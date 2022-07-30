@@ -1,6 +1,7 @@
 import { canAdv } from "canadv.ash";
 import {
   availableAmount,
+  booleanModifier,
   buy,
   canEquip,
   canInteract,
@@ -482,7 +483,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   }
   if (
     equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
-    get("edPiece") !== "fish"
+    !booleanModifier("Adventure Underwater")
   ) {
     cliExecute("edpiece fish");
   }
@@ -1250,8 +1251,7 @@ function _yachtzeeChain(): void {
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
       if (
         equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
-        equippedItem($slot`back`) !== $item`old SCUBA tank` &&
-        get("edPiece") !== "fish"
+        !booleanModifier("Adventure Underwater")
       ) {
         cliExecute("edpiece fish");
       }
