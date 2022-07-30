@@ -57,7 +57,7 @@ function getCachedOutfitValues(fam: Familiar) {
   meatOutfit(
     false,
     new Requirement([], {
-      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker`,
+      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, Daylight Shavings Helmet, Pantsgiving, designer sweatpants`,
     })
   );
 
