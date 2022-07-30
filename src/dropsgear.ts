@@ -335,20 +335,27 @@ export function magnifyingGlass(): Map<Item, number> {
   ]);
 }
 
-export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
+export function bonusGear(
+  equipMode: BonusEquipMode,
+  valueCircumstantialBonus = true
+): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
-    ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
-    ...sweatpants(equipMode),
-    ...shavingBonus(),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
     ...bagOfManyConfections(),
-    ...snowSuit(equipMode),
-    ...mayflowerBouquet(equipMode),
-    ...(equipMode === "barf" ? magnifyingGlass() : []),
-    ...juneCleaver(equipMode),
     ...stickers(equipMode),
+    ...(valueCircumstantialBonus
+      ? new Map<Item, number>([
+          ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
+          ...sweatpants(equipMode),
+          ...shavingBonus(),
+          ...snowSuit(equipMode),
+          ...mayflowerBouquet(equipMode),
+          ...(equipMode === "barf" ? magnifyingGlass() : []),
+          ...juneCleaver(equipMode),
+        ])
+      : []),
   ]);
 }
 

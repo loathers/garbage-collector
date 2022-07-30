@@ -62,7 +62,7 @@ function getCachedOutfitValues(fam: Familiar) {
   );
 
   const outfit = outfitSlots.map((slot) => equippedItem(slot));
-  const bonuses = bonusGear("barf");
+  const bonuses = bonusGear("barf", false);
 
   const values = {
     weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
