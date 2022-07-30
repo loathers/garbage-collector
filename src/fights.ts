@@ -692,9 +692,6 @@ const freeFightSources = [
         "Open Heart Surgery",
         "LOV Extraterrestrial Chocolate"
       );
-
-      visitUrl("choice.php");
-      if (handlingChoice()) throw "Did not get all the way through LOV.";
     },
     false,
     {
