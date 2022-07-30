@@ -780,14 +780,17 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   // Fill organs in rounds, making sure we're making progress in each round.
   const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
   let lastOrgans = [-1, -1, -1];
+  const capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
+  let lastCapacities = [-1, -1, -1];
   while (sum(diet.entries, ({ quantity }) => quantity) > 0) {
-    if (arrayEquals(lastOrgans, organs())) {
+    if (arrayEquals(lastOrgans, organs()) || arrayEquals(lastCapacities, capacities())) {
       print();
       printDiet(diet, "REMAINING");
       print();
       throw "Failed to consume some diet item.";
     }
     lastOrgans = organs();
+    lastCapacities = capacities();
 
     for (const dietEntry of diet.entries) {
       const { menuItems, quantity } = dietEntry;
