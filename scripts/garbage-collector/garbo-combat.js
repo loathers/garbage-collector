@@ -14985,11 +14985,15 @@ function consumeDiet(diet, name) {
 
   var lastOrgans = [-1, -1, -1];
 
+  var capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
+
+  var lastCapacities = [-1, -1, -1];
+
   while (sum(diet.entries, _ref2 => {
     var quantity = _ref2.quantity;
     return quantity;
   }) > 0) {
-    if (arrayEquals(lastOrgans, organs())) {
+    if (arrayEquals(lastOrgans, organs()) && arrayEquals(lastCapacities, capacities())) {
       print();
       printDiet(diet, "REMAINING");
       print();
@@ -14997,6 +15001,7 @@ function consumeDiet(diet, name) {
     }
 
     lastOrgans = organs();
+    lastCapacities = capacities();
 
     var _iterator2 = _createForOfIteratorHelper(diet.entries),
         _step2;
@@ -17637,7 +17642,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("d9ea22a6b2661483a2aab6eb05eb502f2b3e3683" === mainSha) {
+    if ("95d2e7c54e86b01f9f9619e5f0aaf55c053170a3" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");

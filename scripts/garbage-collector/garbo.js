@@ -17620,11 +17620,15 @@ function consumeDiet(diet, name) {
 
   var lastOrgans = [-1, -1, -1];
 
+  var capacities = () => [(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fullnessLimit)(), (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)(), (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.spleenLimit)()];
+
+  var lastCapacities = [-1, -1, -1];
+
   while ((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .sum */ .Sm)(diet.entries, _ref2 => {
     var quantity = _ref2.quantity;
     return quantity;
   }) > 0) {
-    if ((0,_lib__WEBPACK_IMPORTED_MODULE_5__/* .arrayEquals */ ._g)(lastOrgans, organs())) {
+    if ((0,_lib__WEBPACK_IMPORTED_MODULE_5__/* .arrayEquals */ ._g)(lastOrgans, organs()) && (0,_lib__WEBPACK_IMPORTED_MODULE_5__/* .arrayEquals */ ._g)(lastCapacities, capacities())) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)();
       printDiet(diet, "REMAINING");
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)();
@@ -17632,6 +17636,7 @@ function consumeDiet(diet, name) {
     }
 
     lastOrgans = organs();
+    lastCapacities = capacities();
 
     var _iterator2 = _createForOfIteratorHelper(diet.entries),
         _step2;
@@ -24438,7 +24443,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26542);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("d9ea22a6b2661483a2aab6eb05eb502f2b3e3683"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("95d2e7c54e86b01f9f9619e5f0aaf55c053170a3"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25108,7 +25113,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("d9ea22a6b2661483a2aab6eb05eb502f2b3e3683" === mainSha) {
+    if ("95d2e7c54e86b01f9f9619e5f0aaf55c053170a3" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
