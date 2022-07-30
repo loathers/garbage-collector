@@ -783,7 +783,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   const capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
   let lastCapacities = [-1, -1, -1];
   while (sum(diet.entries, ({ quantity }) => quantity) > 0) {
-    if (arrayEquals(lastOrgans, organs()) || arrayEquals(lastCapacities, capacities())) {
+    if (arrayEquals(lastOrgans, organs()) && arrayEquals(lastCapacities, capacities())) {
       print();
       printDiet(diet, "REMAINING");
       print();
