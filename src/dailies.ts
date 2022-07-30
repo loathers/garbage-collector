@@ -57,7 +57,6 @@ import {
   $skill,
   $skills,
   $slot,
-  $stat,
   $thrall,
   BeachComb,
   ChateauMantegna,
@@ -748,13 +747,8 @@ function pantogram(): void {
   if (!have($item`porquoise`)) return;
   retrieveItem($item`ten-leaf clover`);
   retrieveItem($item`bubblin' crude`);
-  const alignment = (new Map([
-    [$stat`Muscle`, "Muscle"],
-    [$stat`Mysticality`, "Mysticality"],
-    [$stat`Moxie`, "Moxie"],
-  ]).get(myPrimestat()) ?? "Mysticality") as "Muscle" | "Mysticality" | "Moxie";
   Pantogram.makePants(
-    alignment,
+    myPrimestat().toString(),
     "Sleaze Resistance: 2",
     "MP Regen Max: 15",
     "Drops Items: true",
