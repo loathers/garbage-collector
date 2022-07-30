@@ -479,12 +479,12 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     bestWaterBreathingEquipment.item !== $item`none`
   ) {
     equip(bestWaterBreathingEquipment.item);
-    if (
-      equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
-      get("edPiece") !== "fish"
-    ) {
-      cliExecute("edpiece fish");
-    }
+  }
+  if (
+    equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
+    get("edPiece") !== "fish"
+  ) {
+    cliExecute("edpiece fish");
   }
   // If we already have fishy, then we longer need to consider the cost of obtaining it
   if (haveEffect($effect`Fishy`) >= yachtzeeTurns) return 0;
@@ -1248,6 +1248,12 @@ function _yachtzeeChain(): void {
         Math.min(jellyTurns, fishyTurns)
       );
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
+      if (
+        equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
+        get("edPiece") !== "fish"
+      ) {
+        cliExecute("edpiece fish");
+      }
     }
     if (!have($effect`Polka of Plenty`)) {
       if (have($effect`Ode to Booze`)) cliExecute(`shrug ${$effect`Ode to Booze`}`);
