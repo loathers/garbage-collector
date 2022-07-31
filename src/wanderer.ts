@@ -362,4 +362,5 @@ const unsupportedChoices = new Map<Location, { [choice: number]: number | string
     },
   ],
   [$location`The Copperhead Club`, { [855]: 4 }],
+  [$location`The Castle in the Clouds in the Sky (Top Floor)`, { [1431]: 1, [677]: 2 }],
 ]);
