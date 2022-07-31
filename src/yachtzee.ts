@@ -482,7 +482,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     equip(bestWaterBreathingEquipment.item);
   }
   if (
-  haveEquipped($item`The Crown of Ed the Undying` )&&
+    haveEquipped($item`The Crown of Ed the Undying`) &&
     !booleanModifier("Adventure Underwater")
   ) {
     cliExecute("edpiece fish");
@@ -1250,7 +1250,7 @@ function _yachtzeeChain(): void {
       );
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
       if (
-       haveEquipped($item`The Crown of Ed the Undying`) &&
+        haveEquipped($item`The Crown of Ed the Undying`) &&
         !booleanModifier("Adventure Underwater")
       ) {
         cliExecute("edpiece fish");
