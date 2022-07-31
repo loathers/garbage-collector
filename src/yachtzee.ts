@@ -1250,7 +1250,7 @@ function _yachtzeeChain(): void {
       );
       if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
       if (
-        equippedItem($slot`hat`) === $item`The Crown of Ed the Undying` &&
+       haveEquipped($item`The Crown of Ed the Undying`) &&
         !booleanModifier("Adventure Underwater")
       ) {
         cliExecute("edpiece fish");
