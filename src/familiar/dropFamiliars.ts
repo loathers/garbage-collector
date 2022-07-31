@@ -8,7 +8,7 @@ type StandardDropFamiliar = {
   expected: number[];
   drop: Item;
   pref: propertyTypes.NumericProperty;
-  additionalValue?: number;
+  additionalValue?: () => number;
 };
 
 function valueStandardDropFamiliar({
@@ -19,7 +19,7 @@ function valueStandardDropFamiliar({
   additionalValue,
 }: StandardDropFamiliar): GeneralFamiliar {
   const expectedTurns = expected[get(pref)] || Infinity;
-  const expectedValue = garboValue(drop) / expectedTurns + (additionalValue ?? 0);
+  const expectedValue = garboValue(drop) / expectedTurns + (additionalValue?.() ?? 0);
   return {
     familiar,
     expectedValue,
@@ -112,14 +112,14 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     expected: Array($familiar`Ms. Puck Man`.dropsLimit).fill(12.85),
     drop: $item`power pill`,
     pref: "_powerPillDrops",
-    additionalValue: garboValue($item`yellow pixel`),
+    additionalValue: () => garboValue($item`yellow pixel`),
   },
   {
     familiar: $familiar`Puck Man`,
     expected: Array($familiar`Puck Man`.dropsLimit).fill(12.85),
     drop: $item`power pill`,
     pref: "_powerPillDrops",
-    additionalValue: garboValue($item`yellow pixel`),
+    additionalValue: () => garboValue($item`yellow pixel`),
   },
   {
     familiar: $familiar`Adventurous Spelunker`,
@@ -160,7 +160,7 @@ export function getAllDrops(fam: Familiar): { expectedValue: number; expectedTur
   for (let i = current; i < target.expected.length; i++) {
     const turns = target.expected[i];
     returnValue.push({
-      expectedValue: garboValue(target.drop) / turns + (target.additionalValue ?? 0),
+      expectedValue: garboValue(target.drop) / turns + (target.additionalValue?.() ?? 0),
       expectedTurns: turns,
     });
   }
