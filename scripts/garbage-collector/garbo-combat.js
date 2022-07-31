@@ -16836,13 +16836,15 @@ function dropFamiliars_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = s
 
 
 function valueStandardDropFamiliar(_ref) {
+  var _additionalValue;
+
   var familiar = _ref.familiar,
       expected = _ref.expected,
       drop = _ref.drop,
       pref = _ref.pref,
       additionalValue = _ref.additionalValue;
   var expectedTurns = expected[get(pref)] || Infinity;
-  var expectedValue = garboValue(drop) / expectedTurns + (additionalValue !== null && additionalValue !== void 0 ? additionalValue : 0);
+  var expectedValue = garboValue(drop) / expectedTurns + ((_additionalValue = additionalValue === null || additionalValue === void 0 ? void 0 : additionalValue()) !== null && _additionalValue !== void 0 ? _additionalValue : 0);
   return {
     familiar: familiar,
     expectedValue: expectedValue,
@@ -16921,13 +16923,13 @@ var rotatingFamiliars = [{
   expected: Array((0,template_string/* $familiar */.HP)(_templateObject28 || (_templateObject28 = dropFamiliars_taggedTemplateLiteral(["Ms. Puck Man"]))).dropsLimit).fill(12.85),
   drop: (0,template_string/* $item */.xr)(_templateObject29 || (_templateObject29 = dropFamiliars_taggedTemplateLiteral(["power pill"]))),
   pref: "_powerPillDrops",
-  additionalValue: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject30 || (_templateObject30 = dropFamiliars_taggedTemplateLiteral(["yellow pixel"]))))
+  additionalValue: () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject30 || (_templateObject30 = dropFamiliars_taggedTemplateLiteral(["yellow pixel"]))))
 }, {
   familiar: (0,template_string/* $familiar */.HP)(_templateObject31 || (_templateObject31 = dropFamiliars_taggedTemplateLiteral(["Puck Man"]))),
   expected: Array((0,template_string/* $familiar */.HP)(_templateObject32 || (_templateObject32 = dropFamiliars_taggedTemplateLiteral(["Puck Man"]))).dropsLimit).fill(12.85),
   drop: (0,template_string/* $item */.xr)(_templateObject33 || (_templateObject33 = dropFamiliars_taggedTemplateLiteral(["power pill"]))),
   pref: "_powerPillDrops",
-  additionalValue: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject34 || (_templateObject34 = dropFamiliars_taggedTemplateLiteral(["yellow pixel"]))))
+  additionalValue: () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject34 || (_templateObject34 = dropFamiliars_taggedTemplateLiteral(["yellow pixel"]))))
 }, {
   familiar: (0,template_string/* $familiar */.HP)(_templateObject35 || (_templateObject35 = dropFamiliars_taggedTemplateLiteral(["Adventurous Spelunker"]))),
   expected: [7.0],
@@ -16962,11 +16964,11 @@ function dropFamiliars_getAllDrops(fam) {
   var returnValue = [];
 
   for (var i = current; i < target.expected.length; i++) {
-    var _target$additionalVal;
+    var _target$additionalVal, _target$additionalVal2;
 
     var turns = target.expected[i];
     returnValue.push({
-      expectedValue: garboValue(target.drop) / turns + ((_target$additionalVal = target.additionalValue) !== null && _target$additionalVal !== void 0 ? _target$additionalVal : 0),
+      expectedValue: garboValue(target.drop) / turns + ((_target$additionalVal = (_target$additionalVal2 = target.additionalValue) === null || _target$additionalVal2 === void 0 ? void 0 : _target$additionalVal2.call(target)) !== null && _target$additionalVal !== void 0 ? _target$additionalVal : 0),
       expectedTurns: turns
     });
   }
@@ -17643,7 +17645,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("6c117c5768c4f0b5ac9bbb5636728b5f6595f2e1" === mainSha) {
+    if ("36ad48183f488794fa6ab4e1d4baa344e6b7a691" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
