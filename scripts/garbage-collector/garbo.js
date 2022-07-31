@@ -23539,23 +23539,23 @@ function optimizeForFishy(yachtzeeTurns, setup) {
 
   if (setup && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject35 || (yachtzee_templateObject35 = yachtzee_taggedTemplateLiteral(["Really Deep Breath"])))) && bestWaterBreathingEquipment.item !== (0,template_string/* $item */.xr)(yachtzee_templateObject36 || (yachtzee_templateObject36 = yachtzee_taggedTemplateLiteral(["none"])))) {
     (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+  }
 
-    if ((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject37 || (yachtzee_templateObject37 = yachtzee_taggedTemplateLiteral(["hat"])))) === (0,template_string/* $item */.xr)(yachtzee_templateObject38 || (yachtzee_templateObject38 = yachtzee_taggedTemplateLiteral(["The Crown of Ed the Undying"]))) && (0,property/* get */.U2)("edPiece") !== "fish") {
-      (0,external_kolmafia_.cliExecute)("edpiece fish");
-    }
+  if ((0,external_kolmafia_.haveEquipped)((0,template_string/* $item */.xr)(yachtzee_templateObject37 || (yachtzee_templateObject37 = yachtzee_taggedTemplateLiteral(["The Crown of Ed the Undying"])))) && !(0,external_kolmafia_.booleanModifier)("Adventure Underwater")) {
+    (0,external_kolmafia_.cliExecute)("edpiece fish");
   } // If we already have fishy, then we longer need to consider the cost of obtaining it
 
 
-  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject39 || (yachtzee_templateObject39 = yachtzee_taggedTemplateLiteral(["Fishy"])))) >= yachtzeeTurns) return 0; // Restore here if we potentially need to visit an adventure.php zone to grab fishy turns
+  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject38 || (yachtzee_templateObject38 = yachtzee_taggedTemplateLiteral(["Fishy"])))) >= yachtzeeTurns) return 0; // Restore here if we potentially need to visit an adventure.php zone to grab fishy turns
 
-  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject40 || (yachtzee_templateObject40 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))))) {
-    (0,lib/* uneffect */.Lo)((0,template_string/* $effect */._G)(yachtzee_templateObject41 || (yachtzee_templateObject41 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))));
+  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject39 || (yachtzee_templateObject39 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))))) {
+    (0,lib/* uneffect */.Lo)((0,template_string/* $effect */._G)(yachtzee_templateObject40 || (yachtzee_templateObject40 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))));
   }
 
   (0,src_lib/* safeRestore */.Pv)(); // Compute the cost of losing buffs if we spend turns getting fishy using clovers
 
   var havePYECCharge = (0,property/* get */.U2)("_PYECAvailable", false);
-  var haveFishyPipe = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject42 || (yachtzee_templateObject42 = yachtzee_taggedTemplateLiteral(["fishy pipe"])))) && !(0,property/* get */.U2)("_fishyPipeUsed", false);
+  var haveFishyPipe = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject41 || (yachtzee_templateObject41 = yachtzee_taggedTemplateLiteral(["fishy pipe"])))) && !(0,property/* get */.U2)("_fishyPipeUsed", false);
   var costOfLosingBuffs = 0;
   (0,lib/* getActiveEffects */.jC)().forEach(eff => costOfLosingBuffs += yachtzeeBuffValue(eff) > 0 // We only consider buffs that affect our meat% and fam wt
   ? (0,external_kolmafia_.haveEffect)(eff) <= 1 + (0,external_kolmafia_.toInt)(haveFishyPipe) && havePYECCharge // If we lose all the turns of our buff
@@ -23567,56 +23567,56 @@ function optimizeForFishy(yachtzeeTurns, setup) {
   );
   var fishySources = [{
     name: "fish juice box",
-    cost: (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject43 || (yachtzee_templateObject43 = yachtzee_taggedTemplateLiteral(["fish juice box"])))) + (!haveFishyPipe && (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject44 || (yachtzee_templateObject44 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 20 + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns ? Infinity : 0),
+    cost: (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject42 || (yachtzee_templateObject42 = yachtzee_taggedTemplateLiteral(["fish juice box"])))) + (!haveFishyPipe && (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject43 || (yachtzee_templateObject43 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 20 + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns ? Infinity : 0),
     action: () => {
-      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject45 || (yachtzee_templateObject45 = yachtzee_taggedTemplateLiteral(["fish juice box"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject46 || (yachtzee_templateObject46 = yachtzee_taggedTemplateLiteral(["fish juice box"])))));
-      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject47 || (yachtzee_templateObject47 = yachtzee_taggedTemplateLiteral(["fish juice box"]))))) throw new Error("Unable to obtain fish juice box");
-      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject48 || (yachtzee_templateObject48 = yachtzee_taggedTemplateLiteral(["fish juice box"]))));
-      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject49 || (yachtzee_templateObject49 = yachtzee_taggedTemplateLiteral(["fishy pipe"]))));
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject44 || (yachtzee_templateObject44 = yachtzee_taggedTemplateLiteral(["fish juice box"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject45 || (yachtzee_templateObject45 = yachtzee_taggedTemplateLiteral(["fish juice box"])))));
+      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject46 || (yachtzee_templateObject46 = yachtzee_taggedTemplateLiteral(["fish juice box"]))))) throw new Error("Unable to obtain fish juice box");
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject47 || (yachtzee_templateObject47 = yachtzee_taggedTemplateLiteral(["fish juice box"]))));
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject48 || (yachtzee_templateObject48 = yachtzee_taggedTemplateLiteral(["fishy pipe"]))));
     }
   }, {
     name: "2x fish juice box",
-    cost: 2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject50 || (yachtzee_templateObject50 = yachtzee_taggedTemplateLiteral(["fish juice box"])))),
+    cost: 2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject49 || (yachtzee_templateObject49 = yachtzee_taggedTemplateLiteral(["fish juice box"])))),
     action: () => {
-      (0,acquire/* acquire */.u)(2, (0,template_string/* $item */.xr)(yachtzee_templateObject51 || (yachtzee_templateObject51 = yachtzee_taggedTemplateLiteral(["fish juice box"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject52 || (yachtzee_templateObject52 = yachtzee_taggedTemplateLiteral(["fish juice box"])))));
+      (0,acquire/* acquire */.u)(2, (0,template_string/* $item */.xr)(yachtzee_templateObject50 || (yachtzee_templateObject50 = yachtzee_taggedTemplateLiteral(["fish juice box"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject51 || (yachtzee_templateObject51 = yachtzee_taggedTemplateLiteral(["fish juice box"])))));
 
-      if ((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject53 || (yachtzee_templateObject53 = yachtzee_taggedTemplateLiteral(["fish juice box"])))) < 2) {
+      if ((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(yachtzee_templateObject52 || (yachtzee_templateObject52 = yachtzee_taggedTemplateLiteral(["fish juice box"])))) < 2) {
         throw new Error("Unable to obtain sufficient fish juice boxes");
       }
 
-      (0,external_kolmafia_.use)(2, (0,template_string/* $item */.xr)(yachtzee_templateObject54 || (yachtzee_templateObject54 = yachtzee_taggedTemplateLiteral(["fish juice box"]))));
+      (0,external_kolmafia_.use)(2, (0,template_string/* $item */.xr)(yachtzee_templateObject53 || (yachtzee_templateObject53 = yachtzee_taggedTemplateLiteral(["fish juice box"]))));
     }
   }, {
     name: "cuppa Gill tea",
-    cost: (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject55 || (yachtzee_templateObject55 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"])))) + bestWaterBreathingEquipment.cost,
+    cost: (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject54 || (yachtzee_templateObject54 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"])))) + bestWaterBreathingEquipment.cost,
     action: () => {
-      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject56 || (yachtzee_templateObject56 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject57 || (yachtzee_templateObject57 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"])))));
-      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject58 || (yachtzee_templateObject58 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))))) throw new Error("Unable to obtain cuppa Gill tea");
-      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject59 || (yachtzee_templateObject59 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))));
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject55 || (yachtzee_templateObject55 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject56 || (yachtzee_templateObject56 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"])))));
+      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject57 || (yachtzee_templateObject57 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))))) throw new Error("Unable to obtain cuppa Gill tea");
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject58 || (yachtzee_templateObject58 = yachtzee_taggedTemplateLiteral(["cuppa Gill tea"]))));
     }
   }, {
     name: "powdered candy sushi set",
-    cost: (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject60 || (yachtzee_templateObject60 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"])))) + bestWaterBreathingEquipment.cost,
+    cost: (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject59 || (yachtzee_templateObject59 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"])))) + bestWaterBreathingEquipment.cost,
     action: () => {
-      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject61 || (yachtzee_templateObject61 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject62 || (yachtzee_templateObject62 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"])))));
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject60 || (yachtzee_templateObject60 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject61 || (yachtzee_templateObject61 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"])))));
 
-      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject63 || (yachtzee_templateObject63 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))))) {
+      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject62 || (yachtzee_templateObject62 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))))) {
         throw new Error("Unable to obtain powdered candy sushi set");
       }
 
-      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject64 || (yachtzee_templateObject64 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))));
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject63 || (yachtzee_templateObject63 = yachtzee_taggedTemplateLiteral(["powdered candy sushi set"]))));
     }
   }, {
     name: "concentrated fish broth",
-    cost: (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject65 || (yachtzee_templateObject65 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"])))) + bestWaterBreathingEquipment.cost,
+    cost: (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject64 || (yachtzee_templateObject64 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"])))) + bestWaterBreathingEquipment.cost,
     action: () => {
-      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject66 || (yachtzee_templateObject66 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject67 || (yachtzee_templateObject67 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"])))));
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject65 || (yachtzee_templateObject65 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject66 || (yachtzee_templateObject66 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"])))));
 
-      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject68 || (yachtzee_templateObject68 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))))) {
+      if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject67 || (yachtzee_templateObject67 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))))) {
         throw new Error("Unable to obtain concentrated fish broth");
       }
 
-      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject69 || (yachtzee_templateObject69 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))));
+      (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject68 || (yachtzee_templateObject68 = yachtzee_taggedTemplateLiteral(["concentrated fish broth"]))));
     }
   }, {
     name: "Lutz, the Ice Skate",
@@ -23626,26 +23626,26 @@ function optimizeForFishy(yachtzeeTurns, setup) {
     }
   }, {
     name: "The Haggling",
-    cost: (0,external_canadv_ash_.canAdv)((0,template_string/* $location */.PG)(yachtzee_templateObject70 || (yachtzee_templateObject70 = yachtzee_taggedTemplateLiteral(["The Brinier Deepers"])))) ? ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject71 || (yachtzee_templateObject71 = yachtzee_taggedTemplateLiteral(["Lucky!"])))) ? 0 : (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject72 || (yachtzee_templateObject72 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))))) + (0,property/* get */.U2)("valueOfAdventure") + bestWaterBreathingEquipment.cost + costOfLosingBuffs : Infinity,
+    cost: (0,external_canadv_ash_.canAdv)((0,template_string/* $location */.PG)(yachtzee_templateObject69 || (yachtzee_templateObject69 = yachtzee_taggedTemplateLiteral(["The Brinier Deepers"])))) ? ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject70 || (yachtzee_templateObject70 = yachtzee_taggedTemplateLiteral(["Lucky!"])))) ? 0 : (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject71 || (yachtzee_templateObject71 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))))) + (0,property/* get */.U2)("valueOfAdventure") + bestWaterBreathingEquipment.cost + costOfLosingBuffs : Infinity,
     action: () => {
-      if (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject73 || (yachtzee_templateObject73 = yachtzee_taggedTemplateLiteral(["Lucky!"]))))) {
-        (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject74 || (yachtzee_templateObject74 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject75 || (yachtzee_templateObject75 = yachtzee_taggedTemplateLiteral(["11-leaf clover"])))));
+      if (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject72 || (yachtzee_templateObject72 = yachtzee_taggedTemplateLiteral(["Lucky!"]))))) {
+        (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject73 || (yachtzee_templateObject73 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))), 1.2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject74 || (yachtzee_templateObject74 = yachtzee_taggedTemplateLiteral(["11-leaf clover"])))));
 
-        if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject76 || (yachtzee_templateObject76 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))))) {
+        if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject75 || (yachtzee_templateObject75 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))))) {
           throw new Error("Unable to get 11-leaf clover for fishy!");
         }
 
-        (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject77 || (yachtzee_templateObject77 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))));
+        (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject76 || (yachtzee_templateObject76 = yachtzee_taggedTemplateLiteral(["11-leaf clover"]))));
       }
 
-      if (haveFishyPipe) (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject78 || (yachtzee_templateObject78 = yachtzee_taggedTemplateLiteral(["fishy pipe"]))));
-      (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(yachtzee_templateObject79 || (yachtzee_templateObject79 = yachtzee_taggedTemplateLiteral(["The Brinier Deepers"]))), combat/* Macro.abort */.LE.abort());
+      if (haveFishyPipe) (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject77 || (yachtzee_templateObject77 = yachtzee_taggedTemplateLiteral(["fishy pipe"]))));
+      (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(yachtzee_templateObject78 || (yachtzee_templateObject78 = yachtzee_taggedTemplateLiteral(["The Brinier Deepers"]))), combat/* Macro.abort */.LE.abort());
 
       if ((0,property/* get */.U2)("lastAdventure") !== "The Brinier Deepers") {
         (0,external_kolmafia_.print)("We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.", "red");
       }
 
-      if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject80 || (yachtzee_templateObject80 = yachtzee_taggedTemplateLiteral(["Fishy"])))) < yachtzeeTurns) {
+      if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject79 || (yachtzee_templateObject79 = yachtzee_taggedTemplateLiteral(["Fishy"])))) < yachtzeeTurns) {
         throw new Error("Failed to get fishy from clover adv");
       }
     }
@@ -23670,13 +23670,13 @@ function yachtzeeChainDiet(simOnly) {
   if ((0,property/* get */.U2)("_garboYachtzeeChainDietPlanned", false)) return true;
   var havePYECCharge = (0,property/* get */.U2)("_PYECAvailable", false);
   var maxYachtzeeTurns = havePYECCharge ? 35 : 30;
-  var haveDistentionPill = !(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject81 || (yachtzee_templateObject81 = yachtzee_taggedTemplateLiteral(["distention pill"])))); // Plan our diet (positive values give space, negative values take space)
+  var haveDistentionPill = !(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject80 || (yachtzee_templateObject80 = yachtzee_taggedTemplateLiteral(["distention pill"])))); // Plan our diet (positive values give space, negative values take space)
 
   var sliders = Math.floor(((0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) - (0,external_kolmafia_.myFullness)()) / 5);
   var pickleJuice = Math.floor(((0,external_kolmafia_.inebrietyLimit)() - (0,external_kolmafia_.myInebriety)()) / 5);
   var reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
 
-  var synth = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject82 || (yachtzee_templateObject82 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"])))) < reqSynthTurns ? -Math.ceil((reqSynthTurns - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject83 || (yachtzee_templateObject83 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"]))))) / 30) : 0;
+  var synth = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject81 || (yachtzee_templateObject81 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"])))) < reqSynthTurns ? -Math.ceil((reqSynthTurns - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject82 || (yachtzee_templateObject82 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"]))))) / 30) : 0;
   var filters = 3 - (0,property/* get */.U2)("currentMojoFilters");
   var extros = (0,extrovermectin/* hasMonsterReplacers */.bh)() ? -(4 - Math.min(4, 2 * (0,property/* get */.U2)("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
 
@@ -23696,11 +23696,11 @@ function yachtzeeChainDiet(simOnly) {
   if (simOnly) (0,external_kolmafia_.print)("We can potentially run ".concat(yachtzeeTurns, " for yachtzee"), "purple");else (0,external_kolmafia_.print)("Trying to run ".concat(yachtzeeTurns, " turns of Yachtzee"), "purple"); // Compute prices to make sure everything is worth it
 
   var fishyCost = optimizeForFishy(yachtzeeTurns);
-  var extroPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject84 || (yachtzee_templateObject84 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"]))));
+  var extroPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject83 || (yachtzee_templateObject83 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"]))));
   var VOA = (0,property/* get */.U2)("valueOfAdventure");
-  var slidersPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject85 || (yachtzee_templateObject85 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"]))));
-  var pickleJuicePrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject86 || (yachtzee_templateObject86 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"]))));
-  var colognePrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject87 || (yachtzee_templateObject87 = yachtzee_taggedTemplateLiteral(["beggin' cologne"])))); // We prefer using pickle juice to cleanse our spleen for stench jellies since
+  var slidersPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject84 || (yachtzee_templateObject84 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"]))));
+  var pickleJuicePrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject85 || (yachtzee_templateObject85 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"]))));
+  var colognePrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject86 || (yachtzee_templateObject86 = yachtzee_taggedTemplateLiteral(["beggin' cologne"])))); // We prefer using pickle juice to cleanse our spleen for stench jellies since
   // 1) It's cheaper
   // 2) Our stomach can be used for horseradish buffs
 
@@ -23712,10 +23712,10 @@ function yachtzeeChainDiet(simOnly) {
   var cologneToChew = -cologne;
   var jelliesToChew = yachtzeeTurns; // Compare jellies + sliders vs toasts
 
-  var jellyPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject88 || (yachtzee_templateObject88 = yachtzee_taggedTemplateLiteral(["stench jelly"]))));
+  var jellyPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject87 || (yachtzee_templateObject87 = yachtzee_taggedTemplateLiteral(["stench jelly"]))));
   var jellySlidersCosts = jellyPrice + slidersPrice / 5;
   var jellyPickleCosts = jellyPrice + pickleJuicePrice / 5;
-  var toastPrice = Math.min((0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject89 || (yachtzee_templateObject89 = yachtzee_taggedTemplateLiteral(["toast with stench jelly"])))), jellyPrice + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject90 || (yachtzee_templateObject90 = yachtzee_taggedTemplateLiteral(["toast"])))));
+  var toastPrice = Math.min((0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject88 || (yachtzee_templateObject88 = yachtzee_taggedTemplateLiteral(["toast with stench jelly"])))), jellyPrice + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject89 || (yachtzee_templateObject89 = yachtzee_taggedTemplateLiteral(["toast"])))));
   var toastCosts = toastPrice + (31.5 / 5 - 3) * VOA;
   var toastsToEat = 0;
 
@@ -23733,21 +23733,21 @@ function yachtzeeChainDiet(simOnly) {
     }
   }
 
-  var jelliesBulkPrice = (0,external_kolmafia_.retrievePrice)((0,template_string/* $item */.xr)(yachtzee_templateObject91 || (yachtzee_templateObject91 = yachtzee_taggedTemplateLiteral(["stench jelly"]))), jelliesToChew); // If we need spleen cleansers but their prices are unreasonable, just return
+  var jelliesBulkPrice = (0,external_kolmafia_.retrievePrice)((0,template_string/* $item */.xr)(yachtzee_templateObject90 || (yachtzee_templateObject90 = yachtzee_taggedTemplateLiteral(["stench jelly"]))), jelliesToChew); // If we need spleen cleansers but their prices are unreasonable, just return
 
   var maxSliderPrice = 150000,
       maxPickleJuicePrice = 150000;
 
-  if (slidersToEat > 0 && (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject92 || (yachtzee_templateObject92 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"])))) > maxSliderPrice) {
+  if (slidersToEat > 0 && (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject91 || (yachtzee_templateObject91 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"])))) > maxSliderPrice) {
     (0,external_kolmafia_.print)("Sliders are way too overpriced for us to clean spleens for jellies", "red");
     return false;
-  } else if (pickleJuiceToDrink > 0 && (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject93 || (yachtzee_templateObject93 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"])))) > maxPickleJuicePrice) {
+  } else if (pickleJuiceToDrink > 0 && (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject92 || (yachtzee_templateObject92 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"])))) > maxPickleJuicePrice) {
     (0,external_kolmafia_.print)("Pickle juices are way too overpriced for us to clean spleens for jellies", "red");
     return false;
   }
 
-  var horseradishes = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject94 || (yachtzee_templateObject94 = yachtzee_taggedTemplateLiteral(["Kicked in the Sinuses"])))) < 30 && (0,external_kolmafia_.myFullness)() + 1 + slidersToEat * 5 + toastsToEat <= (0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) ? 1 : 0;
-  var earlyMeatDropsEstimate = (0,external_kolmafia_.numericModifier)("Meat Drop") + (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject95 || (yachtzee_templateObject95 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"])))) && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(yachtzee_templateObject96 || (yachtzee_templateObject96 = yachtzee_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 300 : 0) + ((0,external_kolmafia_.visitUrl)("forestvillage.php").includes("friarcottage.gif") ? 60 : 0); // Some iffy calculations here
+  var horseradishes = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject93 || (yachtzee_templateObject93 = yachtzee_taggedTemplateLiteral(["Kicked in the Sinuses"])))) < 30 && (0,external_kolmafia_.myFullness)() + 1 + slidersToEat * 5 + toastsToEat <= (0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) ? 1 : 0;
+  var earlyMeatDropsEstimate = (0,external_kolmafia_.numericModifier)("Meat Drop") + (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject94 || (yachtzee_templateObject94 = yachtzee_taggedTemplateLiteral(["Synthesis: Greed"])))) && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(yachtzee_templateObject95 || (yachtzee_templateObject95 = yachtzee_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 300 : 0) + ((0,external_kolmafia_.visitUrl)("forestvillage.php").includes("friarcottage.gif") ? 60 : 0); // Some iffy calculations here
   // If the best diet (at current prices) includes sliders and pickle juice (s+pj), no issues there
   // However, if the best diet does not include s+pj, then we need to compute the loss of switching
   // from the best diet to s+pj, and add it to our jellyValuePerSpleen calculations
@@ -23833,22 +23833,22 @@ function yachtzeeChainDiet(simOnly) {
   } // Acquire everything we need
 
 
-  (0,acquire/* acquire */.u)(jelliesToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject97 || (yachtzee_templateObject97 = yachtzee_taggedTemplateLiteral(["stench jelly"]))), 2 * jelliesBulkPrice / jelliesToChew, true, 1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
+  (0,acquire/* acquire */.u)(jelliesToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject96 || (yachtzee_templateObject96 = yachtzee_taggedTemplateLiteral(["stench jelly"]))), 2 * jelliesBulkPrice / jelliesToChew, true, 1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
   );
-  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject98 || (yachtzee_templateObject98 = yachtzee_taggedTemplateLiteral(["toast with stench jelly"]))), 2 * toastPrice, true, 1.2 * toastPrice * toastsToEat);
-  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject99 || (yachtzee_templateObject99 = yachtzee_taggedTemplateLiteral(["munchies pill"]))), 2.66 * VOA, false);
-  (0,acquire/* acquire */.u)(extrosToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject100 || (yachtzee_templateObject100 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"]))), 100000);
-  (0,acquire/* acquire */.u)(pickleJuiceToDrink, (0,template_string/* $item */.xr)(yachtzee_templateObject101 || (yachtzee_templateObject101 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"]))), maxPickleJuicePrice);
-  (0,acquire/* acquire */.u)(slidersToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject102 || (yachtzee_templateObject102 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"]))), maxSliderPrice);
-  (0,acquire/* acquire */.u)(cologneToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject103 || (yachtzee_templateObject103 = yachtzee_taggedTemplateLiteral(["beggin' cologne"]))), 2 * colognePrice);
-  (0,acquire/* acquire */.u)(filters, (0,template_string/* $item */.xr)(yachtzee_templateObject104 || (yachtzee_templateObject104 = yachtzee_taggedTemplateLiteral(["mojo filter"]))), 2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject105 || (yachtzee_templateObject105 = yachtzee_taggedTemplateLiteral(["mojo filter"])))));
-  (0,acquire/* acquire */.u)(horseradishes, (0,template_string/* $item */.xr)(yachtzee_templateObject106 || (yachtzee_templateObject106 = yachtzee_taggedTemplateLiteral(["jumping horseradish"]))), 60000); // Get fishy turns
+  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject97 || (yachtzee_templateObject97 = yachtzee_taggedTemplateLiteral(["toast with stench jelly"]))), 2 * toastPrice, true, 1.2 * toastPrice * toastsToEat);
+  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject98 || (yachtzee_templateObject98 = yachtzee_taggedTemplateLiteral(["munchies pill"]))), 2.66 * VOA, false);
+  (0,acquire/* acquire */.u)(extrosToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject99 || (yachtzee_templateObject99 = yachtzee_taggedTemplateLiteral(["Extrovermectin\u2122"]))), 100000);
+  (0,acquire/* acquire */.u)(pickleJuiceToDrink, (0,template_string/* $item */.xr)(yachtzee_templateObject100 || (yachtzee_templateObject100 = yachtzee_taggedTemplateLiteral(["jar of fermented pickle juice"]))), maxPickleJuicePrice);
+  (0,acquire/* acquire */.u)(slidersToEat, (0,template_string/* $item */.xr)(yachtzee_templateObject101 || (yachtzee_templateObject101 = yachtzee_taggedTemplateLiteral(["extra-greasy slider"]))), maxSliderPrice);
+  (0,acquire/* acquire */.u)(cologneToChew, (0,template_string/* $item */.xr)(yachtzee_templateObject102 || (yachtzee_templateObject102 = yachtzee_taggedTemplateLiteral(["beggin' cologne"]))), 2 * colognePrice);
+  (0,acquire/* acquire */.u)(filters, (0,template_string/* $item */.xr)(yachtzee_templateObject103 || (yachtzee_templateObject103 = yachtzee_taggedTemplateLiteral(["mojo filter"]))), 2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(yachtzee_templateObject104 || (yachtzee_templateObject104 = yachtzee_taggedTemplateLiteral(["mojo filter"])))));
+  (0,acquire/* acquire */.u)(horseradishes, (0,template_string/* $item */.xr)(yachtzee_templateObject105 || (yachtzee_templateObject105 = yachtzee_taggedTemplateLiteral(["jumping horseradish"]))), 60000); // Get fishy turns
 
   (0,external_kolmafia_.print)("Getting fishy turns", "purple");
   optimizeForFishy(yachtzeeTurns, true); // Final checks
 
-  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject107 || (yachtzee_templateObject107 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns) {
-    throw new Error("We only got ".concat((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject108 || (yachtzee_templateObject108 = yachtzee_taggedTemplateLiteral(["Fishy"])))), "/").concat(yachtzeeTurns, " turns of fishy!"));
+  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject106 || (yachtzee_templateObject106 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns) {
+    throw new Error("We only got ".concat((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject107 || (yachtzee_templateObject107 = yachtzee_taggedTemplateLiteral(["Fishy"])))), "/").concat(yachtzeeTurns, " turns of fishy!"));
   }
 
   (0,property/* set */.t8)("_garboYachtzeeChainDietPlanned", true);
@@ -23881,7 +23881,7 @@ function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
   var excludedEffects = new Set();
   shrugIrrelevantSongs();
 
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject109 || (yachtzee_templateObject109 = yachtzee_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,property/* get */.U2)("_freePillKeeperUsed", false)) {
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject108 || (yachtzee_templateObject108 = yachtzee_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !(0,property/* get */.U2)("_freePillKeeperUsed", false)) {
     var doublingPotions = potions/* farmingPotions.filter */.Zp.filter(potion => potion.canDouble && (0,external_kolmafia_.haveEffect)(potion.effect()) + PYECOffset * (0,external_kolmafia_.toInt)((0,external_kolmafia_.haveEffect)(potion.effect()) > 0) < yachtzeeTurns && yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 && potion.price(true) < (0,external_kolmafia_.myMeat)()).sort((left, right) => yachtzeePotionProfits(right.doubleDuration(), yachtzeeTurns) - yachtzeePotionProfits(left.doubleDuration(), yachtzeeTurns));
     var bestPotion = doublingPotions.length > 0 ? doublingPotions[0].doubleDuration() : undefined;
 
@@ -24025,28 +24025,28 @@ function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
     if ((0,property/* get */.U2)("_PYECAvailable", false)) {
       (0,external_kolmafia_.maximize)("MP", false);
 
-      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject110 || (yachtzee_templateObject110 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))))) {
+      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject109 || (yachtzee_templateObject109 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))))) {
         (0,src_lib/* burnLibrams */.MM)(200);
-        (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject111 || (yachtzee_templateObject111 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+        (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject110 || (yachtzee_templateObject110 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
       } else {
-        (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(yachtzee_templateObject112 || (yachtzee_templateObject112 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))), () => {
-          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject113 || (yachtzee_templateObject113 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))))) {
+        (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(yachtzee_templateObject111 || (yachtzee_templateObject111 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))), () => {
+          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject112 || (yachtzee_templateObject112 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))))) {
             (0,src_lib/* burnLibrams */.MM)(200);
-            (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject114 || (yachtzee_templateObject114 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+            (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject113 || (yachtzee_templateObject113 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
           }
         });
       }
     }
 
-    if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject115 || (yachtzee_templateObject115 = yachtzee_taggedTemplateLiteral(["License to Chill"])))) && !(0,property/* get */.U2)("_licenseToChillUsed")) {
+    if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject114 || (yachtzee_templateObject114 = yachtzee_taggedTemplateLiteral(["License to Chill"])))) && !(0,property/* get */.U2)("_licenseToChillUsed")) {
       (0,src_lib/* burnLibrams */.MM)(200);
-      (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject116 || (yachtzee_templateObject116 = yachtzee_taggedTemplateLiteral(["License to Chill"]))));
+      (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject115 || (yachtzee_templateObject115 = yachtzee_taggedTemplateLiteral(["License to Chill"]))));
     }
 
     if (!(0,property/* get */.U2)("_bagOTricksUsed")) {
-      (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(yachtzee_templateObject117 || (yachtzee_templateObject117 = yachtzee_taggedTemplateLiteral(["Bag o' Tricks"]))), () => {
+      (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(yachtzee_templateObject116 || (yachtzee_templateObject116 = yachtzee_taggedTemplateLiteral(["Bag o' Tricks"]))), () => {
         (0,src_lib/* burnLibrams */.MM)(200);
-        (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject118 || (yachtzee_templateObject118 = yachtzee_taggedTemplateLiteral(["Bag o' Tricks"]))));
+        (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject117 || (yachtzee_templateObject117 = yachtzee_taggedTemplateLiteral(["Bag o' Tricks"]))));
       });
     }
 
@@ -24055,21 +24055,21 @@ function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
   } // Uncle Greenspan's may be cost effective
 
 
-  if (!simOnly && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject119 || (yachtzee_templateObject119 = yachtzee_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) {
+  if (!simOnly && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject118 || (yachtzee_templateObject118 = yachtzee_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) {
     var yachtzeeFactor = yachtzeeTurns * (yachtzeeTurns + 1);
     var embezzlerFactor = Math.min(100, expectedEmbezzlers + yachtzeeTurns) * (Math.min(100, expectedEmbezzlers + yachtzeeTurns) + 1);
     var greenspanValue = (2000 * yachtzeeFactor + (src_lib/* baseMeat */.Vq + 750) * (embezzlerFactor - yachtzeeFactor) + src_lib/* baseMeat */.Vq * (10100 - embezzlerFactor)) / 100;
 
-    var _price = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject120 || (yachtzee_templateObject120 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))));
+    var _price = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(yachtzee_templateObject119 || (yachtzee_templateObject119 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))));
 
     var _profit = greenspanValue - _price;
 
     if (_profit > 0) {
       (0,external_kolmafia_.print)("Expected to profit ".concat(_profit, " meat from using 1 Uncle Greenspan's Bathroom Finance Guide @ price ").concat(_price, " meat"), "blue");
-      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject121 || (yachtzee_templateObject121 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))), greenspanValue, false);
+      (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject120 || (yachtzee_templateObject120 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))), greenspanValue, false);
 
-      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject122 || (yachtzee_templateObject122 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))))) {
-        (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject123 || (yachtzee_templateObject123 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))));
+      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject121 || (yachtzee_templateObject121 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))))) {
+        (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(yachtzee_templateObject122 || (yachtzee_templateObject122 = yachtzee_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"]))));
       }
     }
   }
@@ -24079,43 +24079,43 @@ function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
 
 function bestFamUnderwaterGear(fam) {
   // Returns best familiar gear for yachtzee chaining
-  return fam.underwater || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject124 || (yachtzee_templateObject124 = yachtzee_taggedTemplateLiteral(["Driving Waterproofly"])))) || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject125 || (yachtzee_templateObject125 = yachtzee_taggedTemplateLiteral(["Wet Willied"])))) ? (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject126 || (yachtzee_templateObject126 = yachtzee_taggedTemplateLiteral(["amulet coin"])))) ? (0,template_string/* $item */.xr)(yachtzee_templateObject127 || (yachtzee_templateObject127 = yachtzee_taggedTemplateLiteral(["amulet coin"]))) : (0,template_string/* $item */.xr)(yachtzee_templateObject128 || (yachtzee_templateObject128 = yachtzee_taggedTemplateLiteral(["filthy child leash"]))) : (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject129 || (yachtzee_templateObject129 = yachtzee_taggedTemplateLiteral(["das boot"])))) ? (0,template_string/* $item */.xr)(yachtzee_templateObject130 || (yachtzee_templateObject130 = yachtzee_taggedTemplateLiteral(["das boot"]))) : (0,template_string/* $item */.xr)(yachtzee_templateObject131 || (yachtzee_templateObject131 = yachtzee_taggedTemplateLiteral(["little bitty bathysphere"])));
+  return fam.underwater || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject123 || (yachtzee_templateObject123 = yachtzee_taggedTemplateLiteral(["Driving Waterproofly"])))) || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject124 || (yachtzee_templateObject124 = yachtzee_taggedTemplateLiteral(["Wet Willied"])))) ? (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject125 || (yachtzee_templateObject125 = yachtzee_taggedTemplateLiteral(["amulet coin"])))) ? (0,template_string/* $item */.xr)(yachtzee_templateObject126 || (yachtzee_templateObject126 = yachtzee_taggedTemplateLiteral(["amulet coin"]))) : (0,template_string/* $item */.xr)(yachtzee_templateObject127 || (yachtzee_templateObject127 = yachtzee_taggedTemplateLiteral(["filthy child leash"]))) : (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject128 || (yachtzee_templateObject128 = yachtzee_taggedTemplateLiteral(["das boot"])))) ? (0,template_string/* $item */.xr)(yachtzee_templateObject129 || (yachtzee_templateObject129 = yachtzee_taggedTemplateLiteral(["das boot"]))) : (0,template_string/* $item */.xr)(yachtzee_templateObject130 || (yachtzee_templateObject130 = yachtzee_taggedTemplateLiteral(["little bitty bathysphere"])));
 }
 
 function bestYachtzeeFamiliar() {
   var haveUnderwaterFamEquipment = outfit/* familiarWaterBreathingEquipment.some */.e3.some(item => (0,lib/* have */.lf)(item));
-  var famWt = (0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)() - (0,external_kolmafia_.numericModifier)((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject132 || (yachtzee_templateObject132 = yachtzee_taggedTemplateLiteral(["familiar"])))), "Familiar Weight");
-  var sortedUnderwaterFamiliars = external_kolmafia_.Familiar.all().filter(fam => (0,lib/* have */.lf)(fam) && (0,lib/* findLeprechaunMultiplier */.q$)(fam) > 0 && fam !== (0,template_string/* $familiar */.HP)(yachtzee_templateObject133 || (yachtzee_templateObject133 = yachtzee_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))) && fam !== (0,template_string/* $familiar */.HP)(yachtzee_templateObject134 || (yachtzee_templateObject134 = yachtzee_taggedTemplateLiteral(["Robortender"]))) && (fam.underwater || haveUnderwaterFamEquipment)).sort((left, right) => (0,external_kolmafia_.numericModifier)(right, "Meat Drop", famWt, bestFamUnderwaterGear(right)) - (0,external_kolmafia_.numericModifier)(left, "Meat Drop", famWt, bestFamUnderwaterGear(left)));
+  var famWt = (0,external_kolmafia_.familiarWeight)((0,external_kolmafia_.myFamiliar)()) + (0,external_kolmafia_.weightAdjustment)() - (0,external_kolmafia_.numericModifier)((0,external_kolmafia_.equippedItem)((0,template_string/* $slot */.Jh)(yachtzee_templateObject131 || (yachtzee_templateObject131 = yachtzee_taggedTemplateLiteral(["familiar"])))), "Familiar Weight");
+  var sortedUnderwaterFamiliars = external_kolmafia_.Familiar.all().filter(fam => (0,lib/* have */.lf)(fam) && (0,lib/* findLeprechaunMultiplier */.q$)(fam) > 0 && fam !== (0,template_string/* $familiar */.HP)(yachtzee_templateObject132 || (yachtzee_templateObject132 = yachtzee_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))) && fam !== (0,template_string/* $familiar */.HP)(yachtzee_templateObject133 || (yachtzee_templateObject133 = yachtzee_taggedTemplateLiteral(["Robortender"]))) && (fam.underwater || haveUnderwaterFamEquipment)).sort((left, right) => (0,external_kolmafia_.numericModifier)(right, "Meat Drop", famWt, bestFamUnderwaterGear(right)) - (0,external_kolmafia_.numericModifier)(left, "Meat Drop", famWt, bestFamUnderwaterGear(left)));
   (0,external_kolmafia_.print)("Familiar bonus meat%:", "blue");
   sortedUnderwaterFamiliars.forEach(fam => {
     (0,external_kolmafia_.print)("".concat(fam, " (").concat((0,external_kolmafia_.numericModifier)(fam, "Meat Drop", famWt, bestFamUnderwaterGear(fam)).toFixed(2), "%)"), "blue");
   });
-  if (sortedUnderwaterFamiliars.length === 0) return (0,template_string/* $familiar */.HP)(yachtzee_templateObject135 || (yachtzee_templateObject135 = yachtzee_taggedTemplateLiteral(["none"])));
+  if (sortedUnderwaterFamiliars.length === 0) return (0,template_string/* $familiar */.HP)(yachtzee_templateObject134 || (yachtzee_templateObject134 = yachtzee_taggedTemplateLiteral(["none"])));
   (0,external_kolmafia_.print)("Best Familiar: ".concat(sortedUnderwaterFamiliars[0]), "blue");
   return sortedUnderwaterFamiliars[0];
 }
 
-var maximizeMeat = () => new maximize/* Requirement */.nb(["meat"].concat(yachtzee_toConsumableArray((0,external_kolmafia_.myFamiliar)().underwater || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject136 || (yachtzee_templateObject136 = yachtzee_taggedTemplateLiteral(["Driving Waterproofly"])))) || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject137 || (yachtzee_templateObject137 = yachtzee_taggedTemplateLiteral(["Wet Willied"])))) ? [] : ["underwater familiar"])), {
-  preventEquip: (0,template_string/* $items */.vS)(yachtzee_templateObject138 || (yachtzee_templateObject138 = yachtzee_taggedTemplateLiteral(["anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic\u2122, cheap sunglasses"])))
+var maximizeMeat = () => new maximize/* Requirement */.nb(["meat"].concat(yachtzee_toConsumableArray((0,external_kolmafia_.myFamiliar)().underwater || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject135 || (yachtzee_templateObject135 = yachtzee_taggedTemplateLiteral(["Driving Waterproofly"])))) || (0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject136 || (yachtzee_templateObject136 = yachtzee_taggedTemplateLiteral(["Wet Willied"])))) ? [] : ["underwater familiar"])), {
+  preventEquip: (0,template_string/* $items */.vS)(yachtzee_templateObject137 || (yachtzee_templateObject137 = yachtzee_taggedTemplateLiteral(["anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic\u2122, cheap sunglasses"])))
 }).maximize();
 
 function prepareOutfitAndFamiliar() {
   (0,external_kolmafia_.useFamiliar)(bestYachtzeeFamiliar());
 
   if (!(0,property/* get */.U2)("_feastedFamiliars").includes((0,external_kolmafia_.myFamiliar)().toString()) && (0,property/* get */.U2)("_feastedFamiliars").split(";").length < 5) {
-    (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(yachtzee_templateObject139 || (yachtzee_templateObject139 = yachtzee_taggedTemplateLiteral(["moveable feast"]))), () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject140 || (yachtzee_templateObject140 = yachtzee_taggedTemplateLiteral(["moveable feast"])))));
+    (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(yachtzee_templateObject138 || (yachtzee_templateObject138 = yachtzee_taggedTemplateLiteral(["moveable feast"]))), () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(yachtzee_templateObject139 || (yachtzee_templateObject139 = yachtzee_taggedTemplateLiteral(["moveable feast"])))));
   }
 
   maximizeMeat();
 
   if (!(0,external_kolmafia_.myFamiliar)().underwater) {
-    (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(yachtzee_templateObject141 || (yachtzee_templateObject141 = yachtzee_taggedTemplateLiteral(["familiar"]))), outfit/* familiarWaterBreathingEquipment.filter */.e3.filter(it => (0,lib/* have */.lf)(it)).reduce((a, b) => (0,external_kolmafia_.numericModifier)(a, "Familiar Weight") > (0,external_kolmafia_.numericModifier)(b, "Familiar Weight") ? a : b));
+    (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(yachtzee_templateObject140 || (yachtzee_templateObject140 = yachtzee_taggedTemplateLiteral(["familiar"]))), outfit/* familiarWaterBreathingEquipment.filter */.e3.filter(it => (0,lib/* have */.lf)(it)).reduce((a, b) => (0,external_kolmafia_.numericModifier)(a, "Familiar Weight") > (0,external_kolmafia_.numericModifier)(b, "Familiar Weight") ? a : b));
   }
 }
 
 function stickerSetup(expectedYachts) {
-  var currentStickers = (0,template_string/* $slots */.ei)(yachtzee_templateObject142 || (yachtzee_templateObject142 = yachtzee_taggedTemplateLiteral(["sticker1, sticker2, sticker3"]))).map(s => (0,external_kolmafia_.equippedItem)(s));
-  var UPC = (0,template_string/* $item */.xr)(yachtzee_templateObject143 || (yachtzee_templateObject143 = yachtzee_taggedTemplateLiteral(["scratch 'n' sniff UPC sticker"])));
+  var currentStickers = (0,template_string/* $slots */.ei)(yachtzee_templateObject141 || (yachtzee_templateObject141 = yachtzee_taggedTemplateLiteral(["sticker1, sticker2, sticker3"]))).map(s => (0,external_kolmafia_.equippedItem)(s));
+  var UPC = (0,template_string/* $item */.xr)(yachtzee_templateObject142 || (yachtzee_templateObject142 = yachtzee_taggedTemplateLiteral(["scratch 'n' sniff UPC sticker"])));
   if (currentStickers.every(sticker => sticker === UPC)) return;
   var yachtOpportunityCost = 25 * (0,lib/* findLeprechaunMultiplier */.q$)(bestYachtzeeFamiliar());
   var embezzlerOpportunityCost = 25 * (0,lib/* findLeprechaunMultiplier */.q$)((0,familiar/* meatFamiliar */.M2)());
@@ -24132,8 +24132,8 @@ function _yachtzeeChain() {
   if ((0,external_kolmafia_.myLevel)() <= 13 || !(0,external_kolmafia_.canInteract)()) return; // We definitely need to be able to eat sliders and drink pickle juice
 
   if (!(0,src_lib/* realmAvailable */.e6)("sleaze")) return;
-  (0,property/* set */.t8)("_PYECAvailable", (0,property/* get */.U2)("expressCardUsed") ? false : (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject144 || (yachtzee_templateObject144 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) ? true : (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(yachtzee_templateObject145 || (yachtzee_templateObject145 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))), () => {
-    return (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject146 || (yachtzee_templateObject146 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+  (0,property/* set */.t8)("_PYECAvailable", (0,property/* get */.U2)("expressCardUsed") ? false : (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject143 || (yachtzee_templateObject143 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) ? true : (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(yachtzee_templateObject144 || (yachtzee_templateObject144 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))), () => {
+    return (0,lib/* have */.lf)((0,template_string/* $item */.xr)(yachtzee_templateObject145 || (yachtzee_templateObject145 = yachtzee_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
   }));
   (0,external_kolmafia_.maximize)("MP", false);
   (0,mood/* meatMood */.CE)(false, 750 + src_lib/* baseMeat */.Vq).execute((0,embezzler/* embezzlerCount */.bs)());
@@ -24167,15 +24167,15 @@ function _yachtzeeChain() {
   }
 
   var jellyTurns = (0,property/* get */.U2)("_stenchJellyChargeTarget", 0);
-  var fishyTurns = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject147 || (yachtzee_templateObject147 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 5 * (0,external_kolmafia_.toInt)((0,property/* get */.U2)("_PYECAvailable", false));
+  var fishyTurns = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject146 || (yachtzee_templateObject146 = yachtzee_taggedTemplateLiteral(["Fishy"])))) + 5 * (0,external_kolmafia_.toInt)((0,property/* get */.U2)("_PYECAvailable", false));
   var turncount = (0,external_kolmafia_.myTurncount)();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   stickerSetup(Math.min(jellyTurns, fishyTurns));
   (0,external_kolmafia_.cliExecute)("closet take ".concat((0,property/* get */.U2)("_yachtzeeChainClosetedMeat"), " meat"));
   (0,property/* set */.t8)("_yachtzeeChainClosetedMeat", 0);
 
-  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject148 || (yachtzee_templateObject148 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))))) {
-    (0,lib/* uneffect */.Lo)((0,template_string/* $effect */._G)(yachtzee_templateObject149 || (yachtzee_templateObject149 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))));
+  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject147 || (yachtzee_templateObject147 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))))) {
+    (0,lib/* uneffect */.Lo)((0,template_string/* $effect */._G)(yachtzee_templateObject148 || (yachtzee_templateObject148 = yachtzee_taggedTemplateLiteral(["Beaten Up"]))));
   }
 
   (0,mood/* meatMood */.CE)(false, 2000).execute(Math.min(jellyTurns, fishyTurns));
@@ -24189,9 +24189,13 @@ function _yachtzeeChain() {
 
     prepareOutfitAndFamiliar();
 
-    if (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject150 || (yachtzee_templateObject150 = yachtzee_taggedTemplateLiteral(["Really Deep Breath"]))))) {
+    if (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject149 || (yachtzee_templateObject149 = yachtzee_taggedTemplateLiteral(["Really Deep Breath"]))))) {
       var bestWaterBreathingEquipment = getBestWaterBreathingEquipment(Math.min(jellyTurns, fishyTurns));
-      if (bestWaterBreathingEquipment.item !== (0,template_string/* $item */.xr)(yachtzee_templateObject151 || (yachtzee_templateObject151 = yachtzee_taggedTemplateLiteral(["none"])))) (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+      if (bestWaterBreathingEquipment.item !== (0,template_string/* $item */.xr)(yachtzee_templateObject150 || (yachtzee_templateObject150 = yachtzee_taggedTemplateLiteral(["none"])))) (0,external_kolmafia_.equip)(bestWaterBreathingEquipment.item);
+
+      if ((0,external_kolmafia_.haveEquipped)((0,template_string/* $item */.xr)(yachtzee_templateObject151 || (yachtzee_templateObject151 = yachtzee_taggedTemplateLiteral(["The Crown of Ed the Undying"])))) && !(0,external_kolmafia_.booleanModifier)("Adventure Underwater")) {
+        (0,external_kolmafia_.cliExecute)("edpiece fish");
+      }
     }
 
     if (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(yachtzee_templateObject152 || (yachtzee_templateObject152 = yachtzee_taggedTemplateLiteral(["Polka of Plenty"]))))) {
@@ -24442,7 +24446,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26542);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("aca7eb76fa77da8be5e828d9b42ebd139148c8f2"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f91375c2dbb0e88ab06f9a80102645fc72a0cbcf"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25112,7 +25116,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("aca7eb76fa77da8be5e828d9b42ebd139148c8f2" === mainSha) {
+    if ("f91375c2dbb0e88ab06f9a80102645fc72a0cbcf" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.print)("Garbo is out of date. Please run 'svn update!", "red");
