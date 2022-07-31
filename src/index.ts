@@ -447,6 +447,7 @@ export function main(argString = ""): void {
       autoPinkyRing: true,
       autoGarish: true,
       valueOfInventory: 2,
+      suppressMallPriceCacheMessages: true,
     });
     runDiet();
     propertyManager.resetAll();
@@ -535,6 +536,7 @@ export function main(argString = ""): void {
       allowSummonBurning: true,
       libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
       valueOfInventory: 2,
+      suppressMallPriceCacheMessages: true,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
