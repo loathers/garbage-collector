@@ -85,6 +85,7 @@ import {
   findLeprechaunMultiplier,
   get,
   getAverageAdventures,
+  getFoldGroup,
   have,
   maximizeCached,
   property,
@@ -344,6 +345,11 @@ function bestWitchessPiece() {
 
 export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
+
+  if (getFoldGroup($item`Spooky Putty sheet`).some((item) => have(item))) {
+    cliExecute("fold spooky putty sheet");
+  }
+
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for embezzler before doing setup
