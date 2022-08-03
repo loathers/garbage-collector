@@ -85,7 +85,7 @@ That being said, having garbo try to pull every single item it tries to use woul
 
 We aren't saying garbo won't work if you break prism and leave all of your stuff in Hagnk's. But we are saying that garbo is likely to run into errors, and when you report those errors, our response will inevitably be "you should pull all of your stuff from Hagnk's."
 
-One final note is that we aren't actively opposed to supporting people leaving their stuff in Hagnk's; if you do so, and you find yourself running into specific issues, feel free to [put in a PR](https://github.com/Loathing-Associates-Scripting-Society/KoL-Scripting-Resources/blob/main/PR-Overview.md).
+One final note is that we aren't actively opposed to supporting people leaving their stuff in Hagnk's; if you do so, and you find yourself running into specific issues, feel free to [put in a PR](https://loathing-associates-scripting-society.github.io/KoL-Scripting-Resources/PR-Overview.html).
 
 ## Usage
 
