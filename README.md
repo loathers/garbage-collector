@@ -79,7 +79,7 @@ Universal Recovery will look a lot like mafia's default recovery settings, but w
 
 ### Pull your stuff, please
 
-Garbo uses mafia's `availableAmount` function to determine whether you have certain items. That function, in turn, checks the `autoSatisfyWithStorage` property to determine whether to pay attention to stuff in Hagnk's. For most people, that is set to true. And that's a great value for it to be set to! Unlike the closet, items unpulled from Hagnk's are typically items players want to use to do things.
+Garbo uses mafia's `availableAmount` function to determine whether you have certain items. That function, in turn, checks the `autoSatisfyWithStorage` property to determine whether to pay attention to stuff in Hagnk's. For most people, that is set to true. And that's a great value for it to be set to! Unlike the closet, items unpulled from Hagnk's are typically items players want to use to do things. If that were to be set to false, garbo would operate under the assumption that you don't own anything left in storage, like a mime army slotglas, or a mafia pointer ring, or any of a billion different things we use. Garbo is a big script, we use a lot of stuff.
 
 That being said, having garbo try to pull every single item it tries to use would be burdensome. We'd get features at a snail's pace. It would be incredibly tedious to write code. Which is to say, if garbo thinks you have something, it thinks you _have_ it. That can cause issues when it's in Hagnk's.
 
