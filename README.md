@@ -164,7 +164,3 @@ Garbo will use your consumables and potions if it is deemed profitable to do so.
 > I was trying to click around the mall/campground/inventory/etc and then Garbo crashed, and now it is behaving strangely! Is this a bug?
 
 Garbo can be very fragile during some particular segments of the run and it is strongly recommended you do not click on anything while it is performing. This isn't a bug, Garbo is just pretty complex and the last thing either of us wants is to try looking for a bug that isn't there! Go make yourself a sandwich, do some chores, or relax and watch the meat number go up.
-
-> Help! Garbo keeps opening the mini-browser to the shore!
-
-Ultimately the person to complain to about this is Jick, or CDM, or your family doctor. Garbo needs to do something very silly in order for orb to work optimally, and doing so causes mafia to open the shore in the mini-browser. You can ignore it. It's very weird, I know, but ultimately harmless.
