@@ -75,6 +75,8 @@ export function freeFightOutfit(requirement?: Requirement): void {
     bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
   );
 
+  if (myFamiliar() !== $familiar`Grey Goose`) bonusEquip.set($item`tiny stillsuit`, 69);
+
   const finalRequirement = new Requirement(parameters, {
     forceEquip,
     preventEquip: [
