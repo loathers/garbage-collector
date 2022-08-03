@@ -7,6 +7,7 @@
     - [Set `valueOfAdventure`](#set-valueofadventure)
     - [Set your VIP clan](#set-your-vip-clan)
     - [Suggested: Universal Recovery](#suggested-universal-recovery)
+    - [Pull your stuff from Hagnk's](#pull-your-stuff-please)
   - [Usage](#usage)
     - [`nobarf` flag](#nobarf-flag)
     - [`ascend` flag](#ascend-flag)
@@ -75,6 +76,14 @@ svn checkout https://svn.code.sf.net/p/kolmafiascripts/mafiarecovery/code/
 ```
 
 Universal Recovery will look a lot like mafia's default recovery settings, but will be managed in a more sophisticated manner. You can access these settings via the relay browser.
+
+### Pull your stuff, please
+
+Garbo uses mafia's `availableAmount` function to determine whether you have certain items. That function, in turn, checks the `autoSatisfyWithStorage` property to determine whether to pay attention to stuff in Hagnk's. For most people, that is set to true. And that's a great value for it to be set to! Unlike the closet, items unpulled from Hagnk's are typically items players want to use to do things.
+
+That being said, having garbo try to pull every single item it tries to use would be burdensome. We'd get features at a snail's pace. It would be incredibly tedious to write code. Which is to say, if garbo thinks you have something, it thinks you _have_ it. That can cause issues when it's in Hagnk's.
+
+We aren't saying garbo won't work if you break prism and leave all of your stuff in Hagnk's. But we are saying that garbo is likely to run into errors, and when you report those errors, our response will inevitably be "you should pull all of your stuff from Hagnk's."
 
 ## Usage
 
