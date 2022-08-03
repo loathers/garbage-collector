@@ -640,10 +640,11 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
   const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
-  const synth =
-    haveEffect($effect`Synthesis: Greed`) < reqSynthTurns
+  const synth = have($skill`Sweet Synthesis`)
+    ? haveEffect($effect`Synthesis: Greed`) < reqSynthTurns
       ? -Math.ceil((reqSynthTurns - haveEffect($effect`Synthesis: Greed`)) / 30)
-      : 0;
+      : 0
+    : 0;
   const filters = 3 - get("currentMojoFilters");
   const extros = hasMonsterReplacers() ? -(4 - Math.min(4, 2 * get("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
   let cologne = 0;
