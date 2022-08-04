@@ -56,6 +56,7 @@ import {
   get,
   getActiveEffects,
   getActiveSongs,
+  getAverageAdventures,
   getModifier,
   have,
   isSong,
@@ -639,16 +640,26 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Plan our diet (positive values give space, negative values take space)
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
   const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
+
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
-  const synth =
-    haveEffect($effect`Synthesis: Greed`) < reqSynthTurns
-      ? -Math.ceil((reqSynthTurns - haveEffect($effect`Synthesis: Greed`)) / 30)
-      : 0;
+  const synthTurnsWanted = reqSynthTurns - haveEffect($effect`Synthesis: Greed`);
+  const synthCastsWanted = Math.ceil(synthTurnsWanted / 30);
+  const synthCasts = have($skill`Sweet Synthesis`) ? Math.max(synthCastsWanted, 0) : 0;
+
   const filters = 3 - get("currentMojoFilters");
-  const extros = hasMonsterReplacers() ? -(4 - Math.min(4, 2 * get("beGregariousCharges"))) : 0; // save some spleen for macroed embezzlies
+  const extroSpleenSpace = hasMonsterReplacers()
+    ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
+    : 0; // save some spleen for macroed embezzlies
+
   let cologne = 0;
   const availableSpleen = // Spleen available for ingesting jellies
-    spleenLimit() - mySpleenUse() + 5 * sliders + 5 * pickleJuice + synth + filters + extros;
+    spleenLimit() -
+    mySpleenUse() +
+    5 * sliders +
+    5 * pickleJuice -
+    synthCasts +
+    filters -
+    extroSpleenSpace;
 
   set("_stenchJellyChargeTarget", 0);
 
@@ -658,7 +669,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   }
 
   const yachtzeeTurns = availableSpleen >= maxYachtzeeTurns ? maxYachtzeeTurns : 30;
-  if (availableSpleen > yachtzeeTurns) cologne = -1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
+  if (availableSpleen > yachtzeeTurns) cologne = 1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
 
   if (simOnly) print(`We can potentially run ${yachtzeeTurns} for yachtzee`, "purple");
   else print(`Trying to run ${yachtzeeTurns} turns of Yachtzee`, "purple");
@@ -674,14 +685,17 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // We prefer using pickle juice to cleanse our spleen for stench jellies since
   // 1) It's cheaper
   // 2) Our stomach can be used for horseradish buffs
-  const spleenToClean =
-    yachtzeeTurns - filters - synth - extros - cologne - (spleenLimit() - mySpleenUse());
+  const currentSpleenLeft = spleenLimit() - mySpleenUse();
+  const spleenNeeded = yachtzeeTurns + synthCasts + extroSpleenSpace + cologne;
+  const spleenToClean = currentSpleenLeft + filters - spleenNeeded;
+
   let pickleJuiceToDrink = clamp(Math.ceil(spleenToClean / 5), 0, pickleJuice);
   let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
-  const extrosToChew = -extros / 2;
-  const synthToUse = -synth;
-  const cologneToChew = -cologne;
   let jelliesToChew = yachtzeeTurns;
+
+  const extrosToChew = extroSpleenSpace / 2;
+  const synthToUse = synthCasts;
+  const cologneToChew = cologne;
 
   // Compare jellies + sliders vs toasts
   const jellyPrice = mallPrice($item`stench jelly`);
@@ -691,14 +705,20 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     mallPrice($item`toast with stench jelly`),
     jellyPrice + mallPrice($item`toast`)
   );
-  const toastCosts = toastPrice + (31.5 / 5 - 3) * VOA;
+
+  const sliderAdventuresPerFull = getAverageAdventures($item`extra-greasy slider`) / 5;
+  const toastAdventuresPerFull = getAverageAdventures($item`toast with stench jelly`) / 1;
+  const toastOpportunityCost =
+    toastPrice + (sliderAdventuresPerFull - toastAdventuresPerFull) * VOA;
+
   let toastsToEat = 0;
-  if (toastCosts < jellySlidersCosts) {
+  if (toastOpportunityCost < jellySlidersCosts) {
     toastsToEat = 5 * slidersToEat;
     jelliesToChew -= 5 * slidersToEat;
     slidersToEat = 0;
   }
-  if (toastCosts < jellyPickleCosts) {
+
+  if (toastOpportunityCost < jellyPickleCosts) {
     while (
       pickleJuiceToDrink > 0 &&
       jelliesToChew >= 5 &&
