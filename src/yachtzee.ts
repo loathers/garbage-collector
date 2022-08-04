@@ -638,6 +638,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
 
   // Plan our diet (positive values give space, negative values take space)
+  const currentSpleenLeft = spleenLimit() - mySpleenUse();
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
   const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
 
@@ -652,14 +653,9 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     : 0; // save some spleen for macroed embezzlies
 
   let cologne = 0;
-  const availableSpleen = // Spleen available for ingesting jellies
-    spleenLimit() -
-    mySpleenUse() +
-    5 * sliders +
-    5 * pickleJuice -
-    synthCasts +
-    filters -
-    extroSpleenSpace;
+
+  const potentialSpleen = currentSpleenLeft + 5 * sliders + 5 * pickleJuice + filters;
+  const availableSpleen = potentialSpleen - synthCasts - extroSpleenSpace; // Spleen available for ingesting jellies
 
   set("_stenchJellyChargeTarget", 0);
 
@@ -685,7 +681,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // We prefer using pickle juice to cleanse our spleen for stench jellies since
   // 1) It's cheaper
   // 2) Our stomach can be used for horseradish buffs
-  const currentSpleenLeft = spleenLimit() - mySpleenUse();
   const spleenNeeded = yachtzeeTurns + synthCasts + extroSpleenSpace + cologne;
   const spleenToClean = currentSpleenLeft + filters - spleenNeeded;
 
