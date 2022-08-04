@@ -685,7 +685,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // 1) It's cheaper
   // 2) Our stomach can be used for horseradish buffs
   const spleenNeeded = yachtzeeTurns + synthCasts + extroSpleenSpace + cologne;
-  const spleenToClean = currentSpleenLeft + filters - spleenNeeded;
+  const spleenToClean = spleenNeeded - currentSpleenLeft - filters;
 
   let pickleJuiceToDrink = clamp(Math.ceil(spleenToClean / 5), 0, pickleJuice);
   let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
