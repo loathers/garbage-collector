@@ -212,9 +212,10 @@ function voterSetup(): void {
 function configureGear(): void {
   pantogram();
 
-  if (have($familiar`Cornbeefadon`) && !have($item`amulet coin`)) {
+  if (have($familiar`Cornbeefadon`)) {
     useFamiliar($familiar`Cornbeefadon`);
-    use($item`box of Familiar Jacks`);
+    if (!have($item`amulet coin`)) use($item`box of Familiar Jacks`);
+    if (have($item`tiny stillsuit`)) equip($item`tiny stillsuit`);
   }
 
   if (
