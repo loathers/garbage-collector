@@ -637,7 +637,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const maxYachtzeeTurns = havePYECCharge ? 35 : 30;
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
 
-  // Plan our diet (positive values give space, negative values take space)
+  // Plan our diet
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
   const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
@@ -648,9 +648,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const synthCasts = have($skill`Sweet Synthesis`) ? Math.max(synthCastsWanted, 0) : 0;
 
   const filters = 3 - get("currentMojoFilters");
+
+  // save some spleen the first two extro, which are worth a lot
+  // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
     ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
-    : 0; // save some spleen for macroed embezzlies
+    : 0;
 
   let cologne = 0;
 
