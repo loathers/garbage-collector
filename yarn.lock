@@ -2794,10 +2794,10 @@ kolmafia@^3.0.3:
   resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-3.0.3.tgz#6d7e0a53ecdf2be11f4fd5de4e4b32c0b4cb6992"
   integrity sha512-AD8emaY/+0HTzsgvcbO5UT35+88BlntOC/49PcKvZZs39UB+pqGOcwyWA48d1NR6Rthwi12zVSLXhHYH/2fk2g==
 
-kolmafia@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-3.1.0.tgz#84d06e8959b34d8350ad11572c51c8cbd74cd71a"
-  integrity sha512-RKwywL5Xb1RBitt5vXR/HA8KShxVPcpKyJk0g0jec8uFRKZFi3rfqEKJiJTqkD0uIBUo06ZDFXXMKanJTRsxnA==
+kolmafia@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-3.1.1.tgz#bf821bdbe36d64e301ea201f11f13cf92a7ab47a"
+  integrity sha512-X+CVw9yFHWb6ZnYtnkPeXhKjpvQHPLhZE+EFuulVocobcWpeBdZVDWoUEesmsOIRgoJu7u2fc0c9gkHQh2TaAQ==
 
 levn@^0.4.1:
   version "0.4.1"
