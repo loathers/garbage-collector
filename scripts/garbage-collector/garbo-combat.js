@@ -17645,7 +17645,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("e83fd2ecdbfeca0d376ab69301bfa42e74a44a9a" === mainSha) {
+    if ("d31c9990a98cf2b8b8627d7f70ac7109ae396587" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -18005,7 +18005,7 @@ function shrugBadEffects() {
 /* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8104);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7442);
 /* harmony import */ var _wanderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5444);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -18048,16 +18048,17 @@ function freeFightOutfit(requirement) {
 
   var bjornAlike = bestBjornalike(forceEquip);
   preventEquip.push(bjornAlike === $item(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Buddy Bjorn"]))) ? $item(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Crown of Thrones"]))) : $item(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Buddy Bjorn"]))));
+  if (myFamiliar() !== $familiar(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Grey Goose"])))) bonusEquip.set($item(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["tiny stillsuit"]))), 69);
   var finalRequirement = new Requirement(parameters, {
     forceEquip: forceEquip,
-    preventEquip: [].concat(_toConsumableArray(preventEquip), [bjornAlike === $item(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Buddy Bjorn"]))) ? $item(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Crown of Thrones"]))) : $item(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Buddy Bjorn"])))]).filter(item => !forceEquip.includes(item)),
+    preventEquip: [].concat(_toConsumableArray(preventEquip), [bjornAlike === $item(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Buddy Bjorn"]))) ? $item(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Crown of Thrones"]))) : $item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Buddy Bjorn"])))]).filter(item => !forceEquip.includes(item)),
     bonusEquip: new Map([].concat(_toConsumableArray(bonusEquip), _toConsumableArray(bonusGear(equipMode)), _toConsumableArray(bjornAlike ? new Map([[bjornAlike, !bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0]]) : []))),
     preventSlot: preventSlot
   });
   finalRequirement.maximize();
-  if (haveEquipped($item(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) bjornifyFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Crown of Thrones"]))))) enthroneFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Snow Suit"])))) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  if (haveEquipped($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) bjornifyFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Crown of Thrones"]))))) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Snow Suit"])))) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
 
   var missingEquips = () => {
     var _finalRequirement$max;
@@ -18078,14 +18079,14 @@ function freeFightOutfit(requirement) {
 }
 function refreshLatte() {
   // Refresh unlocked latte ingredients
-  if (have($item(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["latte lovers member's mug"]))))) {
+  if (have($item(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["latte lovers member's mug"]))))) {
     visitUrl("main.php?latte=1", false);
   }
 
-  return have($item(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["latte lovers member's mug"]))));
+  return have($item(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["latte lovers member's mug"]))));
 }
 function tryFillLatte() {
-  if (have($item(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && get("_latteRefillsUsed") < 3 && (get("_latteCopyUsed") || get("latteUnlocks").includes("cajun") && get("latteUnlocks").includes("rawhide") && (numericModifier($item(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Familiar Weight") !== 5 || numericModifier($item(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Meat Drop") !== 40 || get("latteUnlocks").includes("carrot") && numericModifier($item(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Item Drop") !== 20))) {
+  if (have($item(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && get("_latteRefillsUsed") < 3 && (get("_latteCopyUsed") || get("latteUnlocks").includes("cajun") && get("latteUnlocks").includes("rawhide") && (numericModifier($item(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Familiar Weight") !== 5 || numericModifier($item(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Meat Drop") !== 40 || get("latteUnlocks").includes("carrot") && numericModifier($item(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Item Drop") !== 20))) {
     var goodLatteIngredients = ["cajun", "rawhide", "carrot"];
     var latteIngredients = goodLatteIngredients.filter(ingredient => get("latteUnlocks").includes(ingredient));
     if (latteIngredients.length < 3) latteIngredients.push("pumpkin");
@@ -18094,7 +18095,7 @@ function tryFillLatte() {
     cliExecute("latte refill ".concat(latteIngredients.join(" ")));
   }
 
-  return numericModifier($item(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Familiar Weight") === 5 && numericModifier($item(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Meat Drop") === 40;
+  return numericModifier($item(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Familiar Weight") === 5 && numericModifier($item(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["latte lovers member's mug"]))), "Meat Drop") === 40;
 }
 function meatOutfit(embezzlerUp, requirement, sea) {
   var _requirement$maximize6, _requirement$maximize7, _requirement$maximize8, _requirement$maximize9;
@@ -18107,40 +18108,40 @@ function meatOutfit(embezzlerUp, requirement, sea) {
   var preventSlot = (_requirement$maximize9 = requirement === null || requirement === void 0 ? void 0 : requirement.maximizeOptions.preventSlot) !== null && _requirement$maximize9 !== void 0 ? _requirement$maximize9 : [];
 
   if (myInebriety() > inebrietyLimit()) {
-    forceEquip.push($item(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Drunkula's wineglass"]))));
+    forceEquip.push($item(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Drunkula's wineglass"]))));
   } else if (!embezzlerUp) {
-    if (have($item(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["protonic accelerator pack"])))) && get("questPAGhost") === "unstarted" && get("nextParanormalActivity") <= totalTurnsPlayed() && !preventEquip.includes($item(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["protonic accelerator pack"]))))) {
-      forceEquip.push($item(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["protonic accelerator pack"]))));
+    if (have($item(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["protonic accelerator pack"])))) && get("questPAGhost") === "unstarted" && get("nextParanormalActivity") <= totalTurnsPlayed() && !preventEquip.includes($item(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["protonic accelerator pack"]))))) {
+      forceEquip.push($item(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["protonic accelerator pack"]))));
     }
 
-    if (have($item(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["mafia pointer finger ring"]))))) {
-      if (myClass() === $class(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Seal Clubber"]))) && have($skill(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Furious Wallop"]))))) {
-        forceEquip.push($item(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["mafia pointer finger ring"]))));
-      } else if (have($item(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Operation Patriot Shield"])))) && myClass() === $class(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Turtle Tamer"])))) {
-        forceEquip.push.apply(forceEquip, _toConsumableArray($items(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))));
-      } else if (have($item(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["haiku katana"]))))) {
-        forceEquip.push.apply(forceEquip, _toConsumableArray($items(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["haiku katana, mafia pointer finger ring"])))));
-      } else if (have($item(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && forceEquip.every(equipment => toSlot(equipment) !== $slot(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["back"]))))) {
-        var gun = have($item(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["love"])))) && meatFamiliar() === $familiar(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Robortender"]))) ? $item(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["love"]))) : $item(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["ice nine"])));
+    if (have($item(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["mafia pointer finger ring"]))))) {
+      if (myClass() === $class(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Seal Clubber"]))) && have($skill(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Furious Wallop"]))))) {
+        forceEquip.push($item(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["mafia pointer finger ring"]))));
+      } else if (have($item(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Operation Patriot Shield"])))) && myClass() === $class(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Turtle Tamer"])))) {
+        forceEquip.push.apply(forceEquip, _toConsumableArray($items(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))));
+      } else if (have($item(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["haiku katana"]))))) {
+        forceEquip.push.apply(forceEquip, _toConsumableArray($items(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["haiku katana, mafia pointer finger ring"])))));
+      } else if (have($item(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && forceEquip.every(equipment => toSlot(equipment) !== $slot(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["back"]))))) {
+        var gun = have($item(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["love"])))) && meatFamiliar() === $familiar(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["Robortender"]))) ? $item(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["love"]))) : $item(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["ice nine"])));
 
-        if (gun === $item(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["ice nine"]))) && !have($item(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["ice nine"]))))) {
+        if (gun === $item(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["ice nine"]))) && !have($item(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["ice nine"]))))) {
           cliExecute("refresh inventory");
-          retrieveItem($item(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["ice nine"]))));
+          retrieveItem($item(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["ice nine"]))));
         }
 
-        forceEquip.push.apply(forceEquip, [gun].concat(_toConsumableArray($items(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape, mafia pointer finger ring"]))))));
-      } else if (have($item(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["Operation Patriot Shield"]))))) {
-        forceEquip.push.apply(forceEquip, _toConsumableArray($items(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))));
+        forceEquip.push.apply(forceEquip, [gun].concat(_toConsumableArray($items(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape, mafia pointer finger ring"]))))));
+      } else if (have($item(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["Operation Patriot Shield"]))))) {
+        forceEquip.push.apply(forceEquip, _toConsumableArray($items(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))));
       }
     }
 
-    if (getKramcoWandererChance() > 0.05 && have($item(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && forceEquip.every(equipment => toSlot(equipment) !== $slot(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["off-hand"])))) && !preventEquip.includes($item(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]))))) {
-      forceEquip.push($item(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]))));
+    if (getKramcoWandererChance() > 0.05 && have($item(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && forceEquip.every(equipment => toSlot(equipment) !== $slot(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["off-hand"])))) && !preventEquip.includes($item(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]))))) {
+      forceEquip.push($item(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]))));
     }
   }
 
-  var stickerSlots = $slots(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["sticker1, sticker2, sticker3"])));
-  var UPC = $item(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["scratch 'n' sniff UPC sticker"])));
+  var stickerSlots = $slots(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["sticker1, sticker2, sticker3"])));
+  var UPC = $item(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["scratch 'n' sniff UPC sticker"])));
 
   if (embezzlerUp) {
     var currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
@@ -18154,13 +18155,13 @@ function meatOutfit(embezzlerUp, requirement, sea) {
     }
   }
 
-  if (stickerSlots.map(s => equippedItem(s)).includes($item(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["none"]))))) {
-    preventEquip.push.apply(preventEquip, _toConsumableArray($items(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["scratch 'n' sniff sword, scratch 'n' sniff crossbow"])))));
+  if (stickerSlots.map(s => equippedItem(s)).includes($item(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["none"]))))) {
+    preventEquip.push.apply(preventEquip, _toConsumableArray($items(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["scratch 'n' sniff sword, scratch 'n' sniff crossbow"])))));
   }
 
-  if (myFamiliar() === $familiar(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["Obtuse Angel"])))) {
-    forceEquip.push($item(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["quake of arrows"]))));
-    if (!have($item(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["quake of arrows"]))))) retrieveItem($item(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["quake of arrows"]))));
+  if (myFamiliar() === $familiar(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["Obtuse Angel"])))) {
+    forceEquip.push($item(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["quake of arrows"]))));
+    if (!have($item(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["quake of arrows"]))))) retrieveItem($item(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["quake of arrows"]))));
   }
 
   if (sea) {
@@ -18173,23 +18174,23 @@ function meatOutfit(embezzlerUp, requirement, sea) {
     if (airEquip) forceEquip.push(airEquip);else parameters.push("sea");
   }
 
-  if (embezzlerUp && myFamiliar() !== $familiar(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["Pocket Professor"]))) && CombatLoversLocket.have() && !CombatLoversLocket.unlockedLocketMonsters().includes($monster(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["Knob Goblin Embezzler"]))))) {
+  if (embezzlerUp && myFamiliar() !== $familiar(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["Pocket Professor"]))) && CombatLoversLocket.have() && !CombatLoversLocket.unlockedLocketMonsters().includes($monster(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["Knob Goblin Embezzler"]))))) {
     forceEquip.push(CombatLoversLocket.locket);
   }
 
   var bjornAlike = bestBjornalike(forceEquip);
   var compiledRequirements = (requirement !== null && requirement !== void 0 ? requirement : new Requirement([], {})).merge(new Requirement(["".concat(((embezzlerUp ? baseMeat + 750 : baseMeat) / 100).toFixed(2), " Meat Drop"), "".concat(embezzlerUp ? 0 : 0.72, " Item Drop")].concat(_toConsumableArray(parameters)), {
     forceEquip: forceEquip,
-    preventEquip: [].concat(_toConsumableArray(preventEquip), _toConsumableArray(embezzlerUp ? $items(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === $item(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["Buddy Bjorn"]))) ? $item(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["Crown of Thrones"]))) : $item(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["Buddy Bjorn"])))]).filter(item => !forceEquip.includes(item)),
+    preventEquip: [].concat(_toConsumableArray(preventEquip), _toConsumableArray(embezzlerUp ? $items(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["cheap sunglasses"]))) : []), [bjornAlike === $item(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["Buddy Bjorn"]))) ? $item(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["Crown of Thrones"]))) : $item(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["Buddy Bjorn"])))]).filter(item => !forceEquip.includes(item)),
     bonusEquip: new Map([].concat(_toConsumableArray(bonusGear(equipMode)), _toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + valueBjornModifiers(equipMode, bjornChoice.modifier)]]) : []))),
     preventSlot: preventSlot
   }));
   compiledRequirements.maximize();
-  if (haveEquipped($item(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) bjornifyFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["Crown of Thrones"]))))) enthroneFamiliar(bjornChoice.familiar);
-  if (haveEquipped($item(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["Snow Suit"])))) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  if (haveEquipped($item(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["Buddy Bjorn"]))))) bjornifyFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["Crown of Thrones"]))))) enthroneFamiliar(bjornChoice.familiar);
+  if (haveEquipped($item(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["Snow Suit"])))) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
 
-  if (haveEquipped($item(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")) {
+  if (haveEquipped($item(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")) {
     cliExecute("retrocape robot kill");
   }
 
@@ -18210,22 +18211,22 @@ function meatOutfit(embezzlerUp, requirement, sea) {
     throw new Error("Maximizer failed to equip the following equipment: ".concat(missingEquips().map(equipment => equipment.name).join(", "), ".?"));
   }
 
-  if (sea && haveEquipped($item(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["The Crown of Ed the Undying"]))))) cliExecute("edpiece fish");
+  if (sea && haveEquipped($item(_templateObject72 || (_templateObject72 = _taggedTemplateLiteral(["The Crown of Ed the Undying"]))))) cliExecute("edpiece fish");
 }
-var waterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank"])));
-var familiarWaterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject72 || (_templateObject72 = _taggedTemplateLiteral(["das boot, little bitty bathysphere"])));
+var waterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject73 || (_templateObject73 = _taggedTemplateLiteral(["The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank"])));
+var familiarWaterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject74 || (_templateObject74 = _taggedTemplateLiteral(["das boot, little bitty bathysphere"])));
 var cachedUsingPurse = null;
 function usingPurse() {
   if (cachedUsingPurse === null) {
-    cachedUsingPurse = !(0,libram__WEBPACK_IMPORTED_MODULE_8__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$item */ .xr)(_templateObject73 || (_templateObject73 = _taggedTemplateLiteral(["latte lovers member's mug"])))) || !(0,libram__WEBPACK_IMPORTED_MODULE_8__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$familiar */ .HP)(_templateObject74 || (_templateObject74 = _taggedTemplateLiteral(["Robortender"])))) || !(0,canadv_ash__WEBPACK_IMPORTED_MODULE_0__.canAdv)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$location */ .PG)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["The Black Forest"]))), false);
+    cachedUsingPurse = !(0,libram__WEBPACK_IMPORTED_MODULE_8__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$item */ .xr)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["latte lovers member's mug"])))) || !(0,libram__WEBPACK_IMPORTED_MODULE_8__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$familiar */ .HP)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["Robortender"])))) || !(0,canadv_ash__WEBPACK_IMPORTED_MODULE_0__.canAdv)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$location */ .PG)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["The Black Forest"]))), false);
   }
 
   return cachedUsingPurse;
 }
 function useUPCs() {
-  var UPC = $item(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["scratch 'n' sniff UPC sticker"])));
+  var UPC = $item(_templateObject78 || (_templateObject78 = _taggedTemplateLiteral(["scratch 'n' sniff UPC sticker"])));
 
-  if ($items(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["scratch 'n' sniff sword, scratch 'n' sniff crossbow"]))).every(i => !have(i))) {
+  if ($items(_templateObject79 || (_templateObject79 = _taggedTemplateLiteral(["scratch 'n' sniff sword, scratch 'n' sniff crossbow"]))).every(i => !have(i))) {
     visitUrl("bedazzle.php?action=juststick&sticker=".concat(toInt(UPC), "&pwd"));
   }
 
@@ -18235,7 +18236,7 @@ function useUPCs() {
     if (sticker === UPC) continue;
     visitUrl("bedazzle.php");
 
-    if (sticker !== $item(_templateObject78 || (_templateObject78 = _taggedTemplateLiteral(["none"])))) {
+    if (sticker !== $item(_templateObject80 || (_templateObject80 = _taggedTemplateLiteral(["none"])))) {
       visitUrl("bedazzle.php?action=peel&pwd&slot=".concat(slotNumber));
     }
 
