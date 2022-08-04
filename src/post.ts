@@ -149,7 +149,7 @@ function juneCleave(): void {
 }
 
 function stillsuit() {
-  if (have($item`tiny stillsuit`) && !itemAmount($item`tiny stillsuit`)) {
+  if (itemAmount($item`tiny stillsuit`)) {
     const familiarTarget = $familiar`Blood-Faced Volleyball`;
     if (have(familiarTarget)) equip(familiarTarget, $item`tiny stillsuit`);
   }
