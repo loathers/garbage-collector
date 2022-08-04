@@ -131,10 +131,6 @@ If you have issues with this script, please post about them in the #garbage-coll
 
 Garbo will use your resources to earn meat everywhere possible such as the Hidden Bowling Alley, The Haunted Library, The Deep Dark Jungle, or The Ice Hotel. These generally won't cost a turn to do.
 
-> Garbo buys a one-day pass to Dinseylandfill even though I own the charter?
-
-Ensure that ☑️ Have Dinseylandfill is checked in IotM tracking in KolMafia's preferences.
-
 > I'm in a clan with a loaded stash, can Garbo make use of the Pantsgiving that's sitting there waiting for me to pull it?
 
 When possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):
