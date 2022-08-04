@@ -4,6 +4,7 @@ import {
   equip,
   getWorkshed,
   Item,
+  itemAmount,
   myAdventures,
   reverseNumberology,
   runChoice,
@@ -13,6 +14,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $location,
   $skill,
@@ -146,6 +148,13 @@ function juneCleave(): void {
   }
 }
 
+function stillsuit() {
+  if (have($item`tiny stillsuit`) && !itemAmount($item`tiny stillsuit`)) {
+    const familiarTarget = $familiar`Blood-Faced Volleyball`;
+    if (have(familiarTarget)) equip(familiarTarget, $item`tiny stillsuit`);
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
@@ -157,4 +166,5 @@ export default function postCombatActions(skipDiet = false): void {
   safeInterrupt();
   safeRestore();
   updateMallPrices();
+  stillsuit();
 }
