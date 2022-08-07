@@ -47,6 +47,10 @@ const standardFamiliars: ConstantValueFamiliar[] = [
         ? get("garbo_newarkValue", 0) * 0.25
         : 0),
   },
+  {
+    familiar: $familiar`Twitching Space Critter`,
+    value: () => garboValue($item`twitching space egg`) * 0.0002,
+  },
 ];
 
 export default function getConstantValueFamiliars(): GeneralFamiliar[] {
