@@ -16,7 +16,6 @@ import {
   myHash,
   myInebriety,
   myTurncount,
-  prepareForAdventure,
   print,
   retrieveItem,
   runChoice,
@@ -324,13 +323,11 @@ export const chainStarters = [
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdventure($location`Cobb's Knob Treasury`) &&
-      prepareForAdventure($location`Cobb's Knob Treasury`) &&
       !get("_freePillKeeperUsed") &&
       !have($effect`Lucky!`),
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdventure($location`Cobb's Knob Treasury`) &&
-      prepareForAdventure($location`Cobb's Knob Treasury`) &&
       !get("_freePillKeeperUsed") &&
       !have($effect`Lucky!`)
         ? 1
@@ -497,16 +494,8 @@ export const copySources = [
 export const wanderSources = [
   new EmbezzlerFight(
     "Lucky!",
-    () =>
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      prepareForAdventure($location`Cobb's Knob Treasury`) &&
-      have($effect`Lucky!`),
-    () =>
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      prepareForAdventure($location`Cobb's Knob Treasury`) &&
-      have($effect`Lucky!`)
-        ? 1
-        : 0,
+    () => canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`),
+    () => (canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`) ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
@@ -809,10 +798,7 @@ export const emergencyChainStarters = [
     () => {
       const potential = Math.floor(embezzlerCount());
       if (potential < 1) return false;
-      if (
-        !canAdventure($location`Cobb's Knob Treasury`) ||
-        !prepareForAdventure($location`Cobb's Knob Treasury`)
-      ) {
+      if (!canAdventure($location`Cobb's Knob Treasury`)) {
         return false;
       }
       // Don't use clovers if wishes are available and cheaper
