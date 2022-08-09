@@ -1,6 +1,6 @@
-import { canAdv } from "canadv.ash";
 import {
   booleanModifier,
+  canAdventure,
   chatPrivate,
   cliExecute,
   fullnessLimit,
@@ -16,6 +16,7 @@ import {
   myHash,
   myInebriety,
   myTurncount,
+  prepareForAdventure,
   print,
   retrieveItem,
   runChoice,
@@ -322,12 +323,14 @@ export const chainStarters = [
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      prepareForAdventure($location`Cobb's Knob Treasury`) &&
       !get("_freePillKeeperUsed") &&
       !have($effect`Lucky!`),
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      prepareForAdventure($location`Cobb's Knob Treasury`) &&
       !get("_freePillKeeperUsed") &&
       !have($effect`Lucky!`)
         ? 1
@@ -494,8 +497,16 @@ export const copySources = [
 export const wanderSources = [
   new EmbezzlerFight(
     "Lucky!",
-    () => canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`),
-    () => (canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`) ? 1 : 0),
+    () =>
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      prepareForAdventure($location`Cobb's Knob Treasury`) &&
+      have($effect`Lucky!`),
+    () =>
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      prepareForAdventure($location`Cobb's Knob Treasury`) &&
+      have($effect`Lucky!`)
+        ? 1
+        : 0,
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
@@ -798,7 +809,12 @@ export const emergencyChainStarters = [
     () => {
       const potential = Math.floor(embezzlerCount());
       if (potential < 1) return false;
-      if (!canAdv($location`Cobb's Knob Treasury`, true)) return false;
+      if (
+        !canAdventure($location`Cobb's Knob Treasury`) ||
+        !prepareForAdventure($location`Cobb's Knob Treasury`)
+      ) {
+        return false;
+      }
       // Don't use clovers if wishes are available and cheaper
       if (get("_genieFightsUsed") < 3 && mallPrice($item`11-leaf clover`) >= WISH_VALUE) {
         return false;

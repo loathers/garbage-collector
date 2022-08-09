@@ -2,6 +2,7 @@ import {
   availableAmount,
   booleanModifier,
   buy,
+  canAdventure,
   cliExecute,
   currentRound,
   eat,
@@ -97,7 +98,6 @@ import { estimatedTurns } from "./embezzler";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
-import { canAdv } from "canadv.ash";
 import { yachtzeeChain } from "./yachtzee";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -135,7 +135,7 @@ function barfTurn() {
     totalTurnsPlayed() !== get("lastLightsOutTurn") &&
     steveRoom &&
     steveRoom !== ghostLocation &&
-    canAdv(steveRoom)
+    canAdventure(steveRoom)
   ) {
     const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
     if (fightingSteve) {

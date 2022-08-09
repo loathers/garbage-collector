@@ -1,6 +1,6 @@
-import { canAdv } from "canadv.ash";
 import {
   availableChoiceOptions,
+  canAdventure,
   cliExecute,
   eat,
   Familiar,
@@ -302,7 +302,7 @@ export function printHelpMenu(): void {
  * @returns The expected value of using a pillkeeper charge to fight an embezzler
  */
 export function pillkeeperOpportunityCost(): number {
-  const canTreasury = canAdv($location`Cobb's Knob Treasury`, false);
+  const canTreasury = canAdventure($location`Cobb's Knob Treasury`);
 
   const alternateUse = [
     { can: canTreasury, value: 3 * get("valueOfAdventure") },

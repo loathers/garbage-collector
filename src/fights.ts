@@ -2,6 +2,7 @@ import {
   adv1,
   availableAmount,
   buy,
+  canAdventure,
   cliExecute,
   closetAmount,
   create,
@@ -139,7 +140,6 @@ import {
   embezzlerSources,
   getNextEmbezzlerFight,
 } from "./embezzler";
-import { canAdv } from "canadv.ash";
 import { determineDraggableZoneAndEnsureAccess } from "./wanderer";
 import postCombatActions from "./post";
 import {
@@ -652,7 +652,7 @@ const pygmyMacro = Macro.if_(
 function getStenchLocation() {
   return (
     $locations`Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
-      (l) => canAdv(l, false)
+      (l) => canAdventure(l)
     ) || $location`none`
   );
 }
@@ -1691,7 +1691,7 @@ const freeRunFightSources = [
   new FreeRunFight(
     () =>
       have($item`mayfly bait necklace`) &&
-      canAdv($location`Cobb's Knob Menagerie, Level 1`, false) &&
+      canAdventure($location`Cobb's Knob Menagerie, Level 1`) &&
       get("_mayflySummons") < 30,
     (runSource: ActionSource) => {
       adventureMacro(
@@ -1907,7 +1907,7 @@ export function freeFights(): void {
   }
 
   if (
-    canAdv($location`The Red Zeppelin`, false) &&
+    canAdventure($location`The Red Zeppelin`) &&
     !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
   ) {
     buy(
@@ -1993,7 +1993,7 @@ export function deliverThesisIfAble(): void {
     thesisLocation = $location`The Neverending Party`;
   }
   // if running nobarf, might not have access to Uncle Gator's. Space is cheaper.
-  else if (!canAdv(thesisLocation, false)) {
+  else if (!canAdventure(thesisLocation)) {
     if (!have($item`transporter transponder`)) {
       acquire(1, $item`transporter transponder`, 10000);
     }
@@ -2250,7 +2250,7 @@ function killRobortCreaturesForFree() {
   let freeKill = findFreeKill();
   while (
     freeKill &&
-    canAdv($location`The Copperhead Club`) &&
+    canAdventure($location`The Copperhead Club`) &&
     have($skill`Comprehensive Cartography`) &&
     get("_monstersMapped") < 3
   ) {

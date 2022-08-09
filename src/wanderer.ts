@@ -1,5 +1,4 @@
-import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
+import { buy, canAdventure, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
 import {
   $effect,
   $item,
@@ -106,12 +105,12 @@ function canAdvOrUnlock(loc: Location) {
   }
   const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
   const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
-  return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdv(loc, false) || canUnlock);
+  return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdventure(loc) || canUnlock);
 }
 
 function unlock(loc: Location) {
   const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
-  if (!unlockableZone) return canAdv(loc, false);
+  if (!unlockableZone) return canAdventure(loc);
   if (unlockableZone.available()) return true;
   if (buy(1, unlockableZone.unlocker, WANDERER_PRICE_THRESHOLD) === 0) return false;
   return use(unlockableZone.unlocker);

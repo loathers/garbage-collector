@@ -37,7 +37,6 @@ const sharedConfig = {
     new EnvironmentPlugin({ GITHUB_SHA: "CustomBuild", GITHUB_REPOSITORY: "CustomBuild" }),
   ],
   externals: {
-    "canadv.ash": "commonjs canadv.ash",
     kolmafia: "commonjs kolmafia",
   },
 };
