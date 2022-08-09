@@ -103,9 +103,8 @@ function canAdvOrUnlock(loc: Location) {
   if (!have($item`repaid diaper`) && have($item`Great Wolf's beastly trousers`)) {
     skiplist.push($location`The Icy Peak`);
   }
-  const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
   const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
-  return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdventure(loc) || canUnlock);
+  return !underwater && !skiplist.includes(loc) && (canAdventure(loc) || canUnlock);
 }
 
 function unlock(loc: Location) {
