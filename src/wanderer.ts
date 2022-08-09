@@ -1,5 +1,4 @@
-import { canAdv } from "canadv.ash";
-import { buy, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
+import { buy, canAdventure, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
 import {
   $effect,
   $item,
@@ -11,7 +10,6 @@ import {
   get,
   Guzzlr,
   have,
-  questStep,
   SourceTerminal,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
@@ -67,7 +65,7 @@ const UnlockableZones: UnlockableZone[] = [
     noInv: false,
   },
   {
-    zone: "RabbitHole",
+    zone: "Rabbit Hole",
     available: () => have($effect`Down the Rabbit Hole`),
     unlocker: $item`"DRINK ME" potion`,
     noInv: false,
@@ -98,20 +96,19 @@ const UnlockableZones: UnlockableZone[] = [
   },
 ];
 
-function canAdvOrUnlock(loc: Location) {
+function canAdventureOrUnlock(loc: Location) {
   const underwater = loc.environment === "underwater";
   const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
   if (!have($item`repaid diaper`) && have($item`Great Wolf's beastly trousers`)) {
     skiplist.push($location`The Icy Peak`);
   }
-  const canAdvHack = loc === $location`The Upper Chamber` && questStep("questL11Pyramid") === -1; // (hopefully) temporary fix for canadv bug that results in infinite loop
   const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
-  return !underwater && !skiplist.includes(loc) && !canAdvHack && (canAdv(loc, false) || canUnlock);
+  return !underwater && !skiplist.includes(loc) && (canAdventure(loc) || canUnlock);
 }
 
 function unlock(loc: Location) {
   const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
-  if (!unlockableZone) return canAdv(loc, false);
+  if (!unlockableZone) return canAdventure(loc);
   if (unlockableZone.available()) return true;
   if (buy(1, unlockableZone.unlocker, WANDERER_PRICE_THRESHOLD) === 0) return false;
   return use(unlockableZone.unlocker);
@@ -201,7 +198,7 @@ function guzzlrAbandonQuest() {
   if (
     // consider abandoning
     !location || // if mafia faled to track the location correctly
-    !canAdvOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+    !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
     (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
@@ -322,7 +319,7 @@ export function determineDraggableZoneAndEnsureAccess(type: DraggableFight = "wa
     return (
       location &&
       canWander(location, type) &&
-      canAdvOrUnlock(location) &&
+      canAdventureOrUnlock(location) &&
       unlock(location) &&
       prospect.target.prepareTurn()
     );

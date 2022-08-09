@@ -14,10 +14,7 @@
     "noImplicitReturns": true,
     "pretty": true,
     "strict": true,
-    "target": "esnext",
-    "paths": {
-      "canadv.ash": ["./contrib/canadv.ash.d.ts"]
-    }
+    "target": "esnext"
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
   "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */

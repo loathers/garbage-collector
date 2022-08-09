@@ -1,7 +1,7 @@
-import { canAdv } from "canadv.ash";
 import {
   bjornifyFamiliar,
   buy,
+  canAdventure,
   canEquip,
   cliExecute,
   enthroneFamiliar,
@@ -335,7 +335,7 @@ export function usingPurse(): boolean {
     cachedUsingPurse =
       !have($item`latte lovers member's mug`) ||
       !have($familiar`Robortender`) ||
-      !canAdv($location`The Black Forest`, false);
+      !canAdventure($location`The Black Forest`);
   }
   return cachedUsingPurse;
 }

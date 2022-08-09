@@ -1,8 +1,8 @@
-import { canAdv } from "canadv.ash";
 import {
   availableAmount,
   booleanModifier,
   buy,
+  canAdventure,
   canEquip,
   canInteract,
   chew,
@@ -586,7 +586,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     },
     {
       name: "The Haggling",
-      cost: canAdv($location`The Brinier Deepers`)
+      cost: canAdventure($location`The Brinier Deepers`)
         ? (have($effect`Lucky!`) ? 0 : mallPrice($item`11-leaf clover`)) +
           get("valueOfAdventure") +
           bestWaterBreathingEquipment.cost +
