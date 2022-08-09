@@ -66,7 +66,7 @@ const UnlockableZones: UnlockableZone[] = [
     noInv: false,
   },
   {
-    zone: "RabbitHole",
+    zone: "Rabbit Hole",
     available: () => have($effect`Down the Rabbit Hole`),
     unlocker: $item`"DRINK ME" potion`,
     noInv: false,
