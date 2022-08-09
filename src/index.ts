@@ -6,6 +6,7 @@ import {
   cliExecute,
   currentRound,
   eat,
+  equip,
   getCampground,
   getClanName,
   getCounters,
@@ -253,6 +254,12 @@ function barfTurn() {
       ensureEffect($effect`Transpondent`);
       use($item`Map to Safety Shelter Grimace Prime`);
     } else {
+      if (get("dinseyRollercoasterNext")) {
+        for (const slot of $slots`acc1, acc2, acc3`) {
+          if (!itemAmount($item`lucky Crimbo tiki necklace`)) break;
+          equip(slot, $item`lucky Crimbo tiki necklace`);
+        }
+      }
       adventureMacroAuto(
         location,
         Macro.externalIf(
