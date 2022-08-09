@@ -2,5 +2,5 @@ https://github.com/Ezandora/Bastille/branches/Release/
 https://github.com/Ezandora/Gain/branches/Release/
 https://github.com/Ezandora/Briefcase/branches/Release/
 https://github.com/Ezandora/Far-Future/branches/Release/
-https://github.com/Loathing-Associates-Scripting-Society/KoL-MineVolcano/branches/master/RELEASE/
-https://github.com/Loathing-Associates-Scripting-Society/combo/branches/release/
+https://github.com/Loathing-Associates-Scripting-Society/KoL-MineVolcano.git
+https://github.com/Loathing-Associates-Scripting-Society/combo.git release
