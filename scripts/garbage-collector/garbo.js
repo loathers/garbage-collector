@@ -24487,7 +24487,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26634);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("4f1f1af66ed9b2f971b7f556ce44bc35d73f3af2"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("72ef992f9fecbf805c3c19bf9c20eae033941c93"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25156,7 +25156,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("4f1f1af66ed9b2f971b7f556ce44bc35d73f3af2" === mainSha) {
+    if ("72ef992f9fecbf805c3c19bf9c20eae033941c93" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is out of date. Please run 'svn update!", "red");
