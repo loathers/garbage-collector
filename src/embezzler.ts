@@ -919,7 +919,16 @@ export function estimatedTurns(): number {
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
   else if (globalOptions.noBarf) turns = embezzlerCount();
-  else {
+  else if (globalOptions.saveTurns > 0 || !globalOptions.ascending) {
+    turns =
+      (myAdventures() +
+        sausageAdventures +
+        pantsgivingAdventures +
+        thesisAdventures +
+        adventuresAfterChaining -
+        globalOptions.saveTurns) *
+      thumbRingMultiplier;
+  } else {
     turns =
       (myAdventures() +
         sausageAdventures +
