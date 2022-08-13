@@ -105,6 +105,7 @@ import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
 import {
+  bestFairy,
   freeFightFamiliar,
   meatFamiliar,
   pocketProfessorLectures,
@@ -507,36 +508,6 @@ type FreeFightOptions = {
   // True if the macro used by this freeFight can be overridden without causing harm
   canOverrideMacro?: boolean;
 };
-
-let bestNonCheerleaderFairy: Familiar;
-
-function bestFairy() {
-  if (have($familiar`Trick-or-Treating Tot`) && have($item`li'l ninja costume`)) {
-    return $familiar`Trick-or-Treating Tot`;
-  }
-  if (get("_cheerleaderSteam") > 100 && have($familiar`Steam-Powered Cheerleader`)) {
-    return $familiar`Steam-Powered Cheerleader`;
-  }
-
-  if (!bestNonCheerleaderFairy) {
-    setLocation($location`Noob Cave`);
-    const bestNonCheerleaderFairies = Familiar.all()
-      .filter((familiar) => have(familiar) && familiar !== $familiar`Steam-Powered Cheerleader`)
-      .sort(
-        (a, b) =>
-          numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
-      );
-    const bestFairyMult = numericModifier(bestNonCheerleaderFairies[0], "Fairy", 1, $item`none`);
-    bestNonCheerleaderFairy = bestNonCheerleaderFairies
-      .filter((fairy) => numericModifier(fairy, "Fairy", 1, $item`none`) === bestFairyMult)
-      .sort(
-        (a, b) =>
-          numericModifier(b, "Leprechaun", 1, $item`none`) -
-          numericModifier(a, "Leprechaun", 1, $item`none`)
-      )[0];
-  }
-  return bestNonCheerleaderFairy;
-}
 
 class FreeFight {
   available: () => number | boolean;
@@ -1724,6 +1695,13 @@ function sandwormRequirement() {
       have($item`Lil' Doctor™ bag`) && get("_otoscopeUsed") < 3
         ? { forceEquip: $items`Lil' Doctor™ bag` }
         : {}
+    ).merge(
+      new Requirement(
+        [],
+        bestFairy() === $familiar`Reagnimated Gnome`
+          ? { forceEquip: $items`gnomish housemaid's kgnee` }
+          : {}
+      )
     )
   );
 }
