@@ -1,6 +1,7 @@
 import "core-js/modules/es.object.from-entries";
 import {
   cliExecute,
+  create,
   Effect,
   effectModifier,
   haveEffect,
@@ -11,6 +12,7 @@ import {
   itemType,
   mallPrice,
   print,
+  retrievePrice,
   setLocation,
   use,
 } from "kolmafia";
@@ -154,9 +156,12 @@ export class Potion {
 
   price(historical: boolean): number {
     // If asked for historical, and age < 14 days, use historical.
-    return historical && historicalAge(this.potion) < 14
-      ? historicalPrice(this.potion)
-      : mallPrice(this.potion);
+    // If potion is not tradeable, use retrievePrice instead
+    return this.potion.tradeable
+      ? historical && historicalAge(this.potion) < 14
+        ? historicalPrice(this.potion)
+        : mallPrice(this.potion)
+      : retrievePrice(this.potion);
   }
 
   net(embezzlers: number, historical = false): number {
@@ -337,6 +342,18 @@ export const farmingPotions = [
           new Array(quantity).fill(0).every(() => cliExecute(`genie effect ${effect}`)),
       })
   ),
+  new Potion($item`papier-mâché toothpicks`, {
+    effect: $effect`Eyes Wide Propped`,
+    canDouble: true,
+    duration: 40,
+    use: (quantity: number) =>
+      new Array(quantity).fill(0).every(() => {
+        acquire(4, $item`Rad Lib`);
+        acquire(4, $item`soda water`);
+        create(1, $item`papier-mâché toothpicks`);
+        use(1, $item`papier-mâché toothpicks`);
+      }),
+  }),
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {
