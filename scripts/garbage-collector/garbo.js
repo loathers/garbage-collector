@@ -19115,7 +19115,9 @@ function estimatedTurns() {
   var inebrietyAdventures = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)()) * 7;
   var adventuresAfterChaining = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.yachtzeeChain */ .Xe.yachtzeeChain && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_garboYachtzeeChainCompleted") ? Math.max(fullnessAdventures + inebrietyAdventures - 30, 0) : 0;
   var turns;
-  if (_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.stopTurncount */ .Xe.stopTurncount) turns = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.stopTurncount */ .Xe.stopTurncount - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myTurncount)();else if (_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.noBarf */ .Xe.noBarf) turns = embezzlerCount();else {
+  if (_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.stopTurncount */ .Xe.stopTurncount) turns = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.stopTurncount */ .Xe.stopTurncount - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myTurncount)();else if (_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.noBarf */ .Xe.noBarf) turns = embezzlerCount();else if (_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.saveTurns */ .Xe.saveTurns > 0 || !_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.ascending */ .Xe.ascending) {
+    turns = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() + sausageAdventures + pantsgivingAdventures + thesisAdventures + adventuresAfterChaining - _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.saveTurns */ .Xe.saveTurns) * thumbRingMultiplier;
+  } else {
     turns = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() + sausageAdventures + pantsgivingAdventures + nightcapAdventures + thesisAdventures + adventuresAfterChaining) * thumbRingMultiplier;
   }
   return turns;
@@ -24487,7 +24489,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26634);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("72ef992f9fecbf805c3c19bf9c20eae033941c93"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8a137d4d631c0e279d79a619b0c09c51f137b530"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25156,7 +25158,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("72ef992f9fecbf805c3c19bf9c20eae033941c93" === mainSha) {
+    if ("8a137d4d631c0e279d79a619b0c09c51f137b530" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is out of date. Please run 'svn update!", "red");
