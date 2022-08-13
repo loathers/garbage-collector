@@ -1,5 +1,5 @@
-import { Familiar } from "kolmafia";
-import { $familiar, $item, findFairyMultiplier, get, have } from "libram";
+import { Familiar, myFamiliar, runChoice, useFamiliar, visitUrl } from "kolmafia";
+import { $familiar, $item, findFairyMultiplier, get, have, set } from "libram";
 import { menu } from "./freeFightFamiliar";
 
 let bestNonCheerleaderFairy: Familiar;
@@ -25,6 +25,23 @@ export function bestFairy(): Familiar {
 
     const highestFairyMult = findFairyMultiplier(viableFairies[0]);
     const goodFairies = viableFairies.filter((f) => findFairyMultiplier(f) === highestFairyMult);
+
+    if (
+      have($familiar`Reagnimated Gnome`) &&
+      !have($item`gnomish housemaid's kgnee`) &&
+      !get("_garbo_triedForKgnee", false)
+    ) {
+      const current = myFamiliar();
+      useFamiliar($familiar`Reagnimated Gnome`);
+      visitUrl("arena.php");
+      runChoice(4);
+      useFamiliar(current);
+      set("_garbo_triedForKgnee", true);
+    }
+
+    if (have($item`gnomish housemaid's kgnee`) && highestFairyMult === 1) {
+      goodFairies.push($familiar`Reagnimated Gnome`);
+    }
 
     const bonuses = [
       ...menu(true, false),
