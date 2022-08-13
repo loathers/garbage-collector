@@ -12,5 +12,5 @@ export {
   setBestLeprechaunAsMeatFamiliar,
   barfFamiliar,
   freeFightFamiliar,
-  bestFairy
+  bestFairy,
 };
