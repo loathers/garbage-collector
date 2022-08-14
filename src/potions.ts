@@ -431,7 +431,11 @@ export function bathroomFinance(embezzlers: number): void {
   }
 }
 
-class VariableMeatPotions {
+function triangleNumber(b: number, a = 0) {
+  return 0.5 * (b * (b + 1) - a * (a + 1));
+}
+
+class VariableMeatPotion {
   potion: Item;
   effect: Effect;
   duration: number;
@@ -467,85 +471,93 @@ class VariableMeatPotions {
         : mallPrice(this.potion)
       : retrievePrice(this.potion);
   }
-}
 
-function triangleNumber(n2: number, n1?: number) {
-  return 0.5 * (n2 * (n2 + 1) - (n1 ?? 0) * ((n1 ?? 0) + 1));
+  getOptimalNumberToUse(yachtzees: number, embezzlers: number): number {
+    const barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
+
+    const potionAmountsToConsider = [] as number[];
+    for (const fn of [Math.floor, Math.ceil]) {
+      for (const sc of [0, this.softcap]) {
+        for (const em of [0, embezzlers]) {
+          for (const bt of [0, barfTurns]) {
+            potionAmountsToConsider.push(fn((yachtzees + em + bt + sc) / this.duration));
+          }
+        }
+      }
+    }
+
+    const profits = [] as number[];
+    const profitsMap = new Map(
+      potionAmountsToConsider.map((n) => {
+        const profit = this.valueNPotions(n, yachtzees, embezzlers, barfTurns);
+        profits.push(profit);
+        return [profit, n];
+      })
+    );
+
+    const bestProfits = profits.reduce((a, b) => (a > b ? a : b));
+    if (bestProfits > 0) {
+      const nPotionsToUse =
+        potionAmountsToConsider[profitsMap.get(bestProfits) ?? 0] -
+        Math.floor(haveEffect(this.effect) / this.duration);
+      return Math.max(nPotionsToUse, 0);
+    }
+    return 0;
+  }
+
+  valueNPotions(n: number, yachtzees: number, embezzlers: number, barfTurns: number): number {
+    const yachtzeeValue = 2000;
+    const embezzlerValue = baseMeat + 750;
+    const barfValue = (baseMeat * turnsToNC) / 30;
+
+    const totalCosts = n * this.price(false);
+    const totalDuration = n * this.duration;
+    let cappedDuration = Math.max(0, totalDuration - this.softcap + 1);
+    let decayDuration = Math.min(totalDuration, this.softcap - 1);
+    let totalValue = 0;
+    const turnTypes = [
+      [yachtzees, yachtzeeValue],
+      [embezzlers, embezzlerValue],
+      [barfTurns, barfValue],
+    ];
+
+    // eslint-disable-next-line prefer-const
+    for (let [turns, value] of turnTypes) {
+      if (cappedDuration >= turns) {
+        totalValue += (value * turns * this.cappedMeatBonus) / 100;
+        cappedDuration -= turns;
+      } else {
+        totalValue += (value * cappedDuration * this.cappedMeatBonus) / 100;
+        turns -= cappedDuration;
+        cappedDuration = 0;
+        if (decayDuration >= turns) {
+          totalValue +=
+            (value *
+              turns *
+              this.meatBonusPerTurn *
+              triangleNumber(decayDuration, decayDuration - turns)) /
+            100;
+          decayDuration -= turns;
+        } else {
+          totalValue +=
+            (value * decayDuration * this.meatBonusPerTurn * triangleNumber(decayDuration)) / 100;
+          decayDuration = 0;
+        }
+      }
+    }
+    return totalValue - totalCosts;
+  }
 }
 
 export function considerVariableMeatPotions(yachtzees: number, embezzlers: number): void {
   const potions = [
-    new VariableMeatPotions($item`love song of sugary cuteness`, 20, 2),
-    new VariableMeatPotions($item`pulled yellow taffy`, 50, 2),
+    new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2),
+    new VariableMeatPotion($item`pulled yellow taffy`, 50, 2),
     // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
   ];
 
-  const barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
-  const yachtzeeValue = 2000;
-  const embezzlerValue = baseMeat + 750;
-  const barfValue = (baseMeat * turnsToNC) / 30;
-
   potions.forEach((potion) => {
-    function valueNPotions(n: number): number {
-      const totalCosts = n * potion.price(false);
-      const totalDuration = n * potion.duration;
-      let cappedDuration = Math.max(0, totalDuration - potion.softcap + 1);
-      let decayDuration = Math.min(totalDuration, potion.softcap - 1);
-      let totalValue = 0;
-      [
-        [yachtzees, yachtzeeValue],
-        [embezzlers, embezzlerValue],
-        [barfTurns, barfValue],
-      ].forEach((arr) => {
-        let turns = arr[0];
-        const value = arr[1];
-        if (cappedDuration >= turns) {
-          totalValue += (value * turns * potion.cappedMeatBonus) / 100;
-          cappedDuration -= turns;
-        } else {
-          totalValue += (value * cappedDuration * potion.cappedMeatBonus) / 100;
-          turns -= cappedDuration;
-          cappedDuration = 0;
-          if (decayDuration >= turns) {
-            totalValue +=
-              (value *
-                turns *
-                potion.meatBonusPerTurn *
-                triangleNumber(decayDuration, decayDuration - turns)) /
-              100;
-            decayDuration -= turns;
-          } else {
-            totalValue +=
-              (value * decayDuration * potion.meatBonusPerTurn * triangleNumber(decayDuration)) /
-              100;
-            decayDuration = 0;
-          }
-        }
-      });
-      return totalValue - totalCosts;
-    }
-
-    const potionAmountsToConsider = [
-      Math.floor((yachtzees + potion.softcap) / potion.duration),
-      Math.ceil((yachtzees + potion.softcap) / potion.duration),
-      Math.floor(yachtzees / potion.duration),
-      Math.ceil(yachtzees / potion.duration),
-      Math.floor((yachtzees + embezzlers + potion.softcap) / potion.duration),
-      Math.ceil((yachtzees + embezzlers + potion.softcap) / potion.duration),
-      Math.floor((yachtzees + embezzlers) / potion.duration),
-      Math.ceil((yachtzees + embezzlers) / potion.duration),
-      Math.floor((yachtzees + embezzlers + barfTurns + potion.softcap) / potion.duration),
-      Math.ceil((yachtzees + embezzlers + barfTurns + potion.softcap) / potion.duration),
-      Math.floor((yachtzees + embezzlers + barfTurns) / potion.duration),
-      Math.ceil((yachtzees + embezzlers + barfTurns) / potion.duration),
-    ];
-    const profits = potionAmountsToConsider.map(valueNPotions);
-    const bestProfits = profits.reduce((a, b) => (a < b ? a : b));
-    const bestIdx = profits.indexOf(bestProfits);
-    if (bestProfits > 0 && bestIdx >= 0) {
-      const nPotionsToUse =
-        potionAmountsToConsider[bestIdx] - Math.floor(haveEffect(potion.effect) / potion.duration);
-      if (nPotionsToUse > 0) potion.use(nPotionsToUse);
-    }
+    const n = potion.getOptimalNumberToUse(yachtzees, embezzlers);
+    if (n > 0) potion.use(n);
   });
 }
