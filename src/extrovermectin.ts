@@ -1,4 +1,16 @@
-import { equip, mallPrice, myFury, useFamiliar, visitUrl } from "kolmafia";
+import {
+  canEquip,
+  equip,
+  Item,
+  itemType,
+  mallPrice,
+  myFury,
+  retrieveItem,
+  useFamiliar,
+  useSkill,
+  visitUrl,
+  weaponHands,
+} from "kolmafia";
 import {
   $effect,
   $item,
@@ -215,8 +227,21 @@ function initializeDireWarren(): void {
   }
   const canBat = myFury() >= 5 && have($skill`Batter Up!`);
   if (canBat) {
-    new Requirement(["+club", "100 Monster Level"], {
+    if (have($skill`Iron Palm Technique`) && !have($effect`Iron Palms`)) {
+      useSkill($skill`Iron Palm Technique`);
+    }
+    const availableClub =
+      Item.all().find(
+        (i) =>
+          have(i) &&
+          canEquip(i) &&
+          weaponHands(i) === 2 &&
+          (itemType(i) === "club" || (have($effect`Iron Palms`) && itemType(i) === "sword"))
+      ) ?? $item`giant spider leg`;
+    retrieveItem(availableClub);
+    new Requirement(["100 Monster Level"], {
       preventEquip: $items`carnivorous potted plant`,
+      forceEquip: [availableClub],
     }).maximize();
 
     do {
