@@ -237,7 +237,7 @@ function initializeDireWarren(): void {
           canEquip(i) &&
           weaponHands(i) === 2 &&
           (itemType(i) === "club" || (have($effect`Iron Palms`) && itemType(i) === "sword"))
-      ) ?? $item`giant spider leg`;
+      ) ?? $item`amok putter`;
     retrieveItem(availableClub);
     new Requirement(["100 Monster Level"], {
       preventEquip: $items`carnivorous potted plant`,
