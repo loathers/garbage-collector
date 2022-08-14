@@ -287,7 +287,7 @@ function printMarginalSession(): void {
         .filter(
           (detail) =>
             detail.quantity === 1 &&
-            detail.value >= 1000 &&
+            detail.value >= 5000 &&
             barfItemDetails.some((d) => d.item === detail.item && d.quantity <= 2)
         )
         .sort((a, b) => b.value - a.value);
@@ -315,9 +315,13 @@ function printMarginalSession(): void {
         HIGHLIGHT
       );
     } else if (get("_garboMarginalItemValue")) {
-      const items = get("_garboMarginalMeatValue", 0);
+      const items = get("_garboMarginalItemValue", 0);
       const IPA = items / meatTurns;
       const totalMPA = MPA + IPA;
+      print(
+        "Warning: Insufficient turns were run, so this estimate is subject to large variance. Be careful when using these values as is.",
+        "red"
+      );
       print(
         `Marginal MPA: ${formatNumber(Math.round(MPA * 100) / 100)} [raw] + ${formatNumber(
           Math.round(IPA * 100) / 100
