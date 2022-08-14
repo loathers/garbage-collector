@@ -63,7 +63,7 @@ import {
   sum,
   sumNumbers,
 } from "libram";
-import { acquire } from "./acquire";
+import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
@@ -683,7 +683,17 @@ export function computeDiet(): {
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
-    diet: () => fullDietPlanner(balanceMenu(menu(), fullDietPlanner)),
+    diet: () =>
+      fullDietPlanner(
+        balanceMenu(
+          menu().filter(
+            (menuItem) =>
+              !priceCaps[menuItem.item.name] ||
+              priceCaps[menuItem.item.name] >= mallPrice(menuItem.item)
+          ),
+          fullDietPlanner
+        )
+      ),
     shotglass: () =>
       shotglassDietPlanner(
         balanceMenu(
