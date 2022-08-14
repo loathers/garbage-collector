@@ -543,8 +543,9 @@ export function considerVariableMeatPotions(yachtzees: number, embezzlers: numbe
     const bestProfits = profits.reduce((a, b) => (a < b ? a : b));
     const bestIdx = profits.indexOf(bestProfits);
     if (bestProfits > 0 && bestIdx >= 0) {
-      return potionAmountsToConsider[bestIdx];
+      const nPotionsToUse =
+        potionAmountsToConsider[bestIdx] - Math.floor(haveEffect(potion.effect) / potion.duration);
+      if (nPotionsToUse > 0) potion.use(nPotionsToUse);
     }
-    return 0;
   });
 }
