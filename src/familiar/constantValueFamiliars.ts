@@ -49,6 +49,10 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Twitching Space Critter`,
+
+    // Item is ludicrously overvalued and incredibly low-volume.
+    // We can remove this cap once the price reaches a lower equilibrium
+    // we probably won't, but we can.
     value: () => Math.min(garboValue($item`twitching space egg`) * 0.0002, 690),
   },
 ];
