@@ -480,12 +480,12 @@ export function considerVariableMeatPotions(yachtzees: number, embezzlers: numbe
     // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
   ];
 
-  potions.forEach((potion) => {
-    const barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
-    const yachtzeeValue = 2000;
-    const embezzlerValue = baseMeat + 750;
-    const barfValue = (baseMeat * turnsToNC) / 30;
+  const barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
+  const yachtzeeValue = 2000;
+  const embezzlerValue = baseMeat + 750;
+  const barfValue = (baseMeat * turnsToNC) / 30;
 
+  potions.forEach((potion) => {
     function valueNPotions(n: number): number {
       const totalCosts = n * potion.price(false);
       const totalDuration = n * potion.duration;
