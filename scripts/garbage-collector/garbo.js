@@ -19695,7 +19695,7 @@ function getExperienceFamiliarLimit(fam) {
 // EXTERNAL MODULE: ./node_modules/libram/dist/resources/2017/Robortender.js
 var Robortender = __webpack_require__(330);
 ;// CONCATENATED MODULE: ./src/familiar/constantValueFamiliars.ts
-var constantValueFamiliars_templateObject, constantValueFamiliars_templateObject2, constantValueFamiliars_templateObject3, constantValueFamiliars_templateObject4, constantValueFamiliars_templateObject5, constantValueFamiliars_templateObject6, constantValueFamiliars_templateObject7, constantValueFamiliars_templateObject8, constantValueFamiliars_templateObject9, constantValueFamiliars_templateObject10, constantValueFamiliars_templateObject11, constantValueFamiliars_templateObject12;
+var constantValueFamiliars_templateObject, constantValueFamiliars_templateObject2, constantValueFamiliars_templateObject3, constantValueFamiliars_templateObject4, constantValueFamiliars_templateObject5, constantValueFamiliars_templateObject6, constantValueFamiliars_templateObject7, constantValueFamiliars_templateObject8, constantValueFamiliars_templateObject9, constantValueFamiliars_templateObject10, constantValueFamiliars_templateObject11, constantValueFamiliars_templateObject12, constantValueFamiliars_templateObject13, constantValueFamiliars_templateObject14;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -19726,6 +19726,12 @@ var standardFamiliars = [{
 }, {
   familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject9 || (constantValueFamiliars_templateObject9 = constantValueFamiliars_taggedTemplateLiteral(["Robortender"]))),
   value: () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject10 || (constantValueFamiliars_templateObject10 = constantValueFamiliars_taggedTemplateLiteral(["elemental sugarcube"])))) / 5 + (Robortender/* currentDrinks */.JJ().includes((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject11 || (constantValueFamiliars_templateObject11 = constantValueFamiliars_taggedTemplateLiteral(["Feliz Navidad"])))) ? (0,property/* get */.U2)("garbo_felizValue", 0) * 0.25 : 0) + (Robortender/* currentDrinks */.JJ().includes((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject12 || (constantValueFamiliars_templateObject12 = constantValueFamiliars_taggedTemplateLiteral(["Newark"])))) ? (0,property/* get */.U2)("garbo_newarkValue", 0) * 0.25 : 0)
+}, {
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject13 || (constantValueFamiliars_templateObject13 = constantValueFamiliars_taggedTemplateLiteral(["Twitching Space Critter"]))),
+  // Item is ludicrously overvalued and incredibly low-volume.
+  // We can remove this cap once the price reaches a lower equilibrium
+  // we probably won't, but we can.
+  value: () => Math.min((0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject14 || (constantValueFamiliars_templateObject14 = constantValueFamiliars_taggedTemplateLiteral(["twitching space egg"])))) * 0.0002, 690)
 }];
 function getConstantValueFamiliars() {
   return standardFamiliars.filter(_ref => {
@@ -24490,7 +24496,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26634);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("5e62245d3c62babe2a0f091d777385b5d17198cb"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("9258bf99ff34e779a242353aaa1feef444dc4184"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25159,7 +25165,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("5e62245d3c62babe2a0f091d777385b5d17198cb" === mainSha) {
+    if ("9258bf99ff34e779a242353aaa1feef444dc4184" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is out of date. Please run 'svn update!", "red");
