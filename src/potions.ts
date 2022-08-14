@@ -478,11 +478,9 @@ class VariableMeatPotion {
     const potionAmountsToConsider = [] as number[];
     for (const fn of [Math.floor, Math.ceil]) {
       for (const sc of [0, this.softcap]) {
-        for (const em of [0, embezzlers]) {
-          if (em + embezzlers > 0) {
-            for (const bt of [0, barfTurns]) {
-              potionAmountsToConsider.push(fn((yachtzees + em + bt + sc) / this.duration));
-            }
+        for (const em of embezzlers > 0 ? [0, embezzlers] : [0]) {
+          for (const bt of em === embezzlers && barfTurns > 0 ? [0, barfTurns] : [0]) {
+            potionAmountsToConsider.push(fn((yachtzees + em + bt + sc) / this.duration));
           }
         }
       }
