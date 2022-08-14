@@ -1,7 +1,6 @@
 import "core-js/modules/es.object.from-entries";
 import {
   cliExecute,
-  create,
   Effect,
   effectModifier,
   haveEffect,
@@ -11,7 +10,9 @@ import {
   itemAmount,
   itemType,
   mallPrice,
+  numericModifier,
   print,
+  retrieveItem,
   retrievePrice,
   setLocation,
   use,
@@ -34,7 +35,7 @@ import {
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost } from "./lib";
+import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { usingPurse } from "./outfit";
 
@@ -343,14 +344,9 @@ export const farmingPotions = [
       })
   ),
   new Potion($item`papier-mâché toothpicks`, {
-    effect: $effect`Eyes Wide Propped`,
-    canDouble: true,
-    duration: 40,
     use: (quantity: number) =>
       new Array(quantity).fill(0).every(() => {
-        acquire(4, $item`Rad Lib`);
-        acquire(4, $item`soda water`);
-        create(1, $item`papier-mâché toothpicks`);
+        retrieveItem($item`papier-mâché toothpicks`);
         use(1, $item`papier-mâché toothpicks`);
       }),
   }),
@@ -433,4 +429,122 @@ export function bathroomFinance(embezzlers: number): void {
       use(greenspan);
     }
   }
+}
+
+class VariableMeatPotions {
+  potion: Item;
+  effect: Effect;
+  duration: number;
+  softcap: number; // Number of turns to cap out variable bonus
+  meatBonusPerTurn: number; // meat% bonus per turn
+  cappedMeatBonus: number;
+
+  constructor(
+    potion: Item,
+    softcap: number,
+    meatBonusPerTurn: number,
+    duration?: number,
+    effect?: Effect
+  ) {
+    this.potion = potion;
+    this.effect = effect ?? effectModifier(potion, "Effect");
+    this.duration = duration ?? numericModifier(potion, "Effect Duration");
+    this.softcap = softcap;
+    this.meatBonusPerTurn = meatBonusPerTurn;
+    this.cappedMeatBonus = softcap * meatBonusPerTurn;
+  }
+
+  use(quantity: number): boolean {
+    return use(quantity, this.potion);
+  }
+
+  price(historical: boolean): number {
+    // If asked for historical, and age < 14 days, use historical.
+    // If potion is not tradeable, use retrievePrice instead
+    return this.potion.tradeable
+      ? historical && historicalAge(this.potion) < 14
+        ? historicalPrice(this.potion)
+        : mallPrice(this.potion)
+      : retrievePrice(this.potion);
+  }
+}
+
+function triangleNumber(n2: number, n1?: number) {
+  return 0.5 * (n2 * (n2 + 1) - (n1 ?? 0) * ((n1 ?? 0) + 1));
+}
+
+export function considerVariableMeatPotions(yachtzees: number, embezzlers: number): void {
+  const potions = [
+    new VariableMeatPotions($item`love song of sugary cuteness`, 20, 2),
+    new VariableMeatPotions($item`pulled yellow taffy`, 50, 2),
+    // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
+  ];
+
+  potions.forEach((potion) => {
+    const barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
+    const yachtzeeValue = 2000;
+    const embezzlerValue = baseMeat + 750;
+    const barfValue = (baseMeat * turnsToNC) / 30;
+
+    function valueNPotions(n: number): number {
+      const totalCosts = n * potion.price(false);
+      const totalDuration = n * potion.duration;
+      let cappedDuration = Math.max(0, totalDuration - potion.softcap + 1);
+      let decayDuration = Math.min(totalDuration, potion.softcap - 1);
+      let totalValue = 0;
+      [
+        [yachtzees, yachtzeeValue],
+        [embezzlers, embezzlerValue],
+        [barfTurns, barfValue],
+      ].forEach((arr) => {
+        let turns = arr[0];
+        const value = arr[1];
+        if (cappedDuration >= turns) {
+          totalValue += (value * turns * potion.cappedMeatBonus) / 100;
+          cappedDuration -= turns;
+        } else {
+          totalValue += (value * cappedDuration * potion.cappedMeatBonus) / 100;
+          turns -= cappedDuration;
+          cappedDuration = 0;
+          if (decayDuration >= turns) {
+            totalValue +=
+              (value *
+                turns *
+                potion.meatBonusPerTurn *
+                triangleNumber(decayDuration, decayDuration - turns)) /
+              100;
+            decayDuration -= turns;
+          } else {
+            totalValue +=
+              (value * decayDuration * potion.meatBonusPerTurn * triangleNumber(decayDuration)) /
+              100;
+            decayDuration = 0;
+          }
+        }
+      });
+      return totalValue - totalCosts;
+    }
+
+    const potionAmountsToConsider = [
+      Math.floor((yachtzees + potion.softcap) / potion.duration),
+      Math.ceil((yachtzees + potion.softcap) / potion.duration),
+      Math.floor(yachtzees / potion.duration),
+      Math.ceil(yachtzees / potion.duration),
+      Math.floor((yachtzees + embezzlers + potion.softcap) / potion.duration),
+      Math.ceil((yachtzees + embezzlers + potion.softcap) / potion.duration),
+      Math.floor((yachtzees + embezzlers) / potion.duration),
+      Math.ceil((yachtzees + embezzlers) / potion.duration),
+      Math.floor((yachtzees + embezzlers + barfTurns + potion.softcap) / potion.duration),
+      Math.ceil((yachtzees + embezzlers + barfTurns + potion.softcap) / potion.duration),
+      Math.floor((yachtzees + embezzlers + barfTurns) / potion.duration),
+      Math.ceil((yachtzees + embezzlers + barfTurns) / potion.duration),
+    ];
+    const profits = potionAmountsToConsider.map(valueNPotions);
+    const bestProfits = profits.reduce((a, b) => (a < b ? a : b));
+    const bestIdx = profits.indexOf(bestProfits);
+    if (bestProfits > 0 && bestIdx >= 0) {
+      return potionAmountsToConsider[bestIdx];
+    }
+    return 0;
+  });
 }
