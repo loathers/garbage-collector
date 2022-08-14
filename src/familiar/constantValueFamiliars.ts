@@ -49,7 +49,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Twitching Space Critter`,
-    value: () => garboValue($item`twitching space egg`) * 0.0002,
+    value: () => Math.min(garboValue($item`twitching space egg`) * 0.0002, 690),
   },
 ];
 
