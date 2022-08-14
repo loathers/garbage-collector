@@ -16289,6 +16289,7 @@ module.exports = toString;
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "h": () => (/* binding */ priceCaps),
 /* harmony export */   "u": () => (/* binding */ acquire)
 /* harmony export */ });
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
@@ -17540,7 +17541,7 @@ function computeDiet() {
 
 
   return {
-    diet: () => fullDietPlanner(balanceMenu(menu(), fullDietPlanner)),
+    diet: () => fullDietPlanner(balanceMenu(menu().filter(menuItem => !_acquire__WEBPACK_IMPORTED_MODULE_1__/* .priceCaps */ .h[menuItem.item.name] || _acquire__WEBPACK_IMPORTED_MODULE_1__/* .priceCaps */ .h[menuItem.item.name] >= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(menuItem.item)), fullDietPlanner)),
     shotglass: () => shotglassDietPlanner(balanceMenu(menu().filter(menuItem => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemType)(menuItem.item) === "booze" && menuItem.size === 1), shotglassDietPlanner)),
     pantsgiving: () => pantsgivingDietPlanner(balanceMenu(menu().filter(menuItem => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemType)(menuItem.item) === "food" && menuItem.size === 1), pantsgivingDietPlanner)),
     sweatpants: () => sweatpantsDietPlanner(balanceMenu(menu().filter(menuItem => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemType)(menuItem.item) === "booze" && menuItem.size <= 3), sweatpantsDietPlanner))
@@ -24489,7 +24490,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26634);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("8a137d4d631c0e279d79a619b0c09c51f137b530"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("5e62245d3c62babe2a0f091d777385b5d17198cb"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25158,7 +25159,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("8a137d4d631c0e279d79a619b0c09c51f137b530" === mainSha) {
+    if ("5e62245d3c62babe2a0f091d777385b5d17198cb" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is out of date. Please run 'svn update!", "red");
