@@ -1,6 +1,7 @@
 import "core-js/modules/es.object.from-entries";
 import {
   autosellPrice,
+  availableAmount,
   cliExecute,
   Effect,
   effectModifier,
@@ -54,6 +55,10 @@ for (const effectGroup of mutuallyExclusiveList) {
       ...effectGroup.filter((other) => other !== effect),
     ]);
   }
+}
+
+function retrieveUntradeablePrice(it: Item) {
+  return retrievePrice(it, availableAmount(it) + 1) - autosellPrice(it) * availableAmount(it);
 }
 
 export interface PotionOptions {
@@ -162,8 +167,7 @@ export class Potion {
       ? historical && historicalAge(this.potion) < 14
         ? historicalPrice(this.potion)
         : mallPrice(this.potion)
-      : retrievePrice(this.potion, itemAmount(this.potion) + 1) -
-          autosellPrice(this.potion) * itemAmount(this.potion);
+      : retrieveUntradeablePrice(this.potion);
   }
 
   net(embezzlers: number, historical = false): number {
@@ -466,18 +470,20 @@ class VariableMeatPotion {
       ? historical && historicalAge(this.potion) < 14
         ? historicalPrice(this.potion)
         : mallPrice(this.potion)
-      : retrievePrice(this.potion, itemAmount(this.potion) + 1) -
-          autosellPrice(this.potion) * itemAmount(this.potion);
+      : retrieveUntradeablePrice(this.potion);
   }
 
   getOptimalNumberToUse(yachtzees: number, embezzlers: number): number {
     const barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
 
-    const potionAmountsToConsider = [] as number[];
+    const potionAmountsToConsider: number[] = [];
+    const considerSoftcap = [0, this.softcap];
+    const considerEmbezzlers = embezzlers > 0 ? [0, embezzlers] : [0];
     for (const fn of [Math.floor, Math.ceil]) {
-      for (const sc of [0, this.softcap]) {
-        for (const em of embezzlers > 0 ? [0, embezzlers] : [0]) {
-          for (const bt of em === embezzlers && barfTurns > 0 ? [0, barfTurns] : [0]) {
+      for (const sc of considerSoftcap) {
+        for (const em of considerEmbezzlers) {
+          const considerBarfTurns = em === embezzlers && barfTurns > 0 ? [0, barfTurns] : [0];
+          for (const bt of considerBarfTurns) {
             const potionAmount = fn((yachtzees + em + bt + sc) / this.duration);
             if (!potionAmountsToConsider.includes(potionAmount)) {
               potionAmountsToConsider.push(potionAmount);
@@ -487,26 +493,22 @@ class VariableMeatPotion {
       }
     }
 
-    const profits = [] as number[];
-    const profitsMap = new Map(
-      potionAmountsToConsider.map((n) => {
-        const profit = this.valueNPotions(n, yachtzees, embezzlers, barfTurns);
-        profits.push(profit);
-        return [profit, n];
-      })
-    );
+    const profitsFromPotions = potionAmountsToConsider.map((quantity) => ({
+      quantity,
+      value: this.valueNPotions(quantity, yachtzees, embezzlers, barfTurns),
+    }));
+    const bestOption = profitsFromPotions.reduce((a, b) => (a.value > b.value ? a : b));
 
-    const bestProfits = profits.reduce((a, b) => (a > b ? a : b));
-
-    if (bestProfits > 0) {
-      const nPotionsToUse = profitsMap.get(bestProfits) ?? 0;
+    if (bestOption.value > 0) {
       print(
-        `Expected to profit ${bestProfits.toFixed(2)} from ${nPotionsToUse} ${this.potion.plural}`,
+        `Expected to profit ${bestOption.value.toFixed(2)} from ${bestOption.quantity} ${
+          this.potion.plural
+        }`,
         "blue"
       );
-      const additionalPotionsToUse =
-        nPotionsToUse - Math.floor(haveEffect(this.effect) / this.duration);
-      return Math.max(additionalPotionsToUse, 0);
+      const potionsToUse =
+        bestOption.quantity - Math.floor(haveEffect(this.effect) / this.duration);
+      return Math.max(potionsToUse, 0);
     }
     return 0;
   }
