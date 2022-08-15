@@ -55,8 +55,8 @@ export function bestFairy(): Familiar {
 
     goodFairies.sort(
       (a, b) =>
-        bonuses.find(({ familiar }) => familiar === b)?.expectedValue ??
-        0 - (bonuses.find(({ familiar }) => familiar === a)?.expectedValue ?? 0)
+        (bonuses.find(({ familiar }) => familiar === b)?.expectedValue ?? 0) -
+        (bonuses.find(({ familiar }) => familiar === a)?.expectedValue ?? 0)
     );
 
     bestNonCheerleaderFairy = goodFairies[0];
