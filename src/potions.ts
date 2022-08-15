@@ -403,7 +403,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
     }
   }
 
-  considerVariableMeatPotions(0, embezzlers);
+  variableMeatPotionsSetup(0, embezzlers);
 }
 
 /**
@@ -554,15 +554,15 @@ class VariableMeatPotion {
   }
 }
 
-export function considerVariableMeatPotions(yachtzees: number, embezzlers: number): void {
+export function variableMeatPotionsSetup(yachtzees: number, embezzlers: number): void {
   const potions = [
     new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2),
     new VariableMeatPotion($item`pulled yellow taffy`, 50, 2),
     // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
   ];
 
-  potions.forEach((potion) => {
+  for (const potion of potions) {
     const n = potion.getOptimalNumberToUse(yachtzees, embezzlers);
     if (n > 0) potion.use(n);
-  });
+  }
 }
