@@ -39,7 +39,7 @@ export function acquire(
   maxAggregateCost?: number
 ): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
-  if (!item.tradeable || (maxPrice !== undefined && maxPrice <= 0)) return 0;
+  if (maxPrice !== undefined && maxPrice <= 0) return 0;
   if (maxPrice === undefined) throw new Error(`No price cap for ${item.name}.`);
 
   print(`Trying to acquire ${qty} ${item.plural}; max price ${maxPrice.toFixed(0)}.`, "green");

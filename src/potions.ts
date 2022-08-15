@@ -1,5 +1,6 @@
 import "core-js/modules/es.object.from-entries";
 import {
+  autosellPrice,
   cliExecute,
   Effect,
   effectModifier,
@@ -12,7 +13,6 @@ import {
   mallPrice,
   numericModifier,
   print,
-  retrieveItem,
   retrievePrice,
   setLocation,
   use,
@@ -162,7 +162,8 @@ export class Potion {
       ? historical && historicalAge(this.potion) < 14
         ? historicalPrice(this.potion)
         : mallPrice(this.potion)
-      : retrievePrice(this.potion);
+      : retrievePrice(this.potion, itemAmount(this.potion) + 1) -
+          autosellPrice(this.potion) * itemAmount(this.potion);
   }
 
   net(embezzlers: number, historical = false): number {
@@ -343,13 +344,7 @@ export const farmingPotions = [
           new Array(quantity).fill(0).every(() => cliExecute(`genie effect ${effect}`)),
       })
   ),
-  new Potion($item`papier-mâché toothpicks`, {
-    use: (quantity: number) =>
-      new Array(quantity).fill(0).every(() => {
-        retrieveItem($item`papier-mâché toothpicks`);
-        use(1, $item`papier-mâché toothpicks`);
-      }),
-  }),
+  new Potion($item`papier-mâché toothpicks`),
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {
@@ -403,6 +398,8 @@ export function potionSetup(embezzlersOnly: boolean): void {
       }
     }
   }
+
+  considerVariableMeatPotions(0, embezzlers);
 }
 
 /**
@@ -469,7 +466,8 @@ class VariableMeatPotion {
       ? historical && historicalAge(this.potion) < 14
         ? historicalPrice(this.potion)
         : mallPrice(this.potion)
-      : retrievePrice(this.potion);
+      : retrievePrice(this.potion, itemAmount(this.potion) + 1) -
+          autosellPrice(this.potion) * itemAmount(this.potion);
   }
 
   getOptimalNumberToUse(yachtzees: number, embezzlers: number): number {
@@ -480,7 +478,10 @@ class VariableMeatPotion {
       for (const sc of [0, this.softcap]) {
         for (const em of embezzlers > 0 ? [0, embezzlers] : [0]) {
           for (const bt of em === embezzlers && barfTurns > 0 ? [0, barfTurns] : [0]) {
-            potionAmountsToConsider.push(fn((yachtzees + em + bt + sc) / this.duration));
+            const potionAmount = fn((yachtzees + em + bt + sc) / this.duration);
+            if (!potionAmountsToConsider.includes(potionAmount)) {
+              potionAmountsToConsider.push(potionAmount);
+            }
           }
         }
       }
@@ -496,11 +497,16 @@ class VariableMeatPotion {
     );
 
     const bestProfits = profits.reduce((a, b) => (a > b ? a : b));
+
     if (bestProfits > 0) {
-      const nPotionsToUse =
-        potionAmountsToConsider[profitsMap.get(bestProfits) ?? 0] -
-        Math.floor(haveEffect(this.effect) / this.duration);
-      return Math.max(nPotionsToUse, 0);
+      const nPotionsToUse = profitsMap.get(bestProfits) ?? 0;
+      print(
+        `Expected to profit ${bestProfits.toFixed(2)} from ${nPotionsToUse} ${this.potion.plural}`,
+        "blue"
+      );
+      const additionalPotionsToUse =
+        nPotionsToUse - Math.floor(haveEffect(this.effect) / this.duration);
+      return Math.max(additionalPotionsToUse, 0);
     }
     return 0;
   }
@@ -532,19 +538,16 @@ class VariableMeatPotion {
         cappedDuration = 0;
         if (decayDuration >= turns) {
           totalValue +=
-            (value *
-              turns *
-              this.meatBonusPerTurn *
-              triangleNumber(decayDuration, decayDuration - turns)) /
+            (value * this.meatBonusPerTurn * triangleNumber(decayDuration, decayDuration - turns)) /
             100;
           decayDuration -= turns;
         } else {
-          totalValue +=
-            (value * decayDuration * this.meatBonusPerTurn * triangleNumber(decayDuration)) / 100;
+          totalValue += (value * this.meatBonusPerTurn * triangleNumber(decayDuration)) / 100;
           decayDuration = 0;
         }
       }
     }
+
     return totalValue - totalCosts;
   }
 }
