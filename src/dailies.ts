@@ -416,9 +416,9 @@ function configureMisc(): void {
     [$item`BittyCar MeatCar`, "meatcar"],
     [$item`BittyCar SoulCar`, "soulcar"],
   ] as [Item, string][]) {
-    if (get("_bittycar") !== active) break;
+    if (get("_bittycar") === active) break;
     withStash([car], () => use(1, car));
-    if (get("_bittycar") !== active) break;
+    if (get("_bittycar") === active) break;
   }
 
   if (
