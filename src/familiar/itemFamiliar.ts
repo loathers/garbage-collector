@@ -9,13 +9,6 @@ export function bestFairy(): Familiar {
     return $familiar`Trick-or-Treating Tot`;
   }
 
-  if (
-    have($familiar`Steam-Powered Cheerleader`) &&
-    findFairyMultiplier($familiar`Steam-Powered Cheerleader`) > 1.25
-  ) {
-    return $familiar`Steam-Powered Cheerleader`;
-  }
-
   if (!bestNonCheerleaderFairy) {
     const viableFairies = Familiar.all()
       .filter(
@@ -60,6 +53,14 @@ export function bestFairy(): Familiar {
     );
 
     bestNonCheerleaderFairy = goodFairies[0];
+  }
+
+  if (
+    have($familiar`Steam-Powered Cheerleader`) &&
+    findFairyMultiplier($familiar`Steam-Powered Cheerleader`) >
+      findFairyMultiplier(bestNonCheerleaderFairy)
+  ) {
+    return $familiar`Steam-Powered Cheerleader`;
   }
 
   return bestNonCheerleaderFairy;
