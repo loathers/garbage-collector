@@ -34,6 +34,7 @@ import {
   $location,
   $locations,
   $monster,
+  $monsters,
   $skill,
   adventureMacro,
   adventureMacroAuto,
@@ -266,7 +267,9 @@ export const embezzlerMacro = (): Macro =>
       .tryCopier($item`unfinished ice sculpture`)
       .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
       .meatKill()
-  ).abort();
+  )
+    .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
+    .abort();
 
 const wandererFailsafeMacro = () =>
   Macro.externalIf(
