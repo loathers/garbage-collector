@@ -16560,7 +16560,7 @@ function toasterGaze() {
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4564);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -16703,18 +16703,39 @@ function initializeDireWarren() {
     return;
   }
 
-  if (banishedMonsters.get($skill(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Furious Wallop"])))) === $monster(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["fluffy bunny"])))) return;
+  if (banishedMonsters.get($skill(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["Batter Up!"])))) === $monster(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["fluffy bunny"])))) return;
 
   if (!have($item(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
     options.push.apply(options, _toConsumableArray($items(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
   }
 
-  var banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
-  acquire(1, banish, 50000, true);
+  var canBat = myFury() >= 5 && have($skill(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Batter Up!"]))));
 
-  do {
-    adventureMacro($location(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
-  } while ("fluffy bunny" !== get("lastEncounter"));
+  if (canBat) {
+    var _Item$all$find;
+
+    if (have($skill(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["Iron Palm Technique"])))) && !have($effect(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["Iron Palms"]))))) {
+      useSkill($skill(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["Iron Palm Technique"]))));
+    }
+
+    var availableClub = (_Item$all$find = Item.all().find(i => have(i) && canEquip(i) && weaponHands(i) === 2 && (itemType(i) === "club" || have($effect(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["Iron Palms"])))) && itemType(i) === "sword"))) !== null && _Item$all$find !== void 0 ? _Item$all$find : $item(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["amok putter"])));
+    retrieveItem(availableClub);
+    new Requirement(["100 Monster Level"], {
+      preventEquip: $items(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["carnivorous potted plant"]))),
+      forceEquip: [availableClub]
+    }).maximize();
+
+    do {
+      adventureMacro($location(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.skill($skill(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["Batter Up!"]))))).step(embezzlerMacro()));
+    } while ("fluffy bunny" !== get("lastEncounter"));
+  } else {
+    var banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
+    acquire(1, banish, 50000, true);
+
+    do {
+      adventureMacro($location(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
+    } while ("fluffy bunny" !== get("lastEncounter"));
+  }
 }
 
 function initializeExtrovermectinZones() {
@@ -17652,7 +17673,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("ac54cb533ce926a8dd487a62ca512926d3f29994" === mainSha) {
+    if ("1c5270507cf135a8f5a5f9d0068f16d3b5b31936" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
