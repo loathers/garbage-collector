@@ -40,7 +40,7 @@ export function acquire(
   tryRetrievingUntradeable = false
 ): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
-  if (!item.tradeable && !tryRetrievingUntradeable && maxPrice !== undefined && maxPrice <= 0) {
+  if ((!item.tradeable && !tryRetrievingUntradeable) || (maxPrice !== undefined && maxPrice <= 0)) {
     return 0;
   }
   if (maxPrice === undefined) throw new Error(`No price cap for ${item.name}.`);
