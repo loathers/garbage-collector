@@ -312,7 +312,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   const price = potion.price(false);
   const amountsAcquired = value.map((value) =>
     (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0
-      ? acquire(value.quantity, potion.potion, value.value, false)
+      ? acquire(value.quantity, potion.potion, value.value, false, undefined, true)
       : 0
   );
 
