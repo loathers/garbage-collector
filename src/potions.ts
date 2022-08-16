@@ -460,6 +460,8 @@ class VariableMeatPotion {
   }
 
   use(quantity: number): boolean {
+    acquire(quantity, this.potion, (1.2 * retrievePrice(this.potion, quantity)) / quantity, false);
+    if (availableAmount(this.potion) < quantity) return false;
     return use(quantity, this.potion);
   }
 
@@ -518,7 +520,7 @@ class VariableMeatPotion {
     const embezzlerValue = baseMeat + 750;
     const barfValue = (baseMeat * turnsToNC) / 30;
 
-    const totalCosts = n * this.price(false);
+    const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;
     let cappedDuration = Math.max(0, totalDuration - this.softcap + 1);
     let decayDuration = Math.min(totalDuration, this.softcap - 1);
