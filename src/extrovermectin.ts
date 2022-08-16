@@ -1,4 +1,16 @@
-import { equip, mallPrice, useFamiliar, visitUrl } from "kolmafia";
+import {
+  canEquip,
+  equip,
+  Item,
+  itemType,
+  mallPrice,
+  myFury,
+  retrieveItem,
+  useFamiliar,
+  useSkill,
+  visitUrl,
+  weaponHands,
+} from "kolmafia";
 import {
   $effect,
   $item,
@@ -208,19 +220,46 @@ function initializeDireWarren(): void {
   if (options.some((option) => banishedMonsters.get(option) === $monster`fluffy bunny`)) {
     return;
   }
-  if (banishedMonsters.get($skill`Furious Wallop`) === $monster`fluffy bunny`) return;
+  if (banishedMonsters.get($skill`Batter Up!`) === $monster`fluffy bunny`) return;
 
   if (!have($item`miniature crystal ball`)) {
     options.push(...$items`Louder Than Bomb, tennis ball`);
   }
-  const banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
-  acquire(1, banish, 50000, true);
-  do {
-    adventureMacro(
-      $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(embezzlerMacro())
-    );
-  } while ("fluffy bunny" !== get("lastEncounter"));
+  const canBat = myFury() >= 5 && have($skill`Batter Up!`);
+  if (canBat) {
+    if (have($skill`Iron Palm Technique`) && !have($effect`Iron Palms`)) {
+      useSkill($skill`Iron Palm Technique`);
+    }
+    const availableClub =
+      Item.all().find(
+        (i) =>
+          have(i) &&
+          canEquip(i) &&
+          weaponHands(i) === 2 &&
+          (itemType(i) === "club" || (have($effect`Iron Palms`) && itemType(i) === "sword"))
+      ) ?? $item`amok putter`;
+    retrieveItem(availableClub);
+    new Requirement(["100 Monster Level"], {
+      preventEquip: $items`carnivorous potted plant`,
+      forceEquip: [availableClub],
+    }).maximize();
+
+    do {
+      adventureMacro(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).step(embezzlerMacro())
+      );
+    } while ("fluffy bunny" !== get("lastEncounter"));
+  } else {
+    const banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
+    acquire(1, banish, 50000, true);
+    do {
+      adventureMacro(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(embezzlerMacro())
+      );
+    } while ("fluffy bunny" !== get("lastEncounter"));
+  }
 }
 
 export function initializeExtrovermectinZones(): void {
