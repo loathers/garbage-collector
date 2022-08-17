@@ -531,25 +531,17 @@ class VariableMeatPotion {
       [barfTurns, barfValue],
     ];
 
-    // eslint-disable-next-line prefer-const
-    for (let [turns, value] of turnTypes) {
-      if (cappedDuration >= turns) {
-        totalValue += (value * turns * this.cappedMeatBonus) / 100;
-        cappedDuration -= turns;
-      } else {
-        totalValue += (value * cappedDuration * this.cappedMeatBonus) / 100;
-        turns -= cappedDuration;
-        cappedDuration = 0;
-        if (decayDuration >= turns) {
-          totalValue +=
-            (value * this.meatBonusPerTurn * triangleNumber(decayDuration, decayDuration - turns)) /
-            100;
-          decayDuration -= turns;
-        } else {
-          totalValue += (value * this.meatBonusPerTurn * triangleNumber(decayDuration)) / 100;
-          decayDuration = 0;
-        }
-      }
+    for (const [turns, value] of turnTypes) {
+      const cappedTurns = Math.min(cappedDuration, turns);
+      const decayTurns = Math.min(decayDuration, turns - cappedTurns);
+      totalValue +=
+        (value *
+          (cappedTurns * this.cappedMeatBonus +
+            triangleNumber(decayDuration, decayDuration - decayTurns) * this.meatBonusPerTurn)) /
+        100;
+      cappedDuration -= cappedTurns;
+      decayDuration -= decayTurns;
+      if (decayDuration === 0) break;
     }
 
     return totalValue - totalCosts;
