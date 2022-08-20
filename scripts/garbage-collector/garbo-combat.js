@@ -14030,7 +14030,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3311);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5632);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1762);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8104);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9698);
 /* harmony import */ var _wanderer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5444);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181;
 
@@ -15610,8 +15610,8 @@ function CrownOfThrones_pickRider(mode) {
 var diet = __webpack_require__(4033);
 // EXTERNAL MODULE: ./src/embezzler.ts
 var embezzler = __webpack_require__(4936);
-// EXTERNAL MODULE: ./src/familiar/index.ts + 7 modules
-var familiar = __webpack_require__(8104);
+// EXTERNAL MODULE: ./src/familiar/index.ts + 8 modules
+var familiar = __webpack_require__(9698);
 // EXTERNAL MODULE: ./src/lib.ts
 var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/session.ts
@@ -16555,7 +16555,7 @@ function toasterGaze() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3311);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(678);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(7329);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8104);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9698);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7442);
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
@@ -16747,7 +16747,7 @@ function initializeExtrovermectinZones() {
 
 /***/ }),
 
-/***/ 8104:
+/***/ 9698:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -16759,7 +16759,7 @@ __webpack_require__.d(__webpack_exports__, {
   "kZ": () => (/* reexport */ lib_timeToMeatify)
 });
 
-// UNUSED EXPORTS: barfFamiliar, freeFightFamiliar, pocketProfessorLectures, setBestLeprechaunAsMeatFamiliar
+// UNUSED EXPORTS: barfFamiliar, bestFairy, freeFightFamiliar, pocketProfessorLectures, setBestLeprechaunAsMeatFamiliar
 
 // EXTERNAL MODULE: external "kolmafia"
 var external_kolmafia_ = __webpack_require__(7530);
@@ -17335,7 +17335,78 @@ function barfFamiliar() {
   print("Choosing to use ".concat(best.familiar, " ").concat(familiarPrintout(best), " over ").concat(meatFamiliarEntry.familiar, " ").concat(familiarPrintout(meatFamiliarEntry), "."), HIGHLIGHT);
   return best.familiar;
 }
+;// CONCATENATED MODULE: ./src/familiar/itemFamiliar.ts
+var itemFamiliar_templateObject, itemFamiliar_templateObject2, itemFamiliar_templateObject3, itemFamiliar_templateObject4, itemFamiliar_templateObject5, itemFamiliar_templateObject6, itemFamiliar_templateObject7, itemFamiliar_templateObject8, itemFamiliar_templateObject9, itemFamiliar_templateObject10, itemFamiliar_templateObject11, itemFamiliar_templateObject12, itemFamiliar_templateObject13;
+
+function itemFamiliar_toConsumableArray(arr) { return itemFamiliar_arrayWithoutHoles(arr) || itemFamiliar_iterableToArray(arr) || itemFamiliar_unsupportedIterableToArray(arr) || itemFamiliar_nonIterableSpread(); }
+
+function itemFamiliar_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function itemFamiliar_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return itemFamiliar_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return itemFamiliar_arrayLikeToArray(o, minLen); }
+
+function itemFamiliar_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function itemFamiliar_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return itemFamiliar_arrayLikeToArray(arr); }
+
+function itemFamiliar_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function itemFamiliar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+var bestNonCheerleaderFairy;
+function bestFairy() {
+  if (have($familiar(itemFamiliar_templateObject || (itemFamiliar_templateObject = itemFamiliar_taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && have($item(itemFamiliar_templateObject2 || (itemFamiliar_templateObject2 = itemFamiliar_taggedTemplateLiteral(["li'l ninja costume"]))))) {
+    return $familiar(itemFamiliar_templateObject3 || (itemFamiliar_templateObject3 = itemFamiliar_taggedTemplateLiteral(["Trick-or-Treating Tot"])));
+  }
+
+  if (!bestNonCheerleaderFairy) {
+    var viableFairies = Familiar.all().filter(f => have(f) && findFairyMultiplier(f) && f !== $familiar(itemFamiliar_templateObject4 || (itemFamiliar_templateObject4 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))).sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a));
+    var highestFairyMult = findFairyMultiplier(viableFairies[0]);
+    var goodFairies = viableFairies.filter(f => findFairyMultiplier(f) === highestFairyMult);
+
+    if (have($familiar(itemFamiliar_templateObject5 || (itemFamiliar_templateObject5 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"])))) && !have($item(itemFamiliar_templateObject6 || (itemFamiliar_templateObject6 = itemFamiliar_taggedTemplateLiteral(["gnomish housemaid's kgnee"])))) && !get("_garbo_triedForKgnee", false)) {
+      var current = myFamiliar();
+      useFamiliar($familiar(itemFamiliar_templateObject7 || (itemFamiliar_templateObject7 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))));
+      visitUrl("arena.php");
+      runChoice(4);
+      useFamiliar(current);
+      set("_garbo_triedForKgnee", true);
+    }
+
+    if (have($item(itemFamiliar_templateObject8 || (itemFamiliar_templateObject8 = itemFamiliar_taggedTemplateLiteral(["gnomish housemaid's kgnee"])))) && highestFairyMult === 1) {
+      goodFairies.push($familiar(itemFamiliar_templateObject9 || (itemFamiliar_templateObject9 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))));
+    }
+
+    var bonuses = [].concat(itemFamiliar_toConsumableArray(menu(true, false)), [{
+      familiar: $familiar(itemFamiliar_templateObject10 || (itemFamiliar_templateObject10 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))),
+      expectedValue: get("valueOfAdventure") * 70 / 1000,
+      leprechaunMultiplier: 0,
+      limit: "none"
+    }]);
+    goodFairies.sort((a, b) => {
+      var _bonuses$find$expecte, _bonuses$find, _bonuses$find$expecte2, _bonuses$find2;
+
+      return ((_bonuses$find$expecte = (_bonuses$find = bonuses.find(_ref => {
+        var familiar = _ref.familiar;
+        return familiar === b;
+      })) === null || _bonuses$find === void 0 ? void 0 : _bonuses$find.expectedValue) !== null && _bonuses$find$expecte !== void 0 ? _bonuses$find$expecte : 0) - ((_bonuses$find$expecte2 = (_bonuses$find2 = bonuses.find(_ref2 => {
+        var familiar = _ref2.familiar;
+        return familiar === a;
+      })) === null || _bonuses$find2 === void 0 ? void 0 : _bonuses$find2.expectedValue) !== null && _bonuses$find$expecte2 !== void 0 ? _bonuses$find$expecte2 : 0);
+    });
+    bestNonCheerleaderFairy = goodFairies[0];
+  }
+
+  if (have($familiar(itemFamiliar_templateObject11 || (itemFamiliar_templateObject11 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))) && findFairyMultiplier($familiar(itemFamiliar_templateObject12 || (itemFamiliar_templateObject12 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))) > findFairyMultiplier(bestNonCheerleaderFairy)) {
+    return $familiar(itemFamiliar_templateObject13 || (itemFamiliar_templateObject13 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])));
+  }
+
+  return bestNonCheerleaderFairy;
+}
 ;// CONCATENATED MODULE: ./src/familiar/index.ts
+
 
 
 
@@ -17673,7 +17744,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("1c5270507cf135a8f5a5f9d0068f16d3b5b31936" === mainSha) {
+    if ("a83e64431784073641b1b86f011e6152277c4d29" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -18028,7 +18099,7 @@ function shrugBadEffects() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3311);
 /* harmony import */ var _dropsgear__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5472);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4936);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8104);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9698);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7442);
 /* harmony import */ var _wanderer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5444);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80;
