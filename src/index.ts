@@ -273,6 +273,7 @@ function barfTurn() {
           Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
         ).abort()
       );
+      completeBarfQuest();
     }
   }
 
