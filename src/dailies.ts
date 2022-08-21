@@ -868,9 +868,9 @@ export function checkBarfQuest(): void {
   ];
 
   for (const target of targets) {
-    for (const [idx, qst] of quests.entries()) {
-      if (target === qst) {
-        print(`Accepting Barf Quest: ${qst}`, "blue");
+    for (const [idx, quest] of quests.entries()) {
+      if (target === quest) {
+        print(`Accepting Barf Quest: ${quest}`, "blue");
         visitUrl(`choice.php?whichchoice=1066&pwd&option=${idx + 1}`);
         return completeBarfQuest();
       }

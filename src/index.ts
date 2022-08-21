@@ -255,12 +255,12 @@ function barfTurn() {
       ensureEffect($effect`Transpondent`);
       use($item`Map to Safety Shelter Grimace Prime`);
     } else {
-      if (get("dinseyRollercoasterNext") && location === $location`Barf Mountain`) {
-        for (const slot of $slots`acc1, acc2, acc3`) {
-          if (!itemAmount($item`lucky Crimbo tiki necklace`)) break;
-          equip(slot, $item`lucky Crimbo tiki necklace`);
-        }
-        if (have($item`lube-shoes`)) equip($slot`acc3`, $item`lube-shoes`);
+      if (
+        get("dinseyRollercoasterNext") &&
+        have($item`lube-shoes`) &&
+        location === $location`Barf Mountain`
+      ) {
+        equip($slot`acc3`, $item`lube-shoes`);
       }
       adventureMacroAuto(
         location,
