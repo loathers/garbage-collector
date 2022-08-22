@@ -863,8 +863,8 @@ export function checkBarfQuest(): void {
 
   // Page includes Track/Electrical Maintenance and we aren't on an assignment -> choose assignment
   const quests = [
-    page.match("(width=250>)(.*?)(value=1>)")?.at(2)?.match("(<b>)(.*?)(</b>)")?.at(2) ?? "",
-    page.match("(value=1>)(.*?)(value=2>)")?.at(2)?.match("(<b>)(.*?)(</b>)")?.at(2) ?? "",
+    page.match("(width=250>)(.*?)(value=1>)")?.[2]?.match("(<b>)(.*?)(</b>)")?.[2] ?? "",
+    page.match("(value=1>)(.*?)(value=2>)")?.[2]?.match("(<b>)(.*?)(</b>)")?.[2] ?? "",
   ];
 
   for (const target of targets) {
@@ -882,13 +882,26 @@ export function checkBarfQuest(): void {
 export function completeBarfQuest(): void {
   if (get("questEStGiveMeFuel") === "started") {
     const globuleCosts = retrievePrice($item`toxic globule`, 20);
-    if (globuleCosts > 3 * garboValue($item`FunFunds™`)) {
+    if (globuleCosts < 3 * garboValue($item`FunFunds™`)) {
+      print(
+        `The cost of 20 toxic globules (${globuleCosts}) is less than the profits expected from 3 FunFunds™ (${
+          3 * garboValue($item`FunFunds™`)
+        }). Proceeding to acquire toxic globules.`,
+        "red"
+      );
       acquire(20, $item`toxic globule`, (1.5 * globuleCosts) / 20);
+    } else {
+      print(
+        `The cost of 20 toxic globules (${globuleCosts}) exceeds the profits expected from 3 FunFunds™ (${
+          3 * garboValue($item`FunFunds™`)
+        }). Consider farming some globules yourself.`,
+        "red"
+      );
     }
   }
   if (get("questEStSuperLuber") === "step1" || get("questEStGiveMeFuel") === "step1") {
     print("Completing Barf Quest", "blue");
-    visitUrl("choice.php?whichchoice=1066&pwd&option=1");
+    visitUrl("choice.php?whichchoice=1066&pwd&option=3");
   }
   return;
 }
