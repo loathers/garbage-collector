@@ -849,28 +849,34 @@ function configureShrub(): void {
 
 export function checkBarfQuest(): void {
   const page = visitUrl("place.php?whichplace=airport_stench&action=airport3_kiosk");
-  const targets = globalOptions.noBarf
-    ? ["Electrical Maintenance"]
-    : ["Track Maintenance", "Electrical Maintenance"]; // In decreasing order of priority
-
-  // If page does not include Track/Electrical Maintenance quest, return
-  if (!targets.some((target) => page.includes(target))) return;
 
   // If we are on an assignment, try completing and then return after
   if (page.includes("Current Assignment")) {
     return completeBarfQuest();
   }
 
+  const targets = globalOptions.noBarf
+    ? ["Electrical Maintenance"]
+    : ["Track Maintenance", "Electrical Maintenance"]; // In decreasing order of priority
+
   // Page includes Track/Electrical Maintenance and we aren't on an assignment -> choose assignment
   const quests = [
     page.match("(width=250>)(.*?)(value=1>)")?.[2]?.match("(<b>)(.*?)(</b>)")?.[2] ?? "",
     page.match("(value=1>)(.*?)(value=2>)")?.[2]?.match("(<b>)(.*?)(</b>)")?.[2] ?? "",
   ];
+  print("Barf Quests Available:", "blue");
+  quests.forEach((quest) => print(quest, "blue"));
+
+  // If page does not include Track/Electrical Maintenance quest, return
+  if (!targets.some((target) => page.includes(target))) {
+    print("No suitable Barf Quests available.", "red");
+    return;
+  }
 
   for (const target of targets) {
-    for (const [idx, quest] of quests.entries()) {
-      if (target === quest) {
-        print(`Accepting Barf Quest: ${quest}`, "blue");
+    for (const [idx, qst] of quests.entries()) {
+      if (target === qst) {
+        print(`Accepting Barf Quest: ${qst}`, "blue");
         visitUrl(`choice.php?whichchoice=1066&pwd&option=${idx + 1}`);
         return completeBarfQuest();
       }
