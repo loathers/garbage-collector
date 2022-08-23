@@ -855,6 +855,14 @@ export function checkBarfQuest(): void {
     return completeBarfQuest();
   }
 
+  // If there are no available nor current assignments, then we are done for the day
+  if (!page.includes("Available Assignments")) {
+    // Reset prefs to unstarted just in case (since they do not automatically reset on rollover)
+    set("questEStSuperLuber", "unstarted");
+    set("questEStGiveMeFuel", "unstarted");
+    return;
+  }
+
   const targets = globalOptions.noBarf
     ? ["Electrical Maintenance"]
     : ["Track Maintenance", "Electrical Maintenance"]; // In decreasing order of priority
@@ -905,8 +913,9 @@ export function completeBarfQuest(): void {
       );
     }
   }
-  if (get("questEStSuperLuber") === "step1" || get("questEStGiveMeFuel") === "step1") {
+  if (get("questEStSuperLuber") === "step2" || get("questEStGiveMeFuel") === "step1") {
     print("Completing Barf Quest", "blue");
+    visitUrl("place.php?whichplace=airport_stench&action=airport3_kiosk");
     visitUrl("choice.php?whichchoice=1066&pwd&option=3");
   }
   return;
