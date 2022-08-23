@@ -552,6 +552,9 @@ export function variableMeatPotionsSetup(yachtzees: number, embezzlers: number):
   const potions = [
     new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2),
     new VariableMeatPotion($item`pulled yellow taffy`, 50, 2),
+    // To be added in the future. Specifically, we will have to:
+    // 1) accurately estimate the bulk price (potentially in the millions), and
+    // 2) ensure that we have the meat to complete the entire purchase (a partial purchase would be disastrous).
     // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
   ];
 
