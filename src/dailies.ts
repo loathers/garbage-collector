@@ -901,7 +901,7 @@ export function completeBarfQuest(): void {
         `The cost of 20 toxic globules (${globuleCosts}) is less than the profits expected from 3 FunFunds™ (${
           3 * garboValue($item`FunFunds™`)
         }). Proceeding to acquire toxic globules.`,
-        "red"
+        "green"
       );
       acquire(20, $item`toxic globule`, (1.5 * globuleCosts) / 20);
     } else {
