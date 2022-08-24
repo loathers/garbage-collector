@@ -333,9 +333,10 @@ let cachedUsingPurse: boolean | null = null;
 export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
     cachedUsingPurse =
-      !have($item`latte lovers member's mug`) ||
-      !have($familiar`Robortender`) ||
-      !canAdventure($location`The Black Forest`);
+      myInebriety() <= inebrietyLimit() &&
+      (!have($item`latte lovers member's mug`) ||
+        !have($familiar`Robortender`) ||
+        !canAdventure($location`The Black Forest`));
   }
   return cachedUsingPurse;
 }
