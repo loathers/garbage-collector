@@ -271,7 +271,7 @@ export class Potion {
       const barfQuantity = this.usesToCover(remainingTurns, !ascending);
       values.push({ name: "barf", quantity: limitFunction(barfQuantity), value: this.gross(0) });
 
-      if (globalOptions.ascending && this.overage(remainingTurns, barfQuantity) <= 0) {
+      if (globalOptions.ascending && this.overage(remainingTurns, barfQuantity) < 0) {
         const ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
         values.push({
           name: "ascending",
