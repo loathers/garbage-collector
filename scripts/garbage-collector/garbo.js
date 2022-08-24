@@ -24640,7 +24640,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26634);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f515294c7d3b7b4feb4f1afad5872e653bfcb8e8"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("2c447c4eaa230856fa9e49075355aa2ba834dfb9"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25309,7 +25309,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("f515294c7d3b7b4feb4f1afad5872e653bfcb8e8" === mainSha) {
+    if ("2c447c4eaa230856fa9e49075355aa2ba834dfb9" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25895,7 +25895,7 @@ var familiarWaterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .
 var cachedUsingPurse = null;
 function usingPurse() {
   if (cachedUsingPurse === null) {
-    cachedUsingPurse = !(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$item */ .xr)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["latte lovers member's mug"])))) || !(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$familiar */ .HP)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["Robortender"])))) || !(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.canAdventure)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$location */ .PG)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["The Black Forest"]))));
+    cachedUsingPurse = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)() && (!(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$item */ .xr)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["latte lovers member's mug"])))) || !(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$familiar */ .HP)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["Robortender"])))) || !(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.canAdventure)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$location */ .PG)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["The Black Forest"])))));
   }
 
   return cachedUsingPurse;
@@ -26194,7 +26194,7 @@ var Potion = /*#__PURE__*/function () {
           value: this.gross(0)
         });
 
-        if (_lib__WEBPACK_IMPORTED_MODULE_3__/* .globalOptions.ascending */ .Xe.ascending && this.overage(remainingTurns, barfQuantity) <= 0) {
+        if (_lib__WEBPACK_IMPORTED_MODULE_3__/* .globalOptions.ascending */ .Xe.ascending && this.overage(remainingTurns, barfQuantity) < 0) {
           var ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
           values.push({
             name: "ascending",

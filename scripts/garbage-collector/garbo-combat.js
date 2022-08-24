@@ -17744,7 +17744,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("f515294c7d3b7b4feb4f1afad5872e653bfcb8e8" === mainSha) {
+    if ("2c447c4eaa230856fa9e49075355aa2ba834dfb9" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -18314,7 +18314,7 @@ var familiarWaterBreathingEquipment = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .
 var cachedUsingPurse = null;
 function usingPurse() {
   if (cachedUsingPurse === null) {
-    cachedUsingPurse = !(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$item */ .xr)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["latte lovers member's mug"])))) || !(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$familiar */ .HP)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["Robortender"])))) || !(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.canAdventure)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$location */ .PG)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["The Black Forest"]))));
+    cachedUsingPurse = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)() && (!(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$item */ .xr)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["latte lovers member's mug"])))) || !(0,libram__WEBPACK_IMPORTED_MODULE_7__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$familiar */ .HP)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["Robortender"])))) || !(0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.canAdventure)((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$location */ .PG)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["The Black Forest"])))));
   }
 
   return cachedUsingPurse;
@@ -18604,7 +18604,7 @@ var Potion = /*#__PURE__*/function () {
           value: this.gross(0)
         });
 
-        if (_lib__WEBPACK_IMPORTED_MODULE_3__/* .globalOptions.ascending */ .Xe.ascending && this.overage(remainingTurns, barfQuantity) <= 0) {
+        if (_lib__WEBPACK_IMPORTED_MODULE_3__/* .globalOptions.ascending */ .Xe.ascending && this.overage(remainingTurns, barfQuantity) < 0) {
           var ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
           values.push({
             name: "ascending",
