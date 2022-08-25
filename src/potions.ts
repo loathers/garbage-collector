@@ -558,8 +558,21 @@ export function variableMeatPotionsSetup(yachtzees: number, embezzlers: number):
     // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
   ];
 
+  const excludedEffects = new Set<Effect>();
+  for (const effect of getActiveEffects()) {
+    for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+      excludedEffects.add(excluded);
+    }
+  }
+
   for (const potion of potions) {
-    const n = potion.getOptimalNumberToUse(yachtzees, embezzlers);
-    if (n > 0) potion.use(n);
+    const effect = effectModifier(potion.potion, "Effect");
+    const n = excludedEffects.has(effect) ? 0 : potion.getOptimalNumberToUse(yachtzees, embezzlers);
+    if (n > 0) {
+      potion.use(n);
+      for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+        excludedEffects.add(excluded);
+      }
+    }
   }
 }
