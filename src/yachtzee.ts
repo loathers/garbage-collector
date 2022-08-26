@@ -1194,7 +1194,7 @@ function stickerSetup(expectedYachts: number) {
     ((75 - embezzlerOpportunityCost) * Math.min(20, expectedEmbezzlers) * (750 + baseMeat)) / 100;
   if (mallPrice(UPC) < addedValueOfFullSword / 3) {
     const needed = 3 - currentStickers.filter((sticker) => sticker === UPC).length;
-    if (needed) acquire(needed, UPC, addedValueOfFullSword / 3);
+    if (needed) acquire(needed, UPC, addedValueOfFullSword / 3, false);
     useUPCs();
   }
 }
