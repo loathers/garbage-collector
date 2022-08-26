@@ -17744,7 +17744,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("92506796ae531ea697a167dc5ba85b819afa48b2" === mainSha) {
+    if ("f4d35ea0260b26001021bd221304ac272ec67ca4" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -18248,7 +18248,7 @@ function meatOutfit(embezzlerUp, requirement, sea) {
 
     if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
       var needed = 3 - stickerSlots.filter(sticker => equippedItem(sticker) === UPC).length;
-      if (needed) acquire(needed, UPC, addedValueOfFullSword / 3);
+      if (needed) acquire(needed, UPC, addedValueOfFullSword / 3, false);
       useUPCs();
     }
   }

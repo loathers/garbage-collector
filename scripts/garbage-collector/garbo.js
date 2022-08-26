@@ -24313,7 +24313,7 @@ function stickerSetup(expectedYachts) {
 
   if ((0,external_kolmafia_.mallPrice)(UPC) < addedValueOfFullSword / 3) {
     var needed = 3 - currentStickers.filter(sticker => sticker === UPC).length;
-    if (needed) (0,acquire/* acquire */.u)(needed, UPC, addedValueOfFullSword / 3);
+    if (needed) (0,acquire/* acquire */.u)(needed, UPC, addedValueOfFullSword / 3, false);
     (0,outfit/* useUPCs */.Mw)();
   }
 }
@@ -24640,7 +24640,7 @@ function canContinue() {
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26634);
-  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("92506796ae531ea697a167dc5ba85b819afa48b2"));
+  (0,external_kolmafia_.print)("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "@").concat("f4d35ea0260b26001021bd221304ac272ec67ca4"));
   var forbiddenStores = property/* getString */.KF("forbiddenStores").split(",");
 
   if (!forbiddenStores.includes("3408540")) {
@@ -25309,7 +25309,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("92506796ae531ea697a167dc5ba85b819afa48b2" === mainSha) {
+    if ("f4d35ea0260b26001021bd221304ac272ec67ca4" === mainSha) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Garbo is out of date. Please run 'svn update!", "red");
@@ -25829,7 +25829,7 @@ function meatOutfit(embezzlerUp, requirement, sea) {
 
     if (addedValueOfFullSword > 3 * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.mallPrice)(UPC)) {
       var needed = 3 - stickerSlots.filter(sticker => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.equippedItem)(sticker) === UPC).length;
-      if (needed) (0,_acquire__WEBPACK_IMPORTED_MODULE_1__/* .acquire */ .u)(needed, UPC, addedValueOfFullSword / 3);
+      if (needed) (0,_acquire__WEBPACK_IMPORTED_MODULE_1__/* .acquire */ .u)(needed, UPC, addedValueOfFullSword / 3, false);
       useUPCs();
     }
   }
