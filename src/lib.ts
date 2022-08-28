@@ -364,6 +364,7 @@ export function checkBeatenUp(): void {
 
 export function safeRestore(ignoreBeatenUp = false): void {
   if (!ignoreBeatenUp) checkBeatenUp();
+  else uneffect($effect`Beaten Up`);
 
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
