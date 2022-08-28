@@ -13696,8 +13696,13 @@ var priceCaps = {
 function acquire(qty, item, maxPrice) {
   var throwOnFail = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
   var maxAggregateCost = arguments.length > 4 ? arguments[4] : undefined;
+  var tryRetrievingUntradeable = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
-  if (!item.tradeable || maxPrice !== undefined && maxPrice <= 0) return 0;
+
+  if (!item.tradeable && !tryRetrievingUntradeable || maxPrice !== undefined && maxPrice <= 0) {
+    return 0;
+  }
+
   if (maxPrice === undefined) throw new Error("No price cap for ".concat(item.name, "."));
   (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Trying to acquire ".concat(qty, " ").concat(item.plural, "; max price ").concat(maxPrice.toFixed(0), "."), "green");
 
@@ -17744,7 +17749,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("f4d35ea0260b26001021bd221304ac272ec67ca4" === mainSha) {
+    if ("fe8a49a1c4b6fb6fb2f18c35c4c5bbe86650171d" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
@@ -18348,7 +18353,7 @@ function useUPCs() {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* unused harmony exports mutuallyExclusive, Potion, farmingPotions, doublingPotions, potionSetup, bathroomFinance */
+/* unused harmony exports mutuallyExclusive, Potion, farmingPotions, doublingPotions, potionSetup, bathroomFinance, variableMeatPotionsSetup */
 /* harmony import */ var core_js_modules_es_object_from_entries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5809);
 /* harmony import */ var core_js_modules_es_object_from_entries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_from_entries__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7530);
@@ -18361,7 +18366,15 @@ function useUPCs() {
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7442);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
 /* harmony import */ var _outfit__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1730);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14;
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -18379,7 +18392,7 @@ function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symb
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
@@ -18420,6 +18433,10 @@ for (var _i = 0, _mutuallyExclusiveLis = mutuallyExclusiveList; _i < _mutuallyEx
   } finally {
     _iterator.f();
   }
+}
+
+function retrieveUntradeablePrice(it) {
+  return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.retrievePrice)(it, (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.availableAmount)(it) + 1) - (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.autosellPrice)(it) * (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.availableAmount)(it);
 }
 
 var Potion = /*#__PURE__*/function () {
@@ -18513,7 +18530,8 @@ var Potion = /*#__PURE__*/function () {
     key: "price",
     value: function price(historical) {
       // If asked for historical, and age < 14 days, use historical.
-      return historical && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.historicalAge)(this.potion) < 14 ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.historicalPrice)(this.potion) : (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.mallPrice)(this.potion);
+      // If potion is not tradeable, use retrievePrice instead
+      return this.potion.tradeable ? historical && (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.historicalAge)(this.potion) < 14 ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.historicalPrice)(this.potion) : (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.mallPrice)(this.potion) : retrieveUntradeablePrice(this.potion);
     }
   }, {
     key: "net",
@@ -18670,7 +18688,7 @@ var Potion = /*#__PURE__*/function () {
 function useAsValuable(potion, embezzlers, embezzlersOnly) {
   var value = potion.value(embezzlers);
   var price = potion.price(false);
-  var amountsAcquired = value.map(value => (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0 ? acquire(value.quantity, potion.potion, value.value, false) : 0);
+  var amountsAcquired = value.map(value => (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0 ? acquire(value.quantity, potion.potion, value.value, false, undefined, true) : 0);
   var total = amountsAcquired.reduce((total, amount) => total + amount, 0);
 
   if (total > 0) {
@@ -18712,7 +18730,7 @@ var farmingPotions = [].concat(_toConsumableArray(kolmafia__WEBPACK_IMPORTED_MOD
   canDouble: false,
   duration: 20,
   use: quantity => new Array(quantity).fill(0).every(() => (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.cliExecute)("genie effect ".concat(effect)))
-}))));
+}))), [new Potion((0,libram__WEBPACK_IMPORTED_MODULE_6__/* .$item */ .xr)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["papier-m\xE2ch\xE9 toothpicks"]))))]);
 function doublingPotions(embezzlers) {
   return farmingPotions.filter(potion => potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5).map(potion => {
     return {
@@ -18731,7 +18749,7 @@ function potionSetup(embezzlersOnly) {
   // TODO: Count free fights (25 meat each for most).
   var embezzlers = embezzlerCount();
 
-  if (have($item(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !get("_freePillKeeperUsed")) {
+  if (have($item(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !get("_freePillKeeperUsed")) {
     var possibleDoublingPotions = doublingPotions(embezzlers);
     var bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
 
@@ -18809,6 +18827,8 @@ function potionSetup(embezzlersOnly) {
   } finally {
     _iterator4.f();
   }
+
+  variableMeatPotionsSetup(0, embezzlers);
 }
 /**
  * Uses a Greenspan iff profitable; does not account for PYEC/LTC, or running out of adventures with the ascend flag.
@@ -18816,7 +18836,7 @@ function potionSetup(embezzlersOnly) {
  */
 
 function bathroomFinance(embezzlers) {
-  if (have($effect(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
+  if (have($effect(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return; // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
 
   var averageEmbezzlerGross = (baseMeat + 750) * 2 * (embezzlers + 1) / 2 / 100;
   var embezzlerGross = averageEmbezzlerGross * embezzlers;
@@ -18824,7 +18844,7 @@ function bathroomFinance(embezzlers) {
 
   var averageTouristGross = baseMeat * 2 * (100 + embezzlers + 1) / 2 / 100;
   var touristGross = averageTouristGross * tourists;
-  var greenspan = $item(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
+  var greenspan = $item(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
 
   if (touristGross + embezzlerGross > mallPrice(greenspan)) {
     acquire(1, greenspan, touristGross + embezzlerGross, false);
@@ -18833,6 +18853,210 @@ function bathroomFinance(embezzlers) {
       print("Using ".concat(greenspan, "!"), HIGHLIGHT);
 
       _use(greenspan);
+    }
+  }
+}
+
+function triangleNumber(b) {
+  var a = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  return 0.5 * (b * (b + 1) - a * (a + 1));
+}
+
+var VariableMeatPotion = /*#__PURE__*/(/* unused pure expression or super */ null && (function () {
+  // Number of turns to cap out variable bonus
+  // meat% bonus per turn
+  function VariableMeatPotion(potion, softcap, meatBonusPerTurn, duration, effect) {
+    _classCallCheck(this, VariableMeatPotion);
+
+    _defineProperty(this, "potion", void 0);
+
+    _defineProperty(this, "effect", void 0);
+
+    _defineProperty(this, "duration", void 0);
+
+    _defineProperty(this, "softcap", void 0);
+
+    _defineProperty(this, "meatBonusPerTurn", void 0);
+
+    _defineProperty(this, "cappedMeatBonus", void 0);
+
+    this.potion = potion;
+    this.effect = effect !== null && effect !== void 0 ? effect : effectModifier(potion, "Effect");
+    this.duration = duration !== null && duration !== void 0 ? duration : numericModifier(potion, "Effect Duration");
+    this.softcap = softcap;
+    this.meatBonusPerTurn = meatBonusPerTurn;
+    this.cappedMeatBonus = softcap * meatBonusPerTurn;
+  }
+
+  _createClass(VariableMeatPotion, [{
+    key: "use",
+    value: function use(quantity) {
+      acquire(quantity, this.potion, 1.2 * retrievePrice(this.potion, quantity) / quantity, false);
+      if (availableAmount(this.potion) < quantity) return false;
+      return _use(quantity, this.potion);
+    }
+  }, {
+    key: "price",
+    value: function price(historical) {
+      // If asked for historical, and age < 14 days, use historical.
+      // If potion is not tradeable, use retrievePrice instead
+      return this.potion.tradeable ? historical && historicalAge(this.potion) < 14 ? historicalPrice(this.potion) : mallPrice(this.potion) : retrieveUntradeablePrice(this.potion);
+    }
+  }, {
+    key: "getOptimalNumberToUse",
+    value: function getOptimalNumberToUse(yachtzees, embezzlers) {
+      var barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
+      var potionAmountsToConsider = [];
+      var considerSoftcap = [0, this.softcap];
+      var considerEmbezzlers = embezzlers > 0 ? [0, embezzlers] : [0];
+
+      for (var _i2 = 0, _arr = [Math.floor, Math.ceil]; _i2 < _arr.length; _i2++) {
+        var fn = _arr[_i2];
+
+        var _iterator7 = _createForOfIteratorHelper(considerSoftcap),
+            _step7;
+
+        try {
+          for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+            var sc = _step7.value;
+
+            var _iterator8 = _createForOfIteratorHelper(considerEmbezzlers),
+                _step8;
+
+            try {
+              for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+                var em = _step8.value;
+                var considerBarfTurns = em === embezzlers && barfTurns > 0 ? [0, barfTurns] : [0];
+
+                for (var _i3 = 0, _considerBarfTurns = considerBarfTurns; _i3 < _considerBarfTurns.length; _i3++) {
+                  var bt = _considerBarfTurns[_i3];
+                  var potionAmount = fn((yachtzees + em + bt + sc) / this.duration);
+
+                  if (!potionAmountsToConsider.includes(potionAmount)) {
+                    potionAmountsToConsider.push(potionAmount);
+                  }
+                }
+              }
+            } catch (err) {
+              _iterator8.e(err);
+            } finally {
+              _iterator8.f();
+            }
+          }
+        } catch (err) {
+          _iterator7.e(err);
+        } finally {
+          _iterator7.f();
+        }
+      }
+
+      var profitsFromPotions = potionAmountsToConsider.map(quantity => ({
+        quantity: quantity,
+        value: this.valueNPotions(quantity, yachtzees, embezzlers, barfTurns)
+      }));
+      var bestOption = profitsFromPotions.reduce((a, b) => a.value > b.value ? a : b);
+
+      if (bestOption.value > 0) {
+        print("Expected to profit ".concat(bestOption.value.toFixed(2), " from ").concat(bestOption.quantity, " ").concat(this.potion.plural), "blue");
+        var potionsToUse = bestOption.quantity - Math.floor(haveEffect(this.effect) / this.duration);
+        return Math.max(potionsToUse, 0);
+      }
+
+      return 0;
+    }
+  }, {
+    key: "valueNPotions",
+    value: function valueNPotions(n, yachtzees, embezzlers, barfTurns) {
+      var yachtzeeValue = 2000;
+      var embezzlerValue = baseMeat + 750;
+      var barfValue = baseMeat * turnsToNC / 30;
+      var totalCosts = retrievePrice(this.potion, n);
+      var totalDuration = n * this.duration;
+      var cappedDuration = Math.max(0, totalDuration - this.softcap + 1);
+      var decayDuration = Math.min(totalDuration, this.softcap - 1);
+      var totalValue = 0;
+      var turnTypes = [[yachtzees, yachtzeeValue], [embezzlers, embezzlerValue], [barfTurns, barfValue]];
+
+      for (var _i4 = 0, _turnTypes = turnTypes; _i4 < _turnTypes.length; _i4++) {
+        var _turnTypes$_i = _slicedToArray(_turnTypes[_i4], 2),
+            turns = _turnTypes$_i[0],
+            value = _turnTypes$_i[1];
+
+        var cappedTurns = Math.min(cappedDuration, turns);
+        var decayTurns = Math.min(decayDuration, turns - cappedTurns);
+        totalValue += value * (cappedTurns * this.cappedMeatBonus + triangleNumber(decayDuration, decayDuration - decayTurns) * this.meatBonusPerTurn) / 100;
+        cappedDuration -= cappedTurns;
+        decayDuration -= decayTurns;
+        if (decayDuration === 0) break;
+      }
+
+      return totalValue - totalCosts;
+    }
+  }]);
+
+  return VariableMeatPotion;
+}()));
+
+function variableMeatPotionsSetup(yachtzees, embezzlers) {
+  var potions = [new VariableMeatPotion($item(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["love song of sugary cuteness"]))), 20, 2), new VariableMeatPotion($item(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["pulled yellow taffy"]))), 50, 2) // To be added in the future. Specifically, we will have to:
+  // 1) accurately estimate the bulk price (potentially in the millions), and
+  // 2) ensure that we have the meat to complete the entire purchase (a partial purchase would be disastrous).
+  // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
+  ];
+  var excludedEffects = new Set();
+
+  var _iterator9 = _createForOfIteratorHelper(getActiveEffects()),
+      _step9;
+
+  try {
+    for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+      var _mutuallyExclusive$ge5;
+
+      var _effect2 = _step9.value;
+
+      var _iterator11 = _createForOfIteratorHelper((_mutuallyExclusive$ge5 = mutuallyExclusive.get(_effect2)) !== null && _mutuallyExclusive$ge5 !== void 0 ? _mutuallyExclusive$ge5 : []),
+          _step11;
+
+      try {
+        for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
+          var _excluded2 = _step11.value;
+          excludedEffects.add(_excluded2);
+        }
+      } catch (err) {
+        _iterator11.e(err);
+      } finally {
+        _iterator11.f();
+      }
+    }
+  } catch (err) {
+    _iterator9.e(err);
+  } finally {
+    _iterator9.f();
+  }
+
+  for (var _i5 = 0, _potions = potions; _i5 < _potions.length; _i5++) {
+    var potion = _potions[_i5];
+    var effect = effectModifier(potion.potion, "Effect");
+    var n = excludedEffects.has(effect) ? 0 : potion.getOptimalNumberToUse(yachtzees, embezzlers);
+
+    if (n > 0) {
+      var _mutuallyExclusive$ge4;
+
+      potion.use(n);
+
+      var _iterator10 = _createForOfIteratorHelper((_mutuallyExclusive$ge4 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge4 !== void 0 ? _mutuallyExclusive$ge4 : []),
+          _step10;
+
+      try {
+        for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+          var excluded = _step10.value;
+          excludedEffects.add(excluded);
+        }
+      } catch (err) {
+        _iterator10.e(err);
+      } finally {
+        _iterator10.f();
+      }
     }
   }
 }
