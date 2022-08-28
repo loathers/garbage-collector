@@ -89,7 +89,7 @@ import {
   mutuallyExclusive,
   Potion,
   potionSetup,
-  // variableMeatPotionsSetup, // Waiting on the potion PR to be merged
+  variableMeatPotionsSetup,
 } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
@@ -1081,7 +1081,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   }
 
   if (!simOnly) {
-    // variableMeatPotionsSetup(yachtzeeTurns, expectedEmbezzlers);
+    variableMeatPotionsSetup(yachtzeeTurns, expectedEmbezzlers);
     executeNextDietStep(true);
     if (get("_PYECAvailable", false)) {
       maximize("MP", false);
