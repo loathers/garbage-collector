@@ -510,10 +510,10 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     (eff: Effect) =>
       (costOfLosingBuffs +=
         yachtzeeBuffValue(eff) > 0 // We only consider buffs that affect our meat% and fam wt
-          ? haveEffect(eff) <= 1 + toInt(haveFishyPipe) && havePYECCharge // If we lose all the turns of our buff
-            ? (6 + toInt(haveFishyPipe)) * yachtzeeBuffValue(eff) // we also lose the potential of extending it with PYEC (e.g. $effect`smart drunk`)
+          ? haveEffect(eff) <= 1 + toInt(!haveFishyPipe) && havePYECCharge // If we lose all the turns of our buff
+            ? (6 + toInt(!haveFishyPipe)) * yachtzeeBuffValue(eff) // we also lose the potential of extending it with PYEC (e.g. $effect`smart drunk`)
             : haveEffect(eff) + 5 * toInt(havePYECCharge) < yachtzeeTurns // Else if we don't have enough turns of the buff to cover yachtzeeTurns
-            ? (1 + toInt(haveFishyPipe)) * yachtzeeBuffValue(eff) // we lose that many turns worth of value of the buff (e.g. $effect`Puzzle Champ`)
+            ? (1 + toInt(!haveFishyPipe)) * yachtzeeBuffValue(eff) // we lose that many turns worth of value of the buff (e.g. $effect`Puzzle Champ`)
             : 0 // Else, we could potentially lose value from not having enough buffs for embezzlers, but that's out of scope for now
           : 0) // Buffs that don't affect our meat% and fam wt are not considered
   );
