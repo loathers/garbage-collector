@@ -350,7 +350,7 @@ export function safeRestoreMpTarget(): number {
   return Math.min(myMaxmp(), 200);
 }
 
-export function safeRestore(): void {
+export function checkBeatenUp(): void {
   if (have($effect`Beaten Up`)) {
     if (get("lastEncounter") === "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl") {
       uneffect($effect`Beaten Up`);
@@ -360,6 +360,11 @@ export function safeRestore(): void {
       );
     }
   }
+}
+
+export function safeRestore(ignoreBeatenUp = false): void {
+  if (!ignoreBeatenUp) checkBeatenUp();
+
   if (myHp() < myMaxhp() * 0.5) {
     restoreHp(myMaxhp() * 0.9);
   }

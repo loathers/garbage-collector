@@ -27,7 +27,14 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
+import {
+  baseMeat,
+  checkBeatenUp,
+  questStep,
+  safeRestore,
+  safeRestoreMpTarget,
+  setChoice,
+} from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
@@ -41,7 +48,16 @@ Mood.setDefaultOptions({
   useNativeRestores: true,
 });
 
-export function meatMood(urKels = false, meat = baseMeat): Mood {
+class MoodWrapper extends Mood {
+  execute(ensureTurns?: number): boolean {
+    checkBeatenUp(); // Ensure we aren't beaten up before casting blood bond
+    const res = super.execute(ensureTurns);
+    safeRestore(true); // Casting blood bond is a valid reason to get beaten up
+    return res;
+  }
+}
+
+export function meatMood(urKels = false, meat = baseMeat): MoodWrapper {
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
@@ -145,7 +161,7 @@ export function meatMood(urKels = false, meat = baseMeat): Mood {
   return mood;
 }
 
-export function freeFightMood(...additionalEffects: Effect[]): Mood {
+export function freeFightMood(...additionalEffects: Effect[]): MoodWrapper {
   const mood = new Mood();
 
   for (const effect of additionalEffects) {
