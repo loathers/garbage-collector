@@ -1,5 +1,7 @@
 import "core-js/modules/es.object.from-entries";
 import {
+  autosellPrice,
+  availableAmount,
   cliExecute,
   Effect,
   effectModifier,
@@ -10,7 +12,9 @@ import {
   itemAmount,
   itemType,
   mallPrice,
+  numericModifier,
   print,
+  retrievePrice,
   setLocation,
   use,
 } from "kolmafia";
@@ -32,7 +36,7 @@ import {
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost } from "./lib";
+import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
 import { embezzlerCount, estimatedTurns } from "./embezzler";
 import { usingPurse } from "./outfit";
 
@@ -51,6 +55,10 @@ for (const effectGroup of mutuallyExclusiveList) {
       ...effectGroup.filter((other) => other !== effect),
     ]);
   }
+}
+
+function retrieveUntradeablePrice(it: Item) {
+  return retrievePrice(it, availableAmount(it) + 1) - autosellPrice(it) * availableAmount(it);
 }
 
 export interface PotionOptions {
@@ -154,9 +162,12 @@ export class Potion {
 
   price(historical: boolean): number {
     // If asked for historical, and age < 14 days, use historical.
-    return historical && historicalAge(this.potion) < 14
-      ? historicalPrice(this.potion)
-      : mallPrice(this.potion);
+    // If potion is not tradeable, use retrievePrice instead
+    return this.potion.tradeable
+      ? historical && historicalAge(this.potion) < 14
+        ? historicalPrice(this.potion)
+        : mallPrice(this.potion)
+      : retrieveUntradeablePrice(this.potion);
   }
 
   net(embezzlers: number, historical = false): number {
@@ -301,7 +312,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   const price = potion.price(false);
   const amountsAcquired = value.map((value) =>
     (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0
-      ? acquire(value.quantity, potion.potion, value.value, false)
+      ? acquire(value.quantity, potion.potion, value.value, false, undefined, true)
       : 0
   );
 
@@ -337,6 +348,7 @@ export const farmingPotions = [
           new Array(quantity).fill(0).every(() => cliExecute(`genie effect ${effect}`)),
       })
   ),
+  new Potion($item`papier-mâché toothpicks`),
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {
@@ -390,6 +402,8 @@ export function potionSetup(embezzlersOnly: boolean): void {
       }
     }
   }
+
+  variableMeatPotionsSetup(0, embezzlers);
 }
 
 /**
@@ -414,6 +428,151 @@ export function bathroomFinance(embezzlers: number): void {
     if (itemAmount(greenspan) > 0) {
       print(`Using ${greenspan}!`, HIGHLIGHT);
       use(greenspan);
+    }
+  }
+}
+
+function triangleNumber(b: number, a = 0) {
+  return 0.5 * (b * (b + 1) - a * (a + 1));
+}
+
+class VariableMeatPotion {
+  potion: Item;
+  effect: Effect;
+  duration: number;
+  softcap: number; // Number of turns to cap out variable bonus
+  meatBonusPerTurn: number; // meat% bonus per turn
+  cappedMeatBonus: number;
+
+  constructor(
+    potion: Item,
+    softcap: number,
+    meatBonusPerTurn: number,
+    duration?: number,
+    effect?: Effect
+  ) {
+    this.potion = potion;
+    this.effect = effect ?? effectModifier(potion, "Effect");
+    this.duration = duration ?? numericModifier(potion, "Effect Duration");
+    this.softcap = softcap;
+    this.meatBonusPerTurn = meatBonusPerTurn;
+    this.cappedMeatBonus = softcap * meatBonusPerTurn;
+  }
+
+  use(quantity: number): boolean {
+    acquire(quantity, this.potion, (1.2 * retrievePrice(this.potion, quantity)) / quantity, false);
+    if (availableAmount(this.potion) < quantity) return false;
+    return use(quantity, this.potion);
+  }
+
+  price(historical: boolean): number {
+    // If asked for historical, and age < 14 days, use historical.
+    // If potion is not tradeable, use retrievePrice instead
+    return this.potion.tradeable
+      ? historical && historicalAge(this.potion) < 14
+        ? historicalPrice(this.potion)
+        : mallPrice(this.potion)
+      : retrieveUntradeablePrice(this.potion);
+  }
+
+  getOptimalNumberToUse(yachtzees: number, embezzlers: number): number {
+    const barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
+
+    const potionAmountsToConsider: number[] = [];
+    const considerSoftcap = [0, this.softcap];
+    const considerEmbezzlers = embezzlers > 0 ? [0, embezzlers] : [0];
+    for (const fn of [Math.floor, Math.ceil]) {
+      for (const sc of considerSoftcap) {
+        for (const em of considerEmbezzlers) {
+          const considerBarfTurns = em === embezzlers && barfTurns > 0 ? [0, barfTurns] : [0];
+          for (const bt of considerBarfTurns) {
+            const potionAmount = fn((yachtzees + em + bt + sc) / this.duration);
+            if (!potionAmountsToConsider.includes(potionAmount)) {
+              potionAmountsToConsider.push(potionAmount);
+            }
+          }
+        }
+      }
+    }
+
+    const profitsFromPotions = potionAmountsToConsider.map((quantity) => ({
+      quantity,
+      value: this.valueNPotions(quantity, yachtzees, embezzlers, barfTurns),
+    }));
+    const bestOption = profitsFromPotions.reduce((a, b) => (a.value > b.value ? a : b));
+
+    if (bestOption.value > 0) {
+      print(
+        `Expected to profit ${bestOption.value.toFixed(2)} from ${bestOption.quantity} ${
+          this.potion.plural
+        }`,
+        "blue"
+      );
+      const potionsToUse =
+        bestOption.quantity - Math.floor(haveEffect(this.effect) / this.duration);
+      return Math.max(potionsToUse, 0);
+    }
+    return 0;
+  }
+
+  valueNPotions(n: number, yachtzees: number, embezzlers: number, barfTurns: number): number {
+    const yachtzeeValue = 2000;
+    const embezzlerValue = baseMeat + 750;
+    const barfValue = (baseMeat * turnsToNC) / 30;
+
+    const totalCosts = retrievePrice(this.potion, n);
+    const totalDuration = n * this.duration;
+    let cappedDuration = Math.max(0, totalDuration - this.softcap + 1);
+    let decayDuration = Math.min(totalDuration, this.softcap - 1);
+    let totalValue = 0;
+    const turnTypes = [
+      [yachtzees, yachtzeeValue],
+      [embezzlers, embezzlerValue],
+      [barfTurns, barfValue],
+    ];
+
+    for (const [turns, value] of turnTypes) {
+      const cappedTurns = Math.min(cappedDuration, turns);
+      const decayTurns = Math.min(decayDuration, turns - cappedTurns);
+      totalValue +=
+        (value *
+          (cappedTurns * this.cappedMeatBonus +
+            triangleNumber(decayDuration, decayDuration - decayTurns) * this.meatBonusPerTurn)) /
+        100;
+      cappedDuration -= cappedTurns;
+      decayDuration -= decayTurns;
+      if (decayDuration === 0) break;
+    }
+
+    return totalValue - totalCosts;
+  }
+}
+
+export function variableMeatPotionsSetup(yachtzees: number, embezzlers: number): void {
+  const potions = [
+    new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2),
+    new VariableMeatPotion($item`pulled yellow taffy`, 50, 2),
+    // To be added in the future. Specifically, we will have to:
+    // 1) accurately estimate the bulk price (potentially in the millions), and
+    // 2) ensure that we have the meat to complete the entire purchase (a partial purchase would be disastrous).
+    // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
+  ];
+
+  const excludedEffects = new Set<Effect>();
+  for (const effect of getActiveEffects()) {
+    for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+      excludedEffects.add(excluded);
+    }
+  }
+
+  for (const potion of potions) {
+    const effect = effectModifier(potion.potion, "Effect");
+    const n = excludedEffects.has(effect) ? 0 : potion.getOptimalNumberToUse(yachtzees, embezzlers);
+    if (n > 0) {
+      potion.use(n);
+      for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+        excludedEffects.add(excluded);
+      }
     }
   }
 }

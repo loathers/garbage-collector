@@ -84,7 +84,13 @@ import {
 } from "./lib";
 import { meatMood } from "./mood";
 import { familiarWaterBreathingEquipment, useUPCs, waterBreathingEquipment } from "./outfit";
-import { farmingPotions, mutuallyExclusive, Potion, potionSetup } from "./potions";
+import {
+  farmingPotions,
+  mutuallyExclusive,
+  Potion,
+  potionSetup,
+  variableMeatPotionsSetup,
+} from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
 
@@ -1043,6 +1049,7 @@ function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   }
 
   if (!simOnly) {
+    variableMeatPotionsSetup(yachtzeeTurns, expectedEmbezzlers);
     executeNextDietStep(true);
     if (get("_PYECAvailable", false)) {
       maximize("MP", false);
