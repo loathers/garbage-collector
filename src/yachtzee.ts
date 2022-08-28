@@ -505,15 +505,16 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   // Compute the cost of losing buffs if we spend turns getting fishy using clovers
   const havePYECCharge = get("_PYECAvailable", false);
   const haveFishyPipe = have($item`fishy pipe`) && !get("_fishyPipeUsed", false);
+  const haveFishyPreClovering = haveFishyPipe || have($effect`Fishy`);
   let costOfLosingBuffs = 0;
   getActiveEffects().forEach(
     (eff: Effect) =>
       (costOfLosingBuffs +=
         yachtzeeBuffValue(eff) > 0 // We only consider buffs that affect our meat% and fam wt
-          ? haveEffect(eff) <= 1 + toInt(!haveFishyPipe) && havePYECCharge // If we lose all the turns of our buff
-            ? (6 + toInt(!haveFishyPipe)) * yachtzeeBuffValue(eff) // we also lose the potential of extending it with PYEC (e.g. $effect`smart drunk`)
+          ? haveEffect(eff) <= 1 + toInt(!haveFishyPreClovering) && havePYECCharge // If we lose all the turns of our buff
+            ? (6 + toInt(!haveFishyPreClovering)) * yachtzeeBuffValue(eff) // we also lose the potential of extending it with PYEC (e.g. $effect`smart drunk`)
             : haveEffect(eff) + 5 * toInt(havePYECCharge) < yachtzeeTurns // Else if we don't have enough turns of the buff to cover yachtzeeTurns
-            ? (1 + toInt(!haveFishyPipe)) * yachtzeeBuffValue(eff) // we lose that many turns worth of value of the buff (e.g. $effect`Puzzle Champ`)
+            ? (1 + toInt(!haveFishyPreClovering)) * yachtzeeBuffValue(eff) // we lose that many turns worth of value of the buff (e.g. $effect`Puzzle Champ`)
             : 0 // Else, we could potentially lose value from not having enough buffs for embezzlers, but that's out of scope for now
           : 0) // Buffs that don't affect our meat% and fam wt are not considered
   );
@@ -621,9 +622,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     {
       name: "Just Fishy Pipe",
       cost:
-        Math.max(toInt(!haveFishyPipe) * haveEffect($effect`Fishy`), toInt(haveFishyPipe) * 10) +
-          5 * toInt(havePYECCharge) <
-        yachtzeeTurns
+        (haveFishyPipe ? 10 : haveEffect($effect`Fishy`)) + (havePYECCharge ? 5 : 0) < yachtzeeTurns
           ? Infinity
           : 0,
       action: () => {
