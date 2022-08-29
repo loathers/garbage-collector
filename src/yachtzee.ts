@@ -623,7 +623,8 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
     {
       name: "Just Fishy Pipe",
       cost:
-        (haveFishyPipe ? 10 : haveEffect($effect`Fishy`)) + (havePYECCharge ? 5 : 0) < yachtzeeTurns
+        (haveFishyPipe ? 10 : haveEffect($effect`Fishy`)) + (pyecAvailable() ? 5 : 0) <
+        yachtzeeTurns
           ? Infinity
           : 0,
       action: () => {
@@ -651,10 +652,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (get("_garboYachtzeeChainDietPlanned", false)) return true;
 
   const havePYECCharge = pyecAvailable();
-  const maxYachtzeeTurns = havePYECCharge ? 35 : 30;
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
   const haveDogHairPill = !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`);
-  const havePYECCharge = get("_PYECAvailable", false);
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   const filters = 3 - get("currentMojoFilters");
