@@ -249,7 +249,10 @@ function initializeDireWarren(): void {
         $location`The Dire Warren`,
         Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).step(embezzlerMacro())
       );
-    } while ("fluffy bunny" !== get("lastEncounter"));
+    } while (
+      "fluffy bunny" !== get("lastEncounter") &&
+      banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`
+    );
   } else {
     const banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
     acquire(1, banish, 50000, true);
