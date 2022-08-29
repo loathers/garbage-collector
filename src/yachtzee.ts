@@ -518,7 +518,6 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   }
   safeRestore();
 
-  // Compute the cost of losing buffs if we spend turns getting fishy using clovers
   const haveFishyPipe = have($item`fishy pipe`) && !get("_fishyPipeUsed");
   const adventureExtensionBonus = pyecAvailable() ? 5 : 0;
   const fishySources = [
