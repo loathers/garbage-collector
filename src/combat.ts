@@ -572,7 +572,7 @@ export class Macro extends StrictMacro {
       stunRounds < 3 &&
       classStun !== $skill`Entangling Noodles` &&
       have($skill`Shadow Noodles`) &&
-      myMp() >= mpCost(classStun ?? $skill`none`) + mpCost($skill`Shadow Noodles`)
+      myMp() >= mpCost(classStun ?? $skill.none) + mpCost($skill`Shadow Noodles`)
     ) {
       extraStun = $skill`Shadow Noodles`;
       stunRounds += 2;

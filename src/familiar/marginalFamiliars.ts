@@ -84,7 +84,7 @@ function familiarModifier(familiar: Familiar, modifier: NumericModifier): number
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   const totalWeight = familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
 
-  return numericModifier(familiar, modifier, totalWeight, $item`none`);
+  return numericModifier(familiar, modifier, totalWeight, $item.none);
 }
 
 function familiarAbilityValue(familiar: Familiar) {

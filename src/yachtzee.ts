@@ -486,7 +486,7 @@ function getBestWaterBreathingEquipment(yachtzeeTurns: number): { item: Item; co
         : Infinity,
   }));
   const bestWaterBreathingEquipment = waterBreathingEquipment.some((item) => haveEquipped(item))
-    ? { item: $item`none`, cost: 0 }
+    ? { item: $item.none, cost: 0 }
     : waterBreathingEquipmentCosts.reduce((left, right) => (left.cost < right.cost ? left : right));
   return bestWaterBreathingEquipment;
 }
@@ -499,7 +499,7 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
   if (
     setup &&
     !have($effect`Really Deep Breath`) &&
-    bestWaterBreathingEquipment.item !== $item`none`
+    bestWaterBreathingEquipment.item !== $item.none
   ) {
     equip(bestWaterBreathingEquipment.item);
   }
@@ -1181,7 +1181,7 @@ export function bestYachtzeeFamiliar(): Familiar {
     );
   });
 
-  if (sortedUnderwaterFamiliars.length === 0) return $familiar`none`;
+  if (sortedUnderwaterFamiliars.length === 0) return $familiar.none;
   print(`Best Familiar: ${sortedUnderwaterFamiliars[0]}`, "blue");
   return sortedUnderwaterFamiliars[0];
 }
@@ -1309,7 +1309,7 @@ function _yachtzeeChain(): void {
       const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(
         Math.min(jellyTurns, fishyTurns)
       );
-      if (bestWaterBreathingEquipment.item !== $item`none`) equip(bestWaterBreathingEquipment.item);
+      if (bestWaterBreathingEquipment.item !== $item.none) equip(bestWaterBreathingEquipment.item);
       if (
         haveEquipped($item`The Crown of Ed the Undying`) &&
         !booleanModifier("Adventure Underwater")

@@ -545,17 +545,17 @@ function checkVolcanoQuest() {
   const volcoinoValue = garboValue($item`Volcoino`);
   const bestItem = [
     {
-      item: property.getItem("_volcanoItem1") ?? $item`none`,
+      item: property.getItem("_volcanoItem1") ?? $item.none,
       quantity: get("_volcanoItemCount1"),
       choice: 1,
     },
     {
-      item: property.getItem("_volcanoItem2") ?? $item`none`,
+      item: property.getItem("_volcanoItem2") ?? $item.none,
       quantity: get("_volcanoItemCount2"),
       choice: 2,
     },
     {
-      item: property.getItem("_volcanoItem3") ?? $item`none`,
+      item: property.getItem("_volcanoItem3") ?? $item.none,
       quantity: get("_volcanoItemCount3"),
       choice: 3,
     },
@@ -609,14 +609,14 @@ function tomeSummons(): void {
   });
 
   if (have($skill`Summon Clip Art`) && $skill`Summon Clip Art`.dailylimit > 0) {
-    let best = $item`none`;
+    let best = $item.none;
     for (let itemId = 5224; itemId <= 5283; itemId++) {
       const current = Item.get(`[${itemId}]`);
       if (garboValue(current) > garboValue(best)) {
         best = current;
       }
     }
-    if (best !== $item`none`) {
+    if (best !== $item.none) {
       cliExecute(`try; create ${$skill`Summon Clip Art`.dailylimit} ${best}`);
     }
   }

@@ -235,7 +235,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     }
   }
 
-  if (stickerSlots.map((s) => equippedItem(s)).includes($item`none`)) {
+  if (stickerSlots.map((s) => equippedItem(s)).includes($item.none)) {
     preventEquip.push(...$items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`);
   }
 
@@ -351,7 +351,7 @@ export function useUPCs(): void {
     const sticker = equippedItem(slot);
     if (sticker === UPC) continue;
     visitUrl("bedazzle.php");
-    if (sticker !== $item`none`) {
+    if (sticker !== $item.none) {
       visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
     }
     visitUrl(`bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`);
