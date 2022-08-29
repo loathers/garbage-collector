@@ -16565,7 +16565,7 @@ function toasterGaze() {
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4564);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -16731,14 +16731,14 @@ function initializeDireWarren() {
     }).maximize();
 
     do {
-      adventureMacro($location(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.skill($skill(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["Batter Up!"]))))).step(embezzlerMacro()));
-    } while ("fluffy bunny" !== get("lastEncounter"));
+      adventureMacro($location(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.skill($skill(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["Batter Up!"]))))).step(embezzlerMacro()));
+    } while ("fluffy bunny" !== get("lastEncounter") && banishedMonsters.get($skill(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["Batter Up!"])))) !== $monster(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["fluffy bunny"]))));
   } else {
     var banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
     acquire(1, banish, 50000, true);
 
     do {
-      adventureMacro($location(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
+      adventureMacro($location(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
     } while ("fluffy bunny" !== get("lastEncounter"));
   }
 }
@@ -17749,7 +17749,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("75ab094eb53eee12cf2d17337ee0ec9bfcd90cd6" === mainSha) {
+    if ("c0b5d96fd202d449d620b9c3f9bfcf47e2d2aca4" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
