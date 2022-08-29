@@ -18,9 +18,9 @@ import {
   myAdventures,
   myClass,
   myGardenType,
+  myId,
   myInebriety,
   myLevel,
-  myName,
   myTurncount,
   print,
   putStash,
@@ -325,13 +325,13 @@ export function canContinue(): boolean {
 }
 
 const players = new Map([
-  ["wrar", `"Finally."`],
-  ["shanakor", "KoL is not an incremental game."],
+  ["1267204", `"Finally."`],
+  ["2284327", "KoL is not an incremental game."],
 ]);
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(26634);
-  const errMessage = players.get(myName());
+  const errMessage = players.get(myId());
   if (errMessage) throw new Error(errMessage);
 
   print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
