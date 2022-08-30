@@ -679,10 +679,14 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const cleanableSpleen = organsAvailable - synthCastsToCoverRun - extroSpleenSpace;
   const sufficientOrgansFor = (yachtzees: number) =>
     cleanableSpleen >= yachtzees + (havePYECCharge ? 5 : 0);
+
   const possibleBaseYachtzeeTurns = [30, 20, 10];
-  const baseYachtzeeTurns = possibleBaseYachtzeeTurns.reduce((a, b) =>
-    sufficientOrgansFor(a) ? a : b
-  );
+  const baseYachtzeeTurns = possibleBaseYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
+
+  if (baseYachtzeeTurns === 0) {
+    print("Determined that there are no suitable number of turns to chain yachtzees", "red");
+    return false;
+  }
 
   const maxYachtzeeTurns = havePYECCharge ? baseYachtzeeTurns + 5 : baseYachtzeeTurns;
   print(`Synth Casts Wanted: ${synthCastsToCoverRun}`, "blue");
