@@ -955,7 +955,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
-      useFamiliar($familiar`none`);
+      useFamiliar($familiar.none);
     }
 
     MenuItem.defaultPriceFunction = (item: Item) => {
