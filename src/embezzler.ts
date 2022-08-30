@@ -892,6 +892,29 @@ export function embezzlerCount(): number {
   return sum(embezzlerSources, (source: EmbezzlerFight) => source.potential());
 }
 
+function potentialFullnessAdventures(): number {
+  const distentionPillSpace = have($item`distention pill`) && !get("_distentionPillUsed") ? 1 : 0;
+
+  return (fullnessLimit() - myFullness() + distentionPillSpace) * 8;
+}
+
+function potentialInebrietyAdventures(): number {
+  const syntheticPillSpace =
+    have($item`synthetic dog hair pill`) && !get("_syntheticDogHairPillUsed") ? 1 : 0;
+  const shotglassSpace = have($item`mime army shotglass`) && !get("_mimeArmyShotglassUsed") ? 1 : 0;
+  const sweatSpace = have($item`designer sweatpants`) ? 3 - get("_sweatOutSomeBoozeUsed") : 0;
+
+  return (inebrietyLimit() - myInebriety() + syntheticPillSpace + sweatSpace + shotglassSpace) * 7;
+}
+
+function potentialNonOrganAdventures(): number {
+  const borrowedTimeAdventures = globalOptions.ascending && !get("_borrowedTimeUsed") ? 20 : 0;
+  const chocolateAdventures = ((3 - get("_chocolatesUsed")) * (4 - get("_chocolatesUsed"))) / 2;
+  const bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
+
+  return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
+}
+
 export function estimatedTurns(): number {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
   const pantsgivingAdventures = have($item`Pantsgiving`)
@@ -912,26 +935,13 @@ export function estimatedTurns(): number {
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
   // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
-  const distentionPillSpace = have($item`distention pill`) && !get("_distentionPillUsed") ? 1 : 0;
-  const syntheticPillSpace =
-    have($item`synthetic dog hair pill`) && !get("_syntheticDogHairPillUsed") ? 1 : 0;
-  const shotglassSpace = have($item`mime army shotglass`) && !get("_mimeArmyShotglassUsed") ? 1 : 0;
-  const sweatSpace = have($item`designer sweatpants`) ? 3 - get("_sweatOutSomeBoozeUsed") : 0;
-  const fullnessAdventures = (fullnessLimit() - myFullness() + distentionPillSpace) * 8;
-  const inebrietyAdventures =
-    (inebrietyLimit() - myInebriety() + syntheticPillSpace + sweatSpace + shotglassSpace) * 7;
-  const borrowedTimeAdventures = globalOptions.ascending && !get("_borrowedTimeUsed") ? 20 : 0;
-  const chocolateAdventures = ((3 - get("_chocolatesUsed")) * (4 - get("_chocolatesUsed"))) / 2;
   const yachtzeeTurns = 30; // guesstimate
-  const bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
   const adventuresAfterChaining =
     globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted")
       ? Math.max(
-          fullnessAdventures +
-            inebrietyAdventures +
-            borrowedTimeAdventures +
-            chocolateAdventures +
-            bufferAdventures -
+          potentialFullnessAdventures() +
+            potentialInebrietyAdventures() +
+            potentialNonOrganAdventures() -
             yachtzeeTurns,
           0
         )
