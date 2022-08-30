@@ -16014,7 +16014,7 @@ function stickers(equipMode) {
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7442);
 /* harmony import */ var _outfit__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1730);
 /* harmony import */ var _wanderer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5444);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -16472,18 +16472,39 @@ var embezzlerSources = [].concat(wanderSources, conditionalSources, copySources,
 function embezzlerCount() {
   return (0,libram__WEBPACK_IMPORTED_MODULE_18__/* .sum */ .Sm)(embezzlerSources, source => source.potential());
 }
+
+function potentialFullnessAdventures() {
+  var distentionPillSpace = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject142 || (_templateObject142 = _taggedTemplateLiteral(["distention pill"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_distentionPillUsed") ? 1 : 0;
+  return ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fullnessLimit)() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFullness)() + distentionPillSpace) * 8;
+}
+
+function potentialInebrietyAdventures() {
+  var syntheticPillSpace = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject143 || (_templateObject143 = _taggedTemplateLiteral(["synthetic dog hair pill"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_syntheticDogHairPillUsed") ? 1 : 0;
+  var shotglassSpace = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject144 || (_templateObject144 = _taggedTemplateLiteral(["mime army shotglass"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_mimeArmyShotglassUsed") ? 1 : 0;
+  var sweatSpace = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject145 || (_templateObject145 = _taggedTemplateLiteral(["designer sweatpants"])))) ? 3 - (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_sweatOutSomeBoozeUsed") : 0;
+  return ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() + syntheticPillSpace + sweatSpace + shotglassSpace) * 7;
+}
+
+function potentialNonOrganAdventures() {
+  var borrowedTimeAdventures = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.ascending */ .Xe.ascending && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_borrowedTimeUsed") ? 20 : 0;
+  var chocolateAdventures = (3 - (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_chocolatesUsed")) * (4 - (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_chocolatesUsed")) / 2;
+  var bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
+
+  return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
+}
+
 function estimatedTurns() {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
-  var pantsgivingAdventures = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject142 || (_templateObject142 = _taggedTemplateLiteral(["Pantsgiving"])))) ? Math.max(0, 2 - (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_pantsgivingFullness")) * 8 : 0;
-  var potentialSausages = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject143 || (_templateObject143 = _taggedTemplateLiteral(["magical sausage"])))) + (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject144 || (_templateObject144 = _taggedTemplateLiteral(["magical sausage casing"]))));
-  var sausageAdventures = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject145 || (_templateObject145 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) ? Math.min(potentialSausages, 23 - (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_sausagesEaten")) : 0;
-  var thesisAdventures = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$familiar */ .HP)(_templateObject146 || (_templateObject146 = _taggedTemplateLiteral(["Pocket Professor"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_thesisDelivered") ? 11 : 0;
-  var nightcapAdventures = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.ascending */ .Xe.ascending && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)() && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject147 || (_templateObject147 = _taggedTemplateLiteral(["Drunkula's wineglass"])))) ? 60 : 0;
+  var pantsgivingAdventures = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject146 || (_templateObject146 = _taggedTemplateLiteral(["Pantsgiving"])))) ? Math.max(0, 2 - (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_pantsgivingFullness")) * 8 : 0;
+  var potentialSausages = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject147 || (_templateObject147 = _taggedTemplateLiteral(["magical sausage"])))) + (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemAmount)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject148 || (_templateObject148 = _taggedTemplateLiteral(["magical sausage casing"]))));
+  var sausageAdventures = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject149 || (_templateObject149 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) ? Math.min(potentialSausages, 23 - (0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_sausagesEaten")) : 0;
+  var thesisAdventures = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$familiar */ .HP)(_templateObject150 || (_templateObject150 = _taggedTemplateLiteral(["Pocket Professor"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_thesisDelivered") ? 11 : 0;
+  var nightcapAdventures = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.ascending */ .Xe.ascending && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)() && (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject151 || (_templateObject151 = _taggedTemplateLiteral(["Drunkula's wineglass"])))) ? 60 : 0;
   var thumbRingMultiplier = (0,_dropsgear__WEBPACK_IMPORTED_MODULE_3__/* .usingThumbRing */ .uv)() ? 1 / 0.96 : 1; // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
 
-  var fullnessAdventures = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fullnessLimit)() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFullness)()) * 8;
-  var inebrietyAdventures = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)() - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)()) * 7;
-  var adventuresAfterChaining = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.yachtzeeChain */ .Xe.yachtzeeChain && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_garboYachtzeeChainCompleted") ? Math.max(fullnessAdventures + inebrietyAdventures - 30, 0) : 0;
+  var yachtzeeTurns = 30; // guesstimate
+
+  var adventuresAfterChaining = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.yachtzeeChain */ .Xe.yachtzeeChain && !(0,libram__WEBPACK_IMPORTED_MODULE_9__/* .get */ .U2)("_garboYachtzeeChainCompleted") ? Math.max(potentialFullnessAdventures() + potentialInebrietyAdventures() + potentialNonOrganAdventures() - yachtzeeTurns, 0) : 0;
   var turns;
   if (_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.stopTurncount */ .Xe.stopTurncount) turns = _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.stopTurncount */ .Xe.stopTurncount - (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myTurncount)();else if (_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.noBarf */ .Xe.noBarf) turns = embezzlerCount();else if (_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.saveTurns */ .Xe.saveTurns > 0 || !_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.ascending */ .Xe.ascending) {
     turns = ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() + sausageAdventures + pantsgivingAdventures + thesisAdventures + adventuresAfterChaining - _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.saveTurns */ .Xe.saveTurns) * thumbRingMultiplier;
@@ -16506,7 +16527,7 @@ function getNextEmbezzlerFight() {
   var conditional = conditionalSources.find(fight => fight.available());
 
   if (conditional) {
-    var leftoverReplacers = (have($skill(_templateObject148 || (_templateObject148 = _taggedTemplateLiteral(["Meteor Lore"])))) ? 10 - get("_macrometeoriteUses") : 0) + (have($item(_templateObject149 || (_templateObject149 = _taggedTemplateLiteral(["Powerful Glove"])))) ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10) : 0); // we don't want to reset our orb with a gregarious fight; that defeats the purpose
+    var leftoverReplacers = (have($skill(_templateObject152 || (_templateObject152 = _taggedTemplateLiteral(["Meteor Lore"])))) ? 10 - get("_macrometeoriteUses") : 0) + (have($item(_templateObject153 || (_templateObject153 = _taggedTemplateLiteral(["Powerful Glove"])))) ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10) : 0); // we don't want to reset our orb with a gregarious fight; that defeats the purpose
 
     var skip = conditional.name === "Be Gregarious" && crateStrategy() === "Orb" && leftoverReplacers;
     if (!skip) return conditional;
@@ -16526,11 +16547,11 @@ function getNextEmbezzlerFight() {
 function proceedWithOrb() {
   var strat = (0,_extrovermectin__WEBPACK_IMPORTED_MODULE_4__/* .crateStrategy */ .Gc)(); // If we can't possibly use orb, return true
 
-  if (!(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject150 || (_templateObject150 = _taggedTemplateLiteral(["miniature crystal ball"])))) || strat !== "Orb") return true; // If we're using orb, we have a KGE prediction, and we can reset it, return false
+  if (!(0,libram__WEBPACK_IMPORTED_MODULE_10__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$item */ .xr)(_templateObject154 || (_templateObject154 = _taggedTemplateLiteral(["miniature crystal ball"])))) || strat !== "Orb") return true; // If we're using orb, we have a KGE prediction, and we can reset it, return false
 
   var gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
 
-  if (libram__WEBPACK_IMPORTED_MODULE_16__/* .ponder */ .DF().get((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$location */ .PG)(_templateObject151 || (_templateObject151 = _taggedTemplateLiteral(["Noob Cave"])))) === embezzler && embezzlerSources.filter(source => !gregFightNames.includes(source.name)).find(source => source.available())) {
+  if (libram__WEBPACK_IMPORTED_MODULE_16__/* .ponder */ .DF().get((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$location */ .PG)(_templateObject155 || (_templateObject155 = _taggedTemplateLiteral(["Noob Cave"])))) === embezzler && embezzlerSources.filter(source => !gregFightNames.includes(source.name)).find(source => source.available())) {
     return false;
   }
 
@@ -16539,7 +16560,7 @@ function proceedWithOrb() {
 
 function toasterGaze() {
   try {
-    var store = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toUrl)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$location */ .PG)(_templateObject152 || (_templateObject152 = _taggedTemplateLiteral(["The Shore, Inc. Travel Agency"])))));
+    var store = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toUrl)((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .$location */ .PG)(_templateObject156 || (_templateObject156 = _taggedTemplateLiteral(["The Shore, Inc. Travel Agency"])))));
 
     if (!store.includes("Check out the gift shop")) {
       (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Unable to stare longingly at toast");
@@ -17759,7 +17780,7 @@ function checkGithubVersion() {
     var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
     var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
 
-    if ("77bc7cf4a63586d59f428a0638ff2b2800dc65c0" === mainSha) {
+    if ("bde1e3560bf90b93da45147709c0ead4a9b5b9c7" === mainSha) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       print("Garbo is out of date. Please run 'svn update!", "red");
