@@ -180,18 +180,17 @@ function voterSetup(): void {
       })
     );
 
-    const ballotValue =
-      sum(
-        Object.values(availableInitiatives)
-          .sort((a, b) => b - a)
-          .slice(1),
-        (val) => 2 * val
-      ) +
-      3 * get("garbo_valueOfFreeFight", 2000);
-
+    const initiativeValue = sum(
+      Object.values(availableInitiatives)
+        .sort((a, b) => b - a)
+        .slice(1),
+      (val) => 2 * val
+    );
+    const fightValue = 3 * get("garbo_valueOfFreeFight", 2000);
+    const ballotValue = initiativeValue + fightValue;
     if (
       ballotValue > mallPrice($item`absentee voter ballot`) &&
-      acquire(1, $item`absentee voter ballot`, ballotValue)
+      acquire(1, $item`absentee voter ballot`, ballotValue, false)
     ) {
       visitUrl(`inv_use.php?which=3&whichitem=9991&pwd=${myHash()}`);
     } else return;
