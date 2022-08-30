@@ -673,9 +673,11 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     (3 - get("_sweatOutSomeBoozeUsed", 0));
   const spleenAvailable = currentSpleenLeft + filters;
   const organsAvailable = fullnessAvailable + inebrietyAvailable + spleenAvailable;
-  const sufficientOrgans =
+  const sufficientOrgansFor30 =
     organsAvailable - synthCastsToCoverRun - extroSpleenSpace >= 30 + 5 * toInt(havePYECCharge);
-  const baseYachtzeeTurns = sufficientOrgans ? 30 : 10;
+  const sufficientOrgansFor20 =
+    organsAvailable - synthCastsToCoverRun - extroSpleenSpace >= 20 + 5 * toInt(havePYECCharge);
+  const baseYachtzeeTurns = sufficientOrgansFor30 ? 30 : sufficientOrgansFor20 ? 20 : 10;
 
   const maxYachtzeeTurns = havePYECCharge ? baseYachtzeeTurns + 5 : baseYachtzeeTurns;
   print(`Synth Casts Wanted: ${synthCastsToCoverRun}`, "blue");
