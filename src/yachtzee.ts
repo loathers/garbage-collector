@@ -531,7 +531,9 @@ function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number {
         acquire(1, $item`fish juice box`, 1.2 * mallPrice($item`fish juice box`));
         if (!have($item`fish juice box`)) throw new Error("Unable to obtain fish juice box");
         use(1, $item`fish juice box`);
-        if (haveFishyPipe) use(1, $item`fishy pipe`);
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
       },
     },
     {
