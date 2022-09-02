@@ -3,6 +3,7 @@ import {
   canAdventure,
   currentRound,
   inebrietyLimit,
+  Location,
   myAdventures,
   myInebriety,
   myLevel,
@@ -36,14 +37,7 @@ import { Macro, withMacro } from "./combat";
 import { completeBarfQuest } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
-import {
-  embezzlerLog,
-  globalOptions,
-  kramcoGuaranteed,
-  safeRestore,
-  setChoice,
-  steveAdventures,
-} from "./lib";
+import { embezzlerLog, globalOptions, kramcoGuaranteed, safeRestore, setChoice } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -71,6 +65,19 @@ function logEmbezzler(encountertype: string) {
 }
 
 const sober = () => myInebriety() <= inebrietyLimit();
+
+// Lights Out adventures require you to take several choices in a row
+// Are they separate choice adventures with their own IDs? No! Of course not.
+// That would be too easy.
+const steveAdventures: Map<Location, number[]> = new Map([
+  [$location`The Haunted Bedroom`, [1, 3, 1]],
+  [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
+  [$location`The Haunted Conservatory`, [1, 2, 2]],
+  [$location`The Haunted Billiards Room`, [1, 2, 2]],
+  [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
+  [$location`The Haunted Boiler Room`, [1, 2, 2]],
+  [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
+]);
 
 type Turn = {
   name: string;
