@@ -65,20 +65,30 @@ function freeFightPrep(requirements?: Requirement) {
   freeFightOutfit(requirements);
 }
 
+function logEmbezzler(encountertype: string) {
+  embezzlerLog.initialEmbezzlersFought++;
+  embezzlerLog.sources.push(encountertype === "Digitize" ? encountertype : "Unknown Source");
+}
+
 const sober = () => myInebriety() <= inebrietyLimit();
 
 type Turn = {
   name: string;
+
+  // Can we take this turn-action right now?
   available: () => boolean;
-  perform: () => boolean;
+
+  // Take the turn-action. Returns whether we succeeded in doing so.
+  execute: () => boolean;
 };
 
+// This is roughly ordered by the encounter ontology, followed by general priority
 const turns: Turn[] = [
   {
     name: "Lights Out",
     available: () =>
       totalTurnsPlayed() % 37 === 0 && totalTurnsPlayed() !== get("lastLightsOutTurn"),
-    perform: () => {
+    execute: () => {
       const steveRoom = get("nextSpookyravenStephenRoom");
       const ghostLocation = get("ghostLocation");
       if (steveRoom && canAdventure(steveRoom) && steveRoom !== ghostLocation) {
@@ -111,7 +121,7 @@ const turns: Turn[] = [
       have($item`protonic accelerator pack`) &&
       get("questPAGhost") !== "unstarted" &&
       !!get("ghostLocation"),
-    perform: () => {
+    execute: () => {
       const ghostLocation = get("ghostLocation");
       if (!ghostLocation) return false;
       freeFightPrep(
@@ -134,7 +144,7 @@ const turns: Turn[] = [
       totalTurnsPlayed() % 11 === 1 &&
       get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
       get("_voteFreeFights") < 3,
-    perform: () => {
+    execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`"I Voted!" sticker` }));
       adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
       return get("lastVoteMonsterTurn") === totalTurnsPlayed();
@@ -143,7 +153,7 @@ const turns: Turn[] = [
   {
     name: "Digitize Wanderer",
     available: () => Counter.get("Digitize Monster") <= 0,
-    perform: () => {
+    execute: () => {
       const isEmbezzler = get("_sourceTerminalDigitizeMonster") === embezzler;
       const start = get("_sourceTerminalDigitizeMonsterCount");
 
@@ -170,7 +180,7 @@ const turns: Turn[] = [
   {
     name: "Guaranteed Kramco",
     available: () => sober() && kramcoGuaranteed(),
-    perform: () => {
+    execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
       adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
       return !kramcoGuaranteed();
@@ -183,7 +193,7 @@ const turns: Turn[] = [
       have($item`cursed magnifying glass`) &&
       get("cursedMagnifyingGlassCount") === 13 &&
       get("_voidFreeFights") < 5,
-    perform: () => {
+    execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
       adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
       return get("cursedMagnifyingGlassCount") === 0;
@@ -193,7 +203,7 @@ const turns: Turn[] = [
     name: "Envyfish Egg",
     available: () =>
       have($item`envyfish egg`) && get("envyfishMonster") === embezzler && !get("_envyfishEggUsed"),
-    perform: () => {
+    execute: () => {
       embezzlerPrep();
       withMacro(Macro.meatKill(), () => use($item`envyfish egg`), true);
       return get("_envyfishEggUsed");
@@ -206,7 +216,7 @@ const turns: Turn[] = [
       globalOptions.ascending &&
       clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
         availableAmount($item`Map to Safety Shelter Grimace Prime`),
-    perform: () => {
+    execute: () => {
       const choiceToSet =
         availableAmount($item`distention pill`) <
         availableAmount($item`synthetic dog hair pill`) +
@@ -222,7 +232,7 @@ const turns: Turn[] = [
   {
     name: "Barf",
     available: () => true,
-    perform: () => {
+    execute: () => {
       useFamiliar(barfFamiliar());
       const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
       meatOutfit(
@@ -251,17 +261,14 @@ export default function barfTurn(): void {
   safeRestore();
 
   const startTurns = totalTurnsPlayed();
-  for (const { name, available, perform } of turns) {
-    if (available()) {
-      const success = perform();
+  for (const turn of turns) {
+    if (turn.available()) {
+      const success = turn.execute();
       if (success) {
-        if (
-          totalTurnsPlayed() - startTurns === 1 &&
-          get("lastEncounter") === "Knob Goblin Embezzler"
-        ) {
-          embezzlerLog.initialEmbezzlersFought++;
-          embezzlerLog.sources.push(name === "Digitize" ? name : "Unknown Source");
-        }
+        const spentATurn = totalTurnsPlayed() - startTurns === 1;
+        const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
+        if (spentATurn && foughtAnEmbezzler) logEmbezzler(turn.name);
+
         return;
       }
     }
