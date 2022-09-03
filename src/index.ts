@@ -38,7 +38,6 @@ import {
   have,
   haveInCampground,
   JuneCleaver,
-  property,
   set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
@@ -94,14 +93,8 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26634);
-  print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
-  const forbiddenStores = property.getString("forbiddenStores").split(",");
-  if (!forbiddenStores.includes("3408540")) {
-    // Van & Duffel's Baleet Shop
-    forbiddenStores.push("3408540");
-    set("forbiddenStores", forbiddenStores.join(","));
-  }
+  sinceKolmafiaRevision(26713);
+  checkGithubVersion();
 
   if (get("garbo_autoUserConfirm", false)) {
     print(
@@ -164,7 +157,6 @@ export function main(argString = ""): void {
     } else if (arg.match(/yachtzeechain/)) {
       globalOptions.yachtzeeChain = true;
     } else if (arg.match(/version/i)) {
-      checkGithubVersion();
       return;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");

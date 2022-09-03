@@ -7,6 +7,8 @@ import {
   fileToBuffer,
   gametimeToInt,
   getLocketMonsters,
+  gitAtHead,
+  gitInfo,
   handlingChoice,
   haveSkill,
   inebrietyLimit,
@@ -377,20 +379,27 @@ export function safeRestore(): void {
   burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
 
+/**
+ * Compares the local version of Garbo against the most recent release branch, printing results to the CLI
+ */
 export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
   } else {
-    const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-      visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
-    );
-    const mainBranch = gitBranches.find((branchInfo) => branchInfo.name === "main");
-    const mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
-    if (process.env.GITHUB_SHA === mainSha) {
+    if (gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
-      print("Garbo is out of date. Please run 'svn update!", "red");
-      print(`${process.env.GITHUB_REPOSITORY}/main is at ${mainSha}`);
+      const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
+        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
+      );
+      const releaseCommit = gitBranches.find((branchInfo) => branchInfo.name === "release")?.commit;
+      print("Garbo is out of date. Please run 'git update!'", "red");
+      print(
+        `Local Version: ${
+          gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit
+        }.`
+      );
+      print(`Release Version: ${releaseCommit}.`);
     }
   }
 }
