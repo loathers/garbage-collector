@@ -67,8 +67,6 @@ function logEmbezzler(encountertype: string) {
 const sober = () => myInebriety() <= inebrietyLimit();
 
 // Lights Out adventures require you to take several choices in a row
-// Are they separate choice adventures with their own IDs? No! Of course not.
-// That would be too easy.
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
   [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
@@ -79,18 +77,19 @@ const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
 ]);
 
-type Turn = {
+/**
+ * Describes an action we could take as part of our barf-turn loop.
+ * Has a name, a a function to determine availability, and a function that executes the turn.
+ * Execute function returns whether we succeeded.
+ */
+type AdventureAction = {
   name: string;
-
-  // Can we take this turn-action right now?
   available: () => boolean;
-
-  // Take the turn-action. Returns whether we succeeded in doing so.
   execute: () => boolean;
 };
 
 // This is roughly ordered by the encounter ontology, followed by general priority
-const turns: Turn[] = [
+const turns: AdventureAction[] = [
   {
     name: "Lights Out",
     available: () =>
@@ -161,7 +160,7 @@ const turns: Turn[] = [
     name: "Digitize Wanderer",
     available: () => Counter.get("Digitize Monster") <= 0,
     execute: () => {
-      const isEmbezzler = get("_sourceTerminalDigitizeMonster") === embezzler;
+      const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
       const start = get("_sourceTerminalDigitizeMonsterCount");
 
       const shouldGoUnderwater =
