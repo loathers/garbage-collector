@@ -21610,13 +21610,13 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
 })];
 
 function sandwormRequirement() {
-  return new maximize/* Requirement */.nb(["100 Item Drop"], (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject396 || (_templateObject396 = fights_taggedTemplateLiteral(["January's Garbage Tote"])))) && (0,property/* get */.U2)("garbageChampagneCharge") > 0 ? {
+  return maximize/* Requirement.merge */.nb.merge([new maximize/* Requirement */.nb(["100 Item Drop"], (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject396 || (_templateObject396 = fights_taggedTemplateLiteral(["January's Garbage Tote"])))) && (0,property/* get */.U2)("garbageChampagneCharge") > 0 ? {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject397 || (_templateObject397 = fights_taggedTemplateLiteral(["broken champagne bottle"])))
-  } : {}).merge(new maximize/* Requirement */.nb([], (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject398 || (_templateObject398 = fights_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))) && (0,property/* get */.U2)("_otoscopeUsed") < 3 ? {
+  } : {}), new maximize/* Requirement */.nb([], (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject398 || (_templateObject398 = fights_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))) && (0,property/* get */.U2)("_otoscopeUsed") < 3 ? {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject399 || (_templateObject399 = fights_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))
-  } : {}).merge(new maximize/* Requirement */.nb([], (0,familiar/* bestFairy */.Mr)() === (0,template_string/* $familiar */.HP)(_templateObject400 || (_templateObject400 = fights_taggedTemplateLiteral(["Reagnimated Gnome"]))) ? {
+  } : {}), new maximize/* Requirement */.nb([], (0,familiar/* bestFairy */.Mr)() === (0,template_string/* $familiar */.HP)(_templateObject400 || (_templateObject400 = fights_taggedTemplateLiteral(["Reagnimated Gnome"]))) ? {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject401 || (_templateObject401 = fights_taggedTemplateLiteral(["gnomish housemaid's kgnee"])))
-  } : {})));
+  } : {})]);
 }
 
 var freeKillSources = [// 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
@@ -21710,7 +21710,7 @@ function freeFights() {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
           var freeKillSource = _step2.value;
 
-          if (freeKillSource.isAvailable() && (0,property/* get */.U2)("garbageChampagneCharge") > 0) {
+          if (freeKillSource.isAvailable()) {
             // TODO: Add potions that are profitable for free kills.
             (0,lib/* ensureEffect */.pq)((0,template_string/* $effect */._G)(_templateObject453 || (_templateObject453 = fights_taggedTemplateLiteral(["Steely-Eyed Squint"]))));
           }
