@@ -17774,17 +17774,22 @@ function safeRestore() {
 
   burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
+/**
+ * Compares the local version of Garbo against the most recent release branch, printing results to the CLI
+ */
+
 function checkGithubVersion() {
   if (false) {} else {
-    var gitBranches = JSON.parse(visitUrl("https://api.github.com/repos/".concat("Loathing-Associates-Scripting-Society/garbage-collector", "/branches")));
-    var mainBranch = gitBranches.find(branchInfo => branchInfo.name === "main");
-    var mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
-
-    if ("bde1e3560bf90b93da45147709c0ead4a9b5b9c7" === mainSha) {
+    if (gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
-      print("Garbo is out of date. Please run 'svn update!", "red");
-      print("".concat("Loathing-Associates-Scripting-Society/garbage-collector", "/main is at ").concat(mainSha));
+      var _gitBranches$find;
+
+      var gitBranches = JSON.parse(visitUrl("https://api.github.com/repos/".concat("Loathing-Associates-Scripting-Society/garbage-collector", "/branches")));
+      var releaseCommit = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.commit;
+      print("Garbo is out of date. Please run 'git update!'", "red");
+      print("Local Version: ".concat(gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit, "."));
+      print("Release Version: ".concat(releaseCommit, "."));
     }
   }
 }
