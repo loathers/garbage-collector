@@ -386,13 +386,13 @@ export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
   } else {
-    const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-      visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
-    );
-    const releaseCommit = gitBranches.find((branchInfo) => branchInfo.name === "release")?.commit;
     if (gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
+      const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
+        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
+      );
+      const releaseCommit = gitBranches.find((branchInfo) => branchInfo.name === "release")?.commit;
       print("Garbo is out of date. Please run 'git update!'", "red");
       print(
         `Local Version: ${
