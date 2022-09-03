@@ -379,6 +379,9 @@ export function safeRestore(): void {
   burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
 
+/**
+ * Compares the local version of Garbo against the most recent release branch, printing results to the CLI
+ */
 export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
