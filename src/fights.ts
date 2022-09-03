@@ -1684,26 +1684,26 @@ const freeRunFightSources = [
 ];
 
 function sandwormRequirement() {
-  return new Requirement(
-    ["100 Item Drop"],
-    have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
-      ? { forceEquip: $items`broken champagne bottle` }
-      : {}
-  ).merge(
+  return Requirement.merge([
+    new Requirement(
+      ["100 Item Drop"],
+      have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
+        ? { forceEquip: $items`broken champagne bottle` }
+        : {}
+    ),
     new Requirement(
       [],
       have($item`Lil' Doctor™ bag`) && get("_otoscopeUsed") < 3
         ? { forceEquip: $items`Lil' Doctor™ bag` }
         : {}
-    ).merge(
-      new Requirement(
-        [],
-        bestFairy() === $familiar`Reagnimated Gnome`
-          ? { forceEquip: $items`gnomish housemaid's kgnee` }
-          : {}
-      )
-    )
-  );
+    ),
+    new Requirement(
+      [],
+      bestFairy() === $familiar`Reagnimated Gnome`
+        ? { forceEquip: $items`gnomish housemaid's kgnee` }
+        : {}
+    ),
+  ]);
 }
 
 const freeKillSources = [
@@ -1872,7 +1872,7 @@ export function freeFights(): void {
   ) {
     try {
       for (const freeKillSource of freeKillSources) {
-        if (freeKillSource.isAvailable() && get("garbageChampagneCharge") > 0) {
+        if (freeKillSource.isAvailable()) {
           // TODO: Add potions that are profitable for free kills.
           ensureEffect($effect`Steely-Eyed Squint`);
         }
