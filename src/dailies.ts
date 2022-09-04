@@ -26,7 +26,7 @@ import {
   myHp,
   myInebriety,
   myMaxhp,
-  myPathId,
+  myPath,
   myPrimestat,
   myThrall,
   pickedPockets,
@@ -174,7 +174,7 @@ function voterSetup(): void {
 
   if (!get("voteAlways") && !get("_voteToday")) {
     const availableInitiatives: Map<string, number> = new Map(
-      Object.keys(votingBoothInitiatives(myClass(), myPathId(), myDaycount())).map((init) => {
+      Object.keys(votingBoothInitiatives(myClass(), myPath(), myDaycount())).map((init) => {
         const val = initPriority.get(init) ?? 0;
         return [init, val];
       })
