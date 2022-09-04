@@ -181,7 +181,7 @@ function voterSetup(): void {
     );
 
     const initiativeValue = sum(
-      Object.values(availableInitiatives)
+      Array.from(availableInitiatives.values())
         .sort((a, b) => b - a)
         .slice(1),
       (val) => 2 * val
