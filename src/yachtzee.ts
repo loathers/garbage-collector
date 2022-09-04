@@ -119,6 +119,10 @@ class YachtzeeDietEntry<T> {
   }
 }
 
+const freeNCs = () =>
+  (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0) +
+  (have($item`Jurassic Parka`) ? 5 - get("_spikolodonSpikeUses") : 0);
+
 function ensureConsumable(
   name: string,
   n: number,
@@ -185,6 +189,10 @@ class YachtzeeDietUtils {
         ensureConsumable("jumping horseradish", n, 1, 0, 0);
         eat(n, $item`jumping horseradish`);
       }),
+      new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => use($item`Clara's bell`)),
+      new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, () => {
+        // fill me in
+      })
     ];
     if (action) this.dietArray.forEach((entry) => (entry.action = action));
   }
@@ -297,7 +305,7 @@ function executeNextDietStep(stopBeforeJellies?: boolean): void {
   let stenchJellyConsumed = false;
   for (const name of dietString) {
     if (name.length === 0) continue;
-    else if (!stenchJellyConsumed && name.includes("stench jelly")) {
+    else if (!stenchJellyConsumed && name.includes("stench jelly") || ["clara's bell", "jurassic parka"].includes(name)) {
       if (stopBeforeJellies) dietUtil.addToPref(1, name);
       else {
         const entry = dietUtil.dietArray.find((entry) => entry.name === name);
@@ -359,6 +367,7 @@ function yachtzeeDietScheduler(
   const jellies = new Array<YachtzeeDietEntry<void>>();
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
   const toasts = new Array<YachtzeeDietEntry<void>>();
+  const freeNCs = new Array<YachtzeeDietEntry<void>>();
 
   // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
   // Assume all fullness/drunkenness > 0 non-spleen cleansers are inserted for buffs
@@ -371,6 +380,8 @@ function yachtzeeDietScheduler(
       for (const splitEntry of splitDietEntry(entry)) jellies.push(splitEntry);
     } else if (entry.name === "toast with stench jelly") {
       for (const splitEntry of splitDietEntry(entry)) toasts.push(splitEntry);
+    } else if (["clara's bell", "jurassic parka"].includes(entry.name)) {
+      for (const splitEntry of splitDietEntry(entry)) freeNCs.push(splitEntry);
     } else if (entry.fullness > 0 || entry.drunkenness > 0) {
       for (const splitEntry of splitDietEntry(entry)) dietSchedule.splice(0, 0, splitEntry);
     } else {
@@ -409,6 +420,9 @@ function yachtzeeDietScheduler(
       dietSchedule.splice(idx, 0, entry);
     }
   }
+
+  // Next, put our free NC sources at the end of the diet
+  for (const freeNCSource of freeNCs) dietSchedule.push(freeNCSource);
 
   // Next, combine clustered entries where possible (this is purely for aesthetic reasons)
   let idx = 0;
@@ -710,13 +724,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   set("_stenchJellyChargeTarget", 0);
 
-  if (availableSpleen < baseYachtzeeTurns) {
+  if (availableSpleen + freeNCs() < baseYachtzeeTurns) {
     print("We were unable to generate enough organ space for optimal yachtzee chaining", "red");
     return false;
   }
 
   const yachtzeeTurns = availableSpleen >= maxYachtzeeTurns ? maxYachtzeeTurns : baseYachtzeeTurns;
-  if (availableSpleen > yachtzeeTurns) cologne = 1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
+  if (availableSpleen + freeNCs() > yachtzeeTurns) cologne = 1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
 
   if (simOnly) print(`We can potentially run ${yachtzeeTurns} for yachtzee`, "purple");
   else print(`Trying to run ${yachtzeeTurns} turns of Yachtzee`, "purple");
@@ -732,12 +746,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // We prefer using pickle juice to cleanse our spleen for stench jellies since
   // 1) It's cheaper
   // 2) Our stomach can be used for horseradish buffs
-  const spleenNeeded = yachtzeeTurns + synthCasts + extroSpleenSpace + cologne;
+  const spleenNeeded =
+    Math.max(0, yachtzeeTurns - freeNCs()) + synthCasts + extroSpleenSpace + cologne;
   const spleenToClean = spleenNeeded - currentSpleenLeft - filters;
 
   let pickleJuiceToDrink = clamp(Math.ceil(spleenToClean / 5), 0, pickleJuice);
   let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
-  let jelliesToChew = yachtzeeTurns;
+  let jelliesToChew = Math.max(0, yachtzeeTurns - freeNCs());
 
   const extrosToChew = extroSpleenSpace / 2;
   const synthToUse = synthCasts;
@@ -769,7 +784,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       pickleJuiceToDrink > 0 &&
       jelliesToChew >= 5 &&
       myFullness() + slidersToEat * 5 + toastsToEat + 5 <=
-        fullnessLimit() + toInt(haveDistentionPill) - 1
+        fullnessLimit() + (haveDistentionPill ? 1 : 0) - 1
     ) {
       toastsToEat += 5;
       jelliesToChew -= 5;
@@ -856,26 +871,36 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     dietUtil.addToPref(n, name);
   };
   const dietUtil = new YachtzeeDietUtils(addPref);
-  dietUtil.resetDietPref();
-  dietUtil.setDietEntry("extra-greasy slider", slidersToEat);
-  dietUtil.setDietEntry("jar of fermented pickle juice", pickleJuiceToDrink);
-  dietUtil.setDietEntry("Extrovermectin™", extrosToChew);
-  dietUtil.setDietEntry("synthesis", synthToUse);
-  dietUtil.setDietEntry("mojo filter", filters);
-  dietUtil.setDietEntry("beggin' cologne", cologneToChew);
-  dietUtil.setDietEntry("jumping horseradish", horseradishes);
-  dietUtil.setDietEntry("stench jelly", jelliesToChew, (n: number, name?: string) => {
-    dietUtil.addToPref(n, name);
-    if (!simOnly) {
-      set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
-    }
-  });
-  dietUtil.setDietEntry("toast with stench jelly", toastsToEat, (n: number, name?: string) => {
-    dietUtil.addToPref(n, name);
-    if (!simOnly) {
-      set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
-    }
-  });
+  const regularEntries: [string, number][] = [
+    ["extra-greasy slider", slidersToEat],
+    ["jar of fermented pickle juice", pickleJuiceToDrink],
+    ["Extrovermectin™", extrosToChew],
+    ["synthesis", synthToUse],
+    ["mojo filter", filters],
+    ["beggin' cologne", cologneToChew],
+    ["jumping horseradish", horseradishes],
+  ];
+
+  const specialEntries: [string, number, (n: number, name?: string) => void][] = (
+    [
+      ["stench jelly", jelliesToChew],
+      ["toast with stench jelly", toastsToEat],
+      ["clara's bell", have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0],
+      ["jurassic parka", have($item`Jurassic Parka`) ? get("_spikolodonSpikeUses") : 0],
+    ] as [string, number][]
+  ).map(([name, qty]) => [
+    name,
+    qty,
+    (n: number, name?: string) => {
+      dietUtil.addToPref(n, name);
+      if (!simOnly) {
+        set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) + n);
+      }
+    },
+  ]);
+
+  for (const entry of regularEntries) dietUtil.setDietEntry(...entry);
+  for (const entry of specialEntries) dietUtil.setDietEntry(...entry);
 
   // Run diet scheduler
   print("Scheduling diet", "purple");
