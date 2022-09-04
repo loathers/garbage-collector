@@ -322,13 +322,10 @@ export default function barfTurn(): void {
       if (!success) {
         print(`We expected to do ${turn.name}, but failed!`, "red");
       }
-      if (expectToSpendATurn && !spentATurn) {
-        print(`We expected to spend a turn doing ${turn.name}, but didn't!`, "red");
-      }
       if (!expectToSpendATurn && spentATurn) {
         print(`We unexpectedly spent a turn doing ${turn.name}!`, "red");
       }
-      if (success && (!expectToSpendATurn || spentATurn)) {
+      if (success) {
         const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
         if (spentATurn && foughtAnEmbezzler) logEmbezzler(turn.name);
 
