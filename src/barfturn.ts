@@ -3,7 +3,9 @@ import {
   canAdventure,
   cliExecute,
   currentRound,
+  eat,
   inebrietyLimit,
+  itemAmount,
   Location,
   myAdventures,
   myInebriety,
@@ -15,6 +17,7 @@ import {
   toUrl,
   use,
   useFamiliar,
+  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
@@ -38,8 +41,10 @@ import {
 } from "libram";
 import { Macro, withMacro } from "./combat";
 import { completeBarfQuest } from "./dailies";
+import { computeDiet, consumeDiet } from "./diet";
 import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
+import { deliverThesisIfAble } from "./fights";
 import {
   embezzlerLog,
   globalOptions,
@@ -326,9 +331,41 @@ export default function barfTurn(): void {
       if (success && (!expectToSpendATurn || spentATurn)) {
         const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
         if (spentATurn && foughtAnEmbezzler) logEmbezzler(turn.name);
+
+        const needTurns =
+          myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit();
+        if (needTurns) generateTurnsAtEndOfDay();
         return;
       }
     }
   }
   throw new Error("Somehow failed to find anything to do!");
+}
+
+function generateTurnsAtEndOfDay(): void {
+  deliverThesisIfAble();
+
+  if (
+    have($item`Kramco Sausage-o-Matic™`) &&
+    (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
+    get("_sausagesEaten") < 23
+  ) {
+    const available = clamp(
+      23 - get("_sausagesEaten"),
+      0,
+      itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
+    );
+    eat(available, $item`magical sausage`);
+  }
+
+  if (
+    have($item`designer sweatpants`) &&
+    myAdventures() === 1 + globalOptions.saveTurns &&
+    !globalOptions.noDiet
+  ) {
+    while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25 && myInebriety() > 0) {
+      useSkill($skill`Sweat Out Some Booze`);
+    }
+    consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
+  }
 }
