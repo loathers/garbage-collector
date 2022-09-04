@@ -8,6 +8,7 @@ import {
   myAdventures,
   myInebriety,
   myLevel,
+  print,
   runChoice,
   runCombat,
   totalTurnsPlayed,
@@ -39,7 +40,14 @@ import { Macro, withMacro } from "./combat";
 import { completeBarfQuest } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
-import { embezzlerLog, globalOptions, kramcoGuaranteed, realmAvailable, safeRestore, setChoice } from "./lib";
+import {
+  embezzlerLog,
+  globalOptions,
+  kramcoGuaranteed,
+  realmAvailable,
+  safeRestore,
+  setChoice,
+} from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -88,6 +96,7 @@ type AdventureAction = {
   name: string;
   available: () => boolean;
   execute: () => boolean;
+  spendsTurn: boolean | (() => boolean);
 };
 
 // This is roughly ordered by the encounter ontology, followed by general priority
@@ -121,6 +130,7 @@ const turns: AdventureAction[] = [
       }
       return false;
     },
+    spendsTurn: () => get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`,
   },
   {
     name: "Proton Ghost",
@@ -143,6 +153,7 @@ const turns: AdventureAction[] = [
       adventureMacro(ghostLocation, Macro.ghostBustin());
       return get("questPAGhost") === "unstarted";
     },
+    spendsTurn: false,
   },
   {
     name: "Vote Wanderer",
@@ -157,6 +168,7 @@ const turns: AdventureAction[] = [
       adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
       return get("lastVoteMonsterTurn") === totalTurnsPlayed();
     },
+    spendsTurn: false,
   },
   {
     name: "Digitize Wanderer",
@@ -184,6 +196,7 @@ const turns: AdventureAction[] = [
       adventureMacroAuto(targetLocation, Macro.basicCombat());
       return get("_sourceTerminalDigitizeMonsterCount") !== start;
     },
+    spendsTurn: () => !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
   },
   {
     name: "Guaranteed Kramco",
@@ -193,6 +206,7 @@ const turns: AdventureAction[] = [
       adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
       return !kramcoGuaranteed();
     },
+    spendsTurn: false,
   },
   {
     name: "Void Monster",
@@ -206,6 +220,7 @@ const turns: AdventureAction[] = [
       adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
       return get("cursedMagnifyingGlassCount") === 0;
     },
+    spendsTurn: false,
   },
   {
     name: "Envyfish Egg",
@@ -216,22 +231,26 @@ const turns: AdventureAction[] = [
       withMacro(Macro.meatKill(), () => use($item`envyfish egg`), true);
       return get("_envyfishEggUsed");
     },
+    spendsTurn: true,
   },
   {
     name: "Spit Acid",
     available: () => have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
     execute: () => {
       const jellyfishing = have($familiar`Space Jellyfish`) && realmAvailable("stench");
-      const familiarChoice = jellyfishing  ? $familiar`Space Jellyfish` : freeFightFamiliar(true);
+      const familiarChoice = jellyfishing ? $familiar`Space Jellyfish` : freeFightFamiliar(true);
       // We want a 100% combat zone.
-      const locationChoice = jellyfishing ? $location`Pirates of the Garbage Barges` : determineDraggableZoneAndEnsureAccess("backup");
+      const locationChoice = jellyfishing
+        ? $location`Pirates of the Garbage Barges`
+        : determineDraggableZoneAndEnsureAccess("backup");
       useFamiliar(familiarChoice);
-      freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka`}));
+      freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
       cliExecute("parka dilophosaur");
       const macro = Macro.familiarActions().skill($skill`Spit jurassic acid`);
       adventureMacroAuto(locationChoice, macro);
       return have($effect`Everything Looks Yellow`);
-    }
+    },
+    spendsTurn: false,
   },
   {
     name: "Map for Pills",
@@ -252,6 +271,7 @@ const turns: AdventureAction[] = [
       use($item`Map to Safety Shelter Grimace Prime`);
       return true;
     },
+    spendsTurn: true,
   },
   {
     name: "Barf",
@@ -274,6 +294,7 @@ const turns: AdventureAction[] = [
       completeBarfQuest();
       return true;
     },
+    spendsTurn: true,
   },
 ];
 
@@ -287,12 +308,24 @@ export default function barfTurn(): void {
   const startTurns = totalTurnsPlayed();
   for (const turn of turns) {
     if (turn.available()) {
+      const expectToSpendATurn =
+        typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
+
       const success = turn.execute();
-      if (success) {
-        const spentATurn = totalTurnsPlayed() - startTurns === 1;
+      const spentATurn = totalTurnsPlayed() - startTurns === 1;
+
+      if (!success) {
+        print(`We expected to do ${turn.name}, but failed!`, "red");
+      }
+      if (expectToSpendATurn && !spentATurn) {
+        print(`We expected to spend a turn doing ${turn.name}, but didn't!`, "red");
+      }
+      if (!expectToSpendATurn && spentATurn) {
+        print(`We unexpectedly spent a turn doing ${turn.name}!`, "red");
+      }
+      if (success && (!expectToSpendATurn || spentATurn)) {
         const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
         if (spentATurn && foughtAnEmbezzler) logEmbezzler(turn.name);
-
         return;
       }
     }
