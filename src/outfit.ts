@@ -104,6 +104,9 @@ export function freeFightOutfit(requirement?: Requirement): void {
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  if (haveEquipped($item`Jurassic Parka`) && get("parkaMode") !== "dilophosaur") {
+    cliExecute("parka dilophosaur");
+  }
 
   const missingEquips = () =>
     (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
@@ -304,6 +307,9 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     (get("retroCapeSuperhero") !== "robot" || get("retroCapeWashingInstructions") !== "kill")
   ) {
     cliExecute("retrocape robot kill");
+  }
+  if (haveEquipped($item`Jurassic Parka`) && get("parkaMode") !== "kachungasaur") {
+    cliExecute("parka kachungasaur");
   }
 
   const missingEquips = () =>

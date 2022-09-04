@@ -1,6 +1,7 @@
 import {
   availableAmount,
   canAdventure,
+  cliExecute,
   currentRound,
   inebrietyLimit,
   Location,
@@ -17,6 +18,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $items,
   $location,
@@ -37,7 +39,7 @@ import { Macro, withMacro } from "./combat";
 import { completeBarfQuest } from "./dailies";
 import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
-import { embezzlerLog, globalOptions, kramcoGuaranteed, safeRestore, setChoice } from "./lib";
+import { embezzlerLog, globalOptions, kramcoGuaranteed, realmAvailable, safeRestore, setChoice } from "./lib";
 import { meatMood } from "./mood";
 import {
   familiarWaterBreathingEquipment,
@@ -214,6 +216,22 @@ const turns: AdventureAction[] = [
       withMacro(Macro.meatKill(), () => use($item`envyfish egg`), true);
       return get("_envyfishEggUsed");
     },
+  },
+  {
+    name: "Spit Acid",
+    available: () => have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
+    execute: () => {
+      const jellyfishing = have($familiar`Space Jellyfish`) && realmAvailable("stench");
+      const familiarChoice = jellyfishing  ? $familiar`Space Jellyfish` : freeFightFamiliar(true);
+      // We want a 100% combat zone.
+      const locationChoice = jellyfishing ? $location`Pirates of the Garbage Barges` : determineDraggableZoneAndEnsureAccess("backup");
+      useFamiliar(familiarChoice);
+      freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka`}));
+      cliExecute("parka dilophosaur");
+      const macro = Macro.familiarActions().skill($skill`Spit jurassic acid`);
+      adventureMacroAuto(locationChoice, macro);
+      return have($effect`Everything Looks Yellow`);
+    }
   },
   {
     name: "Map for Pills",
