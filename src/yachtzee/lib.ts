@@ -1,8 +1,27 @@
-import { cliExecute, Effect, Item } from "kolmafia";
-import { $effect, $item, $items, get, getActiveSongs, getModifier, have, Mood, set, sum } from "libram";
+import { cliExecute, Effect, Item, useFamiliar } from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  adventureMacroAuto,
+  get,
+  getActiveSongs,
+  getModifier,
+  have,
+  Mood,
+  Requirement,
+  set,
+  sum,
+  tryFindFreeRun,
+} from "libram";
 import { withStash } from "../clan";
+import { Macro } from "../combat";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
-import { globalOptions } from "../lib";
+import { freeFightFamiliar } from "../familiar";
+import { globalOptions, ltbRun, realmAvailable } from "../lib";
+import { freeFightOutfit } from "../outfit";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -55,4 +74,29 @@ export const freeNCs = (): number =>
 
 export function yachtzeeBuffValue(obj: Item | Effect): number {
   return (2000 * (getModifier("Meat Drop", obj) + getModifier("Familiar Weight", obj) * 2.5)) / 100;
+}
+
+export function useSpikolodonSpikes(): void {
+  if (get("_spikolodonSpikeUses") >= 5) return;
+  const run = tryFindFreeRun() ?? ltbRun();
+
+  const canJelly =
+    have($familiar`Space Jellyfish`) && !run.constraints.familiar && realmAvailable("stench");
+  const familiar =
+    run.constraints.familiar?.() ?? canJelly ? $familiar`Space Jellyfish` : freeFightFamiliar();
+  useFamiliar(familiar);
+  const mergedRequirements = new Requirement([], { forceEquip: $items`Jurassic Parka` }).merge(
+    run.constraints.equipmentRequirements?.() ?? new Requirement([], {})
+  );
+  freeFightOutfit(mergedRequirements);
+  cliExecute("parka spikolodon");
+
+  const targetZone = canJelly
+    ? $location`Pirates of the Garbage Barges`
+    : $location`The Haunted Kitchen`;
+  const macro = Macro.familiarActions().step(run.macro);
+  const startingSpikes = get("_spikolodonSpikeUses");
+  do {
+    adventureMacroAuto(targetZone, macro);
+  } while (get("_spikolodonSpikeUses") === startingSpikes);
 }

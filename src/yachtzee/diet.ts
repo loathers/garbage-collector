@@ -39,7 +39,7 @@ import { garboValue } from "../session";
 import synthesize from "../synthesis";
 import { yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
-import { freeNCs, pyecAvailable, shrugIrrelevantSongs } from "./lib";
+import { freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
 
 class YachtzeeDietEntry<T> {
   name: string;
@@ -133,9 +133,7 @@ class YachtzeeDietUtils {
         eat(n, $item`jumping horseradish`);
       }),
       new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => use($item`Clara's bell`)),
-      new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, () => {
-        // fill me in
-      }),
+      new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, useSpikolodonSpikes),
     ];
     if (action) this.dietArray.forEach((entry) => (entry.action = action));
   }
