@@ -38,7 +38,6 @@ import {
   have,
   haveInCampground,
   JuneCleaver,
-  Requirement,
   set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
