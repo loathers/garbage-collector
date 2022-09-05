@@ -240,7 +240,8 @@ const turns: AdventureAction[] = [
   },
   {
     name: "Spit Acid",
-    available: () => have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
+    available: () =>
+      sober() && have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
     execute: () => {
       const jellyfishing = have($familiar`Space Jellyfish`) && realmAvailable("stench");
       const familiarChoice = jellyfishing ? $familiar`Space Jellyfish` : freeFightFamiliar(true);
