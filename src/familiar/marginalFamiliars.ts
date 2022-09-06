@@ -2,9 +2,7 @@ import {
   equippedItem,
   Familiar,
   familiarWeight,
-  inebrietyLimit,
   Item,
-  myInebriety,
   numericModifier,
   print,
   Slot,
@@ -15,11 +13,11 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $slots,
   findLeprechaunMultiplier,
   get,
   getModifier,
-  have,
   Requirement,
   sum,
 } from "libram";
@@ -28,7 +26,6 @@ import { bonusGear } from "../dropsgear";
 import { estimatedTurns } from "../embezzler";
 import { baseMeat, HIGHLIGHT } from "../lib";
 import { meatOutfit } from "../outfit";
-import { garboValue } from "../session";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { menu } from "./freeFightFamiliar";
@@ -118,6 +115,9 @@ function turnsNeededForFamiliar(
 
     case "none":
       return 0;
+
+    case "special":
+      return 0;
   }
 }
 
@@ -135,20 +135,11 @@ export function barfFamiliar(): Familiar {
   // Right now, this menu lies, and says that we cannot customize the macro used.
   // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
   // Some day, I hope to right this wrong.
-  const baseMenu = menu(false);
-
-  if (have($familiar`Space Jellyfish`) && myInebriety() <= inebrietyLimit()) {
-    baseMenu.push({
-      familiar: $familiar`Space Jellyfish`,
-      expectedValue:
-        garboValue($item`stench jelly`) /
-        (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
-      leprechaunMultiplier: 0,
-      limit: "none",
-    });
-  }
-
-  const fullMenu = baseMenu.map(calculateOutfitValue);
+  const fullMenu = menu({
+    canChooseMacro: true,
+    location: $location`Barf Mountain`,
+    includeExperienceFamiliars: false,
+  }).map(calculateOutfitValue);
 
   const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meatFamiliar());
 
