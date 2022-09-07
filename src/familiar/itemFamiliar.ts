@@ -37,7 +37,7 @@ export function bestFairy(): Familiar {
     }
 
     const bonuses = [
-      ...menu(true, false),
+      ...menu({ includeExperienceFamiliars: false }),
       {
         familiar: $familiar`Reagnimated Gnome`,
         expectedValue: (get("valueOfAdventure") * 70) / 1000,
