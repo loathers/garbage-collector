@@ -5,6 +5,7 @@ import {
   $item,
   $items,
   $location,
+  $skill,
   adventureMacroAuto,
   get,
   getActiveSongs,
@@ -94,7 +95,9 @@ export function useSpikolodonSpikes(): void {
   const targetZone = canJelly
     ? $location`Pirates of the Garbage Barges`
     : $location`The Haunted Kitchen`;
-  const macro = Macro.familiarActions().step(run.macro);
+  const macro = Macro.familiarActions()
+    .skill($skill`Launch spikolodon spikes`)
+    .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
   do {
     adventureMacroAuto(targetZone, macro);
