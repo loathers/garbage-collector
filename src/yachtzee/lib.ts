@@ -84,7 +84,7 @@ export function useSpikolodonSpikes(): void {
   const canJelly =
     have($familiar`Space Jellyfish`) && !run.constraints.familiar && realmAvailable("stench");
   const familiar =
-    run.constraints.familiar?.() ?? canJelly ? $familiar`Space Jellyfish` : freeFightFamiliar();
+    run.constraints.familiar?.() ?? (canJelly ? $familiar`Space Jellyfish` : freeFightFamiliar());
   useFamiliar(familiar);
   const mergedRequirements = new Requirement([], { forceEquip: $items`Jurassic Parka` }).merge(
     run.constraints.equipmentRequirements?.() ?? new Requirement([], {})
