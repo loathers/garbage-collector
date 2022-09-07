@@ -1,4 +1,4 @@
-import { Familiar, familiarWeight, Location } from "kolmafia";
+import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
 import { $familiar, $item, findLeprechaunMultiplier, get, have } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../session";
@@ -32,7 +32,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     ...extraFamiliars,
   ];
 
-  if (canChooseMacro) {
+  if (canChooseMacro && myInebriety() <= inebrietyLimit()) {
     if (timeToMeatify()) {
       familiarMenu.push({
         familiar: $familiar`Grey Goose`,
