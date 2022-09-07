@@ -620,7 +620,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       ["stench jelly", jelliesToChew],
       ["toast with stench jelly", toastsToEat],
       ["clara's bell", have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0],
-      ["jurassic parka", have($item`Jurassic Parka`) ? get("_spikolodonSpikeUses") : 0],
+      ["jurassic parka", have($item`Jurassic Parka`) ? 5 - get("_spikolodonSpikeUses") : 0],
     ] as [string, number][]
   ).map(([name, qty]) => [
     name,
