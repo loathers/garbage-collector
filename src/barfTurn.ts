@@ -79,8 +79,6 @@ function logEmbezzler(encountertype: string) {
   embezzlerLog.sources.push(encountertype === "Digitize" ? encountertype : "Unknown Source");
 }
 
-const sober = () => myInebriety() <= inebrietyLimit();
-
 // Lights Out adventures require you to take several choices in a row
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
@@ -92,6 +90,12 @@ const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
 ]);
 
+enum Sobriety {
+  SOBER = "sober",
+  DRUNK = "drunk",
+  EITHER = "either",
+}
+
 /**
  * Describes an action we could take as part of our barf-turn loop.
  * Has a name, a a function to determine availability, and a function that executes the turn.
@@ -102,6 +106,7 @@ type AdventureAction = {
   available: () => boolean;
   execute: () => boolean;
   spendsTurn: boolean | (() => boolean);
+  sobriety: Sobriety;
 };
 
 // This is roughly ordered by the encounter ontology, followed by general priority
@@ -136,11 +141,11 @@ const turns: AdventureAction[] = [
       return false;
     },
     spendsTurn: () => get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`,
+    sobriety: Sobriety.EITHER,
   },
   {
     name: "Proton Ghost",
     available: () =>
-      sober() &&
       have($item`protonic accelerator pack`) &&
       get("questPAGhost") !== "unstarted" &&
       !!get("ghostLocation"),
@@ -159,11 +164,11 @@ const turns: AdventureAction[] = [
       return get("questPAGhost") === "unstarted";
     },
     spendsTurn: false,
+    sobriety: Sobriety.SOBER,
   },
   {
     name: "Vote Wanderer",
     available: () =>
-      sober() &&
       have($item`"I Voted!" sticker`) &&
       totalTurnsPlayed() % 11 === 1 &&
       get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
@@ -174,6 +179,7 @@ const turns: AdventureAction[] = [
       return get("lastVoteMonsterTurn") === totalTurnsPlayed();
     },
     spendsTurn: false,
+    sobriety: get("_voteMonster") === $monster`angry ghost` ? Sobriety.SOBER : Sobriety.EITHER,
   },
   {
     name: "Digitize Wanderer",
@@ -202,21 +208,22 @@ const turns: AdventureAction[] = [
       return get("_sourceTerminalDigitizeMonsterCount") !== start;
     },
     spendsTurn: () => !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
+    sobriety: Sobriety.EITHER,
   },
   {
     name: "Guaranteed Kramco",
-    available: () => sober() && kramcoGuaranteed(),
+    available: () => kramcoGuaranteed(),
     execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
       adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
       return !kramcoGuaranteed();
     },
     spendsTurn: false,
+    sobriety: Sobriety.SOBER,
   },
   {
     name: "Void Monster",
     available: () =>
-      sober() &&
       have($item`cursed magnifying glass`) &&
       get("cursedMagnifyingGlassCount") === 13 &&
       get("_voidFreeFights") < 5,
@@ -226,6 +233,7 @@ const turns: AdventureAction[] = [
       return get("cursedMagnifyingGlassCount") === 0;
     },
     spendsTurn: false,
+    sobriety: Sobriety.SOBER,
   },
   {
     name: "Envyfish Egg",
@@ -237,11 +245,11 @@ const turns: AdventureAction[] = [
       return get("_envyfishEggUsed");
     },
     spendsTurn: true,
+    sobriety: Sobriety.EITHER,
   },
   {
     name: "Spit Acid",
-    available: () =>
-      sober() && have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
+    available: () => have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
     execute: () => {
       const canJellyfish = have($familiar`Space Jellyfish`) && realmAvailable("stench");
       const familiarChoice = freeFightFamiliar({
@@ -260,11 +268,11 @@ const turns: AdventureAction[] = [
       return have($effect`Everything Looks Yellow`);
     },
     spendsTurn: false,
+    sobriety: Sobriety.SOBER,
   },
   {
     name: "Map for Pills",
     available: () =>
-      !sober() &&
       globalOptions.ascending &&
       clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
         availableAmount($item`Map to Safety Shelter Grimace Prime`),
@@ -281,6 +289,7 @@ const turns: AdventureAction[] = [
       return true;
     },
     spendsTurn: true,
+    sobriety: Sobriety.DRUNK,
   },
   {
     name: "Barf",
@@ -304,6 +313,7 @@ const turns: AdventureAction[] = [
       return true;
     },
     spendsTurn: true,
+    sobriety: Sobriety.EITHER,
   },
 ];
 
@@ -315,8 +325,10 @@ export default function barfTurn(): void {
   safeRestore();
 
   const startTurns = totalTurnsPlayed();
+  const isSober = myInebriety() <= inebrietyLimit();
   for (const turn of turns) {
-    if (turn.available()) {
+    const validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
+    if (turn.available() && validSobrieties.includes(turn.sobriety)) {
       const expectToSpendATurn =
         typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
 
