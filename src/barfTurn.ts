@@ -325,9 +325,10 @@ export default function barfTurn(): void {
   safeRestore();
 
   const startTurns = totalTurnsPlayed();
+
   const isSober = myInebriety() <= inebrietyLimit();
+  const validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
   for (const turn of turns) {
-    const validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
     if (turn.available() && validSobrieties.includes(turn.sobriety)) {
       const expectToSpendATurn =
         typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
