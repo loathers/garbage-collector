@@ -1,5 +1,5 @@
 import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
-import { $familiar, $item, findLeprechaunMultiplier, get, have } from "libram";
+import { $familiar, $item, $location, findLeprechaunMultiplier, get, have } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../session";
 import getConstantValueFamiliars from "./constantValueFamiliars";
@@ -16,7 +16,7 @@ type MenuOptions = {
 };
 const DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
-  location: Location.none,
+  location: $location`none`,
   extraFamiliars: [],
   includeExperienceFamiliars: true,
 };

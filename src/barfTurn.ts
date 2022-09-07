@@ -116,7 +116,7 @@ const turns: AdventureAction[] = [
     available: () =>
       totalTurnsPlayed() % 37 === 0 &&
       totalTurnsPlayed() !== get("lastLightsOutTurn") &&
-      canAdventure(get("nextSpookyravenStephenRoom") ?? Location.none),
+      canAdventure(get("nextSpookyravenStephenRoom") ?? $location`none`),
     execute: () => {
       const steveRoom = get("nextSpookyravenStephenRoom");
       const ghostLocation = get("ghostLocation");
@@ -255,7 +255,7 @@ const turns: AdventureAction[] = [
     execute: () => {
       const canJellyfish = have($familiar`Space Jellyfish`) && realmAvailable("stench");
       const familiarChoice = freeFightFamiliar({
-        location: canJellyfish ? $location`Pirates of the Garbage Barges` : Location.none,
+        location: canJellyfish ? $location`Pirates of the Garbage Barges` : $location`none`,
       });
       // We want a 100% combat zone.
       const locationChoice =
