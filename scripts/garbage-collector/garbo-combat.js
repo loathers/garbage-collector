@@ -16672,7 +16672,9 @@ function saberCrateIfSafe() {
     var _tryFindFreeRun, _run$constraints$fami, _run$constraints$fami2, _run$constraints, _run$constraints$prep, _run$constraints2, _run$constraints$equi, _run$constraints$equi2, _run$constraints3;
 
     var run = (_tryFindFreeRun = tryFindFreeRun()) !== null && _tryFindFreeRun !== void 0 ? _tryFindFreeRun : ltbRun();
-    useFamiliar((_run$constraints$fami = (_run$constraints$fami2 = (_run$constraints = run.constraints).familiar) === null || _run$constraints$fami2 === void 0 ? void 0 : _run$constraints$fami2.call(_run$constraints)) !== null && _run$constraints$fami !== void 0 ? _run$constraints$fami : freeFightFamiliar());
+    useFamiliar((_run$constraints$fami = (_run$constraints$fami2 = (_run$constraints = run.constraints).familiar) === null || _run$constraints$fami2 === void 0 ? void 0 : _run$constraints$fami2.call(_run$constraints)) !== null && _run$constraints$fami !== void 0 ? _run$constraints$fami : freeFightFamiliar({
+      canChooseMacro: false
+    }));
     (_run$constraints$prep = (_run$constraints2 = run.constraints).preparation) === null || _run$constraints$prep === void 0 ? void 0 : _run$constraints$prep.call(_run$constraints2);
     new Requirement([], {
       forceEquip: $items(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Fourth of May Cosplay Saber"]))),
@@ -16713,7 +16715,9 @@ function initializeCrates() {
       var macro = Macro.trySkill($skill(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Transcendent Olfaction"])))).trySkill($skill(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Offer Latte to Opponent"])))).externalIf(get("_gallapagosMonster") !== $monster(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["crate"]))) && have($skill(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))), Macro.trySkill($skill(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Gallapagosian Mating Call"]))))).trySkill($skill(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Use the Force"])))).step(run.macro); // equip latte and saber for lattesniff and saberfriends, if we want to
       // Crank up ML to make sure the crate survives several rounds; we may have some passive damage
 
-      useFamiliar((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints4 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints4)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : freeFightFamiliar());
+      useFamiliar((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints4 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints4)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : freeFightFamiliar({
+        canChooseMacro: false
+      }));
       (_run$constraints$prep2 = (_run$constraints5 = run.constraints).preparation) === null || _run$constraints$prep2 === void 0 ? void 0 : _run$constraints$prep2.call(_run$constraints5);
       new Requirement(["100 Monster Level"], {
         forceEquip: $items(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["latte lovers member's mug, Fourth of May Cosplay Saber"]))).filter(item => have(item)),
@@ -17143,7 +17147,7 @@ function constantValueFamiliars_getConstantValueFamiliars() {
   });
 }
 ;// CONCATENATED MODULE: ./src/familiar/freeFightFamiliar.ts
-var freeFightFamiliar_templateObject, freeFightFamiliar_templateObject2, freeFightFamiliar_templateObject3;
+var freeFightFamiliar_templateObject, freeFightFamiliar_templateObject2, freeFightFamiliar_templateObject3, freeFightFamiliar_templateObject4, freeFightFamiliar_templateObject5, freeFightFamiliar_templateObject6;
 
 function freeFightFamiliar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -17159,6 +17163,11 @@ function freeFightFamiliar_arrayWithoutHoles(arr) { if (Array.isArray(arr)) retu
 
 function freeFightFamiliar_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
@@ -17167,12 +17176,26 @@ function freeFightFamiliar_arrayLikeToArray(arr, len) { if (len == null || len >
 
 
 
+
+
+var DEFAULT_MENU_OPTIONS = {
+  canChooseMacro: true,
+  location: external_kolmafia_.Location.none,
+  extraFamiliars: [],
+  includeExperienceFamiliars: true
+};
 function freeFightFamiliar_menu() {
-  var includeExperienceFamiliars = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-  var canChooseMacro = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var familiarMenu = [].concat(freeFightFamiliar_toConsumableArray(getConstantValueFamiliars()), freeFightFamiliar_toConsumableArray(getDropFamiliars()), freeFightFamiliar_toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars() : []));
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  if (canChooseMacro) {
+  var _DEFAULT_MENU_OPTIONS = _objectSpread(_objectSpread({}, DEFAULT_MENU_OPTIONS), options),
+      includeExperienceFamiliars = _DEFAULT_MENU_OPTIONS.includeExperienceFamiliars,
+      canChooseMacro = _DEFAULT_MENU_OPTIONS.canChooseMacro,
+      location = _DEFAULT_MENU_OPTIONS.location,
+      extraFamiliars = _DEFAULT_MENU_OPTIONS.extraFamiliars;
+
+  var familiarMenu = [].concat(freeFightFamiliar_toConsumableArray(getConstantValueFamiliars()), freeFightFamiliar_toConsumableArray(getDropFamiliars()), freeFightFamiliar_toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars() : []), freeFightFamiliar_toConsumableArray(extraFamiliars));
+
+  if (canChooseMacro && myInebriety() <= inebrietyLimit()) {
     if (timeToMeatify()) {
       familiarMenu.push({
         familiar: $familiar(freeFightFamiliar_templateObject || (freeFightFamiliar_templateObject = freeFightFamiliar_taggedTemplateLiteral(["Grey Goose"]))),
@@ -17187,16 +17210,25 @@ function freeFightFamiliar_menu() {
         familiar: $familiar(freeFightFamiliar_templateObject3 || (freeFightFamiliar_templateObject3 = freeFightFamiliar_taggedTemplateLiteral(["Crimbo Shrub"]))),
         expectedValue: 2500,
         leprechaunMultiplier: 0,
-        limit: "none"
+        limit: "special"
+      });
+    }
+
+    if (location.zone === "Dinseylandfill" && have($familiar(freeFightFamiliar_templateObject4 || (freeFightFamiliar_templateObject4 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))))) {
+      familiarMenu.push({
+        familiar: $familiar(freeFightFamiliar_templateObject5 || (freeFightFamiliar_templateObject5 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))),
+        expectedValue: garboValue($item(freeFightFamiliar_templateObject6 || (freeFightFamiliar_templateObject6 = freeFightFamiliar_taggedTemplateLiteral(["stench jelly"])))) / (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
+        leprechaunMultiplier: 0,
+        limit: "special"
       });
     }
   }
 
   var meatFam = meatFamiliar();
 
-  if (familiarMenu.every(_ref => {
+  if (!familiarMenu.some(_ref => {
     var familiar = _ref.familiar;
-    return familiar !== meatFam;
+    return familiar === meatFam;
   })) {
     familiarMenu.push({
       familiar: meatFam,
@@ -17209,7 +17241,7 @@ function freeFightFamiliar_menu() {
   return familiarMenu;
 }
 function freeFightFamiliarData() {
-  var canChooseMacro = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   var compareFamiliars = (a, b) => {
     if (a.expectedValue === b.expectedValue) {
@@ -17219,23 +17251,22 @@ function freeFightFamiliarData() {
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return freeFightFamiliar_menu(true, canChooseMacro).reduce(compareFamiliars);
+  return freeFightFamiliar_menu(options).reduce(compareFamiliars);
 }
 function freeFightFamiliar() {
-  var canChooseMacro = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  return freeFightFamiliarData(canChooseMacro).familiar;
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return freeFightFamiliarData(options).familiar;
 }
 ;// CONCATENATED MODULE: ./src/familiar/marginalFamiliars.ts
-var marginalFamiliars_templateObject, marginalFamiliars_templateObject2, marginalFamiliars_templateObject3, marginalFamiliars_templateObject4, marginalFamiliars_templateObject5, marginalFamiliars_templateObject6;
+var marginalFamiliars_templateObject, marginalFamiliars_templateObject2, marginalFamiliars_templateObject3, marginalFamiliars_templateObject4;
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function marginalFamiliars_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function marginalFamiliars_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? marginalFamiliars_ownKeys(Object(source), !0).forEach(function (key) { marginalFamiliars_defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : marginalFamiliars_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function marginalFamiliars_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function marginalFamiliars_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 
 
 
@@ -17316,6 +17347,9 @@ function turnsNeededForFamiliar(_ref2, baselineToCompareAgainst) {
 
     case "none":
       return 0;
+
+    case "special":
+      return 0;
   }
 }
 
@@ -17323,7 +17357,7 @@ function calculateOutfitValue(f) {
   var outfit = getCachedOutfitValues(f.familiar);
   var outfitValue = outfit.bonus + outfit.meat * MEAT_DROP_VALUE + outfit.item * ITEM_DROP_VALUE;
   var outfitWeight = outfit.weight;
-  return _objectSpread(_objectSpread({}, f), {}, {
+  return marginalFamiliars_objectSpread(marginalFamiliars_objectSpread({}, f), {}, {
     outfitValue: outfitValue,
     outfitWeight: outfitWeight
   });
@@ -17335,18 +17369,11 @@ function barfFamiliar() {
   // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
   // Some day, I hope to right this wrong.
 
-  var baseMenu = menu(false);
-
-  if (have($familiar(marginalFamiliars_templateObject4 || (marginalFamiliars_templateObject4 = marginalFamiliars_taggedTemplateLiteral(["Space Jellyfish"])))) && myInebriety() <= inebrietyLimit()) {
-    baseMenu.push({
-      familiar: $familiar(marginalFamiliars_templateObject5 || (marginalFamiliars_templateObject5 = marginalFamiliars_taggedTemplateLiteral(["Space Jellyfish"]))),
-      expectedValue: garboValue($item(marginalFamiliars_templateObject6 || (marginalFamiliars_templateObject6 = marginalFamiliars_taggedTemplateLiteral(["stench jelly"])))) / (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
-      leprechaunMultiplier: 0,
-      limit: "none"
-    });
-  }
-
-  var fullMenu = baseMenu.map(calculateOutfitValue);
+  var fullMenu = menu({
+    canChooseMacro: true,
+    location: $location(marginalFamiliars_templateObject4 || (marginalFamiliars_templateObject4 = marginalFamiliars_taggedTemplateLiteral(["Barf Mountain"]))),
+    includeExperienceFamiliars: false
+  }).map(calculateOutfitValue);
   var meatFamiliarEntry = fullMenu.find(_ref5 => {
     var familiar = _ref5.familiar;
     return familiar === meatFamiliar();
@@ -17415,7 +17442,9 @@ function bestFairy() {
       goodFairies.push($familiar(itemFamiliar_templateObject9 || (itemFamiliar_templateObject9 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))));
     }
 
-    var bonuses = [].concat(itemFamiliar_toConsumableArray(menu(true, false)), [{
+    var bonuses = [].concat(itemFamiliar_toConsumableArray(menu({
+      includeExperienceFamiliars: false
+    })), [{
       familiar: $familiar(itemFamiliar_templateObject10 || (itemFamiliar_templateObject10 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))),
       expectedValue: get("valueOfAdventure") * 70 / 1000,
       leprechaunMultiplier: 0,

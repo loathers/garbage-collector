@@ -19325,7 +19325,9 @@ function saberCrateIfSafe() {
     var _tryFindFreeRun, _run$constraints$fami, _run$constraints$fami2, _run$constraints, _run$constraints$prep, _run$constraints2, _run$constraints$equi, _run$constraints$equi2, _run$constraints3;
 
     var run = (_tryFindFreeRun = (0,libram__WEBPACK_IMPORTED_MODULE_10__/* .tryFindFreeRun */ .J)()) !== null && _tryFindFreeRun !== void 0 ? _tryFindFreeRun : (0,_lib__WEBPACK_IMPORTED_MODULE_2__/* .ltbRun */ .Pw)();
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.useFamiliar)((_run$constraints$fami = (_run$constraints$fami2 = (_run$constraints = run.constraints).familiar) === null || _run$constraints$fami2 === void 0 ? void 0 : _run$constraints$fami2.call(_run$constraints)) !== null && _run$constraints$fami !== void 0 ? _run$constraints$fami : (0,_familiar__WEBPACK_IMPORTED_MODULE_1__/* .freeFightFamiliar */ .Vo)());
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.useFamiliar)((_run$constraints$fami = (_run$constraints$fami2 = (_run$constraints = run.constraints).familiar) === null || _run$constraints$fami2 === void 0 ? void 0 : _run$constraints$fami2.call(_run$constraints)) !== null && _run$constraints$fami !== void 0 ? _run$constraints$fami : (0,_familiar__WEBPACK_IMPORTED_MODULE_1__/* .freeFightFamiliar */ .Vo)({
+      canChooseMacro: false
+    }));
     (_run$constraints$prep = (_run$constraints2 = run.constraints).preparation) === null || _run$constraints$prep === void 0 ? void 0 : _run$constraints$prep.call(_run$constraints2);
     new libram__WEBPACK_IMPORTED_MODULE_11__/* .Requirement */ .nb([], {
       forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Fourth of May Cosplay Saber"]))),
@@ -19366,7 +19368,9 @@ function initializeCrates() {
       var macro = _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$skill */ .tm)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Transcendent Olfaction"])))).trySkill((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$skill */ .tm)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Offer Latte to Opponent"])))).externalIf((0,libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2)("_gallapagosMonster") !== (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$monster */ .O4)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["crate"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$skill */ .tm)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))), _combat__WEBPACK_IMPORTED_MODULE_3__.Macro.trySkill((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$skill */ .tm)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Gallapagosian Mating Call"]))))).trySkill((0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$skill */ .tm)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Use the Force"])))).step(run.macro); // equip latte and saber for lattesniff and saberfriends, if we want to
       // Crank up ML to make sure the crate survives several rounds; we may have some passive damage
 
-      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.useFamiliar)((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints4 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints4)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : (0,_familiar__WEBPACK_IMPORTED_MODULE_1__/* .freeFightFamiliar */ .Vo)());
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.useFamiliar)((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints4 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints4)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : (0,_familiar__WEBPACK_IMPORTED_MODULE_1__/* .freeFightFamiliar */ .Vo)({
+        canChooseMacro: false
+      }));
       (_run$constraints$prep2 = (_run$constraints5 = run.constraints).preparation) === null || _run$constraints$prep2 === void 0 ? void 0 : _run$constraints$prep2.call(_run$constraints5);
       new libram__WEBPACK_IMPORTED_MODULE_11__/* .Requirement */ .nb(["100 Monster Level"], {
         forceEquip: (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .$items */ .vS)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["latte lovers member's mug, Fourth of May Cosplay Saber"]))).filter(item => (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .have */ .lf)(item)),
@@ -19807,7 +19811,7 @@ function getConstantValueFamiliars() {
   });
 }
 ;// CONCATENATED MODULE: ./src/familiar/freeFightFamiliar.ts
-var freeFightFamiliar_templateObject, freeFightFamiliar_templateObject2, freeFightFamiliar_templateObject3;
+var freeFightFamiliar_templateObject, freeFightFamiliar_templateObject2, freeFightFamiliar_templateObject3, freeFightFamiliar_templateObject4, freeFightFamiliar_templateObject5, freeFightFamiliar_templateObject6;
 
 function freeFightFamiliar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -19823,6 +19827,11 @@ function freeFightFamiliar_arrayWithoutHoles(arr) { if (Array.isArray(arr)) retu
 
 function freeFightFamiliar_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
@@ -19831,12 +19840,26 @@ function freeFightFamiliar_arrayLikeToArray(arr, len) { if (len == null || len >
 
 
 
+
+
+var DEFAULT_MENU_OPTIONS = {
+  canChooseMacro: true,
+  location: external_kolmafia_.Location.none,
+  extraFamiliars: [],
+  includeExperienceFamiliars: true
+};
 function menu() {
-  var includeExperienceFamiliars = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-  var canChooseMacro = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var familiarMenu = [].concat(freeFightFamiliar_toConsumableArray(getConstantValueFamiliars()), freeFightFamiliar_toConsumableArray(getDropFamiliars()), freeFightFamiliar_toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars() : []));
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  if (canChooseMacro) {
+  var _DEFAULT_MENU_OPTIONS = _objectSpread(_objectSpread({}, DEFAULT_MENU_OPTIONS), options),
+      includeExperienceFamiliars = _DEFAULT_MENU_OPTIONS.includeExperienceFamiliars,
+      canChooseMacro = _DEFAULT_MENU_OPTIONS.canChooseMacro,
+      location = _DEFAULT_MENU_OPTIONS.location,
+      extraFamiliars = _DEFAULT_MENU_OPTIONS.extraFamiliars;
+
+  var familiarMenu = [].concat(freeFightFamiliar_toConsumableArray(getConstantValueFamiliars()), freeFightFamiliar_toConsumableArray(getDropFamiliars()), freeFightFamiliar_toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars() : []), freeFightFamiliar_toConsumableArray(extraFamiliars));
+
+  if (canChooseMacro && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)()) {
     if (timeToMeatify()) {
       familiarMenu.push({
         familiar: (0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject || (freeFightFamiliar_templateObject = freeFightFamiliar_taggedTemplateLiteral(["Grey Goose"]))),
@@ -19851,16 +19874,25 @@ function menu() {
         familiar: (0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject3 || (freeFightFamiliar_templateObject3 = freeFightFamiliar_taggedTemplateLiteral(["Crimbo Shrub"]))),
         expectedValue: 2500,
         leprechaunMultiplier: 0,
-        limit: "none"
+        limit: "special"
+      });
+    }
+
+    if (location.zone === "Dinseylandfill" && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject4 || (freeFightFamiliar_templateObject4 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))))) {
+      familiarMenu.push({
+        familiar: (0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject5 || (freeFightFamiliar_templateObject5 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))),
+        expectedValue: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(freeFightFamiliar_templateObject6 || (freeFightFamiliar_templateObject6 = freeFightFamiliar_taggedTemplateLiteral(["stench jelly"])))) / ((0,property/* get */.U2)("_spaceJellyfishDrops") < 5 ? (0,property/* get */.U2)("_spaceJellyfishDrops") + 1 : 20),
+        leprechaunMultiplier: 0,
+        limit: "special"
       });
     }
   }
 
   var meatFam = meatFamiliar();
 
-  if (familiarMenu.every(_ref => {
+  if (!familiarMenu.some(_ref => {
     var familiar = _ref.familiar;
-    return familiar !== meatFam;
+    return familiar === meatFam;
   })) {
     familiarMenu.push({
       familiar: meatFam,
@@ -19873,7 +19905,7 @@ function menu() {
   return familiarMenu;
 }
 function freeFightFamiliarData() {
-  var canChooseMacro = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   var compareFamiliars = (a, b) => {
     if (a.expectedValue === b.expectedValue) {
@@ -19883,23 +19915,22 @@ function freeFightFamiliarData() {
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return menu(true, canChooseMacro).reduce(compareFamiliars);
+  return menu(options).reduce(compareFamiliars);
 }
 function freeFightFamiliar() {
-  var canChooseMacro = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  return freeFightFamiliarData(canChooseMacro).familiar;
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return freeFightFamiliarData(options).familiar;
 }
 ;// CONCATENATED MODULE: ./src/familiar/marginalFamiliars.ts
-var marginalFamiliars_templateObject, marginalFamiliars_templateObject2, marginalFamiliars_templateObject3, marginalFamiliars_templateObject4, marginalFamiliars_templateObject5, marginalFamiliars_templateObject6;
+var marginalFamiliars_templateObject, marginalFamiliars_templateObject2, marginalFamiliars_templateObject3, marginalFamiliars_templateObject4;
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function marginalFamiliars_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function marginalFamiliars_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? marginalFamiliars_ownKeys(Object(source), !0).forEach(function (key) { marginalFamiliars_defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : marginalFamiliars_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function marginalFamiliars_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function marginalFamiliars_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 
 
 
@@ -19980,6 +20011,9 @@ function turnsNeededForFamiliar(_ref2, baselineToCompareAgainst) {
 
     case "none":
       return 0;
+
+    case "special":
+      return 0;
   }
 }
 
@@ -19987,7 +20021,7 @@ function calculateOutfitValue(f) {
   var outfit = getCachedOutfitValues(f.familiar);
   var outfitValue = outfit.bonus + outfit.meat * MEAT_DROP_VALUE + outfit.item * ITEM_DROP_VALUE;
   var outfitWeight = outfit.weight;
-  return _objectSpread(_objectSpread({}, f), {}, {
+  return marginalFamiliars_objectSpread(marginalFamiliars_objectSpread({}, f), {}, {
     outfitValue: outfitValue,
     outfitWeight: outfitWeight
   });
@@ -19999,18 +20033,11 @@ function barfFamiliar() {
   // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
   // Some day, I hope to right this wrong.
 
-  var baseMenu = menu(false);
-
-  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(marginalFamiliars_templateObject4 || (marginalFamiliars_templateObject4 = marginalFamiliars_taggedTemplateLiteral(["Space Jellyfish"])))) && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)()) {
-    baseMenu.push({
-      familiar: (0,template_string/* $familiar */.HP)(marginalFamiliars_templateObject5 || (marginalFamiliars_templateObject5 = marginalFamiliars_taggedTemplateLiteral(["Space Jellyfish"]))),
-      expectedValue: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(marginalFamiliars_templateObject6 || (marginalFamiliars_templateObject6 = marginalFamiliars_taggedTemplateLiteral(["stench jelly"])))) / ((0,property/* get */.U2)("_spaceJellyfishDrops") < 5 ? (0,property/* get */.U2)("_spaceJellyfishDrops") + 1 : 20),
-      leprechaunMultiplier: 0,
-      limit: "none"
-    });
-  }
-
-  var fullMenu = baseMenu.map(calculateOutfitValue);
+  var fullMenu = menu({
+    canChooseMacro: true,
+    location: (0,template_string/* $location */.PG)(marginalFamiliars_templateObject4 || (marginalFamiliars_templateObject4 = marginalFamiliars_taggedTemplateLiteral(["Barf Mountain"]))),
+    includeExperienceFamiliars: false
+  }).map(calculateOutfitValue);
   var meatFamiliarEntry = fullMenu.find(_ref5 => {
     var familiar = _ref5.familiar;
     return familiar === meatFamiliar();
@@ -20079,7 +20106,9 @@ function bestFairy() {
       goodFairies.push((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject9 || (itemFamiliar_templateObject9 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))));
     }
 
-    var bonuses = [].concat(itemFamiliar_toConsumableArray(menu(true, false)), [{
+    var bonuses = [].concat(itemFamiliar_toConsumableArray(menu({
+      includeExperienceFamiliars: false
+    })), [{
       familiar: (0,template_string/* $familiar */.HP)(itemFamiliar_templateObject10 || (itemFamiliar_templateObject10 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))),
       expectedValue: (0,property/* get */.U2)("valueOfAdventure") * 70 / 1000,
       leprechaunMultiplier: 0,
@@ -20807,7 +20836,9 @@ function startWandererCounter() {
 
         (0,external_kolmafia_.print)("You do not have gregs active, so this is a regular free run.");
         run = (_tryFindFreeRun2 = (0,FreeRun/* tryFindFreeRun */.J)()) !== null && _tryFindFreeRun2 !== void 0 ? _tryFindFreeRun2 : (0,src_lib/* ltbRun */.Pw)();
-        (0,external_kolmafia_.useFamiliar)((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints5 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints5)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : (0,familiar/* freeFightFamiliar */.Vo)());
+        (0,external_kolmafia_.useFamiliar)((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints5 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints5)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : (0,familiar/* freeFightFamiliar */.Vo)({
+          canChooseMacro: false
+        }));
         (_run$constraints$prep3 = (_run$constraints6 = run.constraints).preparation) === null || _run$constraints$prep3 === void 0 ? void 0 : _run$constraints$prep3.call(_run$constraints6);
         (0,outfit/* freeFightOutfit */.p8)((_run$constraints$equi2 = (_run$constraints7 = run.constraints).equipmentRequirements) === null || _run$constraints$equi2 === void 0 ? void 0 : _run$constraints$equi2.call(_run$constraints7));
       }
@@ -21002,7 +21033,9 @@ var FreeFight = /*#__PURE__*/function () {
 
       var mandatory = (_this$options$familia = (_this$options = this.options).familiar) === null || _this$options$familia === void 0 ? void 0 : _this$options$familia.call(_this$options);
       if (mandatory) return mandatory;
-      return (0,familiar/* freeFightFamiliar */.Vo)(this.options.canOverrideMacro);
+      return (0,familiar/* freeFightFamiliar */.Vo)({
+        canChooseMacro: this.options.canOverrideMacro
+      });
     }
   }, {
     key: "isAvailable",
@@ -21826,7 +21859,7 @@ function doSausage() {
     return;
   }
 
-  (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)(true));
+  (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)());
   (0,outfit/* freeFightOutfit */.p8)(new maximize/* Requirement */.nb([], {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject474 || (_templateObject474 = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
   }));
@@ -21843,7 +21876,7 @@ function doGhost() {
   if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject476 || (_templateObject476 = fights_taggedTemplateLiteral(["protonic accelerator pack"])))) || (0,property/* get */.U2)("questPAGhost") === "unstarted") return;
   var ghostLocation = (0,property/* get */.U2)("ghostLocation");
   if (!ghostLocation) return;
-  (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)(true));
+  (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)());
   (0,outfit/* freeFightOutfit */.p8)(new maximize/* Requirement */.nb([], {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject477 || (_templateObject477 = fights_taggedTemplateLiteral(["protonic accelerator pack"])))
   }));
@@ -21961,7 +21994,7 @@ function voidMonster() {
     return;
   }
 
-  (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)(true));
+  (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)());
   (0,outfit/* freeFightOutfit */.p8)(new maximize/* Requirement */.nb([], {
     forceEquip: (0,template_string/* $items */.vS)(_templateObject513 || (_templateObject513 = fights_taggedTemplateLiteral(["cursed magnifying glass"])))
   }));
@@ -22048,7 +22081,9 @@ function killRobortCreaturesForFree() {
     var regularTarget = CombatLoversLocket/* findMonster */.CQ(() => true, valueDrops);
 
     if (regularTarget === roboTarget) {
-      (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)());
+      (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)({
+        canChooseMacro: roboTarget.attributes.includes("FREE")
+      }));
     } else {
       (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(_templateObject535 || (_templateObject535 = fights_taggedTemplateLiteral(["Robortender"]))));
     }
@@ -24650,25 +24685,25 @@ function barfTurn() {
     (0,outfit/* meatOutfit */.ZX)(true);
     (0,src_combat.withMacro)(src_combat.Macro.meatKill(), () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(src_templateObject8 || (src_templateObject8 = src_taggedTemplateLiteral(["envyfish egg"])))));
   } else if ((0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject9 || (src_templateObject9 = src_taggedTemplateLiteral(["protonic accelerator pack"])))) && (0,property/* get */.U2)("questPAGhost") !== "unstarted" && ghostLocation) {
-    (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)(true));
+    (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)());
     (0,outfit/* freeFightOutfit */.p8)(new maximize/* Requirement */.nb(ghostLocation === (0,template_string/* $location */.PG)(src_templateObject10 || (src_templateObject10 = src_taggedTemplateLiteral(["The Icy Peak"]))) ? ["Cold Resistance 5 min"] : [], {
       forceEquip: (0,template_string/* $items */.vS)(src_templateObject11 || (src_templateObject11 = src_taggedTemplateLiteral(["protonic accelerator pack"])))
     }));
     (0,combat/* adventureMacro */.Qk)(ghostLocation, src_combat.Macro.ghostBustin());
   } else if ((0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject12 || (src_templateObject12 = src_taggedTemplateLiteral(["\"I Voted!\" sticker"])))) && (0,external_kolmafia_.totalTurnsPlayed)() % 11 === 1 && (0,property/* get */.U2)("lastVoteMonsterTurn") < (0,external_kolmafia_.totalTurnsPlayed)() && (0,property/* get */.U2)("_voteFreeFights") < 3) {
-    (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)(true));
+    (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)());
     (0,outfit/* freeFightOutfit */.p8)(new maximize/* Requirement */.nb([], {
       forceEquip: (0,template_string/* $items */.vS)(src_templateObject13 || (src_templateObject13 = src_taggedTemplateLiteral(["\"I Voted!\" sticker"])))
     }));
     (0,combat/* adventureMacroAuto */.Ao)((0,wanderer/* determineDraggableZoneAndEnsureAccess */.x)(), src_combat.Macro.basicCombat());
   } else if ((0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() && !embezzlerUp && (0,src_lib/* kramcoGuaranteed */.DR)()) {
-    (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)(true));
+    (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)());
     (0,outfit/* freeFightOutfit */.p8)(new maximize/* Requirement */.nb([], {
       forceEquip: (0,template_string/* $items */.vS)(src_templateObject14 || (src_templateObject14 = src_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
     }));
     (0,combat/* adventureMacroAuto */.Ao)((0,wanderer/* determineDraggableZoneAndEnsureAccess */.x)(), src_combat.Macro.basicCombat());
   } else if ((0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)() && !embezzlerUp && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject15 || (src_templateObject15 = src_taggedTemplateLiteral(["cursed magnifying glass"])))) && (0,property/* get */.U2)("cursedMagnifyingGlassCount") === 13 && (0,property/* get */.U2)("_voidFreeFights") < 5) {
-    (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)(true));
+    (0,external_kolmafia_.useFamiliar)((0,familiar/* freeFightFamiliar */.Vo)());
     (0,outfit/* freeFightOutfit */.p8)(new maximize/* Requirement */.nb([], {
       forceEquip: (0,template_string/* $items */.vS)(src_templateObject16 || (src_templateObject16 = src_taggedTemplateLiteral(["cursed magnifying glass"])))
     }));
