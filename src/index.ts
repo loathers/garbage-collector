@@ -64,7 +64,7 @@ import { estimatedTurns } from "./embezzler";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
-import barfTurn from "./barfturn";
+import barfTurn from "./barfTurn";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
