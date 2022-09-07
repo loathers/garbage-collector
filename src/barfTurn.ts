@@ -114,7 +114,9 @@ const turns: AdventureAction[] = [
   {
     name: "Lights Out",
     available: () =>
-      totalTurnsPlayed() % 37 === 0 && totalTurnsPlayed() !== get("lastLightsOutTurn"),
+      totalTurnsPlayed() % 37 === 0 &&
+      totalTurnsPlayed() !== get("lastLightsOutTurn") &&
+      canAdventure(get("nextSpookyravenStephenRoom") ?? Location.none),
     execute: () => {
       const steveRoom = get("nextSpookyravenStephenRoom");
       const ghostLocation = get("ghostLocation");
