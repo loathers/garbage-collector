@@ -27,7 +27,6 @@ import { safeRestore } from "../lib";
 import { pyecAvailable, yachtzeeBuffValue } from "./lib";
 import { getBestWaterBreathingEquipment } from "./outfit";
 
-
 function fishyCloverAdventureOpportunityCost(pipe: boolean) {
   const willBeFishy = pipe || have($effect`Fishy`);
   const fishyCloverAdventureCost = willBeFishy ? 1 : 2;

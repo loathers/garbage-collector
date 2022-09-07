@@ -1,5 +1,27 @@
-import { cliExecute, Effect, haveEffect, itemAmount, maximize, myMeat, print, toInt, use } from "kolmafia";
-import { $effect, $item, $items, clamp, get, getActiveEffects, getActiveSongs, have, isSong, Mood, set } from "libram";
+import {
+  cliExecute,
+  Effect,
+  haveEffect,
+  itemAmount,
+  maximize,
+  myMeat,
+  print,
+  toInt,
+  use,
+} from "kolmafia";
+import {
+  $effect,
+  $item,
+  $items,
+  clamp,
+  get,
+  getActiveEffects,
+  getActiveSongs,
+  have,
+  isSong,
+  Mood,
+  set,
+} from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { baseMeat, burnLibrams, turnsToNC } from "../lib";
