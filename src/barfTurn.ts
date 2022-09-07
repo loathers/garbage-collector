@@ -70,7 +70,7 @@ function embezzlerPrep(requirements?: Requirement) {
 }
 
 function freeFightPrep(requirements?: Requirement) {
-  useFamiliar(freeFightFamiliar(true));
+  useFamiliar(freeFightFamiliar());
   freeFightOutfit(requirements);
 }
 
@@ -243,12 +243,15 @@ const turns: AdventureAction[] = [
     available: () =>
       sober() && have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
     execute: () => {
-      const jellyfishing = have($familiar`Space Jellyfish`) && realmAvailable("stench");
-      const familiarChoice = jellyfishing ? $familiar`Space Jellyfish` : freeFightFamiliar(true);
+      const canJellyfish = have($familiar`Space Jellyfish`) && realmAvailable("stench");
+      const familiarChoice = freeFightFamiliar({
+        location: canJellyfish ? $location`Pirates of the Garbage Barges` : Location.none,
+      });
       // We want a 100% combat zone.
-      const locationChoice = jellyfishing
-        ? $location`Pirates of the Garbage Barges`
-        : determineDraggableZoneAndEnsureAccess("backup");
+      const locationChoice =
+        familiarChoice === $familiar`Space Jellyfish`
+          ? $location`Pirates of the Garbage Barges`
+          : determineDraggableZoneAndEnsureAccess("backup");
       useFamiliar(familiarChoice);
       freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
       cliExecute("parka dilophosaur");
