@@ -193,7 +193,7 @@ const secondChainMacro = () =>
   ).abort();
 
 function embezzlerSetup() {
-  setLocation($location.none);
+  setLocation($location`none`);
   potionSetup(false);
   maximize("MP", false);
   meatMood(true, 750 + baseMeat).execute(embezzlerCount());
@@ -624,7 +624,7 @@ function getStenchLocation() {
   return (
     $locations`Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
       (l) => canAdventure(l)
-    ) || $location.none
+    ) ?? $location`none`
   );
 }
 
@@ -1367,7 +1367,7 @@ const freeRunFightSources = [
     () =>
       have($familiar`Space Jellyfish`) &&
       get("_spaceJellyfishDrops") < 5 &&
-      getStenchLocation() !== $location.none,
+      getStenchLocation() !== $location`none`,
     (runSource: ActionSource) => {
       adventureMacro(
         getStenchLocation(),
@@ -1384,7 +1384,7 @@ const freeRunFightSources = [
       have($familiar`Space Jellyfish`) &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
-      getStenchLocation() !== $location.none,
+      getStenchLocation() !== $location`none`,
     (runSource: ActionSource) => {
       adventureMacro(
         getStenchLocation(),
@@ -1406,7 +1406,7 @@ const freeRunFightSources = [
       have($familiar`Space Jellyfish`) &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
-      getStenchLocation() !== $location.none,
+      getStenchLocation() !== $location`none`,
     (runSource: ActionSource) => {
       adventureMacro(
         getStenchLocation(),

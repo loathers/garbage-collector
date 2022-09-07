@@ -1,19 +1,12 @@
 import {
   availableAmount,
-  booleanModifier,
   buy,
-  canAdventure,
   cliExecute,
-  currentRound,
-  eat,
-  equip,
   getCampground,
   getClanName,
-  getCounters,
   guildStoreAvailable,
   inebrietyLimit,
   Item,
-  itemAmount,
   maximize,
   myAdventures,
   myClass,
@@ -25,14 +18,9 @@ import {
   putStash,
   retrieveItem,
   runChoice,
-  runCombat,
   setAutoAttack,
   toInt,
-  totalTurnsPlayed,
-  toUrl,
   use,
-  useFamiliar,
-  useSkill,
   visitUrl,
   xpath,
 } from "kolmafia";
@@ -40,66 +28,43 @@ import {
   $class,
   $classes,
   $coinmaster,
-  $effect,
   $item,
   $items,
-  $location,
-  $monster,
   $skill,
-  $slot,
   $slots,
-  adventureMacro,
-  adventureMacroAuto,
-  clamp,
   Clan,
-  ensureEffect,
   get,
   getFoldGroup,
   have,
   haveInCampground,
   JuneCleaver,
-  Requirement,
   set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
-  SourceTerminal,
 } from "libram";
-import { Macro, withMacro } from "./combat";
-import { computeDiet, consumeDiet, runDiet } from "./diet";
-import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
+import { runDiet } from "./diet";
+import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
-  embezzlerLog,
   globalOptions,
   HIGHLIGHT,
-  kramcoGuaranteed,
   printHelpMenu,
   printLog,
   propertyManager,
   questStep,
   safeRestore,
-  setChoice,
-  steveAdventures,
   userConfirmDialog,
 } from "./lib";
 import { meatMood } from "./mood";
 import postCombatActions from "./post";
-import {
-  familiarWaterBreathingEquipment,
-  freeFightOutfit,
-  meatOutfit,
-  tryFillLatte,
-  waterBreathingEquipment,
-} from "./outfit";
 import { stashItems, withStash, withVIPClan } from "./clan";
-import { completeBarfQuest, dailySetup, postFreeFightDailySetup } from "./dailies";
+import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { estimatedTurns } from "./embezzler";
-import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
+import barfTurn from "./barfTurn";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -120,201 +85,6 @@ function ensureBarfAccess() {
   }
 }
 
-function barfTurn() {
-  const startTurns = totalTurnsPlayed();
-
-  if (SourceTerminal.have()) {
-    SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
-  }
-
-  tryFillLatte();
-
-  const steveRoom = get("nextSpookyravenStephenRoom");
-  const ghostLocation = get("ghostLocation");
-  if (
-    totalTurnsPlayed() % 37 === 0 &&
-    totalTurnsPlayed() !== get("lastLightsOutTurn") &&
-    steveRoom &&
-    steveRoom !== ghostLocation &&
-    canAdventure(steveRoom)
-  ) {
-    const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
-    if (fightingSteve) {
-      useFamiliar(meatFamiliar());
-      meatOutfit(true);
-    }
-    const plan = steveAdventures.get(steveRoom);
-    if (plan) {
-      withMacro(
-        Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abort(),
-        () => {
-          visitUrl(toUrl(steveRoom));
-          for (const choiceValue of plan) {
-            runChoice(choiceValue);
-          }
-          if (fightingSteve || currentRound()) runCombat();
-        },
-        true
-      );
-    }
-  }
-
-  const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
-
-  // a. set up mood stuff
-  meatMood().execute(estimatedTurns());
-
-  safeRestore(); // get enough mp to use summer siesta and enough hp to not get our ass kicked
-
-  // b. check for wanderers, and do them
-  if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
-    meatOutfit(true);
-    withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
-  } else if (
-    myInebriety() <= inebrietyLimit() &&
-    have($item`protonic accelerator pack`) &&
-    get("questPAGhost") !== "unstarted" &&
-    ghostLocation
-  ) {
-    useFamiliar(freeFightFamiliar());
-    freeFightOutfit(
-      new Requirement(ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [], {
-        forceEquip: $items`protonic accelerator pack`,
-      })
-    );
-    adventureMacro(ghostLocation, Macro.ghostBustin());
-  } else if (
-    myInebriety() <= inebrietyLimit() &&
-    have($item`"I Voted!" sticker`) &&
-    totalTurnsPlayed() % 11 === 1 &&
-    get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
-    get("_voteFreeFights") < 3
-  ) {
-    useFamiliar(freeFightFamiliar());
-    freeFightOutfit(new Requirement([], { forceEquip: $items`"I Voted!" sticker` }));
-    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
-  } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
-    useFamiliar(freeFightFamiliar());
-    freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
-    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
-  } else if (
-    myInebriety() <= inebrietyLimit() &&
-    !embezzlerUp &&
-    have($item`cursed magnifying glass`) &&
-    get("cursedMagnifyingGlassCount") === 13 &&
-    get("_voidFreeFights") < 5
-  ) {
-    useFamiliar(freeFightFamiliar());
-    freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
-    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
-  } else {
-    // c. set up familiar
-    const location = embezzlerUp
-      ? !get("_envyfishEggUsed") &&
-        myLevel() >= 11 &&
-        (booleanModifier("Adventure Underwater") ||
-          waterBreathingEquipment.some((item) => have(item))) &&
-        (booleanModifier("Underwater Familiar") ||
-          familiarWaterBreathingEquipment.some((item) => have(item))) &&
-        (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-        !have($item`envyfish egg`)
-        ? $location`The Briny Deeps`
-        : determineDraggableZoneAndEnsureAccess()
-      : $location`Barf Mountain`;
-
-    const underwater = location === $location`The Briny Deeps`;
-
-    if (underwater) {
-      // now fight one underwater
-      if (get("questS01OldGuy") === "unstarted") {
-        visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-      }
-      retrieveItem($item`pulled green taffy`);
-      if (!have($effect`Fishy`)) use($item`fishy pipe`);
-    } else if (embezzlerUp) useFamiliar(meatFamiliar());
-    else useFamiliar(barfFamiliar());
-
-    // d. get dressed
-    meatOutfit(embezzlerUp, undefined, underwater);
-
-    if (
-      !embezzlerUp &&
-      myInebriety() > inebrietyLimit() &&
-      globalOptions.ascending &&
-      clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
-        availableAmount($item`Map to Safety Shelter Grimace Prime`)
-    ) {
-      const choiceToSet =
-        availableAmount($item`distention pill`) <
-        availableAmount($item`synthetic dog hair pill`) +
-          availableAmount($item`Map to Safety Shelter Grimace Prime`)
-          ? 1
-          : 2;
-      setChoice(536, choiceToSet);
-      ensureEffect($effect`Transpondent`);
-      use($item`Map to Safety Shelter Grimace Prime`);
-    } else {
-      if (
-        get("dinseyRollercoasterNext") &&
-        have($item`lube-shoes`) &&
-        location === $location`Barf Mountain`
-      ) {
-        equip($slot`acc3`, $item`lube-shoes`);
-      }
-      adventureMacroAuto(
-        location,
-        Macro.externalIf(
-          underwater,
-          Macro.if_($monster`Knob Goblin Embezzler`, Macro.item($item`pulled green taffy`))
-        ).meatKill(),
-        Macro.if_(
-          `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
-          Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
-        ).abort()
-      );
-      completeBarfQuest();
-    }
-  }
-
-  if (myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
-    deliverThesisIfAble();
-
-    if (
-      have($item`Kramco Sausage-o-Matic™`) &&
-      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get("_sausagesEaten") < 23
-    ) {
-      const available = clamp(
-        23 - get("_sausagesEaten"),
-        0,
-        itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
-      );
-      eat(available, $item`magical sausage`);
-    }
-  }
-
-  if (
-    have($item`designer sweatpants`) &&
-    myAdventures() === 1 + globalOptions.saveTurns &&
-    !globalOptions.noDiet
-  ) {
-    while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25 && myInebriety() > 0) {
-      useSkill($skill`Sweat Out Some Booze`);
-    }
-    consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
-  }
-
-  if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler") {
-    if (embezzlerUp) {
-      embezzlerLog.digitizedEmbezzlersFought++;
-      embezzlerLog.sources.push("Digitize");
-    } else {
-      embezzlerLog.initialEmbezzlersFought++;
-      embezzlerLog.sources.push("Unknown Source");
-    }
-  }
-}
-
 export function canContinue(): boolean {
   return (
     myAdventures() > globalOptions.saveTurns &&
@@ -323,7 +93,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26713);
+  sinceKolmafiaRevision(26730);
   checkGithubVersion();
 
   if (get("garbo_autoUserConfirm", false)) {
