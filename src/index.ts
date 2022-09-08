@@ -364,12 +364,15 @@ export function main(argString = ""): void {
     ) {
       visitUrl("guild.php?action=buyskill&skillid=32", true);
     }
-    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving, mafia pointer finger ring`;
+    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring`;
     if (
       myInebriety() <= inebrietyLimit() &&
       (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
     ) {
       stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
+    }
+    if (!have($item`Jurassic Parka`) && have($skill`Torso Awareness`)) {
+      stashItems.push($item`origami pasties`);
     }
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
