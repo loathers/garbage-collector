@@ -132,7 +132,10 @@ class YachtzeeDietUtils {
         ensureConsumable("jumping horseradish", n, 1, 0, 0);
         eat(n, $item`jumping horseradish`);
       }),
-      new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => use($item`Clara's bell`)),
+      new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => {
+        use($item`Clara's bell`);
+        globalOptions.clarasBellClaimed = true;
+      }),
       new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, useSpikolodonSpikes),
     ];
     if (action) this.dietArray.forEach((entry) => (entry.action = action));
