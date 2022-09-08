@@ -372,7 +372,7 @@ export function main(argString = ""): void {
       stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
     }
     if (!have($item`Jurassic Parka`) && have($skill`Torso Awareness`)) {
-      stashItems.push(...$items`origami pasties`);
+      stashItems.push($item`origami pasties`);
     }
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
