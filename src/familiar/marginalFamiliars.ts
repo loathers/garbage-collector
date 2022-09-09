@@ -117,7 +117,7 @@ function turnsNeededForFamiliar(
       return 0;
 
     case "shrub":
-      return 0;
+      return Math.ceil(estimatedTurns() / 100);
 
     case "jellyfish":
       return sum(
