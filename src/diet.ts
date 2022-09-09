@@ -704,7 +704,11 @@ export function computeDiet(): {
     pantsgiving: () =>
       pantsgivingDietPlanner(
         balanceMenu(
-          menu().filter((menuItem) => itemType(menuItem.item) === "food" && menuItem.size === 1),
+          menu().filter(
+            (menuItem) =>
+              (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
+              [Mayo.flex, Mayo.zapine].includes(menuItem.item)
+          ),
           pantsgivingDietPlanner
         )
       ),
