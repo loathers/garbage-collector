@@ -164,10 +164,11 @@ export function barfFamiliar(): Familiar {
     );
 
     if (turnsNeeded < estimatedTurns()) {
-      return (
-        viableMenu.find((familiar) => familiar.familiar === $familiar`Crimbo Shrub`)?.familiar ??
-        meatFamiliar()
+      const shrubAvailable = viableMenu.some(
+        ({ familiar }) => familiar === $familiar`Crimbo Shrub`
       );
+      return shrubAvailable ? $familiar`Crimbo Shrub` : meatFamiliar();
+      ```
     }
   }
 
