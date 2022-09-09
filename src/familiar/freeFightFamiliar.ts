@@ -77,6 +77,22 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   return familiarMenu;
 }
 
+export function getAllJellyfishDrops(): { expectedValue: number; expectedTurns: number }[] {
+  if (!have($familiar`Space Jellyfish`)) return [{ expectedValue: 0, expectedTurns: 0 }];
+
+  const current = get("_spaceJellyfishDrops");
+  const returnValue = [];
+
+  for (let turns = current + 1; turns <= 6; turns++) {
+    returnValue.push({
+      expectedValue: garboValue($item`stench jelly`) / (turns > 5 ? 20 : turns),
+      expectedTurns: turns > 5 ? Infinity : turns,
+    });
+  }
+
+  return returnValue;
+}
+
 export function freeFightFamiliarData(options: MenuOptions = {}): GeneralFamiliar {
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a.expectedValue === b.expectedValue) {

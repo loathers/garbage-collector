@@ -28,7 +28,7 @@ import { baseMeat, HIGHLIGHT } from "../lib";
 import { meatOutfit } from "../outfit";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
-import { menu } from "./freeFightFamiliar";
+import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
@@ -117,7 +117,7 @@ function turnsNeededForFamiliar(
       return 0;
 
     case "special":
-      return 0;
+      return getSpecialFamiliarLimit({ familiar, outfitValue, baselineToCompareAgainst });
   }
 }
 
@@ -153,7 +153,12 @@ export function barfFamiliar(): Familiar {
       turnsNeededForFamiliar(option, meatFamiliarEntry)
     );
 
-    if (turnsNeeded < estimatedTurns()) return meatFamiliar();
+    if (turnsNeeded < estimatedTurns()) {
+      const shrubAvailable = viableMenu.some(
+        ({ familiar }) => familiar === $familiar`Crimbo Shrub`
+      );
+      return shrubAvailable ? $familiar`Crimbo Shrub` : meatFamiliar();
+    }
   }
 
   if (viableMenu.length === 0) return meatFamiliar();
@@ -173,4 +178,32 @@ export function barfFamiliar(): Familiar {
   );
 
   return best.familiar;
+}
+
+function getSpecialFamiliarLimit({
+  familiar,
+  outfitValue,
+  baselineToCompareAgainst,
+}: {
+  familiar: Familiar;
+  outfitValue: number;
+  baselineToCompareAgainst: GeneralFamiliar & { outfitWeight: number; outfitValue: number };
+}): number {
+  switch (familiar) {
+    case $familiar`Space Jellyfish`:
+      return sum(
+        getAllJellyfishDrops().filter(
+          ({ expectedValue }) =>
+            outfitValue + familiarAbilityValue(familiar) + expectedValue >
+            totalFamiliarValue(baselineToCompareAgainst)
+        ),
+        ({ expectedTurns }) => expectedTurns
+      );
+
+    case $familiar`Crimbo Shrub`:
+      return Math.ceil(estimatedTurns() / 100);
+
+    default:
+      return 0;
+  }
 }
