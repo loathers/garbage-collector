@@ -17161,7 +17161,7 @@ function constantValueFamiliars_getConstantValueFamiliars() {
   });
 }
 ;// CONCATENATED MODULE: ./src/familiar/freeFightFamiliar.ts
-var freeFightFamiliar_templateObject, freeFightFamiliar_templateObject2, freeFightFamiliar_templateObject3, freeFightFamiliar_templateObject4, freeFightFamiliar_templateObject5, freeFightFamiliar_templateObject6, freeFightFamiliar_templateObject7;
+var freeFightFamiliar_templateObject, freeFightFamiliar_templateObject2, freeFightFamiliar_templateObject3, freeFightFamiliar_templateObject4, freeFightFamiliar_templateObject5, freeFightFamiliar_templateObject6, freeFightFamiliar_templateObject7, freeFightFamiliar_templateObject8, freeFightFamiliar_templateObject9;
 
 function freeFightFamiliar_toConsumableArray(arr) { return freeFightFamiliar_arrayWithoutHoles(arr) || freeFightFamiliar_iterableToArray(arr) || freeFightFamiliar_unsupportedIterableToArray(arr) || freeFightFamiliar_nonIterableSpread(); }
 
@@ -17254,6 +17254,23 @@ function freeFightFamiliar_menu() {
 
   return familiarMenu;
 }
+function freeFightFamiliar_getAllJellyfishDrops() {
+  if (!have($familiar(freeFightFamiliar_templateObject8 || (freeFightFamiliar_templateObject8 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))))) return [{
+    expectedValue: 0,
+    expectedTurns: 0
+  }];
+  var current = get("_spaceJellyfishDrops");
+  var returnValue = [];
+
+  for (var turns = current + 1; turns <= 6; turns++) {
+    returnValue.push({
+      expectedValue: garboValue($item(freeFightFamiliar_templateObject9 || (freeFightFamiliar_templateObject9 = freeFightFamiliar_taggedTemplateLiteral(["stench jelly"])))) / (turns > 5 ? 20 : turns),
+      expectedTurns: turns > 5 ? Infinity : turns
+    });
+  }
+
+  return returnValue;
+}
 function freeFightFamiliarData() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -17272,7 +17289,7 @@ function freeFightFamiliar() {
   return freeFightFamiliarData(options).familiar;
 }
 ;// CONCATENATED MODULE: ./src/familiar/marginalFamiliars.ts
-var marginalFamiliars_templateObject, marginalFamiliars_templateObject2, marginalFamiliars_templateObject3, marginalFamiliars_templateObject4;
+var marginalFamiliars_templateObject, marginalFamiliars_templateObject2, marginalFamiliars_templateObject3, marginalFamiliars_templateObject4, marginalFamiliars_templateObject5, marginalFamiliars_templateObject6, marginalFamiliars_templateObject7, marginalFamiliars_templateObject8;
 
 function marginalFamiliars_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
@@ -17363,7 +17380,11 @@ function turnsNeededForFamiliar(_ref2, baselineToCompareAgainst) {
       return 0;
 
     case "special":
-      return 0;
+      return getSpecialFamiliarLimit({
+        familiar: familiar,
+        outfitValue: outfitValue,
+        baselineToCompareAgainst: baselineToCompareAgainst
+      });
   }
 }
 
@@ -17401,7 +17422,14 @@ function barfFamiliar() {
     return limit !== "none";
   })) {
     var turnsNeeded = sum(viableMenu, option => turnsNeededForFamiliar(option, meatFamiliarEntry));
-    if (turnsNeeded < estimatedTurns()) return meatFamiliar();
+
+    if (turnsNeeded < estimatedTurns()) {
+      var shrubAvailable = viableMenu.some(_ref7 => {
+        var familiar = _ref7.familiar;
+        return familiar === $familiar(marginalFamiliars_templateObject5 || (marginalFamiliars_templateObject5 = marginalFamiliars_taggedTemplateLiteral(["Crimbo Shrub"])));
+      });
+      return shrubAvailable ? $familiar(marginalFamiliars_templateObject6 || (marginalFamiliars_templateObject6 = marginalFamiliars_taggedTemplateLiteral(["Crimbo Shrub"]))) : meatFamiliar();
+    }
   }
 
   if (viableMenu.length === 0) return meatFamiliar();
@@ -17411,6 +17439,29 @@ function barfFamiliar() {
 
   print("Choosing to use ".concat(best.familiar, " ").concat(familiarPrintout(best), " over ").concat(meatFamiliarEntry.familiar, " ").concat(familiarPrintout(meatFamiliarEntry), "."), HIGHLIGHT);
   return best.familiar;
+}
+
+function getSpecialFamiliarLimit(_ref8) {
+  var familiar = _ref8.familiar,
+      outfitValue = _ref8.outfitValue,
+      baselineToCompareAgainst = _ref8.baselineToCompareAgainst;
+
+  switch (familiar) {
+    case $familiar(marginalFamiliars_templateObject7 || (marginalFamiliars_templateObject7 = marginalFamiliars_taggedTemplateLiteral(["Space Jellyfish"]))):
+      return sum(getAllJellyfishDrops().filter(_ref9 => {
+        var expectedValue = _ref9.expectedValue;
+        return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
+      }), _ref10 => {
+        var expectedTurns = _ref10.expectedTurns;
+        return expectedTurns;
+      });
+
+    case $familiar(marginalFamiliars_templateObject8 || (marginalFamiliars_templateObject8 = marginalFamiliars_taggedTemplateLiteral(["Crimbo Shrub"]))):
+      return Math.ceil(estimatedTurns() / 100);
+
+    default:
+      return 0;
+  }
 }
 ;// CONCATENATED MODULE: ./src/familiar/itemFamiliar.ts
 var itemFamiliar_templateObject, itemFamiliar_templateObject2, itemFamiliar_templateObject3, itemFamiliar_templateObject4, itemFamiliar_templateObject5, itemFamiliar_templateObject6, itemFamiliar_templateObject7, itemFamiliar_templateObject8, itemFamiliar_templateObject9, itemFamiliar_templateObject10, itemFamiliar_templateObject11, itemFamiliar_templateObject12, itemFamiliar_templateObject13;
