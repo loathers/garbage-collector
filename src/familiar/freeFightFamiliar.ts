@@ -47,7 +47,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         familiar: $familiar`Crimbo Shrub`,
         expectedValue: 2500,
         leprechaunMultiplier: 0,
-        limit: "shrub",
+        limit: "special",
       });
     }
 
@@ -58,7 +58,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
           garboValue($item`stench jelly`) /
           (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
         leprechaunMultiplier: 0,
-        limit: "jellyfish",
+        limit: "special",
       });
     }
   }

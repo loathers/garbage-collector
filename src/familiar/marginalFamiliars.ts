@@ -116,18 +116,8 @@ function turnsNeededForFamiliar(
     case "none":
       return 0;
 
-    case "shrub":
-      return Math.ceil(estimatedTurns() / 100);
-
-    case "jellyfish":
-      return sum(
-        getAllJellyfishDrops().filter(
-          ({ expectedValue }) =>
-            outfitValue + familiarAbilityValue(familiar) + expectedValue >
-            totalFamiliarValue(baselineToCompareAgainst)
-        ),
-        ({ expectedTurns }) => expectedTurns
-      );
+    case "special":
+      return getSpecialFamiliarLimit({ familiar, outfitValue, baselineToCompareAgainst });
   }
 }
 
@@ -168,7 +158,6 @@ export function barfFamiliar(): Familiar {
         ({ familiar }) => familiar === $familiar`Crimbo Shrub`
       );
       return shrubAvailable ? $familiar`Crimbo Shrub` : meatFamiliar();
-      ```
     }
   }
 
@@ -189,4 +178,32 @@ export function barfFamiliar(): Familiar {
   );
 
   return best.familiar;
+}
+
+function getSpecialFamiliarLimit({
+  familiar,
+  outfitValue,
+  baselineToCompareAgainst,
+}: {
+  familiar: Familiar;
+  outfitValue: number;
+  baselineToCompareAgainst: GeneralFamiliar & { outfitWeight: number; outfitValue: number };
+}): number {
+  switch (familiar) {
+    case $familiar`Space Jellyfish`:
+      return sum(
+        getAllJellyfishDrops().filter(
+          ({ expectedValue }) =>
+            outfitValue + familiarAbilityValue(familiar) + expectedValue >
+            totalFamiliarValue(baselineToCompareAgainst)
+        ),
+        ({ expectedTurns }) => expectedTurns
+      );
+
+    case $familiar`Crimbo Shrub`:
+      return Math.ceil(estimatedTurns() / 100);
+
+    default:
+      return 0;
+  }
 }
