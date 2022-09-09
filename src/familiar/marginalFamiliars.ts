@@ -28,7 +28,7 @@ import { baseMeat, HIGHLIGHT } from "../lib";
 import { meatOutfit } from "../outfit";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
-import { menu } from "./freeFightFamiliar";
+import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
@@ -116,8 +116,18 @@ function turnsNeededForFamiliar(
     case "none":
       return 0;
 
-    case "special":
+    case "shrub":
       return 0;
+
+    case "jellyfish":
+      return sum(
+        getAllJellyfishDrops().filter(
+          ({ expectedValue }) =>
+            outfitValue + familiarAbilityValue(familiar) + expectedValue >
+            totalFamiliarValue(baselineToCompareAgainst)
+        ),
+        ({ expectedTurns }) => expectedTurns
+      );
   }
 }
 
@@ -153,7 +163,12 @@ export function barfFamiliar(): Familiar {
       turnsNeededForFamiliar(option, meatFamiliarEntry)
     );
 
-    if (turnsNeeded < estimatedTurns()) return meatFamiliar();
+    if (turnsNeeded < estimatedTurns()) {
+      return (
+        viableMenu.find((familiar) => familiar.familiar === $familiar`Crimbo Shrub`)?.familiar ??
+        meatFamiliar()
+      );
+    }
   }
 
   if (viableMenu.length === 0) return meatFamiliar();

@@ -47,7 +47,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         familiar: $familiar`Crimbo Shrub`,
         expectedValue: 2500,
         leprechaunMultiplier: 0,
-        limit: "special",
+        limit: "shrub",
       });
     }
 
@@ -58,7 +58,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
           garboValue($item`stench jelly`) /
           (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
         leprechaunMultiplier: 0,
-        limit: "special",
+        limit: "jellyfish",
       });
     }
   }
@@ -75,6 +75,22 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   }
 
   return familiarMenu;
+}
+
+export function getAllJellyfishDrops(): { expectedValue: number; expectedTurns: number }[] {
+  if (!have($familiar`Space Jellyfish`)) return [{ expectedValue: 0, expectedTurns: 0 }];
+
+  const current = get("_spaceJellyfishDrops");
+  const returnValue = [];
+
+  for (let turns = current + 1; turns <= 6; turns++) {
+    returnValue.push({
+      expectedValue: garboValue($item`stench jelly`) / (turns > 5 ? 20 : turns),
+      expectedTurns: turns > 5 ? Infinity : turns,
+    });
+  }
+
+  return returnValue;
 }
 
 export function freeFightFamiliarData(options: MenuOptions = {}): GeneralFamiliar {
