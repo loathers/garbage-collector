@@ -17107,7 +17107,7 @@ function experienceFamiliars_getExperienceFamiliarLimit(fam) {
 // EXTERNAL MODULE: ./node_modules/libram/dist/resources/2017/Robortender.js
 var Robortender = __webpack_require__(330);
 ;// CONCATENATED MODULE: ./src/familiar/constantValueFamiliars.ts
-var constantValueFamiliars_templateObject, constantValueFamiliars_templateObject2, constantValueFamiliars_templateObject3, constantValueFamiliars_templateObject4, constantValueFamiliars_templateObject5, constantValueFamiliars_templateObject6, constantValueFamiliars_templateObject7, constantValueFamiliars_templateObject8, constantValueFamiliars_templateObject9, constantValueFamiliars_templateObject10, constantValueFamiliars_templateObject11, constantValueFamiliars_templateObject12, constantValueFamiliars_templateObject13, constantValueFamiliars_templateObject14;
+var constantValueFamiliars_templateObject, constantValueFamiliars_templateObject2, constantValueFamiliars_templateObject3, constantValueFamiliars_templateObject4, constantValueFamiliars_templateObject5, constantValueFamiliars_templateObject6, constantValueFamiliars_templateObject7, constantValueFamiliars_templateObject8, constantValueFamiliars_templateObject9, constantValueFamiliars_templateObject10, constantValueFamiliars_templateObject11, constantValueFamiliars_templateObject12, constantValueFamiliars_templateObject13, constantValueFamiliars_templateObject14, constantValueFamiliars_templateObject15;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -17144,6 +17144,9 @@ var standardFamiliars = [{
   // We can remove this cap once the price reaches a lower equilibrium
   // we probably won't, but we can.
   value: () => Math.min((0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject14 || (constantValueFamiliars_templateObject14 = constantValueFamiliars_taggedTemplateLiteral(["twitching space egg"])))) * 0.0002, 690)
+}, {
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject15 || (constantValueFamiliars_templateObject15 = constantValueFamiliars_taggedTemplateLiteral(["Hobo Monkey"]))),
+  value: () => 75
 }];
 function constantValueFamiliars_getConstantValueFamiliars() {
   return standardFamiliars.filter(_ref => {
@@ -17257,15 +17260,15 @@ function freeFightFamiliar_menu() {
 function freeFightFamiliar_getAllJellyfishDrops() {
   if (!have($familiar(freeFightFamiliar_templateObject8 || (freeFightFamiliar_templateObject8 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))))) return [{
     expectedValue: 0,
-    expectedTurns: 0
+    turnsAtValue: 0
   }];
   var current = get("_spaceJellyfishDrops");
   var returnValue = [];
 
-  for (var turns = current + 1; turns <= 6; turns++) {
+  for (var dropNumber = clamp(current + 1, 0, 6); dropNumber <= 6; dropNumber++) {
     returnValue.push({
-      expectedValue: garboValue($item(freeFightFamiliar_templateObject9 || (freeFightFamiliar_templateObject9 = freeFightFamiliar_taggedTemplateLiteral(["stench jelly"])))) / (turns > 5 ? 20 : turns),
-      expectedTurns: turns > 5 ? Infinity : turns
+      expectedValue: garboValue($item(freeFightFamiliar_templateObject9 || (freeFightFamiliar_templateObject9 = freeFightFamiliar_taggedTemplateLiteral(["stench jelly"])))) / (dropNumber > 5 ? 20 : dropNumber),
+      turnsAtValue: dropNumber > 5 ? Infinity : dropNumber
     });
   }
 
@@ -17452,8 +17455,8 @@ function getSpecialFamiliarLimit(_ref8) {
         var expectedValue = _ref9.expectedValue;
         return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
       }), _ref10 => {
-        var expectedTurns = _ref10.expectedTurns;
-        return expectedTurns;
+        var turnsAtValue = _ref10.turnsAtValue;
+        return turnsAtValue;
       });
 
     case $familiar(marginalFamiliars_templateObject8 || (marginalFamiliars_templateObject8 = marginalFamiliars_taggedTemplateLiteral(["Crimbo Shrub"]))):
