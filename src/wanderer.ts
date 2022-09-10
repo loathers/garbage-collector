@@ -358,6 +358,16 @@ const unsupportedChoices = new Map<Location, { [choice: number]: number | string
       [672]: 1,
     },
   ],
+  [
+    $location`The Haunted Bedroom`,
+    {
+      [876]: 1, // old leather wallet, 500 meat
+      [877]: 1, // old coin purse, 500 meat
+      [878]: 1, // 400-600 meat
+      [879]: 2, // grouchy spirit
+      [880]: 2, // a dumb 75 meat club
+    },
+  ],
   [$location`The Copperhead Club`, { [855]: 4 }],
   [$location`The Castle in the Clouds in the Sky (Top Floor)`, { [1431]: 1, [677]: 2 }],
   [$location`The Hidden Office Building`, { [786]: 6 }],
