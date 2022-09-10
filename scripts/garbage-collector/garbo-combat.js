@@ -14937,7 +14937,7 @@ function computeDiet() {
   return {
     diet: () => fullDietPlanner(balanceMenu(menu().filter(menuItem => !priceCaps[menuItem.item.name] || priceCaps[menuItem.item.name] >= mallPrice(menuItem.item)), fullDietPlanner)),
     shotglass: () => shotglassDietPlanner(balanceMenu(menu().filter(menuItem => itemType(menuItem.item) === "booze" && menuItem.size === 1), shotglassDietPlanner)),
-    pantsgiving: () => pantsgivingDietPlanner(balanceMenu(menu().filter(menuItem => itemType(menuItem.item) === "food" && menuItem.size === 1), pantsgivingDietPlanner)),
+    pantsgiving: () => pantsgivingDietPlanner(balanceMenu(menu().filter(menuItem => itemType(menuItem.item) === "food" && menuItem.size === 1 || [Mayo.flex, Mayo.zapine].includes(menuItem.item)), pantsgivingDietPlanner)),
     sweatpants: () => sweatpantsDietPlanner(balanceMenu(menu().filter(menuItem => itemType(menuItem.item) === "booze" && menuItem.size <= 3), sweatpantsDietPlanner))
   };
 }
