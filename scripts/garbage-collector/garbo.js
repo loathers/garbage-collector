@@ -23427,7 +23427,7 @@ function yachtzeeBuffValue(obj) {
   return 2000 * ((0,modifier/* get */.U)("Meat Drop", obj) + (0,modifier/* get */.U)("Familiar Weight", obj) * 2.5) / 100;
 }
 function useSpikolodonSpikes() {
-  var _tryFindFreeRun, _run$constraints$fami, _run$constraints$fami2, _run$constraints, _run$constraints$equi, _run$constraints$equi2, _run$constraints2;
+  var _tryFindFreeRun, _run$constraints$fami, _run$constraints$fami2, _run$constraints, _run$constraints$equi, _run$constraints$equi2, _run$constraints2, _run$constraints$prep, _run$constraints3;
 
   if ((0,property/* get */.U2)("_spikolodonSpikeUses") >= 5) return;
   var run = (_tryFindFreeRun = (0,FreeRun/* tryFindFreeRun */.J)()) !== null && _tryFindFreeRun !== void 0 ? _tryFindFreeRun : (0,src_lib/* ltbRun */.Pw)();
@@ -23437,6 +23437,7 @@ function useSpikolodonSpikes() {
   var mergedRequirements = new maximize/* Requirement */.nb([], {
     forceEquip: (0,template_string/* $items */.vS)(lib_templateObject12 || (lib_templateObject12 = lib_taggedTemplateLiteral(["Jurassic Parka"])))
   }).merge((_run$constraints$equi = (_run$constraints$equi2 = (_run$constraints2 = run.constraints).equipmentRequirements) === null || _run$constraints$equi2 === void 0 ? void 0 : _run$constraints$equi2.call(_run$constraints2)) !== null && _run$constraints$equi !== void 0 ? _run$constraints$equi : new maximize/* Requirement */.nb([], {}));
+  (_run$constraints$prep = (_run$constraints3 = run.constraints).preparation) === null || _run$constraints$prep === void 0 ? void 0 : _run$constraints$prep.call(_run$constraints3);
   (0,outfit/* freeFightOutfit */.p8)(mergedRequirements);
   (0,external_kolmafia_.cliExecute)("parka spikolodon");
   var targetZone = canJelly ? (0,template_string/* $location */.PG)(lib_templateObject13 || (lib_templateObject13 = lib_taggedTemplateLiteral(["Pirates of the Garbage Barges"]))) : (0,template_string/* $location */.PG)(lib_templateObject14 || (lib_templateObject14 = lib_taggedTemplateLiteral(["The Haunted Kitchen"])));
