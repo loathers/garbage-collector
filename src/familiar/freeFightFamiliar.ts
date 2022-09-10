@@ -77,8 +77,8 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   return familiarMenu;
 }
 
-export function getAllJellyfishDrops(): { expectedValue: number; expectedTurns: number }[] {
-  if (!have($familiar`Space Jellyfish`)) return [{ expectedValue: 0, expectedTurns: 0 }];
+export function getAllJellyfishDrops(): { expectedValue: number; turnsAtValue: number }[] {
+  if (!have($familiar`Space Jellyfish`)) return [{ expectedValue: 0, turnsAtValue: 0 }];
 
   const current = get("_spaceJellyfishDrops");
   const returnValue = [];
@@ -86,7 +86,7 @@ export function getAllJellyfishDrops(): { expectedValue: number; expectedTurns: 
   for (let dropNumber = clamp(current + 1, 0, 6); dropNumber <= 6; dropNumber++) {
     returnValue.push({
       expectedValue: garboValue($item`stench jelly`) / (dropNumber > 5 ? 20 : dropNumber),
-      expectedTurns: dropNumber > 5 ? Infinity : dropNumber,
+      turnsAtValue: dropNumber > 5 ? Infinity : dropNumber,
     });
   }
 
