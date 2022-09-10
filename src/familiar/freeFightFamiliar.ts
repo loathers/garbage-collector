@@ -1,5 +1,5 @@
 import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
-import { $familiar, $item, $location, findLeprechaunMultiplier, get, have } from "libram";
+import { $familiar, $item, $location, clamp, findLeprechaunMultiplier, get, have } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../session";
 import getConstantValueFamiliars from "./constantValueFamiliars";
@@ -77,16 +77,16 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   return familiarMenu;
 }
 
-export function getAllJellyfishDrops(): { expectedValue: number; expectedTurns: number }[] {
-  if (!have($familiar`Space Jellyfish`)) return [{ expectedValue: 0, expectedTurns: 0 }];
+export function getAllJellyfishDrops(): { expectedValue: number; turnsAtValue: number }[] {
+  if (!have($familiar`Space Jellyfish`)) return [{ expectedValue: 0, turnsAtValue: 0 }];
 
   const current = get("_spaceJellyfishDrops");
   const returnValue = [];
 
-  for (let turns = current + 1; turns <= 6; turns++) {
+  for (let dropNumber = clamp(current + 1, 0, 6); dropNumber <= 6; dropNumber++) {
     returnValue.push({
-      expectedValue: garboValue($item`stench jelly`) / (turns > 5 ? 20 : turns),
-      expectedTurns: turns > 5 ? Infinity : turns,
+      expectedValue: garboValue($item`stench jelly`) / (dropNumber > 5 ? 20 : dropNumber),
+      turnsAtValue: dropNumber > 5 ? Infinity : dropNumber,
     });
   }
 

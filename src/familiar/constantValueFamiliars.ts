@@ -55,6 +55,10 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     // we probably won't, but we can.
     value: () => Math.min(garboValue($item`twitching space egg`) * 0.0002, 690),
   },
+  {
+    familiar: $familiar`Hobo Monkey`,
+    value: () => 75,
+  },
 ];
 
 export default function getConstantValueFamiliars(): GeneralFamiliar[] {
