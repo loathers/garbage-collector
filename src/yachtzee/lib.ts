@@ -89,6 +89,7 @@ export function useSpikolodonSpikes(): void {
   const mergedRequirements = new Requirement([], { forceEquip: $items`Jurassic Parka` }).merge(
     run.constraints.equipmentRequirements?.() ?? new Requirement([], {})
   );
+  run.constraints.preparation?.();
   freeFightOutfit(mergedRequirements);
   cliExecute("parka spikolodon");
 
