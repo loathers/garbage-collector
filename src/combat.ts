@@ -308,7 +308,10 @@ export class Macro extends StrictMacro {
       .externalIf(
         myFamiliar() === $familiar`Space Jellyfish`,
         Macro.if_(
-          $monsters`angry tourist, garbage tourist, horrible tourist family`,
+          [
+            ...$monsters`angry tourist, garbage tourist, horrible tourist family`,
+            ...(get("_spaceJellyfishDrops") >= 5 ? $monsters`sausage goblin` : []),
+          ],
           Macro.trySkill($skill`Extract Jelly`)
         )
       )
