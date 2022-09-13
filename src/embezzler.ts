@@ -1024,8 +1024,13 @@ function proceedWithOrb(): boolean {
 }
 
 function toasterGaze(): void {
+  const shore = $location`The Shore, Inc. Travel Agency`;
+  const pass = $item`Desert Bus pass`;
+  if (!canAdventure(shore) && !have(pass)) {
+    retrieveItem(pass);
+  }
   try {
-    const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+    const store = visitUrl(toUrl(shore));
     if (!store.includes("Check out the gift shop")) {
       print("Unable to stare longingly at toast");
     }
