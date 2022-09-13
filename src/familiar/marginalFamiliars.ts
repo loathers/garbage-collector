@@ -1,5 +1,4 @@
 import {
-  availableAmount,
   equippedItem,
   Familiar,
   familiarWeight,
@@ -16,7 +15,6 @@ import {
   $items,
   $location,
   $slots,
-  clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
@@ -26,13 +24,12 @@ import {
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
 import { estimatedTurns } from "../embezzler";
-import { baseMeat, globalOptions, HIGHLIGHT } from "../lib";
+import { baseMeat, HIGHLIGHT } from "../lib";
 import { meatOutfit } from "../outfit";
-import { digitizedMonstersRemaining } from "../wanderer";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
-import { GeneralFamiliar, timeToMeatify } from "./lib";
+import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
 const ITEM_DROP_VALUE = 0.72;
@@ -156,14 +153,7 @@ export function barfFamiliar(): Familiar {
       turnsNeededForFamiliar(option, meatFamiliarEntry)
     );
 
-    const baseTurns = estimatedTurns();
-    const digitizes = digitizedMonstersRemaining();
-    const mapTurns = globalOptions.ascending
-      ? clamp(availableAmount($item`Map to Safety Shelter Grimace Prime`), 0, 60)
-      : 0;
-    const turnsAvailable = baseTurns - digitizes - mapTurns;
-
-    if (turnsNeeded < turnsAvailable) {
+    if (turnsNeeded < turnsAvailable()) {
       const shrubAvailable = viableMenu.some(
         ({ familiar }) => familiar === $familiar`Crimbo Shrub`
       );

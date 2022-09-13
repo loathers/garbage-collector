@@ -1,4 +1,5 @@
 import {
+  availableAmount,
   Familiar,
   familiarWeight,
   inebrietyLimit,
@@ -7,8 +8,10 @@ import {
   totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, get, have } from "libram";
+import { $effect, $familiar, $item, clamp, get, have } from "libram";
+import { estimatedTurns } from "../embezzler";
 import { globalOptions } from "../lib";
+import { digitizedMonstersRemaining } from "../wanderer";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
@@ -78,4 +81,13 @@ export function canOpenRedPresent(): boolean {
     get("shrubGifts") === "meat" &&
     myInebriety() <= inebrietyLimit()
   );
+}
+
+export function turnsAvailable(): number {
+  const baseTurns = estimatedTurns();
+  const digitizes = digitizedMonstersRemaining();
+  const mapTurns = globalOptions.ascending
+    ? clamp(availableAmount($item`Map to Safety Shelter Grimace Prime`), 0, 60)
+    : 0;
+  return baseTurns - digitizes - mapTurns;
 }
