@@ -98,7 +98,7 @@ const UnlockableZones: UnlockableZone[] = [
 
 function canAdventureOrUnlock(loc: Location) {
   const underwater = loc.environment === "underwater";
-  const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
+  const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome`;
   if (!have($item`repaid diaper`) && have($item`Great Wolf's beastly trousers`)) {
     skiplist.push($location`The Icy Peak`);
   }
