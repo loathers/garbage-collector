@@ -32,6 +32,7 @@ import { embezzlerCount } from "../embezzler";
 import { doSausage } from "../fights";
 import { baseMeat, globalOptions, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
+import postCombatActions from "../post";
 import { potionSetup } from "../potions";
 import { yachtzeePotionSetup } from "./buffs";
 import { executeNextDietStep, yachtzeeChainDiet } from "./diet";
@@ -116,6 +117,7 @@ function _yachtzeeChain(): void {
       }
     }
     adventureMacro($location`The Sunken Party Yacht`, Macro.abort());
+    postCombatActions();
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
