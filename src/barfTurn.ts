@@ -44,6 +44,7 @@ import { completeBarfQuest } from "./dailies";
 import { computeDiet, consumeDiet } from "./diet";
 import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
+import { romanticMonsterImpossible } from "./familiar/lib";
 import { deliverThesisIfAble } from "./fights";
 import {
   embezzlerLog,
@@ -251,7 +252,10 @@ const turns: AdventureAction[] = [
   },
   {
     name: "Spit Acid",
-    available: () => have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
+    available: () =>
+      have($item`Jurassic Parka`) &&
+      !have($effect`Everything Looks Yellow`) &&
+      romanticMonsterImpossible(),
     execute: () => {
       const canJellyfish = have($familiar`Space Jellyfish`) && realmAvailable("stench");
       const familiarChoice = freeFightFamiliar({
@@ -265,7 +269,9 @@ const turns: AdventureAction[] = [
       useFamiliar(familiarChoice);
       freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
       cliExecute("parka dilophosaur");
-      const macro = Macro.familiarActions().skill($skill`Spit jurassic acid`);
+      const macro = Macro.if_(embezzler, Macro.meatKill())
+        .familiarActions()
+        .skill($skill`Spit jurassic acid`);
       adventureMacroAuto(locationChoice, macro);
       return have($effect`Everything Looks Yellow`);
     },
