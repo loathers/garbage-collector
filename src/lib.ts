@@ -107,6 +107,7 @@ export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
 
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
+export const ESTIMATED_OVERDRUNK_TURNS = 60;
 
 export const propertyManager = new PropertiesManager();
 

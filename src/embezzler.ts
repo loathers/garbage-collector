@@ -57,6 +57,7 @@ import { usingThumbRing } from "./dropsgear";
 import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
+  ESTIMATED_OVERDRUNK_TURNS,
   globalOptions,
   HIGHLIGHT,
   ltbRun,
@@ -930,7 +931,7 @@ export function estimatedTurns(): number {
     globalOptions.ascending &&
     myInebriety() <= inebrietyLimit() &&
     have($item`Drunkula's wineglass`)
-      ? 60
+      ? ESTIMATED_OVERDRUNK_TURNS
       : 0;
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 

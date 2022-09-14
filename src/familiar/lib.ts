@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 import { $effect, $familiar, $item, clamp, get, have } from "libram";
 import { estimatedTurns } from "../embezzler";
-import { globalOptions, turnsToNC } from "../lib";
+import { ESTIMATED_OVERDRUNK_TURNS, globalOptions, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining } from "../wanderer";
 
 export type GeneralFamiliar = {
@@ -91,7 +91,11 @@ export function turnsAvailable(): number {
   const baseTurns = estimatedTurns();
   const digitizes = digitizedMonstersRemaining();
   const mapTurns = globalOptions.ascending
-    ? clamp(availableAmount($item`Map to Safety Shelter Grimace Prime`), 0, 60)
+    ? clamp(
+        availableAmount($item`Map to Safety Shelter Grimace Prime`),
+        0,
+        ESTIMATED_OVERDRUNK_TURNS
+      )
     : 0;
 
   const barfTurns = baseTurns - digitizes - mapTurns;
