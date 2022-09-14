@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 import { $effect, $familiar, $item, clamp, get, have } from "libram";
 import { estimatedTurns } from "../embezzler";
-import { globalOptions } from "../lib";
+import { globalOptions, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining } from "../wanderer";
 
 export type GeneralFamiliar = {
@@ -83,11 +83,18 @@ export function canOpenRedPresent(): boolean {
   );
 }
 
+/**
+ * Rough estimate of the  number of barf combats we expect to do. Used for marginal familiar tabulation.
+ * @returns A rough estimate of the number of barf combats we expect to do.
+ */
 export function turnsAvailable(): number {
   const baseTurns = estimatedTurns();
   const digitizes = digitizedMonstersRemaining();
   const mapTurns = globalOptions.ascending
     ? clamp(availableAmount($item`Map to Safety Shelter Grimace Prime`), 0, 60)
     : 0;
-  return baseTurns - digitizes - mapTurns;
+
+  const barfTurns = baseTurns - digitizes - mapTurns;
+  const barfCombatRate = 1 - 1 / turnsToNC;
+  return barfTurns * barfCombatRate;
 }
