@@ -1,4 +1,5 @@
 import {
+  availableAmount,
   Familiar,
   familiarWeight,
   inebrietyLimit,
@@ -7,8 +8,10 @@ import {
   totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, get, have } from "libram";
-import { globalOptions } from "../lib";
+import { $effect, $familiar, $item, clamp, get, have } from "libram";
+import { estimatedTurns } from "../embezzler";
+import { ESTIMATED_OVERDRUNK_TURNS, globalOptions, turnsToNC } from "../lib";
+import { digitizedMonstersRemaining } from "../wanderer";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
@@ -78,4 +81,24 @@ export function canOpenRedPresent(): boolean {
     get("shrubGifts") === "meat" &&
     myInebriety() <= inebrietyLimit()
   );
+}
+
+/**
+ * Rough estimate of the  number of barf combats we expect to do. Used for marginal familiar tabulation.
+ * @returns A rough estimate of the number of barf combats we expect to do.
+ */
+export function turnsAvailable(): number {
+  const baseTurns = estimatedTurns();
+  const digitizes = digitizedMonstersRemaining();
+  const mapTurns = globalOptions.ascending
+    ? clamp(
+        availableAmount($item`Map to Safety Shelter Grimace Prime`),
+        0,
+        ESTIMATED_OVERDRUNK_TURNS
+      )
+    : 0;
+
+  const barfTurns = baseTurns - digitizes - mapTurns;
+  const barfCombatRate = 1 - 1 / turnsToNC;
+  return barfTurns * barfCombatRate;
 }

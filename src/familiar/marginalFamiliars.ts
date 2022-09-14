@@ -29,7 +29,7 @@ import { meatOutfit } from "../outfit";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
-import { GeneralFamiliar, timeToMeatify } from "./lib";
+import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
 const ITEM_DROP_VALUE = 0.72;
@@ -153,7 +153,7 @@ export function barfFamiliar(): Familiar {
       turnsNeededForFamiliar(option, meatFamiliarEntry)
     );
 
-    if (turnsNeeded < estimatedTurns()) {
+    if (turnsNeeded < turnsAvailable()) {
       const shrubAvailable = viableMenu.some(
         ({ familiar }) => familiar === $familiar`Crimbo Shrub`
       );
