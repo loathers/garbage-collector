@@ -2092,7 +2092,7 @@ const itemStealZones = [
   },
   {
     location: $location`The Hidden Temple`,
-    monster: $monster`Baa-relief sheep`,
+    monster: $monster`baa-relief sheep`,
     item: $item`stone wool`,
     dropRate: 1,
     maximize: ["99 monster level 100 max"], // Sheeps need up to +100 ML to survive the polar vortices
