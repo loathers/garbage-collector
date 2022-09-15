@@ -8,7 +8,7 @@ import {
   totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, clamp, Counter, get, have } from "libram";
+import { $effect, $familiar, $item, clamp, get, have } from "libram";
 import { estimatedTurns } from "../embezzler";
 import { ESTIMATED_OVERDRUNK_TURNS, globalOptions, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining } from "../wanderer";
@@ -102,9 +102,3 @@ export function turnsAvailable(): number {
   const barfCombatRate = 1 - 1 / turnsToNC;
   return barfTurns * barfCombatRate;
 }
-
-export const romanticMonsterImpossible = (): boolean =>
-  Counter.get("Romantic Monster Window end") === Infinity ||
-  (Counter.get("Romantic Monster Window begin") > 0 &&
-    Counter.get("Romantic Monster window begin") !== Infinity) ||
-  get("_romanticFightsLeft") <= 0;

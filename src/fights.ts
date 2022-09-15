@@ -129,6 +129,7 @@ import {
   questStep,
   realmAvailable,
   resetDailyPreference,
+  romanticMonsterImpossible,
   safeRestore,
   setChoice,
   userConfirmDialog,
@@ -153,7 +154,6 @@ import {
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
-import { romanticMonsterImpossible } from "./familiar/lib";
 
 const firstChainMacro = () =>
   Macro.if_(

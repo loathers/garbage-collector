@@ -51,6 +51,7 @@ import {
   bestLibramToCast,
   ChateauMantegna,
   CombatLoversLocket,
+  Counter,
   ensureFreeRun,
   get,
   getKramcoWandererChance,
@@ -525,3 +526,9 @@ export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1
     }))
     .sort((a, b) => b.value - a.value)[0].option;
 }
+
+export const romanticMonsterImpossible = (): boolean =>
+  Counter.get("Romantic Monster Window end") === Infinity ||
+  (Counter.get("Romantic Monster Window begin") > 0 &&
+    Counter.get("Romantic Monster window begin") !== Infinity) ||
+  get("_romanticFightsLeft") <= 0;
