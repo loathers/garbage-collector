@@ -153,6 +153,7 @@ import {
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
+import { romanticMonsterImpossible } from "./familiar/lib";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -484,12 +485,7 @@ export function dailyFights(): void {
 
         nextFight = getNextEmbezzlerFight();
 
-        const romanticMonsterImpossible =
-          Counter.get("Romantic Monster Window end") === Infinity ||
-          (Counter.get("Romantic Monster Window begin") > 0 &&
-            Counter.get("Romantic Monster window begin") !== Infinity) ||
-          get("_romanticFightsLeft") <= 0;
-        if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
+        if (romanticMonsterImpossible() && (!nextFight || !nextFight.draggable)) {
           doSausage();
           yachtzee();
         }
