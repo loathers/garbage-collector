@@ -23,6 +23,7 @@ import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
 import { globalOptions, ltbRun, realmAvailable } from "../lib";
 import { freeFightOutfit } from "../outfit";
+import postCombatActions from "../post";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -103,4 +104,6 @@ export function useSpikolodonSpikes(): void {
   do {
     adventureMacroAuto(targetZone, macro);
   } while (get("_spikolodonSpikeUses") === startingSpikes);
+
+  postCombatActions();
 }
