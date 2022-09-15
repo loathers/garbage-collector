@@ -23434,6 +23434,7 @@ function lib_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.sli
 
 
 
+
 var ignoredSources = ["Orb Prediction", "Pillkeeper Semirare", "Lucky!", "11-leaf clover (untapped potential)"];
 var expectedEmbezzlers = (0,utils/* sum */.Sm)(embezzler/* embezzlerSources.filter */.Fn.filter(source => !ignoredSources.includes(source.name)), source => source.potential());
 function pyecAvailable() {
@@ -23497,6 +23498,8 @@ function useSpikolodonSpikes() {
   do {
     (0,combat/* adventureMacroAuto */.Ao)(targetZone, macro);
   } while ((0,property/* get */.U2)("_spikolodonSpikeUses") === startingSpikes);
+
+  postCombatActions();
 }
 ;// CONCATENATED MODULE: ./src/yachtzee/familiar.ts
 var familiar_templateObject, familiar_templateObject2, familiar_templateObject3, familiar_templateObject4, familiar_templateObject5, familiar_templateObject6, familiar_templateObject7, familiar_templateObject8, familiar_templateObject9, familiar_templateObject10, familiar_templateObject11;
@@ -24734,6 +24737,7 @@ function yachtzee_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = string
 
 
 
+
 function _yachtzeeChain() {
   if ((0,external_kolmafia_.myLevel)() <= 13 || !(0,external_kolmafia_.canInteract)()) return; // We definitely need to be able to eat sliders and drink pickle juice
 
@@ -24810,6 +24814,7 @@ function _yachtzeeChain() {
     }
 
     (0,combat/* adventureMacro */.Qk)((0,template_string/* $location */.PG)(yachtzee_templateObject12 || (yachtzee_templateObject12 = yachtzee_taggedTemplateLiteral(["The Sunken Party Yacht"]))), combat/* Macro.abort */.LE.abort());
+    postCombatActions();
 
     if ((0,external_kolmafia_.myTurncount)() > turncount || (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(yachtzee_templateObject13 || (yachtzee_templateObject13 = yachtzee_taggedTemplateLiteral(["Fishy"])))) < fishyTurns) {
       fishyTurns -= 1;
