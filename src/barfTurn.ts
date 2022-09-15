@@ -46,13 +46,13 @@ import { completeBarfQuest } from "./dailies";
 import { computeDiet, consumeDiet } from "./diet";
 import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
-import { romanticMonsterImpossible } from "./familiar/lib";
 import { deliverThesisIfAble } from "./fights";
 import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
   realmAvailable,
+  romanticMonsterImpossible,
   safeRestore,
   setChoice,
 } from "./lib";
