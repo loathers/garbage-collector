@@ -23,7 +23,13 @@ const DEFAULT_MENU_OPTIONS = {
   allowAttackFamiliars: true,
 };
 export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
-  const { includeExperienceFamiliars, canChooseMacro, location, extraFamiliars, allowAttackFamiliars } = {
+  const {
+    includeExperienceFamiliars,
+    canChooseMacro,
+    location,
+    extraFamiliars,
+    allowAttackFamiliars,
+  } = {
     ...DEFAULT_MENU_OPTIONS,
     ...options,
   };
@@ -77,7 +83,9 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   }
 
   if (!allowAttackFamiliars) {
-    return familiarMenu.filter((fam) => (fam.familiar.physicalDamage === false && fam.familiar.elementalDamage === false))
+    return familiarMenu.filter(
+      (fam) => fam.familiar.physicalDamage === false && fam.familiar.elementalDamage === false
+    );
   }
 
   return familiarMenu;
