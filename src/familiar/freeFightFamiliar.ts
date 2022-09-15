@@ -13,15 +13,23 @@ type MenuOptions = {
   location?: Location;
   extraFamiliars?: GeneralFamiliar[];
   includeExperienceFamiliars?: boolean;
+  allowAttackFamiliars?: boolean;
 };
 const DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
   location: $location`none`,
   extraFamiliars: [],
   includeExperienceFamiliars: true,
+  allowAttackFamiliars: true,
 };
 export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
-  const { includeExperienceFamiliars, canChooseMacro, location, extraFamiliars } = {
+  const {
+    includeExperienceFamiliars,
+    canChooseMacro,
+    location,
+    extraFamiliars,
+    allowAttackFamiliars,
+  } = {
     ...DEFAULT_MENU_OPTIONS,
     ...options,
   };
@@ -72,6 +80,12 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
       leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
       limit: "none",
     });
+  }
+
+  if (!allowAttackFamiliars) {
+    return familiarMenu.filter(
+      (fam) => !(fam.familiar.physicalDamage || fam.familiar.elementalDamage)
+    );
   }
 
   return familiarMenu;
