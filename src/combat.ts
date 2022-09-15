@@ -1,4 +1,4 @@
-import "core-js/modules/es.array/flatMap";
+import "core-js/features/array/flat";
 import {
   choiceFollowsFight,
   equippedAmount,
@@ -190,9 +190,9 @@ export class Macro extends StrictMacro {
         Macro.externalIf(
           get("_spaceJellyfishDrops") < 5,
           Macro.if_(
-            $locations`Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice`.flatMap(
-              (l) => getMonsters(l)
-            ),
+            $locations`Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice`
+              .map((l) => getMonsters(l))
+              .flat(),
             Macro.trySkill($skill`Extract Jelly`)
           ),
           Macro.trySkill($skill`Extract Jelly`)
