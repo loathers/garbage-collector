@@ -2090,6 +2090,16 @@ const itemStealZones = [
     openCost: () => 0,
     preReq: null,
   },
+  {
+    location: $location`The Hidden Temple`,
+    monster: $monster`Baa-relief sheep`,
+    item: $item`stone wool`,
+    dropRate: 1,
+    maximize: ["99 monster level 100 max"], // Sheeps need up to +100 ML to survive the polar vortices
+    isOpen: () => get("lastTempleUnlock") == myAscensions(),
+    openCost: () => 0,
+    preReq: null,
+  },
 ] as ItemStealZone[];
 
 function getBestItemStealZone(): ItemStealZone | null {
