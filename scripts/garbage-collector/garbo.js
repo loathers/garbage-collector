@@ -16681,7 +16681,7 @@ var StashManager = /*#__PURE__*/function () {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3311);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5632);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1762);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3328);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9698);
 /* harmony import */ var _wanderer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5444);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183;
 
@@ -18281,8 +18281,8 @@ function pickRider(mode) {
 var diet = __webpack_require__(4033);
 // EXTERNAL MODULE: ./src/embezzler.ts
 var embezzler = __webpack_require__(4936);
-// EXTERNAL MODULE: ./src/familiar/index.ts + 7 modules
-var familiar = __webpack_require__(3328);
+// EXTERNAL MODULE: ./src/familiar/index.ts + 8 modules
+var familiar = __webpack_require__(9698);
 // EXTERNAL MODULE: ./src/lib.ts
 var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/session.ts
@@ -19265,7 +19265,7 @@ function toasterGaze() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9376);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(1762);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(7329);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3328);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9698);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7442);
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
@@ -19461,7 +19461,7 @@ function initializeExtrovermectinZones() {
 
 /***/ }),
 
-/***/ 3328:
+/***/ 9698:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -19470,42 +19470,100 @@ function initializeExtrovermectinZones() {
 __webpack_require__.d(__webpack_exports__, {
   "iD": () => (/* reexport */ barfFamiliar),
   "Mr": () => (/* reexport */ bestFairy),
-  "Ku": () => (/* reexport */ lib/* canOpenRedPresent */.Ku),
+  "Ku": () => (/* reexport */ canOpenRedPresent),
   "Vo": () => (/* reexport */ freeFightFamiliar),
   "M2": () => (/* reexport */ meatFamiliar),
-  "PP": () => (/* reexport */ lib/* pocketProfessorLectures */.PP),
+  "PP": () => (/* reexport */ pocketProfessorLectures),
   "Uc": () => (/* reexport */ setBestLeprechaunAsMeatFamiliar),
-  "kZ": () => (/* reexport */ lib/* timeToMeatify */.kZ)
+  "kZ": () => (/* reexport */ timeToMeatify)
 });
 
-// EXTERNAL MODULE: ./src/familiar/lib.ts
-var lib = __webpack_require__(9247);
 // EXTERNAL MODULE: external "kolmafia"
 var external_kolmafia_ = __webpack_require__(7530);
 // EXTERNAL MODULE: ./node_modules/libram/dist/lib.js
-var dist_lib = __webpack_require__(3311);
+var lib = __webpack_require__(3311);
 // EXTERNAL MODULE: ./node_modules/libram/dist/template-string.js
 var template_string = __webpack_require__(678);
-;// CONCATENATED MODULE: ./src/familiar/meatFamiliar.ts
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6;
+// EXTERNAL MODULE: ./node_modules/libram/dist/property.js + 2 modules
+var property = __webpack_require__(2474);
+// EXTERNAL MODULE: ./node_modules/libram/dist/utils.js
+var utils = __webpack_require__(8588);
+// EXTERNAL MODULE: ./src/embezzler.ts
+var embezzler = __webpack_require__(4936);
+// EXTERNAL MODULE: ./src/lib.ts
+var src_lib = __webpack_require__(7442);
+// EXTERNAL MODULE: ./src/wanderer.ts + 1 modules
+var wanderer = __webpack_require__(5444);
+;// CONCATENATED MODULE: ./src/familiar/lib.ts
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12;
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+
+
+function timeToMeatify() {
+  if (!(0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Grey Goose"])))) || (0,property/* get */.U2)("_meatifyMatterUsed") || (0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)()) {
+    return false;
+  } else if ((0,template_string/* $familiar */.HP)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Grey Goose"]))).experience >= 400) return true;else if (!src_lib/* globalOptions.ascending */.Xe.ascending || (0,external_kolmafia_.myAdventures)() > 50) return false; // Check Wanderers
+
+
+  var totalTurns = (0,external_kolmafia_.totalTurnsPlayed)();
+  var baseMeat = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["SongBoom\u2122 BoomBox"])))) ? 275 : 250;
+  var usingLatte = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && (0,property/* get */.U2)("latteModifier").split(",").includes("Meat Drop: 40");
+  var nextProtonicGhost = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["protonic accelerator pack"])))) ? Math.max(1, (0,property/* get */.U2)("nextParanormalActivity") - totalTurns) : Infinity;
+  var nextVoteMonster = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["\"I Voted!\" sticker"])))) && (0,property/* get */.U2)("_voteFreeFights") < 3 ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
+  var nextVoidMonster = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["cursed magnifying glass"])))) && (0,property/* get */.U2)("_voidFreeFights") < 5 && (0,property/* get */.U2)("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6) ? -(0,property/* get */.U2)("cursedMagnifyingGlassCount") % 13 : Infinity; // If any of the above are 0, then
+  // (1) We should be fighting a free fight
+  // (2) We meatify if Grey Goose is sufficiently heavy and we don't have another free wanderer in our remaining turns
+
+  var freeFightNow = (0,property/* get */.U2)("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
+  var delay = [nextProtonicGhost, nextVoteMonster === 0 ? (0,property/* get */.U2)("_voteFreeFights") < 2 ? 11 : Infinity : nextVoteMonster, nextVoidMonster === 0 ? 13 : nextVoidMonster].reduce((a, b) => a < b ? a : b);
+  if (delay < (0,external_kolmafia_.myAdventures)()) return false; // We can wait for the next free fight
+  else if (freeFightNow || (0,template_string/* $familiar */.HP)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Grey Goose"]))).experience >= 121) return true;
+  return false;
+}
+function pocketProfessorLectures() {
+  return 2 + Math.ceil(Math.sqrt((0,external_kolmafia_.familiarWeight)((0,template_string/* $familiar */.HP)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Pocket Professor"])))) + (0,external_kolmafia_.weightAdjustment)()));
+}
+function canOpenRedPresent() {
+  return (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Crimbo Shrub"])))) && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Everything Looks Red"])))) && (0,property/* get */.U2)("shrubGifts") === "meat" && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)();
+}
+/**
+ * Rough estimate of the  number of barf combats we expect to do. Used for marginal familiar tabulation.
+ * @returns A rough estimate of the number of barf combats we expect to do.
+ */
+
+function turnsAvailable() {
+  var baseTurns = (0,embezzler/* estimatedTurns */.AN)();
+  var digitizes = (0,wanderer/* digitizedMonstersRemaining */.J)();
+  var mapTurns = src_lib/* globalOptions.ascending */.Xe.ascending ? (0,utils/* clamp */.uZ)((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Map to Safety Shelter Grimace Prime"])))), 0, src_lib/* ESTIMATED_OVERDRUNK_TURNS */.SN) : 0;
+  var barfTurns = baseTurns - digitizes - mapTurns;
+  var barfCombatRate = 1 - 1 / src_lib/* turnsToNC */.zr;
+  return barfTurns * barfCombatRate;
+}
+;// CONCATENATED MODULE: ./src/familiar/meatFamiliar.ts
+var meatFamiliar_templateObject, meatFamiliar_templateObject2, meatFamiliar_templateObject3, meatFamiliar_templateObject4, meatFamiliar_templateObject5, meatFamiliar_templateObject6;
+
+function meatFamiliar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
 
 var fam;
 
 function findBestLeprechauns() {
-  var validFamiliars = external_kolmafia_.Familiar.all().filter(f => (0,dist_lib/* have */.lf)(f) && f !== (0,template_string/* $familiar */.HP)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))));
-  validFamiliars.sort((a, b) => (0,dist_lib/* findLeprechaunMultiplier */.q$)(b) - (0,dist_lib/* findLeprechaunMultiplier */.q$)(a));
-  var bestLepMult = (0,dist_lib/* findLeprechaunMultiplier */.q$)(validFamiliars[0]);
-  var firstBadLeprechaun = validFamiliars.findIndex(f => (0,dist_lib/* findLeprechaunMultiplier */.q$)(f) < bestLepMult);
+  var validFamiliars = external_kolmafia_.Familiar.all().filter(f => (0,lib/* have */.lf)(f) && f !== (0,template_string/* $familiar */.HP)(meatFamiliar_templateObject || (meatFamiliar_templateObject = meatFamiliar_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))));
+  validFamiliars.sort((a, b) => (0,lib/* findLeprechaunMultiplier */.q$)(b) - (0,lib/* findLeprechaunMultiplier */.q$)(a));
+  var bestLepMult = (0,lib/* findLeprechaunMultiplier */.q$)(validFamiliars[0]);
+  var firstBadLeprechaun = validFamiliars.findIndex(f => (0,lib/* findLeprechaunMultiplier */.q$)(f) < bestLepMult);
   if (firstBadLeprechaun === -1) return validFamiliars;
   return validFamiliars.slice(0, firstBadLeprechaun);
 }
 
 function findBestLeprechaun() {
-  return findBestLeprechauns().sort((a, b) => (0,dist_lib/* findFairyMultiplier */.gK)(b) - (0,dist_lib/* findFairyMultiplier */.gK)(a))[0];
+  return findBestLeprechauns().sort((a, b) => (0,lib/* findFairyMultiplier */.gK)(b) - (0,lib/* findFairyMultiplier */.gK)(a))[0];
 }
 
 function setBestLeprechaunAsMeatFamiliar() {
@@ -19513,10 +19571,10 @@ function setBestLeprechaunAsMeatFamiliar() {
 }
 function meatFamiliar() {
   if (!fam) {
-    if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() && (0,dist_lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && (0,dist_lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["li'l pirate costume"]))))) {
-      fam = (0,template_string/* $familiar */.HP)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Trick-or-Treating Tot"])));
-    } else if ((0,dist_lib/* have */.lf)((0,template_string/* $familiar */.HP)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Robortender"]))))) {
-      fam = (0,template_string/* $familiar */.HP)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Robortender"])));
+    if ((0,external_kolmafia_.myInebriety)() > (0,external_kolmafia_.inebrietyLimit)() && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(meatFamiliar_templateObject2 || (meatFamiliar_templateObject2 = meatFamiliar_taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(meatFamiliar_templateObject3 || (meatFamiliar_templateObject3 = meatFamiliar_taggedTemplateLiteral(["li'l pirate costume"]))))) {
+      fam = (0,template_string/* $familiar */.HP)(meatFamiliar_templateObject4 || (meatFamiliar_templateObject4 = meatFamiliar_taggedTemplateLiteral(["Trick-or-Treating Tot"])));
+    } else if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(meatFamiliar_templateObject5 || (meatFamiliar_templateObject5 = meatFamiliar_taggedTemplateLiteral(["Robortender"]))))) {
+      fam = (0,template_string/* $familiar */.HP)(meatFamiliar_templateObject6 || (meatFamiliar_templateObject6 = meatFamiliar_taggedTemplateLiteral(["Robortender"])));
     } else {
       setBestLeprechaunAsMeatFamiliar();
     }
@@ -19526,24 +19584,16 @@ function meatFamiliar() {
 }
 // EXTERNAL MODULE: ./node_modules/libram/dist/maximize.js
 var maximize = __webpack_require__(9376);
-// EXTERNAL MODULE: ./node_modules/libram/dist/utils.js
-var utils = __webpack_require__(8588);
 // EXTERNAL MODULE: ./node_modules/libram/dist/modifier.js + 1 modules
 var modifier = __webpack_require__(1245);
-// EXTERNAL MODULE: ./node_modules/libram/dist/property.js + 2 modules
-var property = __webpack_require__(2474);
 // EXTERNAL MODULE: ./src/dropsgear.ts + 1 modules
 var dropsgear = __webpack_require__(5472);
-// EXTERNAL MODULE: ./src/embezzler.ts
-var embezzler = __webpack_require__(4936);
-// EXTERNAL MODULE: ./src/lib.ts
-var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/outfit.ts
 var src_outfit = __webpack_require__(1730);
 // EXTERNAL MODULE: ./src/session.ts
 var session = __webpack_require__(742);
 ;// CONCATENATED MODULE: ./src/familiar/dropFamiliars.ts
-var dropFamiliars_templateObject, dropFamiliars_templateObject2, dropFamiliars_templateObject3, dropFamiliars_templateObject4, dropFamiliars_templateObject5, dropFamiliars_templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40;
+var dropFamiliars_templateObject, dropFamiliars_templateObject2, dropFamiliars_templateObject3, dropFamiliars_templateObject4, dropFamiliars_templateObject5, dropFamiliars_templateObject6, dropFamiliars_templateObject7, dropFamiliars_templateObject8, dropFamiliars_templateObject9, dropFamiliars_templateObject10, dropFamiliars_templateObject11, dropFamiliars_templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40;
 
 function dropFamiliars_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -19563,7 +19613,7 @@ function valueStandardDropFamiliar(_ref) {
   return {
     familiar: familiar,
     expectedValue: expectedValue,
-    leprechaunMultiplier: (0,dist_lib/* findLeprechaunMultiplier */.q$)(familiar),
+    leprechaunMultiplier: (0,lib/* findLeprechaunMultiplier */.q$)(familiar),
     limit: "drops"
   };
 }
@@ -19584,19 +19634,19 @@ var rotatingFamiliars = [{
   drop: (0,template_string/* $item */.xr)(dropFamiliars_templateObject6 || (dropFamiliars_templateObject6 = dropFamiliars_taggedTemplateLiteral(["astral mushroom"]))),
   pref: "_astralDrops"
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(_templateObject7 || (_templateObject7 = dropFamiliars_taggedTemplateLiteral(["Li'l Xenomorph"]))),
+  familiar: (0,template_string/* $familiar */.HP)(dropFamiliars_templateObject7 || (dropFamiliars_templateObject7 = dropFamiliars_taggedTemplateLiteral(["Li'l Xenomorph"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,template_string/* $item */.xr)(_templateObject8 || (_templateObject8 = dropFamiliars_taggedTemplateLiteral(["transporter transponder"]))),
+  drop: (0,template_string/* $item */.xr)(dropFamiliars_templateObject8 || (dropFamiliars_templateObject8 = dropFamiliars_taggedTemplateLiteral(["transporter transponder"]))),
   pref: "_transponderDrops"
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(_templateObject9 || (_templateObject9 = dropFamiliars_taggedTemplateLiteral(["Rogue Program"]))),
+  familiar: (0,template_string/* $familiar */.HP)(dropFamiliars_templateObject9 || (dropFamiliars_templateObject9 = dropFamiliars_taggedTemplateLiteral(["Rogue Program"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,template_string/* $item */.xr)(_templateObject10 || (_templateObject10 = dropFamiliars_taggedTemplateLiteral(["Game Grid token"]))),
+  drop: (0,template_string/* $item */.xr)(dropFamiliars_templateObject10 || (dropFamiliars_templateObject10 = dropFamiliars_taggedTemplateLiteral(["Game Grid token"]))),
   pref: "_tokenDrops"
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(_templateObject11 || (_templateObject11 = dropFamiliars_taggedTemplateLiteral(["Bloovian Groose"]))),
+  familiar: (0,template_string/* $familiar */.HP)(dropFamiliars_templateObject11 || (dropFamiliars_templateObject11 = dropFamiliars_taggedTemplateLiteral(["Bloovian Groose"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,template_string/* $item */.xr)(_templateObject12 || (_templateObject12 = dropFamiliars_taggedTemplateLiteral(["groose grease"]))),
+  drop: (0,template_string/* $item */.xr)(dropFamiliars_templateObject12 || (dropFamiliars_templateObject12 = dropFamiliars_taggedTemplateLiteral(["groose grease"]))),
   pref: "_grooseDrops"
 }, {
   familiar: (0,template_string/* $familiar */.HP)(_templateObject13 || (_templateObject13 = dropFamiliars_taggedTemplateLiteral(["Baby Sandworm"]))),
@@ -19666,7 +19716,7 @@ function getDropFamiliars() {
     var familiar = _ref2.familiar,
         expectedValue = _ref2.expectedValue,
         leprechaunMultiplier = _ref2.leprechaunMultiplier;
-    return (0,dist_lib/* have */.lf)(familiar) && (expectedValue || leprechaunMultiplier);
+    return (0,lib/* have */.lf)(familiar) && (expectedValue || leprechaunMultiplier);
   });
 }
 function getAllDrops(fam) {
@@ -19674,7 +19724,7 @@ function getAllDrops(fam) {
     var familiar = _ref3.familiar;
     return familiar === fam;
   });
-  if (!(0,dist_lib/* have */.lf)(fam) || !target) return [];
+  if (!(0,lib/* have */.lf)(fam) || !target) return [];
   var current = (0,property/* get */.U2)(target.pref);
   var returnValue = [];
 
@@ -19716,13 +19766,13 @@ function valueExperienceFamiliar(_ref) {
   var familiar = _ref.familiar,
       useValue = _ref.useValue,
       baseExp = _ref.baseExp;
-  var currentExp = familiar.experience || ((0,dist_lib/* have */.lf)((0,template_string/* $familiar */.HP)(experienceFamiliars_templateObject3 || (experienceFamiliars_templateObject3 = experienceFamiliars_taggedTemplateLiteral(["Shorter-Order Cook"])))) ? 100 : 0);
+  var currentExp = familiar.experience || ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(experienceFamiliars_templateObject3 || (experienceFamiliars_templateObject3 = experienceFamiliars_taggedTemplateLiteral(["Shorter-Order Cook"])))) ? 100 : 0);
   var experienceNeeded = 400 - (src_lib/* globalOptions.ascending */.Xe.ascending ? currentExp : baseExp);
   var estimatedExperience = 12;
   return {
     familiar: familiar,
     expectedValue: useValue / (experienceNeeded / estimatedExperience),
-    leprechaunMultiplier: (0,dist_lib/* findLeprechaunMultiplier */.q$)(familiar),
+    leprechaunMultiplier: (0,lib/* findLeprechaunMultiplier */.q$)(familiar),
     limit: "experience"
   };
 }
@@ -19731,7 +19781,7 @@ function getExperienceFamiliars() {
   return experienceFamiliars.filter(_ref2 => {
     var used = _ref2.used,
         familiar = _ref2.familiar;
-    return (0,dist_lib/* have */.lf)(familiar) && !(0,property/* get */.U2)(used) && familiar.experience < 400;
+    return (0,lib/* have */.lf)(familiar) && !(0,property/* get */.U2)(used) && familiar.experience < 400;
   }).map(valueExperienceFamiliar);
 }
 function getExperienceFamiliarLimit(fam) {
@@ -19739,7 +19789,7 @@ function getExperienceFamiliarLimit(fam) {
     var familiar = _ref3.familiar;
     return familiar === fam;
   });
-  if (!(0,dist_lib/* have */.lf)(fam) || !target) return 0;
+  if (!(0,lib/* have */.lf)(fam) || !target) return 0;
   return (400 - Bandersnatch/* familiar.experience */.Ld.experience) / 5;
 }
 // EXTERNAL MODULE: ./node_modules/libram/dist/resources/2017/Robortender.js
@@ -19769,7 +19819,7 @@ var standardFamiliars = [{
   value: () => 0.02 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject2 || (constantValueFamiliars_templateObject2 = constantValueFamiliars_taggedTemplateLiteral(["time's arrow"]))))
 }, {
   familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject3 || (constantValueFamiliars_templateObject3 = constantValueFamiliars_taggedTemplateLiteral(["Stocking Mimic"]))),
-  value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(constantValueFamiliars_templateObject4 || (constantValueFamiliars_templateObject4 = constantValueFamiliars_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / 6 + (1 / 3 + ((0,dist_lib/* have */.lf)((0,template_string/* $effect */._G)(constantValueFamiliars_templateObject5 || (constantValueFamiliars_templateObject5 = constantValueFamiliars_taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0)) * ((0,external_kolmafia_.familiarWeight)((0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject6 || (constantValueFamiliars_templateObject6 = constantValueFamiliars_taggedTemplateLiteral(["Stocking Mimic"])))) + (0,external_kolmafia_.weightAdjustment)())
+  value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(constantValueFamiliars_templateObject4 || (constantValueFamiliars_templateObject4 = constantValueFamiliars_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / 6 + (1 / 3 + ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(constantValueFamiliars_templateObject5 || (constantValueFamiliars_templateObject5 = constantValueFamiliars_taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0)) * ((0,external_kolmafia_.familiarWeight)((0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject6 || (constantValueFamiliars_templateObject6 = constantValueFamiliars_taggedTemplateLiteral(["Stocking Mimic"])))) + (0,external_kolmafia_.weightAdjustment)())
 }, {
   familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject7 || (constantValueFamiliars_templateObject7 = constantValueFamiliars_taggedTemplateLiteral(["Shorter-Order Cook"]))),
   value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(constantValueFamiliars_templateObject8 || (constantValueFamiliars_templateObject8 = constantValueFamiliars_taggedTemplateLiteral(["short beer, short stack of pancakes, short stick of butter, short glass of water, short white"]))))) / 11
@@ -19789,14 +19839,14 @@ var standardFamiliars = [{
 function getConstantValueFamiliars() {
   return standardFamiliars.filter(_ref => {
     var familiar = _ref.familiar;
-    return (0,dist_lib/* have */.lf)(familiar);
+    return (0,lib/* have */.lf)(familiar);
   }).map(_ref2 => {
     var familiar = _ref2.familiar,
         value = _ref2.value;
     return {
       familiar: familiar,
       expectedValue: value(),
-      leprechaunMultiplier: (0,dist_lib/* findLeprechaunMultiplier */.q$)(familiar),
+      leprechaunMultiplier: (0,lib/* findLeprechaunMultiplier */.q$)(familiar),
       limit: "none"
     };
   });
@@ -19853,7 +19903,7 @@ function menu() {
   var familiarMenu = [].concat(freeFightFamiliar_toConsumableArray(getConstantValueFamiliars()), freeFightFamiliar_toConsumableArray(getDropFamiliars()), freeFightFamiliar_toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars() : []), freeFightFamiliar_toConsumableArray(extraFamiliars));
 
   if (canChooseMacro && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)()) {
-    if ((0,lib/* timeToMeatify */.kZ)()) {
+    if (timeToMeatify()) {
       familiarMenu.push({
         familiar: (0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject2 || (freeFightFamiliar_templateObject2 = freeFightFamiliar_taggedTemplateLiteral(["Grey Goose"]))),
         expectedValue: Math.pow((Math.max((0,external_kolmafia_.familiarWeight)((0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject3 || (freeFightFamiliar_templateObject3 = freeFightFamiliar_taggedTemplateLiteral(["Grey Goose"])))) - 5), 0), 4),
@@ -19862,7 +19912,7 @@ function menu() {
       });
     }
 
-    if ((0,lib/* canOpenRedPresent */.Ku)()) {
+    if (canOpenRedPresent()) {
       familiarMenu.push({
         familiar: (0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject4 || (freeFightFamiliar_templateObject4 = freeFightFamiliar_taggedTemplateLiteral(["Crimbo Shrub"]))),
         expectedValue: 2500,
@@ -19871,7 +19921,7 @@ function menu() {
       });
     }
 
-    if (location.zone === "Dinseylandfill" && (0,dist_lib/* have */.lf)((0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject5 || (freeFightFamiliar_templateObject5 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))))) {
+    if (location.zone === "Dinseylandfill" && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject5 || (freeFightFamiliar_templateObject5 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))))) {
       familiarMenu.push({
         familiar: (0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject6 || (freeFightFamiliar_templateObject6 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))),
         expectedValue: (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(freeFightFamiliar_templateObject7 || (freeFightFamiliar_templateObject7 = freeFightFamiliar_taggedTemplateLiteral(["stench jelly"])))) / ((0,property/* get */.U2)("_spaceJellyfishDrops") < 5 ? (0,property/* get */.U2)("_spaceJellyfishDrops") + 1 : 20),
@@ -19890,7 +19940,7 @@ function menu() {
     familiarMenu.push({
       familiar: meatFam,
       expectedValue: 0,
-      leprechaunMultiplier: (0,dist_lib/* findLeprechaunMultiplier */.q$)(meatFam),
+      leprechaunMultiplier: (0,lib/* findLeprechaunMultiplier */.q$)(meatFam),
       limit: "none"
     });
   }
@@ -19902,7 +19952,7 @@ function menu() {
   return familiarMenu;
 }
 function getAllJellyfishDrops() {
-  if (!(0,dist_lib/* have */.lf)((0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject8 || (freeFightFamiliar_templateObject8 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))))) return [{
+  if (!(0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(freeFightFamiliar_templateObject8 || (freeFightFamiliar_templateObject8 = freeFightFamiliar_taggedTemplateLiteral(["Space Jellyfish"]))))) return [{
     expectedValue: 0,
     turnsAtValue: 0
   }];
@@ -19963,7 +20013,7 @@ var outfitCache = new Map();
 var outfitSlots = (0,template_string/* $slots */.ei)(marginalFamiliars_templateObject || (marginalFamiliars_templateObject = marginalFamiliars_taggedTemplateLiteral(["hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar"])));
 
 function getCachedOutfitValues(fam) {
-  var lepMult = (0,dist_lib/* findLeprechaunMultiplier */.q$)(fam);
+  var lepMult = (0,lib/* findLeprechaunMultiplier */.q$)(fam);
   var currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
   (0,external_kolmafia_.useFamiliar)(fam);
@@ -20046,7 +20096,7 @@ function calculateOutfitValue(f) {
 }
 
 function barfFamiliar() {
-  if ((0,lib/* timeToMeatify */.kZ)()) return (0,template_string/* $familiar */.HP)(marginalFamiliars_templateObject3 || (marginalFamiliars_templateObject3 = marginalFamiliars_taggedTemplateLiteral(["Grey Goose"])));
+  if (timeToMeatify()) return (0,template_string/* $familiar */.HP)(marginalFamiliars_templateObject3 || (marginalFamiliars_templateObject3 = marginalFamiliars_taggedTemplateLiteral(["Grey Goose"])));
   if ((0,property/* get */.U2)("garbo_IgnoreMarginalFamiliars", false)) return meatFamiliar(); // Right now, this menu lies, and says that we cannot customize the macro used.
   // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
   // Some day, I hope to right this wrong.
@@ -20070,7 +20120,7 @@ function barfFamiliar() {
   })) {
     var turnsNeeded = (0,utils/* sum */.Sm)(viableMenu, option => turnsNeededForFamiliar(option, meatFamiliarEntry));
 
-    if (turnsNeeded < (0,lib/* turnsAvailable */.Il)()) {
+    if (turnsNeeded < turnsAvailable()) {
       var shrubAvailable = viableMenu.some(_ref7 => {
         var familiar = _ref7.familiar;
         return familiar === (0,template_string/* $familiar */.HP)(marginalFamiliars_templateObject5 || (marginalFamiliars_templateObject5 = marginalFamiliars_taggedTemplateLiteral(["Crimbo Shrub"])));
@@ -20132,16 +20182,16 @@ function itemFamiliar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = st
 
 var bestNonCheerleaderFairy;
 function bestFairy() {
-  if ((0,dist_lib/* have */.lf)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject || (itemFamiliar_templateObject = itemFamiliar_taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && (0,dist_lib/* have */.lf)((0,template_string/* $item */.xr)(itemFamiliar_templateObject2 || (itemFamiliar_templateObject2 = itemFamiliar_taggedTemplateLiteral(["li'l ninja costume"]))))) {
+  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject || (itemFamiliar_templateObject = itemFamiliar_taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(itemFamiliar_templateObject2 || (itemFamiliar_templateObject2 = itemFamiliar_taggedTemplateLiteral(["li'l ninja costume"]))))) {
     return (0,template_string/* $familiar */.HP)(itemFamiliar_templateObject3 || (itemFamiliar_templateObject3 = itemFamiliar_taggedTemplateLiteral(["Trick-or-Treating Tot"])));
   }
 
   if (!bestNonCheerleaderFairy) {
-    var viableFairies = external_kolmafia_.Familiar.all().filter(f => (0,dist_lib/* have */.lf)(f) && (0,dist_lib/* findFairyMultiplier */.gK)(f) && f !== (0,template_string/* $familiar */.HP)(itemFamiliar_templateObject4 || (itemFamiliar_templateObject4 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))).sort((a, b) => (0,dist_lib/* findFairyMultiplier */.gK)(b) - (0,dist_lib/* findFairyMultiplier */.gK)(a));
-    var highestFairyMult = (0,dist_lib/* findFairyMultiplier */.gK)(viableFairies[0]);
-    var goodFairies = viableFairies.filter(f => (0,dist_lib/* findFairyMultiplier */.gK)(f) === highestFairyMult);
+    var viableFairies = external_kolmafia_.Familiar.all().filter(f => (0,lib/* have */.lf)(f) && (0,lib/* findFairyMultiplier */.gK)(f) && f !== (0,template_string/* $familiar */.HP)(itemFamiliar_templateObject4 || (itemFamiliar_templateObject4 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))).sort((a, b) => (0,lib/* findFairyMultiplier */.gK)(b) - (0,lib/* findFairyMultiplier */.gK)(a));
+    var highestFairyMult = (0,lib/* findFairyMultiplier */.gK)(viableFairies[0]);
+    var goodFairies = viableFairies.filter(f => (0,lib/* findFairyMultiplier */.gK)(f) === highestFairyMult);
 
-    if ((0,dist_lib/* have */.lf)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject5 || (itemFamiliar_templateObject5 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"])))) && !(0,dist_lib/* have */.lf)((0,template_string/* $item */.xr)(itemFamiliar_templateObject6 || (itemFamiliar_templateObject6 = itemFamiliar_taggedTemplateLiteral(["gnomish housemaid's kgnee"])))) && !(0,property/* get */.U2)("_garbo_triedForKgnee", false)) {
+    if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject5 || (itemFamiliar_templateObject5 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"])))) && !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(itemFamiliar_templateObject6 || (itemFamiliar_templateObject6 = itemFamiliar_taggedTemplateLiteral(["gnomish housemaid's kgnee"])))) && !(0,property/* get */.U2)("_garbo_triedForKgnee", false)) {
       var current = (0,external_kolmafia_.myFamiliar)();
       (0,external_kolmafia_.useFamiliar)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject7 || (itemFamiliar_templateObject7 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))));
       (0,external_kolmafia_.visitUrl)("arena.php");
@@ -20150,7 +20200,7 @@ function bestFairy() {
       (0,property/* set */.t8)("_garbo_triedForKgnee", true);
     }
 
-    if ((0,dist_lib/* have */.lf)((0,template_string/* $item */.xr)(itemFamiliar_templateObject8 || (itemFamiliar_templateObject8 = itemFamiliar_taggedTemplateLiteral(["gnomish housemaid's kgnee"])))) && highestFairyMult === 1) {
+    if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(itemFamiliar_templateObject8 || (itemFamiliar_templateObject8 = itemFamiliar_taggedTemplateLiteral(["gnomish housemaid's kgnee"])))) && highestFairyMult === 1) {
       goodFairies.push((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject9 || (itemFamiliar_templateObject9 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"]))));
     }
 
@@ -20176,7 +20226,7 @@ function bestFairy() {
     bestNonCheerleaderFairy = goodFairies[0];
   }
 
-  if ((0,dist_lib/* have */.lf)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject11 || (itemFamiliar_templateObject11 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))) && (0,dist_lib/* findFairyMultiplier */.gK)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject12 || (itemFamiliar_templateObject12 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))) > (0,dist_lib/* findFairyMultiplier */.gK)(bestNonCheerleaderFairy)) {
+  if ((0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject11 || (itemFamiliar_templateObject11 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))) && (0,lib/* findFairyMultiplier */.gK)((0,template_string/* $familiar */.HP)(itemFamiliar_templateObject12 || (itemFamiliar_templateObject12 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))) > (0,lib/* findFairyMultiplier */.gK)(bestNonCheerleaderFairy)) {
     return (0,template_string/* $familiar */.HP)(itemFamiliar_templateObject13 || (itemFamiliar_templateObject13 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])));
   }
 
@@ -20189,80 +20239,6 @@ function bestFairy() {
 
 
 
-
-/***/ }),
-
-/***/ 9247:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "kZ": () => (/* binding */ timeToMeatify),
-/* harmony export */   "PP": () => (/* binding */ pocketProfessorLectures),
-/* harmony export */   "Ku": () => (/* binding */ canOpenRedPresent),
-/* harmony export */   "Il": () => (/* binding */ turnsAvailable),
-/* harmony export */   "Jp": () => (/* binding */ romanticMonsterImpossible)
-/* harmony export */ });
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
-/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3311);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(678);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2474);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8588);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5632);
-/* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4936);
-/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7442);
-/* harmony import */ var _wanderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5444);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12;
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-
-
-
-
-
-function timeToMeatify() {
-  if (!(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$familiar */ .HP)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Grey Goose"])))) || (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("_meatifyMatterUsed") || (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() > (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)()) {
-    return false;
-  } else if ((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$familiar */ .HP)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Grey Goose"]))).experience >= 400) return true;else if (!_lib__WEBPACK_IMPORTED_MODULE_2__/* .globalOptions.ascending */ .Xe.ascending || (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)() > 50) return false; // Check Wanderers
-
-
-  var totalTurns = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.totalTurnsPlayed)();
-  var baseMeat = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["SongBoom\u2122 BoomBox"])))) ? 275 : 250;
-  var usingLatte = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("latteModifier").split(",").includes("Meat Drop: 40");
-  var nextProtonicGhost = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["protonic accelerator pack"])))) ? Math.max(1, (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("nextParanormalActivity") - totalTurns) : Infinity;
-  var nextVoteMonster = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["\"I Voted!\" sticker"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("_voteFreeFights") < 3 ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
-  var nextVoidMonster = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["cursed magnifying glass"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("_voidFreeFights") < 5 && (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6) ? -(0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("cursedMagnifyingGlassCount") % 13 : Infinity; // If any of the above are 0, then
-  // (1) We should be fighting a free fight
-  // (2) We meatify if Grey Goose is sufficiently heavy and we don't have another free wanderer in our remaining turns
-
-  var freeFightNow = (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
-  var delay = [nextProtonicGhost, nextVoteMonster === 0 ? (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("_voteFreeFights") < 2 ? 11 : Infinity : nextVoteMonster, nextVoidMonster === 0 ? 13 : nextVoidMonster].reduce((a, b) => a < b ? a : b);
-  if (delay < (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myAdventures)()) return false; // We can wait for the next free fight
-  else if (freeFightNow || (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$familiar */ .HP)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Grey Goose"]))).experience >= 121) return true;
-  return false;
-}
-function pocketProfessorLectures() {
-  return 2 + Math.ceil(Math.sqrt((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.familiarWeight)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$familiar */ .HP)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Pocket Professor"])))) + (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.weightAdjustment)()));
-}
-function canOpenRedPresent() {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$familiar */ .HP)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Crimbo Shrub"])))) && !(0,libram__WEBPACK_IMPORTED_MODULE_4__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effect */ ._G)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Everything Looks Red"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("shrubGifts") === "meat" && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myInebriety)() <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inebrietyLimit)();
-}
-/**
- * Rough estimate of the  number of barf combats we expect to do. Used for marginal familiar tabulation.
- * @returns A rough estimate of the number of barf combats we expect to do.
- */
-
-function turnsAvailable() {
-  var baseTurns = (0,_embezzler__WEBPACK_IMPORTED_MODULE_1__/* .estimatedTurns */ .AN)();
-  var digitizes = (0,_wanderer__WEBPACK_IMPORTED_MODULE_3__/* .digitizedMonstersRemaining */ .J)();
-  var mapTurns = _lib__WEBPACK_IMPORTED_MODULE_2__/* .globalOptions.ascending */ .Xe.ascending ? (0,libram__WEBPACK_IMPORTED_MODULE_7__/* .clamp */ .uZ)((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.availableAmount)((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$item */ .xr)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Map to Safety Shelter Grimace Prime"])))), 0, _lib__WEBPACK_IMPORTED_MODULE_2__/* .ESTIMATED_OVERDRUNK_TURNS */ .SN) : 0;
-  var barfTurns = baseTurns - digitizes - mapTurns;
-  var barfCombatRate = 1 - 1 / _lib__WEBPACK_IMPORTED_MODULE_2__/* .turnsToNC */ .zr;
-  return barfTurns * barfCombatRate;
-}
-var romanticMonsterImpossible = () => libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2("Romantic Monster Window end") === Infinity || libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2("Romantic Monster Window begin") > 0 && libram__WEBPACK_IMPORTED_MODULE_8__/* .get */ .U2("Romantic Monster window begin") !== Infinity || (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .get */ .U2)("_romanticFightsLeft") <= 0;
 
 /***/ }),
 
@@ -20585,8 +20561,8 @@ var acquire = __webpack_require__(4564);
 var clan = __webpack_require__(5897);
 // EXTERNAL MODULE: ./src/combat.ts
 var src_combat = __webpack_require__(4223);
-// EXTERNAL MODULE: ./src/familiar/index.ts + 7 modules
-var src_familiar = __webpack_require__(3328);
+// EXTERNAL MODULE: ./src/familiar/index.ts + 8 modules
+var src_familiar = __webpack_require__(9698);
 // EXTERNAL MODULE: ./src/lib.ts
 var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/mood.ts
@@ -20769,8 +20745,6 @@ function postCombatActions() {
 var extrovermectin = __webpack_require__(5836);
 // EXTERNAL MODULE: ./src/dropsgear.ts + 1 modules
 var dropsgear = __webpack_require__(5472);
-// EXTERNAL MODULE: ./src/familiar/lib.ts
-var familiar_lib = __webpack_require__(9247);
 ;// CONCATENATED MODULE: ./src/fights.ts
 var fights_templateObject, fights_templateObject2, fights_templateObject3, fights_templateObject4, fights_templateObject5, fights_templateObject6, fights_templateObject7, fights_templateObject8, fights_templateObject9, fights_templateObject10, fights_templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183, _templateObject184, _templateObject185, _templateObject186, _templateObject187, _templateObject188, _templateObject189, _templateObject190, _templateObject191, _templateObject192, _templateObject193, _templateObject194, _templateObject195, _templateObject196, _templateObject197, _templateObject198, _templateObject199, _templateObject200, _templateObject201, _templateObject202, _templateObject203, _templateObject204, _templateObject205, _templateObject206, _templateObject207, _templateObject208, _templateObject209, _templateObject210, _templateObject211, _templateObject212, _templateObject213, _templateObject214, _templateObject215, _templateObject216, _templateObject217, _templateObject218, _templateObject219, _templateObject220, _templateObject221, _templateObject222, _templateObject223, _templateObject224, _templateObject225, _templateObject226, _templateObject227, _templateObject228, _templateObject229, _templateObject230, _templateObject231, _templateObject232, _templateObject233, _templateObject234, _templateObject235, _templateObject236, _templateObject237, _templateObject238, _templateObject239, _templateObject240, _templateObject241, _templateObject242, _templateObject243, _templateObject244, _templateObject245, _templateObject246, _templateObject247, _templateObject248, _templateObject249, _templateObject250, _templateObject251, _templateObject252, _templateObject253, _templateObject254, _templateObject255, _templateObject256, _templateObject257, _templateObject258, _templateObject259, _templateObject260, _templateObject261, _templateObject262, _templateObject263, _templateObject264, _templateObject265, _templateObject266, _templateObject267, _templateObject268, _templateObject269, _templateObject270, _templateObject271, _templateObject272, _templateObject273, _templateObject274, _templateObject275, _templateObject276, _templateObject277, _templateObject278, _templateObject279, _templateObject280, _templateObject281, _templateObject282, _templateObject283, _templateObject284, _templateObject285, _templateObject286, _templateObject287, _templateObject288, _templateObject289, _templateObject290, _templateObject291, _templateObject292, _templateObject293, _templateObject294, _templateObject295, _templateObject296, _templateObject297, _templateObject298, _templateObject299, _templateObject300, _templateObject301, _templateObject302, _templateObject303, _templateObject304, _templateObject305, _templateObject306, _templateObject307, _templateObject308, _templateObject309, _templateObject310, _templateObject311, _templateObject312, _templateObject313, _templateObject314, _templateObject315, _templateObject316, _templateObject317, _templateObject318, _templateObject319, _templateObject320, _templateObject321, _templateObject322, _templateObject323, _templateObject324, _templateObject325, _templateObject326, _templateObject327, _templateObject328, _templateObject329, _templateObject330, _templateObject331, _templateObject332, _templateObject333, _templateObject334, _templateObject335, _templateObject336, _templateObject337, _templateObject338, _templateObject339, _templateObject340, _templateObject341, _templateObject342, _templateObject343, _templateObject344, _templateObject345, _templateObject346, _templateObject347, _templateObject348, _templateObject349, _templateObject350, _templateObject351, _templateObject352, _templateObject353, _templateObject354, _templateObject355, _templateObject356, _templateObject357, _templateObject358, _templateObject359, _templateObject360, _templateObject361, _templateObject362, _templateObject363, _templateObject364, _templateObject365, _templateObject366, _templateObject367, _templateObject368, _templateObject369, _templateObject370, _templateObject371, _templateObject372, _templateObject373, _templateObject374, _templateObject375, _templateObject376, _templateObject377, _templateObject378, _templateObject379, _templateObject380, _templateObject381, _templateObject382, _templateObject383, _templateObject384, _templateObject385, _templateObject386, _templateObject387, _templateObject388, _templateObject389, _templateObject390, _templateObject391, _templateObject392, _templateObject393, _templateObject394, _templateObject395, _templateObject396, _templateObject397, _templateObject398, _templateObject399, _templateObject400, _templateObject401, _templateObject402, _templateObject403, _templateObject404, _templateObject405, _templateObject406, _templateObject407, _templateObject408, _templateObject409, _templateObject410, _templateObject411, _templateObject412, _templateObject413, _templateObject414, _templateObject415, _templateObject416, _templateObject417, _templateObject418, _templateObject419, _templateObject420, _templateObject421, _templateObject422, _templateObject423, _templateObject424, _templateObject425, _templateObject426, _templateObject427, _templateObject428, _templateObject429, _templateObject430, _templateObject431, _templateObject432, _templateObject433, _templateObject434, _templateObject435, _templateObject436, _templateObject437, _templateObject438, _templateObject439, _templateObject440, _templateObject441, _templateObject442, _templateObject443, _templateObject444, _templateObject445, _templateObject446, _templateObject447, _templateObject448, _templateObject449, _templateObject450, _templateObject451, _templateObject452, _templateObject453, _templateObject454, _templateObject455, _templateObject456, _templateObject457, _templateObject458, _templateObject459, _templateObject460, _templateObject461, _templateObject462, _templateObject463, _templateObject464, _templateObject465, _templateObject466, _templateObject467, _templateObject468, _templateObject469, _templateObject470, _templateObject471, _templateObject472, _templateObject473, _templateObject474, _templateObject475, _templateObject476, _templateObject477, _templateObject478, _templateObject479, _templateObject480, _templateObject481, _templateObject482, _templateObject483, _templateObject484, _templateObject485, _templateObject486, _templateObject487, _templateObject488, _templateObject489, _templateObject490, _templateObject491, _templateObject492, _templateObject493, _templateObject494, _templateObject495, _templateObject496, _templateObject497, _templateObject498, _templateObject499, _templateObject500, _templateObject501, _templateObject502, _templateObject503, _templateObject504, _templateObject505, _templateObject506, _templateObject507, _templateObject508, _templateObject509, _templateObject510, _templateObject511, _templateObject512, _templateObject513, _templateObject514, _templateObject515, _templateObject516, _templateObject517, _templateObject518, _templateObject519, _templateObject520, _templateObject521, _templateObject522, _templateObject523, _templateObject524, _templateObject525, _templateObject526, _templateObject527, _templateObject528, _templateObject529, _templateObject530, _templateObject531, _templateObject532, _templateObject533, _templateObject534, _templateObject535, _templateObject536, _templateObject537, _templateObject538, _templateObject539, _templateObject540, _templateObject541, _templateObject542, _templateObject543, _templateObject544, _templateObject545, _templateObject546, _templateObject547, _templateObject548, _templateObject549;
 
@@ -20815,7 +20789,6 @@ function fights_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return fights_a
 function fights_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function fights_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 
 
 
@@ -21118,7 +21091,7 @@ function dailyFights() {
 
         nextFight = (0,embezzler/* getNextEmbezzlerFight */.U6)();
 
-        if ((0,familiar_lib/* romanticMonsterImpossible */.Jp)() && (!nextFight || !nextFight.draggable)) {
+        if ((0,src_lib/* romanticMonsterImpossible */.Jp)() && (!nextFight || !nextFight.draggable)) {
           doSausage();
           yachtzee();
         }
@@ -24881,7 +24854,6 @@ function barfTurn_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = string
 
 
 
-
 var barfTurn_embezzler = (0,template_string/* $monster */.O4)(barfTurn_templateObject || (barfTurn_templateObject = barfTurn_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
 
 function embezzlerPrep(requirements) {
@@ -25046,7 +25018,7 @@ var turns = [{
   sobriety: Sobriety.EITHER
 }, {
   name: "Spit Acid",
-  available: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(barfTurn_templateObject32 || (barfTurn_templateObject32 = barfTurn_taggedTemplateLiteral(["Jurassic Parka"])))) && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(barfTurn_templateObject33 || (barfTurn_templateObject33 = barfTurn_taggedTemplateLiteral(["Everything Looks Yellow"])))) && (0,familiar_lib/* romanticMonsterImpossible */.Jp)(),
+  available: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(barfTurn_templateObject32 || (barfTurn_templateObject32 = barfTurn_taggedTemplateLiteral(["Jurassic Parka"])))) && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(barfTurn_templateObject33 || (barfTurn_templateObject33 = barfTurn_taggedTemplateLiteral(["Everything Looks Yellow"])))) && (0,src_lib/* romanticMonsterImpossible */.Jp)(),
   execute: () => {
     var canJellyfish = (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(barfTurn_templateObject34 || (barfTurn_templateObject34 = barfTurn_taggedTemplateLiteral(["Space Jellyfish"])))) && (0,src_lib/* realmAvailable */.e6)("stench");
     var familiarChoice = (0,src_familiar/* freeFightFamiliar */.Vo)({
@@ -25569,7 +25541,8 @@ function main() {
 /* harmony export */   "$p": () => (/* binding */ dogOrHolidayWanderer),
 /* harmony export */   "PQ": () => (/* binding */ juneCleaverChoiceValues),
 /* harmony export */   "wc": () => (/* binding */ valueJuneCleaverOption),
-/* harmony export */   "cR": () => (/* binding */ bestJuneCleaverOption)
+/* harmony export */   "cR": () => (/* binding */ bestJuneCleaverOption),
+/* harmony export */   "Jp": () => (/* binding */ romanticMonsterImpossible)
 /* harmony export */ });
 /* unused harmony exports averageTouristNet, getChoiceOption */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
@@ -25584,6 +25557,7 @@ function main() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(7975);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(493);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(8588);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5632);
 /* harmony import */ var _session__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(742);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31;
 
@@ -26026,6 +26000,7 @@ function bestJuneCleaverOption(id) {
     value: valueJuneCleaverOption(juneCleaverChoiceValues[id][option])
   })).sort((a, b) => b.value - a.value)[0].option;
 }
+var romanticMonsterImpossible = () => libram__WEBPACK_IMPORTED_MODULE_12__/* .get */ .U2("Romantic Monster Window end") === Infinity || libram__WEBPACK_IMPORTED_MODULE_12__/* .get */ .U2("Romantic Monster Window begin") > 0 && libram__WEBPACK_IMPORTED_MODULE_12__/* .get */ .U2("Romantic Monster window begin") !== Infinity || (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_romanticFightsLeft") <= 0;
 
 /***/ }),
 
@@ -26265,7 +26240,7 @@ function shrugBadEffects() {
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4564);
 /* harmony import */ var _dropsgear__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5472);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4936);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3328);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9698);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7442);
 /* harmony import */ var _wanderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5444);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80;
