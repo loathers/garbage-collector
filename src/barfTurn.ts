@@ -7,10 +7,12 @@ import {
   inebrietyLimit,
   itemAmount,
   Location,
+  mallPrice,
   myAdventures,
   myInebriety,
   myLevel,
   print,
+  retrieveItem,
   runChoice,
   runCombat,
   totalTurnsPlayed,
@@ -190,10 +192,11 @@ const turns: AdventureAction[] = [
       const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
       const start = get("_sourceTerminalDigitizeMonsterCount");
 
-      const shouldGoUnderwater =
-        isEmbezzler &&
-        !get("_envyfishEggUsed") &&
-        myLevel() >= 11 &&
+      const taffyIsProfitable = () =>
+        mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure");
+
+      const shouldGoUnderwater = isEmbezzler && !get("_envyfishEggUsed") && taffyIsProfitable();
+      myLevel() >= 11 &&
         (getModifier("Adventure Underwater") ||
           waterBreathingEquipment.some((item) => have(item))) &&
         (getModifier("Underwater Familiar") ||
@@ -205,13 +208,12 @@ const turns: AdventureAction[] = [
         ? $location`The Briny Deeps`
         : determineDraggableZoneAndEnsureAccess();
 
+      if (taffyIsProfitable() && shouldGoUnderwater) retrieveItem($item`pulled green taffy`);
+
       isEmbezzler ? embezzlerPrep() : freeFightPrep();
       adventureMacroAuto(
         targetLocation,
-        Macro.externalIf(
-          targetLocation.environment === "underwater",
-          Macro.item($item`pulled green taffy`)
-        ).meatKill()
+        Macro.externalIf(shouldGoUnderwater, Macro.item($item`pulled green taffy`)).meatKill()
       );
       return get("_sourceTerminalDigitizeMonsterCount") !== start;
     },
