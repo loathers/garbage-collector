@@ -17173,7 +17173,8 @@ var DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
   location: (0,template_string/* $location */.PG)(freeFightFamiliar_templateObject || (freeFightFamiliar_templateObject = freeFightFamiliar_taggedTemplateLiteral(["none"]))),
   extraFamiliars: [],
-  includeExperienceFamiliars: true
+  includeExperienceFamiliars: true,
+  allowAttackFamiliars: true
 };
 function freeFightFamiliar_menu() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -17182,7 +17183,8 @@ function freeFightFamiliar_menu() {
       includeExperienceFamiliars = _DEFAULT_MENU_OPTIONS.includeExperienceFamiliars,
       canChooseMacro = _DEFAULT_MENU_OPTIONS.canChooseMacro,
       location = _DEFAULT_MENU_OPTIONS.location,
-      extraFamiliars = _DEFAULT_MENU_OPTIONS.extraFamiliars;
+      extraFamiliars = _DEFAULT_MENU_OPTIONS.extraFamiliars,
+      allowAttackFamiliars = _DEFAULT_MENU_OPTIONS.allowAttackFamiliars;
 
   var familiarMenu = [].concat(freeFightFamiliar_toConsumableArray(getConstantValueFamiliars()), freeFightFamiliar_toConsumableArray(getDropFamiliars()), freeFightFamiliar_toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars() : []), freeFightFamiliar_toConsumableArray(extraFamiliars));
 
@@ -17227,6 +17229,10 @@ function freeFightFamiliar_menu() {
       leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
       limit: "none"
     });
+  }
+
+  if (!allowAttackFamiliars) {
+    return familiarMenu.filter(fam => !(fam.familiar.physicalDamage || fam.familiar.elementalDamage));
   }
 
   return familiarMenu;

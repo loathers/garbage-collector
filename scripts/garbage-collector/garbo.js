@@ -19837,7 +19837,8 @@ var DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
   location: (0,template_string/* $location */.PG)(freeFightFamiliar_templateObject || (freeFightFamiliar_templateObject = freeFightFamiliar_taggedTemplateLiteral(["none"]))),
   extraFamiliars: [],
-  includeExperienceFamiliars: true
+  includeExperienceFamiliars: true,
+  allowAttackFamiliars: true
 };
 function menu() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -19846,7 +19847,8 @@ function menu() {
       includeExperienceFamiliars = _DEFAULT_MENU_OPTIONS.includeExperienceFamiliars,
       canChooseMacro = _DEFAULT_MENU_OPTIONS.canChooseMacro,
       location = _DEFAULT_MENU_OPTIONS.location,
-      extraFamiliars = _DEFAULT_MENU_OPTIONS.extraFamiliars;
+      extraFamiliars = _DEFAULT_MENU_OPTIONS.extraFamiliars,
+      allowAttackFamiliars = _DEFAULT_MENU_OPTIONS.allowAttackFamiliars;
 
   var familiarMenu = [].concat(freeFightFamiliar_toConsumableArray(getConstantValueFamiliars()), freeFightFamiliar_toConsumableArray(getDropFamiliars()), freeFightFamiliar_toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars() : []), freeFightFamiliar_toConsumableArray(extraFamiliars));
 
@@ -19891,6 +19893,10 @@ function menu() {
       leprechaunMultiplier: (0,dist_lib/* findLeprechaunMultiplier */.q$)(meatFam),
       limit: "none"
     });
+  }
+
+  if (!allowAttackFamiliars) {
+    return familiarMenu.filter(fam => !(fam.familiar.physicalDamage || fam.familiar.elementalDamage));
   }
 
   return familiarMenu;
@@ -23483,7 +23489,9 @@ function useSpikolodonSpikes() {
   if ((0,property/* get */.U2)("_spikolodonSpikeUses") >= 5) return;
   var run = (_tryFindFreeRun = (0,FreeRun/* tryFindFreeRun */.J)()) !== null && _tryFindFreeRun !== void 0 ? _tryFindFreeRun : (0,src_lib/* ltbRun */.Pw)();
   var canJelly = (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(lib_templateObject10 || (lib_templateObject10 = lib_taggedTemplateLiteral(["Space Jellyfish"])))) && !run.constraints.familiar && (0,src_lib/* realmAvailable */.e6)("stench");
-  var familiar = (_run$constraints$fami = (_run$constraints$fami2 = (_run$constraints = run.constraints).familiar) === null || _run$constraints$fami2 === void 0 ? void 0 : _run$constraints$fami2.call(_run$constraints)) !== null && _run$constraints$fami !== void 0 ? _run$constraints$fami : canJelly ? (0,template_string/* $familiar */.HP)(lib_templateObject11 || (lib_templateObject11 = lib_taggedTemplateLiteral(["Space Jellyfish"]))) : (0,src_familiar/* freeFightFamiliar */.Vo)();
+  var familiar = (_run$constraints$fami = (_run$constraints$fami2 = (_run$constraints = run.constraints).familiar) === null || _run$constraints$fami2 === void 0 ? void 0 : _run$constraints$fami2.call(_run$constraints)) !== null && _run$constraints$fami !== void 0 ? _run$constraints$fami : canJelly ? (0,template_string/* $familiar */.HP)(lib_templateObject11 || (lib_templateObject11 = lib_taggedTemplateLiteral(["Space Jellyfish"]))) : (0,src_familiar/* freeFightFamiliar */.Vo)({
+    allowAttackFamiliars: false
+  });
   (0,external_kolmafia_.useFamiliar)(familiar);
   var mergedRequirements = new maximize/* Requirement */.nb([], {
     forceEquip: (0,template_string/* $items */.vS)(lib_templateObject12 || (lib_templateObject12 = lib_taggedTemplateLiteral(["Jurassic Parka"])))
