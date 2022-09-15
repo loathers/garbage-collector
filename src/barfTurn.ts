@@ -206,7 +206,13 @@ const turns: AdventureAction[] = [
         : determineDraggableZoneAndEnsureAccess();
 
       isEmbezzler ? embezzlerPrep() : freeFightPrep();
-      adventureMacroAuto(targetLocation, Macro.basicCombat());
+      adventureMacroAuto(
+        targetLocation,
+        Macro.externalIf(
+          targetLocation.environment === "underwater",
+          Macro.item($item`pulled green taffy`)
+        ).meatKill()
+      );
       return get("_sourceTerminalDigitizeMonsterCount") !== start;
     },
     spendsTurn: () => !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
