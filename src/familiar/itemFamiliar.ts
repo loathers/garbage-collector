@@ -12,7 +12,12 @@ export function bestFairy(): Familiar {
   if (!bestNonCheerleaderFairy) {
     const viableFairies = Familiar.all()
       .filter(
-        (f) => have(f) && findFairyMultiplier(f) && f !== $familiar`Steam-Powered Cheerleader`
+        (f) =>
+          have(f) &&
+          findFairyMultiplier(f) &&
+          f !== $familiar`Steam-Powered Cheerleader` &&
+          !f.physicalDamage &&
+          !f.elementalDamage
       )
       .sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a));
 
