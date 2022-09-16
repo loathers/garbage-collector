@@ -17979,7 +17979,7 @@ function bestFairy() {
   }
 
   if (!bestNonCheerleaderFairy) {
-    var viableFairies = Familiar.all().filter(f => have(f) && findFairyMultiplier(f) && f !== $familiar(itemFamiliar_templateObject4 || (itemFamiliar_templateObject4 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))).sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a));
+    var viableFairies = Familiar.all().filter(f => have(f) && findFairyMultiplier(f) && f !== $familiar(itemFamiliar_templateObject4 || (itemFamiliar_templateObject4 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"]))) && !f.physicalDamage && !f.elementalDamage).sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a));
     var highestFairyMult = findFairyMultiplier(viableFairies[0]);
     var goodFairies = viableFairies.filter(f => findFairyMultiplier(f) === highestFairyMult);
 

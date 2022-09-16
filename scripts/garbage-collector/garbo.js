@@ -20643,7 +20643,7 @@ function bestFairy() {
   }
 
   if (!bestNonCheerleaderFairy) {
-    var viableFairies = external_kolmafia_.Familiar.all().filter(f => (0,lib/* have */.lf)(f) && (0,lib/* findFairyMultiplier */.gK)(f) && f !== (0,template_string/* $familiar */.HP)(itemFamiliar_templateObject4 || (itemFamiliar_templateObject4 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"])))).sort((a, b) => (0,lib/* findFairyMultiplier */.gK)(b) - (0,lib/* findFairyMultiplier */.gK)(a));
+    var viableFairies = external_kolmafia_.Familiar.all().filter(f => (0,lib/* have */.lf)(f) && (0,lib/* findFairyMultiplier */.gK)(f) && f !== (0,template_string/* $familiar */.HP)(itemFamiliar_templateObject4 || (itemFamiliar_templateObject4 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"]))) && !f.physicalDamage && !f.elementalDamage).sort((a, b) => (0,lib/* findFairyMultiplier */.gK)(b) - (0,lib/* findFairyMultiplier */.gK)(a));
     var highestFairyMult = (0,lib/* findFairyMultiplier */.gK)(viableFairies[0]);
     var goodFairies = viableFairies.filter(f => (0,lib/* findFairyMultiplier */.gK)(f) === highestFairyMult);
 
