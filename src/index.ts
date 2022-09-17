@@ -1,6 +1,7 @@
 import {
   availableAmount,
   buy,
+  canEquip,
   cliExecute,
   getCampground,
   getClanName,
@@ -121,6 +122,15 @@ export function main(argString = ""): void {
     if (!proceedRegardless) {
       throw new Error("User interrupt requested. Stopping Garbage Collector.");
     }
+  }
+
+  if (
+    myInebriety() > inebrietyLimit() &&
+    (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
+  ) {
+    throw new Error(
+      "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it."
+    );
   }
 
   if (get("valueOfAdventure") <= 3500) {
