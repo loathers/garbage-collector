@@ -873,17 +873,17 @@ const freeFightSources = [
             )
             .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
             .step("pickpocket")
-			.skill($skill`Use the Force`)
-			.setAutoAttack();
+            .skill($skill`Use the Force`)
+            .setAutoAttack();
         );
       }
     },
     false,
     {
       requirements: () => [
-			new Requirement(["1000 Pickpocket Chance"], {
-			forceEquip: $items`Fourth of May Cosplay Saber`,
-			bonusEquip: new Map<Item, number>([[$item`tiny black hole`, 5000],[$item`mime army infiltration glove`, 5000]]),
+            new Requirement(["1000 Pickpocket Chance"], {
+            forceEquip: $items`Fourth of May Cosplay Saber`,
+            bonusEquip: new Map<Item, number>([[$item`tiny black hole`, 5000],[$item`mime army infiltration glove`, 5000]]),
         }),
       ],
       familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
