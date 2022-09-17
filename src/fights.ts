@@ -881,7 +881,7 @@ const freeFightSources = [
     false,
     {
       requirements: () => [
-            new Requirement(["1000 Pickpocket Chance"], {
+        new Requirement(["1000 Pickpocket Chance"], {
             forceEquip: $items`Fourth of May Cosplay Saber`,
             bonusEquip: new Map<Item, number>([[$item`tiny black hole`, 5000],[$item`mime army infiltration glove`, 5000]]),
         }),
