@@ -18,6 +18,7 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  have,
   Requirement,
   sum,
 } from "libram";
@@ -46,7 +47,10 @@ const outfitCache = new Map<number, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
 function getCachedOutfitValues(fam: Familiar) {
-  const lepMult = findLeprechaunMultiplier(fam);
+  const lepMult =
+    fam === $familiar`Trick-or-Treating Tot` && have($item`li'l pirate costume`)
+      ? -1
+      : findLeprechaunMultiplier(fam);
   const currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
 

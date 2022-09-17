@@ -59,6 +59,11 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`Hobo Monkey`,
     value: () => 75,
   },
+  {
+    // This needs to go somewhere
+    familiar: $familiar`Trick-or-Treating Tot`,
+    value: () => 0,
+  },
 ];
 
 export default function getConstantValueFamiliars(): GeneralFamiliar[] {
