@@ -141,7 +141,7 @@ const turns: AdventureAction[] = [
             true
           );
         }
-        return fightingSteve;
+        return totalTurnsPlayed() !== get("lastLightsOutTurn");
       }
       return false;
     },
