@@ -340,8 +340,6 @@ export default function barfTurn(): void {
   meatMood().execute(estimatedTurns());
   safeRestore();
 
-  const startTurns = totalTurnsPlayed();
-
   const isSober = myInebriety() <= inebrietyLimit();
   const validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
   for (const turn of turns) {
@@ -349,6 +347,7 @@ export default function barfTurn(): void {
       const expectToSpendATurn =
         typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
 
+      const startTurns = totalTurnsPlayed();
       const success = turn.execute();
       const spentATurn = totalTurnsPlayed() - startTurns === 1;
 
