@@ -202,8 +202,9 @@ export function mapMonster(location: Location, monster: Monster): void {
   const fightPage = visitUrl(
     `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`
   );
-  if (!fightPage.includes(monster.name))
+  if (!fightPage.includes(monster.name)) {
     throw "Something went wrong starting the fight.";
+  }
 }
 
 export function argmax<T>(values: [T, number][]): T {

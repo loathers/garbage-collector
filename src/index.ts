@@ -204,8 +204,9 @@ export function main(argString = ""): void {
       if (parsedClanIdOrName) {
         Clan.with(parsedClanIdOrName, () => {
           for (const item of [...stashItems]) {
-            if (getFoldGroup(item).some((item) => have(item)))
+            if (getFoldGroup(item).some((item) => have(item))) {
               cliExecute(`fold ${item}`);
+            }
             const retrieved = retrieveItem(item);
             if (
               item === $item`Spooky Putty sheet` &&
@@ -215,8 +216,9 @@ export function main(argString = ""): void {
               continue;
             }
             print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
-            if (putStash(item, 1))
+            if (putStash(item, 1)) {
               stashItems.splice(stashItems.indexOf(item), 1);
+            }
           }
         });
       } else throw new Error("Error: No garbo_stashClan set.");
