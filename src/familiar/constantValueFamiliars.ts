@@ -66,7 +66,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`Trick-or-Treating Tot`,
     // This is the value of getting a pirate costume over getting an amulet coin or whatever
     value: () =>
-      have($item`li'l pirate costume`) ? (baseMeat * (bestAlternative - 300)) / 100 : 0,
+      have($item`li'l pirate costume`) ? (baseMeat * (300 - bestAlternative)) / 100 : 0,
   },
 ];
 
