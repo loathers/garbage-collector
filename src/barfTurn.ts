@@ -86,6 +86,29 @@ function logEmbezzler(encountertype: string) {
   embezzlerLog.sources.push(encountertype === "Digitize" ? encountertype : "Unknown Source");
 }
 
+function shouldGoUnderwater(): boolean {
+  if (myInebriety() > inebrietyLimit()) return false;
+  if (myLevel() < 11) return false;
+
+  if (
+    !getModifier("Adventure Underwater") &&
+    waterBreathingEquipment.every((item) => !have(item))
+  ) {
+    return false;
+  }
+  if (
+    !getModifier("Underwater Familiar") &&
+    familiarWaterBreathingEquipment.every((item) => !have(item))
+  ) {
+    return false;
+  }
+
+  if (have($item`envyfish egg`)) return false;
+  if (!canAdventure($location`The Briny Deeps`)) return false;
+  if (mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure")) return false;
+  return have($effect`Fishy`) || (have($item`fishy pipe`) && use($item`fishy pipe`));
+}
+
 // Lights Out adventures require you to take several choices in a row
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
@@ -198,31 +221,18 @@ const turns: AdventureAction[] = [
       const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
       const start = get("_sourceTerminalDigitizeMonsterCount");
 
-      const taffyIsProfitable = () =>
-        mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure");
+      const underwater = isEmbezzler && shouldGoUnderwater();
 
-      const shouldGoUnderwater =
-        isEmbezzler && !get("_envyfishEggUsed") && myInebriety() <= inebrietyLimit();
-      myLevel() >= 11 &&
-        (getModifier("Adventure Underwater") ||
-          waterBreathingEquipment.some((item) => have(item))) &&
-        (getModifier("Underwater Familiar") ||
-          familiarWaterBreathingEquipment.some((item) => have(item))) &&
-        !have($item`envyfish egg`) &&
-        canAdventure($location`The Briny Deeps`) &&
-        taffyIsProfitable() &&
-        (have($effect`Fishy`) || (have($item`fishy pipe`) && use($item`fishy pipe`)));
-
-      const targetLocation = shouldGoUnderwater
+      const targetLocation = underwater
         ? $location`The Briny Deeps`
         : determineDraggableZoneAndEnsureAccess();
 
-      if (shouldGoUnderwater) retrieveItem($item`pulled green taffy`);
+      if (underwater) retrieveItem($item`pulled green taffy`);
 
-      isEmbezzler ? embezzlerPrep({ sea: shouldGoUnderwater }) : freeFightPrep();
+      isEmbezzler ? embezzlerPrep({ sea: underwater }) : freeFightPrep();
       adventureMacroAuto(
         targetLocation,
-        Macro.externalIf(shouldGoUnderwater, Macro.item($item`pulled green taffy`)).meatKill()
+        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
       );
       return get("_sourceTerminalDigitizeMonsterCount") !== start;
     },
