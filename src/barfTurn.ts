@@ -200,7 +200,11 @@ const turns: AdventureAction[] = [
       const taffyIsProfitable = () =>
         mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure");
 
-      const shouldGoUnderwater = isEmbezzler && !get("_envyfishEggUsed") && taffyIsProfitable();
+      const shouldGoUnderwater =
+        isEmbezzler &&
+        !get("_envyfishEggUsed") &&
+        taffyIsProfitable() &&
+        myInebriety() <= inebrietyLimit();
       myLevel() >= 11 &&
         (getModifier("Adventure Underwater") ||
           waterBreathingEquipment.some((item) => have(item))) &&
