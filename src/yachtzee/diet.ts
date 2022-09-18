@@ -402,6 +402,7 @@ function yachtzeeDietScheduler(
 
 export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (get("_garboYachtzeeChainDietPlanned", false)) return true;
+  set("_garboYachtzeeChainDiet", ""); // Reset whatever diet we've already planned if needed
 
   const havePYECCharge = pyecAvailable();
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
@@ -461,12 +462,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   set("_stenchJellyChargeTarget", 0);
 
-  if (availableSpleen + freeNCs() < baseYachtzeeTurns) {
+  if (availableSpleen < baseYachtzeeTurns) {
     print("We were unable to generate enough organ space for optimal yachtzee chaining", "red");
     return false;
   }
 
-  const yachtzeeTurns = availableSpleen >= maxYachtzeeTurns ? maxYachtzeeTurns : baseYachtzeeTurns;
+  const yachtzeeTurns =
+    freeNCs() + (availableSpleen >= maxYachtzeeTurns ? maxYachtzeeTurns : baseYachtzeeTurns);
   if (availableSpleen + freeNCs() > yachtzeeTurns) cologne = 1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
 
   if (simOnly) print(`We can potentially run ${yachtzeeTurns} for yachtzee`, "purple");
