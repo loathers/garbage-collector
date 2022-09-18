@@ -24683,9 +24683,10 @@ function yachtzeeDietScheduler(menu) {
 }
 
 function yachtzeeChainDiet(simOnly) {
-  var _possibleBaseYachtzee;
+  var _possibleJellyYachtze;
 
   if ((0,property/* get */.U2)("_garboYachtzeeChainDietPlanned", false)) return true;
+  (0,property/* set */.t8)("_garboYachtzeeChainDiet", "");
   var havePYECCharge = pyecAvailable();
   var haveDistentionPill = !(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject31 || (diet_templateObject31 = diet_taggedTemplateLiteral(["distention pill"]))));
   var haveDogHairPill = !(0,property/* get */.U2)("_syntheticDogHairPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject32 || (diet_templateObject32 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))));
@@ -24703,18 +24704,17 @@ function yachtzeeChainDiet(simOnly) {
 
   var sufficientOrgansFor = yachtzees => cleanableSpleen >= yachtzees + (havePYECCharge ? 5 : 0);
 
-  var possibleBaseYachtzeeTurns = [30, 20, 10];
-  var baseYachtzeeTurns = (_possibleBaseYachtzee = possibleBaseYachtzeeTurns.find(sufficientOrgansFor)) !== null && _possibleBaseYachtzee !== void 0 ? _possibleBaseYachtzee : 0;
+  var possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
+  var jellyYachtzeeTurns = (_possibleJellyYachtze = possibleJellyYachtzeeTurns.find(sufficientOrgansFor)) !== null && _possibleJellyYachtze !== void 0 ? _possibleJellyYachtze : 0;
 
-  if (baseYachtzeeTurns === 0) {
+  if (jellyYachtzeeTurns === 0) {
     (0,external_kolmafia_.print)("Determined that there are no suitable number of turns to chain yachtzees", "red");
     return false;
   }
 
-  var maxYachtzeeTurns = havePYECCharge ? baseYachtzeeTurns + 5 : baseYachtzeeTurns;
   (0,external_kolmafia_.print)("Synth Casts Wanted: ".concat(synthCastsToCoverRun), "blue");
   (0,external_kolmafia_.print)("Organs Available: ".concat(organsAvailable), "blue");
-  (0,external_kolmafia_.print)("Max Yachtzee Turns: ".concat(maxYachtzeeTurns), "blue"); // Plan our diet
+  (0,external_kolmafia_.print)("Jelly Yachtzee Turns: ".concat(jellyYachtzeeTurns), "blue"); // Plan our diet
 
   var sliders = Math.floor(((0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) - (0,external_kolmafia_.myFullness)()) / 5);
   var pickleJuice = Math.floor(((0,external_kolmafia_.inebrietyLimit)() - (0,external_kolmafia_.myInebriety)()) / 5);
@@ -24729,12 +24729,12 @@ function yachtzeeChainDiet(simOnly) {
 
   (0,property/* set */.t8)("_stenchJellyChargeTarget", 0);
 
-  if (availableSpleen + freeNCs() < baseYachtzeeTurns) {
+  if (availableSpleen < jellyYachtzeeTurns) {
     (0,external_kolmafia_.print)("We were unable to generate enough organ space for optimal yachtzee chaining", "red");
     return false;
   }
 
-  var yachtzeeTurns = availableSpleen >= maxYachtzeeTurns ? maxYachtzeeTurns : baseYachtzeeTurns;
+  var yachtzeeTurns = freeNCs() + jellyYachtzeeTurns;
   if (availableSpleen + freeNCs() > yachtzeeTurns) cologne = 1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
 
   if (simOnly) (0,external_kolmafia_.print)("We can potentially run ".concat(yachtzeeTurns, " for yachtzee"), "purple");else (0,external_kolmafia_.print)("Trying to run ".concat(yachtzeeTurns, " turns of Yachtzee"), "purple"); // Compute prices to make sure everything is worth it
@@ -24793,7 +24793,7 @@ function yachtzeeChainDiet(simOnly) {
     return false;
   }
 
-  var horseradishes = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject49 || (diet_templateObject49 = diet_taggedTemplateLiteral(["Kicked in the Sinuses"])))) < baseYachtzeeTurns && (0,external_kolmafia_.myFullness)() + 1 + slidersToEat * 5 + toastsToEat <= (0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) ? 1 : 0;
+  var horseradishes = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject49 || (diet_templateObject49 = diet_taggedTemplateLiteral(["Kicked in the Sinuses"])))) < yachtzeeTurns && (0,external_kolmafia_.myFullness)() + 1 + slidersToEat * 5 + toastsToEat <= (0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) ? 1 : 0;
   var earlyMeatDropsEstimate = (0,external_kolmafia_.numericModifier)("Meat Drop") + (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(diet_templateObject50 || (diet_templateObject50 = diet_taggedTemplateLiteral(["Synthesis: Greed"])))) && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject51 || (diet_templateObject51 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 300 : 0) + ((0,external_kolmafia_.visitUrl)("forestvillage.php").includes("friarcottage.gif") ? 60 : 0); // Some iffy calculations here
   // If the best diet (at current prices) includes sliders and pickle juice (s+pj), no issues there
   // However, if the best diet does not include s+pj, then we need to compute the loss of switching
