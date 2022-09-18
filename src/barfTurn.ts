@@ -67,9 +67,13 @@ import {
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 const embezzler = $monster`Knob Goblin Embezzler`;
 
-function embezzlerPrep(requirements?: Requirement) {
+type EmbezzlerPrepOptions = {
+  requirements?: Requirement;
+  sea?: boolean;
+};
+function embezzlerPrep(options: EmbezzlerPrepOptions = {}) {
   useFamiliar(meatFamiliar());
-  meatOutfit(true, requirements);
+  meatOutfit(true, options.requirements, options.sea);
 }
 
 function freeFightPrep(requirements?: Requirement) {
@@ -211,7 +215,7 @@ const turns: AdventureAction[] = [
 
       if (taffyIsProfitable() && shouldGoUnderwater) retrieveItem($item`pulled green taffy`);
 
-      isEmbezzler ? embezzlerPrep() : freeFightPrep();
+      isEmbezzler ? embezzlerPrep({ sea: shouldGoUnderwater }) : freeFightPrep();
       adventureMacroAuto(
         targetLocation,
         Macro.externalIf(shouldGoUnderwater, Macro.item($item`pulled green taffy`)).meatKill()
