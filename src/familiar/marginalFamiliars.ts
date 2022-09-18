@@ -18,7 +18,6 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
-  have,
   Requirement,
   sum,
 } from "libram";
@@ -47,10 +46,7 @@ const outfitCache = new Map<number, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
 function getCachedOutfitValues(fam: Familiar) {
-  const lepMult =
-    fam === $familiar`Trick-or-Treating Tot` && have($item`li'l pirate costume`)
-      ? -1
-      : findLeprechaunMultiplier(fam);
+  const lepMult = findLeprechaunMultiplier(fam);
   const currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
 
@@ -58,7 +54,10 @@ function getCachedOutfitValues(fam: Familiar) {
   meatOutfit(
     false,
     new Requirement([], {
-      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker`,
+      // Pirate costume allows our 2.5 value to always work, even if tot is the source of the 0-lep outfit.
+      // Other items hold strong, temporary bonuses that will go away at the start of the day
+      // and meaningfully compete for slots that matter
+      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume`,
     })
   );
 

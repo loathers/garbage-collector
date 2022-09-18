@@ -9,6 +9,7 @@ import {
   have,
   Robortender,
 } from "libram";
+import { baseMeat } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
 
@@ -60,9 +61,9 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: () => 75,
   },
   {
-    // This needs to go somewhere
     familiar: $familiar`Trick-or-Treating Tot`,
-    value: () => 0,
+    // This is the value of getting a pirate costume over getting an amulet coin
+    value: () => (have($item`li'l pirate costume`) ? 2.5 * baseMeat : 0),
   },
 ];
 
