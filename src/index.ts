@@ -89,8 +89,7 @@ function ensureBarfAccess() {
 export function canContinue(): boolean {
   return (
     myAdventures() > globalOptions.saveTurns &&
-    (globalOptions.stopTurncount === null ||
-      myTurncount() < globalOptions.stopTurncount)
+    (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
   );
 }
 
@@ -115,10 +114,7 @@ export function main(argString = ""): void {
     );
   }
 
-  if (
-    !get("garbo_skipAscensionCheck", false) &&
-    (!get("kingLiberated") || myLevel() < 13)
-  ) {
+  if (!get("garbo_skipAscensionCheck", false) && (!get("kingLiberated") || myLevel() < 13)) {
     const proceedRegardless = userConfirmDialog(
       "Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
       true
@@ -130,8 +126,7 @@ export function main(argString = ""): void {
 
   if (
     myInebriety() > inebrietyLimit() &&
-    (!have($item`Drunkula's wineglass`) ||
-      !canEquip($item`Drunkula's wineglass`))
+    (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
   ) {
     throw new Error(
       "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it."
@@ -176,10 +171,7 @@ export function main(argString = ""): void {
     } else if (arg.match(/version/i)) {
       return;
     } else if (arg) {
-      print(
-        `Invalid argument ${arg} passed. Run garbo help to see valid arguments.`,
-        "red"
-      );
+      print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
       return;
     }
   }
@@ -256,12 +248,10 @@ export function main(argString = ""): void {
   );
   if (
     startingGarden &&
-    !$items`packet of tall grass seeds, packet of mushroom spores`.includes(
-      startingGarden
-    ) &&
+    !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
     getCampground()[startingGarden.name] &&
-    $items`packet of tall grass seeds, packet of mushroom spores`.some(
-      (gardenSeed) => have(gardenSeed)
+    $items`packet of tall grass seeds, packet of mushroom spores`.some((gardenSeed) =>
+      have(gardenSeed)
     )
   ) {
     visitUrl("campground.php?action=garden&pwd");
@@ -278,10 +268,7 @@ export function main(argString = ""): void {
   try {
     print("Collecting garbage!", HIGHLIGHT);
     if (globalOptions.stopTurncount !== null) {
-      print(
-        `Stopping in ${globalOptions.stopTurncount - myTurncount()}`,
-        HIGHLIGHT
-      );
+      print(`Stopping in ${globalOptions.stopTurncount - myTurncount()}`, HIGHLIGHT);
     }
     print();
 
@@ -294,10 +281,7 @@ export function main(argString = ""): void {
     }
 
     setAutoAttack(0);
-    visitUrl(
-      `account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`,
-      true
-    );
+    visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
     propertyManager.set({
       logPreferenceChange: true,
@@ -348,10 +332,7 @@ export function main(argString = ""): void {
         [
           [$items`bowl of eyeballs, bowl of mummy guts, bowl of maggots`, 1],
           [$items`blood and blood, Jack-O-Lantern beer, zombie`, 2],
-          [
-            $items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`,
-            3,
-          ],
+          [$items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`, 3],
         ] as [Item[], number][]
       ).map(([halloweinerOption, choiceId]) => {
         return {
@@ -359,8 +340,7 @@ export function main(argString = ""): void {
           choiceId: choiceId,
         };
       });
-      bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0]
-        .choiceId;
+      bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
     }
     propertyManager.setChoices({
       1106: 3, // Ghost Dog Chow
@@ -372,10 +352,7 @@ export function main(argString = ""): void {
     if (JuneCleaver.have()) {
       propertyManager.setChoices(
         Object.fromEntries(
-          JuneCleaver.choices.map((choice) => [
-            choice,
-            bestJuneCleaverOption(choice),
-          ])
+          JuneCleaver.choices.map((choice) => [choice, bestJuneCleaverOption(choice)])
         )
       );
     }
@@ -420,18 +397,14 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        if (
-          globalOptions.noDiet ||
-          get("_garboYachtzeeChainCompleted", false)
-        ) {
+        if (globalOptions.noDiet || get("_garboYachtzeeChainCompleted", false)) {
           print("We should not be yachtzee chaining", "red");
           globalOptions.yachtzeeChain = false;
         }
 
         if (
           !globalOptions.noDiet &&
-          (!globalOptions.yachtzeeChain ||
-            get("_garboYachtzeeChainCompleted", false))
+          (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
         ) {
           runDiet();
         }
@@ -482,14 +455,8 @@ export function main(argString = ""): void {
     });
   } finally {
     propertyManager.resetAll();
-    set(
-      "garboStashItems",
-      stashItems.map((item) => toInt(item).toFixed(0)).join(",")
-    );
-    visitUrl(
-      `account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`,
-      true
-    );
+    set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
+    visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEmbezzlerLog();
     printGarboSession();
