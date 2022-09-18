@@ -90,6 +90,7 @@ export const globalOptions: {
   noDiet: boolean;
   clarasBellClaimed: boolean;
   yachtzeeChain: boolean;
+  quickMode: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -102,6 +103,7 @@ export const globalOptions: {
   noDiet: false,
   clarasBellClaimed: get("_claraBellUsed"),
   yachtzeeChain: false,
+  quickMode: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -115,7 +117,8 @@ export const propertyManager = new PropertiesManager();
 export const baseMeat =
   SongBoom.have() &&
   (SongBoom.songChangesLeft() > 0 ||
-    (SongBoom.song() === "Total Eclipse of Your Meat" && myInebriety() <= inebrietyLimit()))
+    (SongBoom.song() === "Total Eclipse of Your Meat" &&
+      myInebriety() <= inebrietyLimit()))
     ? 275
     : 250;
 
@@ -199,7 +202,8 @@ export function mapMonster(location: Location, monster: Monster): void {
   const fightPage = visitUrl(
     `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`
   );
-  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
+  if (!fightPage.includes(monster.name))
+    throw "Something went wrong starting the fight.";
 }
 
 export function argmax<T>(values: [T, number][]): T {
@@ -215,7 +219,8 @@ export function argmax<T>(values: [T, number][]): T {
  */
 export function arrayEquals<T>(array1: T[], array2: T[]): boolean {
   return (
-    array1.length === array2.length && array1.every((element, index) => element === array2[index])
+    array1.length === array2.length &&
+    array1.every((element, index) => element === array2[index])
   );
 }
 
@@ -297,7 +302,9 @@ export function printHelpMenu(): void {
     return `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${croppedDescription}</pre></td></tr>`;
   });
   printHtml(
-    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`
+    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(
+      ``
+    )}</table>`
   );
 }
 
@@ -356,7 +363,9 @@ export function safeRestoreMpTarget(): number {
 
 export function safeRestore(): void {
   if (have($effect`Beaten Up`)) {
-    if (get("lastEncounter") === "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl") {
+    if (
+      get("lastEncounter") === "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl"
+    ) {
       uneffect($effect`Beaten Up`);
     } else {
       throw new Error(
@@ -388,17 +397,28 @@ export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
   } else {
-    if (gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
+    if (
+      gitAtHead(
+        "Loathing-Associates-Scripting-Society-garbage-collector-release"
+      )
+    ) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
-      const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
-      );
-      const releaseCommit = gitBranches.find((branchInfo) => branchInfo.name === "release")?.commit;
+      const gitBranches: { name: string; commit: { sha: string } }[] =
+        JSON.parse(
+          visitUrl(
+            `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`
+          )
+        );
+      const releaseCommit = gitBranches.find(
+        (branchInfo) => branchInfo.name === "release"
+      )?.commit;
       print("Garbo is out of date. Please run 'git update!'", "red");
       print(
         `Local Version: ${
-          gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit
+          gitInfo(
+            "Loathing-Associates-Scripting-Society-garbage-collector-release"
+          ).commit
         }.`
       );
       print(`Release Version: ${releaseCommit}.`);
@@ -407,14 +427,24 @@ export function checkGithubVersion(): void {
 }
 
 export function realmAvailable(
-  identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
+  identifier:
+    | "spooky"
+    | "stench"
+    | "hot"
+    | "cold"
+    | "sleaze"
+    | "fantasy"
+    | "pirate"
 ): boolean {
   if (identifier === "fantasy") {
     return get(`_frToday`) || get(`frAlways`);
   } else if (identifier === "pirate") {
     return get(`_prToday`) || get(`prAlways`);
   }
-  return get(`_${identifier}AirportToday`, false) || get(`${identifier}AirportAlways`, false);
+  return (
+    get(`_${identifier}AirportToday`, false) ||
+    get(`${identifier}AirportAlways`, false)
+  );
 }
 
 export function formatNumber(num: number): string {
@@ -440,7 +470,11 @@ export function getChoiceOption(partialText: string): number {
  * @param timeOut time to show dialog before submitting default value
  * @returns answer to confirmation dialog
  */
-export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: number): boolean {
+export function userConfirmDialog(
+  msg: string,
+  defaultValue: boolean,
+  timeOut?: number
+): boolean {
   if (get("garbo_autoUserConfirm", false)) {
     print(`Automatically selected ${defaultValue} for ${msg}`, "red");
     return defaultValue;
@@ -454,11 +488,13 @@ export const latteActionSourceFinderConstraints = {
   allowedAction: (action: ActionSource): boolean => {
     if (!have($item`latte lovers member's mug`)) return true;
     const forceEquipsOtherThanLatte = (
-      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
+      action?.constraints?.equipmentRequirements?.().maximizeOptions
+        .forceEquip ?? []
     ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
     return (
-      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      sum(forceEquipsOtherThanLatte, weaponHands) < 2
+      forceEquipsOtherThanLatte.every(
+        (equipment) => toSlot(equipment) !== $slot`off-hand`
+      ) && sum(forceEquipsOtherThanLatte, weaponHands) < 2
     );
   },
 };
@@ -478,7 +514,8 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
 export const turnsToNC =
-  (27 * barfTourists) / (garbageTourists + angryTourists + 3 * touristFamilies) +
+  (27 * barfTourists) /
+    (garbageTourists + angryTourists + 3 * touristFamilies) +
   1 * touristFamilyRatio +
   2 * (1 - touristFamilyRatio) * touristFamilyRatio +
   3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
@@ -517,7 +554,9 @@ export function valueJuneCleaverOption(result: Item | number): number {
   return result instanceof Item ? garboValue(result) : result;
 }
 
-export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
+export function bestJuneCleaverOption(
+  id: typeof JuneCleaver.choices[number]
+): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
   return options
     .map((option) => ({

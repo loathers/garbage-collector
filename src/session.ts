@@ -1,6 +1,27 @@
-import { Coinmaster, Item, print, sellPrice, toInt } from "kolmafia";
-import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
-import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
+import {
+  Coinmaster,
+  Item,
+  historicalAge,
+  historicalPrice,
+  print,
+  sellPrice,
+  toInt,
+} from "kolmafia";
+import {
+  $item,
+  $items,
+  getSaleValue,
+  property,
+  Session,
+  set,
+  sumNumbers,
+} from "libram";
+import {
+  formatNumber,
+  globalOptions,
+  HIGHLIGHT,
+  resetDailyPreference,
+} from "./lib";
 
 function currency(...items: Item[]): () => number {
   const unitCost: [Item, number][] = items.map((i) => {
@@ -11,7 +32,8 @@ function currency(...items: Item[]): () => number {
       return [i, sellPrice(coinmaster, i)];
     }
   });
-  return () => Math.max(...unitCost.map(([item, cost]) => garboValue(item) / cost));
+  return () =>
+    Math.max(...unitCost.map(([item, cost]) => garboValue(item) / cost));
 }
 
 function complexCandy(): [Item, () => number][] {
@@ -26,20 +48,31 @@ function complexCandy(): [Item, () => number][] {
   }
   const candyIdPrices: [Item, () => number][] = candies
     .filter((i) => !i.tradeable)
-    .map((i) => [i, () => Math.min(...candyLookup[toInt(i) % 5].map((i) => garboValue(i)))]);
+    .map((i) => [
+      i,
+      () => Math.min(...candyLookup[toInt(i) % 5].map((i) => garboValue(i))),
+    ]);
   return candyIdPrices;
 }
 
 const specialValueLookup = new Map<Item, () => number>([
   [
     $item`Freddy Kruegerand`,
-    currency(...$items`bottle of Bloodweiser, electric Kool-Aid, Dreadsylvanian skeleton key`),
+    currency(
+      ...$items`bottle of Bloodweiser, electric Kool-Aid, Dreadsylvanian skeleton key`
+    ),
   ],
   [$item`Beach Buck`, currency($item`one-day ticket to Spring Break Beach`)],
-  [$item`Coinspiracy`, currency(...$items`Merc Core deployment orders, karma shawarma`)],
+  [
+    $item`Coinspiracy`,
+    currency(...$items`Merc Core deployment orders, karma shawarma`),
+  ],
   [$item`FunFunds™`, currency($item`one-day ticket to Dinseylandfill`)],
   [$item`Volcoino`, currency($item`one-day ticket to That 70s Volcano`)],
-  [$item`Wal-Mart gift certificate`, currency($item`one-day ticket to The Glaciest`)],
+  [
+    $item`Wal-Mart gift certificate`,
+    currency($item`one-day ticket to The Glaciest`),
+  ],
   [$item`Rubee™`, currency($item`FantasyRealm guest pass`)],
   [$item`Guzzlrbuck`, currency($item`Never Don't Stop Not Striving`)],
   ...complexCandy(),
@@ -53,7 +86,8 @@ const specialValueLookup = new Map<Item, () => number>([
       3 *
       Math.max(
         garboValue($item`mushroom tea`) - garboValue($item`soda water`),
-        garboValue($item`mushroom whiskey`) - garboValue($item`fermenting powder`),
+        garboValue($item`mushroom whiskey`) -
+          garboValue($item`fermenting powder`),
         garboValue($item`mushroom filet`)
       ),
   ],
@@ -80,7 +114,10 @@ const specialValueLookup = new Map<Item, () => number>([
   ],
   [
     $item`weathered barrel`,
-    () => garboAverageValue(...$items`bean burrito, enchanted bean burrito, jumping bean burrito`),
+    () =>
+      garboAverageValue(
+        ...$items`bean burrito, enchanted bean burrito, jumping bean burrito`
+      ),
   ],
   [
     $item`dusty barrel`,
@@ -129,7 +166,9 @@ const specialValueLookup = new Map<Item, () => number>([
 
 function printSession(session: Session): void {
   const value = session.value(garboValue);
-  const printProfit = (details: { item: Item; value: number; quantity: number }[]) => {
+  const printProfit = (
+    details: { item: Item; value: number; quantity: number }[]
+  ) => {
     for (const { item, quantity, value } of details) {
       print(`  ${item} (${quantity}) @ ${Math.floor(value)}`);
     }
@@ -142,11 +181,22 @@ function printSession(session: Session): void {
     .sort((a, b) => b.value - a.value);
 
   print(`Total Session Value: ${value.total}`);
-  print(`Of that, ${value.meat} came from meat and ${value.items} came from items`);
+  print(
+    `Of that, ${value.meat} came from meat and ${value.items} came from items`
+  );
   print(` You gained meat on ${highValue.length} items including:`);
   printProfit(highValue);
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
+}
+
+function garboSaleValue(item: Item) {
+  if (globalOptions.quickMode) {
+    if (historicalAge(item) <= 7.0 && historicalPrice(item) > 0) {
+      return historicalPrice(item) * 0.9;
+    }
+  }
+  return getSaleValue(item);
 }
 
 const garboValueCache = new Map<Item, number>();
@@ -154,7 +204,9 @@ export function garboValue(item: Item): number {
   const cachedValue = garboValueCache.get(item);
   if (cachedValue === undefined) {
     const specialValueCompute = specialValueLookup.get(item);
-    const value = specialValueCompute ? specialValueCompute() : getSaleValue(item);
+    const value = specialValueCompute
+      ? specialValueCompute()
+      : garboSaleValue(item);
     garboValueCache.set(item, value);
     return value;
   }
@@ -195,9 +247,11 @@ export function printGarboSession(): void {
   }
   const message = (head: string, meat: number, items: number) =>
     print(
-      `${head}, you generated ${formatNumber(meat + items)} meat, with ${formatNumber(
-        meat
-      )} raw meat and ${formatNumber(items)} from items`,
+      `${head}, you generated ${formatNumber(
+        meat + items
+      )} meat, with ${formatNumber(meat)} raw meat and ${formatNumber(
+        items
+      )} from items`,
       HIGHLIGHT
     );
 
@@ -210,7 +264,12 @@ export function printGarboSession(): void {
   const winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
   print(`Extreme Items:`, HIGHLIGHT);
   for (const detail of [...winners, ...losers]) {
-    print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
+    print(
+      `${detail.quantity} ${detail.item} worth ${detail.value.toFixed(
+        0
+      )} total`,
+      HIGHLIGHT
+    );
   }
 
   set("garboResultsMeat", totalMeat);
