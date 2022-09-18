@@ -194,6 +194,7 @@ const turns: AdventureAction[] = [
     name: "Digitize Wanderer",
     available: () => Counter.get("Digitize Monster") <= 0,
     execute: () => {
+      // This check exists primarily for the ease of modded garbos
       const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
       const start = get("_sourceTerminalDigitizeMonsterCount");
 
@@ -210,9 +211,9 @@ const turns: AdventureAction[] = [
           waterBreathingEquipment.some((item) => have(item))) &&
         (getModifier("Underwater Familiar") ||
           familiarWaterBreathingEquipment.some((item) => have(item))) &&
-        (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
         !have($item`envyfish egg`) &&
-        canAdventure($location`The Briny Deeps`);
+        canAdventure($location`The Briny Deeps`) &&
+        (have($effect`Fishy`) || (have($item`fishy pipe`) && use($item`fishy pipe`)));
       const targetLocation = shouldGoUnderwater
         ? $location`The Briny Deeps`
         : determineDraggableZoneAndEnsureAccess();
