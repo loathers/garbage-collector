@@ -51,6 +51,7 @@ import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
+  questStep,
   realmAvailable,
   romanticMonsterImpossible,
   safeRestore,
@@ -89,6 +90,10 @@ function logEmbezzler(encountertype: string) {
 function shouldGoUnderwater(): boolean {
   if (myInebriety() > inebrietyLimit()) return false;
   if (myLevel() < 11) return false;
+
+  if (questStep("questS01OldGuy") === -1) {
+    visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+  }
 
   if (
     !getModifier("Adventure Underwater") &&
