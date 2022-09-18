@@ -202,10 +202,7 @@ const turns: AdventureAction[] = [
         mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure");
 
       const shouldGoUnderwater =
-        isEmbezzler &&
-        !get("_envyfishEggUsed") &&
-        taffyIsProfitable() &&
-        myInebriety() <= inebrietyLimit();
+        isEmbezzler && !get("_envyfishEggUsed") && myInebriety() <= inebrietyLimit();
       myLevel() >= 11 &&
         (getModifier("Adventure Underwater") ||
           waterBreathingEquipment.some((item) => have(item))) &&
@@ -213,12 +210,14 @@ const turns: AdventureAction[] = [
           familiarWaterBreathingEquipment.some((item) => have(item))) &&
         !have($item`envyfish egg`) &&
         canAdventure($location`The Briny Deeps`) &&
+        taffyIsProfitable() &&
         (have($effect`Fishy`) || (have($item`fishy pipe`) && use($item`fishy pipe`)));
+
       const targetLocation = shouldGoUnderwater
         ? $location`The Briny Deeps`
         : determineDraggableZoneAndEnsureAccess();
 
-      if (taffyIsProfitable() && shouldGoUnderwater) retrieveItem($item`pulled green taffy`);
+      if (shouldGoUnderwater) retrieveItem($item`pulled green taffy`);
 
       isEmbezzler ? embezzlerPrep({ sea: shouldGoUnderwater }) : freeFightPrep();
       adventureMacroAuto(
