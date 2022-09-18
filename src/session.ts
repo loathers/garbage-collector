@@ -155,6 +155,7 @@ function printSession(session: Session): void {
   printProfit(highValue);
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
+  print(`Quick mode was enabled, results may be less accurate than normal.`);
 }
 
 function garboSaleValue(item: Item) {
