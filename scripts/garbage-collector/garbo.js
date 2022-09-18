@@ -25526,7 +25526,6 @@ function barfTurn() {
   (0,outfit/* tryFillLatte */.wr)();
   (0,mood/* meatMood */.CE)().execute((0,embezzler/* estimatedTurns */.AN)());
   (0,src_lib/* safeRestore */.Pv)();
-  var startTurns = (0,external_kolmafia_.totalTurnsPlayed)();
   var isSober = (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)();
   var validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
 
@@ -25539,6 +25538,7 @@ function barfTurn() {
 
       if (turn.available() && validSobrieties.includes(turn.sobriety)) {
         var expectToSpendATurn = typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
+        var startTurns = (0,external_kolmafia_.totalTurnsPlayed)();
         var success = turn.execute();
         var spentATurn = (0,external_kolmafia_.totalTurnsPlayed)() - startTurns === 1;
 
