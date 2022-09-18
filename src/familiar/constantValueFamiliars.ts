@@ -6,6 +6,7 @@ import {
   $items,
   findLeprechaunMultiplier,
   get,
+  getModifier,
   have,
   Robortender,
 } from "libram";
@@ -18,6 +19,7 @@ type ConstantValueFamiliar = {
   value: () => number;
 };
 
+const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
 const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Obtuse Angel`,
@@ -62,8 +64,9 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Trick-or-Treating Tot`,
-    // This is the value of getting a pirate costume over getting an amulet coin
-    value: () => (have($item`li'l pirate costume`) ? 2.5 * baseMeat : 0),
+    // This is the value of getting a pirate costume over getting an amulet coin or whatever
+    value: () =>
+      have($item`li'l pirate costume`) ? (baseMeat * (bestAlternative - 300)) / 100 : 0,
   },
 ];
 
