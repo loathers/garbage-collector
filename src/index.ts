@@ -283,6 +283,10 @@ export function main(argString = ""): void {
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
+    const maximizerCombinationLimit = globalOptions.quickMode
+      ? 50000
+      : get("maximizerCombinationLimit");
+
     propertyManager.set({
       logPreferenceChange: true,
       logPreferenceChangeFilter: [
@@ -325,6 +329,7 @@ export function main(argString = ""): void {
       libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
+      maximizerCombinationLimit: maximizerCombinationLimit,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -412,8 +417,16 @@ export function main(argString = ""): void {
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
 
+        const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack`;
+        if (globalOptions.quickMode) {
+          // Brimstone equipment explodes the number of maximize combinations
+          preventEquip.push(
+            ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`
+          );
+        }
+
         setDefaultMaximizeOptions({
-          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack`,
+          preventEquip: preventEquip,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
