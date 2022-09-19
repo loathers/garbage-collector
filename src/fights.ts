@@ -843,7 +843,7 @@ const freeFightSources = [
       if (
         have($skill`Comprehensive Cartography`) &&
         get("_monstersMapped") <
-          (getBestItemStealZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
+          (getBestItemStealZone(true) && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
       ) {
         withMacro(
           Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill()).skill(
@@ -1574,10 +1574,10 @@ const freeRunFightSources = [
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestItemStealZone() !== null,
+      getBestItemStealZone(true) !== null,
     (runSource: ActionSource) => {
       setupItemStealZones();
-      const best = getBestItemStealZone();
+      const best = getBestItemStealZone(true);
       if (!best) throw `Unable to find fire extinguisher zone?`;
       try {
         if (best.preReq) best.preReq();
@@ -1614,10 +1614,13 @@ const freeRunFightSources = [
       have($familiar`XO Skeleton`) &&
       get("_xoHugsUsed") < 11 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestItemStealZone() !== null,
+      getBestItemStealZone(
+        have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3
+      ) !== null,
     (runSource: ActionSource) => {
       setupItemStealZones();
-      const best = getBestItemStealZone();
+      const mapping = have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3;
+      const best = getBestItemStealZone(mapping);
       if (!best) throw `Unable to find XO Skeleton zone?`;
       try {
         if (best.preReq) best.preReq();
@@ -1626,7 +1629,7 @@ const freeRunFightSources = [
           .skill($skill`Hugs and Kisses!`)
           .step(runSource.macro)
           .setAutoAttack();
-        if (have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) {
+        if (mapping) {
           mapMonster(best.location, best.monster);
         } else {
           adv1(best.location, -1, "");
@@ -2049,6 +2052,7 @@ type ItemStealZone = {
   monster: Monster;
   dropRate: number;
   maximize: string[];
+  requireMapTheMonsters: boolean; // When a zone has a choice we want to avoid
   isOpen: () => boolean;
   openCost: () => number;
   preReq: () => void;
@@ -2060,6 +2064,7 @@ const itemStealZones = [
     item: $item`transdermal smoke patch`,
     dropRate: 1,
     maximize: [],
+    requireMapTheMonsters: false,
     isOpen: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
     openCost: () => 0,
     preReq: null,
@@ -2070,6 +2075,7 @@ const itemStealZones = [
     item: $item`perfect ice cube`,
     dropRate: 1,
     maximize: [],
+    requireMapTheMonsters: false,
     isOpen: () => get("_coldAirportToday") || get("coldAirportAlways"),
     openCost: () => 0,
     preReq: null,
@@ -2080,6 +2086,7 @@ const itemStealZones = [
     item: $item`tattered scrap of paper`,
     dropRate: 1,
     maximize: ["99 monster level 100 max"], // Bookbats need up to +100 ML to survive the polar vortices
+    requireMapTheMonsters: false,
     isOpen: () => have($item`[7302]Spookyraven library key`),
     openCost: () => 0,
     preReq: null,
@@ -2090,6 +2097,7 @@ const itemStealZones = [
     item: $item`disintegrating spiky collar`,
     dropRate: 1,
     maximize: ["99 muscle 100 max"], // Ensure mastiff is at least 100 hp
+    requireMapTheMonsters: false,
     isOpen: () => true,
     openCost: () =>
       !have($effect`Absinthe-Minded`) ? mallPrice($item`tiny bottle of absinthe`) : 0,
@@ -2106,17 +2114,30 @@ const itemStealZones = [
     item: $item`rusty hedge trimmers`,
     dropRate: 0.5,
     maximize: ["99 monster level 11 max"], // Topiary animals need an extra 11 HP to survive polar vortices
+    requireMapTheMonsters: false,
     isOpen: () =>
       myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
     openCost: () => 0,
     preReq: null,
   },
+  {
+    location: $location`The Hidden Temple`,
+    monster: $monster`baa-relief sheep`,
+    item: $item`stone wool`,
+    requireMapTheMonsters: true,
+    dropRate: 1,
+    maximize: ["99 monster level 100 max"], // Sheeps need up to +100 ML to survive the polar vortices
+    isOpen: () => get("lastTempleUnlock") === myAscensions(),
+    openCost: () => 0,
+    preReq: null,
+  },
 ] as ItemStealZone[];
 
-function getBestItemStealZone(): ItemStealZone | null {
+function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
   const targets = itemStealZones.filter(
     (zone) =>
       zone.isOpen() &&
+      (mappingMonster || !zone.requireMapTheMonsters) &&
       (!isBanished(zone.monster) ||
         get("olfactedMonster") === zone.monster ||
         get("_gallapagosMonster") === zone.monster)
