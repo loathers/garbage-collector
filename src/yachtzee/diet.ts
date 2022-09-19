@@ -402,6 +402,7 @@ function yachtzeeDietScheduler(
 
 export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (get("_garboYachtzeeChainDietPlanned", false)) return true;
+  set("_garboYachtzeeChainDiet", "");
 
   const havePYECCharge = pyecAvailable();
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
@@ -431,18 +432,17 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const sufficientOrgansFor = (yachtzees: number) =>
     cleanableSpleen >= yachtzees + (havePYECCharge ? 5 : 0);
 
-  const possibleBaseYachtzeeTurns = [30, 20, 10];
-  const baseYachtzeeTurns = possibleBaseYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
+  const possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
+  const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
 
-  if (baseYachtzeeTurns === 0) {
+  if (jellyYachtzeeTurns === 0) {
     print("Determined that there are no suitable number of turns to chain yachtzees", "red");
     return false;
   }
 
-  const maxYachtzeeTurns = havePYECCharge ? baseYachtzeeTurns + 5 : baseYachtzeeTurns;
   print(`Synth Casts Wanted: ${synthCastsToCoverRun}`, "blue");
   print(`Organs Available: ${organsAvailable}`, "blue");
-  print(`Max Yachtzee Turns: ${maxYachtzeeTurns}`, "blue");
+  print(`Jelly Yachtzee Turns: ${jellyYachtzeeTurns}`, "blue");
 
   // Plan our diet
 
@@ -461,12 +461,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   set("_stenchJellyChargeTarget", 0);
 
-  if (availableSpleen + freeNCs() < baseYachtzeeTurns) {
+  if (availableSpleen < jellyYachtzeeTurns) {
     print("We were unable to generate enough organ space for optimal yachtzee chaining", "red");
     return false;
   }
 
-  const yachtzeeTurns = availableSpleen >= maxYachtzeeTurns ? maxYachtzeeTurns : baseYachtzeeTurns;
+  const yachtzeeTurns = freeNCs() + jellyYachtzeeTurns;
   if (availableSpleen + freeNCs() > yachtzeeTurns) cologne = 1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
 
   if (simOnly) print(`We can potentially run ${yachtzeeTurns} for yachtzee`, "purple");
@@ -546,7 +546,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   }
 
   const horseradishes =
-    haveEffect($effect`Kicked in the Sinuses`) < baseYachtzeeTurns &&
+    haveEffect($effect`Kicked in the Sinuses`) < yachtzeeTurns &&
     myFullness() + 1 + slidersToEat * 5 + toastsToEat <= fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
