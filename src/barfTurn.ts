@@ -173,7 +173,7 @@ const turns: AdventureAction[] = [
             true
           );
         }
-        return totalTurnsPlayed() !== get("lastLightsOutTurn");
+        return totalTurnsPlayed() === get("lastLightsOutTurn");
       }
       return false;
     },
