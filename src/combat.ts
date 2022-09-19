@@ -49,7 +49,6 @@ import {
   get,
   getTodaysHolidayWanderers,
   have,
-  property,
   SourceTerminal,
   StrictMacro,
 } from "libram";
