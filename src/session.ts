@@ -236,4 +236,5 @@ export function printGarboSession(): void {
 
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
+  print("Quick mode was enabled, results may be less accurate than normal.");
 }
