@@ -25590,6 +25590,7 @@ function barfTurn() {
 
       if (turn.available() && validSobrieties.includes(turn.sobriety)) {
         var expectToSpendATurn = typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
+        (0,external_kolmafia_.print)("Now running barf-turn: ".concat(turn.name, "."));
         var startTurns = (0,external_kolmafia_.totalTurnsPlayed)();
         var success = turn.execute();
         var spentATurn = (0,external_kolmafia_.totalTurnsPlayed)() - startTurns === 1;
