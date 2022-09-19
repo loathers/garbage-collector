@@ -3,6 +3,7 @@ import {
   availableAmount,
   buy,
   canAdventure,
+  canEquip,
   cliExecute,
   closetAmount,
   create,
@@ -32,6 +33,7 @@ import {
   myLevel,
   myMaxhp,
   myPathId,
+  myPrimestat,
   myThrall,
   numericModifier,
   outfit,
@@ -71,6 +73,7 @@ import {
   $phylum,
   $skill,
   $slot,
+  $stat,
   $thrall,
   ActionSource,
   adventureMacro,
@@ -872,15 +875,33 @@ const freeFightSources = [
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
             )
             .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
+            .step("pickpocket")
             .skill($skill`Use the Force`)
         );
       }
     },
     false,
     {
-      requirements: () => [
-        new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
-      ],
+      requirements: () => {
+        const canPickPocket = myPrimestat() === $stat`Moxie`;
+        const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
+          (item) => have(item) && canEquip(item)
+        );
+
+        const reqs = [
+          new Requirement(["1000 Pickpocket Chance"], {
+            forceEquip: $items`Fourth of May Cosplay Saber`,
+          }),
+        ];
+        if (!canPickPocket && bestPickpocketItem) {
+          reqs.push(
+            new Requirement([], {
+              forceEquip: [bestPickpocketItem],
+            })
+          );
+        }
+        return reqs;
+      },
       familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
       effects: () => $effects`Transpondent`,
     }
