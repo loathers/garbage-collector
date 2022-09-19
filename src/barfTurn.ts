@@ -370,6 +370,8 @@ export default function barfTurn(): void {
       const expectToSpendATurn =
         typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
 
+      print(`Now running barf-turn: ${turn.name}.`);
+
       const startTurns = totalTurnsPlayed();
       const success = turn.execute();
       const spentATurn = totalTurnsPlayed() - startTurns === 1;
