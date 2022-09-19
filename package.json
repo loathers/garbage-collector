@@ -1,7 +1,7 @@
 {
   "name": "garbage-collector",
   "version": "1.0.0",
-  "description": "Script for farming meat (and garbage) in 2004 web RPG Kingdom of Loathing",
+  "description": "Script for farming meat (and garbage) in 2004 web RPG Kingdom of Loathing.",
   "repository": "https://github.com/Loathing-Associates-Scripting-Society/garbage-collector.git",
   "main": "KoLmafia/scripts/garbage-collector/garbo.js",
   "scripts": {

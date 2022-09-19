@@ -51,6 +51,7 @@ import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
+  questStep,
   realmAvailable,
   romanticMonsterImpossible,
   safeRestore,
@@ -67,9 +68,13 @@ import {
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 const embezzler = $monster`Knob Goblin Embezzler`;
 
-function embezzlerPrep(requirements?: Requirement) {
+type EmbezzlerPrepOptions = {
+  requirements?: Requirement;
+  sea?: boolean;
+};
+function embezzlerPrep(options: EmbezzlerPrepOptions = {}) {
   useFamiliar(meatFamiliar());
-  meatOutfit(true, requirements);
+  meatOutfit(true, options.requirements, options.sea);
 }
 
 function freeFightPrep(requirements?: Requirement) {
@@ -80,6 +85,33 @@ function freeFightPrep(requirements?: Requirement) {
 function logEmbezzler(encountertype: string) {
   embezzlerLog.initialEmbezzlersFought++;
   embezzlerLog.sources.push(encountertype === "Digitize" ? encountertype : "Unknown Source");
+}
+
+function shouldGoUnderwater(): boolean {
+  if (myInebriety() > inebrietyLimit()) return false;
+  if (myLevel() < 11) return false;
+
+  if (questStep("questS01OldGuy") === -1) {
+    visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+  }
+
+  if (
+    !getModifier("Adventure Underwater") &&
+    waterBreathingEquipment.every((item) => !have(item))
+  ) {
+    return false;
+  }
+  if (
+    !getModifier("Underwater Familiar") &&
+    familiarWaterBreathingEquipment.every((item) => !have(item))
+  ) {
+    return false;
+  }
+
+  if (have($item`envyfish egg`)) return false;
+  if (!canAdventure($location`The Briny Deeps`)) return false;
+  if (mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure")) return false;
+  return have($effect`Fishy`) || (have($item`fishy pipe`) && use($item`fishy pipe`));
 }
 
 // Lights Out adventures require you to take several choices in a row
@@ -141,7 +173,7 @@ const turns: AdventureAction[] = [
             true
           );
         }
-        return fightingSteve;
+        return totalTurnsPlayed() !== get("lastLightsOutTurn");
       }
       return false;
     },
@@ -190,31 +222,22 @@ const turns: AdventureAction[] = [
     name: "Digitize Wanderer",
     available: () => Counter.get("Digitize Monster") <= 0,
     execute: () => {
+      // This check exists primarily for the ease of modded garbos
       const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
       const start = get("_sourceTerminalDigitizeMonsterCount");
 
-      const taffyIsProfitable = () =>
-        mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure");
+      const underwater = isEmbezzler && shouldGoUnderwater();
 
-      const shouldGoUnderwater = isEmbezzler && !get("_envyfishEggUsed") && taffyIsProfitable();
-      myLevel() >= 11 &&
-        (getModifier("Adventure Underwater") ||
-          waterBreathingEquipment.some((item) => have(item))) &&
-        (getModifier("Underwater Familiar") ||
-          familiarWaterBreathingEquipment.some((item) => have(item))) &&
-        (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-        !have($item`envyfish egg`) &&
-        canAdventure($location`The Briny Deeps`);
-      const targetLocation = shouldGoUnderwater
+      const targetLocation = underwater
         ? $location`The Briny Deeps`
         : determineDraggableZoneAndEnsureAccess();
 
-      if (taffyIsProfitable() && shouldGoUnderwater) retrieveItem($item`pulled green taffy`);
+      if (underwater) retrieveItem($item`pulled green taffy`);
 
-      isEmbezzler ? embezzlerPrep() : freeFightPrep();
+      isEmbezzler ? embezzlerPrep({ sea: underwater }) : freeFightPrep();
       adventureMacroAuto(
         targetLocation,
-        Macro.externalIf(shouldGoUnderwater, Macro.item($item`pulled green taffy`)).meatKill()
+        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
       );
       return get("_sourceTerminalDigitizeMonsterCount") !== start;
     },
@@ -340,8 +363,6 @@ export default function barfTurn(): void {
   meatMood().execute(estimatedTurns());
   safeRestore();
 
-  const startTurns = totalTurnsPlayed();
-
   const isSober = myInebriety() <= inebrietyLimit();
   const validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
   for (const turn of turns) {
@@ -349,6 +370,7 @@ export default function barfTurn(): void {
       const expectToSpendATurn =
         typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
 
+      const startTurns = totalTurnsPlayed();
       const success = turn.execute();
       const spentATurn = totalTurnsPlayed() - startTurns === 1;
 

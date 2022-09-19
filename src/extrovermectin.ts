@@ -81,8 +81,10 @@ export function doingExtrovermectin(): boolean {
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   if (!doingExtrovermectin()) return null;
   if (
-    have($skill`Transcendent Olfaction`) &&
-    (property.getString("olfactedMonster") === "crate" || get("_olfactionsUsed") < 2)
+    (have($skill`Transcendent Olfaction`) &&
+      (property.getString("olfactedMonster") === "crate" || get("_olfactionsUsed") < 2)) ||
+    (have($skill`Long Con`) &&
+      (get("longConMonster") === $monster`crate` || get("_longConUsed") < 4))
   ) {
     return "Sniff";
   }
@@ -172,6 +174,7 @@ function initializeCrates(): void {
 
       // Sniff the crate in as many ways as humanly possible
       const macro = Macro.trySkill($skill`Transcendent Olfaction`)
+        .trySkill($skill`Long Con`)
         .trySkill($skill`Offer Latte to Opponent`)
         .externalIf(
           get("_gallapagosMonster") !== $monster`crate` && have($skill`Gallapagosian Mating Call`),

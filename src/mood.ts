@@ -63,6 +63,7 @@ export function meatMood(urKels = false, meat = baseMeat): Mood {
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
+  mood.skill($skill`Walk: Leisurely Amble`);
 
   const mmjCost =
     (100 -
