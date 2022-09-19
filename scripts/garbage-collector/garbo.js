@@ -25435,7 +25435,7 @@ var turns = [{
         }, true);
       }
 
-      return (0,external_kolmafia_.totalTurnsPlayed)() !== (0,property/* get */.U2)("lastLightsOutTurn");
+      return (0,external_kolmafia_.totalTurnsPlayed)() === (0,property/* get */.U2)("lastLightsOutTurn");
     }
 
     return false;
