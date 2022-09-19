@@ -1587,7 +1587,7 @@ const freeRunFightSources = [
         Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
           .externalIf(hasXO && get("_xoHugsUsed") < 11, Macro.skill($skill`Hugs and Kisses!`))
           .externalIf(
-            hasXO && !best.requireMapTheMonsters && get("_xoHugsUsed") < 10,
+            !best.requireMapTheMonsters && hasXO && get("_xoHugsUsed") < 10,
             Macro.step(itemStealOlfact(best))
           )
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
