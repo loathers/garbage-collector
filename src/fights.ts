@@ -1617,11 +1617,11 @@ const freeRunFightSources = [
       have($familiar`XO Skeleton`) &&
       get("_xoHugsUsed") < 11 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestItemStealZone(false) !== null,
+      getBestItemStealZone() !== null,
     (runSource: ActionSource) => {
       setupItemStealZones();
       const mappingMonster = have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3;
-      const best = getBestItemStealZone(false);
+      const best = getBestItemStealZone();
       if (!best) throw `Unable to find XO Skeleton zone?`;
       try {
         if (best.preReq) best.preReq();
