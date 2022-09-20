@@ -296,7 +296,7 @@ const turns: AdventureAction[] = [
       const locationChoice =
         familiarChoice === $familiar`Space Jellyfish`
           ? $location`Pirates of the Garbage Barges`
-          : determineDraggableZoneAndEnsureAccess("backup");
+          : determineDraggableZoneAndEnsureAccess("yellow ray");
       useFamiliar(familiarChoice);
       freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
       cliExecute("parka dilophosaur");
