@@ -54,7 +54,11 @@ function getCachedOutfitValues(fam: Familiar) {
   meatOutfit(
     false,
     new Requirement([], {
-      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker`,
+      // If we don't include the li'l pirate costume as a preventEquip, we could
+      // double-count the value of the pirate costume between here and constantvalue.ts,
+      // and we could apply the value of the pirate costume to every 0x leprechaun. Other items are
+      // included as strong, temporary bonuses that go away quickly in a user's BarfDay.
+      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume`,
     })
   );
 
@@ -132,9 +136,6 @@ export function barfFamiliar(): Familiar {
   if (timeToMeatify()) return $familiar`Grey Goose`;
   if (get("garbo_IgnoreMarginalFamiliars", false)) return meatFamiliar();
 
-  // Right now, this menu lies, and says that we cannot customize the macro used.
-  // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
-  // Some day, I hope to right this wrong.
   const fullMenu = menu({
     canChooseMacro: true,
     location: $location`Barf Mountain`,

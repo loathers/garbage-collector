@@ -6,9 +6,11 @@ import {
   $items,
   findLeprechaunMultiplier,
   get,
+  getModifier,
   have,
   Robortender,
 } from "libram";
+import { baseMeat } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
 
@@ -17,6 +19,7 @@ type ConstantValueFamiliar = {
   value: () => number;
 };
 
+const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
 const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Obtuse Angel`,
@@ -58,6 +61,12 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Hobo Monkey`,
     value: () => 75,
+  },
+  {
+    familiar: $familiar`Trick-or-Treating Tot`,
+    // This is the value of getting a pirate costume over getting an amulet coin or whatever
+    value: () =>
+      have($item`li'l pirate costume`) ? (baseMeat * (300 - bestAlternative)) / 100 : 0,
   },
 ];
 
