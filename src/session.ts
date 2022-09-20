@@ -1,4 +1,5 @@
 import {
+  autosellPrice,
   Coinmaster,
   historicalAge,
   historicalPrice,
