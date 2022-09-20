@@ -161,7 +161,8 @@ function printSession(session: Session): void {
 function garboSaleValue(item: Item) {
   if (globalOptions.quickMode) {
     if (historicalAge(item) <= 7.0 && historicalPrice(item) > 0) {
-      return historicalPrice(item) * 0.9;
+      const isMallMin = historicalPrice(item) === Math.max(100, 2 * autosellPrice(item));
+      return isMallMin ? autosellPrice(item) : 0.9 * historicalPrice(item);
     }
   }
   return getSaleValue(item);
