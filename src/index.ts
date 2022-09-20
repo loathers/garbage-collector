@@ -284,7 +284,7 @@ export function main(argString = ""): void {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
     const maximizerCombinationLimit = globalOptions.quickMode
-      ? 50000
+      ? 100000
       : get("maximizerCombinationLimit");
 
     propertyManager.set({
