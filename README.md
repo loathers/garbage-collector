@@ -119,9 +119,10 @@ _EXPERIMENTAL_ Garbo will attempt to chain the Yachtzee! NC after all the free f
 ### `quick` flag
 
 _EXPERIMENTAL_ Garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.
-* Many non-critical mall searches will instead check historical price with a max age of 1 week.
-* `maximizerCombinationLimit` will be set to 100000.
-* [Brimstone equipment](https://kol.coldfront.net/thekolwiki/index.php/Blasphemous_Bedizenment) will be ignored by the maximizer to reduce possible combinations.
+
+- Many non-critical mall searches will instead check historical price with a max age of 1 week.
+- `maximizerCombinationLimit` will be set to 100000.
+- [Brimstone equipment](https://kol.coldfront.net/thekolwiki/index.php/Blasphemous_Bedizenment) will be ignored by the maximizer to reduce possible combinations.
 
 ### Turncount
 
