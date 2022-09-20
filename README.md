@@ -14,6 +14,7 @@
     - [`nodiet` flag](#nodiet-flag)
     - [`simdiet` flag](#simdiet-flag)
     - [`yachtzeechain` flag](#yachtzeechain-flag)
+    - [`quick` flag](#quick-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)
@@ -114,6 +115,14 @@ Garbo will list the optimal diet it plans to consume computed from your defined 
 ### `yachtzeechain` flag
 
 _EXPERIMENTAL_ Garbo will attempt to chain the Yachtzee! NC after all the free fights are completed, just before it attempts embezzlers. This command cannot be run in conjuction with the `nodiet` flag. Refer to `help` for more info on the requirements needed to run this.
+
+### `quick` flag
+
+_EXPERIMENTAL_ Garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.
+
+- Many non-critical mall searches will instead check historical price with a max age of 1 week.
+- `maximizerCombinationLimit` will be set to 100000.
+- [Brimstone equipment](https://kol.coldfront.net/thekolwiki/index.php/Blasphemous_Bedizenment) will be ignored by the maximizer to reduce possible combinations.
 
 ### Turncount
 

@@ -159,7 +159,7 @@ function printSession(session: Session): void {
   print(`Quick mode was enabled, results may be less accurate than normal.`);
 }
 
-function garboSaleValue(item: Item) {
+function garboSaleValue(item: Item): number {
   if (globalOptions.quickMode) {
     if (historicalAge(item) <= 7.0 && historicalPrice(item) > 0) {
       const isMallMin = historicalPrice(item) === Math.max(100, 2 * autosellPrice(item));
