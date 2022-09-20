@@ -1586,7 +1586,10 @@ const freeRunFightSources = [
         if (myThrall() !== $thrall.none) useSkill($skill`Dismiss Pasta Thrall`);
         Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
           .externalIf(hasXO && get("_xoHugsUsed") < 11, Macro.skill($skill`Hugs and Kisses!`))
-          .externalIf(hasXO && get("_xoHugsUsed") < 10, Macro.step(itemStealOlfact(best)))
+          .externalIf(
+            !best.requireMapTheMonsters && hasXO && get("_xoHugsUsed") < 10,
+            Macro.step(itemStealOlfact(best))
+          )
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
@@ -1614,13 +1617,11 @@ const freeRunFightSources = [
       have($familiar`XO Skeleton`) &&
       get("_xoHugsUsed") < 11 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestItemStealZone(
-        have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3
-      ) !== null,
+      getBestItemStealZone() !== null,
     (runSource: ActionSource) => {
       setupItemStealZones();
-      const mapping = have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3;
-      const best = getBestItemStealZone(mapping);
+      const mappingMonster = have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3;
+      const best = getBestItemStealZone();
       if (!best) throw `Unable to find XO Skeleton zone?`;
       try {
         if (best.preReq) best.preReq();
@@ -1629,7 +1630,7 @@ const freeRunFightSources = [
           .skill($skill`Hugs and Kisses!`)
           .step(runSource.macro)
           .setAutoAttack();
-        if (mapping) {
+        if (mappingMonster) {
           mapMonster(best.location, best.monster);
         } else {
           adv1(best.location, -1, "");
