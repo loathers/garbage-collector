@@ -1851,6 +1851,29 @@ const freeKillSources = [
         have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
     }
   ),
+
+  new FreeFight(
+    () => have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
+    () => {
+      ensureBeachAccess();
+      cliExecute("parka dilophosaur");
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .trySkill($skill`Spit jurassic acid`),
+        () => use($item`drum machine`)
+      );
+    },
+    true,
+    {
+      familiar: bestFairy,
+      requirements: () => [
+        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Jurassic Parka` })),
+      ],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
+    }
+  ),
 ];
 
 export function freeFights(): void {
