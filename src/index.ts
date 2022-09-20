@@ -166,6 +166,8 @@ export function main(argString = ""): void {
       globalOptions.noDiet = true;
     } else if (arg.match(/yachtzeechain/)) {
       globalOptions.yachtzeeChain = true;
+    } else if (arg.match(/quick/)) {
+      globalOptions.quickMode = true;
     } else if (arg.match(/version/i)) {
       return;
     } else if (arg) {
@@ -194,7 +196,9 @@ export function main(argString = ""): void {
       if (parsedClanIdOrName) {
         Clan.with(parsedClanIdOrName, () => {
           for (const item of [...stashItems]) {
-            if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
+            if (getFoldGroup(item).some((item) => have(item))) {
+              cliExecute(`fold ${item}`);
+            }
             const retrieved = retrieveItem(item);
             if (
               item === $item`Spooky Putty sheet` &&
@@ -204,7 +208,9 @@ export function main(argString = ""): void {
               continue;
             }
             print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
-            if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
+            if (putStash(item, 1)) {
+              stashItems.splice(stashItems.indexOf(item), 1);
+            }
           }
         });
       } else throw new Error("Error: No garbo_stashClan set.");
@@ -277,6 +283,10 @@ export function main(argString = ""): void {
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
+    const maximizerCombinationLimit = globalOptions.quickMode
+      ? 100000
+      : get("maximizerCombinationLimit");
+
     propertyManager.set({
       logPreferenceChange: true,
       logPreferenceChangeFilter: [
@@ -319,6 +329,7 @@ export function main(argString = ""): void {
       libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
+      maximizerCombinationLimit: maximizerCombinationLimit,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -329,7 +340,10 @@ export function main(argString = ""): void {
           [$items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`, 3],
         ] as [Item[], number][]
       ).map(([halloweinerOption, choiceId]) => {
-        return { price: garboAverageValue(...halloweinerOption), choiceId: choiceId };
+        return {
+          price: garboAverageValue(...halloweinerOption),
+          choiceId: choiceId,
+        };
       });
       bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
     }
@@ -403,8 +417,16 @@ export function main(argString = ""): void {
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
 
+        const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack`;
+        if (globalOptions.quickMode) {
+          // Brimstone equipment explodes the number of maximize combinations
+          preventEquip.push(
+            ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`
+          );
+        }
+
         setDefaultMaximizeOptions({
-          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack`,
+          preventEquip: preventEquip,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 

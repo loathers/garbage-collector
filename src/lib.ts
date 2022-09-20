@@ -90,6 +90,7 @@ export const globalOptions: {
   noDiet: boolean;
   clarasBellClaimed: boolean;
   yachtzeeChain: boolean;
+  quickMode: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -102,6 +103,7 @@ export const globalOptions: {
   noDiet: false,
   clarasBellClaimed: get("_claraBellUsed"),
   yachtzeeChain: false,
+  quickMode: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
@@ -199,7 +201,9 @@ export function mapMonster(location: Location, monster: Monster): void {
   const fightPage = visitUrl(
     `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`
   );
-  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
+  if (!fightPage.includes(monster.name)) {
+    throw "Something went wrong starting the fight.";
+  }
 }
 
 export function argmax<T>(values: [T, number][]): T {

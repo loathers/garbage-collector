@@ -1,6 +1,15 @@
-import { Coinmaster, Item, print, sellPrice, toInt } from "kolmafia";
+import {
+  autosellPrice,
+  Coinmaster,
+  historicalAge,
+  historicalPrice,
+  Item,
+  print,
+  sellPrice,
+  toInt,
+} from "kolmafia";
 import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
-import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
+import { formatNumber, globalOptions, HIGHLIGHT, resetDailyPreference } from "./lib";
 
 function currency(...items: Item[]): () => number {
   const unitCost: [Item, number][] = items.map((i) => {
@@ -147,6 +156,17 @@ function printSession(session: Session): void {
   printProfit(highValue);
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
+  print(`Quick mode was enabled, results may be less accurate than normal.`);
+}
+
+function garboSaleValue(item: Item) {
+  if (globalOptions.quickMode) {
+    if (historicalAge(item) <= 7.0 && historicalPrice(item) > 0) {
+      const isMallMin = historicalPrice(item) === Math.max(100, 2 * autosellPrice(item));
+      return isMallMin ? autosellPrice(item) : 0.9 * historicalPrice(item);
+    }
+  }
+  return getSaleValue(item);
 }
 
 const garboValueCache = new Map<Item, number>();
@@ -154,7 +174,7 @@ export function garboValue(item: Item): number {
   const cachedValue = garboValueCache.get(item);
   if (cachedValue === undefined) {
     const specialValueCompute = specialValueLookup.get(item);
-    const value = specialValueCompute ? specialValueCompute() : getSaleValue(item);
+    const value = specialValueCompute ? specialValueCompute() : garboSaleValue(item);
     garboValueCache.set(item, value);
     return value;
   }
@@ -218,4 +238,5 @@ export function printGarboSession(): void {
 
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
+  print("Quick mode was enabled, results may be less accurate than normal.");
 }
