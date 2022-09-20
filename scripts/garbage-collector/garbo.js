@@ -25687,7 +25687,7 @@ function generateTurnsAtEndOfDay() {
   }
 }
 ;// CONCATENATED MODULE: ./src/index.ts
-var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31;
+var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32;
 
 function src_slicedToArray(arr, i) { return src_arrayWithHoles(arr) || src_iterableToArrayLimit(arr, i) || src_unsupportedIterableToArray(arr, i) || src_nonIterableRest(); }
 
@@ -25813,6 +25813,8 @@ function main() {
         src_lib/* globalOptions.noDiet */.Xe.noDiet = true;
       } else if (arg.match(/yachtzeechain/)) {
         src_lib/* globalOptions.yachtzeeChain */.Xe.yachtzeeChain = true;
+      } else if (arg.match(/quick/)) {
+        src_lib/* globalOptions.quickMode */.Xe.quickMode = true;
       } else if (arg.match(/version/i)) {
         return;
       } else if (arg) {
@@ -25835,7 +25837,11 @@ function main() {
         Clan/* Clan.with */._["with"](parsedClanIdOrName, () => {
           for (var _i = 0, _arr = src_toConsumableArray(clan/* stashItems */.cg); _i < _arr.length; _i++) {
             var item = _arr[_i];
-            if ((0,lib/* getFoldGroup */._D)(item).some(item => (0,lib/* have */.lf)(item))) (0,external_kolmafia_.cliExecute)("fold ".concat(item));
+
+            if ((0,lib/* getFoldGroup */._D)(item).some(item => (0,lib/* have */.lf)(item))) {
+              (0,external_kolmafia_.cliExecute)("fold ".concat(item));
+            }
+
             var retrieved = (0,external_kolmafia_.retrieveItem)(item);
 
             if (item === (0,template_string/* $item */.xr)(src_templateObject6 || (src_templateObject6 = src_taggedTemplateLiteral(["Spooky Putty sheet"]))) && !retrieved && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject7 || (src_templateObject7 = src_taggedTemplateLiteral(["Spooky Putty monster"]))))) {
@@ -25843,7 +25849,10 @@ function main() {
             }
 
             (0,external_kolmafia_.print)("Returning ".concat(item, " to ").concat((0,external_kolmafia_.getClanName)(), " stash."), src_lib/* HIGHLIGHT */.X2);
-            if ((0,external_kolmafia_.putStash)(item, 1)) clan/* stashItems.splice */.cg.splice(clan/* stashItems.indexOf */.cg.indexOf(item), 1);
+
+            if ((0,external_kolmafia_.putStash)(item, 1)) {
+              clan/* stashItems.splice */.cg.splice(clan/* stashItems.indexOf */.cg.indexOf(item), 1);
+            }
           }
         });
       } else throw new Error("Error: No garbo_stashClan set.");
@@ -25901,6 +25910,7 @@ function main() {
 
     (0,external_kolmafia_.setAutoAttack)(0);
     (0,external_kolmafia_.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true);
+    var maximizerCombinationLimit = src_lib/* globalOptions.quickMode */.Xe.quickMode ? 100000 : (0,property/* get */.U2)("maximizerCombinationLimit");
     src_lib/* propertyManager.set */.kr.set({
       logPreferenceChange: true,
       logPreferenceChangeFilter: src_toConsumableArray(new Set([].concat(src_toConsumableArray((0,property/* get */.U2)("logPreferenceChangeFilter").split(",")), ["libram_savedMacro", "maximizerMRUList", "testudinalTeachings", "garboEmbezzlerDate", "garboEmbezzlerCount", "garboEmbezzlerSources", "spadingData"]))).sort().filter(a => a).join(","),
@@ -25929,7 +25939,8 @@ function main() {
       libramSkillsSoftcore: "none",
       // Don't cast librams when mana burning, handled manually based on sale price
       valueOfInventory: 2,
-      suppressMallPriceCacheMessages: true
+      suppressMallPriceCacheMessages: true,
+      maximizerCombinationLimit: maximizerCombinationLimit
     });
     var bestHalloweiner = 0;
 
@@ -26012,9 +26023,16 @@ function main() {
 
 
         dailySetup();
+        var preventEquip = (0,template_string/* $items */.vS)(src_templateObject26 || (src_templateObject26 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack"])));
+
+        if (src_lib/* globalOptions.quickMode */.Xe.quickMode) {
+          // Brimstone equipment explodes the number of maximize combinations
+          preventEquip.push.apply(preventEquip, src_toConsumableArray((0,template_string/* $items */.vS)(src_templateObject27 || (src_templateObject27 = src_taggedTemplateLiteral(["Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret"])))));
+        }
+
         (0,maximize/* setDefaultMaximizeOptions */._C)({
-          preventEquip: (0,template_string/* $items */.vS)(src_templateObject26 || (src_templateObject26 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack"]))),
-          preventSlot: (0,template_string/* $slots */.ei)(src_templateObject27 || (src_templateObject27 = src_taggedTemplateLiteral(["buddy-bjorn, crown-of-thrones"])))
+          preventEquip: preventEquip,
+          preventSlot: (0,template_string/* $slots */.ei)(src_templateObject28 || (src_templateObject28 = src_taggedTemplateLiteral(["buddy-bjorn, crown-of-thrones"])))
         }); // 2. do some embezzler stuff
 
         freeFights();
@@ -26036,9 +26054,9 @@ function main() {
             } // buy one-day tickets with FunFunds if user desires
 
 
-            if ((0,property/* get */.U2)("garbo_buyPass", false) && (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(src_templateObject28 || (src_templateObject28 = src_taggedTemplateLiteral(["FunFunds\u2122"])))) >= 20 && !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject29 || (src_templateObject29 = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]))))) {
+            if ((0,property/* get */.U2)("garbo_buyPass", false) && (0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(src_templateObject29 || (src_templateObject29 = src_taggedTemplateLiteral(["FunFunds\u2122"])))) >= 20 && !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject30 || (src_templateObject30 = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]))))) {
               (0,external_kolmafia_.print)("Buying a one-day ticket", src_lib/* HIGHLIGHT */.X2);
-              (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(src_templateObject30 || (src_templateObject30 = src_taggedTemplateLiteral(["The Dinsey Company Store"]))), 1, (0,template_string/* $item */.xr)(src_templateObject31 || (src_templateObject31 = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]))));
+              (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(src_templateObject31 || (src_templateObject31 = src_taggedTemplateLiteral(["The Dinsey Company Store"]))), 1, (0,template_string/* $item */.xr)(src_templateObject32 || (src_templateObject32 = src_taggedTemplateLiteral(["one-day ticket to Dinseylandfill"]))));
             }
           } finally {
             (0,external_kolmafia_.setAutoAttack)(0);
@@ -26168,7 +26186,8 @@ var globalOptions = {
   simulateDiet: false,
   noDiet: false,
   clarasBellClaimed: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_claraBellUsed"),
-  yachtzeeChain: false
+  yachtzeeChain: false,
+  quickMode: false
 };
 var WISH_VALUE = 50000;
 var HIGHLIGHT = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.isDarkMode)() ? "yellow" : "blue";
@@ -26243,7 +26262,10 @@ function mapMonster(location, monster) {
   }
 
   var fightPage = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
-  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
+
+  if (!fightPage.includes(monster.name)) {
+    throw "Something went wrong starting the fight.";
+  }
 }
 function argmax(values) {
   return values.reduce((_ref, _ref2) => {
@@ -27910,6 +27932,18 @@ function printSession(session) {
   printProfit(highValue);
   print(" You lost meat on ".concat(lowValue.length, " items including:"));
   printProfit(lowValue);
+  print("Quick mode was enabled, results may be less accurate than normal.");
+}
+
+function garboSaleValue(item) {
+  if (_lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.quickMode */ .Xe.quickMode) {
+    if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalAge)(item) <= 7.0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item) > 0) {
+      var isMallMin = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item) === Math.max(100, 2 * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.autosellPrice)(item));
+      return isMallMin ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.autosellPrice)(item) : 0.9 * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item);
+    }
+  }
+
+  return (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .getSaleValue */ .xI)(item);
 }
 
 var garboValueCache = new Map();
@@ -27918,7 +27952,7 @@ function garboValue(item) {
 
   if (cachedValue === undefined) {
     var specialValueCompute = specialValueLookup.get(item);
-    var value = specialValueCompute ? specialValueCompute() : (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .getSaleValue */ .xI)(item);
+    var value = specialValueCompute ? specialValueCompute() : garboSaleValue(item);
     garboValueCache.set(item, value);
     return value;
   }
@@ -27985,6 +28019,7 @@ function printGarboSession() {
   (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .set */ .t8)("garboResultsItems", totalItems);
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Quick mode was enabled, results may be less accurate than normal.");
 }
 
 /***/ }),

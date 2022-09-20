@@ -18117,7 +18117,8 @@ var globalOptions = {
   simulateDiet: false,
   noDiet: false,
   clarasBellClaimed: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_claraBellUsed"),
-  yachtzeeChain: false
+  yachtzeeChain: false,
+  quickMode: false
 };
 var WISH_VALUE = 50000;
 var HIGHLIGHT = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.isDarkMode)() ? "yellow" : "blue";
@@ -18192,7 +18193,10 @@ function mapMonster(location, monster) {
   }
 
   var fightPage = visitUrl("choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=".concat(monster.id));
-  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
+
+  if (!fightPage.includes(monster.name)) {
+    throw "Something went wrong starting the fight.";
+  }
 }
 function argmax(values) {
   return values.reduce((_ref, _ref2) => {
@@ -19828,6 +19832,18 @@ function printSession(session) {
   printProfit(highValue);
   print(" You lost meat on ".concat(lowValue.length, " items including:"));
   printProfit(lowValue);
+  print("Quick mode was enabled, results may be less accurate than normal.");
+}
+
+function garboSaleValue(item) {
+  if (_lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.quickMode */ .Xe.quickMode) {
+    if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalAge)(item) <= 7.0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item) > 0) {
+      var isMallMin = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item) === Math.max(100, 2 * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.autosellPrice)(item));
+      return isMallMin ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.autosellPrice)(item) : 0.9 * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item);
+    }
+  }
+
+  return (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .getSaleValue */ .xI)(item);
 }
 
 var garboValueCache = new Map();
@@ -19836,7 +19852,7 @@ function garboValue(item) {
 
   if (cachedValue === undefined) {
     var specialValueCompute = specialValueLookup.get(item);
-    var value = specialValueCompute ? specialValueCompute() : (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .getSaleValue */ .xI)(item);
+    var value = specialValueCompute ? specialValueCompute() : garboSaleValue(item);
     garboValueCache.set(item, value);
     return value;
   }
@@ -19903,6 +19919,7 @@ function printGarboSession() {
   set("garboResultsItems", totalItems);
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
+  print("Quick mode was enabled, results may be less accurate than normal.");
 }
 
 /***/ }),
