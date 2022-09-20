@@ -17584,10 +17584,12 @@ function experienceFamiliars_getExperienceFamiliarLimit(fam) {
   if (!have(fam) || !target) return 0;
   return (400 - familiar.experience) / 5;
 }
+// EXTERNAL MODULE: ./node_modules/libram/dist/modifier.js + 1 modules
+var modifier = __webpack_require__(1245);
 // EXTERNAL MODULE: ./node_modules/libram/dist/resources/2017/Robortender.js
 var Robortender = __webpack_require__(330);
 ;// CONCATENATED MODULE: ./src/familiar/constantValueFamiliars.ts
-var constantValueFamiliars_templateObject, constantValueFamiliars_templateObject2, constantValueFamiliars_templateObject3, constantValueFamiliars_templateObject4, constantValueFamiliars_templateObject5, constantValueFamiliars_templateObject6, constantValueFamiliars_templateObject7, constantValueFamiliars_templateObject8, constantValueFamiliars_templateObject9, constantValueFamiliars_templateObject10, constantValueFamiliars_templateObject11, constantValueFamiliars_templateObject12, constantValueFamiliars_templateObject13, constantValueFamiliars_templateObject14, constantValueFamiliars_templateObject15;
+var constantValueFamiliars_templateObject, constantValueFamiliars_templateObject2, constantValueFamiliars_templateObject3, constantValueFamiliars_templateObject4, constantValueFamiliars_templateObject5, constantValueFamiliars_templateObject6, constantValueFamiliars_templateObject7, constantValueFamiliars_templateObject8, constantValueFamiliars_templateObject9, constantValueFamiliars_templateObject10, constantValueFamiliars_templateObject11, constantValueFamiliars_templateObject12, constantValueFamiliars_templateObject13, constantValueFamiliars_templateObject14, constantValueFamiliars_templateObject15, constantValueFamiliars_templateObject16, constantValueFamiliars_templateObject17, constantValueFamiliars_templateObject18;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -17606,27 +17608,33 @@ function constantValueFamiliars_taggedTemplateLiteral(strings, raw) { if (!raw) 
 
 
 
+
+var bestAlternative = (0,modifier/* get */.U)("Meat Drop", (0,template_string/* $item */.xr)(constantValueFamiliars_templateObject || (constantValueFamiliars_templateObject = constantValueFamiliars_taggedTemplateLiteral(["amulet coin"]))));
 var standardFamiliars = [{
-  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject || (constantValueFamiliars_templateObject = constantValueFamiliars_taggedTemplateLiteral(["Obtuse Angel"]))),
-  value: () => 0.02 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject2 || (constantValueFamiliars_templateObject2 = constantValueFamiliars_taggedTemplateLiteral(["time's arrow"]))))
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject2 || (constantValueFamiliars_templateObject2 = constantValueFamiliars_taggedTemplateLiteral(["Obtuse Angel"]))),
+  value: () => 0.02 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject3 || (constantValueFamiliars_templateObject3 = constantValueFamiliars_taggedTemplateLiteral(["time's arrow"]))))
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject3 || (constantValueFamiliars_templateObject3 = constantValueFamiliars_taggedTemplateLiteral(["Stocking Mimic"]))),
-  value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(constantValueFamiliars_templateObject4 || (constantValueFamiliars_templateObject4 = constantValueFamiliars_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / 6 + (1 / 3 + ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(constantValueFamiliars_templateObject5 || (constantValueFamiliars_templateObject5 = constantValueFamiliars_taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0)) * ((0,external_kolmafia_.familiarWeight)((0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject6 || (constantValueFamiliars_templateObject6 = constantValueFamiliars_taggedTemplateLiteral(["Stocking Mimic"])))) + (0,external_kolmafia_.weightAdjustment)())
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject4 || (constantValueFamiliars_templateObject4 = constantValueFamiliars_taggedTemplateLiteral(["Stocking Mimic"]))),
+  value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(constantValueFamiliars_templateObject5 || (constantValueFamiliars_templateObject5 = constantValueFamiliars_taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / 6 + (1 / 3 + ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(constantValueFamiliars_templateObject6 || (constantValueFamiliars_templateObject6 = constantValueFamiliars_taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0)) * ((0,external_kolmafia_.familiarWeight)((0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject7 || (constantValueFamiliars_templateObject7 = constantValueFamiliars_taggedTemplateLiteral(["Stocking Mimic"])))) + (0,external_kolmafia_.weightAdjustment)())
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject7 || (constantValueFamiliars_templateObject7 = constantValueFamiliars_taggedTemplateLiteral(["Shorter-Order Cook"]))),
-  value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(constantValueFamiliars_templateObject8 || (constantValueFamiliars_templateObject8 = constantValueFamiliars_taggedTemplateLiteral(["short beer, short stack of pancakes, short stick of butter, short glass of water, short white"]))))) / 11
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject8 || (constantValueFamiliars_templateObject8 = constantValueFamiliars_taggedTemplateLiteral(["Shorter-Order Cook"]))),
+  value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(constantValueFamiliars_templateObject9 || (constantValueFamiliars_templateObject9 = constantValueFamiliars_taggedTemplateLiteral(["short beer, short stack of pancakes, short stick of butter, short glass of water, short white"]))))) / 11
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject9 || (constantValueFamiliars_templateObject9 = constantValueFamiliars_taggedTemplateLiteral(["Robortender"]))),
-  value: () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject10 || (constantValueFamiliars_templateObject10 = constantValueFamiliars_taggedTemplateLiteral(["elemental sugarcube"])))) / 5 + (Robortender/* currentDrinks */.JJ().includes((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject11 || (constantValueFamiliars_templateObject11 = constantValueFamiliars_taggedTemplateLiteral(["Feliz Navidad"])))) ? (0,property/* get */.U2)("garbo_felizValue", 0) * 0.25 : 0) + (Robortender/* currentDrinks */.JJ().includes((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject12 || (constantValueFamiliars_templateObject12 = constantValueFamiliars_taggedTemplateLiteral(["Newark"])))) ? (0,property/* get */.U2)("garbo_newarkValue", 0) * 0.25 : 0)
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject10 || (constantValueFamiliars_templateObject10 = constantValueFamiliars_taggedTemplateLiteral(["Robortender"]))),
+  value: () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject11 || (constantValueFamiliars_templateObject11 = constantValueFamiliars_taggedTemplateLiteral(["elemental sugarcube"])))) / 5 + (Robortender/* currentDrinks */.JJ().includes((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject12 || (constantValueFamiliars_templateObject12 = constantValueFamiliars_taggedTemplateLiteral(["Feliz Navidad"])))) ? (0,property/* get */.U2)("garbo_felizValue", 0) * 0.25 : 0) + (Robortender/* currentDrinks */.JJ().includes((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject13 || (constantValueFamiliars_templateObject13 = constantValueFamiliars_taggedTemplateLiteral(["Newark"])))) ? (0,property/* get */.U2)("garbo_newarkValue", 0) * 0.25 : 0)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject13 || (constantValueFamiliars_templateObject13 = constantValueFamiliars_taggedTemplateLiteral(["Twitching Space Critter"]))),
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject14 || (constantValueFamiliars_templateObject14 = constantValueFamiliars_taggedTemplateLiteral(["Twitching Space Critter"]))),
   // Item is ludicrously overvalued and incredibly low-volume.
   // We can remove this cap once the price reaches a lower equilibrium
   // we probably won't, but we can.
-  value: () => Math.min((0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject14 || (constantValueFamiliars_templateObject14 = constantValueFamiliars_taggedTemplateLiteral(["twitching space egg"])))) * 0.0002, 690)
+  value: () => Math.min((0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject15 || (constantValueFamiliars_templateObject15 = constantValueFamiliars_taggedTemplateLiteral(["twitching space egg"])))) * 0.0002, 690)
 }, {
-  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject15 || (constantValueFamiliars_templateObject15 = constantValueFamiliars_taggedTemplateLiteral(["Hobo Monkey"]))),
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject16 || (constantValueFamiliars_templateObject16 = constantValueFamiliars_taggedTemplateLiteral(["Hobo Monkey"]))),
   value: () => 75
+}, {
+  familiar: (0,template_string/* $familiar */.HP)(constantValueFamiliars_templateObject17 || (constantValueFamiliars_templateObject17 = constantValueFamiliars_taggedTemplateLiteral(["Trick-or-Treating Tot"]))),
+  // This is the value of getting a pirate costume over getting an amulet coin or whatever
+  value: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(constantValueFamiliars_templateObject18 || (constantValueFamiliars_templateObject18 = constantValueFamiliars_taggedTemplateLiteral(["li'l pirate costume"])))) ? src_lib/* baseMeat */.Vq * (300 - bestAlternative) / 100 : 0
 }];
 function constantValueFamiliars_getConstantValueFamiliars() {
   return standardFamiliars.filter(_ref => {
@@ -17810,7 +17818,11 @@ function getCachedOutfitValues(fam) {
   if (currentValue) return currentValue;
   useFamiliar(fam);
   meatOutfit(false, new Requirement([], {
-    preventEquip: $items(marginalFamiliars_templateObject2 || (marginalFamiliars_templateObject2 = marginalFamiliars_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122, cursed magnifying glass, protonic accelerator pack, \"I Voted!\" sticker"])))
+    // If we don't include the li'l pirate costume as a preventEquip, we could
+    // double-count the value of the pirate costume between here and constantvalue.ts,
+    // and we could apply the value of the pirate costume to every 0x leprechaun. Other items are
+    // included as strong, temporary bonuses that go away quickly in a user's BarfDay.
+    preventEquip: $items(marginalFamiliars_templateObject2 || (marginalFamiliars_templateObject2 = marginalFamiliars_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122, cursed magnifying glass, protonic accelerator pack, \"I Voted!\" sticker, li'l pirate costume"])))
   }));
   var outfit = outfitSlots.map(slot => equippedItem(slot));
   var bonuses = bonusGear("barf", false);
@@ -17889,10 +17901,7 @@ function calculateOutfitValue(f) {
 
 function barfFamiliar() {
   if (timeToMeatify()) return $familiar(marginalFamiliars_templateObject3 || (marginalFamiliars_templateObject3 = marginalFamiliars_taggedTemplateLiteral(["Grey Goose"])));
-  if (get("garbo_IgnoreMarginalFamiliars", false)) return meatFamiliar(); // Right now, this menu lies, and says that we cannot customize the macro used.
-  // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
-  // Some day, I hope to right this wrong.
-
+  if (get("garbo_IgnoreMarginalFamiliars", false)) return meatFamiliar();
   var fullMenu = menu({
     canChooseMacro: true,
     location: $location(marginalFamiliars_templateObject4 || (marginalFamiliars_templateObject4 = marginalFamiliars_taggedTemplateLiteral(["Barf Mountain"]))),
