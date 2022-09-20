@@ -75,10 +75,8 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
   const fishySources = [
     {
       name: "fish juice box",
-      cost:
-        !haveFishyPipe && haveEffect($effect`Fishy`) + 20 + adventureExtensionBonus < yachtzeeTurns
-          ? Infinity
-          : mallPrice($item`fish juice box`),
+      turns: 20 + (haveFishyPipe ? 10 : 0),
+      cost: mallPrice($item`fish juice box`),
       action: () => {
         acquire(1, $item`fish juice box`, 1.2 * mallPrice($item`fish juice box`));
         if (!have($item`fish juice box`)) throw new Error("Unable to obtain fish juice box");
@@ -90,6 +88,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
     },
     {
       name: "2x fish juice box",
+      turns: 40 + (haveFishyPipe ? 10 : 0),
       cost: 2 * mallPrice($item`fish juice box`),
       action: () => {
         acquire(2, $item`fish juice box`, 1.2 * mallPrice($item`fish juice box`));
@@ -97,19 +96,27 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
           throw new Error("Unable to obtain sufficient fish juice boxes");
         }
         use(2, $item`fish juice box`);
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
       },
     },
     {
       name: "cuppa Gill tea",
+      turns: 30 + (haveFishyPipe ? 10 : 0),
       cost: mallPrice($item`cuppa Gill tea`) + bestWaterBreathingEquipment.cost,
       action: () => {
         acquire(1, $item`cuppa Gill tea`, 1.2 * mallPrice($item`cuppa Gill tea`));
         if (!have($item`cuppa Gill tea`)) throw new Error("Unable to obtain cuppa Gill tea");
         use(1, $item`cuppa Gill tea`);
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
       },
     },
     {
       name: "powdered candy sushi set",
+      turns: 30 + (haveFishyPipe ? 10 : 0),
       cost: mallPrice($item`powdered candy sushi set`) + bestWaterBreathingEquipment.cost,
       action: () => {
         acquire(
@@ -121,10 +128,14 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
           throw new Error("Unable to obtain powdered candy sushi set");
         }
         use(1, $item`powdered candy sushi set`);
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
       },
     },
     {
       name: "concentrated fish broth",
+      turns: 30 + (haveFishyPipe ? 10 : 0),
       cost: mallPrice($item`concentrated fish broth`) + bestWaterBreathingEquipment.cost,
       action: () => {
         acquire(1, $item`concentrated fish broth`, 1.2 * mallPrice($item`concentrated fish broth`));
@@ -132,20 +143,28 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
           throw new Error("Unable to obtain concentrated fish broth");
         }
         use(1, $item`concentrated fish broth`);
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
       },
     },
     {
       name: "Lutz, the Ice Skate",
+      turns: 30 + (haveFishyPipe ? 10 : 0),
       cost:
         get("_skateBuff1", false) || get("skateParkStatus") !== "ice"
           ? Infinity
           : bestWaterBreathingEquipment.cost,
       action: () => {
         cliExecute("skate lutz");
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
       },
     },
     {
       name: "The Haggling",
+      turns: 50 + (haveFishyPipe ? 10 : 0),
       cost: canAdventure($location`The Brinier Deepers`)
         ? (have($effect`Lucky!`) ? 0 : mallPrice($item`11-leaf clover`)) +
           get("valueOfAdventure") +
@@ -168,6 +187,9 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
             "red"
           );
         }
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
         if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
           throw new Error("Failed to get fishy from clover adv");
         }
@@ -175,25 +197,26 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
     },
     {
       name: "Just Fishy Pipe",
-      cost:
-        (haveFishyPipe ? 10 : haveEffect($effect`Fishy`)) + (pyecAvailable() ? 5 : 0) <
-        yachtzeeTurns
-          ? Infinity
-          : 0,
+      turns: 10,
+      cost: haveFishyPipe ? 0 : Infinity,
       action: () => {
         if (haveFishyPipe && haveEffect($effect`Fishy`) < yachtzeeTurns) use(1, $item`fishy pipe`);
       },
     },
   ];
 
-  const bestFishySource = fishySources.reduce((left, right) => {
-    return left.cost < right.cost ? left : right;
-  });
+  const bestFishySource = fishySources
+    .filter((source) => source.turns + haveEffect($effect`Fishy`) >= yachtzeeTurns)
+    .reduce((left, right) => {
+      return left.cost < right.cost ? left : right;
+    });
 
-  print("Cost of Fishy sources:", "blue");
-  fishySources.forEach((source) => {
-    print(`${source.name} (${source.cost})`, "blue");
-  });
+  print("Cost of viable Fishy sources:", "blue");
+  fishySources
+    .filter((source) => source.turns + haveEffect($effect`Fishy`) >= yachtzeeTurns)
+    .forEach((source) => {
+      print(`${source.name} (${source.cost})`, "blue");
+    });
   if (setup) {
     print(`Taking best fishy source: ${bestFishySource.name}`, "blue");
     bestFishySource.action();
