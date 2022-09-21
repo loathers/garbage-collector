@@ -6,9 +6,11 @@ import {
   Item,
   itemAmount,
   myAdventures,
+  myLevel,
   reverseNumberology,
   runChoice,
   totalTurnsPlayed,
+  use,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -16,6 +18,7 @@ import {
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $skill,
   $slot,
@@ -29,6 +32,7 @@ import {
   uneffect,
   withProperty,
 } from "libram";
+import { acquire } from "./acquire";
 import { computeDiet, consumeDiet } from "./diet";
 import {
   argmax,
@@ -40,7 +44,7 @@ import {
   setChoice,
   valueJuneCleaverOption,
 } from "./lib";
-import { garboValue, sessionSinceStart } from "./session";
+import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
@@ -155,6 +159,28 @@ function stillsuit() {
   }
 }
 
+function funguySpores() {
+  if (
+    myLevel() >= 15 &&
+    !have($effect`Mush-Mouth`) &&
+    (!globalOptions.ascending || myAdventures() > 11) &&
+    get("dinseyRollercoasterNext")
+  ) {
+    const value =
+      0.75 *
+        garboAverageValue(
+          ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`
+        ) +
+      0.25 *
+        garboAverageValue(
+          ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
+        );
+    if (acquire(1, $item`Fun-Guy spore`, value, false) > 0) {
+      use($item`Fun-Guy spore`);
+    }
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
@@ -167,4 +193,5 @@ export default function postCombatActions(skipDiet = false): void {
   safeRestore();
   updateMallPrices();
   stillsuit();
+  funguySpores();
 }
