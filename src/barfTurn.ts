@@ -65,6 +65,7 @@ import {
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
+import postCombatActions from "./post";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -356,6 +357,33 @@ const turns: AdventureAction[] = [
   },
 ];
 
+function runTurn() {
+  const isSober = myInebriety() <= inebrietyLimit();
+  const validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
+  const turn = turns.find((t) => t.available() && validSobrieties.includes(t.sobriety));
+  if (!turn) throw new Error("Somehow failed to find anything to do!");
+  const expectToSpendATurn =
+    typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
+  print(`Now running barf-turn: ${turn.name}.`);
+
+  const startTurns = totalTurnsPlayed();
+  const success = turn.execute();
+  const spentATurn = totalTurnsPlayed() - startTurns === 1;
+
+  if (spentATurn) {
+    if (!expectToSpendATurn) print(`We unexpectedly spent a turn doing ${turn.name}!`, "red");
+
+    const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
+    if (foughtAnEmbezzler) logEmbezzler(turn.name);
+
+    const needTurns =
+      myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit();
+    if (needTurns) generateTurnsAtEndOfDay();
+  }
+
+  return { success, spentATurn };
+}
+
 export default function barfTurn(): void {
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
@@ -363,37 +391,15 @@ export default function barfTurn(): void {
   meatMood().execute(estimatedTurns());
   safeRestore();
 
-  const isSober = myInebriety() <= inebrietyLimit();
-  const validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
-  for (const turn of turns) {
-    if (turn.available() && validSobrieties.includes(turn.sobriety)) {
-      const expectToSpendATurn =
-        typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
+  let failures = 0;
+  while (failures < 3) {
+    const { success, spentATurn } = runTurn();
 
-      print(`Now running barf-turn: ${turn.name}.`);
-
-      const startTurns = totalTurnsPlayed();
-      const success = turn.execute();
-      const spentATurn = totalTurnsPlayed() - startTurns === 1;
-
-      if (!success) {
-        print(`We expected to do ${turn.name}, but failed!`, "red");
-      }
-      if (!expectToSpendATurn && spentATurn) {
-        print(`We unexpectedly spent a turn doing ${turn.name}!`, "red");
-      }
-      if (success) {
-        const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
-        if (spentATurn && foughtAnEmbezzler) logEmbezzler(turn.name);
-
-        const needTurns =
-          myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit();
-        if (needTurns) generateTurnsAtEndOfDay();
-        return;
-      }
-    }
+    if (success) return;
+    failures++;
+    if (spentATurn) postCombatActions();
   }
-  throw new Error("Somehow failed to find anything to do!");
+  throw new Error("Tried thrice to adventure, and failed each time. Aborting.");
 }
 
 function generateTurnsAtEndOfDay(): void {
