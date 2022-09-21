@@ -48,6 +48,7 @@ import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { deliverThesisIfAble } from "./fights";
 import {
+  dogOrHolidayWanderer,
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
@@ -377,6 +378,12 @@ export default function barfTurn(): void {
       const spentATurn = totalTurnsPlayed() - startTurns === 1;
 
       if (!success) {
+        if (dogOrHolidayWanderer()) {
+          print(
+            `Curses, our encounter got eaten by ${get("lastEncounter")}. Let's try this again.`
+          );
+          return;
+        }
         print(`We expected to do ${turn.name}, but failed!`, "red");
       }
       if (!expectToSpendATurn && spentATurn) {
