@@ -65,6 +65,7 @@ import {
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
+import postCombatActions from "./post";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -380,7 +381,7 @@ function runTurn() {
     if (needTurns) generateTurnsAtEndOfDay();
   }
 
-  return success;
+  return { success, spentATurn };
 }
 
 export default function barfTurn(): void {
@@ -392,10 +393,11 @@ export default function barfTurn(): void {
 
   let failures = 0;
   while (failures < 3) {
-    const success = runTurn();
+    const { success, spentATurn } = runTurn();
 
-    if (!success) failures++;
-    else return;
+    if (success) return;
+    failures++;
+    if (spentATurn) postCombatActions();
   }
   throw new Error("Tried thrice to adventure, and failed each time. Aborting.");
 }
