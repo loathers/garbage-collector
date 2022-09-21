@@ -25389,6 +25389,7 @@ function barfTurn_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = string
 
 
 
+
 var barfTurn_embezzler = (0,template_string/* $monster */.O4)(barfTurn_templateObject || (barfTurn_templateObject = barfTurn_taggedTemplateLiteral(["Knob Goblin Embezzler"])));
 
 function embezzlerPrep() {
@@ -25622,52 +25623,50 @@ var turns = [{
   spendsTurn: true,
   sobriety: Sobriety.EITHER
 }];
+
+function runTurn() {
+  var isSober = (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)();
+  var validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
+  var turn = turns.find(t => t.available() && validSobrieties.includes(t.sobriety));
+  if (!turn) throw new Error("Somehow failed to find anything to do!");
+  var expectToSpendATurn = typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
+  (0,external_kolmafia_.print)("Now running barf-turn: ".concat(turn.name, "."));
+  var startTurns = (0,external_kolmafia_.totalTurnsPlayed)();
+  var success = turn.execute();
+  var spentATurn = (0,external_kolmafia_.totalTurnsPlayed)() - startTurns === 1;
+
+  if (spentATurn) {
+    if (!expectToSpendATurn) (0,external_kolmafia_.print)("We unexpectedly spent a turn doing ".concat(turn.name, "!"), "red");
+    var foughtAnEmbezzler = (0,property/* get */.U2)("lastEncounter") === "Knob Goblin Embezzler";
+    if (foughtAnEmbezzler) logEmbezzler(turn.name);
+    var needTurns = (0,external_kolmafia_.myAdventures)() === 1 + src_lib/* globalOptions.saveTurns */.Xe.saveTurns && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)();
+    if (needTurns) generateTurnsAtEndOfDay();
+  }
+
+  return {
+    success: success,
+    spentATurn: spentATurn
+  };
+}
+
 function barfTurn() {
   if (SourceTerminal/* have */.lf()) SourceTerminal/* educate */.vv([(0,template_string/* $skill */.tm)(barfTurn_templateObject53 || (barfTurn_templateObject53 = barfTurn_taggedTemplateLiteral(["Extract"]))), (0,template_string/* $skill */.tm)(barfTurn_templateObject54 || (barfTurn_templateObject54 = barfTurn_taggedTemplateLiteral(["Digitize"])))]);
   (0,outfit/* tryFillLatte */.wr)();
   (0,mood/* meatMood */.CE)().execute((0,embezzler/* estimatedTurns */.AN)());
   (0,src_lib/* safeRestore */.Pv)();
-  var isSober = (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)();
-  var validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
+  var failures = 0;
 
-  var _iterator2 = barfTurn_createForOfIteratorHelper(turns),
-      _step2;
+  while (failures < 3) {
+    var _runTurn = runTurn(),
+        success = _runTurn.success,
+        spentATurn = _runTurn.spentATurn;
 
-  try {
-    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var turn = _step2.value;
-
-      if (turn.available() && validSobrieties.includes(turn.sobriety)) {
-        var expectToSpendATurn = typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
-        (0,external_kolmafia_.print)("Now running barf-turn: ".concat(turn.name, "."));
-        var startTurns = (0,external_kolmafia_.totalTurnsPlayed)();
-        var success = turn.execute();
-        var spentATurn = (0,external_kolmafia_.totalTurnsPlayed)() - startTurns === 1;
-
-        if (!success) {
-          (0,external_kolmafia_.print)("We expected to do ".concat(turn.name, ", but failed!"), "red");
-        }
-
-        if (!expectToSpendATurn && spentATurn) {
-          (0,external_kolmafia_.print)("We unexpectedly spent a turn doing ".concat(turn.name, "!"), "red");
-        }
-
-        if (success) {
-          var foughtAnEmbezzler = (0,property/* get */.U2)("lastEncounter") === "Knob Goblin Embezzler";
-          if (spentATurn && foughtAnEmbezzler) logEmbezzler(turn.name);
-          var needTurns = (0,external_kolmafia_.myAdventures)() === 1 + src_lib/* globalOptions.saveTurns */.Xe.saveTurns && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)();
-          if (needTurns) generateTurnsAtEndOfDay();
-          return;
-        }
-      }
-    }
-  } catch (err) {
-    _iterator2.e(err);
-  } finally {
-    _iterator2.f();
+    if (success) return;
+    failures++;
+    if (spentATurn) postCombatActions();
   }
 
-  throw new Error("Somehow failed to find anything to do!");
+  throw new Error("Tried thrice to adventure, and failed each time. Aborting.");
 }
 
 function generateTurnsAtEndOfDay() {
@@ -27932,7 +27931,10 @@ function printSession(session) {
   printProfit(highValue);
   print(" You lost meat on ".concat(lowValue.length, " items including:"));
   printProfit(lowValue);
-  print("Quick mode was enabled, results may be less accurate than normal.");
+
+  if (globalOptions.quickMode) {
+    print("Quick mode was enabled, results may be less accurate than normal.");
+  }
 }
 
 function garboSaleValue(item) {
