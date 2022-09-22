@@ -1,4 +1,16 @@
-import { buy, canAdventure, craftType, Item, Location, print, retrieveItem, use } from "kolmafia";
+import {
+  buy,
+  canAdventure,
+  craftType,
+  getLocationMonsters,
+  Item,
+  itemDropsArray,
+  Location,
+  print,
+  retrieveItem,
+  toMonster,
+  use,
+} from "kolmafia";
 import {
   $effect,
   $item,
@@ -11,12 +23,13 @@ import {
   Guzzlr,
   have,
   SourceTerminal,
+  sumNumbers,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
 import { garboValue } from "./session";
 
-export type DraggableFight = "backup" | "wanderer";
+export type DraggableFight = "backup" | "wanderer" | "yellow ray";
 const WANDERER_PRICE_THRESHOLD = 10000;
 
 function untangleDigitizes(turnCount: number, chunks: number): number {
@@ -98,7 +111,10 @@ const UnlockableZones: UnlockableZone[] = [
 
 function canAdventureOrUnlock(loc: Location) {
   const underwater = loc.environment === "underwater";
-  const skiplist = $locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`;
+  const skiplist = [
+    ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`,
+    ...Location.all().filter((l) => l.parent === "Clan Basement"),
+  ];
   if (!have($item`repaid diaper`) && have($item`Great Wolf's beastly trousers`)) {
     skiplist.push($location`The Icy Peak`);
   }
@@ -117,12 +133,20 @@ function unlock(loc: Location) {
 const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
 const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak`;
 function canWander(location: Location, type: DraggableFight) {
-  if (type === "backup") {
-    return !backupSkiplist.includes(location) && location.combatPercent >= 100;
-  } else if (type === "wanderer") {
-    return !wandererSkiplist.includes(location) && location.wanderers;
+  switch (type) {
+    case "backup":
+      return !backupSkiplist.includes(location) && location.combatPercent >= 100;
+    case "yellow ray":
+      // Fun-guy mansion currently lacks mafia tracking, and eventually becomes immune to insta-kills
+      // Watch this space.
+      return (
+        !backupSkiplist.includes(location) &&
+        location.combatPercent >= 100 &&
+        !(!globalOptions.ascending && location === $location`The Fun-Guy Mansion`)
+      );
+    case "wanderer":
+      return !wandererSkiplist.includes(location) && location.wanderers;
   }
-  return false;
 }
 
 function wandererTurnsAvailableToday(zone: Location) {
@@ -146,7 +170,7 @@ function freeCrafts() {
 }
 class WandererTarget {
   name: string;
-  available: () => boolean;
+  available: (type: DraggableFight) => boolean;
   prepareWanderer: () => boolean;
   location: () => Location | null;
   value: () => number;
@@ -163,7 +187,7 @@ class WandererTarget {
    */
   constructor(
     name: string,
-    available: () => boolean,
+    available: (type: DraggableFight) => boolean,
     location: () => Location | null,
     value: () => number,
     prepareWanderer: () => boolean = () => true,
@@ -177,8 +201,8 @@ class WandererTarget {
     this.prepareTurn = prepareTurn;
   }
 
-  computeCachedValue() {
-    if (this.available() && this.prepareWanderer() && this.location()) {
+  computeCachedValue(type: DraggableFight) {
+    if (this.available(type) && this.prepareWanderer() && this.location()) {
       return { value: this.value(), target: this };
     }
     return { value: 0, target: this };
@@ -203,6 +227,46 @@ function guzzlrAbandonQuest() {
   ) {
     print("Abandoning...");
     Guzzlr.abandon();
+  }
+}
+
+function averageYrValue(location: Location, debug = false) {
+  const monsters = Object.keys(getLocationMonsters(location))
+    .map((m) => toMonster(m))
+    .filter((m) => !["LUCKY", "ULTRARARE", "BOSS"].some((s) => m.attributes.includes(s)));
+
+  if (monsters.length === 0) {
+    return 0;
+  } else {
+    return (
+      sumNumbers(
+        monsters.map((m) => {
+          const items = itemDropsArray(m)
+            .filter((drop) => ["", "n"].includes(drop.type))
+            .map((drop) => garboValue(drop.drop));
+
+          if (debug) print(`${m}: ${items.join(",")}`);
+
+          return sumNumbers(items);
+        })
+      ) / monsters.length
+    );
+  }
+}
+
+function bestYrLocation(): { location: Location; value: number } {
+  const validLocations = Location.all()
+    .filter((l) => canWander(l, "yellow ray") && canAdventureOrUnlock(l))
+    .map((location) => {
+      return { location, value: averageYrValue(location) };
+    })
+    .filter((value) => value.value > 0);
+  if (validLocations.length > 0) {
+    const res = validLocations.sort((a, b) => b.value - a.value)[0];
+    print(`Best YR Location: ${res.location} for value ${res.value}`);
+    return res;
+  } else {
+    return { location: $location.none, value: -1 };
   }
 }
 
@@ -276,6 +340,19 @@ const wandererTargets = [
       return have(guzzlrBooze);
     }
   ),
+  new WandererTarget(
+    "Yellow Ray",
+    (type: DraggableFight) => type === "yellow ray",
+    () => {
+      const bestLocation = bestYrLocation();
+      if (bestLocation.value > 0) {
+        return bestLocation.location;
+      } else {
+        return null;
+      }
+    },
+    () => bestYrLocation().value
+  ),
   // Elemental Airport Currency drops.
   // TODO: Unknown drop rate, using 5% from a quick log search
   // The wiki appears to be wrong about the max coinspiracy drops
@@ -309,8 +386,8 @@ const wandererTargets = [
 
 export function determineDraggableZoneAndEnsureAccess(type: DraggableFight = "wanderer"): Location {
   const sortedTargets = wandererTargets
-    .filter((target: WandererTarget) => target.available() && target.prepareWanderer())
-    .map((target: WandererTarget) => target.computeCachedValue())
+    .filter((target: WandererTarget) => target.available(type) && target.prepareWanderer())
+    .map((target: WandererTarget) => target.computeCachedValue(type))
     .sort((a, b) => b.value - a.value);
 
   const best = sortedTargets.find((prospect) => {
