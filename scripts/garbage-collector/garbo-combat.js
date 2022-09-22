@@ -20288,7 +20288,7 @@ var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/session.ts
 var session = __webpack_require__(742);
 ;// CONCATENATED MODULE: ./src/wanderer.ts
-var wanderer_templateObject, wanderer_templateObject2, wanderer_templateObject3, wanderer_templateObject4, wanderer_templateObject5, wanderer_templateObject6, wanderer_templateObject7, wanderer_templateObject8, wanderer_templateObject9, wanderer_templateObject10, wanderer_templateObject11, wanderer_templateObject12, wanderer_templateObject13, wanderer_templateObject14, wanderer_templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _ref, _templateObject32, _templateObject33, _ref3, _templateObject34, _ref4, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _ref10, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _ref14, _templateObject45, _ref15, _templateObject46, _templateObject47, _ref17, _templateObject48;
+var wanderer_templateObject, wanderer_templateObject2, wanderer_templateObject3, wanderer_templateObject4, wanderer_templateObject5, wanderer_templateObject6, wanderer_templateObject7, wanderer_templateObject8, wanderer_templateObject9, wanderer_templateObject10, wanderer_templateObject11, wanderer_templateObject12, wanderer_templateObject13, wanderer_templateObject14, wanderer_templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _ref, _templateObject33, _templateObject34, _ref3, _templateObject35, _ref4, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _ref10, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _ref14, _templateObject46, _ref15, _templateObject47, _templateObject48, _ref17, _templateObject49;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -20297,6 +20297,18 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function wanderer_toConsumableArray(arr) { return wanderer_arrayWithoutHoles(arr) || wanderer_iterableToArray(arr) || wanderer_unsupportedIterableToArray(arr) || wanderer_nonIterableSpread(); }
+
+function wanderer_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function wanderer_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return wanderer_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return wanderer_arrayLikeToArray(o, minLen); }
+
+function wanderer_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function wanderer_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return wanderer_arrayLikeToArray(arr); }
+
+function wanderer_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function wanderer_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -20366,7 +20378,7 @@ var UnlockableZones = [{
 
 function canAdventureOrUnlock(loc) {
   var underwater = loc.environment === "underwater";
-  var skiplist = (0,template_string/* $locations */.xw)(wanderer_templateObject11 || (wanderer_templateObject11 = wanderer_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren"])));
+  var skiplist = [].concat(wanderer_toConsumableArray((0,template_string/* $locations */.xw)(wanderer_templateObject11 || (wanderer_templateObject11 = wanderer_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren"])))), wanderer_toConsumableArray(external_kolmafia_.Location.all().filter(l => l.parent === "Clan Basement")));
 
   if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(wanderer_templateObject12 || (wanderer_templateObject12 = wanderer_taggedTemplateLiteral(["repaid diaper"])))) && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(wanderer_templateObject13 || (wanderer_templateObject13 = wanderer_taggedTemplateLiteral(["Great Wolf's beastly trousers"]))))) {
     skiplist.push((0,template_string/* $location */.PG)(wanderer_templateObject14 || (wanderer_templateObject14 = wanderer_taggedTemplateLiteral(["The Icy Peak"]))));
@@ -20388,21 +20400,26 @@ var backupSkiplist = (0,template_string/* $locations */.xw)(wanderer_templateObj
 var wandererSkiplist = (0,template_string/* $locations */.xw)(_templateObject16 || (_templateObject16 = wanderer_taggedTemplateLiteral(["The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak"])));
 
 function canWander(location, type) {
-  if (type === "backup") {
-    return !backupSkiplist.includes(location) && location.combatPercent >= 100;
-  } else if (type === "wanderer") {
-    return !wandererSkiplist.includes(location) && location.wanderers;
-  }
+  switch (type) {
+    case "backup":
+      return !backupSkiplist.includes(location) && location.combatPercent >= 100;
 
-  return false;
+    case "yellow ray":
+      // Fun-guy mansion currently lacks mafia tracking, and eventually becomes immune to insta-kills
+      // Watch this space.
+      return !backupSkiplist.includes(location) && location.combatPercent >= 100 && !(!src_lib/* globalOptions.ascending */.Xe.ascending && location === (0,template_string/* $location */.PG)(_templateObject17 || (_templateObject17 = wanderer_taggedTemplateLiteral(["The Fun-Guy Mansion"]))));
+
+    case "wanderer":
+      return !wandererSkiplist.includes(location) && location.wanderers;
+  }
 }
 
 function wandererTurnsAvailableToday(zone) {
-  return (canWander(zone, "wanderer") ? digitizedMonstersRemaining() + ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject17 || (_templateObject17 = wanderer_taggedTemplateLiteral(["\"I Voted!\" sticker"])))) ? (0,utils/* clamp */.uZ)(3 - (0,property/* get */.U2)("_voteFreeFights"), 0, 3) : 0) + ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject18 || (_templateObject18 = wanderer_taggedTemplateLiteral(["cursed magnifying glass"])))) ? (0,utils/* clamp */.uZ)(5 - (0,property/* get */.U2)("_voidFreeFights"), 0, 5) : 0) : 0) + (canWander(zone, "backup") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject19 || (_templateObject19 = wanderer_taggedTemplateLiteral(["backup camera"])))) ? (0,utils/* clamp */.uZ)(11 - (0,property/* get */.U2)("_backUpUses"), 0, 11) : 0);
+  return (canWander(zone, "wanderer") ? digitizedMonstersRemaining() + ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject18 || (_templateObject18 = wanderer_taggedTemplateLiteral(["\"I Voted!\" sticker"])))) ? (0,utils/* clamp */.uZ)(3 - (0,property/* get */.U2)("_voteFreeFights"), 0, 3) : 0) + ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject19 || (_templateObject19 = wanderer_taggedTemplateLiteral(["cursed magnifying glass"])))) ? (0,utils/* clamp */.uZ)(5 - (0,property/* get */.U2)("_voidFreeFights"), 0, 5) : 0) : 0) + (canWander(zone, "backup") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject20 || (_templateObject20 = wanderer_taggedTemplateLiteral(["backup camera"])))) ? (0,utils/* clamp */.uZ)(11 - (0,property/* get */.U2)("_backUpUses"), 0, 11) : 0);
 }
 
 function freeCrafts() {
-  return ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject20 || (_templateObject20 = wanderer_taggedTemplateLiteral(["Rapid Prototyping"])))) ? 5 - (0,property/* get */.U2)("_rapidPrototypingUsed") : 0) + ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject21 || (_templateObject21 = wanderer_taggedTemplateLiteral(["Expert Corner-Cutter"])))) ? 5 - (0,property/* get */.U2)("_expertCornerCutterUsed") : 0);
+  return ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject21 || (_templateObject21 = wanderer_taggedTemplateLiteral(["Rapid Prototyping"])))) ? 5 - (0,property/* get */.U2)("_rapidPrototypingUsed") : 0) + ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(_templateObject22 || (_templateObject22 = wanderer_taggedTemplateLiteral(["Expert Corner-Cutter"])))) ? 5 - (0,property/* get */.U2)("_expertCornerCutterUsed") : 0);
 }
 
 var WandererTarget = /*#__PURE__*/function () {
@@ -20443,8 +20460,8 @@ var WandererTarget = /*#__PURE__*/function () {
 
   _createClass(WandererTarget, [{
     key: "computeCachedValue",
-    value: function computeCachedValue() {
-      if (this.available() && this.prepareWanderer() && this.location()) {
+    value: function computeCachedValue(type) {
+      if (this.available(type) && this.prepareWanderer() && this.location()) {
         return {
           value: this.value(),
           target: this
@@ -20476,12 +20493,47 @@ function guzzlrAbandonQuest() {
   }
 }
 
+function averageYrValue(location) {
+  var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var monsters = Object.keys((0,external_kolmafia_.getLocationMonsters)(location)).map(m => (0,external_kolmafia_.toMonster)(m)).filter(m => !["LUCKY", "ULTRARARE", "BOSS"].some(s => m.attributes.includes(s)));
+
+  if (monsters.length === 0) {
+    return 0;
+  } else {
+    return (0,utils/* sumNumbers */.JD)(monsters.map(m => {
+      var items = (0,external_kolmafia_.itemDropsArray)(m).filter(drop => ["", "n"].includes(drop.type)).map(drop => (0,session/* garboValue */.sf)(drop.drop));
+      if (debug) (0,external_kolmafia_.print)("".concat(m, ": ").concat(items.join(",")));
+      return (0,utils/* sumNumbers */.JD)(items);
+    })) / monsters.length;
+  }
+}
+
+function bestYrLocation() {
+  var validLocations = external_kolmafia_.Location.all().filter(l => canWander(l, "yellow ray") && canAdventureOrUnlock(l)).map(location => {
+    return {
+      location: location,
+      value: averageYrValue(location)
+    };
+  }).filter(value => value.value > 0);
+
+  if (validLocations.length > 0) {
+    var res = validLocations.sort((a, b) => b.value - a.value)[0];
+    (0,external_kolmafia_.print)("Best YR Location: ".concat(res.location, " for value ").concat(res.value));
+    return res;
+  } else {
+    return {
+      location: template_string/* $location.none */.PG.none,
+      value: -1
+    };
+  }
+}
+
 var wandererTargets = [new WandererTarget("Guzzlr", () => have(), () => getLocation(), () => {
   var tier = getTier();
   var progressPerTurn = 100 / (10 - (0,property/* get */.U2)("_guzzlrDeliveries"));
 
   if (tier) {
-    var buckValue = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject22 || (_templateObject22 = wanderer_taggedTemplateLiteral(["Guzzlrbuck"]))));
+    var buckValue = (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject23 || (_templateObject23 = wanderer_taggedTemplateLiteral(["Guzzlrbuck"]))));
 
     switch (tier) {
       case "bronze":
@@ -20540,17 +20592,25 @@ var wandererTargets = [new WandererTarget("Guzzlr", () => have(), () => getLocat
   }
 
   return (0,lib/* have */.lf)(guzzlrBooze);
-}), // Elemental Airport Currency drops.
+}), new WandererTarget("Yellow Ray", type => type === "yellow ray", () => {
+  var bestLocation = bestYrLocation();
+
+  if (bestLocation.value > 0) {
+    return bestLocation.location;
+  } else {
+    return null;
+  }
+}, () => bestYrLocation().value), // Elemental Airport Currency drops.
 // TODO: Unknown drop rate, using 5% from a quick log search
 // The wiki appears to be wrong about the max coinspiracy drops
 // No reason to do fun funds as we're spending turns in barf
-new WandererTarget("Wal-Mart gift certificate", () => (0,src_lib/* realmAvailable */.e6)("cold") && (0,property/* get */.U2)("lovebugsUnlocked"), () => (0,template_string/* $location */.PG)(_templateObject23 || (_templateObject23 = wanderer_taggedTemplateLiteral(["VYKEA"]))), () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject24 || (_templateObject24 = wanderer_taggedTemplateLiteral(["Wal-Mart gift certificate"])))) * 0.05), new WandererTarget("Beach Buck", () => (0,src_lib/* realmAvailable */.e6)("sleaze") && (0,property/* get */.U2)("lovebugsUnlocked"), () => (0,template_string/* $location */.PG)(_templateObject25 || (_templateObject25 = wanderer_taggedTemplateLiteral(["The Fun-Guy Mansion"]))), () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject26 || (_templateObject26 = wanderer_taggedTemplateLiteral(["Beach Buck"])))) * 0.05), new WandererTarget("Coinspiracy", () => (0,src_lib/* realmAvailable */.e6)("spooky") && (0,property/* get */.U2)("lovebugsUnlocked"), () => (0,template_string/* $location */.PG)(_templateObject27 || (_templateObject27 = wanderer_taggedTemplateLiteral(["The Deep Dark Jungle"]))), () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject28 || (_templateObject28 = wanderer_taggedTemplateLiteral(["Coinspiracy"])))) * 0.05), // Default wanderer zone
+new WandererTarget("Wal-Mart gift certificate", () => (0,src_lib/* realmAvailable */.e6)("cold") && (0,property/* get */.U2)("lovebugsUnlocked"), () => (0,template_string/* $location */.PG)(_templateObject24 || (_templateObject24 = wanderer_taggedTemplateLiteral(["VYKEA"]))), () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject25 || (_templateObject25 = wanderer_taggedTemplateLiteral(["Wal-Mart gift certificate"])))) * 0.05), new WandererTarget("Beach Buck", () => (0,src_lib/* realmAvailable */.e6)("sleaze") && (0,property/* get */.U2)("lovebugsUnlocked"), () => (0,template_string/* $location */.PG)(_templateObject26 || (_templateObject26 = wanderer_taggedTemplateLiteral(["The Fun-Guy Mansion"]))), () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject27 || (_templateObject27 = wanderer_taggedTemplateLiteral(["Beach Buck"])))) * 0.05), new WandererTarget("Coinspiracy", () => (0,src_lib/* realmAvailable */.e6)("spooky") && (0,property/* get */.U2)("lovebugsUnlocked"), () => (0,template_string/* $location */.PG)(_templateObject28 || (_templateObject28 = wanderer_taggedTemplateLiteral(["The Deep Dark Jungle"]))), () => (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject29 || (_templateObject29 = wanderer_taggedTemplateLiteral(["Coinspiracy"])))) * 0.05), // Default wanderer zone
 new WandererTarget("Default", () => true, // can always do default
-() => (0,template_string/* $location */.PG)(_templateObject29 || (_templateObject29 = wanderer_taggedTemplateLiteral(["The Haunted Kitchen"]))), () => 1 // slightly lower value
+() => (0,template_string/* $location */.PG)(_templateObject30 || (_templateObject30 = wanderer_taggedTemplateLiteral(["The Haunted Kitchen"]))), () => 1 // slightly lower value
 )];
 function determineDraggableZoneAndEnsureAccess() {
   var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "wanderer";
-  var sortedTargets = wandererTargets.filter(target => target.available() && target.prepareWanderer()).map(target => target.computeCachedValue()).sort((a, b) => b.value - a.value);
+  var sortedTargets = wandererTargets.filter(target => target.available(type) && target.prepareWanderer()).map(target => target.computeCachedValue(type)).sort((a, b) => b.value - a.value);
   var best = sortedTargets.find(prospect => {
     var location = prospect.target.location();
     (0,external_kolmafia_.print)("Trying to place a wanderer using ".concat(prospect.target.name), src_lib/* HIGHLIGHT */.X2);
@@ -20559,13 +20619,13 @@ function determineDraggableZoneAndEnsureAccess() {
     target: wandererTargets[wandererTargets.length - 1],
     value: 1
   };
-  var location = best.target.location() || (0,template_string/* $location */.PG)(_templateObject30 || (_templateObject30 = wanderer_taggedTemplateLiteral(["The Haunted Kitchen"])));
+  var location = best.target.location() || (0,template_string/* $location */.PG)(_templateObject31 || (_templateObject31 = wanderer_taggedTemplateLiteral(["The Haunted Kitchen"])));
   (0,external_kolmafia_.print)("Wandering ".concat(best.target.name, " at ").concat(best.target.location(), " for expected value ").concat(best.value));
   var choices = unsupportedChoices.get(location);
   if (choices) src_lib/* propertyManager.setChoices */.kr.setChoices(choices);
   return location;
 }
-var unsupportedChoices = new Map([[(0,template_string/* $location */.PG)(_templateObject31 || (_templateObject31 = wanderer_taggedTemplateLiteral(["The Spooky Forest"]))), (_ref = {}, _defineProperty(_ref, 502, 2), _defineProperty(_ref, 505, 2), _ref)], [(0,template_string/* $location */.PG)(_templateObject32 || (_templateObject32 = wanderer_taggedTemplateLiteral(["Guano Junction"]))), _defineProperty({}, 1427, 1)], [(0,template_string/* $location */.PG)(_templateObject33 || (_templateObject33 = wanderer_taggedTemplateLiteral(["The Hidden Apartment Building"]))), (_ref3 = {}, _defineProperty(_ref3, 780, 6), _defineProperty(_ref3, 1578, 6), _ref3)], [(0,template_string/* $location */.PG)(_templateObject34 || (_templateObject34 = wanderer_taggedTemplateLiteral(["The Black Forest"]))), (_ref4 = {}, _defineProperty(_ref4, 923, 1), _defineProperty(_ref4, 924, 1), _ref4)], [(0,template_string/* $location */.PG)(_templateObject35 || (_templateObject35 = wanderer_taggedTemplateLiteral(["LavaCo\u2122 Lamp Factory"]))), _defineProperty({}, 1091, 9)], [(0,template_string/* $location */.PG)(_templateObject36 || (_templateObject36 = wanderer_taggedTemplateLiteral(["The Haunted Laboratory"]))), _defineProperty({}, 884, 6)], [(0,template_string/* $location */.PG)(_templateObject37 || (_templateObject37 = wanderer_taggedTemplateLiteral(["The Haunted Nursery"]))), _defineProperty({}, 885, 6)], [(0,template_string/* $location */.PG)(_templateObject38 || (_templateObject38 = wanderer_taggedTemplateLiteral(["The Haunted Storage Room"]))), _defineProperty({}, 886, 6)], [(0,template_string/* $location */.PG)(_templateObject39 || (_templateObject39 = wanderer_taggedTemplateLiteral(["The Hidden Park"]))), _defineProperty({}, 789, 6)], [(0,template_string/* $location */.PG)(_templateObject40 || (_templateObject40 = wanderer_taggedTemplateLiteral(["A Mob of Zeppelin Protesters"]))), (_ref10 = {}, _defineProperty(_ref10, 1432, 1), _defineProperty(_ref10, 857, 2), _ref10)], [(0,template_string/* $location */.PG)(_templateObject41 || (_templateObject41 = wanderer_taggedTemplateLiteral(["A-Boo Peak"]))), _defineProperty({}, 1430, 2)], [(0,template_string/* $location */.PG)(_templateObject42 || (_templateObject42 = wanderer_taggedTemplateLiteral(["Sloppy Seconds Diner"]))), _defineProperty({}, 919, 6)], [(0,template_string/* $location */.PG)(_templateObject43 || (_templateObject43 = wanderer_taggedTemplateLiteral(["VYKEA"]))), _defineProperty({}, 1115, 6)], [(0,template_string/* $location */.PG)(_templateObject44 || (_templateObject44 = wanderer_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Basement)"]))), (_ref14 = {}, _defineProperty(_ref14, 670, 4), _defineProperty(_ref14, 671, 4), _defineProperty(_ref14, 672, 1), _ref14)], [(0,template_string/* $location */.PG)(_templateObject45 || (_templateObject45 = wanderer_taggedTemplateLiteral(["The Haunted Bedroom"]))), (_ref15 = {}, _defineProperty(_ref15, 876, 1), _defineProperty(_ref15, 877, 1), _defineProperty(_ref15, 878, 1), _defineProperty(_ref15, 879, 2), _defineProperty(_ref15, 880, 2), _ref15)], [(0,template_string/* $location */.PG)(_templateObject46 || (_templateObject46 = wanderer_taggedTemplateLiteral(["The Copperhead Club"]))), _defineProperty({}, 855, 4)], [(0,template_string/* $location */.PG)(_templateObject47 || (_templateObject47 = wanderer_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Top Floor)"]))), (_ref17 = {}, _defineProperty(_ref17, 1431, 1), _defineProperty(_ref17, 677, 2), _ref17)], [(0,template_string/* $location */.PG)(_templateObject48 || (_templateObject48 = wanderer_taggedTemplateLiteral(["The Hidden Office Building"]))), _defineProperty({}, 786, 6)]]);
+var unsupportedChoices = new Map([[(0,template_string/* $location */.PG)(_templateObject32 || (_templateObject32 = wanderer_taggedTemplateLiteral(["The Spooky Forest"]))), (_ref = {}, _defineProperty(_ref, 502, 2), _defineProperty(_ref, 505, 2), _ref)], [(0,template_string/* $location */.PG)(_templateObject33 || (_templateObject33 = wanderer_taggedTemplateLiteral(["Guano Junction"]))), _defineProperty({}, 1427, 1)], [(0,template_string/* $location */.PG)(_templateObject34 || (_templateObject34 = wanderer_taggedTemplateLiteral(["The Hidden Apartment Building"]))), (_ref3 = {}, _defineProperty(_ref3, 780, 6), _defineProperty(_ref3, 1578, 6), _ref3)], [(0,template_string/* $location */.PG)(_templateObject35 || (_templateObject35 = wanderer_taggedTemplateLiteral(["The Black Forest"]))), (_ref4 = {}, _defineProperty(_ref4, 923, 1), _defineProperty(_ref4, 924, 1), _ref4)], [(0,template_string/* $location */.PG)(_templateObject36 || (_templateObject36 = wanderer_taggedTemplateLiteral(["LavaCo\u2122 Lamp Factory"]))), _defineProperty({}, 1091, 9)], [(0,template_string/* $location */.PG)(_templateObject37 || (_templateObject37 = wanderer_taggedTemplateLiteral(["The Haunted Laboratory"]))), _defineProperty({}, 884, 6)], [(0,template_string/* $location */.PG)(_templateObject38 || (_templateObject38 = wanderer_taggedTemplateLiteral(["The Haunted Nursery"]))), _defineProperty({}, 885, 6)], [(0,template_string/* $location */.PG)(_templateObject39 || (_templateObject39 = wanderer_taggedTemplateLiteral(["The Haunted Storage Room"]))), _defineProperty({}, 886, 6)], [(0,template_string/* $location */.PG)(_templateObject40 || (_templateObject40 = wanderer_taggedTemplateLiteral(["The Hidden Park"]))), _defineProperty({}, 789, 6)], [(0,template_string/* $location */.PG)(_templateObject41 || (_templateObject41 = wanderer_taggedTemplateLiteral(["A Mob of Zeppelin Protesters"]))), (_ref10 = {}, _defineProperty(_ref10, 1432, 1), _defineProperty(_ref10, 857, 2), _ref10)], [(0,template_string/* $location */.PG)(_templateObject42 || (_templateObject42 = wanderer_taggedTemplateLiteral(["A-Boo Peak"]))), _defineProperty({}, 1430, 2)], [(0,template_string/* $location */.PG)(_templateObject43 || (_templateObject43 = wanderer_taggedTemplateLiteral(["Sloppy Seconds Diner"]))), _defineProperty({}, 919, 6)], [(0,template_string/* $location */.PG)(_templateObject44 || (_templateObject44 = wanderer_taggedTemplateLiteral(["VYKEA"]))), _defineProperty({}, 1115, 6)], [(0,template_string/* $location */.PG)(_templateObject45 || (_templateObject45 = wanderer_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Basement)"]))), (_ref14 = {}, _defineProperty(_ref14, 670, 4), _defineProperty(_ref14, 671, 4), _defineProperty(_ref14, 672, 1), _ref14)], [(0,template_string/* $location */.PG)(_templateObject46 || (_templateObject46 = wanderer_taggedTemplateLiteral(["The Haunted Bedroom"]))), (_ref15 = {}, _defineProperty(_ref15, 876, 1), _defineProperty(_ref15, 877, 1), _defineProperty(_ref15, 878, 1), _defineProperty(_ref15, 879, 2), _defineProperty(_ref15, 880, 2), _ref15)], [(0,template_string/* $location */.PG)(_templateObject47 || (_templateObject47 = wanderer_taggedTemplateLiteral(["The Copperhead Club"]))), _defineProperty({}, 855, 4)], [(0,template_string/* $location */.PG)(_templateObject48 || (_templateObject48 = wanderer_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Top Floor)"]))), (_ref17 = {}, _defineProperty(_ref17, 1431, 1), _defineProperty(_ref17, 677, 2), _ref17)], [(0,template_string/* $location */.PG)(_templateObject49 || (_templateObject49 = wanderer_taggedTemplateLiteral(["The Hidden Office Building"]))), _defineProperty({}, 786, 6)]]);
 
 /***/ }),
 
