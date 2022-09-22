@@ -133,20 +133,18 @@ function unlock(loc: Location) {
 const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
 const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak`;
 function canWander(location: Location, type: DraggableFight) {
-  if (type === "backup" || type === "yellow ray") {
-    return (
-      !backupSkiplist.includes(location) &&
-      location.combatPercent >= 100 &&
-      !(
-        type === "yellow ray" &&
-        !globalOptions.ascending &&
-        location === $location`The Fun-Guy Mansion`
-      )
-    );
-  } else if (type === "wanderer") {
-    return !wandererSkiplist.includes(location) && location.wanderers;
+  switch (type) {
+    case "backup":
+      return !backupSkiplist.includes(location) && location.combatPercent >= 100;
+    case "yellow ray":
+      return (
+        !backupSkiplist.includes(location) &&
+        location.combatPercent >= 100 &&
+        !(!globalOptions.ascending && location === $location`The Fun-Guy Mansion`)
+      );
+    case "wanderer":
+      return !wandererSkiplist.includes(location) && location.wanderers;
   }
-  return false;
 }
 
 function wandererTurnsAvailableToday(zone: Location) {
