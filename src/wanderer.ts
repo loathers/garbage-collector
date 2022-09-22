@@ -134,7 +134,15 @@ const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Man
 const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak`;
 function canWander(location: Location, type: DraggableFight) {
   if (type === "backup" || type === "yellow ray") {
-    return !backupSkiplist.includes(location) && location.combatPercent >= 100;
+    return (
+      !backupSkiplist.includes(location) &&
+      location.combatPercent >= 100 &&
+      !(
+        type === "yellow ray" &&
+        !globalOptions.ascending &&
+        location === $location`The Fun-Guy Mansion`
+      )
+    );
   } else if (type === "wanderer") {
     return !wandererSkiplist.includes(location) && location.wanderers;
   }
@@ -222,7 +230,7 @@ function guzzlrAbandonQuest() {
   }
 }
 
-export function averageYrValue(location: Location, debug = false) {
+function averageYrValue(location: Location, debug = false) {
   const monsters = Object.keys(getLocationMonsters(location))
     .map((m) => toMonster(m))
     .filter((m) => !["LUCKY", "ULTRARARE", "BOSS"].some((s) => m.attributes.includes(s)));
@@ -237,9 +245,8 @@ export function averageYrValue(location: Location, debug = false) {
             .filter((drop) => ["", "n"].includes(drop.type))
             .map((drop) => garboValue(drop.drop));
 
-          if (debug) {
-            print(`${m}: ${items.join(",")}`);
-          }
+          if (debug) print(`${m}: ${items.join(",")}`);
+
           return sumNumbers(items);
         })
       ) / monsters.length
@@ -247,16 +254,15 @@ export function averageYrValue(location: Location, debug = false) {
   }
 }
 
-export function bestYrLocation(): { location: Location; value: number } {
+function bestYrLocation(): { location: Location; value: number } {
   const validLocations = Location.all()
-    .filter(canAdventureOrUnlock)
-    .filter((l) => canWander(l, "yellow ray"))
+    .filter((l) => canWander(l, "yellow ray") && canAdventureOrUnlock(l))
     .map((location) => {
       return { location, value: averageYrValue(location) };
     })
     .filter((value) => value.value > 0);
   if (validLocations.length > 0) {
-    const res = validLocations.sort((a, b) => b.value - a.value)[3];
+    const res = validLocations.sort((a, b) => b.value - a.value)[0];
     print(`Best YR Location: ${res.location} for value ${res.value}`);
     return res;
   } else {
