@@ -137,6 +137,8 @@ function canWander(location: Location, type: DraggableFight) {
     case "backup":
       return !backupSkiplist.includes(location) && location.combatPercent >= 100;
     case "yellow ray":
+      // Fun-guy mansion currently lacks mafia tracking, and eventually becomes immune to insta-kills
+      // Watch this space.
       return (
         !backupSkiplist.includes(location) &&
         location.combatPercent >= 100 &&
