@@ -24,7 +24,6 @@ import {
 } from "kolmafia";
 import {
   $effect,
-  $familiar,
   $item,
   $items,
   $location,
@@ -52,7 +51,6 @@ import {
   globalOptions,
   kramcoGuaranteed,
   questStep,
-  realmAvailable,
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
@@ -288,22 +286,15 @@ const turns: AdventureAction[] = [
       !have($effect`Everything Looks Yellow`) &&
       romanticMonsterImpossible(),
     execute: () => {
-      const canJellyfish = have($familiar`Space Jellyfish`) && realmAvailable("stench");
-      const familiarChoice = freeFightFamiliar({
-        location: canJellyfish ? $location`Pirates of the Garbage Barges` : $location`none`,
-      });
-      // We want a 100% combat zone.
-      const locationChoice =
-        familiarChoice === $familiar`Space Jellyfish`
-          ? $location`Pirates of the Garbage Barges`
-          : determineDraggableZoneAndEnsureAccess("yellow ray");
-      useFamiliar(familiarChoice);
+      const location = determineDraggableZoneAndEnsureAccess("yellow ray");
+      const familiar = freeFightFamiliar({ location });
+      useFamiliar(familiar);
       freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
       cliExecute("parka dilophosaur");
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .skill($skill`Spit jurassic acid`);
-      adventureMacroAuto(locationChoice, macro);
+      adventureMacroAuto(location, macro);
       return have($effect`Everything Looks Yellow`);
     },
     spendsTurn: false,
