@@ -929,7 +929,11 @@ export function checkBarfQuest(): void {
   return;
 }
 
+let attemptCompletingBarfQuest = true;
 export function completeBarfQuest(): void {
+  if (!attemptCompletingBarfQuest) return;
+  attemptCompletingBarfQuest = false;
+
   if (get("questEStGiveMeFuel") === "started") {
     const globuleCosts = retrievePrice($item`toxic globule`, 20);
     if (globuleCosts < 3 * garboValue($item`FunFunds™`)) {
