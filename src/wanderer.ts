@@ -142,7 +142,7 @@ function canWander(location: Location, type: DraggableFight) {
       return (
         !backupSkiplist.includes(location) &&
         location.combatPercent >= 100 &&
-        !(!globalOptions.ascending && location === $location`The Fun-Guy Mansion`)
+        !(location === $location`The Fun-Guy Mansion` && get("funGuyMansionKills", 0) >= 100)
       );
     case "wanderer":
       return !wandererSkiplist.includes(location) && location.wanderers;
