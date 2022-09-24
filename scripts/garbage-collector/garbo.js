@@ -23873,7 +23873,10 @@ function checkBarfQuest() {
 
   return;
 }
+var attemptCompletingBarfQuest = true;
 function completeBarfQuest() {
+  if (!attemptCompletingBarfQuest) return;
+
   if ((0,property/* get */.U2)("questEStGiveMeFuel") === "started") {
     var globuleCosts = (0,external_kolmafia_.retrievePrice)((0,template_string/* $item */.xr)(dailies_templateObject139 || (dailies_templateObject139 = dailies_taggedTemplateLiteral(["toxic globule"]))), 20);
 
@@ -23881,6 +23884,7 @@ function completeBarfQuest() {
       (0,external_kolmafia_.print)("The cost of 20 toxic globules (".concat(globuleCosts, ") is less than the profits expected from 3 FunFunds\u2122 (").concat(3 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailies_templateObject141 || (dailies_templateObject141 = dailies_taggedTemplateLiteral(["FunFunds\u2122"])))), "). Proceeding to acquire toxic globules."), "green");
       (0,acquire/* acquire */.u)(20, (0,template_string/* $item */.xr)(dailies_templateObject142 || (dailies_templateObject142 = dailies_taggedTemplateLiteral(["toxic globule"]))), 1.5 * globuleCosts / 20);
     } else {
+      attemptCompletingBarfQuest = false;
       (0,external_kolmafia_.print)("The cost of 20 toxic globules (".concat(globuleCosts, ") exceeds the profits expected from 3 FunFunds\u2122 (").concat(3 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailies_templateObject143 || (dailies_templateObject143 = dailies_taggedTemplateLiteral(["FunFunds\u2122"])))), "). Consider farming some globules yourself."), "red");
     }
   }
