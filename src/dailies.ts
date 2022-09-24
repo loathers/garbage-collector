@@ -932,7 +932,6 @@ export function checkBarfQuest(): void {
 let attemptCompletingBarfQuest = true;
 export function completeBarfQuest(): void {
   if (!attemptCompletingBarfQuest) return;
-  attemptCompletingBarfQuest = false;
 
   if (get("questEStGiveMeFuel") === "started") {
     const globuleCosts = retrievePrice($item`toxic globule`, 20);
@@ -945,6 +944,7 @@ export function completeBarfQuest(): void {
       );
       acquire(20, $item`toxic globule`, (1.5 * globuleCosts) / 20);
     } else {
+      attemptCompletingBarfQuest = false;
       print(
         `The cost of 20 toxic globules (${globuleCosts}) exceeds the profits expected from 3 FunFunds™ (${
           3 * garboValue($item`FunFunds™`)
