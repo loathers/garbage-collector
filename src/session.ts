@@ -157,7 +157,7 @@ function printSession(session: Session): void {
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
   if (globalOptions.quickMode) {
-    print(`Quick mode was enabled, results may be less accurate than normal.`);
+    print("Quick mode was enabled, results may be less accurate than normal.");
   }
 }
 
@@ -240,5 +240,7 @@ export function printGarboSession(): void {
 
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
-  print("Quick mode was enabled, results may be less accurate than normal.");
+  if (globalOptions.quickMode) {
+    print("Quick mode was enabled, results may be less accurate than normal.");
+  }
 }
