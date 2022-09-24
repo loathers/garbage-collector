@@ -1543,7 +1543,7 @@ const freeRunFightSources = [
         1209: 2, // enter the gallery at Upscale Midnight
         1214: 1, // get High-End ginger wine
       });
-      const best = bestConsumable("booze", $items`high-end ginger wine, astral pilsner`);
+      const best = bestConsumable("booze", true, $items`high-end ginger wine, astral pilsner`);
       const gingerWineValue =
         (0.5 * 30 * (baseMeat + 750) +
           getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /

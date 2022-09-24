@@ -381,8 +381,9 @@ function menu(): MenuItem<Note>[] {
 
 export function bestConsumable(
   organType: "booze" | "food" | "spleen",
+  levelRestrict = true,
   restrictList?: Item | Item[],
-  maxSize?: number
+  maxSize?: number,
 ): { edible: Item; value: number } {
   const fullMenu = potionMenu(menu(), 0, 0);
   let organMenu = fullMenu.filter((menuItem) => itemType(menuItem.item) === organType);
@@ -394,7 +395,10 @@ export function bestConsumable(
     }
   }
   if (maxSize) {
-    organMenu = organMenu.filter((MenuItem) => MenuItem.size <= maxSize);
+    organMenu = organMenu.filter((menuItem) => menuItem.size <= maxSize);
+  }
+  if (levelRestrict) {
+    organMenu = organMenu.filter((menuItem) => menuItem.item.levelreq <= myLevel());
   }
   const organList = organMenu.map((consumable) => {
     const edible = consumable.item;
