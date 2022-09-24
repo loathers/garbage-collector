@@ -65,6 +65,8 @@ import {
 } from "./outfit";
 import postCombatActions from "./post";
 import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
+
+const sober = () => myInebriety() <= inebrietyLimit();
 const embezzler = $monster`Knob Goblin Embezzler`;
 
 type EmbezzlerPrepOptions = {
@@ -87,7 +89,7 @@ function logEmbezzler(encountertype: string) {
 }
 
 function shouldGoUnderwater(): boolean {
-  if (myInebriety() > inebrietyLimit()) return false;
+  if (!sober()) return false;
   if (myLevel() < 11) return false;
 
   if (questStep("questS01OldGuy") === -1) {
@@ -349,8 +351,7 @@ const turns: AdventureAction[] = [
 ];
 
 function runTurn() {
-  const isSober = myInebriety() <= inebrietyLimit();
-  const validSobrieties = [Sobriety.EITHER, isSober ? Sobriety.SOBER : Sobriety.DRUNK];
+  const validSobrieties = [Sobriety.EITHER, sober() ? Sobriety.SOBER : Sobriety.DRUNK];
   const turn = turns.find((t) => t.available() && validSobrieties.includes(t.sobriety));
   if (!turn) throw new Error("Somehow failed to find anything to do!");
   const expectToSpendATurn =
@@ -367,8 +368,7 @@ function runTurn() {
     const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
     if (foughtAnEmbezzler) logEmbezzler(turn.name);
 
-    const needTurns =
-      myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit();
+    const needTurns = myAdventures() === 1 + globalOptions.saveTurns && sober();
     if (needTurns) generateTurnsAtEndOfDay();
   }
 
