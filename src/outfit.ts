@@ -176,53 +176,55 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
   const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
 
-  if (myInebriety() > inebrietyLimit()) {
-    forceEquip.push($item`Drunkula's wineglass`);
-  } else if (!embezzlerUp) {
-    if (
-      have($item`protonic accelerator pack`) &&
-      get("questPAGhost") === "unstarted" &&
-      get("nextParanormalActivity") <= totalTurnsPlayed() &&
-      !preventEquip.includes($item`protonic accelerator pack`)
-    ) {
-      forceEquip.push($item`protonic accelerator pack`);
-    }
-
-    if (have($item`mafia pointer finger ring`)) {
-      if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
-        forceEquip.push($item`mafia pointer finger ring`);
-      } else if (have($item`Operation Patriot Shield`) && myClass() === $class`Turtle Tamer`) {
-        forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
-      } else if (have($item`haiku katana`)) {
-        forceEquip.push(...$items`haiku katana, mafia pointer finger ring`);
-      } else if (
-        have($item`unwrapped knock-off retro superhero cape`) &&
-        forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
+  if (!embezzlerUp) {
+    if (myInebriety() > inebrietyLimit()) {
+      forceEquip.push($item`Drunkula's wineglass`);
+    } else {
+      if (
+        have($item`protonic accelerator pack`) &&
+        get("questPAGhost") === "unstarted" &&
+        get("nextParanormalActivity") <= totalTurnsPlayed() &&
+        !preventEquip.includes($item`protonic accelerator pack`)
       ) {
-        const gun =
-          have($item`love`) && meatFamiliar() === $familiar`Robortender`
-            ? $item`love`
-            : $item`ice nine`;
-        if (gun === $item`ice nine` && !have($item`ice nine`)) {
-          cliExecute("refresh inventory");
-          retrieveItem($item`ice nine`);
-        }
-        forceEquip.push(
-          gun,
-          ...$items`unwrapped knock-off retro superhero cape, mafia pointer finger ring`
-        );
-      } else if (have($item`Operation Patriot Shield`)) {
-        forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+        forceEquip.push($item`protonic accelerator pack`);
       }
-    }
 
-    if (
-      getKramcoWandererChance() > 0.05 &&
-      have($item`Kramco Sausage-o-Matic™`) &&
-      forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      !preventEquip.includes($item`Kramco Sausage-o-Matic™`)
-    ) {
-      forceEquip.push($item`Kramco Sausage-o-Matic™`);
+      if (have($item`mafia pointer finger ring`)) {
+        if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
+          forceEquip.push($item`mafia pointer finger ring`);
+        } else if (have($item`Operation Patriot Shield`) && myClass() === $class`Turtle Tamer`) {
+          forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+        } else if (have($item`haiku katana`)) {
+          forceEquip.push(...$items`haiku katana, mafia pointer finger ring`);
+        } else if (
+          have($item`unwrapped knock-off retro superhero cape`) &&
+          forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
+        ) {
+          const gun =
+            have($item`love`) && meatFamiliar() === $familiar`Robortender`
+              ? $item`love`
+              : $item`ice nine`;
+          if (gun === $item`ice nine` && !have($item`ice nine`)) {
+            cliExecute("refresh inventory");
+            retrieveItem($item`ice nine`);
+          }
+          forceEquip.push(
+            gun,
+            ...$items`unwrapped knock-off retro superhero cape, mafia pointer finger ring`
+          );
+        } else if (have($item`Operation Patriot Shield`)) {
+          forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+        }
+      }
+
+      if (
+        getKramcoWandererChance() > 0.05 &&
+        have($item`Kramco Sausage-o-Matic™`) &&
+        forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+        !preventEquip.includes($item`Kramco Sausage-o-Matic™`)
+      ) {
+        forceEquip.push($item`Kramco Sausage-o-Matic™`);
+      }
     }
   }
 
