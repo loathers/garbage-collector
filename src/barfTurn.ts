@@ -64,9 +64,15 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
-import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
+import {
+  determineDraggableZoneAndEnsureAccess,
+  digitizedMonstersRemaining,
+  DraggableFight,
+} from "./wanderer";
 
 const sober = () => myInebriety() <= inebrietyLimit();
+const noWineglassZone = (type: DraggableFight = "wanderer") =>
+  sober() ? determineDraggableZoneAndEnsureAccess(type) : $location`Drunken Stupor`;
 const embezzler = $monster`Knob Goblin Embezzler`;
 
 type EmbezzlerPrepOptions = {
@@ -159,7 +165,10 @@ const turns: AdventureAction[] = [
       if (steveRoom && canAdventure(steveRoom) && steveRoom !== ghostLocation) {
         const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
         // Technically drops 500 meat, but that's close enough for me.
-        if (fightingSteve) embezzlerPrep();
+        const drunkRequirement = sober()
+          ? undefined
+          : new Requirement([], { forceEquip: $items`Drunkula's wineglass` });
+        if (fightingSteve) embezzlerPrep({ requirements: drunkRequirement });
         const plan = steveAdventures.get(steveRoom);
         if (plan) {
           withMacro(
@@ -202,6 +211,8 @@ const turns: AdventureAction[] = [
       return get("questPAGhost") === "unstarted";
     },
     spendsTurn: false,
+    // Ghost fights are currently hard
+    // and they resist physical attacks!
     sobriety: Sobriety.SOBER,
   },
   {
@@ -212,12 +223,24 @@ const turns: AdventureAction[] = [
       get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
       get("_voteFreeFights") < 3,
     execute: () => {
-      freeFightPrep(new Requirement([], { forceEquip: $items`"I Voted!" sticker` }));
-      adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+      const isGhost = get("_voteMonster") === $monster`angry ghost`;
+
+      freeFightPrep(
+        new Requirement([], {
+          forceEquip: [
+            $item`"I Voted!" sticker`,
+            ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
+          ],
+        })
+      );
+      adventureMacroAuto(
+        isGhost ? noWineglassZone() : determineDraggableZoneAndEnsureAccess(),
+        Macro.basicCombat()
+      );
       return get("lastVoteMonsterTurn") === totalTurnsPlayed();
     },
     spendsTurn: false,
-    sobriety: get("_voteMonster") === $monster`angry ghost` ? Sobriety.SOBER : Sobriety.EITHER,
+    sobriety: Sobriety.EITHER,
   },
   {
     name: "Digitize Wanderer",
@@ -229,9 +252,7 @@ const turns: AdventureAction[] = [
 
       const underwater = isEmbezzler && shouldGoUnderwater();
 
-      const targetLocation = underwater
-        ? $location`The Briny Deeps`
-        : determineDraggableZoneAndEnsureAccess();
+      const targetLocation = underwater ? $location`The Briny Deeps` : noWineglassZone();
 
       if (underwater) retrieveItem($item`pulled green taffy`);
 
@@ -250,11 +271,11 @@ const turns: AdventureAction[] = [
     available: () => kramcoGuaranteed(),
     execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
-      adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+      adventureMacroAuto(noWineglassZone(), Macro.basicCombat());
       return !kramcoGuaranteed();
     },
     spendsTurn: false,
-    sobriety: Sobriety.SOBER,
+    sobriety: Sobriety.EITHER,
   },
   {
     name: "Void Monster",
@@ -264,11 +285,11 @@ const turns: AdventureAction[] = [
       get("_voidFreeFights") < 5,
     execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
-      adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+      adventureMacroAuto(noWineglassZone(), Macro.basicCombat());
       return get("cursedMagnifyingGlassCount") === 0;
     },
     spendsTurn: false,
-    sobriety: Sobriety.SOBER,
+    sobriety: Sobriety.EITHER,
   },
   {
     name: "Envyfish Egg",
