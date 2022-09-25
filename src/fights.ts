@@ -518,7 +518,10 @@ type FreeFightOptions = {
   requirements?: () => Requirement[];
   noncombat?: () => boolean;
   effects?: () => Effect[];
-  // True if the macro used by this freeFight can be overridden without causing harm
+
+  // Tells us if this fight can reasonably be expected to do familiar
+  // actions like meatifying matter, or crimbo shrub red raying.
+  // Defaults to true.
   macroDoesFamiliarActions?: boolean;
 };
 
