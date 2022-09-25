@@ -349,6 +349,19 @@ function bestWitchessPiece() {
   return witchessPieces.sort((a, b) => garboValue(b.drop) - garboValue(a.drop))[0].piece;
 }
 
+function pygmyOptions(forceEquip: Item[] = []) {
+  return {
+    requirements: () => [
+      new Requirement([], {
+        forceEquip,
+        preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
+        bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
+      }),
+    ],
+    macroAllowsFamiliarActions: false,
+  };
+}
+
 export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
 
@@ -505,8 +518,11 @@ type FreeFightOptions = {
   requirements?: () => Requirement[];
   noncombat?: () => boolean;
   effects?: () => Effect[];
-  // True if the macro used by this freeFight can be overridden without causing harm
-  canOverrideMacro?: boolean;
+
+  // Tells us if this fight can reasonably be expected to do familiar
+  // actions like meatifying matter, or crimbo shrub red raying.
+  // Defaults to true.
+  macroAllowsFamiliarActions?: boolean;
 };
 
 class FreeFight {
@@ -530,7 +546,7 @@ class FreeFight {
   pickFamiliar(): Familiar {
     const mandatory = this.options.familiar?.();
     if (mandatory) return mandatory;
-    return freeFightFamiliar({ canChooseMacro: this.options.canOverrideMacro });
+    return freeFightFamiliar({ canChooseMacro: this.options.macroAllowsFamiliarActions });
   }
 
   isAvailable(): boolean {
@@ -571,7 +587,7 @@ class FreeRunFight extends FreeFight {
     options: FreeFightOptions = {},
     freeRunPicker: FindActionSourceConstraints = {}
   ) {
-    super(available, () => null, false, options);
+    super(available, () => null, false, { ...options, macroAllowsFamiliarActions: false });
     this.freeRun = run;
     this.constraints = freeRunPicker;
   }
@@ -672,7 +688,7 @@ const freeFightSources = [
     },
     false,
     {
-      canOverrideMacro: true,
+      macroAllowsFamiliarActions: true,
     }
   ),
 
@@ -691,7 +707,6 @@ const freeFightSources = [
         )
           ? $familiar`Robortender`
           : null,
-      canOverrideMacro: true,
     }
   ),
 
@@ -723,8 +738,7 @@ const freeFightSources = [
       useSkill($skill`Evoke Eldritch Horror`);
       if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
     },
-    false,
-    { canOverrideMacro: true }
+    false
   ),
 
   new FreeFight(
@@ -733,7 +747,6 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`lynyrd snare`),
-      canOverrideMacro: true,
     }
   ),
 
@@ -783,6 +796,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement(["1000 mainstat"], {})],
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -831,7 +845,8 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
-      canOverrideMacro: true,
+      // They just die too dang quickly
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -904,6 +919,7 @@ const freeFightSources = [
       },
       familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
       effects: () => $effects`Transpondent`,
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -922,14 +938,7 @@ const freeFightSources = [
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
-    }
+    {}
   ),
 
   // 10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
@@ -941,15 +950,7 @@ const freeFightSources = [
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
-    }
+    pygmyOptions($items`miniature crystal ball`.filter((item) => have(item)))
   ),
   // 11th pygmy fight if we lack a saber
   new FreeFight(
@@ -963,14 +964,7 @@ const freeFightSources = [
       adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
-    }
+    pygmyOptions()
   ),
 
   // 11th+ pygmy fight if we have a saber- saber friends
@@ -1008,15 +1002,7 @@ const freeFightSources = [
       }
     },
     false,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`Fourth of May Cosplay Saber`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-    }
+    pygmyOptions($items`Fourth of May Cosplay Saber`)
   ),
 
   // Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
@@ -1034,15 +1020,7 @@ const freeFightSources = [
       );
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-    }
+    pygmyOptions($items`miniature crystal ball`.filter((item) => have(item)))
   ),
 
   new FreeFight(
@@ -1061,14 +1039,7 @@ const freeFightSources = [
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-    }
+    pygmyOptions()
   ),
 
   new FreeFight(
@@ -1081,7 +1052,6 @@ const freeFightSources = [
           forceEquip: $items`Kramco Sausage-o-Matic™`,
         }),
       ],
-      canOverrideMacro: true,
     }
   ),
 
@@ -1093,7 +1063,10 @@ const freeFightSources = [
     () => {
       adventureMacro($location`The Red Zeppelin`, Macro.item($item`glark cable`));
     },
-    true
+    true,
+    {
+      macroAllowsFamiliarActions: false,
+    }
   ),
 
   // Mushroom garden
@@ -1174,7 +1147,6 @@ const freeFightSources = [
           ]),
         }),
       ],
-      canOverrideMacro: true,
     }
   ),
 
@@ -1226,8 +1198,7 @@ const freeFightSources = [
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
     () => Witchess.fightPiece(bestWitchessPiece()),
-    true,
-    { canOverrideMacro: true }
+    true
   ),
 
   new FreeFight(
@@ -1239,8 +1210,7 @@ const freeFightSources = [
       }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
-    false,
-    { canOverrideMacro: true }
+    false
   ),
 
   new FreeFight(
@@ -1268,7 +1238,6 @@ const freeFightSources = [
           }
         ),
       ],
-      canOverrideMacro: true,
     }
   ),
 
@@ -1281,7 +1250,6 @@ const freeFightSources = [
     },
     true,
     {
-      canOverrideMacro: true,
       familiar: () => $familiars`Robortender`.find(have) ?? null,
     }
   ),
@@ -1302,6 +1270,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -1327,6 +1296,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
+      macroAllowsFamiliarActions: false,
     }
   ),
 ];
