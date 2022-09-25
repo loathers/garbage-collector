@@ -571,7 +571,7 @@ class FreeRunFight extends FreeFight {
     options: FreeFightOptions = {},
     freeRunPicker: FindActionSourceConstraints = {}
   ) {
-    super(available, () => null, false, options);
+    super(available, () => null, false, {...options,       macroDoesFamiliarActions: false,});
     this.freeRun = run;
     this.constraints = freeRunPicker;
   }
@@ -659,7 +659,6 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`protonic accelerator pack` })],
-      macroDoesFamiliarActions: true,
     }
   ),
   new FreeFight(
@@ -692,7 +691,6 @@ const freeFightSources = [
         )
           ? $familiar`Robortender`
           : null,
-      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -704,10 +702,7 @@ const freeFightSources = [
       if (!handlingChoice()) throw "No choice?";
       runChoice(haveEldritchEssence ? 2 : 1);
     },
-    false,
-    {
-      macroDoesFamiliarActions: true,
-    }
+    false
   ),
 
   new FreeFight(
@@ -727,8 +722,7 @@ const freeFightSources = [
       useSkill($skill`Evoke Eldritch Horror`);
       if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
     },
-    false,
-    { macroDoesFamiliarActions: true }
+    false
   ),
 
   new FreeFight(
@@ -737,7 +731,6 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`lynyrd snare`),
-      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -910,6 +903,7 @@ const freeFightSources = [
       },
       familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
       effects: () => $effects`Transpondent`,
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -935,6 +929,7 @@ const freeFightSources = [
           bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
         }),
       ],
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -955,6 +950,7 @@ const freeFightSources = [
           bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
         }),
       ],
+      macroDoesFamiliarActions: false,
     }
   ),
   // 11th pygmy fight if we lack a saber
@@ -976,6 +972,7 @@ const freeFightSources = [
           bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
         }),
       ],
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -1022,6 +1019,7 @@ const freeFightSources = [
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -1048,6 +1046,7 @@ const freeFightSources = [
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -1074,6 +1073,7 @@ const freeFightSources = [
           preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         }),
       ],
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -1087,7 +1087,6 @@ const freeFightSources = [
           forceEquip: $items`Kramco Sausage-o-Matic™`,
         }),
       ],
-      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -1099,7 +1098,10 @@ const freeFightSources = [
     () => {
       adventureMacro($location`The Red Zeppelin`, Macro.item($item`glark cable`));
     },
-    true
+    true,
+    {
+      macroDoesFamiliarActions: false,
+    }
   ),
 
   // Mushroom garden
@@ -1180,7 +1182,6 @@ const freeFightSources = [
           ]),
         }),
       ],
-      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -1232,8 +1233,7 @@ const freeFightSources = [
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
     () => Witchess.fightPiece(bestWitchessPiece()),
-    true,
-    { macroDoesFamiliarActions: true }
+    true
   ),
 
   new FreeFight(
@@ -1245,8 +1245,7 @@ const freeFightSources = [
       }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
-    false,
-    { macroDoesFamiliarActions: true }
+    false
   ),
 
   new FreeFight(
@@ -1274,7 +1273,6 @@ const freeFightSources = [
           }
         ),
       ],
-      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -1287,7 +1285,6 @@ const freeFightSources = [
     },
     true,
     {
-      macroDoesFamiliarActions: true,
       familiar: () => $familiars`Robortender`.find(have) ?? null,
     }
   ),
@@ -1308,6 +1305,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -1333,6 +1331,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
+      macroDoesFamiliarActions: false,
     }
   ),
 ];
