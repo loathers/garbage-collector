@@ -248,6 +248,14 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
               use(1, $item`distention pill`);
             }
           }
+          if (entry.drunkenness > 0) {
+            while (get("sweat") >= 25 && get("_sweatOutSomeBoozeUsed") < 3 && myInebriety() > 0) {
+              useSkill($skill`Sweat Out Some Booze`);
+            }
+            if (!get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`)) {
+              use(1, $item`synthetic dog hair pill`);
+            }
+          }
           entry.action(1);
         } else {
           throw new Error(`Could not find ${name} in dietArray`);
@@ -372,6 +380,13 @@ function yachtzeeDietScheduler(
   let fullness = myFullness();
   let drunkenness = myInebriety();
   let spleenUse = mySpleenUse();
+  let sweatOutsAvailable = clamp(
+    Math.floor(get("sweat") / 25),
+    0,
+    3 - get("_sweatOutSomeBoozeUsed")
+  );
+  let syntheticPillsAvailable =
+    !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
   for (const entry of dietSchedule) {
     fullness += entry.quantity * entry.fullness;
     drunkenness += entry.quantity * entry.drunkenness;
@@ -395,6 +410,14 @@ function yachtzeeDietScheduler(
         } to ${spleenUse}/${spleenLimit()}`
       );
     }
+    while (drunkenness > 0 && sweatOutsAvailable > 0) {
+      drunkenness -= 1;
+      sweatOutsAvailable -= 1;
+    }
+    if (drunkenness > 0 && syntheticPillsAvailable > 0) {
+      drunkenness -= 1;
+      syntheticPillsAvailable -= 1;
+    }
   }
 
   return dietSchedule;
@@ -406,7 +429,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const havePYECCharge = pyecAvailable();
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
-  const haveDogHairPill = !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`);
+  const sweatOutsAvailable = clamp(
+    Math.floor(get("sweat") / 25),
+    0,
+    3 - get("_sweatOutSomeBoozeUsed")
+  );
+  const syntheticPillsAvailable =
+    !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   const filters = 3 - get("currentMojoFilters");
@@ -421,10 +450,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       : Math.max(0, Math.round((estimatedTurns() - haveEffect($effect`Synthesis: Greed`)) / 30));
   const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
   const inebrietyAvailable =
-    inebrietyLimit() -
-    myInebriety() +
-    toInt(haveDogHairPill) +
-    (3 - get("_sweatOutSomeBoozeUsed", 0));
+    inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable;
   const spleenAvailable = currentSpleenLeft + filters;
   const organsAvailable = fullnessAvailable + inebrietyAvailable + spleenAvailable;
 
@@ -447,7 +473,9 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Plan our diet
 
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
-  const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
+  const pickleJuice = Math.floor(
+    (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5
+  );
 
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
   const synthTurnsWanted = reqSynthTurns - haveEffect($effect`Synthesis: Greed`);

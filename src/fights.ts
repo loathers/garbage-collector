@@ -1877,8 +1877,9 @@ const freeKillSources = [
   ),
 ];
 
-export function freeFights(): void {
+export function freeRunFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
+  if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
   if (
     get("beGregariousFightsLeft") > 0 &&
     get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
@@ -1903,6 +1904,24 @@ export function freeFights(): void {
       freeRunFightSource.runAll();
     }
   });
+}
+
+export function freeFights(): void {
+  if (myInebriety() > inebrietyLimit()) return;
+  if (
+    get("beGregariousFightsLeft") > 0 &&
+    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+  ) {
+    return;
+  }
+  visitUrl("place.php?whichplace=town_wrong");
+
+  propertyManager.setChoices({
+    1387: 2, // "You will go find two friends and meet me here."
+    1324: 5, // Fight a random partier
+  });
+
+  freeRunFights();
 
   killRobortCreaturesForFree();
 
