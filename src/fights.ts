@@ -349,6 +349,19 @@ function bestWitchessPiece() {
   return witchessPieces.sort((a, b) => garboValue(b.drop) - garboValue(a.drop))[0].piece;
 }
 
+function pygmyOptions(forceEquip: Item[] = []) {
+  return {
+    requirements: () => [
+      new Requirement([], {
+        forceEquip,
+        preventEquip:$items`Staff of Queso Escusado, stinky cheese sword`,
+        bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
+      }),
+    ],
+    macroDoesFamiliarActions: false,
+  }
+}
+
 export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
 
@@ -923,13 +936,7 @@ const freeFightSources = [
     },
     true,
     {
-      requirements: () => [
-        new Requirement([], {
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
-      macroDoesFamiliarActions: false,
+
     }
   ),
 
@@ -942,16 +949,7 @@ const freeFightSources = [
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
-      macroDoesFamiliarActions: false,
-    }
+    pygmyOptions($items`miniature crystal ball`.filter((item) => have(item)))
   ),
   // 11th pygmy fight if we lack a saber
   new FreeFight(
@@ -965,15 +963,7 @@ const freeFightSources = [
       adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
-      macroDoesFamiliarActions: false,
-    }
+pygmyOptions()
   ),
 
   // 11th+ pygmy fight if we have a saber- saber friends
@@ -1011,16 +1001,7 @@ const freeFightSources = [
       }
     },
     false,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`Fourth of May Cosplay Saber`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-      macroDoesFamiliarActions: false,
-    }
+pygmyOptions($items`Fourth of May Cosplay Saber`)
   ),
 
   // Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
@@ -1038,16 +1019,7 @@ const freeFightSources = [
       );
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-      macroDoesFamiliarActions: false,
-    }
+    pygmyOptions($items`miniature crystal ball`.filter((item) => have(item)))
   ),
 
   new FreeFight(
@@ -1066,15 +1038,7 @@ const freeFightSources = [
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-      macroDoesFamiliarActions: false,
-    }
+pygmyOptions()
   ),
 
   new FreeFight(
