@@ -18,6 +18,7 @@ import {
   meatDropModifier,
   Monster,
   mpCost,
+  myFamiliar,
   myHp,
   myInebriety,
   myMaxhp,
@@ -42,6 +43,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $location,
   $monster,
@@ -539,3 +541,7 @@ export const romanticMonsterImpossible = (): boolean =>
   (Counter.get("Romantic Monster Window begin") > 0 &&
     Counter.get("Romantic Monster window begin") !== Infinity) ||
   get("_romanticFightsLeft") <= 0;
+
+export function sober(): boolean {
+  return myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
+}

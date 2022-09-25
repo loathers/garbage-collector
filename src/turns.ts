@@ -12,6 +12,10 @@ import { usingThumbRing } from "./dropsgear";
 import { embezzlerCount } from "./embezzler";
 import { ESTIMATED_OVERDRUNK_TURNS, globalOptions } from "./lib";
 
+/**
+ * Computes the estimated number of turns during which garbo will run
+ * @returns A guess of how many runs garbo will run in total
+ */
 export function estimatedTurns(): number {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
   const pantsgivingAdventures = have($item`Pantsgiving`)
@@ -76,6 +80,10 @@ function untangleDigitizes(turnCount: number, chunks: number): number {
   return Math.round(chunks * monstersPerChunk);
 }
 
+/**
+ *
+ * @returns The number of digitized monsters that we expect to fight today
+ */
 export function digitizedMonstersRemaining(): number {
   if (!SourceTerminal.have()) return 0;
 

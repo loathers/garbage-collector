@@ -1,9 +1,6 @@
-import { buy, canAdventure, Item, Location, print, use } from "kolmafia";
+import { buy, canAdventure, Item, Location, use } from "kolmafia";
 import { $effect, $item, $location, $locations, get, have } from "libram";
-import { propertyManager, realmAvailable } from "../lib";
-import { guzzlrFactory } from "./guzzlr";
-import { lovebugsFactory } from "./lovebugs";
-import { yellowRayFactory } from "./yellowray";
+import { realmAvailable } from "../lib";
 
 export type DraggableFight = "backup" | "wanderer" | "yellow ray";
 
@@ -72,7 +69,7 @@ export function canAdventureOrUnlock(loc: Location): boolean {
   return !underwater && !skiplist.includes(loc) && (canAdventure(loc) || canUnlock);
 }
 
-function unlock(loc: Location, value: number) {
+export function unlock(loc: Location, value: number): boolean {
   const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
   if (!unlockableZone) return canAdventure(loc);
   if (unlockableZone.available()) return true;
@@ -133,82 +130,13 @@ export class WandererTarget {
     this.prepareTurn = prepareTurn;
   }
 }
-export type WandererFactory = (type: DraggableFight) => WandererTarget[] | undefined;
+export type WandererFactory = (
+  type: DraggableFight,
+  locationSkiplist: Location[]
+) => WandererTarget[];
 export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
-function defaultLocation(): WandererTarget[] {
-  return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
-}
-
-const wanderFactories: WandererFactory[] = [
-  defaultLocation,
-  yellowRayFactory,
-  lovebugsFactory,
-  guzzlrFactory,
-];
-
-export function bestWander(
-  type: DraggableFight,
-  locationSkiplist: Location[],
-  nameSkiplist: string[]
-): WandererLocation {
-  const possibleLocations = new Map<Location, WandererLocation>();
-
-  for (const wanderFactory of wanderFactories) {
-    const wanderTargets = wanderFactory(type);
-    if (wanderTargets) {
-      for (const wanderTarget of wanderTargets) {
-        if (
-          !nameSkiplist.includes(wanderTarget.name) &&
-          !locationSkiplist.includes(wanderTarget.location)
-        ) {
-          const wandererLocation: WandererLocation = possibleLocations.get(
-            wanderTarget.location
-          ) ?? {
-            location: wanderTarget.location,
-            targets: [],
-            value: 0,
-          };
-          wandererLocation.targets = [...wandererLocation.targets, wanderTarget];
-          wandererLocation.value += wanderTarget.value;
-          possibleLocations.set(wandererLocation.location, wandererLocation);
-        }
-      }
-    }
-  }
-
-  if (possibleLocations.size === 0) {
-    throw "Could not determine a wander target!";
-  }
-
-  return [...possibleLocations.values()].sort((prev, curr) => prev.value - curr.value)[0];
-}
-
-export function wanderTo(
-  type: DraggableFight,
-  nameSkiplist: string[] = [],
-  locationSkiplist: Location[] = []
-): Location {
-  const candidate = bestWander(type, locationSkiplist, nameSkiplist);
-  const failed = candidate.targets.filter((target) => target.prepareTurn());
-
-  if (failed.length > 0 || !unlock(candidate.location, candidate.value)) {
-    return wanderTo(type, [...nameSkiplist, ...failed.map((target) => target.name)]);
-  } else {
-    const choices = unsupportedChoices.get(candidate.location);
-    if (choices) propertyManager.setChoices(choices);
-
-    print(
-      `Wandering at ${candidate.location} for expected value ${candidate.value} (${candidate.targets
-        .map((t) => t.name)
-        .join(",")})`
-    );
-
-    return candidate.location;
-  }
-}
-
-const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
+export const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
   [$location`The Spooky Forest`, { [502]: 2, [505]: 2 }],
   [$location`Guano Junction`, { [1427]: 1 }],
   [$location`The Hidden Apartment Building`, { [780]: 6, [1578]: 6 }],
@@ -244,3 +172,15 @@ const unsupportedChoices = new Map<Location, { [choice: number]: number | string
   [$location`The Castle in the Clouds in the Sky (Top Floor)`, { [1431]: 1, [677]: 2 }],
   [$location`The Hidden Office Building`, { [786]: 6 }],
 ]);
+
+export function defaultLocation(): WandererTarget[] {
+  return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
+}
+
+export function maxBy<T>(array: T[], key: (t: T) => number): T {
+  return array
+    .map((t: T) => {
+      return { t, value: key(t) };
+    })
+    .reduce((prev, curr) => (prev.value < curr.value ? curr : prev)).t;
+}

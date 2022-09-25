@@ -3,7 +3,7 @@ import { $item, $skill, clamp, get, Guzzlr, have } from "libram";
 import { globalOptions } from "../lib";
 import { garboValue } from "../session";
 import { digitizedMonstersRemaining } from "../turns";
-import { canAdventureOrUnlock, canWander, WandererTarget } from "./lib";
+import { canAdventureOrUnlock, canWander, DraggableFight, WandererTarget } from "./lib";
 
 function freeCrafts() {
   return (
@@ -25,7 +25,7 @@ function wandererTurnsAvailableToday(zone: Location) {
   );
 }
 
-function guzzlrAbandonQuest() {
+function considerAbandon(locationSkiplist: Location[]) {
   const location = Guzzlr.getLocation();
   const remaningTurns = Math.ceil(
     (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
@@ -38,6 +38,7 @@ function guzzlrAbandonQuest() {
   if (
     // consider abandoning
     !location || // if mafia faled to track the location correctly
+    locationSkiplist.includes(location) ||
     !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
     (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
   ) {
@@ -46,8 +47,8 @@ function guzzlrAbandonQuest() {
   }
 }
 
-function acceptGuzzlrQuest() {
-  if (Guzzlr.isQuestActive()) guzzlrAbandonQuest();
+function acceptGuzzlrQuest(locationSkiplist: Location[]) {
+  if (Guzzlr.isQuestActive()) considerAbandon(locationSkiplist);
   while (!Guzzlr.isQuestActive()) {
     print("Picking a guzzlr quest");
     if (
@@ -62,7 +63,7 @@ function acceptGuzzlrQuest() {
       // fall back to bronze when can't plat, can't gold, or bronze is not maxed
       Guzzlr.acceptBronze();
     }
-    guzzlrAbandonQuest();
+    considerAbandon(locationSkiplist);
   }
 }
 
@@ -82,9 +83,12 @@ function guzzlrValue(tier: "bronze" | "gold" | "platinum" | null) {
   }
 }
 
-export function guzzlrFactory(): WandererTarget[] | undefined {
+export function guzzlrFactory(
+  _type: DraggableFight,
+  locationSkiplist: Location[]
+): WandererTarget[] {
   if (Guzzlr.have()) {
-    acceptGuzzlrQuest();
+    acceptGuzzlrQuest(locationSkiplist);
     const location = Guzzlr.getLocation();
     if (location !== null) {
       const guzzlrBooze =
@@ -109,5 +113,5 @@ export function guzzlrFactory(): WandererTarget[] | undefined {
       ];
     }
   }
-  return undefined;
+  return [];
 }

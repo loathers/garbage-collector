@@ -59,7 +59,7 @@ import {
   WISH_VALUE,
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
-import { DraggableFight, wanderTo } from "./wanderer/lib";
+import { DraggableFight, wanderWhere } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -191,7 +191,7 @@ export class EmbezzlerFight {
       (this.draggable && !suggestion) ||
       (this.draggable === "backup" && suggestion && suggestion.combatPercent < 100)
     ) {
-      return wanderTo(this.draggable);
+      return wanderWhere(this.draggable);
     }
     return suggestion ?? $location`Noob Cave`;
   }
