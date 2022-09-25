@@ -1886,7 +1886,6 @@ export function freeRunFights(): void {
   ) {
     return;
   }
-  visitUrl("place.php?whichplace=town_wrong");
 
   propertyManager.setChoices({
     1387: 2, // "You will go find two friends and meet me here."
@@ -1914,7 +1913,6 @@ export function freeFights(): void {
   ) {
     return;
   }
-  visitUrl("place.php?whichplace=town_wrong");
 
   propertyManager.setChoices({
     1387: 2, // "You will go find two friends and meet me here."
