@@ -506,7 +506,7 @@ type FreeFightOptions = {
   noncombat?: () => boolean;
   effects?: () => Effect[];
   // True if the macro used by this freeFight can be overridden without causing harm
-  canOverrideMacro?: boolean;
+  macroDoesFamiliarActions?: boolean;
 };
 
 class FreeFight {
@@ -530,7 +530,7 @@ class FreeFight {
   pickFamiliar(): Familiar {
     const mandatory = this.options.familiar?.();
     if (mandatory) return mandatory;
-    return freeFightFamiliar({ canChooseMacro: this.options.canOverrideMacro });
+    return freeFightFamiliar({ canChooseMacro: this.options.macroDoesFamiliarActions });
   }
 
   isAvailable(): boolean {
@@ -659,6 +659,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`protonic accelerator pack` })],
+      macroDoesFamiliarActions: true,
     }
   ),
   new FreeFight(
@@ -672,7 +673,7 @@ const freeFightSources = [
     },
     false,
     {
-      canOverrideMacro: true,
+      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -691,7 +692,7 @@ const freeFightSources = [
         )
           ? $familiar`Robortender`
           : null,
-      canOverrideMacro: true,
+      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -703,7 +704,10 @@ const freeFightSources = [
       if (!handlingChoice()) throw "No choice?";
       runChoice(haveEldritchEssence ? 2 : 1);
     },
-    false
+    false,
+    {
+      macroDoesFamiliarActions: true,
+    }
   ),
 
   new FreeFight(
@@ -724,7 +728,7 @@ const freeFightSources = [
       if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
     },
     false,
-    { canOverrideMacro: true }
+    { macroDoesFamiliarActions: true }
   ),
 
   new FreeFight(
@@ -733,7 +737,7 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`lynyrd snare`),
-      canOverrideMacro: true,
+      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -783,6 +787,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement(["1000 mainstat"], {})],
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -831,7 +836,8 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
-      canOverrideMacro: true,
+      // They just die too dang quickly
+      macroDoesFamiliarActions: false,
     }
   ),
 
@@ -1081,7 +1087,7 @@ const freeFightSources = [
           forceEquip: $items`Kramco Sausage-o-Matic™`,
         }),
       ],
-      canOverrideMacro: true,
+      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -1174,7 +1180,7 @@ const freeFightSources = [
           ]),
         }),
       ],
-      canOverrideMacro: true,
+      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -1227,7 +1233,7 @@ const freeFightSources = [
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
     () => Witchess.fightPiece(bestWitchessPiece()),
     true,
-    { canOverrideMacro: true }
+    { macroDoesFamiliarActions: true }
   ),
 
   new FreeFight(
@@ -1240,7 +1246,7 @@ const freeFightSources = [
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
     false,
-    { canOverrideMacro: true }
+    { macroDoesFamiliarActions: true }
   ),
 
   new FreeFight(
@@ -1268,7 +1274,7 @@ const freeFightSources = [
           }
         ),
       ],
-      canOverrideMacro: true,
+      macroDoesFamiliarActions: true,
     }
   ),
 
@@ -1281,7 +1287,7 @@ const freeFightSources = [
     },
     true,
     {
-      canOverrideMacro: true,
+      macroDoesFamiliarActions: true,
       familiar: () => $familiars`Robortender`.find(have) ?? null,
     }
   ),
