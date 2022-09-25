@@ -9,6 +9,7 @@ import {
   Location,
   mallPrice,
   myAdventures,
+  myFamiliar,
   myInebriety,
   myLevel,
   print,
@@ -72,7 +73,7 @@ import {
 } from "./wanderer";
 
 const sober = () =>
-  myInebriety() <= inebrietyLimit() + (meatFamiliar() === $familiar`Stooper` ? -1 : 0);
+  myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
 const noWineglassZone = (type: DraggableFight = "wanderer") =>
   sober() ? determineDraggableZoneAndEnsureAccess(type) : $location`Drunken Stupor`;
 const embezzler = $monster`Knob Goblin Embezzler`;
