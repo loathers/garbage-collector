@@ -354,12 +354,12 @@ function pygmyOptions(forceEquip: Item[] = []) {
     requirements: () => [
       new Requirement([], {
         forceEquip,
-        preventEquip:$items`Staff of Queso Escusado, stinky cheese sword`,
+        preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
         bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
       }),
     ],
     macroDoesFamiliarActions: false,
-  }
+  };
 }
 
 export function dailyFights(): void {
@@ -935,9 +935,7 @@ const freeFightSources = [
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {
-
-    }
+    {}
   ),
 
   // 10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
@@ -963,7 +961,7 @@ const freeFightSources = [
       adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-pygmyOptions()
+    pygmyOptions()
   ),
 
   // 11th+ pygmy fight if we have a saber- saber friends
@@ -1001,7 +999,7 @@ pygmyOptions()
       }
     },
     false,
-pygmyOptions($items`Fourth of May Cosplay Saber`)
+    pygmyOptions($items`Fourth of May Cosplay Saber`)
   ),
 
   // Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
@@ -1038,7 +1036,7 @@ pygmyOptions($items`Fourth of May Cosplay Saber`)
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
     },
     true,
-pygmyOptions()
+    pygmyOptions()
   ),
 
   new FreeFight(
