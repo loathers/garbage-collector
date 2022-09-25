@@ -1,4 +1,5 @@
 import {
+  appearanceRates,
   buy,
   canAdventure,
   craftType,
@@ -231,9 +232,12 @@ function guzzlrAbandonQuest() {
 }
 
 function averageYrValue(location: Location) {
+  const rates = appearanceRates(location);
   const monsters = Object.keys(getLocationMonsters(location))
     .map((m) => toMonster(m))
-    .filter((m) => !["LUCKY", "ULTRARARE", "BOSS"].some((s) => m.attributes.includes(s)));
+    .filter(
+      (m) => !["LUCKY", "ULTRARARE", "BOSS"].some((s) => m.attributes.includes(s)) && rates[m.name]
+    );
 
   if (monsters.length === 0) {
     return 0;
