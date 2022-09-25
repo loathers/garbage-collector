@@ -24,6 +24,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $items,
   $location,
@@ -70,7 +71,8 @@ import {
   DraggableFight,
 } from "./wanderer";
 
-const sober = () => myInebriety() <= inebrietyLimit();
+const sober = () =>
+  myInebriety() <= inebrietyLimit() + (meatFamiliar() === $familiar`Stooper` ? -1 : 0);
 const noWineglassZone = (type: DraggableFight = "wanderer") =>
   sober() ? determineDraggableZoneAndEnsureAccess(type) : $location`Drunken Stupor`;
 const embezzler = $monster`Knob Goblin Embezzler`;
