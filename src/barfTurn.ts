@@ -45,7 +45,6 @@ import {
 import { Macro, withMacro } from "./combat";
 import { completeBarfQuest } from "./dailies";
 import { computeDiet, consumeDiet } from "./diet";
-import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { deliverThesisIfAble } from "./fights";
 import {
@@ -66,16 +65,13 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
-import {
-  determineDraggableZoneAndEnsureAccess,
-  digitizedMonstersRemaining,
-  DraggableFight,
-} from "./wanderer";
+import { digitizedMonstersRemaining, estimatedTurns } from "./turns";
+import { DraggableFight, wanderTo } from "./wanderer/lib";
 
 const sober = () =>
   myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
 const noWineglassZone = (type: DraggableFight = "wanderer") =>
-  sober() ? determineDraggableZoneAndEnsureAccess(type) : $location`Drunken Stupor`;
+  sober() ? wanderTo(type) : $location`Drunken Stupor`;
 const embezzler = $monster`Knob Goblin Embezzler`;
 
 type EmbezzlerPrepOptions = {
@@ -236,10 +232,7 @@ const turns: AdventureAction[] = [
           ],
         })
       );
-      adventureMacroAuto(
-        isGhost ? noWineglassZone() : determineDraggableZoneAndEnsureAccess(),
-        Macro.basicCombat()
-      );
+      adventureMacroAuto(isGhost ? noWineglassZone() : wanderTo("wanderer"), Macro.basicCombat());
       return get("lastVoteMonsterTurn") === totalTurnsPlayed();
     },
     spendsTurn: false,
@@ -320,7 +313,7 @@ const turns: AdventureAction[] = [
       !have($effect`Everything Looks Yellow`) &&
       romanticMonsterImpossible(),
     execute: () => {
-      const location = determineDraggableZoneAndEnsureAccess("yellow ray");
+      const location = wanderTo("yellow ray");
       const familiar = freeFightFamiliar({ location });
       useFamiliar(familiar);
       freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));

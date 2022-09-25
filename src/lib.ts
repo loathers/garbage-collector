@@ -414,9 +414,8 @@ export function checkGithubVersion(): void {
   }
 }
 
-export function realmAvailable(
-  identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
-): boolean {
+export type RealmType = "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate";
+export function realmAvailable(identifier: RealmType): boolean {
   if (identifier === "fantasy") {
     return get(`_frToday`) || get(`frAlways`);
   } else if (identifier === "pirate") {

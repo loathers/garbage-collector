@@ -32,11 +32,11 @@ import {
   set,
 } from "libram";
 import { acquire } from "../acquire";
-import { estimatedTurns } from "../embezzler";
 import { hasMonsterReplacers } from "../extrovermectin";
 import { globalOptions } from "../lib";
 import { garboValue } from "../session";
 import synthesize from "../synthesis";
+import { estimatedTurns } from "../turns";
 import { yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
 import { freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";

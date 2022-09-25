@@ -61,11 +61,11 @@ import { meatMood } from "./mood";
 import postCombatActions from "./post";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
-import { estimatedTurns } from "./embezzler";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
 import barfTurn from "./barfTurn";
+import { estimatedTurns } from "./turns";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;

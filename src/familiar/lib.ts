@@ -9,9 +9,8 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import { $effect, $familiar, $item, clamp, get, have } from "libram";
-import { estimatedTurns } from "../embezzler";
 import { ESTIMATED_OVERDRUNK_TURNS, globalOptions, turnsToNC } from "../lib";
-import { digitizedMonstersRemaining } from "../wanderer";
+import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
 
 export type GeneralFamiliar = {
   familiar: Familiar;

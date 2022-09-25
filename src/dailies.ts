@@ -96,13 +96,13 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { withStash } from "./clan";
-import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { embezzlerCount } from "./embezzler";
 import { refreshLatte } from "./outfit";
-import { digitizedMonstersRemaining } from "./wanderer";
 import { doingExtrovermectin } from "./extrovermectin";
 import { garboAverageValue, garboValue } from "./session";
 import { acquire } from "./acquire";
 import { estimatedTentacles } from "./fights";
+import { digitizedMonstersRemaining, estimatedTurns } from "./turns";
 
 export function dailySetup(): void {
   voterSetup();

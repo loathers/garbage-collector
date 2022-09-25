@@ -41,7 +41,6 @@ import {
   pickRider,
 } from "libram/dist/resources/2010/CrownOfThrones";
 import { mallMin } from "./diet";
-import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
@@ -53,6 +52,7 @@ import {
   valueJuneCleaverOption,
 } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
+import { estimatedTurns } from "./turns";
 
 /**
  * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
