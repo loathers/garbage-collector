@@ -242,8 +242,8 @@ function averageYrValue(location: Location, debug = false) {
       sumNumbers(
         monsters.map((m) => {
           const items = itemDropsArray(m)
-            .filter((drop) => ["", "n"].includes(drop.type))
-            .map((drop) => garboValue(drop.drop));
+            .filter(({ type }) => ["", "n"].includes(type))
+            .map(({ drop }) => garboValue(drop, true));
 
           if (debug) print(`${m}: ${items.join(",")}`);
 
