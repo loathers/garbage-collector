@@ -29,7 +29,7 @@ import {
 import { prepFamiliars } from "../dailies";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
-import { doSausage } from "../fights";
+import { doSausage, freeRunFights } from "../fights";
 import { baseMeat, globalOptions, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
