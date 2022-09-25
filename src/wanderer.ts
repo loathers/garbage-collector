@@ -23,7 +23,7 @@ import {
   Guzzlr,
   have,
   SourceTerminal,
-  sumNumbers,
+  sum,
 } from "libram";
 import { estimatedTurns } from "./embezzler";
 import { globalOptions, HIGHLIGHT, propertyManager, realmAvailable } from "./lib";
@@ -230,7 +230,7 @@ function guzzlrAbandonQuest() {
   }
 }
 
-function averageYrValue(location: Location, debug = false) {
+function averageYrValue(location: Location) {
   const monsters = Object.keys(getLocationMonsters(location))
     .map((m) => toMonster(m))
     .filter((m) => !["LUCKY", "ULTRARARE", "BOSS"].some((s) => m.attributes.includes(s)));
@@ -239,16 +239,10 @@ function averageYrValue(location: Location, debug = false) {
     return 0;
   } else {
     return (
-      sumNumbers(
-        monsters.map((m) => {
-          const items = itemDropsArray(m)
-            .filter(({ type }) => ["", "n"].includes(type))
-            .map(({ drop }) => garboValue(drop, true));
-
-          if (debug) print(`${m}: ${items.join(",")}`);
-
-          return sumNumbers(items);
-        })
+      sum(monsters, (m) =>
+        sum(itemDropsArray(m), ({ type, drop }) =>
+          ["", "n"].includes(type) ? garboValue(drop, true) : 0
+        )
       ) / monsters.length
     );
   }
