@@ -18886,7 +18886,7 @@ function mrCheengsSpectacles() {
   // TODO: Possible drops are speculated to be any pvpable potion that will never be banned by standard
 
 
-  return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject32 || (dropsgear_templateObject32 = dropsgear_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 400]]);
+  return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject32 || (dropsgear_templateObject32 = dropsgear_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 220]]);
 }
 
 function mrScreegesSpectacles() {
@@ -25753,7 +25753,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(26730);
+  sinceKolmafiaRevision(26787);
   (0,src_lib/* checkGithubVersion */.ki)();
 
   if ((0,property/* get */.U2)("garbo_autoUserConfirm", false)) {
@@ -28031,7 +28031,10 @@ function printGarboSession() {
   (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .set */ .t8)("garboResultsItems", totalItems);
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Quick mode was enabled, results may be less accurate than normal.");
+
+  if (_lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.quickMode */ .Xe.quickMode) {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Quick mode was enabled, results may be less accurate than normal.");
+  }
 }
 
 /***/ }),
@@ -28519,7 +28522,7 @@ function canWander(location, type) {
     case "yellow ray":
       // Fun-guy mansion currently lacks mafia tracking, and eventually becomes immune to insta-kills
       // Watch this space.
-      return !backupSkiplist.includes(location) && location.combatPercent >= 100 && !(!src_lib/* globalOptions.ascending */.Xe.ascending && location === (0,template_string/* $location */.PG)(_templateObject17 || (_templateObject17 = wanderer_taggedTemplateLiteral(["The Fun-Guy Mansion"]))));
+      return !backupSkiplist.includes(location) && location.combatPercent >= 100 && !(location === (0,template_string/* $location */.PG)(_templateObject17 || (_templateObject17 = wanderer_taggedTemplateLiteral(["The Fun-Guy Mansion"]))) && (0,property/* get */.U2)("funGuyMansionKills", 0) >= 100);
 
     case "wanderer":
       return !wandererSkiplist.includes(location) && location.wanderers;

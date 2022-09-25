@@ -16244,7 +16244,7 @@ function mrCheengsSpectacles() {
   // TODO: Possible drops are speculated to be any pvpable potion that will never be banned by standard
 
 
-  return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject32 || (dropsgear_templateObject32 = dropsgear_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 400]]);
+  return new Map([[(0,template_string/* $item */.xr)(dropsgear_templateObject32 || (dropsgear_templateObject32 = dropsgear_taggedTemplateLiteral(["Mr. Cheeng's spectacles"]))), 220]]);
 }
 
 function mrScreegesSpectacles() {
@@ -19930,7 +19930,10 @@ function printGarboSession() {
   set("garboResultsItems", totalItems);
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
-  print("Quick mode was enabled, results may be less accurate than normal.");
+
+  if (globalOptions.quickMode) {
+    print("Quick mode was enabled, results may be less accurate than normal.");
+  }
 }
 
 /***/ }),
@@ -20415,7 +20418,7 @@ function canWander(location, type) {
     case "yellow ray":
       // Fun-guy mansion currently lacks mafia tracking, and eventually becomes immune to insta-kills
       // Watch this space.
-      return !backupSkiplist.includes(location) && location.combatPercent >= 100 && !(!src_lib/* globalOptions.ascending */.Xe.ascending && location === (0,template_string/* $location */.PG)(_templateObject17 || (_templateObject17 = wanderer_taggedTemplateLiteral(["The Fun-Guy Mansion"]))));
+      return !backupSkiplist.includes(location) && location.combatPercent >= 100 && !(location === (0,template_string/* $location */.PG)(_templateObject17 || (_templateObject17 = wanderer_taggedTemplateLiteral(["The Fun-Guy Mansion"]))) && (0,property/* get */.U2)("funGuyMansionKills", 0) >= 100);
 
     case "wanderer":
       return !wandererSkiplist.includes(location) && location.wanderers;
