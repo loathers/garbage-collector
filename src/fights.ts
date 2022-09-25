@@ -358,7 +358,7 @@ function pygmyOptions(forceEquip: Item[] = []) {
         bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
       }),
     ],
-    macroDoesFamiliarActions: false,
+    macroAllowsFamiliarActions: false,
   };
 }
 
@@ -522,7 +522,7 @@ type FreeFightOptions = {
   // Tells us if this fight can reasonably be expected to do familiar
   // actions like meatifying matter, or crimbo shrub red raying.
   // Defaults to true.
-  macroDoesFamiliarActions?: boolean;
+  macroAllowsFamiliarActions?: boolean;
 };
 
 class FreeFight {
@@ -546,7 +546,7 @@ class FreeFight {
   pickFamiliar(): Familiar {
     const mandatory = this.options.familiar?.();
     if (mandatory) return mandatory;
-    return freeFightFamiliar({ canChooseMacro: this.options.macroDoesFamiliarActions });
+    return freeFightFamiliar({ canChooseMacro: this.options.macroAllowsFamiliarActions });
   }
 
   isAvailable(): boolean {
@@ -587,7 +587,7 @@ class FreeRunFight extends FreeFight {
     options: FreeFightOptions = {},
     freeRunPicker: FindActionSourceConstraints = {}
   ) {
-    super(available, () => null, false, { ...options, macroDoesFamiliarActions: false });
+    super(available, () => null, false, { ...options, macroAllowsFamiliarActions: false });
     this.freeRun = run;
     this.constraints = freeRunPicker;
   }
@@ -688,7 +688,7 @@ const freeFightSources = [
     },
     false,
     {
-      macroDoesFamiliarActions: true,
+      macroAllowsFamiliarActions: true,
     }
   ),
 
@@ -796,7 +796,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement(["1000 mainstat"], {})],
-      macroDoesFamiliarActions: false,
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -846,7 +846,7 @@ const freeFightSources = [
     {
       cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
       // They just die too dang quickly
-      macroDoesFamiliarActions: false,
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -919,7 +919,7 @@ const freeFightSources = [
       },
       familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
       effects: () => $effects`Transpondent`,
-      macroDoesFamiliarActions: false,
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -1065,7 +1065,7 @@ const freeFightSources = [
     },
     true,
     {
-      macroDoesFamiliarActions: false,
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -1270,7 +1270,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
-      macroDoesFamiliarActions: false,
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -1296,7 +1296,7 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
-      macroDoesFamiliarActions: false,
+      macroAllowsFamiliarActions: false,
     }
   ),
 ];
