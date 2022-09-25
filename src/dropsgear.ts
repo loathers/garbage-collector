@@ -233,7 +233,7 @@ function mrCheengsSpectacles() {
 
   // Items drop every 4 turns
   // TODO: Possible drops are speculated to be any pvpable potion that will never be banned by standard
-  return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 400]]);
+  return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 220]]);
 }
 
 function mrScreegesSpectacles() {
