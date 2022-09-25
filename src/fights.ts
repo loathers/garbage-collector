@@ -571,7 +571,7 @@ class FreeRunFight extends FreeFight {
     options: FreeFightOptions = {},
     freeRunPicker: FindActionSourceConstraints = {}
   ) {
-    super(available, () => null, false, {...options,       macroDoesFamiliarActions: false,});
+    super(available, () => null, false, { ...options, macroDoesFamiliarActions: false });
     this.freeRun = run;
     this.constraints = freeRunPicker;
   }
