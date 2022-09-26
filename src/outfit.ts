@@ -42,6 +42,7 @@ import {
   getKramcoWandererChance,
   have,
   Requirement,
+  SongBoom,
 } from "libram";
 import { acquire } from "./acquire";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
@@ -358,13 +359,19 @@ export function usingPurse(): boolean {
         !have($familiar`Robortender`) ||
         !canAdventure($location`The Black Forest`));
     if (have($familiar`Hobo Monkey`)) {
-      const purseBonus = 1025 * 0.6 - mallPrice($item`Flaskfull of Hollow`) / 150;
+      const purseBonus = () => {
+        if (SongBoom.have()) {
+          return 1025 * 0.6 - mallPrice($item`Flaskfull of Hollow`) / 150;
+        } else {
+          return 1000 * 0.6 - mallPrice($item`Flaskfull of Hollow`) / 150;
+        }
+      };
       useFamiliar($familiar`Hobo Monkey`);
       setLocation($location`none`);
       meatOutfit(
         true,
         new Requirement([], {
-          bonusEquip: new Map($items`Half a Purse`.map((item) => [item, purseBonus])),
+          bonusEquip: new Map($items`Half a Purse`.map((item) => [item, purseBonus()])),
         })
       );
       if (haveEquipped($item`Half a Purse`)) {
