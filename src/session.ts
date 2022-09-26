@@ -173,7 +173,8 @@ function garboSaleValue(item: Item, useHistorical: boolean): number {
 
 const garboRegularValueCache = new Map<Item, number>();
 const garboHistoricalValueCache = new Map<Item, number>();
-export function garboValue(item: Item, useHistorical = globalOptions.quickMode): number {
+export function garboValue(item: Item, useHistorical = false): number {
+  useHistorical ||= globalOptions.quickMode;
   const cachedValue =
     garboRegularValueCache.get(item) ??
     (useHistorical ? garboHistoricalValueCache.get(item) : undefined);
