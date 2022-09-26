@@ -17,6 +17,7 @@ import {
   numericModifier,
   print,
   retrieveItem,
+  setLocation,
   toInt,
   toSlot,
   totalTurnsPlayed,
@@ -359,6 +360,7 @@ export function usingPurse(): boolean {
     if (have($familiar`Hobo Monkey`)) {
       const purseBonus = 1025 * 0.6 - mallPrice($item`Flaskfull of Hollow`) / 150;
       useFamiliar($familiar`Hobo Monkey`);
+      setLocation($location`none`);
       meatOutfit(
         true,
         new Requirement([], {
