@@ -6,6 +6,7 @@ import {
   cliExecute,
   enthroneFamiliar,
   equippedItem,
+  haveEffect,
   haveEquipped,
   inebrietyLimit,
   Item,
@@ -19,10 +20,12 @@ import {
   toInt,
   toSlot,
   totalTurnsPlayed,
+  useFamiliar,
   visitUrl,
 } from "kolmafia";
 import {
   $class,
+  $effect,
   $familiar,
   $familiars,
   $item,
@@ -353,6 +356,22 @@ export function usingPurse(): boolean {
       (!have($item`latte lovers member's mug`) ||
         !have($familiar`Robortender`) ||
         !canAdventure($location`The Black Forest`));
+    if (have($familiar`Hobo Monkey`)) {
+      const purseBonus = 1025 * 0.6 - mallPrice($item`Flaskfull of Hollow`) / 150;
+      useFamiliar($familiar`Hobo Monkey`);
+      meatOutfit(
+        true,
+        new Requirement([], {
+          bonusEquip: new Map($items`Half a Purse`.map((item) => [item, purseBonus])),
+        })
+      );
+      if (haveEquipped($item`Half a Purse`)) {
+        cachedUsingPurse = true;
+      }
+    }
+    if (haveEffect($effect`Merry Smithsness`)) {
+      cachedUsingPurse = true;
+    }
   }
   return cachedUsingPurse;
 }
