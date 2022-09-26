@@ -1,4 +1,4 @@
-import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
+import { Familiar, familiarWeight, inebrietyLimit, Item, Location, myInebriety } from "kolmafia";
 import { $familiar, $item, $location, clamp, findLeprechaunMultiplier, get, have } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../session";
@@ -22,6 +22,15 @@ const DEFAULT_MENU_OPTIONS = {
   includeExperienceFamiliars: true,
   allowAttackFamiliars: true,
 };
+
+const jellies = {
+  Dinseylandfill: $item`stench jelly`,
+  "Spring Break Beach": $item`sleaze jelly`,
+  "The Glaciest": $item`cold jelly`,
+  "Conspiracy Island": $item`spooky jelly`,
+  "That 70s Volcano": $item`hot jelly`,
+};
+
 export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   const {
     includeExperienceFamiliars,
@@ -60,14 +69,20 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     }
 
     if (location.zone === "Dinseylandfill" && have($familiar`Space Jellyfish`)) {
-      familiarMenu.push({
-        familiar: $familiar`Space Jellyfish`,
-        expectedValue:
-          garboValue($item`stench jelly`) /
-          (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
-        leprechaunMultiplier: 0,
-        limit: "special",
-      });
+      const jelly: Item | undefined = jellies[location.zone];
+      if (jelly) {
+        const isStench = jelly === $item`stench jelly`;
+        const turnsPerJelly =
+          get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20;
+        if (isStench || turnsPerJelly === 20) {
+          familiarMenu.push({
+            familiar: $familiar`Space Jellyfish`,
+            expectedValue: garboValue(jelly) / turnsPerJelly,
+            leprechaunMultiplier: 0,
+            limit: "special",
+          });
+        }
+      }
     }
   }
 
