@@ -358,7 +358,7 @@ export function usingPurse(): boolean {
       (!have($item`latte lovers member's mug`) ||
         !have($familiar`Robortender`) ||
         !canAdventure($location`The Black Forest`));
-    if (have($familiar`Hobo Monkey`)) {
+    if (have($familiar`Hobo Monkey`) && myInebriety() <= inebrietyLimit()) {
       const purseBonus = () => {
         if (haveEffect($effect`Merry Smithsness`)) {
           return 0;
