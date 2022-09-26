@@ -378,6 +378,8 @@ export function usingPurse(): boolean {
       );
       if (haveEquipped($item`Half a Purse`)) {
         cachedUsingPurse = true;
+      } else {
+        cachedUsingPurse = false;
       }
     }
   }
