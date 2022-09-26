@@ -360,7 +360,9 @@ export function usingPurse(): boolean {
         !canAdventure($location`The Black Forest`));
     if (have($familiar`Hobo Monkey`)) {
       const purseBonus = () => {
-        if (SongBoom.have()) {
+        if (haveEffect($effect`Merry Smithsness`)) {
+          return 0;
+        } else if (SongBoom.have()) {
           return 1025 * 0.6 - mallPrice($item`Flaskfull of Hollow`) / 150;
         } else {
           return 1000 * 0.6 - mallPrice($item`Flaskfull of Hollow`) / 150;
@@ -377,9 +379,6 @@ export function usingPurse(): boolean {
       if (haveEquipped($item`Half a Purse`)) {
         cachedUsingPurse = true;
       }
-    }
-    if (haveEffect($effect`Merry Smithsness`)) {
-      cachedUsingPurse = true;
     }
   }
   return cachedUsingPurse;
