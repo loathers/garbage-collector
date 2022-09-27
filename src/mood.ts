@@ -49,9 +49,6 @@ export function meatMood(urKels = false, meat = baseMeat): Mood {
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
-  const flaskValue = usingPurse() ? 0.3 * baseMeat : 5;
-  mood.potion($item`Flaskfull of Hollow`, flaskValue);
-
   mood.skill($skill`Blood Bond`);
   mood.skill($skill`Leash of Linguini`);
   mood.skill($skill`Empathy of the Newt`);
@@ -140,6 +137,9 @@ export function meatMood(urKels = false, meat = baseMeat): Mood {
       useSkill($skill`Chorale of Companionship`, 10 - get("_companionshipCasts"));
     }
   }
+
+  const flaskValue = usingPurse() ? 0.3 * baseMeat : 5;
+  mood.potion($item`Flaskfull of Hollow`, flaskValue);
 
   shrugBadEffects();
 
