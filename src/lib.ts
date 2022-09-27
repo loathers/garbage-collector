@@ -389,10 +389,7 @@ export function safeRestore(): void {
     eat($item`magical sausage`);
   }
 
-  const maxSoulFoodMpGain = (myMaxmp() - myMp()) / 15;
-  const maxSoulFoodCasts = mySoulsauce() / soulsauceCost($skill`Soul Food`);
-  const soulFoodCasts = Math.floor(Math.min(maxSoulFoodMpGain, maxSoulFoodCasts));
-
+  const soulFoodCasts = Math.floor(mySoulsauce() / soulsauceCost($skill`Soul Food`));
   if (shouldRestoreMp() && soulFoodCasts > 0) useSkill(soulFoodCasts, $skill`Soul Food`);
 
   if (shouldRestoreMp()) restoreMp(mpTarget);
