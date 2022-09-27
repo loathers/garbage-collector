@@ -26434,6 +26434,11 @@ function burnLibrams() {
   }
 }
 function safeRestoreMpTarget() {
+  //  If our max MP is close to 200, we could be restoring every turn even if we don't need to, avoid that case.
+  if (Math.abs((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myMaxmp)() - 200) < 40) {
+    return Math.min((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myMaxmp)(), 100);
+  }
+
   return Math.min((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myMaxmp)(), 200);
 }
 function safeRestore() {
