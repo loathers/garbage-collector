@@ -233,8 +233,8 @@ const turns: AdventureAction[] = [
         new Requirement([], {
           forceEquip: [
             $item`"I Voted!" sticker`,
-            ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : [])
-            ...(isMutant && !have($item`mutant crown`) ? $items`mutant arm, mutant leg`.filter((i) => have(i)) : [])
+            ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
+            ...(isMutant && !have($item`mutant crown`) ? $items`mutant arm, mutant leg`.filter((i) => have(i)) : []),
           ],
         })
       );
