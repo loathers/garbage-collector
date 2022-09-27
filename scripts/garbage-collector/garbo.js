@@ -22686,11 +22686,11 @@ function killRobortCreaturesForFree() {
 
 var isFree = monster => monster.attributes.includes("FREE");
 
-var valueDrops = monster => (0,utils/* sumNumbers */.JD)((0,external_kolmafia_.itemDropsArray)(monster).map(_ref4 => {
+var valueDrops = monster => (0,utils/* sum */.Sm)((0,external_kolmafia_.itemDropsArray)(monster), _ref4 => {
   var drop = _ref4.drop,
       rate = _ref4.rate;
-  return (0,session/* garboValue */.sf)(drop) * rate / 100;
-}));
+  return (0,session/* garboValue */.sf)(drop, true) * rate / 100;
+});
 
 var locketMonster = () => CombatLoversLocket/* findMonster */.CQ(isFree, valueDrops);
 
@@ -23718,17 +23718,17 @@ function pickCargoPocket() {
     }
 
     if (pocket in items) {
-      value += Object.entries((0,external_kolmafia_.pocketItems)(pocket)).map(_ref6 => {
+      value += (0,utils/* sum */.Sm)(Object.entries((0,external_kolmafia_.pocketItems)(pocket)), _ref6 => {
         var _ref7 = dailies_slicedToArray(_ref6, 2),
             item = _ref7[0],
             count = _ref7[1];
 
-        return (0,session/* garboValue */.sf)((0,external_kolmafia_.toItem)(item)) * count;
-      }).reduce((prev, cur) => prev + cur, 0);
+        return (0,session/* garboValue */.sf)((0,external_kolmafia_.toItem)(item), true) * count;
+      });
     }
 
     if (pocket in meats) {
-      value += Object.values((0,external_kolmafia_.pocketMeat)(pocket)).map(x => parseInt(x)).reduce((prev, cur) => prev + cur, 0);
+      value += (0,utils/* sum */.Sm)(Object.values((0,external_kolmafia_.pocketMeat)(pocket)), x => parseInt(x));
     }
 
     if (pocket in scraps) {
@@ -27948,8 +27948,8 @@ function printSession(session) {
   }
 }
 
-function garboSaleValue(item) {
-  if (_lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.quickMode */ .Xe.quickMode) {
+function garboSaleValue(item, useHistorical) {
+  if (useHistorical) {
     if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalAge)(item) <= 7.0 && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item) > 0) {
       var isMallMin = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item) === Math.max(100, 2 * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.autosellPrice)(item));
       return isMallMin ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.autosellPrice)(item) : 0.9 * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.historicalPrice)(item);
@@ -27959,14 +27959,19 @@ function garboSaleValue(item) {
   return (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .getSaleValue */ .xI)(item);
 }
 
-var garboValueCache = new Map();
+var garboRegularValueCache = new Map();
+var garboHistoricalValueCache = new Map();
 function garboValue(item) {
-  var cachedValue = garboValueCache.get(item);
+  var _garboRegularValueCac;
+
+  var useHistorical = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  useHistorical || (useHistorical = _lib__WEBPACK_IMPORTED_MODULE_1__/* .globalOptions.quickMode */ .Xe.quickMode);
+  var cachedValue = (_garboRegularValueCac = garboRegularValueCache.get(item)) !== null && _garboRegularValueCac !== void 0 ? _garboRegularValueCac : useHistorical ? garboHistoricalValueCache.get(item) : undefined;
 
   if (cachedValue === undefined) {
     var specialValueCompute = specialValueLookup.get(item);
-    var value = specialValueCompute ? specialValueCompute() : garboSaleValue(item);
-    garboValueCache.set(item, value);
+    var value = specialValueCompute ? specialValueCompute() : garboSaleValue(item, useHistorical);
+    (useHistorical ? garboHistoricalValueCache : garboRegularValueCache).set(item, value);
     return value;
   }
 
@@ -27977,7 +27982,7 @@ function garboAverageValue() {
     items[_key2] = arguments[_key2];
   }
 
-  return (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .sumNumbers */ .JD)(items.map(garboValue)) / items.length;
+  return (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .sumNumbers */ .JD)(items.map(i => garboValue(i))) / items.length;
 }
 var session = null;
 /**
@@ -28404,7 +28409,7 @@ var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/session.ts
 var session = __webpack_require__(742);
 ;// CONCATENATED MODULE: ./src/wanderer.ts
-var wanderer_templateObject, wanderer_templateObject2, wanderer_templateObject3, wanderer_templateObject4, wanderer_templateObject5, wanderer_templateObject6, wanderer_templateObject7, wanderer_templateObject8, wanderer_templateObject9, wanderer_templateObject10, wanderer_templateObject11, wanderer_templateObject12, wanderer_templateObject13, wanderer_templateObject14, wanderer_templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _ref, _templateObject33, _templateObject34, _ref3, _templateObject35, _ref4, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _ref10, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _ref14, _templateObject46, _ref15, _templateObject47, _templateObject48, _ref17, _templateObject49;
+var wanderer_templateObject, wanderer_templateObject2, wanderer_templateObject3, wanderer_templateObject4, wanderer_templateObject5, wanderer_templateObject6, wanderer_templateObject7, wanderer_templateObject8, wanderer_templateObject9, wanderer_templateObject10, wanderer_templateObject11, wanderer_templateObject12, wanderer_templateObject13, wanderer_templateObject14, wanderer_templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _ref2, _templateObject33, _templateObject34, _ref4, _templateObject35, _ref5, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _ref11, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _ref15, _templateObject46, _ref16, _templateObject47, _templateObject48, _ref18, _templateObject49;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -28610,16 +28615,16 @@ function guzzlrAbandonQuest() {
 }
 
 function averageYrValue(location) {
-  var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var monsters = Object.keys((0,external_kolmafia_.getLocationMonsters)(location)).map(m => (0,external_kolmafia_.toMonster)(m)).filter(m => !["LUCKY", "ULTRARARE", "BOSS"].some(s => m.attributes.includes(s)));
+  var rates = (0,external_kolmafia_.appearanceRates)(location);
+  var monsters = Object.keys((0,external_kolmafia_.getLocationMonsters)(location)).map(m => (0,external_kolmafia_.toMonster)(m)).filter(m => !["LUCKY", "ULTRARARE", "BOSS"].some(s => m.attributes.includes(s)) && rates[m.name] > 0);
 
   if (monsters.length === 0) {
     return 0;
   } else {
-    return (0,utils/* sumNumbers */.JD)(monsters.map(m => {
-      var items = (0,external_kolmafia_.itemDropsArray)(m).filter(drop => ["", "n"].includes(drop.type)).map(drop => (0,session/* garboValue */.sf)(drop.drop));
-      if (debug) (0,external_kolmafia_.print)("".concat(m, ": ").concat(items.join(",")));
-      return (0,utils/* sumNumbers */.JD)(items);
+    return (0,utils/* sum */.Sm)(monsters, m => (0,utils/* sum */.Sm)((0,external_kolmafia_.itemDropsArray)(m), _ref => {
+      var type = _ref.type,
+          drop = _ref.drop;
+      return ["", "n"].includes(type) ? (0,session/* garboValue */.sf)(drop, true) : 0;
     })) / monsters.length;
   }
 }
@@ -28741,7 +28746,7 @@ function determineDraggableZoneAndEnsureAccess() {
   if (choices) src_lib/* propertyManager.setChoices */.kr.setChoices(choices);
   return location;
 }
-var unsupportedChoices = new Map([[(0,template_string/* $location */.PG)(_templateObject32 || (_templateObject32 = wanderer_taggedTemplateLiteral(["The Spooky Forest"]))), (_ref = {}, _defineProperty(_ref, 502, 2), _defineProperty(_ref, 505, 2), _ref)], [(0,template_string/* $location */.PG)(_templateObject33 || (_templateObject33 = wanderer_taggedTemplateLiteral(["Guano Junction"]))), _defineProperty({}, 1427, 1)], [(0,template_string/* $location */.PG)(_templateObject34 || (_templateObject34 = wanderer_taggedTemplateLiteral(["The Hidden Apartment Building"]))), (_ref3 = {}, _defineProperty(_ref3, 780, 6), _defineProperty(_ref3, 1578, 6), _ref3)], [(0,template_string/* $location */.PG)(_templateObject35 || (_templateObject35 = wanderer_taggedTemplateLiteral(["The Black Forest"]))), (_ref4 = {}, _defineProperty(_ref4, 923, 1), _defineProperty(_ref4, 924, 1), _ref4)], [(0,template_string/* $location */.PG)(_templateObject36 || (_templateObject36 = wanderer_taggedTemplateLiteral(["LavaCo\u2122 Lamp Factory"]))), _defineProperty({}, 1091, 9)], [(0,template_string/* $location */.PG)(_templateObject37 || (_templateObject37 = wanderer_taggedTemplateLiteral(["The Haunted Laboratory"]))), _defineProperty({}, 884, 6)], [(0,template_string/* $location */.PG)(_templateObject38 || (_templateObject38 = wanderer_taggedTemplateLiteral(["The Haunted Nursery"]))), _defineProperty({}, 885, 6)], [(0,template_string/* $location */.PG)(_templateObject39 || (_templateObject39 = wanderer_taggedTemplateLiteral(["The Haunted Storage Room"]))), _defineProperty({}, 886, 6)], [(0,template_string/* $location */.PG)(_templateObject40 || (_templateObject40 = wanderer_taggedTemplateLiteral(["The Hidden Park"]))), _defineProperty({}, 789, 6)], [(0,template_string/* $location */.PG)(_templateObject41 || (_templateObject41 = wanderer_taggedTemplateLiteral(["A Mob of Zeppelin Protesters"]))), (_ref10 = {}, _defineProperty(_ref10, 1432, 1), _defineProperty(_ref10, 857, 2), _ref10)], [(0,template_string/* $location */.PG)(_templateObject42 || (_templateObject42 = wanderer_taggedTemplateLiteral(["A-Boo Peak"]))), _defineProperty({}, 1430, 2)], [(0,template_string/* $location */.PG)(_templateObject43 || (_templateObject43 = wanderer_taggedTemplateLiteral(["Sloppy Seconds Diner"]))), _defineProperty({}, 919, 6)], [(0,template_string/* $location */.PG)(_templateObject44 || (_templateObject44 = wanderer_taggedTemplateLiteral(["VYKEA"]))), _defineProperty({}, 1115, 6)], [(0,template_string/* $location */.PG)(_templateObject45 || (_templateObject45 = wanderer_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Basement)"]))), (_ref14 = {}, _defineProperty(_ref14, 670, 4), _defineProperty(_ref14, 671, 4), _defineProperty(_ref14, 672, 1), _ref14)], [(0,template_string/* $location */.PG)(_templateObject46 || (_templateObject46 = wanderer_taggedTemplateLiteral(["The Haunted Bedroom"]))), (_ref15 = {}, _defineProperty(_ref15, 876, 1), _defineProperty(_ref15, 877, 1), _defineProperty(_ref15, 878, 1), _defineProperty(_ref15, 879, 2), _defineProperty(_ref15, 880, 2), _ref15)], [(0,template_string/* $location */.PG)(_templateObject47 || (_templateObject47 = wanderer_taggedTemplateLiteral(["The Copperhead Club"]))), _defineProperty({}, 855, 4)], [(0,template_string/* $location */.PG)(_templateObject48 || (_templateObject48 = wanderer_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Top Floor)"]))), (_ref17 = {}, _defineProperty(_ref17, 1431, 1), _defineProperty(_ref17, 677, 2), _ref17)], [(0,template_string/* $location */.PG)(_templateObject49 || (_templateObject49 = wanderer_taggedTemplateLiteral(["The Hidden Office Building"]))), _defineProperty({}, 786, 6)]]);
+var unsupportedChoices = new Map([[(0,template_string/* $location */.PG)(_templateObject32 || (_templateObject32 = wanderer_taggedTemplateLiteral(["The Spooky Forest"]))), (_ref2 = {}, _defineProperty(_ref2, 502, 2), _defineProperty(_ref2, 505, 2), _ref2)], [(0,template_string/* $location */.PG)(_templateObject33 || (_templateObject33 = wanderer_taggedTemplateLiteral(["Guano Junction"]))), _defineProperty({}, 1427, 1)], [(0,template_string/* $location */.PG)(_templateObject34 || (_templateObject34 = wanderer_taggedTemplateLiteral(["The Hidden Apartment Building"]))), (_ref4 = {}, _defineProperty(_ref4, 780, 6), _defineProperty(_ref4, 1578, 6), _ref4)], [(0,template_string/* $location */.PG)(_templateObject35 || (_templateObject35 = wanderer_taggedTemplateLiteral(["The Black Forest"]))), (_ref5 = {}, _defineProperty(_ref5, 923, 1), _defineProperty(_ref5, 924, 1), _ref5)], [(0,template_string/* $location */.PG)(_templateObject36 || (_templateObject36 = wanderer_taggedTemplateLiteral(["LavaCo\u2122 Lamp Factory"]))), _defineProperty({}, 1091, 9)], [(0,template_string/* $location */.PG)(_templateObject37 || (_templateObject37 = wanderer_taggedTemplateLiteral(["The Haunted Laboratory"]))), _defineProperty({}, 884, 6)], [(0,template_string/* $location */.PG)(_templateObject38 || (_templateObject38 = wanderer_taggedTemplateLiteral(["The Haunted Nursery"]))), _defineProperty({}, 885, 6)], [(0,template_string/* $location */.PG)(_templateObject39 || (_templateObject39 = wanderer_taggedTemplateLiteral(["The Haunted Storage Room"]))), _defineProperty({}, 886, 6)], [(0,template_string/* $location */.PG)(_templateObject40 || (_templateObject40 = wanderer_taggedTemplateLiteral(["The Hidden Park"]))), _defineProperty({}, 789, 6)], [(0,template_string/* $location */.PG)(_templateObject41 || (_templateObject41 = wanderer_taggedTemplateLiteral(["A Mob of Zeppelin Protesters"]))), (_ref11 = {}, _defineProperty(_ref11, 1432, 1), _defineProperty(_ref11, 857, 2), _ref11)], [(0,template_string/* $location */.PG)(_templateObject42 || (_templateObject42 = wanderer_taggedTemplateLiteral(["A-Boo Peak"]))), _defineProperty({}, 1430, 2)], [(0,template_string/* $location */.PG)(_templateObject43 || (_templateObject43 = wanderer_taggedTemplateLiteral(["Sloppy Seconds Diner"]))), _defineProperty({}, 919, 6)], [(0,template_string/* $location */.PG)(_templateObject44 || (_templateObject44 = wanderer_taggedTemplateLiteral(["VYKEA"]))), _defineProperty({}, 1115, 6)], [(0,template_string/* $location */.PG)(_templateObject45 || (_templateObject45 = wanderer_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Basement)"]))), (_ref15 = {}, _defineProperty(_ref15, 670, 4), _defineProperty(_ref15, 671, 4), _defineProperty(_ref15, 672, 1), _ref15)], [(0,template_string/* $location */.PG)(_templateObject46 || (_templateObject46 = wanderer_taggedTemplateLiteral(["The Haunted Bedroom"]))), (_ref16 = {}, _defineProperty(_ref16, 876, 1), _defineProperty(_ref16, 877, 1), _defineProperty(_ref16, 878, 1), _defineProperty(_ref16, 879, 2), _defineProperty(_ref16, 880, 2), _ref16)], [(0,template_string/* $location */.PG)(_templateObject47 || (_templateObject47 = wanderer_taggedTemplateLiteral(["The Copperhead Club"]))), _defineProperty({}, 855, 4)], [(0,template_string/* $location */.PG)(_templateObject48 || (_templateObject48 = wanderer_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Top Floor)"]))), (_ref18 = {}, _defineProperty(_ref18, 1431, 1), _defineProperty(_ref18, 677, 2), _ref18)], [(0,template_string/* $location */.PG)(_templateObject49 || (_templateObject49 = wanderer_taggedTemplateLiteral(["The Hidden Office Building"]))), _defineProperty({}, 786, 6)]]);
 
 /***/ }),
 
