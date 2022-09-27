@@ -378,21 +378,24 @@ export function safeRestore(): void {
     restoreHp(myMaxhp() * 0.9);
   }
   const mpTarget = safeRestoreMpTarget();
-  if (myMp() < mpTarget) {
-    const maxSoulFoodMpGain = (myMaxmp() - myMp()) / 15;
-    const maxSoulFoodCasts = mySoulsauce() / soulsauceCost($skill`Soul Food`);
-    const soulFoodCasts = Math.floor(Math.min(maxSoulFoodMpGain, maxSoulFoodCasts));
-    if (soulFoodCasts > 0) {
-      useSkill(soulFoodCasts, $skill`Soul Food`);
-    }
-    if (
-      have($item`Kramco Sausage-o-Matic™`) &&
-      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get("_sausagesEaten") < 23
-    ) {
-      eat($item`magical sausage`);
-    } else restoreMp(mpTarget);
+  const shouldRestoreMp = () => myMp() < mpTarget;
+
+  if (
+    shouldRestoreMp() &&
+    have($item`Kramco Sausage-o-Matic™`) &&
+    (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
+    get("_sausagesEaten") < 23
+  ) {
+    eat($item`magical sausage`);
   }
+
+  const maxSoulFoodMpGain = (myMaxmp() - myMp()) / 15;
+  const maxSoulFoodCasts = mySoulsauce() / soulsauceCost($skill`Soul Food`);
+  const soulFoodCasts = Math.floor(Math.min(maxSoulFoodMpGain, maxSoulFoodCasts));
+
+  if (shouldRestoreMp() && soulFoodCasts > 0) useSkill(soulFoodCasts, $skill`Soul Food`);
+
+  if (shouldRestoreMp()) restoreMp(mpTarget);
 
   burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
