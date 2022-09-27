@@ -1,7 +1,6 @@
 import {
   availableAmount,
   bjornifyFamiliar,
-  canAdventure,
   canEquip,
   cliExecute,
   enthroneFamiliar,
@@ -353,12 +352,7 @@ export const familiarWaterBreathingEquipment = $items`das boot, little bitty bat
 let cachedUsingPurse: boolean | null = null;
 export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
-    cachedUsingPurse =
-      myInebriety() <= inebrietyLimit() &&
-      (!have($item`latte lovers member's mug`) ||
-        !have($familiar`Robortender`) ||
-        !canAdventure($location`The Black Forest`));
-    if (have($familiar`Hobo Monkey`) && myInebriety() <= inebrietyLimit()) {
+    if (myInebriety() <= inebrietyLimit()) {
       const purseBonus = () => {
         if (haveEffect($effect`Merry Smithsness`)) {
           return 0;
@@ -368,7 +362,7 @@ export function usingPurse(): boolean {
           return 1000 * 0.6 - mallPrice($item`Flaskfull of Hollow`) / 150;
         }
       };
-      useFamiliar($familiar`Hobo Monkey`);
+      useFamiliar(meatFamiliar());
       setLocation($location`none`);
       meatOutfit(
         true,
@@ -376,11 +370,9 @@ export function usingPurse(): boolean {
           bonusEquip: new Map($items`Half a Purse`.map((item) => [item, purseBonus()])),
         })
       );
-      if (haveEquipped($item`Half a Purse`)) {
-        cachedUsingPurse = true;
-      } else {
-        cachedUsingPurse = false;
-      }
+      cachedUsingPurse = haveEquipped($item`Half a Purse`);
+    } else {
+      cachedUsingPurse = false;
     }
   }
   return cachedUsingPurse;
