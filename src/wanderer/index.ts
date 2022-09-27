@@ -1,9 +1,10 @@
 import { Location, print } from "kolmafia";
 import { $location } from "libram";
-import { propertyManager, sober } from "../lib";
+import { HIGHLIGHT, propertyManager, sober } from "../lib";
 import { guzzlrFactory } from "./guzzlr";
 import {
-  defaultLocation,
+  canAdventureOrUnlock,
+  defaultFactory,
   DraggableFight,
   maxBy,
   unlock,
@@ -17,7 +18,7 @@ import { yellowRayFactory } from "./yellowray";
 export { DraggableFight };
 
 const wanderFactories: WandererFactory[] = [
-  defaultLocation,
+  defaultFactory,
   yellowRayFactory,
   lovebugsFactory,
   guzzlrFactory,
@@ -32,23 +33,19 @@ export function bestWander(
 
   for (const wanderFactory of wanderFactories) {
     const wanderTargets = wanderFactory(type, locationSkiplist);
-    if (wanderTargets) {
-      for (const wanderTarget of wanderTargets) {
-        if (
-          !nameSkiplist.includes(wanderTarget.name) &&
-          !locationSkiplist.includes(wanderTarget.location)
-        ) {
-          const wandererLocation: WandererLocation = possibleLocations.get(
-            wanderTarget.location
-          ) ?? {
-            location: wanderTarget.location,
-            targets: [],
-            value: 0,
-          };
-          wandererLocation.targets = [...wandererLocation.targets, wanderTarget];
-          wandererLocation.value += wanderTarget.value;
-          possibleLocations.set(wandererLocation.location, wandererLocation);
-        }
+    for (const wanderTarget of wanderTargets) {
+      if (
+        !nameSkiplist.includes(wanderTarget.name) &&
+        !locationSkiplist.includes(wanderTarget.location)
+      ) {
+        const wandererLocation: WandererLocation = possibleLocations.get(wanderTarget.location) ?? {
+          location: wanderTarget.location,
+          targets: [],
+          value: 0,
+        };
+        wandererLocation.targets = [...wandererLocation.targets, wanderTarget];
+        wandererLocation.value += wanderTarget.value;
+        possibleLocations.set(wandererLocation.location, wandererLocation);
       }
     }
   }
@@ -73,14 +70,24 @@ export function wanderWhere(
   locationSkiplist: Location[] = []
 ): Location {
   const candidate = bestWander(type, locationSkiplist, nameSkiplist);
-  const failed = candidate.targets.filter((target) => target.prepareTurn());
+  const failed = candidate.targets.filter((target) => !target.prepareTurn());
 
-  if (failed.length > 0 || !unlock(candidate.location, candidate.value)) {
-    return wanderWhere(type, [...nameSkiplist, ...failed.map((target) => target.name)]);
+  const badLocation =
+    !canAdventureOrUnlock(candidate.location) || !unlock(candidate.location, candidate.value)
+      ? [candidate.location]
+      : [];
+
+  if (failed.length > 0 || badLocation.length > 0) {
+    return wanderWhere(
+      type,
+      [...nameSkiplist, ...failed.map((target) => target.name)],
+      [...locationSkiplist, ...badLocation]
+    );
   } else {
     propertyManager.setChoices(unsupportedChoices.get(candidate.location) ?? {});
-    const targets = candidate.targets.map((t) => t.name).join(",");
-    print(`Wandering at ${candidate.location} for expected value ${candidate.value} (${targets}`);
+    const targets = candidate.targets.map((t) => t.name).join("; ");
+    const value = candidate.value.toFixed(2);
+    print(`Wandering at ${candidate.location} for expected value ${value} (${targets})`, HIGHLIGHT);
 
     return candidate.location;
   }

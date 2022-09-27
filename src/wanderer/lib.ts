@@ -1,6 +1,8 @@
 import { buy, canAdventure, Item, Location, use } from "kolmafia";
-import { $effect, $item, $location, $locations, get, have } from "libram";
+import { $effect, $item, $location, $locations, clamp, get, have, sum } from "libram";
+import { NumericProperty } from "libram/dist/propertyTypes";
 import { realmAvailable } from "../lib";
+import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
 
 export type DraggableFight = "backup" | "wanderer" | "yellow ray";
 
@@ -56,8 +58,11 @@ export const UnlockableZones: UnlockableZone[] = [
   },
 ];
 
+export function underwater(location: Location): boolean {
+  return location.environment === "underwater";
+}
+
 export function canAdventureOrUnlock(loc: Location): boolean {
-  const underwater = loc.environment === "underwater";
   const skiplist = [
     ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`,
     ...Location.all().filter((l) => l.parent === "Clan Basement"),
@@ -66,7 +71,7 @@ export function canAdventureOrUnlock(loc: Location): boolean {
     skiplist.push($location`The Icy Peak`);
   }
   const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
-  return !underwater && !skiplist.includes(loc) && (canAdventure(loc) || canUnlock);
+  return !underwater(loc) && !skiplist.includes(loc) && (canAdventure(loc) || canUnlock);
 }
 
 export function unlock(loc: Location, value: number): boolean {
@@ -95,6 +100,7 @@ function canWanderTypeWander(location: Location): boolean {
 }
 
 export function canWander(location: Location, type: DraggableFight): boolean {
+  if (underwater(location)) return false;
   switch (type) {
     case "backup":
       return canWanderTypeBackup(location);
@@ -173,7 +179,7 @@ export const unsupportedChoices = new Map<Location, { [choice: number]: number |
   [$location`The Hidden Office Building`, { [786]: 6 }],
 ]);
 
-export function defaultLocation(): WandererTarget[] {
+export function defaultFactory(): WandererTarget[] {
   return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
 }
 
@@ -183,4 +189,60 @@ export function maxBy<T>(array: T[], key: (t: T) => number): T {
       return { t, value: key(t) };
     })
     .reduce((prev, curr) => (prev.value < curr.value ? curr : prev)).t;
+}
+
+type WanderingSource = {
+  name: string;
+  item: Item;
+  max: number;
+  property: NumericProperty;
+  type: DraggableFight;
+};
+const WanderingSources: WanderingSource[] = [
+  {
+    name: "CMG",
+    item: $item`cursed magnifying glass`,
+    max: 3,
+    property: "_voidFreeFights",
+    type: "wanderer",
+  },
+  {
+    name: "Voter",
+    item: $item`"I Voted!" sticker`,
+    max: 3,
+    property: "_voteFreeFights",
+    type: "wanderer",
+  },
+  {
+    name: "Voter",
+    item: $item`"I Voted!" sticker`,
+    max: 3,
+    property: "_voteFreeFights",
+    type: "wanderer",
+  },
+  {
+    name: "Backup",
+    item: $item`backup camera`,
+    max: 11,
+    property: "_backUpUses",
+    type: "backup",
+  },
+];
+
+export function wandererTurnsAvailableToday(location: Location): number {
+  const canWanderCache: { [K in DraggableFight]: boolean } = {
+    backup: canWander(location, "backup"),
+    wanderer: canWander(location, "wanderer"),
+    "yellow ray": canWander(location, "yellow ray"),
+  };
+
+  const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
+  const yellowRay = canWanderCache["yellow ray"] ? Math.floor(estimatedTurns() / 100) : 0;
+  const wanderers = sum(WanderingSources, (source) =>
+    canWanderCache[source.type] && have(source.item)
+      ? clamp(get(source.property), 0, source.max)
+      : 0
+  );
+
+  return digitize + yellowRay + wanderers;
 }

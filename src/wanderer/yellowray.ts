@@ -12,13 +12,11 @@ import { garboValue } from "../session";
 import { canWander, DraggableFight, maxBy, UnlockableZones, WandererTarget } from "./lib";
 
 function averageYrValue(location: Location) {
+  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
   const monsters = Object.keys(getLocationMonsters(location))
     .map((m) => toMonster(m))
-    .filter(
-      (m) =>
-        !["LUCKY", "ULTRARARE", "BOSS"].some((s) => m.attributes.includes(s) && rates[m.name] > 0)
-    );
+    .filter((m) => !badAttributes.some((s) => m.attributes.includes(s) && rates[m.name] > 0));
 
   if (monsters.length === 0) {
     return 0;

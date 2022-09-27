@@ -1,29 +1,13 @@
 import { buy, craftType, Location, print, retrieveItem } from "kolmafia";
-import { $item, $skill, clamp, get, Guzzlr, have } from "libram";
-import { globalOptions } from "../lib";
+import { $item, get, Guzzlr, have } from "libram";
+import { freeCrafts, globalOptions } from "../lib";
 import { garboValue } from "../session";
-import { digitizedMonstersRemaining } from "../turns";
-import { canAdventureOrUnlock, canWander, DraggableFight, WandererTarget } from "./lib";
-
-function freeCrafts() {
-  return (
-    (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
-    (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
-  );
-}
-
-function wandererTurnsAvailableToday(zone: Location) {
-  return (
-    (canWander(zone, "wanderer")
-      ? digitizedMonstersRemaining() +
-        (have($item`"I Voted!" sticker`) ? clamp(3 - get("_voteFreeFights"), 0, 3) : 0) +
-        (have($item`cursed magnifying glass`) ? clamp(5 - get("_voidFreeFights"), 0, 5) : 0)
-      : 0) +
-    (canWander(zone, "backup") && have($item`backup camera`)
-      ? clamp(11 - get("_backUpUses"), 0, 11)
-      : 0)
-  );
-}
+import {
+  canAdventureOrUnlock,
+  DraggableFight,
+  WandererTarget,
+  wandererTurnsAvailableToday,
+} from "./lib";
 
 function considerAbandon(locationSkiplist: Location[]) {
   const location = Guzzlr.getLocation();

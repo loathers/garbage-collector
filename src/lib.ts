@@ -545,3 +545,10 @@ export const romanticMonsterImpossible = (): boolean =>
 export function sober(): boolean {
   return myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
 }
+
+export function freeCrafts(): number {
+  return (
+    (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
+    (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
+  );
+}
