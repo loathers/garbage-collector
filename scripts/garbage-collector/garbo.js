@@ -26023,7 +26023,7 @@ function main() {
 
 
         dailySetup();
-        var preventEquip = (0,template_string/* $items */.vS)(src_templateObject26 || (src_templateObject26 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack"])));
+        var preventEquip = (0,template_string/* $items */.vS)(src_templateObject26 || (src_templateObject26 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack, dice-shaped backpack"])));
 
         if (src_lib/* globalOptions.quickMode */.Xe.quickMode) {
           // Brimstone equipment explodes the number of maximize combinations
