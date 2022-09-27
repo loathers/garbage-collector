@@ -23,6 +23,7 @@ import {
   myMaxhp,
   myMaxmp,
   myMp,
+  mySoulsauce,
   myTurncount,
   print,
   printHtml,
@@ -30,6 +31,7 @@ import {
   restoreMp,
   runChoice,
   runCombat,
+  soulsauceCost,
   todayToString,
   toSlot,
   toUrl,
@@ -377,6 +379,12 @@ export function safeRestore(): void {
   }
   const mpTarget = safeRestoreMpTarget();
   if (myMp() < mpTarget) {
+    const maxSoulFoodMpGain = (myMaxmp() - myMp()) / 15;
+    const maxSoulFoodCasts = mySoulsauce() / soulsauceCost($skill`Soul Food`);
+    const soulFoodCasts = Math.floor(Math.min(maxSoulFoodMpGain, maxSoulFoodCasts));
+    if (soulFoodCasts > 0) {
+      useSkill(soulFoodCasts, $skill`Soul Food`);
+    }
     if (
       have($item`Kramco Sausage-o-Matic™`) &&
       (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
