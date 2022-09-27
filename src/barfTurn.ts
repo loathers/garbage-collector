@@ -236,7 +236,14 @@ const turns: AdventureAction[] = [
       isEmbezzler ? embezzlerPrep({ sea: underwater }) : freeFightPrep();
       adventureMacroAuto(
         targetLocation,
-        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
+        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(),
+
+        // Hacky fix for when we fail init to embezzler, who are special monsters
+        // Macro autoattacks fail when you lose the jump to special monsters
+        Macro.if_(
+          `(monsterid ${embezzler.id}) && !gotjump && !(pastround 1)`,
+          Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
+        ).abort()
       );
       return get("_sourceTerminalDigitizeMonsterCount") !== start;
     },
