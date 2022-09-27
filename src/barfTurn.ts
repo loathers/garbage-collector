@@ -267,7 +267,7 @@ const turns: AdventureAction[] = [
         // Hacky fix for when we fail init to embezzler, who are special monsters
         // Macro autoattacks fail when you lose the jump to special monsters
         Macro.if_(
-          `(monsterid ${embezzler.id}) && !gotjump && !(pastround 1)`,
+          `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
           Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
         ).abort()
       );
