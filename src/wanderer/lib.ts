@@ -61,17 +61,21 @@ export const UnlockableZones: UnlockableZone[] = [
 export function underwater(location: Location): boolean {
   return location.environment === "underwater";
 }
-
+const canAdventureOrUnlockSkipList = [
+  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`,
+  ...Location.all().filter((l) => l.parent === "Clan Basement"),
+];
 export function canAdventureOrUnlock(loc: Location): boolean {
-  const skiplist = [
-    ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`,
-    ...Location.all().filter((l) => l.parent === "Clan Basement"),
-  ];
+  const skiplist = [...canAdventureOrUnlockSkipList];
   if (!have($item`repaid diaper`) && have($item`Great Wolf's beastly trousers`)) {
     skiplist.push($location`The Icy Peak`);
   }
   const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
-  return !underwater(loc) && !skiplist.includes(loc) && (canAdventure(loc) || canUnlock);
+  return (
+    !underwater(loc) &&
+    !canAdventureOrUnlockSkipList.includes(loc) &&
+    (canAdventure(loc) || canUnlock)
+  );
 }
 
 export function unlock(loc: Location, value: number): boolean {
@@ -230,7 +234,7 @@ const WanderingSources: WanderingSource[] = [
 ];
 
 export function wandererTurnsAvailableToday(location: Location): number {
-  const canWanderCache: { [K in DraggableFight]: boolean } = {
+  const canWanderCache: Record<DraggableFight, boolean> = {
     backup: canWander(location, "backup"),
     wanderer: canWander(location, "wanderer"),
     "yellow ray": canWander(location, "yellow ray"),

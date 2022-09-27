@@ -9,7 +9,14 @@ import {
 import { sum } from "libram";
 import { freeFightFamiliarData } from "../familiar/freeFightFamiliar";
 import { garboValue } from "../session";
-import { canWander, DraggableFight, maxBy, UnlockableZones, WandererTarget } from "./lib";
+import {
+  canWander,
+  DraggableFight,
+  maxBy,
+  underwater,
+  UnlockableZones,
+  WandererTarget,
+} from "./lib";
 
 function averageYrValue(location: Location) {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
@@ -24,7 +31,7 @@ function averageYrValue(location: Location) {
     return (
       sum(monsters, (m) => {
         const items = itemDropsArray(m).filter((drop) => ["", "n"].includes(drop.type));
-        return sum(items, (drop) => garboValue(drop.drop));
+        return sum(items, (drop) => garboValue(drop.drop, true));
       }) / monsters.length
     );
   }
@@ -32,7 +39,7 @@ function averageYrValue(location: Location) {
 
 function yrValues(): Map<Location, number> {
   const values = new Map<Location, number>();
-  for (const location of Location.all()) {
+  for (const location of Location.all().filter((l) => canAdventure(l) && !underwater(l))) {
     values.set(
       location,
       averageYrValue(location) + freeFightFamiliarData({ location }).expectedValue
