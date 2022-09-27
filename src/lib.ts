@@ -355,6 +355,10 @@ export function burnLibrams(mpTarget = 0): void {
 }
 
 export function safeRestoreMpTarget(): number {
+  //  If our max MP is close to 200, we could be restoring every turn even if we don't need to, avoid that case.
+  if (Math.abs(myMaxmp() - 200) < 40) {
+    return Math.min(myMaxmp(), 100);
+  }
   return Math.min(myMaxmp(), 200);
 }
 
