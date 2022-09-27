@@ -805,14 +805,13 @@ function pickCargoPocket(): void {
       return value;
     }
     if (pocket in items) {
-      value += Object.entries(pocketItems(pocket))
-        .map(([item, count]) => garboValue(toItem(item)) * count)
-        .reduce((prev, cur) => prev + cur, 0);
+      value += sum(
+        Object.entries(pocketItems(pocket)),
+        ([item, count]) => garboValue(toItem(item), true) * count
+      );
     }
     if (pocket in meats) {
-      value += Object.values(pocketMeat(pocket))
-        .map((x) => parseInt(x))
-        .reduce((prev, cur) => prev + cur, 0);
+      value += sum(Object.values(pocketMeat(pocket)), (x) => parseInt(x));
     }
     if (pocket in scraps) {
       value += 200;
