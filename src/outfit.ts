@@ -356,7 +356,7 @@ export function usingPurse(): boolean {
     cachedUsingPurse =
       myInebriety() <= inebrietyLimit() &&
       (!have($item`latte lovers member's mug`) ||
-        !have($familiar`Robortender`) ||
+        (!have($familiar`Robortender`) && !have($familiar`Hobo Monkey`)) ||
         !canAdventure($location`The Black Forest`));
     if (have($familiar`Hobo Monkey`) && myInebriety() <= inebrietyLimit()) {
       const purseBonus = () => {
