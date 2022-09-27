@@ -6,7 +6,6 @@
   - [Setup](#setup)
     - [Set `valueOfAdventure`](#set-valueofadventure)
     - [Set your VIP clan](#set-your-vip-clan)
-    - [Suggested: Universal Recovery](#suggested-universal-recovery)
     - [Pull your stuff from Hagnk's](#pull-your-stuff-please)
   - [Usage](#usage)
     - [`nobarf` flag](#nobarf-flag)
@@ -67,16 +66,6 @@ set garbo_vipClan = "Bonus Adventures from Hell"
 ```
 
 This is optional - you can skip providing this clan and Garbo will still run.
-
-### Suggested: Universal Recovery
-
-Sometimes, this script will get you caught in a weird loop if your auto-recovery is incorrectly set and Mafia decides to fix HP problems by adventuring at your campsite. To avoid this, uncheck everything in auto-recovery and check out Universal Recovery.
-
-```text
-svn checkout https://svn.code.sf.net/p/kolmafiascripts/mafiarecovery/code/
-```
-
-Universal Recovery will look a lot like mafia's default recovery settings, but will be managed in a more sophisticated manner. You can access these settings via the relay browser.
 
 ### Pull your stuff, please
 
