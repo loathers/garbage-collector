@@ -161,8 +161,8 @@ function printSession(session: Session): void {
   }
 }
 
-function garboSaleValue(item: Item): number {
-  if (globalOptions.quickMode) {
+function garboSaleValue(item: Item, useHistorical: boolean): number {
+  if (useHistorical) {
     if (historicalAge(item) <= 7.0 && historicalPrice(item) > 0) {
       const isMallMin = historicalPrice(item) === Math.max(100, 2 * autosellPrice(item));
       return isMallMin ? autosellPrice(item) : 0.9 * historicalPrice(item);
@@ -171,19 +171,23 @@ function garboSaleValue(item: Item): number {
   return getSaleValue(item);
 }
 
-const garboValueCache = new Map<Item, number>();
-export function garboValue(item: Item): number {
-  const cachedValue = garboValueCache.get(item);
+const garboRegularValueCache = new Map<Item, number>();
+const garboHistoricalValueCache = new Map<Item, number>();
+export function garboValue(item: Item, useHistorical = false): number {
+  useHistorical ||= globalOptions.quickMode;
+  const cachedValue =
+    garboRegularValueCache.get(item) ??
+    (useHistorical ? garboHistoricalValueCache.get(item) : undefined);
   if (cachedValue === undefined) {
     const specialValueCompute = specialValueLookup.get(item);
-    const value = specialValueCompute ? specialValueCompute() : garboSaleValue(item);
-    garboValueCache.set(item, value);
+    const value = specialValueCompute ? specialValueCompute() : garboSaleValue(item, useHistorical);
+    (useHistorical ? garboHistoricalValueCache : garboRegularValueCache).set(item, value);
     return value;
   }
   return cachedValue;
 }
 export function garboAverageValue(...items: Item[]): number {
-  return sumNumbers(items.map(garboValue)) / items.length;
+  return sumNumbers(items.map((i) => garboValue(i))) / items.length;
 }
 
 let session: Session | null = null;
