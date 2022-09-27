@@ -355,7 +355,7 @@ export function burnLibrams(mpTarget = 0): void {
 }
 
 export function safeRestoreMpTarget(): number {
-  return Math.min(myMaxmp(), 200);
+  return Math.min(myMaxmp(), 100);
 }
 
 export function safeRestore(): void {
