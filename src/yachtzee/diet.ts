@@ -319,9 +319,10 @@ function yachtzeeDietScheduler(
       for (const splitEntry of splitDietEntry(entry)) toasts.push(splitEntry);
     } else if (entry.name === "jurassic parka") {
       // Parka before Clara's, since we want to use free runs asap
-      for (const splitEntry of splitDietEntry(entry)) freeNCs.splice(0, 0, splitEntry);
-    } else if (entry.name === "clara's bell") {
+      // Note that since we push a flipped freeNCs onto the dietSchedule, so we put Clara's in front in freeNCs
       for (const splitEntry of splitDietEntry(entry)) freeNCs.push(splitEntry);
+    } else if (entry.name === "clara's bell") {
+      for (const splitEntry of splitDietEntry(entry)) freeNCs.splice(0, 0, splitEntry);
     } else if (entry.fullness > 0 || entry.drunkenness > 0) {
       for (const splitEntry of splitDietEntry(entry)) dietSchedule.splice(0, 0, splitEntry);
     } else {
