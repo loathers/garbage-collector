@@ -4,12 +4,10 @@ import {
   cliExecute,
   currentRound,
   eat,
-  inebrietyLimit,
   itemAmount,
   Location,
   mallPrice,
   myAdventures,
-  myFamiliar,
   myInebriety,
   myLevel,
   print,
@@ -25,7 +23,6 @@ import {
 } from "kolmafia";
 import {
   $effect,
-  $familiar,
   $item,
   $items,
   $location,
@@ -45,7 +42,6 @@ import {
 import { Macro, withMacro } from "./combat";
 import { completeBarfQuest } from "./dailies";
 import { computeDiet, consumeDiet } from "./diet";
-import { estimatedTurns } from "./embezzler";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { deliverThesisIfAble } from "./fights";
 import {
@@ -56,6 +52,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  sober,
 } from "./lib";
 import { meatMood } from "./mood";
 import {
@@ -66,16 +63,9 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
-import {
-  determineDraggableZoneAndEnsureAccess,
-  digitizedMonstersRemaining,
-  DraggableFight,
-} from "./wanderer";
+import { digitizedMonstersRemaining, estimatedTurns } from "./turns";
+import { drunkSafeWander, wanderWhere } from "./wanderer";
 
-const sober = () =>
-  myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
-const noWineglassZone = (type: DraggableFight = "wanderer") =>
-  sober() ? determineDraggableZoneAndEnsureAccess(type) : $location`Drunken Stupor`;
 const embezzler = $monster`Knob Goblin Embezzler`;
 
 type EmbezzlerPrepOptions = {
@@ -237,7 +227,7 @@ const turns: AdventureAction[] = [
         })
       );
       adventureMacroAuto(
-        isGhost ? noWineglassZone() : determineDraggableZoneAndEnsureAccess(),
+        isGhost ? drunkSafeWander("wanderer") : wanderWhere("wanderer"),
         Macro.basicCombat()
       );
       return get("lastVoteMonsterTurn") === totalTurnsPlayed();
@@ -255,7 +245,7 @@ const turns: AdventureAction[] = [
 
       const underwater = isEmbezzler && shouldGoUnderwater();
 
-      const targetLocation = underwater ? $location`The Briny Deeps` : noWineglassZone();
+      const targetLocation = underwater ? $location`The Briny Deeps` : drunkSafeWander("wanderer");
 
       if (underwater) retrieveItem($item`pulled green taffy`);
 
@@ -281,7 +271,7 @@ const turns: AdventureAction[] = [
     available: () => kramcoGuaranteed(),
     execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
-      adventureMacroAuto(noWineglassZone(), Macro.basicCombat());
+      adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
       return !kramcoGuaranteed();
     },
     spendsTurn: false,
@@ -295,7 +285,7 @@ const turns: AdventureAction[] = [
       get("_voidFreeFights") < 5,
     execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
-      adventureMacroAuto(noWineglassZone(), Macro.basicCombat());
+      adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
       return get("cursedMagnifyingGlassCount") === 0;
     },
     spendsTurn: false,
@@ -320,7 +310,7 @@ const turns: AdventureAction[] = [
       !have($effect`Everything Looks Yellow`) &&
       romanticMonsterImpossible(),
     execute: () => {
-      const location = determineDraggableZoneAndEnsureAccess("yellow ray");
+      const location = wanderWhere("yellow ray");
       const familiar = freeFightFamiliar({ location });
       useFamiliar(familiar);
       freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));

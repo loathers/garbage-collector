@@ -18,6 +18,7 @@ import {
   meatDropModifier,
   Monster,
   mpCost,
+  myFamiliar,
   myHp,
   myInebriety,
   myMaxhp,
@@ -44,6 +45,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $location,
   $monster,
@@ -422,9 +424,8 @@ export function checkGithubVersion(): void {
   }
 }
 
-export function realmAvailable(
-  identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
-): boolean {
+export type RealmType = "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate";
+export function realmAvailable(identifier: RealmType): boolean {
   if (identifier === "fantasy") {
     return get(`_frToday`) || get(`frAlways`);
   } else if (identifier === "pirate") {
@@ -548,3 +549,14 @@ export const romanticMonsterImpossible = (): boolean =>
   (Counter.get("Romantic Monster Window begin") > 0 &&
     Counter.get("Romantic Monster window begin") !== Infinity) ||
   get("_romanticFightsLeft") <= 0;
+
+export function sober(): boolean {
+  return myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
+}
+
+export function freeCrafts(): number {
+  return (
+    (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
+    (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
+  );
+}

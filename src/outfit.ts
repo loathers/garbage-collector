@@ -44,7 +44,7 @@ import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dro
 import { embezzlerCount } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import { baseMeat, globalOptions } from "./lib";
-import { digitizedMonstersRemaining } from "./wanderer";
+import { digitizedMonstersRemaining } from "./turns";
 
 export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
