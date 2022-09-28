@@ -217,12 +217,15 @@ const turns: AdventureAction[] = [
       get("_voteFreeFights") < 3,
     execute: () => {
       const isGhost = get("_voteMonster") === $monster`angry ghost`;
-
+      const isMutant = get("_voteMonster") === $monster`terrible mutant`;
       freeFightPrep(
         new Requirement([], {
           forceEquip: [
             $item`"I Voted!" sticker`,
             ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
+            ...(!have($item`mutant crown`) && isMutant
+              ? $items`mutant arm, mutant legs`.filter((i) => have(i))
+              : []),
           ],
         })
       );
