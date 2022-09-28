@@ -317,7 +317,10 @@ function yachtzeeDietScheduler(
       for (const splitEntry of splitDietEntry(entry)) jellies.push(splitEntry);
     } else if (entry.name === "toast with stench jelly") {
       for (const splitEntry of splitDietEntry(entry)) toasts.push(splitEntry);
-    } else if (["clara's bell", "jurassic parka"].includes(entry.name)) {
+    } else if (entry.name === "jurassic parka") {
+      // Parka before Clara's, since we want to use free runs asap
+      for (const splitEntry of splitDietEntry(entry)) freeNCs.splice(0, 0, splitEntry);
+    } else if (entry.name === "clara's bell") {
       for (const splitEntry of splitDietEntry(entry)) freeNCs.push(splitEntry);
     } else if (entry.fullness > 0 || entry.drunkenness > 0) {
       for (const splitEntry of splitDietEntry(entry)) dietSchedule.splice(0, 0, splitEntry);
@@ -358,8 +361,15 @@ function yachtzeeDietScheduler(
     }
   }
 
-  // Next, put our free NC sources at the end of the diet
-  for (const freeNCSource of freeNCs) dietSchedule.push(freeNCSource);
+  // Place our free NC sources immediately before any jellies
+  for (let idx = 0; idx <= dietSchedule.length; idx++) {
+    if (idx === dietSchedule.length) {
+      for (const freeNCSource of freeNCs) dietSchedule.push(freeNCSource);
+    } else if (dietSchedule[idx].name.includes("jelly")) {
+      for (const freeNCSource of freeNCs) dietSchedule.splice(idx, 0, freeNCSource);
+      break;
+    }
+  }
 
   // Next, combine clustered entries where possible (this is purely for aesthetic reasons)
   let idx = 0;
