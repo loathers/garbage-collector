@@ -45,7 +45,7 @@ import {
 } from "./outfit";
 
 function _yachtzeeChain(): void {
-  if (myLevel() <= 13 || !canInteract()) return;
+  if (myLevel() < 13 || !canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
   if (!realmAvailable("sleaze")) return;
 
