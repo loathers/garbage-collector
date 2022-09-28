@@ -23,7 +23,7 @@ function averageYrValue(location: Location) {
   const rates = appearanceRates(location);
   const monsters = Object.keys(getLocationMonsters(location))
     .map((m) => toMonster(m))
-    .filter((m) => !badAttributes.some((s) => m.attributes.includes(s) && rates[m.name] > 0));
+    .filter((m) => !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0);
 
   if (monsters.length === 0) {
     return 0;
