@@ -795,7 +795,7 @@ const freeFightSources = [
       ),
     true,
     {
-      requirements: () => [new Requirement(["1000 mainstat"], {})],
+      requirements: () => [new Requirement(["1000 mainstat, -10 ml 0 min"], {})],
       macroAllowsFamiliarActions: false,
     }
   ),
