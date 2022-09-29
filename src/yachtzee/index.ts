@@ -146,9 +146,9 @@ export function yachtzeeChain(): void {
   _yachtzeeChain();
   set("_garboYachtzeeChainCompleted", true);
   globalOptions.yachtzeeChain = false;
-  freeRunFights();
   if (!globalOptions.noDiet) {
     runDiet();
     prepFamiliars(); // Recompute robo drinks' worth after diet is finally consumed
   }
+  freeRunFights();
 }
