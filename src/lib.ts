@@ -18,11 +18,13 @@ import {
   meatDropModifier,
   Monster,
   mpCost,
+  myFamiliar,
   myHp,
   myInebriety,
   myMaxhp,
   myMaxmp,
   myMp,
+  mySoulsauce,
   myTurncount,
   print,
   printHtml,
@@ -30,6 +32,7 @@ import {
   restoreMp,
   runChoice,
   runCombat,
+  soulsauceCost,
   todayToString,
   toSlot,
   toUrl,
@@ -42,6 +45,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $location,
   $monster,
@@ -355,6 +359,10 @@ export function burnLibrams(mpTarget = 0): void {
 }
 
 export function safeRestoreMpTarget(): number {
+  //  If our max MP is close to 200, we could be restoring every turn even if we don't need to, avoid that case.
+  if (Math.abs(myMaxmp() - 200) < 40) {
+    return Math.min(myMaxmp(), 100);
+  }
   return Math.min(myMaxmp(), 200);
 }
 
@@ -372,15 +380,21 @@ export function safeRestore(): void {
     restoreHp(myMaxhp() * 0.9);
   }
   const mpTarget = safeRestoreMpTarget();
-  if (myMp() < mpTarget) {
-    if (
-      have($item`Kramco Sausage-o-Matic™`) &&
-      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get("_sausagesEaten") < 23
-    ) {
-      eat($item`magical sausage`);
-    } else restoreMp(mpTarget);
+  const shouldRestoreMp = () => myMp() < mpTarget;
+
+  if (
+    shouldRestoreMp() &&
+    have($item`Kramco Sausage-o-Matic™`) &&
+    (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
+    get("_sausagesEaten") < 23
+  ) {
+    eat($item`magical sausage`);
   }
+
+  const soulFoodCasts = Math.floor(mySoulsauce() / soulsauceCost($skill`Soul Food`));
+  if (shouldRestoreMp() && soulFoodCasts > 0) useSkill(soulFoodCasts, $skill`Soul Food`);
+
+  if (shouldRestoreMp()) restoreMp(mpTarget);
 
   burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
@@ -410,9 +424,8 @@ export function checkGithubVersion(): void {
   }
 }
 
-export function realmAvailable(
-  identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
-): boolean {
+export type RealmType = "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate";
+export function realmAvailable(identifier: RealmType): boolean {
   if (identifier === "fantasy") {
     return get(`_frToday`) || get(`frAlways`);
   } else if (identifier === "pirate") {
@@ -536,3 +549,14 @@ export const romanticMonsterImpossible = (): boolean =>
   (Counter.get("Romantic Monster Window begin") > 0 &&
     Counter.get("Romantic Monster window begin") !== Infinity) ||
   get("_romanticFightsLeft") <= 0;
+
+export function sober(): boolean {
+  return myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
+}
+
+export function freeCrafts(): number {
+  return (
+    (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
+    (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
+  );
+}

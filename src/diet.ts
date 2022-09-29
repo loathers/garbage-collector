@@ -65,7 +65,7 @@ import {
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
-import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { embezzlerCount } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import {
   argmax,
@@ -80,6 +80,7 @@ import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
+import { estimatedTurns } from "./turns";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);

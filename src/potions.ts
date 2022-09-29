@@ -37,8 +37,9 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
-import { embezzlerCount, estimatedTurns } from "./embezzler";
+import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
+import { estimatedTurns } from "./turns";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;

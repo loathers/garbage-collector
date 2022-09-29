@@ -23,9 +23,9 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
-import { estimatedTurns } from "../embezzler";
 import { baseMeat, HIGHLIGHT } from "../lib";
 import { meatOutfit } from "../outfit";
+import { estimatedTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
