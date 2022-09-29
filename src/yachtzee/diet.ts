@@ -248,14 +248,6 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
               use(1, $item`distention pill`);
             }
           }
-          if (entry.drunkenness > 0) {
-            while (get("sweat") >= 25 && get("_sweatOutSomeBoozeUsed") < 3 && myInebriety() > 0) {
-              useSkill($skill`Sweat Out Some Booze`);
-            }
-            if (!get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`)) {
-              use(1, $item`synthetic dog hair pill`);
-            }
-          }
           entry.action(1);
         } else {
           throw new Error(`Could not find ${name} in dietArray`);
@@ -266,6 +258,14 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
     } else if (!stenchJellyConsumed) {
       dietUtil.dietArray.forEach((entry) => {
         if (entry.name === name) {
+          if (entry.drunkenness > 0) {
+            while (get("sweat") >= 25 && get("_sweatOutSomeBoozeUsed") < 3 && myInebriety() > 0) {
+              useSkill($skill`Sweat Out Some Booze`);
+            }
+            if (!get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`)) {
+              use(1, $item`synthetic dog hair pill`);
+            }
+          }
           if (myFullness() + entry.fullness > fullnessLimit()) {
             throw new Error(`consuming ${entry.name} will exceed our fullness limit`);
           } else if (myInebriety() + entry.drunkenness > inebrietyLimit()) {
