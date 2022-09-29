@@ -3,7 +3,6 @@ repos:
     rev: v4.3.0
     hooks:
       - id: check-yaml
-      - id: trailing-whitespace
       - id: check-merge-conflict
   - repo: https://gitlab.com/bmares/check-json5
     rev: v1.0.0
