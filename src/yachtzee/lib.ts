@@ -97,7 +97,7 @@ export function useSpikolodonSpikes(): void {
 
   const targetZone = canJelly
     ? $location`Pirates of the Garbage Barges`
-    : $location`The Haunted Kitchen`;
+    : $location`Sloppy Seconds Diner`;
   const macro = Macro.familiarActions()
     .skill($skill`Launch spikolodon spikes`)
     .step(run.macro);

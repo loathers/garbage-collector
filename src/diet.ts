@@ -165,7 +165,7 @@ function useIfUnused(item: Item, prop: string | boolean, maxPrice: number) {
   }
 }
 
-function nonOrganAdventures(): void {
+export function nonOrganAdventures(): void {
   useIfUnused($item`fancy chocolate car`, get("_chocolatesUsed") !== 0, 2 * MPA);
 
   while (get("_loveChocolatesUsed") < 3) {
@@ -797,8 +797,14 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   let lastOrgans = [-1, -1, -1];
   const capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
   let lastCapacities = [-1, -1, -1];
-  while (sum(diet.entries, ({ quantity }) => quantity) > 0) {
-    if (arrayEquals(lastOrgans, organs()) && arrayEquals(lastCapacities, capacities())) {
+  let currentQuantity = sum(diet.entries, ({ quantity }) => quantity);
+  let lastQuantity = -1;
+  while (currentQuantity > 0) {
+    if (
+      arrayEquals(lastOrgans, organs()) &&
+      arrayEquals(lastCapacities, capacities()) &&
+      lastQuantity === currentQuantity
+    ) {
       print();
       printDiet(diet, "REMAINING");
       print();
@@ -806,6 +812,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
     }
     lastOrgans = organs();
     lastCapacities = capacities();
+    lastQuantity = currentQuantity;
 
     for (const dietEntry of diet.entries) {
       const { menuItems, quantity } = dietEntry;
@@ -954,6 +961,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
       }
       dietEntry.quantity -= countToConsume;
     }
+    currentQuantity = sum(diet.entries, ({ quantity }) => quantity);
   }
 }
 
