@@ -43,7 +43,7 @@ import {
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
 } from "libram";
-import { runDiet } from "./diet";
+import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   bestJuneCleaverOption,
@@ -412,6 +412,8 @@ export function main(argString = ""): void {
           (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
         ) {
           runDiet();
+        } else if (!globalOptions.simulateDiet) {
+          nonOrganAdventures();
         }
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
