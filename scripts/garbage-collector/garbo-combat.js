@@ -14913,7 +14913,7 @@ function main() {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* unused harmony exports mallMin, bestConsumable, potionMenu, computeDiet, consumeDiet, runDiet */
+/* unused harmony exports nonOrganAdventures, mallMin, bestConsumable, potionMenu, computeDiet, consumeDiet, runDiet */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(2474);
@@ -15201,7 +15201,10 @@ function menu() {
   })]);
 }
 
-function bestConsumable(organType, restrictList, maxSize) {
+function bestConsumable(organType) {
+  var levelRestrict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  var restrictList = arguments.length > 2 ? arguments[2] : undefined;
+  var maxSize = arguments.length > 3 ? arguments[3] : undefined;
   var fullMenu = potionMenu(menu(), 0, 0);
   var organMenu = fullMenu.filter(menuItem => itemType(menuItem.item) === organType);
 
@@ -15214,7 +15217,11 @@ function bestConsumable(organType, restrictList, maxSize) {
   }
 
   if (maxSize) {
-    organMenu = organMenu.filter(MenuItem => MenuItem.size <= maxSize);
+    organMenu = organMenu.filter(menuItem => menuItem.size <= maxSize);
+  }
+
+  if (levelRestrict) {
+    organMenu = organMenu.filter(menuItem => menuItem.item.levelreq <= myLevel());
   }
 
   var organList = organMenu.map(consumable => {
@@ -15476,12 +15483,14 @@ function consumeDiet(diet, name) {
   var capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
 
   var lastCapacities = [-1, -1, -1];
-
-  while (sum(diet.entries, _ref2 => {
+  var currentQuantity = sum(diet.entries, _ref2 => {
     var quantity = _ref2.quantity;
     return quantity;
-  }) > 0) {
-    if (arrayEquals(lastOrgans, organs()) && arrayEquals(lastCapacities, capacities())) {
+  });
+  var lastQuantity = -1;
+
+  while (currentQuantity > 0) {
+    if (arrayEquals(lastOrgans, organs()) && arrayEquals(lastCapacities, capacities()) && lastQuantity === currentQuantity) {
       print();
       printDiet(diet, "REMAINING");
       print();
@@ -15490,6 +15499,7 @@ function consumeDiet(diet, name) {
 
     lastOrgans = organs();
     lastCapacities = capacities();
+    lastQuantity = currentQuantity;
 
     var _iterator2 = _createForOfIteratorHelper(diet.entries),
         _step2;
@@ -15630,6 +15640,11 @@ function consumeDiet(diet, name) {
     } finally {
       _iterator2.f();
     }
+
+    currentQuantity = sum(diet.entries, _ref3 => {
+      var quantity = _ref3.quantity;
+      return quantity;
+    });
   }
 }
 function runDiet() {
