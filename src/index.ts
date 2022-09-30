@@ -43,7 +43,7 @@ import {
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
 } from "libram";
-import { runDiet } from "./diet";
+import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   bestJuneCleaverOption,
@@ -61,11 +61,11 @@ import { meatMood } from "./mood";
 import postCombatActions from "./post";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
-import { estimatedTurns } from "./embezzler";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
 import barfTurn from "./barfTurn";
+import { estimatedTurns } from "./turns";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -412,12 +412,14 @@ export function main(argString = ""): void {
           (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
         ) {
           runDiet();
+        } else if (!globalOptions.simulateDiet) {
+          nonOrganAdventures();
         }
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
 
-        const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack`;
+        const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack`;
         if (globalOptions.quickMode) {
           // Brimstone equipment explodes the number of maximize combinations
           preventEquip.push(

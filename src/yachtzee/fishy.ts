@@ -163,6 +163,37 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
       },
     },
     {
+      name: "Pocket Wish",
+      turns: 20 + (haveFishyPipe ? 10 : 0),
+      cost: mallPrice($item`pocket wish`) + bestWaterBreathingEquipment.cost,
+      action: () => {
+        acquire(1, $item`pocket wish`, 1.2 * mallPrice($item`pocket wish`));
+        if (!have($item`pocket wish`)) {
+          throw new Error("Unable to obtain Pocket Wish");
+        }
+        cliExecute(`genie effect Fishy`);
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
+      },
+    },
+    {
+      name: "2x Pocket Wish",
+      turns: 40 + (haveFishyPipe ? 10 : 0),
+      cost: 2 * mallPrice($item`pocket wish`) + bestWaterBreathingEquipment.cost,
+      action: () => {
+        acquire(2, $item`pocket wish`, 1.2 * mallPrice($item`pocket wish`));
+        if (availableAmount($item`pocket wish`) < 2) {
+          throw new Error("Unable to obtain Pocket Wish");
+        }
+        cliExecute(`genie effect Fishy`);
+        cliExecute(`genie effect Fishy`);
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
+      },
+    },
+    {
       name: "The Haggling",
       turns: 50 + (haveFishyPipe ? 10 : 0),
       cost: canAdventure($location`The Brinier Deepers`)
@@ -198,7 +229,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
     {
       name: "Just Fishy Pipe",
       turns: 10,
-      cost: haveFishyPipe ? 0 : Infinity,
+      cost: haveFishyPipe ? bestWaterBreathingEquipment.cost : Infinity,
       action: () => {
         if (haveFishyPipe && haveEffect($effect`Fishy`) < yachtzeeTurns) use(1, $item`fishy pipe`);
       },

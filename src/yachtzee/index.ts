@@ -29,7 +29,7 @@ import {
 import { prepFamiliars } from "../dailies";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
-import { doSausage } from "../fights";
+import { doSausage, freeRunFights } from "../fights";
 import { baseMeat, globalOptions, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
@@ -45,7 +45,7 @@ import {
 } from "./outfit";
 
 function _yachtzeeChain(): void {
-  if (myLevel() <= 13 || !canInteract()) return;
+  if (myLevel() < 13 || !canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
   if (!realmAvailable("sleaze")) return;
 
@@ -150,4 +150,5 @@ export function yachtzeeChain(): void {
     runDiet();
     prepFamiliars(); // Recompute robo drinks' worth after diet is finally consumed
   }
+  freeRunFights();
 }

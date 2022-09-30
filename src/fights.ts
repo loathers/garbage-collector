@@ -98,7 +98,6 @@ import {
   set,
   SourceTerminal,
   sum,
-  sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
   uneffect,
@@ -146,7 +145,6 @@ import {
   embezzlerSources,
   getNextEmbezzlerFight,
 } from "./embezzler";
-import { determineDraggableZoneAndEnsureAccess } from "./wanderer";
 import postCombatActions from "./post";
 import {
   crateStrategy,
@@ -157,6 +155,7 @@ import {
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
+import { wanderWhere } from "./wanderer";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1048,7 +1047,7 @@ const freeFightSources = [
 
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => adv1(determineDraggableZoneAndEnsureAccess(), -1, ""),
+    () => adv1(wanderWhere("wanderer"), -1, ""),
     true,
     {
       requirements: () => [
@@ -1517,7 +1516,7 @@ const freeRunFightSources = [
         1209: 2, // enter the gallery at Upscale Midnight
         1214: 1, // get High-End ginger wine
       });
-      const best = bestConsumable("booze", $items`high-end ginger wine, astral pilsner`);
+      const best = bestConsumable("booze", true, $items`high-end ginger wine, astral pilsner`);
       const gingerWineValue =
         (0.5 * 30 * (baseMeat + 750) +
           getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /
@@ -1627,7 +1626,7 @@ const freeRunFightSources = [
       get("_hipsterAdv") < 7 &&
       (have($familiar`Mini-Hipster`) || have($familiar`Artistic Goth Kid`)),
     (runSource: ActionSource) => {
-      const targetLocation = determineDraggableZoneAndEnsureAccess("backup");
+      const targetLocation = wanderWhere("backup");
       adventureMacro(
         targetLocation,
         Macro.if_(
@@ -1851,15 +1850,15 @@ const freeKillSources = [
   ),
 ];
 
-export function freeFights(): void {
+export function freeRunFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
+  if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
   if (
     get("beGregariousFightsLeft") > 0 &&
     get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
   ) {
     return;
   }
-  visitUrl("place.php?whichplace=town_wrong");
 
   propertyManager.setChoices({
     1387: 2, // "You will go find two friends and meet me here."
@@ -1877,6 +1876,23 @@ export function freeFights(): void {
       freeRunFightSource.runAll();
     }
   });
+}
+
+export function freeFights(): void {
+  if (myInebriety() > inebrietyLimit()) return;
+  if (
+    get("beGregariousFightsLeft") > 0 &&
+    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+  ) {
+    return;
+  }
+
+  propertyManager.setChoices({
+    1387: 2, // "You will go find two friends and meet me here."
+    1324: 5, // Fight a random partier
+  });
+
+  freeRunFights();
 
   killRobortCreaturesForFree();
 
@@ -2015,7 +2031,7 @@ export function doSausage(): void {
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
   do {
     adventureMacroAuto(
-      determineDraggableZoneAndEnsureAccess(),
+      wanderWhere("wanderer"),
       Macro.if_($monster`sausage goblin`, Macro.basicCombat())
         .ifHolidayWanderer(Macro.basicCombat())
         .abort()
@@ -2202,7 +2218,7 @@ function voidMonster(): void {
 
   useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
-  adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+  adventureMacro(wanderWhere("wanderer"), Macro.basicCombat());
   postCombatActions();
 }
 
@@ -2331,7 +2347,7 @@ function killRobortCreaturesForFree() {
 
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
-  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => (garboValue(drop) * rate) / 100));
+  sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 
 export function estimatedFreeFights(): number {

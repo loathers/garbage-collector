@@ -32,11 +32,11 @@ import {
   set,
 } from "libram";
 import { acquire } from "../acquire";
-import { estimatedTurns } from "../embezzler";
 import { hasMonsterReplacers } from "../extrovermectin";
 import { globalOptions } from "../lib";
 import { garboValue } from "../session";
 import synthesize from "../synthesis";
+import { estimatedTurns } from "../turns";
 import { yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
 import { freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
@@ -258,6 +258,14 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
     } else if (!stenchJellyConsumed) {
       dietUtil.dietArray.forEach((entry) => {
         if (entry.name === name) {
+          if (entry.drunkenness > 0) {
+            while (get("sweat") >= 25 && get("_sweatOutSomeBoozeUsed") < 3 && myInebriety() > 0) {
+              useSkill($skill`Sweat Out Some Booze`);
+            }
+            if (!get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`)) {
+              use(1, $item`synthetic dog hair pill`);
+            }
+          }
           if (myFullness() + entry.fullness > fullnessLimit()) {
             throw new Error(`consuming ${entry.name} will exceed our fullness limit`);
           } else if (myInebriety() + entry.drunkenness > inebrietyLimit()) {
@@ -309,8 +317,12 @@ function yachtzeeDietScheduler(
       for (const splitEntry of splitDietEntry(entry)) jellies.push(splitEntry);
     } else if (entry.name === "toast with stench jelly") {
       for (const splitEntry of splitDietEntry(entry)) toasts.push(splitEntry);
-    } else if (["clara's bell", "jurassic parka"].includes(entry.name)) {
+    } else if (entry.name === "jurassic parka") {
+      // Parka before Clara's, since we want to use free runs asap
+      // Note that since we push a flipped freeNCs onto the dietSchedule, so we put Clara's in front in freeNCs
       for (const splitEntry of splitDietEntry(entry)) freeNCs.push(splitEntry);
+    } else if (entry.name === "clara's bell") {
+      for (const splitEntry of splitDietEntry(entry)) freeNCs.splice(0, 0, splitEntry);
     } else if (entry.fullness > 0 || entry.drunkenness > 0) {
       for (const splitEntry of splitDietEntry(entry)) dietSchedule.splice(0, 0, splitEntry);
     } else {
@@ -350,8 +362,15 @@ function yachtzeeDietScheduler(
     }
   }
 
-  // Next, put our free NC sources at the end of the diet
-  for (const freeNCSource of freeNCs) dietSchedule.push(freeNCSource);
+  // Place our free NC sources immediately before any jellies
+  for (let idx = 0; idx <= dietSchedule.length; idx++) {
+    if (idx === dietSchedule.length) {
+      for (const freeNCSource of freeNCs) dietSchedule.push(freeNCSource);
+    } else if (dietSchedule[idx].name.includes("jelly")) {
+      for (const freeNCSource of freeNCs) dietSchedule.splice(idx, 0, freeNCSource);
+      break;
+    }
+  }
 
   // Next, combine clustered entries where possible (this is purely for aesthetic reasons)
   let idx = 0;
@@ -372,6 +391,13 @@ function yachtzeeDietScheduler(
   let fullness = myFullness();
   let drunkenness = myInebriety();
   let spleenUse = mySpleenUse();
+  let sweatOutsAvailable = clamp(
+    Math.floor(get("sweat") / 25),
+    0,
+    3 - get("_sweatOutSomeBoozeUsed")
+  );
+  let syntheticPillsAvailable =
+    !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
   for (const entry of dietSchedule) {
     fullness += entry.quantity * entry.fullness;
     drunkenness += entry.quantity * entry.drunkenness;
@@ -395,6 +421,14 @@ function yachtzeeDietScheduler(
         } to ${spleenUse}/${spleenLimit()}`
       );
     }
+    while (drunkenness > 0 && sweatOutsAvailable > 0) {
+      drunkenness -= 1;
+      sweatOutsAvailable -= 1;
+    }
+    if (drunkenness > 0 && syntheticPillsAvailable > 0) {
+      drunkenness -= 1;
+      syntheticPillsAvailable -= 1;
+    }
   }
 
   return dietSchedule;
@@ -406,7 +440,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const havePYECCharge = pyecAvailable();
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
-  const haveDogHairPill = !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`);
+  const sweatOutsAvailable = clamp(
+    Math.floor(get("sweat") / 25),
+    0,
+    3 - get("_sweatOutSomeBoozeUsed")
+  );
+  const syntheticPillsAvailable =
+    !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   const filters = 3 - get("currentMojoFilters");
@@ -421,10 +461,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       : Math.max(0, Math.round((estimatedTurns() - haveEffect($effect`Synthesis: Greed`)) / 30));
   const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
   const inebrietyAvailable =
-    inebrietyLimit() -
-    myInebriety() +
-    toInt(haveDogHairPill) +
-    (3 - get("_sweatOutSomeBoozeUsed", 0));
+    inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable;
   const spleenAvailable = currentSpleenLeft + filters;
   const organsAvailable = fullnessAvailable + inebrietyAvailable + spleenAvailable;
 
@@ -447,7 +484,9 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Plan our diet
 
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
-  const pickleJuice = Math.floor((inebrietyLimit() - myInebriety()) / 5);
+  const pickleJuice = Math.floor(
+    (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5
+  );
 
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
   const synthTurnsWanted = reqSynthTurns - haveEffect($effect`Synthesis: Greed`);
