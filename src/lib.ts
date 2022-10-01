@@ -95,6 +95,7 @@ export const globalOptions: {
   clarasBellClaimed: boolean;
   yachtzeeChain: boolean;
   quickMode: boolean;
+  keepZonesOpen: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -108,6 +109,7 @@ export const globalOptions: {
   clarasBellClaimed: get("_claraBellUsed"),
   yachtzeeChain: false,
   quickMode: false,
+  keepZonesOpen: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";

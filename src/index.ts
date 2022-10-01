@@ -168,6 +168,8 @@ export function main(argString = ""): void {
       globalOptions.yachtzeeChain = true;
     } else if (arg.match(/quick/)) {
       globalOptions.quickMode = true;
+    } else if (arg.match(/keepzonesopen/i)) {
+      globalOptions.keepZonesOpen = true;
     } else if (arg.match(/version/i)) {
       return;
     } else if (arg) {
