@@ -515,7 +515,10 @@ function nepQuest(): void {
 
   if (get("_questPartyFair") === "unstarted") {
     visitUrl(toUrl($location`The Neverending Party`));
-    if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
+    if (
+      ["food", "booze"].includes(get("_questPartyFairQuest")) ||
+      (["trash", "dj"].includes(get("_questPartyFairQuest")) && !globalOptions.noBarf) // Preserve NEP if running nobarf
+    ) {
       runChoice(1); // Accept quest
     } else {
       runChoice(2); // Decline quest
