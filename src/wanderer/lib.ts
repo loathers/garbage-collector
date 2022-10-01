@@ -71,11 +71,7 @@ export function canAdventureOrUnlock(loc: Location): boolean {
     skiplist.push($location`The Icy Peak`);
   }
   const canUnlock = UnlockableZones.some((z) => loc.zone === z.zone && (z.available() || !z.noInv));
-  return (
-    !underwater(loc) &&
-    !canAdventureOrUnlockSkipList.includes(loc) &&
-    (canAdventure(loc) || canUnlock)
-  );
+  return !underwater(loc) && !skiplist.includes(loc) && (canAdventure(loc) || canUnlock);
 }
 
 export function unlock(loc: Location, value: number): boolean {
