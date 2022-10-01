@@ -17837,7 +17837,10 @@ function menu() {
   })]);
 }
 
-function bestConsumable(organType, restrictList, maxSize) {
+function bestConsumable(organType) {
+  var levelRestrict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  var restrictList = arguments.length > 2 ? arguments[2] : undefined;
+  var maxSize = arguments.length > 3 ? arguments[3] : undefined;
   var fullMenu = potionMenu(menu(), 0, 0);
   var organMenu = fullMenu.filter(menuItem => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.itemType)(menuItem.item) === organType);
 
@@ -17850,7 +17853,11 @@ function bestConsumable(organType, restrictList, maxSize) {
   }
 
   if (maxSize) {
-    organMenu = organMenu.filter(MenuItem => MenuItem.size <= maxSize);
+    organMenu = organMenu.filter(menuItem => menuItem.size <= maxSize);
+  }
+
+  if (levelRestrict) {
+    organMenu = organMenu.filter(menuItem => menuItem.item.levelreq <= (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myLevel)());
   }
 
   var organList = organMenu.map(consumable => {
@@ -22198,7 +22205,7 @@ new FreeRunFight(() => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_t
     1214: 1 // get High-End ginger wine
 
   });
-  var best = (0,diet/* bestConsumable */.Kt)("booze", (0,template_string/* $items */.vS)(_templateObject352 || (_templateObject352 = fights_taggedTemplateLiteral(["high-end ginger wine, astral pilsner"]))));
+  var best = (0,diet/* bestConsumable */.Kt)("booze", true, (0,template_string/* $items */.vS)(_templateObject352 || (_templateObject352 = fights_taggedTemplateLiteral(["high-end ginger wine, astral pilsner"]))));
   var gingerWineValue = (0.5 * 30 * (src_lib/* baseMeat */.Vq + 750) + (0,lib/* getAverageAdventures */.N)((0,template_string/* $item */.xr)(_templateObject353 || (_templateObject353 = fights_taggedTemplateLiteral(["high-end ginger wine"])))) * (0,property/* get */.U2)("valueOfAdventure")) / 2;
   var valueDif = gingerWineValue - best.value;
 

@@ -15201,7 +15201,10 @@ function menu() {
   })]);
 }
 
-function bestConsumable(organType, restrictList, maxSize) {
+function bestConsumable(organType) {
+  var levelRestrict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  var restrictList = arguments.length > 2 ? arguments[2] : undefined;
+  var maxSize = arguments.length > 3 ? arguments[3] : undefined;
   var fullMenu = potionMenu(menu(), 0, 0);
   var organMenu = fullMenu.filter(menuItem => itemType(menuItem.item) === organType);
 
@@ -15214,7 +15217,11 @@ function bestConsumable(organType, restrictList, maxSize) {
   }
 
   if (maxSize) {
-    organMenu = organMenu.filter(MenuItem => MenuItem.size <= maxSize);
+    organMenu = organMenu.filter(menuItem => menuItem.size <= maxSize);
+  }
+
+  if (levelRestrict) {
+    organMenu = organMenu.filter(menuItem => menuItem.item.levelreq <= myLevel());
   }
 
   var organList = organMenu.map(consumable => {
