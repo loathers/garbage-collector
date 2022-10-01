@@ -30,6 +30,10 @@
     "description": "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode."
   },
   {
+    "tableItem": "keepzonesopen",
+    "description": "garbo will try to leave zones open that it could potentially close under normal circumstances - currently only applies to NEP."
+  },
+  {
     "tableItem": "Note on Arguments:",
     "description": "You can use multiple arguments in conjunction, e.g. \"garbo nobarf ascend\"."
   },
