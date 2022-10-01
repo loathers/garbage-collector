@@ -28819,7 +28819,7 @@ function canAdventureOrUnlock(loc) {
   }
 
   var canUnlock = UnlockableZones.some(z => loc.zone === z.zone && (z.available() || !z.noInv));
-  return !underwater(loc) && !canAdventureOrUnlockSkipList.includes(loc) && ((0,external_kolmafia_.canAdventure)(loc) || canUnlock);
+  return !underwater(loc) && !skiplist.includes(loc) && ((0,external_kolmafia_.canAdventure)(loc) || canUnlock);
 }
 function unlock(loc, value) {
   var unlockableZone = UnlockableZones.find(z => z.zone === loc.zone);
