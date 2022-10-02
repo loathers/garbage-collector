@@ -126,7 +126,7 @@ export const baseMeat =
     : 250;
 
 export function averageEmbezzlerNet(): number {
-  return ((baseMeat + 750) * meatDropModifier()) / 100;
+  return 15000;
 }
 
 export function averageTouristNet(): number {

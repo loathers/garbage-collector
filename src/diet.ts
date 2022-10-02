@@ -46,7 +46,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   $skill,
   clamp,
   Diet,
@@ -61,12 +60,9 @@ import {
   MenuItem,
   set,
   sum,
-  sumNumbers,
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
-import { embezzlerCount } from "./embezzler";
-import { expectedGregs } from "./extrovermectin";
 import {
   argmax,
   arrayEquals,
@@ -419,76 +415,6 @@ export function bestConsumable(
   return best;
 }
 
-function gregariousCount(): {
-  expectedGregariousFights: number[];
-  marginalGregariousFights: number;
-} {
-  const gregariousCharges =
-    get("beGregariousCharges") +
-    (get("beGregariousFightsLeft") > 0 &&
-    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
-      ? 1
-      : 0);
-  const gregariousFightsPerCharge = expectedGregs();
-  // remove and preserve the last index - that is the marginal count of gregarious fights
-  const marginalGregariousFights = gregariousFightsPerCharge.splice(
-    gregariousFightsPerCharge.length - 1,
-    1
-  )[0];
-
-  const expectedGregariousFights = gregariousFightsPerCharge.slice(gregariousCharges);
-
-  return {
-    expectedGregariousFights,
-    marginalGregariousFights,
-  };
-}
-
-function copiers(): MenuItem<Note>[] {
-  // assuming embezzler is worth 4 * MPA and a marginal turn is 1 * MPA, the differential is 3 * MPA
-  const embezzlerDifferential = 3 * MPA;
-  const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
-  const extros =
-    myInebriety() > inebrietyLimit()
-      ? []
-      : [
-          ...expectedGregariousFights.map(
-            (embezzlers) =>
-              new MenuItem<Note>($item`Extrovermectin™`, {
-                additionalValue: embezzlers * embezzlerDifferential,
-                maximum: 1,
-              })
-          ),
-          new MenuItem<Note>($item`Extrovermectin™`, {
-            additionalValue: marginalGregariousFights * embezzlerDifferential,
-          }),
-        ];
-  return [...extros];
-}
-
-function countCopies(diet: Diet<Note>): number {
-  // this only counts the copies not yet realized
-  // any copies already realized will be properly counted by embezzlerCount
-
-  // returns an array of expected counts for number of greg copies to fight per pill use
-  // the last value is how much you expect to fight per pill
-  const extros = sumNumbers(
-    diet.entries.map((dietEntry) =>
-      dietEntry.menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`)
-        ? dietEntry.quantity
-        : 0
-    )
-  );
-  const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
-
-  // slice will never return an array that is bigger than the original array
-  const replaceExtros = sumNumbers(expectedGregariousFights.slice(0, extros));
-  const bonusExtros =
-    clamp(extros - expectedGregariousFights.length, 0, extros) * marginalGregariousFights;
-
-  return replaceExtros + bonusExtros;
-}
-
 function ingredientCost(item: Item): number {
   const ingredientMallPrice = mallPrice(item);
   const ingredientAutosellPrice = autosellPrice(item);
@@ -570,7 +496,6 @@ export function potionMenu(
 
   return [
     ...baseMenu,
-    ...copiers(),
 
     // FOOD POTIONS
     ...potion($item`jumping horseradish`),
@@ -644,7 +569,7 @@ interface DietPlanner {
   (menu: MenuItem<Note>[]): Diet<Note>;
 }
 function balanceMenu(baseMenu: MenuItem<Note>[], dietPlanner: DietPlanner): MenuItem<Note>[] {
-  const baseEmbezzlers = embezzlerCount();
+  const baseEmbezzlers = 0;
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -656,12 +581,7 @@ function balanceMenu(baseMenu: MenuItem<Note>[], dietPlanner: DietPlanner): Menu
       return fullMenu;
     } else {
       const balancingDiet = dietPlanner(fullMenu);
-      return rebalance(
-        menu,
-        iterations - 1,
-        countCopies(balancingDiet),
-        balancingDiet.expectedAdventures()
-      );
+      return rebalance(menu, iterations - 1, 0, balancingDiet.expectedAdventures());
     }
   }
   const baseDiet = dietPlanner(baseMenu);
@@ -735,7 +655,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   diet = diet.copy();
   diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
 
-  const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
+  const embezzlers = 0;
   const adventures = Math.floor(estimatedTurns() + diet.expectedAdventures());
   print(`Planning to fight ${embezzlers} embezzlers and run ${adventures} adventures`);
 

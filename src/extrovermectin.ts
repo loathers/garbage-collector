@@ -33,7 +33,7 @@ import {
 import { freeFightFamiliar } from "./familiar";
 import { globalOptions, latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
 import { Macro } from "./combat";
-import { embezzlerMacro } from "./embezzler";
+import { copyTargetMacro } from "./embezzler";
 import { acquire } from "./acquire";
 
 export function expectedGregs(): number[] {
@@ -250,7 +250,7 @@ function initializeDireWarren(): void {
     do {
       adventureMacro(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).step(embezzlerMacro())
+        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).step(copyTargetMacro())
       );
     } while (
       "fluffy bunny" !== get("lastEncounter") &&
@@ -262,7 +262,7 @@ function initializeDireWarren(): void {
     do {
       adventureMacro(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(embezzlerMacro())
+        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(copyTargetMacro())
       );
     } while ("fluffy bunny" !== get("lastEncounter"));
   }

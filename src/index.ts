@@ -133,16 +133,13 @@ export function main(argString = ""): void {
     );
   }
 
-  if (get("valueOfAdventure") <= 3500) {
+  if (get("valueOfAdventure") <= 8000) {
     throw `Your valueOfAdventure is set to ${get(
       "valueOfAdventure"
     )}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
   }
-  if (get("valueOfAdventure") >= 10000) {
-    throw `Your valueOfAdventure is set to ${get(
-      "valueOfAdventure"
-    )}, which is definitely incorrect. Please set it to your reliable marginal turn value.`;
-  }
+
+  globalOptions.noBarf = true;
 
   const args = argString.split(" ");
   for (const arg of args) {
@@ -155,8 +152,6 @@ export function main(argString = ""): void {
       }
     } else if (arg.match(/ascend/)) {
       globalOptions.ascending = true;
-    } else if (arg.match(/nobarf/)) {
-      globalOptions.noBarf = true;
     } else if (arg.match(/help/i)) {
       printHelpMenu();
       return;
