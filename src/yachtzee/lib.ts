@@ -19,7 +19,7 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { Macro } from "../combat";
-import { EmbezzlerFight, embezzlerSources } from "../embezzler";
+import { copyTargetSources, WitchessFight } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
 import { globalOptions, ltbRun, realmAvailable } from "../lib";
 import { freeFightOutfit } from "../outfit";
@@ -32,8 +32,8 @@ const ignoredSources = [
   "11-leaf clover (untapped potential)",
 ];
 export const expectedEmbezzlers = sum(
-  embezzlerSources.filter((source: EmbezzlerFight) => !ignoredSources.includes(source.name)),
-  (source: EmbezzlerFight) => source.potential()
+  copyTargetSources.filter((source: WitchessFight) => !ignoredSources.includes(source.name)),
+  (source: WitchessFight) => source.potential()
 );
 
 export function pyecAvailable(): boolean {
