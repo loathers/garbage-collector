@@ -28,7 +28,9 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Stocking Mimic`,
     value: () =>
-      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 +
+      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 -
+      // We can't equip an amulet coin if we equip the bag of many confections
+      (bestAlternative * baseMeat) / 100 +
       (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
         (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
   },
