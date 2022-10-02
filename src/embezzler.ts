@@ -175,8 +175,6 @@ export class WitchessFight {
   }
 
   location(location?: Location): Location {
-
-
     const suggestion = location;
 
     if (
@@ -188,7 +186,6 @@ export class WitchessFight {
     return suggestion ?? $location`Noob Cave`;
   }
 }
-
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
