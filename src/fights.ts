@@ -2417,7 +2417,7 @@ function yachtzee(): void {
 export function bestDigitizeTarget(): Monster | null {
   if (
     have($item`Kramco Sausage-o-Matic™`) &&
-    sum($items`magical sausage, magical sausage casing`, (item) => availableAmount(item)) < 420
+    sum($items`magical sausage, magical sausage casing`, (item) => availableAmount(item)) < 69
   ) {
     return $monster`sausage goblin`;
   }
