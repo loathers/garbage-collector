@@ -158,11 +158,11 @@ import { wanderWhere } from "./wanderer";
 
 const firstChainMacro = () =>
   Macro.if_(
-    $monster`Knob Goblin Embezzler`,
+    bestDigitizeTarget() ?? $monster.none,
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.externalIf(
-        SourceTerminal.getDigitizeMonster() !== $monster`Knob Goblin Embezzler`,
+        SourceTerminal.getDigitizeMonster() !== bestDigitizeTarget() ?? $monster.none,
         Macro.tryCopier($skill`Digitize`)
       )
         .tryCopier($item`Spooky Putty sheet`)
@@ -177,12 +177,12 @@ const firstChainMacro = () =>
 
 const secondChainMacro = () =>
   Macro.if_(
-    $monster`Knob Goblin Embezzler`,
+    bestDigitizeTarget() ?? $monster.none,
     Macro.if_("!hasskill Lecture on Relativity", Macro.trySkill($skill`Meteor Shower`))
       .if_(
         "!hasskill Lecture on Relativity",
         Macro.externalIf(
-          get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+          get("_sourceTerminalDigitizeMonster") !== bestDigitizeTarget() ?? $monster.none,
           Macro.tryCopier($skill`Digitize`)
         )
           .tryCopier($item`Spooky Putty sheet`)
@@ -319,7 +319,7 @@ function startWandererCounter() {
 
       adventureMacro(
         $location`The Haunted Kitchen`,
-        Macro.if_($monster`Knob Goblin Embezzler`, copyTargetMacro()).step(run.macro)
+        Macro.if_(bestDigitizeTarget() ?? $monster.none, copyTargetMacro()).step(run.macro)
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
@@ -479,9 +479,10 @@ export function dailyFights(): void {
 
         print(`Finished ${nextFight.name}`);
         if (
-          totalTurnsPlayed() - startTurns === 1 &&
-          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-          (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")
+          (totalTurnsPlayed() - startTurns === 1 &&
+            get("lastCopyableMonster") === bestDigitizeTarget()) ??
+          ($monster.none &&
+            (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler"))
         ) {
           embezzlerLog.initialEmbezzlersFought++;
           embezzlerLog.sources.push(nextFight.name);
@@ -1839,8 +1840,8 @@ export function freeRunFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
   if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
   if (
-    get("beGregariousFightsLeft") > 0 &&
-    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+    (get("beGregariousFightsLeft") > 0 && get("beGregariousMonster") === bestDigitizeTarget()) ??
+    $monster.none
   ) {
     return;
   }
@@ -1866,8 +1867,8 @@ export function freeRunFights(): void {
 export function freeFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
   if (
-    get("beGregariousFightsLeft") > 0 &&
-    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+    (get("beGregariousFightsLeft") > 0 && get("beGregariousMonster") === bestDigitizeTarget()) ??
+    $monster.none
   ) {
     return;
   }
