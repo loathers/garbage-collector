@@ -109,7 +109,6 @@ import { Macro, withMacro } from "./combat";
 import {
   bestFairy,
   freeFightFamiliar,
-  meatFamiliar,
   pocketProfessorLectures,
   setBestLeprechaunAsMeatFamiliar,
 } from "./familiar";
@@ -468,7 +467,7 @@ export function dailyFights(): void {
         if (romanticFamiliar && get("_badlyRomanticArrows") === 0) {
           useFamiliar(romanticFamiliar);
         } else {
-          useFamiliar(meatFamiliar());
+          useFamiliar(freeFightFamiliar());
         }
 
         setLocation(nextFight.location());
