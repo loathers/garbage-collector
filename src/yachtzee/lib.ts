@@ -14,27 +14,16 @@ import {
   Mood,
   Requirement,
   set,
-  sum,
   tryFindFreeRun,
 } from "libram";
 import { withStash } from "../clan";
 import { Macro } from "../combat";
-import { copyTargetSources, WitchessFight } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
 import { globalOptions, ltbRun, realmAvailable } from "../lib";
 import { freeFightOutfit } from "../outfit";
 import postCombatActions from "../post";
 
-const ignoredSources = [
-  "Orb Prediction",
-  "Pillkeeper Semirare",
-  "Lucky!",
-  "11-leaf clover (untapped potential)",
-];
-export const expectedEmbezzlers = sum(
-  copyTargetSources.filter((source: WitchessFight) => !ignoredSources.includes(source.name)),
-  (source: WitchessFight) => source.potential()
-);
+export const expectedEmbezzlers = 0;
 
 export function pyecAvailable(): boolean {
   if (get("_PYECAvailable") === "") {
