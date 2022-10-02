@@ -37,7 +37,6 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
-import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedTurns } from "./turns";
 
@@ -371,7 +370,7 @@ export function doublingPotions(embezzlers: number): Potion[] {
 export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
-  const embezzlers = embezzlerCount();
+  const embezzlers = 0;
 
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
     const possibleDoublingPotions = doublingPotions(embezzlers);

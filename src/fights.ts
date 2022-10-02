@@ -136,7 +136,7 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
-import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
+import { freeFightOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
 import { bathroomFinance, potionSetup } from "./potions";
 import {
   copyTargetCount,
@@ -311,20 +311,12 @@ function startWandererCounter() {
     if (digitizeNeedsStarting) print("Starting digitize counter by visiting the Haunted Kitchen!");
     if (romanceNeedsStarting) print("Starting romance counter by visiting the Haunted Kitchen!");
     do {
-      let run: ActionSource;
-      if (get("beGregariousFightsLeft") > 0) {
-        print("You still have gregs active, so we're going to wear your meat outfit.");
-        run = ltbRun();
-        run.constraints.preparation?.();
-        useFamiliar(meatFamiliar());
-        meatOutfit(true);
-      } else {
-        print("You do not have gregs active, so this is a regular free run.");
-        run = tryFindFreeRun() ?? ltbRun();
-        useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar({ canChooseMacro: false }));
-        run.constraints.preparation?.();
-        freeFightOutfit(run.constraints.equipmentRequirements?.());
-      }
+      const run = tryFindFreeRun() ?? ltbRun();
+      print("You do not have gregs active, so this is a regular free run.");
+      useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar({ canChooseMacro: false }));
+      run.constraints.preparation?.();
+      freeFightOutfit(run.constraints.equipmentRequirements?.());
+
       adventureMacro(
         $location`The Haunted Kitchen`,
         Macro.if_($monster`Knob Goblin Embezzler`, copyTargetMacro()).step(run.macro)
@@ -380,7 +372,7 @@ export function dailyFights(): void {
             property: "_garbo_meatChain",
             maximizeParameters: [], // implicitly maximize against meat
             macro: firstChainMacro,
-            goalMaximize: (requirements: Requirement) => meatOutfit(true, requirements),
+            goalMaximize: (requirements: Requirement) => freeFightOutfit(requirements),
           },
           {
             property: "_garbo_weightChain",
@@ -449,7 +441,7 @@ export function dailyFights(): void {
         }
       }
 
-      useFamiliar(meatFamiliar());
+      useFamiliar(freeFightFamiliar());
 
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getNextWitchessFight();
@@ -472,17 +464,15 @@ export function dailyFights(): void {
           if (weWantToSaberCrates) saberCrateIfSafe();
         }
 
-        const underwater = nextFight.location().environment === "underwater";
-
         const romanticFamiliar = $familiars`Obtuse Angel, Reanimated Reanimator`.find(have);
-        if (romanticFamiliar && get("_badlyRomanticArrows") === 0 && !underwater) {
+        if (romanticFamiliar && get("_badlyRomanticArrows") === 0) {
           useFamiliar(romanticFamiliar);
         } else {
           useFamiliar(meatFamiliar());
         }
 
         setLocation(nextFight.location());
-        meatOutfit(true, Requirement.merge(nextFight.requirements), underwater);
+        freeFightOutfit(Requirement.merge(nextFight.requirements));
 
         nextFight.run();
         postCombatActions();

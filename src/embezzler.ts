@@ -1,5 +1,4 @@
 import {
-  booleanModifier,
   canAdventure,
   chatPrivate,
   cliExecute,
@@ -7,7 +6,6 @@ import {
   haveEquipped,
   itemAmount,
   Location,
-  mallPrice,
   myAdventures,
   myFamiliar,
   myHash,
@@ -40,7 +38,6 @@ import {
   get,
   have,
   property,
-  questStep,
   Requirement,
   set,
   SourceTerminal,
@@ -59,7 +56,6 @@ import {
   userConfirmDialog,
   WISH_VALUE,
 } from "./lib";
-import { waterBreathingEquipment } from "./outfit";
 import { DraggableFight, wanderWhere } from "./wanderer";
 
 const copyTarget = bestDigitizeTarget() ?? $monster.none;
@@ -179,14 +175,9 @@ export class WitchessFight {
   }
 
   location(location?: Location): Location {
-    const taffyIsWorthIt = () =>
-      mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure") &&
-      retrieveItem($item`pulled green taffy`);
 
-    const suggestion =
-      this.draggable && !location && checkUnderwater() && taffyIsWorthIt()
-        ? $location`The Briny Deeps`
-        : location;
+
+    const suggestion = location;
 
     if (
       (this.draggable && !suggestion) ||
@@ -198,23 +189,6 @@ export class WitchessFight {
   }
 }
 
-function checkUnderwater() {
-  // first check to see if underwater even makes sense
-  if (
-    questStep("questS01OldGuy") >= 0 &&
-    !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
-    (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
-    (booleanModifier("Adventure Underwater") ||
-      waterBreathingEquipment.some((item) => have(item))) &&
-    (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
-  ) {
-    if (!have($effect`Fishy`) && !get("_fishyPipeUsed")) use($item`fishy pipe`);
-
-    return have($effect`Fishy`);
-  }
-
-  return false;
-}
 
 function checkFax(): boolean {
   if (!have($item`photocopied monster`)) cliExecute("fax receive");
