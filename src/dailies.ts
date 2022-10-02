@@ -96,14 +96,13 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { withStash } from "./clan";
-import { embezzlerCount } from "./embezzler";
 import { refreshLatte } from "./outfit";
 import { doingExtrovermectin } from "./extrovermectin";
 import { garboAverageValue, garboValue } from "./session";
 import { acquire } from "./acquire";
 import { estimatedTentacles } from "./fights";
 import { digitizedMonstersRemaining, estimatedTurns } from "./turns";
-
+const embezzlerCount = () => 0;
 export function dailySetup(): void {
   voterSetup();
   martini();

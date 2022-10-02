@@ -9,9 +9,8 @@ import {
 } from "kolmafia";
 import { $familiar, $item, Counter, get, have, SourceTerminal } from "libram";
 import { usingThumbRing } from "./dropsgear";
-import { embezzlerCount } from "./embezzler";
 import { ESTIMATED_OVERDRUNK_TURNS, globalOptions } from "./lib";
-
+const embezzlerCount = () => 0;
 /**
  * Computes the estimated number of turns during which garbo will run
  * @returns A guess of how many runs garbo will run in total
