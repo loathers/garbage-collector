@@ -17136,7 +17136,7 @@ var StashManager = /*#__PURE__*/function () {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3311);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5632);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1762);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8402);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3056);
 /* harmony import */ var _turns__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9709);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83, _templateObject84, _templateObject85, _templateObject86, _templateObject87, _templateObject88, _templateObject89, _templateObject90, _templateObject91, _templateObject92, _templateObject93, _templateObject94, _templateObject95, _templateObject96, _templateObject97, _templateObject98, _templateObject99, _templateObject100, _templateObject101, _templateObject102, _templateObject103, _templateObject104, _templateObject105, _templateObject106, _templateObject107, _templateObject108, _templateObject109, _templateObject110, _templateObject111, _templateObject112, _templateObject113, _templateObject114, _templateObject115, _templateObject116, _templateObject117, _templateObject118, _templateObject119, _templateObject120, _templateObject121, _templateObject122, _templateObject123, _templateObject124, _templateObject125, _templateObject126, _templateObject127, _templateObject128, _templateObject129, _templateObject130, _templateObject131, _templateObject132, _templateObject133, _templateObject134, _templateObject135, _templateObject136, _templateObject137, _templateObject138, _templateObject139, _templateObject140, _templateObject141, _templateObject142, _templateObject143, _templateObject144, _templateObject145, _templateObject146, _templateObject147, _templateObject148, _templateObject149, _templateObject150, _templateObject151, _templateObject152, _templateObject153, _templateObject154, _templateObject155, _templateObject156, _templateObject157, _templateObject158, _templateObject159, _templateObject160, _templateObject161, _templateObject162, _templateObject163, _templateObject164, _templateObject165, _templateObject166, _templateObject167, _templateObject168, _templateObject169, _templateObject170, _templateObject171, _templateObject172, _templateObject173, _templateObject174, _templateObject175, _templateObject176, _templateObject177, _templateObject178, _templateObject179, _templateObject180, _templateObject181, _templateObject182, _templateObject183, _templateObject184, _templateObject185, _templateObject186, _templateObject187;
 
@@ -18754,7 +18754,7 @@ function pickRider(mode) {
 // EXTERNAL MODULE: ./src/diet.ts
 var diet = __webpack_require__(4033);
 // EXTERNAL MODULE: ./src/familiar/index.ts + 2 modules
-var familiar = __webpack_require__(8402);
+var familiar = __webpack_require__(3056);
 // EXTERNAL MODULE: ./src/lib.ts
 var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/session.ts
@@ -19695,7 +19695,7 @@ function toasterGaze() {
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9376);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(1762);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(7329);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8402);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3056);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7442);
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
@@ -20142,7 +20142,7 @@ var property = __webpack_require__(2474);
 // EXTERNAL MODULE: ./node_modules/libram/dist/utils.js
 var utils = __webpack_require__(8588);
 // EXTERNAL MODULE: ./src/familiar/index.ts + 2 modules
-var familiar = __webpack_require__(8402);
+var familiar = __webpack_require__(3056);
 // EXTERNAL MODULE: ./src/session.ts
 var session = __webpack_require__(742);
 // EXTERNAL MODULE: ./node_modules/libram/dist/modifier.js + 1 modules
@@ -20178,7 +20178,8 @@ var standardFamiliars = [{
   value: () => 0.02 * (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["time's arrow"]))))
 }, {
   familiar: (0,template_string/* $familiar */.HP)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Stocking Mimic"]))),
-  value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / 6 + (1 / 3 + ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0)) * ((0,external_kolmafia_.familiarWeight)((0,template_string/* $familiar */.HP)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Stocking Mimic"])))) + (0,external_kolmafia_.weightAdjustment)())
+  value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Polka Pop, BitterSweetTarts, Piddles"]))))) / 6 - // We can't equip an amulet coin if we equip the bag of many confections
+  bestAlternative * src_lib/* baseMeat */.Vq / 100 + (1 / 3 + ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Jingle Jangle Jingle"])))) ? 0.1 : 0)) * ((0,external_kolmafia_.familiarWeight)((0,template_string/* $familiar */.HP)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Stocking Mimic"])))) + (0,external_kolmafia_.weightAdjustment)())
 }, {
   familiar: (0,template_string/* $familiar */.HP)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Shorter-Order Cook"]))),
   value: () => session/* garboAverageValue.apply */.Et.apply(void 0, _toConsumableArray((0,template_string/* $items */.vS)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["short beer, short stack of pancakes, short stick of butter, short glass of water, short white"]))))) / 11
@@ -20359,7 +20360,7 @@ function freeFightFamiliar() {
 
 /***/ }),
 
-/***/ 8402:
+/***/ 3056:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -20408,7 +20409,7 @@ var dropFamiliars = __webpack_require__(175);
 var experienceFamiliars = __webpack_require__(7678);
 // EXTERNAL MODULE: ./src/familiar/freeFightFamiliar.ts + 1 modules
 var freeFightFamiliar = __webpack_require__(6617);
-;// CONCATENATED MODULE: ./src/familiar/marginalFamiliars.ts
+;// CONCATENATED MODULE: ./src/familiar/barfFamiliar.ts
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8;
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -20445,7 +20446,7 @@ function getCachedOutfitValues(fam) {
     // double-count the value of the pirate costume between here and constantvalue.ts,
     // and we could apply the value of the pirate costume to every 0x leprechaun. Other items are
     // included as strong, temporary bonuses that go away quickly in a user's BarfDay.
-    preventEquip: (0,template_string/* $items */.vS)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122, cursed magnifying glass, protonic accelerator pack, \"I Voted!\" sticker, li'l pirate costume"])))
+    preventEquip: (0,template_string/* $items */.vS)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122, cursed magnifying glass, protonic accelerator pack, \"I Voted!\" sticker, li'l pirate costume, bag of many confections"])))
   }));
   var outfit = outfitSlots.map(slot => (0,external_kolmafia_.equippedItem)(slot));
   var bonuses = (0,dropsgear/* bonusGear */.Mi)("barf", false);
@@ -21107,7 +21108,7 @@ var clan = __webpack_require__(5897);
 // EXTERNAL MODULE: ./src/combat.ts
 var src_combat = __webpack_require__(4223);
 // EXTERNAL MODULE: ./src/familiar/index.ts + 2 modules
-var src_familiar = __webpack_require__(8402);
+var src_familiar = __webpack_require__(3056);
 // EXTERNAL MODULE: ./src/lib.ts
 var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/mood.ts
@@ -27058,7 +27059,7 @@ function shrugBadEffects() {
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4564);
 /* harmony import */ var _dropsgear__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5472);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4936);
-/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8402);
+/* harmony import */ var _familiar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3056);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7442);
 /* harmony import */ var _turns__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9709);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79, _templateObject80, _templateObject81, _templateObject82, _templateObject83;
@@ -29045,11 +29046,11 @@ var LovebugTargets = [{
   location: (0,template_string/* $location */.PG)(lovebugs_templateObject || (lovebugs_templateObject = lovebugs_taggedTemplateLiteral(["VYKEA"]))),
   currency: (0,template_string/* $item */.xr)(lovebugs_templateObject2 || (lovebugs_templateObject2 = lovebugs_taggedTemplateLiteral(["Wal-Mart gift certificate"])))
 }, {
-  element: "spooky",
+  element: "sleaze",
   location: (0,template_string/* $location */.PG)(lovebugs_templateObject3 || (lovebugs_templateObject3 = lovebugs_taggedTemplateLiteral(["The Fun-Guy Mansion"]))),
   currency: (0,template_string/* $item */.xr)(lovebugs_templateObject4 || (lovebugs_templateObject4 = lovebugs_taggedTemplateLiteral(["Beach Buck"])))
 }, {
-  element: "sleaze",
+  element: "spooky",
   location: (0,template_string/* $location */.PG)(lovebugs_templateObject5 || (lovebugs_templateObject5 = lovebugs_taggedTemplateLiteral(["The Deep Dark Jungle"]))),
   currency: (0,template_string/* $item */.xr)(lovebugs_templateObject6 || (lovebugs_templateObject6 = lovebugs_taggedTemplateLiteral(["Coinspiracy"])))
 }];
