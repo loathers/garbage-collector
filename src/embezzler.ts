@@ -950,6 +950,7 @@ function toasterGaze(): void {
     runChoice(4);
   } catch {
     // orb reseting raises a mafia error
+  } finally {
+    visitUrl("main.php");
   }
-  visitUrl("main.php");
 }
