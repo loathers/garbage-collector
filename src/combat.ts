@@ -63,10 +63,11 @@ import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { garboValue } from "./session";
 import { digitizedMonstersRemaining } from "./turns";
 
-const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
-const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 function bestDigitizeTarget(): Monster | null {
+  const valueDrops = (monster: Monster) =>
+    sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
+  const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+
   if (
     have($item`Kramco Sausage-o-Matic™`) &&
     sum($items`magical sausage, magical sausage casing`, (item) => availableAmount(item)) < 69

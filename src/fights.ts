@@ -155,6 +155,11 @@ import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
 import { wanderWhere } from "./wanderer";
 
+const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+const valueDrops = (monster: Monster) =>
+  sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
+const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
+
 const firstChainMacro = () =>
   Macro.if_(
     bestDigitizeTarget() ?? $monster.none,
@@ -2325,11 +2330,6 @@ function killRobortCreaturesForFree() {
   }
 }
 
-const isFree = (monster: Monster) => monster.attributes.includes("FREE");
-const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
-const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
-
 export function estimatedFreeFights(): number {
   return sum(freeFightSources, (source: FreeFight) => {
     const avail = source.available();
@@ -2414,6 +2414,9 @@ function yachtzee(): void {
 }
 
 export function bestDigitizeTarget(): Monster | null {
+  const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+  const valueDrops = (monster: Monster) =>
+    sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
   if (
     have($item`Kramco Sausage-o-Matic™`) &&
     sum($items`magical sausage, magical sausage casing`, (item) => availableAmount(item)) < 69

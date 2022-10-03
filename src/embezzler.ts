@@ -8,7 +8,6 @@ import {
   Location,
   myAdventures,
   myFamiliar,
-  myHash,
   print,
   retrieveItem,
   runChoice,
@@ -43,19 +42,10 @@ import {
   SourceTerminal,
   sum,
 } from "libram";
-import { acquire } from "./acquire";
 import { Macro, shouldRedigitize, withMacro } from "./combat";
 import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import { bestDigitizeTarget } from "./fights";
-import {
-  averageEmbezzlerNet,
-  globalOptions,
-  HIGHLIGHT,
-  ltbRun,
-  setChoice,
-  userConfirmDialog,
-  WISH_VALUE,
-} from "./lib";
+import { ltbRun, setChoice } from "./lib";
 import { DraggableFight, wanderWhere } from "./wanderer";
 
 const copyTarget = bestDigitizeTarget() ?? $monster.none;
@@ -734,50 +724,7 @@ export const fakeSources = [
   ),
 ];
 
-export const emergencyChainStarters = [
-  // These are very deliberately the last copyTarget fights.
-  new WitchessFight(
-    "Pocket Wish (untapped potential)",
-    () => {
-      const potential = Math.floor(copyTargetCount());
-      if (potential < 1) return false;
-      if (get("_genieFightsUsed") >= 3) return false;
-      if (globalOptions.askedAboutWish && !globalOptions.wishAnswer) return false;
-      const profit = (potential + 1) * averageEmbezzlerNet() - WISH_VALUE;
-      if (profit < 0) return false;
-      print(`You have the following copyTarget-sources untapped right now:`, HIGHLIGHT);
-      copyTargetSources
-        .filter((source) => source.potential() > 0)
-        .map((source) => `${source.potential()} from ${source.name}`)
-        .forEach((text) => print(text, HIGHLIGHT));
-      globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = userConfirmDialog(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current copyTarget net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`,
-        true
-      );
-      return globalOptions.wishAnswer;
-    },
-    () => 0,
-    (options: WitchessFightRunOptions) => {
-      withMacro(
-        options.macro,
-        () => {
-          acquire(1, $item`pocket wish`, WISH_VALUE);
-          visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`, false, true);
-          visitUrl(
-            "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
-            true,
-            true
-          );
-          visitUrl("main.php", false);
-          runCombat();
-          globalOptions.askedAboutWish = false;
-        },
-        options.useAuto
-      );
-    }
-  ),
-];
+export const emergencyChainStarters = [];
 
 export const copyTargetSources = [
   ...wanderSources,
@@ -816,7 +763,7 @@ export function getNextWitchessFight(): WitchessFight | null {
   if (copy) return copy;
   const chainStart = chainStarters.find((fight) => fight.available());
   if (chainStart) return chainStart;
-  return conditional ?? emergencyChainStarters.find((fight) => fight.available()) ?? null;
+  return conditional ?? null;
 }
 
 /**
