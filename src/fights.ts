@@ -734,8 +734,27 @@ const freeFightSources = [
           use($item`crappy waiter disguise`);
         }
       }
-      useSkill($skill`Evoke Eldritch Horror`);
-      if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
+      withMacro(
+        Macro.if_(
+          $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
+          // Using while_ here in case you run out of mp
+          Macro.while_("hasskill Awesome Balls of Fire", Macro.skill($skill`Awesome Balls of Fire`))
+            .while_("hasskill Eggsplosion", Macro.skill($skill`Eggsplosion`))
+            .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
+            .while_(
+              "hasskill Weapon of the Pastalord",
+              Macro.skill($skill`Weapon of the Pastalord`)
+            )
+            .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+            .attack()
+            .repeat()
+        ).basicCombat(),
+        () => {
+          useSkill($skill`Evoke Eldritch Horror`);
+          if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
+        },
+        false
+      );
     },
     false
   ),
