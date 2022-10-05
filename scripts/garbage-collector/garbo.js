@@ -19664,10 +19664,11 @@ function toasterGaze() {
     }
 
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.runChoice)(4);
-  } catch (_unused) {// orb reseting raises a mafia error
+  } catch (e) {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("We ran into an issue when gazing at toast: ".concat(e, "."), "red");
+  } finally {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("main.php");
   }
-
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("main.php");
 }
 
 /***/ }),
