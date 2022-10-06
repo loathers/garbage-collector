@@ -94,7 +94,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26787);
+  sinceKolmafiaRevision(26812);
   checkGithubVersion();
 
   if (get("garbo_autoUserConfirm", false)) {
