@@ -25,7 +25,7 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { meatFamiliar } from "../familiar";
-import { baseMeat } from "../lib";
+import { baseMeat, maxBy } from "../lib";
 import { familiarWaterBreathingEquipment, useUPCs, waterBreathingEquipment } from "../outfit";
 import { bestYachtzeeFamiliar } from "./familiar";
 import { expectedEmbezzlers, yachtzeeBuffValue } from "./lib";
@@ -58,7 +58,7 @@ export function getBestWaterBreathingEquipment(yachtzeeTurns: number): {
   }));
   const bestWaterBreathingEquipment = waterBreathingEquipment.some((item) => haveEquipped(item))
     ? { item: $item.none, cost: 0 }
-    : waterBreathingEquipmentCosts.reduce((left, right) => (left.cost < right.cost ? left : right));
+    : maxBy(waterBreathingEquipmentCosts, ({ cost }) => -cost);
   return bestWaterBreathingEquipment;
 }
 

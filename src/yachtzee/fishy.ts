@@ -23,7 +23,7 @@ import {
   uneffect,
 } from "libram";
 import { acquire } from "../acquire";
-import { safeRestore } from "../lib";
+import { maxBy, safeRestore } from "../lib";
 import { pyecAvailable, yachtzeeBuffValue } from "./lib";
 import { getBestWaterBreathingEquipment } from "./outfit";
 
@@ -236,11 +236,10 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
     },
   ];
 
-  const bestFishySource = fishySources
-    .filter((source) => source.turns + haveEffect($effect`Fishy`) >= yachtzeeTurns)
-    .reduce((left, right) => {
-      return left.cost < right.cost ? left : right;
-    });
+  const bestFishySource = maxBy(
+    fishySources.filter((source) => source.turns + haveEffect($effect`Fishy`) >= yachtzeeTurns),
+    ({ cost }) => -cost
+  );
 
   print("Cost of viable Fishy sources:", "blue");
   fishySources

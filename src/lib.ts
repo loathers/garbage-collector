@@ -210,12 +210,6 @@ export function mapMonster(location: Location, monster: Monster): void {
   }
 }
 
-export function argmax<T>(values: [T, number][]): T {
-  return values.reduce(([minValue, minScore], [value, score]) =>
-    score > minScore ? [value, score] : [minValue, minScore]
-  )[0];
-}
-
 /**
  * Returns true if the arguments have all elements equal.
  * @param array1 First array.
@@ -562,7 +556,10 @@ export function freeCrafts(): number {
 }
 
 export function maxBy<T>(array: T[], optimizer: (element: T) => number): T;
-export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(array: T[], key: S): T;
+export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
+  array: T[],
+  key: S
+): T;
 export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
   array: T[],
   optimizer: ((element: T) => number) | S

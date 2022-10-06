@@ -16,9 +16,7 @@ import {
   UnlockableZones,
   WandererTarget,
 } from "./lib";
-import {
-  maxBy
-} from "../lib"
+import { maxBy } from "../lib";
 
 function averageYrValue(location: Location) {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];

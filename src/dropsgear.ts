@@ -33,6 +33,7 @@ import {
   have,
   JuneCleaver,
   Modifiers,
+  sum,
   sumNumbers,
 } from "libram";
 import {
@@ -454,11 +455,8 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
   }
   if (!juneCleaverEV) {
     juneCleaverEV =
-      JuneCleaver.choices.reduce(
-        (total, choice) =>
-          total +
-          valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]),
-        0
+      sum([...JuneCleaver.choices], (choice) =>
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
       ) / JuneCleaver.choices.length;
   }
 

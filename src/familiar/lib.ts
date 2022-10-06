@@ -9,7 +9,7 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import { $effect, $familiar, $item, clamp, get, have } from "libram";
-import { ESTIMATED_OVERDRUNK_TURNS, globalOptions, turnsToNC } from "../lib";
+import { ESTIMATED_OVERDRUNK_TURNS, globalOptions, maxBy, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
 
 export type GeneralFamiliar = {
@@ -56,11 +56,14 @@ export function timeToMeatify(): boolean {
 
   const freeFightNow =
     get("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
-  const delay = [
-    nextProtonicGhost,
-    nextVoteMonster === 0 ? (get("_voteFreeFights") < 2 ? 11 : Infinity) : nextVoteMonster,
-    nextVoidMonster === 0 ? 13 : nextVoidMonster,
-  ].reduce((a, b) => (a < b ? a : b));
+  const delay = maxBy(
+    [
+      nextProtonicGhost,
+      nextVoteMonster === 0 ? (get("_voteFreeFights") < 2 ? 11 : Infinity) : nextVoteMonster,
+      nextVoidMonster === 0 ? 13 : nextVoidMonster,
+    ],
+    (x) => -x
+  );
 
   if (delay < myAdventures()) return false;
   // We can wait for the next free fight

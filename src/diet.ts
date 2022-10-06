@@ -68,11 +68,11 @@ import { withVIPClan } from "./clan";
 import { embezzlerCount } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import {
-  argmax,
   arrayEquals,
   baseMeat,
   globalOptions,
   HIGHLIGHT,
+  maxBy,
   realmAvailable,
   userConfirmDialog,
 } from "./lib";
@@ -281,7 +281,7 @@ const stomachLiverCleaners = new Map([
 ]);
 
 export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
-  argmax(items.map((i) => [i, -mallPrice(i)]));
+  maxBy(items, (i) => -mallPrice(i));
 
 /**
  * Generate a basic menu of high-yield items to consider
