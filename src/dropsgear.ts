@@ -49,7 +49,6 @@ import {
   BonusEquipMode,
   globalOptions,
   juneCleaverChoiceValues,
-  maxBy,
   realmAvailable,
   valueJuneCleaverOption,
 } from "./lib";
@@ -168,7 +167,7 @@ const alternativePants = Item.all()
     (item) => toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
   )
   .map((pants) => numericModifier(pants, "Adventures"));
-const bestAdventuresFromPants = alternativePants.length ? maxBy(alternativePants, (x) => x) : 0;
+const bestAdventuresFromPants = Math.max(0, ...alternativePants);
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
 function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&
