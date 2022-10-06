@@ -71,7 +71,7 @@ function coldMedicineCabinet(): void {
     itemChoices.set(item, i);
   }
 
-  const bestItem = maxBy(Array.from(itemChoices.keys()), garboValue);
+  const bestItem = maxBy([...itemChoices.keys()], garboValue);
   const bestChoice = itemChoices.get(bestItem);
   if (bestChoice && bestChoice > 0) {
     visitUrl("campground.php?action=workshed");
