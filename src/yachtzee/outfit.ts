@@ -6,7 +6,6 @@ import {
   Item,
   mallPrice,
   myFamiliar,
-  numericModifier,
   toSlot,
   use,
   useFamiliar,
@@ -19,6 +18,7 @@ import {
   $slots,
   findLeprechaunMultiplier,
   get,
+  getModifier,
   have,
   Requirement,
 } from "libram";
@@ -74,11 +74,10 @@ export function prepareOutfitAndFamiliar(): void {
   if (!myFamiliar().underwater) {
     equip(
       $slot`familiar`,
-      familiarWaterBreathingEquipment
-        .filter((it) => have(it))
-        .reduce((a, b) =>
-          numericModifier(a, "Familiar Weight") > numericModifier(b, "Familiar Weight") ? a : b
-        )
+      maxBy(
+        familiarWaterBreathingEquipment.filter((it) => have(it)),
+        (eq) => getModifier("Familiar Weight", eq)
+      )
     );
   }
 }

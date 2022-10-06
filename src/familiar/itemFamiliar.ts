@@ -1,5 +1,6 @@
 import { Familiar, myFamiliar, runChoice, useFamiliar, visitUrl } from "kolmafia";
 import { $familiar, $item, findFairyMultiplier, get, have, set } from "libram";
+import { maxBy } from "../lib";
 import { menu } from "./freeFightFamiliar";
 
 let bestNonCheerleaderFairy: Familiar;
@@ -10,18 +11,16 @@ export function bestFairy(): Familiar {
   }
 
   if (!bestNonCheerleaderFairy) {
-    const viableFairies = Familiar.all()
-      .filter(
-        (f) =>
-          have(f) &&
-          findFairyMultiplier(f) &&
-          f !== $familiar`Steam-Powered Cheerleader` &&
-          !f.physicalDamage &&
-          !f.elementalDamage
-      )
-      .sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a));
+    const viableFairies = Familiar.all().filter(
+      (f) =>
+        have(f) &&
+        findFairyMultiplier(f) &&
+        f !== $familiar`Steam-Powered Cheerleader` &&
+        !f.physicalDamage &&
+        !f.elementalDamage
+    );
 
-    const highestFairyMult = findFairyMultiplier(viableFairies[0]);
+    const highestFairyMult = findFairyMultiplier(maxBy(viableFairies, findFairyMultiplier));
     const goodFairies = viableFairies.filter((f) => findFairyMultiplier(f) === highestFairyMult);
 
     if (
@@ -51,13 +50,7 @@ export function bestFairy(): Familiar {
       },
     ];
 
-    goodFairies.sort(
-      (a, b) =>
-        (bonuses.find(({ familiar }) => familiar === b)?.expectedValue ?? 0) -
-        (bonuses.find(({ familiar }) => familiar === a)?.expectedValue ?? 0)
-    );
-
-    bestNonCheerleaderFairy = goodFairies[0];
+    bestNonCheerleaderFairy = maxBy(goodFairies, (f) => bonuses.find(({ familiar }) => familiar === f)?.expectedValue ?? 0);
   }
 
   if (
