@@ -551,21 +551,28 @@ export function freeCrafts(): number {
   );
 }
 
-export function maxBy<T>(array: T[] | readonly T[], optimizer: (element: T) => number): T;
-export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
+export function maxBy<T>(
   array: T[] | readonly T[],
-  key: S
+  optimizer: (element: T) => number,
+  reverse?: boolean
 ): T;
 export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
   array: T[] | readonly T[],
-  optimizer: ((element: T) => number) | S
+  key: S,
+  reverse?: boolean
+): T;
+export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
+  array: T[] | readonly T[],
+  optimizer: ((element: T) => number) | S,
+  reverse = false
 ): T {
   if (typeof optimizer === "function") {
     return maxBy(
       array.map((key) => ({ key, value: optimizer(key) })),
-      "value"
+      "value",
+      reverse
     ).key;
   } else {
-    return array.reduce((a, b) => (a[optimizer] > b[optimizer] ? a : b));
+    return array.reduce((a, b) => (a[optimizer] > b[optimizer] !== reverse ? a : b));
   }
 }

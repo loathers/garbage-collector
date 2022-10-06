@@ -257,7 +257,7 @@ function initializeDireWarren(): void {
       banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`
     );
   } else {
-    const banish = maxBy(options, (x) => -mallPrice(x));
+    const banish = maxBy(options, mallPrice, true);
     acquire(1, banish, 50000, true);
     do {
       adventureMacro(

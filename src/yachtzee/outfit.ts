@@ -58,7 +58,7 @@ export function getBestWaterBreathingEquipment(yachtzeeTurns: number): {
   }));
   const bestWaterBreathingEquipment = waterBreathingEquipment.some((item) => haveEquipped(item))
     ? { item: $item.none, cost: 0 }
-    : maxBy(waterBreathingEquipmentCosts, ({ cost }) => -cost);
+    : maxBy(waterBreathingEquipmentCosts, "cost", true);
   return bestWaterBreathingEquipment;
 }
 

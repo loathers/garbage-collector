@@ -280,8 +280,7 @@ const stomachLiverCleaners = new Map([
   [$item`designer sweatpants`, [0, -1]],
 ]);
 
-export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
-  maxBy(items, (i) => -mallPrice(i));
+export const mallMin: (items: Item[]) => Item = (items: Item[]) => maxBy(items, mallPrice, true);
 
 /**
  * Generate a basic menu of high-yield items to consider

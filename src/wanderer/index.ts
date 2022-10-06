@@ -53,7 +53,7 @@ export function bestWander(
     throw "Could not determine a wander target!";
   }
 
-  return maxBy([...possibleLocations.values()], (w: WandererLocation) => w.value);
+  return maxBy([...possibleLocations.values()], "value");
 }
 
 /**

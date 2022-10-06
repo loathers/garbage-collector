@@ -238,7 +238,8 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
 
   const bestFishySource = maxBy(
     fishySources.filter((source) => source.turns + haveEffect($effect`Fishy`) >= yachtzeeTurns),
-    ({ cost }) => -cost
+    "cost",
+    true
   );
 
   print("Cost of viable Fishy sources:", "blue");
