@@ -6,7 +6,6 @@ import {
   haveEffect,
   haveEquipped,
   maximize,
-  myLevel,
   myMeat,
   myTurncount,
   print,
@@ -45,7 +44,7 @@ import {
 } from "./outfit";
 
 function _yachtzeeChain(): void {
-  if (myLevel() < 13 || !canInteract()) return;
+  if (!canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
   if (!realmAvailable("sleaze")) return;
 

@@ -10,6 +10,7 @@ import {
   mallPrice,
   myFullness,
   myInebriety,
+  myLevel,
   mySpleenUse,
   numericModifier,
   print,
@@ -461,7 +462,9 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       : Math.max(0, Math.round((estimatedTurns() - haveEffect($effect`Synthesis: Greed`)) / 30));
   const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
   const inebrietyAvailable =
-    inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable;
+    myLevel() >= 13
+      ? inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable
+      : 0;
   const spleenAvailable = currentSpleenLeft + filters;
   const organsAvailable = fullnessAvailable + inebrietyAvailable + spleenAvailable;
 
@@ -472,7 +475,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
   const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
 
-  if (jellyYachtzeeTurns === 0) {
+  const fishyTurnsAvailable =
+    haveEffect($effect`Fishy`) + (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0);
+  const canParkaChain =
+    fishyTurnsAvailable + (fishyTurnsAvailable > 0 && pyecAvailable() ? 5 : 0) >= freeNCs();
+
+  if (jellyYachtzeeTurns === 0 && !canParkaChain) {
     print("Determined that there are no suitable number of turns to chain yachtzees", "red");
     return false;
   }
@@ -484,9 +492,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Plan our diet
 
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
-  const pickleJuice = Math.floor(
-    (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5
-  );
+  const pickleJuice =
+    myLevel() >= 13
+      ? Math.floor(
+          (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5
+        )
+      : 0;
 
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
   const synthTurnsWanted = reqSynthTurns - haveEffect($effect`Synthesis: Greed`);
@@ -549,7 +560,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     toastPrice + (sliderAdventuresPerFull - toastAdventuresPerFull) * VOA;
 
   let toastsToEat = 0;
-  if (toastOpportunityCost < jellySlidersCosts) {
+  if (toastOpportunityCost < jellySlidersCosts || myLevel() < 13) {
     toastsToEat = 5 * slidersToEat;
     jelliesToChew -= 5 * slidersToEat;
     slidersToEat = 0;
@@ -636,7 +647,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       "orange"
     );
   }
-  if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly) {
+  if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly && jellyYachtzeeTurns > 0) {
     print("Running extros is more profitable than chaining yachtzees", "red");
     return false; // We should do extros instead since they are more valuable
   }
