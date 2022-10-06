@@ -31,7 +31,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { globalOptions, latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
+import { globalOptions, latteActionSourceFinderConstraints, ltbRun, maxBy, setChoice } from "./lib";
 import { Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";
@@ -257,7 +257,7 @@ function initializeDireWarren(): void {
       banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`
     );
   } else {
-    const banish = options.sort((a, b) => mallPrice(a) - mallPrice(b))[0];
+    const banish = maxBy(options, (x) => -mallPrice(x));
     acquire(1, banish, 50000, true);
     do {
       adventureMacro(

@@ -49,6 +49,7 @@ import {
   BonusEquipMode,
   globalOptions,
   juneCleaverChoiceValues,
+  maxBy,
   realmAvailable,
   valueJuneCleaverOption,
 } from "./lib";
@@ -162,14 +163,12 @@ function sweatpants(equipMode: BonusEquipMode) {
   return new Map([[$item`designer sweatpants`, bonus]]);
 }
 
-const bestAdventuresFromPants =
-  Item.all()
-    .filter(
-      (item) =>
-        toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
-    )
-    .map((pants) => numericModifier(pants, "Adventures"))
-    .sort((a, b) => b - a)[0] || 0;
+const alternativePants = Item.all()
+  .filter(
+    (item) => toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
+  )
+  .map((pants) => numericModifier(pants, "Adventures"));
+const bestAdventuresFromPants = alternativePants.length ? maxBy(alternativePants, (x) => x) : 0;
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
 function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&

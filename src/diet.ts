@@ -205,7 +205,7 @@ export function nonOrganAdventures(): void {
         value: chocExpVal(i, choc),
       };
     });
-    const best = chocoVals.sort((a, b) => b.value - a.value)[0];
+    const best = maxBy(chocoVals, "value");
     if (best.value > 0) {
       acquire(1, best.choco, best.value + mallPrice(best.choco), false);
       use(1, best.choco);
@@ -415,7 +415,7 @@ export function bestConsumable(
       value: (buffValue + advValue - mallPrice(edible)) / organSpace,
     };
   });
-  const best = organList.sort((a, b) => b.value - a.value)[0];
+  const best = maxBy(organList, "value");
   return best;
 }
 

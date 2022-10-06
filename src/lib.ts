@@ -310,15 +310,16 @@ export function printHelpMenu(): void {
 export function pillkeeperOpportunityCost(): number {
   const canTreasury = canAdventure($location`Cobb's Knob Treasury`);
 
-  const alternateUse = [
-    { can: canTreasury, value: 3 * get("valueOfAdventure") },
-    {
-      can: realmAvailable("sleaze"),
-      value: 40000,
-    },
-  ]
-    .filter((x) => x.can)
-    .sort((a, b) => b.value - a.value)[0];
+  const alternateUse = maxBy(
+    [
+      { can: canTreasury, value: 3 * get("valueOfAdventure") },
+      {
+        can: realmAvailable("sleaze"),
+        value: 40000,
+      },
+    ].filter((x) => x.can),
+    "value"
+  );
   const alternateUseValue = alternateUse?.value;
 
   if (!alternateUseValue) return 0;
@@ -530,12 +531,7 @@ export function valueJuneCleaverOption(result: Item | number): number {
 
 export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
-  return options
-    .map((option) => ({
-      option,
-      value: valueJuneCleaverOption(juneCleaverChoiceValues[id][option]),
-    }))
-    .sort((a, b) => b.value - a.value)[0].option;
+  return maxBy(options, (option) => valueJuneCleaverOption(juneCleaverChoiceValues[id][option]));
 }
 
 export const romanticMonsterImpossible = (): boolean =>
@@ -555,13 +551,13 @@ export function freeCrafts(): number {
   );
 }
 
-export function maxBy<T>(array: T[], optimizer: (element: T) => number): T;
+export function maxBy<T>(array: T[] | readonly T[], optimizer: (element: T) => number): T;
 export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
-  array: T[],
+  array: T[] | readonly T[],
   key: S
 ): T;
 export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
-  array: T[],
+  array: T[] | readonly T[],
   optimizer: ((element: T) => number) | S
 ): T {
   if (typeof optimizer === "function") {
