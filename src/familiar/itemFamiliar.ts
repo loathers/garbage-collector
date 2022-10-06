@@ -50,7 +50,10 @@ export function bestFairy(): Familiar {
       },
     ];
 
-    bestNonCheerleaderFairy = maxBy(goodFairies, (f) => bonuses.find(({ familiar }) => familiar === f)?.expectedValue ?? 0);
+    bestNonCheerleaderFairy = maxBy(
+      goodFairies,
+      (f) => bonuses.find(({ familiar }) => familiar === f)?.expectedValue ?? 0
+    );
   }
 
   if (

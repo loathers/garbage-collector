@@ -61,7 +61,7 @@ function drawBestCards(): void {
 }
 
 function bestExtrude(): Item {
-  return  maxBy( $items`browser cookie, hacked gibson`, garboValue);
+  return maxBy($items`browser cookie, hacked gibson`, garboValue);
 }
 
 function pickCargoPocket(): void {
