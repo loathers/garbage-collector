@@ -560,3 +560,19 @@ export function freeCrafts(): number {
     (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
   );
 }
+
+export function maxBy<T>(array: T[], optimizer: (element: T) => number): T;
+export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(array: T[], key: S): T;
+export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
+  array: T[],
+  optimizer: ((element: T) => number) | S
+): T {
+  if (typeof optimizer === "function") {
+    return maxBy(
+      array.map((key) => ({ key, value: optimizer(key) })),
+      "value"
+    ).key;
+  } else {
+    return array.reduce((a, b) => (a[optimizer] > b[optimizer] ? a : b));
+  }
+}

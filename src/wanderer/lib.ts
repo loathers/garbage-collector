@@ -183,14 +183,6 @@ export function defaultFactory(): WandererTarget[] {
   return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
 }
 
-export function maxBy<T>(array: T[], key: (t: T) => number): T {
-  return array
-    .map((t: T) => {
-      return { t, value: key(t) };
-    })
-    .reduce((prev, curr) => (prev.value < curr.value ? curr : prev)).t;
-}
-
 type WanderingSource = {
   name: string;
   item: Item;
