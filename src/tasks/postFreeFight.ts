@@ -1,7 +1,7 @@
 import { Task } from "grimoire-kolmafia";
 import { cliExecute, mallPrice, myClass, myThrall, use, useSkill } from "kolmafia";
 import { $class, $item, $skill, $thrall, get, have } from "libram";
-import { baseMeat } from "../lib";
+import { baseMeat, maxBy } from "../lib";
 import { estimatedTurns } from "../turns";
 
 function bestVykeaLevel(): number {
@@ -10,15 +10,19 @@ function bestVykeaLevel(): number {
     [2, 1],
     [3, 11],
   ]; // excluding 4 and 5 as per bean's suggestion
-  const vykeaProfit = (level: number, cost: number) =>
-    estimatedTurns() * baseMeat * 0.1 * level -
-    (5 * mallPrice($item`VYKEA rail`) +
-      cost * mallPrice($item`VYKEA dowel`) +
-      5 * mallPrice($item`VYKEA plank`) +
-      1 * mallPrice($item`VYKEA instructions`));
+  const vykeaProfit = (vykea: [number, number]) => {
+    const [level, dowelCost] = vykea;
+    return (
+      estimatedTurns() * baseMeat * 0.1 * level -
+      (5 * mallPrice($item`VYKEA rail`) +
+        dowelCost * mallPrice($item`VYKEA dowel`) +
+        5 * mallPrice($item`VYKEA plank`) +
+        1 * mallPrice($item`VYKEA instructions`))
+    );
+  };
 
-  if (vykeas.some(([level, cost]) => vykeaProfit(level, cost) > 0)) {
-    return vykeas.sort((a, b) => vykeaProfit(...b) - vykeaProfit(...a))[0][0];
+  if (vykeas.some((vykea) => vykeaProfit(vykea) > 0)) {
+    return maxBy(vykeas, vykeaProfit)[0];
   }
   return 0;
 }

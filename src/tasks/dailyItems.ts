@@ -28,7 +28,7 @@ import {
   sum,
 } from "libram";
 import { doingExtrovermectin } from "../extrovermectin";
-import { argmax, coinmasterPrice } from "../lib";
+import { coinmasterPrice, maxBy } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
@@ -61,7 +61,7 @@ function drawBestCards(): void {
 }
 
 function bestExtrude(): Item {
-  return $items`browser cookie, hacked gibson`.sort((a, b) => garboValue(b) - garboValue(a))[0];
+  return  maxBy( $items`browser cookie, hacked gibson`, garboValue);
 }
 
 function pickCargoPocket(): void {
@@ -99,7 +99,7 @@ function pickCargoPocket(): void {
   }
 
   if (pockets.length > 0) {
-    cliExecute(`cargo ${Math.trunc(argmax(pockets))}`);
+    cliExecute(`cargo ${Math.trunc(maxBy(pockets, 1)[0])}`);
   }
 }
 
@@ -225,7 +225,7 @@ export const DailyItemTasks: Task[] = [
       completed: () => get("_pottedTeaTreeUsed"),
       do: (): void => {
         const teas = $items`cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea`;
-        const bestTea = teas.sort((a, b) => garboValue(b) - garboValue(a))[0];
+        const bestTea = maxBy(teas, garboValue);
         const shakeVal = 3 * garboAverageValue(...teas);
         const teaAction = shakeVal > garboValue(bestTea) ? "shake" : bestTea.name;
         cliExecute(`teatree ${teaAction}`);

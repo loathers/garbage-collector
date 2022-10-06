@@ -54,7 +54,7 @@ import { withStash } from "../clan";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
-import { baseMeat, globalOptions, HIGHLIGHT } from "../lib";
+import { baseMeat, globalOptions, HIGHLIGHT, maxBy } from "../lib";
 import { garboValue } from "../session";
 import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
 
@@ -95,12 +95,8 @@ function voterSetup(): void {
       })
     );
 
-    const initiativeValue = sum(
-      Array.from(availableInitiatives.values())
-        .sort((a, b) => b - a)
-        .slice(1),
-      (val) => 2 * val
-    );
+    const initiativeValue = 2 * Math.max(...availableInitiatives.values());
+
     const fightValue = 3 * get("garbo_valueOfFreeFight", 2000);
     const ballotValue = initiativeValue + fightValue;
     if (
@@ -153,10 +149,9 @@ function voterSetup(): void {
     [1, initPriority.get(get("_voteLocal2")) || (get("_voteLocal2").indexOf("-") === -1 ? 1 : -1)],
     [2, initPriority.get(get("_voteLocal3")) || (get("_voteLocal3").indexOf("-") === -1 ? 1 : -1)],
     [3, initPriority.get(get("_voteLocal4")) || (get("_voteLocal4").indexOf("-") === -1 ? 1 : -1)],
-  ];
+  ] as const;
 
-  const bestVotes = voteLocalPriorityArr.sort((a, b) => b[1] - a[1]);
-  const init = bestVotes[0][0];
+  const init = maxBy(voteLocalPriorityArr, 1)[0];
 
   visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
 }
@@ -172,13 +167,15 @@ function pantogram(): void {
   } else {
     const lepMult = findLeprechaunMultiplier(meatFamiliar());
     const lepBonus = 2 * lepMult + Math.sqrt(lepMult);
+
     const totalPantsValue = (pants: Item) =>
       getModifier("Meat Drop", pants) + getModifier("Familiar Weight", pants) * lepBonus;
-    const bestPantsValue =
-      Item.all()
-        .filter((item) => have(item) && toSlot(item) === $slot`pants`)
-        .map((pants) => totalPantsValue(pants))
-        .sort((a, b) => b - a)[0] ?? 0;
+
+    const alternativePants = Item.all()
+      .filter((item) => have(item) && toSlot(item) === $slot`pants`)
+      .map((pants) => totalPantsValue(pants));
+    const bestPantsValue = Math.max(0, ...alternativePants);
+
     pantogramValue = (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedTurns();
   }
   const cloverPrice = Math.min(
