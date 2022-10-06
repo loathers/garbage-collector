@@ -1,6 +1,6 @@
-https://github.com/Ezandora/Bastille.git Release
-https://github.com/Ezandora/Gain.git Release
-https://github.com/Ezandora/Briefcase.git Release
-https://github.com/Ezandora/Far-Future.git Release
-https://github.com/Loathing-Associates-Scripting-Society/KoL-MineVolcano.git
-https://github.com/Loathing-Associates-Scripting-Society/combo.git release
+github Ezandora/Bastille Release
+github Ezandora/Gain Release
+github Ezandora/Briefcase Release
+github Ezandora/Far-Future Release
+github Loathing-Associates-Scripting-Society/KoL-MineVolcano
+github Loathing-Associates-Scripting-Society/combo release
