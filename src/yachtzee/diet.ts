@@ -450,7 +450,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
-  const filters = 3 - get("currentMojoFilters");
+  let filters = 3 - get("currentMojoFilters");
   // save some spleen the first two extro, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
@@ -516,7 +516,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     return false;
   }
 
-  const yachtzeeTurns = freeNCs() + jellyYachtzeeTurns;
+  let yachtzeeTurns = freeNCs() + jellyYachtzeeTurns;
   if (availableSpleen + freeNCs() > yachtzeeTurns) cologne = 1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
 
   if (simOnly) print(`We can potentially run ${yachtzeeTurns} for yachtzee`, "purple");
@@ -648,8 +648,18 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     );
   }
   if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly && jellyYachtzeeTurns > 0) {
-    print("Running extros is more profitable than chaining yachtzees", "red");
-    return false; // We should do extros instead since they are more valuable
+    // If we can't parka-chain, then return early
+    if (!canParkaChain) {
+      print("Running extros is more profitable than chaining yachtzees", "red");
+      return false; // We should do extros instead since they are more valuable
+    }
+    // Else, we do not want to use any toasts/jellies
+    yachtzeeTurns = freeNCs();
+    slidersToEat = 0;
+    pickleJuiceToDrink = 0;
+    toastsToEat = 0;
+    jelliesToChew = 0;
+    filters = Math.min(mySpleenUse(), filters); // We may need to filter for synth/extros, but no longer need to filter for jellies
   }
 
   // Schedule our diet first
