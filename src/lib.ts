@@ -310,16 +310,15 @@ export function printHelpMenu(): void {
 export function pillkeeperOpportunityCost(): number {
   const canTreasury = canAdventure($location`Cobb's Knob Treasury`);
 
-  const alternateUse = maxBy(
-    [
-      { can: canTreasury, value: 3 * get("valueOfAdventure") },
-      {
-        can: realmAvailable("sleaze"),
-        value: 40000,
-      },
-    ].filter((x) => x.can),
-    "value"
-  );
+  const alternateUses = [
+    { can: canTreasury, value: 3 * get("valueOfAdventure") },
+    {
+      can: realmAvailable("sleaze"),
+      value: 40000,
+    },
+  ].filter((x) => x.can);
+
+  const alternateUse = alternateUses.length ? maxBy(alternateUses, "value") : undefined;
   const alternateUseValue = alternateUse?.value;
 
   if (!alternateUseValue) return 0;
