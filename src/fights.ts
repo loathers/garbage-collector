@@ -886,7 +886,7 @@ const freeFightSources = [
           () => {
             mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
             runCombat();
-            if (choiceFollowsFight()) runChoice(-1);
+            runChoice(-1);
           }
         );
       } else {
