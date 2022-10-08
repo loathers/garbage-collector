@@ -4,6 +4,7 @@ import { DailyItemTasks } from "./tasks/dailyItems";
 import { DailyVolcanoTasks } from "./tasks/dailyVolcano";
 import { DailyFamiliarTasks } from "./tasks/dailyFamiliars";
 import { runSafeGarboTasks } from "./tasks/engine";
+import { AscendingTasks } from "./tasks/ascending";
 
 export function dailySetup(): void {
   runSafeGarboTasks([
@@ -11,6 +12,7 @@ export function dailySetup(): void {
     ...DailyItemTasks,
     ...DailyVolcanoTasks,
     ...DailyTasks,
+    ...AscendingTasks,
   ]);
 }
 
