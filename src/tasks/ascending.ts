@@ -1,7 +1,7 @@
 import { Task } from "grimoire-kolmafia";
 import { create, handlingChoice, runChoice, toInt, useSkill } from "kolmafia";
 import { $item, $items, $skill, get, have } from "libram";
-import { freeCrafts, globalOptions } from "../lib";
+import { globalOptions } from "../lib";
 import { garboValue } from "../session";
 
 function bestLockPickChoice(): number {
@@ -29,32 +29,40 @@ export const AscendingTasks: Task[] = [
   },
   {
     name: "Cook Boris's key lime",
-    ready: () => have($item`Boris's key`) && freeCrafts() > 0 && globalOptions.ascending,
-    completed: () => !have($item`Boris's key`),
+    ready: () => globalOptions.ascending,
+    completed: () =>
+      !have($item`Boris's key`) || garboValue($item`Boris's key lime`) < garboValue($item`lime`),
     do: () => create($item`Boris's key lime`),
   },
   {
     name: "Cook Jarlsberg's key lime",
-    ready: () => have($item`Jarlsberg's key`) && freeCrafts() > 0 && globalOptions.ascending,
-    completed: () => !have($item`Jarlsberg's key`),
+    ready: () => globalOptions.ascending,
+    completed: () =>
+      !have($item`Jarlsberg's key`) ||
+      garboValue($item`Jarlsberg's key lime`) < garboValue($item`lime`),
     do: () => create($item`Jarlsberg's key lime`),
   },
   {
     name: "Cook Sneaky Pete's key lime",
-    ready: () => have($item`Sneaky Pete's key`) && freeCrafts() > 0 && globalOptions.ascending,
-    completed: () => !have($item`Sneaky Pete's key`),
+    ready: () => globalOptions.ascending,
+    completed: () =>
+      !have($item`Sneaky Pete's key`) ||
+      garboValue($item`Sneaky Pete's key lime`) < garboValue($item`lime`),
     do: () => create($item`Sneaky Pete's key lime`),
   },
   {
     name: "Cook digital key lime",
-    ready: () => have($item`digital key`) && freeCrafts() > 0 && globalOptions.ascending,
-    completed: () => !have($item`digital key`),
+    ready: () => globalOptions.ascending,
+    completed: () =>
+      !have($item`digital key`) || garboValue($item`digital key lime`) < garboValue($item`lime`),
     do: () => create($item`digital key lime`),
   },
   {
     name: "Cook star key lime",
-    ready: () => have($item`Richard's star key`) && freeCrafts() > 0 && globalOptions.ascending,
-    completed: () => !have($item`Richard's star key`),
+    ready: () => globalOptions.ascending,
+    completed: () =>
+      !have($item`Richard's star key`) ||
+      garboValue($item`star key lime`) < garboValue($item`lime`),
     do: () => create($item`star key lime`),
   },
 ];
