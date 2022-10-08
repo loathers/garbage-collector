@@ -475,10 +475,10 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
   const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
 
-  const fishyTurnsAvailable =
+  const fishyPipeTurnsAvailable =
     haveEffect($effect`Fishy`) + (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0);
   const canParkaChain =
-    fishyTurnsAvailable + (fishyTurnsAvailable > 0 && pyecAvailable() ? 5 : 0) >= freeNCs();
+    fishyPipeTurnsAvailable + (fishyPipeTurnsAvailable > 0 && pyecAvailable() ? 5 : 0) >= freeNCs();
 
   if (jellyYachtzeeTurns === 0 && !canParkaChain) {
     print("Determined that there are no suitable number of turns to chain yachtzees", "red");
@@ -581,6 +581,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const jelliesBulkPrice = retrievePrice($item`stench jelly`, jelliesToChew);
 
+  // TODO: This is outdated in the era of dynamic chains - if prices are too expensive, choose a more profitable chain length!
   // If we need spleen cleansers but their prices are unreasonable, just return
   const maxSliderPrice = 150000,
     maxPickleJuicePrice = 150000;
