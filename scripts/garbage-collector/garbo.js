@@ -20788,7 +20788,7 @@ function meatFamiliar() {
 
 /***/ }),
 
-/***/ 5232:
+/***/ 4470:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -26204,6 +26204,57 @@ function runGarboTasks(tasks) {
     engine.destruct();
   }
 }
+;// CONCATENATED MODULE: ./src/tasks/ascending.ts
+var ascending_templateObject, ascending_templateObject2, ascending_templateObject3, ascending_templateObject4, ascending_templateObject5, ascending_templateObject6, ascending_templateObject7, ascending_templateObject8, ascending_templateObject9, ascending_templateObject10, ascending_templateObject11, ascending_templateObject12, ascending_templateObject13, ascending_templateObject14, ascending_templateObject15, ascending_templateObject16, ascending_templateObject17, ascending_templateObject18, ascending_templateObject19, ascending_templateObject20, ascending_templateObject21, ascending_templateObject22, ascending_templateObject23, ascending_templateObject24;
+
+function ascending_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function ascending_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+
+
+function bestLockPickChoice() {
+  return 1 + (0,external_kolmafia_.toInt)((0,template_string/* $items */.vS)(ascending_templateObject || (ascending_templateObject = ascending_taggedTemplateLiteral(["Boris's key lime, Jarlsberg's key lime, Sneaky Pete's key lime"]))).sort((a, b) => (0,session/* garboValue */.sf)(b) - (0,session/* garboValue */.sf)(a))[0]) - (0,external_kolmafia_.toInt)((0,template_string/* $item */.xr)(ascending_templateObject2 || (ascending_templateObject2 = ascending_taggedTemplateLiteral(["Boris's key lime"]))));
+}
+
+var AscendingTasks = [{
+  name: "Lock Picking",
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(ascending_templateObject3 || (ascending_templateObject3 = ascending_taggedTemplateLiteral(["Lock Picking"])))) && src_lib/* globalOptions.ascending */.Xe.ascending,
+  completed: () => (0,property/* get */.U2)("lockPicked"),
+  do: () => {
+    (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(ascending_templateObject4 || (ascending_templateObject4 = ascending_taggedTemplateLiteral(["Lock Picking"]))));
+    if ((0,external_kolmafia_.handlingChoice)()) (0,external_kolmafia_.runChoice)(-1);
+  },
+  choices: ascending_defineProperty({}, 1414, () => bestLockPickChoice())
+}, {
+  name: "Cook Boris's key lime",
+  ready: () => src_lib/* globalOptions.ascending */.Xe.ascending,
+  completed: () => !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(ascending_templateObject5 || (ascending_templateObject5 = ascending_taggedTemplateLiteral(["Boris's key"])))) || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject6 || (ascending_templateObject6 = ascending_taggedTemplateLiteral(["Boris's key lime"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject7 || (ascending_templateObject7 = ascending_taggedTemplateLiteral(["lime"])))),
+  do: () => (0,external_kolmafia_.create)((0,template_string/* $item */.xr)(ascending_templateObject8 || (ascending_templateObject8 = ascending_taggedTemplateLiteral(["Boris's key lime"]))))
+}, {
+  name: "Cook Jarlsberg's key lime",
+  ready: () => src_lib/* globalOptions.ascending */.Xe.ascending,
+  completed: () => !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(ascending_templateObject9 || (ascending_templateObject9 = ascending_taggedTemplateLiteral(["Jarlsberg's key"])))) || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject10 || (ascending_templateObject10 = ascending_taggedTemplateLiteral(["Jarlsberg's key lime"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject11 || (ascending_templateObject11 = ascending_taggedTemplateLiteral(["lime"])))),
+  do: () => (0,external_kolmafia_.create)((0,template_string/* $item */.xr)(ascending_templateObject12 || (ascending_templateObject12 = ascending_taggedTemplateLiteral(["Jarlsberg's key lime"]))))
+}, {
+  name: "Cook Sneaky Pete's key lime",
+  ready: () => src_lib/* globalOptions.ascending */.Xe.ascending,
+  completed: () => !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(ascending_templateObject13 || (ascending_templateObject13 = ascending_taggedTemplateLiteral(["Sneaky Pete's key"])))) || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject14 || (ascending_templateObject14 = ascending_taggedTemplateLiteral(["Sneaky Pete's key lime"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject15 || (ascending_templateObject15 = ascending_taggedTemplateLiteral(["lime"])))),
+  do: () => (0,external_kolmafia_.create)((0,template_string/* $item */.xr)(ascending_templateObject16 || (ascending_templateObject16 = ascending_taggedTemplateLiteral(["Sneaky Pete's key lime"]))))
+}, {
+  name: "Cook digital key lime",
+  ready: () => src_lib/* globalOptions.ascending */.Xe.ascending,
+  completed: () => !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(ascending_templateObject17 || (ascending_templateObject17 = ascending_taggedTemplateLiteral(["digital key"])))) || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject18 || (ascending_templateObject18 = ascending_taggedTemplateLiteral(["digital key lime"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject19 || (ascending_templateObject19 = ascending_taggedTemplateLiteral(["lime"])))),
+  do: () => (0,external_kolmafia_.create)((0,template_string/* $item */.xr)(ascending_templateObject20 || (ascending_templateObject20 = ascending_taggedTemplateLiteral(["digital key lime"]))))
+}, {
+  name: "Cook star key lime",
+  ready: () => src_lib/* globalOptions.ascending */.Xe.ascending,
+  completed: () => !(0,lib/* have */.lf)((0,template_string/* $item */.xr)(ascending_templateObject21 || (ascending_templateObject21 = ascending_taggedTemplateLiteral(["Richard's star key"])))) || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject22 || (ascending_templateObject22 = ascending_taggedTemplateLiteral(["star key lime"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(ascending_templateObject23 || (ascending_templateObject23 = ascending_taggedTemplateLiteral(["lime"])))),
+  do: () => (0,external_kolmafia_.create)((0,template_string/* $item */.xr)(ascending_templateObject24 || (ascending_templateObject24 = ascending_taggedTemplateLiteral(["star key lime"]))))
+}];
 ;// CONCATENATED MODULE: ./src/dailies.ts
 function dailies_toConsumableArray(arr) { return dailies_arrayWithoutHoles(arr) || dailies_iterableToArray(arr) || dailies_unsupportedIterableToArray(arr) || dailies_nonIterableSpread(); }
 
@@ -26223,8 +26274,9 @@ function dailies_arrayLikeToArray(arr, len) { if (len == null || len > arr.lengt
 
 
 
+
 function dailySetup() {
-  runSafeGarboTasks([].concat(dailies_toConsumableArray(DailyFamiliarTasks), dailies_toConsumableArray(DailyItemTasks), dailies_toConsumableArray(DailyVolcanoTasks), dailies_toConsumableArray(DailyTasks)));
+  runSafeGarboTasks([].concat(dailies_toConsumableArray(DailyFamiliarTasks), dailies_toConsumableArray(DailyItemTasks), dailies_toConsumableArray(DailyVolcanoTasks), dailies_toConsumableArray(DailyTasks), dailies_toConsumableArray(AscendingTasks)));
 }
 function postFreeFightDailySetup() {
   runSafeGarboTasks(PostFreeFightTasks);
@@ -31629,7 +31681,7 @@ module.exports = require("kolmafia");
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 5232);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 4470);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
