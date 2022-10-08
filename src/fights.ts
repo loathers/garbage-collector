@@ -4,6 +4,7 @@ import {
   buy,
   canAdventure,
   canEquip,
+  choiceFollowsFight,
   cliExecute,
   closetAmount,
   create,
@@ -885,7 +886,7 @@ const freeFightSources = [
           () => {
             mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
             runCombat();
-            runChoice(-1);
+            if (choiceFollowsFight()) runChoice(-1);
           }
         );
       } else {
@@ -1307,6 +1308,7 @@ const freeFightSources = [
           .abort()
           .setAutoAttack();
         mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
+        if (choiceFollowsFight()) runChoice(-1);
       } finally {
         setAutoAttack(0);
       }
@@ -1582,6 +1584,7 @@ const freeRunFightSources = [
           .step(runSource.macro)
           .setAutoAttack();
         mapMonster(best.location, best.monster);
+        if (choiceFollowsFight()) runChoice(-1);
       } finally {
         setAutoAttack(0);
       }
@@ -1620,6 +1623,7 @@ const freeRunFightSources = [
           .setAutoAttack();
         if (mappingMonster) {
           mapMonster(best.location, best.monster);
+          if (choiceFollowsFight()) runChoice(-1);
         } else {
           adv1(best.location, -1, "");
         }
@@ -2310,6 +2314,7 @@ function killRobortCreaturesForFree() {
       () => {
         mapMonster($location`The Copperhead Club`, $monster`Mob Penguin Capo`);
         runCombat();
+        if (choiceFollowsFight()) runChoice(-1);
       },
       true
     );

@@ -1,10 +1,8 @@
 import {
-  choiceFollowsFight,
   cliExecute,
   descToItem,
   equip,
   getWorkshed,
-  handlingChoice,
   Item,
   itemAmount,
   myAdventures,
@@ -186,10 +184,6 @@ function funguySpores() {
 }
 
 export default function postCombatActions(skipDiet = false): void {
-  while (handlingChoice() || choiceFollowsFight()) {
-    runChoice(-1);
-  }
-
   juneCleave();
   numberology();
   if (!skipDiet && !globalOptions.noDiet) {
