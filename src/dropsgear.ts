@@ -33,6 +33,7 @@ import {
   have,
   JuneCleaver,
   Modifiers,
+  sum,
   sumNumbers,
 } from "libram";
 import {
@@ -161,14 +162,12 @@ function sweatpants(equipMode: BonusEquipMode) {
   return new Map([[$item`designer sweatpants`, bonus]]);
 }
 
-const bestAdventuresFromPants =
-  Item.all()
-    .filter(
-      (item) =>
-        toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
-    )
-    .map((pants) => numericModifier(pants, "Adventures"))
-    .sort((a, b) => b - a)[0] || 0;
+const alternativePants = Item.all()
+  .filter(
+    (item) => toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
+  )
+  .map((pants) => numericModifier(pants, "Adventures"));
+const bestAdventuresFromPants = Math.max(0, ...alternativePants);
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
 function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&
@@ -454,11 +453,8 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
   }
   if (!juneCleaverEV) {
     juneCleaverEV =
-      JuneCleaver.choices.reduce(
-        (total, choice) =>
-          total +
-          valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]),
-        0
+      sum([...JuneCleaver.choices], (choice) =>
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
       ) / JuneCleaver.choices.length;
   }
 

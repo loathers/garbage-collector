@@ -210,12 +210,6 @@ export function mapMonster(location: Location, monster: Monster): void {
   }
 }
 
-export function argmax<T>(values: [T, number][]): T {
-  return values.reduce(([minValue, minScore], [value, score]) =>
-    score > minScore ? [value, score] : [minValue, minScore]
-  )[0];
-}
-
 /**
  * Returns true if the arguments have all elements equal.
  * @param array1 First array.
@@ -316,15 +310,15 @@ export function printHelpMenu(): void {
 export function pillkeeperOpportunityCost(): number {
   const canTreasury = canAdventure($location`Cobb's Knob Treasury`);
 
-  const alternateUse = [
+  const alternateUses = [
     { can: canTreasury, value: 3 * get("valueOfAdventure") },
     {
       can: realmAvailable("sleaze"),
       value: 40000,
     },
-  ]
-    .filter((x) => x.can)
-    .sort((a, b) => b.value - a.value)[0];
+  ].filter((x) => x.can);
+
+  const alternateUse = alternateUses.length ? maxBy(alternateUses, "value") : undefined;
   const alternateUseValue = alternateUse?.value;
 
   if (!alternateUseValue) return 0;
@@ -536,12 +530,7 @@ export function valueJuneCleaverOption(result: Item | number): number {
 
 export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
-  return options
-    .map((option) => ({
-      option,
-      value: valueJuneCleaverOption(juneCleaverChoiceValues[id][option]),
-    }))
-    .sort((a, b) => b.value - a.value)[0].option;
+  return maxBy(options, (option) => valueJuneCleaverOption(juneCleaverChoiceValues[id][option]));
 }
 
 export const romanticMonsterImpossible = (): boolean =>
@@ -559,4 +548,36 @@ export function freeCrafts(): number {
     (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
     (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
   );
+}
+
+/**
+ * Find the best element of an array, where "best" is defined by some given criteria.
+ * @param array The array to traverse and find the best element of.
+ * @param optimizer Either a key on the objects we're looking at that corresponds to numerical values, or a function for mapping these objects to numbers. Essentially, some way of assigning value to the elements of the array.
+ * @param reverse Make this true to find the worst element of the array, and false to find the best. Defaults to false.
+ */
+export function maxBy<T>(
+  array: T[] | readonly T[],
+  optimizer: (element: T) => number,
+  reverse?: boolean
+): T;
+export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
+  array: T[] | readonly T[],
+  key: S,
+  reverse?: boolean
+): T;
+export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
+  array: T[] | readonly T[],
+  optimizer: ((element: T) => number) | S,
+  reverse = false
+): T {
+  if (typeof optimizer === "function") {
+    return maxBy(
+      array.map((key) => ({ key, value: optimizer(key) })),
+      "value",
+      reverse
+    ).key;
+  } else {
+    return array.reduce((a, b) => (a[optimizer] > b[optimizer] !== reverse ? a : b));
+  }
 }

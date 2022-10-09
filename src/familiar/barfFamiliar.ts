@@ -23,7 +23,7 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
-import { baseMeat, HIGHLIGHT } from "../lib";
+import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
 import { meatOutfit } from "../outfit";
 import { estimatedTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -164,7 +164,7 @@ export function barfFamiliar(): Familiar {
 
   if (viableMenu.length === 0) return meatFamiliar();
 
-  const best = viableMenu.reduce((a, b) => (totalFamiliarValue(a) > totalFamiliarValue(b) ? a : b));
+  const best = maxBy(viableMenu, totalFamiliarValue);
 
   const familiarPrintout = (x: MarginalFamiliar) =>
     `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(

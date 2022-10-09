@@ -35,10 +35,10 @@ import {
 import { acquire } from "./acquire";
 import { computeDiet, consumeDiet } from "./diet";
 import {
-  argmax,
   bestJuneCleaverOption,
   globalOptions,
   juneCleaverChoiceValues,
+  maxBy,
   safeInterrupt,
   safeRestore,
   setChoice,
@@ -71,7 +71,7 @@ function coldMedicineCabinet(): void {
     itemChoices.set(item, i);
   }
 
-  const bestItem = argmax(Array.from(itemChoices.keys()).map((i) => [i, garboValue(i)]));
+  const bestItem = maxBy([...itemChoices.keys()], garboValue);
   const bestChoice = itemChoices.get(bestItem);
   if (bestChoice && bestChoice > 0) {
     visitUrl("campground.php?action=workshed");

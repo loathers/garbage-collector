@@ -68,11 +68,11 @@ import { withVIPClan } from "./clan";
 import { embezzlerCount } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import {
-  argmax,
   arrayEquals,
   baseMeat,
   globalOptions,
   HIGHLIGHT,
+  maxBy,
   realmAvailable,
   userConfirmDialog,
 } from "./lib";
@@ -205,7 +205,7 @@ export function nonOrganAdventures(): void {
         value: chocExpVal(i, choc),
       };
     });
-    const best = chocoVals.sort((a, b) => b.value - a.value)[0];
+    const best = maxBy(chocoVals, "value");
     if (best.value > 0) {
       acquire(1, best.choco, best.value + mallPrice(best.choco), false);
       use(1, best.choco);
@@ -280,8 +280,7 @@ const stomachLiverCleaners = new Map([
   [$item`designer sweatpants`, [0, -1]],
 ]);
 
-export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
-  argmax(items.map((i) => [i, -mallPrice(i)]));
+export const mallMin: (items: Item[]) => Item = (items: Item[]) => maxBy(items, mallPrice, true);
 
 /**
  * Generate a basic menu of high-yield items to consider
@@ -415,7 +414,7 @@ export function bestConsumable(
       value: (buffValue + advValue - mallPrice(edible)) / organSpace,
     };
   });
-  const best = organList.sort((a, b) => b.value - a.value)[0];
+  const best = maxBy(organList, "value");
   return best;
 }
 

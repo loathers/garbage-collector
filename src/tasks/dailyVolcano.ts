@@ -22,7 +22,7 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { globalOptions, HIGHLIGHT, logMessage, realmAvailable } from "../lib";
+import { globalOptions, HIGHLIGHT, logMessage, maxBy, realmAvailable } from "../lib";
 import { garboValue } from "../session";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
@@ -48,23 +48,27 @@ function checkVolcanoQuest() {
   print("Checking volcano quest", HIGHLIGHT);
   visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
   const volcoinoValue = garboValue($item`Volcoino`);
-  const bestItem = [
-    {
-      item: property.getItem("_volcanoItem1") ?? $item.none,
-      quantity: get("_volcanoItemCount1"),
-      choice: 1,
-    },
-    {
-      item: property.getItem("_volcanoItem2") ?? $item.none,
-      quantity: get("_volcanoItemCount2"),
-      choice: 2,
-    },
-    {
-      item: property.getItem("_volcanoItem3") ?? $item.none,
-      quantity: get("_volcanoItemCount3"),
-      choice: 3,
-    },
-  ].reduce((a, b) => (volcanoItemValue(a) < volcanoItemValue(b) ? a : b));
+  const bestItem = maxBy(
+    [
+      {
+        item: property.getItem("_volcanoItem1") ?? $item.none,
+        quantity: get("_volcanoItemCount1"),
+        choice: 1,
+      },
+      {
+        item: property.getItem("_volcanoItem2") ?? $item.none,
+        quantity: get("_volcanoItemCount2"),
+        choice: 2,
+      },
+      {
+        item: property.getItem("_volcanoItem3") ?? $item.none,
+        quantity: get("_volcanoItemCount3"),
+        choice: 3,
+      },
+    ],
+    volcanoItemValue,
+    true
+  );
   if (bestItem.item === $item`fused fuse`) {
     globalOptions.clarasBellClaimed = true;
     logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");

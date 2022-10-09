@@ -50,6 +50,7 @@ import {
   checkGithubVersion,
   globalOptions,
   HIGHLIGHT,
+  maxBy,
   printHelpMenu,
   printLog,
   propertyManager,
@@ -345,7 +346,7 @@ export function main(argString = ""): void {
           choiceId: choiceId,
         };
       });
-      bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
+      bestHalloweiner = maxBy(halloweinerOptions, "price").choiceId;
     }
     propertyManager.setChoices({
       1106: 3, // Ghost Dog Chow

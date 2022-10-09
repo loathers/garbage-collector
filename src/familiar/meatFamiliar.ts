@@ -1,5 +1,6 @@
 import { Familiar, inebrietyLimit, myInebriety } from "kolmafia";
 import { $familiar, $item, findFairyMultiplier, findLeprechaunMultiplier, have } from "libram";
+import { maxBy } from "../lib";
 
 let fam: Familiar;
 
@@ -20,7 +21,7 @@ function findBestLeprechauns(): Familiar[] {
 }
 
 function findBestLeprechaun(): Familiar {
-  return findBestLeprechauns().sort((a, b) => findFairyMultiplier(b) - findFairyMultiplier(a))[0];
+  return maxBy(findBestLeprechauns(), findFairyMultiplier);
 }
 
 export function setBestLeprechaunAsMeatFamiliar(): void {
