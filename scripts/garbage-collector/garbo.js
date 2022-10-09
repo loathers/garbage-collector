@@ -27164,6 +27164,8 @@ function yachtzeeDietScheduler(menu) {
       } finally {
         _iterator4.f();
       }
+
+      break;
     } else if (dietSchedule[_idx2].name.includes("jelly")) {
       var _iterator5 = diet_createForOfIteratorHelper(freeNCs),
           _step5;
