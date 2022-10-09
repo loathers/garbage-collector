@@ -367,6 +367,7 @@ function yachtzeeDietScheduler(
   for (let idx = 0; idx <= dietSchedule.length; idx++) {
     if (idx === dietSchedule.length) {
       for (const freeNCSource of freeNCs) dietSchedule.push(freeNCSource);
+      break;
     } else if (dietSchedule[idx].name.includes("jelly")) {
       for (const freeNCSource of freeNCs) dietSchedule.splice(idx, 0, freeNCSource);
       break;
