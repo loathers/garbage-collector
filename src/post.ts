@@ -20,9 +20,11 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $skill,
   $slot,
   adventureMacro,
+  AutumnAton,
   get,
   getRemainingStomach,
   have,
@@ -183,6 +185,8 @@ function funguySpores() {
   }
 }
 
+const autumnAtonZones = $locations`The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley`;
+
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
@@ -196,4 +200,5 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
+  AutumnAton.sendTo(autumnAtonZones);
 }
