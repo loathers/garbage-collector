@@ -9,7 +9,6 @@ import {
   inebrietyLimit,
   Item,
   maximize,
-  myAdventures,
   myClass,
   myGardenType,
   myInebriety,
@@ -58,14 +57,13 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { meatMood } from "./mood";
-import postCombatActions from "./post";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { potionSetup } from "./potions";
 import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
-import barfTurn from "./barfTurn";
 import { estimatedTurns } from "./turns";
+import { barfTurns } from "./tasks/barfTurn";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -84,13 +82,6 @@ function ensureBarfAccess() {
     runChoice(6);
     cliExecute("refresh inv");
   }
-}
-
-export function canContinue(): boolean {
-  return (
-    myAdventures() > globalOptions.saveTurns &&
-    (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
-  );
 }
 
 export function main(argString = ""): void {
@@ -444,10 +435,7 @@ export function main(argString = ""): void {
           maximize("MP", false);
           meatMood().execute(estimatedTurns());
           try {
-            while (canContinue()) {
-              barfTurn();
-              postCombatActions();
-            }
+            barfTurns();
 
             // buy one-day tickets with FunFunds if user desires
             if (

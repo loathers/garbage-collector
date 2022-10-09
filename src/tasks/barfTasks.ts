@@ -1,3 +1,4 @@
+import { Task as BaseTask } from "grimoire-kolmafia";
 import {
   availableAmount,
   canAdventure,
@@ -10,7 +11,6 @@ import {
   myAdventures,
   myInebriety,
   myLevel,
-  print,
   retrieveItem,
   runChoice,
   runCombat,
@@ -39,50 +39,43 @@ import {
   Requirement,
   SourceTerminal,
 } from "libram";
-import { Macro, withMacro } from "./combat";
-import { computeDiet, consumeDiet } from "./diet";
-import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
-import { deliverThesisIfAble } from "./fights";
+import { Macro, withMacro } from "../combat";
+import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "../familiar";
 import {
   embezzlerLog,
   globalOptions,
   kramcoGuaranteed,
   questStep,
   romanticMonsterImpossible,
-  safeRestore,
   setChoice,
   sober,
-} from "./lib";
-import { meatMood } from "./mood";
+} from "../lib";
 import {
   familiarWaterBreathingEquipment,
   freeFightOutfit,
   meatOutfit,
-  tryFillLatte,
   waterBreathingEquipment,
-} from "./outfit";
-import postCombatActions from "./post";
-import { completeBarfQuest } from "./tasks/daily";
-import { digitizedMonstersRemaining, estimatedTurns } from "./turns";
-import { drunkSafeWander, wanderWhere } from "./wanderer";
+} from "../outfit";
+import { digitizedMonstersRemaining } from "../turns";
+import { drunkSafeWander, wanderWhere } from "../wanderer";
+import { completeBarfQuest } from "./daily";
+import { deliverThesisIfAble } from "../fights";
+import { computeDiet, consumeDiet } from "../diet";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
-type EmbezzlerPrepOptions = {
-  requirements?: Requirement;
-  sea?: boolean;
+export enum Sobriety {
+  SOBER = "sober",
+  DRUNK = "drunk",
+  EITHER = "either",
+}
+
+export type BarfTask = BaseTask & {
+  sobriety: Sobriety;
+  spendsTurn: boolean | (() => boolean);
 };
-function embezzlerPrep(options: EmbezzlerPrepOptions = {}) {
-  useFamiliar(meatFamiliar());
-  meatOutfit(true, options.requirements, options.sea);
-}
 
-function freeFightPrep(requirements?: Requirement) {
-  useFamiliar(freeFightFamiliar());
-  freeFightOutfit(requirements);
-}
-
-function logEmbezzler(encountertype: string) {
+export function logEmbezzler(encountertype: string): void {
   embezzlerLog.initialEmbezzlersFought++;
   embezzlerLog.sources.push(encountertype === "Digitize" ? encountertype : "Unknown Source");
 }
@@ -114,7 +107,26 @@ function shouldGoUnderwater(): boolean {
   return have($effect`Fishy`) || (have($item`fishy pipe`) && use($item`fishy pipe`));
 }
 
-// Lights Out adventures require you to take several choices in a row
+type PrepOptions = {
+  requirements?: Requirement;
+  sea?: boolean;
+  location?: Location;
+};
+function prep(type: "free" | "meat", options: PrepOptions = {}): void {
+  if (type === "free") {
+    useFamiliar(freeFightFamiliar({ location: options.location }));
+    freeFightOutfit(options.requirements);
+  } else {
+    useFamiliar(meatFamiliar());
+    meatOutfit(true, options.requirements, options.sea);
+  }
+}
+
+const lightsOutReady: () => boolean = () =>
+  totalTurnsPlayed() % 37 === 0 &&
+  totalTurnsPlayed() !== get("lastLightsOutTurn") &&
+  canAdventure(get("nextSpookyravenStephenRoom") ?? $location`none`);
+
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
   [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
@@ -125,34 +137,15 @@ const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
 ]);
 
-enum Sobriety {
-  SOBER = "sober",
-  DRUNK = "drunk",
-  EITHER = "either",
-}
+let digitize = -1;
 
-/**
- * Describes an action we could take as part of our barf-turn loop.
- * Has a name, a a function to determine availability, and a function that executes the turn.
- * Execute function returns whether we succeeded.
- */
-type AdventureAction = {
-  name: string;
-  available: () => boolean;
-  execute: () => boolean;
-  spendsTurn: boolean | (() => boolean);
-  sobriety: Sobriety;
-};
+const needTurns: () => boolean = () => myAdventures() === 1 + globalOptions.saveTurns && sober();
 
-// This is roughly ordered by the encounter ontology, followed by general priority
-const turns: AdventureAction[] = [
+export const barfTasks: BarfTask[] = [
   {
     name: "Lights Out",
-    available: () =>
-      totalTurnsPlayed() % 37 === 0 &&
-      totalTurnsPlayed() !== get("lastLightsOutTurn") &&
-      canAdventure(get("nextSpookyravenStephenRoom") ?? $location`none`),
-    execute: () => {
+    ready: () => lightsOutReady(),
+    do: (): void => {
       const steveRoom = get("nextSpookyravenStephenRoom");
       const ghostLocation = get("ghostLocation");
       if (steveRoom && canAdventure(steveRoom) && steveRoom !== ghostLocation) {
@@ -161,7 +154,7 @@ const turns: AdventureAction[] = [
         const drunkRequirement = sober()
           ? undefined
           : new Requirement([], { forceEquip: $items`Drunkula's wineglass` });
-        if (fightingSteve) embezzlerPrep({ requirements: drunkRequirement });
+        if (fightingSteve) prep("meat", { requirements: drunkRequirement });
         const plan = steveAdventures.get(steveRoom);
         if (plan) {
           withMacro(
@@ -176,33 +169,35 @@ const turns: AdventureAction[] = [
             true
           );
         }
-        return totalTurnsPlayed() === get("lastLightsOutTurn");
       }
-      return false;
     },
     spendsTurn: () => get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`,
     sobriety: Sobriety.EITHER,
+    completed: () =>
+      totalTurnsPlayed() === get("lastLightsOutTurn") ||
+      get("lastEncounter") === "Stephen Spookyraven",
   },
   {
     name: "Proton Ghost",
-    available: () =>
+    ready: () =>
       have($item`protonic accelerator pack`) &&
       get("questPAGhost") !== "unstarted" &&
       !!get("ghostLocation"),
-    execute: () => {
+    do: (): void => {
       const ghostLocation = get("ghostLocation");
-      if (!ghostLocation) return false;
-      freeFightPrep(
-        new Requirement(
-          ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [],
-          {
-            forceEquip: $items`protonic accelerator pack`,
-          }
-        )
-      );
-      adventureMacro(ghostLocation, Macro.ghostBustin());
-      return get("questPAGhost") === "unstarted";
+      if (ghostLocation) {
+        prep("free", {
+          requirements: new Requirement(
+            ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [],
+            {
+              forceEquip: $items`protonic accelerator pack`,
+            }
+          ),
+        });
+        adventureMacro(ghostLocation, Macro.ghostBustin());
+      }
     },
+    completed: () => get("questPAGhost") === "unstarted",
     spendsTurn: false,
     // Ghost fights are currently hard
     // and they resist physical attacks!
@@ -210,16 +205,16 @@ const turns: AdventureAction[] = [
   },
   {
     name: "Vote Wanderer",
-    available: () =>
+    ready: () =>
       have($item`"I Voted!" sticker`) &&
       totalTurnsPlayed() % 11 === 1 &&
       get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
       get("_voteFreeFights") < 3,
-    execute: () => {
+    do: (): void => {
       const isGhost = get("_voteMonster") === $monster`angry ghost`;
       const isMutant = get("_voteMonster") === $monster`terrible mutant`;
-      freeFightPrep(
-        new Requirement([], {
+      prep("free", {
+        requirements: new Requirement([], {
           forceEquip: [
             $item`"I Voted!" sticker`,
             ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
@@ -227,24 +222,24 @@ const turns: AdventureAction[] = [
               ? $items`mutant arm, mutant legs`.filter((i) => have(i))
               : []),
           ],
-        })
-      );
+        }),
+      });
       adventureMacroAuto(
         isGhost ? drunkSafeWander("wanderer") : wanderWhere("wanderer"),
         Macro.basicCombat()
       );
-      return get("lastVoteMonsterTurn") === totalTurnsPlayed();
     },
+    completed: () => get("lastVoteMonsterTurn") === totalTurnsPlayed(),
     spendsTurn: false,
     sobriety: Sobriety.EITHER,
   },
   {
     name: "Digitize Wanderer",
-    available: () => Counter.get("Digitize Monster") <= 0,
-    execute: () => {
+    ready: () => Counter.get("Digitize Monster") <= 0,
+    do: (): void => {
       // This check exists primarily for the ease of modded garbos
       const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
-      const start = get("_sourceTerminalDigitizeMonsterCount");
+      digitize = get("_sourceTerminalDigitizeMonsterCount");
 
       const underwater = isEmbezzler && shouldGoUnderwater();
 
@@ -252,7 +247,7 @@ const turns: AdventureAction[] = [
 
       if (underwater) retrieveItem($item`pulled green taffy`);
 
-      isEmbezzler ? embezzlerPrep({ sea: underwater }) : freeFightPrep();
+      isEmbezzler ? prep("meat", { sea: underwater }) : prep("free");
       adventureMacroAuto(
         targetLocation,
         Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(),
@@ -264,76 +259,82 @@ const turns: AdventureAction[] = [
           Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
         ).abort()
       );
-      return get("_sourceTerminalDigitizeMonsterCount") !== start;
+      return;
     },
     spendsTurn: () => !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
     sobriety: Sobriety.EITHER,
+    completed: () => get("_sourceTerminalDigitizeMonsterCount") !== digitize,
   },
   {
     name: "Guaranteed Kramco",
-    available: () => kramcoGuaranteed(),
-    execute: () => {
-      freeFightPrep(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
+    ready: () => kramcoGuaranteed(),
+    do: (): void => {
+      prep("free", {
+        requirements: new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }),
+      });
       adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
-      return !kramcoGuaranteed();
     },
+    completed: () => !kramcoGuaranteed(),
     spendsTurn: false,
     sobriety: Sobriety.EITHER,
   },
   {
     name: "Void Monster",
-    available: () =>
+    ready: () =>
       have($item`cursed magnifying glass`) &&
       get("cursedMagnifyingGlassCount") === 13 &&
       get("_voidFreeFights") < 5,
-    execute: () => {
-      freeFightPrep(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
+    do: (): void => {
+      prep("free", {
+        requirements: new Requirement([], { forceEquip: $items`cursed magnifying glass` }),
+      });
       adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
-      return get("cursedMagnifyingGlassCount") === 0;
     },
+    completed: () => get("cursedMagnifyingGlassCount") === 0,
     spendsTurn: false,
     sobriety: Sobriety.EITHER,
   },
   {
     name: "Envyfish Egg",
-    available: () =>
+    ready: () =>
       have($item`envyfish egg`) && get("envyfishMonster") === embezzler && !get("_envyfishEggUsed"),
-    execute: () => {
-      embezzlerPrep();
+    do: (): void => {
+      prep("meat");
       withMacro(Macro.meatKill(), () => use($item`envyfish egg`), true);
-      return get("_envyfishEggUsed");
     },
+    completed: () => get("_envyfishEggUsed"),
     spendsTurn: true,
     sobriety: Sobriety.EITHER,
   },
   {
     name: "Spit Acid",
-    available: () =>
+    ready: () =>
       have($item`Jurassic Parka`) &&
       !have($effect`Everything Looks Yellow`) &&
       romanticMonsterImpossible(),
-    execute: () => {
+    do: (): void => {
       const location = wanderWhere("yellow ray");
-      const familiar = freeFightFamiliar({ location });
-      useFamiliar(familiar);
-      freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
+      prep("free", {
+        location,
+        requirements: new Requirement([], { forceEquip: $items`Jurassic Parka` }),
+      });
       cliExecute("parka dilophosaur");
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .skill($skill`Spit jurassic acid`);
       adventureMacroAuto(location, macro);
-      return have($effect`Everything Looks Yellow`);
     },
+    completed: () => have($effect`Everything Looks Yellow`),
     spendsTurn: false,
     sobriety: Sobriety.SOBER,
   },
   {
     name: "Map for Pills",
-    available: () =>
+    ready: () =>
       globalOptions.ascending &&
       clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
         availableAmount($item`Map to Safety Shelter Grimace Prime`),
-    execute: () => {
+    do: (): void => {
       const choiceToSet =
         availableAmount($item`distention pill`) <
         availableAmount($item`synthetic dog hair pill`) +
@@ -343,15 +344,55 @@ const turns: AdventureAction[] = [
       setChoice(536, choiceToSet);
       ensureEffect($effect`Transpondent`);
       use($item`Map to Safety Shelter Grimace Prime`);
-      return true;
     },
+    completed: () => true,
     spendsTurn: true,
     sobriety: Sobriety.DRUNK,
   },
   {
+    name: "Thesis",
+    ready: needTurns,
+    do: deliverThesisIfAble,
+    completed: () => !needTurns(),
+    sobriety: Sobriety.SOBER,
+    spendsTurn: false,
+  },
+  {
+    name: "Sausages",
+    ready: () =>
+      needTurns() &&
+      have($item`Kramco Sausage-o-Matic™`) &&
+      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
+      get("_sausagesEaten") < 23,
+    do: (): void => {
+      const available = clamp(
+        23 - get("_sausagesEaten"),
+        0,
+        itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
+      );
+      eat(available, $item`magical sausage`);
+    },
+    completed: () => !needTurns(),
+    sobriety: Sobriety.EITHER,
+    spendsTurn: false,
+  },
+  {
+    name: "Sweatpants",
+    ready: () => needTurns() && have($item`designer sweatpants`) && globalOptions.noDiet,
+    do: (): void => {
+      while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25 && myInebriety() > 0) {
+        useSkill($skill`Sweat Out Some Booze`);
+      }
+      consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
+    },
+    completed: () => !needTurns(),
+    sobriety: Sobriety.SOBER,
+    spendsTurn: false,
+  },
+  {
     name: "Barf",
-    available: () => true,
-    execute: () => {
+    ready: () => true,
+    do: (): void => {
       useFamiliar(barfFamiliar());
       const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
       meatOutfit(
@@ -367,80 +408,9 @@ const turns: AdventureAction[] = [
         ).abort()
       );
       completeBarfQuest();
-      return true;
     },
+    completed: () => true,
     spendsTurn: true,
     sobriety: Sobriety.EITHER,
   },
 ];
-
-function runTurn() {
-  const validSobrieties = [Sobriety.EITHER, sober() ? Sobriety.SOBER : Sobriety.DRUNK];
-  const turn = turns.find((t) => t.available() && validSobrieties.includes(t.sobriety));
-  if (!turn) throw new Error("Somehow failed to find anything to do!");
-  const expectToSpendATurn =
-    typeof turn.spendsTurn === "function" ? turn.spendsTurn() : turn.spendsTurn;
-  print(`Now running barf-turn: ${turn.name}.`);
-
-  const startTurns = totalTurnsPlayed();
-  const success = turn.execute();
-  const spentATurn = totalTurnsPlayed() - startTurns === 1;
-
-  if (spentATurn) {
-    if (!expectToSpendATurn) print(`We unexpectedly spent a turn doing ${turn.name}!`, "red");
-
-    const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
-    if (foughtAnEmbezzler) logEmbezzler(turn.name);
-
-    const needTurns = myAdventures() === 1 + globalOptions.saveTurns && sober();
-    if (needTurns) generateTurnsAtEndOfDay();
-  }
-
-  return { success, spentATurn };
-}
-
-export default function barfTurn(): void {
-  if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
-
-  tryFillLatte();
-  meatMood().execute(estimatedTurns());
-  safeRestore();
-
-  let failures = 0;
-  while (failures < 3) {
-    const { success, spentATurn } = runTurn();
-
-    if (success) return;
-    failures++;
-    if (spentATurn) postCombatActions();
-  }
-  throw new Error("Tried thrice to adventure, and failed each time. Aborting.");
-}
-
-function generateTurnsAtEndOfDay(): void {
-  deliverThesisIfAble();
-
-  if (
-    have($item`Kramco Sausage-o-Matic™`) &&
-    (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-    get("_sausagesEaten") < 23
-  ) {
-    const available = clamp(
-      23 - get("_sausagesEaten"),
-      0,
-      itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
-    );
-    eat(available, $item`magical sausage`);
-  }
-
-  if (
-    have($item`designer sweatpants`) &&
-    myAdventures() === 1 + globalOptions.saveTurns &&
-    !globalOptions.noDiet
-  ) {
-    while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25 && myInebriety() > 0) {
-      useSkill($skill`Sweat Out Some Booze`);
-    }
-    consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
-  }
-}
