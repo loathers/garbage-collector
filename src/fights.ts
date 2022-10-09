@@ -1981,7 +1981,7 @@ function setNepQuestChoicesAndPrepItems() {
   }
 }
 
-function thesisReady(): boolean {
+export function thesisReady(): boolean {
   return (
     !get("_thesisDelivered") &&
     have($familiar`Pocket Professor`) &&

@@ -1,10 +1,11 @@
-import { Task as BaseTask } from "grimoire-kolmafia";
+import { Task as BaseTask, outfitSlots, OutfitSpec } from "grimoire-kolmafia";
 import {
   availableAmount,
   canAdventure,
   cliExecute,
   currentRound,
   eat,
+  equippedItem,
   itemAmount,
   Location,
   mallPrice,
@@ -14,6 +15,7 @@ import {
   retrieveItem,
   runChoice,
   runCombat,
+  toSlot,
   totalTurnsPlayed,
   toUrl,
   use,
@@ -28,6 +30,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slot,
   adventureMacro,
   adventureMacroAuto,
   clamp,
@@ -59,7 +62,7 @@ import {
 import { digitizedMonstersRemaining } from "../turns";
 import { drunkSafeWander, wanderWhere } from "../wanderer";
 import { completeBarfQuest } from "./daily";
-import { deliverThesisIfAble } from "../fights";
+import { deliverThesisIfAble, thesisReady } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
@@ -73,6 +76,7 @@ export enum Sobriety {
 export type BarfTask = BaseTask & {
   sobriety: Sobriety;
   spendsTurn: boolean | (() => boolean);
+  alwaysSucceeds?: boolean;
 };
 
 export function logEmbezzler(encountertype: string): void {
@@ -107,35 +111,62 @@ function shouldGoUnderwater(): boolean {
   return have($effect`Fishy`) || (have($item`fishy pipe`) && use($item`fishy pipe`));
 }
 
-type PrepOptions = {
+type SpecOptions = {
   requirements?: Requirement;
-  sea?: boolean;
+  underwater?: boolean;
   location?: Location;
 };
-function prep(type: "free" | "meat", options: PrepOptions = {}): void {
-  if (type === "free") {
-    useFamiliar(freeFightFamiliar({ location: options.location }));
-    freeFightOutfit(options.requirements);
-  } else {
-    useFamiliar(meatFamiliar());
-    meatOutfit(true, options.requirements, options.sea);
-  }
+
+function makeSpec(): OutfitSpec {
+  return Object.fromEntries(
+    outfitSlots.map((v) => [v, equippedItem(v === "famequip" ? $slot`familiar` : toSlot(v))])
+  );
 }
 
-const lightsOutReady: () => boolean = () =>
-  totalTurnsPlayed() % 37 === 0 &&
-  totalTurnsPlayed() !== get("lastLightsOutTurn") &&
-  canAdventure(get("nextSpookyravenStephenRoom") ?? $location`none`);
+function spec(type: "free" | "meat" | "barf", options: SpecOptions = {}): OutfitSpec {
+  if (type === "free") {
+    freeFightOutfit(options.requirements);
+    return {
+      familiar: freeFightFamiliar({ location: options.location }),
+      ...makeSpec(),
+    };
+  } else if (type === "meat") {
+    meatOutfit(true, options.requirements, options.underwater);
+    return {
+      familiar: meatFamiliar(),
+      ...makeSpec(),
+    };
+  } else if (type === "barf") {
+    meatOutfit(false, options.requirements);
+    return {
+      familiar: barfFamiliar(),
+      ...makeSpec(),
+    };
+  }
+  return {};
+}
+const LightsOut = {
+  ready: (): boolean =>
+    totalTurnsPlayed() % 37 === 0 &&
+    totalTurnsPlayed() !== get("lastLightsOutTurn") &&
+    canAdventure(get("nextSpookyravenStephenRoom") ?? $location`none`),
+  steveAdventures: new Map<Location, number[]>([
+    [$location`The Haunted Bedroom`, [1, 3, 1]],
+    [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
+    [$location`The Haunted Conservatory`, [1, 2, 2]],
+    [$location`The Haunted Billiards Room`, [1, 2, 2]],
+    [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
+    [$location`The Haunted Boiler Room`, [1, 2, 2]],
+    [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
+  ]),
+  steveRoom: () => get("nextSpookyravenStephenRoom"),
+  fightingSteve: () => get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`,
+};
 
-const steveAdventures: Map<Location, number[]> = new Map([
-  [$location`The Haunted Bedroom`, [1, 3, 1]],
-  [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
-  [$location`The Haunted Conservatory`, [1, 2, 2]],
-  [$location`The Haunted Billiards Room`, [1, 2, 2]],
-  [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
-  [$location`The Haunted Boiler Room`, [1, 2, 2]],
-  [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
-]);
+const Voting = {
+  isGhost: () => get("_voteMonster") === $monster`angry ghost`,
+  isMutant: () => get("_voteMonster") === $monster`terrible mutant`,
+};
 
 let digitize = -1;
 
@@ -144,35 +175,42 @@ const needTurns: () => boolean = () => myAdventures() === 1 + globalOptions.save
 export const barfTasks: BarfTask[] = [
   {
     name: "Lights Out",
-    ready: () => lightsOutReady(),
-    do: (): void => {
+    ready: (): boolean => {
       const steveRoom = get("nextSpookyravenStephenRoom");
       const ghostLocation = get("ghostLocation");
-      if (steveRoom && canAdventure(steveRoom) && steveRoom !== ghostLocation) {
-        const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
-        // Technically drops 500 meat, but that's close enough for me.
+      return (
+        !!steveRoom && canAdventure(steveRoom) && steveRoom !== ghostLocation && LightsOut.ready()
+      );
+    },
+    do: (): void => {
+      const steveRoom = LightsOut.steveRoom() || $location.none;
+      // Technically drops 500 meat, but that's close enough for me.
+      const plan = LightsOut.steveAdventures.get(steveRoom);
+      if (plan) {
+        withMacro(
+          Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abort(),
+          () => {
+            visitUrl(toUrl(steveRoom));
+            for (const choiceValue of plan) {
+              runChoice(choiceValue);
+            }
+            if (LightsOut.fightingSteve() || currentRound()) runCombat();
+          },
+          true
+        );
+      }
+    },
+    spendsTurn: LightsOut.fightingSteve,
+    sobriety: Sobriety.EITHER,
+    outfit: (): OutfitSpec => {
+      if (LightsOut.fightingSteve()) {
         const drunkRequirement = sober()
           ? undefined
           : new Requirement([], { forceEquip: $items`Drunkula's wineglass` });
-        if (fightingSteve) prep("meat", { requirements: drunkRequirement });
-        const plan = steveAdventures.get(steveRoom);
-        if (plan) {
-          withMacro(
-            Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abort(),
-            () => {
-              visitUrl(toUrl(steveRoom));
-              for (const choiceValue of plan) {
-                runChoice(choiceValue);
-              }
-              if (fightingSteve || currentRound()) runCombat();
-            },
-            true
-          );
-        }
+        return spec("meat", { requirements: drunkRequirement });
       }
+      return {};
     },
-    spendsTurn: () => get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`,
-    sobriety: Sobriety.EITHER,
     completed: () =>
       totalTurnsPlayed() === get("lastLightsOutTurn") ||
       get("lastEncounter") === "Stephen Spookyraven",
@@ -184,18 +222,18 @@ export const barfTasks: BarfTask[] = [
       get("questPAGhost") !== "unstarted" &&
       !!get("ghostLocation"),
     do: (): void => {
-      const ghostLocation = get("ghostLocation");
-      if (ghostLocation) {
-        prep("free", {
-          requirements: new Requirement(
-            ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [],
-            {
-              forceEquip: $items`protonic accelerator pack`,
-            }
-          ),
-        });
-        adventureMacro(ghostLocation, Macro.ghostBustin());
-      }
+      const location = get("ghostLocation");
+      if (location) adventureMacro(location, Macro.ghostBustin());
+    },
+    outfit: (): OutfitSpec => {
+      return spec("free", {
+        requirements: new Requirement(
+          get("ghostLocation") === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [],
+          {
+            forceEquip: $items`protonic accelerator pack`,
+          }
+        ),
+      });
     },
     completed: () => get("questPAGhost") === "unstarted",
     spendsTurn: false,
@@ -211,23 +249,23 @@ export const barfTasks: BarfTask[] = [
       get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
       get("_voteFreeFights") < 3,
     do: (): void => {
-      const isGhost = get("_voteMonster") === $monster`angry ghost`;
-      const isMutant = get("_voteMonster") === $monster`terrible mutant`;
-      prep("free", {
+      adventureMacroAuto(
+        Voting.isGhost() ? drunkSafeWander("wanderer") : wanderWhere("wanderer"),
+        Macro.basicCombat()
+      );
+    },
+    outfit: (): OutfitSpec => {
+      return spec("free", {
         requirements: new Requirement([], {
           forceEquip: [
             $item`"I Voted!" sticker`,
-            ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
-            ...(!have($item`mutant crown`) && isMutant
+            ...(!sober() && !Voting.isGhost() ? $items`Drunkula's wineglass` : []),
+            ...(!have($item`mutant crown`) && Voting.isMutant()
               ? $items`mutant arm, mutant legs`.filter((i) => have(i))
               : []),
           ],
         }),
       });
-      adventureMacroAuto(
-        isGhost ? drunkSafeWander("wanderer") : wanderWhere("wanderer"),
-        Macro.basicCombat()
-      );
     },
     completed: () => get("lastVoteMonsterTurn") === totalTurnsPlayed(),
     spendsTurn: false,
@@ -238,16 +276,15 @@ export const barfTasks: BarfTask[] = [
     ready: () => Counter.get("Digitize Monster") <= 0,
     do: (): void => {
       // This check exists primarily for the ease of modded garbos
-      const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
+
       digitize = get("_sourceTerminalDigitizeMonsterCount");
 
+      const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
       const underwater = isEmbezzler && shouldGoUnderwater();
 
       const targetLocation = underwater ? $location`The Briny Deeps` : drunkSafeWander("wanderer");
-
       if (underwater) retrieveItem($item`pulled green taffy`);
 
-      isEmbezzler ? prep("meat", { sea: underwater }) : prep("free");
       adventureMacroAuto(
         targetLocation,
         Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(),
@@ -261,6 +298,11 @@ export const barfTasks: BarfTask[] = [
       );
       return;
     },
+    outfit: (): OutfitSpec => {
+      const isEmbezzler = SourceTerminal.getDigitizeMonster() === embezzler;
+      const underwater = isEmbezzler && shouldGoUnderwater();
+      return spec(isEmbezzler ? "meat" : "free", { underwater });
+    },
     spendsTurn: () => !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
     sobriety: Sobriety.EITHER,
     completed: () => get("_sourceTerminalDigitizeMonsterCount") !== digitize,
@@ -268,12 +310,11 @@ export const barfTasks: BarfTask[] = [
   {
     name: "Guaranteed Kramco",
     ready: () => kramcoGuaranteed(),
-    do: (): void => {
-      prep("free", {
+    do: () => adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat()),
+    outfit: (): OutfitSpec =>
+      spec("free", {
         requirements: new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }),
-      });
-      adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
-    },
+      }),
     completed: () => !kramcoGuaranteed(),
     spendsTurn: false,
     sobriety: Sobriety.EITHER,
@@ -284,12 +325,11 @@ export const barfTasks: BarfTask[] = [
       have($item`cursed magnifying glass`) &&
       get("cursedMagnifyingGlassCount") === 13 &&
       get("_voidFreeFights") < 5,
-    do: (): void => {
-      prep("free", {
+    do: () => adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat()),
+    outfit: (): OutfitSpec =>
+      spec("free", {
         requirements: new Requirement([], { forceEquip: $items`cursed magnifying glass` }),
-      });
-      adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
-    },
+      }),
     completed: () => get("cursedMagnifyingGlassCount") === 0,
     spendsTurn: false,
     sobriety: Sobriety.EITHER,
@@ -298,10 +338,8 @@ export const barfTasks: BarfTask[] = [
     name: "Envyfish Egg",
     ready: () =>
       have($item`envyfish egg`) && get("envyfishMonster") === embezzler && !get("_envyfishEggUsed"),
-    do: (): void => {
-      prep("meat");
-      withMacro(Macro.meatKill(), () => use($item`envyfish egg`), true);
-    },
+    do: () => withMacro(Macro.meatKill(), () => use($item`envyfish egg`), true),
+    outfit: spec("meat"),
     completed: () => get("_envyfishEggUsed"),
     spendsTurn: true,
     sobriety: Sobriety.EITHER,
@@ -314,15 +352,18 @@ export const barfTasks: BarfTask[] = [
       romanticMonsterImpossible(),
     do: (): void => {
       const location = wanderWhere("yellow ray");
-      prep("free", {
-        location,
-        requirements: new Requirement([], { forceEquip: $items`Jurassic Parka` }),
-      });
       cliExecute("parka dilophosaur");
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .skill($skill`Spit jurassic acid`);
       adventureMacroAuto(location, macro);
+    },
+    outfit: (): OutfitSpec => {
+      const location = wanderWhere("yellow ray");
+      return spec("free", {
+        location,
+        requirements: new Requirement([], { forceEquip: $items`Jurassic Parka` }),
+      });
     },
     completed: () => have($effect`Everything Looks Yellow`),
     spendsTurn: false,
@@ -351,8 +392,8 @@ export const barfTasks: BarfTask[] = [
   },
   {
     name: "Thesis",
-    ready: needTurns,
-    do: deliverThesisIfAble,
+    ready: () => needTurns() && thesisReady(),
+    do: () => deliverThesisIfAble(),
     completed: () => !needTurns(),
     sobriety: Sobriety.SOBER,
     spendsTurn: false,
@@ -409,8 +450,9 @@ export const barfTasks: BarfTask[] = [
       );
       completeBarfQuest();
     },
-    completed: () => true,
+    completed: () => false,
     spendsTurn: true,
     sobriety: Sobriety.EITHER,
+    alwaysSucceeds: true,
   },
 ];

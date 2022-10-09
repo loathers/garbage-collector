@@ -86,7 +86,7 @@ export class BarfTaskEngine extends BaseGarboEngine<never, BarfTask> {
       print(`We unexpectedly spent a turn doing ${task.name}!`, "red");
     }
 
-    if (task.completed()) {
+    if (task.completed() || task.alwaysSucceeds) {
       this.failures = 0;
     } else {
       this.failures += 1;
