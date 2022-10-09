@@ -10,6 +10,7 @@ import {
   mallPrice,
   myFullness,
   myInebriety,
+  myLevel,
   mySpleenUse,
   numericModifier,
   print,
@@ -449,7 +450,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
-  const filters = 3 - get("currentMojoFilters");
+  let filters = 3 - get("currentMojoFilters");
   // save some spleen the first two extro, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
@@ -461,7 +462,9 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       : Math.max(0, Math.round((estimatedTurns() - haveEffect($effect`Synthesis: Greed`)) / 30));
   const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
   const inebrietyAvailable =
-    inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable;
+    myLevel() >= 13
+      ? inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable
+      : 0;
   const spleenAvailable = currentSpleenLeft + filters;
   const organsAvailable = fullnessAvailable + inebrietyAvailable + spleenAvailable;
 
@@ -472,7 +475,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
   const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
 
-  if (jellyYachtzeeTurns === 0) {
+  const fishyPipeTurnsAvailable =
+    haveEffect($effect`Fishy`) + (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0);
+  const canParkaChain =
+    fishyPipeTurnsAvailable + (fishyPipeTurnsAvailable > 0 && pyecAvailable() ? 5 : 0) >= freeNCs();
+
+  if (jellyYachtzeeTurns === 0 && !canParkaChain) {
     print("Determined that there are no suitable number of turns to chain yachtzees", "red");
     return false;
   }
@@ -484,9 +492,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // Plan our diet
 
   const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
-  const pickleJuice = Math.floor(
-    (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5
-  );
+  const pickleJuice =
+    myLevel() >= 13
+      ? Math.floor(
+          (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5
+        )
+      : 0;
 
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
   const synthTurnsWanted = reqSynthTurns - haveEffect($effect`Synthesis: Greed`);
@@ -505,7 +516,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     return false;
   }
 
-  const yachtzeeTurns = freeNCs() + jellyYachtzeeTurns;
+  let yachtzeeTurns = freeNCs() + jellyYachtzeeTurns;
   if (availableSpleen + freeNCs() > yachtzeeTurns) cologne = 1; // If we have excess spleen, chew a cologne (representing -1 to availableSpleen, but we no longer need that variable)
 
   if (simOnly) print(`We can potentially run ${yachtzeeTurns} for yachtzee`, "purple");
@@ -549,7 +560,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     toastPrice + (sliderAdventuresPerFull - toastAdventuresPerFull) * VOA;
 
   let toastsToEat = 0;
-  if (toastOpportunityCost < jellySlidersCosts) {
+  if (toastOpportunityCost < jellySlidersCosts || myLevel() < 13) {
     toastsToEat = 5 * slidersToEat;
     jelliesToChew -= 5 * slidersToEat;
     slidersToEat = 0;
@@ -570,6 +581,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const jelliesBulkPrice = retrievePrice($item`stench jelly`, jelliesToChew);
 
+  // TODO: This is outdated in the era of dynamic chains - if prices are too expensive, choose a more profitable chain length!
   // If we need spleen cleansers but their prices are unreasonable, just return
   const maxSliderPrice = 150000,
     maxPickleJuicePrice = 150000;
@@ -636,9 +648,19 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       "orange"
     );
   }
-  if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly) {
-    print("Running extros is more profitable than chaining yachtzees", "red");
-    return false; // We should do extros instead since they are more valuable
+  if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly && jellyYachtzeeTurns > 0) {
+    // If we can't parka-chain, then return early
+    if (!canParkaChain) {
+      print("Running extros is more profitable than chaining yachtzees", "red");
+      return false; // We should do extros instead since they are more valuable
+    }
+    // Else, we do not want to use any toasts/jellies
+    yachtzeeTurns = freeNCs();
+    slidersToEat = 0;
+    pickleJuiceToDrink = 0;
+    toastsToEat = 0;
+    jelliesToChew = 0;
+    filters = Math.min(mySpleenUse(), filters); // We may need to filter for synth/extros, but no longer need to filter for jellies
   }
 
   // Schedule our diet first
