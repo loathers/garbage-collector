@@ -18361,6 +18361,8 @@ function mapMonster(location, monster) {
   if (!fightPage.includes(monster.name)) {
     throw "Something went wrong starting the fight.";
   }
+
+  if (choiceFollowsFight()) runChoice(-1);
 }
 /**
  * Returns true if the arguments have all elements equal.

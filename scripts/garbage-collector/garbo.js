@@ -28871,6 +28871,8 @@ function main() {
       1107: 1,
       // tennis ball
       1108: bestHalloweiner,
+      1340: 1,
+      // Accept the doctor quest
       1341: 1 // Cure her poison
 
     });
@@ -29169,6 +29171,8 @@ function mapMonster(location, monster) {
   if (!fightPage.includes(monster.name)) {
     throw "Something went wrong starting the fight.";
   }
+
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.choiceFollowsFight)()) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.runChoice)(-1);
 }
 /**
  * Returns true if the arguments have all elements equal.
