@@ -2314,7 +2314,6 @@ function killRobortCreaturesForFree() {
       () => {
         mapMonster($location`The Copperhead Club`, $monster`Mob Penguin Capo`);
         runCombat();
-        if (choiceFollowsFight()) runChoice(-1);
       },
       true
     );
