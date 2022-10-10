@@ -814,7 +814,11 @@ const freeFightSources = [
       ),
     true,
     {
-      requirements: () => [new Requirement(["1000 mainstat"], {})],
+      requirements: () => [
+        new Requirement(["1000 mainstat"], {
+          preventEquip: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
+        }),
+      ],
       macroAllowsFamiliarActions: false,
     }
   ),
