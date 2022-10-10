@@ -352,6 +352,7 @@ export function main(argString = ""): void {
       1106: 3, // Ghost Dog Chow
       1107: 1, // tennis ball
       1108: bestHalloweiner,
+      1340: 1, // Accept the doctor quest
       1341: 1, // Cure her poison
     });
 
