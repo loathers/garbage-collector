@@ -4,7 +4,6 @@ import {
   buy,
   canAdventure,
   canEquip,
-  choiceFollowsFight,
   cliExecute,
   closetAmount,
   create,
@@ -1308,7 +1307,6 @@ const freeFightSources = [
           .abort()
           .setAutoAttack();
         mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
-        if (choiceFollowsFight()) runChoice(-1);
       } finally {
         setAutoAttack(0);
       }
@@ -1584,7 +1582,6 @@ const freeRunFightSources = [
           .step(runSource.macro)
           .setAutoAttack();
         mapMonster(best.location, best.monster);
-        if (choiceFollowsFight()) runChoice(-1);
       } finally {
         setAutoAttack(0);
       }
@@ -1623,7 +1620,6 @@ const freeRunFightSources = [
           .setAutoAttack();
         if (mappingMonster) {
           mapMonster(best.location, best.monster);
-          if (choiceFollowsFight()) runChoice(-1);
         } else {
           adv1(best.location, -1, "");
         }

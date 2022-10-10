@@ -1,6 +1,7 @@
 import {
   availableChoiceOptions,
   canAdventure,
+  choiceFollowsFight,
   cliExecute,
   eat,
   Familiar,
@@ -208,6 +209,7 @@ export function mapMonster(location: Location, monster: Monster): void {
   if (!fightPage.includes(monster.name)) {
     throw "Something went wrong starting the fight.";
   }
+  if (choiceFollowsFight()) runChoice(-1);
 }
 
 export function argmax<T>(values: [T, number][]): T {
