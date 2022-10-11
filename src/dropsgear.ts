@@ -462,16 +462,14 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
     const availEV =
       sum([...JuneCleaver.choicesAvailable()], (choice) =>
         valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
-      ) / JuneCleaver.choicesAvailable.length;
+      ) / JuneCleaver.choicesAvailable().length;
     const queueEV =
-      (sum(
+      sum(
         [...JuneCleaver.queue()],
         (choice) =>
-          valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]) /
-          JuneCleaver.queue.length
-      ) *
-        (1 - 2 / 3)) ^
-      Math.max(0, Math.floor(estimatedTurns() - (1 + JuneCleaver.queue().indexOf(choice))));
+          valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]) *
+          ((1 - 2 / 3) ^ Math.max(0, estimatedTurns() - (1 + JuneCleaver.queue().indexOf(choice))))
+      ) / JuneCleaver.queue().length;
     juneCleaverEV = queueEV + availEV;
   }
 
