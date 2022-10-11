@@ -8,20 +8,10 @@ import {
   use,
   useFamiliar,
 } from "kolmafia";
-import {
-  $familiar,
-  $familiars,
-  $item,
-  $items,
-  CrimboShrub,
-  get,
-  have,
-} from "libram";
+import { $familiar, $familiars, $item, $items, CrimboShrub, get, have } from "libram";
 import { withStash } from "../clan";
 import { meatFamiliar } from "../familiar";
-import {
-  tryFeast,
-} from "../lib";
+import { tryFeast } from "../lib";
 
 export const DailyFamiliarTasks: Task[] = [
   {
