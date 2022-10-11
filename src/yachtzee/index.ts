@@ -32,7 +32,6 @@ import { baseMeat, globalOptions, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
-import { prepRobortender } from "../tasks/dailyFamiliars";
 import { yachtzeePotionSetup } from "./buffs";
 import { executeNextDietStep, yachtzeeChainDiet } from "./diet";
 import { pyecAvailable } from "./lib";
@@ -147,7 +146,6 @@ export function yachtzeeChain(): void {
   globalOptions.yachtzeeChain = false;
   if (!globalOptions.noDiet) {
     runDiet();
-    prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
   }
   freeRunFights();
 }
