@@ -50,6 +50,7 @@ import {
   checkGithubVersion,
   globalOptions,
   HIGHLIGHT,
+  maxBy,
   printHelpMenu,
   printLog,
   propertyManager,
@@ -94,7 +95,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26787);
+  sinceKolmafiaRevision(26829);
   checkGithubVersion();
 
   if (get("garbo_autoUserConfirm", false)) {
@@ -340,12 +341,13 @@ export function main(argString = ""): void {
           choiceId: choiceId,
         };
       });
-      bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
+      bestHalloweiner = maxBy(halloweinerOptions, "price").choiceId;
     }
     propertyManager.setChoices({
       1106: 3, // Ghost Dog Chow
       1107: 1, // tennis ball
       1108: bestHalloweiner,
+      1340: 1, // Accept the doctor quest
       1341: 1, // Cure her poison
     });
 

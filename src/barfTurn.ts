@@ -40,7 +40,6 @@ import {
   SourceTerminal,
 } from "libram";
 import { Macro, withMacro } from "./combat";
-import { completeBarfQuest } from "./dailies";
 import { computeDiet, consumeDiet } from "./diet";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { deliverThesisIfAble } from "./fights";
@@ -63,6 +62,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
+import { completeBarfQuest } from "./tasks/daily";
 import { digitizedMonstersRemaining, estimatedTurns } from "./turns";
 import { drunkSafeWander, wanderWhere } from "./wanderer";
 

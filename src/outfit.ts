@@ -1,5 +1,4 @@
 import {
-  availableAmount,
   bjornifyFamiliar,
   canAdventure,
   canEquip,
@@ -14,7 +13,6 @@ import {
   myFamiliar,
   myInebriety,
   numericModifier,
-  print,
   retrieveItem,
   toInt,
   toSlot,
@@ -123,9 +121,6 @@ export function freeFightOutfit(requirement?: Requirement): void {
         .map((equipment) => equipment.name)
         .join(", ")}.?`
     );
-  }
-  if (availableAmount($item`June cleaver`) > 1) {
-    print("Dear Gausie, it happened here. Sincerely, Neil");
   }
 }
 
@@ -334,9 +329,6 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   }
 
   if (sea && haveEquipped($item`The Crown of Ed the Undying`)) cliExecute("edpiece fish");
-  if (availableAmount($item`June cleaver`) > 1) {
-    print("Dear Gausie, it happened here. Sincerely, Neil");
-  }
 }
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;

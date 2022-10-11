@@ -6,7 +6,6 @@ import {
   Item,
   mallPrice,
   myFamiliar,
-  numericModifier,
   toSlot,
   use,
   useFamiliar,
@@ -19,13 +18,14 @@ import {
   $slots,
   findLeprechaunMultiplier,
   get,
+  getModifier,
   have,
   Requirement,
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { meatFamiliar } from "../familiar";
-import { baseMeat } from "../lib";
+import { baseMeat, maxBy } from "../lib";
 import { familiarWaterBreathingEquipment, useUPCs, waterBreathingEquipment } from "../outfit";
 import { bestYachtzeeFamiliar } from "./familiar";
 import { expectedEmbezzlers, yachtzeeBuffValue } from "./lib";
@@ -58,7 +58,7 @@ export function getBestWaterBreathingEquipment(yachtzeeTurns: number): {
   }));
   const bestWaterBreathingEquipment = waterBreathingEquipment.some((item) => haveEquipped(item))
     ? { item: $item.none, cost: 0 }
-    : waterBreathingEquipmentCosts.reduce((left, right) => (left.cost < right.cost ? left : right));
+    : maxBy(waterBreathingEquipmentCosts, "cost", true);
   return bestWaterBreathingEquipment;
 }
 
@@ -74,11 +74,10 @@ export function prepareOutfitAndFamiliar(): void {
   if (!myFamiliar().underwater) {
     equip(
       $slot`familiar`,
-      familiarWaterBreathingEquipment
-        .filter((it) => have(it))
-        .reduce((a, b) =>
-          numericModifier(a, "Familiar Weight") > numericModifier(b, "Familiar Weight") ? a : b
-        )
+      maxBy(
+        familiarWaterBreathingEquipment.filter((it) => have(it)),
+        (eq) => getModifier("Familiar Weight", eq)
+      )
     );
   }
 }

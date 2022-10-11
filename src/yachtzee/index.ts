@@ -6,7 +6,6 @@ import {
   haveEffect,
   haveEquipped,
   maximize,
-  myLevel,
   myMeat,
   myTurncount,
   print,
@@ -26,7 +25,6 @@ import {
   set,
   uneffect,
 } from "libram";
-import { prepFamiliars } from "../dailies";
 import { runDiet } from "../diet";
 import { copyTargetCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
@@ -34,6 +32,7 @@ import { baseMeat, globalOptions, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
+import { prepRobortender } from "../tasks/dailyFamiliars";
 import { yachtzeePotionSetup } from "./buffs";
 import { executeNextDietStep, yachtzeeChainDiet } from "./diet";
 import { pyecAvailable } from "./lib";
@@ -45,7 +44,7 @@ import {
 } from "./outfit";
 
 function _yachtzeeChain(): void {
-  if (myLevel() < 13 || !canInteract()) return;
+  if (!canInteract()) return;
   // We definitely need to be able to eat sliders and drink pickle juice
   if (!realmAvailable("sleaze")) return;
 
@@ -148,7 +147,7 @@ export function yachtzeeChain(): void {
   globalOptions.yachtzeeChain = false;
   if (!globalOptions.noDiet) {
     runDiet();
-    prepFamiliars(); // Recompute robo drinks' worth after diet is finally consumed
+    prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
   }
   freeRunFights();
 }

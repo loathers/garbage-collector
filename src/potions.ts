@@ -36,7 +36,14 @@ import {
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, globalOptions, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  globalOptions,
+  HIGHLIGHT,
+  maxBy,
+  pillkeeperOpportunityCost,
+  turnsToNC,
+} from "./lib";
 import { usingPurse } from "./outfit";
 import { estimatedTurns } from "./turns";
 
@@ -318,7 +325,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
       : 0
   );
 
-  const total = amountsAcquired.reduce((total, amount) => total + amount, 0);
+  const total = sumNumbers(amountsAcquired);
   if (total > 0) {
     const effect = potion.effect();
     if (isSong(effect) && !have(effect)) {
@@ -501,7 +508,7 @@ class VariableMeatPotion {
       quantity,
       value: this.valueNPotions(quantity, yachtzees, embezzlers, barfTurns),
     }));
-    const bestOption = profitsFromPotions.reduce((a, b) => (a.value > b.value ? a : b));
+    const bestOption = maxBy(profitsFromPotions, "value");
 
     if (bestOption.value > 0) {
       print(

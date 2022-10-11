@@ -62,7 +62,7 @@ export function underwater(location: Location): boolean {
   return location.environment === "underwater";
 }
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren`,
+  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome`,
   ...Location.all().filter((l) => l.parent === "Clan Basement"),
 ];
 export function canAdventureOrUnlock(loc: Location): boolean {
@@ -181,14 +181,6 @@ export const unsupportedChoices = new Map<Location, { [choice: number]: number |
 
 export function defaultFactory(): WandererTarget[] {
   return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
-}
-
-export function maxBy<T>(array: T[], key: (t: T) => number): T {
-  return array
-    .map((t: T) => {
-      return { t, value: key(t) };
-    })
-    .reduce((prev, curr) => (prev.value < curr.value ? curr : prev)).t;
 }
 
 type WanderingSource = {

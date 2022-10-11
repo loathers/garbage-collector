@@ -56,11 +56,11 @@ export function timeToMeatify(): boolean {
 
   const freeFightNow =
     get("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
-  const delay = [
+  const delay = Math.min(
     nextProtonicGhost,
     nextVoteMonster === 0 ? (get("_voteFreeFights") < 2 ? 11 : Infinity) : nextVoteMonster,
-    nextVoidMonster === 0 ? 13 : nextVoidMonster,
-  ].reduce((a, b) => (a < b ? a : b));
+    nextVoidMonster === 0 ? 13 : nextVoidMonster
+  );
 
   if (delay < myAdventures()) return false;
   // We can wait for the next free fight

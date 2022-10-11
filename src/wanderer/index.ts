@@ -1,12 +1,11 @@
 import { Location, print } from "kolmafia";
 import { $location } from "libram";
-import { HIGHLIGHT, propertyManager, sober } from "../lib";
+import { HIGHLIGHT, maxBy, propertyManager, sober } from "../lib";
 import { guzzlrFactory } from "./guzzlr";
 import {
   canAdventureOrUnlock,
   defaultFactory,
   DraggableFight,
-  maxBy,
   unlock,
   unsupportedChoices,
   WandererFactory,
@@ -54,7 +53,7 @@ export function bestWander(
     throw "Could not determine a wander target!";
   }
 
-  return maxBy([...possibleLocations.values()], (w: WandererLocation) => w.value);
+  return maxBy([...possibleLocations.values()], "value");
 }
 
 /**

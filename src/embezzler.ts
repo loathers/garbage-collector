@@ -801,8 +801,9 @@ function toasterGaze(): void {
       print("Unable to stare longingly at toast");
     }
     runChoice(4);
-  } catch {
-    // orb reseting raises a mafia error
+  } catch (e) {
+    print(`We ran into an issue when gazing at toast: ${e}.`, "red");
+  } finally {
+    visitUrl("main.php");
   }
-  visitUrl("main.php");
 }

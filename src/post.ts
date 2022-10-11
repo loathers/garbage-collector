@@ -20,9 +20,11 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $skill,
   $slot,
   adventureMacro,
+  AutumnAton,
   get,
   getRemainingStomach,
   have,
@@ -35,10 +37,10 @@ import {
 import { acquire } from "./acquire";
 import { computeDiet, consumeDiet } from "./diet";
 import {
-  argmax,
   bestJuneCleaverOption,
   globalOptions,
   juneCleaverChoiceValues,
+  maxBy,
   safeInterrupt,
   safeRestore,
   setChoice,
@@ -71,7 +73,7 @@ function coldMedicineCabinet(): void {
     itemChoices.set(item, i);
   }
 
-  const bestItem = argmax(Array.from(itemChoices.keys()).map((i) => [i, garboValue(i)]));
+  const bestItem = maxBy([...itemChoices.keys()], garboValue);
   const bestChoice = itemChoices.get(bestItem);
   if (bestChoice && bestChoice > 0) {
     visitUrl("campground.php?action=workshed");
@@ -183,6 +185,8 @@ function funguySpores() {
   }
 }
 
+const autumnAtonZones = $locations`The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley`;
+
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
@@ -196,4 +200,5 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
+  AutumnAton.sendTo(autumnAtonZones);
 }

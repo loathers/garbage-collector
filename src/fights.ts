@@ -125,6 +125,7 @@ import {
   logMessage,
   ltbRun,
   mapMonster,
+  maxBy,
   propertyManager,
   questStep,
   realmAvailable,
@@ -340,7 +341,7 @@ const witchessPieces = [
 ];
 
 function bestWitchessPiece() {
-  return witchessPieces.sort((a, b) => garboValue(b.drop) - garboValue(a.drop))[0].piece;
+  return maxBy(witchessPieces, ({ drop }) => garboValue(drop)).piece;
 }
 
 function pygmyOptions(forceEquip: Item[] = []) {
@@ -728,8 +729,27 @@ const freeFightSources = [
           use($item`crappy waiter disguise`);
         }
       }
-      useSkill($skill`Evoke Eldritch Horror`);
-      if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
+      withMacro(
+        Macro.if_(
+          $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
+          // Using while_ here in case you run out of mp
+          Macro.while_("hasskill Awesome Balls of Fire", Macro.skill($skill`Awesome Balls of Fire`))
+            .while_("hasskill Eggsplosion", Macro.skill($skill`Eggsplosion`))
+            .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
+            .while_(
+              "hasskill Weapon of the Pastalord",
+              Macro.skill($skill`Weapon of the Pastalord`)
+            )
+            .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+            .attack()
+            .repeat()
+        ).basicCombat(),
+        () => {
+          useSkill($skill`Evoke Eldritch Horror`);
+          if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
+        },
+        false
+      );
     },
     false
   ),
@@ -788,7 +808,11 @@ const freeFightSources = [
       ),
     true,
     {
-      requirements: () => [new Requirement(["1000 mainstat"], {})],
+      requirements: () => [
+        new Requirement(["1000 mainstat"], {
+          preventEquip: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
+        }),
+      ],
       macroAllowsFamiliarActions: false,
     }
   ),
@@ -2156,11 +2180,7 @@ function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
       zone.dropRate * garboValue(zone.item) * (vorticesAvail + hugsAvail / 2) - zone.openCost()
     );
   };
-  return (
-    targets.sort((a, b) => {
-      return value(b) - value(a);
-    })[0] ?? null
-  );
+  return targets.length ? maxBy(targets, value) : null;
 }
 
 function setupItemStealZones() {
@@ -2369,15 +2389,13 @@ function yachtzee(): void {
     },
   ]) {
     if (available) {
-      useFamiliar(
-        Familiar.all()
-          .filter(
-            (familiar) =>
-              have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
-          )
-          .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a))[0] ??
-          $familiar.none
+      const familiarOptions = Familiar.all().filter(
+        (familiar) => have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
       );
+      const familiarChoice = familiarOptions.length
+        ? maxBy(familiarOptions, findLeprechaunMultiplier)
+        : $familiar.none;
+      useFamiliar(familiarChoice);
 
       const underwaterBreathingGear = waterBreathingEquipment.find((item) => have(item));
       if (!underwaterBreathingGear) return;
