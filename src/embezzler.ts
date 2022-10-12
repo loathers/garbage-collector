@@ -154,6 +154,9 @@ export class WitchessFight {
   run(options: { macro?: Macro; location?: Location; useAuto?: boolean } = {}): void {
     if (!this.available() || !myAdventures()) return;
     print(`Now running Embezzler fight: ${this.name}. Stay tuned for details.`);
+    if (SourceTerminal.have() && SourceTerminal.couldDigitize()) {
+      SourceTerminal.educate(SourceTerminal.Skills.Digitize);
+    }
     const fightMacro = options.macro ?? copyTargetMacro();
     if (this.draggable) {
       this.execute(
