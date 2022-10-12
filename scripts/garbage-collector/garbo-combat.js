@@ -15201,7 +15201,7 @@ function nonOrganAdventures() {
     if (_ret === "break") break;
   }
 
-  useIfUnused($item(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["fancy chocolate sculpture"]))), get("_chocolateSculpturesUsed") < 1, 5 * MPA + 5000);
+  useIfUnused($item(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["fancy chocolate sculpture"]))), get("_chocolateSculpturesUsed") > 0, 5 * MPA + 5000);
   useIfUnused($item(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["essential tofu"]))), "_essentialTofuUsed", 5 * MPA);
 
   if (!get("_etchedHourglassUsed") && have($item(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["etched hourglass"]))))) {

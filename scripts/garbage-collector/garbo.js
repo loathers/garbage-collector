@@ -17841,7 +17841,7 @@ function nonOrganAdventures() {
     if (_ret === "break") break;
   }
 
-  useIfUnused((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["fancy chocolate sculpture"]))), (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .get */ .U2)("_chocolateSculpturesUsed") < 1, 5 * MPA + 5000);
+  useIfUnused((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["fancy chocolate sculpture"]))), (0,libram__WEBPACK_IMPORTED_MODULE_11__/* .get */ .U2)("_chocolateSculpturesUsed") > 0, 5 * MPA + 5000);
   useIfUnused((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["essential tofu"]))), "_essentialTofuUsed", 5 * MPA);
 
   if (!(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .get */ .U2)("_etchedHourglassUsed") && (0,libram__WEBPACK_IMPORTED_MODULE_13__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["etched hourglass"]))))) {
