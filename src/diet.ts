@@ -210,7 +210,7 @@ export function nonOrganAdventures(): void {
 
   useIfUnused(
     $item`fancy chocolate sculpture`,
-    get("_chocolateSculpturesUsed") < 1,
+    get("_chocolateSculpturesUsed") > 0,
     5 * MPA + 5000
   );
   useIfUnused($item`essential tofu`, "_essentialTofuUsed", 5 * MPA);
