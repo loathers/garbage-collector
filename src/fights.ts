@@ -1061,7 +1061,10 @@ const freeFightSources = [
 
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => adv1(wanderWhere("wanderer"), -1, ""),
+    () => {
+      SourceTerminal.educate($skill`Digitize`);
+      adv1(wanderWhere("wanderer"), -1, "");
+    },
     true,
     {
       requirements: () => [
@@ -1214,7 +1217,10 @@ const freeFightSources = [
   // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
-    () => Witchess.fightPiece(bestWitchessPiece()),
+    () => {
+      SourceTerminal.educate($skill`Digitize`);
+      Witchess.fightPiece(bestWitchessPiece());
+    },
     true
   ),
 
@@ -1263,6 +1269,7 @@ const freeFightSources = [
     () => {
       const monster = locketMonster();
       if (!monster) return;
+      SourceTerminal.educate($skill`Digitize`);
       CombatLoversLocket.reminisce(monster);
     },
     true,
@@ -2043,6 +2050,7 @@ export function doSausage(): void {
   }
   useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
+  SourceTerminal.educate($skill`Digitize`);
   do {
     adventureMacroAuto(
       wanderWhere("wanderer"),
