@@ -6,7 +6,6 @@ import {
   canEquip,
   cliExecute,
   closetAmount,
-  create,
   Effect,
   equip,
   Familiar,
@@ -106,12 +105,7 @@ import {
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { Macro, withMacro } from "./combat";
-import {
-  bestFairy,
-  freeFightFamiliar,
-  pocketProfessorLectures,
-  setBestLeprechaunAsMeatFamiliar,
-} from "./familiar";
+import { bestFairy, freeFightFamiliar, pocketProfessorLectures } from "./familiar";
 import {
   baseMeat,
   burnLibrams,
@@ -133,7 +127,6 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
-  userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
 import { freeFightOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
@@ -2290,7 +2283,6 @@ function killRobortCreaturesForFree() {
   if (!have($familiar`Robortender`)) return;
   useFamiliar($familiar`Robortender`);
 
-  const currentHeads = availableAmount($item`fish head`);
   let freeKill = findFreeKill();
   while (
     freeKill &&
@@ -2342,19 +2334,6 @@ function killRobortCreaturesForFree() {
       true
     );
     freeKill = findFreeKill();
-  }
-
-  if (
-    !Robortender.currentDrinks().includes($item`drive-by shooting`) &&
-    availableAmount($item`fish head`) > currentHeads &&
-    userConfirmDialog(
-      "Garbo managed to rustle up a fish head, would you like it to use it to make a drive-by shooting so you can benefit from your robortender? Sorry for flip-flopping on this, life is hard.",
-      true
-    )
-  ) {
-    if (!have($item`drive-by shooting`)) create($item`drive-by shooting`);
-    Robortender.feed($item`drive-by shooting`);
-    setBestLeprechaunAsMeatFamiliar();
   }
 }
 
