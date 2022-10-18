@@ -200,7 +200,7 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
-  if (globalOptions.ascending || AutumnAton.turnsForQuest() < (myAdventures() + 10)){
-		AutumnAton.sendTo(autumnAtonZones);
-	}
+  if (globalOptions.ascending || AutumnAton.turnsForQuest() < myAdventures() + 10) {
+    AutumnAton.sendTo(autumnAtonZones);
+  }
 }
