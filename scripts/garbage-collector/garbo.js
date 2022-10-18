@@ -21304,7 +21304,7 @@ var possibleUpgrades = (/* unused pure expression or super */ null && (["leftarm
  */
 
 function currentUpgrades() {
-  return get("autumnatonUpgrades").split(",");
+  return (0,property/* get */.U2)("autumnatonUpgrades").split(",");
 }
 /**
  * @returns The number of turns remaining in your current autumn-aton quest. This number may be negative for any number of reasons.
@@ -21318,7 +21318,7 @@ function turnsLeft() {
  */
 
 function turnsForQuest() {
-  return 11 * Math.max(1, get("_autumnatonQuests") - currentUpgrades().filter(u => u.includes("leg")).length);
+  return 11 * Math.max(1, (0,property/* get */.U2)("_autumnatonQuests") - currentUpgrades().filter(u => u.includes("leg")).length);
 }
 /**
  * @returns The current visual acuity level of your autumn-aton as determined by the current upgrade-state.
@@ -21524,7 +21524,10 @@ function postCombatActions() {
   updateMallPrices();
   stillsuit();
   funguySpores();
-  sendTo(autumnAtonZones);
+
+  if (src_lib/* globalOptions.ascending */.Xe.ascending || turnsForQuest() < (0,external_kolmafia_.myAdventures)() + 10) {
+    sendTo(autumnAtonZones);
+  }
 }
 // EXTERNAL MODULE: ./src/extrovermectin.ts
 var extrovermectin = __webpack_require__(5836);
