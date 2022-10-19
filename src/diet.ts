@@ -89,7 +89,11 @@ const Mayo = MayoClinic.Mayo;
 type Note = PotionTier | null;
 
 function eatSafe(qty: number, item: Item) {
-  if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
+  if (
+    have($item`Universal Seasoning`) &&
+    $item`Universal Seasoning`.dailyusesleft > 0 &&
+    !get("universalSeasoningActive")
+  ) {
     use($item`Universal Seasoning`);
   }
   if (myLevel() >= 15 && !get("_hungerSauceUsed") && mallPrice($item`Hunger™ Sauce`) < 3 * MPA) {
