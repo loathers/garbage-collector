@@ -468,7 +468,11 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
         [...JuneCleaver.queue()],
         (choice) =>
           valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]) *
-          ((1 - 2 / 3) ^ Math.max(0, estimatedTurns() - (1 + JuneCleaver.queue().indexOf(choice))))
+          ((1 - 2 / 3) ^
+            Math.max(
+              0,
+              Math.floor(estimatedTurns() / 30) - (1 + JuneCleaver.queue().indexOf(choice))
+            ))
       ) / JuneCleaver.queue().length;
     juneCleaverEV = queueEV + availEV;
   }
