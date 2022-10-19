@@ -16,7 +16,7 @@ import {
   toItem,
   visitUrl,
 } from "kolmafia";
-import { $familiar, $item, $items, $monster, Clan, get, getFoldGroup, have, set } from "libram";
+import { $familiar, $item, $items, $monsters, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
 import { HIGHLIGHT, userConfirmDialog } from "./lib";
 
@@ -139,7 +139,10 @@ export class StashManager {
     if (items.length === 0) return;
     if (visitUrl("fight.php").includes("You're fighting")) {
       print("In fight, trying to get away to return items to stash...", HIGHLIGHT);
-      Macro.if_($monster`Knob Goblin Embezzler`, Macro.attack().repeat())
+      Macro.if_(
+        $monsters`Knob Goblin Embezzler, menacing thug, Mob Penguin hitman, hunting seal, turtle trapper, evil spaghetti cult assassin, béarnaise zombie, flock of seagulls, mariachi bandolero, Argarggagarg the Dire Hellseal, Safari Jack\, Small-Game Hunter, Yakisoba the Executioner, Heimandatz\, Nacho Golem, Jocko Homo, The Mariachi With No Name`,
+        Macro.attack().repeat()
+      )
         .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
         .step("runaway")
         .submit();

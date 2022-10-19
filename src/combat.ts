@@ -1,5 +1,6 @@
 import "core-js/features/array/flat";
 import {
+  availableAmount,
   choiceFollowsFight,
   equippedAmount,
   equippedItem,
@@ -13,7 +14,9 @@ import {
   inMultiFight,
   Item,
   itemAmount,
+  itemDropsArray,
   itemType,
+  Monster,
   mpCost,
   myAdventures,
   myBjornedFamiliar,
@@ -42,18 +45,49 @@ import {
   $location,
   $locations,
   $monster,
+  $monsters,
   $skill,
   $slot,
   $thralls,
+  CombatLoversLocket,
   Counter,
   get,
   getTodaysHolidayWanderers,
   have,
   SourceTerminal,
   StrictMacro,
+  sum,
+  Witchess,
 } from "libram";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
+import { garboValue } from "./session";
 import { digitizedMonstersRemaining } from "./turns";
+
+function bestDigitizeTarget(): Monster | null {
+  const valueDrops = (monster: Monster) =>
+    sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
+  const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+
+  if (
+    have($item`Kramco Sausage-o-Matic™`) &&
+    sum($items`magical sausage, magical sausage casing`, (item) => availableAmount(item)) < 69
+  ) {
+    return $monster`sausage goblin`;
+  }
+
+  for (const piece of $monsters`Witchess Knight, Witchess Bishop, Witchess Pawn`.sort(
+    (a, b) => valueDrops(b) - valueDrops(a)
+  )) {
+    if (
+      Witchess.have() ||
+      (CombatLoversLocket.have() && CombatLoversLocket.availableLocketMonsters().includes(piece))
+    ) {
+      return piece;
+    }
+  }
+
+  return CombatLoversLocket.findMonster(isFree, valueDrops);
+}
 
 let monsterManuelCached: boolean | undefined = undefined;
 export function monsterManuelAvailable(): boolean {
@@ -521,7 +555,14 @@ export class Macro extends StrictMacro {
   }
 
   basicCombat(): Macro {
-    return this.startCombat().kill();
+    const target =
+      SourceTerminal.have() && !SourceTerminal.getDigitizeMonster() ? bestDigitizeTarget() : null;
+    return this.externalIf(
+      target !== null,
+      Macro.if_(target ?? $monster`none`, Macro.skill($skill`Digitize`))
+    )
+      .startCombat()
+      .kill();
   }
 
   static basicCombat(): Macro {

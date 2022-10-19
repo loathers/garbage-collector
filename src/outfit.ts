@@ -39,7 +39,6 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
-import { embezzlerCount } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import { baseMeat, globalOptions } from "./lib";
 import { digitizedMonstersRemaining } from "./turns";
@@ -228,9 +227,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
 
   if (embezzlerUp) {
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
-    const embezzlers = globalOptions.ascending
-      ? Math.min(20, embezzlerCount() || digitizedMonstersRemaining())
-      : 20;
+    const embezzlers = globalOptions.ascending ? Math.min(20, digitizedMonstersRemaining()) : 20;
 
     const addedValueOfFullSword = (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
     if (addedValueOfFullSword > 3 * mallPrice(UPC)) {

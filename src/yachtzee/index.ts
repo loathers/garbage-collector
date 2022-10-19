@@ -26,13 +26,12 @@ import {
   uneffect,
 } from "libram";
 import { runDiet } from "../diet";
-import { embezzlerCount } from "../embezzler";
+import { copyTargetCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
 import { baseMeat, globalOptions, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
-import { prepRobortender } from "../tasks/dailyFamiliars";
 import { yachtzeePotionSetup } from "./buffs";
 import { executeNextDietStep, yachtzeeChainDiet } from "./diet";
 import { pyecAvailable } from "./lib";
@@ -49,7 +48,7 @@ function _yachtzeeChain(): void {
   if (!realmAvailable("sleaze")) return;
 
   maximize("MP", false);
-  meatMood(false, 750 + baseMeat).execute(embezzlerCount());
+  meatMood(false, 750 + baseMeat).execute(copyTargetCount());
   potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
@@ -147,7 +146,6 @@ export function yachtzeeChain(): void {
   globalOptions.yachtzeeChain = false;
   if (!globalOptions.noDiet) {
     runDiet();
-    prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
   }
   freeRunFights();
 }

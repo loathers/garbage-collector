@@ -50,7 +50,6 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
-import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, globalOptions, HIGHLIGHT, maxBy } from "../lib";
@@ -63,6 +62,7 @@ const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 let latteRefreshed = false;
 let horseryRefreshed = false;
 let attemptCompletingBarfQuest = true;
+const embezzlerCount = () => 0;
 
 function voterSetup(): void {
   const initPriority: Map<string, number> = new Map([
