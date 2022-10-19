@@ -457,6 +457,25 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
         valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
       ) / JuneCleaver.choices.length;
   }
+  // If we're ascending then the chances of hitting choices in the queue is reduced
+  if (globalOptions.ascending && estimatedTurns() <= 180 && JuneCleaver.getInterval() === 30) {
+    const availEV =
+      sum([...JuneCleaver.choicesAvailable()], (choice) =>
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
+      ) / JuneCleaver.choicesAvailable().length;
+    const queueEV =
+      sum([...JuneCleaver.queue()], (choice) => {
+        const choiceValue = valueJuneCleaverOption(
+          juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]
+        );
+        const cleaverEncountersLeft = Math.floor(estimatedTurns() / 30);
+        const encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
+        const chancesLeft = cleaverEncountersLeft - encountersToQueueExit;
+        const encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
+        return choiceValue * encounterProbability;
+      }) / JuneCleaver.queue().length;
+    juneCleaverEV = queueEV + availEV;
+  }
 
   const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
   return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / interval]]);
