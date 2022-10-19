@@ -9486,9 +9486,11 @@ function findMonster(criteria) {
 /* harmony export */   "lf": () => (/* binding */ have),
 /* harmony export */   "ZS": () => (/* binding */ getInterval),
 /* harmony export */   "ZF": () => (/* binding */ skipsRemaining),
-/* harmony export */   "Zg": () => (/* binding */ choices)
+/* harmony export */   "Zg": () => (/* binding */ choices),
+/* harmony export */   "c8": () => (/* binding */ queue),
+/* harmony export */   "YI": () => (/* binding */ choicesAvailable)
 /* harmony export */ });
-/* unused harmony exports cleaver, getSkippedInterval, damage, queue, choicesAvailable */
+/* unused harmony exports cleaver, getSkippedInterval, damage */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2474);
@@ -9538,7 +9540,7 @@ var choices = [1467, 1468, 1469, 1470, 1471, 1472, 1473, 1474, 1475];
  */
 
 function queue() {
-  return get("juneCleaverQueue").split(",").filter(x => x.trim().length > 0).map(x => parseInt(x));
+  return (0,_property__WEBPACK_IMPORTED_MODULE_1__/* .get */ .U2)("juneCleaverQueue").split(",").filter(x => x.trim().length > 0).map(x => parseInt(x));
 }
 /**
  * @returns An array consisting of the cleaver choice adventures not currently in the queue.
@@ -19203,6 +19205,20 @@ function juneCleaver(equipMode) {
 
   if (!juneCleaverEV) {
     juneCleaverEV = (0,utils/* sum */.Sm)(dropsgear_toConsumableArray(JuneCleaver/* choices */.Zg), choice => (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[choice][(0,src_lib/* bestJuneCleaverOption */.cR)(choice)])) / JuneCleaver/* choices.length */.Zg.length;
+  } // If we're ascending then the chances of hitting choices in the queue is reduced
+
+
+  if (src_lib/* globalOptions.ascending */.Xe.ascending && (0,src_turns/* estimatedTurns */.A)() <= 180 && JuneCleaver/* getInterval */.ZS() === 30) {
+    var availEV = (0,utils/* sum */.Sm)(dropsgear_toConsumableArray(JuneCleaver/* choicesAvailable */.YI()), choice => (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[choice][(0,src_lib/* bestJuneCleaverOption */.cR)(choice)])) / JuneCleaver/* choicesAvailable */.YI().length;
+    var queueEV = (0,utils/* sum */.Sm)(dropsgear_toConsumableArray(JuneCleaver/* queue */.c8()), choice => {
+      var choiceValue = (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[choice][(0,src_lib/* bestJuneCleaverOption */.cR)(choice)]);
+      var cleaverEncountersLeft = Math.floor((0,src_turns/* estimatedTurns */.A)() / 30);
+      var encountersToQueueExit = 1 + JuneCleaver/* queue */.c8().indexOf(choice);
+      var chancesLeft = cleaverEncountersLeft - encountersToQueueExit;
+      var encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
+      return choiceValue * encounterProbability;
+    }) / JuneCleaver/* queue */.c8().length;
+    juneCleaverEV = queueEV + availEV;
   }
 
   var interval = equipMode === "embezzler" ? 30 : JuneCleaver/* getInterval */.ZS();

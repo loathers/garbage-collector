@@ -16556,6 +16556,20 @@ function juneCleaver(equipMode) {
 
   if (!juneCleaverEV) {
     juneCleaverEV = sum(dropsgear_toConsumableArray(JuneCleaver.choices), choice => valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])) / JuneCleaver.choices.length;
+  } // If we're ascending then the chances of hitting choices in the queue is reduced
+
+
+  if (globalOptions.ascending && estimatedTurns() <= 180 && JuneCleaver.getInterval() === 30) {
+    var availEV = sum(dropsgear_toConsumableArray(JuneCleaver.choicesAvailable()), choice => valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])) / JuneCleaver.choicesAvailable().length;
+    var queueEV = sum(dropsgear_toConsumableArray(JuneCleaver.queue()), choice => {
+      var choiceValue = valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]);
+      var cleaverEncountersLeft = Math.floor(estimatedTurns() / 30);
+      var encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
+      var chancesLeft = cleaverEncountersLeft - encountersToQueueExit;
+      var encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
+      return choiceValue * encounterProbability;
+    }) / JuneCleaver.queue().length;
+    juneCleaverEV = queueEV + availEV;
   }
 
   var interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
