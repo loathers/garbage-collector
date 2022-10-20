@@ -220,6 +220,19 @@ export const DailyItemTasks: Task[] = [
       acquire: () => Wads.map((x) => <AcquireItem>{ item: x, num: 3 - get("prismaticSummons") }),
     },
     {
+      name: "Request Sandwich",
+      ready: () => have($skill`Request Sandwich`),
+      completed: () => get("_requestSandwichSucceeded"),
+      do: () => useSkill($skill`Request Sandwich`),
+      limit: { soft: 10 },
+    },
+    {
+      name: "Demand Sandwich",
+      ready: () => have($skill`Demand Sandwich`),
+      completed: () => get("_demandSandwich") > 0,
+      do: () => useSkill($skill`Demand Sandwich`),
+    },
+    {
       name: "Tea Tree",
       ready: () => getCampground()["potted tea tree"] !== undefined,
       completed: () => get("_pottedTeaTreeUsed"),
