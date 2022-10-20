@@ -28502,7 +28502,7 @@ var barfTurn_turns = [{
   sobriety: Sobriety.EITHER
 }, {
   name: "Guaranteed Kramco",
-  available: () => (0,src_lib/* kramcoGuaranteed */.DR)(),
+  available: () => (0,src_lib/* kramcoGuaranteed */.DR)() && (0,src_lib/* romanticMonsterImpossible */.Jp)(),
   execute: () => {
     freeFightPrep(new maximize/* Requirement */.nb([], {
       forceEquip: (0,template_string/* $items */.vS)(barfTurn_templateObject34 || (barfTurn_templateObject34 = barfTurn_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
