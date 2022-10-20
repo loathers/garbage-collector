@@ -138,16 +138,16 @@ export const DailyItemTasks: Task[] = [
       do: () => visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false),
     },
     {
-      name: "Ice Cold April Shower",
-      ready: () => have($item`Clan VIP Lounge key`),
-      completed: () => get("_aprilShower"),
-      do: () => cliExecute("try; shower ice"),
-    },
-    {
       name: "Kremlin's Greatest Briefcase Collect",
       ready: () => have($item`Kremlin's Greatest Briefcase`),
       completed: () => get("_kgbClicksUsed") > 17 || get("_kgbDispenserUses") >= 3,
       do: () => cliExecute("Briefcase collect"),
+    },
+    {
+      name: "Ice Cold April Shower",
+      ready: () => have($item`Clan VIP Lounge key`) && getClanLounge()["Clan shower"] !== undefined,
+      completed: () => get("_aprilShower"),
+      do: () => cliExecute("try; shower ice"),
     },
     {
       name: "Swimming Pool Item",
