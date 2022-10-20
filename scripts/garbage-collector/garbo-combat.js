@@ -21090,7 +21090,7 @@ function bestWander(type, locationSkiplist, nameSkiplist) {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
           var wanderTarget = _step2.value;
 
-          if (!nameSkiplist.includes(wanderTarget.name) && !locationSkiplist.includes(wanderTarget.location)) {
+          if (!nameSkiplist.includes(wanderTarget.name) && !locationSkiplist.includes(wanderTarget.location) && canWander(wanderTarget.location, type)) {
             var _possibleLocations$ge;
 
             var wandererLocation = (_possibleLocations$ge = possibleLocations.get(wanderTarget.location)) !== null && _possibleLocations$ge !== void 0 ? _possibleLocations$ge : {
@@ -21134,7 +21134,7 @@ function wanderWhere(type) {
   var locationSkiplist = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
   var candidate = bestWander(type, locationSkiplist, nameSkiplist);
   var failed = candidate.targets.filter(target => !target.prepareTurn());
-  var badLocation = !canAdventureOrUnlock(candidate.location) || !unlock(candidate.location, candidate.value) ? [candidate.location] : [];
+  var badLocation = !canAdventureOrUnlock(candidate.location) || !unlock(candidate.location, candidate.value) || !canWander(candidate.location, type) ? [candidate.location] : [];
 
   if (failed.length > 0 || badLocation.length > 0) {
     return wanderWhere(type, [].concat(wanderer_toConsumableArray(nameSkiplist), wanderer_toConsumableArray(failed.map(target => target.name))), [].concat(wanderer_toConsumableArray(locationSkiplist), badLocation));
