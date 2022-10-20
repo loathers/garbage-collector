@@ -2687,7 +2687,7 @@ function getMacroId() {
   if (macroMatches.length === 0) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?action=new");
     var newMacroText = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?macroid=0&name=".concat(name, "&macrotext=abort&action=save"));
-    return parseInt((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.xpath)(newMacroText, "//input[@name=macroid]/@value")[0], 10);
+    return parseInt((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.xpath)(newMacroText, "//input[@name=".concat(name, "]/@value"))[0], 10);
   } else {
     return parseInt(macroMatches[0], 10);
   }
@@ -2910,47 +2910,29 @@ var Macro = /*#__PURE__*/function () {
      * @returns {Macro} This object itself.
      */
     function if_(condition, ifTrue) {
-      var ballsCondition = "";
-
-      if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Monster) {
-        ballsCondition = "monsterid ".concat(condition.id);
-      } else if (condition instanceof Array) {
-        ballsCondition = condition.map(mon => "monsterid ".concat(mon.id)).join(" || ");
-        ballsCondition = "(".concat(ballsCondition, ")");
-      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Effect) {
-        ballsCondition = "haseffect ".concat((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toInt)(condition));
-      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Skill) {
-        ballsCondition = "hasskill ".concat(skillBallsMacroName(condition));
-      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Item) {
-        if (!condition.combat) {
-          throw new InvalidMacroError("Item ".concat(condition, " cannot be made a valid BALLS predicate (it is not combat-usable)"));
-        }
-
-        ballsCondition = "hascombatitem ".concat(itemOrItemsBallsMacroName(condition));
-      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Location) {
-        var snarfblat = condition.id;
-
-        if (snarfblat < 1) {
-          throw new InvalidMacroError("Location ".concat(condition, " cannot be made a valid BALLS predicate (it has no location id)"));
-        }
-
-        ballsCondition = "snarfblat ".concat(snarfblat);
-      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Class) {
-        if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toInt)(condition) > 6) {
-          throw new InvalidMacroError("Class ".concat(condition, " cannot be made a valid BALLS predicate (it is not a standard class)"));
-        }
-
-        ballsCondition = condition.toString().replaceAll(" ", "").toLowerCase();
-      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Stat) {
-        ballsCondition = "".concat(condition.toString().toLowerCase(), "class");
-      } else {
-        ballsCondition = condition;
-      }
-
-      return this.step("if ".concat(ballsCondition)).step(ifTrue).step("endif");
+      return this.step("if ".concat(Macro.makeBALLSPredicate(condition))).step(ifTrue).step("endif");
     }
     /**
      * Create a new macro with an "if" statement.
+     * @param condition The BALLS condition for the if statement.
+     * @param ifTrue Continuation if the condition is true.
+     * @returns {Macro} This object itself.
+     */
+
+  }, {
+    key: "ifNot",
+    value:
+    /**
+     * Add an "if" statement to this macro, inverting the condition.
+     * @param condition The BALLS condition for the if statement.
+     * @param ifTrue Continuation if the condition is true.
+     * @returns {Macro} This object itself.
+     */
+    function ifNot(condition, ifTrue) {
+      return this.step("if !(".concat(Macro.makeBALLSPredicate(condition), ")")).step(ifTrue).step("endif");
+    }
+    /**
+     * Create a new macro with an "if" statement, inverting the condition.
      * @param condition The BALLS condition for the if statement.
      * @param ifTrue Continuation if the condition is true.
      * @returns {Macro} This object itself.
@@ -3207,6 +3189,7 @@ var Macro = /*#__PURE__*/function () {
           var id = (_Macro$cachedMacroIds = Macro.cachedMacroIds.get(name)) !== null && _Macro$cachedMacroIds !== void 0 ? _Macro$cachedMacroIds : getMacroId(name);
           (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("account_combatmacros.php?macroid=".concat(id, "&action=edit&what=Delete&confirm=1"));
           Macro.cachedAutoAttacks.delete(name);
+          Macro.cachedMacroIds.delete(name);
         }
       } catch (err) {
         _iterator.e(err);
@@ -3225,9 +3208,56 @@ var Macro = /*#__PURE__*/function () {
       return new this().runaway();
     }
   }, {
+    key: "makeBALLSPredicate",
+    value: function makeBALLSPredicate(condition) {
+      var ballsCondition = "";
+
+      if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Monster) {
+        ballsCondition = "monsterid ".concat(condition.id);
+      } else if (condition instanceof Array) {
+        ballsCondition = condition.map(mon => "monsterid ".concat(mon.id)).join(" || ");
+        ballsCondition = "(".concat(ballsCondition, ")");
+      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Effect) {
+        ballsCondition = "haseffect ".concat((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toInt)(condition));
+      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Skill) {
+        ballsCondition = "hasskill ".concat(skillBallsMacroName(condition));
+      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Item) {
+        if (!condition.combat) {
+          throw new InvalidMacroError("Item ".concat(condition, " cannot be made a valid BALLS predicate (it is not combat-usable)"));
+        }
+
+        ballsCondition = "hascombatitem ".concat(itemOrItemsBallsMacroName(condition));
+      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Location) {
+        var snarfblat = condition.id;
+
+        if (snarfblat < 1) {
+          throw new InvalidMacroError("Location ".concat(condition, " cannot be made a valid BALLS predicate (it has no location id)"));
+        }
+
+        ballsCondition = "snarfblat ".concat(snarfblat);
+      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Class) {
+        if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.toInt)(condition) > 6) {
+          throw new InvalidMacroError("Class ".concat(condition, " cannot be made a valid BALLS predicate (it is not a standard class)"));
+        }
+
+        ballsCondition = condition.toString().replaceAll(" ", "").toLowerCase();
+      } else if (condition instanceof kolmafia__WEBPACK_IMPORTED_MODULE_0__.Stat) {
+        ballsCondition = "".concat(condition.toString().toLowerCase(), "class");
+      } else {
+        ballsCondition = condition;
+      }
+
+      return ballsCondition;
+    }
+  }, {
     key: "if_",
     value: function if_(condition, ifTrue) {
       return new this().if_(condition, ifTrue);
+    }
+  }, {
+    key: "ifNot",
+    value: function ifNot(condition, ifTrue) {
+      return new this().ifNot(condition, ifTrue);
     }
   }, {
     key: "while_",
@@ -4404,7 +4434,7 @@ var Logger = /*#__PURE__*/function () {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "nb": () => (/* binding */ Requirement)
 /* harmony export */ });
-/* unused harmony exports setDefaultMaximizeOptions, maximizeCached */
+/* unused harmony exports setDefaultMaximizeOptions, modeableItems, modeableState, getCurrentModes, applyModes, maximizeCached */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _logger__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8685);
@@ -4440,11 +4470,15 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -4469,7 +4503,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
  */
 
 function mergeMaximizeOptions(defaultOptions, addendums) {
-  var _addendums$updateOnFa, _addendums$updateOnCa, _addendums$useOutfitC, _addendums$forceEquip, _addendums$preventEqu, _addendums$bonusEquip, _addendums$onlySlot, _addendums$preventSlo, _addendums$forceUpdat;
+  var _addendums$updateOnFa, _addendums$updateOnCa, _addendums$useOutfitC, _addendums$forceEquip, _addendums$preventEqu, _addendums$bonusEquip, _addendums$onlySlot, _addendums$preventSlo, _addendums$forceUpdat, _addendums$modes;
 
   return {
     updateOnFamiliarChange: (_addendums$updateOnFa = addendums.updateOnFamiliarChange) !== null && _addendums$updateOnFa !== void 0 ? _addendums$updateOnFa : defaultOptions.updateOnFamiliarChange,
@@ -4484,7 +4518,8 @@ function mergeMaximizeOptions(defaultOptions, addendums) {
     bonusEquip: new Map([].concat(_toConsumableArray(defaultOptions.bonusEquip), _toConsumableArray((_addendums$bonusEquip = addendums.bonusEquip) !== null && _addendums$bonusEquip !== void 0 ? _addendums$bonusEquip : []))),
     onlySlot: (_addendums$onlySlot = addendums.onlySlot) !== null && _addendums$onlySlot !== void 0 ? _addendums$onlySlot : defaultOptions.onlySlot,
     preventSlot: [].concat(_toConsumableArray(defaultOptions.preventSlot), _toConsumableArray((_addendums$preventSlo = addendums.preventSlot) !== null && _addendums$preventSlo !== void 0 ? _addendums$preventSlo : [])),
-    forceUpdate: (_addendums$forceUpdat = addendums.forceUpdate) !== null && _addendums$forceUpdat !== void 0 ? _addendums$forceUpdat : defaultOptions.forceUpdate
+    forceUpdate: (_addendums$forceUpdat = addendums.forceUpdate) !== null && _addendums$forceUpdat !== void 0 ? _addendums$forceUpdat : defaultOptions.forceUpdate,
+    modes: _objectSpread(_objectSpread({}, defaultOptions.modes), (_addendums$modes = addendums.modes) !== null && _addendums$modes !== void 0 ? _addendums$modes : {})
   };
 }
 
@@ -4497,7 +4532,8 @@ var defaultMaximizeOptions = {
   bonusEquip: new Map(),
   onlySlot: [],
   preventSlot: [],
-  forceUpdate: false
+  forceUpdate: false,
+  modes: {}
 };
 /**
  *
@@ -4529,7 +4565,6 @@ var modeableState = {
   retrocape: () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getProperty)("retroCapeSuperhero") + " " + (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getProperty)("retroCapeWashingInstructions"),
   parka: () => (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.getProperty)("parkaMode")
 };
-
 function getCurrentModes() {
   var modes = {};
 
@@ -4552,7 +4587,6 @@ function getCurrentModes() {
 
   return modes;
 }
-
 function applyModes(modes) {
   var _iterator2 = _createForOfIteratorHelper(modeableCommands),
       _step2;
@@ -4573,7 +4607,6 @@ function applyModes(modes) {
     _iterator2.f();
   }
 } // Subset of slots that are valid for caching.
-
 
 var cachedSlots = (0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$slots */ .ei)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar"])));
 
@@ -4795,7 +4828,7 @@ function applyCached(entry, options) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.bjornifyFamiliar)(entry.rider.get((0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$item */ .xr)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Buddy Bjorn"])))) || _template_string__WEBPACK_IMPORTED_MODULE_1__/* .$familiar.none */ .HP.none);
   }
 
-  applyModes(entry.modes);
+  applyModes(_objectSpread(_objectSpread({}, entry.modes), options.modes));
 }
 
 var slotStructure = [(0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$slots */ .ei)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["hat"]))), (0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$slots */ .ei)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["back"]))), (0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$slots */ .ei)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["shirt"]))), (0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$slots */ .ei)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["weapon, off-hand"]))), (0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$slots */ .ei)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["pants"]))), (0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$slots */ .ei)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["acc1, acc2, acc3"]))), (0,_template_string__WEBPACK_IMPORTED_MODULE_1__/* .$slots */ .ei)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["familiar"])))];
@@ -4951,7 +4984,7 @@ function saveCached(cacheKey, options) {
     }
   }
 
-  var entry = new CacheEntry(equipment, rider, (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)(), canEquipItemCount(), getCurrentModes());
+  var entry = new CacheEntry(equipment, rider, (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myFamiliar)(), canEquipItemCount(), _objectSpread(_objectSpread({}, getCurrentModes()), options.modes));
   cachedObjectives[cacheKey] = entry;
 
   if (options.useOutfitCaching) {
@@ -6969,9 +7002,8 @@ function enquiryBuffDuration() {
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3311);
-/* harmony import */ var _property__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2474);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(678);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8588);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8588);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13;
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -6987,7 +7019,6 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 
 
 
@@ -7055,17 +7086,17 @@ function inventoryItems() {
 } // Efficiency in meat per fuel.
 
 
-function calculateFuelUnitCost(it, targetUnits) {
-  var priceAge = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : PriceAge.RECENT;
+function calculateFuelUnitCost(it) {
+  var priceAge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : PriceAge.RECENT;
   var units = (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(it);
-  return price(it, priceAge) / Math.min(targetUnits, units);
+  return price(it, priceAge) / units;
 }
 
 function isFuelItem(it) {
   return !(0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.isNpcItem)(it) && it.fullness + it.inebriety > 0 && (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(it) > 0 && it.tradeable && it.discardable && !fuelSkiplist.includes(it);
 }
 
-function getBestFuels(targetUnits) {
+function getBestFuels() {
   // Three stages.
   // 1. Filter to reasonable items using historical cost (within 5x of historical best).
   var allFuel = kolmafia__WEBPACK_IMPORTED_MODULE_1__.Item.all().filter(isFuelItem);
@@ -7075,7 +7106,7 @@ function getBestFuels(targetUnits) {
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.mallPrices)("booze");
   }
 
-  var keyHistorical = item => calculateFuelUnitCost(item, targetUnits, PriceAge.HISTORICAL);
+  var keyHistorical = item => calculateFuelUnitCost(item, PriceAge.HISTORICAL);
 
   allFuel.sort((x, y) => keyHistorical(x) - keyHistorical(y));
   var bestUnitCost = keyHistorical(allFuel[0]);
@@ -7089,18 +7120,18 @@ function getBestFuels(targetUnits) {
 
   var key1 = item => -(0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(item);
 
-  var key2 = item => calculateFuelUnitCost(item, targetUnits, PriceAge.RECENT);
+  var key2 = item => calculateFuelUnitCost(item, PriceAge.RECENT);
 
   potentialFuel.sort((x, y) => key1(x) - key1(y));
   potentialFuel.sort((x, y) => key2(x) - key2(y)); // 3. Find result using precise price for those top candidates.
 
   var candidates = potentialFuel.slice(0, 10);
 
-  var key3 = item => calculateFuelUnitCost(item, targetUnits, PriceAge.TODAY);
+  var key3 = item => calculateFuelUnitCost(item, PriceAge.TODAY);
 
   candidates.sort((x, y) => key3(x) - key3(y));
 
-  if (calculateFuelUnitCost(candidates[0], targetUnits, PriceAge.TODAY) > 100) {
+  if (calculateFuelUnitCost(candidates[0], PriceAge.TODAY) > 100) {
     throw new Error("Could not identify any fuel with efficiency better than 100 meat per fuel. " + "This means something went wrong.");
   }
 
@@ -7127,33 +7158,29 @@ function insertFuel(it) {
 
 function fillTo(targetUnits) {
   if (!installed()) return false;
-  var manager = new _property__WEBPACK_IMPORTED_MODULE_4__/* .PropertiesManager */ .Jr();
 
   while ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getFuel)() < targetUnits) {
-    var remaining = targetUnits - (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getFuel)(); // if in Hardcore/ronin, skip the price calculation and just use soda bread
-
-    var _ref = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.canInteract)() ? getBestFuels(remaining) : [(0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["loaf of soda bread"]))), undefined],
+    // if in Hardcore/ronin, skip the price calculation and just use soda bread
+    var _ref = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.canInteract)() ? getBestFuels() : [(0,_template_string__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["loaf of soda bread"]))), undefined],
         _ref2 = _slicedToArray(_ref, 2),
         bestFuel = _ref2[0],
         secondBest = _ref2[1];
 
     var count = Math.ceil(targetUnits / (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(bestFuel));
+    var ceiling = undefined;
 
     if (secondBest) {
       var efficiencyOfSecondBest = (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.mallPrice)(secondBest) / (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(secondBest);
-      var ceiling = Math.ceil(efficiencyOfSecondBest * (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(bestFuel));
-      manager.setMaximumValue("autoBuyPriceLimit", ceiling);
+      ceiling = Math.ceil(efficiencyOfSecondBest * (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(bestFuel));
     }
 
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.retrieveItem)(count, bestFuel);
+    ceiling ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.buy)(count, bestFuel, ceiling) : (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.buy)(count, bestFuel);
 
     if (!insertFuel(bestFuel, Math.min((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.itemAmount)(bestFuel), count))) {
-      manager.resetAll();
       throw new Error("Failed to fuel Asdon Martin.");
     }
   }
 
-  manager.resetAll();
   return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.getFuel)() >= targetUnits;
 }
 
@@ -7162,7 +7189,7 @@ function fillWithBestInventoryItem(targetUnits) {
   if (options.length === 0) return false;
   var best = options[0];
   if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.autosellPrice)(best) / (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(best) > 100) return false;
-  var amountToUse = (0,_utils__WEBPACK_IMPORTED_MODULE_5__/* .clamp */ .uZ)(Math.ceil(targetUnits / (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(best)), 0, (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.itemAmount)(best));
+  var amountToUse = (0,_utils__WEBPACK_IMPORTED_MODULE_4__/* .clamp */ .uZ)(Math.ceil(targetUnits / (0,_lib__WEBPACK_IMPORTED_MODULE_3__/* .getAverageAdventures */ .N)(best)), 0, (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.itemAmount)(best));
   return insertFuel(best, amountToUse);
 }
 /**
@@ -17159,7 +17186,7 @@ function toasterGaze() {
 /* harmony import */ var _combat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4223);
 /* harmony import */ var _embezzler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4936);
 /* harmony import */ var _acquire__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4564);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -17268,14 +17295,14 @@ function initializeCrates() {
     } // if we have olfaction, that's our primary method for ensuring crates
 
 
-    if (crateStrategy() === "Sniff" && property.getString("olfactedMonster") !== "crate" || crateStrategy() === "Orb" && (get("_gallapagosMonster") !== $monster(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["crate"]))) && have($skill(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))) || have($item(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && !get("_latteCopyUsed"))) {
+    if (crateStrategy() === "Sniff" && (property.getString("olfactedMonster") !== "crate" || !have($effect(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["On the Trail"])))) || property.getString("longConMonster") !== "crate" || get("_longConUsed") <= 0) || crateStrategy() === "Orb" && (get("_gallapagosMonster") !== $monster(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["crate"]))) && have($skill(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))) || have($item(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["latte lovers member's mug"])))) && !get("_latteCopyUsed"))) {
       var _tryFindFreeRun2, _run$constraints$fami3, _run$constraints$fami4, _run$constraints4, _run$constraints$prep2, _run$constraints5, _run$constraints$equi3, _run$constraints$equi4, _run$constraints6;
 
       var run = (_tryFindFreeRun2 = tryFindFreeRun(latteActionSourceFinderConstraints)) !== null && _tryFindFreeRun2 !== void 0 ? _tryFindFreeRun2 : ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
       // Sniff the crate in as many ways as humanly possible
 
-      var macro = Macro.trySkill($skill(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Transcendent Olfaction"])))).trySkill($skill(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Long Con"])))).trySkill($skill(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Offer Latte to Opponent"])))).externalIf(get("_gallapagosMonster") !== $monster(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["crate"]))) && have($skill(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))), Macro.trySkill($skill(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["Gallapagosian Mating Call"]))))).trySkill($skill(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Use the Force"])))).step(run.macro); // equip latte and saber for lattesniff and saberfriends, if we want to
+      var macro = Macro.trySkill($skill(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["Transcendent Olfaction"])))).trySkill($skill(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["Long Con"])))).trySkill($skill(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Offer Latte to Opponent"])))).externalIf(get("_gallapagosMonster") !== $monster(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["crate"]))) && have($skill(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["Gallapagosian Mating Call"])))), Macro.trySkill($skill(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["Gallapagosian Mating Call"]))))).trySkill($skill(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Use the Force"])))).step(run.macro); // equip latte and saber for lattesniff and saberfriends, if we want to
       // Crank up ML to make sure the crate survives several rounds; we may have some passive damage
 
       useFamiliar((_run$constraints$fami3 = (_run$constraints$fami4 = (_run$constraints4 = run.constraints).familiar) === null || _run$constraints$fami4 === void 0 ? void 0 : _run$constraints$fami4.call(_run$constraints4)) !== null && _run$constraints$fami3 !== void 0 ? _run$constraints$fami3 : freeFightFamiliar({
@@ -17283,12 +17310,12 @@ function initializeCrates() {
       }));
       (_run$constraints$prep2 = (_run$constraints5 = run.constraints).preparation) === null || _run$constraints$prep2 === void 0 ? void 0 : _run$constraints$prep2.call(_run$constraints5);
       new Requirement(["100 Monster Level"], {
-        forceEquip: $items(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["latte lovers member's mug, Fourth of May Cosplay Saber"]))).filter(item => have(item)),
-        preventEquip: $items(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["carnivorous potted plant"])))
+        forceEquip: $items(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["latte lovers member's mug, Fourth of May Cosplay Saber"]))).filter(item => have(item)),
+        preventEquip: $items(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["carnivorous potted plant"])))
       }).merge((_run$constraints$equi3 = (_run$constraints$equi4 = (_run$constraints6 = run.constraints).equipmentRequirements) === null || _run$constraints$equi4 === void 0 ? void 0 : _run$constraints$equi4.call(_run$constraints6)) !== null && _run$constraints$equi3 !== void 0 ? _run$constraints$equi3 : new Requirement([], {})).maximize();
-      adventureMacro($location(_templateObject41 || (_templateObject41 = _taggedTemplateLiteral(["Noob Cave"]))), Macro.if_($monster(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["crate"]))), macro).if_($monsters(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["giant rubber spider, time-spinner prank"]))), Macro.kill()).ifHolidayWanderer(run.macro).abort());
-      visitUrl("desc_effect.php?whicheffect=".concat($effect(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["On the Trail"]))).descid));
-    } else if (crateStrategy() === "Saber" && (get("_saberForceMonster") !== $monster(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["crate"]))) || get("_saberForceMonsterCount") === 0) && get("_saberForceUses") < 5) {
+      adventureMacro($location(_templateObject42 || (_templateObject42 = _taggedTemplateLiteral(["Noob Cave"]))), Macro.if_($monster(_templateObject43 || (_templateObject43 = _taggedTemplateLiteral(["crate"]))), macro).if_($monsters(_templateObject44 || (_templateObject44 = _taggedTemplateLiteral(["giant rubber spider, time-spinner prank"]))), Macro.kill()).ifHolidayWanderer(run.macro).abort());
+      visitUrl("desc_effect.php?whicheffect=".concat($effect(_templateObject45 || (_templateObject45 = _taggedTemplateLiteral(["On the Trail"]))).descid));
+    } else if (crateStrategy() === "Saber" && (get("_saberForceMonster") !== $monster(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["crate"]))) || get("_saberForceMonsterCount") === 0) && get("_saberForceUses") < 5) {
       saberCrateIfSafe();
     } else break; // we can break the loop if there's nothing to do
 
@@ -17299,44 +17326,44 @@ function initializeCrates() {
 function initializeDireWarren() {
   visitUrl("museum.php?action=icehouse");
   var banishedMonsters = getBanishedMonsters();
-  if (banishedMonsters.get($item(_templateObject46 || (_templateObject46 = _taggedTemplateLiteral(["ice house"])))) === $monster(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["fluffy bunny"])))) return;
-  var options = $items(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"])));
+  if (banishedMonsters.get($item(_templateObject47 || (_templateObject47 = _taggedTemplateLiteral(["ice house"])))) === $monster(_templateObject48 || (_templateObject48 = _taggedTemplateLiteral(["fluffy bunny"])))) return;
+  var options = $items(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["human musk, tryptophan dart, Daily Affirmation: Be a Mind Master"])));
 
-  if (options.some(option => banishedMonsters.get(option) === $monster(_templateObject49 || (_templateObject49 = _taggedTemplateLiteral(["fluffy bunny"]))))) {
+  if (options.some(option => banishedMonsters.get(option) === $monster(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["fluffy bunny"]))))) {
     return;
   }
 
-  if (banishedMonsters.get($skill(_templateObject50 || (_templateObject50 = _taggedTemplateLiteral(["Batter Up!"])))) === $monster(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["fluffy bunny"])))) return;
+  if (banishedMonsters.get($skill(_templateObject51 || (_templateObject51 = _taggedTemplateLiteral(["Batter Up!"])))) === $monster(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["fluffy bunny"])))) return;
 
-  if (!have($item(_templateObject52 || (_templateObject52 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
-    options.push.apply(options, _toConsumableArray($items(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
+  if (!have($item(_templateObject53 || (_templateObject53 = _taggedTemplateLiteral(["miniature crystal ball"]))))) {
+    options.push.apply(options, _toConsumableArray($items(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["Louder Than Bomb, tennis ball"])))));
   }
 
-  var canBat = myFury() >= 5 && have($skill(_templateObject54 || (_templateObject54 = _taggedTemplateLiteral(["Batter Up!"]))));
+  var canBat = myFury() >= 5 && have($skill(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["Batter Up!"]))));
 
   if (canBat) {
     var _Item$all$find;
 
-    if (have($skill(_templateObject55 || (_templateObject55 = _taggedTemplateLiteral(["Iron Palm Technique"])))) && !have($effect(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["Iron Palms"]))))) {
-      useSkill($skill(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["Iron Palm Technique"]))));
+    if (have($skill(_templateObject56 || (_templateObject56 = _taggedTemplateLiteral(["Iron Palm Technique"])))) && !have($effect(_templateObject57 || (_templateObject57 = _taggedTemplateLiteral(["Iron Palms"]))))) {
+      useSkill($skill(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["Iron Palm Technique"]))));
     }
 
-    var availableClub = (_Item$all$find = Item.all().find(i => have(i) && canEquip(i) && weaponHands(i) === 2 && (itemType(i) === "club" || have($effect(_templateObject58 || (_templateObject58 = _taggedTemplateLiteral(["Iron Palms"])))) && itemType(i) === "sword"))) !== null && _Item$all$find !== void 0 ? _Item$all$find : $item(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["amok putter"])));
+    var availableClub = (_Item$all$find = Item.all().find(i => have(i) && canEquip(i) && weaponHands(i) === 2 && (itemType(i) === "club" || have($effect(_templateObject59 || (_templateObject59 = _taggedTemplateLiteral(["Iron Palms"])))) && itemType(i) === "sword"))) !== null && _Item$all$find !== void 0 ? _Item$all$find : $item(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["amok putter"])));
     retrieveItem(availableClub);
     new Requirement(["100 Monster Level"], {
-      preventEquip: $items(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral(["carnivorous potted plant"]))),
+      preventEquip: $items(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["carnivorous potted plant"]))),
       forceEquip: [availableClub]
     }).maximize();
 
     do {
-      adventureMacro($location(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.skill($skill(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["Batter Up!"]))))).step(embezzlerMacro()));
-    } while ("fluffy bunny" !== get("lastEncounter") && banishedMonsters.get($skill(_templateObject61 || (_templateObject61 = _taggedTemplateLiteral(["Batter Up!"])))) !== $monster(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["fluffy bunny"]))));
+      adventureMacro($location(_templateObject64 || (_templateObject64 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject65 || (_templateObject65 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.skill($skill(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["Batter Up!"]))))).step(embezzlerMacro()));
+    } while ("fluffy bunny" !== get("lastEncounter") && banishedMonsters.get($skill(_templateObject62 || (_templateObject62 = _taggedTemplateLiteral(["Batter Up!"])))) !== $monster(_templateObject63 || (_templateObject63 = _taggedTemplateLiteral(["fluffy bunny"]))));
   } else {
     var banish = maxBy(options, mallPrice, true);
     acquire(1, banish, 50000, true);
 
     do {
-      adventureMacro($location(_templateObject66 || (_templateObject66 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
+      adventureMacro($location(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["The Dire Warren"]))), Macro.if_($monster(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["fluffy bunny"]))), Macro.item(banish)).step(embezzlerMacro()));
     } while ("fluffy bunny" !== get("lastEncounter"));
   }
 }
