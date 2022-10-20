@@ -323,7 +323,7 @@ const turns: AdventureAction[] = [
       }
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
-        .tryHaveSkill($skill`Duplicate`)
+        .trySkill($skill`Duplicate`)
         .skill($skill`Spit jurassic acid`);
       adventureMacroAuto(location, macro);
       if (SourceTerminal.have()) {
