@@ -30,8 +30,11 @@ function averageYrValue(location: Location) {
   } else {
     return (
       sum(monsters, (m) => {
-        const items = itemDropsArray(m).filter((drop) => drop.type === "");
-        return sum(items, (drop) => garboValue(drop.drop, true));
+        const items = itemDropsArray(m).filter((drop) => ["", "n"].includes(drop.type));
+        return sum(items, (drop) => {
+          const yrRate = drop.type === "" ? 1 : drop.rate;
+          return yrRate * garboValue(drop.drop, true);
+        });
       }) / monsters.length
     );
   }
