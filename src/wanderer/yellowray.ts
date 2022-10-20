@@ -30,7 +30,7 @@ function averageYrValue(location: Location) {
   } else {
     return (
       sum(monsters, (m) => {
-        const items = itemDropsArray(m).filter((drop) => ["", "n"].includes(drop.type));
+        const items = itemDropsArray(m).filter((drop) => drop.type === "");
         return sum(items, (drop) => garboValue(drop.drop, true));
       }) / monsters.length
     );
