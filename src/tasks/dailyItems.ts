@@ -10,6 +10,7 @@ import {
   pickedPockets,
   pocketItems,
   pocketMeat,
+  runChoice,
   scrapPockets,
   toItem,
   useSkill,
@@ -258,6 +259,16 @@ export const DailyItemTasks: Task[] = [
         get("_timeSpinnerMinutesUsed") <= 8,
       completed: () => get("_timeSpinnerReplicatorUsed"),
       do: () => cliExecute("FarFuture drink"),
+    },
+    {
+      name: "FantasyRealm Hat",
+      ready: () => get("frAlways") || get("_frToday"),
+      completed: () => have($item`FantasyRealm G. E. M.`),
+      do: () => {
+        visitUrl("place.php?whichplace=realm_fantasy&action=fr_initcenter");
+        runChoice(-1);
+      },
+      choices: { 1280: 1 },
     },
   ],
 ];
