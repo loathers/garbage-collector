@@ -145,6 +145,12 @@ export const DailyItemTasks: Task[] = [
       do: () => cliExecute("Briefcase collect"),
     },
     {
+      name: "Ice Cold April Shower",
+      ready: () => have($item`Clan VIP Lounge key`) && getClanLounge()["Clan shower"] !== undefined,
+      completed: () => get("_aprilShower"),
+      do: () => cliExecute("try; shower ice"),
+    },
+    {
       name: "Swimming Pool Item",
       ready: () =>
         have($item`Clan VIP Lounge key`) &&
