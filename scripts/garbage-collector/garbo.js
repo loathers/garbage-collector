@@ -23770,7 +23770,7 @@ var PostFreeFightTasks = [{
   do: () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(postFreeFight_templateObject12 || (postFreeFight_templateObject12 = postFreeFight_taggedTemplateLiteral(["experimental carbon fiber pasta additive"]))))
 }];
 ;// CONCATENATED MODULE: ./src/tasks/dailyItems.ts
-var dailyItems_templateObject, dailyItems_templateObject2, dailyItems_templateObject3, dailyItems_templateObject4, dailyItems_templateObject5, dailyItems_templateObject6, dailyItems_templateObject7, dailyItems_templateObject8, dailyItems_templateObject9, dailyItems_templateObject10, dailyItems_templateObject11, dailyItems_templateObject12, dailyItems_templateObject13, dailyItems_templateObject14, dailyItems_templateObject15, dailyItems_templateObject16, dailyItems_templateObject17, dailyItems_templateObject18, dailyItems_templateObject19, dailyItems_templateObject20, dailyItems_templateObject21, dailyItems_templateObject22, dailyItems_templateObject23, dailyItems_templateObject24, dailyItems_templateObject25, dailyItems_templateObject26, dailyItems_templateObject27, dailyItems_templateObject28, dailyItems_templateObject29, dailyItems_templateObject30, dailyItems_templateObject31, dailyItems_templateObject32, dailyItems_templateObject33, dailyItems_templateObject34, dailyItems_templateObject35, dailyItems_templateObject36, dailyItems_templateObject37, dailyItems_templateObject38, dailyItems_templateObject39, dailyItems_templateObject40, dailyItems_templateObject41, dailyItems_templateObject42, dailyItems_templateObject43, dailyItems_templateObject44, dailyItems_templateObject45, dailyItems_templateObject46, dailyItems_templateObject47, dailyItems_templateObject48, dailyItems_templateObject49, dailyItems_templateObject50, dailyItems_templateObject51, dailyItems_templateObject52, dailyItems_templateObject53, dailyItems_templateObject54, dailyItems_templateObject55, dailyItems_templateObject56, dailyItems_templateObject57, dailyItems_templateObject58, dailyItems_templateObject59, dailyItems_templateObject60, dailyItems_templateObject61, dailyItems_templateObject62, dailyItems_templateObject63, dailyItems_templateObject64, dailyItems_templateObject65, dailyItems_templateObject66, dailyItems_templateObject67;
+var dailyItems_templateObject, dailyItems_templateObject2, dailyItems_templateObject3, dailyItems_templateObject4, dailyItems_templateObject5, dailyItems_templateObject6, dailyItems_templateObject7, dailyItems_templateObject8, dailyItems_templateObject9, dailyItems_templateObject10, dailyItems_templateObject11, dailyItems_templateObject12, dailyItems_templateObject13, dailyItems_templateObject14, dailyItems_templateObject15, dailyItems_templateObject16, dailyItems_templateObject17, dailyItems_templateObject18, dailyItems_templateObject19, dailyItems_templateObject20, dailyItems_templateObject21, dailyItems_templateObject22, dailyItems_templateObject23, dailyItems_templateObject24, dailyItems_templateObject25, dailyItems_templateObject26, dailyItems_templateObject27, dailyItems_templateObject28, dailyItems_templateObject29, dailyItems_templateObject30, dailyItems_templateObject31, dailyItems_templateObject32, dailyItems_templateObject33, dailyItems_templateObject34, dailyItems_templateObject35, dailyItems_templateObject36, dailyItems_templateObject37, dailyItems_templateObject38, dailyItems_templateObject39, dailyItems_templateObject40, dailyItems_templateObject41, dailyItems_templateObject42, dailyItems_templateObject43, dailyItems_templateObject44, dailyItems_templateObject45, dailyItems_templateObject46, dailyItems_templateObject47, dailyItems_templateObject48, dailyItems_templateObject49, dailyItems_templateObject50, dailyItems_templateObject51, dailyItems_templateObject52, dailyItems_templateObject53, dailyItems_templateObject54, dailyItems_templateObject55, dailyItems_templateObject56, dailyItems_templateObject57, dailyItems_templateObject58, dailyItems_templateObject59, dailyItems_templateObject60, dailyItems_templateObject61, dailyItems_templateObject62, dailyItems_templateObject63, dailyItems_templateObject64, dailyItems_templateObject65, dailyItems_templateObject66, dailyItems_templateObject67, dailyItems_templateObject68;
 
 function dailyItems_toConsumableArray(arr) { return dailyItems_arrayWithoutHoles(arr) || dailyItems_iterableToArray(arr) || dailyItems_unsupportedIterableToArray(arr) || dailyItems_nonIterableSpread(); }
 
@@ -23954,22 +23954,27 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
   completed: () => (0,property/* get */.U2)("_kgbClicksUsed") > 17 || (0,property/* get */.U2)("_kgbDispenserUses") >= 3,
   do: () => (0,external_kolmafia_.cliExecute)("Briefcase collect")
 }, {
+  name: "Ice Cold April Shower",
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject20 || (dailyItems_templateObject20 = dailyItems_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && (0,external_kolmafia_.getClanLounge)()["Clan shower"] !== undefined,
+  completed: () => (0,property/* get */.U2)("_aprilShower"),
+  do: () => (0,external_kolmafia_.cliExecute)("try; shower ice")
+}, {
   name: "Swimming Pool Item",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject20 || (dailyItems_templateObject20 = dailyItems_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && (0,external_kolmafia_.getClanLounge)()["Olympic-sized Clan crate"] !== undefined,
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject21 || (dailyItems_templateObject21 = dailyItems_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && (0,external_kolmafia_.getClanLounge)()["Olympic-sized Clan crate"] !== undefined,
   completed: () => (0,property/* get */.U2)("_olympicSwimmingPoolItemFound"),
   do: () => (0,external_kolmafia_.cliExecute)("swim item")
 }, {
   name: "Cheat Deck of Every Card",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject21 || (dailyItems_templateObject21 = dailyItems_taggedTemplateLiteral(["Deck of Every Card"])))),
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject22 || (dailyItems_templateObject22 = dailyItems_taggedTemplateLiteral(["Deck of Every Card"])))),
   completed: () => Math.floor(3 - (0,property/* get */.U2)("_deckCardsDrawn") / 5) === 0,
   do: () => drawBestCards()
 }, {
   name: "Source Terminal Extrude",
   ready: () => SourceTerminal/* have */.lf(),
-  completed: () => (0,property/* get */.U2)("_sourceTerminalExtrudes") === 3 || (0,session/* garboValue */.sf)(bestExtrude()) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject22 || (dailyItems_templateObject22 = dailyItems_taggedTemplateLiteral(["Source essence"])))) * 10,
+  completed: () => (0,property/* get */.U2)("_sourceTerminalExtrudes") === 3 || (0,session/* garboValue */.sf)(bestExtrude()) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject23 || (dailyItems_templateObject23 = dailyItems_taggedTemplateLiteral(["Source essence"])))) * 10,
   do: () => SourceTerminal/* extrude */.O6(bestExtrude()),
   acquire: [{
-    item: (0,template_string/* $item */.xr)(dailyItems_templateObject23 || (dailyItems_templateObject23 = dailyItems_taggedTemplateLiteral(["Source essence"]))),
+    item: (0,template_string/* $item */.xr)(dailyItems_templateObject24 || (dailyItems_templateObject24 = dailyItems_taggedTemplateLiteral(["Source essence"]))),
     num: 10
   }],
   limit: {
@@ -23977,49 +23982,49 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
   }
 }, {
   name: "Internet Meme Shop viral video",
-  completed: () => (0,property/* get */.U2)("_internetViralVideoBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject24 || (dailyItems_templateObject24 = dailyItems_taggedTemplateLiteral(["viral video"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject25 || (dailyItems_templateObject25 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject26 || (dailyItems_templateObject26 = dailyItems_taggedTemplateLiteral(["viral video"])))),
-  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject27 || (dailyItems_templateObject27 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject28 || (dailyItems_templateObject28 = dailyItems_taggedTemplateLiteral(["viral video"])))),
+  completed: () => (0,property/* get */.U2)("_internetViralVideoBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject25 || (dailyItems_templateObject25 = dailyItems_taggedTemplateLiteral(["viral video"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject26 || (dailyItems_templateObject26 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject27 || (dailyItems_templateObject27 = dailyItems_taggedTemplateLiteral(["viral video"])))),
+  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject28 || (dailyItems_templateObject28 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject29 || (dailyItems_templateObject29 = dailyItems_taggedTemplateLiteral(["viral video"])))),
   acquire: [{
-    item: (0,template_string/* $item */.xr)(dailyItems_templateObject29 || (dailyItems_templateObject29 = dailyItems_taggedTemplateLiteral(["BACON"]))),
-    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject30 || (dailyItems_templateObject30 = dailyItems_taggedTemplateLiteral(["viral video"]))))
+    item: (0,template_string/* $item */.xr)(dailyItems_templateObject30 || (dailyItems_templateObject30 = dailyItems_taggedTemplateLiteral(["BACON"]))),
+    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject31 || (dailyItems_templateObject31 = dailyItems_taggedTemplateLiteral(["viral video"]))))
   }]
 }, {
   name: "Internet Meme Shop plus one",
-  completed: () => (0,property/* get */.U2)("_internetPlusOneBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject31 || (dailyItems_templateObject31 = dailyItems_taggedTemplateLiteral(["plus one"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject32 || (dailyItems_templateObject32 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject33 || (dailyItems_templateObject33 = dailyItems_taggedTemplateLiteral(["plus one"])))),
-  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject34 || (dailyItems_templateObject34 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject35 || (dailyItems_templateObject35 = dailyItems_taggedTemplateLiteral(["plus one"])))),
+  completed: () => (0,property/* get */.U2)("_internetPlusOneBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject32 || (dailyItems_templateObject32 = dailyItems_taggedTemplateLiteral(["plus one"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject33 || (dailyItems_templateObject33 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject34 || (dailyItems_templateObject34 = dailyItems_taggedTemplateLiteral(["plus one"])))),
+  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject35 || (dailyItems_templateObject35 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject36 || (dailyItems_templateObject36 = dailyItems_taggedTemplateLiteral(["plus one"])))),
   acquire: [{
-    item: (0,template_string/* $item */.xr)(dailyItems_templateObject36 || (dailyItems_templateObject36 = dailyItems_taggedTemplateLiteral(["BACON"]))),
-    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject37 || (dailyItems_templateObject37 = dailyItems_taggedTemplateLiteral(["plus one"]))))
+    item: (0,template_string/* $item */.xr)(dailyItems_templateObject37 || (dailyItems_templateObject37 = dailyItems_taggedTemplateLiteral(["BACON"]))),
+    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject38 || (dailyItems_templateObject38 = dailyItems_taggedTemplateLiteral(["plus one"]))))
   }]
 }, {
   name: "Internet Meme Shop gallon of milk",
-  completed: () => (0,property/* get */.U2)("_internetGallonOfMilkBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject38 || (dailyItems_templateObject38 = dailyItems_taggedTemplateLiteral(["gallon of milk"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject39 || (dailyItems_templateObject39 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject40 || (dailyItems_templateObject40 = dailyItems_taggedTemplateLiteral(["gallon of milk"])))),
-  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject41 || (dailyItems_templateObject41 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject42 || (dailyItems_templateObject42 = dailyItems_taggedTemplateLiteral(["gallon of milk"])))),
+  completed: () => (0,property/* get */.U2)("_internetGallonOfMilkBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject39 || (dailyItems_templateObject39 = dailyItems_taggedTemplateLiteral(["gallon of milk"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject40 || (dailyItems_templateObject40 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject41 || (dailyItems_templateObject41 = dailyItems_taggedTemplateLiteral(["gallon of milk"])))),
+  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject42 || (dailyItems_templateObject42 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject43 || (dailyItems_templateObject43 = dailyItems_taggedTemplateLiteral(["gallon of milk"])))),
   acquire: [{
-    item: (0,template_string/* $item */.xr)(dailyItems_templateObject43 || (dailyItems_templateObject43 = dailyItems_taggedTemplateLiteral(["BACON"]))),
-    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject44 || (dailyItems_templateObject44 = dailyItems_taggedTemplateLiteral(["gallon of milk"]))))
+    item: (0,template_string/* $item */.xr)(dailyItems_templateObject44 || (dailyItems_templateObject44 = dailyItems_taggedTemplateLiteral(["BACON"]))),
+    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject45 || (dailyItems_templateObject45 = dailyItems_taggedTemplateLiteral(["gallon of milk"]))))
   }]
 }, {
   name: "Internet Meme Shop print screen button",
-  completed: () => (0,property/* get */.U2)("_internetPrintScreenButtonBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject45 || (dailyItems_templateObject45 = dailyItems_taggedTemplateLiteral(["print screen button"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject46 || (dailyItems_templateObject46 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject47 || (dailyItems_templateObject47 = dailyItems_taggedTemplateLiteral(["print screen button"])))),
-  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject48 || (dailyItems_templateObject48 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject49 || (dailyItems_templateObject49 = dailyItems_taggedTemplateLiteral(["print screen button"])))),
+  completed: () => (0,property/* get */.U2)("_internetPrintScreenButtonBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject46 || (dailyItems_templateObject46 = dailyItems_taggedTemplateLiteral(["print screen button"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject47 || (dailyItems_templateObject47 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject48 || (dailyItems_templateObject48 = dailyItems_taggedTemplateLiteral(["print screen button"])))),
+  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject49 || (dailyItems_templateObject49 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject50 || (dailyItems_templateObject50 = dailyItems_taggedTemplateLiteral(["print screen button"])))),
   acquire: [{
-    item: (0,template_string/* $item */.xr)(dailyItems_templateObject50 || (dailyItems_templateObject50 = dailyItems_taggedTemplateLiteral(["BACON"]))),
-    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject51 || (dailyItems_templateObject51 = dailyItems_taggedTemplateLiteral(["print screen button"]))))
+    item: (0,template_string/* $item */.xr)(dailyItems_templateObject51 || (dailyItems_templateObject51 = dailyItems_taggedTemplateLiteral(["BACON"]))),
+    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject52 || (dailyItems_templateObject52 = dailyItems_taggedTemplateLiteral(["print screen button"]))))
   }]
 }, {
   name: "Internet Meme Shop daily dungeon malware",
-  completed: () => (0,property/* get */.U2)("_internetDailyDungeonMalwareBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject52 || (dailyItems_templateObject52 = dailyItems_taggedTemplateLiteral(["daily dungeon malware"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject53 || (dailyItems_templateObject53 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject54 || (dailyItems_templateObject54 = dailyItems_taggedTemplateLiteral(["daily dungeon malware"])))),
-  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject55 || (dailyItems_templateObject55 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject56 || (dailyItems_templateObject56 = dailyItems_taggedTemplateLiteral(["daily dungeon malware"])))),
+  completed: () => (0,property/* get */.U2)("_internetDailyDungeonMalwareBought") || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject53 || (dailyItems_templateObject53 = dailyItems_taggedTemplateLiteral(["daily dungeon malware"])))) < (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject54 || (dailyItems_templateObject54 = dailyItems_taggedTemplateLiteral(["BACON"])))) * (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject55 || (dailyItems_templateObject55 = dailyItems_taggedTemplateLiteral(["daily dungeon malware"])))),
+  do: () => (0,external_kolmafia_.buy)((0,template_string/* $coinmaster */.$L)(dailyItems_templateObject56 || (dailyItems_templateObject56 = dailyItems_taggedTemplateLiteral(["Internet Meme Shop"]))), 1, (0,template_string/* $item */.xr)(dailyItems_templateObject57 || (dailyItems_templateObject57 = dailyItems_taggedTemplateLiteral(["daily dungeon malware"])))),
   acquire: [{
-    item: (0,template_string/* $item */.xr)(dailyItems_templateObject57 || (dailyItems_templateObject57 = dailyItems_taggedTemplateLiteral(["BACON"]))),
-    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject58 || (dailyItems_templateObject58 = dailyItems_taggedTemplateLiteral(["daily dungeon malware"]))))
+    item: (0,template_string/* $item */.xr)(dailyItems_templateObject58 || (dailyItems_templateObject58 = dailyItems_taggedTemplateLiteral(["BACON"]))),
+    num: (0,src_lib/* coinmasterPrice */.Fx)((0,template_string/* $item */.xr)(dailyItems_templateObject59 || (dailyItems_templateObject59 = dailyItems_taggedTemplateLiteral(["daily dungeon malware"]))))
   }]
 }, {
   name: "Rainbow Gravitation",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(dailyItems_templateObject59 || (dailyItems_templateObject59 = dailyItems_taggedTemplateLiteral(["Rainbow Gravitation"])))),
-  completed: () => (0,property/* get */.U2)("prismaticSummons") === 3 || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject60 || (dailyItems_templateObject60 = dailyItems_taggedTemplateLiteral(["prismatic wad"])))) < (0,utils/* sum */.Sm)(Wads, session/* garboValue */.sf),
-  do: () => (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(dailyItems_templateObject61 || (dailyItems_templateObject61 = dailyItems_taggedTemplateLiteral(["Rainbow Gravitation"]))), 3 - (0,property/* get */.U2)("prismaticSummons")),
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(dailyItems_templateObject60 || (dailyItems_templateObject60 = dailyItems_taggedTemplateLiteral(["Rainbow Gravitation"])))),
+  completed: () => (0,property/* get */.U2)("prismaticSummons") === 3 || (0,session/* garboValue */.sf)((0,template_string/* $item */.xr)(dailyItems_templateObject61 || (dailyItems_templateObject61 = dailyItems_taggedTemplateLiteral(["prismatic wad"])))) < (0,utils/* sum */.Sm)(Wads, session/* garboValue */.sf),
+  do: () => (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(dailyItems_templateObject62 || (dailyItems_templateObject62 = dailyItems_taggedTemplateLiteral(["Rainbow Gravitation"]))), 3 - (0,property/* get */.U2)("prismaticSummons")),
   acquire: () => Wads.map(x => ({
     item: x,
     num: 3 - (0,property/* get */.U2)("prismaticSummons")
@@ -24029,7 +24034,7 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
   ready: () => (0,external_kolmafia_.getCampground)()["potted tea tree"] !== undefined,
   completed: () => (0,property/* get */.U2)("_pottedTeaTreeUsed"),
   do: () => {
-    var teas = (0,template_string/* $items */.vS)(dailyItems_templateObject62 || (dailyItems_templateObject62 = dailyItems_taggedTemplateLiteral(["cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea"])));
+    var teas = (0,template_string/* $items */.vS)(dailyItems_templateObject63 || (dailyItems_templateObject63 = dailyItems_taggedTemplateLiteral(["cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea"])));
     var bestTea = (0,src_lib/* maxBy */.UT)(teas, session/* garboValue */.sf);
     var shakeVal = 3 * session/* garboAverageValue.apply */.Et.apply(void 0, dailyItems_toConsumableArray(teas));
     var teaAction = shakeVal > (0,session/* garboValue */.sf)(bestTea) ? "shake" : bestTea.name;
@@ -24037,28 +24042,28 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
   }
 }, {
   name: "Check Jick Jar",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject63 || (dailyItems_templateObject63 = dailyItems_taggedTemplateLiteral(["psychoanalytic jar"])))),
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject64 || (dailyItems_templateObject64 = dailyItems_taggedTemplateLiteral(["psychoanalytic jar"])))),
   completed: () => (0,property/* get */.U2)("_jickJarAvailable") !== "unknown",
   do: () => (0,external_kolmafia_.visitUrl)("showplayer.php?who=1")
 }, {
   name: "Acquire Jick Jar",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject64 || (dailyItems_templateObject64 = dailyItems_taggedTemplateLiteral(["psychoanalytic jar"])))) && (0,property/* get */.U2)("_jickJarAvailable") === "true",
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject65 || (dailyItems_templateObject65 = dailyItems_taggedTemplateLiteral(["psychoanalytic jar"])))) && (0,property/* get */.U2)("_jickJarAvailable") === "true",
   completed: () => (0,property/* get */.U2)("_psychoJarFilled"),
   do: () => (0,external_kolmafia_.visitUrl)("showplayer.php?who=1&action=jung&whichperson=jick")
 }, {
   name: "Cargo Shorts Pocket",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject65 || (dailyItems_templateObject65 = dailyItems_taggedTemplateLiteral(["Cargo Cultist Shorts"])))),
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject66 || (dailyItems_templateObject66 = dailyItems_taggedTemplateLiteral(["Cargo Cultist Shorts"])))),
   completed: () => (0,property/* get */.U2)("_cargoPocketEmptied"),
   do: () => pickCargoPocket()
 }, {
   name: "Time-Spinner Gin",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject66 || (dailyItems_templateObject66 = dailyItems_taggedTemplateLiteral(["Time-Spinner"])))) && !(0,extrovermectin/* doingExtrovermectin */.KN)() && (0,property/* get */.U2)("timeSpinnerMedals") >= 5 && (0,property/* get */.U2)("_timeSpinnerMinutesUsed") <= 8,
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject67 || (dailyItems_templateObject67 = dailyItems_taggedTemplateLiteral(["Time-Spinner"])))) && !(0,extrovermectin/* doingExtrovermectin */.KN)() && (0,property/* get */.U2)("timeSpinnerMedals") >= 5 && (0,property/* get */.U2)("_timeSpinnerMinutesUsed") <= 8,
   completed: () => (0,property/* get */.U2)("_timeSpinnerReplicatorUsed"),
   do: () => (0,external_kolmafia_.cliExecute)("FarFuture drink")
 }, {
   name: "FantasyRealm Hat",
   ready: () => (0,property/* get */.U2)("frAlways") || (0,property/* get */.U2)("_frToday"),
-  completed: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject67 || (dailyItems_templateObject67 = dailyItems_taggedTemplateLiteral(["FantasyRealm G. E. M."])))),
+  completed: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyItems_templateObject68 || (dailyItems_templateObject68 = dailyItems_taggedTemplateLiteral(["FantasyRealm G. E. M."])))),
   do: () => {
     (0,external_kolmafia_.visitUrl)("place.php?whichplace=realm_fantasy&action=fr_initcenter");
     (0,external_kolmafia_.runChoice)(-1);
