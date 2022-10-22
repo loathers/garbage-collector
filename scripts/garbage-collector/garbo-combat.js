@@ -20965,8 +20965,11 @@ function averageYrValue(location) {
     return 0;
   } else {
     return (0,utils/* sum */.Sm)(monsters, m => {
-      var items = (0,external_kolmafia_.itemDropsArray)(m).filter(drop => drop.type === "");
-      return (0,utils/* sum */.Sm)(items, drop => (0,session/* garboValue */.sf)(drop.drop, true));
+      var items = (0,external_kolmafia_.itemDropsArray)(m).filter(drop => ["", "n"].includes(drop.type));
+      return (0,utils/* sum */.Sm)(items, drop => {
+        var yrRate = (drop.type === "" ? 100 : drop.rate) / 100;
+        return yrRate * (0,session/* garboValue */.sf)(drop.drop, true);
+      });
     }) / monsters.length;
   }
 }
