@@ -31583,7 +31583,7 @@ var UnlockableZones = [{
 function underwater(location) {
   return location.environment === "underwater";
 }
-var canAdventureOrUnlockSkipList = [].concat(lib_toConsumableArray((0,template_string/* $locations */.xw)(lib_templateObject11 || (lib_templateObject11 = lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome"])))), lib_toConsumableArray(external_kolmafia_.Location.all().filter(l => l.parent === "Clan Basement")));
+var canAdventureOrUnlockSkipList = [].concat(lib_toConsumableArray((0,template_string/* $locations */.xw)(lib_templateObject11 || (lib_templateObject11 = lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon"])))), lib_toConsumableArray(external_kolmafia_.Location.all().filter(l => l.parent === "Clan Basement")));
 function canAdventureOrUnlock(loc) {
   var skiplist = lib_toConsumableArray(canAdventureOrUnlockSkipList);
 
