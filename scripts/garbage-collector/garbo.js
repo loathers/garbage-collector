@@ -24252,7 +24252,7 @@ function decorate(topper, lights, garland, gifts) {
   return true;
 }
 ;// CONCATENATED MODULE: ./src/tasks/dailyFamiliars.ts
-var dailyFamiliars_templateObject, dailyFamiliars_templateObject2, dailyFamiliars_templateObject3, dailyFamiliars_templateObject4, dailyFamiliars_templateObject5, dailyFamiliars_templateObject6, dailyFamiliars_templateObject7, dailyFamiliars_templateObject8, dailyFamiliars_templateObject9, dailyFamiliars_templateObject10, dailyFamiliars_templateObject11, dailyFamiliars_templateObject12, dailyFamiliars_templateObject13, dailyFamiliars_templateObject14, dailyFamiliars_templateObject15, dailyFamiliars_templateObject16, dailyFamiliars_templateObject17, dailyFamiliars_templateObject18, dailyFamiliars_templateObject19, dailyFamiliars_templateObject20, dailyFamiliars_templateObject21, dailyFamiliars_templateObject22, dailyFamiliars_templateObject23, dailyFamiliars_templateObject24, dailyFamiliars_templateObject25, dailyFamiliars_templateObject26, dailyFamiliars_templateObject27, dailyFamiliars_templateObject28, dailyFamiliars_templateObject29, dailyFamiliars_templateObject30, dailyFamiliars_templateObject31, dailyFamiliars_templateObject32, dailyFamiliars_templateObject33, dailyFamiliars_templateObject34, dailyFamiliars_templateObject35;
+var dailyFamiliars_templateObject, dailyFamiliars_templateObject2, dailyFamiliars_templateObject3, dailyFamiliars_templateObject4, dailyFamiliars_templateObject5, dailyFamiliars_templateObject6, dailyFamiliars_templateObject7, dailyFamiliars_templateObject8, dailyFamiliars_templateObject9, dailyFamiliars_templateObject10, dailyFamiliars_templateObject11, dailyFamiliars_templateObject12, dailyFamiliars_templateObject13, dailyFamiliars_templateObject14, dailyFamiliars_templateObject15, dailyFamiliars_templateObject16, dailyFamiliars_templateObject17, dailyFamiliars_templateObject18, dailyFamiliars_templateObject19, dailyFamiliars_templateObject20, dailyFamiliars_templateObject21, dailyFamiliars_templateObject22, dailyFamiliars_templateObject23, dailyFamiliars_templateObject24, dailyFamiliars_templateObject25, dailyFamiliars_templateObject26, dailyFamiliars_templateObject27, dailyFamiliars_templateObject28, dailyFamiliars_templateObject29, dailyFamiliars_templateObject30, dailyFamiliars_templateObject31, dailyFamiliars_templateObject32, dailyFamiliars_templateObject33, dailyFamiliars_templateObject34;
 
 function dailyFamiliars_toConsumableArray(arr) { return dailyFamiliars_arrayWithoutHoles(arr) || dailyFamiliars_iterableToArray(arr) || dailyFamiliars_unsupportedIterableToArray(arr) || dailyFamiliars_nonIterableSpread(); }
 
@@ -24414,7 +24414,7 @@ var DailyFamiliarTasks = [{
 }, {
   // TODO: Consider other familiars?
   name: "Equip tiny stillsuit",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject15 || (dailyFamiliars_templateObject15 = dailyFamiliars_taggedTemplateLiteral(["tiny stillsuit"])))) && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject16 || (dailyFamiliars_templateObject16 = dailyFamiliars_taggedTemplateLiteral(["Cornbeefadon"])))),
+  ready: () => (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject15 || (dailyFamiliars_templateObject15 = dailyFamiliars_taggedTemplateLiteral(["tiny stillsuit"])))) > 0 && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject16 || (dailyFamiliars_templateObject16 = dailyFamiliars_taggedTemplateLiteral(["Cornbeefadon"])))),
   completed: () => (0,external_kolmafia_.familiarEquippedEquipment)((0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject17 || (dailyFamiliars_templateObject17 = dailyFamiliars_taggedTemplateLiteral(["Cornbeefadon"])))) === (0,template_string/* $item */.xr)(dailyFamiliars_templateObject18 || (dailyFamiliars_templateObject18 = dailyFamiliars_taggedTemplateLiteral(["tiny stillsuit"]))),
   do: () => (0,external_kolmafia_.equip)((0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject19 || (dailyFamiliars_templateObject19 = dailyFamiliars_taggedTemplateLiteral(["Cornbeefadon"]))), (0,template_string/* $item */.xr)(dailyFamiliars_templateObject20 || (dailyFamiliars_templateObject20 = dailyFamiliars_taggedTemplateLiteral(["tiny stillsuit"]))))
 }, {
@@ -24430,14 +24430,14 @@ var DailyFamiliarTasks = [{
 }, {
   name: "Decorate Crimbo Shrub",
   ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject25 || (dailyFamiliars_templateObject25 = dailyFamiliars_taggedTemplateLiteral(["box of old Crimbo decorations"])))),
-  completed: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject26 || (dailyFamiliars_templateObject26 = dailyFamiliars_taggedTemplateLiteral(["box of old Crimbo decorations"])))),
+  completed: () => (0,property/* get */.U2)("_shrubDecorated"),
   do: () => decorate((0,external_kolmafia_.myPrimestat)().toString(), "Stench Damage", (0,external_kolmafia_.hippyStoneBroken)() ? "PvP Fights" : "HP Regen", "Red Ray"),
   outfit: {
-    familiar: (0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject27 || (dailyFamiliars_templateObject27 = dailyFamiliars_taggedTemplateLiteral(["Crimbo Shrub"])))
+    familiar: (0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject26 || (dailyFamiliars_templateObject26 = dailyFamiliars_taggedTemplateLiteral(["Crimbo Shrub"])))
   }
 }, {
   name: "Mummery Meat",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject28 || (dailyFamiliars_templateObject28 = dailyFamiliars_taggedTemplateLiteral(["mumming trunk"])))),
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject27 || (dailyFamiliars_templateObject27 = dailyFamiliars_taggedTemplateLiteral(["mumming trunk"])))),
   completed: () => (0,property/* get */.U2)("_mummeryMods").includes("Meat Drop"),
   do: () => (0,external_kolmafia_.cliExecute)("mummery meat"),
   outfit: {
@@ -24445,20 +24445,20 @@ var DailyFamiliarTasks = [{
   }
 }, {
   name: "Mummery Item",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject29 || (dailyFamiliars_templateObject29 = dailyFamiliars_taggedTemplateLiteral(["mumming trunk"])))) && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject30 || (dailyFamiliars_templateObject30 = dailyFamiliars_taggedTemplateLiteral(["Trick-or-Treating Tot"])))),
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject28 || (dailyFamiliars_templateObject28 = dailyFamiliars_taggedTemplateLiteral(["mumming trunk"])))) && (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject29 || (dailyFamiliars_templateObject29 = dailyFamiliars_taggedTemplateLiteral(["Trick-or-Treating Tot"])))),
   completed: () => (0,property/* get */.U2)("_mummeryMods").includes("Item Drop"),
   do: () => (0,external_kolmafia_.cliExecute)("mummery item"),
   outfit: {
-    familiar: (0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject31 || (dailyFamiliars_templateObject31 = dailyFamiliars_taggedTemplateLiteral(["Trick-or-Treating Tot"])))
+    familiar: (0,template_string/* $familiar */.HP)(dailyFamiliars_templateObject30 || (dailyFamiliars_templateObject30 = dailyFamiliars_taggedTemplateLiteral(["Trick-or-Treating Tot"])))
   }
 }, {
   name: "Moveable feast",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject32 || (dailyFamiliars_templateObject32 = dailyFamiliars_taggedTemplateLiteral(["moveable feast"])))) || (0,property/* get */.U2)("garbo_stashClan", "none") !== "none",
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject31 || (dailyFamiliars_templateObject31 = dailyFamiliars_taggedTemplateLiteral(["moveable feast"])))) || (0,property/* get */.U2)("garbo_stashClan", "none") !== "none",
   completed: () => (0,property/* get */.U2)("_feastUsed") > 0,
   do: () => {
-    (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(dailyFamiliars_templateObject33 || (dailyFamiliars_templateObject33 = dailyFamiliars_taggedTemplateLiteral(["moveable feast"]))), () => {
-      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject34 || (dailyFamiliars_templateObject34 = dailyFamiliars_taggedTemplateLiteral(["moveable feast"]))))) {
-        [].concat(dailyFamiliars_toConsumableArray((0,template_string/* $familiars */.LG)(dailyFamiliars_templateObject35 || (dailyFamiliars_templateObject35 = dailyFamiliars_taggedTemplateLiteral(["Pocket Professor, Frumious Bandersnatch, Pair of Stomping Boots"])))), [(0,src_familiar/* meatFamiliar */.M2)()]).forEach(src_lib/* tryFeast */.j0);
+    (0,clan/* withStash */.HG)((0,template_string/* $items */.vS)(dailyFamiliars_templateObject32 || (dailyFamiliars_templateObject32 = dailyFamiliars_taggedTemplateLiteral(["moveable feast"]))), () => {
+      if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailyFamiliars_templateObject33 || (dailyFamiliars_templateObject33 = dailyFamiliars_taggedTemplateLiteral(["moveable feast"]))))) {
+        [].concat(dailyFamiliars_toConsumableArray((0,template_string/* $familiars */.LG)(dailyFamiliars_templateObject34 || (dailyFamiliars_templateObject34 = dailyFamiliars_taggedTemplateLiteral(["Pocket Professor, Frumious Bandersnatch, Pair of Stomping Boots"])))), [(0,src_familiar/* meatFamiliar */.M2)()]).forEach(src_lib/* tryFeast */.j0);
       }
     });
   }
