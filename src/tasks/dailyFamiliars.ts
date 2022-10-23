@@ -6,6 +6,7 @@ import {
   familiarEquippedEquipment,
   fileToBuffer,
   hippyStoneBroken,
+  itemAmount,
   myPrimestat,
   retrieveItem,
   retrievePrice,
@@ -167,7 +168,7 @@ export const DailyFamiliarTasks: Task[] = [
   {
     // TODO: Consider other familiars?
     name: "Equip tiny stillsuit",
-    ready: () => have($item`tiny stillsuit`) && have($familiar`Cornbeefadon`),
+    ready: () => itemAmount($item`tiny stillsuit`) > 0 && have($familiar`Cornbeefadon`),
     completed: () => familiarEquippedEquipment($familiar`Cornbeefadon`) === $item`tiny stillsuit`,
     do: () => equip($familiar`Cornbeefadon`, $item`tiny stillsuit`),
   },
@@ -183,7 +184,7 @@ export const DailyFamiliarTasks: Task[] = [
   {
     name: "Decorate Crimbo Shrub",
     ready: () => have($item`box of old Crimbo decorations`),
-    completed: () => have($item`box of old Crimbo decorations`),
+    completed: () => get("_shrubDecorated"),
     do: () =>
       CrimboShrub.decorate(
         myPrimestat().toString(),
