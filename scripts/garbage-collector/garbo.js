@@ -8416,6 +8416,7 @@ function setMayoMinder(mayo) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "lf": () => (/* binding */ have),
 /* harmony export */   "Uu": () => (/* binding */ enhance),
+/* harmony export */   "po": () => (/* binding */ enquiry),
 /* harmony export */   "vv": () => (/* binding */ educate),
 /* harmony export */   "SM": () => (/* binding */ getSkills),
 /* harmony export */   "O6": () => (/* binding */ extrude),
@@ -8428,7 +8429,7 @@ function setMayoMinder(mayo) {
 /* harmony export */   "db": () => (/* binding */ duplicateUsesRemaining),
 /* harmony export */   "Im": () => (/* binding */ enhanceUsesRemaining)
 /* harmony export */ });
-/* unused harmony exports item, Buffs, RolloverBuffs, enquiry, Skills, isCurrentSkill, Items, getChips, couldDigitize, prepareDigitize, Digitize, getDuplicateUses, getEnhanceUses, getPortscanUses, maximumDuplicateUses, maximumEnhanceUses, enhanceBuffDuration, enquiryBuffDuration */
+/* unused harmony exports item, Buffs, RolloverBuffs, Skills, isCurrentSkill, Items, getChips, couldDigitize, prepareDigitize, Digitize, getDuplicateUses, getEnhanceUses, getPortscanUses, maximumDuplicateUses, maximumEnhanceUses, enhanceBuffDuration, enquiryBuffDuration */
 /* harmony import */ var core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2231);
 /* harmony import */ var core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7530);
@@ -8520,7 +8521,7 @@ function enquiry(rolloverBuff) {
     return false;
   }
 
-  return cliExecute("terminal enquiry ".concat(rolloverBuff.name));
+  return (0,kolmafia__WEBPACK_IMPORTED_MODULE_1__.cliExecute)("terminal enquiry ".concat(rolloverBuff.name));
 }
 /**
  * Skills that can be acquired from Enhance
@@ -23333,7 +23334,7 @@ var SongBoom = __webpack_require__(2211);
 // EXTERNAL MODULE: ./src/turns.ts
 var turns = __webpack_require__(9709);
 ;// CONCATENATED MODULE: ./src/tasks/daily.ts
-var daily_templateObject, daily_templateObject2, daily_templateObject3, daily_templateObject4, daily_templateObject5, daily_templateObject6, daily_templateObject7, daily_templateObject8, daily_templateObject9, daily_templateObject10, daily_templateObject11, daily_templateObject12, daily_templateObject13, daily_templateObject14, daily_templateObject15, daily_templateObject16, daily_templateObject17, daily_templateObject18, daily_templateObject19, daily_templateObject20, daily_templateObject21, daily_templateObject22, daily_templateObject23, daily_templateObject24, daily_templateObject25, daily_templateObject26, daily_templateObject27, daily_templateObject28, daily_templateObject29, daily_templateObject30, daily_templateObject31, daily_templateObject32, daily_templateObject33, daily_templateObject34, daily_templateObject35, daily_templateObject36, daily_templateObject37, daily_templateObject38, daily_templateObject39, daily_templateObject40, daily_templateObject41, daily_templateObject42, daily_templateObject43, daily_templateObject44, daily_templateObject45, daily_templateObject46, daily_templateObject47, daily_templateObject48, daily_templateObject49, daily_templateObject50, daily_templateObject51, daily_templateObject52, daily_templateObject53, daily_templateObject54, daily_templateObject55;
+var daily_templateObject, daily_templateObject2, daily_templateObject3, daily_templateObject4, daily_templateObject5, daily_templateObject6, daily_templateObject7, daily_templateObject8, daily_templateObject9, daily_templateObject10, daily_templateObject11, daily_templateObject12, daily_templateObject13, daily_templateObject14, daily_templateObject15, daily_templateObject16, daily_templateObject17, daily_templateObject18, daily_templateObject19, daily_templateObject20, daily_templateObject21, daily_templateObject22, daily_templateObject23, daily_templateObject24, daily_templateObject25, daily_templateObject26, daily_templateObject27, daily_templateObject28, daily_templateObject29, daily_templateObject30, daily_templateObject31, daily_templateObject32, daily_templateObject33, daily_templateObject34, daily_templateObject35, daily_templateObject36, daily_templateObject37, daily_templateObject38, daily_templateObject39, daily_templateObject40, daily_templateObject41, daily_templateObject42, daily_templateObject43, daily_templateObject44, daily_templateObject45, daily_templateObject46, daily_templateObject47, daily_templateObject48, daily_templateObject49, daily_templateObject50, daily_templateObject51, daily_templateObject52, daily_templateObject53, daily_templateObject54, daily_templateObject55, daily_templateObject56;
 
 function daily_slicedToArray(arr, i) { return daily_arrayWithHoles(arr) || daily_iterableToArrayLimit(arr, i) || daily_unsupportedIterableToArray(arr, i) || daily_nonIterableRest(); }
 
@@ -23634,14 +23635,19 @@ var DailyTasks = [{
     soft: 3
   }
 }, {
+  name: "Source Terminal Enquire",
+  ready: () => SourceTerminal/* have */.lf(),
+  completed: () => (0,property/* get */.U2)("sourceTerminalEnquiry") === "familiar.enq",
+  do: () => SourceTerminal/* enquiry */.po((0,template_string/* $effect */._G)(daily_templateObject37 || (daily_templateObject37 = daily_taggedTemplateLiteral(["familiar.enq"]))))
+}, {
   name: "Mad Tea Party Buff",
   ready: () => !(0,property/* get */.U2)("_madTeaParty"),
   completed: () => (0,property/* get */.U2)("_madTeaParty"),
   do: () => (0,external_kolmafia_.cliExecute)("hatter 22"),
   acquire: [{
-    item: (0,template_string/* $item */.xr)(daily_templateObject37 || (daily_templateObject37 = daily_taggedTemplateLiteral(["filthy knitted dread sack"])))
+    item: (0,template_string/* $item */.xr)(daily_templateObject38 || (daily_templateObject38 = daily_taggedTemplateLiteral(["filthy knitted dread sack"])))
   }],
-  effects: [(0,template_string/* $effect */._G)(daily_templateObject38 || (daily_templateObject38 = daily_taggedTemplateLiteral(["Down the Rabbit Hole"])))]
+  effects: [(0,template_string/* $effect */._G)(daily_templateObject39 || (daily_templateObject39 = daily_taggedTemplateLiteral(["Down the Rabbit Hole"])))]
 }, {
   name: "SongBoom Buff",
   ready: () => SongBoom/* have */.lf() && SongBoom/* songChangesLeft */.ib() > 0 && (0,external_kolmafia_.myInebriety)() <= (0,external_kolmafia_.inebrietyLimit)(),
@@ -23654,34 +23660,34 @@ var DailyTasks = [{
   do: () => SongBoom/* setSong */.st("Food Vibrations")
 }, {
   name: "Set Mind Control Device",
-  ready: () => (0,external_kolmafia_.canadiaAvailable)() || (0,external_kolmafia_.gnomadsAvailable)() || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(daily_templateObject39 || (daily_templateObject39 = daily_taggedTemplateLiteral(["detuned radio"])))),
+  ready: () => (0,external_kolmafia_.canadiaAvailable)() || (0,external_kolmafia_.gnomadsAvailable)() || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(daily_templateObject40 || (daily_templateObject40 = daily_taggedTemplateLiteral(["detuned radio"])))),
   completed: () => (0,external_kolmafia_.currentMcd)() === ((0,external_kolmafia_.canadiaAvailable)() ? 11 : 10),
   do: () => (0,external_kolmafia_.changeMcd)((0,external_kolmafia_.canadiaAvailable)() ? 11 : 10)
 }, {
   name: "Implement [glitch season reward name]",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(daily_templateObject40 || (daily_templateObject40 = daily_taggedTemplateLiteral(["[glitch season reward name]"])))),
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(daily_templateObject41 || (daily_templateObject41 = daily_taggedTemplateLiteral(["[glitch season reward name]"])))),
   completed: () => (0,property/* get */.U2)("_glitchItemImplemented"),
-  do: () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(daily_templateObject41 || (daily_templateObject41 = daily_taggedTemplateLiteral(["[glitch season reward name]"]))))
+  do: () => (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(daily_templateObject42 || (daily_templateObject42 = daily_taggedTemplateLiteral(["[glitch season reward name]"]))))
 }, {
   name: "Use BittyCar MeatCart",
   ready: () => (0,property/* get */.U2)("_bittycar") !== "meatcar",
   completed: () => (0,property/* get */.U2)("_bittycar") === "meatcar",
-  do: () => (0,clan/* withStash */.HG)([(0,template_string/* $item */.xr)(daily_templateObject42 || (daily_templateObject42 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))], () => (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(daily_templateObject43 || (daily_templateObject43 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))))
+  do: () => (0,clan/* withStash */.HG)([(0,template_string/* $item */.xr)(daily_templateObject43 || (daily_templateObject43 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))], () => (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(daily_templateObject44 || (daily_templateObject44 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))))
 }, {
   name: "Use BittyCar SoulCar",
   ready: () => (0,property/* get */.U2)("_bittycar") !== "meatcar" && (0,property/* get */.U2)("_bittycar") !== "soulcar",
   completed: () => (0,property/* get */.U2)("_bittycar") === "soulcar",
-  do: () => (0,clan/* withStash */.HG)([(0,template_string/* $item */.xr)(daily_templateObject44 || (daily_templateObject44 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))], () => (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(daily_templateObject45 || (daily_templateObject45 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))))
+  do: () => (0,clan/* withStash */.HG)([(0,template_string/* $item */.xr)(daily_templateObject45 || (daily_templateObject45 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))], () => (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(daily_templateObject46 || (daily_templateObject46 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))))
 }, {
   name: "Holiday Eldritch Attunement",
-  ready: () => (0,external_kolmafia_.holiday)() === "Generic Summer Holiday" && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(daily_templateObject46 || (daily_templateObject46 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))) && estimatedTentacles() * (0,property/* get */.U2)("garbo_valueOfFreeFight", 2000) > (0,property/* get */.U2)("valueOfAdventure"),
-  completed: () => (0,lib/* have */.lf)((0,template_string/* $effect */._G)(daily_templateObject47 || (daily_templateObject47 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))),
-  do: () => (0,external_kolmafia_.adv1)((0,template_string/* $location */.PG)(daily_templateObject48 || (daily_templateObject48 = daily_taggedTemplateLiteral(["Generic Summer Holiday Swimming!"])))),
+  ready: () => (0,external_kolmafia_.holiday)() === "Generic Summer Holiday" && !(0,lib/* have */.lf)((0,template_string/* $effect */._G)(daily_templateObject47 || (daily_templateObject47 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))) && estimatedTentacles() * (0,property/* get */.U2)("garbo_valueOfFreeFight", 2000) > (0,property/* get */.U2)("valueOfAdventure"),
+  completed: () => (0,lib/* have */.lf)((0,template_string/* $effect */._G)(daily_templateObject48 || (daily_templateObject48 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))),
+  do: () => (0,external_kolmafia_.adv1)((0,template_string/* $location */.PG)(daily_templateObject49 || (daily_templateObject49 = daily_taggedTemplateLiteral(["Generic Summer Holiday Swimming!"])))),
   acquire: [{
-    item: (0,template_string/* $item */.xr)(daily_templateObject49 || (daily_templateObject49 = daily_taggedTemplateLiteral(["water wings"])))
+    item: (0,template_string/* $item */.xr)(daily_templateObject50 || (daily_templateObject50 = daily_taggedTemplateLiteral(["water wings"])))
   }],
   outfit: {
-    acc1: (0,template_string/* $item */.xr)(daily_templateObject50 || (daily_templateObject50 = daily_taggedTemplateLiteral(["water wings"])))
+    acc1: (0,template_string/* $item */.xr)(daily_templateObject51 || (daily_templateObject51 = daily_taggedTemplateLiteral(["water wings"])))
   }
 }, {
   name: "Check Neverending Party Quest",
@@ -23701,9 +23707,9 @@ var DailyTasks = [{
   do: () => closetItems.forEach(item => (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)(item), item))
 }, {
   name: "Closet Hobo Nickels",
-  ready: () => (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(daily_templateObject51 || (daily_templateObject51 = daily_taggedTemplateLiteral(["Hobo Monkey"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(daily_templateObject52 || (daily_templateObject52 = daily_taggedTemplateLiteral(["hobo nickel"]))), 1000),
-  completed: () => (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(daily_templateObject53 || (daily_templateObject53 = daily_taggedTemplateLiteral(["hobo nickel"])))) === 0,
-  do: () => (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(daily_templateObject54 || (daily_templateObject54 = daily_taggedTemplateLiteral(["hobo nickel"])))), (0,template_string/* $item */.xr)(daily_templateObject55 || (daily_templateObject55 = daily_taggedTemplateLiteral(["hobo nickel"]))))
+  ready: () => (0,lib/* have */.lf)((0,template_string/* $familiar */.HP)(daily_templateObject52 || (daily_templateObject52 = daily_taggedTemplateLiteral(["Hobo Monkey"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(daily_templateObject53 || (daily_templateObject53 = daily_taggedTemplateLiteral(["hobo nickel"]))), 1000),
+  completed: () => (0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(daily_templateObject54 || (daily_templateObject54 = daily_taggedTemplateLiteral(["hobo nickel"])))) === 0,
+  do: () => (0,external_kolmafia_.putCloset)((0,external_kolmafia_.itemAmount)((0,template_string/* $item */.xr)(daily_templateObject55 || (daily_templateObject55 = daily_taggedTemplateLiteral(["hobo nickel"])))), (0,template_string/* $item */.xr)(daily_templateObject56 || (daily_templateObject56 = daily_taggedTemplateLiteral(["hobo nickel"]))))
 }, {
   name: "Retrieve Items",
   ready: () => retrieveItems.some(item => (0,external_kolmafia_.itemAmount)(item) === 0),
