@@ -385,6 +385,11 @@ export const DailyTasks: Task[] = [
     do: () => SourceTerminal.enhance($effect`meat.enh`),
     limit: { soft: 3 },
   },
+  {name: "Source Terminal Enquire"
+  ready: () => SourceTerminal.have(),
+  completed: () => toSkill(get("sourceTerminalEnquiry")) === $effect`familiar.enq`,
+  do: () => SourceTerminal.enquiry($effect`familiar.enq`)
+},
   {
     name: "Mad Tea Party Buff",
     ready: () => !get("_madTeaParty"),
