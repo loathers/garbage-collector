@@ -386,6 +386,12 @@ export const DailyTasks: Task[] = [
     limit: { soft: 3 },
   },
   {
+    name: "Source Terminal Enquire",
+    ready: () => SourceTerminal.have(),
+    completed: () => get("sourceTerminalEnquiry") === "familiar.enq",
+    do: () => SourceTerminal.enquiry($effect`familiar.enq`),
+  },
+  {
     name: "Mad Tea Party Buff",
     ready: () => !get("_madTeaParty"),
     completed: () => get("_madTeaParty"),
