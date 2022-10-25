@@ -82,9 +82,10 @@ function freeFightPrep(requirements?: Requirement) {
   freeFightOutfit(requirements);
 }
 
-function logEmbezzler(encountertype: string) {
-  embezzlerLog.initialEmbezzlersFought++;
-  embezzlerLog.sources.push(encountertype === "Digitize" ? encountertype : "Unknown Source");
+function logEmbezzler(encounterType: string) {
+  const isDigitize = encounterType === "Digitize Wanderer";
+  isDigitize ? embezzlerLog.digitizedEmbezzlersFought++ : embezzlerLog.initialEmbezzlersFought++;
+  embezzlerLog.sources.push(isDigitize ? "Digitize" : "Unknown Source");
 }
 
 function shouldGoUnderwater(): boolean {
