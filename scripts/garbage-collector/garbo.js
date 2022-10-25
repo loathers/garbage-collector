@@ -28388,9 +28388,10 @@ function freeFightPrep(requirements) {
   (0,outfit/* freeFightOutfit */.p8)(requirements);
 }
 
-function logEmbezzler(encountertype) {
-  src_lib/* embezzlerLog.initialEmbezzlersFought */.G.initialEmbezzlersFought++;
-  src_lib/* embezzlerLog.sources.push */.G.sources.push(encountertype === "Digitize" ? encountertype : "Unknown Source");
+function logEmbezzler(encounterType) {
+  var isDigitize = encounterType === "Digitize Wanderer";
+  isDigitize ? src_lib/* embezzlerLog.digitizedEmbezzlersFought */.G.digitizedEmbezzlersFought++ : src_lib/* embezzlerLog.initialEmbezzlersFought */.G.initialEmbezzlersFought++;
+  src_lib/* embezzlerLog.sources.push */.G.sources.push(isDigitize ? "Digitize" : "Unknown Source");
 }
 
 function shouldGoUnderwater() {
