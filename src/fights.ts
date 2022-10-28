@@ -1284,6 +1284,7 @@ const freeFightSources = [
       have($familiar`Trick-or-Treating Tot`) &&
       !get("_firedJokestersGun") &&
       have($item`The Jokester's gun`) &&
+      canEquip($item`The Jokester's gun`) &&
       questStep("questL08Trapper") >= 2,
     () =>
       adventureMacro(
@@ -1304,6 +1305,7 @@ const freeFightSources = [
       have($familiar`Trick-or-Treating Tot`) &&
       !get("_firedJokestersGun") &&
       have($item`The Jokester's gun`) &&
+      canEquip($item`The Jokester's gun`) &&
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3,
     () => {
