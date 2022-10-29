@@ -470,7 +470,7 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
         );
         const cleaverEncountersLeft = Math.floor(estimatedTurns() / 30);
         const encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
-        const chancesLeft = cleaverEncountersLeft - encountersToQueueExit;
+        const chancesLeft = Math.max(0, cleaverEncountersLeft - encountersToQueueExit);
         const encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
         return choiceValue * encounterProbability;
       }) / JuneCleaver.queue().length;
