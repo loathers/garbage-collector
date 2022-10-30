@@ -16592,7 +16592,7 @@ function juneCleaver(equipMode) {
       var choiceValue = valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]);
       var cleaverEncountersLeft = Math.floor(estimatedTurns() / 30);
       var encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
-      var chancesLeft = cleaverEncountersLeft - encountersToQueueExit;
+      var chancesLeft = Math.max(0, cleaverEncountersLeft - encountersToQueueExit);
       var encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
       return choiceValue * encounterProbability;
     }) / JuneCleaver.queue().length;

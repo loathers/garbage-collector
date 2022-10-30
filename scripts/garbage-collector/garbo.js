@@ -19244,7 +19244,7 @@ function juneCleaver(equipMode) {
       var choiceValue = (0,src_lib/* valueJuneCleaverOption */.wc)(src_lib/* juneCleaverChoiceValues */.PQ[choice][(0,src_lib/* bestJuneCleaverOption */.cR)(choice)]);
       var cleaverEncountersLeft = Math.floor((0,src_turns/* estimatedTurns */.A)() / 30);
       var encountersToQueueExit = 1 + JuneCleaver/* queue */.c8().indexOf(choice);
-      var chancesLeft = cleaverEncountersLeft - encountersToQueueExit;
+      var chancesLeft = Math.max(0, cleaverEncountersLeft - encountersToQueueExit);
       var encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
       return choiceValue * encounterProbability;
     }) / JuneCleaver/* queue */.c8().length;
