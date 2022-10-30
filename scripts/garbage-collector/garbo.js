@@ -21447,6 +21447,8 @@ function coldMedicineCabinet() {
     (0,external_kolmafia_.visitUrl)("campground.php?action=workshed");
     (0,external_kolmafia_.runChoice)(bestChoice);
   }
+
+  if ((0,external_kolmafia_.handlingChoice)()) (0,external_kolmafia_.visitUrl)("main.php");
 }
 
 function fillPantsgivingFullness() {
