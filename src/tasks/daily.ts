@@ -9,14 +9,12 @@ import {
   getClanLounge,
   gnomadsAvailable,
   holiday,
-  inebrietyLimit,
   Item,
   itemAmount,
   mallPrice,
   myClass,
   myDaycount,
   myHash,
-  myInebriety,
   myPath,
   myPrimestat,
   print,
@@ -395,15 +393,7 @@ export const DailyTasks: Task[] = [
   },
   {
     name: "SongBoom Buff",
-    ready: () =>
-      SongBoom.have() && SongBoom.songChangesLeft() > 0 && myInebriety() <= inebrietyLimit(),
-    completed: () => SongBoom.song() === "Total Eclipse of Your Meat",
-    do: () => SongBoom.setSong("Total Eclipse of Your Meat"),
-  },
-  {
-    name: "SongBoom Buff (Drunk)",
-    ready: () =>
-      SongBoom.have() && SongBoom.songChangesLeft() > 0 && myInebriety() > inebrietyLimit(),
+    ready: () => SongBoom.have() && SongBoom.songChangesLeft() > 0,
     completed: () => SongBoom.song() === "Food Vibrations",
     do: () => SongBoom.setSong("Food Vibrations"),
   },

@@ -62,7 +62,7 @@ export function underwater(location: Location): boolean {
   return location.environment === "underwater";
 }
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome`,
+  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, The Overgrown Lot, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome`,
   ...Location.all().filter((l) => l.parent === "Clan Basement"),
 ];
 export function canAdventureOrUnlock(loc: Location): boolean {
