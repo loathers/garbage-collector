@@ -3,6 +3,7 @@ import {
   descToItem,
   equip,
   getWorkshed,
+  handlingChoice,
   Item,
   itemAmount,
   myAdventures,
@@ -79,6 +80,7 @@ function coldMedicineCabinet(): void {
     visitUrl("campground.php?action=workshed");
     runChoice(bestChoice);
   }
+  if (handlingChoice()) visitUrl("main.php");
 }
 
 function fillPantsgivingFullness(): void {
