@@ -431,15 +431,6 @@ export const copySources = [
 
 export const wanderSources = [
   new WitchessFight(
-    "Lucky!",
-    () => canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`),
-    () => (canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`) ? 1 : 0),
-    (options: WitchessFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
-      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
-    }
-  ),
-  new WitchessFight(
     "Digitize",
     () =>
       get("_sourceTerminalDigitizeMonster") === copyTarget && Counter.get("Digitize Monster") <= 0,
