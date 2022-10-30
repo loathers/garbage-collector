@@ -197,7 +197,7 @@ function copyTargetSetup() {
   setLocation($location`none`);
   potionSetup(false);
   maximize("MP", false);
-  meatMood(true, 750 + baseMeat).execute(copyTargetCount());
+  meatMood(true, 0).execute(copyTargetCount());
   safeRestore();
   freeFightMood().execute(50);
   withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
