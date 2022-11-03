@@ -70,6 +70,15 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: () =>
       have($item`li'l pirate costume`) ? (baseMeat * (300 - bestAlternative)) / 100 : 0,
   },
+  {
+    familiar: $familiar`Cookbookbat`,
+    value: () =>
+      (3 *
+        garboAverageValue(
+          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`
+        )) /
+      11,
+  },
 ];
 
 export default function getConstantValueFamiliars(): GeneralFamiliar[] {
