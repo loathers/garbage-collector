@@ -28760,7 +28760,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(26829);
+  sinceKolmafiaRevision(26891);
   (0,src_lib/* checkGithubVersion */.ki)();
 
   if ((0,property/* get */.U2)("garbo_autoUserConfirm", false)) {
