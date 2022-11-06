@@ -571,10 +571,6 @@ export function potionMenu(
         })
       : [];
 
-  const borisBread = !get("unknownRecipe11000") // this property is true if you don't know the recipe, false if you do
-    ? potion($item`Boris's bread`, { price: ingredientCost($item`Boris's bread`) })
-    : [];
-
   return [
     ...baseMenu,
     ...copiers(),
@@ -590,7 +586,6 @@ export function potionMenu(
     ...potion($item`haunted Hell ramen`),
     ...campfireHotdog,
     ...foodCone,
-    ...borisBread,
 
     // BOOZE POTIONS
     ...potion($item`dirt julep`),
