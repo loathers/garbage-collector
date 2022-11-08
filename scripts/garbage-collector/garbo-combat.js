@@ -15469,7 +15469,7 @@ function potionMenu(baseMenu, embezzlers, turns) {
   var foodCone = realmAvailable("stench") || globalOptions.simulateDiet && !globalOptions.noBarf ? limitedPotion($item(_templateObject108 || (_templateObject108 = _taggedTemplateLiteral(["Dinsey food-cone"]))), Math.floor(availableAmount($item(_templateObject109 || (_templateObject109 = _taggedTemplateLiteral(["FunFunds\u2122"])))) / 2), {
     price: 2 * garboValue($item(_templateObject110 || (_templateObject110 = _taggedTemplateLiteral(["FunFunds\u2122"]))))
   }) : [];
-  var borisBread = !get("unknownRecipe11000") // this property is true if you don't know the recipe, false if you do
+  var borisBread = !get("unknownRecipe11000", true) // this property is true if you don't know the recipe, false if you do
   ? potion($item(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral(["Boris's bread"]))), {
     price: 2 * ingredientCost($item(_templateObject112 || (_templateObject112 = _taggedTemplateLiteral(["Yeast of Boris"]))))
   }) : [];

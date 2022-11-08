@@ -18114,7 +18114,7 @@ function potionMenu(baseMenu, embezzlers, turns) {
   var foodCone = (0,_lib__WEBPACK_IMPORTED_MODULE_5__/* .realmAvailable */ .e6)("stench") || _lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.simulateDiet */ .Xe.simulateDiet && !_lib__WEBPACK_IMPORTED_MODULE_5__/* .globalOptions.noBarf */ .Xe.noBarf ? limitedPotion((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject108 || (_templateObject108 = _taggedTemplateLiteral(["Dinsey food-cone"]))), Math.floor((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.availableAmount)((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject109 || (_templateObject109 = _taggedTemplateLiteral(["FunFunds\u2122"])))) / 2), {
     price: 2 * (0,_session__WEBPACK_IMPORTED_MODULE_8__/* .garboValue */ .sf)((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject110 || (_templateObject110 = _taggedTemplateLiteral(["FunFunds\u2122"]))))
   }) : [];
-  var borisBread = !(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .get */ .U2)("unknownRecipe11000") // this property is true if you don't know the recipe, false if you do
+  var borisBread = !(0,libram__WEBPACK_IMPORTED_MODULE_11__/* .get */ .U2)("unknownRecipe11000", true) // this property is true if you don't know the recipe, false if you do
   ? potion((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral(["Boris's bread"]))), {
     price: 2 * ingredientCost((0,libram__WEBPACK_IMPORTED_MODULE_14__/* .$item */ .xr)(_templateObject112 || (_templateObject112 = _taggedTemplateLiteral(["Yeast of Boris"]))))
   }) : [];
