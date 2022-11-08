@@ -715,7 +715,8 @@ export function computeDiet(): {
           menu().filter(
             (menuItem) =>
               (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
-              [Mayo.flex, Mayo.zapine].includes(menuItem.item)
+              [Mayo.flex, Mayo.zapine].includes(menuItem.item) ||
+              menuItem.item === $item`Special Seasoning`
           ),
           pantsgivingDietPlanner
         )
