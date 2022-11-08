@@ -966,7 +966,7 @@ const freeFightSources = [
       cost: () =>
         sumNumbers(
           $items`divine champagne popper, Louder Than Bomb, tennis ball`.map((i) => garboValue(i))
-        ),
+        ) / 11,
     }
   ),
 
