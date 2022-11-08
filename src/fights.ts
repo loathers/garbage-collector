@@ -98,6 +98,7 @@ import {
   set,
   SourceTerminal,
   sum,
+  sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
   uneffect,
@@ -961,7 +962,12 @@ const freeFightSources = [
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {}
+    {
+      cost: () =>
+        sumNumbers(
+          $items`divine champagne popper, Louder Than Bomb, tennis ball`.map((i) => garboValue(i))
+        ),
+    }
   ),
 
   // 10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
