@@ -35,6 +35,7 @@ import {
   myPathId,
   myPrimestat,
   myThrall,
+  npcPrice,
   numericModifier,
   outfit,
   print,
@@ -963,10 +964,12 @@ const freeFightSources = [
     },
     true,
     {
-      cost: () =>
-        sumNumbers(
-          $items`divine champagne popper, Louder Than Bomb, tennis ball`.map((i) => garboValue(i))
-        ) / 11,
+      cost: () => {
+        const banishers = $items`divine champagne popper, Louder Than Bomb, tennis ball`;
+        return (
+          npcPrice($item`Bowl of Scorpions`) + sumNumbers(banishers.map((b) => mallPrice(b))) / 11
+        );
+      },
     }
   ),
 
