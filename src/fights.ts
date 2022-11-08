@@ -642,7 +642,7 @@ const pygmyBanishHandlers = [
     pygmy: $monster`pygmy janitor`,
     skill: undefined,
     check: undefined,
-    limit: undefined,
+    limit: 0,
     item: $item`tennis ball`,
   },
 ] as const;
