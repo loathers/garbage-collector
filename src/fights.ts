@@ -42,6 +42,7 @@ import {
   refreshStash,
   restoreHp,
   retrieveItem,
+  retrievePrice,
   runChoice,
   runCombat,
   setAutoAttack,
@@ -622,15 +623,35 @@ class FreeRunFight extends FreeFight {
   }
 }
 
-const pygmyMacro = Macro.if_(
-  $monster`pygmy bowler`,
-  Macro.trySkill($skill`Snokebomb`).item($item`Louder Than Bomb`)
-)
-  .if_(
-    $monster`pygmy orderlies`,
-    Macro.trySkill($skill`Feel Hatred`).item($item`divine champagne popper`)
+const pygmyBanishHandlers = [
+  {
+    pygmy: $monster`pygmy bowler`,
+    skill: $skill`Snokebomb`,
+    check: "_snokebombUsed",
+    limit: 3,
+    item: $item`Louder Than Bomb`,
+  },
+  {
+    pygmy: $monster`pygmy orderlies`,
+    skill: $skill`Feel Hatred`,
+    check: "_feelHatredUsed",
+    limit: 3,
+    item: $item`divine champagne popper`,
+  },
+  {
+    pygmy: $monster`pygmy janitor`,
+    skill: undefined,
+    check: undefined,
+    limit: 0,
+    item: $item`tennis ball`,
+  },
+] as const;
+
+const pygmyMacro = Macro.step(
+  ...pygmyBanishHandlers.map(({ pygmy, skill, item }) =>
+    Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item))
   )
-  .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
+)
   .if_($monsters`giant rubber spider, time-spinner prank`, Macro.basicCombat())
   .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`))
   .ifHolidayWanderer(Macro.basicCombat())
@@ -961,7 +982,14 @@ const freeFightSources = [
       adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {}
+    {
+      cost: () => {
+        const banishers = pygmyBanishHandlers
+          .filter(({ check, limit }) => check && get(check) >= limit)
+          .map(({ item }) => item);
+        return retrievePrice($item`Bowl of Scorpions`) + sum(banishers, mallPrice) / 11;
+      },
+    }
   ),
 
   // 10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
