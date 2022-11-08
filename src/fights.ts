@@ -99,7 +99,6 @@ import {
   set,
   SourceTerminal,
   sum,
-  sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
   uneffect,
@@ -966,9 +965,7 @@ const freeFightSources = [
     {
       cost: () => {
         const banishers = $items`divine champagne popper, Louder Than Bomb, tennis ball`;
-        return (
-          npcPrice($item`Bowl of Scorpions`) + sumNumbers(banishers.map((b) => mallPrice(b))) / 11
-        );
+        return npcPrice($item`Bowl of Scorpions`) + sum(banishers, mallPrice) / 11;
       },
     }
   ),
