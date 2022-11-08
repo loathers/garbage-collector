@@ -35,7 +35,6 @@ import {
   myPathId,
   myPrimestat,
   myThrall,
-  npcPrice,
   numericModifier,
   outfit,
   print,
@@ -43,6 +42,7 @@ import {
   refreshStash,
   restoreHp,
   retrieveItem,
+  retrievePrice,
   runChoice,
   runCombat,
   setAutoAttack,
@@ -965,7 +965,7 @@ const freeFightSources = [
     {
       cost: () => {
         const banishers = $items`divine champagne popper, Louder Than Bomb, tennis ball`;
-        return npcPrice($item`Bowl of Scorpions`) + sum(banishers, mallPrice) / 11;
+        return retrievePrice($item`Bowl of Scorpions`) + sum(banishers, mallPrice) / 11;
       },
     }
   ),
