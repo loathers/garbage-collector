@@ -28978,6 +28978,7 @@ function main() {
       afterAdventureScript: "",
       betweenBattleScript: "",
       choiceAdventureScript: "",
+      counterScript: "",
       familiarScript: "",
       customCombatScript: "garbo",
       currentMood: "apathetic",
