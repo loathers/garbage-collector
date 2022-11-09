@@ -319,6 +319,7 @@ export function main(argString = ""): void {
       afterAdventureScript: "",
       betweenBattleScript: "",
       choiceAdventureScript: "",
+      counterScript: "",
       familiarScript: "",
       customCombatScript: "garbo",
       currentMood: "apathetic",
