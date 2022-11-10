@@ -985,7 +985,9 @@ const freeFightSources = [
     {
       cost: () => {
         const banishers = pygmyBanishHandlers
-          .filter(({ check, limit }) => check && get(check) >= limit)
+          .filter(
+            ({ skill, check, limit }) => !skill || !have(skill) || (check && get(check) >= limit)
+          )
           .map(({ item }) => item);
         return retrievePrice($item`Bowl of Scorpions`) + sum(banishers, mallPrice) / 11;
       },
