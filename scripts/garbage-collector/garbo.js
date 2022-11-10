@@ -22275,9 +22275,10 @@ new FreeFight(() => (0,property/* get */.U2)("questL11Worship") !== "unstarted" 
 }, true, {
   cost: () => {
     var banishers = pygmyBanishHandlers.filter(_ref4 => {
-      var check = _ref4.check,
+      var skill = _ref4.skill,
+          check = _ref4.check,
           limit = _ref4.limit;
-      return check && (0,property/* get */.U2)(check) >= limit;
+      return !skill || !(0,lib/* have */.lf)(skill) || check && (0,property/* get */.U2)(check) >= limit;
     }).map(_ref5 => {
       var item = _ref5.item;
       return item;
