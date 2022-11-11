@@ -56,6 +56,7 @@ import {
   propertyManager,
   questStep,
   safeRestore,
+  useBuffExtenders,
   userConfirmDialog,
 } from "./lib";
 import { meatMood } from "./mood";
@@ -446,6 +447,7 @@ export function main(argString = ""): void {
           potionSetup(false);
           maximize("MP", false);
           meatMood().execute(estimatedTurns());
+          useBuffExtenders();
           try {
             while (canContinue()) {
               barfTurn();

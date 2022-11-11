@@ -136,6 +136,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  useBuffExtenders,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood } from "./mood";
@@ -205,15 +206,7 @@ function embezzlerSetup() {
   meatMood(true, 750 + baseMeat).execute(embezzlerCount());
   safeRestore();
   freeFightMood().execute(50);
-  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
-    if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
-      burnLibrams();
-      use($item`Platinum Yendorian Express Card`);
-    }
-    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
-      use($item`Bag o' Tricks`);
-    }
-  });
+  useBuffExtenders;
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
     burnLibrams();
     use($item`License to Chill`);
