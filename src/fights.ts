@@ -206,7 +206,7 @@ function embezzlerSetup() {
   meatMood(true, 750 + baseMeat).execute(embezzlerCount());
   safeRestore();
   freeFightMood().execute(50);
-  useBuffExtenders;
+  useBuffExtenders();
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
     burnLibrams();
     use($item`License to Chill`);
