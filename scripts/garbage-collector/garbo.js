@@ -23618,6 +23618,11 @@ var DailyTasks = [{
   completed: () => (0,property/* get */.U2)("_bastilleGames") !== 0,
   do: () => (0,external_kolmafia_.cliExecute)("bastille myst brutalist gesture")
 }, {
+  name: "11th Precinct",
+  ready: () => (0,property/* get */.U2)("hasDetectiveSchool"),
+  completed: () => (0,property/* get */.U2)("_detectiveCasesCompleted") >= 3,
+  do: () => (0,external_kolmafia_.cliExecute)("Detective Solver.ash")
+}, {
   name: "Getaway Campsite Buffs",
   ready: () => (0,property/* get */.U2)("getawayCampsiteUnlocked"),
   completed: () => (0,property/* get */.U2)("_campAwayCloudBuffs") + (0,property/* get */.U2)("_campAwaySmileBuffs") === 4,
