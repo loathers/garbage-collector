@@ -133,6 +133,10 @@ class YachtzeeDietUtils {
         ensureConsumable("jumping horseradish", n, 1, 0, 0);
         eat(n, $item`jumping horseradish`);
       }),
+      new YachtzeeDietEntry("Boris's bread", 0, 1, 0, 0, (n: number) => {
+        ensureConsumable("Boris's bread", n, 1, 0, 0);
+        eat(n, $item`Boris's bread`);
+      }),
       new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => {
         use($item`Clara's bell`);
         globalOptions.clarasBellClaimed = true;
@@ -602,6 +606,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     myFullness() + 1 + slidersToEat * 5 + toastsToEat <= fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
+  const borisBreads =
+    !get("unknownRecipe11000", true) &&
+    haveEffect($effect`Inspired Chef`) < yachtzeeTurns &&
+    myFullness() + 1 + slidersToEat * 5 + toastsToEat + horseradishes <=
+      fullnessLimit() + toInt(haveDistentionPill)
+      ? 1
+      : 0;
 
   const earlyMeatDropsEstimate =
     numericModifier("Meat Drop") +
@@ -625,7 +636,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const higherBaseMeatProfits =
     yachtzeePotionSetup(yachtzeeTurns, true) +
     cologneToChew * ((yachtzeeTurns + 60 + 5 * toInt(havePYECCharge)) * 1000 - colognePrice) +
-    (horseradishes > 0 ? yachtzeeTurns * 1000 : 0);
+    (horseradishes > 0 ? yachtzeeTurns * 1000 : 0) +
+    (borisBreads > 0 ? yachtzeeTurns * 1000 : 0);
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
   // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
@@ -678,6 +690,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     ["mojo filter", filters],
     ["beggin' cologne", cologneToChew],
     ["jumping horseradish", horseradishes],
+    ["Boris's bread", borisBreads],
   ];
 
   const specialEntries: [string, number, (n: number, name?: string) => void][] = (
@@ -742,6 +755,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   acquire(cologneToChew, $item`beggin' cologne`, 2 * colognePrice);
   acquire(filters, $item`mojo filter`, 2 * mallPrice($item`mojo filter`));
   acquire(horseradishes, $item`jumping horseradish`, 60000);
+  acquire(borisBreads, $item`Boris's bread`, 60000);
 
   // Get fishy turns
   print("Getting fishy turns", "purple");
