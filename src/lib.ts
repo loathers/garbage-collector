@@ -48,7 +48,6 @@ import {
   $effect,
   $familiar,
   $item,
-  $items,
   $location,
   $monster,
   $skill,
@@ -73,7 +72,6 @@ import {
   uneffect,
 } from "libram";
 import { garboValue } from "./session";
-import { withStash } from "./clan";
 
 export const embezzlerLog: {
   initialEmbezzlersFought: number;
@@ -354,21 +352,6 @@ export function burnLibrams(mpTarget = 0): void {
   } else {
     cliExecute("burn *");
   }
-}
-
-/**
- * Use buff extenders like PYEC and Bag o Tricks
- */
-export function useBuffExtenders(): void {
-  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
-    if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
-      burnLibrams();
-      use($item`Platinum Yendorian Express Card`);
-    }
-    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
-      use($item`Bag o' Tricks`);
-    }
-  });
 }
 
 export function safeRestoreMpTarget(): number {
