@@ -58,7 +58,7 @@ import {
   safeRestore,
   userConfirmDialog,
 } from "./lib";
-import { meatMood } from "./mood";
+import { meatMood, useBuffExtenders } from "./mood";
 import postCombatActions from "./post";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
@@ -446,6 +446,7 @@ export function main(argString = ""): void {
           potionSetup(false);
           maximize("MP", false);
           meatMood().execute(estimatedTurns());
+          useBuffExtenders();
           try {
             while (canContinue()) {
               barfTurn();

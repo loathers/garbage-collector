@@ -27,7 +27,7 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
+import { baseMeat, burnLibrams, questStep, safeRestoreMpTarget, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
@@ -201,6 +201,25 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
   return mood;
+}
+
+/**
+ * Use buff extenders like PYEC and Bag o Tricks
+ */
+export function useBuffExtenders(): void {
+  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
+    if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
+      burnLibrams();
+      use($item`Platinum Yendorian Express Card`);
+    }
+    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
+      use($item`Bag o' Tricks`);
+    }
+  });
+  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    burnLibrams();
+    use($item`License to Chill`);
+  }
 }
 
 const stings = [
