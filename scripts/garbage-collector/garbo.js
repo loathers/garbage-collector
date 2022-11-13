@@ -29477,8 +29477,8 @@ function safeRestore() {
     }
   }
 
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myHp)() < (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myMaxhp)() * 0.5) {
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.restoreHp)((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myMaxhp)() * 0.9);
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myHp)() < Math.min((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myMaxhp)() * 0.5, (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("garbo_restoreHpTarget", 2000))) {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.restoreHp)(Math.min((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myMaxhp)() * 0.9, (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("garbo_restoreHpTarget", 2000)));
   }
 
   var mpTarget = safeRestoreMpTarget();
