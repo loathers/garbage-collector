@@ -330,6 +330,12 @@ export const DailyTasks: Task[] = [
     do: () => cliExecute("bastille myst brutalist gesture"),
   },
   {
+    name: "11th Precinct",
+    ready: () => get("hasDetectiveSchool"),
+    completed: () => get("_detectiveCasesCompleted") >= 3,
+    do: () => cliExecute("Detective Solver.ash"),
+  },
+  {
     name: "Getaway Campsite Buffs",
     ready: () => get("getawayCampsiteUnlocked"),
     completed: () => get("_campAwayCloudBuffs") + get("_campAwaySmileBuffs") === 4,
