@@ -206,10 +206,6 @@ function embezzlerSetup() {
   safeRestore();
   freeFightMood().execute(50);
   useBuffExtenders();
-  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
-    burnLibrams();
-    use($item`License to Chill`);
-  }
   burnLibrams(400);
   if (
     globalOptions.ascending &&
