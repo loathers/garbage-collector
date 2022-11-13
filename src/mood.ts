@@ -216,6 +216,10 @@ export function useBuffExtenders(): void {
       use($item`Bag o' Tricks`);
     }
   });
+  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    burnLibrams();
+    use($item`License to Chill`);
+  }
 }
 
 const stings = [
