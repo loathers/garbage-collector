@@ -50,5 +50,10 @@
     "name": "garbo_IgnoreMarginalFamiliars",
     "type": "boolean",
     "description": "Should garbo use only your meat familiar throughout your barf-turns, or should it also use drops familiars to maximize profit?"
+  },
+  {
+    "name": "garbo_restoreHpTarget",
+    "defaultValue": 2000,
+    "description": "If you're a very high level, what HP threshold should garbo aim to maintain?"
   }
 ]
