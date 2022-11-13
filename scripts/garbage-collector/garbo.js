@@ -27211,7 +27211,7 @@ function optimizeForFishy(yachtzeeTurns, setup) {
   return bestFishySource.cost;
 }
 ;// CONCATENATED MODULE: ./src/yachtzee/diet.ts
-var diet_templateObject, diet_templateObject2, diet_templateObject3, diet_templateObject4, diet_templateObject5, diet_templateObject6, diet_templateObject7, diet_templateObject8, diet_templateObject9, diet_templateObject10, diet_templateObject11, diet_templateObject12, diet_templateObject13, diet_templateObject14, diet_templateObject15, diet_templateObject16, diet_templateObject17, diet_templateObject18, diet_templateObject19, diet_templateObject20, diet_templateObject21, diet_templateObject22, diet_templateObject23, diet_templateObject24, diet_templateObject25, diet_templateObject26, diet_templateObject27, diet_templateObject28, diet_templateObject29, diet_templateObject30, diet_templateObject31, diet_templateObject32, diet_templateObject33, diet_templateObject34, diet_templateObject35, diet_templateObject36, diet_templateObject37, diet_templateObject38, diet_templateObject39, diet_templateObject40, diet_templateObject41, diet_templateObject42, diet_templateObject43, diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71;
+var diet_templateObject, diet_templateObject2, diet_templateObject3, diet_templateObject4, diet_templateObject5, diet_templateObject6, diet_templateObject7, diet_templateObject8, diet_templateObject9, diet_templateObject10, diet_templateObject11, diet_templateObject12, diet_templateObject13, diet_templateObject14, diet_templateObject15, diet_templateObject16, diet_templateObject17, diet_templateObject18, diet_templateObject19, diet_templateObject20, diet_templateObject21, diet_templateObject22, diet_templateObject23, diet_templateObject24, diet_templateObject25, diet_templateObject26, diet_templateObject27, diet_templateObject28, diet_templateObject29, diet_templateObject30, diet_templateObject31, diet_templateObject32, diet_templateObject33, diet_templateObject34, diet_templateObject35, diet_templateObject36, diet_templateObject37, diet_templateObject38, diet_templateObject39, diet_templateObject40, diet_templateObject41, diet_templateObject42, diet_templateObject43, diet_templateObject44, diet_templateObject45, diet_templateObject46, diet_templateObject47, diet_templateObject48, diet_templateObject49, diet_templateObject50, diet_templateObject51, diet_templateObject52, diet_templateObject53, diet_templateObject54, diet_templateObject55, diet_templateObject56, diet_templateObject57, diet_templateObject58, diet_templateObject59, diet_templateObject60, diet_templateObject61, diet_templateObject62, diet_templateObject63, diet_templateObject64, diet_templateObject65, diet_templateObject66, diet_templateObject67, diet_templateObject68, diet_templateObject69, diet_templateObject70, diet_templateObject71, diet_templateObject72, diet_templateObject73, diet_templateObject74;
 
 function diet_toConsumableArray(arr) { return diet_arrayWithoutHoles(arr) || diet_iterableToArray(arr) || diet_unsupportedIterableToArray(arr) || diet_nonIterableSpread(); }
 
@@ -27337,8 +27337,11 @@ var YachtzeeDietUtils = /*#__PURE__*/function () {
     }), new YachtzeeDietEntry("jumping horseradish", 0, 1, 0, 0, n => {
       ensureConsumable("jumping horseradish", n, 1, 0, 0);
       (0,external_kolmafia_.eat)(n, (0,template_string/* $item */.xr)(diet_templateObject13 || (diet_templateObject13 = diet_taggedTemplateLiteral(["jumping horseradish"]))));
+    }), new YachtzeeDietEntry("Boris's bread", 0, 1, 0, 0, n => {
+      ensureConsumable("Boris's bread", n, 1, 0, 0);
+      (0,external_kolmafia_.eat)(n, (0,template_string/* $item */.xr)(diet_templateObject14 || (diet_templateObject14 = diet_taggedTemplateLiteral(["Boris's bread"]))));
     }), new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => {
-      (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(diet_templateObject14 || (diet_templateObject14 = diet_taggedTemplateLiteral(["Clara's bell"]))));
+      (0,external_kolmafia_.use)((0,template_string/* $item */.xr)(diet_templateObject15 || (diet_templateObject15 = diet_taggedTemplateLiteral(["Clara's bell"]))));
       src_lib/* globalOptions.clarasBellClaimed */.Xe.clarasBellClaimed = true;
     }), new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, useSpikolodonSpikes)];
     if (action) this.dietArray.forEach(entry => entry.action = action);
@@ -27394,16 +27397,16 @@ function combineDietEntries(left, right) {
 }
 
 function castOde(turns) {
-  if (!(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject15 || (diet_templateObject15 = diet_taggedTemplateLiteral(["The Ode to Booze"]))))) return false;
+  if (!(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject16 || (diet_templateObject16 = diet_taggedTemplateLiteral(["The Ode to Booze"]))))) return false;
   shrugIrrelevantSongs(); // If we have the polka of plenty skill, we can re-buff up later
   // Else, get rid of chorale which is the most inefficient song
 
-  if (lib/* getActiveSongs.length */.b_.length === ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject16 || (diet_templateObject16 = diet_taggedTemplateLiteral(["Mariachi Memory"])))) ? 4 : 3)) {
-    if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject17 || (diet_templateObject17 = diet_taggedTemplateLiteral(["The Polka of Plenty"]))))) (0,external_kolmafia_.cliExecute)("shrug ".concat((0,template_string/* $effect */._G)(diet_templateObject18 || (diet_templateObject18 = diet_taggedTemplateLiteral(["Polka of Plenty"])))));else (0,external_kolmafia_.cliExecute)("shrug ".concat((0,template_string/* $effect */._G)(diet_templateObject19 || (diet_templateObject19 = diet_taggedTemplateLiteral(["Chorale of Companionship"])))));
+  if (lib/* getActiveSongs.length */.b_.length === ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject17 || (diet_templateObject17 = diet_taggedTemplateLiteral(["Mariachi Memory"])))) ? 4 : 3)) {
+    if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject18 || (diet_templateObject18 = diet_taggedTemplateLiteral(["The Polka of Plenty"]))))) (0,external_kolmafia_.cliExecute)("shrug ".concat((0,template_string/* $effect */._G)(diet_templateObject19 || (diet_templateObject19 = diet_taggedTemplateLiteral(["Polka of Plenty"])))));else (0,external_kolmafia_.cliExecute)("shrug ".concat((0,template_string/* $effect */._G)(diet_templateObject20 || (diet_templateObject20 = diet_taggedTemplateLiteral(["Chorale of Companionship"])))));
   }
 
-  while ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject20 || (diet_templateObject20 = diet_taggedTemplateLiteral(["Ode to Booze"])))) < turns) {
-    (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(diet_templateObject21 || (diet_templateObject21 = diet_taggedTemplateLiteral(["The Ode to Booze"]))));
+  while ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject21 || (diet_templateObject21 = diet_taggedTemplateLiteral(["Ode to Booze"])))) < turns) {
+    (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(diet_templateObject22 || (diet_templateObject22 = diet_taggedTemplateLiteral(["The Ode to Booze"]))));
   }
 
   return true;
@@ -27431,12 +27434,12 @@ function executeNextDietStep(stopBeforeJellies) {
           if (entry) {
             if (entry.fullness > 0) {
               if (!(0,property/* get */.U2)("_milkOfMagnesiumUsed")) {
-                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(diet_templateObject22 || (diet_templateObject22 = diet_taggedTemplateLiteral(["milk of magnesium"]))), 5 * VOA);
-                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject23 || (diet_templateObject23 = diet_taggedTemplateLiteral(["milk of magnesium"]))));
+                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(diet_templateObject23 || (diet_templateObject23 = diet_taggedTemplateLiteral(["milk of magnesium"]))), 5 * VOA);
+                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject24 || (diet_templateObject24 = diet_taggedTemplateLiteral(["milk of magnesium"]))));
               }
 
-              if (!(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject24 || (diet_templateObject24 = diet_taggedTemplateLiteral(["distention pill"]))))) {
-                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject25 || (diet_templateObject25 = diet_taggedTemplateLiteral(["distention pill"]))));
+              if (!(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject25 || (diet_templateObject25 = diet_taggedTemplateLiteral(["distention pill"]))))) {
+                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject26 || (diet_templateObject26 = diet_taggedTemplateLiteral(["distention pill"]))));
               }
             }
 
@@ -27453,11 +27456,11 @@ function executeNextDietStep(stopBeforeJellies) {
           if (entry.name === name) {
             if (entry.drunkenness > 0) {
               while ((0,property/* get */.U2)("sweat") >= 25 && (0,property/* get */.U2)("_sweatOutSomeBoozeUsed") < 3 && (0,external_kolmafia_.myInebriety)() > 0) {
-                (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(diet_templateObject26 || (diet_templateObject26 = diet_taggedTemplateLiteral(["Sweat Out Some Booze"]))));
+                (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(diet_templateObject27 || (diet_templateObject27 = diet_taggedTemplateLiteral(["Sweat Out Some Booze"]))));
               }
 
-              if (!(0,property/* get */.U2)("_syntheticDogHairPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject27 || (diet_templateObject27 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))))) {
-                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject28 || (diet_templateObject28 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))));
+              if (!(0,property/* get */.U2)("_syntheticDogHairPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject28 || (diet_templateObject28 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))))) {
+                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject29 || (diet_templateObject29 = diet_taggedTemplateLiteral(["synthetic dog hair pill"]))));
               }
             }
 
@@ -27471,12 +27474,12 @@ function executeNextDietStep(stopBeforeJellies) {
 
             if (entry.fullness > 0) {
               if (!(0,property/* get */.U2)("_milkOfMagnesiumUsed")) {
-                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(diet_templateObject29 || (diet_templateObject29 = diet_taggedTemplateLiteral(["milk of magnesium"]))), 5 * VOA);
-                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject30 || (diet_templateObject30 = diet_taggedTemplateLiteral(["milk of magnesium"]))));
+                (0,acquire/* acquire */.u)(1, (0,template_string/* $item */.xr)(diet_templateObject30 || (diet_templateObject30 = diet_taggedTemplateLiteral(["milk of magnesium"]))), 5 * VOA);
+                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject31 || (diet_templateObject31 = diet_taggedTemplateLiteral(["milk of magnesium"]))));
               }
 
-              if (!(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject31 || (diet_templateObject31 = diet_taggedTemplateLiteral(["distention pill"]))))) {
-                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject32 || (diet_templateObject32 = diet_taggedTemplateLiteral(["distention pill"]))));
+              if (!(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject32 || (diet_templateObject32 = diet_taggedTemplateLiteral(["distention pill"]))))) {
+                (0,external_kolmafia_.use)(1, (0,template_string/* $item */.xr)(diet_templateObject33 || (diet_templateObject33 = diet_taggedTemplateLiteral(["distention pill"]))));
               }
             }
 
@@ -27510,7 +27513,7 @@ function yachtzeeDietScheduler(menu) {
   var dietSchedule = new Array();
   var remainingMenu = new Array();
   var jellies = new Array();
-  var haveDistentionPill = !(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject33 || (diet_templateObject33 = diet_taggedTemplateLiteral(["distention pill"]))));
+  var haveDistentionPill = !(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject34 || (diet_templateObject34 = diet_taggedTemplateLiteral(["distention pill"]))));
   var toasts = new Array();
   var freeNCs = new Array(); // We assume the menu was constructed such that we will not overshoot our fullness and inebriety limits
   // Assume all fullness/drunkenness > 0 non-spleen cleansers are inserted for buffs
@@ -27739,7 +27742,7 @@ function yachtzeeDietScheduler(menu) {
   var drunkenness = (0,external_kolmafia_.myInebriety)();
   var spleenUse = (0,external_kolmafia_.mySpleenUse)();
   var sweatOutsAvailable = (0,utils/* clamp */.uZ)(Math.floor((0,property/* get */.U2)("sweat") / 25), 0, 3 - (0,property/* get */.U2)("_sweatOutSomeBoozeUsed"));
-  var syntheticPillsAvailable = !(0,property/* get */.U2)("_syntheticDogHairPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject34 || (diet_templateObject34 = diet_taggedTemplateLiteral(["synthetic dog hair pill"])))) ? 1 : 0;
+  var syntheticPillsAvailable = !(0,property/* get */.U2)("_syntheticDogHairPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject35 || (diet_templateObject35 = diet_taggedTemplateLiteral(["synthetic dog hair pill"])))) ? 1 : 0;
 
   for (var _i4 = 0, _dietSchedule2 = dietSchedule; _i4 < _dietSchedule2.length; _i4++) {
     var _entry2 = _dietSchedule2[_i4];
@@ -27775,15 +27778,15 @@ function yachtzeeChainDiet(simOnly) {
   if ((0,property/* get */.U2)("_garboYachtzeeChainDietPlanned", false)) return true;
   (0,property/* set */.t8)("_garboYachtzeeChainDiet", "");
   var havePYECCharge = pyecAvailable();
-  var haveDistentionPill = !(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject35 || (diet_templateObject35 = diet_taggedTemplateLiteral(["distention pill"]))));
+  var haveDistentionPill = !(0,property/* get */.U2)("_distentionPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject36 || (diet_templateObject36 = diet_taggedTemplateLiteral(["distention pill"]))));
   var sweatOutsAvailable = (0,utils/* clamp */.uZ)(Math.floor((0,property/* get */.U2)("sweat") / 25), 0, 3 - (0,property/* get */.U2)("_sweatOutSomeBoozeUsed"));
-  var syntheticPillsAvailable = !(0,property/* get */.U2)("_syntheticDogHairPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject36 || (diet_templateObject36 = diet_taggedTemplateLiteral(["synthetic dog hair pill"])))) ? 1 : 0;
+  var syntheticPillsAvailable = !(0,property/* get */.U2)("_syntheticDogHairPillUsed") && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject37 || (diet_templateObject37 = diet_taggedTemplateLiteral(["synthetic dog hair pill"])))) ? 1 : 0;
   var currentSpleenLeft = (0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)();
   var filters = 3 - (0,property/* get */.U2)("currentMojoFilters"); // save some spleen the first two extro, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
 
   var extroSpleenSpace = (0,extrovermectin/* hasMonsterReplacers */.bh)() ? 4 - Math.min(4, 2 * (0,property/* get */.U2)("beGregariousCharges")) : 0;
-  var synthCastsToCoverRun = src_lib/* globalOptions.noBarf */.Xe.noBarf || !(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject37 || (diet_templateObject37 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 0 : Math.max(0, Math.round(((0,turns/* estimatedTurns */.A)() - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject38 || (diet_templateObject38 = diet_taggedTemplateLiteral(["Synthesis: Greed"]))))) / 30));
+  var synthCastsToCoverRun = src_lib/* globalOptions.noBarf */.Xe.noBarf || !(0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject38 || (diet_templateObject38 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 0 : Math.max(0, Math.round(((0,turns/* estimatedTurns */.A)() - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject39 || (diet_templateObject39 = diet_taggedTemplateLiteral(["Synthesis: Greed"]))))) / 30));
   var fullnessAvailable = (0,external_kolmafia_.fullnessLimit)() - (0,external_kolmafia_.myFullness)() + (0,external_kolmafia_.toInt)(haveDistentionPill);
   var inebrietyAvailable = (0,external_kolmafia_.myLevel)() >= 13 ? (0,external_kolmafia_.inebrietyLimit)() - (0,external_kolmafia_.myInebriety)() + syntheticPillsAvailable + sweatOutsAvailable : 0;
   var spleenAvailable = currentSpleenLeft + filters;
@@ -27794,7 +27797,7 @@ function yachtzeeChainDiet(simOnly) {
 
   var possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
   var jellyYachtzeeTurns = (_possibleJellyYachtze = possibleJellyYachtzeeTurns.find(sufficientOrgansFor)) !== null && _possibleJellyYachtze !== void 0 ? _possibleJellyYachtze : 0;
-  var fishyPipeTurnsAvailable = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject39 || (diet_templateObject39 = diet_taggedTemplateLiteral(["Fishy"])))) + ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject40 || (diet_templateObject40 = diet_taggedTemplateLiteral(["fishy pipe"])))) && !(0,property/* get */.U2)("_fishyPipeUsed") ? 10 : 0);
+  var fishyPipeTurnsAvailable = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject40 || (diet_templateObject40 = diet_taggedTemplateLiteral(["Fishy"])))) + ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject41 || (diet_templateObject41 = diet_taggedTemplateLiteral(["fishy pipe"])))) && !(0,property/* get */.U2)("_fishyPipeUsed") ? 10 : 0);
   var canParkaChain = fishyPipeTurnsAvailable + (fishyPipeTurnsAvailable > 0 && pyecAvailable() ? 5 : 0) >= freeNCs();
 
   if (jellyYachtzeeTurns === 0 && !canParkaChain) {
@@ -27810,9 +27813,9 @@ function yachtzeeChainDiet(simOnly) {
   var pickleJuice = (0,external_kolmafia_.myLevel)() >= 13 ? Math.floor(((0,external_kolmafia_.inebrietyLimit)() - (0,external_kolmafia_.myInebriety)() + sweatOutsAvailable + syntheticPillsAvailable) / 5) : 0;
   var reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
 
-  var synthTurnsWanted = reqSynthTurns - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject41 || (diet_templateObject41 = diet_taggedTemplateLiteral(["Synthesis: Greed"]))));
+  var synthTurnsWanted = reqSynthTurns - (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject42 || (diet_templateObject42 = diet_taggedTemplateLiteral(["Synthesis: Greed"]))));
   var synthCastsWanted = Math.ceil(synthTurnsWanted / 30);
-  var synthCasts = (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject42 || (diet_templateObject42 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? Math.max(synthCastsWanted, 0) : 0;
+  var synthCasts = (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject43 || (diet_templateObject43 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? Math.max(synthCastsWanted, 0) : 0;
   var cologne = 0;
   var potentialSpleen = currentSpleenLeft + 5 * sliders + 5 * pickleJuice + filters;
   var availableSpleen = potentialSpleen - synthCasts - extroSpleenSpace; // Spleen available for ingesting jellies
@@ -27830,11 +27833,11 @@ function yachtzeeChainDiet(simOnly) {
   if (simOnly) (0,external_kolmafia_.print)("We can potentially run ".concat(yachtzeeTurns, " for yachtzee"), "purple");else (0,external_kolmafia_.print)("Trying to run ".concat(yachtzeeTurns, " turns of Yachtzee"), "purple"); // Compute prices to make sure everything is worth it
 
   var fishyCost = optimizeForFishy(yachtzeeTurns);
-  var extroPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject43 || (diet_templateObject43 = diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))));
+  var extroPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject44 || (diet_templateObject44 = diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))));
   var VOA = (0,property/* get */.U2)("valueOfAdventure");
-  var slidersPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject44 || (diet_templateObject44 = diet_taggedTemplateLiteral(["extra-greasy slider"]))));
-  var pickleJuicePrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject45 || (diet_templateObject45 = diet_taggedTemplateLiteral(["jar of fermented pickle juice"]))));
-  var colognePrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject46 || (diet_templateObject46 = diet_taggedTemplateLiteral(["beggin' cologne"])))); // We prefer using pickle juice to cleanse our spleen for stench jellies since
+  var slidersPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject45 || (diet_templateObject45 = diet_taggedTemplateLiteral(["extra-greasy slider"]))));
+  var pickleJuicePrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject46 || (diet_templateObject46 = diet_taggedTemplateLiteral(["jar of fermented pickle juice"]))));
+  var colognePrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject47 || (diet_templateObject47 = diet_taggedTemplateLiteral(["beggin' cologne"])))); // We prefer using pickle juice to cleanse our spleen for stench jellies since
   // 1) It's cheaper
   // 2) Our stomach can be used for horseradish buffs
 
@@ -27847,12 +27850,12 @@ function yachtzeeChainDiet(simOnly) {
   var synthToUse = synthCasts;
   var cologneToChew = cologne; // Compare jellies + sliders vs toasts
 
-  var jellyPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject47 || (diet_templateObject47 = diet_taggedTemplateLiteral(["stench jelly"]))));
+  var jellyPrice = (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject48 || (diet_templateObject48 = diet_taggedTemplateLiteral(["stench jelly"]))));
   var jellySlidersCosts = jellyPrice + slidersPrice / 5;
   var jellyPickleCosts = jellyPrice + pickleJuicePrice / 5;
-  var toastPrice = Math.min((0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject48 || (diet_templateObject48 = diet_taggedTemplateLiteral(["toast with stench jelly"])))), jellyPrice + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject49 || (diet_templateObject49 = diet_taggedTemplateLiteral(["toast"])))));
-  var sliderAdventuresPerFull = (0,lib/* getAverageAdventures */.N)((0,template_string/* $item */.xr)(diet_templateObject50 || (diet_templateObject50 = diet_taggedTemplateLiteral(["extra-greasy slider"])))) / 5;
-  var toastAdventuresPerFull = (0,lib/* getAverageAdventures */.N)((0,template_string/* $item */.xr)(diet_templateObject51 || (diet_templateObject51 = diet_taggedTemplateLiteral(["toast with stench jelly"])))) / 1;
+  var toastPrice = Math.min((0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject49 || (diet_templateObject49 = diet_taggedTemplateLiteral(["toast with stench jelly"])))), jellyPrice + (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject50 || (diet_templateObject50 = diet_taggedTemplateLiteral(["toast"])))));
+  var sliderAdventuresPerFull = (0,lib/* getAverageAdventures */.N)((0,template_string/* $item */.xr)(diet_templateObject51 || (diet_templateObject51 = diet_taggedTemplateLiteral(["extra-greasy slider"])))) / 5;
+  var toastAdventuresPerFull = (0,lib/* getAverageAdventures */.N)((0,template_string/* $item */.xr)(diet_templateObject52 || (diet_templateObject52 = diet_taggedTemplateLiteral(["toast with stench jelly"])))) / 1;
   var toastOpportunityCost = toastPrice + (sliderAdventuresPerFull - toastAdventuresPerFull) * VOA;
   var toastsToEat = 0;
 
@@ -27870,22 +27873,23 @@ function yachtzeeChainDiet(simOnly) {
     }
   }
 
-  var jelliesBulkPrice = (0,external_kolmafia_.retrievePrice)((0,template_string/* $item */.xr)(diet_templateObject52 || (diet_templateObject52 = diet_taggedTemplateLiteral(["stench jelly"]))), jelliesToChew); // TODO: This is outdated in the era of dynamic chains - if prices are too expensive, choose a more profitable chain length!
+  var jelliesBulkPrice = (0,external_kolmafia_.retrievePrice)((0,template_string/* $item */.xr)(diet_templateObject53 || (diet_templateObject53 = diet_taggedTemplateLiteral(["stench jelly"]))), jelliesToChew); // TODO: This is outdated in the era of dynamic chains - if prices are too expensive, choose a more profitable chain length!
   // If we need spleen cleansers but their prices are unreasonable, just return
 
   var maxSliderPrice = 150000,
       maxPickleJuicePrice = 150000;
 
-  if (slidersToEat > 0 && (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject53 || (diet_templateObject53 = diet_taggedTemplateLiteral(["extra-greasy slider"])))) > maxSliderPrice) {
+  if (slidersToEat > 0 && (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject54 || (diet_templateObject54 = diet_taggedTemplateLiteral(["extra-greasy slider"])))) > maxSliderPrice) {
     (0,external_kolmafia_.print)("Sliders are way too overpriced for us to clean spleens for jellies", "red");
     return false;
-  } else if (pickleJuiceToDrink > 0 && (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject54 || (diet_templateObject54 = diet_taggedTemplateLiteral(["jar of fermented pickle juice"])))) > maxPickleJuicePrice) {
+  } else if (pickleJuiceToDrink > 0 && (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject55 || (diet_templateObject55 = diet_taggedTemplateLiteral(["jar of fermented pickle juice"])))) > maxPickleJuicePrice) {
     (0,external_kolmafia_.print)("Pickle juices are way too overpriced for us to clean spleens for jellies", "red");
     return false;
   }
 
-  var horseradishes = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject55 || (diet_templateObject55 = diet_taggedTemplateLiteral(["Kicked in the Sinuses"])))) < yachtzeeTurns && (0,external_kolmafia_.myFullness)() + 1 + slidersToEat * 5 + toastsToEat <= (0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) ? 1 : 0;
-  var earlyMeatDropsEstimate = (0,external_kolmafia_.numericModifier)("Meat Drop") + (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(diet_templateObject56 || (diet_templateObject56 = diet_taggedTemplateLiteral(["Synthesis: Greed"])))) && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject57 || (diet_templateObject57 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 300 : 0) + ((0,external_kolmafia_.visitUrl)("forestvillage.php").includes("friarcottage.gif") ? 60 : 0); // Some iffy calculations here
+  var horseradishes = (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject56 || (diet_templateObject56 = diet_taggedTemplateLiteral(["Kicked in the Sinuses"])))) < yachtzeeTurns && (0,external_kolmafia_.myFullness)() + 1 + slidersToEat * 5 + toastsToEat <= (0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) ? 1 : 0;
+  var borisBreads = !(0,property/* get */.U2)("unknownRecipe11000", true) && (0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject57 || (diet_templateObject57 = diet_taggedTemplateLiteral(["Inspired Chef"])))) < yachtzeeTurns && (0,external_kolmafia_.myFullness)() + 1 + slidersToEat * 5 + toastsToEat + horseradishes <= (0,external_kolmafia_.fullnessLimit)() + (0,external_kolmafia_.toInt)(haveDistentionPill) ? 1 : 0;
+  var earlyMeatDropsEstimate = (0,external_kolmafia_.numericModifier)("Meat Drop") + (!(0,lib/* have */.lf)((0,template_string/* $effect */._G)(diet_templateObject58 || (diet_templateObject58 = diet_taggedTemplateLiteral(["Synthesis: Greed"])))) && (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(diet_templateObject59 || (diet_templateObject59 = diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 300 : 0) + ((0,external_kolmafia_.visitUrl)("forestvillage.php").includes("friarcottage.gif") ? 60 : 0); // Some iffy calculations here
   // If the best diet (at current prices) includes sliders and pickle juice (s+pj), no issues there
   // However, if the best diet does not include s+pj, then we need to compute the loss of switching
   // from the best diet to s+pj, and add it to our jellyValuePerSpleen calculations
@@ -27899,7 +27903,7 @@ function yachtzeeChainDiet(simOnly) {
   // If running simOnly, there's a possibility that potionSetup() hasn't been run
   // However, this means that higherBaseMeatProfits would try to account for the lower earlyMeatDropsEstimate
 
-  var higherBaseMeatProfits = yachtzeePotionSetup(yachtzeeTurns, true) + cologneToChew * ((yachtzeeTurns + 60 + 5 * (0,external_kolmafia_.toInt)(havePYECCharge)) * 1000 - colognePrice) + (horseradishes > 0 ? yachtzeeTurns * 1000 : 0); // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
+  var higherBaseMeatProfits = yachtzeePotionSetup(yachtzeeTurns, true) + cologneToChew * ((yachtzeeTurns + 60 + 5 * (0,external_kolmafia_.toInt)(havePYECCharge)) * 1000 - colognePrice) + (horseradishes > 0 ? yachtzeeTurns * 1000 : 0) + (borisBreads > 0 ? yachtzeeTurns * 1000 : 0); // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
   // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
 
   var extroValuePerSpleen = 6 * VOA - extroPrice / 2;
@@ -27934,8 +27938,8 @@ function yachtzeeChainDiet(simOnly) {
   };
 
   var dietUtil = new YachtzeeDietUtils(addPref);
-  var regularEntries = [["extra-greasy slider", slidersToEat], ["jar of fermented pickle juice", pickleJuiceToDrink], ["Extrovermectin™", extrosToChew], ["synthesis", synthToUse], ["mojo filter", filters], ["beggin' cologne", cologneToChew], ["jumping horseradish", horseradishes]];
-  var specialEntries = [["stench jelly", jelliesToChew], ["toast with stench jelly", toastsToEat], ["clara's bell", (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject58 || (diet_templateObject58 = diet_taggedTemplateLiteral(["Clara's bell"])))) && !src_lib/* globalOptions.clarasBellClaimed */.Xe.clarasBellClaimed ? 1 : 0], ["jurassic parka", (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject59 || (diet_templateObject59 = diet_taggedTemplateLiteral(["Jurassic Parka"])))) ? 5 - (0,property/* get */.U2)("_spikolodonSpikeUses") : 0]].map(_ref => {
+  var regularEntries = [["extra-greasy slider", slidersToEat], ["jar of fermented pickle juice", pickleJuiceToDrink], ["Extrovermectin™", extrosToChew], ["synthesis", synthToUse], ["mojo filter", filters], ["beggin' cologne", cologneToChew], ["jumping horseradish", horseradishes], ["Boris's bread", borisBreads]];
+  var specialEntries = [["stench jelly", jelliesToChew], ["toast with stench jelly", toastsToEat], ["clara's bell", (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject60 || (diet_templateObject60 = diet_taggedTemplateLiteral(["Clara's bell"])))) && !src_lib/* globalOptions.clarasBellClaimed */.Xe.clarasBellClaimed ? 1 : 0], ["jurassic parka", (0,lib/* have */.lf)((0,template_string/* $item */.xr)(diet_templateObject61 || (diet_templateObject61 = diet_taggedTemplateLiteral(["Jurassic Parka"])))) ? 5 - (0,property/* get */.U2)("_spikolodonSpikeUses") : 0]].map(_ref => {
     var _ref2 = diet_slicedToArray(_ref, 2),
         name = _ref2[0],
         qty = _ref2[1];
@@ -27995,22 +27999,23 @@ function yachtzeeChainDiet(simOnly) {
   } // Acquire everything we need
 
 
-  (0,acquire/* acquire */.u)(jelliesToChew, (0,template_string/* $item */.xr)(diet_templateObject60 || (diet_templateObject60 = diet_taggedTemplateLiteral(["stench jelly"]))), 2 * jelliesBulkPrice / jelliesToChew, true, 1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
+  (0,acquire/* acquire */.u)(jelliesToChew, (0,template_string/* $item */.xr)(diet_templateObject62 || (diet_templateObject62 = diet_taggedTemplateLiteral(["stench jelly"]))), 2 * jelliesBulkPrice / jelliesToChew, true, 1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
   );
-  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(diet_templateObject61 || (diet_templateObject61 = diet_taggedTemplateLiteral(["toast with stench jelly"]))), 2 * toastPrice, true, 1.2 * toastPrice * toastsToEat);
-  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(diet_templateObject62 || (diet_templateObject62 = diet_taggedTemplateLiteral(["munchies pill"]))), 2.66 * VOA, false);
-  (0,acquire/* acquire */.u)(extrosToChew, (0,template_string/* $item */.xr)(diet_templateObject63 || (diet_templateObject63 = diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), 100000);
-  (0,acquire/* acquire */.u)(pickleJuiceToDrink, (0,template_string/* $item */.xr)(diet_templateObject64 || (diet_templateObject64 = diet_taggedTemplateLiteral(["jar of fermented pickle juice"]))), maxPickleJuicePrice);
-  (0,acquire/* acquire */.u)(slidersToEat, (0,template_string/* $item */.xr)(diet_templateObject65 || (diet_templateObject65 = diet_taggedTemplateLiteral(["extra-greasy slider"]))), maxSliderPrice);
-  (0,acquire/* acquire */.u)(cologneToChew, (0,template_string/* $item */.xr)(diet_templateObject66 || (diet_templateObject66 = diet_taggedTemplateLiteral(["beggin' cologne"]))), 2 * colognePrice);
-  (0,acquire/* acquire */.u)(filters, (0,template_string/* $item */.xr)(diet_templateObject67 || (diet_templateObject67 = diet_taggedTemplateLiteral(["mojo filter"]))), 2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject68 || (diet_templateObject68 = diet_taggedTemplateLiteral(["mojo filter"])))));
-  (0,acquire/* acquire */.u)(horseradishes, (0,template_string/* $item */.xr)(diet_templateObject69 || (diet_templateObject69 = diet_taggedTemplateLiteral(["jumping horseradish"]))), 60000); // Get fishy turns
+  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(diet_templateObject63 || (diet_templateObject63 = diet_taggedTemplateLiteral(["toast with stench jelly"]))), 2 * toastPrice, true, 1.2 * toastPrice * toastsToEat);
+  (0,acquire/* acquire */.u)(toastsToEat, (0,template_string/* $item */.xr)(diet_templateObject64 || (diet_templateObject64 = diet_taggedTemplateLiteral(["munchies pill"]))), 2.66 * VOA, false);
+  (0,acquire/* acquire */.u)(extrosToChew, (0,template_string/* $item */.xr)(diet_templateObject65 || (diet_templateObject65 = diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), 100000);
+  (0,acquire/* acquire */.u)(pickleJuiceToDrink, (0,template_string/* $item */.xr)(diet_templateObject66 || (diet_templateObject66 = diet_taggedTemplateLiteral(["jar of fermented pickle juice"]))), maxPickleJuicePrice);
+  (0,acquire/* acquire */.u)(slidersToEat, (0,template_string/* $item */.xr)(diet_templateObject67 || (diet_templateObject67 = diet_taggedTemplateLiteral(["extra-greasy slider"]))), maxSliderPrice);
+  (0,acquire/* acquire */.u)(cologneToChew, (0,template_string/* $item */.xr)(diet_templateObject68 || (diet_templateObject68 = diet_taggedTemplateLiteral(["beggin' cologne"]))), 2 * colognePrice);
+  (0,acquire/* acquire */.u)(filters, (0,template_string/* $item */.xr)(diet_templateObject69 || (diet_templateObject69 = diet_taggedTemplateLiteral(["mojo filter"]))), 2 * (0,external_kolmafia_.mallPrice)((0,template_string/* $item */.xr)(diet_templateObject70 || (diet_templateObject70 = diet_taggedTemplateLiteral(["mojo filter"])))));
+  (0,acquire/* acquire */.u)(horseradishes, (0,template_string/* $item */.xr)(diet_templateObject71 || (diet_templateObject71 = diet_taggedTemplateLiteral(["jumping horseradish"]))), 60000);
+  (0,acquire/* acquire */.u)(borisBreads, (0,template_string/* $item */.xr)(diet_templateObject72 || (diet_templateObject72 = diet_taggedTemplateLiteral(["Boris's bread"]))), 60000); // Get fishy turns
 
   (0,external_kolmafia_.print)("Getting fishy turns", "purple");
   optimizeForFishy(yachtzeeTurns, true); // Final checks
 
-  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject70 || (diet_templateObject70 = diet_taggedTemplateLiteral(["Fishy"])))) + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns) {
-    throw new Error("We only got ".concat((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject71 || (diet_templateObject71 = diet_taggedTemplateLiteral(["Fishy"])))), "/").concat(yachtzeeTurns, " turns of fishy!"));
+  if ((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject73 || (diet_templateObject73 = diet_taggedTemplateLiteral(["Fishy"])))) + 5 * (0,external_kolmafia_.toInt)(havePYECCharge) < yachtzeeTurns) {
+    throw new Error("We only got ".concat((0,external_kolmafia_.haveEffect)((0,template_string/* $effect */._G)(diet_templateObject74 || (diet_templateObject74 = diet_taggedTemplateLiteral(["Fishy"])))), "/").concat(yachtzeeTurns, " turns of fishy!"));
   }
 
   (0,property/* set */.t8)("_garboYachtzeeChainDietPlanned", true);
