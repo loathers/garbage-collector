@@ -136,10 +136,9 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
-  useBuffExtenders,
   userConfirmDialog,
 } from "./lib";
-import { freeFightMood, meatMood } from "./mood";
+import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
 import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
 import { bathroomFinance, potionSetup } from "./potions";
 import {

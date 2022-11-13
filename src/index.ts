@@ -56,10 +56,9 @@ import {
   propertyManager,
   questStep,
   safeRestore,
-  useBuffExtenders,
   userConfirmDialog,
 } from "./lib";
-import { meatMood } from "./mood";
+import { meatMood, useBuffExtenders } from "./mood";
 import postCombatActions from "./post";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
