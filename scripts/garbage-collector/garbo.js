@@ -20053,9 +20053,8 @@ function initializeExtrovermectinZones() {
 /* harmony export */   "Z": () => (/* binding */ getDropFamiliars),
 /* harmony export */   "u": () => (/* binding */ getAllDrops)
 /* harmony export */ });
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2474);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3311);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(678);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3311);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(678);
 /* harmony import */ var _session__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(742);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40;
 
@@ -20070,117 +20069,98 @@ function valueStandardDropFamiliar(_ref) {
   var familiar = _ref.familiar,
       expected = _ref.expected,
       drop = _ref.drop,
-      pref = _ref.pref,
       additionalValue = _ref.additionalValue;
-  var expectedTurns = expected[(0,libram__WEBPACK_IMPORTED_MODULE_1__/* .get */ .U2)(pref)] || Infinity;
+  var expectedTurns = expected[familiar.dropsToday] || Infinity;
   var expectedValue = (0,_session__WEBPACK_IMPORTED_MODULE_0__/* .garboValue */ .sf)(drop) / expectedTurns + ((_additionalValue = additionalValue === null || additionalValue === void 0 ? void 0 : additionalValue()) !== null && _additionalValue !== void 0 ? _additionalValue : 0);
   return {
     familiar: familiar,
     expectedValue: expectedValue,
-    leprechaunMultiplier: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .findLeprechaunMultiplier */ .q$)(familiar),
+    leprechaunMultiplier: (0,libram__WEBPACK_IMPORTED_MODULE_1__/* .findLeprechaunMultiplier */ .q$)(familiar),
     limit: "drops"
   };
 }
 
 var rotatingFamiliars = [{
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Fist Turkey"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Fist Turkey"]))),
   expected: [3.91, 4.52, 4.52, 5.29, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Ambitious Turkey"]))),
-  pref: "_turkeyBooze"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Ambitious Turkey"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Llama Lama"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Llama Lama"]))),
   expected: [3.42, 3.91, 4.52, 5.29, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["llama lama gong"]))),
-  pref: "_gongDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["llama lama gong"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Astral Badger"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Astral Badger"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["astral mushroom"]))),
-  pref: "_astralDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["astral mushroom"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Li'l Xenomorph"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Li'l Xenomorph"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["transporter transponder"]))),
-  pref: "_transponderDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["transporter transponder"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Rogue Program"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Rogue Program"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Game Grid token"]))),
-  pref: "_tokenDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Game Grid token"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Bloovian Groose"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Bloovian Groose"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["groose grease"]))),
-  pref: "_grooseDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["groose grease"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Baby Sandworm"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Baby Sandworm"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["agua de vida"]))),
-  pref: "_aguaDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["agua de vida"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Green Pixie"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Green Pixie"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["tiny bottle of absinthe"]))),
-  pref: "_absintheDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["tiny bottle of absinthe"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Blavious Kloop"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Blavious Kloop"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["devilish folio"]))),
-  pref: "_kloopDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["devilish folio"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Galloping Grill"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["Galloping Grill"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["hot ashes"]))),
-  pref: "_hotAshesDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["hot ashes"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Grim Brother"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["Grim Brother"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["grim fairy tale"]))),
-  pref: "_grimFairyTaleDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["grim fairy tale"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Golden Monkey"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Golden Monkey"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["powdered gold"]))),
-  pref: "_powderedGoldDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["powdered gold"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Unconscious Collective"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["Unconscious Collective"]))),
   expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Unconscious Collective Dream Jar"]))),
-  pref: "_dreamJarDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Unconscious Collective Dream Jar"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Ms. Puck Man"]))),
-  expected: Array((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Ms. Puck Man"]))).dropsLimit).fill(12.85),
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["power pill"]))),
-  pref: "_powerPillDrops",
-  additionalValue: () => (0,_session__WEBPACK_IMPORTED_MODULE_0__/* .garboValue */ .sf)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["yellow pixel"]))))
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["Ms. Puck Man"]))),
+  expected: Array((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["Ms. Puck Man"]))).dropsLimit).fill(12.85),
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["power pill"]))),
+  additionalValue: () => (0,_session__WEBPACK_IMPORTED_MODULE_0__/* .garboValue */ .sf)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["yellow pixel"]))))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Puck Man"]))),
-  expected: Array((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Puck Man"]))).dropsLimit).fill(12.85),
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["power pill"]))),
-  pref: "_powerPillDrops",
-  additionalValue: () => (0,_session__WEBPACK_IMPORTED_MODULE_0__/* .garboValue */ .sf)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["yellow pixel"]))))
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["Puck Man"]))),
+  expected: Array((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["Puck Man"]))).dropsLimit).fill(12.85),
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["power pill"]))),
+  additionalValue: () => (0,_session__WEBPACK_IMPORTED_MODULE_0__/* .garboValue */ .sf)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["yellow pixel"]))))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Adventurous Spelunker"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["Adventurous Spelunker"]))),
   expected: [7.0],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Tales of Spelunking"]))),
-  pref: "_spelunkingTalesDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["Tales of Spelunking"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["Angry Jung Man"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral(["Angry Jung Man"]))),
   expected: [30.0],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["psychoanalytic jar"]))),
-  pref: "_jungDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral(["psychoanalytic jar"])))
 }, {
-  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$familiar */ .HP)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Grimstone Golem"]))),
+  familiar: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$familiar */ .HP)(_templateObject39 || (_templateObject39 = _taggedTemplateLiteral(["Grimstone Golem"]))),
   expected: [45.0],
-  drop: (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["grimstone mask"]))),
-  pref: "_grimstoneMaskDrops"
+  drop: (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject40 || (_templateObject40 = _taggedTemplateLiteral(["grimstone mask"])))
 }];
 function getDropFamiliars() {
   return rotatingFamiliars.map(valueStandardDropFamiliar).filter(_ref2 => {
     var familiar = _ref2.familiar,
         expectedValue = _ref2.expectedValue,
         leprechaunMultiplier = _ref2.leprechaunMultiplier;
-    return (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .have */ .lf)(familiar) && (expectedValue || leprechaunMultiplier);
+    return (0,libram__WEBPACK_IMPORTED_MODULE_1__/* .have */ .lf)(familiar) && (expectedValue || leprechaunMultiplier);
   });
 }
 function getAllDrops(fam) {
@@ -20188,8 +20168,8 @@ function getAllDrops(fam) {
     var familiar = _ref3.familiar;
     return familiar === fam;
   });
-  if (!(0,libram__WEBPACK_IMPORTED_MODULE_2__/* .have */ .lf)(fam) || !target) return [];
-  var current = (0,libram__WEBPACK_IMPORTED_MODULE_1__/* .get */ .U2)(target.pref);
+  if (!(0,libram__WEBPACK_IMPORTED_MODULE_1__/* .have */ .lf)(fam) || !target) return [];
+  var current = fam.dropsToday;
   var returnValue = [];
 
   for (var i = current; i < target.expected.length; i++) {
