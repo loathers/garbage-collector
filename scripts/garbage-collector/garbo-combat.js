@@ -18757,7 +18757,7 @@ function maxBy(array, optimizer) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* unused harmony exports meatMood, freeFightMood, shrugBadEffects */
+/* unused harmony exports meatMood, freeFightMood, useBuffExtenders, shrugBadEffects */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6115);
@@ -18765,7 +18765,7 @@ function maxBy(array, optimizer) {
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7442);
 /* harmony import */ var _clan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5897);
 /* harmony import */ var _outfit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1730);
-var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77, _templateObject78, _templateObject79;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -18941,9 +18941,30 @@ function freeFightMood() {
   if (getWorkshed() === $item(_templateObject67 || (_templateObject67 = _taggedTemplateLiteral(["Asdon Martin keyfob"])))) mood.drive(AsdonMartin.Driving.Observantly);
   return mood;
 }
-var stings = [].concat(_toConsumableArray((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effects */ .lh)(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effect */ ._G)(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["Burning, Man"]))), (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effect */ ._G)(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["Yes, Can Haz"])))]);
-var textAlteringEffects = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effects */ .lh)(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo"])));
-var teleportEffects = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effects */ .lh)(_templateObject72 || (_templateObject72 = _taggedTemplateLiteral(["Teleportitis, Feeling Lost, Funday!"])));
+/**
+ * Use buff extenders like PYEC and Bag o Tricks
+ */
+
+function useBuffExtenders() {
+  withStash($items(_templateObject68 || (_templateObject68 = _taggedTemplateLiteral(["Platinum Yendorian Express Card, Bag o' Tricks"]))), () => {
+    if (have($item(_templateObject69 || (_templateObject69 = _taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) && !get("expressCardUsed")) {
+      burnLibrams();
+      use($item(_templateObject70 || (_templateObject70 = _taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+    }
+
+    if (have($item(_templateObject71 || (_templateObject71 = _taggedTemplateLiteral(["Bag o' Tricks"])))) && !get("_bagOTricksUsed")) {
+      use($item(_templateObject72 || (_templateObject72 = _taggedTemplateLiteral(["Bag o' Tricks"]))));
+    }
+  });
+
+  if (have($item(_templateObject73 || (_templateObject73 = _taggedTemplateLiteral(["License to Chill"])))) && !get("_licenseToChillUsed")) {
+    burnLibrams();
+    use($item(_templateObject74 || (_templateObject74 = _taggedTemplateLiteral(["License to Chill"]))));
+  }
+}
+var stings = [].concat(_toConsumableArray((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effects */ .lh)(_templateObject75 || (_templateObject75 = _taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [(0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effect */ ._G)(_templateObject76 || (_templateObject76 = _taggedTemplateLiteral(["Burning, Man"]))), (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effect */ ._G)(_templateObject77 || (_templateObject77 = _taggedTemplateLiteral(["Yes, Can Haz"])))]);
+var textAlteringEffects = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effects */ .lh)(_templateObject78 || (_templateObject78 = _taggedTemplateLiteral(["Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo"])));
+var teleportEffects = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .$effects */ .lh)(_templateObject79 || (_templateObject79 = _taggedTemplateLiteral(["Teleportitis, Feeling Lost, Funday!"])));
 function shrugBadEffects() {
   for (var _len2 = arguments.length, exclude = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
     exclude[_key2] = arguments[_key2];
