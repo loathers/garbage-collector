@@ -1,14 +1,22 @@
 import { Familiar, Item } from "kolmafia";
-import { $familiar, $item, findLeprechaunMultiplier, have } from "libram";
-import { garboValue } from "../session";
+import { $familiar, $item, $items, findLeprechaunMultiplier, have } from "libram";
+import { garboAverageValue, garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
 
 type StandardDropFamiliar = {
   familiar: Familiar;
   expected: number[];
-  drop: Item;
+  drop: Item | Item[] | (() => number);
   additionalValue?: () => number;
 };
+
+function dropValue(drop: Item | Item[] | (() => number)): number {
+  return drop instanceof Item
+    ? garboValue(drop)
+    : Array.isArray(drop)
+    ? garboAverageValue(...drop)
+    : drop();
+}
 
 function valueStandardDropFamiliar({
   familiar,
@@ -17,7 +25,7 @@ function valueStandardDropFamiliar({
   additionalValue,
 }: StandardDropFamiliar): GeneralFamiliar {
   const expectedTurns = expected[familiar.dropsToday] || Infinity;
-  const expectedValue = garboValue(drop) / expectedTurns + (additionalValue?.() ?? 0);
+  const expectedValue = dropValue(drop) / expectedTurns + (additionalValue?.() ?? 0);
   return {
     familiar,
     expectedValue,
@@ -119,6 +127,33 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     expected: [45.0],
     drop: $item`grimstone mask`,
   },
+  {
+    familiar: $familiar`Cookbookbat`,
+    expected: [33.0],
+    drop: () =>
+      0.5 *
+        garboAverageValue(
+          ...$items`Recipe of Before Yore: Deep Dish of Legend, Recipe of Before Yore: Pizza of Legend, Recipe of Before Yore: Calzone of Legend`
+        ) +
+      0.15 *
+        garboAverageValue(
+          ...$items`Recipe of Before Yore: plain calzone, Recipe of Before Yore: roasted vegetable focaccia, Recipe of Before Yore: baked veggie ricotta`
+        ) +
+      0.1 *
+        garboAverageValue(
+          ...$items`Recipe of Before Yore: roasted vegetable of J., Recipe of Before Yore: Pete's rich ricotta, Recipe of Before Yore: Boris's bread`
+        ) +
+      0.25 *
+        garboAverageValue(
+          ...$items`Recipe of Before Yore: Boris's beer, Recipe of Before Yore: honey bun of Boris, Recipe of Before Yore: ratatouille de Jarlsberg, Recipe of Before Yore: Jarlsberg's vegetable soup, Recipe of Before Yore: Pete's wily whey bar, Recipe of Before Yore: St. Pete's sneaky smoothie`
+        ),
+    additionalValue: () =>
+      (3 *
+        garboAverageValue(
+          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`
+        )) /
+      11,
+  },
 ];
 
 export default function getDropFamiliars(): GeneralFamiliar[] {
@@ -134,13 +169,15 @@ export function getAllDrops(fam: Familiar): { expectedValue: number; expectedTur
   const target = rotatingFamiliars.find(({ familiar }) => familiar === fam);
   if (!have(fam) || !target) return [];
 
+  const { expected, drop, additionalValue } = target;
+
   const current = fam.dropsToday;
   const returnValue = [];
 
-  for (let i = current; i < target.expected.length; i++) {
+  for (let i = current; i < expected.length; i++) {
     const turns = target.expected[i];
     returnValue.push({
-      expectedValue: garboValue(target.drop) / turns + (target.additionalValue?.() ?? 0),
+      expectedValue: dropValue(drop) / turns + (additionalValue?.() ?? 0),
       expectedTurns: turns,
     });
   }
