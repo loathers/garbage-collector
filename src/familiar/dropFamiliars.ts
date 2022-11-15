@@ -6,16 +6,12 @@ import { GeneralFamiliar } from "./lib";
 type StandardDropFamiliar = {
   familiar: Familiar;
   expected: number[];
-  drop: Item | Item[] | (() => number);
+  drop: Item | Item[];
   additionalValue?: () => number;
 };
 
-function dropValue(drop: Item | Item[] | (() => number)): number {
-  return drop instanceof Item
-    ? garboValue(drop)
-    : Array.isArray(drop)
-    ? garboAverageValue(...drop)
-    : drop();
+function dropValue(drop: Item | Item[]): number {
+  return drop instanceof Item ? garboValue(drop) : garboAverageValue(...drop);
 }
 
 function valueStandardDropFamiliar({
@@ -130,23 +126,23 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
   {
     familiar: $familiar`Cookbookbat`,
     expected: [33.0],
-    drop: () =>
-      0.5 *
-        garboAverageValue(
-          ...$items`Recipe of Before Yore: Deep Dish of Legend, Recipe of Before Yore: Pizza of Legend, Recipe of Before Yore: Calzone of Legend`
-        ) +
-      0.15 *
-        garboAverageValue(
-          ...$items`Recipe of Before Yore: plain calzone, Recipe of Before Yore: roasted vegetable focaccia, Recipe of Before Yore: baked veggie ricotta`
-        ) +
-      0.1 *
-        garboAverageValue(
-          ...$items`Recipe of Before Yore: roasted vegetable of J., Recipe of Before Yore: Pete's rich ricotta, Recipe of Before Yore: Boris's bread`
-        ) +
-      0.25 *
-        garboAverageValue(
-          ...$items`Recipe of Before Yore: Boris's beer, Recipe of Before Yore: honey bun of Boris, Recipe of Before Yore: ratatouille de Jarlsberg, Recipe of Before Yore: Jarlsberg's vegetable soup, Recipe of Before Yore: Pete's wily whey bar, Recipe of Before Yore: St. Pete's sneaky smoothie`
-        ),
+    drop: [
+      $item`Recipe of Before Yore: Deep Dish of Legend`,
+      $item`Recipe of Before Yore: Pizza of Legend`,
+      $item`Recipe of Before Yore: Calzone of Legend`,
+      $item`Recipe of Before Yore: plain calzone`,
+      $item`Recipe of Before Yore: roasted vegetable focaccia`,
+      $item`Recipe of Before Yore: baked veggie ricotta`,
+      $item`Recipe of Before Yore: roasted vegetable of J.`,
+      $item`Recipe of Before Yore: Pete's rich ricotta`,
+      $item`Recipe of Before Yore: Boris's bread`,
+      $item`Recipe of Before Yore: Boris's beer`,
+      $item`Recipe of Before Yore: honey bun of Boris`,
+      $item`Recipe of Before Yore: ratatouille de Jarlsberg`,
+      $item`Recipe of Before Yore: Jarlsberg's vegetable soup`,
+      $item`Recipe of Before Yore: Pete's wily whey bar`,
+      $item`Recipe of Before Yore: St. Pete's sneaky smoothie`,
+    ],
     additionalValue: () =>
       (3 *
         garboAverageValue(
