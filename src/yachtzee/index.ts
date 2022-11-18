@@ -17,14 +17,13 @@ import {
   $item,
   $location,
   $skill,
-  adventureMacro,
   get,
   getActiveSongs,
   have,
-  Macro,
   set,
   uneffect,
 } from "libram";
+import { adventureMacro, Macro } from "../combat";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";

@@ -31,8 +31,6 @@ import {
   $monster,
   $monsters,
   $skill,
-  adventureMacro,
-  adventureMacroAuto,
   ChateauMantegna,
   CombatLoversLocket,
   Counter,
@@ -47,7 +45,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { Macro, shouldRedigitize, withMacro } from "./combat";
+import { adventureMacro, adventureMacroAuto, Macro, shouldRedigitize, withMacro } from "./combat";
 import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,

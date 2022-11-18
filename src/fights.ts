@@ -77,8 +77,6 @@ import {
   $stat,
   $thrall,
   ActionSource,
-  adventureMacro,
-  adventureMacroAuto,
   AsdonMartin,
   ChateauMantegna,
   clamp,
@@ -106,7 +104,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
-import { Macro, withMacro } from "./combat";
+import { adventureMacro, adventureMacroAuto, Macro, withMacro } from "./combat";
 import {
   bestFairy,
   freeFightFamiliar,

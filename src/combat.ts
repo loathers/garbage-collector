@@ -1,6 +1,8 @@
 import "core-js/features/array/flat";
 import {
+  adv1,
   choiceFollowsFight,
+  cliExecute,
   equippedAmount,
   equippedItem,
   Familiar,
@@ -14,6 +16,7 @@ import {
   Item,
   itemAmount,
   itemType,
+  Location,
   mpCost,
   myAdventures,
   myBjornedFamiliar,
@@ -32,6 +35,7 @@ import {
   setAutoAttack,
   Skill,
   visitUrl,
+  writeCcs,
 } from "kolmafia";
 import {
   $class,
@@ -615,32 +619,11 @@ export class Macro extends StrictMacro {
   }
 }
 
-/**
- * Attempt to perform a nonstandard combat-starting Action with a Macro
- * @param macro The Macro to attempt to use
- * @param action The combat-starting action to attempt
- * @param tryAuto Whether or not we should try to resolve the combat with an autoattack; autoattack macros can fail against special monsters, and thus we have to submit a macro with Macro.save() regardless
- * @returns The output of your specified action function (typically void)
- */
-export function withMacro<T>(macro: Macro, action: () => T, tryAuto = false): T {
-  if (getAutoAttack() !== 0) setAutoAttack(0);
-  if (tryAuto) macro.setAutoAttack();
-  macro.save();
-  try {
-    return action();
-  } finally {
-    Macro.clearSaved();
-    if (tryAuto) setAutoAttack(0);
-  }
-}
-
-export function main(): void {
+function customizeMacro<M extends StrictMacro>(macro: M) {
   if (have($effect`Eldritch Attunement`)) {
-    Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
-      .step(Macro.load())
-      .submit();
+    return Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat()).step(macro);
   } else if (getTodaysHolidayWanderers().length !== 0) {
-    Macro.ifHolidayWanderer(
+    return Macro.ifHolidayWanderer(
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
@@ -649,12 +632,77 @@ export function main(): void {
         Macro.skill($skill`Back-Up to your Last Enemy`).step(Macro.load()),
         Macro.basicCombat()
       )
-    )
-      .step(Macro.load())
-      .submit();
+    ).step(macro);
   } else {
-    Macro.load().submit();
+    return macro;
   }
-  while (inMultiFight()) runCombat();
-  if (choiceFollowsFight()) visitUrl("choice.php");
+}
+
+function makeCcs<M extends StrictMacro>(macro: M) {
+  writeCcs(`[default]\n"${customizeMacro(macro).toString()}"`, "garbo");
+  cliExecute("ccs garbo");
+}
+
+function completeCombat<T>(action: () => T) {
+  try {
+    const result = action();
+    while (inMultiFight()) runCombat();
+    if (choiceFollowsFight()) visitUrl("choice.php");
+    return result;
+  } catch (e) {
+    throw `Combat exception! Last macro error: ${get("lastMacroError")}. Exception ${e}.`;
+  }
+}
+
+/**
+ * Attempt to perform a nonstandard combat-starting Action with a Macro
+ * @param macro The Macro to attempt to use
+ * @param action The combat-starting action to attempt
+ * @param tryAuto Whether or not we should try to resolve the combat with an autoattack; autoattack macros can fail against special monsters, and thus we have to submit a macro with Macro.save() regardless
+ * @returns The output of your specified action function (typically void)
+ */
+export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, tryAuto = false): T {
+  if (getAutoAttack() !== 0) setAutoAttack(0);
+  if (tryAuto) macro.setAutoAttack();
+  makeCcs(macro);
+  try {
+    return action();
+  } finally {
+    if (tryAuto) setAutoAttack(0);
+  }
+}
+
+/**
+ * Adventure in a location and handle all combats with a given macro.
+ * To use this function you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
+ * See examples/consult.ts for an example.
+ *
+ * @category Combat
+ * @param loc Location to adventure in.
+ * @param macro Macro to execute.
+ */
+export function adventureMacro<M extends StrictMacro>(loc: Location, macro: M): void {
+  if (getAutoAttack() !== 0) setAutoAttack(0);
+  makeCcs(macro);
+  completeCombat(() => adv1(loc, -1, ""));
+}
+
+/**
+ * Adventure in a location and handle all combats with a given autoattack and manual macro.
+ * To use the nextMacro parameter you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
+ * See examples/consult.ts for an example.
+ *
+ * @category Combat
+ * @param loc Location to adventure in.
+ * @param autoMacro Macro to execute via KoL autoattack.
+ * @param nextMacro Macro to execute manually after autoattack completes.
+ */
+export function adventureMacroAuto<M extends StrictMacro>(
+  loc: Location,
+  autoMacro: M,
+  nextMacro = Macro.abort()
+): void {
+  autoMacro.setAutoAttack();
+  makeCcs(nextMacro);
+  completeCombat(() => adv1(loc, -1, ""));
 }

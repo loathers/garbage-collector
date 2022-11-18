@@ -28,8 +28,6 @@ import {
   $location,
   $monster,
   $skill,
-  adventureMacro,
-  adventureMacroAuto,
   clamp,
   Counter,
   ensureEffect,
@@ -39,7 +37,7 @@ import {
   Requirement,
   SourceTerminal,
 } from "libram";
-import { Macro, withMacro } from "./combat";
+import { adventureMacro, adventureMacroAuto, Macro, withMacro } from "./combat";
 import { computeDiet, consumeDiet } from "./diet";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { deliverThesisIfAble } from "./fights";

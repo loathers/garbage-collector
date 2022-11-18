@@ -10,19 +10,9 @@ import {
   print,
   use,
 } from "kolmafia";
-import {
-  $effect,
-  $item,
-  $location,
-  adventureMacro,
-  get,
-  getActiveEffects,
-  have,
-  Macro,
-  sum,
-  uneffect,
-} from "libram";
+import { $effect, $item, $location, get, getActiveEffects, have, sum, uneffect } from "libram";
 import { acquire } from "../acquire";
+import { adventureMacro, Macro } from "../combat";
 import { maxBy, safeRestore } from "../lib";
 import { pyecAvailable, yachtzeeBuffValue } from "./lib";
 import { getBestWaterBreathingEquipment } from "./outfit";

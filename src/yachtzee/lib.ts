@@ -6,7 +6,6 @@ import {
   $items,
   $location,
   $skill,
-  adventureMacroAuto,
   get,
   getActiveSongs,
   getModifier,
@@ -18,7 +17,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { withStash } from "../clan";
-import { Macro } from "../combat";
+import { adventureMacroAuto, Macro } from "../combat";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
 import { globalOptions, ltbRun, realmAvailable } from "../lib";

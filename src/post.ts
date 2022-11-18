@@ -24,18 +24,17 @@ import {
   $locations,
   $skill,
   $slot,
-  adventureMacro,
   AutumnAton,
   get,
   getRemainingStomach,
   have,
   JuneCleaver,
-  Macro,
   property,
   uneffect,
   withProperty,
 } from "libram";
 import { acquire } from "./acquire";
+import { adventureMacro, Macro } from "./combat";
 import { computeDiet, consumeDiet } from "./diet";
 import {
   bestJuneCleaverOption,
