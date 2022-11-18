@@ -34,7 +34,7 @@ import {
   withProperty,
 } from "libram";
 import { acquire } from "./acquire";
-import { adventureMacro, Macro } from "./combat";
+import { garboAdventure, Macro } from "./combat";
 import { computeDiet, consumeDiet } from "./diet";
 import {
   bestJuneCleaverOption,
@@ -147,7 +147,7 @@ function juneCleave(): void {
     equip($slot`weapon`, $item`June cleaver`);
     skipJuneCleaverChoices();
     withProperty("recoveryScript", "", () => {
-      adventureMacro($location`Noob Cave`, Macro.abort());
+      garboAdventure($location`Noob Cave`, Macro.abort());
       if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
         uneffect($effect`Beaten Up`);
       }

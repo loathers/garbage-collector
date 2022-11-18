@@ -681,7 +681,7 @@ export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, t
  * @param loc Location to adventure in.
  * @param macro Macro to execute.
  */
-export function adventureMacro<M extends StrictMacro>(loc: Location, macro: M): void {
+export function garboAdventure<M extends StrictMacro>(loc: Location, macro: M): void {
   if (getAutoAttack() !== 0) setAutoAttack(0);
   makeCcs(macro);
   completeCombat(() => adv1(loc, -1, ""));
@@ -697,7 +697,7 @@ export function adventureMacro<M extends StrictMacro>(loc: Location, macro: M): 
  * @param autoMacro Macro to execute via KoL autoattack.
  * @param nextMacro Macro to execute manually after autoattack completes.
  */
-export function adventureMacroAuto<M extends StrictMacro>(
+export function garboAdventureAuto<M extends StrictMacro>(
   loc: Location,
   autoMacro: M,
   nextMacro = Macro.abort()

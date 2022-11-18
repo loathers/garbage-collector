@@ -45,7 +45,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { adventureMacro, adventureMacroAuto, Macro, shouldRedigitize, withMacro } from "./combat";
+import { garboAdventure, garboAdventureAuto, Macro, shouldRedigitize, withMacro } from "./combat";
 import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
@@ -334,7 +334,7 @@ export const chainStarters = [
         set("_freePillKeeperUsed", true);
         return;
       }
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
@@ -492,7 +492,7 @@ export const wanderSources = [
     () => canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`),
     () => (canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`) ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
@@ -502,7 +502,7 @@ export const wanderSources = [
       get("_sourceTerminalDigitizeMonster") === embezzler && Counter.get("Digitize Monster") <= 0,
     () => (SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
@@ -521,7 +521,7 @@ export const wanderSources = [
       Counter.get("Romantic Monster window end") <= 0,
     () => 0,
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
@@ -541,7 +541,7 @@ export const wanderSources = [
         ? 1
         : 0,
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
@@ -575,7 +575,7 @@ export const conditionalSources = [
       ) {
         return;
       }
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`The Dire Warren`, options.macro, options.macro);
       toasterGaze();
       if (!doingExtrovermectin()) set("_garbo_doneGregging", true);
@@ -621,7 +621,7 @@ export const conditionalSources = [
           )
           .skill($skill`Macrometeorite`)
       ).step(options.macro);
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
       if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
@@ -665,7 +665,7 @@ export const conditionalSources = [
           )
           .skill($skill`CHEAT CODE: Replace Enemy`)
       ).step(options.macro);
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
       if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
@@ -686,7 +686,7 @@ export const conditionalSources = [
     (options: EmbezzlerFightRunOptions) => {
       const run = ltbRun();
       run.constraints.preparation?.();
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         $location`The Dire Warren`,
         Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
@@ -715,7 +715,7 @@ export const conditionalSources = [
         ? 1
         : 0,
     (options: EmbezzlerFightRunOptions) => {
-      adventureMacro($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
+      garboAdventure($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
     },
     {
       requirements: [
@@ -734,7 +734,7 @@ export const conditionalSources = [
       get("_backUpUses") < 11,
     () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         options.location,
         Macro.if_(
@@ -823,7 +823,7 @@ export const emergencyChainStarters = [
       );
       use($item`11-leaf clover`);
       if (have($effect`Lucky!`)) {
-        const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+        const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
         adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
       }
       globalOptions.askedAboutWish = false;
