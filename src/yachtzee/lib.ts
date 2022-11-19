@@ -6,7 +6,6 @@ import {
   $items,
   $location,
   $skill,
-  adventureMacroAuto,
   get,
   getActiveSongs,
   getModifier,
@@ -17,7 +16,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { withStash } from "../clan";
-import { Macro } from "../combat";
+import { garboAdventureAuto, Macro } from "../combat";
 import { freeFightFamiliar } from "../familiar";
 import { globalOptions, ltbRun, realmAvailable } from "../lib";
 import { freeFightOutfit } from "../outfit";
@@ -92,7 +91,7 @@ export function useSpikolodonSpikes(): void {
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
   do {
-    adventureMacroAuto(targetZone, macro);
+    garboAdventureAuto(targetZone, macro);
   } while (get("_spikolodonSpikeUses") === startingSpikes);
 
   postCombatActions();

@@ -20,7 +20,6 @@ import {
   $monsters,
   $skill,
   $slot,
-  adventureMacro,
   clamp,
   CrystalBall,
   get,
@@ -32,7 +31,7 @@ import {
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
 import { globalOptions, latteActionSourceFinderConstraints, ltbRun, maxBy, setChoice } from "./lib";
-import { Macro } from "./combat";
+import { garboAdventure, Macro } from "./combat";
 import { copyTargetMacro } from "./embezzler";
 import { acquire } from "./acquire";
 
@@ -120,7 +119,7 @@ export function saberCrateIfSafe(): void {
       .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
       .maximize();
     setChoice(1387, 2);
-    adventureMacro(
+    garboAdventure(
       $location`Noob Cave`,
       Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
         .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
@@ -195,7 +194,7 @@ function initializeCrates(): void {
       })
         .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
         .maximize();
-      adventureMacro(
+      garboAdventure(
         $location`Noob Cave`,
         Macro.if_($monster`crate`, macro)
           .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
@@ -248,7 +247,7 @@ function initializeDireWarren(): void {
     }).maximize();
 
     do {
-      adventureMacro(
+      garboAdventure(
         $location`The Dire Warren`,
         Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).step(copyTargetMacro())
       );
@@ -260,7 +259,7 @@ function initializeDireWarren(): void {
     const banish = maxBy(options, mallPrice, true);
     acquire(1, banish, 50000, true);
     do {
-      adventureMacro(
+      garboAdventure(
         $location`The Dire Warren`,
         Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(copyTargetMacro())
       );

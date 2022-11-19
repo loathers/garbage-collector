@@ -15,7 +15,7 @@ import {
 import { lovebugsFactory } from "./lovebugs";
 import { yellowRayFactory } from "./yellowray";
 
-export { DraggableFight };
+export type { DraggableFight };
 
 const wanderFactories: WandererFactory[] = [
   defaultFactory,

@@ -28,8 +28,6 @@ import {
   $location,
   $monster,
   $skill,
-  adventureMacro,
-  adventureMacroAuto,
   clamp,
   Counter,
   ensureEffect,
@@ -39,7 +37,7 @@ import {
   Requirement,
   SourceTerminal,
 } from "libram";
-import { Macro, withMacro } from "./combat";
+import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { computeDiet, consumeDiet } from "./diet";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { deliverThesisIfAble } from "./fights";
@@ -200,7 +198,7 @@ const turns: AdventureAction[] = [
           }
         )
       );
-      adventureMacro(ghostLocation, Macro.ghostBustin());
+      garboAdventure(ghostLocation, Macro.ghostBustin());
       return get("questPAGhost") === "unstarted";
     },
     spendsTurn: false,
@@ -229,7 +227,7 @@ const turns: AdventureAction[] = [
           ],
         })
       );
-      adventureMacroAuto(
+      garboAdventureAuto(
         isGhost ? drunkSafeWander("wanderer") : wanderWhere("wanderer"),
         Macro.basicCombat()
       );
@@ -253,7 +251,7 @@ const turns: AdventureAction[] = [
       if (underwater) retrieveItem($item`pulled green taffy`);
 
       isEmbezzler ? embezzlerPrep({ sea: underwater }) : freeFightPrep();
-      adventureMacroAuto(
+      garboAdventureAuto(
         targetLocation,
         Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(),
 
@@ -274,7 +272,7 @@ const turns: AdventureAction[] = [
     available: () => kramcoGuaranteed(),
     execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
-      adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
+      garboAdventureAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
       return !kramcoGuaranteed();
     },
     spendsTurn: false,
@@ -288,7 +286,7 @@ const turns: AdventureAction[] = [
       get("_voidFreeFights") < 5,
     execute: () => {
       freeFightPrep(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
-      adventureMacroAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
+      garboAdventureAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
       return get("cursedMagnifyingGlassCount") === 0;
     },
     spendsTurn: false,
@@ -321,7 +319,7 @@ const turns: AdventureAction[] = [
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .skill($skill`Spit jurassic acid`);
-      adventureMacroAuto(location, macro);
+      garboAdventureAuto(location, macro);
       return have($effect`Everything Looks Yellow`);
     },
     spendsTurn: false,
@@ -358,7 +356,7 @@ const turns: AdventureAction[] = [
         false,
         lubing ? new Requirement([], { forceEquip: $items`lube-shoes` }) : undefined
       );
-      adventureMacroAuto(
+      garboAdventureAuto(
         $location`Barf Mountain`,
         Macro.meatKill(),
         Macro.if_(
