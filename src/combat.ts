@@ -2,7 +2,6 @@ import "core-js/features/array/flat";
 import {
   adv1,
   choiceFollowsFight,
-  cliExecute,
   equippedAmount,
   equippedItem,
   Familiar,
@@ -57,6 +56,7 @@ import {
   StrictMacro,
 } from "libram";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
+import { propertyManager } from "./lib";
 import { digitizedMonstersRemaining } from "./turns";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -629,7 +629,7 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
           get("_backUpUses") < 11 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           myFamiliar() === meatFamiliar(),
-        Macro.skill($skill`Back-Up to your Last Enemy`).step(Macro.load()),
+        Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
         Macro.basicCombat()
       )
     ).step(macro);
@@ -639,13 +639,14 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
 }
 
 function makeCcs<M extends StrictMacro>(macro: M) {
+  print(customizeMacro(macro).toString());
   writeCcs(`[default]\n"${customizeMacro(macro).toString()}"`, "garbo");
-  cliExecute("ccs garbo");
+  propertyManager.set({ customCombatScript: "garbo" });
 }
 
-function completeCombat<T>(action: () => T) {
+function runCombatBy<T>(initiateCombatAction: () => T) {
   try {
-    const result = action();
+    const result = initiateCombatAction();
     while (inMultiFight()) runCombat();
     if (choiceFollowsFight()) visitUrl("choice.php");
     return result;
@@ -674,8 +675,6 @@ export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, t
 
 /**
  * Adventure in a location and handle all combats with a given macro.
- * To use this function you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
- * See examples/consult.ts for an example.
  *
  * @category Combat
  * @param loc Location to adventure in.
@@ -684,13 +683,11 @@ export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, t
 export function garboAdventure<M extends StrictMacro>(loc: Location, macro: M): void {
   if (getAutoAttack() !== 0) setAutoAttack(0);
   makeCcs(macro);
-  completeCombat(() => adv1(loc, -1, ""));
+  runCombatBy(() => adv1(loc, -1, ""));
 }
 
 /**
  * Adventure in a location and handle all combats with a given autoattack and manual macro.
- * To use the nextMacro parameter you will need to create a consult script that runs Macro.load().submit() and a CCS that calls that consult script.
- * See examples/consult.ts for an example.
  *
  * @category Combat
  * @param loc Location to adventure in.
@@ -704,5 +701,5 @@ export function garboAdventureAuto<M extends StrictMacro>(
 ): void {
   autoMacro.setAutoAttack();
   makeCcs(nextMacro);
-  completeCombat(() => adv1(loc, -1, ""));
+  runCombatBy(() => adv1(loc, -1, ""));
 }

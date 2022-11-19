@@ -1258,7 +1258,7 @@ const freeFightSources = [
         ? clamp(10 - get("_neverendingPartyFreeTurns") - (get("_thesisDelivered") ? 0 : 1), 0, 10)
         : 0,
     () => {
-      const constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).step(Macro.load());
+      const constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).basicCombat();
       setNepQuestChoicesAndPrepItems();
       garboAdventure($location`The Neverending Party`, constructedMacro);
     },
