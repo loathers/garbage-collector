@@ -28,7 +28,6 @@ import {
   mySoulsauce,
   myThrall,
   numericModifier,
-  print,
   retrieveItem,
   runCombat,
   setAutoAttack,
@@ -156,11 +155,6 @@ export function shouldRedigitize(): boolean {
 }
 
 export class Macro extends StrictMacro {
-  submit(): string {
-    print(this.components.join(";"));
-    return super.submit();
-  }
-
   tryHaveSkill(skill: Skill | null): Macro {
     if (!skill) return this;
     return this.externalIf(haveSkill(skill), Macro.trySkill(skill));
@@ -639,7 +633,6 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
 }
 
 function makeCcs<M extends StrictMacro>(macro: M) {
-  print(customizeMacro(macro).toString());
   writeCcs(`[default]\n"${customizeMacro(macro).toString()}"`, "garbo");
   propertyManager.set({ customCombatScript: "garbo" });
 }
@@ -659,7 +652,7 @@ function runCombatBy<T>(initiateCombatAction: () => T) {
  * Attempt to perform a nonstandard combat-starting Action with a Macro
  * @param macro The Macro to attempt to use
  * @param action The combat-starting action to attempt
- * @param tryAuto Whether or not we should try to resolve the combat with an autoattack; autoattack macros can fail against special monsters, and thus we have to submit a macro with Macro.save() regardless
+ * @param tryAuto Whether or not we should try to resolve the combat with an autoattack; autoattack macros can fail against special monsters, and thus we have to submit a macro via CCS regardless.
  * @returns The output of your specified action function (typically void)
  */
 export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, tryAuto = false): T {
@@ -667,7 +660,7 @@ export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, t
   if (tryAuto) macro.setAutoAttack();
   makeCcs(macro);
   try {
-    return action();
+    return runCombatBy(action);
   } finally {
     if (tryAuto) setAutoAttack(0);
   }
