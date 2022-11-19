@@ -17,14 +17,13 @@ import {
   $item,
   $location,
   $skill,
-  adventureMacro,
   get,
   getActiveSongs,
   have,
-  Macro,
   set,
   uneffect,
 } from "libram";
+import { garboAdventure, Macro } from "../combat";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
@@ -115,7 +114,7 @@ function _yachtzeeChain(): void {
         useSkill($skill`The Polka of Plenty`);
       }
     }
-    adventureMacro($location`The Sunken Party Yacht`, Macro.abort());
+    garboAdventure($location`The Sunken Party Yacht`, Macro.abort());
     postCombatActions();
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;

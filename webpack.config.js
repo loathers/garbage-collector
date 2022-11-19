@@ -45,7 +45,6 @@ const scriptsConfig = merge(
   {
     entry: {
       garbo: "./src/index.ts",
-      "garbo-combat": "./src/combat.ts",
     },
     output: {
       path: path.resolve(__dirname, "KoLmafia", "scripts", "garbage-collector"),

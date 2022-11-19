@@ -10,19 +10,9 @@ import {
   print,
   use,
 } from "kolmafia";
-import {
-  $effect,
-  $item,
-  $location,
-  adventureMacro,
-  get,
-  getActiveEffects,
-  have,
-  Macro,
-  sum,
-  uneffect,
-} from "libram";
+import { $effect, $item, $location, get, getActiveEffects, have, sum, uneffect } from "libram";
 import { acquire } from "../acquire";
+import { garboAdventure, Macro } from "../combat";
 import { maxBy, safeRestore } from "../lib";
 import { pyecAvailable, yachtzeeBuffValue } from "./lib";
 import { getBestWaterBreathingEquipment } from "./outfit";
@@ -211,7 +201,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
           use(1, $item`11-leaf clover`);
         }
         if (haveFishyPipe) use(1, $item`fishy pipe`);
-        adventureMacro($location`The Brinier Deepers`, Macro.abort());
+        garboAdventure($location`The Brinier Deepers`, Macro.abort());
         if (get("lastAdventure") !== "The Brinier Deepers") {
           print(
             "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
