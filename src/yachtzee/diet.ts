@@ -446,6 +446,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const havePYECCharge = pyecAvailable();
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
+  visitUrl("desc_item.php?whichitem=800334855"); // Ensure that our sweat tracker is updated
   const sweatOutsAvailable = clamp(
     Math.floor(get("sweat") / 25),
     0,
