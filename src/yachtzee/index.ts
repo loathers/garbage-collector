@@ -34,7 +34,7 @@ import { potionSetup } from "../potions";
 import { prepRobortender } from "../tasks/dailyFamiliars";
 import { yachtzeePotionSetup } from "./buffs";
 import { executeNextDietStep, yachtzeeChainDiet } from "./diet";
-import { pyecAvailable } from "./lib";
+import { pyecAvailable, shrugIrrelevantSongs } from "./lib";
 import {
   getBestWaterBreathingEquipment,
   maximizeMeat,
@@ -145,6 +145,7 @@ export function yachtzeeChain(): void {
   set("_garboYachtzeeChainCompleted", true);
   globalOptions.yachtzeeChain = false;
   if (!globalOptions.noDiet) {
+    shrugIrrelevantSongs();
     runDiet();
     prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
   }
