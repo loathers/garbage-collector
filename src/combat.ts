@@ -44,6 +44,7 @@ import {
   $location,
   $locations,
   $monster,
+  $monsters,
   $skill,
   $slot,
   $thralls,
@@ -614,21 +615,24 @@ export class Macro extends StrictMacro {
 }
 
 function customizeMacro<M extends StrictMacro>(macro: M) {
+  const base = Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill());
   if (have($effect`Eldritch Attunement`)) {
-    return Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat()).step(macro);
+    return base.if_($monster`Eldritch Tentacle`, Macro.basicCombat()).step(macro);
   } else if (getTodaysHolidayWanderers().length !== 0) {
-    return Macro.ifHolidayWanderer(
-      Macro.externalIf(
-        haveEquipped($item`backup camera`) &&
-          get("_backUpUses") < 11 &&
-          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-          myFamiliar() === meatFamiliar(),
-        Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
-        Macro.basicCombat()
+    return base
+      .ifHolidayWanderer(
+        Macro.externalIf(
+          haveEquipped($item`backup camera`) &&
+            get("_backUpUses") < 11 &&
+            get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+            myFamiliar() === meatFamiliar(),
+          Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
+          Macro.basicCombat()
+        )
       )
-    ).step(macro);
+      .step(macro);
   } else {
-    return macro;
+    return base.step(macro);
   }
 }
 

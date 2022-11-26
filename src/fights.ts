@@ -638,7 +638,6 @@ const pygmyMacro = Macro.step(
     Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item))
   )
 )
-  .if_($monsters`giant rubber spider, time-spinner prank`, Macro.basicCombat())
   .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`))
   .ifHolidayWanderer(Macro.basicCombat())
   .abort();
@@ -890,16 +889,11 @@ const freeFightSources = [
         get("_monstersMapped") <
           (getBestItemStealZone(true) && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
       ) {
-        withMacro(
-          Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill()).skill(
-            $skill`Use the Force`
-          ),
-          () => {
-            mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
-            runCombat();
-            runChoice(-1);
-          }
-        );
+        withMacro(Macro.skill($skill`Use the Force`), () => {
+          mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
+          runCombat();
+          runChoice(-1);
+        });
       } else {
         if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
           retrieveItem(1, $item`tennis ball`);
@@ -919,7 +913,6 @@ const freeFightSources = [
               $monster`dog-alien`,
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
             )
-            .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
             .step("pickpocket")
             .skill($skill`Use the Force`)
         );
@@ -2059,12 +2052,7 @@ export function deliverThesisIfAble(): void {
     thesisLocation = $location`Hamburglaris Shield Generator`;
   }
 
-  garboAdventure(
-    thesisLocation,
-    Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.basicCombat()).skill(
-      $skill`deliver your thesis!`
-    )
-  );
+  garboAdventure(thesisLocation, Macro.skill($skill`deliver your thesis!`));
   postCombatActions();
 }
 
