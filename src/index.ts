@@ -321,7 +321,6 @@ export function main(argString = ""): void {
       choiceAdventureScript: "",
       counterScript: "",
       familiarScript: "",
-      customCombatScript: "garbo",
       currentMood: "apathetic",
       autoTuxedo: true,
       autoPinkyRing: true,
