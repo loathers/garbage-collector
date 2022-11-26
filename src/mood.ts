@@ -231,9 +231,11 @@ const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of
 const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
 const otherwiseBadEffects = $effects`Temporary Blindness`;
 export function shrugBadEffects(...exclude: Effect[]): void {
-  [...stings, ...textAlteringEffects, ...teleportEffects, ...otherwiseBadEffects].forEach((effect) => {
-    if (have(effect) && !exclude.includes(effect)) {
-      uneffect(effect);
+  [...stings, ...textAlteringEffects, ...teleportEffects, ...otherwiseBadEffects].forEach(
+    (effect) => {
+      if (have(effect) && !exclude.includes(effect)) {
+        uneffect(effect);
+      }
     }
-  });
+  );
 }
