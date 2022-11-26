@@ -142,7 +142,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
       name: "Lutz, the Ice Skate",
       turns: 30 + (haveFishyPipe ? 10 : 0),
       cost:
-        get("_skateBuff1", false) || get("skateParkStatus") !== "ice"
+        get("_skateBuff1") || get("skateParkStatus") !== "ice"
           ? Infinity
           : bestWaterBreathingEquipment.cost,
       action: () => {

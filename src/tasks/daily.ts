@@ -380,7 +380,7 @@ export const DailyTasks: Task[] = [
   },
   {
     name: "Summon Demon",
-    ready: () => get("demonName2", false) && get("questL11Manor") === "finished",
+    ready: () => !!get("demonName2") && get("questL11Manor") === "finished",
     completed: () => get("demonSummoned"),
     do: () => cliExecute("summon Preternatural Greed"),
   },

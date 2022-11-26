@@ -444,7 +444,7 @@ function generateTurnsAtEndOfDay(): void {
     myAdventures() === 1 + globalOptions.saveTurns &&
     !globalOptions.noDiet
   ) {
-    while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25 && myInebriety() > 0) {
+    while (get("_sweatOutSomeBoozeUsed") < 3 && get("sweat") >= 25 && myInebriety() > 0) {
       useSkill($skill`Sweat Out Some Booze`);
     }
     consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");

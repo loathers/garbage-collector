@@ -94,12 +94,12 @@ function fillPantsgivingFullness(): void {
 function fillSweatyLiver(): void {
   if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
 
-  const castsWanted = 3 - get("_sweatOutSomeBoozeUsed", 0);
+  const castsWanted = 3 - get("_sweatOutSomeBoozeUsed");
   if (castsWanted <= 0 || !have($item`designer sweatpants`)) return;
 
   const sweatNeeded = 25 * castsWanted;
-  if (get("sweat", 0) >= sweatNeeded) {
-    while (get("_sweatOutSomeBoozeUsed", 0) < 3) {
+  if (get("sweat") >= sweatNeeded) {
+    while (get("_sweatOutSomeBoozeUsed") < 3) {
       useSkill($skill`Sweat Out Some Booze`);
     }
     consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
