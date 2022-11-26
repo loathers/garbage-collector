@@ -607,7 +607,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       ? 1
       : 0;
   const borisBreads =
-    !get("unknownRecipe10978", true) &&
+    !get("unknownRecipe10978") &&
     haveEffect($effect`Inspired Chef`) < yachtzeeTurns &&
     myFullness() + 1 + slidersToEat * 5 + toastsToEat + horseradishes <=
       fullnessLimit() + toInt(haveDistentionPill)

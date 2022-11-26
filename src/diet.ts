@@ -578,14 +578,14 @@ export function potionMenu(
 
   // Replace string with BooleanProperty later
   const ofLegendPotion = (item: Item, prefName: string) => {
-    if (get(prefName, false)) return [];
+    if (get(prefName, true)) return [];
 
     const recipes = [
       item,
       ...$items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`,
     ].map((i) => toInt(i));
 
-    if (recipes.some((id) => get(`unknownRecipe${id}`, false))) return [];
+    if (recipes.some((id) => get(`unknownRecipe${id}`, true))) return [];
 
     return limitedPotion(item, 1, {
       price:

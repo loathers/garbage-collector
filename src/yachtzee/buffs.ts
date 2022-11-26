@@ -68,7 +68,7 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
 
   shrugIrrelevantSongs();
 
-  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed", false)) {
+  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
     const doublingPotions = farmingPotions
       .filter(
         (potion) =>
