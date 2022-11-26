@@ -15609,7 +15609,7 @@ function checkGithubVersion() {
       var releaseCommit = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.commit;
       (0,external_kolmafia_namespaceObject.print)("Garbo is out of date. Please run 'git update!'", "red");
       (0,external_kolmafia_namespaceObject.print)("Local Version: ".concat((0,external_kolmafia_namespaceObject.gitInfo)("Loathing-Associates-Scripting-Society-garbage-collector-release").commit, "."));
-      (0,external_kolmafia_namespaceObject.print)("Release Version: ".concat(releaseCommit, "."));
+      (0,external_kolmafia_namespaceObject.print)("Release Version: ".concat(releaseCommit === null || releaseCommit === void 0 ? void 0 : releaseCommit.sha, "."));
     }
   }
 }
