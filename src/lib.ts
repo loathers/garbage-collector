@@ -415,7 +415,7 @@ export function checkGithubVersion(): void {
           gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit
         }.`
       );
-      print(`Release Version: ${releaseCommit}.`);
+      print(`Release Version: ${releaseCommit?.sha}.`);
     }
   }
 }
