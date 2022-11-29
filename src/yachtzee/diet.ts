@@ -35,10 +35,11 @@ import {
 import { acquire } from "../acquire";
 import { hasMonsterReplacers } from "../extrovermectin";
 import { globalOptions } from "../lib";
+import { Potion } from "../potions";
 import { garboValue } from "../session";
 import synthesize from "../synthesis";
 import { estimatedTurns } from "../turns";
-import { yachtzeePotionSetup } from "./buffs";
+import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
 import { freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
 
@@ -140,6 +141,10 @@ class YachtzeeDietUtils {
       new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => {
         use($item`Clara's bell`);
         globalOptions.clarasBellClaimed = true;
+      }),
+      new YachtzeeDietEntry("Deep Dish of Legend", 0, 2, 0, 0, (n: number) => {
+        ensureConsumable("Deep Dish of Legend", n, 2, 0, 0);
+        eat(n, $item`Deep Dish of Legend`);
       }),
       new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, useSpikolodonSpikes),
     ];
@@ -603,14 +608,31 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   }
 
   const horseradishes =
+    mallPrice($item`jumping horseradish`) <= 60000 &&
     haveEffect($effect`Kicked in the Sinuses`) < yachtzeeTurns &&
     myFullness() + 1 + slidersToEat * 5 + toastsToEat <= fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
   const borisBreads =
     !get("unknownRecipe10978") &&
+    retrievePrice($item`Boris's bread`) <= 60000 &&
     haveEffect($effect`Inspired Chef`) < yachtzeeTurns &&
     myFullness() + 1 + slidersToEat * 5 + toastsToEat + horseradishes <=
+      fullnessLimit() + toInt(haveDistentionPill)
+      ? 1
+      : 0;
+  // Opportunistically fit in Deep Dish of Legend only if we have enough stomach space
+  const pizzaAdditionalAdvPerFullness = 24 / 2 - 31.5 / 5;
+  const deepDishValue =
+    yachtzeePotionProfits(new Potion($item`Deep Dish of Legend`), yachtzeeTurns) +
+    pizzaAdditionalAdvPerFullness * 2 * VOA;
+  const deepDishPizzas =
+    !get("deepDishOfLegendEaten") &&
+    deepDishValue > retrievePrice($item`Deep Dish of Legend`) &&
+    !get("unknownRecipe11000") &&
+    !get("unknownRecipe10988") &&
+    !get("unknownRecipe10978") &&
+    myFullness() + 2 + slidersToEat * 5 + toastsToEat + horseradishes + borisBreads <=
       fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
@@ -692,6 +714,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     ["beggin' cologne", cologneToChew],
     ["jumping horseradish", horseradishes],
     ["Boris's bread", borisBreads],
+    ["Deep Dish of Legend", deepDishPizzas],
   ];
 
   const specialEntries: [string, number, (n: number, name?: string) => void][] = (
@@ -757,6 +780,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   acquire(filters, $item`mojo filter`, 2 * mallPrice($item`mojo filter`));
   acquire(horseradishes, $item`jumping horseradish`, 60000);
   acquire(borisBreads, $item`Boris's bread`, 60000);
+  acquire(deepDishPizzas, $item`Deep Dish of Legend`, 1.2 * deepDishValue);
 
   // Get fishy turns
   print("Getting fishy turns", "purple");
