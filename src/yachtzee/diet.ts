@@ -627,6 +627,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     yachtzeePotionProfits(new Potion($item`Deep Dish of Legend`), yachtzeeTurns) +
     pizzaAdditionalAdvPerFullness * 2 * VOA;
   const deepDishPizzas =
+    !get("deepDishOfLegendEaten") &&
     deepDishValue > retrievePrice($item`Deep Dish of Legend`) &&
     !get("unknownRecipe11000") &&
     !get("unknownRecipe10988") &&
