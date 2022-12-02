@@ -30611,7 +30611,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(26978);
+  sinceKolmafiaRevision(26987);
   checkGithubVersion();
 
   if (property_get("garbo_autoUserConfirm", false)) {
