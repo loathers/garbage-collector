@@ -312,17 +312,19 @@ const turns: AdventureAction[] = [
       !have($effect`Everything Looks Yellow`) &&
       romanticMonsterImpossible(),
     execute: () => {
+      const usingDuplicate = SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
+
       const location = wanderWhere("yellow ray");
-      const familiar = freeFightFamiliar({ location });
+      const familiar = freeFightFamiliar({ location, allowAttackFamiliars: !usingDuplicate });
       useFamiliar(familiar);
       freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
       cliExecute("parka dilophosaur");
-      if (SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0) {
+      if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
       }
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
-        .trySkill($skill`Duplicate`)
+        .externalIf(usingDuplicate, Macro.trySkill($skill`Duplicate`))
         .skill($skill`Spit jurassic acid`);
       garboAdventureAuto(location, macro);
       if (SourceTerminal.have()) {
