@@ -30454,9 +30454,11 @@ var turns = [{
   name: "Spit Acid",
   available: () => lib_have(template_string_$item(barfTurn_templateObject39 || (barfTurn_templateObject39 = barfTurn_taggedTemplateLiteral(["Jurassic Parka"])))) && !lib_have($effect(barfTurn_templateObject40 || (barfTurn_templateObject40 = barfTurn_taggedTemplateLiteral(["Everything Looks Yellow"])))) && romanticMonsterImpossible(),
   execute: () => {
+    var usingDuplicate = SourceTerminal_have() && duplicateUsesRemaining() > 0;
     var location = wanderWhere("yellow ray");
     var familiar = freeFightFamiliar({
-      location: location
+      location: location,
+      allowAttackFamiliars: !usingDuplicate
     });
     (0,external_kolmafia_namespaceObject.useFamiliar)(familiar);
     freeFightOutfit(new Requirement([], {
@@ -30464,11 +30466,11 @@ var turns = [{
     }));
     (0,external_kolmafia_namespaceObject.cliExecute)("parka dilophosaur");
 
-    if (SourceTerminal_have() && duplicateUsesRemaining() > 0) {
+    if (usingDuplicate) {
       educate([$skill(barfTurn_templateObject42 || (barfTurn_templateObject42 = barfTurn_taggedTemplateLiteral(["Extract"]))), $skill(barfTurn_templateObject43 || (barfTurn_templateObject43 = barfTurn_taggedTemplateLiteral(["Duplicate"])))]);
     }
 
-    var macro = combat_Macro.if_(barfTurn_embezzler, combat_Macro.meatKill()).familiarActions().trySkill($skill(barfTurn_templateObject44 || (barfTurn_templateObject44 = barfTurn_taggedTemplateLiteral(["Duplicate"])))).skill($skill(barfTurn_templateObject45 || (barfTurn_templateObject45 = barfTurn_taggedTemplateLiteral(["Spit jurassic acid"]))));
+    var macro = combat_Macro.if_(barfTurn_embezzler, combat_Macro.meatKill()).familiarActions().externalIf(usingDuplicate, combat_Macro.trySkill($skill(barfTurn_templateObject44 || (barfTurn_templateObject44 = barfTurn_taggedTemplateLiteral(["Duplicate"]))))).skill($skill(barfTurn_templateObject45 || (barfTurn_templateObject45 = barfTurn_taggedTemplateLiteral(["Spit jurassic acid"]))));
     garboAdventureAuto(location, macro);
 
     if (SourceTerminal_have()) {
