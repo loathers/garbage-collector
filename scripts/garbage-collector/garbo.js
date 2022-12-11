@@ -30814,7 +30814,6 @@ function main() {
       choiceAdventureScript: "",
       counterScript: "",
       familiarScript: "",
-      customCombatScript: "garbo",
       currentMood: "apathetic",
       autoTuxedo: true,
       autoPinkyRing: true,
