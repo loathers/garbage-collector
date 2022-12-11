@@ -25340,7 +25340,7 @@ function completeBarfQuest() {
 
     if (globuleCosts < 3 * garboValue(template_string_$item(daily_templateObject24 || (daily_templateObject24 = daily_taggedTemplateLiteral(["FunFunds\u2122"]))))) {
       (0,external_kolmafia_namespaceObject.print)("The cost of 20 toxic globules (".concat(globuleCosts, ") is less than the profits expected from 3 FunFunds\u2122 (").concat(3 * garboValue(template_string_$item(daily_templateObject25 || (daily_templateObject25 = daily_taggedTemplateLiteral(["FunFunds\u2122"])))), "). Proceeding to acquire toxic globules."), "green");
-      acquire(20, template_string_$item(daily_templateObject26 || (daily_templateObject26 = daily_taggedTemplateLiteral(["toxic globule"]))), 1.5 * globuleCosts / 20);
+      attemptCompletingBarfQuest = acquire(20, template_string_$item(daily_templateObject26 || (daily_templateObject26 = daily_taggedTemplateLiteral(["toxic globule"]))), 1.5 * globuleCosts / 20, false) >= 20;
     } else {
       attemptCompletingBarfQuest = false;
       (0,external_kolmafia_namespaceObject.print)("The cost of 20 toxic globules (".concat(globuleCosts, ") exceeds the profits expected from 3 FunFunds\u2122 (").concat(3 * garboValue(template_string_$item(daily_templateObject27 || (daily_templateObject27 = daily_taggedTemplateLiteral(["FunFunds\u2122"])))), "). Consider farming some globules yourself."), "red");
