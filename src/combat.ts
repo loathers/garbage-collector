@@ -50,7 +50,6 @@ import {
   $thralls,
   Counter,
   get,
-  getTodaysHolidayWanderers,
   have,
   SourceTerminal,
   StrictMacro,
@@ -615,12 +614,15 @@ export class Macro extends StrictMacro {
 }
 
 function customizeMacro<M extends StrictMacro>(macro: M) {
-  const base = Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill());
-  if (have($effect`Eldritch Attunement`)) {
-    return base.if_($monster`Eldritch Tentacle`, Macro.basicCombat()).step(macro);
-  } else if (getTodaysHolidayWanderers().length !== 0) {
-    return base
-      .ifHolidayWanderer(
+  return Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
+    .externalIf(
+      have($effect`Eldritch Attunement`),
+      Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
+    )
+    .ifHolidayWanderer(
+      Macro.externalIf(
+        Counter.get("Holiday Monster Window Begin") > 0 &&
+          Counter.get("Holiday Monster Window Begin") !== Infinity,
         Macro.externalIf(
           haveEquipped($item`backup camera`) &&
             get("_backUpUses") < 11 &&
@@ -630,10 +632,8 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
           Macro.basicCombat()
         )
       )
-      .step(macro);
-  } else {
-    return base.step(macro);
-  }
+    )
+    .step(macro);
 }
 
 function makeCcs<M extends StrictMacro>(macro: M) {
