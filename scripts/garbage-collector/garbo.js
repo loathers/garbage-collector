@@ -17443,14 +17443,14 @@ function initializeDireWarren() {
 
     do {
       garboAdventure($location(extrovermectin_templateObject64 || (extrovermectin_templateObject64 = extrovermectin_taggedTemplateLiteral(["The Dire Warren"]))), combat_Macro.if_($monster(extrovermectin_templateObject65 || (extrovermectin_templateObject65 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))), combat_Macro.skill($skill(extrovermectin_templateObject66 || (extrovermectin_templateObject66 = extrovermectin_taggedTemplateLiteral(["Batter Up!"]))))).step(embezzlerMacro()));
-    } while ("fluffy bunny" !== property_get("lastEncounter") && banishedMonsters.get($skill(extrovermectin_templateObject62 || (extrovermectin_templateObject62 = extrovermectin_taggedTemplateLiteral(["Batter Up!"])))) !== $monster(extrovermectin_templateObject63 || (extrovermectin_templateObject63 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))));
+    } while ((0,external_kolmafia_namespaceObject.myFury)() >= 5 && banishedMonsters.get($skill(extrovermectin_templateObject62 || (extrovermectin_templateObject62 = extrovermectin_taggedTemplateLiteral(["Batter Up!"])))) !== $monster(extrovermectin_templateObject63 || (extrovermectin_templateObject63 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))));
   } else {
     var banish = lib_maxBy(options, external_kolmafia_namespaceObject.mallPrice, true);
     acquire(1, banish, 50000, true);
 
     do {
       garboAdventure($location(extrovermectin_templateObject67 || (extrovermectin_templateObject67 = extrovermectin_taggedTemplateLiteral(["The Dire Warren"]))), combat_Macro.if_($monster(extrovermectin_templateObject68 || (extrovermectin_templateObject68 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))), combat_Macro.item(banish)).step(embezzlerMacro()));
-    } while ("fluffy bunny" !== property_get("lastEncounter"));
+    } while ("fluffy bunny" !== property_get("lastEncounter") && !property_get("banishedMonsters").includes("fluffy bunny"));
   }
 }
 
