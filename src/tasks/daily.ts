@@ -226,7 +226,8 @@ export function completeBarfQuest(): void {
         }). Proceeding to acquire toxic globules.`,
         "green"
       );
-      acquire(20, $item`toxic globule`, (1.5 * globuleCosts) / 20);
+      attemptCompletingBarfQuest =
+        acquire(20, $item`toxic globule`, (1.5 * globuleCosts) / 20, false) >= 20;
     } else {
       attemptCompletingBarfQuest = false;
       print(
