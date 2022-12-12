@@ -621,16 +621,12 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
     )
     .ifHolidayWanderer(
       Macro.externalIf(
-        Counter.get("Holiday Monster Window Begin") > 0 &&
-          Counter.get("Holiday Monster Window Begin") !== Infinity,
-        Macro.externalIf(
-          haveEquipped($item`backup camera`) &&
-            get("_backUpUses") < 11 &&
-            get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
-            myFamiliar() === meatFamiliar(),
-          Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
-          Macro.basicCombat()
-        )
+        haveEquipped($item`backup camera`) &&
+          get("_backUpUses") < 11 &&
+          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+          myFamiliar() === meatFamiliar(),
+        Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
+        Macro.basicCombat()
       )
     )
     .step(macro);
