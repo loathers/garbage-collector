@@ -44,12 +44,12 @@ import {
   $location,
   $locations,
   $monster,
+  $monsters,
   $skill,
   $slot,
   $thralls,
   Counter,
   get,
-  getTodaysHolidayWanderers,
   have,
   SourceTerminal,
   StrictMacro,
@@ -614,10 +614,12 @@ export class Macro extends StrictMacro {
 }
 
 function customizeMacro<M extends StrictMacro>(macro: M) {
-  if (have($effect`Eldritch Attunement`)) {
-    return Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat()).step(macro);
-  } else if (getTodaysHolidayWanderers().length !== 0) {
-    return Macro.ifHolidayWanderer(
+  return Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
+    .externalIf(
+      have($effect`Eldritch Attunement`),
+      Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
+    )
+    .ifHolidayWanderer(
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
@@ -626,10 +628,8 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
         Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
         Macro.basicCombat()
       )
-    ).step(macro);
-  } else {
-    return macro;
-  }
+    )
+    .step(macro);
 }
 
 function makeCcs<M extends StrictMacro>(macro: M) {
