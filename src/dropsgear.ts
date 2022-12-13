@@ -448,7 +448,11 @@ export function usingThumbRing(): boolean {
 
 let juneCleaverEV: number | null = null;
 function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
-  if (!have($item`June cleaver`) || get("_juneCleaverFightsLeft") > estimatedTurns()) {
+  if (
+    !have($item`June cleaver`) ||
+    get("_juneCleaverFightsLeft") > estimatedTurns() ||
+    !get("_juneCleaverFightsLeft")
+  ) {
     return new Map();
   }
   if (!juneCleaverEV) {
