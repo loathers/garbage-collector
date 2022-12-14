@@ -1,6 +1,8 @@
 import {
-<<<<<<< HEAD
+  autosellPrice,
   Coinmaster,
+  historicalAge,
+  historicalPrice,
   inebrietyLimit,
   Item,
   myAdventures,
@@ -12,18 +14,6 @@ import {
   totalTurnsPlayed,
 } from "kolmafia";
 import { $item, $items, get, getSaleValue, property, Session, set, sumNumbers } from "libram";
-=======
-  autosellPrice,
-  Coinmaster,
-  historicalAge,
-  historicalPrice,
-  Item,
-  print,
-  sellPrice,
-  toInt,
-} from "kolmafia";
-import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
->>>>>>> main
 import { formatNumber, globalOptions, HIGHLIGHT, resetDailyPreference } from "./lib";
 
 function currency(...items: Item[]): () => number {
@@ -392,12 +382,9 @@ export function printGarboSession(): void {
 
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
-<<<<<<< HEAD
 
   printMarginalSession();
-=======
   if (globalOptions.quickMode) {
     print("Quick mode was enabled, results may be less accurate than normal.");
   }
->>>>>>> main
 }
