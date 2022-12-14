@@ -1,12 +1,15 @@
-import { canAdv } from "canadv.ash";
 import {
   availableChoiceOptions,
+  canAdventure,
+  choiceFollowsFight,
   cliExecute,
   eat,
   Familiar,
   fileToBuffer,
   gametimeToInt,
   getLocketMonsters,
+  gitAtHead,
+  gitInfo,
   handlingChoice,
   haveSkill,
   inebrietyLimit,
@@ -16,11 +19,13 @@ import {
   meatDropModifier,
   Monster,
   mpCost,
+  myFamiliar,
   myHp,
   myInebriety,
   myMaxhp,
   myMaxmp,
   myMp,
+  mySoulsauce,
   myTurncount,
   print,
   printHtml,
@@ -28,6 +33,7 @@ import {
   restoreMp,
   runChoice,
   runCombat,
+  soulsauceCost,
   todayToString,
   toSlot,
   toUrl,
@@ -40,6 +46,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $location,
   $monster,
@@ -49,6 +56,7 @@ import {
   bestLibramToCast,
   ChateauMantegna,
   CombatLoversLocket,
+  Counter,
   ensureFreeRun,
   get,
   getKramcoWandererChance,
@@ -87,6 +95,7 @@ export const globalOptions: {
   noDiet: boolean;
   clarasBellClaimed: boolean;
   yachtzeeChain: boolean;
+  quickMode: boolean;
 } = {
   stopTurncount: null,
   ascending: false,
@@ -99,12 +108,14 @@ export const globalOptions: {
   noDiet: false,
   clarasBellClaimed: get("_claraBellUsed"),
   yachtzeeChain: false,
+  quickMode: false,
 };
 
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
 
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
+export const ESTIMATED_OVERDRUNK_TURNS = 60;
 
 export const propertyManager = new PropertiesManager();
 
@@ -195,13 +206,10 @@ export function mapMonster(location: Location, monster: Monster): void {
   const fightPage = visitUrl(
     `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`
   );
-  if (!fightPage.includes(monster.name)) throw "Something went wrong starting the fight.";
-}
-
-export function argmax<T>(values: [T, number][]): T {
-  return values.reduce(([minValue, minScore], [value, score]) =>
-    score > minScore ? [value, score] : [minValue, minScore]
-  )[0];
+  if (!fightPage.includes(monster.name)) {
+    throw "Something went wrong starting the fight.";
+  }
+  if (choiceFollowsFight()) runChoice(-1);
 }
 
 /**
@@ -302,17 +310,17 @@ export function printHelpMenu(): void {
  * @returns The expected value of using a pillkeeper charge to fight an embezzler
  */
 export function pillkeeperOpportunityCost(): number {
-  const canTreasury = canAdv($location`Cobb's Knob Treasury`, false);
+  const canTreasury = canAdventure($location`Cobb's Knob Treasury`);
 
-  const alternateUse = [
+  const alternateUses = [
     { can: canTreasury, value: 3 * get("valueOfAdventure") },
     {
       can: realmAvailable("sleaze"),
       value: 40000,
     },
-  ]
-    .filter((x) => x.can)
-    .sort((a, b) => b.value - a.value)[0];
+  ].filter((x) => x.can);
+
+  const alternateUse = alternateUses.length ? maxBy(alternateUses, "value") : undefined;
   const alternateUseValue = alternateUse?.value;
 
   if (!alternateUseValue) return 0;
@@ -347,6 +355,10 @@ export function burnLibrams(mpTarget = 0): void {
 }
 
 export function safeRestoreMpTarget(): number {
+  //  If our max MP is close to 200, we could be restoring every turn even if we don't need to, avoid that case.
+  if (Math.abs(myMaxmp() - 200) < 40) {
+    return Math.min(myMaxmp(), 100);
+  }
   return Math.min(myMaxmp(), 200);
 }
 
@@ -360,44 +372,56 @@ export function safeRestore(): void {
       );
     }
   }
-  if (myHp() < myMaxhp() * 0.5) {
-    restoreHp(myMaxhp() * 0.9);
+  if (myHp() < Math.min(myMaxhp() * 0.5, get("garbo_restoreHpTarget", 2000))) {
+    restoreHp(Math.min(myMaxhp() * 0.9, get("garbo_restoreHpTarget", 2000)));
   }
   const mpTarget = safeRestoreMpTarget();
-  if (myMp() < mpTarget) {
-    if (
-      have($item`Kramco Sausage-o-Matic™`) &&
-      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get("_sausagesEaten") < 23
-    ) {
-      eat($item`magical sausage`);
-    } else restoreMp(mpTarget);
+  const shouldRestoreMp = () => myMp() < mpTarget;
+
+  if (
+    shouldRestoreMp() &&
+    have($item`Kramco Sausage-o-Matic™`) &&
+    (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
+    get("_sausagesEaten") < 23
+  ) {
+    eat($item`magical sausage`);
   }
+
+  const soulFoodCasts = Math.floor(mySoulsauce() / soulsauceCost($skill`Soul Food`));
+  if (shouldRestoreMp() && soulFoodCasts > 0) useSkill(soulFoodCasts, $skill`Soul Food`);
+
+  if (shouldRestoreMp()) restoreMp(mpTarget);
 
   burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
 
+/**
+ * Compares the local version of Garbo against the most recent release branch, printing results to the CLI
+ */
 export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
   } else {
-    const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-      visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
-    );
-    const mainBranch = gitBranches.find((branchInfo) => branchInfo.name === "main");
-    const mainSha = mainBranch && mainBranch.commit ? mainBranch.commit.sha : "CustomBuild";
-    if (process.env.GITHUB_SHA === mainSha) {
+    if (gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
-      print("Garbo is out of date. Please run 'svn update!", "red");
-      print(`${process.env.GITHUB_REPOSITORY}/main is at ${mainSha}`);
+      const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
+        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
+      );
+      const releaseCommit = gitBranches.find((branchInfo) => branchInfo.name === "release")?.commit;
+      print("Garbo is out of date. Please run 'git update!'", "red");
+      print(
+        `Local Version: ${
+          gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit
+        }.`
+      );
+      print(`Release Version: ${releaseCommit?.sha}.`);
     }
   }
 }
 
-export function realmAvailable(
-  identifier: "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate"
-): boolean {
+export type RealmType = "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate";
+export function realmAvailable(identifier: RealmType): boolean {
   if (identifier === "fantasy") {
     return get(`_frToday`) || get(`frAlways`);
   } else if (identifier === "pirate") {
@@ -472,16 +496,6 @@ export const turnsToNC =
   2 * (1 - touristFamilyRatio) * touristFamilyRatio +
   3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
 
-export const steveAdventures: Map<Location, number[]> = new Map([
-  [$location`The Haunted Bedroom`, [1, 3, 1]],
-  [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
-  [$location`The Haunted Conservatory`, [1, 2, 2]],
-  [$location`The Haunted Billiards Room`, [1, 2, 2]],
-  [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
-  [$location`The Haunted Boiler Room`, [1, 2, 2]],
-  [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
-]);
-
 export function dogOrHolidayWanderer(extraEncounters: string[] = []): boolean {
   return [
     ...extraEncounters,
@@ -518,10 +532,54 @@ export function valueJuneCleaverOption(result: Item | number): number {
 
 export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
-  return options
-    .map((option) => ({
-      option,
-      value: valueJuneCleaverOption(juneCleaverChoiceValues[id][option]),
-    }))
-    .sort((a, b) => b.value - a.value)[0].option;
+  return maxBy(options, (option) => valueJuneCleaverOption(juneCleaverChoiceValues[id][option]));
+}
+
+export const romanticMonsterImpossible = (): boolean =>
+  Counter.get("Romantic Monster Window end") === Infinity ||
+  (Counter.get("Romantic Monster Window begin") > 0 &&
+    Counter.get("Romantic Monster window begin") !== Infinity) ||
+  get("_romanticFightsLeft") <= 0;
+
+export function sober(): boolean {
+  return myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
+}
+
+export function freeCrafts(): number {
+  return (
+    (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
+    (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
+  );
+}
+
+/**
+ * Find the best element of an array, where "best" is defined by some given criteria.
+ * @param array The array to traverse and find the best element of.
+ * @param optimizer Either a key on the objects we're looking at that corresponds to numerical values, or a function for mapping these objects to numbers. Essentially, some way of assigning value to the elements of the array.
+ * @param reverse Make this true to find the worst element of the array, and false to find the best. Defaults to false.
+ */
+export function maxBy<T>(
+  array: T[] | readonly T[],
+  optimizer: (element: T) => number,
+  reverse?: boolean
+): T;
+export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
+  array: T[] | readonly T[],
+  key: S,
+  reverse?: boolean
+): T;
+export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
+  array: T[] | readonly T[],
+  optimizer: ((element: T) => number) | S,
+  reverse = false
+): T {
+  if (typeof optimizer === "function") {
+    return maxBy(
+      array.map((key) => ({ key, value: optimizer(key) })),
+      "value",
+      reverse
+    ).key;
+  } else {
+    return array.reduce((a, b) => (a[optimizer] > b[optimizer] !== reverse ? a : b));
+  }
 }

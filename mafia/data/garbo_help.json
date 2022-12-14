@@ -3,7 +3,7 @@
 
   {
     "tableItem": "nobarf",
-    "description": "garbo will do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns."
+    "description": "garbo will do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day."
   },
   {
     "tableItem": "ascend",
@@ -24,6 +24,10 @@
   {
     "tableItem": "yachtzeechain",
     "description": "*EXPERIMENTAL* garbo only diets after free fights, and attempts to estimate if Yachtzee! chaining is profitable for you - if so, it consumes a specific diet which uses ~30-41 spleen; if not it automatically continues with the regular diet. Requires Spring Break Beach access (it will not grab a one-day pass for you, but will make an attempt if one is used). Sweet Synthesis is strongly recommended, as with access to other meat% buffs from Source Terminal, Fortune Teller, KGB and the summoning chamber. Having access to a PYEC (on hand or in the clan stash) is a plus."
+  },
+  {
+    "tableItem": "quick",
+    "description": "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode."
   },
   {
     "tableItem": "Note on Arguments:",

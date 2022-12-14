@@ -37,7 +37,6 @@ const sharedConfig = {
     new EnvironmentPlugin({ GITHUB_SHA: "CustomBuild", GITHUB_REPOSITORY: "CustomBuild" }),
   ],
   externals: {
-    "canadv.ash": "commonjs canadv.ash",
     kolmafia: "commonjs kolmafia",
   },
 };
@@ -46,7 +45,6 @@ const scriptsConfig = merge(
   {
     entry: {
       garbo: "./src/index.ts",
-      "garbo-combat": "./src/combat.ts",
     },
     output: {
       path: path.resolve(__dirname, "KoLmafia", "scripts", "garbage-collector"),

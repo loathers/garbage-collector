@@ -27,7 +27,7 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
+import { baseMeat, burnLibrams, questStep, safeRestoreMpTarget, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
@@ -63,6 +63,7 @@ export function meatMood(urKels = false, meat = baseMeat): Mood {
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
+  mood.skill($skill`Walk: Leisurely Amble`);
 
   const mmjCost =
     (100 -
@@ -202,6 +203,25 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   return mood;
 }
 
+/**
+ * Use buff extenders like PYEC and Bag o Tricks
+ */
+export function useBuffExtenders(): void {
+  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
+    if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
+      burnLibrams();
+      use($item`Platinum Yendorian Express Card`);
+    }
+    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
+      use($item`Bag o' Tricks`);
+    }
+  });
+  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    burnLibrams();
+    use($item`License to Chill`);
+  }
+}
+
 const stings = [
   ...$effects`Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jabañero Saucesphere, Jalapeño Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous`,
   $effect`Burning, Man`,
@@ -209,10 +229,13 @@ const stings = [
 ];
 const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
 const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
+const otherwiseBadEffects = $effects`Temporary Blindness`;
 export function shrugBadEffects(...exclude: Effect[]): void {
-  [...stings, ...textAlteringEffects, ...teleportEffects].forEach((effect) => {
-    if (have(effect) && !exclude.includes(effect)) {
-      uneffect(effect);
+  [...stings, ...textAlteringEffects, ...teleportEffects, ...otherwiseBadEffects].forEach(
+    (effect) => {
+      if (have(effect) && !exclude.includes(effect)) {
+        uneffect(effect);
+      }
     }
-  });
+  );
 }

@@ -6,9 +6,11 @@ import {
   $items,
   findLeprechaunMultiplier,
   get,
+  getModifier,
   have,
   Robortender,
 } from "libram";
+import { baseMeat } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
 
@@ -17,6 +19,7 @@ type ConstantValueFamiliar = {
   value: () => number;
 };
 
+const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
 const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Obtuse Angel`,
@@ -25,7 +28,9 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Stocking Mimic`,
     value: () =>
-      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 +
+      garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 -
+      // We can't equip an amulet coin if we equip the bag of many confections
+      (bestAlternative * baseMeat) / 100 +
       (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
         (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
   },
@@ -46,6 +51,33 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       (Robortender.currentDrinks().includes($item`Newark`)
         ? get("garbo_newarkValue", 0) * 0.25
         : 0),
+  },
+  {
+    familiar: $familiar`Twitching Space Critter`,
+
+    // Item is ludicrously overvalued and incredibly low-volume.
+    // We can remove this cap once the price reaches a lower equilibrium
+    // we probably won't, but we can.
+    value: () => Math.min(garboValue($item`twitching space egg`) * 0.0002, 690),
+  },
+  {
+    familiar: $familiar`Hobo Monkey`,
+    value: () => 75,
+  },
+  {
+    familiar: $familiar`Trick-or-Treating Tot`,
+    // This is the value of getting a pirate costume over getting an amulet coin or whatever
+    value: () =>
+      have($item`li'l pirate costume`) ? (baseMeat * (300 - bestAlternative)) / 100 : 0,
+  },
+  {
+    familiar: $familiar`Cookbookbat`,
+    value: () =>
+      (3 *
+        garboAverageValue(
+          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`
+        )) /
+      11,
   },
 ];
 

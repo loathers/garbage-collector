@@ -1,21 +1,16 @@
-import { canAdv } from "canadv.ash";
 import {
   booleanModifier,
+  canAdventure,
   chatPrivate,
   cliExecute,
-  fullnessLimit,
   getClanLounge,
   haveEquipped,
-  inebrietyLimit,
   itemAmount,
   Location,
   mallPrice,
   myAdventures,
   myFamiliar,
-  myFullness,
   myHash,
-  myInebriety,
-  myTurncount,
   print,
   retrieveItem,
   runChoice,
@@ -35,8 +30,6 @@ import {
   $locations,
   $monster,
   $skill,
-  adventureMacro,
-  adventureMacroAuto,
   ChateauMantegna,
   CombatLoversLocket,
   Counter,
@@ -51,8 +44,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { Macro, shouldRedigitize, withMacro } from "./combat";
-import { usingThumbRing } from "./dropsgear";
+import { garboAdventure, garboAdventureAuto, Macro, shouldRedigitize, withMacro } from "./combat";
 import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
@@ -64,7 +56,7 @@ import {
   WISH_VALUE,
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
-import { determineDraggableZoneAndEnsureAccess, DraggableFight } from "./wanderer";
+import { DraggableFight, wanderWhere } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -196,7 +188,7 @@ export class EmbezzlerFight {
       (this.draggable && !suggestion) ||
       (this.draggable === "backup" && suggestion && suggestion.combatPercent < 100)
     ) {
-      return determineDraggableZoneAndEnsureAccess(this.draggable);
+      return wanderWhere(this.draggable);
     }
     return suggestion ?? $location`Noob Cave`;
   }
@@ -322,12 +314,12 @@ export const chainStarters = [
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
+      canAdventure($location`Cobb's Knob Treasury`) &&
       !get("_freePillKeeperUsed") &&
       !have($effect`Lucky!`),
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
-      canAdv($location`Cobb's Knob Treasury`, true) &&
+      canAdventure($location`Cobb's Knob Treasury`) &&
       !get("_freePillKeeperUsed") &&
       !have($effect`Lucky!`)
         ? 1
@@ -339,7 +331,7 @@ export const chainStarters = [
         set("_freePillKeeperUsed", true);
         return;
       }
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
@@ -494,10 +486,10 @@ export const copySources = [
 export const wanderSources = [
   new EmbezzlerFight(
     "Lucky!",
-    () => canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`),
-    () => (canAdv($location`Cobb's Knob Treasury`, true) && have($effect`Lucky!`) ? 1 : 0),
+    () => canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`),
+    () => (canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`) ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     }
   ),
@@ -507,7 +499,7 @@ export const wanderSources = [
       get("_sourceTerminalDigitizeMonster") === embezzler && Counter.get("Digitize Monster") <= 0,
     () => (SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
@@ -526,7 +518,7 @@ export const wanderSources = [
       Counter.get("Romantic Monster window end") <= 0,
     () => 0,
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
@@ -546,7 +538,7 @@ export const wanderSources = [
         ? 1
         : 0,
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
@@ -580,7 +572,7 @@ export const conditionalSources = [
       ) {
         return;
       }
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`The Dire Warren`, options.macro, options.macro);
       toasterGaze();
       if (!doingExtrovermectin()) set("_garbo_doneGregging", true);
@@ -626,7 +618,7 @@ export const conditionalSources = [
           )
           .skill($skill`Macrometeorite`)
       ).step(options.macro);
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
       if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
@@ -670,7 +662,7 @@ export const conditionalSources = [
           )
           .skill($skill`CHEAT CODE: Replace Enemy`)
       ).step(options.macro);
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
       if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
@@ -691,7 +683,7 @@ export const conditionalSources = [
     (options: EmbezzlerFightRunOptions) => {
       const run = ltbRun();
       run.constraints.preparation?.();
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         $location`The Dire Warren`,
         Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
@@ -720,7 +712,7 @@ export const conditionalSources = [
         ? 1
         : 0,
     (options: EmbezzlerFightRunOptions) => {
-      adventureMacro($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
+      garboAdventure($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
     },
     {
       requirements: [
@@ -739,7 +731,7 @@ export const conditionalSources = [
       get("_backUpUses") < 11,
     () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
     (options: EmbezzlerFightRunOptions) => {
-      const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction(
         options.location,
         Macro.if_(
@@ -798,7 +790,9 @@ export const emergencyChainStarters = [
     () => {
       const potential = Math.floor(embezzlerCount());
       if (potential < 1) return false;
-      if (!canAdv($location`Cobb's Knob Treasury`, true)) return false;
+      if (!canAdventure($location`Cobb's Knob Treasury`)) {
+        return false;
+      }
       // Don't use clovers if wishes are available and cheaper
       if (get("_genieFightsUsed") < 3 && mallPrice($item`11-leaf clover`) >= WISH_VALUE) {
         return false;
@@ -820,12 +814,13 @@ export const emergencyChainStarters = [
     },
     () => 0,
     (options: EmbezzlerFightRunOptions) => {
+      globalOptions.askedAboutWish = false;
       property.withProperty("autoSatisfyWithCloset", true, () =>
         retrieveItem($item`11-leaf clover`)
       );
       use($item`11-leaf clover`);
       if (have($effect`Lucky!`)) {
-        const adventureFunction = options.useAuto ? adventureMacroAuto : adventureMacro;
+        const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
         adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
       }
       globalOptions.askedAboutWish = false;
@@ -854,6 +849,7 @@ export const emergencyChainStarters = [
     },
     () => 0,
     (options: EmbezzlerFightRunOptions) => {
+      globalOptions.askedAboutWish = false;
       withMacro(
         options.macro,
         () => {
@@ -885,50 +881,6 @@ export const embezzlerSources = [
 
 export function embezzlerCount(): number {
   return sum(embezzlerSources, (source: EmbezzlerFight) => source.potential());
-}
-
-export function estimatedTurns(): number {
-  // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
-  const pantsgivingAdventures = have($item`Pantsgiving`)
-    ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
-    : 0;
-  const potentialSausages =
-    itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`);
-  const sausageAdventures = have($item`Kramco Sausage-o-Matic™`)
-    ? Math.min(potentialSausages, 23 - get("_sausagesEaten"))
-    : 0;
-  const thesisAdventures = have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
-  const nightcapAdventures =
-    globalOptions.ascending &&
-    myInebriety() <= inebrietyLimit() &&
-    have($item`Drunkula's wineglass`)
-      ? 60
-      : 0;
-  const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
-
-  // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
-  const fullnessAdventures = (fullnessLimit() - myFullness()) * 8;
-  const inebrietyAdventures = (inebrietyLimit() - myInebriety()) * 7;
-  const adventuresAfterChaining =
-    globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted")
-      ? Math.max(fullnessAdventures + inebrietyAdventures - 30, 0)
-      : 0;
-
-  let turns;
-  if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
-  else if (globalOptions.noBarf) turns = embezzlerCount();
-  else {
-    turns =
-      (myAdventures() +
-        sausageAdventures +
-        pantsgivingAdventures +
-        nightcapAdventures +
-        thesisAdventures +
-        adventuresAfterChaining) *
-      thumbRingMultiplier;
-  }
-
-  return turns;
 }
 
 /**
@@ -982,14 +934,20 @@ function proceedWithOrb(): boolean {
 }
 
 function toasterGaze(): void {
+  const shore = $location`The Shore, Inc. Travel Agency`;
+  const pass = $item`Desert Bus pass`;
+  if (!canAdventure(shore) && !have(pass)) {
+    retrieveItem(pass);
+  }
   try {
-    const store = visitUrl(toUrl($location`The Shore, Inc. Travel Agency`));
+    const store = visitUrl(toUrl(shore));
     if (!store.includes("Check out the gift shop")) {
       print("Unable to stare longingly at toast");
     }
     runChoice(4);
-  } catch {
-    // orb reseting raises a mafia error
+  } catch (e) {
+    print(`We ran into an issue when gazing at toast: ${e}.`, "red");
+  } finally {
+    visitUrl("main.php");
   }
-  visitUrl("main.php");
 }

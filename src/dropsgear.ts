@@ -33,6 +33,7 @@ import {
   have,
   JuneCleaver,
   Modifiers,
+  sum,
   sumNumbers,
 } from "libram";
 import {
@@ -41,7 +42,6 @@ import {
   pickRider,
 } from "libram/dist/resources/2010/CrownOfThrones";
 import { mallMin } from "./diet";
-import { estimatedTurns } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
@@ -53,6 +53,7 @@ import {
   valueJuneCleaverOption,
 } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
+import { estimatedTurns } from "./turns";
 
 /**
  * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
@@ -161,14 +162,12 @@ function sweatpants(equipMode: BonusEquipMode) {
   return new Map([[$item`designer sweatpants`, bonus]]);
 }
 
-const bestAdventuresFromPants =
-  Item.all()
-    .filter(
-      (item) =>
-        toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
-    )
-    .map((pants) => numericModifier(pants, "Adventures"))
-    .sort((a, b) => b - a)[0] || 0;
+const alternativePants = Item.all()
+  .filter(
+    (item) => toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
+  )
+  .map((pants) => numericModifier(pants, "Adventures"));
+const bestAdventuresFromPants = Math.max(0, ...alternativePants);
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
 function cheeses(embezzlerUp: boolean) {
   return haveSomeCheese &&
@@ -233,7 +232,7 @@ function mrCheengsSpectacles() {
 
   // Items drop every 4 turns
   // TODO: Possible drops are speculated to be any pvpable potion that will never be banned by standard
-  return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 400]]);
+  return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 220]]);
 }
 
 function mrScreegesSpectacles() {
@@ -335,20 +334,27 @@ export function magnifyingGlass(): Map<Item, number> {
   ]);
 }
 
-export function bonusGear(equipMode: BonusEquipMode): Map<Item, number> {
+export function bonusGear(
+  equipMode: BonusEquipMode,
+  valueCircumstantialBonus = true
+): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(equipMode === "embezzler"),
-    ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
-    ...sweatpants(equipMode),
-    ...shavingBonus(),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
     ...bagOfManyConfections(),
-    ...snowSuit(equipMode),
-    ...mayflowerBouquet(equipMode),
-    ...(equipMode === "barf" ? magnifyingGlass() : []),
-    ...juneCleaver(equipMode),
     ...stickers(equipMode),
+    ...(valueCircumstantialBonus
+      ? new Map<Item, number>([
+          ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
+          ...sweatpants(equipMode),
+          ...shavingBonus(),
+          ...snowSuit(equipMode),
+          ...mayflowerBouquet(equipMode),
+          ...(equipMode === "barf" ? magnifyingGlass() : []),
+          ...juneCleaver(equipMode),
+        ])
+      : []),
   ]);
 }
 
@@ -447,12 +453,28 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
   }
   if (!juneCleaverEV) {
     juneCleaverEV =
-      JuneCleaver.choices.reduce(
-        (total, choice) =>
-          total +
-          valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]),
-        0
+      sum([...JuneCleaver.choices], (choice) =>
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
       ) / JuneCleaver.choices.length;
+  }
+  // If we're ascending then the chances of hitting choices in the queue is reduced
+  if (globalOptions.ascending && estimatedTurns() <= 180 && JuneCleaver.getInterval() === 30) {
+    const availEV =
+      sum([...JuneCleaver.choicesAvailable()], (choice) =>
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
+      ) / JuneCleaver.choicesAvailable().length;
+    const queueEV =
+      sum([...JuneCleaver.queue()], (choice) => {
+        const choiceValue = valueJuneCleaverOption(
+          juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]
+        );
+        const cleaverEncountersLeft = Math.floor(estimatedTurns() / 30);
+        const encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
+        const chancesLeft = Math.max(0, cleaverEncountersLeft - encountersToQueueExit);
+        const encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
+        return choiceValue * encounterProbability;
+      }) / JuneCleaver.queue().length;
+    juneCleaverEV = queueEV + availEV;
   }
 
   const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();

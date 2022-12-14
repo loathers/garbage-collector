@@ -157,11 +157,11 @@ export class StashManager {
           retrieveItem(count, item);
           if (item === $item`Buddy Bjorn`) {
             visitUrl(`desc_item.php?whichitem=${$item`Buddy Bjorn`.descid}`);
-            bjornifyFamiliar($familiar`none`);
+            bjornifyFamiliar($familiar.none);
           }
           if (item === $item`Crown of Thrones`) {
             visitUrl(`desc_item.php?whichitem=${$item`Crown of Thrones`.descid}`);
-            enthroneFamiliar($familiar`none`);
+            enthroneFamiliar($familiar.none);
           }
           if (putStash(count, item)) {
             const index = stashItems.indexOf(item);

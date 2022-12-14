@@ -3,42 +3,50 @@ import {
   descToItem,
   equip,
   getWorkshed,
+  handlingChoice,
   Item,
+  itemAmount,
   myAdventures,
+  myLevel,
   reverseNumberology,
   runChoice,
   totalTurnsPlayed,
+  use,
   useSkill,
   visitUrl,
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
+  $items,
   $location,
+  $locations,
   $skill,
   $slot,
-  adventureMacro,
+  AutumnAton,
   get,
   getRemainingStomach,
   have,
   JuneCleaver,
-  Macro,
   property,
   uneffect,
   withProperty,
 } from "libram";
+import { acquire } from "./acquire";
+import { garboAdventure, Macro } from "./combat";
 import { computeDiet, consumeDiet } from "./diet";
 import {
-  argmax,
   bestJuneCleaverOption,
   globalOptions,
   juneCleaverChoiceValues,
+  maxBy,
   safeInterrupt,
   safeRestore,
   setChoice,
   valueJuneCleaverOption,
 } from "./lib";
-import { garboValue, sessionSinceStart } from "./session";
+import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
@@ -65,12 +73,13 @@ function coldMedicineCabinet(): void {
     itemChoices.set(item, i);
   }
 
-  const bestItem = argmax(Array.from(itemChoices.keys()).map((i) => [i, garboValue(i)]));
+  const bestItem = maxBy([...itemChoices.keys()], garboValue);
   const bestChoice = itemChoices.get(bestItem);
   if (bestChoice && bestChoice > 0) {
     visitUrl("campground.php?action=workshed");
     runChoice(bestChoice);
   }
+  if (handlingChoice()) visitUrl("main.php");
 }
 
 function fillPantsgivingFullness(): void {
@@ -85,12 +94,12 @@ function fillPantsgivingFullness(): void {
 function fillSweatyLiver(): void {
   if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
 
-  const castsWanted = 3 - get("_sweatOutSomeBoozeUsed", 0);
+  const castsWanted = 3 - get("_sweatOutSomeBoozeUsed");
   if (castsWanted <= 0 || !have($item`designer sweatpants`)) return;
 
   const sweatNeeded = 25 * castsWanted;
-  if (get("sweat", 0) >= sweatNeeded) {
-    while (get("_sweatOutSomeBoozeUsed", 0) < 3) {
+  if (get("sweat") >= sweatNeeded) {
+    while (get("_sweatOutSomeBoozeUsed") < 3) {
       useSkill($skill`Sweat Out Some Booze`);
     }
     consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
@@ -138,13 +147,46 @@ function juneCleave(): void {
     equip($slot`weapon`, $item`June cleaver`);
     skipJuneCleaverChoices();
     withProperty("recoveryScript", "", () => {
-      adventureMacro($location`Noob Cave`, Macro.abort());
+      garboAdventure($location`Noob Cave`, Macro.abort());
       if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
         uneffect($effect`Beaten Up`);
       }
     });
   }
 }
+
+function stillsuit() {
+  if (itemAmount($item`tiny stillsuit`)) {
+    const familiarTarget = $familiar`Blood-Faced Volleyball`;
+    if (have(familiarTarget)) equip(familiarTarget, $item`tiny stillsuit`);
+  }
+}
+
+function funguySpores() {
+  // Mush-Mouth will drop an expensive mushroom if you do a combat with one turn of it left
+  if (
+    myLevel() >= 15 && // It applies -100 to all stats, and Level 15 seems to be a reasonable place where you will survive -100 to all stats
+    !have($effect`Mush-Mouth`) &&
+    (!globalOptions.ascending || myAdventures() > 11) &&
+    get("dinseyRollercoasterNext") // If it were to expire on a rails adventure, you'd waste the cost of the spore. Using it when next turn is rails is easiest way to make sure it won't
+  ) {
+    // According to wiki, it has a 75% chance of being a stat mushroom and 25% chance of being another mushroom
+    const value =
+      0.75 *
+        garboAverageValue(
+          ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`
+        ) +
+      0.25 *
+        garboAverageValue(
+          ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
+        );
+    if (acquire(1, $item`Fun-Guy spore`, value, false) > 0) {
+      use($item`Fun-Guy spore`);
+    }
+  }
+}
+
+const autumnAtonZones = $locations`The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley`;
 
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
@@ -157,4 +199,9 @@ export default function postCombatActions(skipDiet = false): void {
   safeInterrupt();
   safeRestore();
   updateMallPrices();
+  stillsuit();
+  funguySpores();
+  if (globalOptions.ascending || AutumnAton.turnsForQuest() < myAdventures() + 10) {
+    AutumnAton.sendTo(autumnAtonZones);
+  }
 }

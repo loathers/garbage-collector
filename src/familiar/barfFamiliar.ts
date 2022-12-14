@@ -2,9 +2,7 @@ import {
   equippedItem,
   Familiar,
   familiarWeight,
-  inebrietyLimit,
   Item,
-  myInebriety,
   numericModifier,
   print,
   Slot,
@@ -15,24 +13,23 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $slots,
   findLeprechaunMultiplier,
   get,
   getModifier,
-  have,
   Requirement,
   sum,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
-import { estimatedTurns } from "../embezzler";
-import { baseMeat, HIGHLIGHT } from "../lib";
+import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
 import { meatOutfit } from "../outfit";
-import { garboValue } from "../session";
+import { estimatedTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
-import { menu } from "./freeFightFamiliar";
-import { GeneralFamiliar, timeToMeatify } from "./lib";
+import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
+import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
 const ITEM_DROP_VALUE = 0.72;
@@ -57,12 +54,16 @@ function getCachedOutfitValues(fam: Familiar) {
   meatOutfit(
     false,
     new Requirement([], {
-      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker`,
+      // If we don't include the li'l pirate costume as a preventEquip, we could
+      // double-count the value of the pirate costume between here and constantvalue.ts,
+      // and we could apply the value of the pirate costume to every 0x leprechaun. Other items are
+      // included as strong, temporary bonuses that go away quickly in a user's BarfDay.
+      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
     })
   );
 
   const outfit = outfitSlots.map((slot) => equippedItem(slot));
-  const bonuses = bonusGear("barf");
+  const bonuses = bonusGear("barf", false);
 
   const values = {
     weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
@@ -84,7 +85,7 @@ function familiarModifier(familiar: Familiar, modifier: NumericModifier): number
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   const totalWeight = familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
 
-  return numericModifier(familiar, modifier, totalWeight, $item`none`);
+  return numericModifier(familiar, modifier, totalWeight, $item.none);
 }
 
 function familiarAbilityValue(familiar: Familiar) {
@@ -118,6 +119,9 @@ function turnsNeededForFamiliar(
 
     case "none":
       return 0;
+
+    case "special":
+      return getSpecialFamiliarLimit({ familiar, outfitValue, baselineToCompareAgainst });
   }
 }
 
@@ -132,23 +136,11 @@ export function barfFamiliar(): Familiar {
   if (timeToMeatify()) return $familiar`Grey Goose`;
   if (get("garbo_IgnoreMarginalFamiliars", false)) return meatFamiliar();
 
-  // Right now, this menu lies, and says that we cannot customize the macro used.
-  // This is because the Grey Goose has bespoke handling, and the Crimbo Shrub needs bespoke handling later on.
-  // Some day, I hope to right this wrong.
-  const baseMenu = menu(false);
-
-  if (have($familiar`Space Jellyfish`) && myInebriety() <= inebrietyLimit()) {
-    baseMenu.push({
-      familiar: $familiar`Space Jellyfish`,
-      expectedValue:
-        garboValue($item`stench jelly`) /
-        (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
-      leprechaunMultiplier: 0,
-      limit: "none",
-    });
-  }
-
-  const fullMenu = baseMenu.map(calculateOutfitValue);
+  const fullMenu = menu({
+    canChooseMacro: true,
+    location: $location`Barf Mountain`,
+    includeExperienceFamiliars: false,
+  }).map(calculateOutfitValue);
 
   const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meatFamiliar());
 
@@ -162,12 +154,17 @@ export function barfFamiliar(): Familiar {
       turnsNeededForFamiliar(option, meatFamiliarEntry)
     );
 
-    if (turnsNeeded < estimatedTurns()) return meatFamiliar();
+    if (turnsNeeded < turnsAvailable()) {
+      const shrubAvailable = viableMenu.some(
+        ({ familiar }) => familiar === $familiar`Crimbo Shrub`
+      );
+      return shrubAvailable ? $familiar`Crimbo Shrub` : meatFamiliar();
+    }
   }
 
   if (viableMenu.length === 0) return meatFamiliar();
 
-  const best = viableMenu.reduce((a, b) => (totalFamiliarValue(a) > totalFamiliarValue(b) ? a : b));
+  const best = maxBy(viableMenu, totalFamiliarValue);
 
   const familiarPrintout = (x: MarginalFamiliar) =>
     `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(
@@ -182,4 +179,32 @@ export function barfFamiliar(): Familiar {
   );
 
   return best.familiar;
+}
+
+function getSpecialFamiliarLimit({
+  familiar,
+  outfitValue,
+  baselineToCompareAgainst,
+}: {
+  familiar: Familiar;
+  outfitValue: number;
+  baselineToCompareAgainst: GeneralFamiliar & { outfitWeight: number; outfitValue: number };
+}): number {
+  switch (familiar) {
+    case $familiar`Space Jellyfish`:
+      return sum(
+        getAllJellyfishDrops().filter(
+          ({ expectedValue }) =>
+            outfitValue + familiarAbilityValue(familiar) + expectedValue >
+            totalFamiliarValue(baselineToCompareAgainst)
+        ),
+        ({ turnsAtValue }) => turnsAtValue
+      );
+
+    case $familiar`Crimbo Shrub`:
+      return Math.ceil(estimatedTurns() / 100);
+
+    default:
+      return 0;
+  }
 }

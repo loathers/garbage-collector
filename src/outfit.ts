@@ -1,7 +1,6 @@
-import { canAdv } from "canadv.ash";
 import {
   bjornifyFamiliar,
-  buy,
+  canAdventure,
   canEquip,
   cliExecute,
   enthroneFamiliar,
@@ -38,11 +37,12 @@ import {
   have,
   Requirement,
 } from "libram";
+import { acquire } from "./acquire";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { embezzlerCount } from "./embezzler";
 import { meatFamiliar } from "./familiar";
 import { baseMeat, globalOptions } from "./lib";
-import { digitizedMonstersRemaining } from "./wanderer";
+import { digitizedMonstersRemaining } from "./turns";
 
 export function freeFightOutfit(requirement?: Requirement): void {
   const equipMode = myFamiliar() === $familiar`Machine Elf` ? "dmt" : "free";
@@ -75,6 +75,8 @@ export function freeFightOutfit(requirement?: Requirement): void {
     bjornAlike === $item`Buddy Bjorn` ? $item`Crown of Thrones` : $item`Buddy Bjorn`
   );
 
+  if (myFamiliar() !== $familiar`Grey Goose`) bonusEquip.set($item`tiny stillsuit`, 69);
+
   const finalRequirement = new Requirement(parameters, {
     forceEquip,
     preventEquip: [
@@ -102,6 +104,9 @@ export function freeFightOutfit(requirement?: Requirement): void {
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
+  if (haveEquipped($item`Jurassic Parka`) && get("parkaMode") !== "dilophosaur") {
+    cliExecute("parka dilophosaur");
+  }
 
   const missingEquips = () =>
     (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
@@ -166,53 +171,55 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   const preventEquip = requirement?.maximizeOptions.preventEquip ?? [];
   const preventSlot = requirement?.maximizeOptions.preventSlot ?? [];
 
-  if (myInebriety() > inebrietyLimit()) {
-    forceEquip.push($item`Drunkula's wineglass`);
-  } else if (!embezzlerUp) {
-    if (
-      have($item`protonic accelerator pack`) &&
-      get("questPAGhost") === "unstarted" &&
-      get("nextParanormalActivity") <= totalTurnsPlayed() &&
-      !preventEquip.includes($item`protonic accelerator pack`)
-    ) {
-      forceEquip.push($item`protonic accelerator pack`);
-    }
-
-    if (have($item`mafia pointer finger ring`)) {
-      if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
-        forceEquip.push($item`mafia pointer finger ring`);
-      } else if (have($item`Operation Patriot Shield`) && myClass() === $class`Turtle Tamer`) {
-        forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
-      } else if (have($item`haiku katana`)) {
-        forceEquip.push(...$items`haiku katana, mafia pointer finger ring`);
-      } else if (
-        have($item`unwrapped knock-off retro superhero cape`) &&
-        forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
+  if (!embezzlerUp) {
+    if (myInebriety() > inebrietyLimit()) {
+      forceEquip.push($item`Drunkula's wineglass`);
+    } else {
+      if (
+        have($item`protonic accelerator pack`) &&
+        get("questPAGhost") === "unstarted" &&
+        get("nextParanormalActivity") <= totalTurnsPlayed() &&
+        !preventEquip.includes($item`protonic accelerator pack`)
       ) {
-        const gun =
-          have($item`love`) && meatFamiliar() === $familiar`Robortender`
-            ? $item`love`
-            : $item`ice nine`;
-        if (gun === $item`ice nine` && !have($item`ice nine`)) {
-          cliExecute("refresh inventory");
-          retrieveItem($item`ice nine`);
-        }
-        forceEquip.push(
-          gun,
-          ...$items`unwrapped knock-off retro superhero cape, mafia pointer finger ring`
-        );
-      } else if (have($item`Operation Patriot Shield`)) {
-        forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+        forceEquip.push($item`protonic accelerator pack`);
       }
-    }
 
-    if (
-      getKramcoWandererChance() > 0.05 &&
-      have($item`Kramco Sausage-o-Matic™`) &&
-      forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      !preventEquip.includes($item`Kramco Sausage-o-Matic™`)
-    ) {
-      forceEquip.push($item`Kramco Sausage-o-Matic™`);
+      if (have($item`mafia pointer finger ring`)) {
+        if (myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) {
+          forceEquip.push($item`mafia pointer finger ring`);
+        } else if (have($item`Operation Patriot Shield`) && myClass() === $class`Turtle Tamer`) {
+          forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+        } else if (have($item`haiku katana`)) {
+          forceEquip.push(...$items`haiku katana, mafia pointer finger ring`);
+        } else if (
+          have($item`unwrapped knock-off retro superhero cape`) &&
+          forceEquip.every((equipment) => toSlot(equipment) !== $slot`back`)
+        ) {
+          const gun =
+            have($item`love`) && meatFamiliar() === $familiar`Robortender`
+              ? $item`love`
+              : $item`ice nine`;
+          if (gun === $item`ice nine` && !have($item`ice nine`)) {
+            cliExecute("refresh inventory");
+            retrieveItem($item`ice nine`);
+          }
+          forceEquip.push(
+            gun,
+            ...$items`unwrapped knock-off retro superhero cape, mafia pointer finger ring`
+          );
+        } else if (have($item`Operation Patriot Shield`)) {
+          forceEquip.push(...$items`Operation Patriot Shield, mafia pointer finger ring`);
+        }
+      }
+
+      if (
+        getKramcoWandererChance() > 0.05 &&
+        have($item`Kramco Sausage-o-Matic™`) &&
+        forceEquip.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+        !preventEquip.includes($item`Kramco Sausage-o-Matic™`)
+      ) {
+        forceEquip.push($item`Kramco Sausage-o-Matic™`);
+      }
     }
   }
 
@@ -228,12 +235,12 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     const addedValueOfFullSword = (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
     if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
       const needed = 3 - stickerSlots.filter((sticker) => equippedItem(sticker) === UPC).length;
-      if (needed) buy(needed, UPC, addedValueOfFullSword / 3);
+      if (needed) acquire(needed, UPC, addedValueOfFullSword / 3, false);
       useUPCs();
     }
   }
 
-  if (stickerSlots.map((s) => equippedItem(s)).includes($item`none`)) {
+  if (stickerSlots.map((s) => equippedItem(s)).includes($item.none)) {
     preventEquip.push(...$items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`);
   }
 
@@ -303,6 +310,9 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
   ) {
     cliExecute("retrocape robot kill");
   }
+  if (haveEquipped($item`Jurassic Parka`) && get("parkaMode") !== "kachungasaur") {
+    cliExecute("parka kachungasaur");
+  }
 
   const missingEquips = () =>
     (compiledRequirements.maximizeOptions.forceEquip ?? []).filter(
@@ -331,9 +341,10 @@ let cachedUsingPurse: boolean | null = null;
 export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
     cachedUsingPurse =
-      !have($item`latte lovers member's mug`) ||
-      !have($familiar`Robortender`) ||
-      !canAdv($location`The Black Forest`, false);
+      myInebriety() <= inebrietyLimit() &&
+      (!have($item`latte lovers member's mug`) ||
+        (!have($familiar`Robortender`) && !have($familiar`Hobo Monkey`)) ||
+        !canAdventure($location`The Black Forest`));
   }
   return cachedUsingPurse;
 }
@@ -348,7 +359,7 @@ export function useUPCs(): void {
     const sticker = equippedItem(slot);
     if (sticker === UPC) continue;
     visitUrl("bedazzle.php");
-    if (sticker !== $item`none`) {
+    if (sticker !== $item.none) {
       visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
     }
     visitUrl(`bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`);

@@ -1,4 +1,5 @@
 import {
+  availableAmount,
   Familiar,
   familiarWeight,
   inebrietyLimit,
@@ -7,14 +8,15 @@ import {
   totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, get, have } from "libram";
-import { globalOptions } from "../lib";
+import { $effect, $familiar, $item, clamp, get, have } from "libram";
+import { ESTIMATED_OVERDRUNK_TURNS, globalOptions, turnsToNC } from "../lib";
+import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
   expectedValue: number;
   leprechaunMultiplier: number;
-  limit: "drops" | "experience" | "none";
+  limit: "drops" | "experience" | "none" | "special";
 };
 
 export function timeToMeatify(): boolean {
@@ -54,11 +56,11 @@ export function timeToMeatify(): boolean {
 
   const freeFightNow =
     get("questPAGhost") !== "unstarted" || nextVoteMonster === 0 || nextVoidMonster === 0;
-  const delay = [
+  const delay = Math.min(
     nextProtonicGhost,
     nextVoteMonster === 0 ? (get("_voteFreeFights") < 2 ? 11 : Infinity) : nextVoteMonster,
-    nextVoidMonster === 0 ? 13 : nextVoidMonster,
-  ].reduce((a, b) => (a < b ? a : b));
+    nextVoidMonster === 0 ? 13 : nextVoidMonster
+  );
 
   if (delay < myAdventures()) return false;
   // We can wait for the next free fight
@@ -78,4 +80,24 @@ export function canOpenRedPresent(): boolean {
     get("shrubGifts") === "meat" &&
     myInebriety() <= inebrietyLimit()
   );
+}
+
+/**
+ * Rough estimate of the  number of barf combats we expect to do. Used for marginal familiar tabulation.
+ * @returns A rough estimate of the number of barf combats we expect to do.
+ */
+export function turnsAvailable(): number {
+  const baseTurns = estimatedTurns();
+  const digitizes = digitizedMonstersRemaining();
+  const mapTurns = globalOptions.ascending
+    ? clamp(
+        availableAmount($item`Map to Safety Shelter Grimace Prime`),
+        0,
+        ESTIMATED_OVERDRUNK_TURNS
+      )
+    : 0;
+
+  const barfTurns = baseTurns - digitizes - mapTurns;
+  const barfCombatRate = 1 - 1 / turnsToNC;
+  return barfTurns * barfCombatRate;
 }

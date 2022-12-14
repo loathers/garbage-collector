@@ -1,17 +1,13 @@
 import {
   availableAmount,
-  booleanModifier,
   buy,
+  canEquip,
   cliExecute,
-  currentRound,
-  eat,
   getCampground,
   getClanName,
-  getCounters,
   guildStoreAvailable,
   inebrietyLimit,
   Item,
-  itemAmount,
   maximize,
   myAdventures,
   myClass,
@@ -23,14 +19,9 @@ import {
   putStash,
   retrieveItem,
   runChoice,
-  runCombat,
   setAutoAttack,
   toInt,
-  totalTurnsPlayed,
-  toUrl,
   use,
-  useFamiliar,
-  useSkill,
   visitUrl,
   xpath,
 } from "kolmafia";
@@ -38,72 +29,44 @@ import {
   $class,
   $classes,
   $coinmaster,
-  $effect,
   $item,
   $items,
-  $location,
-  $monster,
   $skill,
   $slots,
-  adventureMacro,
-  adventureMacroAuto,
-  clamp,
   Clan,
-  ensureEffect,
   get,
   getFoldGroup,
   have,
   haveInCampground,
   JuneCleaver,
-  property,
-  Requirement,
   set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
-  SourceTerminal,
 } from "libram";
-import { Macro, withMacro } from "./combat";
-import { computeDiet, consumeDiet, runDiet } from "./diet";
-import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
-import { dailyFights, deliverThesisIfAble, freeFights, printEmbezzlerLog } from "./fights";
+import { nonOrganAdventures, runDiet } from "./diet";
+import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
-  embezzlerLog,
   globalOptions,
   HIGHLIGHT,
-  kramcoGuaranteed,
+  maxBy,
   printHelpMenu,
   printLog,
   propertyManager,
   questStep,
   safeRestore,
-  setChoice,
-  steveAdventures,
   userConfirmDialog,
 } from "./lib";
-import { meatMood } from "./mood";
+import { meatMood, useBuffExtenders } from "./mood";
 import postCombatActions from "./post";
-import {
-  familiarWaterBreathingEquipment,
-  freeFightOutfit,
-  meatOutfit,
-  tryFillLatte,
-  waterBreathingEquipment,
-} from "./outfit";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
-import { estimatedTurns } from "./embezzler";
-import { determineDraggableZoneAndEnsureAccess, digitizedMonstersRemaining } from "./wanderer";
 import { potionSetup } from "./potions";
-import {
-  garboAverageValue,
-  printGarboSession,
-  startSession,
-  trackBarfSessionStatistics,
-} from "./session";
-import { canAdv } from "canadv.ash";
+import { garboAverageValue, printGarboSession, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
+import barfTurn from "./barfTurn";
+import { estimatedTurns } from "./turns";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -124,195 +87,6 @@ function ensureBarfAccess() {
   }
 }
 
-function barfTurn() {
-  const startTurns = totalTurnsPlayed();
-  trackBarfSessionStatistics();
-
-  if (SourceTerminal.have()) {
-    SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
-  }
-
-  tryFillLatte();
-
-  const steveRoom = get("nextSpookyravenStephenRoom");
-  const ghostLocation = get("ghostLocation");
-  if (
-    totalTurnsPlayed() % 37 === 0 &&
-    totalTurnsPlayed() !== get("lastLightsOutTurn") &&
-    steveRoom &&
-    steveRoom !== ghostLocation &&
-    canAdv(steveRoom)
-  ) {
-    const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
-    if (fightingSteve) {
-      useFamiliar(meatFamiliar());
-      meatOutfit(true);
-    }
-    const plan = steveAdventures.get(steveRoom);
-    if (plan) {
-      withMacro(
-        Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abort(),
-        () => {
-          visitUrl(toUrl(steveRoom));
-          for (const choiceValue of plan) {
-            runChoice(choiceValue);
-          }
-          if (fightingSteve || currentRound()) runCombat();
-        },
-        true
-      );
-    }
-  }
-
-  const embezzlerUp = getCounters("Digitize Monster", 0, 0).trim() !== "";
-
-  // a. set up mood stuff
-  meatMood().execute(estimatedTurns());
-
-  safeRestore(); // get enough mp to use summer siesta and enough hp to not get our ass kicked
-
-  // b. check for wanderers, and do them
-  if (have($item`envyfish egg`) && !get("_envyfishEggUsed")) {
-    meatOutfit(true);
-    withMacro(Macro.meatKill(), () => use($item`envyfish egg`));
-  } else if (
-    myInebriety() <= inebrietyLimit() &&
-    have($item`protonic accelerator pack`) &&
-    get("questPAGhost") !== "unstarted" &&
-    ghostLocation
-  ) {
-    useFamiliar(freeFightFamiliar(true));
-    freeFightOutfit(
-      new Requirement(ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [], {
-        forceEquip: $items`protonic accelerator pack`,
-      })
-    );
-    adventureMacro(ghostLocation, Macro.ghostBustin());
-  } else if (
-    myInebriety() <= inebrietyLimit() &&
-    have($item`"I Voted!" sticker`) &&
-    totalTurnsPlayed() % 11 === 1 &&
-    get("lastVoteMonsterTurn") < totalTurnsPlayed() &&
-    get("_voteFreeFights") < 3
-  ) {
-    useFamiliar(freeFightFamiliar(true));
-    freeFightOutfit(new Requirement([], { forceEquip: $items`"I Voted!" sticker` }));
-    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
-  } else if (myInebriety() <= inebrietyLimit() && !embezzlerUp && kramcoGuaranteed()) {
-    useFamiliar(freeFightFamiliar(true));
-    freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
-    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
-  } else if (
-    myInebriety() <= inebrietyLimit() &&
-    !embezzlerUp &&
-    have($item`cursed magnifying glass`) &&
-    get("cursedMagnifyingGlassCount") === 13 &&
-    get("_voidFreeFights") < 5
-  ) {
-    useFamiliar(freeFightFamiliar(true));
-    freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
-    adventureMacroAuto(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
-  } else {
-    // c. set up familiar
-    const location = embezzlerUp
-      ? !get("_envyfishEggUsed") &&
-        myLevel() >= 11 &&
-        (booleanModifier("Adventure Underwater") ||
-          waterBreathingEquipment.some((item) => have(item))) &&
-        (booleanModifier("Underwater Familiar") ||
-          familiarWaterBreathingEquipment.some((item) => have(item))) &&
-        (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))) &&
-        !have($item`envyfish egg`)
-        ? $location`The Briny Deeps`
-        : determineDraggableZoneAndEnsureAccess()
-      : $location`Barf Mountain`;
-
-    const underwater = location === $location`The Briny Deeps`;
-
-    // c. set up familiar
-    if (underwater) {
-      // now fight one underwater
-      if (get("questS01OldGuy") === "unstarted") {
-        visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-      }
-      retrieveItem($item`pulled green taffy`);
-      if (!have($effect`Fishy`)) use($item`fishy pipe`);
-    } else if (embezzlerUp) useFamiliar(meatFamiliar());
-    else useFamiliar(barfFamiliar());
-
-    // d. get dressed
-    meatOutfit(embezzlerUp, undefined, underwater);
-
-    if (
-      !embezzlerUp &&
-      myInebriety() > inebrietyLimit() &&
-      globalOptions.ascending &&
-      clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
-        availableAmount($item`Map to Safety Shelter Grimace Prime`)
-    ) {
-      const choiceToSet =
-        availableAmount($item`distention pill`) <
-        availableAmount($item`synthetic dog hair pill`) +
-          availableAmount($item`Map to Safety Shelter Grimace Prime`)
-          ? 1
-          : 2;
-      setChoice(536, choiceToSet);
-      ensureEffect($effect`Transpondent`);
-      use($item`Map to Safety Shelter Grimace Prime`);
-    } else {
-      adventureMacroAuto(
-        location,
-        Macro.externalIf(
-          underwater,
-          Macro.if_($monster`Knob Goblin Embezzler`, Macro.item($item`pulled green taffy`))
-        ).meatKill(),
-        Macro.if_(
-          `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
-          Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
-        ).abort()
-      );
-    }
-  }
-
-  if (myAdventures() === 1 + globalOptions.saveTurns && myInebriety() <= inebrietyLimit()) {
-    deliverThesisIfAble();
-
-    if (
-      have($item`Kramco Sausage-o-Matic™`) &&
-      (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-      get("_sausagesEaten") < 23
-    ) {
-      const available = clamp(
-        23 - get("_sausagesEaten"),
-        0,
-        itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
-      );
-      eat(available, $item`magical sausage`);
-    }
-  }
-
-  if (
-    have($item`designer sweatpants`) &&
-    myAdventures() === 1 + globalOptions.saveTurns &&
-    !globalOptions.noDiet
-  ) {
-    while (get("_sweatOutSomeBoozeUsed", 0) < 3 && get("sweat", 0) >= 25 && myInebriety() > 0) {
-      useSkill($skill`Sweat Out Some Booze`);
-    }
-    consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
-  }
-
-  if (totalTurnsPlayed() - startTurns === 1 && get("lastEncounter") === "Knob Goblin Embezzler") {
-    if (embezzlerUp) {
-      embezzlerLog.digitizedEmbezzlersFought++;
-      embezzlerLog.sources.push("Digitize");
-    } else {
-      embezzlerLog.initialEmbezzlersFought++;
-      embezzlerLog.sources.push("Unknown Source");
-    }
-  }
-}
-
 export function canContinue(): boolean {
   return (
     myAdventures() > globalOptions.saveTurns &&
@@ -321,14 +95,8 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26542);
-  print(`${process.env.GITHUB_REPOSITORY}@${process.env.GITHUB_SHA}`);
-  const forbiddenStores = property.getString("forbiddenStores").split(",");
-  if (!forbiddenStores.includes("3408540")) {
-    // Van & Duffel's Baleet Shop
-    forbiddenStores.push("3408540");
-    set("forbiddenStores", forbiddenStores.join(","));
-  }
+  sinceKolmafiaRevision(26987);
+  checkGithubVersion();
 
   if (get("garbo_autoUserConfirm", false)) {
     print(
@@ -355,6 +123,15 @@ export function main(argString = ""): void {
     if (!proceedRegardless) {
       throw new Error("User interrupt requested. Stopping Garbage Collector.");
     }
+  }
+
+  if (
+    myInebriety() > inebrietyLimit() &&
+    (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
+  ) {
+    throw new Error(
+      "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it."
+    );
   }
 
   if (get("valueOfAdventure") <= 3500) {
@@ -390,8 +167,9 @@ export function main(argString = ""): void {
       globalOptions.noDiet = true;
     } else if (arg.match(/yachtzeechain/)) {
       globalOptions.yachtzeeChain = true;
+    } else if (arg.match(/quick/)) {
+      globalOptions.quickMode = true;
     } else if (arg.match(/version/i)) {
-      checkGithubVersion();
       return;
     } else if (arg) {
       print(`Invalid argument ${arg} passed. Run garbo help to see valid arguments.`, "red");
@@ -419,7 +197,9 @@ export function main(argString = ""): void {
       if (parsedClanIdOrName) {
         Clan.with(parsedClanIdOrName, () => {
           for (const item of [...stashItems]) {
-            if (getFoldGroup(item).some((item) => have(item))) cliExecute(`fold ${item}`);
+            if (getFoldGroup(item).some((item) => have(item))) {
+              cliExecute(`fold ${item}`);
+            }
             const retrieved = retrieveItem(item);
             if (
               item === $item`Spooky Putty sheet` &&
@@ -429,7 +209,9 @@ export function main(argString = ""): void {
               continue;
             }
             print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
-            if (putStash(item, 1)) stashItems.splice(stashItems.indexOf(item), 1);
+            if (putStash(item, 1)) {
+              stashItems.splice(stashItems.indexOf(item), 1);
+            }
           }
         });
       } else throw new Error("Error: No garbo_stashClan set.");
@@ -454,6 +236,7 @@ export function main(argString = ""): void {
       autoPinkyRing: true,
       autoGarish: true,
       valueOfInventory: 2,
+      suppressMallPriceCacheMessages: true,
     });
     runDiet();
     propertyManager.resetAll();
@@ -501,6 +284,10 @@ export function main(argString = ""): void {
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
+    const maximizerCombinationLimit = globalOptions.quickMode
+      ? 100000
+      : get("maximizerCombinationLimit");
+
     propertyManager.set({
       logPreferenceChange: true,
       logPreferenceChangeFilter: [
@@ -532,8 +319,8 @@ export function main(argString = ""): void {
       afterAdventureScript: "",
       betweenBattleScript: "",
       choiceAdventureScript: "",
+      counterScript: "",
       familiarScript: "",
-      customCombatScript: "garbo",
       currentMood: "apathetic",
       autoTuxedo: true,
       autoPinkyRing: true,
@@ -542,6 +329,8 @@ export function main(argString = ""): void {
       allowSummonBurning: true,
       libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
       valueOfInventory: 2,
+      suppressMallPriceCacheMessages: true,
+      maximizerCombinationLimit: maximizerCombinationLimit,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -552,14 +341,18 @@ export function main(argString = ""): void {
           [$items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`, 3],
         ] as [Item[], number][]
       ).map(([halloweinerOption, choiceId]) => {
-        return { price: garboAverageValue(...halloweinerOption), choiceId: choiceId };
+        return {
+          price: garboAverageValue(...halloweinerOption),
+          choiceId: choiceId,
+        };
       });
-      bestHalloweiner = halloweinerOptions.sort((a, b) => b.price - a.price)[0].choiceId;
+      bestHalloweiner = maxBy(halloweinerOptions, "price").choiceId;
     }
     propertyManager.setChoices({
       1106: 3, // Ghost Dog Chow
       1107: 1, // tennis ball
       1108: bestHalloweiner,
+      1340: 1, // Accept the doctor quest
       1341: 1, // Cure her poison
     });
 
@@ -597,12 +390,15 @@ export function main(argString = ""): void {
     ) {
       visitUrl("guild.php?action=buyskill&skillid=32", true);
     }
-    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, origami pasties, Pantsgiving`;
+    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring`;
     if (
       myInebriety() <= inebrietyLimit() &&
       (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
     ) {
       stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
+    }
+    if (!have($item`Jurassic Parka`) && have($skill`Torso Awareness`)) {
+      stashItems.push($item`origami pasties`);
     }
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
@@ -618,13 +414,23 @@ export function main(argString = ""): void {
           (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
         ) {
           runDiet();
+        } else if (!globalOptions.simulateDiet) {
+          nonOrganAdventures();
         }
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
 
+        const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack`;
+        if (globalOptions.quickMode) {
+          // Brimstone equipment explodes the number of maximize combinations
+          preventEquip.push(
+            ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`
+          );
+        }
+
         setDefaultMaximizeOptions({
-          preventEquip: $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack`,
+          preventEquip: preventEquip,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
@@ -639,6 +445,7 @@ export function main(argString = ""): void {
           potionSetup(false);
           maximize("MP", false);
           meatMood().execute(estimatedTurns());
+          useBuffExtenders();
           try {
             while (canContinue()) {
               barfTurn();

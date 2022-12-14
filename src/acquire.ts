@@ -19,7 +19,7 @@ import {
 import { get, withProperty } from "libram";
 import { garboValue } from "./session";
 
-const priceCaps: { [index: string]: number } = {
+export const priceCaps: { [index: string]: number } = {
   "cuppa Voraci tea": 200000,
   "cuppa Sobrie tea": 200000,
   "potion of the field gar": 50000,
@@ -36,10 +36,13 @@ export function acquire(
   item: Item,
   maxPrice?: number,
   throwOnFail = true,
-  maxAggregateCost?: number
+  maxAggregateCost?: number,
+  tryRetrievingUntradeable = false
 ): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
-  if (!item.tradeable || (maxPrice !== undefined && maxPrice <= 0)) return 0;
+  if ((!item.tradeable && !tryRetrievingUntradeable) || (maxPrice !== undefined && maxPrice <= 0)) {
+    return 0;
+  }
   if (maxPrice === undefined) throw new Error(`No price cap for ${item.name}.`);
 
   print(`Trying to acquire ${qty} ${item.plural}; max price ${maxPrice.toFixed(0)}.`, "green");
