@@ -343,7 +343,6 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`green eggnog`),
 
     // SPLEEN
-    new MenuItem($item`octolus oculus`),
     new MenuItem($item`prismatic wad`),
     new MenuItem($item`transdermal smoke patch`),
     new MenuItem($item`antimatter wad`),

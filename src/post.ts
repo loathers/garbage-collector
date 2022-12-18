@@ -5,6 +5,7 @@ import {
   getWorkshed,
   Item,
   itemAmount,
+  mallPrice,
   myAdventures,
   myLevel,
   reverseNumberology,
@@ -178,7 +179,10 @@ function funguySpores() {
         garboAverageValue(
           ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
         );
-    if (acquire(1, $item`Fun-Guy spore`, value, false) > 0) {
+    if (
+      mallPrice($item`Fun-Guy spore`) < value &&
+      acquire(1, $item`Fun-Guy spore`, value, false) > 0
+    ) {
       use($item`Fun-Guy spore`);
     }
   }

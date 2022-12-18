@@ -311,6 +311,7 @@ export function main(argString = ""): void {
       hpAutoRecoveryTarget: 0.0,
       mpAutoRecovery: -0.05,
       mpAutoRecoveryTarget: 0.0,
+      manaBurningThreshold: -0.05,
       afterAdventureScript: "",
       betweenBattleScript: "",
       choiceAdventureScript: "",
