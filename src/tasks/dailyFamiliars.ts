@@ -58,13 +58,6 @@ export const DailyFamiliarTasks: Task[] = [
     outfit: { familiar: $familiar`Crimbo Shrub` },
   },
   {
-    name: "Mummery Meat",
-    ready: () => have($item`mumming trunk`),
-    completed: () => get("_mummeryMods").includes("Meat Drop"),
-    do: () => cliExecute("mummery meat"),
-    outfit: { familiar: meatFamiliar() },
-  },
-  {
     name: "Mummery Item",
     ready: () => have($item`mumming trunk`) && have($familiar`Trick-or-Treating Tot`),
     completed: () => get("_mummeryMods").includes("Item Drop"),
