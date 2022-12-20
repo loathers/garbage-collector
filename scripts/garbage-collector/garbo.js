@@ -25471,12 +25471,12 @@ var DailyTasks = [{
 }, {
   name: "Beach Comb Buff",
   ready: () => lib_have(template_string_$item(daily_templateObject32 || (daily_templateObject32 = daily_taggedTemplateLiteral(["Beach Comb"])))),
-  completed: () => property_get("_beachHeadsUsed").split(",").includes("10") || property_get("_freeBeachWalksUsed") === 11,
+  completed: () => property_get("_beachHeadsUsed").split(",").includes("10") || property_get("_freeBeachWalksUsed") >= 11,
   do: () => tryHead($effect(daily_templateObject33 || (daily_templateObject33 = daily_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))))
 }, {
   name: "Beach Comb Free Walks",
   ready: () => lib_have(template_string_$item(daily_templateObject34 || (daily_templateObject34 = daily_taggedTemplateLiteral(["Beach Comb"])))),
-  completed: () => property_get("_freeBeachWalksUsed") === 11,
+  completed: () => property_get("_freeBeachWalksUsed") >= 11,
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("combo ".concat(11 - property_get("_freeBeachWalksUsed")))
 }, {
   name: "Clan Fortune Buff",
