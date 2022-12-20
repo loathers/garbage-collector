@@ -23383,17 +23383,19 @@ function stillsuit() {
   }
 }
 
+var funguyWorthIt = true;
+
 function funguySpores() {
   // Mush-Mouth will drop an expensive mushroom if you do a combat with one turn of it left
   if ((0,external_kolmafia_namespaceObject.myLevel)() >= 15 && // It applies -100 to all stats, and Level 15 seems to be a reasonable place where you will survive -100 to all stats
-  !lib_have($effect(post_templateObject12 || (post_templateObject12 = post_taggedTemplateLiteral(["Mush-Mouth"])))) && (!lib_globalOptions.ascending || (0,external_kolmafia_namespaceObject.myAdventures)() > 11) && property_get("dinseyRollercoasterNext") // If it were to expire on a rails adventure, you'd waste the cost of the spore. Using it when next turn is rails is easiest way to make sure it won't
-  ) {
+  !lib_have($effect(post_templateObject12 || (post_templateObject12 = post_taggedTemplateLiteral(["Mush-Mouth"])))) && (!lib_globalOptions.ascending || (0,external_kolmafia_namespaceObject.myAdventures)() > 11) && property_get("dinseyRollercoasterNext") && // If it were to expire on a rails adventure, you'd waste the cost of the spore. Using it when next turn is rails is easiest way to make sure it won't
+  funguyWorthIt) {
     // According to wiki, it has a 75% chance of being a stat mushroom and 25% chance of being another mushroom
     var value = 0.75 * garboAverageValue.apply(void 0, post_toConsumableArray(template_string_$items(post_templateObject13 || (post_templateObject13 = post_taggedTemplateLiteral(["Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom"]))))) + 0.25 * garboAverageValue.apply(void 0, post_toConsumableArray(template_string_$items(post_templateObject14 || (post_templateObject14 = post_taggedTemplateLiteral(["Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom"])))));
 
     if (acquire(1, template_string_$item(post_templateObject15 || (post_templateObject15 = post_taggedTemplateLiteral(["Fun-Guy spore"]))), value, false) > 0) {
       (0,external_kolmafia_namespaceObject.use)(template_string_$item(post_templateObject16 || (post_templateObject16 = post_taggedTemplateLiteral(["Fun-Guy spore"]))));
-    }
+    } else funguyWorthIt = false;
   }
 }
 
