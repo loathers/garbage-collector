@@ -574,11 +574,13 @@ export function maxBy<S extends string | number | symbol, T extends { [x in S]: 
   reverse = false
 ): T {
   if (typeof optimizer === "function") {
-    return maxBy(
-      array.map((key) => ({ key, value: optimizer(key) })),
-      "value",
-      reverse
-    ).key;
+    return [...array].reduce(
+      ({ value, item }, other) => {
+        const otherValue = optimizer(other);
+        return value >= otherValue ? { value, item } : { value: otherValue, item: other };
+      },
+      { item: array[0], value: optimizer(array[0]) }
+    ).item;
   } else {
     return array.reduce((a, b) => (a[optimizer] > b[optimizer] !== reverse ? a : b));
   }
