@@ -380,6 +380,12 @@ export const DailyTasks: Task[] = [
     do: () => cliExecute("fortune buff meat"),
   },
   {
+    name: "April Shower",
+    ready: () => have($item`Clan VIP Lounge key`) && getClanLounge()["April Shower"] !== undefined,
+    completed: () => get("_aprilShower"),
+    do: () => cliExecute(`shower ${myPrimestat()}`),
+  },
+  {
     name: "Summon Demon",
     ready: () => !!get("demonName2") && get("questL11Manor") === "finished",
     completed: () => get("demonSummoned"),
