@@ -1,6 +1,5 @@
 import { Task } from "grimoire-kolmafia";
 import {
-  cliExecute,
   equip,
   familiarEquippedEquipment,
   hippyStoneBroken,
@@ -56,13 +55,6 @@ export const DailyFamiliarTasks: Task[] = [
         "Red Ray"
       ),
     outfit: { familiar: $familiar`Crimbo Shrub` },
-  },
-  {
-    name: "Mummery Item",
-    ready: () => have($item`mumming trunk`) && have($familiar`Trick-or-Treating Tot`),
-    completed: () => get("_mummeryMods").includes("Item Drop"),
-    do: () => cliExecute("mummery item"),
-    outfit: { familiar: $familiar`Trick-or-Treating Tot` },
   },
   {
     name: "Moveable feast",
