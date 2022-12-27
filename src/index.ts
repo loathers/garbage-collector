@@ -97,7 +97,8 @@ export function canContinue(): boolean {
 export function main(argString = ""): void {
   sinceKolmafiaRevision(26987);
   checkGithubVersion();
-  set("_garboCompleted", "");
+  const completedProperty = "_garboCompleted";
+  set(completedProperty, "");
 
   if (get("garbo_autoUserConfirm", false)) {
     print(
@@ -481,5 +482,5 @@ export function main(argString = ""): void {
     printGarboSession();
     printLog(HIGHLIGHT);
   }
-  set("_garboCompleted", `garbo ${argString}`);
+  set(completedProperty, `garbo ${argString}`);
 }
