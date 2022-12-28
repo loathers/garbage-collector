@@ -794,6 +794,7 @@ const freeFightSources = [
             get("lovebugsUnlocked"),
             Macro.trySkill($skill`Summon Love Gnats`).trySkill($skill`Summon Love Mosquito`)
           )
+          .tryItem($item`train whistle`)
           .trySkill($skill`Micrometeorite`)
           .tryItem($item`Time-Spinner`)
           .tryItem($item`little red book`)
