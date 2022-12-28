@@ -2416,7 +2416,9 @@ function yachtzee(): void {
   }
 }
 
+let target: Monster | null = null;
 export function bestDigitizeTarget(): Monster | null {
+  if (target) return target;
   const isFree = (monster: Monster) => monster.attributes.includes("FREE");
   const valueDrops = (monster: Monster) =>
     sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
@@ -2424,7 +2426,7 @@ export function bestDigitizeTarget(): Monster | null {
     have($item`Kramco Sausage-o-Matic™`) &&
     sum($items`magical sausage, magical sausage casing`, (item) => availableAmount(item)) < 69
   ) {
-    return $monster`sausage goblin`;
+    return (target = $monster`sausage goblin`);
   }
 
   for (const piece of $monsters`Witchess Knight, Witchess Bishop, Witchess Pawn`.sort(
@@ -2434,9 +2436,9 @@ export function bestDigitizeTarget(): Monster | null {
       Witchess.have() ||
       (CombatLoversLocket.have() && CombatLoversLocket.availableLocketMonsters().includes(piece))
     ) {
-      return piece;
+      return (target = piece);
     }
   }
 
-  return CombatLoversLocket.findMonster(isFree, valueDrops);
+  return (target = CombatLoversLocket.findMonster(isFree, valueDrops));
 }
