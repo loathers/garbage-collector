@@ -470,13 +470,7 @@ class VariableMeatPotion {
   }
 
   use(quantity: number): boolean {
-    acquire(
-      quantity,
-      this.potion,
-      (1.2 * retrievePrice(this.potion, quantity)) / quantity,
-      false,
-      2000000
-    );
+    acquire(quantity, this.potion, (1.2 * retrievePrice(this.potion, quantity)) / quantity, false);
     if (availableAmount(this.potion) < quantity) return false;
     return use(quantity, this.potion);
   }
@@ -571,7 +565,7 @@ export function variableMeatPotionsSetup(yachtzees: number, embezzlers: number):
     // To be added in the future. Specifically, we will have to:
     // 1) accurately estimate the bulk price (potentially in the millions), and
     // 2) ensure that we have the meat to complete the entire purchase (a partial purchase would be disastrous).
-    new VariableMeatPotion($item`porcelain candy dish`, 500, 1),
+    // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
   ];
 
   const excludedEffects = new Set<Effect>();
