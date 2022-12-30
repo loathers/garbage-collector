@@ -15770,10 +15770,21 @@ function lib_maxBy(array, optimizer) {
   var reverse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   if (typeof optimizer === "function") {
-    return lib_maxBy(array.map(key => ({
-      key: key,
-      value: optimizer(key)
-    })), "value", reverse).key;
+    return lib_toConsumableArray(array).reduce((_ref2, other) => {
+      var value = _ref2.value,
+          item = _ref2.item;
+      var otherValue = optimizer(other);
+      return value >= otherValue ? {
+        value: value,
+        item: item
+      } : {
+        value: otherValue,
+        item: other
+      };
+    }, {
+      item: array[0],
+      value: optimizer(array[0])
+    }).item;
   } else {
     return array.reduce((a, b) => a[optimizer] > b[optimizer] !== reverse ? a : b);
   }
