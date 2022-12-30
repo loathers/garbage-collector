@@ -46,6 +46,7 @@ import {
   setChoice,
   valueJuneCleaverOption,
 } from "./lib";
+import { teleportEffects } from "./mood";
 import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
 
 function coldMedicineCabinet(): void {
@@ -143,7 +144,7 @@ function skipJuneCleaverChoices(): void {
   }
 }
 function juneCleave(): void {
-  if (get("_juneCleaverFightsLeft") <= 0) {
+  if (get("_juneCleaverFightsLeft") <= 0 && teleportEffects.every((e) => !have(e))) {
     equip($slot`weapon`, $item`June cleaver`);
     skipJuneCleaverChoices();
     withProperty("recoveryScript", "", () => {
