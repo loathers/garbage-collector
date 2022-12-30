@@ -30646,6 +30646,8 @@ function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26987);
   checkGithubVersion();
+  var completedProperty = "_garboCompleted";
+  _set(completedProperty, "");
 
   if (property_get("garbo_autoUserConfirm", false)) {
     (0,external_kolmafia_namespaceObject.print)("I have set auto-confirm to true and accept all ramifications that come with that.", "red");
@@ -30970,6 +30972,8 @@ function main() {
     printGarboSession();
     printLog(HIGHLIGHT);
   }
+
+  _set(completedProperty, "garbo ".concat(argString));
 }
 
 /***/ })
