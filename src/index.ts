@@ -95,7 +95,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26987);
+  sinceKolmafiaRevision(27035);
   checkGithubVersion();
   const completedProperty = "_garboCompleted";
   set(completedProperty, "");

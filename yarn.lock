@@ -2172,10 +2172,10 @@ eslint-config-prettier@^8.3.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.3.0.tgz#f7471b20b6fe8a9a9254cc684454202886a2dd7a"
   integrity sha512-BgZuLUSeKzvlL/VUjx/Yb787VQ26RU3gGjA3iiFvdsp/2bMfVIWUVP7tjxtjS0e+HP409cPlPvNkQloz8C91ew==
 
-eslint-plugin-libram@^0.2.21:
-  version "0.2.21"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-libram/-/eslint-plugin-libram-0.2.21.tgz#6f47123992c272203a8586dc5574dc1f1ca2dc7e"
-  integrity sha512-KkPsfFY5Coj2gc5JSbzIJksj8ydMqLIcIeYYtvRvKSrNHHjkAebEnHC2dSthpN0O8uNoJkcNT9meexzD4TUnzA==
+eslint-plugin-libram@^0.2.25:
+  version "0.2.25"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-libram/-/eslint-plugin-libram-0.2.25.tgz#c2a3dc767f1e392be608901a9248036f70714354"
+  integrity sha512-lFYasWDh+ImR4Cyv3rv1wr15X9AznHHg9dWm+8AqQnrq6QKnw9N0zoeJ9+oqrUPk7aaD9qm6NqCVux4045zaAg==
   dependencies:
     html-entities "^2.3.2"
     requireindex "~1.1.0"
@@ -2801,10 +2801,10 @@ klona@^2.0.4:
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.5.tgz#d166574d90076395d9963aa7a928fabb8d76afbc"
   integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
 
-kolmafia@^5.26827.0:
-  version "5.26827.0"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.26827.0.tgz#0e9f363c8756f55e4d4876b782e83882738648b1"
-  integrity sha512-NOxYGaPdgjxSbI+RuSXKEPjKjpcmvEHU8bHIXZXIEPG11ReF6M1gEwmXvpm2uwmsPBah8p9iPSOCRMqFNKPWAQ==
+kolmafia@^5.27036.0:
+  version "5.27036.0"
+  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27036.0.tgz#956550ef40bda5a8945daaf38af89d6be9892a89"
+  integrity sha512-uQSTJIifKaj2p2VB6tfIQqE2diWJ0qBIyIo/7RJSRkGEbHIl0tewvIs9vxyuQ6jhGgx8dauHuv8AkT790qjZJQ==
 
 levn@^0.4.1:
   version "0.4.1"
