@@ -17201,7 +17201,7 @@ function usingThumbRing() {
 var juneCleaverEV = null;
 
 function juneCleaver(equipMode) {
-  if (!lib_have(template_string_$item(dropsgear_templateObject72 || (dropsgear_templateObject72 = dropsgear_taggedTemplateLiteral(["June cleaver"])))) || property_get("_juneCleaverFightsLeft") > estimatedTurns()) {
+  if (!lib_have(template_string_$item(dropsgear_templateObject72 || (dropsgear_templateObject72 = dropsgear_taggedTemplateLiteral(["June cleaver"])))) || property_get("_juneCleaverFightsLeft") > estimatedTurns() || !property_get("_juneCleaverFightsLeft")) {
     return new Map();
   }
 
@@ -23258,6 +23258,7 @@ function post_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.sl
 
 
 
+
 function coldMedicineCabinet() {
   if ((0,external_kolmafia_namespaceObject.getWorkshed)() !== template_string_$item(post_templateObject || (post_templateObject = post_taggedTemplateLiteral(["cold medicine cabinet"])))) return;
 
@@ -23363,7 +23364,7 @@ function skipJuneCleaverChoices() {
 }
 
 function juneCleave() {
-  if (property_get("_juneCleaverFightsLeft") <= 0) {
+  if (property_get("_juneCleaverFightsLeft") <= 0 && teleportEffects.every(e => !lib_have(e))) {
     (0,external_kolmafia_namespaceObject.equip)($slot(post_templateObject5 || (post_templateObject5 = post_taggedTemplateLiteral(["weapon"]))), template_string_$item(post_templateObject6 || (post_templateObject6 = post_taggedTemplateLiteral(["June cleaver"]))));
     skipJuneCleaverChoices();
     withProperty("recoveryScript", "", () => {
