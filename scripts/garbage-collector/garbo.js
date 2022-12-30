@@ -15774,7 +15774,7 @@ function lib_maxBy(array, optimizer) {
       var value = _ref2.value,
           item = _ref2.item;
       var otherValue = optimizer(other);
-      return value >= otherValue ? {
+      return value >= otherValue !== reverse ? {
         value: value,
         item: item
       } : {
@@ -15786,7 +15786,7 @@ function lib_maxBy(array, optimizer) {
       value: optimizer(array[0])
     }).item;
   } else {
-    return array.reduce((a, b) => a[optimizer] > b[optimizer] !== reverse ? a : b);
+    return array.reduce((a, b) => a[optimizer] >= b[optimizer] !== reverse ? a : b);
   }
 }
 ;// CONCATENATED MODULE: ./src/session.ts
