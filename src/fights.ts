@@ -134,6 +134,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  today,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
@@ -2444,7 +2445,6 @@ function yachtzee(): void {
       if (!equippedOutfit || !success()) return;
 
       const lastUMDDate = property.getString("umdLastObtained");
-      const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5; // Import today from ./lib once the PR is merged
       const getUMD =
         !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
         garboValue($item`Ultimate Mind Destroyer`) >=
