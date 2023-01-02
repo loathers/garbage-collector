@@ -10,7 +10,6 @@ import {
   Effect,
   equip,
   Familiar,
-  gametimeToInt,
   getAutoAttack,
   getCampground,
   handlingChoice,
