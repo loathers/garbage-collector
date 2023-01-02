@@ -1,4 +1,5 @@
 import {
+  canAdventure,
   cliExecute,
   descToItem,
   equip,
@@ -6,6 +7,7 @@ import {
   handlingChoice,
   Item,
   itemAmount,
+  Location,
   myAdventures,
   myLevel,
   reverseNumberology,
@@ -21,7 +23,6 @@ import {
   $item,
   $items,
   $location,
-  $locations,
   $skill,
   $slot,
   AutumnAton,
@@ -189,8 +190,6 @@ function funguySpores() {
   }
 }
 
-const autumnAtonZones = $locations`The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley`;
-
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
@@ -205,6 +204,6 @@ export default function postCombatActions(skipDiet = false): void {
   stillsuit();
   funguySpores();
   if (globalOptions.ascending || AutumnAton.turnsForQuest() < myAdventures() + 10) {
-    AutumnAton.sendTo(autumnAtonZones);
+    AutumnAton.sendTo(Location.all().filter((l) => l.turnsSpent && canAdventure(l)));
   }
 }
