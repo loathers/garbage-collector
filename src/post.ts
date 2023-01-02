@@ -35,6 +35,7 @@ import {
   withProperty,
 } from "libram";
 import { acquire } from "./acquire";
+import { averageAutumnatonValue, prioritizeUpgradeLocations } from "./autumnaton";
 import { garboAdventure, Macro } from "./combat";
 import { computeDiet, consumeDiet } from "./diet";
 import {
@@ -190,6 +191,10 @@ function funguySpores() {
   }
 }
 
+const autumnatonLocations = prioritizeUpgradeLocations(
+  Location.all().filter((l) => l.turnsSpent && canAdventure(l))
+);
+
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
@@ -204,6 +209,6 @@ export default function postCombatActions(skipDiet = false): void {
   stillsuit();
   funguySpores();
   if (globalOptions.ascending || AutumnAton.turnsForQuest() < myAdventures() + 10) {
-    AutumnAton.sendTo(Location.all().filter((l) => l.turnsSpent && canAdventure(l)));
+    AutumnAton.sendTo(maxBy(autumnatonLocations, (location) => averageAutumnatonValue(location)));
   }
 }
