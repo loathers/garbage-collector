@@ -1238,9 +1238,16 @@ const freeFightSources = [
   new FreeFight(
     () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
     () => {
-      if (get("snojoSetting") === null) {
+      const snojoSetting = get("snojoSetting", "NONE");
+      if (snojoSetting === "MYSTICALITY" && get("snojoMysticalityWins") > 50) {
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         runChoice(3);
+      } else if (snojoSetting === "MUSCLE" && get("snojoMuscleWins") > 50) {
+        visitUrl("place.php?whichplace=snojo&action=snojo_controller");
+        runChoice(2);
+      } else if (snojoSetting === "NONE") {
+        visitUrl("place.php?whichplace=snojo&action=snojo_controller");
+        runChoice(1);
       }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
