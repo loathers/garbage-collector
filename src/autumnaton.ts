@@ -88,7 +88,7 @@ export function averageAutumnatonValue(
     // Find the expected drops for each valid item
     validDrops.forEach((d) => {
       // First two rolls do not care about acuity
-      const acuityCutoff = 20 - (acuityOverride ? acuityOverride : AutumnAton.visualAcuity() * 5);
+      const acuityCutoff = 20 - (acuityOverride ?? AutumnAton.visualAcuity() * 5);
       d.expectedDrops1 = Math.min(
         slotOverride ? slotOverride : AutumnAton.zoneItems(),
         (d.rate / 100) * 2
@@ -111,7 +111,7 @@ export function averageAutumnatonValue(
       if (d.expectedDrops1 && d.expectedDrops2) {
         d.totalExpectedDrops =
           ((d.expectedDrops1 + d.expectedDrops2) / totalZoneExpectedDrops) *
-          Math.min(totalZoneExpectedDrops, slotOverride ? slotOverride : AutumnAton.zoneItems());
+          Math.min(totalZoneExpectedDrops, slotOverride ?? AutumnAton.zoneItems());
       }
       if (d.totalExpectedDrops) expectedCollectionValue += d.totalExpectedDrops * d.value;
     });
