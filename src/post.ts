@@ -1,5 +1,4 @@
 import {
-  canAdventure,
   cliExecute,
   descToItem,
   equip,
@@ -7,7 +6,6 @@ import {
   handlingChoice,
   Item,
   itemAmount,
-  Location,
   myAdventures,
   myLevel,
   reverseNumberology,
