@@ -1,5 +1,5 @@
 import { maxBy } from "./lib";
-import { garboValue } from "./session";
+import { garboAverageValue, garboValue } from "./session";
 import { estimatedTurns } from "./turns";
 import {
   appearanceRates,
@@ -10,7 +10,7 @@ import {
   Location,
   toMonster,
 } from "kolmafia";
-import { $item, $items, AutumnAton, get, sum } from "libram";
+import { $item, $items, AutumnAton, get } from "libram";
 
 function getAutumnatonUniques(location: Location): [AutumnAton.Upgrade, Item] {
   switch (location.environment) {
@@ -122,8 +122,7 @@ export function averageAutumnatonValue(
 function seasonalItemValue(location: Location, seasonalOverride?: number): number {
   // Find the value of the drops based on zone difficulty/type
   const autumnItems = $items`autumn leaf, AutumnFest ale, autumn breeze, autumn dollar, autumn years wisdom`;
-  const avgValueOfRandomAutumnItem =
-    sum(autumnItems, (item) => garboValue(item, true)) / autumnItems.length;
+  const avgValueOfRandomAutumnItem = garboAverageValue(...autumnItems);
   const autumnMeltables = $items`autumn debris shield, autumn leaf pendant, autumn sweater-weather sweater`;
   const autumnItem = getAutumnatonUniques(location)[1];
   const seasonalItemDrops = seasonalOverride ?? AutumnAton.seasonalItems();
