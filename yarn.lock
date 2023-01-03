@@ -1178,12 +1178,12 @@
     "@babel/plugin-transform-typescript" "^7.16.0"
 
 "@babel/runtime-corejs3@^7.17.2":
-  version "7.17.2"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.17.2.tgz#fdca2cd05fba63388babe85d349b6801b008fd13"
-  integrity sha512-NcKtr2epxfIrNM4VOmPKO46TvDMCBhgi2CrSHaEarrz+Plk2K5r9QemmOFTGpZaoKnWoGH5MO+CzeRsih/Fcgg==
+  version "7.20.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.20.7.tgz#a1e5ea3d758ba6beb715210142912e3f29981d84"
+  integrity sha512-jr9lCZ4RbRQmCR28Q8U8Fu49zvFqLxTY9AMOUz+iyMohMoAgpEcVxY+wJNay99oXOpOcCTODkk70NDN2aaJEeg==
   dependencies:
-    core-js-pure "^3.20.2"
-    regenerator-runtime "^0.13.4"
+    core-js-pure "^3.25.1"
+    regenerator-runtime "^0.13.11"
 
 "@babel/runtime@^7.8.4":
   version "7.16.3"
@@ -2005,10 +2005,10 @@ core-js-compat@^3.20.2, core-js-compat@^3.21.0:
     browserslist "^4.19.1"
     semver "7.0.0"
 
-core-js-pure@^3.20.2:
-  version "3.21.0"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.21.0.tgz#819adc8dfb808205ce25b51d50591becd615db7e"
-  integrity sha512-VaJUunCZLnxuDbo1rNOzwbet9E1K9joiXS5+DQMPtgxd24wfsZbJZMMfQLGYMlCUvSxLfsRUUhoOR2x28mFfeg==
+core-js-pure@^3.25.1:
+  version "3.27.1"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.27.1.tgz#ede4a6b8440585c7190062757069c01d37a19dca"
+  integrity sha512-BS2NHgwwUppfeoqOXqi08mUqS5FiZpuRuJJpKsaME7kJz0xxuk0xkhDdfMIlP/zLa80krBqss1LtD7f889heAw==
 
 core-js@^3.16.4:
   version "3.25.3"
@@ -2016,9 +2016,9 @@ core-js@^3.16.4:
   integrity sha512-y1hvKXmPHvm5B7w4ln1S4uc9eV/O5+iFExSRUimnvIph11uaizFR8LFMdONN8hG3P2pipUfX4Y/fR8rAEtcHcQ==
 
 core-js@^3.21.0:
-  version "3.21.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.21.1.tgz#f2e0ddc1fc43da6f904706e8e955bc19d06a0d94"
-  integrity sha512-FRq5b/VMrWlrmCzwRrpDYNxyHP9BcAZC+xHJaqTgIE5091ZV1NTmyh0sGOg5XqpnHvR0svdy0sv1gWA1zmhxig==
+  version "3.27.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.27.1.tgz#23cc909b315a6bb4e418bf40a52758af2103ba46"
+  integrity sha512-GutwJLBChfGCpwwhbYoqfv03LAfmiz7e7D/BNxzeMxwQf10GRSzqiOjx7AmtEk+heiD/JWmBuyBPgFtx0Sg1ww==
 
 core-js@^3.8.0:
   version "3.19.1"
@@ -2802,9 +2802,9 @@ klona@^2.0.4:
   integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
 
 kolmafia@^5.27036.0:
-  version "5.27036.0"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27036.0.tgz#956550ef40bda5a8945daaf38af89d6be9892a89"
-  integrity sha512-uQSTJIifKaj2p2VB6tfIQqE2diWJ0qBIyIo/7RJSRkGEbHIl0tewvIs9vxyuQ6jhGgx8dauHuv8AkT790qjZJQ==
+  version "5.27059.0"
+  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27059.0.tgz#d3dd673675c43c83e648b596cf73798717c2956b"
+  integrity sha512-vE2w8Km3aV0syoTErHDSov2cqddMCeLFF4ATLt3Vb2QG+czvzwgERr53/zEHDaNJDmvenwySsseH38uFosFXVQ==
 
 levn@^0.4.1:
   version "0.4.1"
@@ -3318,10 +3318,10 @@ regenerate@^1.4.2:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.2.tgz#b9346d8827e8f5a32f7ba29637d398b69014848a"
   integrity sha512-zrceR/XhGYU/d/opr2EKO7aRHUeiBI8qjtfHqADTwZd6Szfy16la6kqD0MIUs5z5hx6AaKa+PixpPrR289+I0A==
 
-regenerator-runtime@^0.13.4:
-  version "0.13.9"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
-  integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
+regenerator-runtime@^0.13.11, regenerator-runtime@^0.13.4:
+  version "0.13.11"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
+  integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
 
 regenerator-transform@^0.14.2:
   version "0.14.5"

@@ -1005,6 +1005,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   }
 }
 
+export let dietCompleted = globalOptions.noDiet;
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
@@ -1049,4 +1050,5 @@ export function runDiet(): void {
       shrugBadEffects();
     }
   });
+  dietCompleted = true;
 }
