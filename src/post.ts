@@ -191,10 +191,6 @@ function funguySpores() {
   }
 }
 
-const autumnatonLocations = prioritizeUpgradeLocations(
-  Location.all().filter((l) => l.turnsSpent && canAdventure(l))
-);
-
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
@@ -209,6 +205,8 @@ export default function postCombatActions(skipDiet = false): void {
   stillsuit();
   funguySpores();
   if (globalOptions.ascending || AutumnAton.turnsForQuest() < myAdventures() + 10) {
-    AutumnAton.sendTo(maxBy(autumnatonLocations, (location) => averageAutumnatonValue(location)));
+    AutumnAton.sendTo((locations) =>
+      maxBy(prioritizeUpgradeLocations(locations), averageAutumnatonValue)
+    );
   }
 }
