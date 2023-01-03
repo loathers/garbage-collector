@@ -89,17 +89,14 @@ export function averageAutumnatonValue(
     validDrops.forEach((d) => {
       // First two rolls do not care about acuity
       const acuityCutoff = 20 - (acuityOverride ?? AutumnAton.visualAcuity() * 5);
-      d.expectedDrops1 = Math.min(
-        slotOverride ? slotOverride : AutumnAton.zoneItems(),
-        (d.rate / 100) * 2
-      );
+      d.expectedDrops1 = Math.min(slotOverride ?? AutumnAton.zoneItems(), (d.rate / 100) * 2);
       // Last 8 rolls do not count items below the acuity cutoff
       // Our max capacity is reduced by the expected drops from the first 2 rolls
       if (d.rate < acuityCutoff) {
         d.rate = 0;
       }
       d.expectedDrops2 = Math.min(
-        (slotOverride ? slotOverride : AutumnAton.zoneItems()) - d.expectedDrops1,
+        (slotOverride ?? AutumnAton.zoneItems()) - d.expectedDrops1,
         (d.rate / 100) * 8
       );
       totalZoneExpectedDrops += d.expectedDrops1 + d.expectedDrops2;
@@ -147,9 +144,7 @@ function expectedRemainingExpeditions(legOverride?: number): number {
       Math.max(
         1,
         quests -
-          (legOverride
-            ? legOverride
-            : AutumnAton.currentUpgrades().filter((u) => u.includes("leg")).length)
+          (legOverride ?? AutumnAton.currentUpgrades().filter((u) => u.includes("leg")).length)
       );
     quests++;
   }
