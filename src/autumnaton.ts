@@ -49,6 +49,14 @@ function getAutumnatonUniques(location: Location): [AutumnAton.Upgrade, Item] {
   return [AutumnAton.possibleUpgrades[0], $item`AutumnFest ale`];
 }
 
+interface ItemData {
+  value: number;
+  rate: number;
+  expectedDrops1?: number;
+  expectedDrops2?: number;
+  totalExpectedDrops?: number;
+}
+
 export function averageAutumnatonValue(
   location: Location,
   acuityOverride?: number,
@@ -63,14 +71,6 @@ export function averageAutumnatonValue(
   if (monsters.length === 0) {
     return 0;
   } else {
-    interface ItemData {
-      value: number;
-      rate: number;
-      expectedDrops1?: number;
-      expectedDrops2?: number;
-      totalExpectedDrops?: number;
-    }
-
     const validDrops: ItemData[] = [];
     // Get all valid drops from monsters in the zone.
     // If mafia doesn't know the droprate, or it is conditional, we value it at 0
