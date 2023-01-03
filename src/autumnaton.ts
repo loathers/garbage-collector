@@ -3,6 +3,7 @@ import { garboValue } from "./session";
 import { estimatedTurns } from "./turns";
 import {
   appearanceRates,
+  availableAmount,
   getLocationMonsters,
   Item,
   itemDropsArray,
@@ -129,7 +130,10 @@ function seasonalItemValue(location: Location, seasonalOverride?: number): numbe
   return (
     (seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0) +
     (autumnMeltables.includes(autumnItem)
-      ? avgValueOfRandomAutumnItem
+      ? // If we already have the meltable, then we get a random item, else value at 0
+        availableAmount(autumnItem) > 0
+        ? avgValueOfRandomAutumnItem
+        : 0
       : garboValue(autumnItem, true))
   );
 }
