@@ -167,8 +167,8 @@ export function prioritizeUpgradeLocations(fullLocations: Location[]): Location[
     "cowcatcher",
     "periscope",
     "radardish",
-  ];
-  const currentUpgrades = AutumnAton.currentUpgrades() as string[];
+  ] as const;
+  const currentUpgrades = AutumnAton.currentUpgrades();
   const acquirableUpgrades = profitRelevantUpgrades.filter(
     (upgrade) => !currentUpgrades.includes(upgrade)
   );
