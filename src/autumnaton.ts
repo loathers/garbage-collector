@@ -125,7 +125,7 @@ function seasonalItemValue(location: Location, seasonalOverride?: number): numbe
     sum(autumnItems, (item) => garboValue(item, true)) / autumnItems.length;
   const autumnMeltables = $items`autumn debris shield, autumn leaf pendant, autumn sweater-weather sweater`;
   const autumnItem = getAutumnatonUniques(location)[1];
-  const seasonalItemDrops = seasonalOverride ? seasonalOverride : AutumnAton.seasonalItems();
+  const seasonalItemDrops = seasonalOverride ??  AutumnAton.seasonalItems();
   return (
     (seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0) +
     (autumnMeltables.includes(autumnItem)
