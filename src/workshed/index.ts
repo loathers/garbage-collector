@@ -8,7 +8,7 @@ import {
   use,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $items, AsdonMartin, clamp, get, have, property } from "libram";
+import { $effect, $item, $items, AsdonMartin, clamp, DNALab, get, have } from "libram";
 import { dietCompleted } from "../diet";
 import { globalOptions } from "../lib";
 import { potionSetupCompleted } from "../potions";
@@ -67,7 +67,7 @@ const worksheds = [
       return get("_coldMedicineConsults") >= 5;
     },
     () => {
-      if (property.getNumber("_nextColdMedicineConsult") > totalTurnsPlayed()) return;
+      if (get("_nextColdMedicineConsult") > totalTurnsPlayed()) return;
       grabMedicine();
     }
   ),
@@ -97,10 +97,7 @@ const worksheds = [
     },
     () => {
       // Just grab whatever tonics for now, since we don't actually have support for DNA
-      const page = visitUrl("campground.php?action=workshed");
-      if (page.includes("Human-")) {
-        visitUrl("campground.php?action=dnapotion");
-      }
+      if (get("dnaSyringe")) DNALab.makeTonic(3);
     }
   ),
   new GarboWorkshed(
