@@ -22,19 +22,14 @@ import {
 
 class GarboWorkshed {
   workshed: Item;
-
+  done = () => true;
+  action = () => {
+    return;
+  };
   constructor(workshed: Item, done?: () => boolean, action?: () => void) {
     this.workshed = workshed;
     if (done) this.done = done;
     if (action) this.action = action;
-  }
-
-  done(): boolean {
-    return true;
-  }
-
-  action(): void {
-    return;
   }
 }
 
