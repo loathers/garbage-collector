@@ -25013,8 +25013,6 @@ function yachtzee() {
       if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(_templateObject553 || (_templateObject553 = fights_taggedTemplateLiteral(["The Crown of Ed the Undying"]))))) (0,external_kolmafia_namespaceObject.cliExecute)("edpiece fish");
       if (!equippedOutfit || !success()) return;
       var lastUMDDate = getString("umdLastObtained");
-      var today = Date.now() - (0,external_kolmafia_namespaceObject.gametimeToInt)() - 1000 * 60 * 3.5; // Import today from ./lib once the PR is merged
-
       var getUMD = !property_get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
       garboValue(template_string_$item(_templateObject554 || (_templateObject554 = fights_taggedTemplateLiteral(["Ultimate Mind Destroyer"])))) >= 2000 * (1 + (0,external_kolmafia_namespaceObject.numericModifier)("meat drop") / 100) && (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1000 * 60 * 60 * 24 * 7);
       setChoice(918, getUMD ? 1 : 2);
