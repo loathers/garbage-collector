@@ -57,7 +57,12 @@ const worksheds = [
     },
     () => {
       if (!isTrainsetConfigurable()) return;
-      else if (defaultPieces.join(",") === get("trainsetConfiguration", "")) return;
+      else {
+        const pos = get("trainsetPosition", 0);
+        const configured = get("lastTrainsetConfiguration", 0);
+        const idx = (pos - configured) % 8;
+        if (defaultPieces.join(",") === get("trainsetConfiguration", "") && idx <= 1) return;
+      }
       setTrainsetConfiguration(defaultPieces);
     }
   ),

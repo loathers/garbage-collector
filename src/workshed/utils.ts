@@ -72,7 +72,6 @@ function getTrainsetPositionsUntilConfigurable(): number {
 }
 
 export function isTrainsetConfigurable(): boolean {
-  // eslint-disable-next-line libram/verify-constants
   return getWorkshed() === $item`model train set` && getTrainsetPositionsUntilConfigurable() <= 0;
 }
 
