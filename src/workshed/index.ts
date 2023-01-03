@@ -120,10 +120,10 @@ const worksheds = [
     (item) => new GarboWorkshed(item, dietCompleted)
   ),
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
-    (item) => new GarboWorkshed(item, potionSetupCompleted),
-    ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
-      (item) => new GarboWorkshed(item)
-    )
+    (item) => new GarboWorkshed(item, potionSetupCompleted)
+  ),
+  ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
+    (item) => new GarboWorkshed(item)
   ),
 ];
 
