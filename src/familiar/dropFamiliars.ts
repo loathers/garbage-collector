@@ -5,10 +5,14 @@ import { GeneralFamiliar } from "./lib";
 
 type StandardDropFamiliar = {
   familiar: Familiar;
-  expected: number[];
+  expected: number[] | ((index: number) => number);
   drop: Item | Item[];
   additionalValue?: () => number;
 };
+
+function expectedTurnsValue(expected: number[] | ((index: number) => number), index: number) {
+  return Array.isArray(expected) ? expected[index] : expected(index);
+}
 
 function dropValue(drop: Item | Item[]): number {
   return drop instanceof Item ? garboValue(drop) : garboAverageValue(...drop);
@@ -20,7 +24,7 @@ function valueStandardDropFamiliar({
   drop,
   additionalValue,
 }: StandardDropFamiliar): GeneralFamiliar {
-  const expectedTurns = expected[familiar.dropsToday] || Infinity;
+  const expectedTurns = expectedTurnsValue(expected, familiar.dropsToday) || Infinity;
   const expectedValue = dropValue(drop) / expectedTurns + (additionalValue?.() ?? 0);
   return {
     familiar,
@@ -150,6 +154,32 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
         )) /
       11,
   },
+  {
+    familiar: $familiar`Rockin' Robin`,
+    expected: (i) => (i === 0 ? 5 : 30),
+    drop: $item`robin's egg`,
+  },
+  {
+    familiar: $familiar`Optimistic Candle`,
+    expected: (i) => (i === 0 ? 5 : 30),
+    drop: $item`glob of melted wax`,
+  },
+  {
+    familiar: $familiar`Shorter-Order Cook`,
+    expected: () => 11, // 9 with blue plate equipped
+    drop: [
+      $item`short stack of pancakes`,
+      $item`short stick of butter`,
+      $item`short glass of water`,
+      $item`short white`,
+      $item`short beer`,
+    ],
+  },
+  {
+    familiar: $familiar`Hobo in Sheep's Clothing`,
+    expected: (i) => 5 * (i ** 2 + 3 * i + 2), // faster with half-height cigar
+    drop: $item`grubby wool`,
+  },
 ];
 
 export default function getDropFamiliars(): GeneralFamiliar[] {
@@ -171,7 +201,7 @@ export function getAllDrops(fam: Familiar): { expectedValue: number; expectedTur
   const returnValue = [];
 
   for (let i = current; i < expected.length; i++) {
-    const turns = target.expected[i];
+    const turns = expectedTurnsValue(target.expected, i);
     returnValue.push({
       expectedValue: dropValue(drop) / turns + (additionalValue?.() ?? 0),
       expectedTurns: turns,
