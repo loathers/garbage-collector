@@ -21264,7 +21264,7 @@ function fightPiece(piece) {
   return (0,external_kolmafia_namespaceObject.runCombat)();
 }
 ;// CONCATENATED MODULE: ./src/mood.ts
-var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, mood_templateObject11, mood_templateObject12, mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67, mood_templateObject68, mood_templateObject69, mood_templateObject70, mood_templateObject71, mood_templateObject72, mood_templateObject73, mood_templateObject74, mood_templateObject75, mood_templateObject76, mood_templateObject77, mood_templateObject78, mood_templateObject79, mood_templateObject80;
+var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, mood_templateObject11, mood_templateObject12, mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67, mood_templateObject68, mood_templateObject69, mood_templateObject70, mood_templateObject71, mood_templateObject72, mood_templateObject73, mood_templateObject74, mood_templateObject75, mood_templateObject76, mood_templateObject77, mood_templateObject78, mood_templateObject79, mood_templateObject80, mood_templateObject81, mood_templateObject82;
 
 function mood_toConsumableArray(arr) { return mood_arrayWithoutHoles(arr) || mood_iterableToArray(arr) || src_mood_unsupportedIterableToArray(arr) || mood_nonIterableSpread(); }
 
@@ -21436,8 +21436,12 @@ function freeFightMood() {
     (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject66 || (mood_templateObject66 = src_mood_taggedTemplateLiteral(["The Legendary Beat"]))));
   }
 
+  if (lib_have(template_string_$item(mood_templateObject67 || (mood_templateObject67 = src_mood_taggedTemplateLiteral(["portable steam unit"])))) && !property_get("_portableSteamUnitUsed")) {
+    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject68 || (mood_templateObject68 = src_mood_taggedTemplateLiteral(["portable steam unit"]))));
+  }
+
   shrugBadEffects.apply(void 0, additionalEffects);
-  if ((0,external_kolmafia_namespaceObject.getWorkshed)() === template_string_$item(mood_templateObject67 || (mood_templateObject67 = src_mood_taggedTemplateLiteral(["Asdon Martin keyfob"])))) mood.drive(Driving.Observantly);
+  if ((0,external_kolmafia_namespaceObject.getWorkshed)() === template_string_$item(mood_templateObject69 || (mood_templateObject69 = src_mood_taggedTemplateLiteral(["Asdon Martin keyfob"])))) mood.drive(Driving.Observantly);
   return mood;
 }
 /**
@@ -21445,26 +21449,26 @@ function freeFightMood() {
  */
 
 function useBuffExtenders() {
-  withStash(template_string_$items(mood_templateObject68 || (mood_templateObject68 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card, Bag o' Tricks"]))), () => {
-    if (lib_have(template_string_$item(mood_templateObject69 || (mood_templateObject69 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) && !property_get("expressCardUsed")) {
+  withStash(template_string_$items(mood_templateObject70 || (mood_templateObject70 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card, Bag o' Tricks"]))), () => {
+    if (lib_have(template_string_$item(mood_templateObject71 || (mood_templateObject71 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) && !property_get("expressCardUsed")) {
       burnLibrams();
-      (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject70 || (mood_templateObject70 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+      (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject72 || (mood_templateObject72 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
     }
 
-    if (lib_have(template_string_$item(mood_templateObject71 || (mood_templateObject71 = src_mood_taggedTemplateLiteral(["Bag o' Tricks"])))) && !property_get("_bagOTricksUsed")) {
-      (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject72 || (mood_templateObject72 = src_mood_taggedTemplateLiteral(["Bag o' Tricks"]))));
+    if (lib_have(template_string_$item(mood_templateObject73 || (mood_templateObject73 = src_mood_taggedTemplateLiteral(["Bag o' Tricks"])))) && !property_get("_bagOTricksUsed")) {
+      (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject74 || (mood_templateObject74 = src_mood_taggedTemplateLiteral(["Bag o' Tricks"]))));
     }
   });
 
-  if (lib_have(template_string_$item(mood_templateObject73 || (mood_templateObject73 = src_mood_taggedTemplateLiteral(["License to Chill"])))) && !property_get("_licenseToChillUsed")) {
+  if (lib_have(template_string_$item(mood_templateObject75 || (mood_templateObject75 = src_mood_taggedTemplateLiteral(["License to Chill"])))) && !property_get("_licenseToChillUsed")) {
     burnLibrams();
-    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject74 || (mood_templateObject74 = src_mood_taggedTemplateLiteral(["License to Chill"]))));
+    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject76 || (mood_templateObject76 = src_mood_taggedTemplateLiteral(["License to Chill"]))));
   }
 }
-var stings = [].concat(mood_toConsumableArray($effects(mood_templateObject75 || (mood_templateObject75 = src_mood_taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [$effect(mood_templateObject76 || (mood_templateObject76 = src_mood_taggedTemplateLiteral(["Burning, Man"]))), $effect(mood_templateObject77 || (mood_templateObject77 = src_mood_taggedTemplateLiteral(["Yes, Can Haz"])))]);
-var textAlteringEffects = $effects(mood_templateObject78 || (mood_templateObject78 = src_mood_taggedTemplateLiteral(["Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo"])));
-var teleportEffects = $effects(mood_templateObject79 || (mood_templateObject79 = src_mood_taggedTemplateLiteral(["Teleportitis, Feeling Lost, Funday!"])));
-var otherwiseBadEffects = $effects(mood_templateObject80 || (mood_templateObject80 = src_mood_taggedTemplateLiteral(["Temporary Blindness"])));
+var stings = [].concat(mood_toConsumableArray($effects(mood_templateObject77 || (mood_templateObject77 = src_mood_taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [$effect(mood_templateObject78 || (mood_templateObject78 = src_mood_taggedTemplateLiteral(["Burning, Man"]))), $effect(mood_templateObject79 || (mood_templateObject79 = src_mood_taggedTemplateLiteral(["Yes, Can Haz"])))]);
+var textAlteringEffects = $effects(mood_templateObject80 || (mood_templateObject80 = src_mood_taggedTemplateLiteral(["Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo"])));
+var teleportEffects = $effects(mood_templateObject81 || (mood_templateObject81 = src_mood_taggedTemplateLiteral(["Teleportitis, Feeling Lost, Funday!"])));
+var otherwiseBadEffects = $effects(mood_templateObject82 || (mood_templateObject82 = src_mood_taggedTemplateLiteral(["Temporary Blindness"])));
 function shrugBadEffects() {
   for (var _len2 = arguments.length, exclude = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
     exclude[_key2] = arguments[_key2];
