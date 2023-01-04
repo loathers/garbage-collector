@@ -48,6 +48,7 @@ import {
 } from "./lib";
 import { teleportEffects } from "./mood";
 import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
+import { estimatedTurns } from "./turns";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
@@ -202,7 +203,7 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
-  if (globalOptions.ascending || AutumnAton.turnsForQuest() < myAdventures() + 10) {
+  if (globalOptions.ascending || AutumnAton.turnsForQuest() < estimatedTurns() + 10) {
     AutumnAton.sendTo((locations) =>
       maxBy(prioritizeUpgradeLocations(locations), averageAutumnatonValue)
     );
