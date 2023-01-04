@@ -519,7 +519,7 @@ export const DailyTasks: Task[] = [
   {
     name: "Configure Snojo",
     ready: () => get("snojoAvailable") && get("_snojoFreeFights") < 10,
-    completed: () => !snojoConfigured,
+    completed: () => snojoConfigured,
     do: () => configureSnojo(),
   },
   // Final tasks
