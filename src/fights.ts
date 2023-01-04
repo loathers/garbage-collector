@@ -1236,12 +1236,11 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
+    () =>
+      get("snojoAvailable") &&
+      get("snojoSetting") !== null &&
+      clamp(10 - get("_snojoFreeFights"), 0, 10),
     () => {
-      if (get("snojoSetting") === null) {
-        visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-        runChoice(3);
-      }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
     false
