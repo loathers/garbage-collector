@@ -3,6 +3,11 @@ import { $familiar, $item, $items, findLeprechaunMultiplier, get, have } from "l
 import { garboAverageValue, garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
 
+// load these once when module is first loaded
+const rockinRobinProgress = get("rockinRobinProgress");
+const optimisticCandleProgress = get("optimisticCandleProgress");
+const garbageFireProgress = get("garbageFireProgress");
+
 type StandardDropFamiliar = {
   familiar: Familiar;
   expected: number[] | ((index: number) => number);
@@ -156,17 +161,17 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
   },
   {
     familiar: $familiar`Rockin' Robin`,
-    expected: () => (30 - get("rockinRobinProgress")),
+    expected: (i) => (i === 0 ? 30 - rockinRobinProgress : 30),
     drop: $item`robin's egg`,
   },
   {
     familiar: $familiar`Optimistic Candle`,
-    expected: () => (30 - get("optimisticCandleProgress")),
+    expected: (i) => (i === 0 ? 30 - optimisticCandleProgress : 30),
     drop: $item`glob of melted wax`,
   },
   {
     familiar: $familiar`Garbage Fire`,
-    expected: () => (30 - get("garbageFireProgress")),
+    expected: (i) => (i === 0 ? 30 - garbageFireProgress : 30),
     drop: [
       $item`burning newspaper`,
       $item`extra-toasted half sandwich`,
