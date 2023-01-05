@@ -21436,7 +21436,7 @@ function freeFightMood() {
     (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject66 || (mood_templateObject66 = src_mood_taggedTemplateLiteral(["The Legendary Beat"]))));
   }
 
-  if (lib_have(template_string_$item(mood_templateObject67 || (mood_templateObject67 = src_mood_taggedTemplateLiteral(["portable steam unit"])))) && !property_get("_portableSteamUnitUsed")) {
+  if (lib_have(template_string_$item(mood_templateObject67 || (mood_templateObject67 = src_mood_taggedTemplateLiteral(["portable steam unit"])))) && !property_get("_portableSteamUnitUsed", false)) {
     (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject68 || (mood_templateObject68 = src_mood_taggedTemplateLiteral(["portable steam unit"]))));
   }
 
