@@ -40,12 +40,11 @@ function acceptGuzzlrQuest(locationSkiplist: Location[]) {
       !(get("garbo_prioritizeCappingGuzzlr", false) && Guzzlr.haveFullPlatinumBonus())
     ) {
       Guzzlr.acceptPlatinum();
-    } else if (Guzzlr.canGold() && (Guzzlr.haveFullBronzeBonus() || !Guzzlr.haveFullGoldBonus())) {
-      // if gold is not maxed, do that first since they are limited per day
-      Guzzlr.acceptGold();
-    } else {
-      // fall back to bronze when can't plat, can't gold, or bronze is not maxed
+    } else if (!Guzzlr.haveFullBronzeBonus() || !Guzzlr.canGold()) {
+      // if cannot plat and bronze is either not maxed or cannot gold
       Guzzlr.acceptBronze();
+    } else {
+      Guzzlr.acceptGold();
     }
     considerAbandon(locationSkiplist);
   }
