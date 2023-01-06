@@ -9,7 +9,8 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import { $effect, $familiar, $item, clamp, get, have } from "libram";
-import { ESTIMATED_OVERDRUNK_TURNS, globalOptions, turnsToNC } from "../lib";
+import { globalOptions } from "../config";
+import { ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
 
 export type GeneralFamiliar = {
@@ -27,7 +28,7 @@ export function timeToMeatify(): boolean {
   ) {
     return false;
   } else if ($familiar`Grey Goose`.experience >= 400) return true;
-  else if (!globalOptions.ascending || myAdventures() > 50) return false;
+  else if (!globalOptions.ascend || myAdventures() > 50) return false;
 
   // Check Wanderers
   const totalTurns = totalTurnsPlayed();
@@ -46,7 +47,7 @@ export function timeToMeatify(): boolean {
   const nextVoidMonster =
     have($item`cursed magnifying glass`) &&
     get("_voidFreeFights") < 5 &&
-    get("valueOfFreeFight", 2000) / 13 > baseMeat * (usingLatte ? 0.75 : 0.6)
+    globalOptions.prefs.valueOfFreeFight / 13 > baseMeat * (usingLatte ? 0.75 : 0.6)
       ? -get("cursedMagnifyingGlassCount") % 13
       : Infinity;
 
@@ -89,7 +90,7 @@ export function canOpenRedPresent(): boolean {
 export function turnsAvailable(): number {
   const baseTurns = estimatedTurns();
   const digitizes = digitizedMonstersRemaining();
-  const mapTurns = globalOptions.ascending
+  const mapTurns = globalOptions.ascend
     ? clamp(
         availableAmount($item`Map to Safety Shelter Grimace Prime`),
         0,

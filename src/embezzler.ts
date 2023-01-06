@@ -45,10 +45,10 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { garboAdventure, garboAdventureAuto, Macro, shouldRedigitize, withMacro } from "./combat";
+import { globalOptions } from "./config";
 import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
-  globalOptions,
   HIGHLIGHT,
   ltbRun,
   setChoice,

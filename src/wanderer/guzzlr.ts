@@ -1,6 +1,7 @@
 import { buy, craftType, Location, print, retrieveItem } from "kolmafia";
 import { $item, get, Guzzlr, have } from "libram";
-import { freeCrafts, globalOptions } from "../lib";
+import { globalOptions } from "../config";
+import { freeCrafts } from "../lib";
 import { garboValue } from "../session";
 import {
   canAdventureOrUnlock,
@@ -24,7 +25,7 @@ function considerAbandon(locationSkiplist: Location[]) {
     !location || // if mafia faled to track the location correctly
     locationSkiplist.includes(location) ||
     !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
-    (globalOptions.ascending && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
+    (globalOptions.ascend && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();

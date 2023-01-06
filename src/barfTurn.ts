@@ -38,12 +38,12 @@ import {
   SourceTerminal,
 } from "libram";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
+import { globalOptions } from "./config";
 import { computeDiet, consumeDiet } from "./diet";
 import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { deliverThesisIfAble } from "./fights";
 import {
   embezzlerLog,
-  globalOptions,
   kramcoGuaranteed,
   questStep,
   romanticMonsterImpossible,
@@ -338,7 +338,7 @@ const turns: AdventureAction[] = [
   {
     name: "Map for Pills",
     available: () =>
-      globalOptions.ascending &&
+      globalOptions.ascend &&
       clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
         availableAmount($item`Map to Safety Shelter Grimace Prime`),
     execute: () => {
@@ -444,7 +444,7 @@ function generateTurnsAtEndOfDay(): void {
   if (
     have($item`designer sweatpants`) &&
     myAdventures() === 1 + globalOptions.saveTurns &&
-    !globalOptions.noDiet
+    !globalOptions.nodiet
   ) {
     while (get("_sweatOutSomeBoozeUsed") < 3 && get("sweat") >= 25 && myInebriety() > 0) {
       useSkill($skill`Sweat Out Some Booze`);

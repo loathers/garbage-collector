@@ -24,10 +24,11 @@ import {
   uneffect,
 } from "libram";
 import { garboAdventure, Macro } from "../combat";
+import { globalOptions } from "../config";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
-import { baseMeat, globalOptions, realmAvailable, safeRestore } from "../lib";
+import { baseMeat, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
@@ -138,13 +139,13 @@ function _yachtzeeChain(): void {
 }
 
 export function yachtzeeChain(): void {
-  if (!globalOptions.yachtzeeChain) return;
+  if (!globalOptions.prefs.yachtzeechain) return;
   if (get("_garboYachtzeeChainCompleted", false)) return;
   print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
   set("_garboYachtzeeChainCompleted", true);
-  globalOptions.yachtzeeChain = false;
-  if (!globalOptions.noDiet) {
+  globalOptions.prefs.yachtzeechain = false;
+  if (!globalOptions.nodiet) {
     shrugIrrelevantSongs();
     runDiet();
     prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed

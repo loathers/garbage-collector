@@ -18,9 +18,10 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { garboAdventureAuto, Macro } from "../combat";
+import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { globalOptions, ltbRun, realmAvailable } from "../lib";
+import { ltbRun, realmAvailable } from "../lib";
 import { freeFightOutfit } from "../outfit";
 import postCombatActions from "../post";
 
