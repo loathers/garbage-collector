@@ -1,12 +1,7 @@
 import { Familiar, Item } from "kolmafia";
-import { $familiar, $item, $items, findLeprechaunMultiplier, get, have } from "libram";
+import { $familiar, $item, $items, findLeprechaunMultiplier, have } from "libram";
 import { garboAverageValue, garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
-
-// load these once when module is first loaded
-const rockinRobinProgress = get("rockinRobinProgress");
-const optimisticCandleProgress = get("optimisticCandleProgress");
-const garbageFireProgress = get("garbageFireProgress");
 
 type StandardDropFamiliar = {
   familiar: Familiar;
@@ -160,36 +155,6 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
       11,
   },
   {
-    familiar: $familiar`Rockin' Robin`,
-    expected: (i) => (i === 0 ? 30 - rockinRobinProgress : 30),
-    drop: $item`robin's egg`,
-  },
-  {
-    familiar: $familiar`Optimistic Candle`,
-    expected: (i) => (i === 0 ? 30 - optimisticCandleProgress : 30),
-    drop: $item`glob of melted wax`,
-  },
-  {
-    familiar: $familiar`Garbage Fire`,
-    expected: (i) => (i === 0 ? 30 - garbageFireProgress : 30),
-    drop: [
-      $item`burning newspaper`,
-      $item`extra-toasted half sandwich`,
-      $item`mulled hobo wine`,
-    ]
-  },
-  {
-    familiar: $familiar`Shorter-Order Cook`,
-    expected: () => 11, // 9 with blue plate equipped
-    drop: [
-      $item`short stack of pancakes`,
-      $item`short stick of butter`,
-      $item`short glass of water`,
-      $item`short white`,
-      $item`short beer`,
-    ],
-  },
-  {
     // eslint-disable-next-line libram/verify-constants
     familiar: $familiar`Hobo in Sheep's Clothing`,
     expected: (i) => 5 * (i ** 2 + 3 * i + 2), // faster with half-height cigar
@@ -216,7 +181,8 @@ export function getAllDrops(fam: Familiar): { expectedValue: number; expectedTur
   const current = fam.dropsToday;
   const returnValue = [];
 
-  for (let i = current; i < expected.length; i++) {
+  const length = Array.isArray(expected) ? expected.length : 11; // 11 seems a reasonable max
+  for (let i = current; i < length; i++) {
     const turns = expectedTurnsValue(target.expected, i);
     returnValue.push({
       expectedValue: dropValue(drop) / turns + (additionalValue?.() ?? 0),
