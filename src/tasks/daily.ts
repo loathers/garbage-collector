@@ -50,6 +50,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
+import { luckyGoldRing } from "../dropsgear";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
@@ -339,6 +340,16 @@ export function configureSnojo(): void {
   }
 }
 
+function shouldClosetHoboNickels(): boolean {
+  const nickel = $item`hobo nickel`;
+  if (!have($item`lucky gold ring`)) return false;
+  if (!have($familiar`Hobo Monkey`) && !have(nickel, 1000)) return false;
+  if (!itemAmount(nickel)) return false;
+  const lgrValue = luckyGoldRing("barf", false).get($item`lucky gold ring`) ?? 0;
+  const nickelValue = garboValue($item`hobo nickel`);
+  return lgrValue >= nickelValue;
+}
+
 export const DailyTasks: Task[] = [
   {
     name: "Refresh Latte",
@@ -531,7 +542,7 @@ export const DailyTasks: Task[] = [
   },
   {
     name: "Closet Hobo Nickels",
-    ready: () => have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000),
+    ready: shouldClosetHoboNickels,
     completed: () => itemAmount($item`hobo nickel`) === 0,
     do: () => putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`),
   },

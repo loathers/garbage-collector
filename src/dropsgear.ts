@@ -196,7 +196,10 @@ function mafiaThumbRing(equipMode: BonusEquipMode) {
   ]);
 }
 
-function luckyGoldRing(equipMode: BonusEquipMode) {
+export function luckyGoldRing(
+  equipMode: BonusEquipMode,
+  includeVolcoino = true
+): Map<Item, number> {
   // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
   if (!have($item`lucky gold ring`) || equipMode === "dmt") {
     return new Map<Item, number>([]);
@@ -213,7 +216,9 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
       realmAvailable("sleaze") ? garboValue($item`Beach Buck`) : 0,
       realmAvailable("spooky") ? garboValue($item`Coinspiracy`) : 0,
       realmAvailable("stench") ? garboValue($item`FunFunds™`) : 0,
-      realmAvailable("hot") && !get("_luckyGoldRingVolcoino") ? garboValue($item`Volcoino`) : 0,
+      realmAvailable("hot") && !get("_luckyGoldRingVolcoino") && includeVolcoino
+        ? garboValue($item`Volcoino`)
+        : 0,
       realmAvailable("cold") ? garboValue($item`Wal-Mart gift certificate`) : 0,
       realmAvailable("fantasy") ? garboValue($item`Rubee™`) : 0,
     ].filter((value) => value > 0),
