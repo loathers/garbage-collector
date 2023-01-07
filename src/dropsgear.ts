@@ -207,7 +207,12 @@ function luckyGoldRing(equipMode: BonusEquipMode) {
   const dropValues = [
     100, // 80 - 120 meat
     ...[
-      itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
+      itemAmount($item`hobo nickel`) > 0
+        ? (garboValue($item`lewd playing card`) -
+            garboValue($item`11-leaf clover`) -
+            get("valueOfAdventure")) /
+          5
+        : 0, // This should be closeted
       itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
       itemAmount($item`Freddy Kruegerand`) > 0 ? garboValue($item`Freddy Kruegerand`) : 0,
       realmAvailable("sleaze") ? garboValue($item`Beach Buck`) : 0,
