@@ -8,7 +8,7 @@ import {
   sellPrice,
   toInt,
 } from "kolmafia";
-import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
+import { $item, $items, get, getSaleValue, property, Session, set, sumNumbers } from "libram";
 import { formatNumber, globalOptions, HIGHLIGHT, resetDailyPreference } from "./lib";
 
 function currency(...items: Item[]): () => number {
@@ -43,6 +43,14 @@ const specialValueLookup = new Map<Item, () => number>([
   [
     $item`Freddy Kruegerand`,
     currency(...$items`bottle of Bloodweiser, electric Kool-Aid, Dreadsylvanian skeleton key`),
+  ],
+  [
+    $item`hobo nickel`,
+    () =>
+      (garboValue($item`lewd playing card`) -
+        garboValue($item`11-leaf clover`) -
+        get("valueOfAdventure")) /
+      5,
   ],
   [$item`Beach Buck`, currency($item`one-day ticket to Spring Break Beach`)],
   [$item`Coinspiracy`, currency(...$items`Merc Core deployment orders, karma shawarma`)],
