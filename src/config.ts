@@ -18,7 +18,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     }),
     turns: Args.number({
       setting: "",
-      help: 'terminate after the specified number of turns, e.g. "garbo turns=200" will terminate after 200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.',
+      help: 'terminate after the specified number of turns, e.g. "garbo 200" or "garbo turns=200" will terminate after 200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.',
       default: 0,
     }),
     simdiet: Args.flag({
