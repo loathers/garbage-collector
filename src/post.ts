@@ -189,7 +189,7 @@ function funguySpores() {
   }
 }
 
-const autumnAtonZones = $locations`The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley`;
+const autumnAtonZones = $locations`El Vibrato Island, The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley`;
 
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
