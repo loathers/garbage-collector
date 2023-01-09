@@ -505,7 +505,7 @@ function powerGlove(): Map<Item, number> {
   return new Map([
     [
       $item`Powerful Glove`,
-      0.23 * garboAverageValue(...$items`blue pixel, green pixel, red pixel, white pixel`),
+      0.25 * garboAverageValue(...$items`blue pixel, green pixel, red pixel, white pixel`),
     ],
   ]);
 }
