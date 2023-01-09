@@ -49,14 +49,6 @@ function getAutumnatonUniques(location: Location): [AutumnAton.Upgrade, Item] {
   return [AutumnAton.possibleUpgrades[0], $item`AutumnFest ale`];
 }
 
-/* interface ItemData {
-  value: number;
-  rate: number;
-  expectedDrops1?: number;
-  expectedDrops2?: number;
-  totalExpectedDrops?: number;
-} */
-
 export function averageAutumnatonValue(
   location: Location,
   acuityOverride?: number,
