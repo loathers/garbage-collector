@@ -357,7 +357,11 @@ export const farmingPotions = [
 
 export function doublingPotions(embezzlers: number): Potion[] {
   return farmingPotions
-    .filter((potion) => potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5)
+    .filter(
+      (potion) =>
+        potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5 &&
+        potion.potion !== $item`pocket wish`
+    )
     .map((potion) => {
       return { potion: potion, value: potion.doublingValue(embezzlers) };
     })
