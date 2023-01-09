@@ -19968,7 +19968,6 @@ function src_combat_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = stri
 
 
 
-
 var monsterManuelCached = undefined;
 function monsterManuelAvailable() {
   if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
@@ -20291,9 +20290,7 @@ function customizeMacro(macro) {
 
 function makeCcs(macro) {
   (0,external_kolmafia_namespaceObject.writeCcs)("[default]\n\"".concat(customizeMacro(macro).toString(), "\""), "garbo");
-  propertyManager.set({
-    customCombatScript: "garbo"
-  });
+  (0,external_kolmafia_namespaceObject.setCcs)("garbo");
 }
 
 function runCombatBy(initiateCombatAction) {
@@ -30678,7 +30675,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(27035);
+  sinceKolmafiaRevision(27075);
   checkGithubVersion();
   var completedProperty = "_garboCompleted";
   _set(completedProperty, "");
@@ -30843,6 +30840,7 @@ function main() {
       logPreferenceChange: true,
       logPreferenceChangeFilter: src_toConsumableArray(new Set([].concat(src_toConsumableArray(property_get("logPreferenceChangeFilter").split(",")), ["libram_savedMacro", "maximizerMRUList", "testudinalTeachings", "garboEmbezzlerDate", "garboEmbezzlerCount", "garboEmbezzlerSources", "spadingData"]))).sort().filter(a => a).join(","),
       battleAction: "custom combat script",
+      customCombatScript: "garbo",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
       autoSatisfyWithCoinmasters: true,
