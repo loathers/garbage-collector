@@ -18035,7 +18035,7 @@ var UnlockableZones = [{
 function underwater(location) {
   return location.environment === "underwater";
 }
-var canAdventureOrUnlockSkipList = [].concat(wanderer_lib_toConsumableArray($locations(wanderer_lib_templateObject11 || (wanderer_lib_templateObject11 = wanderer_lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip)"])))), wanderer_lib_toConsumableArray(external_kolmafia_namespaceObject.Location.all().filter(l => l.parent === "Clan Basement")));
+var canAdventureOrUnlockSkipList = [].concat(wanderer_lib_toConsumableArray($locations(wanderer_lib_templateObject11 || (wanderer_lib_templateObject11 = wanderer_lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island"])))), wanderer_lib_toConsumableArray(external_kolmafia_namespaceObject.Location.all().filter(l => l.parent === "Clan Basement")));
 function canAdventureOrUnlock(loc) {
   var skiplist = wanderer_lib_toConsumableArray(canAdventureOrUnlockSkipList);
 
@@ -23415,7 +23415,7 @@ function funguySpores() {
   }
 }
 
-var autumnAtonZones = $locations(post_templateObject17 || (post_templateObject17 = post_taggedTemplateLiteral(["The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley"])));
+var autumnAtonZones = $locations(post_templateObject17 || (post_templateObject17 = post_taggedTemplateLiteral(["El Vibrato Island, The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley"])));
 function postCombatActions() {
   var skipDiet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   juneCleave();
