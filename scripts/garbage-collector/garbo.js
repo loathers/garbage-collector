@@ -23225,7 +23225,7 @@ var StashManager = /*#__PURE__*/function () {
 
     var clanIdOrName = config_globalOptions.prefs.stashClan;
     this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
-    this.enabled = 0 !== this.clanIdOrName && "none" !== this.clanIdOrName;
+    this.enabled = ![0, "", "none"].some(id => id === this.clanIdOrName);
   }
 
   clan_createClass(StashManager, [{
