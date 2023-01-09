@@ -155,10 +155,8 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
       11,
   },
   {
-    // eslint-disable-next-line libram/verify-constants
     familiar: $familiar`Hobo in Sheep's Clothing`,
     expected: (i) => 5 * (i ** 2 + 3 * i + 2), // faster with half-height cigar
-    // eslint-disable-next-line libram/verify-constants
     drop: $item`grubby wool`,
   },
 ];
