@@ -2,8 +2,11 @@ import {
   adv1,
   availableAmount,
   buy,
+  canAdventure,
+  canEquip,
   cliExecute,
   closetAmount,
+  create,
   Effect,
   equip,
   Familiar,
@@ -11,6 +14,7 @@ import {
   getCampground,
   handlingChoice,
   haveEquipped,
+  haveOutfit,
   inebrietyLimit,
   isBanished,
   Item,
@@ -20,6 +24,7 @@ import {
   mallPrice,
   maximize,
   Monster,
+  myAdventures,
   myAscensions,
   myClass,
   myFamiliar,
@@ -27,6 +32,7 @@ import {
   myLevel,
   myMaxhp,
   myPathId,
+  myPrimestat,
   myThrall,
   numericModifier,
   outfit,
@@ -35,17 +41,17 @@ import {
   refreshStash,
   restoreHp,
   retrieveItem,
+  retrievePrice,
   runChoice,
   runCombat,
   setAutoAttack,
   setLocation,
+  Skill,
   stashAmount,
   takeCloset,
   toInt,
   toItem,
-  toSlot,
   totalTurnsPlayed,
-  toUrl,
   use,
   useFamiliar,
   useSkill,
@@ -67,10 +73,9 @@ import {
   $phylum,
   $skill,
   $slot,
+  $stat,
   $thrall,
   ActionSource,
-  adventureMacro,
-  adventureMacroAuto,
   AsdonMartin,
   ChateauMantegna,
   clamp,
@@ -81,61 +86,76 @@ import {
   FindActionSourceConstraints,
   findLeprechaunMultiplier,
   get,
-  getTodaysHolidayWanderers,
+  getAverageAdventures,
+  getFoldGroup,
   have,
   maximizeCached,
   property,
   Requirement,
+  Robortender,
   set,
   SourceTerminal,
   sum,
-  sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
+  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
-import { Macro, withMacro } from "./combat";
-import { freeFightFamiliar, meatFamiliar, pocketProfessorLectures } from "./familiar";
+import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import {
+  bestFairy,
+  freeFightFamiliar,
+  meatFamiliar,
+  pocketProfessorLectures,
+  setBestLeprechaunAsMeatFamiliar,
+} from "./familiar";
+import {
+  baseMeat,
   burnLibrams,
+  dogOrHolidayWanderer,
   embezzlerLog,
+  ESTIMATED_OVERDRUNK_TURNS,
   expectedEmbezzlerProfit,
-  globalOptions,
   HIGHLIGHT,
   kramcoGuaranteed,
+  latteActionSourceFinderConstraints,
   logMessage,
   ltbRun,
   mapMonster,
+  maxBy,
   propertyManager,
   questStep,
   realmAvailable,
   resetDailyPreference,
+  romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  today,
+  userConfirmDialog,
 } from "./lib";
-import { freeFightMood, meatMood } from "./mood";
+import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
 import { freeFightOutfit, meatOutfit, tryFillLatte, waterBreathingEquipment } from "./outfit";
 import { bathroomFinance, potionSetup } from "./potions";
 import {
   embezzlerCount,
   embezzlerMacro,
   embezzlerSources,
-  estimatedTurns,
   getNextEmbezzlerFight,
 } from "./embezzler";
-import { canAdv } from "canadv.ash";
-import { determineDraggableZoneAndEnsureAccess } from "./wanderer";
 import postCombatActions from "./post";
 import {
   crateStrategy,
   doingExtrovermectin,
-  intializeExtrovermectinZones,
+  initializeExtrovermectinZones,
   saberCrateIfSafe,
 } from "./extrovermectin";
 import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
+import { bestConsumable } from "./diet";
+import { wanderWhere } from "./wanderer";
+import { globalOptions } from "./config";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -143,7 +163,7 @@ const firstChainMacro = () =>
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.externalIf(
-        get("_sourceTerminalDigitizeMonster") !== $monster`Knob Goblin Embezzler`,
+        SourceTerminal.getDigitizeMonster() !== $monster`Knob Goblin Embezzler`,
         Macro.tryCopier($skill`Digitize`)
       )
         .tryCopier($item`Spooky Putty sheet`)
@@ -179,27 +199,14 @@ const secondChainMacro = () =>
 function embezzlerSetup() {
   setLocation($location`none`);
   potionSetup(false);
-  meatMood(true).execute(estimatedTurns());
+  maximize("MP", false);
+  meatMood(true, 750 + baseMeat).execute(embezzlerCount());
   safeRestore();
   freeFightMood().execute(50);
-  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
-    if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
-      maximize("MP", false);
-      burnLibrams();
-      use($item`Platinum Yendorian Express Card`);
-    }
-    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
-      use($item`Bag o' Tricks`);
-    }
-  });
-  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
-    maximize("MP", false);
-    burnLibrams();
-    use($item`License to Chill`);
-  }
+  useBuffExtenders();
   burnLibrams(400);
   if (
-    globalOptions.ascending &&
+    globalOptions.ascend &&
     questStep("questM16Temple") > 0 &&
     get("lastTempleAdventures") < myAscensions() &&
     acquire(1, $item`stone wool`, 3 * get("valueOfAdventure") + 100, false) > 0
@@ -213,7 +220,7 @@ function embezzlerSetup() {
       useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
       run.constraints.preparation?.();
       freeFightOutfit(run.constraints.equipmentRequirements?.());
-      adventureMacro($location`The Hidden Temple`, run.macro);
+      garboAdventure($location`The Hidden Temple`, run.macro);
     }
   }
 
@@ -274,7 +281,7 @@ function embezzlerSetup() {
   }
 
   if (doingExtrovermectin()) {
-    intializeExtrovermectinZones();
+    initializeExtrovermectinZones();
   }
 }
 
@@ -284,11 +291,11 @@ function startWandererCounter() {
     return;
   }
   const digitizeNeedsStarting =
-    Counter.get("Digitize Monster") === null && get("_sourceTerminalDigitizeUses") !== 0;
+    Counter.get("Digitize Monster") === Infinity && SourceTerminal.getDigitizeUses() !== 0;
   const romanceNeedsStarting =
     get("_romanticFightsLeft") > 0 &&
-    Counter.get("Romantic Monster window begin") === null &&
-    Counter.get("Romantic Monster window end") === null;
+    Counter.get("Romantic Monster window begin") === Infinity &&
+    Counter.get("Romantic Monster window end") === Infinity;
   if (digitizeNeedsStarting || romanceNeedsStarting) {
     if (digitizeNeedsStarting) print("Starting digitize counter by visiting the Haunted Kitchen!");
     if (romanceNeedsStarting) print("Starting romance counter by visiting the Haunted Kitchen!");
@@ -303,25 +310,17 @@ function startWandererCounter() {
       } else {
         print("You do not have gregs active, so this is a regular free run.");
         run = tryFindFreeRun() ?? ltbRun();
-        useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar());
+        useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar({ canChooseMacro: false }));
         run.constraints.preparation?.();
         freeFightOutfit(run.constraints.equipmentRequirements?.());
       }
-      adventureMacro(
+      garboAdventure(
         $location`The Haunted Kitchen`,
         Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro)
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
-      [
-        "Lights Out in the Kitchen",
-        "Play Misty For Me",
-        "Wooof! Wooooooof!",
-        ...getTodaysHolidayWanderers().map((monster) => monster.name),
-      ].includes(get("lastEncounter"))
-      // We use the haunted kitchen because we don't do anything else there, it's always available, it's 100% combat, and it allows wanderers
-      // Account for lights out and semi-rare
-      // It sucks to hit the semi-rare, but SRs interact weirdly with wanderers, and it's better to know than not to know
+      dogOrHolidayWanderer(["Lights Out in the Kitchen"])
     );
   }
 }
@@ -334,11 +333,29 @@ const witchessPieces = [
 ];
 
 function bestWitchessPiece() {
-  return witchessPieces.sort((a, b) => garboValue(b.drop) - garboValue(a.drop))[0].piece;
+  return maxBy(witchessPieces, ({ drop }) => garboValue(drop)).piece;
+}
+
+function pygmyOptions(forceEquip: Item[] = []) {
+  return {
+    requirements: () => [
+      new Requirement([], {
+        forceEquip,
+        preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
+        bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
+      }),
+    ],
+    macroAllowsFamiliarActions: false,
+  };
 }
 
 export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
+
+  if (getFoldGroup($item`Spooky Putty sheet`).some((item) => have(item))) {
+    cliExecute("fold spooky putty sheet");
+  }
+
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for embezzler before doing setup
@@ -416,14 +433,6 @@ export function dailyFights(): void {
           postCombatActions();
           const predictedNextFight = getNextEmbezzlerFight();
           if (!predictedNextFight?.draggable) doSausage();
-          // Check in case our prof gained enough exp during the profchain
-          if (
-            thesisReady() &&
-            get("beGregariousFightsLeft") <= 0 &&
-            predictedNextFight?.name !== "Orb Prediction"
-          ) {
-            deliverThesis();
-          }
           doGhost();
           startWandererCounter();
         }
@@ -433,7 +442,7 @@ export function dailyFights(): void {
 
       // REMAINING EMBEZZLER FIGHTS
       let nextFight = getNextEmbezzlerFight();
-      while (nextFight !== null) {
+      while (nextFight !== null && myAdventures()) {
         print(`Running fight ${nextFight.name}`);
         const startTurns = totalTurnsPlayed();
 
@@ -455,12 +464,7 @@ export function dailyFights(): void {
         const underwater = nextFight.location().environment === "underwater";
 
         const romanticFamiliar = $familiars`Obtuse Angel, Reanimated Reanimator`.find(have);
-        if (
-          romanticFamiliar &&
-          get("_badlyRomanticArrows") === 0 &&
-          nextFight.draggable &&
-          !underwater
-        ) {
+        if (romanticFamiliar && get("_badlyRomanticArrows") === 0 && !underwater) {
           useFamiliar(romanticFamiliar);
         } else {
           useFamiliar(meatFamiliar());
@@ -478,30 +482,14 @@ export function dailyFights(): void {
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
-          if (nextFight.wrongEncounterName) {
-            print(`fight ${nextFight.name} reports wrong encounter!`);
-          }
           embezzlerLog.initialEmbezzlersFought++;
           embezzlerLog.sources.push(nextFight.name);
         }
 
         nextFight = getNextEmbezzlerFight();
 
-        // try to deliver the thesis
-        const romanticMonsterImpossible =
-          Counter.get("Romantic Monster Window end") === null ||
-          (Counter.get("Romantic Monster Window begin") ?? -1) > 0 ||
-          get("_romanticFightsLeft") <= 0;
-        if (romanticMonsterImpossible && (!nextFight || !nextFight.draggable)) {
+        if (romanticMonsterImpossible() && (!nextFight || !nextFight.draggable)) {
           doSausage();
-          // Check in case our prof gained enough exp during the profchains
-          if (
-            thesisReady() &&
-            get("beGregariousFightsLeft") <= 0 &&
-            nextFight?.name !== "Orb Prediction"
-          ) {
-            deliverThesis();
-          }
           yachtzee();
         }
         doGhost();
@@ -517,39 +505,12 @@ type FreeFightOptions = {
   requirements?: () => Requirement[];
   noncombat?: () => boolean;
   effects?: () => Effect[];
-  // True if the macro used by this freeFight can be overridden without causing harm
-  canOverrideMacro?: boolean;
+
+  // Tells us if this fight can reasonably be expected to do familiar
+  // actions like meatifying matter, or crimbo shrub red raying.
+  // Defaults to true.
+  macroAllowsFamiliarActions?: boolean;
 };
-
-let bestNonCheerleaderFairy: Familiar;
-
-function bestFairy() {
-  if (have($familiar`Trick-or-Treating Tot`) && have($item`li'l ninja costume`)) {
-    return $familiar`Trick-or-Treating Tot`;
-  }
-  if (get("_cheerleaderSteam") > 100 && have($familiar`Steam-Powered Cheerleader`)) {
-    return $familiar`Steam-Powered Cheerleader`;
-  }
-
-  if (!bestNonCheerleaderFairy) {
-    setLocation($location`Noob Cave`);
-    const bestNonCheerleaderFairies = Familiar.all()
-      .filter((familiar) => have(familiar) && familiar !== $familiar`Steam-Powered Cheerleader`)
-      .sort(
-        (a, b) =>
-          numericModifier(b, "Fairy", 1, $item`none`) - numericModifier(a, "Fairy", 1, $item`none`)
-      );
-    const bestFairyMult = numericModifier(bestNonCheerleaderFairies[0], "Fairy", 1, $item`none`);
-    bestNonCheerleaderFairy = bestNonCheerleaderFairies
-      .filter((fairy) => numericModifier(fairy, "Fairy", 1, $item`none`) === bestFairyMult)
-      .sort(
-        (a, b) =>
-          numericModifier(b, "Leprechaun", 1, $item`none`) -
-          numericModifier(a, "Leprechaun", 1, $item`none`)
-      )[0];
-  }
-  return bestNonCheerleaderFairy;
-}
 
 class FreeFight {
   available: () => number | boolean;
@@ -572,13 +533,20 @@ class FreeFight {
   pickFamiliar(): Familiar {
     const mandatory = this.options.familiar?.();
     if (mandatory) return mandatory;
-    return freeFightFamiliar(this.options.canOverrideMacro);
+    return freeFightFamiliar({ canChooseMacro: this.options.macroAllowsFamiliarActions });
+  }
+
+  isAvailable(): boolean {
+    const avail = this.available();
+    return typeof avail === "number" ? avail > 0 : avail;
   }
 
   runAll() {
-    if (!this.available()) return;
-    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
-    while (this.available()) {
+    if (!this.isAvailable()) return;
+    if ((this.options.cost ? this.options.cost() : 0) > globalOptions.prefs.valueOfFreeFight) {
+      return;
+    }
+    while (this.isAvailable()) {
       voidMonster();
       const noncombat = !!this.options?.noncombat?.();
       if (!noncombat) {
@@ -593,7 +561,7 @@ class FreeFight {
       withMacro(Macro.basicCombat(), this.run);
       postCombatActions();
       // Slot in our Professor Thesis if it's become available
-      if (thesisReady() && !have($effect`Feeling Lost`)) deliverThesis();
+      if (!have($effect`Feeling Lost`)) deliverThesisIfAble();
     }
   }
 }
@@ -608,15 +576,17 @@ class FreeRunFight extends FreeFight {
     options: FreeFightOptions = {},
     freeRunPicker: FindActionSourceConstraints = {}
   ) {
-    super(available, () => null, false, options);
+    super(available, () => null, false, { ...options, macroAllowsFamiliarActions: false });
     this.freeRun = run;
     this.constraints = freeRunPicker;
   }
 
   runAll() {
-    if (!this.available()) return;
-    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
-    while (this.available()) {
+    if (!this.isAvailable()) return;
+    if ((this.options.cost ? this.options.cost() : 0) > globalOptions.prefs.valueOfFreeFight) {
+      return;
+    }
+    while (this.isAvailable()) {
       const constraints = {
         noFamiliar: () => this.options.familiar !== undefined,
         ...this.constraints,
@@ -635,6 +605,7 @@ class FreeRunFight extends FreeFight {
             : []),
         ])
       );
+      freeFightMood(...(this.options.effects?.() ?? []));
       safeRestore();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
       postCombatActions();
@@ -642,25 +613,44 @@ class FreeRunFight extends FreeFight {
   }
 }
 
-const pygmyMacro = Macro.if_(
-  $monster`pygmy bowler`,
-  Macro.trySkill($skill`Snokebomb`).item($item`Louder Than Bomb`)
-)
-  .if_(
-    $monster`pygmy orderlies`,
-    Macro.trySkill($skill`Feel Hatred`).item($item`divine champagne popper`)
+const pygmyBanishHandlers = [
+  {
+    pygmy: $monster`pygmy bowler`,
+    skill: $skill`Snokebomb`,
+    check: "_snokebombUsed",
+    limit: 3,
+    item: $item`Louder Than Bomb`,
+  },
+  {
+    pygmy: $monster`pygmy orderlies`,
+    skill: $skill`Feel Hatred`,
+    check: "_feelHatredUsed",
+    limit: 3,
+    item: $item`divine champagne popper`,
+  },
+  {
+    pygmy: $monster`pygmy janitor`,
+    skill: undefined,
+    check: undefined,
+    limit: 0,
+    item: $item`tennis ball`,
+  },
+] as const;
+
+const pygmyMacro = Macro.step(
+  ...pygmyBanishHandlers.map(({ pygmy, skill, item }) =>
+    Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item))
   )
-  .if_($monster`pygmy janitor`, Macro.item($item`tennis ball`))
-  .if_($monster`time-spinner prank`, Macro.basicCombat())
+)
   .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`))
   .ifHolidayWanderer(Macro.basicCombat())
   .abort();
 
 function getStenchLocation() {
   return (
-    $locations`Barf Mountain, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
-      (l) => canAdv(l, false)
-    ) || $location`none`
+    $locations`Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
+      (l) => canAdventure(l)
+    ) ?? $location`none`
   );
 }
 
@@ -690,7 +680,7 @@ const freeFightSources = [
     () => {
       const ghostLocation = get("ghostLocation");
       if (!ghostLocation) return;
-      adventureMacro(ghostLocation, Macro.ghostBustin());
+      garboAdventure(ghostLocation, Macro.ghostBustin());
     },
     true,
     {
@@ -705,13 +695,10 @@ const freeFightSources = [
         "Open Heart Surgery",
         "LOV Extraterrestrial Chocolate"
       );
-
-      visitUrl("choice.php");
-      if (handlingChoice()) throw "Did not get all the way through LOV.";
     },
     false,
     {
-      canOverrideMacro: true,
+      macroAllowsFamiliarActions: true,
     }
   ),
 
@@ -730,7 +717,6 @@ const freeFightSources = [
         )
           ? $familiar`Robortender`
           : null,
-      canOverrideMacro: true,
     }
   ),
 
@@ -747,9 +733,41 @@ const freeFightSources = [
 
   new FreeFight(
     () => have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked"),
-    () => useSkill($skill`Evoke Eldritch Horror`),
-    false,
-    { canOverrideMacro: true }
+    () => {
+      if (!have($effect`Crappily Disguised as a Waiter`)) {
+        const expectedIchors = 1;
+        const rate = 11 / 200;
+        const value =
+          expectedIchors * garboValue($item`eldritch ichor`) * rate -
+          mallPrice($item`crappy waiter disguise`);
+        if (value > 0) {
+          retrieveItem($item`crappy waiter disguise`);
+          use($item`crappy waiter disguise`);
+        }
+      }
+      withMacro(
+        Macro.if_(
+          $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
+          // Using while_ here in case you run out of mp
+          Macro.while_("hasskill Awesome Balls of Fire", Macro.skill($skill`Awesome Balls of Fire`))
+            .while_("hasskill Eggsplosion", Macro.skill($skill`Eggsplosion`))
+            .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
+            .while_(
+              "hasskill Weapon of the Pastalord",
+              Macro.skill($skill`Weapon of the Pastalord`)
+            )
+            .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+            .attack()
+            .repeat()
+        ).basicCombat(),
+        () => {
+          useSkill($skill`Evoke Eldritch Horror`);
+          if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
+        },
+        false
+      );
+    },
+    false
   ),
 
   new FreeFight(
@@ -758,7 +776,6 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`lynyrd snare`),
-      canOverrideMacro: true,
     }
   ),
 
@@ -781,6 +798,8 @@ const freeFightSources = [
             get("lovebugsUnlocked"),
             Macro.trySkill($skill`Summon Love Gnats`).trySkill($skill`Summon Love Mosquito`)
           )
+          // eslint-disable-next-line libram/verify-constants
+          .tryItem($item`train whistle`)
           .trySkill($skill`Micrometeorite`)
           .tryItem($item`Time-Spinner`)
           .tryItem($item`little red book`)
@@ -795,14 +814,24 @@ const freeFightSources = [
           if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
           retrieveItem($item`[glitch season reward name]`);
-          if (get("glitchItemImplementationCount") >= 1000) retrieveItem($item`gas can`, 2);
+          if (
+            get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
+            2000
+          ) {
+            retrieveItem($item`gas can`, 2);
+          }
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
         }
       ),
     true,
     {
-      requirements: () => [new Requirement(["1000 mainstat"], {})],
+      requirements: () => [
+        new Requirement(["1000 mainstat"], {
+          preventEquip: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
+        }),
+      ],
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -851,7 +880,8 @@ const freeFightSources = [
     true,
     {
       cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
-      canOverrideMacro: true,
+      // They just die too dang quickly
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -863,23 +893,20 @@ const freeFightSources = [
       if (
         have($skill`Comprehensive Cartography`) &&
         get("_monstersMapped") <
-          (getBestItemStealZone() && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
+          (getBestItemStealZone(true) && get("_fireExtinguisherCharge") >= 10 ? 2 : 3) // Save a map to use for polar vortex
       ) {
-        withMacro(
-          Macro.if_($monster`time-spinner prank`, Macro.kill()).skill($skill`Use the Force`),
-          () => {
-            mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
-            runCombat();
-            runChoice(-1);
-          }
-        );
+        withMacro(Macro.skill($skill`Use the Force`), () => {
+          mapMonster($location`Domed City of Grimacia`, $monster`grizzled survivor`);
+          runCombat();
+          runChoice(-1);
+        });
       } else {
         if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
           retrieveItem(1, $item`tennis ball`);
           retrieveItem(1, $item`Louder Than Bomb`);
           retrieveItem(1, $item`divine champagne popper`);
         }
-        adventureMacro(
+        garboAdventure(
           $location`Domed City of Grimacia`,
           Macro.if_(
             $monster`alielf`,
@@ -892,18 +919,36 @@ const freeFightSources = [
               $monster`dog-alien`,
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`)
             )
-            .if_($monster`time-spinner prank`, Macro.kill())
+            .step("pickpocket")
             .skill($skill`Use the Force`)
         );
       }
     },
-    true,
+    false,
     {
-      requirements: () => [
-        new Requirement([], { forceEquip: $items`Fourth of May Cosplay Saber` }),
-      ],
+      requirements: () => {
+        const canPickPocket = myPrimestat() === $stat`Moxie`;
+        const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
+          (item) => have(item) && canEquip(item)
+        );
+
+        const reqs = [
+          new Requirement(["1000 Pickpocket Chance"], {
+            forceEquip: $items`Fourth of May Cosplay Saber`,
+          }),
+        ];
+        if (!canPickPocket && bestPickpocketItem) {
+          reqs.push(
+            new Requirement([], {
+              forceEquip: [bestPickpocketItem],
+            })
+          );
+        }
+        return reqs;
+      },
       familiar: () => (have($familiar`Red-Nosed Snapper`) ? $familiar`Red-Nosed Snapper` : null),
       effects: () => $effects`Transpondent`,
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -919,16 +964,18 @@ const freeFightSources = [
       retrieveItem($item`Louder Than Bomb`);
       retrieveItem($item`tennis ball`);
       retrieveItem($item`divine champagne popper`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      garboAdventure($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
     {
-      requirements: () => [
-        new Requirement([], {
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
+      cost: () => {
+        const banishers = pygmyBanishHandlers
+          .filter(
+            ({ skill, check, limit }) => !skill || !have(skill) || (check && get(check) >= limit)
+          )
+          .map(({ item }) => item);
+        return retrievePrice($item`Bowl of Scorpions`) + sum(banishers, mallPrice) / 11;
+      },
     }
   ),
 
@@ -938,18 +985,10 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
-      adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+      garboAdventure($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
-    }
+    pygmyOptions($items`miniature crystal ball`.filter((item) => have(item)))
   ),
   // 11th pygmy fight if we lack a saber
   new FreeFight(
@@ -960,17 +999,10 @@ const freeFightSources = [
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
-      adventureMacroAuto($location`The Hidden Bowling Alley`, pygmyMacro);
+      garboAdventureAuto($location`The Hidden Bowling Alley`, pygmyMacro);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-        }),
-      ],
-    }
+    pygmyOptions()
   ),
 
   // 11th+ pygmy fight if we have a saber- saber friends
@@ -987,15 +1019,8 @@ const freeFightSources = [
       const drunksCanAppear =
         get("_drunkPygmyBanishes") === 10 ||
         (saberedMonster === $monster`drunk pygmy` && get("_saberForceMonsterCount"));
-      const remainingSaberPygmies =
-        (saberedMonster === $monster`drunk pygmy` ? get("_saberForceMonsterCount") : 0) +
-        2 * clamp(5 - get("_saberForceUses"), 0, 5);
       return (
-        get("questL11Worship") !== "unstarted" &&
-        rightTime &&
-        !wrongPygmySabered &&
-        drunksCanAppear &&
-        remainingSaberPygmies
+        get("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && drunksCanAppear
       );
     },
     () => {
@@ -1006,51 +1031,34 @@ const freeFightSources = [
       ) {
         putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
         putCloset(itemAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
-        adventureMacro($location`The Hidden Bowling Alley`, Macro.skill($skill`Use the Force`));
+        garboAdventure($location`The Hidden Bowling Alley`, Macro.skill($skill`Use the Force`));
       } else {
         if (closetAmount($item`Bowl of Scorpions`) > 0) {
           takeCloset(closetAmount($item`Bowl of Scorpions`), $item`Bowl of Scorpions`);
         } else retrieveItem($item`Bowl of Scorpions`);
-        adventureMacro($location`The Hidden Bowling Alley`, pygmyMacro);
+        garboAdventure($location`The Hidden Bowling Alley`, pygmyMacro);
       }
     },
     false,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`Fourth of May Cosplay Saber`,
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-    }
+    pygmyOptions($items`Fourth of May Cosplay Saber`)
   ),
 
   // Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
   new FreeFight(
     () =>
       get("questL11Worship") !== "unstarted" &&
-      CrystalBall.currentPredictions(false).get($location`The Hidden Bowling Alley`) ===
-        $monster`drunk pygmy` &&
+      CrystalBall.ponder().get($location`The Hidden Bowling Alley`) === $monster`drunk pygmy` &&
       get("_drunkPygmyBanishes") >= 11,
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(1, $item`Bowl of Scorpions`);
-      adventureMacro(
+      garboAdventure(
         $location`The Hidden Bowling Alley`,
         Macro.if_($monster`drunk pygmy`, pygmyMacro).abort()
       );
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-    }
+    pygmyOptions($items`miniature crystal ball`.filter((item) => have(item)))
   ),
 
   new FreeFight(
@@ -1069,19 +1077,12 @@ const freeFightSources = [
       visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
     },
     true,
-    {
-      requirements: () => [
-        new Requirement([], {
-          bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-          preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        }),
-      ],
-    }
+    pygmyOptions()
   ),
 
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => adv1(determineDraggableZoneAndEnsureAccess(), -1, ""),
+    () => adv1(wanderWhere("wanderer"), -1, ""),
     true,
     {
       requirements: () => [
@@ -1089,7 +1090,6 @@ const freeFightSources = [
           forceEquip: $items`Kramco Sausage-o-Matic™`,
         }),
       ],
-      canOverrideMacro: true,
     }
   ),
 
@@ -1099,9 +1099,12 @@ const freeFightSources = [
         ? clamp(5 - get("_glarkCableUses"), 0, itemAmount($item`glark cable`))
         : 0,
     () => {
-      adventureMacro($location`The Red Zeppelin`, Macro.item($item`glark cable`));
+      garboAdventure($location`The Red Zeppelin`, Macro.item($item`glark cable`));
     },
-    true
+    true,
+    {
+      macroAllowsFamiliarActions: false,
+    }
   ),
 
   // Mushroom garden
@@ -1115,7 +1118,7 @@ const freeFightSources = [
       if (SourceTerminal.have()) {
         SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
-      adventureMacro(
+      garboAdventure(
         $location`Your Mushroom Garden`,
         Macro.externalIf(
           !doingExtrovermectin(),
@@ -1144,7 +1147,7 @@ const freeFightSources = [
       if (SourceTerminal.have()) {
         SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
-      adventureMacro(
+      garboAdventure(
         $location`Your Mushroom Garden`,
         Macro.if_($monster`Government agent`, Macro.skill($skill`Macrometeorite`)).if_(
           $monster`piranha plant`,
@@ -1182,7 +1185,6 @@ const freeFightSources = [
           ]),
         }),
       ],
-      canOverrideMacro: true,
     }
   ),
 
@@ -1207,7 +1209,7 @@ const freeFightSources = [
       if (sensation) {
         acquire(1, $item`abstraction: sensation`, garboValue($item`abstraction: motion`), false);
       }
-      adventureMacro(
+      garboAdventure(
         $location`The Deep Machine Tunnels`,
         Macro.externalIf(
           thought,
@@ -1234,32 +1236,35 @@ const freeFightSources = [
   new FreeFight(
     () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
     () => Witchess.fightPiece(bestWitchessPiece()),
-    true,
-    { canOverrideMacro: true }
+    true
   ),
 
   new FreeFight(
-    () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
+    () =>
+      get("snojoAvailable") &&
+      get("snojoSetting") !== null &&
+      clamp(10 - get("_snojoFreeFights"), 0, 10),
     () => {
-      if (get("snojoSetting") === null) {
-        visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-        runChoice(3);
-      }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
-    false,
-    { canOverrideMacro: true }
+    false
   ),
 
   new FreeFight(
     () =>
       get("neverendingPartyAlways") && questStep("_questPartyFair") < 999
-        ? clamp(10 - get("_neverendingPartyFreeTurns"), 0, 10)
+        ? clamp(
+            10 -
+              get("_neverendingPartyFreeTurns") -
+              (get("_thesisDelivered") || !have($familiar`Pocket Professor`) ? 0 : 1),
+            0,
+            10
+          )
         : 0,
     () => {
-      const constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).step(Macro.load());
+      const constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).basicCombat();
       setNepQuestChoicesAndPrepItems();
-      adventureMacro($location`The Neverending Party`, constructedMacro);
+      garboAdventure($location`The Neverending Party`, constructedMacro);
     },
     true,
     {
@@ -1276,8 +1281,14 @@ const freeFightSources = [
           }
         ),
       ],
-      canOverrideMacro: true,
     }
+  ),
+
+  new FreeFight(
+    () => (get("ownsSpeakeasy") ? 3 - get("_speakeasyFreeFights") : 0),
+    // eslint-disable-next-line libram/verify-constants
+    () => adv1($location`An Unusually Quiet Barroom Brawl`, -1, ""),
+    true
   ),
 
   new FreeFight(
@@ -1288,7 +1299,9 @@ const freeFightSources = [
       CombatLoversLocket.reminisce(monster);
     },
     true,
-    { canOverrideMacro: true }
+    {
+      familiar: () => $familiars`Robortender`.find(have) ?? null,
+    }
   ),
 
   // Get a li'l ninja costume for 150% item drop
@@ -1298,15 +1311,17 @@ const freeFightSources = [
       have($familiar`Trick-or-Treating Tot`) &&
       !get("_firedJokestersGun") &&
       have($item`The Jokester's gun`) &&
+      canEquip($item`The Jokester's gun`) &&
       questStep("questL08Trapper") >= 2,
     () =>
-      adventureMacro(
+      garboAdventure(
         $location`Lair of the Ninja Snowmen`,
         Macro.skill($skill`Fire the Jokester's Gun`).abort()
       ),
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
+      macroAllowsFamiliarActions: false,
     }
   ),
 
@@ -1317,6 +1332,7 @@ const freeFightSources = [
       have($familiar`Trick-or-Treating Tot`) &&
       !get("_firedJokestersGun") &&
       have($item`The Jokester's gun`) &&
+      canEquip($item`The Jokester's gun`) &&
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3,
     () => {
@@ -1332,22 +1348,10 @@ const freeFightSources = [
     true,
     {
       requirements: () => [new Requirement([], { forceEquip: $items`The Jokester's gun` })],
+      macroAllowsFamiliarActions: false,
     }
   ),
 ];
-
-const latteActionSourceFinderConstraints = {
-  allowedAction: (action: ActionSource) => {
-    const forceEquipsOtherThanLatte = (
-      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
-    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
-    return (
-      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      forceEquipsOtherThanLatte.filter((equipment) => toSlot(equipment) === $slot`weapon`).length <
-        2
-    );
-  },
-};
 
 const freeRunFightSources = [
   // Unlock Latte ingredients
@@ -1361,7 +1365,7 @@ const freeRunFightSources = [
         [923]: 1, // go to the blackberries in All Around the Map
         [924]: 1, // fight a blackberry bush, so that we can freerun
       });
-      adventureMacro($location`The Black Forest`, runSource.macro);
+      garboAdventure($location`The Black Forest`, runSource.macro);
     },
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
@@ -1378,7 +1382,7 @@ const freeRunFightSources = [
         [502]: 2, // go towards the stream in Arboreal Respite, so we can skip adventure
         [505]: 2, // skip adventure
       });
-      adventureMacro($location`The Spooky Forest`, runSource.macro);
+      garboAdventure($location`The Spooky Forest`, runSource.macro);
     },
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
@@ -1392,14 +1396,28 @@ const freeRunFightSources = [
       get("latteUnlocks").includes("cajun") &&
       get("latteUnlocks").includes("rawhide"),
     (runSource: ActionSource) => {
-      adventureMacro($location`The Dire Warren`, runSource.macro);
+      garboAdventure($location`The Dire Warren`, runSource.macro);
     },
     {
       requirements: () => [new Requirement([], { forceEquip: $items`latte lovers member's mug` })],
     },
     latteActionSourceFinderConstraints
   ),
-
+  new FreeRunFight(
+    () =>
+      have($familiar`Space Jellyfish`) &&
+      get("_spaceJellyfishDrops") < 5 &&
+      getStenchLocation() !== $location`none`,
+    (runSource: ActionSource) => {
+      garboAdventure(
+        getStenchLocation(),
+        Macro.trySkill($skill`Extract Jelly`).step(runSource.macro)
+      );
+    },
+    {
+      familiar: () => $familiar`Space Jellyfish`,
+    }
+  ),
   new FreeRunFight(
     () =>
       !doingExtrovermectin() &&
@@ -1408,7 +1426,7 @@ const freeRunFightSources = [
       get("_macrometeoriteUses") < 10 &&
       getStenchLocation() !== $location`none`,
     (runSource: ActionSource) => {
-      adventureMacro(
+      garboAdventure(
         getStenchLocation(),
         Macro.while_(
           "!pastround 28 && hasskill macrometeorite",
@@ -1430,7 +1448,7 @@ const freeRunFightSources = [
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
       getStenchLocation() !== $location`none`,
     (runSource: ActionSource) => {
-      adventureMacro(
+      garboAdventure(
         getStenchLocation(),
         Macro.while_(
           "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
@@ -1455,7 +1473,7 @@ const freeRunFightSources = [
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
       });
-      adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+      garboAdventure($location`Gingerbread Civic Center`, Macro.abort());
     },
     false,
     {
@@ -1470,7 +1488,7 @@ const freeRunFightSources = [
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
       });
-      adventureMacro($location`Gingerbread Civic Center`, runSource.macro);
+      garboAdventure($location`Gingerbread Civic Center`, runSource.macro);
       if (
         [
           "Even Tamer Than Usual",
@@ -1498,7 +1516,7 @@ const freeRunFightSources = [
       propertyManager.setChoices({
         1204: 1, // Gingerbread Train Station Noon random candy
       });
-      adventureMacro($location`Gingerbread Train Station`, Macro.abort());
+      garboAdventure($location`Gingerbread Train Station`, Macro.abort());
     },
     false,
     {
@@ -1510,12 +1528,12 @@ const freeRunFightSources = [
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) >= 10 &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 &&
-      availableAmount($item`sprinkles`) > 5,
+      (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     (runSource: ActionSource) => {
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
       });
-      adventureMacro($location`Gingerbread Civic Center`, runSource.macro);
+      garboAdventure($location`Gingerbread Civic Center`, runSource.macro);
       if (
         [
           "Even Tamer Than Usual",
@@ -1539,13 +1557,31 @@ const freeRunFightSources = [
     () =>
       (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) === 19 &&
-      availableAmount($item`sprinkles`) > 5,
+      (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     () => {
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
         1215: 1, // Gingerbread Civic Center advance clock
+        1209: 2, // enter the gallery at Upscale Midnight
+        1214: 1, // get High-End ginger wine
       });
-      adventureMacro($location`Gingerbread Civic Center`, Macro.abort());
+      const best = bestConsumable("booze", true, $items`high-end ginger wine, astral pilsner`);
+      const gingerWineValue =
+        (0.5 * 30 * (baseMeat + 750) +
+          getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /
+        2;
+      const valueDif = gingerWineValue - best.value;
+      if (
+        haveOutfit("gingerbread best") &&
+        (availableAmount($item`sprinkles`) < 5 ||
+          (valueDif * 2 > garboValue($item`gingerbread cigarette`) * 5 &&
+            itemAmount($item`high-end ginger wine`) < 11))
+      ) {
+        outfit("gingerbread best");
+        garboAdventure($location`Gingerbread Upscale Retail District`, Macro.abort());
+      } else {
+        garboAdventure($location`Gingerbread Civic Center`, Macro.abort());
+      }
     },
     false,
     {
@@ -1560,19 +1596,22 @@ const freeRunFightSources = [
       have($skill`Comprehensive Cartography`) &&
       get("_monstersMapped") < 3 &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestItemStealZone() !== null,
+      getBestItemStealZone(true) !== null,
     (runSource: ActionSource) => {
       setupItemStealZones();
-      const best = getBestItemStealZone();
+      const best = getBestItemStealZone(true);
       if (!best) throw `Unable to find fire extinguisher zone?`;
       try {
         if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
         const hasXO = myFamiliar() === $familiar`XO Skeleton`;
-        if (myThrall() !== $thrall`none`) useSkill($skill`Dismiss Pasta Thrall`);
+        if (myThrall() !== $thrall.none) useSkill($skill`Dismiss Pasta Thrall`);
         Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
           .externalIf(hasXO && get("_xoHugsUsed") < 11, Macro.skill($skill`Hugs and Kisses!`))
-          .externalIf(hasXO && get("_xoHugsUsed") < 10, Macro.step(itemStealOlfact(best)))
+          .externalIf(
+            !best.requireMapTheMonsters && hasXO && get("_xoHugsUsed") < 10,
+            Macro.step(itemStealOlfact(best))
+          )
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
@@ -1603,6 +1642,7 @@ const freeRunFightSources = [
       getBestItemStealZone() !== null,
     (runSource: ActionSource) => {
       setupItemStealZones();
+      const mappingMonster = have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3;
       const best = getBestItemStealZone();
       if (!best) throw `Unable to find XO Skeleton zone?`;
       try {
@@ -1612,7 +1652,7 @@ const freeRunFightSources = [
           .skill($skill`Hugs and Kisses!`)
           .step(runSource.macro)
           .setAutoAttack();
-        if (have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3) {
+        if (mappingMonster) {
           mapMonster(best.location, best.monster);
         } else {
           adv1(best.location, -1, "");
@@ -1635,8 +1675,8 @@ const freeRunFightSources = [
       get("_hipsterAdv") < 7 &&
       (have($familiar`Mini-Hipster`) || have($familiar`Artistic Goth Kid`)),
     (runSource: ActionSource) => {
-      const targetLocation = determineDraggableZoneAndEnsureAccess("backup");
-      adventureMacro(
+      const targetLocation = wanderWhere("backup");
+      garboAdventure(
         targetLocation,
         Macro.if_(
           `(monsterid 969) || (monsterid 970) || (monsterid 971) || (monsterid 972) || (monsterid 973) || (monstername Black Crayon *)`,
@@ -1666,12 +1706,12 @@ const freeRunFightSources = [
   new FreeRunFight(
     () =>
       have($item`mayfly bait necklace`) &&
-      canAdv($location`Cobb's Knob Menagerie, Level 1`, false) &&
+      canAdventure($location`Cobb's Knob Menagerie, Level 1`) &&
       get("_mayflySummons") < 30,
     (runSource: ActionSource) => {
-      adventureMacro(
+      garboAdventure(
         $location`Cobb's Knob Menagerie, Level 1`,
-        Macro.if_($monster`QuickBASIC Elemental`, Macro.basicCombat())
+        Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
           .if_($monster`BASIC Elemental`, Macro.trySkill($skill`Summon Mayfly Swarm`))
           .step(runSource.macro)
       );
@@ -1688,21 +1728,61 @@ const freeRunFightSources = [
 ];
 
 function sandwormRequirement() {
-  return new Requirement(
-    ["100 Item Drop"],
-    have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
-      ? { forceEquip: $items`broken champagne bottle` }
-      : {}
-  );
+  return Requirement.merge([
+    new Requirement(
+      ["100 Item Drop"],
+      have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0
+        ? { forceEquip: $items`broken champagne bottle` }
+        : {}
+    ),
+    new Requirement(
+      [],
+      have($item`Lil' Doctor™ bag`) && get("_otoscopeUsed") < 3
+        ? { forceEquip: $items`Lil' Doctor™ bag` }
+        : {}
+    ),
+    new Requirement(
+      [],
+      bestFairy() === $familiar`Reagnimated Gnome`
+        ? { forceEquip: $items`gnomish housemaid's kgnee` }
+        : {}
+    ),
+  ]);
 }
 
 const freeKillSources = [
+  // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
+  new FreeFight(
+    () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
+    () => {
+      ensureBeachAccess();
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .trySkill($skill`Chest X-Ray`),
+        () => use($item`drum machine`)
+      );
+    },
+    true,
+    {
+      familiar: bestFairy,
+      requirements: () => [
+        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })),
+      ],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
+    }
+  ),
+
   new FreeFight(
     () => !get("_gingerbreadMobHitUsed") && have($skill`Gingerbread Mob Hit`),
     () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Gingerbread Mob Hit`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .trySkill($skill`Gingerbread Mob Hit`),
+        () => use($item`drum machine`)
       );
     },
     true,
@@ -1718,8 +1798,11 @@ const freeKillSources = [
     () => (have($skill`Shattering Punch`) ? clamp(3 - get("_shatteringPunchUsed"), 0, 3) : 0),
     () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Shattering Punch`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .trySkill($skill`Shattering Punch`),
+        () => use($item`drum machine`)
       );
     },
     true,
@@ -1731,32 +1814,15 @@ const freeKillSources = [
     }
   ),
 
-  // 22	3	0	0	Chest X-Ray	combat skill	must have a Lil' Doctor™ bag equipped
-  new FreeFight(
-    () => (have($item`Lil' Doctor™ bag`) ? clamp(3 - get("_chestXRayUsed"), 0, 3) : 0),
-    () => {
-      ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).trySkill($skill`Chest X-Ray`), () =>
-        use($item`drum machine`)
-      );
-    },
-    true,
-    {
-      familiar: bestFairy,
-      requirements: () => [
-        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Lil' Doctor™ bag` })),
-      ],
-      effects: () =>
-        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
-    }
-  ),
-
   new FreeFight(
     () => (have($item`replica bat-oomerang`) ? clamp(3 - get("_usedReplicaBatoomerang"), 0, 3) : 0),
     () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).item($item`replica bat-oomerang`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .item($item`replica bat-oomerang`),
+        () => use($item`drum machine`)
       );
     },
     true,
@@ -1774,7 +1840,9 @@ const freeKillSources = [
       ensureBeachAccess();
       AsdonMartin.fillTo(100);
       withMacro(
-        Macro.trySkill($skill`Sing Along`).skill($skill`Asdon Martin: Missile Launcher`),
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .skill($skill`Asdon Martin: Missile Launcher`),
         () => use($item`drum machine`)
       );
     },
@@ -1788,11 +1856,14 @@ const freeKillSources = [
   ),
 
   new FreeFight(
-    () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
+    () => (globalOptions.ascend ? get("shockingLickCharges") : 0),
     () => {
       ensureBeachAccess();
-      withMacro(Macro.trySkill($skill`Sing Along`).skill($skill`Shocking Lick`), () =>
-        use($item`drum machine`)
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .skill($skill`Shocking Lick`),
+        () => use($item`drum machine`)
       );
     },
     true,
@@ -1803,37 +1874,45 @@ const freeKillSources = [
         have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
     }
   ),
+
+  new FreeFight(
+    () => have($item`Jurassic Parka`) && !have($effect`Everything Looks Yellow`),
+    () => {
+      ensureBeachAccess();
+      cliExecute("parka dilophosaur");
+      withMacro(
+        Macro.trySkill($skill`Sing Along`)
+          .tryHaveSkill($skill`Otoscope`)
+          .trySkill($skill`Spit jurassic acid`),
+        () => use($item`drum machine`)
+      );
+    },
+    true,
+    {
+      familiar: bestFairy,
+      requirements: () => [
+        sandwormRequirement().merge(new Requirement([], { forceEquip: $items`Jurassic Parka` })),
+      ],
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3 ? $effects`Feeling Lost` : [],
+    }
+  ),
 ];
 
-export function freeFights(): void {
+export function freeRunFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
+  if (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted", false)) return;
   if (
     get("beGregariousFightsLeft") > 0 &&
     get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
   ) {
     return;
   }
-  visitUrl("place.php?whichplace=town_wrong");
 
   propertyManager.setChoices({
     1387: 2, // "You will go find two friends and meet me here."
     1324: 5, // Fight a random partier
   });
-
-  if (
-    canAdv($location`The Red Zeppelin`, false) &&
-    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
-  ) {
-    buy(
-      clamp(5 - get("_glarkCableUses"), 0, 5),
-      $item`glark cable`,
-      get("garbo_valueOfFreeFight", 2000)
-    );
-  }
-
-  for (const freeFightSource of freeFightSources) {
-    freeFightSource.runAll();
-  }
 
   const stashRun = stashAmount($item`navel ring of navel gazing`)
     ? $items`navel ring of navel gazing`
@@ -1846,8 +1925,25 @@ export function freeFights(): void {
       freeRunFightSource.runAll();
     }
   });
+}
 
-  tryFillLatte();
+export function freeFights(): void {
+  if (myInebriety() > inebrietyLimit()) return;
+  if (
+    get("beGregariousFightsLeft") > 0 &&
+    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+  ) {
+    return;
+  }
+
+  propertyManager.setChoices({
+    1387: 2, // "You will go find two friends and meet me here."
+    1324: 5, // Fight a random partier
+  });
+
+  freeRunFights();
+
+  killRobortCreaturesForFree();
 
   //  Use free fights on melanges if we have Tote/Squint and prices are reasonable.
   const canSquint =
@@ -1860,7 +1956,7 @@ export function freeFights(): void {
   ) {
     try {
       for (const freeKillSource of freeKillSources) {
-        if (freeKillSource.available() && get("garbageChampagneCharge") > 0) {
+        if (freeKillSource.isAvailable()) {
           // TODO: Add potions that are profitable for free kills.
           ensureEffect($effect`Steely-Eyed Squint`);
         }
@@ -1871,21 +1967,26 @@ export function freeFights(): void {
       if (have($item`January's Garbage Tote`)) cliExecute("fold wad of used tape");
     }
   }
+
+  if (
+    canAdventure($location`The Red Zeppelin`) &&
+    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
+  ) {
+    buy(
+      clamp(5 - get("_glarkCableUses"), 0, 5),
+      $item`glark cable`,
+      globalOptions.prefs.valueOfFreeFight
+    );
+  }
+
+  for (const freeFightSource of freeFightSources) {
+    freeFightSource.runAll();
+  }
+
+  tryFillLatte();
 }
 
 function setNepQuestChoicesAndPrepItems() {
-  if (get("_questPartyFair") === "unstarted") {
-    visitUrl(toUrl($location`The Neverending Party`));
-    if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
-      print("Gerald/ine quest!", HIGHLIGHT);
-      globalOptions.clarasBellClaimed = true;
-    }
-    if (["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))) {
-      runChoice(1); // Accept quest
-    } else {
-      runChoice(2); // Decline quest
-    }
-  }
   const quest = get("_questPartyFairQuest");
 
   if (quest === "food") {
@@ -1922,7 +2023,8 @@ function thesisReady(): boolean {
   );
 }
 
-function deliverThesis(): void {
+export function deliverThesisIfAble(): void {
+  if (!thesisReady()) return;
   const thesisInNEP =
     (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
     questStep("_questPartyFair") < 999;
@@ -1953,7 +2055,7 @@ function deliverThesis(): void {
     thesisLocation = $location`The Neverending Party`;
   }
   // if running nobarf, might not have access to Uncle Gator's. Space is cheaper.
-  else if (!canAdv(thesisLocation, false)) {
+  else if (!canAdventure(thesisLocation)) {
     if (!have($item`transporter transponder`)) {
       acquire(1, $item`transporter transponder`, 10000);
     }
@@ -1961,25 +2063,24 @@ function deliverThesis(): void {
     thesisLocation = $location`Hamburglaris Shield Generator`;
   }
 
-  adventureMacro(
-    thesisLocation,
-    Macro.if_($monster`time-spinner prank`, Macro.basicCombat()).skill($skill`deliver your thesis!`)
-  );
+  garboAdventure(thesisLocation, Macro.skill($skill`deliver your thesis!`));
   postCombatActions();
 }
 
-function doSausage() {
+export function doSausage(): void {
   if (!kramcoGuaranteed()) {
     return;
   }
-  useFamiliar(freeFightFamiliar(true));
+  useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
-  adventureMacroAuto(
-    determineDraggableZoneAndEnsureAccess(),
-    Macro.if_($monster`sausage goblin`, Macro.basicCombat())
-      .ifHolidayWanderer(Macro.basicCombat())
-      .abort()
-  );
+  do {
+    garboAdventureAuto(
+      wanderWhere("wanderer"),
+      Macro.if_($monster`sausage goblin`, Macro.basicCombat())
+        .ifHolidayWanderer(Macro.basicCombat())
+        .abort()
+    );
+  } while (dogOrHolidayWanderer());
   if (getAutoAttack() !== 0) setAutoAttack(0);
   postCombatActions();
 }
@@ -1988,9 +2089,9 @@ function doGhost() {
   if (!have($item`protonic accelerator pack`) || get("questPAGhost") === "unstarted") return;
   const ghostLocation = get("ghostLocation");
   if (!ghostLocation) return;
-  useFamiliar(freeFightFamiliar(true));
+  useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
-  adventureMacro(ghostLocation, Macro.ghostBustin());
+  garboAdventure(ghostLocation, Macro.ghostBustin());
   postCombatActions();
 }
 
@@ -2009,6 +2110,7 @@ type ItemStealZone = {
   monster: Monster;
   dropRate: number;
   maximize: string[];
+  requireMapTheMonsters: boolean; // When a zone has a choice we want to avoid
   isOpen: () => boolean;
   openCost: () => number;
   preReq: () => void;
@@ -2020,6 +2122,7 @@ const itemStealZones = [
     item: $item`transdermal smoke patch`,
     dropRate: 1,
     maximize: [],
+    requireMapTheMonsters: false,
     isOpen: () => get("_spookyAirportToday") || get("spookyAirportAlways"),
     openCost: () => 0,
     preReq: null,
@@ -2030,6 +2133,7 @@ const itemStealZones = [
     item: $item`perfect ice cube`,
     dropRate: 1,
     maximize: [],
+    requireMapTheMonsters: false,
     isOpen: () => get("_coldAirportToday") || get("coldAirportAlways"),
     openCost: () => 0,
     preReq: null,
@@ -2040,6 +2144,7 @@ const itemStealZones = [
     item: $item`tattered scrap of paper`,
     dropRate: 1,
     maximize: ["99 monster level 100 max"], // Bookbats need up to +100 ML to survive the polar vortices
+    requireMapTheMonsters: false,
     isOpen: () => have($item`[7302]Spookyraven library key`),
     openCost: () => 0,
     preReq: null,
@@ -2050,6 +2155,7 @@ const itemStealZones = [
     item: $item`disintegrating spiky collar`,
     dropRate: 1,
     maximize: ["99 muscle 100 max"], // Ensure mastiff is at least 100 hp
+    requireMapTheMonsters: false,
     isOpen: () => true,
     openCost: () =>
       !have($effect`Absinthe-Minded`) ? mallPrice($item`tiny bottle of absinthe`) : 0,
@@ -2066,17 +2172,30 @@ const itemStealZones = [
     item: $item`rusty hedge trimmers`,
     dropRate: 0.5,
     maximize: ["99 monster level 11 max"], // Topiary animals need an extra 11 HP to survive polar vortices
+    requireMapTheMonsters: false,
     isOpen: () =>
       myLevel() >= 9 && get("chasmBridgeProgress") >= 30 && get("twinPeakProgress") >= 15,
     openCost: () => 0,
     preReq: null,
   },
+  {
+    location: $location`The Hidden Temple`,
+    monster: $monster`baa-relief sheep`,
+    item: $item`stone wool`,
+    requireMapTheMonsters: true,
+    dropRate: 1,
+    maximize: ["99 monster level 100 max"], // Sheeps need up to +100 ML to survive the polar vortices
+    isOpen: () => get("lastTempleUnlock") === myAscensions(),
+    openCost: () => 0,
+    preReq: null,
+  },
 ] as ItemStealZone[];
 
-function getBestItemStealZone(): ItemStealZone | null {
+function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
   const targets = itemStealZones.filter(
     (zone) =>
       zone.isOpen() &&
+      (mappingMonster || !zone.requireMapTheMonsters) &&
       (!isBanished(zone.monster) ||
         get("olfactedMonster") === zone.monster ||
         get("_gallapagosMonster") === zone.monster)
@@ -2091,11 +2210,7 @@ function getBestItemStealZone(): ItemStealZone | null {
       zone.dropRate * garboValue(zone.item) * (vorticesAvail + hugsAvail / 2) - zone.openCost()
     );
   };
-  return (
-    targets.sort((a, b) => {
-      return value(b) - value(a);
-    })[0] ?? null
-  );
+  return targets.length ? maxBy(targets, value) : null;
 }
 
 function setupItemStealZones() {
@@ -2127,7 +2242,7 @@ const haveEnoughPills =
   clamp(availableAmount($item`synthetic dog hair pill`), 0, 100) +
     clamp(availableAmount($item`distention pill`), 0, 100) +
     availableAmount($item`Map to Safety Shelter Grimace Prime`) <
-    200 && availableAmount($item`Map to Safety Shelter Grimace Prime`) < 60;
+    200 && availableAmount($item`Map to Safety Shelter Grimace Prime`) < ESTIMATED_OVERDRUNK_TURNS;
 function wantPills(): boolean {
   return have($item`Fourth of May Cosplay Saber`) && crateStrategy() !== "Saber" && haveEnoughPills;
 }
@@ -2143,7 +2258,7 @@ function voidMonster(): void {
 
   useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
-  adventureMacro(determineDraggableZoneAndEnsureAccess(), Macro.basicCombat());
+  garboAdventure(wanderWhere("wanderer"), Macro.basicCombat());
   postCombatActions();
 }
 
@@ -2175,10 +2290,104 @@ export function printEmbezzlerLog(): void {
     HIGHLIGHT
   );
 }
+type FreeKill = { source?: Item; macro: Skill | Item; used: () => boolean };
+const freeKills: FreeKill[] = [
+  {
+    source: $item`The Jokester's gun`,
+    macro: $skill`Fire the Jokester's Gun`,
+    used: () => get("_firedJokestersGun"),
+  },
+  {
+    source: $item`Lil' Doctor™ bag`,
+    macro: $skill`Chest X-Ray`,
+    used: () => get("_chestXRayUsed") >= 3,
+  },
+  { macro: $skill`Shattering Punch`, used: () => get("_shatteringPunchUsed") >= 3 },
+  { macro: $skill`Gingerbread Mob Hit`, used: () => get("_gingerbreadMobHitUsed") },
+  { macro: $item`replica bat-oomerang`, used: () => get("_usedReplicaBatoomerang") >= 3 },
+];
+const canUseSource = ({ source, macro, used }: FreeKill) => have(source ?? macro) && !used();
+const toRequirement = ({ source }: FreeKill) =>
+  source ? new Requirement([], { forceEquip: [source] }) : new Requirement([], {});
+function findFreeKill() {
+  return freeKills.find(canUseSource) ?? null;
+}
+
+function killRobortCreaturesForFree() {
+  if (!have($familiar`Robortender`)) return;
+  useFamiliar($familiar`Robortender`);
+
+  const currentHeads = availableAmount($item`fish head`);
+  let freeKill = findFreeKill();
+  while (
+    freeKill &&
+    canAdventure($location`The Copperhead Club`) &&
+    have($skill`Comprehensive Cartography`) &&
+    get("_monstersMapped") < 3
+  ) {
+    if (have($effect`Crappily Disguised as a Waiter`)) {
+      setChoice(855, 4);
+      garboAdventure($location`The Copperhead Club`, Macro.abort());
+    }
+    freeFightOutfit(toRequirement(freeKill));
+    withMacro(
+      freeKill.macro instanceof Item ? Macro.item(freeKill.macro) : Macro.skill(freeKill.macro),
+      () => {
+        mapMonster($location`The Copperhead Club`, $monster`Mob Penguin Capo`);
+        runCombat();
+      },
+      true
+    );
+    freeKill = findFreeKill();
+  }
+
+  while (freeKill && CombatLoversLocket.have() && CombatLoversLocket.reminiscesLeft() > 1) {
+    const roboTarget = CombatLoversLocket.findMonster(
+      () => true,
+      (monster: Monster) =>
+        valueDrops(monster) + garboValue(Robortender.dropFrom(monster)) * Robortender.dropChance()
+    );
+
+    if (!roboTarget) break;
+    const regularTarget = CombatLoversLocket.findMonster(() => true, valueDrops);
+    if (regularTarget === roboTarget) {
+      useFamiliar(freeFightFamiliar({ canChooseMacro: roboTarget.attributes.includes("FREE") }));
+    } else {
+      useFamiliar($familiar`Robortender`);
+    }
+
+    freeFightOutfit(
+      roboTarget.attributes.includes("FREE") ? new Requirement([], {}) : toRequirement(freeKill)
+    );
+    withMacro(
+      isFree(roboTarget)
+        ? Macro.basicCombat()
+        : freeKill.macro instanceof Item
+        ? Macro.item(freeKill.macro)
+        : Macro.skill(freeKill.macro),
+      () => CombatLoversLocket.reminisce(roboTarget),
+      true
+    );
+    freeKill = findFreeKill();
+  }
+
+  if (
+    !Robortender.currentDrinks().includes($item`drive-by shooting`) &&
+    availableAmount($item`fish head`) > currentHeads &&
+    userConfirmDialog(
+      "Garbo managed to rustle up a fish head, would you like it to use it to make a drive-by shooting so you can benefit from your robortender? Sorry for flip-flopping on this, life is hard.",
+      true
+    )
+  ) {
+    if (!have($item`drive-by shooting`)) create($item`drive-by shooting`);
+    Robortender.feed($item`drive-by shooting`);
+    setBestLeprechaunAsMeatFamiliar();
+  }
+}
 
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
-  sumNumbers(itemDropsArray(monster).map(({ drop, rate }) => garboValue(drop) * rate));
+  sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 
 export function estimatedFreeFights(): number {
@@ -2220,15 +2429,13 @@ function yachtzee(): void {
     },
   ]) {
     if (available) {
-      useFamiliar(
-        Familiar.all()
-          .filter(
-            (familiar) =>
-              have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
-          )
-          .sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a))[0] ??
-          $familiar`none`
+      const familiarOptions = Familiar.all().filter(
+        (familiar) => have(familiar) && familiar.underwater && familiar !== $familiar`Robortender`
       );
+      const familiarChoice = familiarOptions.length
+        ? maxBy(familiarOptions, findLeprechaunMultiplier)
+        : $familiar.none;
+      useFamiliar(familiarChoice);
 
       const underwaterBreathingGear = waterBreathingEquipment.find((item) => have(item));
       if (!underwaterBreathingGear) return;
@@ -2239,10 +2446,24 @@ function yachtzee(): void {
 
       if (!equippedOutfit || !success()) return;
 
-      setChoice(918, 2);
-      adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+      const lastUMDDate = property.getString("umdLastObtained");
+      const getUMD =
+        !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
+        garboValue($item`Ultimate Mind Destroyer`) >=
+          2000 * (1 + numericModifier("meat drop") / 100) &&
+        (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1000 * 60 * 60 * 24 * 7);
+
+      setChoice(918, getUMD ? 1 : 2);
+
+      garboAdventureAuto($location`The Sunken Party Yacht`, Macro.abort());
+      if (
+        visitUrl("forestvillage.php").includes("friarcottage.gif") &&
+        !get("_floristPlantsUsed").split(",").includes("Crookweed")
+      ) {
+        cliExecute("florist plant Crookweed");
+      }
       if (get("lastEncounter") === "Yacht, See?") {
-        adventureMacroAuto($location`The Sunken Party Yacht`, Macro.abort());
+        garboAdventureAuto($location`The Sunken Party Yacht`, Macro.abort());
       }
       return;
     }

@@ -7,11 +7,14 @@
     - [Set `valueOfAdventure`](#set-valueofadventure)
     - [Set your VIP clan](#set-your-vip-clan)
     - [Suggested: Universal Recovery](#suggested-universal-recovery)
+    - [Pull your stuff from Hagnk's](#pull-your-stuff-please)
   - [Usage](#usage)
     - [`nobarf` flag](#nobarf-flag)
     - [`ascend` flag](#ascend-flag)
     - [`nodiet` flag](#nodiet-flag)
     - [`simdiet` flag](#simdiet-flag)
+    - [`yachtzeechain` flag](#yachtzeechain-flag)
+    - [`quick` flag](#quick-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)
@@ -35,7 +38,7 @@ Consult [this page](ITEMS.md) for a list of various items that are useful to hav
 To install the script, use the following command in the KoLMafia CLI.
 
 ```text
-svn checkout https://github.com/Loathing-Associates-Scripting-Society/garbage-collector/branches/release/
+git checkout https://github.com/Loathing-Associates-Scripting-Society/garbage-collector.git release
 ```
 
 Before running Garbage Collector, there are a few tasks you must do.
@@ -75,6 +78,16 @@ svn checkout https://svn.code.sf.net/p/kolmafiascripts/mafiarecovery/code/
 
 Universal Recovery will look a lot like mafia's default recovery settings, but will be managed in a more sophisticated manner. You can access these settings via the relay browser.
 
+### Pull your stuff, please
+
+Garbo uses mafia's `availableAmount` function to determine whether you have certain items. That function, in turn, checks the `autoSatisfyWithStorage` property to determine whether to pay attention to stuff in Hagnk's. For most people, that is set to true. And that's a great value for it to be set to! Unlike the closet, items unpulled from Hagnk's are typically items players want to use to do things. If that were to be set to false, garbo would operate under the assumption that you don't own anything left in storage, like a mime army shotglass, or a mafia pointer finger ring, or any of a billion different things we use. Garbo is a big script, we use a lot of stuff.
+
+That being said, having garbo try to pull every single item it tries to use would be burdensome. We'd get features at a snail's pace. It would be incredibly tedious to write code. Which is to say, if garbo thinks you have something, it thinks you _have_ it. That can cause issues when it's in Hagnk's.
+
+We aren't saying garbo won't work if you break prism and leave all of your stuff in Hagnk's. But we are saying that garbo is likely to run into errors, and when you report those errors, our response will inevitably be "you should pull all of your stuff from Hagnk's."
+
+One final note is that we aren't actively opposed to supporting people leaving their stuff in Hagnk's; if you do so, and you find yourself running into specific issues, feel free to [put in a PR](https://loathing-associates-scripting-society.github.io/KoL-Scripting-Resources/PR-Overview.html).
+
 ## Usage
 
 To invoke Garbage Collector, type `garbo` in the Mafia GCLI. In addition, you can use various flags to configure how Garbage Collector runs. Additionally, you can also specify the number of turns for garbo to run.
@@ -99,6 +112,18 @@ _EXPERIMENTAL_ Garbo will not eat or drink anything as part of the run (includin
 
 Garbo will list the optimal diet it plans to consume computed from your defined mpa and current prices, and then exit.
 
+### `yachtzeechain` flag
+
+_EXPERIMENTAL_ Garbo will attempt to chain the Yachtzee! NC after all the free fights are completed, just before it attempts embezzlers. This command cannot be run in conjuction with the `nodiet` flag. Refer to `help` for more info on the requirements needed to run this.
+
+### `quick` flag
+
+_EXPERIMENTAL_ Garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.
+
+- Many non-critical mall searches will instead check historical price with a max age of 1 week.
+- `maximizerCombinationLimit` will be set to 100000.
+- [Brimstone equipment](https://kol.coldfront.net/thekolwiki/index.php/Blasphemous_Bedizenment) will be ignored by the maximizer to reduce possible combinations.
+
 ### Turncount
 
 Garbo can run for a specified number of turns, or run until you have a specified number of turns remaining. To run for `N` turns, run `garbo N`. To run until `M` turns are remaining, run `garbo -M`.
@@ -114,10 +139,6 @@ If you have issues with this script, please post about them in the #garbage-coll
 > Why is Garbo adventuring outside of Barf Mountain?
 
 Garbo will use your resources to earn meat everywhere possible such as the Hidden Bowling Alley, The Haunted Library, The Deep Dark Jungle, or The Ice Hotel. These generally won't cost a turn to do.
-
-> Garbo buys a one-day pass to Dinseylandfill even though I own the charter?
-
-Ensure that ☑️ Have Dinseylandfill is checked in IotM tracking in KolMafia's preferences.
 
 > I'm in a clan with a loaded stash, can Garbo make use of the Pantsgiving that's sitting there waiting for me to pull it?
 
@@ -148,7 +169,3 @@ Garbo will use your consumables and potions if it is deemed profitable to do so.
 > I was trying to click around the mall/campground/inventory/etc and then Garbo crashed, and now it is behaving strangely! Is this a bug?
 
 Garbo can be very fragile during some particular segments of the run and it is strongly recommended you do not click on anything while it is performing. This isn't a bug, Garbo is just pretty complex and the last thing either of us wants is to try looking for a bug that isn't there! Go make yourself a sandwich, do some chores, or relax and watch the meat number go up.
-
-> Help! Garbo keeps opening the mini-browser to the shore!
-
-Ultimately the person to complain to about this is Jick, or CDM, or your family doctor. Garbo needs to do something very silly in order for orb to work optimally, and doing so causes mafia to open the shore in the mini-browser. You can ignore it. It's very weird, I know, but ultimately harmless.

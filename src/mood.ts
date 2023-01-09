@@ -5,6 +5,7 @@ import {
   getWorkshed,
   haveEffect,
   itemAmount,
+  mallPrice,
   myClass,
   myLevel,
   numericModifier,
@@ -26,7 +27,7 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
+import { baseMeat, burnLibrams, questStep, safeRestoreMpTarget, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
@@ -37,9 +38,10 @@ Mood.setDefaultOptions({
     $effects`Chorale of Companionship`,
     $effects`The Ballad of Richie Thingfinder`,
   ],
+  useNativeRestores: true,
 });
 
-export function meatMood(urKels = false): Mood {
+export function meatMood(urKels = false, meat = baseMeat): Mood {
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
@@ -61,7 +63,19 @@ export function meatMood(urKels = false): Mood {
   mood.skill($skill`The Spirit of Taking`);
   mood.skill($skill`Drescher's Annoying Noise`);
   mood.skill($skill`Pride of the Puffin`);
-  if (myClass() !== $class`Pastamancer`) mood.skill($skill`Bind Lasagmbie`);
+  mood.skill($skill`Walk: Leisurely Amble`);
+
+  const mmjCost =
+    (100 -
+      (have($skill`Five Finger Discount`) ? 5 : 0) -
+      (have($item`Travoltan trousers`) ? 5 : 0)) *
+    (200 / (1.5 * myLevel() + 5));
+  const genericManaPotionCost = mallPrice($item`generic mana potion`) * (200 / (2.5 * myLevel()));
+  const mpRestorerCost = Math.min(mmjCost, genericManaPotionCost);
+
+  if (myClass() !== $class`Pastamancer` && 0.1 * meat * 10 > mpRestorerCost) {
+    mood.skill($skill`Bind Lasagmbie`);
+  }
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
@@ -161,6 +175,8 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   }
   mood.potion($item`white candy heart`, 30);
 
+  mood.skill($skill`Curiosity of Br'er Tarrypin`);
+
   if ((get("daycareOpen") || get("_daycareToday")) && !get("_daycareSpa")) {
     cliExecute("daycare mysticality");
   }
@@ -180,11 +196,33 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
   }
+  if (have($item`portable steam unit`) && !get("_portableSteamUnitUsed", false)) {
+    use($item`portable steam unit`);
+  }
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
   return mood;
+}
+
+/**
+ * Use buff extenders like PYEC and Bag o Tricks
+ */
+export function useBuffExtenders(): void {
+  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
+    if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
+      burnLibrams();
+      use($item`Platinum Yendorian Express Card`);
+    }
+    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
+      use($item`Bag o' Tricks`);
+    }
+  });
+  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    burnLibrams();
+    use($item`License to Chill`);
+  }
 }
 
 const stings = [
@@ -193,11 +231,14 @@ const stings = [
   $effect`Yes, Can Haz`,
 ];
 const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
-const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
-function shrugBadEffects(...exclude: Effect[]) {
-  [...stings, ...textAlteringEffects, ...teleportEffects].forEach((effect) => {
-    if (have(effect) && !exclude.includes(effect)) {
-      uneffect(effect);
+export const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
+const otherwiseBadEffects = $effects`Temporary Blindness`;
+export function shrugBadEffects(...exclude: Effect[]): void {
+  [...stings, ...textAlteringEffects, ...teleportEffects, ...otherwiseBadEffects].forEach(
+    (effect) => {
+      if (have(effect) && !exclude.includes(effect)) {
+        uneffect(effect);
+      }
     }
-  });
+  );
 }

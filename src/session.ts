@@ -1,5 +1,15 @@
-import { Coinmaster, Item, print, sellPrice, toInt } from "kolmafia";
+import {
+  autosellPrice,
+  Coinmaster,
+  historicalAge,
+  historicalPrice,
+  Item,
+  print,
+  sellPrice,
+  toInt,
+} from "kolmafia";
 import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
+import { globalOptions } from "./config";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
 
 function currency(...items: Item[]): () => number {
@@ -124,6 +134,7 @@ const specialValueLookup = new Map<Item, () => number>([
         ...$items`Alewife™ Ale, bazookafish bubble gum, beefy fish meat, eel battery, glistening fish meat, ink bladder, pufferfish spine, shark cartilage, slick fish meat, slug of rum, slug of shochu, slug of vodka, temporary teardrop tattoo`
       ),
   ],
+  [$item`fake hand`, () => 50000],
 ]);
 
 function printSession(session: Session): void {
@@ -146,21 +157,38 @@ function printSession(session: Session): void {
   printProfit(highValue);
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
+  if (globalOptions.quick) {
+    print("Quick mode was enabled, results may be less accurate than normal.");
+  }
 }
 
-const garboValueCache = new Map<Item, number>();
-export function garboValue(item: Item): number {
-  const cachedValue = garboValueCache.get(item);
+function garboSaleValue(item: Item, useHistorical: boolean): number {
+  if (useHistorical) {
+    if (historicalAge(item) <= 7.0 && historicalPrice(item) > 0) {
+      const isMallMin = historicalPrice(item) === Math.max(100, 2 * autosellPrice(item));
+      return isMallMin ? autosellPrice(item) : 0.9 * historicalPrice(item);
+    }
+  }
+  return getSaleValue(item);
+}
+
+const garboRegularValueCache = new Map<Item, number>();
+const garboHistoricalValueCache = new Map<Item, number>();
+export function garboValue(item: Item, useHistorical = false): number {
+  useHistorical ||= globalOptions.quick;
+  const cachedValue =
+    garboRegularValueCache.get(item) ??
+    (useHistorical ? garboHistoricalValueCache.get(item) : undefined);
   if (cachedValue === undefined) {
     const specialValueCompute = specialValueLookup.get(item);
-    const value = specialValueCompute ? specialValueCompute() : getSaleValue(item);
-    garboValueCache.set(item, value);
+    const value = specialValueCompute ? specialValueCompute() : garboSaleValue(item, useHistorical);
+    (useHistorical ? garboHistoricalValueCache : garboRegularValueCache).set(item, value);
     return value;
   }
   return cachedValue;
 }
 export function garboAverageValue(...items: Item[]): number {
-  return sumNumbers(items.map(garboValue)) / items.length;
+  return sumNumbers(items.map((i) => garboValue(i))) / items.length;
 }
 
 let session: Session | null = null;
@@ -209,7 +237,7 @@ export function printGarboSession(): void {
   const winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
   print(`Extreme Items:`, HIGHLIGHT);
   for (const detail of [...winners, ...losers]) {
-    print(`${detail.quantity} ${detail.item} worth ${detail.value} total`, HIGHLIGHT);
+    print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
   }
 
   set("garboResultsMeat", totalMeat);
@@ -217,4 +245,7 @@ export function printGarboSession(): void {
 
   message("This run of garbo", meat, items);
   message("So far today", totalMeat, totalItems);
+  if (globalOptions.quick) {
+    print("Quick mode was enabled, results may be less accurate than normal.");
+  }
 }

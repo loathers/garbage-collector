@@ -21,7 +21,7 @@ In an ideal world, Garbo is supposed to be a flexible script that operates succe
 | training scroll: Shattering Punch | Skill     | 3 Free Insta-kills per day                                                                                                                                                                                       |
 | Gingerbread Mob Hit               | Skill     | 1 Free Insta-kill per day                                                                                                                                                                                        |
 | The Jokester's gun                | Weapon    | 1 Free Insta-kill per day                                                                                                                                                                                        |
-| fishy pipe                        | Item      | Useful with wanderers/backup; synergizes with green taffy for +1 embezzler. Costs 50 sand dollars.                                                                                                               |
+| fishy pipe                        | Item      | Yachtzee! Useful with wanderers/backup; synergizes with green taffy for +1 embezzler. Costs 50 sand dollars.                                                                                                     |
 | warbear foil hat                  | Hat       | +15 pound hat, specifically optimal for Turtle Tamers with a Robortender.                                                                                                                                        |
 
 Those are our best recommendations for a handful of relatively cheap things Garbo uses that you may want to look into purchasing, as they effectively pay for themselves.
@@ -51,7 +51,6 @@ This next table outlines something a bit different -- tradable IOTMs that are co
 | Greatest American Pants         | Pants              | Free runs (shared with the navel ring of navel gazing)            |
 | Pantsgiving                     | Pants              | Meat/Item Drops, increase fullness cap                            |
 | repaid diaper                   | Pants              | +15 familiar weight, best-in-class for robort users               |
-| origami pasties                 | Shirt              | +30% meat drops                                                   |
 
 Having gone through tradeable things and cheap purchases, the rest of this list is devoted to bind-to-account IOTMs that Garbo utilizes for farming.
 
@@ -69,6 +68,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | ---------------------------------------- | ------------------ | ---------------------------------------------------------------------------------- |
 | backup camera                            | Accessory          | Copier, +Meat Drops                                                                |
 | Beach Comb                               | Accessory          | +5 Familiar Weight buff. Also, 11 free COMBO beachcombs, which is LIT              |
+| combat lover's locket                    | Accessory          | Fight 3 different stored monsters per day, basically equivalent to 3 faxes         |
 | Eight Days a Week Pill Keeper            | Accessory          | Used to double the next potion.                                                    |
 | Guzzlr tablet                            | Accessory          | Garbo uses Guzzlr to extract a bit of value from wanderers, by gaining guzzlrbucks |
 | Kremlin's Greatest Briefcase             | Accessory          | Banish, buffs, & martinis                                                          |
@@ -77,7 +77,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Powerful Glove                           | Accessory          | Monster Replacer; used in concert w/ Extrovermectin for additional Embezzlers      |
 | protonic accelerator pack                | Back               | Bust Ghosts for free fights & profit                                               |
 | unwrapped knock-off retro superhero cape | Back               | Configurable back item that serves as a crit source for the pointer ring           |
-| vampyric cloake                          | Back               | adventures, item drops, and +meat                                                  |
+| vampyric cloake                          | Back               | Rollover adventures, item drops, and +meat                                         |
 | Asdon Martin keyfob                      | Campground         | Meat/Item/Booze Drops                                                              |
 | cold medicine cabinet                    | Campground         | Two Words: Horse Paste.                                                            |
 | haunted doghouse                         | Campground         | Drops Airplane charter currencies, Ghost Dog Chow, tennis ball, food/booze         |
@@ -95,6 +95,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Baby Sandworm                            | Familiar           | Drops Item - agua de vida (5)                                                      |
 | Blavious Kloop                           | Familiar           | Drops Item - devilish folio (5)                                                    |
 | Bloovian Groose                          | Familiar           | Drops Item - groose grease                                                         |
+| Crimbo Shrub                             | Familiar           | Red Ray for 2000-3000 Meat every 100 turns                                         |
 | Fist Turkey                              | Familiar           | Drops Item - Turkey Booze (5)                                                      |
 | Frumious Bandersnatch                    | Familiar           | Free runs                                                                          |
 | Galloping Grill                          | Familiar           | Drops Item - hot ashes (5) and various                                             |
@@ -108,6 +109,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Machine Elf                              | Familiar           | Zone unlock with 5 free fights per day.                                            |
 | Mini-Hipster                             | Familiar           | Scaling Monster/Free Fights (up to 7 per day)                                      |
 | Ms. Puck Man                             | Familiar           | Drops Item - yellow pixel (25) & Power pill                                        |
+| Mutant Cactus Bud                        | Familiar           | Optimal Yachtzee! familiar on days when Grimace is fully illuminated               |
 | Obtuse Angel                             | Familiar           | Copier, and drops Time's Arrow                                                     |
 | Pocket Professor                         | Familiar           | Copier                                                                             |
 | Puck Man                                 | Familiar           | Drops Item - yellow pixel (25) & Power pill                                        |
@@ -123,11 +125,13 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Unconscious Collective                   | Familiar           | Drops Item - Unconscious Collective Dream Jar (5)                                  |
 | XO Skeleton                              | Familiar           | Drops Item - Xes and Os every 9th combat                                           |
 | miniature crystal ball                   | Familiar Equipment | Can predict the future combats in the zone.                                        |
-| Daylight Shavings Helmet                 | Hat                | Adventures, familiar weight, random buffs every 11 advs.                           |
+| Daylight Shavings Helmet                 | Hat                | Rollover adventures, familiar weight, random buffs every 11 advs.                  |
 | can of Rain-Doh                          | Item               | Copier                                                                             |
+| Clara's bell                             | Item               | 1x Forced noncombat per day for Yachtzee!                                          |
 | cosmic bowling ball                      | Item               | Item/Meat Drops, banishes                                                          |
 | Deck of Every Card                       | Item               | Draw cards for buffs, etc.                                                         |
 | January's Garbage Tote                   | Item               | Limited charge items for meat drops and other items.                               |
+| License to Chill                         | Item               | Adventures, extend each effect by 1 (50% chance per effect)                        |
 | Monster Manuel                           | Item               | Factoids and knowing monster values.                                               |
 | mumming trunk                            | Item               | Add +meat & +item to a few familiars for the rest of the day                       |
 | pantogram                                | Item               | Sacrifice for pants with specific enchantments.                                    |
@@ -139,6 +143,8 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Kramco Sausage-o-Matic™                  | Off-hand           | Extra adventures & a few free fights every day; 13-16 depending on turns played    |
 | latte lovers member's mug                | Off-hand           | Fill your mug for various enchantments (+5 fam / 40% meat / 20% item).             |
 | Cargo Cultist Shorts                     | Pants              | Grab a valuable item, once per day                                                 |
+| designer sweatpants                      | Pants              | Reduce 3x drunkenness per day                                                      |
+| Jurassic Parka                           | Shirt              | Meat drops, 5x forced noncombats per day for Yachtzee! Free kill yellow rays       |
 | Bird-a-Day calendar                      | Skill              | Daily bird with various random enchantment in a buff                               |
 | bottle of lovebug pheromones             | Skill              | Drops airplane charter currency, meat                                              |
 | Comprehensive Cartography                | Skill              | Sometimes buffs after combat, fight specific monsters                              |
@@ -147,10 +153,11 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Rethinking Candy                         | Skill              | Use spleen to increase meat drops/etc.                                             |
 | Tome of Clip Art                         | Skill              | Borrowed time, banishes, etc.                                                      |
 | Fourth of May Cosplay Saber              | Weapon             | Copy/Banish/Yellow Ray, also configurable                                          |
-| industrial fire extinguisher             | Weapon             | Garbo uses it for guaranteed pickpockets in various locations for profit           |
+| industrial fire extinguisher             | Weapon             | Guaranteed pickpockets in various locations for profit                             |
+| June cleaver                             | Weapon             | Extra adventures and items from noncombats, often better than +10 lbs              |
 | airplane charter: Conspiracy Island      | Zone               | Used for Guzzlr/Fire Extinguisher                                                  |
 | airplane charter: Dinseylandfill         | Zone               | BARF                                                                               |
-| airplane charter: Spring Break Beach     | Zone               | Used for Guzzlr/Fire Extinguisher                                                  |
+| airplane charter: Spring Break Beach     | Zone               | Yachtzee! Used for Guzzlr/Fire Extinguisher                                        |
 | airplane charter: That 70s Volcano       | Zone               | Volcano Mining and used for Guzzlr/Fire Extinguisher                               |
 | airplane charter: The Glaciest           | Zone               | Used for Guzzlr/Fire Extinguisher                                                  |
 | Bastille Battalion control rig           | Zone               | Daily Buff                                                                         |
