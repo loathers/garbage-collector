@@ -38,10 +38,11 @@ import {
   Requirement,
 } from "libram";
 import { acquire } from "./acquire";
+import { globalOptions } from "./config";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { embezzlerCount } from "./embezzler";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, globalOptions } from "./lib";
+import { baseMeat } from "./lib";
 import { digitizedMonstersRemaining } from "./turns";
 
 export function freeFightOutfit(requirement?: Requirement): void {
@@ -228,7 +229,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
 
   if (embezzlerUp) {
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
-    const embezzlers = globalOptions.ascending
+    const embezzlers = globalOptions.ascend
       ? Math.min(20, embezzlerCount() || digitizedMonstersRemaining())
       : 20;
 

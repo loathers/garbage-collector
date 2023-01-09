@@ -1,7 +1,7 @@
 import { Familiar } from "kolmafia";
 import { $familiar, findLeprechaunMultiplier, get, have, propertyTypes } from "libram";
 import { familiar } from "libram/dist/resources/2009/Bandersnatch";
-import { globalOptions } from "../lib";
+import { globalOptions } from "../config";
 import { GeneralFamiliar } from "./lib";
 
 type ExperienceFamiliar = {
@@ -32,7 +32,7 @@ function valueExperienceFamiliar({
   baseExp,
 }: ExperienceFamiliar): GeneralFamiliar {
   const currentExp = familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
-  const experienceNeeded = 400 - (globalOptions.ascending ? currentExp : baseExp);
+  const experienceNeeded = 400 - (globalOptions.ascend ? currentExp : baseExp);
   const estimatedExperience = 12;
   return {
     familiar,

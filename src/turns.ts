@@ -8,9 +8,10 @@ import {
   myTurncount,
 } from "kolmafia";
 import { $familiar, $item, Counter, get, have, SourceTerminal } from "libram";
+import { globalOptions } from "./config";
 import { usingThumbRing } from "./dropsgear";
 import { embezzlerCount } from "./embezzler";
-import { ESTIMATED_OVERDRUNK_TURNS, globalOptions } from "./lib";
+import { ESTIMATED_OVERDRUNK_TURNS } from "./lib";
 
 /**
  * Computes the estimated number of turns during which garbo will run
@@ -28,9 +29,7 @@ export function estimatedTurns(): number {
     : 0;
   const thesisAdventures = have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
   const nightcapAdventures =
-    globalOptions.ascending &&
-    myInebriety() <= inebrietyLimit() &&
-    have($item`Drunkula's wineglass`)
+    globalOptions.ascend && myInebriety() <= inebrietyLimit() && have($item`Drunkula's wineglass`)
       ? ESTIMATED_OVERDRUNK_TURNS
       : 0;
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
@@ -38,7 +37,7 @@ export function estimatedTurns(): number {
   // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
   const yachtzeeTurns = 30; // guesstimate
   const adventuresAfterChaining =
-    globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted")
+    globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted")
       ? Math.max(
           potentialFullnessAdventures() +
             potentialInebrietyAdventures() +
@@ -50,8 +49,8 @@ export function estimatedTurns(): number {
 
   let turns;
   if (globalOptions.stopTurncount) turns = globalOptions.stopTurncount - myTurncount();
-  else if (globalOptions.noBarf) turns = embezzlerCount();
-  else if (globalOptions.saveTurns > 0 || !globalOptions.ascending) {
+  else if (globalOptions.nobarf) turns = embezzlerCount();
+  else if (globalOptions.saveTurns > 0 || !globalOptions.ascend) {
     turns =
       (myAdventures() +
         sausageAdventures +
@@ -119,7 +118,7 @@ function potentialInebrietyAdventures(): number {
 }
 
 function potentialNonOrganAdventures(): number {
-  const borrowedTimeAdventures = globalOptions.ascending && !get("_borrowedTimeUsed") ? 20 : 0;
+  const borrowedTimeAdventures = globalOptions.ascend && !get("_borrowedTimeUsed") ? 20 : 0;
   const chocolateAdventures = ((3 - get("_chocolatesUsed")) * (4 - get("_chocolatesUsed"))) / 2;
   const bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
 

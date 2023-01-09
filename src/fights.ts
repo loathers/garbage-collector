@@ -118,7 +118,6 @@ import {
   embezzlerLog,
   ESTIMATED_OVERDRUNK_TURNS,
   expectedEmbezzlerProfit,
-  globalOptions,
   HIGHLIGHT,
   kramcoGuaranteed,
   latteActionSourceFinderConstraints,
@@ -156,6 +155,7 @@ import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
 import { wanderWhere } from "./wanderer";
+import { globalOptions } from "./config";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -206,7 +206,7 @@ function embezzlerSetup() {
   useBuffExtenders();
   burnLibrams(400);
   if (
-    globalOptions.ascending &&
+    globalOptions.ascend &&
     questStep("questM16Temple") > 0 &&
     get("lastTempleAdventures") < myAscensions() &&
     acquire(1, $item`stone wool`, 3 * get("valueOfAdventure") + 100, false) > 0
@@ -543,7 +543,9 @@ class FreeFight {
 
   runAll() {
     if (!this.isAvailable()) return;
-    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
+    if ((this.options.cost ? this.options.cost() : 0) > globalOptions.prefs.valueOfFreeFight) {
+      return;
+    }
     while (this.isAvailable()) {
       voidMonster();
       const noncombat = !!this.options?.noncombat?.();
@@ -581,7 +583,9 @@ class FreeRunFight extends FreeFight {
 
   runAll() {
     if (!this.isAvailable()) return;
-    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
+    if ((this.options.cost ? this.options.cost() : 0) > globalOptions.prefs.valueOfFreeFight) {
+      return;
+    }
     while (this.isAvailable()) {
       const constraints = {
         noFamiliar: () => this.options.familiar !== undefined,
@@ -1852,7 +1856,7 @@ const freeKillSources = [
   ),
 
   new FreeFight(
-    () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
+    () => (globalOptions.ascend ? get("shockingLickCharges") : 0),
     () => {
       ensureBeachAccess();
       withMacro(
@@ -1897,7 +1901,7 @@ const freeKillSources = [
 
 export function freeRunFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
-  if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
+  if (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted", false)) return;
   if (
     get("beGregariousFightsLeft") > 0 &&
     get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
@@ -1971,7 +1975,7 @@ export function freeFights(): void {
     buy(
       clamp(5 - get("_glarkCableUses"), 0, 5),
       $item`glark cable`,
-      get("garbo_valueOfFreeFight", 2000)
+      globalOptions.prefs.valueOfFreeFight
     );
   }
 
