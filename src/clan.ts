@@ -75,7 +75,7 @@ export class StashManager {
   constructor() {
     const clanIdOrName = globalOptions.prefs.stashClan;
     this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
-    this.enabled = 0 !== this.clanIdOrName && "none" !== this.clanIdOrName;
+    this.enabled = ![0, "", "none"].some((id) => id === this.clanIdOrName);
   }
 
   take(...items: Item[]): void {
