@@ -95,7 +95,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27035);
+  sinceKolmafiaRevision(27075);
   checkGithubVersion();
   const completedProperty = "_garboCompleted";
   set(completedProperty, "");
@@ -308,6 +308,7 @@ export function main(argString = ""): void {
         .filter((a) => a)
         .join(","),
       battleAction: "custom combat script",
+      customCombatScript: "garbo",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
       autoSatisfyWithCoinmasters: true,
