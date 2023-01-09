@@ -8,7 +8,8 @@ import {
   visitUrl,
 } from "kolmafia";
 import { $item, get } from "libram";
-import { globalOptions, maxBy } from "../lib";
+import { globalOptions } from "../config";
+import { maxBy } from "../lib";
 import { garboValue } from "../session";
 
 export enum TrainsetPiece {
@@ -114,7 +115,7 @@ export function grabMedicine(): void {
   let match;
   const regexp = /descitem\((\d+)\)/g;
   const itemChoices = new Map<Item, number>();
-  if (!globalOptions.noBarf) {
+  if (!globalOptions.nobarf) {
     // if spending turns at barf, we probably will be able to get an extro so always consider it
     itemChoices.set($item`Extrovermectin™`, -1);
   }

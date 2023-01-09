@@ -145,7 +145,7 @@ function nextWorkshed(): GarboWorkshed {
   _nextWorkshed ??=
     worksheds.find((workshed) => workshed.workshed === toItem(globalOptions.workshed)) ??
     defaultWorkshed;
-  return _nextWorkshed;
+  return _nextWorkshed ?? defaultWorkshed;
 }
 
 if (nextWorkshed().workshed === $item`none` && globalOptions.workshed.length > 0) {
