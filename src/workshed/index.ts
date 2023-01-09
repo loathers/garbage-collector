@@ -4,7 +4,6 @@ import {
   Item,
   print,
   toInt,
-  toItem,
   totalTurnsPlayed,
   use,
   visitUrl,
@@ -20,6 +19,7 @@ import {
   grabMedicine,
   isTrainsetConfigurable,
   setTrainsetConfiguration,
+  stringToWorkshedItem,
   TrainsetPiece,
 } from "./utils";
 
@@ -36,12 +36,18 @@ class GarboWorkshed {
   }
 }
 
-export function currentWorkshed(): GarboWorkshed {
-  return worksheds.find(({ workshed }) => workshed === getWorkshed()) ?? defaultWorkshed;
+function getGarboWorkshed(item: Item): GarboWorkshed {
+  return worksheds.find(({ workshed }) => workshed === item) ?? defaultWorkshed;
 }
 
-export function getGarboWorkshed(item: Item): GarboWorkshed {
-  return worksheds.find(({ workshed }) => workshed === item) ?? defaultWorkshed;
+function currentWorkshed(): GarboWorkshed {
+  return getGarboWorkshed(getWorkshed());
+}
+
+let _nextWorkshed: GarboWorkshed | null = null;
+function nextWorkshed(): GarboWorkshed {
+  _nextWorkshed ??= getGarboWorkshed(stringToWorkshedItem());
+  return _nextWorkshed ?? defaultWorkshed;
 }
 
 const defaultWorkshed = new GarboWorkshed($item`none`);
@@ -138,19 +144,6 @@ const worksheds = [
     (item) => new GarboWorkshed(item)
   ),
 ];
-
-let _nextWorkshed: GarboWorkshed | null = null;
-
-function nextWorkshed(): GarboWorkshed {
-  _nextWorkshed ??=
-    worksheds.find((workshed) => workshed.workshed === toItem(globalOptions.workshed)) ??
-    defaultWorkshed;
-  return _nextWorkshed ?? defaultWorkshed;
-}
-
-if (nextWorkshed().workshed === $item`none` && globalOptions.workshed.length > 0) {
-  throw new Error(`Error: Could not find matching workshed for ${globalOptions.workshed}`);
-}
 
 if (
   currentWorkshed().workshed === $item`model train set` &&
