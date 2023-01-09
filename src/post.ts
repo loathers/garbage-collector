@@ -27,10 +27,10 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { garboAdventure, Macro } from "./combat";
+import { globalOptions } from "./config";
 import { computeDiet, consumeDiet } from "./diet";
 import {
   bestJuneCleaverOption,
-  globalOptions,
   juneCleaverChoiceValues,
   safeInterrupt,
   safeRestore,
@@ -44,14 +44,14 @@ import { handleWorkshed } from "./workshed";
 function fillPantsgivingFullness(): void {
   if (
     getRemainingStomach() > 0 &&
-    (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
+    (!globalOptions.prefs.yachtzeechain || get("_garboYachtzeeChainCompleted", false))
   ) {
     consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING");
   }
 }
 
 function fillSweatyLiver(): void {
-  if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
+  if (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted", false)) return;
 
   const castsWanted = 3 - get("_sweatOutSomeBoozeUsed");
   if (castsWanted <= 0 || !have($item`designer sweatpants`)) return;
@@ -127,7 +127,7 @@ function funguySpores() {
   if (
     myLevel() >= 15 && // It applies -100 to all stats, and Level 15 seems to be a reasonable place where you will survive -100 to all stats
     !have($effect`Mush-Mouth`) &&
-    (!globalOptions.ascending || myAdventures() > 11) &&
+    (!globalOptions.ascend || myAdventures() > 11) &&
     get("dinseyRollercoasterNext") && // If it were to expire on a rails adventure, you'd waste the cost of the spore. Using it when next turn is rails is easiest way to make sure it won't
     funguyWorthIt
   ) {
@@ -147,12 +147,12 @@ function funguySpores() {
   }
 }
 
-const autumnAtonZones = $locations`The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley`;
+const autumnAtonZones = $locations`El Vibrato Island, The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley`;
 
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
-  if (!skipDiet && !globalOptions.noDiet) {
+  if (!skipDiet && !globalOptions.nodiet) {
     fillPantsgivingFullness();
     fillSweatyLiver();
   }
@@ -162,7 +162,7 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
-  if (globalOptions.ascending || AutumnAton.turnsForQuest() < myAdventures() + 10) {
+  if (globalOptions.ascend || AutumnAton.turnsForQuest() < myAdventures() + 10) {
     AutumnAton.sendTo(autumnAtonZones);
   }
 }

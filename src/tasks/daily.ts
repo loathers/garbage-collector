@@ -50,10 +50,11 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
+import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
-import { baseMeat, globalOptions, HIGHLIGHT, maxBy } from "../lib";
+import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
 import { garboValue } from "../session";
 import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
 
@@ -77,7 +78,7 @@ function voterSetup(): void {
       0.15 *
         (4 * 100 * 0.3 * embezzlerCount() + 3 * 200 * 0.15 * (estimatedTurns() - embezzlerCount())),
     ],
-    ["Adventures: +1", globalOptions.ascending ? 0 : get("valueOfAdventure")],
+    ["Adventures: +1", globalOptions.ascend ? 0 : get("valueOfAdventure")],
     ["Familiar Experience: +2", 8],
     ["Monster Level: +10", 5],
     [`${myPrimestat()} Percent: +25`, 3],
@@ -97,7 +98,7 @@ function voterSetup(): void {
 
     const initiativeValue = 2 * Math.max(...availableInitiatives.values());
 
-    const fightValue = 3 * get("garbo_valueOfFreeFight", 2000);
+    const fightValue = 3 * globalOptions.prefs.valueOfFreeFight;
     const ballotValue = initiativeValue + fightValue;
     if (
       ballotValue > mallPrice($item`absentee voter ballot`) &&
@@ -160,7 +161,7 @@ function pantogram(): void {
   if (!Pantogram.have() || Pantogram.havePants()) return;
   let pantogramValue: number;
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
-    const expectedBarfTurns = globalOptions.noBarf
+    const expectedBarfTurns = globalOptions.nobarf
       ? 0
       : estimatedTurns() - digitizedMonstersRemaining() - embezzlerCount();
     pantogramValue = 100 * expectedBarfTurns;
@@ -263,7 +264,7 @@ function checkBarfQuest(): void {
     return;
   }
 
-  const targets = globalOptions.noBarf
+  const targets = globalOptions.nobarf
     ? ["Electrical Maintenance"]
     : ["Track Maintenance", "Electrical Maintenance"]; // In decreasing order of priority
 
@@ -305,7 +306,7 @@ export function configureSnojo(): void {
   ]);
   // otherwise, assume we're in for at least five days and consider scrolls
   // we get 7 consumables in 5 days, plus a scroll
-  if (!globalOptions.ascending) {
+  if (!globalOptions.ascend) {
     if (get("snojoMuscleWins") < 50) {
       options.set(
         (7 * garboValue($item`ancient medicinal herbs`) +
@@ -496,7 +497,7 @@ export const DailyTasks: Task[] = [
     ready: () =>
       holiday() === "Generic Summer Holiday" &&
       !have($effect`Eldritch Attunement`) &&
-      estimatedTentacles() * get("garbo_valueOfFreeFight", 2000) > get("valueOfAdventure"),
+      estimatedTentacles() * globalOptions.prefs.valueOfFreeFight > get("valueOfAdventure"),
     completed: () => have($effect`Eldritch Attunement`),
     do: () => adv1($location`Generic Summer Holiday Swimming!`),
     acquire: [{ item: $item`water wings` }],

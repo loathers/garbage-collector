@@ -11,7 +11,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $items, AsdonMartin, clamp, DNALab, get, have } from "libram";
 import { dietCompleted } from "../diet";
-import { globalOptions } from "../lib";
+import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
 import {
@@ -94,14 +94,14 @@ const worksheds = [
       return (
         haveEffect($effect`Driving Observantly`) >=
         estimatedTurns() +
-          (globalOptions.ascending ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600))
+          (globalOptions.ascend ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600))
       );
     },
     () => {
       AsdonMartin.drive(
         $effect`Driving Observantly`,
         estimatedTurns() +
-          (globalOptions.ascending ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600))
+          (globalOptions.ascend ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600))
       );
     }
   ),
@@ -139,20 +139,27 @@ const worksheds = [
   ),
 ];
 
-const nextWorkshed =
-  worksheds.find((workshed) => workshed.workshed === toItem(get("_garboNextWorkshed", ""))) ??
-  defaultWorkshed;
+let _nextWorkshed: GarboWorkshed | null = null;
 
-if (nextWorkshed.workshed === $item`none` && get("_garboNextWorkshed", "").length > 0) {
-  throw new Error(`Error: Could not find matching workshed for ${get("_garboNextWorkshed", "")}`);
+function nextWorkshed(): GarboWorkshed {
+  _nextWorkshed ??=
+    worksheds.find((workshed) => workshed.workshed === toItem(globalOptions.workshed)) ??
+    defaultWorkshed;
+  return _nextWorkshed;
+}
+
+if (nextWorkshed().workshed === $item`none` && globalOptions.workshed.length > 0) {
+  throw new Error(`Error: Could not find matching workshed for ${globalOptions.workshed}`);
 }
 
 if (
   currentWorkshed().workshed === $item`model train set` &&
-  nextWorkshed.workshed !== $item`none`
+  nextWorkshed().workshed !== $item`none`
 ) {
   print(
-    `Warning: We currently do not support switching from the model train set to another workshed, so ${nextWorkshed.workshed} will not be set-up during this run of garbo!`,
+    `Warning: We currently do not support switching from the model train set to another workshed, so ${
+      nextWorkshed().workshed
+    } will not be set-up during this run of garbo!`,
     "red"
   );
 }
@@ -162,10 +169,10 @@ export function handleWorkshed(): void {
   if (
     !get("_workshedItemUsed") &&
     currentWorkshed().done() &&
-    nextWorkshed.workshed !== $item`none` &&
-    have(nextWorkshed.workshed)
+    nextWorkshed().workshed !== $item`none` &&
+    have(nextWorkshed().workshed)
   ) {
-    use(nextWorkshed.workshed);
+    use(nextWorkshed().workshed);
     if (!currentWorkshed().done()) currentWorkshed().action();
   }
 }

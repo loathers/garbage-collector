@@ -36,17 +36,11 @@ import {
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
-import {
-  baseMeat,
-  globalOptions,
-  HIGHLIGHT,
-  maxBy,
-  pillkeeperOpportunityCost,
-  turnsToNC,
-} from "./lib";
+import { baseMeat, HIGHLIGHT, maxBy, pillkeeperOpportunityCost, turnsToNC } from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedTurns } from "./turns";
+import { globalOptions } from "./config";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -247,7 +241,7 @@ export class Potion {
     limit?: number
   ): { name: PotionTier; quantity: number; value: number }[] {
     const startingTurns = haveEffect(this.effect());
-    const ascending = globalOptions.ascending;
+    const ascending = globalOptions.ascend;
     const totalTurns = turns ?? estimatedTurns();
     const values: {
       name: PotionTier;
@@ -277,14 +271,14 @@ export class Potion {
       values.push({
         name: "overlap",
         quantity: limitFunction(1),
-        value: this.gross(overlapEmbezzlers, globalOptions.noBarf ? overlapEmbezzlers : undefined),
+        value: this.gross(overlapEmbezzlers, globalOptions.nobarf ? overlapEmbezzlers : undefined),
       });
     }
 
     const embezzlerCoverage =
       embezzlerQuantity + (overlapEmbezzlers > 0 ? 1 : 0) * this.effectDuration();
 
-    if (!globalOptions.noBarf) {
+    if (!globalOptions.nobarf) {
       // unless nobarf, compute the value of barf turns
       // if ascending, break those turns that are not fully covered by a potion into their own value
       const remainingTurns = Math.max(0, totalTurns - embezzlerCoverage - startingTurns);
@@ -292,7 +286,7 @@ export class Potion {
       const barfQuantity = this.usesToCover(remainingTurns, !ascending);
       values.push({ name: "barf", quantity: limitFunction(barfQuantity), value: this.gross(0) });
 
-      if (globalOptions.ascending && this.overage(remainingTurns, barfQuantity) < 0) {
+      if (globalOptions.ascend && this.overage(remainingTurns, barfQuantity) < 0) {
         const ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
         values.push({
           name: "ascending",

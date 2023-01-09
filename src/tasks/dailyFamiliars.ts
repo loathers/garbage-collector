@@ -28,6 +28,7 @@ import {
   withProperty,
 } from "libram";
 import { withStash } from "../clan";
+import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
@@ -210,7 +211,7 @@ export const DailyFamiliarTasks: Task[] = [
   },
   {
     name: "Moveable feast",
-    ready: () => have($item`moveable feast`) || get("garbo_stashClan", "none") !== "none",
+    ready: () => have($item`moveable feast`) || globalOptions.prefs.stashClan !== "none",
     completed: () => get("_feastUsed") > 0,
     do: (): void => {
       withStash($items`moveable feast`, () => {
