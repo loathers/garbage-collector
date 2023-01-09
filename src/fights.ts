@@ -10,7 +10,6 @@ import {
   Effect,
   equip,
   Familiar,
-  gametimeToInt,
   getAutoAttack,
   getCampground,
   handlingChoice,
@@ -134,6 +133,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  today,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
@@ -1236,12 +1236,11 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
+    () =>
+      get("snojoAvailable") &&
+      get("snojoSetting") !== null &&
+      clamp(10 - get("_snojoFreeFights"), 0, 10),
     () => {
-      if (get("snojoSetting") === null) {
-        visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-        runChoice(3);
-      }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
     false
@@ -2444,7 +2443,6 @@ function yachtzee(): void {
       if (!equippedOutfit || !success()) return;
 
       const lastUMDDate = property.getString("umdLastObtained");
-      const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5; // Import today from ./lib once the PR is merged
       const getUMD =
         !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
         garboValue($item`Ultimate Mind Destroyer`) >=

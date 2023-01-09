@@ -63,6 +63,7 @@ const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 let latteRefreshed = false;
 let horseryRefreshed = false;
 let attemptCompletingBarfQuest = true;
+let snojoConfigured = false;
 
 function voterSetup(): void {
   const initPriority: Map<string, number> = new Map([
@@ -292,6 +293,52 @@ function checkBarfQuest(): void {
   return;
 }
 
+export function configureSnojo(): void {
+  if (snojoConfigured) return;
+
+  // if we're ascending, pick whichever consumable has the best price
+  // each consumable takes 7 turns and we can spend 10 per day
+  const options = new Map<number, number>([
+    [(10 / 7) * garboValue($item`ancient medicinal herbs`), 1],
+    [(10 / 7) * garboValue($item`ice rice`), 2],
+    [(10 / 7) * garboValue($item`iced plum wine`), 3],
+  ]);
+  // otherwise, assume we're in for at least five days and consider scrolls
+  // we get 7 consumables in 5 days, plus a scroll
+  if (!globalOptions.ascending) {
+    if (get("snojoMuscleWins") < 50) {
+      options.set(
+        (7 * garboValue($item`ancient medicinal herbs`) +
+          garboValue($item`training scroll:  Shattering Punch`)) /
+          5,
+        1
+      );
+    }
+    if (get("snojoMysticalityWins") < 50) {
+      options.set(
+        (7 * garboValue($item`ice rice`) + garboValue($item`training scroll:  Snokebomb`)) / 5,
+        2
+      );
+    }
+    if (get("snojoMoxieWins") < 50) {
+      options.set(
+        (7 * garboValue($item`iced plum wine`) +
+          garboValue($item`training scroll:  Shivering Monkey Technique`)) /
+          5,
+        3
+      );
+    }
+  }
+
+  const bestProfit = Math.max(...options.keys());
+  const option = options.get(bestProfit);
+  if (option) {
+    visitUrl("place.php?whichplace=snojo&action=snojo_controller");
+    runChoice(option);
+    snojoConfigured = true;
+  }
+}
+
 export const DailyTasks: Task[] = [
   {
     name: "Refresh Latte",
@@ -468,6 +515,12 @@ export const DailyTasks: Task[] = [
     ready: () => get("stenchAirportAlways") || get("_stenchAirportToday"),
     completed: () => !attemptCompletingBarfQuest,
     do: () => checkBarfQuest(),
+  },
+  {
+    name: "Configure Snojo",
+    ready: () => get("snojoAvailable") && get("_snojoFreeFights") < 10,
+    completed: () => snojoConfigured,
+    do: () => configureSnojo(),
   },
   // Final tasks
   {
