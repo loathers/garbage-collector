@@ -3,6 +3,7 @@ import {
   haveEffect,
   Item,
   print,
+  toInt,
   toItem,
   totalTurnsPlayed,
   use,
@@ -15,9 +16,11 @@ import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
 import {
   defaultPieces,
+  getTrainsetConfiguration,
   grabMedicine,
   isTrainsetConfigurable,
   setTrainsetConfiguration,
+  TrainsetPiece,
 } from "./utils";
 
 class GarboWorkshed {
@@ -52,13 +55,27 @@ const worksheds = [
     },
     () => {
       if (!isTrainsetConfigurable()) return;
-      else {
-        const pos = get("trainsetPosition", 0);
-        const configured = get("lastTrainsetConfiguration", 0);
-        const idx = (pos - configured) % 8;
-        if (defaultPieces.join(",") === get("trainsetConfiguration", "") && idx <= 1) return;
+      if (get("trainsetConfiguration") === "") {
+        print("Reconfiguring trainset, as our next station is empty", "blue");
+        return setTrainsetConfiguration(defaultPieces);
+      } else {
+        const pieces = getTrainsetConfiguration();
+        const offset = toInt(get("trainsetPosition")) % 8;
+        const nextPiece = pieces[offset];
+
+        print(`Reconfiguring trainset, as our next station is ${String(nextPiece)}`, "blue");
+        if ([TrainsetPiece.DOUBLE_NEXT_STATION, TrainsetPiece.GAIN_MEAT].includes(nextPiece)) {
+          return;
+        }
+
+        const newPieces: TrainsetPiece[] = [];
+        for (let i = 0; i < 8; i++) {
+          const newPos = (i + offset) % 8;
+          newPieces[newPos] = defaultPieces[i];
+        }
+
+        return setTrainsetConfiguration(newPieces);
       }
-      setTrainsetConfiguration(defaultPieces);
     }
   ),
   new GarboWorkshed(

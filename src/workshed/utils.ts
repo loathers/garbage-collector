@@ -11,7 +11,7 @@ import { $item, get } from "libram";
 import { globalOptions, maxBy } from "../lib";
 import { garboValue } from "../session";
 
-enum TrainsetPiece {
+export enum TrainsetPiece {
   UNKNOWN = "",
   EMPTY = "empty",
   GAIN_MEAT = "meat_mine",
@@ -132,4 +132,8 @@ export function grabMedicine(): void {
     runChoice(bestChoice);
   }
   if (handlingChoice()) visitUrl("main.php");
+}
+
+export function getTrainsetConfiguration(): TrainsetPiece[] {
+  return get("trainsetConfiguration").split(",") as TrainsetPiece[];
 }

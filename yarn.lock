@@ -2173,9 +2173,9 @@ eslint-config-prettier@^8.3.0:
   integrity sha512-BgZuLUSeKzvlL/VUjx/Yb787VQ26RU3gGjA3iiFvdsp/2bMfVIWUVP7tjxtjS0e+HP409cPlPvNkQloz8C91ew==
 
 eslint-plugin-libram@^0.2.25:
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-libram/-/eslint-plugin-libram-0.2.25.tgz#c2a3dc767f1e392be608901a9248036f70714354"
-  integrity sha512-lFYasWDh+ImR4Cyv3rv1wr15X9AznHHg9dWm+8AqQnrq6QKnw9N0zoeJ9+oqrUPk7aaD9qm6NqCVux4045zaAg==
+  version "0.2.26"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-libram/-/eslint-plugin-libram-0.2.26.tgz#dd7e615d9daea8d3ccc2a9f378897fa8c0e42275"
+  integrity sha512-z1v9bu2p+ICw84JmT8Ha10b9zq77V1ndMjEiJfZxv5RqrPmzHzGVcoGpYOneUqK+6kaAh9tRcry+4I5O05JUEg==
   dependencies:
     html-entities "^2.3.2"
     requireindex "~1.1.0"
@@ -2802,9 +2802,9 @@ klona@^2.0.4:
   integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
 
 kolmafia@^5.27036.0:
-  version "5.27059.0"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27059.0.tgz#d3dd673675c43c83e648b596cf73798717c2956b"
-  integrity sha512-vE2w8Km3aV0syoTErHDSov2cqddMCeLFF4ATLt3Vb2QG+czvzwgERr53/zEHDaNJDmvenwySsseH38uFosFXVQ==
+  version "5.27075.0"
+  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27075.0.tgz#e643e86ce91826ffb4bc7e1a8bd733cd8a8cf5ee"
+  integrity sha512-97SXY+IPmFDn58e9dzAkVKXdd04JEfE6NXQ2+FQ+ivE3TeymUsvgjneWEgXlaaEgd3h3WCpNElXSpie4Bq+AsQ==
 
 levn@^0.4.1:
   version "0.4.1"
@@ -3318,7 +3318,7 @@ regenerate@^1.4.2:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.2.tgz#b9346d8827e8f5a32f7ba29637d398b69014848a"
   integrity sha512-zrceR/XhGYU/d/opr2EKO7aRHUeiBI8qjtfHqADTwZd6Szfy16la6kqD0MIUs5z5hx6AaKa+PixpPrR289+I0A==
 
-regenerator-runtime@^0.13.11:
+regenerator-runtime@^0.13.11, regenerator-runtime@^0.13.4:
   version "0.13.11"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
   integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
