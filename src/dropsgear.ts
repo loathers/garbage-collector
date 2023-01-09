@@ -500,7 +500,8 @@ function stickers(equipMode: BonusEquipMode): Map<Item, number> {
 
 function powerGlove(): Map<Item, number> {
   if (!have($item`Powerful Glove`)) return new Map();
-  // 23% proc rate
+  // 23% proc rate, according to the wiki
+  // https://kol.coldfront.net/thekolwiki/index.php/Powerful_Glove
   return new Map([
     [
       $item`Powerful Glove`,
