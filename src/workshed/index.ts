@@ -94,14 +94,14 @@ const worksheds = [
       return (
         haveEffect($effect`Driving Observantly`) >=
         estimatedTurns() +
-          (globalOptions.ascending ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 10, 0, 300))
+          (globalOptions.ascending ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600))
       );
     },
     () => {
       AsdonMartin.drive(
         $effect`Driving Observantly`,
         estimatedTurns() +
-          (globalOptions.ascending ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 10, 0, 300))
+          (globalOptions.ascending ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600))
       );
     }
   ),
