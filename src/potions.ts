@@ -342,7 +342,7 @@ export const farmingPotions = [
     .filter((item) => item.tradeable && !banned.includes(item) && itemType(item) === "potion")
     .map((item) => new Potion(item))
     .filter((potion) => potion.bonusMeat() > 0),
-  ...$effects`Braaaaaains, Frosty`.map(
+  ...$effects`Braaaaaains, Frosty, Let's Go Shopping!`.map(
     (effect) =>
       new Potion($item`pocket wish`, {
         effect,
