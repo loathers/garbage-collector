@@ -1,4 +1,4 @@
-import { Args, ParseError } from "grimoire-kolmafia";
+import { Args } from "grimoire-kolmafia";
 import { get } from "libram";
 
 export const globalOptions = Args.create(
@@ -52,7 +52,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)",
           default: 2000,
         }),
-        yachtzeechain: Args.boolean({
+        yachtzeechain: Args.flag({
           setting: "garbo_yachtzeechain",
           help: "only diets after free fights, and attempts to estimate if Yachtzee! chaining is profitable for you - if so, it consumes a specific diet which uses ~30-41 spleen;\
       if not it automatically continues with the regular diet. Requires Spring Break Beach access (it will not grab a one-day pass for you, but will make an attempt if one is used).\
@@ -93,21 +93,21 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       }
     ),
     /*
-      Hidden preferences, do not set via CLI
+      Hidden preferences, CLI input ignored
     */
-    stopTurncount: Args.custom<number | null>(
-      { hidden: true, default: null },
-      () => new ParseError(""),
-      "unused"
+    stopTurncount: Args.custom<number | null>({ hidden: true, default: null }, () => null, ""),
+    saveTurns: Args.custom<number>({ hidden: true, default: 0 }, () => 0, ""),
+    askedAboutWish: Args.custom<boolean>({ hidden: true, default: false }, () => false, ""),
+    triedToUnlockHiddenTavern: Args.custom<boolean>(
+      { hidden: true, default: false },
+      () => false,
+      ""
     ),
-    saveTurns: Args.number({ hidden: true, default: 0 }),
-    askedAboutWish: Args.boolean({ hidden: true, default: false }),
-    triedToUnlockHiddenTavern: Args.boolean({ hidden: true, default: false }),
-    wishAnswer: Args.boolean({ hidden: true, default: false }),
+    wishAnswer: Args.custom<boolean>({ hidden: true, default: false }, () => false, ""),
     clarasBellClaimed: Args.custom<boolean>(
       { hidden: true, setting: "_claraBellUsed" },
       () => get("_claraBellUsed"),
-      "circumvent"
+      ""
     ),
   },
   { positionalArgs: ["turns"] }
