@@ -998,7 +998,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   }
 }
 
-let completedDiet = globalOptions.noDiet;
+let completedDiet = globalOptions.nodiet;
 export function dietCompleted(): boolean {
   return completedDiet;
 }
