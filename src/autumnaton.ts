@@ -70,10 +70,11 @@ export function averageAutumnatonValue(
       .flat()
       .map(({ rate, type, drop }) => ({
         value: !["c", "0"].includes(type) ? garboValue(drop, true) : 0,
-        preAcuityExpectation: Math.min(maximumDrops, (2 * rate) / 100),
-        postAcuityExpectation: rate >= acuityCutoff ? Math.min(maximumDrops, (2 * rate) / 100) : 0,
+        preAcuityExpectation: ["c", "0", ""].includes(type) ? (2 * rate) / 100 : 0,
+        postAcuityExpectation:
+          rate >= acuityCutoff && ["c", "0", ""].includes(type) ? (8 * rate) / 100 : 0,
       }));
-    const expectedDropQuantity = sum(
+    const overallExpectedDropQuantity = sum(
       validDrops,
       ({ preAcuityExpectation, postAcuityExpectation }) =>
         preAcuityExpectation + postAcuityExpectation
@@ -81,9 +82,11 @@ export function averageAutumnatonValue(
     const expectedCollectionValue = sum(
       validDrops,
       ({ value, preAcuityExpectation, postAcuityExpectation }) => {
-        const weight = Math.min(1, maximumDrops / expectedDropQuantity);
-        const expectation = weight * (preAcuityExpectation + postAcuityExpectation);
-        return value * expectation;
+        // This gives us the adjusted amount to fit within our total amount of available drop slots
+        const adjustedDropAmount =
+          (preAcuityExpectation + postAcuityExpectation) *
+          Math.min(1, maximumDrops / overallExpectedDropQuantity);
+        return adjustedDropAmount * value;
       }
     );
     return seasonalItemValue(location) + expectedCollectionValue;
