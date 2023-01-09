@@ -10,7 +10,7 @@ import {
   Location,
   toMonster,
 } from "kolmafia";
-import { $item, $items, AutumnAton, get } from "libram";
+import { $item, $items, AutumnAton, get, sum } from "libram";
 
 function getAutumnatonUniques(location: Location): [AutumnAton.Upgrade, Item] {
   switch (location.environment) {
@@ -49,13 +49,13 @@ function getAutumnatonUniques(location: Location): [AutumnAton.Upgrade, Item] {
   return [AutumnAton.possibleUpgrades[0], $item`AutumnFest ale`];
 }
 
-interface ItemData {
+/* interface ItemData {
   value: number;
   rate: number;
   expectedDrops1?: number;
   expectedDrops2?: number;
   totalExpectedDrops?: number;
-}
+} */
 
 export function averageAutumnatonValue(
   location: Location,
@@ -71,47 +71,29 @@ export function averageAutumnatonValue(
   if (monsters.length === 0) {
     return 0;
   } else {
-    const validDrops: ItemData[] = [];
-    // Get all valid drops from monsters in the zone.
-    // If mafia doesn't know the droprate, or it is conditional, we value it at 0
-    monsters.forEach((m) => {
-      itemDropsArray(m).forEach((item) => {
-        if (item.type.includes("c" || "0")) {
-          validDrops.push({ value: 0, rate: item.rate });
-        } else if (item.type === "") {
-          validDrops.push({ value: garboValue(item.drop, true), rate: item.rate });
-        }
-      });
-    });
-
-    let totalZoneExpectedDrops = 0;
-    // Find the expected drops for each valid item
-    validDrops.forEach((d) => {
-      // First two rolls do not care about acuity
-      const acuityCutoff = 20 - (acuityOverride ?? AutumnAton.visualAcuity() * 5);
-      d.expectedDrops1 = Math.min(slotOverride ?? AutumnAton.zoneItems(), (d.rate / 100) * 2);
-      // Last 8 rolls do not count items below the acuity cutoff
-      // Our max capacity is reduced by the expected drops from the first 2 rolls
-      if (d.rate < acuityCutoff) {
-        d.rate = 0;
+    const maximumDrops = slotOverride ?? AutumnAton.zoneItems();
+    const acuityCutoff = 20 - (acuityOverride ?? AutumnAton.visualAcuity()) * 5;
+    const validDrops = monsters
+      .map((m) => itemDropsArray(m))
+      .flat()
+      .map(({ rate, type, drop }) => ({
+        value: !["c", "0"].includes(type) ? garboValue(drop, true) : 0,
+        preAcuityExpectation: Math.min(maximumDrops, (2 * rate) / 100),
+        postAcuityExpectation: rate >= acuityCutoff ? Math.min(maximumDrops, (2 * rate) / 100) : 0,
+      }));
+    const expectedDropQuantity = sum(
+      validDrops,
+      ({ preAcuityExpectation, postAcuityExpectation }) =>
+        preAcuityExpectation + postAcuityExpectation
+    );
+    const expectedCollectionValue = sum(
+      validDrops,
+      ({ value, preAcuityExpectation, postAcuityExpectation }) => {
+        const weight = Math.min(1, maximumDrops / expectedDropQuantity);
+        const expectation = weight * (preAcuityExpectation + postAcuityExpectation);
+        return value * expectation;
       }
-      d.expectedDrops2 = Math.min(
-        (slotOverride ?? AutumnAton.zoneItems()) - d.expectedDrops1,
-        (d.rate / 100) * 8
-      );
-      totalZoneExpectedDrops += d.expectedDrops1 + d.expectedDrops2;
-    });
-
-    let expectedCollectionValue = 0;
-    validDrops.forEach((d) => {
-      // This makes sure that when we have a larger amount of total expected drops than we have room for, we still return the correct adjusted amount for our available slots
-      if (d.expectedDrops1 && d.expectedDrops2) {
-        d.totalExpectedDrops =
-          ((d.expectedDrops1 + d.expectedDrops2) / totalZoneExpectedDrops) *
-          Math.min(totalZoneExpectedDrops, slotOverride ?? AutumnAton.zoneItems());
-      }
-      if (d.totalExpectedDrops) expectedCollectionValue += d.totalExpectedDrops * d.value;
-    });
+    );
     return seasonalItemValue(location) + expectedCollectionValue;
   }
 }
