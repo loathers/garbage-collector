@@ -18,6 +18,7 @@ import {
   getTrainsetConfiguration,
   grabMedicine,
   isTrainsetConfigurable,
+  offsetDefaultPieces,
   setTrainsetConfiguration,
   stringToWorkshedItem,
   TrainsetPiece,
@@ -69,18 +70,11 @@ const worksheds = [
         const offset = toInt(get("trainsetPosition")) % 8;
         const nextPiece = pieces[offset];
 
-        print(`Reconfiguring trainset, as our next station is ${String(nextPiece)}`, "blue");
         if ([TrainsetPiece.DOUBLE_NEXT_STATION, TrainsetPiece.GAIN_MEAT].includes(nextPiece)) {
           return;
         }
-
-        const newPieces: TrainsetPiece[] = [];
-        for (let i = 0; i < 8; i++) {
-          const newPos = (i + offset) % 8;
-          newPieces[newPos] = defaultPieces[i];
-        }
-
-        return setTrainsetConfiguration(newPieces);
+        print(`Reconfiguring trainset, as our next station is ${String(nextPiece)}`, "blue");
+        return setTrainsetConfiguration(offsetDefaultPieces(offset));
       }
     }
   ),
