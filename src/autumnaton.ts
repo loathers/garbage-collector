@@ -148,6 +148,11 @@ export function prioritizeUpgradeLocations(fullLocations: Location[]): Location[
   const acquirableUpgrades = profitRelevantUpgrades.filter(
     (upgrade) => !currentUpgrades.includes(upgrade)
   );
+
+  if (acquirableUpgrades.length === 0) {
+    return fullLocations;
+  }
+
   const currentBestLocation = maxBy(fullLocations, (loc: Location) => averageAutumnatonValue(loc));
   const currentExpectedProfit =
     averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
