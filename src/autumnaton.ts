@@ -176,7 +176,7 @@ export function prioritizeUpgradeLocations(fullLocations: Location[]): Location[
         averageAutumnatonValue(bestLocWithInstalledUpg) *
           Math.max(0, expectedRemainingExpeditions() - 1);
 
-      return { upgrade: upgrade, profit: extraExpectedProfit };
+      return { upgrade, profit: extraExpectedProfit };
     }
     if (upgrade === ("rightleg1" || "leftleg1")) {
       const bestLocWithInstalledUpg = currentBestLocation;
@@ -185,7 +185,7 @@ export function prioritizeUpgradeLocations(fullLocations: Location[]): Location[
         averageAutumnatonValue(bestLocWithInstalledUpg) *
           Math.max(0, expectedRemainingExpeditions(legUpgrades + 1) - 1);
 
-      return { upgrade: upgrade, profit: extraExpectedProfit };
+      return { upgrade, profit: extraExpectedProfit };
     }
     if (upgrade === ("rightarm1" || "leftarm1")) {
       const bestLocWithInstalledUpg = maxBy(fullLocations, (loc: Location) =>
@@ -196,7 +196,7 @@ export function prioritizeUpgradeLocations(fullLocations: Location[]): Location[
         averageAutumnatonValue(bestLocWithInstalledUpg) *
           Math.max(0, expectedRemainingExpeditions() - 1);
 
-      return { upgrade: upgrade, profit: extraExpectedProfit };
+      return { upgrade, profit: extraExpectedProfit };
     }
     if (upgrade === "cowcatcher") {
       const bestLocWithInstalledUpg = currentBestLocation;
@@ -206,9 +206,9 @@ export function prioritizeUpgradeLocations(fullLocations: Location[]): Location[
           averageAutumnatonValue(bestLocWithInstalledUpg)) *
           Math.max(0, expectedRemainingExpeditions() - 1);
 
-      return { upgrade: upgrade, profit: extraExpectedProfit };
+      return { upgrade, profit: extraExpectedProfit };
     }
-    return { upgrade: upgrade, profit: 0 };
+    return { upgrade, profit: 0 };
   });
   const mostValuableUpgrade = maxBy(upgradeValuations, ({ profit }) => profit);
   const profitFromBestUpg = mostValuableUpgrade.profit;
