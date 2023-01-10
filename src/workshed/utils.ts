@@ -161,7 +161,9 @@ export function stringToWorkshedItem(): Item {
       ),
     ]).entries(),
   ]
-    .filter(([aliases, item]) => [item.name.toLowerCase, ...aliases].includes(lowerCaseWorkshed))
+    .filter(([aliases, item]) =>
+      [item.name.toLowerCase(), ...aliases].some((alias) => alias.includes(lowerCaseWorkshed))
+    )
     .map(([, item]) => item);
 
   if (validWorksheds.length > 1) {
