@@ -165,7 +165,7 @@ export function stringToWorkshedItem(): Item {
     ]).entries(),
   ]
     .filter(([aliases, item]) =>
-      [item?.name.toLowerCase(), ...aliases].some((alias) => alias.includes(lowerCaseWorkshed))
+      [item.name?.toLowerCase(), ...aliases].some((alias) => alias?.includes(lowerCaseWorkshed))
     )
     .map(([, item]) => item);
 
