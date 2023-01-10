@@ -210,7 +210,7 @@ export function prioritizeUpgradeLocations(fullLocations: Location[]): Location[
     }
     return { upgrade, profit: 0 };
   });
-  const mostValuableUpgrade = maxBy(upgradeValuations, ({ profit }) => profit);
+  const mostValuableUpgrade = maxBy(upgradeValuations, "profit");
   const profitFromBestUpg = mostValuableUpgrade.profit;
 
   if (profitFromBestUpg > currentExpectedProfit) {
