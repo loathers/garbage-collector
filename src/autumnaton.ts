@@ -128,20 +128,22 @@ function expectedRemainingExpeditions(legOverride?: number): number {
 
   return quests - get("_autumnatonQuests", 0);
 }
+
+const profitRelevantUpgrades = [
+  "leftarm1",
+  "leftleg1",
+  "rightarm1",
+  "rightleg1",
+  "cowcatcher",
+  "periscope",
+  "radardish",
+] as const;
+
 export function prioritizeUpgradeLocations(fullLocations: Location[]): Location[] {
   // This function shouldn't be getting called if we don't have an expedition left
   if (expectedRemainingExpeditions() < 1) {
     return fullLocations;
   }
-  const profitRelevantUpgrades = [
-    "leftarm1",
-    "leftleg1",
-    "rightarm1",
-    "rightleg1",
-    "cowcatcher",
-    "periscope",
-    "radardish",
-  ] as const;
   // Libram doesn't have amount of leg upgrades specifically like the other types do
   const legUpgrades = AutumnAton.currentUpgrades().filter((u) => u.includes("leg")).length;
   const currentUpgrades = AutumnAton.currentUpgrades();
