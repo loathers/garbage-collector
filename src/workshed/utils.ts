@@ -149,13 +149,16 @@ export function offsetDefaultPieces(offset: number): TrainsetPiece[] {
 }
 
 export function stringToWorkshedItem(): Item {
-  const lowerCaseWorkshed = globalOptions.workshed.toLowerCase();
+  // An empty string is a subset of every string and will match all the worksheds
+  // So we explicitly handle this case here
+  if (globalOptions.workshed === "") return $item`none`;
 
+  const lowerCaseWorkshed = globalOptions.workshed.toLowerCase();
   const validWorksheds = [
     ...new Map([
       [["cmc"], $item`cold medicine cabinet`],
       [["trainset"], $item`model train set`],
-      [["none", ""], $item`none`],
+      [["none"], $item`none`],
       ...$items`Asdon Martin keyfob, diabolic pizza cube, portable Mayo Clinic, Little Geneticist DNA-Splicing Lab, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`.map(
         (item): [string[], Item] => [[], item]
       ),
