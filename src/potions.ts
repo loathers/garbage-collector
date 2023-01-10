@@ -44,7 +44,7 @@ import { globalOptions } from "./config";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
-const failedWishes = [] as Effect[];
+export const failedWishes = [] as Effect[];
 
 const mutuallyExclusiveList: Effect[][] = [
   $effects`Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue`,
