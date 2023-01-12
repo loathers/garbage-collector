@@ -1,7 +1,37 @@
 import { Args } from "grimoire-kolmafia";
 import { Item } from "kolmafia";
-import { $item, get } from "libram";
-import { stringToWorkshedItem } from "./workshed/utils";
+import { $item, $items, get } from "libram";
+
+const workshedShortAliases: [Item, string][] = [
+  [$item`cold medicine cabinet`, "cmc"],
+  [$item`model train set`, "trainset"],
+  [$item`none`, "none"],
+  ...$items`Asdon Martin keyfob, diabolic pizza cube, portable Mayo Clinic, Little Geneticist DNA-Splicing Lab, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`.map(
+    (item): [Item, string] => [item, ""]
+  ),
+];
+const workshedAliases = workshedShortAliases.map(([item, s]): [Item, string] => [
+  item,
+  `${item.name?.toLowerCase() ?? ""}${s.length > 0 && s !== "none" ? ", " : ""}${s}`,
+]);
+
+function stringToWorkshedItem(s: string): Item {
+  // An empty string is a subset of every string and will match all the worksheds
+  // So we explicitly handle this case here
+  if (s === "") return $item`none`;
+
+  const lowerCaseWorkshed = s.toLowerCase();
+  const validWorksheds = workshedAliases
+    .filter(([, s]) => s.split(", ").some((alias) => alias?.includes(lowerCaseWorkshed)))
+    .map(([item]) => item);
+
+  if (validWorksheds.length > 1) {
+    throw new Error(`Invalid Workshed: ${s} matches multiple worksheds!`);
+  } else if (validWorksheds.length === 0) {
+    throw new Error(`Invalid Workshed: ${s} does not match any worksheds!`);
+  }
+  return validWorksheds[0];
+}
 
 export const globalOptions = Args.create(
   "garbo",
@@ -41,10 +71,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     workshed: Args.custom<Item>(
       {
         default: $item`none`,
-        help: "Parses the substring of the item name (e.g dna, mayo, asdon) into the corresponding workshed for garbo to intelligently switch into. Additional accepted aliases: cmc, trainset.",
+        help: "Parses the substring of the item name (e.g dna, mayo, asdon) into the corresponding workshed for garbo to intelligently switch into. Also accepts certain shorthand aliases.",
+        options: workshedAliases,
       },
       stringToWorkshedItem,
-      ""
+      "Item"
     ),
     version: Args.flag({
       setting: "",

@@ -7,7 +7,7 @@ import {
   toInt,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, get } from "libram";
+import { $item, get } from "libram";
 import { globalOptions } from "../config";
 import { maxBy } from "../lib";
 import { garboValue } from "../session";
@@ -120,35 +120,6 @@ export function offsetDefaultPieces(offset: number): TrainsetPiece[] {
     newPieces[newPos] = defaultPieces[i];
   }
   return newPieces;
-}
-
-export function stringToWorkshedItem(s: string): Item {
-  // An empty string is a subset of every string and will match all the worksheds
-  // So we explicitly handle this case here
-  if (s === "") return $item`none`;
-
-  const lowerCaseWorkshed = s.toLowerCase();
-  const validWorksheds = [
-    ...new Map([
-      [["cmc"], $item`cold medicine cabinet`],
-      [["trainset"], $item`model train set`],
-      [["none"], $item`none`],
-      ...$items`Asdon Martin keyfob, diabolic pizza cube, portable Mayo Clinic, Little Geneticist DNA-Splicing Lab, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`.map(
-        (item): [string[], Item] => [[], item]
-      ),
-    ]).entries(),
-  ]
-    .filter(([aliases, item]) =>
-      [item.name?.toLowerCase(), ...aliases].some((alias) => alias?.includes(lowerCaseWorkshed))
-    )
-    .map(([, item]) => item);
-
-  if (validWorksheds.length > 1) {
-    throw new Error(`Invalid Workshed: ${globalOptions.workshed} matches multiple worksheds!`);
-  } else if (validWorksheds.length === 0) {
-    throw new Error(`Invalid Workshed: ${globalOptions.workshed} does not match any worksheds!`);
-  }
-  return validWorksheds[0];
 }
 
 export function grabMedicine(): void {
