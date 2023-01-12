@@ -31414,8 +31414,8 @@ function main() {
     throw new Error("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
   }
 
-  if (!config_globalOptions.prefs.skipAscensionCheck && (!property_get("kingLiberated") || (0,external_kolmafia_namespaceObject.myLevel)() < 13)) {
-    var proceedRegardless = userConfirmDialog("Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?", true);
+  if (!config_globalOptions.prefs.skipAscensionCheck && (!property_get("kingLiberated") || (0,external_kolmafia_namespaceObject.myLevel)() < 13 || external_kolmafia_namespaceObject.Stat.all().some(s => (0,external_kolmafia_namespaceObject.myBasestat)(s) < 75))) {
+    var proceedRegardless = userConfirmDialog("Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?", true);
 
     if (!proceedRegardless) {
       throw new Error("User interrupt requested. Stopping Garbage Collector.");
