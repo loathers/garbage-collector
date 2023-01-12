@@ -44,7 +44,7 @@ import { globalOptions } from "./config";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
-export const failedWishes = [] as Effect[];
+export const failedWishes: Effect[] = [];
 
 const mutuallyExclusiveList: Effect[][] = [
   $effects`Blue Tongue, Green Tongue, Orange Tongue, Purple Tongue, Red Tongue, Black Tongue`,
@@ -300,14 +300,20 @@ export class Potion {
     return values.filter((tier) => tier.quantity > 0);
   }
 
+  private _use(quantity: number): boolean {
+    if (this.useOverride) {
+      return this.useOverride(quantity);
+    } else if (itemType(this.potion) === "potion") {
+      return use(quantity, this.potion);
+    } else {
+      // must provide an override for non potions, otherwise they won't use
+      return false;
+    }
+  }
+
   use(quantity: number): boolean {
     const effectTurns = haveEffect(this.effect());
-    const result = this.useOverride
-      ? this.useOverride(quantity)
-      : itemType(this.potion) === "potion"
-      ? use(quantity, this.potion)
-      : false; // must provide an override for non potions, otherwise they won't use
-
+    const result = this._use(quantity);
     // If we tried wishing but failed, no longer try this wish in the future
     if (this.potion === $item`pocket wish` && haveEffect(this.effect()) <= effectTurns) {
       failedWishes.push(this.effect());
