@@ -20,10 +20,11 @@ import {
   isTrainsetConfigurable,
   offsetDefaultPieces,
   setTrainsetConfiguration,
-  stringToWorkshedItem,
   TrainsetPiece,
 } from "./utils";
 
+let _nextWorkshed: GarboWorkshed | null = null;
+let _currentWorkshed: GarboWorkshed | null = null;
 class GarboWorkshed {
   workshed: Item;
   done = () => true;
@@ -35,22 +36,21 @@ class GarboWorkshed {
     if (done) this.done = done;
     if (action) this.action = action;
   }
-}
 
-function getGarboWorkshed(item: Item): GarboWorkshed {
-  return worksheds.find(({ workshed }) => workshed === item) ?? defaultWorkshed;
-}
+  static getGarboWorkshed(item: Item): GarboWorkshed {
+    return worksheds.find(({ workshed }) => workshed === item) ?? defaultWorkshed;
+  }
 
-function currentWorkshed(): GarboWorkshed {
-  return getGarboWorkshed(getWorkshed());
-}
+  static currentWorkshed(): GarboWorkshed {
+    _currentWorkshed ??= GarboWorkshed.getGarboWorkshed(getWorkshed());
+    return _currentWorkshed ?? defaultWorkshed;
+  }
 
-let _nextWorkshed: GarboWorkshed | null = null;
-function nextWorkshed(): GarboWorkshed {
-  _nextWorkshed ??= getGarboWorkshed(stringToWorkshedItem());
-  return _nextWorkshed ?? defaultWorkshed;
+  static nextWorkshed(): GarboWorkshed {
+    _nextWorkshed ??= GarboWorkshed.getGarboWorkshed(globalOptions.workshed);
+    return _nextWorkshed ?? defaultWorkshed;
+  }
 }
-
 const defaultWorkshed = new GarboWorkshed($item`none`);
 
 const worksheds = [
@@ -140,26 +140,26 @@ const worksheds = [
 ];
 
 if (
-  currentWorkshed().workshed === $item`model train set` &&
-  nextWorkshed().workshed !== $item`none`
+  GarboWorkshed.currentWorkshed().workshed === $item`model train set` &&
+  GarboWorkshed.nextWorkshed().workshed !== $item`none`
 ) {
   print(
     `Warning: We currently do not support switching from the model train set to another workshed, so ${
-      nextWorkshed().workshed
+      GarboWorkshed.nextWorkshed().workshed
     } will not be set-up during this run of garbo!`,
     "red"
   );
 }
 
-export function handleWorkshed(): void {
-  if (!currentWorkshed().done()) currentWorkshed().action();
+export default function handleWorkshed(): void {
+  if (!GarboWorkshed.currentWorkshed().done()) GarboWorkshed.currentWorkshed().action();
   if (
     !get("_workshedItemUsed") &&
-    currentWorkshed().done() &&
-    nextWorkshed().workshed !== $item`none` &&
-    have(nextWorkshed().workshed)
+    GarboWorkshed.currentWorkshed().done() &&
+    GarboWorkshed.nextWorkshed().workshed !== $item`none` &&
+    have(GarboWorkshed.nextWorkshed().workshed)
   ) {
-    use(nextWorkshed().workshed);
-    if (!currentWorkshed().done()) currentWorkshed().action();
+    use(GarboWorkshed.nextWorkshed().workshed);
+    if (!GarboWorkshed.currentWorkshed().done()) GarboWorkshed.currentWorkshed().action();
   }
 }

@@ -1,5 +1,7 @@
 import { Args } from "grimoire-kolmafia";
-import { get } from "libram";
+import { Item } from "kolmafia";
+import { $item, get } from "libram";
+import { stringToWorkshedItem } from "./workshed/utils";
 
 export const globalOptions = Args.create(
   "garbo",
@@ -36,11 +38,14 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.",
       default: false,
     }),
-    workshed: Args.string({
-      setting: "",
-      help: "workshed that garbo should intelligently switch to after fully exploiting the benefits of your current workshed.",
-      default: "",
-    }),
+    workshed: Args.custom<Item>(
+      {
+        default: $item`none`,
+        help: "Parses the substring of the item name (e.g dna, mayo, asdon) into the corresponding workshed for garbo to intelligently switch into. Additional accepted aliases: cmc, trainset.",
+      },
+      stringToWorkshedItem,
+      ""
+    ),
     version: Args.flag({
       setting: "",
       help: "Print the current version and exit.",

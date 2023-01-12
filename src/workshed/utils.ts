@@ -109,6 +109,48 @@ export const defaultPieces = [
   TrainsetPiece.GAIN_STATS,
 ];
 
+export function getTrainsetConfiguration(): TrainsetPiece[] {
+  return get("trainsetConfiguration").split(",") as TrainsetPiece[];
+}
+
+export function offsetDefaultPieces(offset: number): TrainsetPiece[] {
+  const newPieces: TrainsetPiece[] = [];
+  for (let i = 0; i < 8; i++) {
+    const newPos = (i + offset) % 8;
+    newPieces[newPos] = defaultPieces[i];
+  }
+  return newPieces;
+}
+
+export function stringToWorkshedItem(s: string): Item {
+  // An empty string is a subset of every string and will match all the worksheds
+  // So we explicitly handle this case here
+  if (s === "") return $item`none`;
+
+  const lowerCaseWorkshed = s.toLowerCase();
+  const validWorksheds = [
+    ...{
+      ["cmc"]: $item`cold medicine cabinet`,
+      ["trainset"]: $item`model train set`,
+      ["none"]: $item`none`,
+      ...$items`Asdon Martin keyfob, diabolic pizza cube, portable Mayo Clinic, Little Geneticist DNA-Splicing Lab, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`.map(
+        (item): [string[], Item] => [[], item]
+      ),
+    },
+  ]
+    .filter(([aliases, item]) =>
+      [item.name?.toLowerCase(), ...aliases].some((alias) => alias?.includes(lowerCaseWorkshed))
+    )
+    .map(([, item]) => item);
+
+  if (validWorksheds.length > 1) {
+    throw new Error(`Invalid Workshed: ${globalOptions.workshed} matches multiple worksheds!`);
+  } else if (validWorksheds.length === 0) {
+    throw new Error(`Invalid Workshed: ${globalOptions.workshed} does not match any worksheds!`);
+  }
+  return validWorksheds[0];
+}
+
 export function grabMedicine(): void {
   const options = visitUrl("campground.php?action=workshed");
   let i = 0;
@@ -133,46 +175,4 @@ export function grabMedicine(): void {
     runChoice(bestChoice);
   }
   if (handlingChoice()) visitUrl("main.php");
-}
-
-export function getTrainsetConfiguration(): TrainsetPiece[] {
-  return get("trainsetConfiguration").split(",") as TrainsetPiece[];
-}
-
-export function offsetDefaultPieces(offset: number): TrainsetPiece[] {
-  const newPieces: TrainsetPiece[] = [];
-  for (let i = 0; i < 8; i++) {
-    const newPos = (i + offset) % 8;
-    newPieces[newPos] = defaultPieces[i];
-  }
-  return newPieces;
-}
-
-export function stringToWorkshedItem(): Item {
-  // An empty string is a subset of every string and will match all the worksheds
-  // So we explicitly handle this case here
-  if (globalOptions.workshed === "") return $item`none`;
-
-  const lowerCaseWorkshed = globalOptions.workshed.toLowerCase();
-  const validWorksheds = [
-    ...new Map([
-      [["cmc"], $item`cold medicine cabinet`],
-      [["trainset"], $item`model train set`],
-      [["none"], $item`none`],
-      ...$items`Asdon Martin keyfob, diabolic pizza cube, portable Mayo Clinic, Little Geneticist DNA-Splicing Lab, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`.map(
-        (item): [string[], Item] => [[], item]
-      ),
-    ]).entries(),
-  ]
-    .filter(([aliases, item]) =>
-      [item.name?.toLowerCase(), ...aliases].some((alias) => alias?.includes(lowerCaseWorkshed))
-    )
-    .map(([, item]) => item);
-
-  if (validWorksheds.length > 1) {
-    throw new Error(`Invalid Workshed: ${globalOptions.workshed} matches multiple worksheds!`);
-  } else if (validWorksheds.length === 0) {
-    throw new Error(`Invalid Workshed: ${globalOptions.workshed} does not match any worksheds!`);
-  }
-  return validWorksheds[0];
 }
