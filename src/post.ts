@@ -39,7 +39,7 @@ import {
 } from "./lib";
 import { teleportEffects } from "./mood";
 import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
-import { handleWorkshed } from "./workshed";
+import handleWorkshed from "./workshed";
 
 function fillPantsgivingFullness(): void {
   if (
