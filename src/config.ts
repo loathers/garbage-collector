@@ -5,10 +5,10 @@ import { $item, $items, get } from "libram";
 const workshedShortAliases: [Item, string][] = [
   [$item`cold medicine cabinet`, "cmc"],
   [$item`model train set`, "trainset"],
-  [$item`none`, "none"],
   ...$items`Asdon Martin keyfob, diabolic pizza cube, portable Mayo Clinic, Little Geneticist DNA-Splicing Lab, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`.map(
     (item): [Item, string] => [item, ""]
   ),
+  [$item`none`, "none"],
 ];
 const workshedAliases = workshedShortAliases.map(([item, s]): [Item, string] => [
   item,
