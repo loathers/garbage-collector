@@ -52,6 +52,7 @@ class GarboWorkshed {
   }
 }
 const defaultWorkshed = new GarboWorkshed($item`none`);
+const estimatedTurnsTomorrow = 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600);
 
 const worksheds = [
   new GarboWorkshed(
@@ -93,15 +94,13 @@ const worksheds = [
     () => {
       return (
         haveEffect($effect`Driving Observantly`) >=
-        estimatedTurns() +
-          (globalOptions.ascend ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600))
+        estimatedTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
     () => {
       AsdonMartin.drive(
         $effect`Driving Observantly`,
-        estimatedTurns() +
-          (globalOptions.ascend ? 0 : 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600))
+        estimatedTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     }
   ),
