@@ -139,7 +139,7 @@ const profitRelevantUpgrades = [
   "radardish",
 ] as const;
 
-export function trimToBestUpgradeLocations(fullLocations: Location[]): Location[] {
+export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
   // This function shouldn't be getting called if we don't have an expedition left
   if (expectedRemainingExpeditions() < 1) {
     return fullLocations;

@@ -33,7 +33,7 @@ import {
   withProperty,
 } from "libram";
 import { acquire } from "./acquire";
-import { averageAutumnatonValue, trimToBestUpgradeLocations } from "./autumnaton";
+import { averageAutumnatonValue, mostValuableUpgrade } from "./autumnaton";
 import { garboAdventure, Macro } from "./combat";
 import { computeDiet, consumeDiet } from "./diet";
 import {
@@ -204,8 +204,6 @@ export default function postCombatActions(skipDiet = false): void {
   stillsuit();
   funguySpores();
   if (globalOptions.ascending || AutumnAton.turnsForQuest() < estimatedTurns()) {
-    AutumnAton.sendTo((locations) =>
-      maxBy(trimToBestUpgradeLocations(locations), averageAutumnatonValue)
-    );
+    AutumnAton.sendTo((locations) => maxBy(mostValuableUpgrade(locations), averageAutumnatonValue));
   }
 }
