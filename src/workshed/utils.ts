@@ -129,14 +129,14 @@ export function stringToWorkshedItem(s: string): Item {
 
   const lowerCaseWorkshed = s.toLowerCase();
   const validWorksheds = [
-    ...{
-      ["cmc"]: $item`cold medicine cabinet`,
-      ["trainset"]: $item`model train set`,
-      ["none"]: $item`none`,
+    ...new Map([
+      [["cmc"], $item`cold medicine cabinet`],
+      [["trainset"], $item`model train set`],
+      [["none"], $item`none`],
       ...$items`Asdon Martin keyfob, diabolic pizza cube, portable Mayo Clinic, Little Geneticist DNA-Splicing Lab, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`.map(
         (item): [string[], Item] => [[], item]
       ),
-    },
+    ]).entries(),
   ]
     .filter(([aliases, item]) =>
       [item.name?.toLowerCase(), ...aliases].some((alias) => alias?.includes(lowerCaseWorkshed))
