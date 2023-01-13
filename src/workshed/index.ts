@@ -20,17 +20,17 @@ class GarboWorkshed {
     if (action) this.action = action;
   }
 
-  static getGarboWorkshed(item: Item): GarboWorkshed {
+  static get(item: Item): GarboWorkshed {
     return worksheds.find(({ workshed }) => workshed === item) ?? defaultWorkshed;
   }
 
-  static currentWorkshed(): GarboWorkshed {
-    _currentWorkshed ??= GarboWorkshed.getGarboWorkshed(getWorkshed());
+  static current(): GarboWorkshed {
+    _currentWorkshed ??= GarboWorkshed.get(getWorkshed());
     return _currentWorkshed ?? defaultWorkshed;
   }
 
-  static nextWorkshed(): GarboWorkshed {
-    _nextWorkshed ??= GarboWorkshed.getGarboWorkshed(globalOptions.workshed);
+  static next(): GarboWorkshed {
+    _nextWorkshed ??= GarboWorkshed.get(globalOptions.workshed);
     return _nextWorkshed ?? defaultWorkshed;
   }
 }
@@ -118,26 +118,26 @@ const worksheds = [
 ];
 
 if (
-  GarboWorkshed.currentWorkshed().workshed === $item`model train set` &&
-  GarboWorkshed.nextWorkshed().workshed !== $item`none`
+  GarboWorkshed.current().workshed === $item`model train set` &&
+  GarboWorkshed.next().workshed !== $item`none`
 ) {
   print(
     `Warning: We currently do not support switching from the model train set to another workshed, so ${
-      GarboWorkshed.nextWorkshed().workshed
+      GarboWorkshed.next().workshed
     } will not be set-up during this run of garbo!`,
     "red"
   );
 }
 
 export default function handleWorkshed(): void {
-  if (!GarboWorkshed.currentWorkshed().done()) GarboWorkshed.currentWorkshed().action();
+  if (!GarboWorkshed.current().done()) GarboWorkshed.current().action();
   if (
     !get("_workshedItemUsed") &&
-    GarboWorkshed.currentWorkshed().done() &&
-    GarboWorkshed.nextWorkshed().workshed !== $item`none` &&
-    have(GarboWorkshed.nextWorkshed().workshed)
+    GarboWorkshed.current().done() &&
+    GarboWorkshed.next().workshed !== $item`none` &&
+    have(GarboWorkshed.next().workshed)
   ) {
-    use(GarboWorkshed.nextWorkshed().workshed);
-    if (!GarboWorkshed.currentWorkshed().done()) GarboWorkshed.currentWorkshed().action();
+    use(GarboWorkshed.next().workshed);
+    if (!GarboWorkshed.current().done()) GarboWorkshed.current().action();
   }
 }
