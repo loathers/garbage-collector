@@ -34,6 +34,7 @@ import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
   garbageTouristRatio,
+  GarboItemLists,
   today,
   tryFeast,
   turnsToNC,
@@ -45,12 +46,9 @@ import { estimatedTurns } from "../turns";
 function newarkValue(): number {
   const lastCalculated = get("garbo_newarkValueDate", 0);
   if (!get("garbo_newarkValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
-    const newarkDrops = (
-      JSON.parse(fileToBuffer("garbo_robo_drinks_data.json")) as {
-        Newark: string[];
-        "Feliz Navidad": string[];
-      }
-    )["Newark"];
+    const newarkDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
+      "Newark"
+    ];
     set(
       "garbo_newarkValue",
       (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
@@ -63,12 +61,9 @@ function newarkValue(): number {
 function felizValue(): number {
   const lastCalculated = get("garbo_felizValueDate", 0);
   if (!get("garbo_felizValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
-    const felizDrops = (
-      JSON.parse(fileToBuffer("garbo_robo_drinks_data.json")) as {
-        Newark: string[];
-        "Feliz Navidad": string[];
-      }
-    )["Feliz Navidad"];
+    const felizDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
+      "Feliz Navidad"
+    ];
     set(
       "garbo_felizValue",
       (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0)
