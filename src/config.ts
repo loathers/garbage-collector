@@ -12,10 +12,10 @@ const workshedAliases = [
 ];
 const unaliasedSheds = $items`spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
 
-function stringToWorkshedItem(s: string): Item {
+function stringToWorkshedItem(s: string): Item | null {
   // An empty string is a subset of every string and will match all the worksheds
   // So we explicitly handle this case here
-  if (s === "") return $item`none`;
+  if (s === "") return null;
 
   const lowerCaseWorkshed = s.toLowerCase();
   const item =
@@ -62,16 +62,16 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.",
       default: false,
     }),
-    workshed: Args.custom<Item>(
+    workshed: Args.custom<Item | null>(
       {
-        default: $item`none`,
+        default: null,
         help: "Intelligently switch into the workshed whose item name you give us. Also accepts certain shorthand aliases.",
         options: [
           ...workshedAliases.map(
             ({ item, aliases }) => [item, `${[item.name, ...aliases].join(", ")}`] as [Item, string]
           ),
           ...unaliasedSheds.map((item) => [item, item.name] as [Item, string]),
-          [$item.none, "leave this field blank"],
+          [null, "leave this field blank"],
         ],
       },
       stringToWorkshedItem,
