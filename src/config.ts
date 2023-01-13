@@ -8,7 +8,7 @@ const workshedAliases = [
   { item: $item`Asdon Martin keyfob`, aliases: ["breadcar", "car", "asdon", "aston"] },
   { item: $item`diabolic pizza cube`, aliases: ["cube", "pizza", "pizzacube"] },
   { item: $item`portable Mayo Clinic`, aliases: ["mayo", "clinic"] },
-  { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dna", "lab", "dnalab"] },
+  { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dna", "dnalab"] },
 ];
 const unaliasedSheds = $items`spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
 
