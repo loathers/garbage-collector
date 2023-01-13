@@ -560,4 +560,4 @@ export function maxBy<S extends string | number | symbol, T extends { [x in S]: 
   }
 }
 
-export type GarboItemLists = { Newark: string[]; "Feliz Navidad": string[]; trainSet: string[] };
+export type GarboItemLists = { Newark: string[]; "Feliz Navidad": string[]; trainset: string[] };
