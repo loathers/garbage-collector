@@ -156,7 +156,7 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
   },
   {
     familiar: $familiar`Hobo in Sheep's Clothing`,
-    expected: (i) => 5 * (i ** 2 + 3 * i + 2), // faster with half-height cigar
+    expected: (i) => 10 * i + 10, // faster with half-height cigar
     drop: $item`grubby wool`,
   },
 ];
