@@ -41,13 +41,13 @@ import {
   FamiliarRider,
   pickRider,
 } from "libram/dist/resources/2010/CrownOfThrones";
+import { globalOptions } from "./config";
 import { mallMin } from "./diet";
 import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
   bestJuneCleaverOption,
   BonusEquipMode,
-  globalOptions,
   juneCleaverChoiceValues,
   realmAvailable,
   valueJuneCleaverOption,
@@ -123,7 +123,7 @@ function pantsgiving() {
   if (cachedBonus) return new Map([[$item`Pantsgiving`, cachedBonus]]);
 
   const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
-  const expectedUseableSinusTurns = globalOptions.ascending
+  const expectedUseableSinusTurns = globalOptions.ascend
     ? clamp(
         estimatedTurns() - (turns - count) - haveEffect($effect`Kicked in the Sinuses`),
         0,
@@ -144,7 +144,7 @@ function sweatpants(equipMode: BonusEquipMode) {
   if (!have($item`designer sweatpants`) || equipMode === "embezzler") return new Map();
 
   const needSweat =
-    (!globalOptions.ascending && get("sweat", 0) < 75) ||
+    (!globalOptions.ascend && get("sweat", 0) < 75) ||
     get("sweat", 0) < 25 * (3 - get("_sweatOutSomeBoozeUsed", 0));
 
   if (!needSweat) return new Map();
@@ -169,12 +169,12 @@ const alternativePants = Item.all()
   .map((pants) => numericModifier(pants, "Adventures"));
 const bestAdventuresFromPants = Math.max(0, ...alternativePants);
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
-function cheeses(embezzlerUp: boolean) {
+function cheeses(mode: BonusEquipMode) {
   return haveSomeCheese &&
-    !globalOptions.ascending &&
+    !globalOptions.ascend &&
     get("_stinkyCheeseCount") < 100 &&
     estimatedTurns() >= 100 - get("_stinkyCheeseCount") &&
-    !embezzlerUp
+    mode !== "embezzler"
     ? new Map<Item, number>(
         getFoldGroup($item`stinky cheese diaper`)
           .filter((item) => toSlot(item) !== $slot`weapon`)
@@ -330,7 +330,7 @@ export function magnifyingGlass(): Map<Item, number> {
   }
 
   return new Map<Item, number>([
-    [$item`cursed magnifying glass`, get("garbo_valueOfFreeFight", 2000) / 13],
+    [$item`cursed magnifying glass`, globalOptions.prefs.valueOfFreeFight / 13],
   ]);
 }
 
@@ -339,11 +339,12 @@ export function bonusGear(
   valueCircumstantialBonus = true
 ): Map<Item, number> {
   return new Map<Item, number>([
-    ...cheeses(equipMode === "embezzler"),
+    ...cheeses(equipMode),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
     ...bagOfManyConfections(),
     ...stickers(equipMode),
+    ...powerGlove(),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
@@ -386,12 +387,12 @@ function shavingBonus(): Map<Item, number> {
   }
 
   const timeToMeatBuff = 11 * (DaylightShavings.buffsUntil($effect`Friendly Chops`) ?? Infinity);
-  if (globalOptions.ascending && timeToMeatBuff > estimatedTurns()) {
+  if (globalOptions.ascend && timeToMeatBuff > estimatedTurns()) {
     return new Map();
   }
 
   if (
-    !globalOptions.ascending &&
+    !globalOptions.ascend &&
     DaylightShavings.nextBuff() === $effect`Friendly Chops` &&
     estimatedTurns() < 11 * 11
   ) {
@@ -462,7 +463,7 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
       ) / JuneCleaver.choices.length;
   }
   // If we're ascending then the chances of hitting choices in the queue is reduced
-  if (globalOptions.ascending && estimatedTurns() <= 180 && JuneCleaver.getInterval() === 30) {
+  if (globalOptions.ascend && estimatedTurns() <= 180 && JuneCleaver.getInterval() === 30) {
     const availEV =
       sum([...JuneCleaver.choicesAvailable()], (choice) =>
         valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
@@ -494,5 +495,17 @@ function stickers(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map([
     [$item`scratch 'n' sniff sword`, -1 * cost],
     [$item`scratch 'n' sniff crossbow`, -1 * cost],
+  ]);
+}
+
+function powerGlove(): Map<Item, number> {
+  if (!have($item`Powerful Glove`)) return new Map();
+  // 23% proc rate, according to the wiki
+  // https://kol.coldfront.net/thekolwiki/index.php/Powerful_Glove
+  return new Map([
+    [
+      $item`Powerful Glove`,
+      0.25 * garboAverageValue(...$items`blue pixel, green pixel, red pixel, white pixel`),
+    ],
   ]);
 }

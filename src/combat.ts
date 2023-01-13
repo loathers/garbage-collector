@@ -31,6 +31,7 @@ import {
   retrieveItem,
   runCombat,
   setAutoAttack,
+  setCcs,
   Skill,
   visitUrl,
   writeCcs,
@@ -55,7 +56,6 @@ import {
   StrictMacro,
 } from "libram";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
-import { propertyManager } from "./lib";
 import { digitizedMonstersRemaining } from "./turns";
 
 let monsterManuelCached: boolean | undefined = undefined;
@@ -279,8 +279,8 @@ export class Macro extends StrictMacro {
       shouldRedigitize(),
       Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`))
     )
-      .familiarActions()
       .tryHaveSkill($skill`Sing Along`)
+      .familiarActions()
       .externalIf(
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
@@ -634,7 +634,7 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
 
 function makeCcs<M extends StrictMacro>(macro: M) {
   writeCcs(`[default]\n"${customizeMacro(macro).toString()}"`, "garbo");
-  propertyManager.set({ customCombatScript: "garbo" });
+  setCcs("garbo");
 }
 
 function runCombatBy<T>(initiateCombatAction: () => T) {

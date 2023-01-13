@@ -35,10 +35,10 @@ import {
 import { acquire } from "./acquire";
 import { averageAutumnatonValue, mostValuableUpgrade } from "./autumnaton";
 import { garboAdventure, Macro } from "./combat";
+import { globalOptions } from "./config";
 import { computeDiet, consumeDiet } from "./diet";
 import {
   bestJuneCleaverOption,
-  globalOptions,
   juneCleaverChoiceValues,
   maxBy,
   safeInterrupt,
@@ -64,7 +64,7 @@ function coldMedicineCabinet(): void {
   let match;
   const regexp = /descitem\((\d+)\)/g;
   const itemChoices = new Map<Item, number>();
-  if (!globalOptions.noBarf) {
+  if (!globalOptions.nobarf) {
     // if spending turns at barf, we probably will be able to get an extro so always consider it
     itemChoices.set($item`Extrovermectin™`, -1);
   }
@@ -87,14 +87,14 @@ function coldMedicineCabinet(): void {
 function fillPantsgivingFullness(): void {
   if (
     getRemainingStomach() > 0 &&
-    (!globalOptions.yachtzeeChain || get("_garboYachtzeeChainCompleted", false))
+    (!globalOptions.prefs.yachtzeechain || get("_garboYachtzeeChainCompleted", false))
   ) {
     consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING");
   }
 }
 
 function fillSweatyLiver(): void {
-  if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
+  if (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted", false)) return;
 
   const castsWanted = 3 - get("_sweatOutSomeBoozeUsed");
   if (castsWanted <= 0 || !have($item`designer sweatpants`)) return;
@@ -170,7 +170,7 @@ function funguySpores() {
   if (
     myLevel() >= 15 && // It applies -100 to all stats, and Level 15 seems to be a reasonable place where you will survive -100 to all stats
     !have($effect`Mush-Mouth`) &&
-    (!globalOptions.ascending || myAdventures() > 11) &&
+    (!globalOptions.ascend || myAdventures() > 11) &&
     get("dinseyRollercoasterNext") && // If it were to expire on a rails adventure, you'd waste the cost of the spore. Using it when next turn is rails is easiest way to make sure it won't
     funguyWorthIt
   ) {
@@ -193,7 +193,7 @@ function funguySpores() {
 export default function postCombatActions(skipDiet = false): void {
   juneCleave();
   numberology();
-  if (!skipDiet && !globalOptions.noDiet) {
+  if (!skipDiet && !globalOptions.nodiet) {
     fillPantsgivingFullness();
     fillSweatyLiver();
   }

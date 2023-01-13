@@ -83,34 +83,6 @@ export const embezzlerLog: {
   sources: [],
 };
 
-export const globalOptions: {
-  ascending: boolean;
-  stopTurncount: number | null;
-  saveTurns: number;
-  noBarf: boolean;
-  askedAboutWish: boolean;
-  triedToUnlockHiddenTavern: boolean;
-  wishAnswer: boolean;
-  simulateDiet: boolean;
-  noDiet: boolean;
-  clarasBellClaimed: boolean;
-  yachtzeeChain: boolean;
-  quickMode: boolean;
-} = {
-  stopTurncount: null,
-  ascending: false,
-  saveTurns: 0,
-  noBarf: false,
-  askedAboutWish: false,
-  triedToUnlockHiddenTavern: false,
-  wishAnswer: false,
-  simulateDiet: false,
-  noDiet: false,
-  clarasBellClaimed: get("_claraBellUsed"),
-  yachtzeeChain: false,
-  quickMode: false,
-};
-
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
 
 export const WISH_VALUE = 50000;

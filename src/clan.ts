@@ -18,6 +18,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $items, $monster, Clan, get, getFoldGroup, have, set } from "libram";
 import { Macro } from "./combat";
+import { globalOptions } from "./config";
 import { HIGHLIGHT, userConfirmDialog } from "./lib";
 
 export const stashItems = get("garboStashItems", "")
@@ -36,7 +37,7 @@ export function withStash<T>(itemsToTake: Item[], action: () => T): T {
 }
 
 export function withVIPClan<T>(action: () => T): T {
-  const clanIdOrNameString = get("garbo_vipClan");
+  const clanIdOrNameString = globalOptions.prefs.vipClan;
   let clanIdOrName = clanIdOrNameString.match(/^\d+$/)
     ? parseInt(clanIdOrNameString)
     : clanIdOrNameString;
@@ -49,6 +50,7 @@ export function withVIPClan<T>(action: () => T): T {
       )
     ) {
       clanIdOrName = getClanId();
+      globalOptions.prefs.vipClan = `${clanIdOrName}`;
       set("garbo_vipClan", clanIdOrName);
     }
   }
@@ -71,9 +73,9 @@ export class StashManager {
   taken = new Map<Item, number>();
 
   constructor() {
-    const clanIdOrName = get("garbo_stashClan", "none");
+    const clanIdOrName = globalOptions.prefs.stashClan;
     this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
-    this.enabled = 0 !== this.clanIdOrName && "none" !== this.clanIdOrName;
+    this.enabled = ![0, "", "none"].some((id) => id === this.clanIdOrName);
   }
 
   take(...items: Item[]): void {
