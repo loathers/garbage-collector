@@ -40,6 +40,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "Print the current version and exit.",
     }),
+    richbitch: Args.flag({
+      setting: "",
+      help: "*DANGEROUS* garbo will consider using porcelain candy dishes. This could result in potentially destructive behavior in the instance that the user does not have sufficient meat (1-2 million) to purchase as many dishes as garbo desires or there is a price cliff.",
+      default: false,
+      hidden: true,
+    }),
     prefs: Args.group(
       "You can manually set the properties below, but it's recommended that you use the relay interface (dropdown menu at the top left in the browser)",
       {
