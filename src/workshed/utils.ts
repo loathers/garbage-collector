@@ -64,7 +64,7 @@ export function getBestCycle(): TrainSet.Cycle {
     ] as TrainSet.Cycle;
     trainCycle = cycle;
   }
-  return trainCycle;
+  return [...trainCycle];
 }
 
 export function offsetDefaultPieces(offset: number): TrainSet.Cycle {

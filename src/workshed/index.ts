@@ -53,7 +53,7 @@ const worksheds = [
         const bestTwoStations = getBestCycle().splice(0, 2);
         const offset = get("trainsetPosition") % 8;
         if (bestTwoStations.includes(TrainSet.next())) return;
-        print(`Reconfiguring trainset, as our next station is ${TrainSet.next()}}`, "blue");
+        print(`Reconfiguring trainset, as our next station is ${TrainSet.next()}`, "blue");
         return TrainSet.setConfiguration(offsetDefaultPieces(offset));
       }
     }
