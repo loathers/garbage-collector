@@ -203,7 +203,7 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
-  if (globalOptions.ascending || AutumnAton.turnsForQuest() < estimatedTurns()) {
+  if (globalOptions.ascend || AutumnAton.turnsForQuest() < estimatedTurns()) {
     AutumnAton.sendTo((locations) => maxBy(mostValuableUpgrade(locations), averageAutumnatonValue));
   }
 }
