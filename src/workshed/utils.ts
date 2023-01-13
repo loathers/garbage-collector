@@ -23,7 +23,7 @@ function candyFactoryValue(): number {
     set("garbo_candyFactoryValue", averageDropValue);
     set("garbo_candyFactoryValueDate", today);
   }
-  return get("garbo_candyFactoryValue", 0) * 2;
+  return get("garbo_candyFactoryValue", 0);
 }
 
 const POTENTIAL_BEST_TRAIN_PIECES = [
