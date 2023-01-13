@@ -70,14 +70,17 @@ const worksheds = [
     },
     action: () => {
       if (!TrainSet.canConfigure()) return;
-      if (get("trainsetConfiguration") === "") {
+      if (!get("trainsetConfiguration")) {
+        // Visit the workshed to make sure it's actually empty, instead of us having not yet seen it this run
+        visitUrl("campground.php?action=workshed");
+        visitUrl("main.php");
+      }
+      if (!get("trainsetConfiguration")) {
         print("Reconfiguring trainset, as our next station is empty", "blue");
         return TrainSet.setConfiguration(getBestCycle());
       } else {
         const bestTwoStations = getBestCycle().splice(0, 2);
         const offset = get("trainsetPosition") % 8;
-        print(`Next station: ${TrainSet.next()}`);
-        print(`Best two stations: ${bestTwoStations}`);
         if (bestTwoStations.includes(TrainSet.next())) return;
         print(`Reconfiguring trainset, as our next station is ${TrainSet.next()}`, "blue");
         return TrainSet.setConfiguration(offsetDefaultPieces(offset));
