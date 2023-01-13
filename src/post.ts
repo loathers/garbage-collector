@@ -1,19 +1,12 @@
 import {
   cliExecute,
-  descToItem,
   equip,
-  getWorkshed,
-  handlingChoice,
-  Item,
   itemAmount,
   myAdventures,
   myLevel,
   reverseNumberology,
-  runChoice,
-  totalTurnsPlayed,
   use,
   useSkill,
-  visitUrl,
 } from "kolmafia";
 import {
   $effect,
@@ -28,7 +21,6 @@ import {
   getRemainingStomach,
   have,
   JuneCleaver,
-  property,
   uneffect,
   withProperty,
 } from "libram";
@@ -40,7 +32,6 @@ import { computeDiet, consumeDiet } from "./diet";
 import {
   bestJuneCleaverOption,
   juneCleaverChoiceValues,
-  maxBy,
   safeInterrupt,
   safeRestore,
   setChoice,
@@ -49,6 +40,7 @@ import {
 import { teleportEffects } from "./mood";
 import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
 import { estimatedTurns } from "./turns";
+import handleWorkshed from "./workshed";
 
 function coldMedicineCabinet(): void {
   if (getWorkshed() !== $item`cold medicine cabinet`) return;
@@ -197,7 +189,7 @@ export default function postCombatActions(skipDiet = false): void {
     fillPantsgivingFullness();
     fillSweatyLiver();
   }
-  coldMedicineCabinet();
+  handleWorkshed();
   safeInterrupt();
   safeRestore();
   updateMallPrices();

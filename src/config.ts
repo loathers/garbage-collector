@@ -1,5 +1,31 @@
 import { Args } from "grimoire-kolmafia";
-import { get } from "libram";
+import { Item } from "kolmafia";
+import { $item, $items, get } from "libram";
+
+const workshedAliases = [
+  { item: $item`cold medicine cabinet`, aliases: ["cmc"] },
+  { item: $item`model train set`, aliases: ["trainset", "trainrealm", "train"] },
+  { item: $item`Asdon Martin keyfob`, aliases: ["breadcar", "car", "asdon", "aston"] },
+  { item: $item`diabolic pizza cube`, aliases: ["cube", "pizza", "pizzacube"] },
+  { item: $item`portable Mayo Clinic`, aliases: ["mayo", "clinic"] },
+  { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dna", "dnalab"] },
+];
+const unaliasedSheds = $items`spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
+
+function stringToWorkshedItem(s: string): Item | null {
+  // An empty string is a subset of every string and will match all the worksheds
+  // So we explicitly handle this case here
+  if (s === "") return null;
+
+  const lowerCaseWorkshed = s.toLowerCase();
+  const item =
+    workshedAliases.find(
+      ({ item, aliases }) =>
+        item.name.toLowerCase() === lowerCaseWorkshed || aliases.includes(lowerCaseWorkshed)
+    )?.item ?? unaliasedSheds.find((i) => i.name.toLowerCase() === lowerCaseWorkshed);
+  if (!item) throw new Error(`Unable to identify workshed ${s}.`);
+  return item;
+}
 
 export const globalOptions = Args.create(
   "garbo",
@@ -36,6 +62,21 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.",
       default: false,
     }),
+    workshed: Args.custom<Item | null>(
+      {
+        default: null,
+        help: "Intelligently switch into the workshed whose item name you give us. Also accepts certain shorthand aliases.",
+        options: [
+          ...workshedAliases.map(
+            ({ item, aliases }) => [item, `${[item.name, ...aliases].join(", ")}`] as [Item, string]
+          ),
+          ...unaliasedSheds.map((item) => [item, item.name] as [Item, string]),
+          [null, "leave this field blank"],
+        ],
+      },
+      stringToWorkshedItem,
+      "Item"
+    ),
     version: Args.flag({
       setting: "",
       help: "Print the current version and exit.",
@@ -54,7 +95,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
         }),
         yachtzeechain: Args.flag({
           setting: "garbo_yachtzeechain",
-          help: "only diets after free fights, and attempts to estimate if Yachtzee! chaining is profitable for you - if so, it consumes a specific diet which uses ~30-41 spleen;\
+          help: "only diets after free fights, and attempts to estimate if Yachtzee! chaining is profitable for you - if so, it consumes a specific diet which uses ~0-36 spleen;\
       if not it automatically continues with the regular diet. Requires Spring Break Beach access (it will not grab a one-day pass for you, but will make an attempt if one is used).\
       Sweet Synthesis is strongly recommended, as with access to other meat% buffs from Source Terminal, Fortune Teller, KGB and the summoning chamber. Having access to a PYEC (on hand or in the clan stash) is a plus.",
           default: false,
