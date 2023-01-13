@@ -4,6 +4,7 @@ import {
   $familiar,
   $item,
   $items,
+  clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
@@ -72,19 +73,19 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Rockin' Robin`,
-    value: () => garboValue($item`robin's egg`) / (30 - get("rockinRobinProgress")),
+    value: () => garboValue($item`robin's egg`) / clamp(30 - get("rockinRobinProgress"), 1, 30),
   },
   {
     familiar: $familiar`Optimistic Candle`,
-    value: () => garboValue($item`glob of melted wax`) / (30 - get("optimisticCandleProgress")),
+    value: () =>
+      garboValue($item`glob of melted wax`) / clamp(30 - get("optimisticCandleProgress"), 1, 30),
   },
   {
     familiar: $familiar`Garbage Fire`,
     value: () =>
       garboAverageValue(
         ...$items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`
-      ) /
-      (30 - get("garbageFireProgress")),
+      ) / clamp(30 - get("garbageFireProgress"), 1, 30),
   },
   {
     familiar: $familiar`Cookbookbat`,
