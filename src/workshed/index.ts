@@ -1,27 +1,10 @@
-import {
-  getWorkshed,
-  haveEffect,
-  Item,
-  print,
-  toInt,
-  totalTurnsPlayed,
-  use,
-  visitUrl,
-} from "kolmafia";
-import { $effect, $item, $items, AsdonMartin, clamp, DNALab, get, have } from "libram";
+import { getWorkshed, haveEffect, Item, print, totalTurnsPlayed, use, visitUrl } from "kolmafia";
+import { $effect, $item, $items, AsdonMartin, clamp, DNALab, get, have, TrainSet } from "libram";
 import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
-import {
-  defaultPieces,
-  getTrainsetConfiguration,
-  grabMedicine,
-  isTrainsetConfigurable,
-  offsetDefaultPieces,
-  setTrainsetConfiguration,
-  TrainsetPiece,
-} from "./utils";
+import { getBestCycle, grabMedicine, offsetDefaultPieces } from "./utils";
 
 let _nextWorkshed: GarboWorkshed | null = null;
 let _currentWorkshed: GarboWorkshed | null = null;
@@ -62,20 +45,16 @@ const worksheds = [
       return false;
     },
     () => {
-      if (!isTrainsetConfigurable()) return;
+      if (!TrainSet.canConfigure()) return;
       if (get("trainsetConfiguration") === "") {
         print("Reconfiguring trainset, as our next station is empty", "blue");
-        return setTrainsetConfiguration(defaultPieces);
+        return TrainSet.setConfiguration(getBestCycle());
       } else {
-        const pieces = getTrainsetConfiguration();
-        const offset = toInt(get("trainsetPosition")) % 8;
-        const nextPiece = pieces[offset];
-
-        if ([TrainsetPiece.DOUBLE_NEXT_STATION, TrainsetPiece.GAIN_MEAT].includes(nextPiece)) {
-          return;
-        }
-        print(`Reconfiguring trainset, as our next station is ${String(nextPiece)}`, "blue");
-        return setTrainsetConfiguration(offsetDefaultPieces(offset));
+        const bestTwoStations = getBestCycle().splice(0, 2);
+        const offset = get("trainsetPosition") % 8;
+        if (bestTwoStations.includes(TrainSet.next())) return;
+        print(`Reconfiguring trainset, as our next station is ${TrainSet.next()}}`, "blue");
+        return TrainSet.setConfiguration(offsetDefaultPieces(offset));
       }
     }
   ),

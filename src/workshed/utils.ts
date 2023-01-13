@@ -1,125 +1,80 @@
 import {
   descToItem,
-  getWorkshed,
+  fileToBuffer,
   handlingChoice,
   Item,
   runChoice,
-  toInt,
+  toItem,
   visitUrl,
 } from "kolmafia";
-import { $item, get } from "libram";
+import { $item, $items, get, set, sum, TrainSet } from "libram";
 import { globalOptions } from "../config";
-import { maxBy } from "../lib";
-import { garboValue } from "../session";
+import { GarboItemLists, maxBy, today } from "../lib";
+import { garboAverageValue, garboValue } from "../session";
 
-export enum TrainsetPiece {
-  UNKNOWN = "",
-  EMPTY = "empty",
-  GAIN_MEAT = "meat_mine",
-  EFFECT_MP = "tower_fizzy",
-  GAIN_STATS = "viewing_platform",
-  HOT_RES_COLD_DMG = "tower_frozen",
-  STENCH_RES_SPOOKY_DMG = "spooky_graveyard",
-  SMUT_BRIDGE_OR_STATS = "logging_mill",
-  CANDY = "candy_factory",
-  DOUBLE_NEXT_STATION = "coal_hopper",
-  COLD_RES_STENCH_DMG = "tower_sewage",
-  SPOOKY_RES_SLEAZE_DMG = "oil_refinery",
-  SLEAZE_RES_HOT_DMG = "oil_bridge",
-  MORE_ML = "water_bridge",
-  MOXIE_STATS = "groin_silo",
-  RANDOM_BOOZE = "grain_silo",
-  MYS_STATS = "brain_silo",
-  MUS_STATS = "brawn_silo",
-  BUFF_FOOD_DROP = "prawn_silo",
-  DROP_LAST_FOOD_OR_RANDOM = "trackside_diner",
-  ORE = "ore_hopper",
-}
-
-const pieces: TrainsetPiece[] = [
-  TrainsetPiece.EMPTY,
-  TrainsetPiece.GAIN_MEAT,
-  TrainsetPiece.EFFECT_MP,
-  TrainsetPiece.GAIN_STATS,
-  TrainsetPiece.HOT_RES_COLD_DMG,
-  TrainsetPiece.STENCH_RES_SPOOKY_DMG,
-  TrainsetPiece.SMUT_BRIDGE_OR_STATS,
-  TrainsetPiece.CANDY,
-  TrainsetPiece.DOUBLE_NEXT_STATION,
-  TrainsetPiece.COLD_RES_STENCH_DMG,
-  TrainsetPiece.UNKNOWN,
-  TrainsetPiece.SPOOKY_RES_SLEAZE_DMG,
-  TrainsetPiece.SLEAZE_RES_HOT_DMG,
-  TrainsetPiece.MORE_ML,
-  TrainsetPiece.MOXIE_STATS,
-  TrainsetPiece.RANDOM_BOOZE,
-  TrainsetPiece.MYS_STATS,
-  TrainsetPiece.MUS_STATS,
-  TrainsetPiece.BUFF_FOOD_DROP,
-  TrainsetPiece.DROP_LAST_FOOD_OR_RANDOM,
-  TrainsetPiece.ORE,
-];
-
-function getPieceId(piece: TrainsetPiece): number {
-  return Math.max(0, pieces.indexOf(piece));
-}
-
-function getTrainsetPositionsUntilConfigurable(): number {
-  const pos = toInt(get("trainsetPosition", ""));
-  const configured = toInt(get("lastTrainsetConfiguration", ""));
-  const turnsSinceConfigured = pos - configured;
-
-  return Math.max(0, 40 - turnsSinceConfigured);
-}
-
-export function isTrainsetConfigurable(): boolean {
-  return getWorkshed() === $item`model train set` && getTrainsetPositionsUntilConfigurable() <= 0;
-}
-
-export function setTrainsetConfiguration(pieces: TrainsetPiece[]): void {
-  visitUrl("campground.php?action=workshed");
-
-  const pieceIds = pieces.map((piece, index) => `slot[${index}]=${getPieceId(piece)}`);
-
-  const url = `choice.php?forceoption=0&whichchoice=1485&option=1&pwd&${pieceIds.join("&")}`;
-
-  visitUrl(url, true);
-  visitUrl("main.php");
-
-  const expected = pieces.join(",");
-
-  if (expected !== get("trainsetConfiguration", "")) {
-    throw new Error(
-      `Expected trainset configuration to have changed, expected "${expected}" but instead got ${get(
-        "trainsetConfiguration",
-        ""
-      )}`
-    );
+function candyFactoryValue(): number {
+  const lastCalculated = get("garbo_candyFactoryValueDate", 0);
+  if (!get("garbo_candyFactoryValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+    const candyFactoryDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
+      "trainSet"
+    ];
+    const averageDropValue =
+      sum(candyFactoryDrops, (name) => garboValue(toItem(name), true)) / candyFactoryDrops.length;
+    set("garbo_candyFactoryValue", averageDropValue);
+    set("garbo_candyFactoryValueDate", today);
   }
+  return get("garbo_candyFactoryValue", 0) * 2;
 }
 
-export const defaultPieces = [
-  TrainsetPiece.DOUBLE_NEXT_STATION,
-  TrainsetPiece.GAIN_MEAT,
-  TrainsetPiece.CANDY,
-  TrainsetPiece.RANDOM_BOOZE,
-  TrainsetPiece.DROP_LAST_FOOD_OR_RANDOM,
-  TrainsetPiece.ORE,
-  TrainsetPiece.EFFECT_MP,
-  TrainsetPiece.GAIN_STATS,
+const POTENTIAL_BEST_TRAIN_PIECES = [
+  { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
+  {
+    // Some day this'll be better
+    piece: TrainSet.Station.TRACKSIDE_DINER,
+    value: () => garboAverageValue(...$items`bowl of cottage cheese, hot buttered roll, toast`),
+  },
+  { piece: TrainSet.Station.CANDY_FACTORY, value: candyFactoryValue },
+  {
+    piece: TrainSet.Station.GRAIN_SILO,
+    value: () =>
+      2 *
+      garboAverageValue(
+        ...$items`bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine`
+      ),
+  },
+  {
+    piece: TrainSet.Station.ORE_HOPPER,
+    value: () =>
+      garboAverageValue(
+        ...$items`linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore`
+      ),
+  },
 ];
 
-export function getTrainsetConfiguration(): TrainsetPiece[] {
-  return get("trainsetConfiguration").split(",") as TrainsetPiece[];
+let trainCycle: TrainSet.Cycle;
+export function getBestCycle(): TrainSet.Cycle {
+  if (!trainCycle) {
+    const cycle = [
+      TrainSet.Station.COAL_HOPPER,
+      ...POTENTIAL_BEST_TRAIN_PIECES.sort(({ value: a }, { value: b }) => b() - a()).map(
+        ({ piece }) => piece
+      ),
+      TrainSet.Station.TOWER_FIZZY,
+      TrainSet.Station.VIEWING_PLATFORM,
+    ] as TrainSet.Cycle;
+    trainCycle = cycle;
+  }
+  return trainCycle;
 }
 
-export function offsetDefaultPieces(offset: number): TrainsetPiece[] {
-  const newPieces: TrainsetPiece[] = [];
+export function offsetDefaultPieces(offset: number): TrainSet.Cycle {
+  const newPieces: TrainSet.Station[] = [];
+  const defaultPieces = getBestCycle();
   for (let i = 0; i < 8; i++) {
     const newPos = (i + offset) % 8;
     newPieces[newPos] = defaultPieces[i];
   }
-  return newPieces;
+  return newPieces as TrainSet.Cycle;
 }
 
 export function grabMedicine(): void {
