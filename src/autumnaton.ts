@@ -5,49 +5,11 @@ import {
   appearanceRates,
   availableAmount,
   getLocationMonsters,
-  Item,
   itemDropsArray,
   Location,
   toMonster,
 } from "kolmafia";
-import { $item, $items, AutumnAton, get, sum } from "libram";
-
-function getAutumnatonUniques(location: Location): [AutumnAton.Upgrade, Item] {
-  switch (location.environment) {
-    case "outdoor":
-      switch (location.difficultyLevel) {
-        case "low":
-          return [AutumnAton.possibleUpgrades[4], $item`autumn leaf`];
-        case "mid":
-          return [AutumnAton.possibleUpgrades[2], $item`autumn debris shield`];
-        case "high":
-          return [AutumnAton.possibleUpgrades[6], $item`autumn leaf pendant`];
-      }
-      break;
-    case "indoor":
-      switch (location.difficultyLevel) {
-        case "low":
-          return [AutumnAton.possibleUpgrades[0], $item`AutumnFest ale`];
-        case "mid":
-          return [AutumnAton.possibleUpgrades[3], $item`autumn-spice donut`];
-        case "high":
-          return [AutumnAton.possibleUpgrades[7], $item`autumn breeze`];
-      }
-      break;
-    case "underground":
-      switch (location.difficultyLevel) {
-        case "low":
-          return [AutumnAton.possibleUpgrades[1], $item`autumn sweater-weather sweater`];
-        case "mid":
-          return [AutumnAton.possibleUpgrades[5], $item`autumn dollar`];
-        case "high":
-          return [AutumnAton.possibleUpgrades[8], $item`autumn years wisdom`];
-      }
-      break;
-  }
-  // Just return a default value if location info is incorrect, libram types don't accept undefined
-  return [AutumnAton.possibleUpgrades[0], $item`AutumnFest ale`];
-}
+import { $items, AutumnAton, get, sum } from "libram";
 
 export function averageAutumnatonValue(
   location: Location,
@@ -98,17 +60,22 @@ function seasonalItemValue(location: Location, seasonalOverride?: number): numbe
   const autumnItems = $items`autumn leaf, AutumnFest ale, autumn breeze, autumn dollar, autumn years wisdom`;
   const avgValueOfRandomAutumnItem = garboAverageValue(...autumnItems);
   const autumnMeltables = $items`autumn debris shield, autumn leaf pendant, autumn sweater-weather sweater`;
-  const autumnItem = getAutumnatonUniques(location)[1];
+  const autumnItem = AutumnAton.getUniques(location)?.item;
   const seasonalItemDrops = seasonalOverride ?? AutumnAton.seasonalItems();
-  return (
-    (seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0) +
-    (autumnMeltables.includes(autumnItem)
-      ? // If we already have the meltable, then we get a random item, else value at 0
-        availableAmount(autumnItem) > 0
-        ? avgValueOfRandomAutumnItem
-        : 0
-      : garboValue(autumnItem, true))
-  );
+  if (autumnItem) {
+    return (
+      (seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0) +
+      (autumnMeltables.includes(autumnItem)
+        ? // If we already have the meltable, then we get a random item, else value at 0
+          availableAmount(autumnItem) > 0
+          ? avgValueOfRandomAutumnItem
+          : 0
+        : garboValue(autumnItem, true))
+    );
+  } else {
+    // If we're in a location without any uniques, we still get cowcatcher items
+    return seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0;
+  }
 }
 
 function expectedRemainingExpeditions(legOverride?: number): number {
@@ -144,8 +111,6 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
   if (expectedRemainingExpeditions() < 1) {
     return fullLocations;
   }
-  // Libram doesn't have amount of leg upgrades specifically like the other types do
-  const legUpgrades = AutumnAton.currentUpgrades().filter((u) => u.includes("leg")).length;
   const currentUpgrades = AutumnAton.currentUpgrades();
   const acquirableUpgrades = profitRelevantUpgrades.filter(
     (upgrade) => !currentUpgrades.includes(upgrade)
@@ -161,7 +126,7 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
 
   const upgradeValuations = acquirableUpgrades.map((upgrade) => {
     const upgradeLocations = fullLocations.filter(
-      (location) => getAutumnatonUniques(location)[0] === upgrade
+      (location) => AutumnAton.getUniques(location)?.upgrade === upgrade
     );
     const bestLocContainingUpg = maxBy(upgradeLocations, (loc: Location) =>
       averageAutumnatonValue(loc)
@@ -183,7 +148,7 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
       const extraExpectedProfit =
         averageAutumnatonValue(bestLocContainingUpg) +
         averageAutumnatonValue(bestLocWithInstalledUpg) *
-          Math.max(0, expectedRemainingExpeditions(legUpgrades + 1) - 1);
+          Math.max(0, expectedRemainingExpeditions(AutumnAton.legs() + 1) - 1);
 
       return { upgrade, profit: extraExpectedProfit };
     }
@@ -215,7 +180,7 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
 
   if (profitFromBestUpg > currentExpectedProfit) {
     const upgradeLocations = fullLocations.filter(
-      (location) => getAutumnatonUniques(location)[0] === mostValuableUpgrade.upgrade
+      (location) => AutumnAton.getUniques(location)?.upgrade === mostValuableUpgrade.upgrade
     );
     return upgradeLocations;
   } else {
