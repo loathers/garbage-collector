@@ -40,6 +40,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "Print the current version and exit.",
     }),
+    loginvalidwishes: Args.flag({
+      setting: "",
+      help: "Logs any invalid wishes at the end of the day.",
+      hidden: true,
+    }),
     prefs: Args.group(
       "You can manually set the properties below, but it's recommended that you use the relay interface (dropdown menu at the top left in the browser)",
       {
