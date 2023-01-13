@@ -147,7 +147,8 @@ if (GarboWorkshed.current?.workshed === $item`model train set` && GarboWorkshed.
 }
 
 export default function handleWorkshed(): void {
-  if (!GarboWorkshed.current?.canRemove()) GarboWorkshed.current?.use();
+  GarboWorkshed.current?.use();
+
   if (
     !get("_workshedItemUsed") &&
     (GarboWorkshed.current?.canRemove() ?? true) &&
