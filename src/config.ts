@@ -40,12 +40,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "Print the current version and exit.",
     }),
-    candydish: Args.flag({
-      setting: "",
-      help: "*DANGEROUS* garbo will consider using porcelain candy dishes. This could result in potentially destructive behavior in the instance that the user does not have sufficient meat (1-2 million) to purchase as many dishes as garbo desires or there is a price cliff.",
-      default: false,
-      hidden: true,
-    }),
     prefs: Args.group(
       "You can manually set the properties below, but it's recommended that you use the relay interface (dropdown menu at the top left in the browser)",
       {
@@ -64,6 +58,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       if not it automatically continues with the regular diet. Requires Spring Break Beach access (it will not grab a one-day pass for you, but will make an attempt if one is used).\
       Sweet Synthesis is strongly recommended, as with access to other meat% buffs from Source Terminal, Fortune Teller, KGB and the summoning chamber. Having access to a PYEC (on hand or in the clan stash) is a plus.",
           default: false,
+        }),
+        candydish: Args.flag({
+          setting: "garbo_candydish",
+          help: "*DANGEROUS* garbo will consider using porcelain candy dishes. This could result in potentially destructive behavior in the instance that the user does not have sufficient meat (1-2 million) to purchase as many dishes as garbo desires or there is a price cliff.",
+          default: false,
+          hidden: true,
         }),
         stashClan: Args.string({
           setting: "garbo_stashClan",
