@@ -1,16 +1,29 @@
 import { Args } from "grimoire-kolmafia";
-import { Item } from "kolmafia";
+import { Item, print } from "kolmafia";
 import { $item, $items, get } from "libram";
 
 const workshedAliases = [
-  { item: $item`cold medicine cabinet`, aliases: ["cmc"] },
-  { item: $item`model train set`, aliases: ["trainset", "trainrealm", "train"] },
-  { item: $item`Asdon Martin keyfob`, aliases: ["breadcar", "car", "asdon", "aston"] },
-  { item: $item`diabolic pizza cube`, aliases: ["cube", "pizza", "pizzacube"] },
-  { item: $item`portable Mayo Clinic`, aliases: ["mayo", "clinic"] },
-  { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dna", "dnalab"] },
+  { item: $item`model train set`, aliases: ["trainrealm"] },
+  { item: $item`Asdon Martin keyfob`, aliases: ["breadcar", "car", "aston"] },
+  { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dnalab"] },
 ];
-const unaliasedSheds = $items`spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
+const unaliasedSheds = $items`cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
+const allWorkshedAliases = [
+  ...workshedAliases.map(({ item, aliases }) => {
+    return { item: item, aliases: [...aliases, item.name.toLowerCase()] };
+  }),
+  ...unaliasedSheds.map((item) => {
+    return { item: item, aliases: [item.name.toLowerCase()] };
+  }),
+];
+
+function toInitials(s: string): string {
+  const initials = s
+    .split(" ")
+    .map((term) => term[0])
+    .join("");
+  return initials.length >= 3 ? initials : "";
+}
 
 function stringToWorkshedItem(s: string): Item | null {
   // An empty string is a subset of every string and will match all the worksheds
@@ -18,13 +31,27 @@ function stringToWorkshedItem(s: string): Item | null {
   if (s === "") return null;
 
   const lowerCaseWorkshed = s.toLowerCase();
-  const item =
-    workshedAliases.find(
-      ({ item, aliases }) =>
-        item.name.toLowerCase() === lowerCaseWorkshed || aliases.includes(lowerCaseWorkshed)
-    )?.item ?? unaliasedSheds.find((i) => i.name.toLowerCase() === lowerCaseWorkshed);
-  if (!item) throw new Error(`Unable to identify workshed ${s}.`);
-  return item;
+  const strippedWorkshed = lowerCaseWorkshed.replace(" ", "").replace("-", "");
+  const validWorksheds = allWorkshedAliases.filter(
+    ({ item, aliases }) =>
+      toInitials(item.name.toLowerCase()) === lowerCaseWorkshed ||
+      aliases.some(
+        (alias) =>
+          alias.includes(lowerCaseWorkshed) ||
+          alias.replace(" ", "").replace("-", "").includes(strippedWorkshed)
+      )
+  );
+
+  if (validWorksheds.length > 1) {
+    print(`Invalid Workshed: ${s} matches multiple worksheds! Matched:`);
+    validWorksheds.forEach(({ item }) => print(`${item}`));
+    throw new Error();
+  } else if (validWorksheds.length === 0) {
+    print(`Invalid Workshed: ${s} does not match any worksheds!`);
+    throw new Error();
+  }
+
+  return validWorksheds[0].item;
 }
 
 export const globalOptions = Args.create(
@@ -65,12 +92,17 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     workshed: Args.custom<Item | null>(
       {
         default: null,
-        help: "Intelligently switch into the workshed whose item name you give us. Also accepts certain shorthand aliases.",
+        help: "Intelligently switch into the workshed whose item name you give us. Also accepts substrings of the item name (e.g. dna, trainset), certain shorthand aliases (e.g. car) and initials of length >= 3 (e.g. cmc).",
         options: [
-          ...workshedAliases.map(
-            ({ item, aliases }) => [item, `${[item.name, ...aliases].join(", ")}`] as [Item, string]
+          ...allWorkshedAliases.map(
+            ({ item, aliases }) =>
+              [
+                item,
+                `${[...aliases, toInitials(item.name.toLowerCase())]
+                  .filter((alias) => alias !== "")
+                  .join(", ")}`,
+              ] as [Item, string]
           ),
-          ...unaliasedSheds.map((item) => [item, item.name] as [Item, string]),
           [null, "leave this field blank"],
         ],
       },
