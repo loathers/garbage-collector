@@ -37,6 +37,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "operate under the assumption that you're ascending after running it, rather than experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.",
       default: false,
     }),
+    dumpstash: Args.flag({
+      setting: "",
+      help: "return all items to the clan stash, then quit",
+      default: false,
+    }),
     nobarf: Args.flag({
       setting: "",
       help: "do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",

@@ -63,7 +63,7 @@ import postCombatActions from "./post";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { potionSetup } from "./potions";
-import { garboAverageValue, printGarboSession, startSession } from "./session";
+import { endSession, garboAverageValue, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
 import barfTurn from "./barfTurn";
 import { estimatedTurns } from "./turns";
@@ -131,38 +131,45 @@ export function main(argString = ""): void {
         true
       )
     ) {
-      const clanIdOrName = globalOptions.prefs.stashClan;
-      const parsedClanIdOrName =
-        clanIdOrName !== "none"
-          ? clanIdOrName.match(/^\d+$/)
-            ? parseInt(clanIdOrName)
-            : clanIdOrName
-          : null;
+      startSession();
+      try {
+        const clanIdOrName = globalOptions.prefs.stashClan;
+        const parsedClanIdOrName =
+          clanIdOrName !== "none"
+            ? clanIdOrName.match(/^\d+$/)
+              ? parseInt(clanIdOrName)
+              : clanIdOrName
+            : null;
 
-      if (parsedClanIdOrName) {
-        Clan.with(parsedClanIdOrName, () => {
-          for (const item of [...stashItems]) {
-            if (getFoldGroup(item).some((item) => have(item))) {
-              cliExecute(`fold ${item}`);
+        if (parsedClanIdOrName) {
+          Clan.with(parsedClanIdOrName, () => {
+            for (const item of [...stashItems]) {
+              if (getFoldGroup(item).some((item) => have(item))) {
+                cliExecute(`fold ${item}`);
+              }
+              const retrieved = retrieveItem(item);
+              if (
+                item === $item`Spooky Putty sheet` &&
+                !retrieved &&
+                have($item`Spooky Putty monster`)
+              ) {
+                continue;
+              }
+              print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
+              if (putStash(item, 1)) {
+                stashItems.splice(stashItems.indexOf(item), 1);
+              }
             }
-            const retrieved = retrieveItem(item);
-            if (
-              item === $item`Spooky Putty sheet` &&
-              !retrieved &&
-              have($item`Spooky Putty monster`)
-            ) {
-              continue;
-            }
-            print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
-            if (putStash(item, 1)) {
-              stashItems.splice(stashItems.indexOf(item), 1);
-            }
-          }
-        });
-      } else throw new Error("Error: No garbo_stashClan set.");
+          });
+        } else throw new Error("Error: No garbo_stashClan set.");
+      } finally {
+        endSession();
+      }
     } else {
       stashItems.splice(0, stashItems.length);
     }
+
+    if (globalOptions.dumpstash) return;
   }
 
   if (
@@ -465,7 +472,7 @@ export function main(argString = ""): void {
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEmbezzlerLog();
-    printGarboSession();
+    endSession();
     printLog(HIGHLIGHT);
   }
   set(completedProperty, `garbo ${argString}`);
