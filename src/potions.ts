@@ -412,6 +412,8 @@ export function potionSetup(embezzlersOnly: boolean): void {
   }
 
   variableMeatPotionsSetup(0, embezzlers);
+
+  if (have($item`lodestone`) && !get("_lodestoneUsed")) use($item`lodestone`);
   completedPotionSetup = true;
 }
 
