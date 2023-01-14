@@ -152,13 +152,6 @@ const worksheds = [
   ),
 ];
 
-if (GarboWorkshed.current?.workshed === $item`model train set` && GarboWorkshed.next) {
-  print(
-    `Warning: We currently do not support switching from the model train set to another workshed, so ${GarboWorkshed.next.workshed} will not be set-up during this run of garbo!`,
-    "red"
-  );
-}
-
 export default function handleWorkshed(): void {
   GarboWorkshed.current?.use();
 

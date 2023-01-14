@@ -43,11 +43,11 @@ function stringToWorkshedItem(s: string): Item | null {
   );
 
   if (validWorksheds.length > 1) {
-    print(`Invalid Workshed: ${s} matches multiple worksheds! Matched:`);
-    validWorksheds.forEach(({ item }) => print(`${item}`));
+    print(`Invalid Workshed: ${s} matches multiple worksheds! Matched:`, "red");
+    validWorksheds.forEach(({ item }) => print(`${item}`, "red"));
     throw new Error();
   } else if (validWorksheds.length === 0) {
-    print(`Invalid Workshed: ${s} does not match any worksheds!`);
+    print(`Invalid Workshed: ${s} does not match any worksheds!`, "red");
     throw new Error();
   }
 
