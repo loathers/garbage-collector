@@ -29,7 +29,8 @@ class GarboWorkshed {
   canRemove(): boolean {
     return (
       (this.done?.() ?? true) ||
-      estimatedTurns() < (GarboWorkshed.next ? GarboWorkshed.next.minTurns ?? 0 : 0)
+      estimatedTurns() - globalOptions.saveTurns <=
+        (GarboWorkshed.next ? GarboWorkshed.next.minTurns ?? 0 : 0)
     );
   }
 
