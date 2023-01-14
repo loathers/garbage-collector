@@ -107,61 +107,19 @@ export function main(argString = ""): void {
     return;
   }
 
-  const completedProperty = "_garboCompleted";
-  set(completedProperty, "");
-
-  if (globalOptions.prefs.autoUserConfirm) {
-    print(
-      "I have set auto-confirm to true and accept all ramifications that come with that.",
-      "red"
-    );
-  }
-
-  if (
-    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
-      myClass()
-    )
-  ) {
-    throw new Error(
-      "Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes"
-    );
-  }
-
-  if (
-    !globalOptions.prefs.skipAscensionCheck &&
-    (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75))
-  ) {
-    const proceedRegardless = userConfirmDialog(
-      "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
-      true
-    );
-    if (!proceedRegardless) {
-      throw new Error("User interrupt requested. Stopping Garbage Collector.");
-    }
-  }
-
-  if (
-    myInebriety() > inebrietyLimit() &&
-    (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
-  ) {
-    throw new Error(
-      "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it."
-    );
-  }
-
-  if (globalOptions.prefs.valueOfAdventure && globalOptions.prefs.valueOfAdventure <= 3500) {
-    throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
-  }
-  if (globalOptions.prefs.valueOfAdventure && globalOptions.prefs.valueOfAdventure >= 10000) {
-    throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is definitely incorrect. Please set it to your reliable marginal turn value.`;
-  }
-
   if (globalOptions.turns) {
     if (globalOptions.turns >= 0) {
       globalOptions.stopTurncount = myTurncount() + globalOptions.turns;
     } else {
       globalOptions.saveTurns = -globalOptions.turns;
     }
+  }
+
+  if (globalOptions.prefs.autoUserConfirm) {
+    print(
+      "I have set auto-confirm to true and accept all ramifications that come with that.",
+      "red"
+    );
   }
 
   if (stashItems.length > 0) {
@@ -206,6 +164,48 @@ export function main(argString = ""): void {
       stashItems.splice(0, stashItems.length);
     }
   }
+
+  if (
+    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
+      myClass()
+    )
+  ) {
+    throw new Error(
+      "Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes"
+    );
+  }
+
+  if (
+    !globalOptions.prefs.skipAscensionCheck &&
+    (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75))
+  ) {
+    const proceedRegardless = userConfirmDialog(
+      "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
+      true
+    );
+    if (!proceedRegardless) {
+      throw new Error("User interrupt requested. Stopping Garbage Collector.");
+    }
+  }
+
+  if (globalOptions.prefs.valueOfAdventure && globalOptions.prefs.valueOfAdventure <= 3500) {
+    throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
+  }
+  if (globalOptions.prefs.valueOfAdventure && globalOptions.prefs.valueOfAdventure >= 10000) {
+    throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is definitely incorrect. Please set it to your reliable marginal turn value.`;
+  }
+
+  if (
+    myInebriety() > inebrietyLimit() &&
+    (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
+  ) {
+    throw new Error(
+      "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it."
+    );
+  }
+
+  const completedProperty = "_garboCompleted";
+  set(completedProperty, "");
 
   startSession();
   if (!globalOptions.nobarf && !globalOptions.simdiet) {
