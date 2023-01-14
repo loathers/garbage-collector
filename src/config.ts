@@ -42,6 +42,8 @@ function stringToWorkshedItem(s: string): Item | null {
       )
   );
 
+  // grimoire catches the errors and throws its own errors
+  // so throw new Error(text) would result in the text not getting printed.
   if (validWorksheds.length > 1) {
     print(`Invalid Workshed: ${s} matches multiple worksheds! Matched:`, "red");
     validWorksheds.forEach(({ item }) => print(`${item}`, "red"));
