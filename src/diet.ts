@@ -197,7 +197,7 @@ export function nonOrganAdventures(): void {
   };
   const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
   for (let i = chocosRemaining; i > 0; i--) {
-    const chocoVals = Array.from(chocos.values()).map((choc) => {
+    const chocoVals = [...chocos.values()].map((choc) => {
       return {
         choco: choc,
         value: chocExpVal(i, choc),
