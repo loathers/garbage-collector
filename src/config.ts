@@ -25,21 +25,25 @@ function toInitials(s: string): string {
   return initials.length >= 3 ? initials : "";
 }
 
+function stripString(s: string): string {
+  if (s.includes(" ")) return stripString(s.replace(" ", ""));
+  else if (s.includes("-")) return stripString(s.replace("-", ""));
+  return s;
+}
+
 function stringToWorkshedItem(s: string): Item | null {
   // An empty string is a subset of every string and will match all the worksheds
   // So we explicitly handle this case here
   if (s === "") return null;
 
   const lowerCaseWorkshed = s.toLowerCase();
-  const strippedWorkshed = lowerCaseWorkshed.replace(" ", "").replace("-", "");
+  const strippedWorkshed = stripString(lowerCaseWorkshed);
   const validWorksheds = allWorkshedAliases.filter(
     ({ item, aliases }) =>
       toInitials(item.name.toLowerCase()) === lowerCaseWorkshed ||
-      aliases.some(
-        (alias) =>
-          alias.includes(lowerCaseWorkshed) ||
-          alias.replace(" ", "").replace("-", "").includes(strippedWorkshed)
-      )
+      item.name.toLowerCase().includes(lowerCaseWorkshed) ||
+      stripString(item.name.toLowerCase()).includes(strippedWorkshed) ||
+      aliases.some((alias) => alias === lowerCaseWorkshed)
   );
 
   // grimoire catches the errors and throws its own errors
