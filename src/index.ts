@@ -230,7 +230,7 @@ export function main(argString = ""): void {
     return;
   }
 
-  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
+  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds`;
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
   );
@@ -242,7 +242,13 @@ export function main(argString = ""): void {
       have(gardenSeed)
     )
   ) {
-    visitUrl("campground.php?action=garden&pwd");
+    if (startingGarden === $item`packet of rock seeds`) {
+      visitUrl("campground.php?action=rgarden1&pwd");
+      visitUrl("campground.php?action=rgarden2&pwd");
+      visitUrl("campground.php?action=rgarden3&pwd");
+    } else {
+      visitUrl("campground.php?action=garden&pwd");
+    }
   }
 
   const aaBossFlag =
