@@ -20122,12 +20122,14 @@ function usingThumbRing() {
 
   if (cachedUsingThumbRing === null) {
     var gear = bonusAccessories("barf");
-    var accessoryBonuses = Array.from(gear.entries()).filter(_ref => {
+
+    var accessoryBonuses = dropsgear_toConsumableArray(gear.entries()).filter(_ref => {
       var _ref2 = dropsgear_slicedToArray(_ref, 1),
           item = _ref2[0];
 
       return lib_have(item);
     });
+
     (0,external_kolmafia_namespaceObject.setLocation)($location(dropsgear_templateObject62 || (dropsgear_templateObject62 = dropsgear_taggedTemplateLiteral(["Barf Mountain"]))));
     var meatAccessories = external_kolmafia_namespaceObject.Item.all().filter(item => lib_have(item) && (0,external_kolmafia_namespaceObject.toSlot)(item) === $slot(dropsgear_templateObject63 || (dropsgear_templateObject63 = dropsgear_taggedTemplateLiteral(["acc1"]))) && modifier_get("Meat Drop", item) > 0).map(item => [item, modifier_get("Meat Drop", item) * baseMeat / 100]);
     var accessoryValues = new Map(accessoryBonuses);
@@ -20155,7 +20157,7 @@ function usingThumbRing() {
       accessoryValues.set(template_string_$item(dropsgear_templateObject70 || (dropsgear_templateObject70 = dropsgear_taggedTemplateLiteral(["mafia pointer finger ring"]))), 500);
     }
 
-    var bestAccessories = Array.from(accessoryValues.entries()).sort((_ref3, _ref4) => {
+    var bestAccessories = dropsgear_toConsumableArray(accessoryValues.entries()).sort((_ref3, _ref4) => {
       var _ref5 = dropsgear_slicedToArray(_ref3, 2),
           aBonus = _ref5[1];
 
@@ -20169,6 +20171,7 @@ function usingThumbRing() {
 
       return item;
     });
+
     cachedUsingThumbRing = bestAccessories.slice(0, 2).includes(template_string_$item(dropsgear_templateObject71 || (dropsgear_templateObject71 = dropsgear_taggedTemplateLiteral(["mafia thumb ring"]))));
   }
 
@@ -25393,12 +25396,13 @@ function nonOrganAdventures() {
   var chocosRemaining = clamp(3 - property_get("_chocolatesUsed"), 0, 3);
 
   var _loop = function _loop(i) {
-    var chocoVals = Array.from(chocos.values()).map(choc => {
+    var chocoVals = src_diet_toConsumableArray(chocos.values()).map(choc => {
       return {
         choco: choc,
         value: chocExpVal(i, choc)
       };
     });
+
     var best = lib_maxBy(chocoVals, "value");
 
     if (best.value > 0) {
