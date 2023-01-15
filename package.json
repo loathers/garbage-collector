@@ -6,7 +6,7 @@
   "main": "KoLmafia/scripts/garbage-collector/garbo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "yarn node build.mjs",
+    "build": "node build.mjs",
     "deploy": "copyfiles --up 1 --exclude \"**/dependencies.txt\" \"KoLmafia/**/*\" \"mafia/**/*\"",
     "lint": "eslint src && prettier --check .",
     "lint:fix": "eslint src --fix && prettier --check --write ."
@@ -34,8 +34,8 @@
     "@types/mini-css-extract-plugin": "^2.0.1",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
-    "@typescript-eslint/eslint-plugin": "^4.28.3",
-    "@typescript-eslint/parser": "^4.28.3",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
     "babel-loader": "^9.1.2",
     "babel-plugin-transform-scss": "^1.1.0",
     "copyfiles": "^2.4.1",
