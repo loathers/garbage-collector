@@ -22946,6 +22946,7 @@ function src_combat_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = stri
 
 
 
+
 var monsterManuelCached = undefined;
 function monsterManuelAvailable() {
   if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
@@ -23134,6 +23135,11 @@ var combat_Macro = /*#__PURE__*/function (_StrictMacro) {
       if ((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(combat_templateObject94 || (combat_templateObject94 = src_combat_taggedTemplateLiteral(["Hobo Monkey"]))) || (0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(combat_templateObject95 || (combat_templateObject95 = src_combat_taggedTemplateLiteral(["Buddy Bjorn"])))) || (0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(combat_templateObject96 || (combat_templateObject96 = src_combat_taggedTemplateLiteral(["Crown of Thrones"])))) || property_get("_bittycar")) {
         // These things can take a little longer to proc sometimes
         stasisRounds = 20;
+      }
+
+      if (config_globalOptions.quick) {
+        // long fights can be very slow
+        stasisRounds = Math.min(5, stasisRounds);
       } // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
       // Delevel the sausage goblins as otherwise they can kind of hurt
 
