@@ -16843,6 +16843,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
       Sweet Synthesis is strongly recommended, as with access to other meat% buffs from Source Terminal, Fortune Teller, KGB and the summoning chamber. Having access to a PYEC (on hand or in the clan stash) is a plus.",
       default: false
     }),
+    candydish: Args.flag({
+      setting: "garbo_candydish",
+      help: "*DANGEROUS* garbo will consider using porcelain candy dishes. This could result in potentially destructive behavior in the instance that the user does not have sufficient meat (1-2 million) to purchase as many dishes as garbo desires or there is a price cliff.",
+      default: false,
+      hidden: true
+    }),
     stashClan: Args.string({
       setting: "garbo_stashClan",
       help: "If set, garbo will attempt to switch to this clan to take and return useful clan stash item, i.e. a Haiku Katana or Repaid Diaper. Leave blank to disable.",
@@ -24469,7 +24475,7 @@ function shrugBadEffects() {
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.from-entries.js
 var modules_es_object_from_entries = __webpack_require__(5809);
 ;// CONCATENATED MODULE: ./src/potions.ts
-var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8, potions_templateObject9, potions_templateObject10, potions_templateObject11, potions_templateObject12, potions_templateObject13, potions_templateObject14, potions_templateObject15, potions_templateObject16;
+var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8, potions_templateObject9, potions_templateObject10, potions_templateObject11, potions_templateObject12, potions_templateObject13, potions_templateObject14, potions_templateObject15, potions_templateObject16, potions_templateObject17;
 
 function potions_slicedToArray(arr, i) { return potions_arrayWithHoles(arr) || potions_iterableToArrayLimit(arr, i) || potions_unsupportedIterableToArray(arr, i) || potions_nonIterableRest(); }
 
@@ -25108,11 +25114,7 @@ var VariableMeatPotion = /*#__PURE__*/function () {
 }();
 
 function variableMeatPotionsSetup(yachtzees, embezzlers) {
-  var potions = [new VariableMeatPotion(template_string_$item(potions_templateObject15 || (potions_templateObject15 = potions_taggedTemplateLiteral(["love song of sugary cuteness"]))), 20, 2), new VariableMeatPotion(template_string_$item(potions_templateObject16 || (potions_templateObject16 = potions_taggedTemplateLiteral(["pulled yellow taffy"]))), 50, 2) // To be added in the future. Specifically, we will have to:
-  // 1) accurately estimate the bulk price (potentially in the millions), and
-  // 2) ensure that we have the meat to complete the entire purchase (a partial purchase would be disastrous).
-  // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
-  ];
+  var potions = [new VariableMeatPotion(template_string_$item(potions_templateObject15 || (potions_templateObject15 = potions_taggedTemplateLiteral(["love song of sugary cuteness"]))), 20, 2), new VariableMeatPotion(template_string_$item(potions_templateObject16 || (potions_templateObject16 = potions_taggedTemplateLiteral(["pulled yellow taffy"]))), 50, 2)].concat(potions_toConsumableArray(config_globalOptions.prefs.candydish ? [new VariableMeatPotion(template_string_$item(potions_templateObject17 || (potions_templateObject17 = potions_taggedTemplateLiteral(["porcelain candy dish"]))), 500, 1)] : []));
   var excludedEffects = new Set();
 
   var _iterator9 = potions_createForOfIteratorHelper(getActiveEffects()),
@@ -25120,17 +25122,17 @@ function variableMeatPotionsSetup(yachtzees, embezzlers) {
 
   try {
     for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
-      var _mutuallyExclusive$ge5;
+      var _mutuallyExclusive$ge4;
 
-      var _effect2 = _step9.value;
+      var effect = _step9.value;
 
-      var _iterator11 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge5 = mutuallyExclusive.get(_effect2)) !== null && _mutuallyExclusive$ge5 !== void 0 ? _mutuallyExclusive$ge5 : []),
+      var _iterator11 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge4 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge4 !== void 0 ? _mutuallyExclusive$ge4 : []),
           _step11;
 
       try {
         for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
-          var _excluded2 = _step11.value;
-          excludedEffects.add(_excluded2);
+          var excluded = _step11.value;
+          excludedEffects.add(excluded);
         }
       } catch (err) {
         _iterator11.e(err);
@@ -25144,30 +25146,41 @@ function variableMeatPotionsSetup(yachtzees, embezzlers) {
     _iterator9.f();
   }
 
-  for (var _i5 = 0, _potions = potions; _i5 < _potions.length; _i5++) {
-    var potion = _potions[_i5];
-    var effect = (0,external_kolmafia_namespaceObject.effectModifier)(potion.potion, "Effect");
-    var n = excludedEffects.has(effect) ? 0 : potion.getOptimalNumberToUse(yachtzees, embezzlers);
+  var _iterator10 = potions_createForOfIteratorHelper(potions),
+      _step10;
 
-    if (n > 0) {
-      var _mutuallyExclusive$ge4;
+  try {
+    for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+      var potion = _step10.value;
 
-      potion.use(n);
+      var _effect2 = (0,external_kolmafia_namespaceObject.effectModifier)(potion.potion, "Effect");
 
-      var _iterator10 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge4 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge4 !== void 0 ? _mutuallyExclusive$ge4 : []),
-          _step10;
+      var n = excludedEffects.has(_effect2) ? 0 : potion.getOptimalNumberToUse(yachtzees, embezzlers);
 
-      try {
-        for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
-          var excluded = _step10.value;
-          excludedEffects.add(excluded);
+      if (n > 0) {
+        var _mutuallyExclusive$ge5;
+
+        potion.use(n);
+
+        var _iterator12 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge5 = mutuallyExclusive.get(_effect2)) !== null && _mutuallyExclusive$ge5 !== void 0 ? _mutuallyExclusive$ge5 : []),
+            _step12;
+
+        try {
+          for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
+            var _excluded2 = _step12.value;
+            excludedEffects.add(_excluded2);
+          }
+        } catch (err) {
+          _iterator12.e(err);
+        } finally {
+          _iterator12.f();
         }
-      } catch (err) {
-        _iterator10.e(err);
-      } finally {
-        _iterator10.f();
       }
     }
+  } catch (err) {
+    _iterator10.e(err);
+  } finally {
+    _iterator10.f();
   }
 }
 ;// CONCATENATED MODULE: ./src/synthesis.ts
