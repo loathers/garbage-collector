@@ -4,6 +4,7 @@ import {
   itemAmount,
   myAdventures,
   myLevel,
+  myLocation,
   reverseNumberology,
   use,
   useSkill,
@@ -18,6 +19,7 @@ import {
   $skill,
   $slot,
   AutumnAton,
+  FloristFriar,
   get,
   getRemainingStomach,
   have,
@@ -40,6 +42,15 @@ import {
 import { teleportEffects } from "./mood";
 import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
 import handleWorkshed from "./workshed";
+
+function floristFriars(): void {
+  if (!FloristFriar.have() || myLocation() !== $location`Barf Mountain` || FloristFriar.isFull()) {
+    return;
+  }
+  [FloristFriar.StealingMagnolia, FloristFriar.AloeGuvnor, FloristFriar.PitcherPlant].forEach(
+    (flower) => flower.plant()
+  );
+}
 
 function fillPantsgivingFullness(): void {
   if (
@@ -156,6 +167,7 @@ export default function postCombatActions(skipDiet = false): void {
     fillPantsgivingFullness();
     fillSweatyLiver();
   }
+  floristFriars();
   handleWorkshed();
   safeInterrupt();
   safeRestore();
