@@ -1,19 +1,12 @@
 import {
   cliExecute,
-  descToItem,
   equip,
-  getWorkshed,
-  handlingChoice,
-  Item,
   itemAmount,
   myAdventures,
   myLevel,
   reverseNumberology,
-  runChoice,
-  totalTurnsPlayed,
   use,
   useSkill,
-  visitUrl,
 } from "kolmafia";
 import {
   $effect,
@@ -29,7 +22,6 @@ import {
   getRemainingStomach,
   have,
   JuneCleaver,
-  property,
   uneffect,
   withProperty,
 } from "libram";
@@ -40,7 +32,6 @@ import { computeDiet, consumeDiet } from "./diet";
 import {
   bestJuneCleaverOption,
   juneCleaverChoiceValues,
-  maxBy,
   safeInterrupt,
   safeRestore,
   setChoice,
@@ -48,40 +39,7 @@ import {
 } from "./lib";
 import { teleportEffects } from "./mood";
 import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
-
-function coldMedicineCabinet(): void {
-  if (getWorkshed() !== $item`cold medicine cabinet`) return;
-
-  if (
-    property.getNumber("_coldMedicineConsults") >= 5 ||
-    property.getNumber("_nextColdMedicineConsult") > totalTurnsPlayed()
-  ) {
-    return;
-  }
-  const options = visitUrl("campground.php?action=workshed");
-  let i = 0;
-  let match;
-  const regexp = /descitem\((\d+)\)/g;
-  const itemChoices = new Map<Item, number>();
-  if (!globalOptions.nobarf) {
-    // if spending turns at barf, we probably will be able to get an extro so always consider it
-    itemChoices.set($item`Extrovermectin™`, -1);
-  }
-
-  while ((match = regexp.exec(options)) !== null) {
-    i++;
-    const item = descToItem(match[1]);
-    itemChoices.set(item, i);
-  }
-
-  const bestItem = maxBy([...itemChoices.keys()], garboValue);
-  const bestChoice = itemChoices.get(bestItem);
-  if (bestChoice && bestChoice > 0) {
-    visitUrl("campground.php?action=workshed");
-    runChoice(bestChoice);
-  }
-  if (handlingChoice()) visitUrl("main.php");
-}
+import handleWorkshed from "./workshed";
 
 function fillPantsgivingFullness(): void {
   if (
@@ -198,7 +156,7 @@ export default function postCombatActions(skipDiet = false): void {
     fillPantsgivingFullness();
     fillSweatyLiver();
   }
-  coldMedicineCabinet();
+  handleWorkshed();
   safeInterrupt();
   safeRestore();
   updateMallPrices();

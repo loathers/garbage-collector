@@ -197,7 +197,7 @@ export function nonOrganAdventures(): void {
   };
   const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
   for (let i = chocosRemaining; i > 0; i--) {
-    const chocoVals = Array.from(chocos.values()).map((choc) => {
+    const chocoVals = [...chocos.values()].map((choc) => {
       return {
         choco: choc,
         value: chocExpVal(i, choc),
@@ -998,6 +998,10 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   }
 }
 
+let completedDiet = globalOptions.nodiet;
+export function dietCompleted(): boolean {
+  return completedDiet;
+}
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
@@ -1042,4 +1046,5 @@ export function runDiet(): void {
       shrugBadEffects();
     }
   });
+  completedDiet = true;
 }

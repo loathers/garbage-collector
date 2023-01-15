@@ -55,6 +55,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
+import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 
@@ -399,6 +400,11 @@ export class Macro extends StrictMacro {
     ) {
       // These things can take a little longer to proc sometimes
       stasisRounds = 20;
+    }
+
+    if (globalOptions.quick) {
+      // long fights can be very slow
+      stasisRounds = Math.min(5, stasisRounds);
     }
 
     // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove

@@ -416,7 +416,7 @@ export function usingThumbRing(): boolean {
   }
   if (cachedUsingThumbRing === null) {
     const gear = bonusAccessories("barf");
-    const accessoryBonuses = Array.from(gear.entries()).filter(([item]) => have(item));
+    const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
     setLocation($location`Barf Mountain`);
     const meatAccessories = Item.all()
@@ -439,7 +439,7 @@ export function usingThumbRing(): boolean {
     ) {
       accessoryValues.set($item`mafia pointer finger ring`, 500);
     }
-    const bestAccessories = Array.from(accessoryValues.entries())
+    const bestAccessories = [...accessoryValues.entries()]
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
       .map(([item]) => item);
     cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
