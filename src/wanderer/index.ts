@@ -13,6 +13,7 @@ import {
   WandererLocation,
 } from "./lib";
 import { lovebugsFactory } from "./lovebugs";
+import { wartFactory } from "./wart";
 import { yellowRayFactory } from "./yellowray";
 
 export type { DraggableFight };
@@ -22,6 +23,7 @@ const wanderFactories: WandererFactory[] = [
   yellowRayFactory,
   lovebugsFactory,
   guzzlrFactory,
+  wartFactory,
 ];
 
 export function bestWander(
