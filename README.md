@@ -128,6 +128,7 @@ _EXPERIMENTAL_ Garbo will sacrifice some optimal behaviors to run quicker. Estim
 - Many non-critical mall searches will instead check historical price with a max age of 1 week.
 - `maximizerCombinationLimit` will be set to 100000.
 - [Brimstone equipment](https://kol.coldfront.net/thekolwiki/index.php/Blasphemous_Bedizenment) will be ignored by the maximizer to reduce possible combinations.
+- Stasis at max 5 rounds, instead of up to 20.
 
 ### Turncount
 
