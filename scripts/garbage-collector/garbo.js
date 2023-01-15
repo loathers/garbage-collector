@@ -29276,36 +29276,31 @@ var postFreeFight_templateObject, postFreeFight_templateObject2, postFreeFight_t
 
 function postFreeFight_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-function postFreeFight_slicedToArray(arr, i) { return postFreeFight_arrayWithHoles(arr) || postFreeFight_iterableToArrayLimit(arr, i) || postFreeFight_unsupportedIterableToArray(arr, i) || postFreeFight_nonIterableRest(); }
-
-function postFreeFight_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function postFreeFight_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return postFreeFight_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return postFreeFight_arrayLikeToArray(o, minLen); }
-
-function postFreeFight_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function postFreeFight_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function postFreeFight_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 
 
 
 
 
 function bestVykeaLevel() {
-  var vykeas = [[1, 0], [2, 1], [3, 11]]; // excluding 4 and 5 as per bean's suggestion
+  var vykeas = [{
+    level: 1,
+    dowelCost: 0
+  }, {
+    level: 2,
+    dowelCost: 1
+  }, {
+    level: 3,
+    dowelCost: 11
+  }]; // excluding 4 and 5 as per bean's suggestion
 
   var vykeaProfit = vykea => {
-    var _vykea = postFreeFight_slicedToArray(vykea, 2),
-        level = _vykea[0],
-        dowelCost = _vykea[1];
-
+    var level = vykea.level,
+        dowelCost = vykea.dowelCost;
     return estimatedTurns() * baseMeat * 0.1 * level - (5 * (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(postFreeFight_templateObject || (postFreeFight_templateObject = postFreeFight_taggedTemplateLiteral(["VYKEA rail"])))) + dowelCost * (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(postFreeFight_templateObject2 || (postFreeFight_templateObject2 = postFreeFight_taggedTemplateLiteral(["VYKEA dowel"])))) + 5 * (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(postFreeFight_templateObject3 || (postFreeFight_templateObject3 = postFreeFight_taggedTemplateLiteral(["VYKEA plank"])))) + 1 * (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(postFreeFight_templateObject4 || (postFreeFight_templateObject4 = postFreeFight_taggedTemplateLiteral(["VYKEA instructions"])))));
   };
 
   if (vykeas.some(vykea => vykeaProfit(vykea) > 0)) {
-    return lib_maxBy(vykeas, vykeaProfit)[0];
+    return lib_maxBy(vykeas, vykeaProfit).level;
   }
 
   return 0;
