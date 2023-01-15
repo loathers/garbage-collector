@@ -365,6 +365,10 @@ export function doublingPotions(embezzlers: number): Potion[] {
     .map((pair) => pair.potion);
 }
 
+let completedPotionSetup = false;
+export function potionSetupCompleted(): boolean {
+  return completedPotionSetup;
+}
 /**
  * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
  * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
@@ -408,6 +412,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
   }
 
   variableMeatPotionsSetup(0, embezzlers);
+  completedPotionSetup = true;
 }
 
 /**
@@ -559,7 +564,9 @@ export function variableMeatPotionsSetup(yachtzees: number, embezzlers: number):
     // To be added in the future. Specifically, we will have to:
     // 1) accurately estimate the bulk price (potentially in the millions), and
     // 2) ensure that we have the meat to complete the entire purchase (a partial purchase would be disastrous).
-    // new VariableMeatPotions($item`porcelain candy dish`, 500, 1),
+    ...(globalOptions.prefs.candydish
+      ? [new VariableMeatPotion($item`porcelain candy dish`, 500, 1)]
+      : []),
   ];
 
   const excludedEffects = new Set<Effect>();

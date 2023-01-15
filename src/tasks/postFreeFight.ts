@@ -5,13 +5,13 @@ import { baseMeat, maxBy } from "../lib";
 import { estimatedTurns } from "../turns";
 
 function bestVykeaLevel(): number {
-  const vykeas: [number, number][] = [
-    [1, 0],
-    [2, 1],
-    [3, 11],
+  const vykeas = [
+    { level: 1, dowelCost: 0 },
+    { level: 2, dowelCost: 1 },
+    { level: 3, dowelCost: 11 },
   ]; // excluding 4 and 5 as per bean's suggestion
-  const vykeaProfit = (vykea: [number, number]) => {
-    const [level, dowelCost] = vykea;
+  const vykeaProfit = (vykea: { level: number; dowelCost: number }) => {
+    const { level, dowelCost } = vykea;
     return (
       estimatedTurns() * baseMeat * 0.1 * level -
       (5 * mallPrice($item`VYKEA rail`) +
@@ -22,7 +22,7 @@ function bestVykeaLevel(): number {
   };
 
   if (vykeas.some((vykea) => vykeaProfit(vykea) > 0)) {
-    return maxBy(vykeas, vykeaProfit)[0];
+    return maxBy(vykeas, vykeaProfit).level;
   }
   return 0;
 }

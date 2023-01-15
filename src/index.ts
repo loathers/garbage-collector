@@ -10,6 +10,7 @@ import {
   Item,
   maximize,
   myAdventures,
+  myBasestat,
   myClass,
   myGardenType,
   myInebriety,
@@ -20,6 +21,7 @@ import {
   retrieveItem,
   runChoice,
   setAutoAttack,
+  Stat,
   toInt,
   use,
   visitUrl,
@@ -125,9 +127,12 @@ export function main(argString = ""): void {
     );
   }
 
-  if (!globalOptions.prefs.skipAscensionCheck && (!get("kingLiberated") || myLevel() < 13)) {
+  if (
+    !globalOptions.prefs.skipAscensionCheck &&
+    (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75))
+  ) {
     const proceedRegardless = userConfirmDialog(
-      "Looks like your ascension may not be done yet. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
+      "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
       true
     );
     if (!proceedRegardless) {

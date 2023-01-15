@@ -169,12 +169,12 @@ const alternativePants = Item.all()
   .map((pants) => numericModifier(pants, "Adventures"));
 const bestAdventuresFromPants = Math.max(0, ...alternativePants);
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
-function cheeses(embezzlerUp: boolean) {
+function cheeses(mode: BonusEquipMode) {
   return haveSomeCheese &&
     !globalOptions.ascend &&
     get("_stinkyCheeseCount") < 100 &&
     estimatedTurns() >= 100 - get("_stinkyCheeseCount") &&
-    !embezzlerUp
+    mode !== "embezzler"
     ? new Map<Item, number>(
         getFoldGroup($item`stinky cheese diaper`)
           .filter((item) => toSlot(item) !== $slot`weapon`)
@@ -339,11 +339,12 @@ export function bonusGear(
   valueCircumstantialBonus = true
 ): Map<Item, number> {
   return new Map<Item, number>([
-    ...cheeses(equipMode === "embezzler"),
+    ...cheeses(equipMode),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
     ...bagOfManyConfections(),
     ...stickers(equipMode),
+    ...powerGlove(),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
@@ -415,7 +416,7 @@ export function usingThumbRing(): boolean {
   }
   if (cachedUsingThumbRing === null) {
     const gear = bonusAccessories("barf");
-    const accessoryBonuses = Array.from(gear.entries()).filter(([item]) => have(item));
+    const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
     setLocation($location`Barf Mountain`);
     const meatAccessories = Item.all()
@@ -438,7 +439,7 @@ export function usingThumbRing(): boolean {
     ) {
       accessoryValues.set($item`mafia pointer finger ring`, 500);
     }
-    const bestAccessories = Array.from(accessoryValues.entries())
+    const bestAccessories = [...accessoryValues.entries()]
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
       .map(([item]) => item);
     cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
@@ -494,5 +495,17 @@ function stickers(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map([
     [$item`scratch 'n' sniff sword`, -1 * cost],
     [$item`scratch 'n' sniff crossbow`, -1 * cost],
+  ]);
+}
+
+function powerGlove(): Map<Item, number> {
+  if (!have($item`Powerful Glove`)) return new Map();
+  // 23% proc rate, according to the wiki
+  // https://kol.coldfront.net/thekolwiki/index.php/Powerful_Glove
+  return new Map([
+    [
+      $item`Powerful Glove`,
+      0.25 * garboAverageValue(...$items`blue pixel, green pixel, red pixel, white pixel`),
+    ],
   ]);
 }
