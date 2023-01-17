@@ -11,6 +11,10 @@ import {
 } from "kolmafia";
 import { $items, AutumnAton, get, sum } from "libram";
 
+export function bestAutumnatonLocation(): Location {
+  return maxBy(mostValuableUpgrade(AutumnAton.availableLocations()), averageAutumnatonValue);
+}
+
 export function averageAutumnatonValue(
   location: Location,
   acuityOverride?: number,
