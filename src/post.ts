@@ -25,14 +25,13 @@ import {
   withProperty,
 } from "libram";
 import { acquire } from "./acquire";
-import { averageAutumnatonValue, bestAutumnatonLocation, mostValuableUpgrade } from "./autumnaton";
+import { bestAutumnatonLocation } from "./autumnaton";
 import { garboAdventure, Macro } from "./combat";
 import { globalOptions } from "./config";
 import { computeDiet, consumeDiet } from "./diet";
 import {
   bestJuneCleaverOption,
   juneCleaverChoiceValues,
-  maxBy,
   safeInterrupt,
   safeRestore,
   setChoice,
