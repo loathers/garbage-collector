@@ -179,12 +179,14 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
     }
     return { upgrade, profit: 0 };
   });
-  const mostValuableUpgrade = maxBy(upgradeValuations, "profit");
-  const profitFromBestUpg = mostValuableUpgrade.profit;
+  const { upgrade: mostValuableUpgrade, profit: profitFromBestUpgrade } = maxBy(
+    upgradeValuations,
+    "profit"
+  );
 
-  if (profitFromBestUpg > currentExpectedProfit) {
+  if (profitFromBestUpgrade > currentExpectedProfit) {
     const upgradeLocations = fullLocations.filter(
-      (location) => AutumnAton.getUniques(location)?.upgrade === mostValuableUpgrade.upgrade
+      (location) => AutumnAton.getUniques(location)?.upgrade === mostValuableUpgrade
     );
     return upgradeLocations;
   } else {
