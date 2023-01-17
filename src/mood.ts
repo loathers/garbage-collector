@@ -196,6 +196,9 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
   }
+  if (have($item`portable steam unit`) && !get("_portableSteamUnitUsed", false)) {
+    use($item`portable steam unit`);
+  }
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);

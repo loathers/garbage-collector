@@ -22,7 +22,8 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { globalOptions, HIGHLIGHT, logMessage, maxBy, realmAvailable } from "../lib";
+import { globalOptions } from "../config";
+import { HIGHLIGHT, logMessage, maxBy, realmAvailable } from "../lib";
 import { garboValue } from "../session";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };

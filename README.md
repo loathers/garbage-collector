@@ -14,6 +14,7 @@
     - [`nodiet` flag](#nodiet-flag)
     - [`simdiet` flag](#simdiet-flag)
     - [`yachtzeechain` flag](#yachtzeechain-flag)
+    - [`workshed` arg](#workshed-arg)
     - [`quick` flag](#quick-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
@@ -115,6 +116,10 @@ Garbo will list the optimal diet it plans to consume computed from your defined 
 ### `yachtzeechain` flag
 
 _EXPERIMENTAL_ Garbo will attempt to chain the Yachtzee! NC after all the free fights are completed, just before it attempts embezzlers. This command cannot be run in conjuction with the `nodiet` flag. Refer to `help` for more info on the requirements needed to run this.
+
+### `workshed` arg
+
+Garbo will determine when you are done with your current workshed, and automatically swap to this workshed mid-run. This argument is used in the following manner: e.g. `garbo workshed="cold medicine cabinet" ascend`. (It will also attempt simple string matching, so `workshed=cmc`, `workshed=pizza` or `workshed=trainset` should also work)
 
 ### `quick` flag
 
