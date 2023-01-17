@@ -110,6 +110,48 @@ const profitRelevantUpgrades = [
   "radardish",
 ] as const;
 
+function profitFromExtraAcuity(
+  bestLocationContainingUpgrade: Location,
+  bestLocationWithInstalledUpgrade: Location
+): number {
+  return (
+    averageAutumnatonValue(bestLocationContainingUpgrade) +
+    averageAutumnatonValue(bestLocationWithInstalledUpgrade) *
+      Math.max(0, expectedRemainingExpeditions() - 1)
+  );
+}
+function profitFromExtraLeg(
+  bestLocationContainingUpgrade: Location,
+  bestLocationWithInstalledUpgrade: Location
+): number {
+  return (
+    averageAutumnatonValue(bestLocationContainingUpgrade) +
+    averageAutumnatonValue(bestLocationWithInstalledUpgrade) *
+      Math.max(0, expectedRemainingExpeditions(AutumnAton.legs() + 1) - 1)
+  );
+}
+function profitFromExtraArm(
+  bestLocationContainingUpgrade: Location,
+  bestLocationWithInstalledUpgrade: Location
+): number {
+  return (
+    averageAutumnatonValue(bestLocationContainingUpgrade) +
+    averageAutumnatonValue(bestLocationWithInstalledUpgrade) *
+      Math.max(0, expectedRemainingExpeditions() - 1)
+  );
+}
+function profitFromExtraAutumnItem(
+  bestLocationContainingUpgrade: Location,
+  bestLocationWithInstalledUpgrade: Location
+): number {
+  return (
+    averageAutumnatonValue(bestLocationContainingUpgrade) +
+    (seasonalItemValue(bestLocationWithInstalledUpgrade) +
+      averageAutumnatonValue(bestLocationWithInstalledUpgrade)) *
+      Math.max(0, expectedRemainingExpeditions() - 1)
+  );
+}
+
 export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
   // This function shouldn't be getting called if we don't have an expedition left
   if (expectedRemainingExpeditions() < 1) {
@@ -132,52 +174,53 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
     const upgradeLocations = fullLocations.filter(
       (location) => AutumnAton.getUniques(location)?.upgrade === upgrade
     );
-    const bestLocContainingUpg = maxBy(upgradeLocations, (loc: Location) =>
-      averageAutumnatonValue(loc)
-    );
 
-    if (upgrade === ("periscope" || "radardish")) {
-      const bestLocWithInstalledUpg = maxBy(fullLocations, (loc: Location) =>
-        averageAutumnatonValue(loc, AutumnAton.visualAcuity() + 1)
-      );
-      const extraExpectedProfit =
-        averageAutumnatonValue(bestLocContainingUpg) +
-        averageAutumnatonValue(bestLocWithInstalledUpg) *
-          Math.max(0, expectedRemainingExpeditions() - 1);
+    const bestLocationContainingUpgrade = maxBy(upgradeLocations, averageAutumnatonValue);
 
-      return { upgrade, profit: extraExpectedProfit };
+    switch (upgrade) {
+      case "periscope":
+      case "radardish": {
+        const bestLocationWithInstalledUpgrade = maxBy(fullLocations, (loc: Location) =>
+          averageAutumnatonValue(loc, AutumnAton.visualAcuity() + 1)
+        );
+        return {
+          upgrade,
+          profit: profitFromExtraAcuity(
+            bestLocationContainingUpgrade,
+            bestLocationWithInstalledUpgrade
+          ),
+        };
+      }
+      case "rightleg1":
+      case "leftleg1": {
+        return {
+          upgrade,
+          profit: profitFromExtraLeg(bestLocationContainingUpgrade, currentBestLocation),
+        };
+      }
+      case "rightarm1":
+      case "leftarm1": {
+        const bestLocationWithInstalledUpgrade = maxBy(fullLocations, (loc: Location) =>
+          averageAutumnatonValue(loc, undefined, AutumnAton.zoneItems() + 1)
+        );
+        return {
+          upgrade,
+          profit: profitFromExtraArm(
+            bestLocationContainingUpgrade,
+            bestLocationWithInstalledUpgrade
+          ),
+        };
+      }
+      case "cowcatcher": {
+        return {
+          upgrade,
+          profit: profitFromExtraAutumnItem(bestLocationContainingUpgrade, currentBestLocation),
+        };
+      }
+      default: {
+        return { upgrade, profit: 0 };
+      }
     }
-    if (upgrade === ("rightleg1" || "leftleg1")) {
-      const bestLocWithInstalledUpg = currentBestLocation;
-      const extraExpectedProfit =
-        averageAutumnatonValue(bestLocContainingUpg) +
-        averageAutumnatonValue(bestLocWithInstalledUpg) *
-          Math.max(0, expectedRemainingExpeditions(AutumnAton.legs() + 1) - 1);
-
-      return { upgrade, profit: extraExpectedProfit };
-    }
-    if (upgrade === ("rightarm1" || "leftarm1")) {
-      const bestLocWithInstalledUpg = maxBy(fullLocations, (loc: Location) =>
-        averageAutumnatonValue(loc, undefined, AutumnAton.zoneItems() + 1)
-      );
-      const extraExpectedProfit =
-        averageAutumnatonValue(bestLocContainingUpg) +
-        averageAutumnatonValue(bestLocWithInstalledUpg) *
-          Math.max(0, expectedRemainingExpeditions() - 1);
-
-      return { upgrade, profit: extraExpectedProfit };
-    }
-    if (upgrade === "cowcatcher") {
-      const bestLocWithInstalledUpg = currentBestLocation;
-      const extraExpectedProfit =
-        averageAutumnatonValue(bestLocContainingUpg) +
-        (seasonalItemValue(bestLocWithInstalledUpg) +
-          averageAutumnatonValue(bestLocWithInstalledUpg)) *
-          Math.max(0, expectedRemainingExpeditions() - 1);
-
-      return { upgrade, profit: extraExpectedProfit };
-    }
-    return { upgrade, profit: 0 };
   });
   const { upgrade: mostValuableUpgrade, profit: profitFromBestUpgrade } = maxBy(
     upgradeValuations,
