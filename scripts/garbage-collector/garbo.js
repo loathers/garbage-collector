@@ -16726,7 +16726,7 @@ function lastEncounterWasWanderingNC() {
 
 
 ;// CONCATENATED MODULE: ./src/config.ts
-var config_templateObject, config_templateObject2, config_templateObject3, config_templateObject4, config_templateObject5, config_templateObject6, config_templateObject7;
+var config_templateObject, config_templateObject2, config_templateObject3, config_templateObject4;
 
 function config_toConsumableArray(arr) { return config_arrayWithoutHoles(arr) || config_iterableToArray(arr) || config_unsupportedIterableToArray(arr) || config_nonIterableSpread(); }
 
@@ -16744,41 +16744,68 @@ function config_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.
 
 
 
+
 var workshedAliases = [{
-  item: template_string_$item(config_templateObject || (config_templateObject = config_taggedTemplateLiteral(["cold medicine cabinet"]))),
-  aliases: ["cmc"]
+  item: template_string_$item(config_templateObject || (config_templateObject = config_taggedTemplateLiteral(["model train set"]))),
+  aliases: ["trainrealm"]
 }, {
-  item: template_string_$item(config_templateObject2 || (config_templateObject2 = config_taggedTemplateLiteral(["model train set"]))),
-  aliases: ["trainset", "trainrealm", "train"]
+  item: template_string_$item(config_templateObject2 || (config_templateObject2 = config_taggedTemplateLiteral(["Asdon Martin keyfob"]))),
+  aliases: ["breadcar", "car", "aston"]
 }, {
-  item: template_string_$item(config_templateObject3 || (config_templateObject3 = config_taggedTemplateLiteral(["Asdon Martin keyfob"]))),
-  aliases: ["breadcar", "car", "asdon", "aston"]
-}, {
-  item: template_string_$item(config_templateObject4 || (config_templateObject4 = config_taggedTemplateLiteral(["diabolic pizza cube"]))),
-  aliases: ["cube", "pizza", "pizzacube"]
-}, {
-  item: template_string_$item(config_templateObject5 || (config_templateObject5 = config_taggedTemplateLiteral(["portable Mayo Clinic"]))),
-  aliases: ["mayo", "clinic"]
-}, {
-  item: template_string_$item(config_templateObject6 || (config_templateObject6 = config_taggedTemplateLiteral(["Little Geneticist DNA-Splicing Lab"]))),
-  aliases: ["dna", "dnalab"]
+  item: template_string_$item(config_templateObject3 || (config_templateObject3 = config_taggedTemplateLiteral(["Little Geneticist DNA-Splicing Lab"]))),
+  aliases: ["dnalab"]
 }];
-var unaliasedSheds = template_string_$items(config_templateObject7 || (config_templateObject7 = config_taggedTemplateLiteral(["spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner"])));
+var unaliasedSheds = template_string_$items(config_templateObject4 || (config_templateObject4 = config_taggedTemplateLiteral(["cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner"])));
+var allWorkshedAliases = [].concat(config_toConsumableArray(workshedAliases.map(_ref => {
+  var item = _ref.item,
+      aliases = _ref.aliases;
+  return {
+    item: item,
+    aliases: [].concat(config_toConsumableArray(aliases), [item.name.toLowerCase()])
+  };
+})), config_toConsumableArray(unaliasedSheds.map(item => {
+  return {
+    item: item,
+    aliases: [item.name.toLowerCase()]
+  };
+})));
+
+function toInitials(s) {
+  var initials = s.split(" ").map(term => term[0]).join("");
+  return initials.length >= 3 ? initials : "";
+}
+
+function stripString(s) {
+  if (s.includes(" ")) return stripString(s.replace(" ", ""));else if (s.includes("-")) return stripString(s.replace("-", ""));
+  return s;
+}
 
 function stringToWorkshedItem(s) {
-  var _workshedAliases$find, _workshedAliases$find2;
-
   // An empty string is a subset of every string and will match all the worksheds
   // So we explicitly handle this case here
   if (s === "") return null;
   var lowerCaseWorkshed = s.toLowerCase();
-  var item = (_workshedAliases$find = (_workshedAliases$find2 = workshedAliases.find(_ref => {
-    var item = _ref.item,
-        aliases = _ref.aliases;
-    return item.name.toLowerCase() === lowerCaseWorkshed || aliases.includes(lowerCaseWorkshed);
-  })) === null || _workshedAliases$find2 === void 0 ? void 0 : _workshedAliases$find2.item) !== null && _workshedAliases$find !== void 0 ? _workshedAliases$find : unaliasedSheds.find(i => i.name.toLowerCase() === lowerCaseWorkshed);
-  if (!item) throw new Error("Unable to identify workshed ".concat(s, "."));
-  return item;
+  var strippedWorkshed = stripString(lowerCaseWorkshed);
+  var validWorksheds = allWorkshedAliases.filter(_ref2 => {
+    var item = _ref2.item,
+        aliases = _ref2.aliases;
+    return toInitials(item.name.toLowerCase()) === lowerCaseWorkshed || item.name.toLowerCase().includes(lowerCaseWorkshed) || stripString(item.name.toLowerCase()).includes(strippedWorkshed) || aliases.some(alias => alias === lowerCaseWorkshed);
+  }); // grimoire catches the errors and throws its own errors
+  // so throw new Error(text) would result in the text not getting printed.
+
+  if (validWorksheds.length > 1) {
+    (0,external_kolmafia_namespaceObject.print)("Invalid Workshed: ".concat(s, " matches multiple worksheds! Matched:"), "red");
+    validWorksheds.forEach(_ref3 => {
+      var item = _ref3.item;
+      return (0,external_kolmafia_namespaceObject.print)("".concat(item), "red");
+    });
+    throw new Error();
+  } else if (validWorksheds.length === 0) {
+    (0,external_kolmafia_namespaceObject.print)("Invalid Workshed: ".concat(s, " does not match any worksheds!"), "red");
+    throw new Error();
+  }
+
+  return validWorksheds[0].item;
 }
 
 var config_globalOptions = Args.create("garbo", 'This script is an automated turn-burning script for the Kingdom of Loathing that spends a day\'s resources and adventures on farming\n\
@@ -16815,12 +16842,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
   }),
   workshed: Args.custom({
     default: null,
-    help: "Intelligently switch into the workshed whose item name you give us. Also accepts certain shorthand aliases.",
-    options: [].concat(config_toConsumableArray(workshedAliases.map(_ref2 => {
-      var item = _ref2.item,
-          aliases = _ref2.aliases;
-      return [item, "".concat([item.name].concat(config_toConsumableArray(aliases)).join(", "))];
-    })), config_toConsumableArray(unaliasedSheds.map(item => [item, item.name])), [[null, "leave this field blank"]])
+    help: "Intelligently switch into the workshed whose item name you give us. Also accepts substrings of the item name (e.g. dna, trainset), certain shorthand aliases (e.g. car) and initials of length >= 3 (e.g. cmc).",
+    options: [].concat(config_toConsumableArray(allWorkshedAliases.map(_ref4 => {
+      var item = _ref4.item,
+          aliases = _ref4.aliases;
+      return [item, "".concat([].concat(config_toConsumableArray(aliases), [toInitials(item.name.toLowerCase())]).filter(alias => alias !== "").join(", "))];
+    })), [[null, "leave this field blank"]])
   }, stringToWorkshedItem, "Item"),
   version: Args.flag({
     setting: "",
@@ -27045,7 +27072,7 @@ function grabMedicine() {
   if ((0,external_kolmafia_namespaceObject.handlingChoice)()) (0,external_kolmafia_namespaceObject.visitUrl)("main.php");
 }
 ;// CONCATENATED MODULE: ./src/workshed/index.ts
-var workshed_templateObject, workshed_templateObject2, workshed_templateObject3, workshed_templateObject4, workshed_templateObject5, workshed_templateObject6, workshed_templateObject7, workshed_templateObject8, workshed_templateObject9, workshed_templateObject10, _GarboWorkshed$curren, workshed_templateObject11;
+var workshed_templateObject, workshed_templateObject2, workshed_templateObject3, workshed_templateObject4, workshed_templateObject5, workshed_templateObject6, workshed_templateObject7, workshed_templateObject8, workshed_templateObject9, workshed_templateObject10;
 
 function workshed_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -27079,6 +27106,8 @@ function workshed_defineProperty(obj, key, value) { if (key in obj) { Object.def
 
 var GarboWorkshed = /*#__PURE__*/function () {
   function GarboWorkshed(options) {
+    var _options$minTurns;
+
     workshed_classCallCheck(this, GarboWorkshed);
 
     workshed_defineProperty(this, "workshed", void 0);
@@ -27087,17 +27116,20 @@ var GarboWorkshed = /*#__PURE__*/function () {
 
     workshed_defineProperty(this, "action", void 0);
 
+    workshed_defineProperty(this, "minTurns", void 0);
+
     this.workshed = options.workshed;
     if (options.done) this.done = options.done;
     if (options.action) this.action = options.action;
+    this.minTurns = (_options$minTurns = options.minTurns) !== null && _options$minTurns !== void 0 ? _options$minTurns : 0;
   }
 
   workshed_createClass(GarboWorkshed, [{
     key: "canRemove",
     value: function canRemove() {
-      var _this$done, _this$done2;
+      var _this$done, _this$done2, _GarboWorkshed$next$m, _GarboWorkshed$next;
 
-      return (_this$done = (_this$done2 = this.done) === null || _this$done2 === void 0 ? void 0 : _this$done2.call(this)) !== null && _this$done !== void 0 ? _this$done : true;
+      return ((_this$done = (_this$done2 = this.done) === null || _this$done2 === void 0 ? void 0 : _this$done2.call(this)) !== null && _this$done !== void 0 ? _this$done : true) || estimatedTurns() <= ((_GarboWorkshed$next$m = (_GarboWorkshed$next = GarboWorkshed.next) === null || _GarboWorkshed$next === void 0 ? void 0 : _GarboWorkshed$next.minTurns) !== null && _GarboWorkshed$next$m !== void 0 ? _GarboWorkshed$next$m : 0);
     }
   }, {
     key: "use",
@@ -27160,6 +27192,7 @@ workshed_defineProperty(GarboWorkshed, "_nextWorkshed", null);
 workshed_defineProperty(GarboWorkshed, "_currentWorkshed", null);
 
 var estimatedTurnsTomorrow = 400 + clamp((property_get("valueOfAdventure") - 4000) / 8, 0, 600);
+var _attemptedMakingTonics = false;
 var worksheds = [new GarboWorkshed({
   workshed: template_string_$item(workshed_templateObject || (workshed_templateObject = workshed_taggedTemplateLiteral(["model train set"]))),
   done: () => {
@@ -27192,7 +27225,8 @@ var worksheds = [new GarboWorkshed({
   action: () => {
     if (property_get("_nextColdMedicineConsult") > (0,external_kolmafia_namespaceObject.totalTurnsPlayed)()) return;
     grabMedicine();
-  }
+  },
+  minTurns: 80
 }), new GarboWorkshed({
   workshed: template_string_$item(workshed_templateObject3 || (workshed_templateObject3 = workshed_taggedTemplateLiteral(["Asdon Martin keyfob"]))),
   done: () => {
@@ -27206,11 +27240,12 @@ var worksheds = [new GarboWorkshed({
   done: () => {
     // This will likely always return true or false for now, depending on the start state of garbo
     // Since we don't actually support using the syringe in combat at this time, the counter will never change
-    return property_get("_dnaPotionsMade") >= 3;
+    return _attemptedMakingTonics || property_get("_dnaPotionsMade") >= 3;
   },
   action: () => {
     // Just grab whatever tonics for now, since we don't actually have support for DNA
     if (property_get("dnaSyringe")) makeTonic(3);
+    _attemptedMakingTonics = true;
   }
 }), new GarboWorkshed({
   workshed: template_string_$item(workshed_templateObject7 || (workshed_templateObject7 = workshed_taggedTemplateLiteral(["spinning wheel"]))),
@@ -27229,21 +27264,16 @@ var worksheds = [new GarboWorkshed({
 }))), workshed_toConsumableArray(template_string_$items(workshed_templateObject10 || (workshed_templateObject10 = workshed_taggedTemplateLiteral(["snow machine, warbear jackhammer drill press, warbear auto-anvil"]))).map(item => new GarboWorkshed({
   workshed: item
 }))));
-
-if (((_GarboWorkshed$curren = GarboWorkshed.current) === null || _GarboWorkshed$curren === void 0 ? void 0 : _GarboWorkshed$curren.workshed) === template_string_$item(workshed_templateObject11 || (workshed_templateObject11 = workshed_taggedTemplateLiteral(["model train set"]))) && GarboWorkshed.next) {
-  (0,external_kolmafia_namespaceObject.print)("Warning: We currently do not support switching from the model train set to another workshed, so ".concat(GarboWorkshed.next.workshed, " will not be set-up during this run of garbo!"), "red");
-}
-
 function handleWorkshed() {
-  var _GarboWorkshed$curren2, _GarboWorkshed$curren3, _GarboWorkshed$curren4;
+  var _GarboWorkshed$curren, _GarboWorkshed$curren2, _GarboWorkshed$curren3;
 
-  (_GarboWorkshed$curren2 = GarboWorkshed.current) === null || _GarboWorkshed$curren2 === void 0 ? void 0 : _GarboWorkshed$curren2.use();
+  (_GarboWorkshed$curren = GarboWorkshed.current) === null || _GarboWorkshed$curren === void 0 ? void 0 : _GarboWorkshed$curren.use();
 
-  if (!property_get("_workshedItemUsed") && ((_GarboWorkshed$curren3 = (_GarboWorkshed$curren4 = GarboWorkshed.current) === null || _GarboWorkshed$curren4 === void 0 ? void 0 : _GarboWorkshed$curren4.canRemove()) !== null && _GarboWorkshed$curren3 !== void 0 ? _GarboWorkshed$curren3 : true) && GarboWorkshed.next && lib_have(GarboWorkshed.next.workshed)) {
-    var _GarboWorkshed$curren5;
+  if (!property_get("_workshedItemUsed") && ((_GarboWorkshed$curren2 = (_GarboWorkshed$curren3 = GarboWorkshed.current) === null || _GarboWorkshed$curren3 === void 0 ? void 0 : _GarboWorkshed$curren3.canRemove()) !== null && _GarboWorkshed$curren2 !== void 0 ? _GarboWorkshed$curren2 : true) && GarboWorkshed.next && lib_have(GarboWorkshed.next.workshed)) {
+    var _GarboWorkshed$curren4;
 
     GarboWorkshed.useNext();
-    (_GarboWorkshed$curren5 = GarboWorkshed.current) === null || _GarboWorkshed$curren5 === void 0 ? void 0 : _GarboWorkshed$curren5.use();
+    (_GarboWorkshed$curren4 = GarboWorkshed.current) === null || _GarboWorkshed$curren4 === void 0 ? void 0 : _GarboWorkshed$curren4.use();
   }
 }
 ;// CONCATENATED MODULE: ./src/post.ts
