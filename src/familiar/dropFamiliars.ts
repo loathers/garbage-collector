@@ -5,10 +5,14 @@ import { GeneralFamiliar } from "./lib";
 
 type StandardDropFamiliar = {
   familiar: Familiar;
-  expected: number[];
+  expected: number[] | ((index: number) => number);
   drop: Item | Item[];
   additionalValue?: () => number;
 };
+
+function expectedTurnsValue(expected: number[] | ((index: number) => number), index: number) {
+  return Array.isArray(expected) ? expected[index] : expected(index);
+}
 
 function dropValue(drop: Item | Item[]): number {
   return drop instanceof Item ? garboValue(drop) : garboAverageValue(...drop);
@@ -20,7 +24,7 @@ function valueStandardDropFamiliar({
   drop,
   additionalValue,
 }: StandardDropFamiliar): GeneralFamiliar {
-  const expectedTurns = expected[familiar.dropsToday] || Infinity;
+  const expectedTurns = expectedTurnsValue(expected, familiar.dropsToday) || Infinity;
   const expectedValue = dropValue(drop) / expectedTurns + (additionalValue?.() ?? 0);
   return {
     familiar,
@@ -150,6 +154,11 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
         )) /
       11,
   },
+  {
+    familiar: $familiar`Hobo in Sheep's Clothing`,
+    expected: (i) => 10 * i + 10, // faster with half-height cigar
+    drop: $item`grubby wool`,
+  },
 ];
 
 export default function getDropFamiliars(): GeneralFamiliar[] {
@@ -170,8 +179,9 @@ export function getAllDrops(fam: Familiar): { expectedValue: number; expectedTur
   const current = fam.dropsToday;
   const returnValue = [];
 
-  for (let i = current; i < expected.length; i++) {
-    const turns = target.expected[i];
+  const length = Array.isArray(expected) ? expected.length : 11; // 11 seems a reasonable max
+  for (let i = current; i < length; i++) {
+    const turns = expectedTurnsValue(target.expected, i);
     returnValue.push({
       expectedValue: dropValue(drop) / turns + (additionalValue?.() ?? 0),
       expectedTurns: turns,
