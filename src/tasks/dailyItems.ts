@@ -296,5 +296,11 @@ export const DailyItemTasks: Task[] = [
       completed: () => get("_lodestoneUsed"),
       do: () => use($item`lodestone`),
     },
+    {
+      name: "Update Garbage Tote",
+      ready: () => have($item`January's Garbage Tote`) && !get("_garbageItemChanged"),
+      completed: () => get("_garbageItemChanged"),
+      do: () => cliExecute("fold broken champagne bottle"),
+    },
   ],
 ];
