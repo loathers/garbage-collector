@@ -8312,7 +8312,7 @@ module.exports = toString;
 
 /***/ }),
 
-/***/ 6894:
+/***/ 6798:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8880,7 +8880,7 @@ function sumNumbers(addends) {
  * @returns Whether the item is in the array, and narrows the type of the item.
  */
 
-function utils_arrayContains(item, array) {
+function arrayContains(item, array) {
   return array.includes(item);
 }
 /**
@@ -11744,35 +11744,35 @@ function modifier_defineProperty(obj, key, value) { if (key in obj) { Object.def
 
 
 function modifier_get(name, subject) {
-  if (utils_arrayContains(name, booleanModifiers)) {
+  if (arrayContains(name, booleanModifiers)) {
     return subject === undefined ? (0,external_kolmafia_namespaceObject.booleanModifier)(name) : (0,external_kolmafia_namespaceObject.booleanModifier)(subject, name);
   }
 
-  if (utils_arrayContains(name, classModifiers)) {
+  if (arrayContains(name, classModifiers)) {
     return (0,external_kolmafia_namespaceObject.classModifier)(subject, name);
   }
 
-  if (utils_arrayContains(name, effectModifiers)) {
+  if (arrayContains(name, effectModifiers)) {
     return (0,external_kolmafia_namespaceObject.effectModifier)(subject, name);
   }
 
-  if (utils_arrayContains(name, monsterModifiers)) {
+  if (arrayContains(name, monsterModifiers)) {
     return (0,external_kolmafia_namespaceObject.monsterModifier)(subject, name);
   }
 
-  if (utils_arrayContains(name, numericModifiers)) {
+  if (arrayContains(name, numericModifiers)) {
     return subject === undefined ? (0,external_kolmafia_namespaceObject.numericModifier)(name) : (0,external_kolmafia_namespaceObject.numericModifier)(subject, name);
   }
 
-  if (utils_arrayContains(name, skillModifiers)) {
+  if (arrayContains(name, skillModifiers)) {
     return (0,external_kolmafia_namespaceObject.skillModifier)(subject, name);
   }
 
-  if (utils_arrayContains(name, stringModifiers)) {
+  if (arrayContains(name, stringModifiers)) {
     return subject === undefined ? (0,external_kolmafia_namespaceObject.stringModifier)(name) : (0,external_kolmafia_namespaceObject.stringModifier)(subject, name);
   }
 
-  if (utils_arrayContains(name, statModifiers)) {
+  if (arrayContains(name, statModifiers)) {
     return (0,external_kolmafia_namespaceObject.statModifier)(subject, name);
   }
 }
@@ -11788,13 +11788,13 @@ function pairwiseMerge(modifiers1, modifiers2) {
 
   for (var modifier in modifiers1) {
     if (Array.from(Object.values(modifiers2)).includes(modifier)) {
-      if (utils_arrayContains(modifier, numericModifiers)) {
+      if (arrayContains(modifier, numericModifiers)) {
         var _modifiers1$modifier, _modifiers2$modifier;
 
         returnValue[modifier] = ((_modifiers1$modifier = modifiers1[modifier]) !== null && _modifiers1$modifier !== void 0 ? _modifiers1$modifier : 0) + ((_modifiers2$modifier = modifiers2[modifier]) !== null && _modifiers2$modifier !== void 0 ? _modifiers2$modifier : 0);
       }
 
-      if (utils_arrayContains(modifier, booleanModifiers)) {
+      if (arrayContains(modifier, booleanModifiers)) {
         var _modifiers1$modifier2, _modifiers2$modifier2;
 
         returnValue[modifier] = ((_modifiers1$modifier2 = modifiers1[modifier]) !== null && _modifiers1$modifier2 !== void 0 ? _modifiers1$modifier2 : false) || ((_modifiers2$modifier2 = modifiers2[modifier]) !== null && _modifiers2$modifier2 !== void 0 ? _modifiers2$modifier2 : false);
@@ -26545,19 +26545,19 @@ function upgrade() {
 function availableLocations() {
   if (!available()) return [];
   var pageHtml = use();
-  visitUrl("main.php");
+  (0,external_kolmafia_namespaceObject.visitUrl)("main.php");
   return checkLocations(pageHtml);
 }
 /**
  * The mafia names for the autumn-aton upgrades
  */
 
-var possibleUpgrades = (/* unused pure expression or super */ null && (["leftarm1", "leftleg1", "rightarm1", "rightleg1", "base_blackhat", "cowcatcher", "periscope", "radardish", "dualexhaust"]));
+var possibleUpgrades = ["leftarm1", "leftleg1", "rightarm1", "rightleg1", "base_blackhat", "cowcatcher", "periscope", "radardish", "dualexhaust"];
 /**
  * @returns An array containing the upgrades that you currently have on your autumn-aton.
  */
 
-function currentUpgrades() {
+function AutumnAton_currentUpgrades() {
   return property_get("autumnatonUpgrades").split(",");
 }
 /**
@@ -26565,17 +26565,17 @@ function currentUpgrades() {
  */
 
 function turnsLeft() {
-  return get("autumnatonQuestTurn") - totalTurnsPlayed();
+  return property_get("autumnatonQuestTurn") - (0,external_kolmafia_namespaceObject.totalTurnsPlayed)();
 }
-function legs() {
-  return currentUpgrades().filter(u => u.includes("leg")).length;
+function AutumnAton_legs() {
+  return AutumnAton_currentUpgrades().filter(u => u.includes("leg")).length;
 }
 /**
  * @returns The number of turns we expect your next autumn-aton quest to take.
  */
 
 function turnsForQuest() {
-  return 11 * Math.max(1, property_get("_autumnatonQuests") - legs());
+  return 11 * Math.max(1, property_get("_autumnatonQuests") - AutumnAton_legs());
 }
 /**
  * @returns The current visual acuity level of your autumn-aton as determined by the current upgrade-state.
@@ -26583,23 +26583,23 @@ function turnsForQuest() {
 
 function visualAcuity() {
   var visualUpgrades = ["periscope", "radardish"];
-  return 1 + currentUpgrades().filter(u => visualUpgrades.includes(u)).length;
+  return 1 + AutumnAton_currentUpgrades().filter(u => visualUpgrades.includes(u)).length;
 }
 /**
  * @returns The number of items from a zone we expect the autumn-aton to steal based on the current upgrade-state. It may not succeed in stealing every item it can.
  */
 
 function zoneItems() {
-  return 3 + currentUpgrades().filter(u => u.includes("arm")).length;
+  return 3 + AutumnAton_currentUpgrades().filter(u => u.includes("arm")).length;
 }
 /**
  * @returns The number of seasonal items we expect the autumn-aton to return with given its current upgrade-state.
  */
 
 function seasonalItems() {
-  return currentUpgrades().includes("cowcatcher") ? 2 : 1;
+  return AutumnAton_currentUpgrades().includes("cowcatcher") ? 2 : 1;
 }
-var difficulties = (/* unused pure expression or super */ null && (["low", "mid", "high"]));
+var difficulties = ["low", "mid", "high"];
 var UNIQUES = {
   outdoor: {
     low: {
@@ -26659,6 +26659,200 @@ function getUniques(location) {
   }
 
   return null;
+}
+;// CONCATENATED MODULE: ./src/autumnaton.ts
+var autumnaton_templateObject, autumnaton_templateObject2;
+
+function autumnaton_toConsumableArray(arr) { return autumnaton_arrayWithoutHoles(arr) || autumnaton_iterableToArray(arr) || autumnaton_unsupportedIterableToArray(arr) || autumnaton_nonIterableSpread(); }
+
+function autumnaton_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function autumnaton_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return autumnaton_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return autumnaton_arrayLikeToArray(o, minLen); }
+
+function autumnaton_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function autumnaton_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return autumnaton_arrayLikeToArray(arr); }
+
+function autumnaton_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function autumnaton_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+
+
+function bestAutumnatonLocation() {
+  return lib_maxBy(mostValuableUpgrade(availableLocations()), averageAutumnatonValue);
+}
+function averageAutumnatonValue(location, acuityOverride, slotOverride) {
+  var badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
+  var rates = (0,external_kolmafia_namespaceObject.appearanceRates)(location);
+  var monsters = Object.keys((0,external_kolmafia_namespaceObject.getLocationMonsters)(location)).map(m => (0,external_kolmafia_namespaceObject.toMonster)(m)).filter(m => !badAttributes.some(s => m.attributes.includes(s)) && rates[m.name] > 0);
+
+  if (monsters.length === 0) {
+    return 0;
+  } else {
+    var maximumDrops = slotOverride !== null && slotOverride !== void 0 ? slotOverride : zoneItems();
+    var acuityCutoff = 20 - (acuityOverride !== null && acuityOverride !== void 0 ? acuityOverride : visualAcuity()) * 5;
+    var validDrops = monsters.map(m => (0,external_kolmafia_namespaceObject.itemDropsArray)(m)).flat().map(_ref => {
+      var rate = _ref.rate,
+          type = _ref.type,
+          drop = _ref.drop;
+      return {
+        value: !["c", "0"].includes(type) ? garboValue(drop, true) : 0,
+        preAcuityExpectation: ["c", "0", ""].includes(type) ? 2 * rate / 100 : 0,
+        postAcuityExpectation: rate >= acuityCutoff && ["c", "0", ""].includes(type) ? 8 * rate / 100 : 0
+      };
+    });
+    var overallExpectedDropQuantity = utils_sum(validDrops, _ref2 => {
+      var preAcuityExpectation = _ref2.preAcuityExpectation,
+          postAcuityExpectation = _ref2.postAcuityExpectation;
+      return preAcuityExpectation + postAcuityExpectation;
+    });
+    var expectedCollectionValue = utils_sum(validDrops, _ref3 => {
+      var value = _ref3.value,
+          preAcuityExpectation = _ref3.preAcuityExpectation,
+          postAcuityExpectation = _ref3.postAcuityExpectation;
+      // This gives us the adjusted amount to fit within our total amount of available drop slots
+      var adjustedDropAmount = (preAcuityExpectation + postAcuityExpectation) * Math.min(1, maximumDrops / overallExpectedDropQuantity);
+      return adjustedDropAmount * value;
+    });
+    return seasonalItemValue(location) + expectedCollectionValue;
+  }
+}
+
+function seasonalItemValue(location, seasonalOverride) {
+  var _AutumnAton$getUnique;
+
+  // Find the value of the drops based on zone difficulty/type
+  var autumnItems = template_string_$items(autumnaton_templateObject || (autumnaton_templateObject = autumnaton_taggedTemplateLiteral(["autumn leaf, AutumnFest ale, autumn breeze, autumn dollar, autumn years wisdom"])));
+  var avgValueOfRandomAutumnItem = garboAverageValue.apply(void 0, autumnaton_toConsumableArray(autumnItems));
+  var autumnMeltables = template_string_$items(autumnaton_templateObject2 || (autumnaton_templateObject2 = autumnaton_taggedTemplateLiteral(["autumn debris shield, autumn leaf pendant, autumn sweater-weather sweater"])));
+  var autumnItem = (_AutumnAton$getUnique = getUniques(location)) === null || _AutumnAton$getUnique === void 0 ? void 0 : _AutumnAton$getUnique.item;
+  var seasonalItemDrops = seasonalOverride !== null && seasonalOverride !== void 0 ? seasonalOverride : seasonalItems();
+
+  if (autumnItem) {
+    return (seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0) + (autumnMeltables.includes(autumnItem) ? // If we already have the meltable, then we get a random item, else value at 0
+    (0,external_kolmafia_namespaceObject.availableAmount)(autumnItem) > 0 ? avgValueOfRandomAutumnItem : 0 : garboValue(autumnItem, true));
+  } else {
+    // If we're in a location without any uniques, we still get cowcatcher items
+    return seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0;
+  }
+}
+
+function expectedRemainingExpeditions() {
+  var legs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : AutumnAton_legs();
+  var availableAutumnatonTurns = estimatedTurns() - turnsLeft();
+  var quests = property_get("_autumnatonQuests");
+  var legOffsetFactor = 11 * Math.max(quests - legs - 1, 0);
+  return Math.floor(Math.sqrt(Math.pow(quests, 2) + 2 * (availableAutumnatonTurns - legOffsetFactor) / 11));
+}
+
+var profitRelevantUpgrades = ["leftarm1", "leftleg1", "rightarm1", "rightleg1", "cowcatcher", "periscope", "radardish"];
+
+function profitFromExtraAcuity(bestLocationContainingUpgrade, bestLocationWithInstalledUpgrade) {
+  return averageAutumnatonValue(bestLocationContainingUpgrade) + averageAutumnatonValue(bestLocationWithInstalledUpgrade) * Math.max(0, expectedRemainingExpeditions() - 1);
+}
+
+function profitFromExtraLeg(bestLocationContainingUpgrade, bestLocationWithInstalledUpgrade) {
+  return averageAutumnatonValue(bestLocationContainingUpgrade) + averageAutumnatonValue(bestLocationWithInstalledUpgrade) * Math.max(0, expectedRemainingExpeditions(AutumnAton_legs() + 1) - 1);
+}
+
+function profitFromExtraArm(bestLocationContainingUpgrade, bestLocationWithInstalledUpgrade) {
+  return averageAutumnatonValue(bestLocationContainingUpgrade) + averageAutumnatonValue(bestLocationWithInstalledUpgrade) * Math.max(0, expectedRemainingExpeditions() - 1);
+}
+
+function profitFromExtraAutumnItem(bestLocationContainingUpgrade, bestLocationWithInstalledUpgrade) {
+  return averageAutumnatonValue(bestLocationContainingUpgrade) + (seasonalItemValue(bestLocationWithInstalledUpgrade) + averageAutumnatonValue(bestLocationWithInstalledUpgrade)) * Math.max(0, expectedRemainingExpeditions() - 1);
+}
+
+function mostValuableUpgrade(fullLocations) {
+  // This function shouldn't be getting called if we don't have an expedition left
+  if (expectedRemainingExpeditions() < 1) {
+    return fullLocations;
+  }
+
+  var currentUpgrades = AutumnAton_currentUpgrades();
+  var acquirableUpgrades = profitRelevantUpgrades.filter(upgrade => !currentUpgrades.includes(upgrade));
+
+  if (acquirableUpgrades.length === 0) {
+    return fullLocations;
+  }
+
+  var currentBestLocation = lib_maxBy(fullLocations, loc => averageAutumnatonValue(loc));
+  var currentExpectedProfit = averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
+  var upgradeValuations = acquirableUpgrades.map(upgrade => {
+    var upgradeLocations = fullLocations.filter(location => {
+      var _AutumnAton$getUnique2;
+
+      return ((_AutumnAton$getUnique2 = getUniques(location)) === null || _AutumnAton$getUnique2 === void 0 ? void 0 : _AutumnAton$getUnique2.upgrade) === upgrade;
+    });
+    var bestLocationContainingUpgrade = lib_maxBy(upgradeLocations, averageAutumnatonValue);
+
+    switch (upgrade) {
+      case "periscope":
+      case "radardish":
+        {
+          var bestLocationWithInstalledUpgrade = lib_maxBy(fullLocations, loc => averageAutumnatonValue(loc, visualAcuity() + 1));
+          return {
+            upgrade: upgrade,
+            profit: profitFromExtraAcuity(bestLocationContainingUpgrade, bestLocationWithInstalledUpgrade)
+          };
+        }
+
+      case "rightleg1":
+      case "leftleg1":
+        {
+          return {
+            upgrade: upgrade,
+            profit: profitFromExtraLeg(bestLocationContainingUpgrade, currentBestLocation)
+          };
+        }
+
+      case "rightarm1":
+      case "leftarm1":
+        {
+          var _bestLocationWithInstalledUpgrade = lib_maxBy(fullLocations, loc => averageAutumnatonValue(loc, undefined, zoneItems() + 1));
+
+          return {
+            upgrade: upgrade,
+            profit: profitFromExtraArm(bestLocationContainingUpgrade, _bestLocationWithInstalledUpgrade)
+          };
+        }
+
+      case "cowcatcher":
+        {
+          return {
+            upgrade: upgrade,
+            profit: profitFromExtraAutumnItem(bestLocationContainingUpgrade, currentBestLocation)
+          };
+        }
+
+      default:
+        {
+          return {
+            upgrade: upgrade,
+            profit: 0
+          };
+        }
+    }
+  });
+
+  var _maxBy = lib_maxBy(upgradeValuations, "profit"),
+      mostValuableUpgrade = _maxBy.upgrade,
+      profitFromBestUpgrade = _maxBy.profit;
+
+  if (profitFromBestUpgrade > currentExpectedProfit) {
+    var upgradeLocations = fullLocations.filter(location => {
+      var _AutumnAton$getUnique3;
+
+      return ((_AutumnAton$getUnique3 = getUniques(location)) === null || _AutumnAton$getUnique3 === void 0 ? void 0 : _AutumnAton$getUnique3.upgrade) === mostValuableUpgrade;
+    });
+    return upgradeLocations;
+  } else {
+    return fullLocations;
+  }
 }
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2022/TrainSet.js
 var TrainSet_templateObject;
@@ -27277,7 +27471,7 @@ function handleWorkshed() {
   }
 }
 ;// CONCATENATED MODULE: ./src/post.ts
-var post_templateObject, post_templateObject2, post_templateObject3, post_templateObject4, post_templateObject5, post_templateObject6, post_templateObject7, post_templateObject8, post_templateObject9, post_templateObject10, post_templateObject11, post_templateObject12, post_templateObject13, post_templateObject14, post_templateObject15, post_templateObject16;
+var post_templateObject, post_templateObject2, post_templateObject3, post_templateObject4, post_templateObject5, post_templateObject6, post_templateObject7, post_templateObject8, post_templateObject9, post_templateObject10, post_templateObject11, post_templateObject12, post_templateObject13, post_templateObject14, post_templateObject15;
 
 function post_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = post_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -27294,6 +27488,8 @@ function post_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return post_array
 function post_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function post_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
 
 
 
@@ -27420,7 +27616,6 @@ function funguySpores() {
   }
 }
 
-var autumnAtonZones = $locations(post_templateObject16 || (post_templateObject16 = post_taggedTemplateLiteral(["El Vibrato Island, The Toxic Teacups, The Oasis, The Deep Dark Jungle, The Bubblin' Caldera, The Sleazy Back Alley"])));
 function postCombatActions() {
   var skipDiet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   juneCleave();
@@ -27439,8 +27634,8 @@ function postCombatActions() {
   stillsuit();
   funguySpores();
 
-  if (config_globalOptions.ascend || turnsForQuest() < (0,external_kolmafia_namespaceObject.myAdventures)() + 10) {
-    sendTo(autumnAtonZones);
+  if (config_globalOptions.ascend || turnsForQuest() < estimatedTurns()) {
+    sendTo(bestAutumnatonLocation);
   }
 }
 ;// CONCATENATED MODULE: ./src/fights.ts
@@ -32618,11 +32813,17 @@ function main() {
     throw new Error("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
   }
 
-  if (!config_globalOptions.prefs.skipAscensionCheck && (!property_get("kingLiberated") || (0,external_kolmafia_namespaceObject.myLevel)() < 13 || external_kolmafia_namespaceObject.Stat.all().some(s => (0,external_kolmafia_namespaceObject.myBasestat)(s) < 75))) {
-    var proceedRegardless = userConfirmDialog("Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?", true);
+  if (!property_get("kingLiberated") || (0,external_kolmafia_namespaceObject.myLevel)() < 13 || external_kolmafia_namespaceObject.Stat.all().some(s => (0,external_kolmafia_namespaceObject.myBasestat)(s) < 75)) {
+    if (config_globalOptions.prefs.skipAscensionCheck) {
+      (0,external_kolmafia_namespaceObject.logprint)("This player is a silly goose, who ignored our warnings about being underleveled.");
+    } else {
+      var proceedRegardless = userConfirmDialog("Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?", true);
 
-    if (!proceedRegardless) {
-      throw new Error("User interrupt requested. Stopping Garbage Collector.");
+      if (!proceedRegardless) {
+        throw new Error("User interrupt requested. Stopping Garbage Collector.");
+      } else {
+        (0,external_kolmafia_namespaceObject.logprint)("This player is a silly goose, who ignored our warnings about being underleveled.");
+      }
     }
   }
 
@@ -33008,7 +33209,7 @@ function main() {
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 6894);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 6798);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
