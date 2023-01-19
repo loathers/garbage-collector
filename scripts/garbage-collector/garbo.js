@@ -8312,7 +8312,7 @@ module.exports = toString;
 
 /***/ }),
 
-/***/ 6798:
+/***/ 7635:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -26546,7 +26546,7 @@ function upgrade() {
 function availableLocations() {
   if (!available()) return [];
   var pageHtml = use();
-  (0,external_kolmafia_namespaceObject.visitUrl)("main.php");
+  visitUrl("main.php");
   return checkLocations(pageHtml);
 }
 /**
@@ -26661,7 +26661,7 @@ function getUniques(location) {
 
   return null;
 }
-;// CONCATENATED MODULE: ./src/autumnaton.ts
+;// CONCATENATED MODULE: ./src/post/autumnaton.ts
 var autumnaton_templateObject, autumnaton_templateObject2;
 
 function autumnaton_toConsumableArray(arr) { return autumnaton_arrayWithoutHoles(arr) || autumnaton_iterableToArray(arr) || autumnaton_unsupportedIterableToArray(arr) || autumnaton_nonIterableSpread(); }
@@ -26683,8 +26683,13 @@ function autumnaton_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = stri
 
 
 
-function bestAutumnatonLocation() {
-  return lib_maxBy(mostValuableUpgrade(availableLocations()), averageAutumnatonValue);
+function bestAutumnatonLocation(locations) {
+  try {
+    return lib_maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
+  } finally {
+    // Sometimes mallPrice calls will cause us to leave the choice
+    if (!(0,external_kolmafia_namespaceObject.handlingChoice)()) (0,external_kolmafia_namespaceObject.visitUrl)("inv_use.php?pwd&whichitem=10954");
+  }
 }
 
 function averageAutumnatonValue(location, acuityOverride, slotOverride) {
@@ -26769,22 +26774,8 @@ function profitFromExtraAutumnItem(bestLocationContainingUpgrade, bestLocationWi
   return averageAutumnatonValue(bestLocationContainingUpgrade) + (seasonalItemValue(bestLocationWithInstalledUpgrade) + averageAutumnatonValue(bestLocationWithInstalledUpgrade)) * Math.max(0, expectedRemainingExpeditions() - 1);
 }
 
-function mostValuableUpgrade(fullLocations) {
-  // This function shouldn't be getting called if we don't have an expedition left
-  if (expectedRemainingExpeditions() < 1) {
-    return fullLocations;
-  }
-
-  var currentUpgrades = AutumnAton_currentUpgrades();
-  var acquirableUpgrades = profitRelevantUpgrades.filter(upgrade => !currentUpgrades.includes(upgrade));
-
-  if (acquirableUpgrades.length === 0) {
-    return fullLocations;
-  }
-
-  var currentBestLocation = lib_maxBy(fullLocations, averageAutumnatonValue);
-  var currentExpectedProfit = averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
-  var upgradeValuations = acquirableUpgrades.map(upgrade => {
+function makeUpgradeValuator(fullLocations, currentBestLocation) {
+  return function (upgrade) {
     var upgradeLocations = fullLocations.filter(location => {
       var _AutumnAton$getUnique2;
 
@@ -26847,7 +26838,25 @@ function mostValuableUpgrade(fullLocations) {
           };
         }
     }
-  });
+  };
+}
+
+function mostValuableUpgrade(fullLocations) {
+  // This function shouldn't be getting called if we don't have an expedition left
+  if (expectedRemainingExpeditions() < 1) {
+    return fullLocations;
+  }
+
+  var currentUpgrades = AutumnAton_currentUpgrades();
+  var acquirableUpgrades = profitRelevantUpgrades.filter(upgrade => !currentUpgrades.includes(upgrade));
+
+  if (acquirableUpgrades.length === 0) {
+    return fullLocations;
+  }
+
+  var currentBestLocation = lib_maxBy(fullLocations, averageAutumnatonValue);
+  var currentExpectedProfit = averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
+  var upgradeValuations = acquirableUpgrades.map(makeUpgradeValuator(fullLocations, currentBestLocation));
 
   var _maxBy = lib_maxBy(upgradeValuations, "profit"),
       highestValueUpgrade = _maxBy.upgrade,
@@ -27167,20 +27176,20 @@ function makeTonic() {
 function tonicsLeft() {
   return clamp(3 - property_get("_dnaPotionsMade"), 0, 3);
 }
-;// CONCATENATED MODULE: ./src/workshed/utils.ts
-var utils_templateObject, utils_templateObject2, utils_templateObject3, utils_templateObject4;
+;// CONCATENATED MODULE: ./src/post/workshed_utils.ts
+var workshed_utils_templateObject, workshed_utils_templateObject2, workshed_utils_templateObject3, workshed_utils_templateObject4;
 
-function utils_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+function workshed_utils_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-function utils_toConsumableArray(arr) { return utils_arrayWithoutHoles(arr) || utils_iterableToArray(arr) || workshed_utils_unsupportedIterableToArray(arr) || utils_nonIterableSpread(); }
+function workshed_utils_toConsumableArray(arr) { return workshed_utils_arrayWithoutHoles(arr) || workshed_utils_iterableToArray(arr) || workshed_utils_unsupportedIterableToArray(arr) || workshed_utils_nonIterableSpread(); }
 
-function utils_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function workshed_utils_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
 function workshed_utils_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return workshed_utils_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return workshed_utils_arrayLikeToArray(o, minLen); }
 
-function utils_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function workshed_utils_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
-function utils_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return workshed_utils_arrayLikeToArray(arr); }
+function workshed_utils_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return workshed_utils_arrayLikeToArray(arr); }
 
 function workshed_utils_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -27209,21 +27218,21 @@ var POTENTIAL_BEST_TRAIN_PIECES = [{
 }, {
   // Some day this'll be better
   piece: Station.TRACKSIDE_DINER,
-  value: () => garboAverageValue.apply(void 0, utils_toConsumableArray(template_string_$items(utils_templateObject || (utils_templateObject = utils_taggedTemplateLiteral(["bowl of cottage cheese, hot buttered roll, toast"])))))
+  value: () => garboAverageValue.apply(void 0, workshed_utils_toConsumableArray(template_string_$items(workshed_utils_templateObject || (workshed_utils_templateObject = workshed_utils_taggedTemplateLiteral(["bowl of cottage cheese, hot buttered roll, toast"])))))
 }, {
   piece: Station.CANDY_FACTORY,
   value: candyFactoryValue
 }, {
   piece: Station.GRAIN_SILO,
-  value: () => 2 * garboAverageValue.apply(void 0, utils_toConsumableArray(template_string_$items(utils_templateObject2 || (utils_templateObject2 = utils_taggedTemplateLiteral(["bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine"])))))
+  value: () => 2 * garboAverageValue.apply(void 0, workshed_utils_toConsumableArray(template_string_$items(workshed_utils_templateObject2 || (workshed_utils_templateObject2 = workshed_utils_taggedTemplateLiteral(["bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine"])))))
 }, {
   piece: Station.ORE_HOPPER,
-  value: () => garboAverageValue.apply(void 0, utils_toConsumableArray(template_string_$items(utils_templateObject3 || (utils_templateObject3 = utils_taggedTemplateLiteral(["linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore"])))))
+  value: () => garboAverageValue.apply(void 0, workshed_utils_toConsumableArray(template_string_$items(workshed_utils_templateObject3 || (workshed_utils_templateObject3 = workshed_utils_taggedTemplateLiteral(["linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore"])))))
 }];
 var trainCycle;
 function getBestCycle() {
   if (!trainCycle) {
-    var cycle = [Station.COAL_HOPPER].concat(utils_toConsumableArray(POTENTIAL_BEST_TRAIN_PIECES.sort((_ref, _ref2) => {
+    var cycle = [Station.COAL_HOPPER].concat(workshed_utils_toConsumableArray(POTENTIAL_BEST_TRAIN_PIECES.sort((_ref, _ref2) => {
       var a = _ref.value;
       var b = _ref2.value;
       return b() - a();
@@ -27234,7 +27243,7 @@ function getBestCycle() {
     trainCycle = cycle;
   }
 
-  return utils_toConsumableArray(trainCycle);
+  return workshed_utils_toConsumableArray(trainCycle);
 }
 function offsetDefaultPieces(offset) {
   var newPieces = [];
@@ -27256,7 +27265,7 @@ function grabMedicine() {
 
   if (!config_globalOptions.nobarf) {
     // if spending turns at barf, we probably will be able to get an extro so always consider it
-    itemChoices.set(template_string_$item(utils_templateObject4 || (utils_templateObject4 = utils_taggedTemplateLiteral(["Extrovermectin\u2122"]))), -1);
+    itemChoices.set(template_string_$item(workshed_utils_templateObject4 || (workshed_utils_templateObject4 = workshed_utils_taggedTemplateLiteral(["Extrovermectin\u2122"]))), -1);
   }
 
   while ((match = regexp.exec(options)) !== null) {
@@ -27265,7 +27274,7 @@ function grabMedicine() {
     itemChoices.set(item, i);
   }
 
-  var bestItem = lib_maxBy(utils_toConsumableArray(itemChoices.keys()), garboValue);
+  var bestItem = lib_maxBy(workshed_utils_toConsumableArray(itemChoices.keys()), garboValue);
   var bestChoice = itemChoices.get(bestItem);
 
   if (bestChoice && bestChoice > 0) {
@@ -27275,7 +27284,7 @@ function grabMedicine() {
 
   if ((0,external_kolmafia_namespaceObject.handlingChoice)()) (0,external_kolmafia_namespaceObject.visitUrl)("main.php");
 }
-;// CONCATENATED MODULE: ./src/workshed/index.ts
+;// CONCATENATED MODULE: ./src/post/workshed.ts
 var workshed_templateObject, workshed_templateObject2, workshed_templateObject3, workshed_templateObject4, workshed_templateObject5, workshed_templateObject6, workshed_templateObject7, workshed_templateObject8, workshed_templateObject9, workshed_templateObject10;
 
 function workshed_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
@@ -27480,7 +27489,7 @@ function handleWorkshed() {
     (_GarboWorkshed$curren4 = GarboWorkshed.current) === null || _GarboWorkshed$curren4 === void 0 ? void 0 : _GarboWorkshed$curren4.use();
   }
 }
-;// CONCATENATED MODULE: ./src/post.ts
+;// CONCATENATED MODULE: ./src/post/index.ts
 var post_templateObject, post_templateObject2, post_templateObject3, post_templateObject4, post_templateObject5, post_templateObject6, post_templateObject7, post_templateObject8, post_templateObject9, post_templateObject10, post_templateObject11, post_templateObject12, post_templateObject13, post_templateObject14, post_templateObject15;
 
 function post_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = post_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -33219,7 +33228,7 @@ function main() {
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 6798);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 7635);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
