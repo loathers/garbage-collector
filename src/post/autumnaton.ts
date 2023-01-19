@@ -5,20 +5,21 @@ import {
   appearanceRates,
   availableAmount,
   getLocationMonsters,
+  handlingChoice,
   itemDropsArray,
   Location,
   toMonster,
-  use,
+  visitUrl,
 } from "kolmafia";
-import { $item, $items, AutumnAton, get, sum } from "libram";
+import { $items, AutumnAton, get, sum } from "libram";
 
-export default function bestAutumnatonLocation(): Location {
-  const bestLoc = maxBy(
-    mostValuableUpgrade(AutumnAton.availableLocations()),
-    averageAutumnatonValue
-  );
-  use($item`autumn-aton`);
-  return bestLoc;
+export default function bestAutumnatonLocation(locations: Location[]): Location {
+  try {
+    return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
+  } finally {
+    // Sometimes mallPrice calls will cause us to leave the choice
+    if (!handlingChoice()) visitUrl("inv_use.php?pwd&whichitem=10954");
+  }
 }
 
 function averageAutumnatonValue(
