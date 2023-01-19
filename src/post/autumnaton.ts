@@ -1,6 +1,6 @@
-import { maxBy } from "./lib";
-import { garboAverageValue, garboValue } from "./session";
-import { estimatedTurns } from "./turns";
+import { maxBy } from "../lib";
+import { garboAverageValue, garboValue } from "../session";
+import { estimatedTurns } from "../turns";
 import {
   appearanceRates,
   availableAmount,
@@ -11,7 +11,7 @@ import {
 } from "kolmafia";
 import { $items, AutumnAton, get, sum } from "libram";
 
-export function bestAutumnatonLocation(): Location {
+export default function bestAutumnatonLocation(): Location {
   return maxBy(mostValuableUpgrade(AutumnAton.availableLocations()), averageAutumnatonValue);
 }
 

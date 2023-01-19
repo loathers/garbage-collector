@@ -26,11 +26,11 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { acquire } from "./acquire";
-import { bestAutumnatonLocation } from "./autumnaton";
-import { garboAdventure, Macro } from "./combat";
-import { globalOptions } from "./config";
-import { computeDiet, consumeDiet } from "./diet";
+import { acquire } from "../acquire";
+import bestAutumnatonLocation from "./autumnaton";
+import { garboAdventure, Macro } from "../combat";
+import { globalOptions } from "../config";
+import { computeDiet, consumeDiet } from "../diet";
 import {
   bestJuneCleaverOption,
   juneCleaverChoiceValues,
@@ -38,10 +38,10 @@ import {
   safeRestore,
   setChoice,
   valueJuneCleaverOption,
-} from "./lib";
-import { teleportEffects } from "./mood";
-import { garboAverageValue, garboValue, sessionSinceStart } from "./session";
-import { estimatedTurns } from "./turns";
+} from "../lib";
+import { teleportEffects } from "../mood";
+import { garboAverageValue, garboValue, sessionSinceStart } from "../session";
+import { estimatedTurns } from "../turns";
 import handleWorkshed from "./workshed";
 
 function floristFriars(): void {
