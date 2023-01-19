@@ -87,13 +87,8 @@ function expectedRemainingExpeditions(legs = AutumnAton.legs()): number {
   const quests = get("_autumnatonQuests");
   const legOffsetFactor = 11 * Math.max(quests - legs - 1, 0);
   return Math.floor(
-    Math.sqrt(
-      quests ** 2 +
-      2 * (
-        availableAutumnatonTurns  - legOffsetFactor
-      ) / 11
-    )
-  )
+    Math.sqrt(quests ** 2 + (2 * (availableAutumnatonTurns - legOffsetFactor)) / 11)
+  );
 }
 
 const profitRelevantUpgrades = [
