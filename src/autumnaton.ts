@@ -15,7 +15,7 @@ export function bestAutumnatonLocation(): Location {
   return maxBy(mostValuableUpgrade(AutumnAton.availableLocations()), averageAutumnatonValue);
 }
 
-export function averageAutumnatonValue(
+function averageAutumnatonValue(
   location: Location,
   acuityOverride?: number,
   slotOverride?: number
@@ -143,7 +143,7 @@ function profitFromExtraAutumnItem(
   );
 }
 
-export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
+function mostValuableUpgrade(fullLocations: Location[]): Location[] {
   // This function shouldn't be getting called if we don't have an expedition left
   if (expectedRemainingExpeditions() < 1) {
     return fullLocations;
@@ -157,7 +157,7 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
     return fullLocations;
   }
 
-  const currentBestLocation = maxBy(fullLocations, (loc: Location) => averageAutumnatonValue(loc));
+  const currentBestLocation = maxBy(fullLocations, averageAutumnatonValue);
   const currentExpectedProfit =
     averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
 
@@ -165,6 +165,10 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
     const upgradeLocations = fullLocations.filter(
       (location) => AutumnAton.getUniques(location)?.upgrade === upgrade
     );
+
+    if (!upgradeLocations.length) {
+      return { upgrade, profit: 0 };
+    }
 
     const bestLocationContainingUpgrade = maxBy(upgradeLocations, averageAutumnatonValue);
 
@@ -213,14 +217,15 @@ export function mostValuableUpgrade(fullLocations: Location[]): Location[] {
       }
     }
   });
-  const { upgrade: mostValuableUpgrade, profit: profitFromBestUpgrade } = maxBy(
+
+  const { upgrade: highestValueUpgrade, profit: profitFromBestUpgrade } = maxBy(
     upgradeValuations,
     "profit"
   );
 
   if (profitFromBestUpgrade > currentExpectedProfit) {
     const upgradeLocations = fullLocations.filter(
-      (location) => AutumnAton.getUniques(location)?.upgrade === mostValuableUpgrade
+      (location) => AutumnAton.getUniques(location)?.upgrade === highestValueUpgrade
     );
     return upgradeLocations;
   } else {
