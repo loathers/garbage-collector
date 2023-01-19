@@ -26685,6 +26685,7 @@ function autumnaton_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = stri
 function bestAutumnatonLocation() {
   return lib_maxBy(mostValuableUpgrade(availableLocations()), averageAutumnatonValue);
 }
+
 function averageAutumnatonValue(location, acuityOverride, slotOverride) {
   var badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   var rates = (0,external_kolmafia_namespaceObject.appearanceRates)(location);
@@ -26780,7 +26781,7 @@ function mostValuableUpgrade(fullLocations) {
     return fullLocations;
   }
 
-  var currentBestLocation = lib_maxBy(fullLocations, loc => averageAutumnatonValue(loc));
+  var currentBestLocation = lib_maxBy(fullLocations, averageAutumnatonValue);
   var currentExpectedProfit = averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
   var upgradeValuations = acquirableUpgrades.map(upgrade => {
     var upgradeLocations = fullLocations.filter(location => {
@@ -26788,6 +26789,14 @@ function mostValuableUpgrade(fullLocations) {
 
       return ((_AutumnAton$getUnique2 = getUniques(location)) === null || _AutumnAton$getUnique2 === void 0 ? void 0 : _AutumnAton$getUnique2.upgrade) === upgrade;
     });
+
+    if (!upgradeLocations.length) {
+      return {
+        upgrade: upgrade,
+        profit: 0
+      };
+    }
+
     var bestLocationContainingUpgrade = lib_maxBy(upgradeLocations, averageAutumnatonValue);
 
     switch (upgrade) {
@@ -26840,14 +26849,14 @@ function mostValuableUpgrade(fullLocations) {
   });
 
   var _maxBy = lib_maxBy(upgradeValuations, "profit"),
-      mostValuableUpgrade = _maxBy.upgrade,
+      highestValueUpgrade = _maxBy.upgrade,
       profitFromBestUpgrade = _maxBy.profit;
 
   if (profitFromBestUpgrade > currentExpectedProfit) {
     var upgradeLocations = fullLocations.filter(location => {
       var _AutumnAton$getUnique3;
 
-      return ((_AutumnAton$getUnique3 = getUniques(location)) === null || _AutumnAton$getUnique3 === void 0 ? void 0 : _AutumnAton$getUnique3.upgrade) === mostValuableUpgrade;
+      return ((_AutumnAton$getUnique3 = getUniques(location)) === null || _AutumnAton$getUnique3 === void 0 ? void 0 : _AutumnAton$getUnique3.upgrade) === highestValueUpgrade;
     });
     return upgradeLocations;
   } else {
