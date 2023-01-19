@@ -545,6 +545,8 @@ export function maxBy<S extends string | number | symbol, T extends { [x in S]: 
   optimizer: ((element: T) => number) | S,
   reverse = false
 ): T {
+  if (!array.length) throw new Error("Don't call maxBy on an empty array!");
+
   if (typeof optimizer === "function") {
     return [...array].reduce(
       ({ value, item }, other) => {
