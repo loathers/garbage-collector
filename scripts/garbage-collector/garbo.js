@@ -18769,6 +18769,7 @@ function freeCrafts() {
 
 function lib_maxBy(array, optimizer) {
   var reverse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  if (!array.length) throw new Error("Don't call maxBy on an empty array!");
 
   if (typeof optimizer === "function") {
     return lib_toConsumableArray(array).reduce((_ref2, other) => {
