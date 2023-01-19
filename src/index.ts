@@ -8,6 +8,7 @@ import {
   guildStoreAvailable,
   inebrietyLimit,
   Item,
+  logprint,
   maximize,
   myAdventures,
   myBasestat,
@@ -127,16 +128,21 @@ export function main(argString = ""): void {
     );
   }
 
-  if (
-    !globalOptions.prefs.skipAscensionCheck &&
-    (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75))
-  ) {
-    const proceedRegardless = userConfirmDialog(
-      "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
-      true
-    );
-    if (!proceedRegardless) {
-      throw new Error("User interrupt requested. Stopping Garbage Collector.");
+  if (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75)) {
+    if (globalOptions.prefs.skipAscensionCheck) {
+      logprint("This player is a silly goose, who ignored our warnings about being underleveled.");
+    } else {
+      const proceedRegardless = userConfirmDialog(
+        "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
+        true
+      );
+      if (!proceedRegardless) {
+        throw new Error("User interrupt requested. Stopping Garbage Collector.");
+      } else {
+        logprint(
+          "This player is a silly goose, who ignored our warnings about being underleveled."
+        );
+      }
     }
   }
 
