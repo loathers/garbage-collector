@@ -8,11 +8,14 @@ import {
   itemDropsArray,
   Location,
   toMonster,
+  use,
 } from "kolmafia";
-import { $items, AutumnAton, get, sum } from "libram";
+import { $item, $items, AutumnAton, get, sum } from "libram";
 
 export default function bestAutumnatonLocation(): Location {
-  return maxBy(mostValuableUpgrade(AutumnAton.availableLocations()), averageAutumnatonValue);
+  const bestLoc = maxBy(mostValuableUpgrade(AutumnAton.availableLocations()), averageAutumnatonValue);
+  use($item`autumn-aton`);
+  return bestLoc
 }
 
 function averageAutumnatonValue(
