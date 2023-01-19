@@ -82,22 +82,18 @@ function seasonalItemValue(location: Location, seasonalOverride?: number): numbe
   }
 }
 
-function expectedRemainingExpeditions(legOverride?: number): number {
+function expectedRemainingExpeditions(legs = AutumnAton.legs()): number {
   const availableAutumnatonTurns = estimatedTurns() - AutumnAton.turnsLeft();
-  let expeditionTurnSum = 0;
-  let quests = get("_autumnatonQuests", 0);
-  while (expeditionTurnSum < availableAutumnatonTurns) {
-    expeditionTurnSum +=
-      11 *
-      Math.max(
-        1,
-        quests -
-          (legOverride ?? AutumnAton.currentUpgrades().filter((u) => u.includes("leg")).length)
-      );
-    quests++;
-  }
-
-  return quests - get("_autumnatonQuests", 0);
+  const quests = get("_autumnatonQuests");
+  const legOffsetFactor = 11 * Math.max(quests - legs - 1, 0);
+  return Math.floor(
+    Math.sqrt(
+      quests ** 2 +
+      2 * (
+        availableAutumnatonTurns  - legOffsetFactor
+      ) / 11
+    )
+  )
 }
 
 const profitRelevantUpgrades = [
