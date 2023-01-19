@@ -1,18 +1,25 @@
-import { maxBy } from "./lib";
-import { garboAverageValue, garboValue } from "./session";
-import { estimatedTurns } from "./turns";
+import { maxBy } from "../lib";
+import { garboAverageValue, garboValue } from "../session";
+import { estimatedTurns } from "../turns";
 import {
   appearanceRates,
   availableAmount,
   getLocationMonsters,
+  handlingChoice,
   itemDropsArray,
   Location,
   toMonster,
+  visitUrl,
 } from "kolmafia";
 import { $items, AutumnAton, get, sum } from "libram";
 
-export function bestAutumnatonLocation(): Location {
-  return maxBy(mostValuableUpgrade(AutumnAton.availableLocations()), averageAutumnatonValue);
+export default function bestAutumnatonLocation(locations: Location[]): Location {
+  try {
+    return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
+  } finally {
+    // Sometimes mallPrice calls will cause us to leave the choice
+    if (!handlingChoice()) visitUrl("inv_use.php?pwd&whichitem=10954");
+  }
 }
 
 function averageAutumnatonValue(
@@ -143,25 +150,8 @@ function profitFromExtraAutumnItem(
   );
 }
 
-function mostValuableUpgrade(fullLocations: Location[]): Location[] {
-  // This function shouldn't be getting called if we don't have an expedition left
-  if (expectedRemainingExpeditions() < 1) {
-    return fullLocations;
-  }
-  const currentUpgrades = AutumnAton.currentUpgrades();
-  const acquirableUpgrades = profitRelevantUpgrades.filter(
-    (upgrade) => !currentUpgrades.includes(upgrade)
-  );
-
-  if (acquirableUpgrades.length === 0) {
-    return fullLocations;
-  }
-
-  const currentBestLocation = maxBy(fullLocations, averageAutumnatonValue);
-  const currentExpectedProfit =
-    averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
-
-  const upgradeValuations = acquirableUpgrades.map((upgrade) => {
+function makeUpgradeValuator(fullLocations: Location[], currentBestLocation: Location) {
+  return function (upgrade: AutumnAton.Upgrade) {
     const upgradeLocations = fullLocations.filter(
       (location) => AutumnAton.getUniques(location)?.upgrade === upgrade
     );
@@ -216,7 +206,30 @@ function mostValuableUpgrade(fullLocations: Location[]): Location[] {
         return { upgrade, profit: 0 };
       }
     }
-  });
+  };
+}
+
+function mostValuableUpgrade(fullLocations: Location[]): Location[] {
+  // This function shouldn't be getting called if we don't have an expedition left
+  if (expectedRemainingExpeditions() < 1) {
+    return fullLocations;
+  }
+  const currentUpgrades = AutumnAton.currentUpgrades();
+  const acquirableUpgrades = profitRelevantUpgrades.filter(
+    (upgrade) => !currentUpgrades.includes(upgrade)
+  );
+
+  if (acquirableUpgrades.length === 0) {
+    return fullLocations;
+  }
+
+  const currentBestLocation = maxBy(fullLocations, averageAutumnatonValue);
+  const currentExpectedProfit =
+    averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
+
+  const upgradeValuations = acquirableUpgrades.map(
+    makeUpgradeValuator(fullLocations, currentBestLocation)
+  );
 
   const { upgrade: highestValueUpgrade, profit: profitFromBestUpgrade } = maxBy(
     upgradeValuations,
