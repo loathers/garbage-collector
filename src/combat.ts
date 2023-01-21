@@ -663,7 +663,7 @@ function runCombatBy<T>(initiateCombatAction: () => T) {
  */
 export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, tryAuto = false): T {
   if (getAutoAttack() !== 0) setAutoAttack(0);
-  if (tryAuto) macro.setAutoAttack();
+  if (tryAuto) customizeMacro(macro).setAutoAttack();
   makeCcs(macro);
   try {
     return runCombatBy(action);
