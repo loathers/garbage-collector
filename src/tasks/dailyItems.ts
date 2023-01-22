@@ -13,6 +13,7 @@ import {
   runChoice,
   scrapPockets,
   toItem,
+  use,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -288,6 +289,18 @@ export const DailyItemTasks: Task[] = [
         runChoice(-1);
       },
       choices: { 1280: 1 },
+    },
+    {
+      name: "Lodestone",
+      ready: () => have($item`lodestone`) && !get("_lodestoneUsed"),
+      completed: () => get("_lodestoneUsed"),
+      do: () => use($item`lodestone`),
+    },
+    {
+      name: "Update Garbage Tote",
+      ready: () => have($item`January's Garbage Tote`) && !get("_garbageItemChanged"),
+      completed: () => get("_garbageItemChanged"),
+      do: () => cliExecute("fold broken champagne bottle"),
     },
   ],
 ];
