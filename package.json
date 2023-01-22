@@ -6,8 +6,8 @@
   "main": "KoLmafia/scripts/garbage-collector/garbo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node esbuild/build.mjs",
-    "watch": "node esbuild/build.mjs --watch",
+    "build": "node esbuild/build-all.mjs",
+    "watch": "node esbuild/build-all.mjs --watch",
     "deploy": "copyfiles --up 1 --exclude \"**/dependencies.txt\" \"KoLmafia/**/*\" \"mafia/**/*\"",
     "lint": "eslint src && prettier --check .",
     "lint:fix": "eslint src --fix && prettier --check --write ."
