@@ -1,35 +1,27 @@
 import { Effect, Location, Skill } from "kolmafia";
 import { $location, clamp, get, getModifier, have, sum } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
+type EightBitData = { modifier: NumericModifier; offset: number; color: string };
 
-const doubled: { [x in string]: Location } = {
-  green: $location`Hero's Field`,
-  black: $location`Vanya's Castle`,
-  red: $location`The Fungus Plains`,
-  blue: $location`Megalo-City`,
-};
-
-const bonusPoints = new Map<Location, { modifier: NumericModifier; offset: number }>([
-  [$location`Hero's Field`, { modifier: "Item Drop", offset: 100 }],
-  [$location`Vanya's Castle`, { modifier: "Initiative", offset: 300 }],
-  [$location`Megalo-City`, { modifier: "Damage Absorption", offset: 300 }],
-  [$location`The Fungus Plains`, { modifier: "Meat Drop", offset: 150 }],
+const bonusPoints = new Map<Location, EightBitData>([
+  [$location`Hero's Field`, { modifier: "Item Drop", offset: 100, color: "green" }],
+  [$location`Vanya's Castle`, { modifier: "Initiative", offset: 300, color: "black" }],
+  [$location`Megalo-City`, { modifier: "Damage Absorption", offset: 300, color: "red" }],
+  [$location`The Fungus Plains`, { modifier: "Meat Drop", offset: 150, color: "blue" }],
 ]);
 
-function expectedPoints(location: Location): number {
-  const isDoubled = doubled[get("8BitScore")] === location;
-  const data = bonusPoints.get(location);
-  if (!data) return 0;
-  const { modifier, offset } = data;
-
+function expectedPoints({ modifier, offset, color }: EightBitData): number {
+  const isDoubled = color === get("8BitColor");
   return (
     clamp(
-      sum(
-        [...Skill.all(), ...Effect.all()].filter((x) => have(x)),
-        (x) => getModifier(modifier, x)
-      ) - offset,
+      100 +
+        sum(
+          [...Skill.all(), ...Effect.all()].filter((x) => have(x)),
+          (x) => getModifier(modifier, x)
+        ) -
+        offset,
       0,
-      300
+      400
     ) * (isDoubled ? 1 : 1 / 2)
   );
 }
