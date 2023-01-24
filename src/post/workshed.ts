@@ -4,7 +4,7 @@ import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
-import { getBestCycle, getBestOffset, grabMedicine, offsetDefaultPieces } from "./workshed_utils";
+import { getBestTrainConfiguration, getBestTrainStations, grabMedicine, offsetDefaultPieces } from "./workshed_utils";
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;
@@ -74,6 +74,8 @@ const worksheds = [
     },
     action: () => {
       if (!TrainSet.canConfigure()) return;
+      if (globalOptions.ascend && estimatedTurns() <= 40) return;
+
       if (!get("trainsetConfiguration")) {
         // Visit the workshed to make sure it's actually empty, instead of us having not yet seen it this run
         visitUrl("campground.php?action=workshed");
@@ -81,14 +83,12 @@ const worksheds = [
       }
       if (!get("trainsetConfiguration")) {
         print("Reconfiguring trainset, as our next station is empty", "blue");
-        return TrainSet.setConfiguration(getBestCycle());
+        return TrainSet.setConfiguration(getBestTrainConfiguration());
       } else {
-        const offsetWanted = getBestOffset();
-        const stationToWatchFor = getBestCycle()[offsetWanted];
-        const offset = get("trainsetPosition") % 8;
-        if (TrainSet.next() !== stationToWatchFor) return;
+        const currentOffset = get("trainsetPosition") % 8;
+        if (!getBestTrainStations().includes(TrainSet.next())) return;
         print(`Reconfiguring trainset.}`, "blue");
-        return TrainSet.setConfiguration(offsetDefaultPieces(offset));
+        return TrainSet.setConfiguration(offsetDefaultPieces(currentOffset));
       }
     },
   }),

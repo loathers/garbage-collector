@@ -50,11 +50,17 @@ const POTENTIAL_BEST_TRAIN_PIECES = [
       ),
   },
 ];
+function valueTrainStation(station: TrainSet.Station): number {
+  if (station === TrainSet.Station.COAL_HOPPER) {
+    return Math.max(...POTENTIAL_BEST_TRAIN_PIECES.map(({ value }) => value()));
+  }
+  return POTENTIAL_BEST_TRAIN_PIECES.find(({ piece }) => piece === station)?.value?.() ?? 0;
+}
 
-let trainCycle: TrainSet.Cycle;
-export function getBestCycle(): TrainSet.Cycle {
-  if (!trainCycle) {
-    const cycle = [
+let bestCycle: TrainSet.Cycle | null = null;
+export function getBestTrainConfiguration(): TrainSet.Cycle {
+  if (!bestCycle) {
+    bestCycle = [
       TrainSet.Station.COAL_HOPPER,
       ...POTENTIAL_BEST_TRAIN_PIECES.sort(({ value: a }, { value: b }) => b() - a()).map(
         ({ piece }) => piece
@@ -62,34 +68,39 @@ export function getBestCycle(): TrainSet.Cycle {
       TrainSet.Station.TOWER_FIZZY,
       TrainSet.Station.VIEWING_PLATFORM,
     ] as TrainSet.Cycle;
-    trainCycle = cycle;
   }
-  return [...trainCycle];
+  return bestCycle;
 }
 
-export function getBestOffset(): number {
-  const cycle = getBestCycle();
-  const valueTrainStation = (station: TrainSet.Station) =>
-    POTENTIAL_BEST_TRAIN_PIECES.find(({ piece }) => piece === station)?.value?.() ?? 0;
-  const cycleValue =
-    5 * (sum(POTENTIAL_BEST_TRAIN_PIECES, ({ value }) => value()) + valueTrainStation(cycle[0]));
+let bestStations: TrainSet.Station[] | null = null;
+export function getBestTrainStations(): TrainSet.Station[] {
+  if (!bestStations) {
+    const cycle = getBestTrainConfiguration();
+    const cycleValue =
+      5 * (sum(POTENTIAL_BEST_TRAIN_PIECES, ({ value }) => value()) + valueTrainStation(cycle[1]));
 
-  const potentialOffsets = Array(POTENTIAL_BEST_TRAIN_PIECES.length)
-    .fill(null)
-    .map((_x, i) => i + 2);
+    const goodStations: TrainSet.Station[] = cycle.slice(0, 2);
+    let currentBestAverageTurnValue = (cycleValue + sum(goodStations, valueTrainStation)) / 42;
 
-  return maxBy(potentialOffsets, (offset) => {
-    const tail = [...cycle].splice(1, offset - 1);
-    const tailValue = sum(tail, valueTrainStation);
-    const fullCycleValue = cycleValue + valueTrainStation(cycle[0]) + tailValue;
-    const cycleLength = 40 + offset;
-    return fullCycleValue / cycleLength;
-  });
+    for (let i = 2; i < 7; i++) {
+      const averageTurnValue =
+        (cycleValue + sum([...goodStations, cycle[i]], valueTrainStation)) / (40 + i);
+      if (averageTurnValue > currentBestAverageTurnValue) {
+        currentBestAverageTurnValue = averageTurnValue;
+        goodStations.push(cycle[i]);
+      } else {
+        bestStations = goodStations;
+        break;
+      }
+    }
+    bestStations ??= cycle;
+  }
+  return bestStations;
 }
 
 export function offsetDefaultPieces(offset: number): TrainSet.Cycle {
   const newPieces: TrainSet.Station[] = [];
-  const defaultPieces = getBestCycle();
+  const defaultPieces = getBestTrainConfiguration();
   for (let i = 0; i < 8; i++) {
     const newPos = (i + offset) % 8;
     newPieces[newPos] = defaultPieces[i];
