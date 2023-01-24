@@ -67,6 +67,26 @@ export function getBestCycle(): TrainSet.Cycle {
   return [...trainCycle];
 }
 
+export function getBestOffset(): number {
+  const cycle = getBestCycle();
+  const valueTrainStation = (station: TrainSet.Station) =>
+    POTENTIAL_BEST_TRAIN_PIECES.find(({ piece }) => piece === station)?.value?.() ?? 0;
+  const cycleValue =
+    5 * (sum(POTENTIAL_BEST_TRAIN_PIECES, ({ value }) => value()) + valueTrainStation(cycle[0]));
+
+  const potentialOffsets = Array(POTENTIAL_BEST_TRAIN_PIECES.length)
+    .fill(null)
+    .map((_x, i) => i + 2);
+
+  return maxBy(potentialOffsets, (offset) => {
+    const tail = [...cycle].splice(1, offset - 1);
+    const tailValue = sum(tail, valueTrainStation);
+    const fullCycleValue = cycleValue + valueTrainStation(cycle[0]) + tailValue;
+    const cycleLength = 40 + offset;
+    return fullCycleValue / cycleLength;
+  });
+}
+
 export function offsetDefaultPieces(offset: number): TrainSet.Cycle {
   const newPieces: TrainSet.Station[] = [];
   const defaultPieces = getBestCycle();
