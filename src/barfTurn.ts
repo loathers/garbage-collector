@@ -320,7 +320,9 @@ const turns: AdventureAction[] = [
       const location = wanderWhere("yellow ray");
       const familiar = freeFightFamiliar({ location, allowAttackFamiliars: !usingDuplicate });
       useFamiliar(familiar);
-      freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
+      freeFightOutfit(
+        new Requirement([], { forceEquip: $items`Jurassic Parka`, modes: { parka: "dilophosaur" } })
+      );
       cliExecute("parka dilophosaur");
       if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);

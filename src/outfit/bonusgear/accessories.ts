@@ -1,7 +1,18 @@
-import { Item, myClass, setLocation, toSlot } from "kolmafia";
-import { $class, $item, $items, $location, $skill, $slot, getModifier, have } from "libram";
-import { nonNull } from "../../lib";
-import { garboAverageValue } from "../../session";
+import { Item, itemAmount, myClass, setLocation, toSlot } from "kolmafia";
+import {
+  $class,
+  $item,
+  $items,
+  $location,
+  $skill,
+  $slot,
+  get,
+  getModifier,
+  have,
+  sumNumbers,
+} from "libram";
+import { nonNull, realmAvailable } from "../../lib";
+import { garboAverageValue, garboValue } from "../../session";
 import { BonusEquipMode, isFreeFight, meatValue, toBonus, VOA } from "../lib";
 
 const mafiaThumbRing = {
@@ -18,10 +29,40 @@ const powerGlove = {
   value: () => 0.25 * garboAverageValue(...$items`blue pixel, green pixel, red pixel, white pixel`),
 };
 
+function valueLGR(mode: BonusEquipMode): number {
+  if (mode === BonusEquipMode.DMT && realmAvailable("hot") && !get("_luckyGoldRingVolcoino")) {
+    return 0;
+  }
+
+  const dropValues = [
+    100, // 80 - 120 meat
+    ...[
+      itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
+      itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
+      itemAmount($item`Freddy Kruegerand`) > 0 ? garboValue($item`Freddy Kruegerand`) : 0,
+      realmAvailable("sleaze") ? garboValue($item`Beach Buck`) : 0,
+      realmAvailable("spooky") ? garboValue($item`Coinspiracy`) : 0,
+      realmAvailable("stench") ? garboValue($item`FunFunds™`) : 0,
+      realmAvailable("hot") && !get("_luckyGoldRingVolcoino") && mode !== BonusEquipMode.EMBEZZLER
+        ? garboValue($item`Volcoino`)
+        : 0,
+      realmAvailable("cold") ? garboValue($item`Wal-Mart gift certificate`) : 0,
+      realmAvailable("fantasy") ? garboValue($item`Rubee™`) : 0,
+    ].filter((value) => value > 0),
+  ];
+
+  return sumNumbers(dropValues) / dropValues.length / 10;
+}
+
+const luckyGoldRing = {
+  item: $item`lucky gold ring`,
+  value: valueLGR,
+};
+
 export function bonusAccessories(mode: BonusEquipMode): [Item, number][] {
   return nonNull(
-    [mafiaThumbRing, mrCheengsSpectacles, mrScreegesSpectacles, powerGlove].map((x) =>
-      toBonus(x, mode)
+    [mafiaThumbRing, mrCheengsSpectacles, mrScreegesSpectacles, powerGlove, luckyGoldRing].map(
+      (x) => toBonus(x, mode)
     )
   );
 }
