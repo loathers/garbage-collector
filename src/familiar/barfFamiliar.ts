@@ -22,15 +22,16 @@ import {
   sum,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
-import { bonusGear } from "../dropsgear";
+import { bonusGear } from "../outfit/bonusgear";
 import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
-import { meatOutfit } from "../outfit";
+import { meatOutfit } from "../outfit/meat";
 import { estimatedTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
+import { BonusEquipMode } from "../outfit/lib";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat / 100;
@@ -63,13 +64,13 @@ function getCachedOutfitValues(fam: Familiar) {
   );
 
   const outfit = outfitSlots.map((slot) => equippedItem(slot));
-  const bonuses = bonusGear("barf", false);
+  const bonuses = bonusGear(BonusEquipMode.BARF, false);
 
   const values = {
     weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
     meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
     item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
-    bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
+    bonus: sum(outfit, (eq: Item) => new Map(bonuses).get(eq) ?? 0),
   };
   outfitCache.set(lepMult, values);
   return values;

@@ -39,5 +39,6 @@ function valueCleaver(mode: BonusEquipMode): number {
   const interval = mode === BonusEquipMode.EMBEZZLER ? 30 : JuneCleaver.getInterval();
   return juneCleaverEV / interval;
 }
-const juneCleaver = { item: JuneCleaver.cleaver, value: valueCleaver };
-export default (mode: BonusEquipMode): [Item, number] | null => toBonus(juneCleaver, mode);
+const juneCleaver = { item: JuneCleaver.cleaver, value: valueCleaver, circumstsantial: true };
+export default (mode: BonusEquipMode, valueCircumstantialBonus: boolean): [Item, number] | null =>
+  toBonus(juneCleaver, mode, valueCircumstantialBonus);

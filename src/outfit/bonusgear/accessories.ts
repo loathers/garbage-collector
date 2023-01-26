@@ -59,10 +59,13 @@ const luckyGoldRing = {
   value: valueLGR,
 };
 
-export function bonusAccessories(mode: BonusEquipMode): [Item, number][] {
+export function bonusAccessories(
+  mode: BonusEquipMode,
+  valueCircumstantialBonus = true
+): [Item, number][] {
   return nonNull(
     [mafiaThumbRing, mrCheengsSpectacles, mrScreegesSpectacles, powerGlove, luckyGoldRing].map(
-      (x) => toBonus(x, mode)
+      (x) => toBonus(x, mode, valueCircumstantialBonus)
     )
   );
 }

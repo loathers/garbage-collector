@@ -50,10 +50,16 @@ export const VOA = get("valueOfAdventure");
 export type BonusGear = {
   item: Item;
   value: (mode: BonusEquipMode) => number;
+  circumstantial?: boolean;
 };
 
-export function toBonus({ item, value }: BonusGear, mode: BonusEquipMode): [Item, number] | null {
+export function toBonus(
+  { item, value, circumstantial }: BonusGear,
+  mode: BonusEquipMode,
+  valueCircumstantialBonus = true
+): [Item, number] | null {
   if (!have(item) || !canEquip(item)) return null;
+  if ((circumstantial ?? true) && !valueCircumstantialBonus) return null;
   const val = value(mode);
   if (!val) return null;
   return [item, val];

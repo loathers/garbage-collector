@@ -23,5 +23,10 @@ function designerSweatpantsValue(mode: BonusEquipMode): number {
   return (Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2) / 25;
 }
 
-const designerSweatpants = { item: $item`designer sweatpants`, value: designerSweatpantsValue };
-export default (mode: BonusEquipMode): [Item, number] | null => toBonus(designerSweatpants, mode);
+const designerSweatpants = {
+  item: $item`designer sweatpants`,
+  value: designerSweatpantsValue,
+  circumstantial: true,
+};
+export default (mode: BonusEquipMode, valueCircumstantialBonus: boolean): [Item, number] | null =>
+  toBonus(designerSweatpants, mode, valueCircumstantialBonus);

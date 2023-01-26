@@ -1,8 +1,9 @@
 import { equippedItem, Item, mallPrice } from "kolmafia";
 import { $item, $items, $slots, get, sum } from "libram";
+import { globalOptions } from "../../config";
 import { nonNull } from "../../lib";
 import { garboAverageValue, garboValue } from "../../session";
-import { BonusEquipMode, ignoreLimitedDrops, toBonus } from "../lib";
+import { BonusEquipMode, ignoreLimitedDrops, isFreeFight, toBonus } from "../lib";
 
 // PANTS
 const pantogramPants = {
@@ -21,6 +22,17 @@ const snowSuit = {
     ignoreLimitedDrops(mode) || get("_carrotNoseDrops") >= 3
       ? 0
       : garboValue($item`carrot nose`) / 10,
+      circumstantial: true,
+};
+
+// OFFHANDS
+const magnifyingGlass = {
+  item: $item`cursed magnifying glass`,
+  value: (mode: BonusEquipMode) =>
+    isFreeFight(mode) || get("cursedMagnifyingGlassCount") >= 13 || get("_voidFreeFights") >= 5
+      ? 0
+      : globalOptions.prefs.valueOfFreeFight / 13,
+  circumstantial: true,
 };
 
 // WEIRD
@@ -34,9 +46,9 @@ function stickerValue(mode: BonusEquipMode): number {
 const stickerSword = { item: $item`scratch 'n' sniff sword`, value: stickerValue };
 const stickerCrossbow = { item: $item`scratch 'n' sniff crossbow`, value: stickerValue };
 
-export default (mode: BonusEquipMode): [Item, number][] =>
+export default (mode: BonusEquipMode, valueCircumstantialBonus: boolean): [Item, number][] =>
   nonNull(
-    [pantogramPants, bagOfManyConfections, snowSuit, stickerSword, stickerCrossbow].map((x) =>
-      toBonus(x, mode)
+    [pantogramPants, bagOfManyConfections, snowSuit, magnifyingGlass, stickerSword, stickerCrossbow].map((x) =>
+      toBonus(x, mode, valueCircumstantialBonus)
     )
   );

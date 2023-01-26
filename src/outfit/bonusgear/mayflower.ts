@@ -12,5 +12,6 @@ function valueMayflower(mode: BonusEquipMode): number {
   const sporadicMeatValue = (meatValue(mode) * 40 * 0.125) / 100;
   return dropValue + sporadicMeatValue;
 }
-const mayflower = { item: $item`Mayflower bouquet`, value: valueMayflower };
-export default (mode: BonusEquipMode): [Item, number] | null => toBonus(mayflower, mode);
+const mayflower = { item: $item`Mayflower bouquet`, value: valueMayflower, circumstantial: true };
+export default (mode: BonusEquipMode, valueCircumstantialBonus: boolean): [Item, number] | null =>
+  toBonus(mayflower, mode, valueCircumstantialBonus);

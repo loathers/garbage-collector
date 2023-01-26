@@ -9,12 +9,12 @@ import pantsgiving from "./pantsgiving";
 import sweatpants from "./sweatpants";
 import { nonNull } from "../../lib";
 
-function bonusGear(mode: BonusEquipMode): [Item, number][] {
+function bonusGear(mode: BonusEquipMode, valueCircumstantialBonus = true): [Item, number][] {
   return [
-    ...nonNull([cleaver, mayflower, pantsgiving, sweatpants].map((bonus) => bonus(mode))),
+    ...nonNull([cleaver, mayflower, pantsgiving, sweatpants].map((bonus) => bonus(mode, valueCircumstantialBonus))),
     ...cheeses(mode),
-    ...bonusAccessories(mode),
-    ...misc(mode),
+    ...bonusAccessories(mode, valueCircumstantialBonus),
+    ...misc(mode, valueCircumstantialBonus),
   ];
 }
 

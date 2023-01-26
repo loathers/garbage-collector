@@ -38,5 +38,6 @@ function pantsgivingValue(): number {
   return pantsgivingBonus;
 }
 
-const pantsgiving = { item: $item`Pantsgiving`, value: pantsgivingValue };
-export default (mode: BonusEquipMode): [Item, number] | null => toBonus(pantsgiving, mode);
+const pantsgiving = { item: $item`Pantsgiving`, value: pantsgivingValue, circumstantial: true };
+export default (mode: BonusEquipMode, valueCircumstantialBonus: boolean): [Item, number] | null =>
+  toBonus(pantsgiving, mode, valueCircumstantialBonus);
