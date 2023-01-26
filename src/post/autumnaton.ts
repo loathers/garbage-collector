@@ -210,9 +210,10 @@ function makeUpgradeValuator(fullLocations: Location[], currentBestLocation: Loc
 }
 
 function mostValuableUpgrade(fullLocations: Location[]): Location[] {
+  const validLocations = fullLocations.filter((l) => l.parent !== "Clan Basement");
   // This function shouldn't be getting called if we don't have an expedition left
   if (expectedRemainingExpeditions() < 1) {
-    return fullLocations;
+    return validLocations;
   }
   const currentUpgrades = AutumnAton.currentUpgrades();
   const acquirableUpgrades = profitRelevantUpgrades.filter(
@@ -220,15 +221,15 @@ function mostValuableUpgrade(fullLocations: Location[]): Location[] {
   );
 
   if (acquirableUpgrades.length === 0) {
-    return fullLocations;
+    return validLocations;
   }
 
-  const currentBestLocation = maxBy(fullLocations, averageAutumnatonValue);
+  const currentBestLocation = maxBy(validLocations, averageAutumnatonValue);
   const currentExpectedProfit =
     averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
 
   const upgradeValuations = acquirableUpgrades.map(
-    makeUpgradeValuator(fullLocations, currentBestLocation)
+    makeUpgradeValuator(validLocations, currentBestLocation)
   );
 
   const { upgrade: highestValueUpgrade, profit: profitFromBestUpgrade } = maxBy(
@@ -237,11 +238,11 @@ function mostValuableUpgrade(fullLocations: Location[]): Location[] {
   );
 
   if (profitFromBestUpgrade > currentExpectedProfit) {
-    const upgradeLocations = fullLocations.filter(
+    const upgradeLocations = validLocations.filter(
       (location) => AutumnAton.getUniques(location)?.upgrade === highestValueUpgrade
     );
     return upgradeLocations;
   } else {
-    return fullLocations;
+    return validLocations;
   }
 }
