@@ -1,3 +1,4 @@
+import "core-js/features/array/flat";
 import { maxBy } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 import { estimatedTurns } from "../turns";

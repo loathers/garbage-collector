@@ -84,8 +84,6 @@ export const embezzlerLog: {
   sources: [],
 };
 
-export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
-
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 60;
@@ -504,7 +502,7 @@ export function valueJuneCleaverOption(result: Item | number): number {
   return result instanceof Item ? garboValue(result) : result;
 }
 
-export function bestJuneCleaverOption(id: (typeof JuneCleaver.choices)[number]): 1 | 2 | 3 {
+export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
   return maxBy(options, (option) => valueJuneCleaverOption(juneCleaverChoiceValues[id][option]));
 }
@@ -568,3 +566,8 @@ export type GarboItemLists = { Newark: string[]; "Feliz Navidad": string[]; trai
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
   Array.isArray(singleOrArray) ? singleOrArray : [singleOrArray];
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function nonNull<T extends {}>(arr: (T | null)[]): T[] {
+  return arr.filter((x): x is T => x !== null);
+}
