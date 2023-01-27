@@ -55,6 +55,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
+import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 
@@ -401,6 +402,11 @@ export class Macro extends StrictMacro {
       stasisRounds = 20;
     }
 
+    if (globalOptions.quick) {
+      // long fights can be very slow
+      stasisRounds = Math.min(5, stasisRounds);
+    }
+
     // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
@@ -657,7 +663,7 @@ function runCombatBy<T>(initiateCombatAction: () => T) {
  */
 export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, tryAuto = false): T {
   if (getAutoAttack() !== 0) setAutoAttack(0);
-  if (tryAuto) macro.setAutoAttack();
+  if (tryAuto) customizeMacro(macro).setAutoAttack();
   makeCcs(macro);
   try {
     return runCombatBy(action);

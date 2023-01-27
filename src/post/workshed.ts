@@ -4,11 +4,12 @@ import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
-import { getBestCycle, grabMedicine, offsetDefaultPieces } from "./utils";
+import { getBestCycle, grabMedicine, offsetDefaultPieces } from "./workshed_utils";
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;
   action?: () => void;
+  minTurns?: number;
 };
 class GarboWorkshed {
   private static _nextWorkshed: GarboWorkshed | null = null;
@@ -17,14 +18,16 @@ class GarboWorkshed {
   workshed: Item;
   done?: () => boolean;
   action?: () => void;
+  minTurns?: number;
   constructor(options: WorkshedOptions) {
     this.workshed = options.workshed;
     if (options.done) this.done = options.done;
     if (options.action) this.action = options.action;
+    this.minTurns = options.minTurns ?? 0;
   }
 
   canRemove(): boolean {
-    return this.done?.() ?? true;
+    return (this.done?.() ?? true) || estimatedTurns() <= (GarboWorkshed.next?.minTurns ?? 0);
   }
 
   use(): void {
@@ -60,6 +63,7 @@ class GarboWorkshed {
   }
 }
 const estimatedTurnsTomorrow = 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600);
+let _attemptedMakingTonics = false;
 
 const worksheds = [
   new GarboWorkshed({
@@ -94,6 +98,7 @@ const worksheds = [
       if (get("_nextColdMedicineConsult") > totalTurnsPlayed()) return;
       grabMedicine();
     },
+    minTurns: 80,
   }),
   new GarboWorkshed({
     workshed: $item`Asdon Martin keyfob`,
@@ -115,11 +120,12 @@ const worksheds = [
     done: () => {
       // This will likely always return true or false for now, depending on the start state of garbo
       // Since we don't actually support using the syringe in combat at this time, the counter will never change
-      return get("_dnaPotionsMade") >= 3;
+      return _attemptedMakingTonics || get("_dnaPotionsMade") >= 3;
     },
     action: () => {
       // Just grab whatever tonics for now, since we don't actually have support for DNA
       if (get("dnaSyringe")) DNALab.makeTonic(3);
+      _attemptedMakingTonics = true;
     },
   }),
   new GarboWorkshed({
@@ -141,13 +147,6 @@ const worksheds = [
     (item) => new GarboWorkshed({ workshed: item })
   ),
 ];
-
-if (GarboWorkshed.current?.workshed === $item`model train set` && GarboWorkshed.next) {
-  print(
-    `Warning: We currently do not support switching from the model train set to another workshed, so ${GarboWorkshed.next.workshed} will not be set-up during this run of garbo!`,
-    "red"
-  );
-}
 
 export default function handleWorkshed(): void {
   GarboWorkshed.current?.use();

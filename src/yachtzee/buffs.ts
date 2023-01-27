@@ -25,7 +25,13 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { baseMeat, burnLibrams, turnsToNC } from "../lib";
-import { farmingPotions, mutuallyExclusive, Potion, variableMeatPotionsSetup } from "../potions";
+import {
+  failedWishes,
+  farmingPotions,
+  mutuallyExclusive,
+  Potion,
+  variableMeatPotionsSetup,
+} from "../potions";
 import { garboValue } from "../session";
 import { executeNextDietStep } from "./diet";
 import { expectedEmbezzlers, pyecAvailable, shrugIrrelevantSongs } from "./lib";
@@ -165,6 +171,11 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
           if (
             !potion.use(Math.min(itemAmount(potion.potion), nPotions)) ||
             tries >= 5 * Math.ceil(yachtzeeTurns / potion.effectDuration())
+          ) {
+            break;
+          } else if (
+            potion.potion === $item`pocket wish` &&
+            failedWishes.includes(potion.effect())
           ) {
             break;
           }

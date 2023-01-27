@@ -1,16 +1,35 @@
 import { Args } from "grimoire-kolmafia";
-import { Item } from "kolmafia";
+import { Item, print } from "kolmafia";
 import { $item, $items, get } from "libram";
 
 const workshedAliases = [
-  { item: $item`cold medicine cabinet`, aliases: ["cmc"] },
-  { item: $item`model train set`, aliases: ["trainset", "trainrealm", "train"] },
-  { item: $item`Asdon Martin keyfob`, aliases: ["breadcar", "car", "asdon", "aston"] },
-  { item: $item`diabolic pizza cube`, aliases: ["cube", "pizza", "pizzacube"] },
-  { item: $item`portable Mayo Clinic`, aliases: ["mayo", "clinic"] },
-  { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dna", "dnalab"] },
+  { item: $item`model train set`, aliases: ["trainrealm"] },
+  { item: $item`Asdon Martin keyfob`, aliases: ["breadcar", "car", "aston"] },
+  { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dnalab"] },
 ];
-const unaliasedSheds = $items`spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
+const unaliasedSheds = $items`cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
+const allWorkshedAliases = [
+  ...workshedAliases.map(({ item, aliases }) => {
+    return { item: item, aliases: [...aliases, item.name.toLowerCase()] };
+  }),
+  ...unaliasedSheds.map((item) => {
+    return { item: item, aliases: [item.name.toLowerCase()] };
+  }),
+];
+
+function toInitials(s: string): string {
+  const initials = s
+    .split(" ")
+    .map((term) => term[0])
+    .join("");
+  return initials.length >= 3 ? initials : "";
+}
+
+function stripString(s: string): string {
+  if (s.includes(" ")) return stripString(s.replace(" ", ""));
+  else if (s.includes("-")) return stripString(s.replace("-", ""));
+  return s;
+}
 
 function stringToWorkshedItem(s: string): Item | null {
   // An empty string is a subset of every string and will match all the worksheds
@@ -18,13 +37,27 @@ function stringToWorkshedItem(s: string): Item | null {
   if (s === "") return null;
 
   const lowerCaseWorkshed = s.toLowerCase();
-  const item =
-    workshedAliases.find(
-      ({ item, aliases }) =>
-        item.name.toLowerCase() === lowerCaseWorkshed || aliases.includes(lowerCaseWorkshed)
-    )?.item ?? unaliasedSheds.find((i) => i.name.toLowerCase() === lowerCaseWorkshed);
-  if (!item) throw new Error(`Unable to identify workshed ${s}.`);
-  return item;
+  const strippedWorkshed = stripString(lowerCaseWorkshed);
+  const validWorksheds = allWorkshedAliases.filter(
+    ({ item, aliases }) =>
+      toInitials(item.name.toLowerCase()) === lowerCaseWorkshed ||
+      item.name.toLowerCase().includes(lowerCaseWorkshed) ||
+      stripString(item.name.toLowerCase()).includes(strippedWorkshed) ||
+      aliases.some((alias) => alias === lowerCaseWorkshed)
+  );
+
+  // grimoire catches the errors and throws its own errors
+  // so throw new Error(text) would result in the text not getting printed.
+  if (validWorksheds.length > 1) {
+    print(`Invalid Workshed: ${s} matches multiple worksheds! Matched:`, "red");
+    validWorksheds.forEach(({ item }) => print(`${item}`, "red"));
+    throw new Error();
+  } else if (validWorksheds.length === 0) {
+    print(`Invalid Workshed: ${s} does not match any worksheds!`, "red");
+    throw new Error();
+  }
+
+  return validWorksheds[0].item;
 }
 
 export const globalOptions = Args.create(
@@ -41,6 +74,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "return all items to the clan stash, then quit",
       default: false,
+    }),
+    loginvalidwishes: Args.flag({
+      setting: "",
+      help: "Logs any invalid wishes at the end of the day.",
+      hidden: true,
     }),
     nobarf: Args.flag({
       setting: "",
@@ -74,12 +112,17 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     workshed: Args.custom<Item | null>(
       {
         default: null,
-        help: "Intelligently switch into the workshed whose item name you give us. Also accepts certain shorthand aliases.",
+        help: "Intelligently switch into the workshed whose item name you give us. Also accepts substrings of the item name (e.g. dna, trainset), certain shorthand aliases (e.g. car) and initials of length >= 3 (e.g. cmc).",
         options: [
-          ...workshedAliases.map(
-            ({ item, aliases }) => [item, `${[item.name, ...aliases].join(", ")}`] as [Item, string]
+          ...allWorkshedAliases.map(
+            ({ item, aliases }) =>
+              [
+                item,
+                `${[...aliases, toInitials(item.name.toLowerCase())]
+                  .filter((alias) => alias !== "")
+                  .join(", ")}`,
+              ] as [Item, string]
           ),
-          ...unaliasedSheds.map((item) => [item, item.name] as [Item, string]),
           [null, "leave this field blank"],
         ],
       },
@@ -104,6 +147,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       if not it automatically continues with the regular diet. Requires Spring Break Beach access (it will not grab a one-day pass for you, but will make an attempt if one is used).\
       Sweet Synthesis is strongly recommended, as with access to other meat% buffs from Source Terminal, Fortune Teller, KGB and the summoning chamber. Having access to a PYEC (on hand or in the clan stash) is a plus.",
           default: false,
+        }),
+        candydish: Args.flag({
+          setting: "garbo_candydish",
+          help: "*DANGEROUS* garbo will consider using porcelain candy dishes. This could result in potentially destructive behavior in the instance that the user does not have sufficient meat (1-2 million) to purchase as many dishes as garbo desires or there is a price cliff.",
+          default: false,
+          hidden: true,
         }),
         stashClan: Args.string({
           setting: "garbo_stashClan",

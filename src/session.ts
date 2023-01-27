@@ -11,6 +11,7 @@ import {
 import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
 import { globalOptions } from "./config";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
+import { failedWishes } from "./potions";
 
 function currency(...items: Item[]): () => number {
   const unitCost: [Item, number][] = items.map((i) => {
@@ -250,6 +251,14 @@ export function endSession(printLog = true): void {
     message("So far today", totalMeat, totalItems);
     if (globalOptions.quick) {
       print("Quick mode was enabled, results may be less accurate than normal.");
+    }
+  }
+  if (globalOptions.loginvalidwishes) {
+    if (failedWishes.length === 0) {
+      print("No invalid wishes found.");
+    } else {
+      print("Found the following unwishable effects:");
+      failedWishes.forEach((effect) => print(`${effect}`));
     }
   }
 }

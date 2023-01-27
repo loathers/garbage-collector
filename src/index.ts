@@ -8,6 +8,7 @@ import {
   guildStoreAvailable,
   inebrietyLimit,
   Item,
+  logprint,
   maximize,
   myAdventures,
   myBasestat,
@@ -182,16 +183,21 @@ export function main(argString = ""): void {
     );
   }
 
-  if (
-    !globalOptions.prefs.skipAscensionCheck &&
-    (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75))
-  ) {
-    const proceedRegardless = userConfirmDialog(
-      "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
-      true
-    );
-    if (!proceedRegardless) {
-      throw new Error("User interrupt requested. Stopping Garbage Collector.");
+  if (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75)) {
+    if (globalOptions.prefs.skipAscensionCheck) {
+      logprint("This player is a silly goose, who ignored our warnings about being underleveled.");
+    } else {
+      const proceedRegardless = userConfirmDialog(
+        "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
+        true
+      );
+      if (!proceedRegardless) {
+        throw new Error("User interrupt requested. Stopping Garbage Collector.");
+      } else {
+        logprint(
+          "This player is a silly goose, who ignored our warnings about being underleveled."
+        );
+      }
     }
   }
 
@@ -237,7 +243,7 @@ export function main(argString = ""): void {
     return;
   }
 
-  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores`;
+  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds`;
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name)
   );
@@ -249,7 +255,13 @@ export function main(argString = ""): void {
       have(gardenSeed)
     )
   ) {
-    visitUrl("campground.php?action=garden&pwd");
+    if (startingGarden === $item`packet of rock seeds`) {
+      visitUrl("campground.php?action=rgarden1&pwd");
+      visitUrl("campground.php?action=rgarden2&pwd");
+      visitUrl("campground.php?action=rgarden3&pwd");
+    } else {
+      visitUrl("campground.php?action=garden&pwd");
+    }
   }
 
   const aaBossFlag =
