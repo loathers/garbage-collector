@@ -167,6 +167,15 @@ export function main(argString = ""): void {
       } finally {
         endSession(false);
       }
+    } else {
+      if (
+        !userConfirmDialog(
+          "Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?",
+          true
+        )
+      ) {
+        stashItems.splice(0);
+      }
     }
   }
   if (globalOptions.returnstash) return;
