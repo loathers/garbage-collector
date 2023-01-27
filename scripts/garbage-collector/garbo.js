@@ -26842,35 +26842,36 @@ function makeUpgradeValuator(fullLocations, currentBestLocation) {
 }
 
 function mostValuableUpgrade(fullLocations) {
-  // This function shouldn't be getting called if we don't have an expedition left
+  var validLocations = fullLocations.filter(l => l.parent !== "Clan Basement"); // This function shouldn't be getting called if we don't have an expedition left
+
   if (expectedRemainingExpeditions() < 1) {
-    return fullLocations;
+    return validLocations;
   }
 
   var currentUpgrades = AutumnAton_currentUpgrades();
   var acquirableUpgrades = profitRelevantUpgrades.filter(upgrade => !currentUpgrades.includes(upgrade));
 
   if (acquirableUpgrades.length === 0) {
-    return fullLocations;
+    return validLocations;
   }
 
-  var currentBestLocation = lib_maxBy(fullLocations, averageAutumnatonValue);
+  var currentBestLocation = lib_maxBy(validLocations, averageAutumnatonValue);
   var currentExpectedProfit = averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
-  var upgradeValuations = acquirableUpgrades.map(makeUpgradeValuator(fullLocations, currentBestLocation));
+  var upgradeValuations = acquirableUpgrades.map(makeUpgradeValuator(validLocations, currentBestLocation));
 
   var _maxBy = lib_maxBy(upgradeValuations, "profit"),
       highestValueUpgrade = _maxBy.upgrade,
       profitFromBestUpgrade = _maxBy.profit;
 
   if (profitFromBestUpgrade > currentExpectedProfit) {
-    var upgradeLocations = fullLocations.filter(location => {
+    var upgradeLocations = validLocations.filter(location => {
       var _AutumnAton$getUnique3;
 
       return ((_AutumnAton$getUnique3 = getUniques(location)) === null || _AutumnAton$getUnique3 === void 0 ? void 0 : _AutumnAton$getUnique3.upgrade) === highestValueUpgrade;
     });
     return upgradeLocations;
   } else {
-    return fullLocations;
+    return validLocations;
   }
 }
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2022/TrainSet.js
