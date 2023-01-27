@@ -1,4 +1,4 @@
-import { Item, myClass, numericModifier, toSlot } from "kolmafia";
+import { canEquip, Item, myClass, numericModifier, toSlot } from "kolmafia";
 import {
   $class,
   $item,
@@ -70,7 +70,10 @@ export function bestBjornalike(existingForceEquips: Item[]): Item | null {
   if (numericModifier($item`shining star cap`, "Familiar Weight") === 10) {
     goodRobortHats.push($item`shining star cap`);
   }
-  if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
+  if (
+    have($item`carpe`) &&
+    (!hasStrongLep || !goodRobortHats.some((hat) => have(hat) && canEquip(hat)))
+  ) {
     return $item`Crown of Thrones`;
   }
   return $item`Buddy Bjorn`;

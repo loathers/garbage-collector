@@ -1,5 +1,5 @@
+export { initializeRiders } from "./bjorn";
 export { usingThumbRing } from "./bonusgear";
-export { meatOutfit } from "./meat";
 export { freeFightOutfit } from "./free";
 export {
   usingPurse,
@@ -9,3 +9,4 @@ export {
   waterBreathingEquipment,
   familiarWaterBreathingEquipment,
 } from "./lib";
+export { meatOutfit } from "./meat";
