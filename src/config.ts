@@ -65,24 +65,24 @@ export const globalOptions = Args.create(
   'This script is an automated turn-burning script for the Kingdom of Loathing that spends a day\'s resources and adventures on farming\n\
 You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
   {
-    nobarf: Args.flag({
-      setting: "",
-      help: "do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
-      default: false,
-    }),
     ascend: Args.flag({
       setting: "",
       help: "operate under the assumption that you're ascending after running it, rather than experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.",
       default: false,
     }),
-    turns: Args.number({
+    returnstash: Args.flag({
       setting: "",
-      help: 'terminate after the specified number of turns, e.g. "garbo 200" or "garbo turns=200" will terminate after 200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.',
-      default: 0,
+      help: "return all items to your stash clan's stash, then quit",
+      default: false,
     }),
-    simdiet: Args.flag({
+    loginvalidwishes: Args.flag({
       setting: "",
-      help: "print out what it computes as an optimal diet and then exit.",
+      help: "Logs any invalid wishes at the end of the day.",
+      hidden: true,
+    }),
+    nobarf: Args.flag({
+      setting: "",
+      help: "do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
       default: false,
     }),
     nodiet: Args.flag({
@@ -94,6 +94,20 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.",
       default: false,
+    }),
+    simdiet: Args.flag({
+      setting: "",
+      help: "print out what it computes as an optimal diet and then exit.",
+      default: false,
+    }),
+    turns: Args.number({
+      setting: "",
+      help: 'terminate after the specified number of turns, e.g. "garbo 200" or "garbo turns=200" will terminate after 200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.',
+      default: 0,
+    }),
+    version: Args.flag({
+      setting: "",
+      help: "Print the current version and exit.",
     }),
     workshed: Args.custom<Item | null>(
       {
@@ -115,15 +129,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       stringToWorkshedItem,
       "Item"
     ),
-    version: Args.flag({
-      setting: "",
-      help: "Print the current version and exit.",
-    }),
-    loginvalidwishes: Args.flag({
-      setting: "",
-      help: "Logs any invalid wishes at the end of the day.",
-      hidden: true,
-    }),
     prefs: Args.group(
       "You can manually set the properties below, but it's recommended that you use the relay interface (dropdown menu at the top left in the browser)",
       {
