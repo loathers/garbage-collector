@@ -16829,24 +16829,24 @@ function stringToWorkshedItem(s) {
 
 var config_globalOptions = Args.create("garbo", 'This script is an automated turn-burning script for the Kingdom of Loathing that spends a day\'s resources and adventures on farming\n\
 You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
-  nobarf: Args.flag({
-    setting: "",
-    help: "do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
-    default: false
-  }),
   ascend: Args.flag({
     setting: "",
     help: "operate under the assumption that you're ascending after running it, rather than experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.",
     default: false
   }),
-  turns: Args.number({
+  returnstash: Args.flag({
     setting: "",
-    help: 'terminate after the specified number of turns, e.g. "garbo 200" or "garbo turns=200" will terminate after 200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.',
-    default: 0
+    help: "return all items to your stash clan's stash, then quit",
+    default: false
   }),
-  simdiet: Args.flag({
+  loginvalidwishes: Args.flag({
     setting: "",
-    help: "print out what it computes as an optimal diet and then exit.",
+    help: "Logs any invalid wishes at the end of the day.",
+    hidden: true
+  }),
+  nobarf: Args.flag({
+    setting: "",
+    help: "do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
     default: false
   }),
   nodiet: Args.flag({
@@ -16859,6 +16859,20 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
     help: "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.",
     default: false
   }),
+  simdiet: Args.flag({
+    setting: "",
+    help: "print out what it computes as an optimal diet and then exit.",
+    default: false
+  }),
+  turns: Args.number({
+    setting: "",
+    help: 'terminate after the specified number of turns, e.g. "garbo 200" or "garbo turns=200" will terminate after 200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.',
+    default: 0
+  }),
+  version: Args.flag({
+    setting: "",
+    help: "Print the current version and exit."
+  }),
   workshed: Args.custom({
     default: null,
     help: "Intelligently switch into the workshed whose item name you give us. Also accepts substrings of the item name (e.g. dna, trainset), certain shorthand aliases (e.g. car) and initials of length >= 3 (e.g. cmc).",
@@ -16868,15 +16882,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
       return [item, "".concat([].concat(config_toConsumableArray(aliases), [toInitials(item.name.toLowerCase())]).filter(alias => alias !== "").join(", "))];
     })), [[null, "leave this field blank"]])
   }, stringToWorkshedItem, "Item"),
-  version: Args.flag({
-    setting: "",
-    help: "Print the current version and exit."
-  }),
-  loginvalidwishes: Args.flag({
-    setting: "",
-    help: "Logs any invalid wishes at the end of the day.",
-    hidden: true
-  }),
   prefs: Args.group("You can manually set the properties below, but it's recommended that you use the relay interface (dropdown menu at the top left in the browser)", {
     valueOfAdventure: Args.number({
       setting: "valueOfAdventure",
@@ -24665,7 +24670,9 @@ function valueSession() {
   printSession(Session.current());
   Session.current().toFile("test.json");
 }
-function printGarboSession() {
+function endSession() {
+  var printLog = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
   if (resetDailyPreference("garboResultsDate")) {
     _set("garboResultsMeat", 0);
     _set("garboResultsItems", 0);
@@ -24679,24 +24686,30 @@ function printGarboSession() {
       itemDetails = _sessionSinceStart$va.itemDetails;
 
   var totalMeat = meat + getNumber("garboResultsMeat", 0);
-  var totalItems = items + getNumber("garboResultsItems", 0); // list the top 3 gaining and top 3 losing items
+  var totalItems = items + getNumber("garboResultsItems", 0);
 
-  var losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
-  var winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
-  (0,external_kolmafia_namespaceObject.print)("Extreme Items:", HIGHLIGHT);
+  if (printLog) {
+    // list the top 3 gaining and top 3 losing items
+    var losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
+    var winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
+    (0,external_kolmafia_namespaceObject.print)("Extreme Items:", HIGHLIGHT);
 
-  for (var _i2 = 0, _arr2 = [].concat(src_session_toConsumableArray(winners), src_session_toConsumableArray(losers)); _i2 < _arr2.length; _i2++) {
-    var detail = _arr2[_i2];
-    (0,external_kolmafia_namespaceObject.print)("".concat(detail.quantity, " ").concat(detail.item, " worth ").concat(detail.value.toFixed(0), " total"), HIGHLIGHT);
+    for (var _i2 = 0, _arr2 = [].concat(src_session_toConsumableArray(winners), src_session_toConsumableArray(losers)); _i2 < _arr2.length; _i2++) {
+      var detail = _arr2[_i2];
+      (0,external_kolmafia_namespaceObject.print)("".concat(detail.quantity, " ").concat(detail.item, " worth ").concat(detail.value.toFixed(0), " total"), HIGHLIGHT);
+    }
   }
 
   _set("garboResultsMeat", totalMeat);
   _set("garboResultsItems", totalItems);
-  message("This run of garbo", meat, items);
-  message("So far today", totalMeat, totalItems);
 
-  if (config_globalOptions.quick) {
-    (0,external_kolmafia_namespaceObject.print)("Quick mode was enabled, results may be less accurate than normal.");
+  if (printLog) {
+    message("This run of garbo", meat, items);
+    message("So far today", totalMeat, totalItems);
+
+    if (config_globalOptions.quick) {
+      (0,external_kolmafia_namespaceObject.print)("Quick mode was enabled, results may be less accurate than normal.");
+    }
   }
 
   if (config_globalOptions.loginvalidwishes) {
@@ -32901,14 +32914,62 @@ function main() {
     return;
   }
 
-  var completedProperty = "_garboCompleted";
-  _set(completedProperty, "");
+  if (config_globalOptions.turns) {
+    if (config_globalOptions.turns >= 0) {
+      config_globalOptions.stopTurncount = (0,external_kolmafia_namespaceObject.myTurncount)() + config_globalOptions.turns;
+    } else {
+      config_globalOptions.saveTurns = -config_globalOptions.turns;
+    }
+  }
 
   if (config_globalOptions.prefs.autoUserConfirm) {
     (0,external_kolmafia_namespaceObject.print)("I have set auto-confirm to true and accept all ramifications that come with that.", "red");
   }
 
-  if (!$classes(src_templateObject3 || (src_templateObject3 = src_taggedTemplateLiteral(["Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger"]))).includes((0,external_kolmafia_namespaceObject.myClass)())) {
+  if (stashItems.length > 0) {
+    if (config_globalOptions.returnstash || userConfirmDialog("Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ".concat(stashItems.map(item => item.name).join(", "), ". Would you like us to return these to the stash now?"), true)) {
+      startSession();
+
+      try {
+        var clanIdOrName = config_globalOptions.prefs.stashClan;
+        var parsedClanIdOrName = clanIdOrName !== "none" ? clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName : null;
+
+        if (parsedClanIdOrName) {
+          Clan["with"](parsedClanIdOrName, () => {
+            for (var _i = 0, _arr = src_toConsumableArray(stashItems); _i < _arr.length; _i++) {
+              var item = _arr[_i];
+
+              if (getFoldGroup(item).some(item => lib_have(item))) {
+                (0,external_kolmafia_namespaceObject.cliExecute)("fold ".concat(item));
+              }
+
+              var retrieved = (0,external_kolmafia_namespaceObject.retrieveItem)(item);
+
+              if (item === template_string_$item(src_templateObject3 || (src_templateObject3 = src_taggedTemplateLiteral(["Spooky Putty sheet"]))) && !retrieved && lib_have(template_string_$item(src_templateObject4 || (src_templateObject4 = src_taggedTemplateLiteral(["Spooky Putty monster"]))))) {
+                continue;
+              }
+
+              (0,external_kolmafia_namespaceObject.print)("Returning ".concat(item, " to ").concat((0,external_kolmafia_namespaceObject.getClanName)(), " stash."), HIGHLIGHT);
+
+              if ((0,external_kolmafia_namespaceObject.putStash)(item, 1)) {
+                stashItems.splice(stashItems.indexOf(item), 1);
+              }
+            }
+          });
+        } else throw new Error("Error: No garbo_stashClan set.");
+      } finally {
+        endSession(false);
+      }
+    } else {
+      if (userConfirmDialog("Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?", true)) {
+        stashItems.splice(0);
+      }
+    }
+  }
+
+  if (config_globalOptions.returnstash) return;
+
+  if (!$classes(src_templateObject5 || (src_templateObject5 = src_taggedTemplateLiteral(["Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger"]))).includes((0,external_kolmafia_namespaceObject.myClass)())) {
     throw new Error("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
   }
 
@@ -32926,10 +32987,6 @@ function main() {
     }
   }
 
-  if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && (!lib_have(template_string_$item(src_templateObject4 || (src_templateObject4 = src_taggedTemplateLiteral(["Drunkula's wineglass"])))) || !(0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(src_templateObject5 || (src_templateObject5 = src_taggedTemplateLiteral(["Drunkula's wineglass"])))))) {
-    throw new Error("Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it.");
-  }
-
   if (config_globalOptions.prefs.valueOfAdventure && config_globalOptions.prefs.valueOfAdventure <= 3500) {
     throw "Your valueOfAdventure is set to ".concat(config_globalOptions.prefs.valueOfAdventure, ", which is too low for barf farming to be worthwhile. If you forgot to set it, use \"set valueOfAdventure = XXXX\" to set it to your marginal turn meat value.");
   }
@@ -32938,47 +32995,12 @@ function main() {
     throw "Your valueOfAdventure is set to ".concat(config_globalOptions.prefs.valueOfAdventure, ", which is definitely incorrect. Please set it to your reliable marginal turn value.");
   }
 
-  if (config_globalOptions.turns) {
-    if (config_globalOptions.turns >= 0) {
-      config_globalOptions.stopTurncount = (0,external_kolmafia_namespaceObject.myTurncount)() + config_globalOptions.turns;
-    } else {
-      config_globalOptions.saveTurns = -config_globalOptions.turns;
-    }
+  if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && (!lib_have(template_string_$item(src_templateObject6 || (src_templateObject6 = src_taggedTemplateLiteral(["Drunkula's wineglass"])))) || !(0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(src_templateObject7 || (src_templateObject7 = src_taggedTemplateLiteral(["Drunkula's wineglass"])))))) {
+    throw new Error("Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it.");
   }
 
-  if (stashItems.length > 0) {
-    if (userConfirmDialog("Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ".concat(stashItems.map(item => item.name).join(","), ". Would you like us to return these to the stash now?"), true)) {
-      var clanIdOrName = config_globalOptions.prefs.stashClan;
-      var parsedClanIdOrName = clanIdOrName !== "none" ? clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName : null;
-
-      if (parsedClanIdOrName) {
-        Clan["with"](parsedClanIdOrName, () => {
-          for (var _i = 0, _arr = src_toConsumableArray(stashItems); _i < _arr.length; _i++) {
-            var item = _arr[_i];
-
-            if (getFoldGroup(item).some(item => lib_have(item))) {
-              (0,external_kolmafia_namespaceObject.cliExecute)("fold ".concat(item));
-            }
-
-            var retrieved = (0,external_kolmafia_namespaceObject.retrieveItem)(item);
-
-            if (item === template_string_$item(src_templateObject6 || (src_templateObject6 = src_taggedTemplateLiteral(["Spooky Putty sheet"]))) && !retrieved && lib_have(template_string_$item(src_templateObject7 || (src_templateObject7 = src_taggedTemplateLiteral(["Spooky Putty monster"]))))) {
-              continue;
-            }
-
-            (0,external_kolmafia_namespaceObject.print)("Returning ".concat(item, " to ").concat((0,external_kolmafia_namespaceObject.getClanName)(), " stash."), HIGHLIGHT);
-
-            if ((0,external_kolmafia_namespaceObject.putStash)(item, 1)) {
-              stashItems.splice(stashItems.indexOf(item), 1);
-            }
-          }
-        });
-      } else throw new Error("Error: No garbo_stashClan set.");
-    } else {
-      stashItems.splice(0, stashItems.length);
-    }
-  }
-
+  var completedProperty = "_garboCompleted";
+  _set(completedProperty, "");
   startSession();
 
   if (!config_globalOptions.nobarf && !config_globalOptions.simdiet) {
@@ -33200,7 +33222,7 @@ function main() {
     (0,external_kolmafia_namespaceObject.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=".concat(aaBossFlag, "&action=Update"), true);
     if (startingGarden && lib_have(startingGarden)) (0,external_kolmafia_namespaceObject.use)(startingGarden);
     printEmbezzlerLog();
-    printGarboSession();
+    endSession();
     printLog(HIGHLIGHT);
   }
 
