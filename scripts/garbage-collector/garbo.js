@@ -20519,7 +20519,7 @@ function bestBjornalike(existingForceEquips) {
     goodRobortHats.push(template_string_$item(dropsgear_templateObject54 || (dropsgear_templateObject54 = dropsgear_taggedTemplateLiteral(["shining star cap"]))));
   }
 
-  if (lib_have(template_string_$item(dropsgear_templateObject55 || (dropsgear_templateObject55 = dropsgear_taggedTemplateLiteral(["carpe"])))) && (!hasStrongLep || !goodRobortHats.some(hat => lib_have(hat)))) {
+  if (lib_have(template_string_$item(dropsgear_templateObject55 || (dropsgear_templateObject55 = dropsgear_taggedTemplateLiteral(["carpe"])))) && (!hasStrongLep || !goodRobortHats.some(hat => lib_have(hat) && (0,external_kolmafia_namespaceObject.canEquip)(hat)))) {
     return template_string_$item(dropsgear_templateObject56 || (dropsgear_templateObject56 = dropsgear_taggedTemplateLiteral(["Crown of Thrones"])));
   }
 
