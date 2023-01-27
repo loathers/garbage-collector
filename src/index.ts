@@ -125,6 +125,7 @@ export function main(argString = ""): void {
 
   if (stashItems.length > 0) {
     if (
+      globalOptions.returnstash ||
       userConfirmDialog(
         `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
           .map((item) => item.name)
@@ -166,12 +167,9 @@ export function main(argString = ""): void {
       } finally {
         endSession(false);
       }
-    } else {
-      stashItems.splice(0, stashItems.length);
     }
-
-    if (globalOptions.returnstash) return;
   }
+  if (globalOptions.returnstash) return;
 
   if (
     !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
