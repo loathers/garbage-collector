@@ -11,7 +11,11 @@ import { nonNull } from "../../lib";
 
 function bonusGear(mode: BonusEquipMode, valueCircumstantialBonus = true): [Item, number][] {
   return [
-    ...nonNull([cleaver, mayflower, pantsgiving, sweatpants].map((bonus) => bonus(mode, valueCircumstantialBonus))),
+    ...nonNull(
+      [cleaver, mayflower, pantsgiving, sweatpants].map((bonus) =>
+        bonus(mode, valueCircumstantialBonus)
+      )
+    ),
     ...cheeses(mode),
     ...bonusAccessories(mode, valueCircumstantialBonus),
     ...misc(mode, valueCircumstantialBonus),

@@ -153,12 +153,17 @@ import {
   initializeExtrovermectinZones,
   saberCrateIfSafe,
 } from "./extrovermectin";
-import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
 import { wanderWhere } from "./wanderer";
 import { globalOptions } from "./config";
 
+const magnifyingGlass = () =>
+  have($item`cursed magnifying glass`) &&
+  get("_voidFreeFights") < 5 &&
+  get("cursedMagnifyingGlassCount") < 13
+    ? new Map([[$item`cursed magnifying glass`, globalOptions.prefs.valueOfFreeFight]])
+    : [];
 const firstChainMacro = () =>
   Macro.if_(
     $monster`Knob Goblin Embezzler`,

@@ -22,7 +22,7 @@ const snowSuit = {
     ignoreLimitedDrops(mode) || get("_carrotNoseDrops") >= 3
       ? 0
       : garboValue($item`carrot nose`) / 10,
-      circumstantial: true,
+  circumstantial: true,
 };
 
 // OFFHANDS
@@ -48,7 +48,12 @@ const stickerCrossbow = { item: $item`scratch 'n' sniff crossbow`, value: sticke
 
 export default (mode: BonusEquipMode, valueCircumstantialBonus: boolean): [Item, number][] =>
   nonNull(
-    [pantogramPants, bagOfManyConfections, snowSuit, magnifyingGlass, stickerSword, stickerCrossbow].map((x) =>
-      toBonus(x, mode, valueCircumstantialBonus)
-    )
+    [
+      pantogramPants,
+      bagOfManyConfections,
+      snowSuit,
+      magnifyingGlass,
+      stickerSword,
+      stickerCrossbow,
+    ].map((x) => toBonus(x, mode, valueCircumstantialBonus))
   );
