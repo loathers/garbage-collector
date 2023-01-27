@@ -128,7 +128,7 @@ export function main(argString = ""): void {
       userConfirmDialog(
         `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
           .map((item) => item.name)
-          .join(",")}. Would you like us to return these to the stash now?`,
+          .join(", ")}. Would you like us to return these to the stash now?`,
         true
       )
     ) {
@@ -164,13 +164,13 @@ export function main(argString = ""): void {
           });
         } else throw new Error("Error: No garbo_stashClan set.");
       } finally {
-        endSession();
+        endSession(false);
       }
     } else {
       stashItems.splice(0, stashItems.length);
     }
 
-    if (globalOptions.dumpstash) return;
+    if (globalOptions.returnstash) return;
   }
 
   if (
