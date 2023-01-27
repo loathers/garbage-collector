@@ -1,4 +1,5 @@
 import {
+  canEquip,
   equippedItem,
   fullnessLimit,
   getWorkshed,
@@ -375,7 +376,10 @@ export function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
   if (numericModifier($item`shining star cap`, "Familiar Weight") === 10) {
     goodRobortHats.push($item`shining star cap`);
   }
-  if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
+  if (
+    have($item`carpe`) &&
+    (!hasStrongLep || !goodRobortHats.some((hat) => have(hat) && canEquip(hat)))
+  ) {
     return $item`Crown of Thrones`;
   }
   return $item`Buddy Bjorn`;
