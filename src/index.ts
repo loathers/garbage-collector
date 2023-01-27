@@ -169,7 +169,7 @@ export function main(argString = ""): void {
       }
     } else {
       if (
-        !userConfirmDialog(
+        userConfirmDialog(
           "Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?",
           true
         )
