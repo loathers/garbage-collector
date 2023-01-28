@@ -8,7 +8,7 @@ import {
   sellPrice,
   toInt,
 } from "kolmafia";
-import { $item, $items, getSaleValue, property, Session, set, sumNumbers } from "libram";
+import { $item, $items, getSaleValue, property, Session, set, sum } from "libram";
 import { globalOptions } from "./config";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
 import { failedWishes } from "./potions";
@@ -189,7 +189,7 @@ export function garboValue(item: Item, useHistorical = false): number {
   return cachedValue;
 }
 export function garboAverageValue(...items: Item[]): number {
-  return sumNumbers(items.map((i) => garboValue(i))) / items.length;
+  return sum(items, garboValue) / items.length;
 }
 
 let session: Session | null = null;

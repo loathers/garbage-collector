@@ -469,12 +469,8 @@ function countCopies(diet: Diet<Note>): number {
 
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
-  const extros = sumNumbers(
-    diet.entries.map((dietEntry) =>
-      dietEntry.menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`)
-        ? dietEntry.quantity
-        : 0
-    )
+  const extros = sum(diet.entries, ({ menuItems, quantity }) =>
+    menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`) ? quantity : 0
   );
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
 

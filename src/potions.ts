@@ -33,6 +33,7 @@ import {
   have,
   isSong,
   Mood,
+  sum,
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
@@ -250,8 +251,7 @@ export class Potion {
       value: number;
     }[] = [];
     const limitFunction = limit
-      ? (quantity: number) =>
-          clamp(limit - sumNumbers(values.map((tier) => tier.quantity)), 0, quantity)
+      ? (quantity: number) => clamp(limit - sum(values, ({ quantity }) => quantity), 0, quantity)
       : (quantity: number) => quantity;
 
     // compute the value of covering embezzlers
