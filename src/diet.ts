@@ -321,6 +321,7 @@ function menu(): MenuItem<Note>[] {
   return [
     // FOOD
     new MenuItem($item`Dreadsylvanian spooky pocket`),
+    new MenuItem($item`Dreadsylvanian sleaze pocket`),
     new MenuItem($item`tin cup of mulligan stew`),
     new MenuItem($item`frozen banquet`),
     new MenuItem($item`deviled egg`),
