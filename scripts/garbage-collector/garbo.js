@@ -23992,7 +23992,10 @@ var Potion = /*#__PURE__*/function () {
       var ascending = config_globalOptions.ascend;
       var totalTurns = turns !== null && turns !== void 0 ? turns : estimatedTurns();
       var values = [];
-      var limitFunction = limit ? quantity => utils_clamp(limit - sumNumbers(values.map(tier => tier.quantity)), 0, quantity) : quantity => quantity; // compute the value of covering embezzlers
+      var limitFunction = limit ? quantity => utils_clamp(limit - utils_sum(values, _ref => {
+        var quantity = _ref.quantity;
+        return quantity;
+      }), 0, quantity) : quantity => quantity; // compute the value of covering embezzlers
 
       var embezzlerTurns = Math.max(0, embezzlers - startingTurns);
       var embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
@@ -24644,7 +24647,7 @@ function garboAverageValue() {
     items[_key2] = arguments[_key2];
   }
 
-  return sumNumbers(items.map(i => garboValue(i))) / items.length;
+  return utils_sum(items, garboValue) / items.length;
 }
 var session = null;
 /**
@@ -25713,7 +25716,11 @@ function countCopies(diet) {
   // any copies already realized will be properly counted by embezzlerCount
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
-  var extros = sumNumbers(diet.entries.map(dietEntry => dietEntry.menuItems.some(menuItem => menuItem.item === template_string_$item(diet_templateObject98 || (diet_templateObject98 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"])))) ? dietEntry.quantity : 0));
+  var extros = utils_sum(diet.entries, _ref => {
+    var menuItems = _ref.menuItems,
+        quantity = _ref.quantity;
+    return menuItems.some(menuItem => menuItem.item === template_string_$item(diet_templateObject98 || (diet_templateObject98 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"])))) ? quantity : 0;
+  });
 
   var _gregariousCount2 = gregariousCount(),
       expectedGregariousFights = _gregariousCount2.expectedGregariousFights,
@@ -25921,9 +25928,9 @@ function consumeDiet(diet, name) {
   (0,external_kolmafia_namespaceObject.print)();
   printDiet(diet, name);
   (0,external_kolmafia_namespaceObject.print)();
-  var seasoningCount = utils_sum(diet.entries, _ref => {
-    var menuItems = _ref.menuItems,
-        quantity = _ref.quantity;
+  var seasoningCount = utils_sum(diet.entries, _ref2 => {
+    var menuItems = _ref2.menuItems,
+        quantity = _ref2.quantity;
     return menuItems.some(menuItem => menuItem.item === template_string_$item(diet_templateObject169 || (diet_templateObject169 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) ? quantity : 0;
   });
   acquire(seasoningCount, template_string_$item(diet_templateObject170 || (diet_templateObject170 = src_diet_taggedTemplateLiteral(["Special Seasoning"]))), MPA); // Fill organs in rounds, making sure we're making progress in each round.
@@ -25935,8 +25942,8 @@ function consumeDiet(diet, name) {
   var capacities = () => [(0,external_kolmafia_namespaceObject.fullnessLimit)(), (0,external_kolmafia_namespaceObject.inebrietyLimit)(), (0,external_kolmafia_namespaceObject.spleenLimit)()];
 
   var lastCapacities = [-1, -1, -1];
-  var currentQuantity = utils_sum(diet.entries, _ref2 => {
-    var quantity = _ref2.quantity;
+  var currentQuantity = utils_sum(diet.entries, _ref3 => {
+    var quantity = _ref3.quantity;
     return quantity;
   });
   var lastQuantity = -1;
@@ -26093,8 +26100,8 @@ function consumeDiet(diet, name) {
       _iterator2.f();
     }
 
-    currentQuantity = utils_sum(diet.entries, _ref3 => {
-      var quantity = _ref3.quantity;
+    currentQuantity = utils_sum(diet.entries, _ref4 => {
+      var quantity = _ref4.quantity;
       return quantity;
     });
   }
