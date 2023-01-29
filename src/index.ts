@@ -345,6 +345,7 @@ export function main(argString = ""): void {
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
       maximizerCombinationLimit: maximizerCombinationLimit,
+      allowNegativeTally: true,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
