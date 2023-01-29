@@ -246,7 +246,10 @@ export function main(argString = ""): void {
       }
     }
   }
-  if (globalOptions.returnstash) return;
+  if (globalOptions.returnstash) {
+    propertyManager.resetAll();
+    return;
+  }
 
   if (
     !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
