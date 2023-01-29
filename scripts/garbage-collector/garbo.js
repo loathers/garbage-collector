@@ -30811,7 +30811,7 @@ function runGarboTasks(tasks) {
   }
 }
 ;// CONCATENATED MODULE: ./src/tasks/ascending.ts
-var ascending_templateObject, ascending_templateObject2, ascending_templateObject3, ascending_templateObject4, ascending_templateObject5, ascending_templateObject6, ascending_templateObject7, ascending_templateObject8, ascending_templateObject9, ascending_templateObject10, ascending_templateObject11, ascending_templateObject12, ascending_templateObject13, ascending_templateObject14, ascending_templateObject15, ascending_templateObject16, ascending_templateObject17, ascending_templateObject18, ascending_templateObject19, ascending_templateObject20, ascending_templateObject21, ascending_templateObject22, ascending_templateObject23, ascending_templateObject24;
+var ascending_templateObject, ascending_templateObject2, ascending_templateObject3, ascending_templateObject4, ascending_templateObject5, ascending_templateObject6, ascending_templateObject7, ascending_templateObject8, ascending_templateObject9, ascending_templateObject10, ascending_templateObject11, ascending_templateObject12, ascending_templateObject13, ascending_templateObject14, ascending_templateObject15, ascending_templateObject16, ascending_templateObject17, ascending_templateObject18, ascending_templateObject19, ascending_templateObject20;
 
 function ascending_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -30851,15 +30851,10 @@ var AscendingTasks = [{
   completed: () => !lib_have(template_string_$item(ascending_templateObject13 || (ascending_templateObject13 = ascending_taggedTemplateLiteral(["Sneaky Pete's key"])))) || garboValue(template_string_$item(ascending_templateObject14 || (ascending_templateObject14 = ascending_taggedTemplateLiteral(["Sneaky Pete's key lime"])))) < garboValue(template_string_$item(ascending_templateObject15 || (ascending_templateObject15 = ascending_taggedTemplateLiteral(["lime"])))),
   do: () => (0,external_kolmafia_namespaceObject.create)(template_string_$item(ascending_templateObject16 || (ascending_templateObject16 = ascending_taggedTemplateLiteral(["Sneaky Pete's key lime"]))))
 }, {
-  name: "Cook digital key lime",
-  ready: () => config_globalOptions.ascend,
-  completed: () => !lib_have(template_string_$item(ascending_templateObject17 || (ascending_templateObject17 = ascending_taggedTemplateLiteral(["digital key"])))) || garboValue(template_string_$item(ascending_templateObject18 || (ascending_templateObject18 = ascending_taggedTemplateLiteral(["digital key lime"])))) < garboValue(template_string_$item(ascending_templateObject19 || (ascending_templateObject19 = ascending_taggedTemplateLiteral(["lime"])))),
-  do: () => (0,external_kolmafia_namespaceObject.create)(template_string_$item(ascending_templateObject20 || (ascending_templateObject20 = ascending_taggedTemplateLiteral(["digital key lime"]))))
-}, {
   name: "Cook star key lime",
   ready: () => config_globalOptions.ascend,
-  completed: () => !lib_have(template_string_$item(ascending_templateObject21 || (ascending_templateObject21 = ascending_taggedTemplateLiteral(["Richard's star key"])))) || garboValue(template_string_$item(ascending_templateObject22 || (ascending_templateObject22 = ascending_taggedTemplateLiteral(["star key lime"])))) < garboValue(template_string_$item(ascending_templateObject23 || (ascending_templateObject23 = ascending_taggedTemplateLiteral(["lime"])))),
-  do: () => (0,external_kolmafia_namespaceObject.create)(template_string_$item(ascending_templateObject24 || (ascending_templateObject24 = ascending_taggedTemplateLiteral(["star key lime"]))))
+  completed: () => !lib_have(template_string_$item(ascending_templateObject17 || (ascending_templateObject17 = ascending_taggedTemplateLiteral(["Richard's star key"])))) || garboValue(template_string_$item(ascending_templateObject18 || (ascending_templateObject18 = ascending_taggedTemplateLiteral(["star key lime"])))) < garboValue(template_string_$item(ascending_templateObject19 || (ascending_templateObject19 = ascending_taggedTemplateLiteral(["lime"])))),
+  do: () => (0,external_kolmafia_namespaceObject.create)(template_string_$item(ascending_templateObject20 || (ascending_templateObject20 = ascending_taggedTemplateLiteral(["star key lime"]))))
 }];
 ;// CONCATENATED MODULE: ./src/dailies.ts
 function dailies_toConsumableArray(arr) { return dailies_arrayWithoutHoles(arr) || dailies_iterableToArray(arr) || dailies_unsupportedIterableToArray(arr) || dailies_nonIterableSpread(); }
