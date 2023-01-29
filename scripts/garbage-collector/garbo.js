@@ -33094,7 +33094,8 @@ function main() {
       // Don't cast librams when mana burning, handled manually based on sale price
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
-      maximizerCombinationLimit: maximizerCombinationLimit
+      maximizerCombinationLimit: maximizerCombinationLimit,
+      allowNegativeTally: true
     });
     var bestHalloweiner = 0;
 
