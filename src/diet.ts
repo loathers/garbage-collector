@@ -320,6 +320,10 @@ function menu(): MenuItem<Note>[] {
 
   return [
     // FOOD
+    new MenuItem($item`Dreadsylvanian cold pocket`),
+    new MenuItem($item`Dreadsylvanian hot pocket`),
+    new MenuItem($item`Dreadsylvanian sleaze pocket`),
+    new MenuItem($item`Dreadsylvanian stink pocket`),
     new MenuItem($item`Dreadsylvanian spooky pocket`),
     new MenuItem($item`tin cup of mulligan stew`),
     new MenuItem($item`frozen banquet`),
@@ -333,7 +337,11 @@ function menu(): MenuItem<Note>[] {
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
     new MenuItem($item`moreltini`),
+    new MenuItem($item`Dreadsylvanian cold-fashioned`),
+    new MenuItem($item`Dreadsylvanian dank and stormy`),
     new MenuItem($item`Dreadsylvanian grimlet`),
+    new MenuItem($item`Dreadsylvanian hot toddy`),
+    new MenuItem($item`Dreadsylvanian slithery nipple`),
     new MenuItem($item`Hodgman's blanket`),
     new MenuItem($item`Sacramento wine`),
     new MenuItem($item`iced plum wine`),
