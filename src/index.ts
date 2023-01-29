@@ -123,6 +123,74 @@ export function main(argString = ""): void {
     );
   }
 
+  if (globalOptions.simdiet) {
+    propertyManager.set({
+      logPreferenceChange: true,
+      autoSatisfyWithMall: true,
+      autoSatisfyWithNPCs: true,
+      autoSatisfyWithCoinmasters: true,
+      autoSatisfyWithStash: false,
+      maximizerFoldables: true,
+      autoTuxedo: true,
+      autoPinkyRing: true,
+      autoGarish: true,
+      valueOfInventory: 2,
+      suppressMallPriceCacheMessages: true,
+    });
+    runDiet();
+    propertyManager.resetAll();
+    return;
+  }
+
+  const maximizerCombinationLimit = globalOptions.quick ? 100000 : get("maximizerCombinationLimit");
+
+  propertyManager.set({
+    logPreferenceChange: true,
+    logPreferenceChangeFilter: [
+      ...new Set([
+        ...get("logPreferenceChangeFilter").split(","),
+        "libram_savedMacro",
+        "maximizerMRUList",
+        "testudinalTeachings",
+        "garboEmbezzlerDate",
+        "garboEmbezzlerCount",
+        "garboEmbezzlerSources",
+        "spadingData",
+      ]),
+    ]
+      .sort()
+      .filter((a) => a)
+      .join(","),
+    battleAction: "custom combat script",
+    customCombatScript: "garbo",
+    autoSatisfyWithMall: true,
+    autoSatisfyWithNPCs: true,
+    autoSatisfyWithCoinmasters: true,
+    autoSatisfyWithStash: false,
+    dontStopForCounters: true,
+    maximizerFoldables: true,
+    hpAutoRecovery: -0.05,
+    hpAutoRecoveryTarget: 0.0,
+    mpAutoRecovery: -0.05,
+    mpAutoRecoveryTarget: 0.0,
+    afterAdventureScript: "",
+    betweenBattleScript: "",
+    choiceAdventureScript: "",
+    counterScript: "",
+    familiarScript: "",
+    currentMood: "apathetic",
+    autoTuxedo: true,
+    autoPinkyRing: true,
+    autoGarish: true,
+    allowNonMoodBurning: !globalOptions.ascend,
+    allowSummonBurning: true,
+    libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
+    valueOfInventory: 2,
+    suppressMallPriceCacheMessages: true,
+    maximizerCombinationLimit: maximizerCombinationLimit,
+    allowNegativeTally: true,
+  });
+
   if (stashItems.length > 0) {
     if (
       globalOptions.returnstash ||
@@ -228,26 +296,8 @@ export function main(argString = ""): void {
   set(completedProperty, "");
 
   startSession();
-  if (!globalOptions.nobarf && !globalOptions.simdiet) {
+  if (!globalOptions.nobarf) {
     ensureBarfAccess();
-  }
-  if (globalOptions.simdiet) {
-    propertyManager.set({
-      logPreferenceChange: true,
-      autoSatisfyWithMall: true,
-      autoSatisfyWithNPCs: true,
-      autoSatisfyWithCoinmasters: true,
-      autoSatisfyWithStash: false,
-      maximizerFoldables: true,
-      autoTuxedo: true,
-      autoPinkyRing: true,
-      autoGarish: true,
-      valueOfInventory: 2,
-      suppressMallPriceCacheMessages: true,
-    });
-    runDiet();
-    propertyManager.resetAll();
-    return;
   }
 
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds`;
@@ -297,56 +347,6 @@ export function main(argString = ""): void {
     setAutoAttack(0);
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
 
-    const maximizerCombinationLimit = globalOptions.quick
-      ? 100000
-      : get("maximizerCombinationLimit");
-
-    propertyManager.set({
-      logPreferenceChange: true,
-      logPreferenceChangeFilter: [
-        ...new Set([
-          ...get("logPreferenceChangeFilter").split(","),
-          "libram_savedMacro",
-          "maximizerMRUList",
-          "testudinalTeachings",
-          "garboEmbezzlerDate",
-          "garboEmbezzlerCount",
-          "garboEmbezzlerSources",
-          "spadingData",
-        ]),
-      ]
-        .sort()
-        .filter((a) => a)
-        .join(","),
-      battleAction: "custom combat script",
-      customCombatScript: "garbo",
-      autoSatisfyWithMall: true,
-      autoSatisfyWithNPCs: true,
-      autoSatisfyWithCoinmasters: true,
-      autoSatisfyWithStash: false,
-      dontStopForCounters: true,
-      maximizerFoldables: true,
-      hpAutoRecovery: -0.05,
-      hpAutoRecoveryTarget: 0.0,
-      mpAutoRecovery: -0.05,
-      mpAutoRecoveryTarget: 0.0,
-      afterAdventureScript: "",
-      betweenBattleScript: "",
-      choiceAdventureScript: "",
-      counterScript: "",
-      familiarScript: "",
-      currentMood: "apathetic",
-      autoTuxedo: true,
-      autoPinkyRing: true,
-      autoGarish: true,
-      allowNonMoodBurning: !globalOptions.ascend,
-      allowSummonBurning: true,
-      libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
-      valueOfInventory: 2,
-      suppressMallPriceCacheMessages: true,
-      maximizerCombinationLimit: maximizerCombinationLimit,
-      allowNegativeTally: true,
-    });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
       const halloweinerOptions: { price: number; choiceId: number }[] = (
@@ -429,7 +429,7 @@ export function main(argString = ""): void {
           (!globalOptions.prefs.yachtzeechain || get("_garboYachtzeeChainCompleted", false))
         ) {
           runDiet();
-        } else if (!globalOptions.simdiet) {
+        } else {
           nonOrganAdventures();
         }
 
