@@ -51,13 +51,6 @@ export const AscendingTasks: Task[] = [
     do: () => create($item`Sneaky Pete's key lime`),
   },
   {
-    name: "Cook digital key lime",
-    ready: () => globalOptions.ascend,
-    completed: () =>
-      !have($item`digital key`) || garboValue($item`digital key lime`) < garboValue($item`lime`),
-    do: () => create($item`digital key lime`),
-  },
-  {
     name: "Cook star key lime",
     ready: () => globalOptions.ascend,
     completed: () =>
