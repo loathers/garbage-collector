@@ -26,50 +26,30 @@ export const AscendingTasks: Task[] = [
     },
     choices: { [1414]: () => bestLockPickChoice() },
   },
-  {
-    name: "Cook Boris's key lime",
-    ready: () =>
-      globalOptions.ascend &&
-      (freeCrafts() > 0 ||
-        (have($familiar`Cookbookbat`) && get("_cookbookbatCrafting") < 5) ||
-        get("hasChef")),
-    completed: () =>
-      !have($item`Boris's key`) || garboValue($item`Boris's key lime`) < garboValue($item`lime`),
-    do: () => create($item`Boris's key lime`),
-  },
-  {
-    name: "Cook Jarlsberg's key lime",
-    ready: () =>
-      globalOptions.ascend &&
-      (freeCrafts() > 0 ||
-        (have($familiar`Cookbookbat`) && get("_cookbookbatCrafting") < 5) ||
-        get("hasChef")),
-    completed: () =>
-      !have($item`Jarlsberg's key`) ||
-      garboValue($item`Jarlsberg's key lime`) < garboValue($item`lime`),
-    do: () => create($item`Jarlsberg's key lime`),
-  },
-  {
-    name: "Cook Sneaky Pete's key lime",
+  ...[
+    {
+      key: $item`Boris's key`,
+      lime: $item`Boris's key lime`,
+    },
+    {
+      key: $item`Jarlsberg's key`,
+      lime: $item`Jarlsberg's key lime`,
+    },
+    {
+      key: $item`Sneaky Pete's key`,
+      lime: $item`Sneaky Pete's key lime`,
+    },
+    {
+      key: $item`Richard's star key`,
+      lime: $item`star key lime`,
+    },
+  ].map(({ key, lime }) => ({
+    name: `Cook ${lime}`,
+    completed: () => !have(key) || garboValue(lime) < garboValue($item`lime`),
+    do: () => create(lime),
     ready: () =>
       (globalOptions.ascend &&
         (freeCrafts() > 0 || (have($familiar`Cookbookbat`) && get("_cookbookbatCrafting") < 5))) ||
       get("hasChef"),
-    completed: () =>
-      !have($item`Sneaky Pete's key`) ||
-      garboValue($item`Sneaky Pete's key lime`) < garboValue($item`lime`),
-    do: () => create($item`Sneaky Pete's key lime`),
-  },
-  {
-    name: "Cook star key lime",
-    ready: () =>
-      globalOptions.ascend &&
-      (freeCrafts() > 0 ||
-        (have($familiar`Cookbookbat`) && get("_cookbookbatCrafting") < 5) ||
-        get("hasChef")),
-    completed: () =>
-      !have($item`Richard's star key`) ||
-      garboValue($item`star key lime`) < garboValue($item`lime`),
-    do: () => create($item`star key lime`),
-  },
+  })),
 ];
