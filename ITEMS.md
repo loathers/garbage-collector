@@ -81,6 +81,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Asdon Martin keyfob                      | Campground         | Meat/Item/Booze Drops                                                              |
 | cold medicine cabinet                    | Campground         | Two Words: Horse Paste.                                                            |
 | haunted doghouse                         | Campground         | Drops Airplane charter currencies, Ghost Dog Chow, tennis ball, food/booze         |
+| model train set                          | Campground         | Cycles through meat, stats, duplicate a food item, candy, and some small buffs     |
 | packet of mushroom spores                | Campground         | 1 free fight per day, & some minor booze                                           |
 | packet of tall grass seeds               | Campground         | Drops fertilizer, which sell for decent meat gain                                  |
 | portable Mayo Clinic                     | Campground         | Additional adventures from food or double effect duration from food                |
@@ -95,6 +96,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Baby Sandworm                            | Familiar           | Drops Item - agua de vida (5)                                                      |
 | Blavious Kloop                           | Familiar           | Drops Item - devilish folio (5)                                                    |
 | Bloovian Groose                          | Familiar           | Drops Item - groose grease                                                         |
+| Cookbookbat                              | Familiar           | Drops tradeable ingredients for making cookbookbat foods, legendary pizzas         |
 | Crimbo Shrub                             | Familiar           | Red Ray for 2000-3000 Meat every 100 turns                                         |
 | Fist Turkey                              | Familiar           | Drops Item - Turkey Booze (5)                                                      |
 | Frumious Bandersnatch                    | Familiar           | Free runs                                                                          |
@@ -126,6 +128,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | XO Skeleton                              | Familiar           | Drops Item - Xes and Os every 9th combat                                           |
 | miniature crystal ball                   | Familiar Equipment | Can predict the future combats in the zone.                                        |
 | Daylight Shavings Helmet                 | Hat                | Rollover adventures, familiar weight, random buffs every 11 advs.                  |
+| Autumn-aton                              | Item               | Collects items from zones independently from your own adventures                   |
 | can of Rain-Doh                          | Item               | Copier                                                                             |
 | Clara's bell                             | Item               | 1x Forced noncombat per day for Yachtzee!                                          |
 | cosmic bowling ball                      | Item               | Item/Meat Drops, banishes                                                          |
