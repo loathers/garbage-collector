@@ -453,16 +453,6 @@ export function usingThumbRing(): boolean {
 
 let juneCleaverEV: number | null = null;
 function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
-  if (!juneCleaverEV) {
-    juneCleaverEV =
-      sum([...JuneCleaver.choices], (choice) =>
-        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
-      ) / JuneCleaver.choices.length;
-  }
-  const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
-  if (globalOptions.nobarf) {
-    return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / interval]]);
-  }
   if (
     !have($item`June cleaver`) ||
     get("_juneCleaverFightsLeft") > estimatedTurns() ||
@@ -470,7 +460,12 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
   ) {
     return new Map();
   }
-
+  if (!juneCleaverEV) {
+    juneCleaverEV =
+      sum([...JuneCleaver.choices], (choice) =>
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
+      ) / JuneCleaver.choices.length;
+  }
   // If we're ascending then the chances of hitting choices in the queue is reduced
   if (globalOptions.ascend && estimatedTurns() <= 180 && JuneCleaver.getInterval() === 30) {
     const availEV =
@@ -491,6 +486,7 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
     juneCleaverEV = queueEV + availEV;
   }
 
+  const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
   return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / interval]]);
 }
 
