@@ -1,6 +1,6 @@
 import { maxBy } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
-import { estimatedGarboTurns } from "../turns";
+import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../turns";
 import {
   appearanceRates,
   availableAmount,
@@ -10,6 +10,7 @@ import {
   toMonster,
 } from "kolmafia";
 import { $items, AutumnAton, get, sum } from "libram";
+import { globalOptions } from "../config";
 
 export default function bestAutumnatonLocation(locations: Location[]): Location {
   return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
@@ -83,7 +84,11 @@ function seasonalItemValue(location: Location, seasonalOverride?: number): numbe
 }
 
 function expectedRemainingExpeditions(legs = AutumnAton.legs()): number {
-  const availableAutumnatonTurns = estimatedGarboTurns() - AutumnAton.turnsLeft();
+  // Better estimate upgrade value if not ascending
+  const availableAutumnatonTurns =
+    estimatedGarboTurns() -
+    AutumnAton.turnsLeft() +
+    (globalOptions.ascend ? 0 : estimatedTurnsTomorrow);
   const quests = get("_autumnatonQuests");
   const legOffsetFactor = 11 * Math.max(quests - legs - 1, 0);
   return Math.floor(
