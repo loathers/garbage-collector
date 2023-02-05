@@ -302,5 +302,15 @@ export const DailyItemTasks: Task[] = [
       completed: () => get("_garbageItemChanged"),
       do: () => cliExecute("fold broken champagne bottle"),
     },
+    {
+      name: "Learn About Bugs",
+      // eslint-disable-next-line libram/verify-constants
+      ready: () => have($item`S.I.T. Course Completion Certificate`),
+      // eslint-disable-next-line libram/verify-constants
+      completed: () => get("_sitCourseCompleted", true) || have($skill`Insectologist`),
+      // eslint-disable-next-line libram/verify-constants
+      do: () => use($item`S.I.T. Course Completion Certificate`),
+      choices: { [1494]: 2 },
+    },
   ],
 ];
