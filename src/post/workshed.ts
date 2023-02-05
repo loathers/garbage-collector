@@ -1,9 +1,9 @@
 import { getWorkshed, haveEffect, Item, print, totalTurnsPlayed, use, visitUrl } from "kolmafia";
-import { $effect, $item, $items, AsdonMartin, clamp, DNALab, get, have, TrainSet } from "libram";
+import { $effect, $item, $items, AsdonMartin, DNALab, get, have, TrainSet } from "libram";
 import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
-import { estimatedGarboTurns } from "../turns";
+import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../turns";
 import { getBestCycle, grabMedicine, offsetDefaultPieces } from "./workshed_utils";
 type WorkshedOptions = {
   workshed: Item;
@@ -62,7 +62,7 @@ class GarboWorkshed {
     return GarboWorkshed._currentWorkshed;
   }
 }
-const estimatedTurnsTomorrow = 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600);
+
 let _attemptedMakingTonics = false;
 
 const worksheds = [

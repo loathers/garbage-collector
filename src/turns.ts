@@ -7,7 +7,7 @@ import {
   myInebriety,
   myTurncount,
 } from "kolmafia";
-import { $familiar, $item, Counter, get, have, SourceTerminal } from "libram";
+import { $familiar, $item, clamp, Counter, get, have, SourceTerminal } from "libram";
 import { globalOptions } from "./config";
 import { usingThumbRing } from "./dropsgear";
 import { embezzlerCount } from "./embezzler";
@@ -85,6 +85,8 @@ export function estimatedNonGarboTurns(): number {
   const turns = myAdventures() + dietAdventures - estimatedGarboTurns() + globalOptions.saveTurns;
   return turns;
 }
+
+export const estimatedTurnsTomorrow = 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600);
 
 function untangleDigitizes(turnCount: number, chunks: number): number {
   const turnsPerChunk = turnCount / chunks;
