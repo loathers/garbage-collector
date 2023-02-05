@@ -3,7 +3,7 @@ import { $effect, $item, $items, AsdonMartin, clamp, DNALab, get, have, TrainSet
 import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
-import { estimatedTurns } from "../turns";
+import { estimatedGarboTurns } from "../turns";
 import { getBestCycle, grabMedicine, offsetDefaultPieces } from "./workshed_utils";
 type WorkshedOptions = {
   workshed: Item;
@@ -27,7 +27,7 @@ class GarboWorkshed {
   }
 
   canRemove(): boolean {
-    return (this.done?.() ?? true) || estimatedTurns() <= (GarboWorkshed.next?.minTurns ?? 0);
+    return (this.done?.() ?? true) || estimatedGarboTurns() <= (GarboWorkshed.next?.minTurns ?? 0);
   }
 
   use(): void {
@@ -105,13 +105,13 @@ const worksheds = [
     done: () => {
       return (
         haveEffect($effect`Driving Observantly`) >=
-        estimatedTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+        estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
     action: () => {
       AsdonMartin.drive(
         $effect`Driving Observantly`,
-        estimatedTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+        estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
   }),

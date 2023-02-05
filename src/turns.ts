@@ -17,7 +17,7 @@ import { ESTIMATED_OVERDRUNK_TURNS } from "./lib";
  * Computes the estimated number of turns during which garbo will run
  * @returns A guess of how many runs garbo will run in total
  */
-export function estimatedTurns(): number {
+export function estimatedGarboTurns(): number {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
   const pantsgivingAdventures = have($item`Pantsgiving`)
     ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
@@ -73,6 +73,19 @@ export function estimatedTurns(): number {
   return turns;
 }
 
+/**
+ * Computes the estimated number of turns left that the user will use outside garbo
+ * @returns A guess of how many turns will be used outside garbo
+ */
+export function estimatedNonGarboTurns(): number {
+  const dietAdventures = Math.max(
+    potentialFullnessAdventures() + potentialInebrietyAdventures() + potentialNonOrganAdventures(),
+    0
+  );
+  const turns = myAdventures() + dietAdventures - estimatedGarboTurns() + globalOptions.saveTurns;
+  return turns;
+}
+
 function untangleDigitizes(turnCount: number, chunks: number): number {
   const turnsPerChunk = turnCount / chunks;
   const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
@@ -88,12 +101,12 @@ export function digitizedMonstersRemaining(): number {
 
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
   if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
-    return untangleDigitizes(estimatedTurns(), SourceTerminal.getMaximumDigitizeUses());
+    return untangleDigitizes(estimatedGarboTurns(), SourceTerminal.getMaximumDigitizeUses());
   }
 
   const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
 
-  const turnsLeftAtNextMonster = estimatedTurns() - Counter.get("Digitize Monster");
+  const turnsLeftAtNextMonster = estimatedGarboTurns() - Counter.get("Digitize Monster");
   if (turnsLeftAtNextMonster <= 0) return 0;
   const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
   return (

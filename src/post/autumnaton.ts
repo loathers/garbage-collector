@@ -1,6 +1,6 @@
 import { maxBy } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
-import { estimatedTurns } from "../turns";
+import { estimatedGarboTurns } from "../turns";
 import {
   appearanceRates,
   availableAmount,
@@ -83,7 +83,7 @@ function seasonalItemValue(location: Location, seasonalOverride?: number): numbe
 }
 
 function expectedRemainingExpeditions(legs = AutumnAton.legs()): number {
-  const availableAutumnatonTurns = estimatedTurns() - AutumnAton.turnsLeft();
+  const availableAutumnatonTurns = estimatedGarboTurns() - AutumnAton.turnsLeft();
   const quests = get("_autumnatonQuests");
   const legOffsetFactor = 11 * Math.max(quests - legs - 1, 0);
   return Math.floor(

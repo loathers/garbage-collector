@@ -56,7 +56,7 @@ import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
 import { garboValue } from "../session";
-import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
@@ -71,12 +71,14 @@ function voterSetup(): void {
     [
       "Meat Drop: +30",
       0.3 *
-        ((baseMeat + 750) * embezzlerCount() + baseMeat * (estimatedTurns() - embezzlerCount())),
+        ((baseMeat + 750) * embezzlerCount() +
+          baseMeat * (estimatedGarboTurns() - embezzlerCount())),
     ],
     [
       "Item Drop: +15",
       0.15 *
-        (4 * 100 * 0.3 * embezzlerCount() + 3 * 200 * 0.15 * (estimatedTurns() - embezzlerCount())),
+        (4 * 100 * 0.3 * embezzlerCount() +
+          3 * 200 * 0.15 * (estimatedGarboTurns() - embezzlerCount())),
     ],
     ["Adventures: +1", globalOptions.ascend ? 0 : get("valueOfAdventure")],
     ["Familiar Experience: +2", 8],
@@ -163,7 +165,7 @@ function pantogram(): void {
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
     const expectedBarfTurns = globalOptions.nobarf
       ? 0
-      : estimatedTurns() - digitizedMonstersRemaining() - embezzlerCount();
+      : estimatedGarboTurns() - digitizedMonstersRemaining() - embezzlerCount();
     pantogramValue = 100 * expectedBarfTurns;
   } else {
     const lepMult = findLeprechaunMultiplier(meatFamiliar());
@@ -177,7 +179,8 @@ function pantogram(): void {
       .map((pants) => totalPantsValue(pants));
     const bestPantsValue = Math.max(0, ...alternativePants);
 
-    pantogramValue = (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedTurns();
+    pantogramValue =
+      (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
     ...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item))

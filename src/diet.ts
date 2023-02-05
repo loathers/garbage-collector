@@ -74,7 +74,7 @@ import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
-import { estimatedTurns } from "./turns";
+import { estimatedGarboTurns } from "./turns";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -684,7 +684,11 @@ function balanceMenu(baseMenu: MenuItem<Note>[], dietPlanner: DietPlanner): Menu
     embezzlers: number,
     adventures: number
   ): MenuItem<Note>[] {
-    const fullMenu = potionMenu(menu, baseEmbezzlers + embezzlers, estimatedTurns() + adventures);
+    const fullMenu = potionMenu(
+      menu,
+      baseEmbezzlers + embezzlers,
+      estimatedGarboTurns() + adventures
+    );
     if (iterations <= 0) {
       return fullMenu;
     } else {
@@ -769,7 +773,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
 
   const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
-  const adventures = Math.floor(estimatedTurns() + diet.expectedAdventures());
+  const adventures = Math.floor(estimatedGarboTurns() + diet.expectedAdventures());
   print(`Planning to fight ${embezzlers} embezzlers and run ${adventures} adventures`);
 
   for (const dietEntry of diet.entries) {

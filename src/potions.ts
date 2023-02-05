@@ -40,7 +40,7 @@ import { acquire } from "./acquire";
 import { baseMeat, HIGHLIGHT, maxBy, pillkeeperOpportunityCost, turnsToNC } from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
-import { estimatedTurns } from "./turns";
+import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
@@ -244,7 +244,7 @@ export class Potion {
   ): { name: PotionTier; quantity: number; value: number }[] {
     const startingTurns = haveEffect(this.effect());
     const ascending = globalOptions.ascend;
-    const totalTurns = turns ?? estimatedTurns();
+    const totalTurns = turns ?? estimatedGarboTurns();
     const values: {
       name: PotionTier;
       quantity: number;
@@ -510,7 +510,7 @@ class VariableMeatPotion {
   }
 
   getOptimalNumberToUse(yachtzees: number, embezzlers: number): number {
-    const barfTurns = Math.max(0, estimatedTurns() - yachtzees - embezzlers);
+    const barfTurns = Math.max(0, estimatedGarboTurns() - yachtzees - embezzlers);
 
     const potionAmountsToConsider: number[] = [];
     const considerSoftcap = [0, this.softcap];

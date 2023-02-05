@@ -25,7 +25,7 @@ import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
 import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
 import { meatOutfit } from "../outfit";
-import { estimatedTurns } from "../turns";
+import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
@@ -202,7 +202,7 @@ function getSpecialFamiliarLimit({
       );
 
     case $familiar`Crimbo Shrub`:
-      return Math.ceil(estimatedTurns() / 100);
+      return Math.ceil(estimatedGarboTurns() / 100);
 
     default:
       return 0;
