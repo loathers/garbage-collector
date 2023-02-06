@@ -54,7 +54,7 @@ import {
   valueJuneCleaverOption,
 } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
-import { estimatedGarboTurns, estimatedNonGarboTurns } from "./turns";
+import { estimatedGarboTurns, remainingUserTurns } from "./turns";
 
 /**
  * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
@@ -453,9 +453,7 @@ export function usingThumbRing(): boolean {
 
 let juneCleaverEV: number | null = null;
 function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
-  const estimatedJuneCleaverTurns = globalOptions.nobarf
-    ? estimatedNonGarboTurns
-    : estimatedGarboTurns;
+  const estimatedJuneCleaverTurns = globalOptions.nobarf ? remainingUserTurns : estimatedGarboTurns;
   if (
     !have($item`June cleaver`) ||
     get("_juneCleaverFightsLeft") > estimatedJuneCleaverTurns() ||

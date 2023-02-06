@@ -77,7 +77,7 @@ export function estimatedGarboTurns(): number {
  * Computes the estimated number of turns left that the user will use outside garbo
  * @returns A guess of how many turns will be used outside garbo
  */
-export function estimatedNonGarboTurns(): number {
+export function remainingUserTurns(): number {
   const dietAdventures = Math.max(
     potentialFullnessAdventures() + potentialInebrietyAdventures() + potentialNonOrganAdventures(),
     0
