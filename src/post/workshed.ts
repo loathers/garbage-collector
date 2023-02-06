@@ -5,6 +5,7 @@ import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
 import { getPrioritizedStations, getRotatedCycle, grabMedicine } from "./workshed_utils";
+import { HIGHLIGHT } from "../lib";
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;
@@ -79,15 +80,22 @@ const worksheds = [
         visitUrl("campground.php?action=workshed");
         visitUrl("main.php");
       }
+
+      const position = get("trainsetPosition") % 8;
+
       if (!get("trainsetConfiguration")) {
-        print("Reconfiguring trainset, as our next station is empty", "blue");
-        return TrainSet.setConfiguration(getRotatedCycle(get("trainsetPosition") % 8));
+        print("Reconfiguring trainset, as it is empty", HIGHLIGHT);
+        return TrainSet.setConfiguration(getRotatedCycle(position));
+      } else if (globalOptions.ascend && estimatedTurns() <= 40) {
+        print(
+          "Refusing to reconfigure trainset, to save a reconfiguration for your upcoming ascension.",
+          HIGHLIGHT
+        );
+        return;
       } else {
         const bestStations = getPrioritizedStations();
         if (bestStations.includes(TrainSet.next())) return;
-        if (globalOptions.ascend && estimatedTurns() <= 40) return;
-        print(`Reconfiguring trainset, as our next station is ${TrainSet.next()}`, "blue");
-        const position = get("trainsetPosition") % 8;
+        print(`Reconfiguring trainset, as our next station is ${TrainSet.next()}`, HIGHLIGHT);
         return TrainSet.setConfiguration(getRotatedCycle(position));
       }
     },
