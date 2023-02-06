@@ -82,15 +82,15 @@ function valueOffset(offset: number): number {
 
 let bestOffset: number | null = null;
 function getBestOffset(): number {
-  bestOffset ??= maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset);
-  return bestOffset;
+  return (bestOffset ??= maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset));
 }
 
 export function getPrioritizedStations(): TrainSet.Station[] {
   return getBestCycle().slice(0, getBestOffset() - 1);
 }
 
-export function getRotatedCycle(offset: number): TrainSet.Cycle {
+function getRotatedCycle(): TrainSet.Cycle {
+  const offset = get("trainsetPosition") % 8;
   const newPieces: TrainSet.Station[] = [];
   const defaultPieces = getBestCycle();
   for (let i = 0; i < 8; i++) {
@@ -98,6 +98,10 @@ export function getRotatedCycle(offset: number): TrainSet.Cycle {
     newPieces[newPos] = defaultPieces[i];
   }
   return newPieces as TrainSet.Cycle;
+}
+
+export function rotateToOptimalCycle(): boolean {
+  return TrainSet.setConfiguration(getRotatedCycle());
 }
 
 export function grabMedicine(): void {

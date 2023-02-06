@@ -4,7 +4,7 @@ import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
-import { getPrioritizedStations, getRotatedCycle, grabMedicine } from "./workshed_utils";
+import { getPrioritizedStations, grabMedicine, rotateToOptimalCycle } from "./workshed_utils";
 import { HIGHLIGHT } from "../lib";
 type WorkshedOptions = {
   workshed: Item;
@@ -81,11 +81,9 @@ const worksheds = [
         visitUrl("main.php");
       }
 
-      const position = get("trainsetPosition") % 8;
-
       if (!get("trainsetConfiguration")) {
         print("Reconfiguring trainset, as it is empty", HIGHLIGHT);
-        return TrainSet.setConfiguration(getRotatedCycle(position));
+        return rotateToOptimalCycle();
       } else if (globalOptions.ascend && estimatedTurns() <= 40) {
         print(
           "Refusing to reconfigure trainset, to save a reconfiguration for your upcoming ascension.",
@@ -96,7 +94,7 @@ const worksheds = [
         const bestStations = getPrioritizedStations();
         if (bestStations.includes(TrainSet.next())) return;
         print(`Reconfiguring trainset, as our next station is ${TrainSet.next()}`, HIGHLIGHT);
-        return TrainSet.setConfiguration(getRotatedCycle(position));
+        return rotateToOptimalCycle();
       }
     },
   }),
