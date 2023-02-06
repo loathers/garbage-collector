@@ -4,11 +4,7 @@ import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
-import {
-  getPrioritizedStations,
-  getRotatedCycle,
-  grabMedicine,
-} from "./workshed_utils";
+import { getPrioritizedStations, getRotatedCycle, grabMedicine } from "./workshed_utils";
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;
