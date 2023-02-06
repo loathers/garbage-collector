@@ -76,18 +76,18 @@ function valueStation(station: TrainSet.Station): number {
 
 function valueOffset(offset: number): number {
   const firstFortyTurns = 5 * sum(getBestCycle(), valueStation);
-  const extraTurns = sum(getBestCycle().slice(0, offset), valueStation);
+  const extraTurns = sum(getBestCycle().slice(0, offset - 1), valueStation);
   return (firstFortyTurns + extraTurns) / (40 + offset);
 }
 
 let bestOffset: number | null = null;
 function getBestOffset(): number {
-  bestOffset ??= maxBy([2, 3, 4, 5, 6, 7], valueOffset);
+  bestOffset ??= maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset);
   return bestOffset;
 }
 
 export function getPrioritizedStations(): TrainSet.Station[] {
-  return getBestCycle().slice(0, getBestOffset());
+  return getBestCycle().slice(0, getBestOffset() - 1);
 }
 
 export function getRotatedCycle(offset: number): TrainSet.Cycle {
