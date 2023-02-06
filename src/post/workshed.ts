@@ -4,7 +4,11 @@ import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
 import { estimatedTurns } from "../turns";
-import { getBestCycle, grabMedicine, offsetDefaultPieces } from "./workshed_utils";
+import {
+  getPrioritizedStations,
+  getRotatedCycle,
+  grabMedicine,
+} from "./workshed_utils";
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;
@@ -81,13 +85,14 @@ const worksheds = [
       }
       if (!get("trainsetConfiguration")) {
         print("Reconfiguring trainset, as our next station is empty", "blue");
-        return TrainSet.setConfiguration(getBestCycle());
+        return TrainSet.setConfiguration(getRotatedCycle(get("trainsetPosition") % 8));
       } else {
-        const bestTwoStations = getBestCycle().splice(0, 2);
-        const offset = get("trainsetPosition") % 8;
-        if (bestTwoStations.includes(TrainSet.next())) return;
+        const bestStations = getPrioritizedStations();
+        if (bestStations.includes(TrainSet.next())) return;
+        if (globalOptions.ascend && estimatedTurns() <= 40) return;
         print(`Reconfiguring trainset, as our next station is ${TrainSet.next()}`, "blue");
-        return TrainSet.setConfiguration(offsetDefaultPieces(offset));
+        const position = get("trainsetPosition") % 8;
+        return TrainSet.setConfiguration(getRotatedCycle(position));
       }
     },
   }),

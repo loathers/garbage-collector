@@ -26,7 +26,7 @@ function candyFactoryValue(): number {
   return get("garbo_candyFactoryValue", 0);
 }
 
-const POTENTIAL_BEST_TRAIN_PIECES = [
+const GOOD_TRAIN_STATIONS = [
   { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
   {
     // Some day this'll be better
@@ -52,11 +52,11 @@ const POTENTIAL_BEST_TRAIN_PIECES = [
 ];
 
 let trainCycle: TrainSet.Cycle;
-export function getBestCycle(): TrainSet.Cycle {
+function getBestCycle(): TrainSet.Cycle {
   if (!trainCycle) {
     const cycle = [
       TrainSet.Station.COAL_HOPPER,
-      ...POTENTIAL_BEST_TRAIN_PIECES.sort(({ value: a }, { value: b }) => b() - a()).map(
+      ...GOOD_TRAIN_STATIONS.sort(({ value: a }, { value: b }) => b() - a()).map(
         ({ piece }) => piece
       ),
       TrainSet.Station.TOWER_FIZZY,
@@ -67,7 +67,30 @@ export function getBestCycle(): TrainSet.Cycle {
   return [...trainCycle];
 }
 
-export function offsetDefaultPieces(offset: number): TrainSet.Cycle {
+function valueStation(station: TrainSet.Station): number {
+  if (station === TrainSet.Station.COAL_HOPPER) {
+    return valueStation(getBestCycle()[1]);
+  }
+  return GOOD_TRAIN_STATIONS.find(({ piece }) => piece === station)?.value() ?? 0;
+}
+
+function valueOffset(offset: number): number {
+  const firstFortyTurns = 5 * sum(getBestCycle(), valueStation);
+  const extraTurns = sum(getBestCycle().slice(offset), valueStation);
+  return (firstFortyTurns + extraTurns) / (40 + offset)
+}
+
+let bestOffset: number | null = null;
+function getBestOffset(): number {
+    bestOffset ??= maxBy([2,3,4,5,6,7], valueOffset);
+    return bestOffset;
+}
+
+export function getPrioritizedStations(): TrainSet.Station[] {
+  return getBestCycle().slice(getBestOffset());
+}
+
+export function getRotatedCycle(offset: number): TrainSet.Cycle {
   const newPieces: TrainSet.Station[] = [];
   const defaultPieces = getBestCycle();
   for (let i = 0; i < 8; i++) {
