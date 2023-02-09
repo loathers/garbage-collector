@@ -20881,14 +20881,7 @@ function freeFightOutfit(requirement) {
     bonusEquip: new Map([].concat(src_outfit_toConsumableArray(bonusEquip), src_outfit_toConsumableArray(bonusGear(equipMode)), src_outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, !bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0]]) : []))),
     preventSlot: preventSlot
   });
-  finalRequirement.maximize();
-  if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(src_outfit_templateObject14 || (src_outfit_templateObject14 = src_outfit_taggedTemplateLiteral(["Buddy Bjorn"]))))) (0,external_kolmafia_namespaceObject.bjornifyFamiliar)(bjornChoice.familiar);
-  if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(src_outfit_templateObject15 || (src_outfit_templateObject15 = src_outfit_taggedTemplateLiteral(["Crown of Thrones"]))))) (0,external_kolmafia_namespaceObject.enthroneFamiliar)(bjornChoice.familiar);
-  if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(src_outfit_templateObject16 || (src_outfit_templateObject16 = src_outfit_taggedTemplateLiteral(["Snow Suit"])))) && property_get("snowsuit") !== "nose") (0,external_kolmafia_namespaceObject.cliExecute)("snowsuit nose");
-
-  if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(src_outfit_templateObject17 || (src_outfit_templateObject17 = src_outfit_taggedTemplateLiteral(["Jurassic Parka"])))) && property_get("parkaMode") !== "dilophosaur") {
-    (0,external_kolmafia_namespaceObject.cliExecute)("parka dilophosaur");
-  }
+  var result = finalRequirement.maximize();
 
   var missingEquips = () => {
     var _finalRequirement$max;
@@ -20896,15 +20889,23 @@ function freeFightOutfit(requirement) {
     return ((_finalRequirement$max = finalRequirement.maximizeOptions.forceEquip) !== null && _finalRequirement$max !== void 0 ? _finalRequirement$max : []).filter(equipment => !(0,external_kolmafia_namespaceObject.haveEquipped)(equipment));
   };
 
-  if (missingEquips().length > 0) {
+  if (missingEquips().length > 0 || !result) {
     (0,external_kolmafia_namespaceObject.cliExecute)("refresh all");
-    new Requirement([], {
+    var newResult = new Requirement([], {
       forceUpdate: true
     }).merge(finalRequirement).maximize();
+
+    if (missingEquips().length > 0 || !newResult) {
+      throw new Error("Maximizer failed to equip the following equipment: ".concat(missingEquips().map(equipment => equipment.name).join(", "), ".?"));
+    }
   }
 
-  if (missingEquips().length > 0) {
-    throw new Error("Maximizer failed to equip the following equipment: ".concat(missingEquips().map(equipment => equipment.name).join(", "), ".?"));
+  if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(src_outfit_templateObject14 || (src_outfit_templateObject14 = src_outfit_taggedTemplateLiteral(["Buddy Bjorn"]))))) (0,external_kolmafia_namespaceObject.bjornifyFamiliar)(bjornChoice.familiar);
+  if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(src_outfit_templateObject15 || (src_outfit_templateObject15 = src_outfit_taggedTemplateLiteral(["Crown of Thrones"]))))) (0,external_kolmafia_namespaceObject.enthroneFamiliar)(bjornChoice.familiar);
+  if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(src_outfit_templateObject16 || (src_outfit_templateObject16 = src_outfit_taggedTemplateLiteral(["Snow Suit"])))) && property_get("snowsuit") !== "nose") (0,external_kolmafia_namespaceObject.cliExecute)("snowsuit nose");
+
+  if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(src_outfit_templateObject17 || (src_outfit_templateObject17 = src_outfit_taggedTemplateLiteral(["Jurassic Parka"])))) && property_get("parkaMode") !== "dilophosaur") {
+    (0,external_kolmafia_namespaceObject.cliExecute)("parka dilophosaur");
   }
 }
 function refreshLatte() {
@@ -21017,7 +21018,25 @@ function meatOutfit(embezzlerUp, requirement, sea) {
     bonusEquip: new Map([].concat(src_outfit_toConsumableArray(bonusGear(equipMode)), src_outfit_toConsumableArray(bjornAlike ? new Map([[bjornAlike, (!bjornChoice.dropPredicate || bjornChoice.dropPredicate() ? bjornChoice.meatVal() * bjornChoice.probability : 0) + valueBjornModifiers(equipMode, bjornChoice.modifier)]]) : []))),
     preventSlot: preventSlot
   }));
-  compiledRequirements.maximize();
+  var result = compiledRequirements.maximize();
+
+  var missingEquips = () => {
+    var _compiledRequirements;
+
+    return ((_compiledRequirements = compiledRequirements.maximizeOptions.forceEquip) !== null && _compiledRequirements !== void 0 ? _compiledRequirements : []).filter(equipment => !(0,external_kolmafia_namespaceObject.haveEquipped)(equipment));
+  };
+
+  if (missingEquips().length > 0 || !result) {
+    (0,external_kolmafia_namespaceObject.cliExecute)("refresh all");
+    var newResult = new Requirement([], {
+      forceUpdate: true
+    }).merge(compiledRequirements).maximize();
+
+    if (missingEquips().length > 0 || !newResult) {
+      throw new Error("Maximizer failed to equip the following equipment: ".concat(missingEquips().map(equipment => equipment.name).join(", "), ".?"));
+    }
+  }
+
   if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(outfit_templateObject68 || (outfit_templateObject68 = src_outfit_taggedTemplateLiteral(["Buddy Bjorn"]))))) (0,external_kolmafia_namespaceObject.bjornifyFamiliar)(bjornChoice.familiar);
   if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(outfit_templateObject69 || (outfit_templateObject69 = src_outfit_taggedTemplateLiteral(["Crown of Thrones"]))))) (0,external_kolmafia_namespaceObject.enthroneFamiliar)(bjornChoice.familiar);
   if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(outfit_templateObject70 || (outfit_templateObject70 = src_outfit_taggedTemplateLiteral(["Snow Suit"])))) && property_get("snowsuit") !== "nose") (0,external_kolmafia_namespaceObject.cliExecute)("snowsuit nose");
@@ -21028,23 +21047,6 @@ function meatOutfit(embezzlerUp, requirement, sea) {
 
   if ((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(outfit_templateObject72 || (outfit_templateObject72 = src_outfit_taggedTemplateLiteral(["Jurassic Parka"])))) && property_get("parkaMode") !== "kachungasaur") {
     (0,external_kolmafia_namespaceObject.cliExecute)("parka kachungasaur");
-  }
-
-  var missingEquips = () => {
-    var _compiledRequirements;
-
-    return ((_compiledRequirements = compiledRequirements.maximizeOptions.forceEquip) !== null && _compiledRequirements !== void 0 ? _compiledRequirements : []).filter(equipment => !(0,external_kolmafia_namespaceObject.haveEquipped)(equipment));
-  };
-
-  if (missingEquips().length > 0) {
-    (0,external_kolmafia_namespaceObject.cliExecute)("refresh all");
-    new Requirement([], {
-      forceUpdate: true
-    }).merge(compiledRequirements).maximize();
-  }
-
-  if (missingEquips().length > 0) {
-    throw new Error("Maximizer failed to equip the following equipment: ".concat(missingEquips().map(equipment => equipment.name).join(", "), ".?"));
   }
 
   if (sea && (0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(outfit_templateObject73 || (outfit_templateObject73 = src_outfit_taggedTemplateLiteral(["The Crown of Ed the Undying"]))))) (0,external_kolmafia_namespaceObject.cliExecute)("edpiece fish");
