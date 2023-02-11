@@ -458,8 +458,6 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  // assuming embezzler is worth 4 * MPA and a marginal turn is 1 * MPA, the differential is 3 * MPA
-  // however, much of our outfit in barf has flat bonuses rather than meat%, so a lower multiplier of 2.5 is preferred
   const embezzlerDifferential = EMBEZZLER_MULTIPLIER * MPA;
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
   const extros =
