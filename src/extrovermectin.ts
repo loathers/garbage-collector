@@ -17,10 +17,8 @@ import {
   $items,
   $location,
   $monster,
-  $monsters,
   $skill,
   $slot,
-  adventureMacro,
   clamp,
   CrystalBall,
   get,
@@ -31,10 +29,11 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { globalOptions, latteActionSourceFinderConstraints, ltbRun, maxBy, setChoice } from "./lib";
-import { Macro } from "./combat";
+import { latteActionSourceFinderConstraints, ltbRun, maxBy, setChoice } from "./lib";
+import { garboAdventure, Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";
+import { globalOptions } from "./config";
 
 export function expectedGregs(): number[] {
   const baseGregs = 3;
@@ -74,7 +73,7 @@ export function doingExtrovermectin(): boolean {
   return (
     get("beGregariousCharges") > 0 ||
     get("beGregariousFightsLeft") > 0 ||
-    (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted"))
+    (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted"))
   );
 }
 
@@ -120,10 +119,9 @@ export function saberCrateIfSafe(): void {
       .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
       .maximize();
     setChoice(1387, 2);
-    adventureMacro(
+    garboAdventure(
       $location`Noob Cave`,
       Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
-        .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
         .if_($monster`sausage goblin`, Macro.kill())
         .ifHolidayWanderer(run.macro)
         .abort()
@@ -163,7 +161,11 @@ function initializeCrates(): void {
     }
     // if we have olfaction, that's our primary method for ensuring crates
     if (
-      (crateStrategy() === "Sniff" && property.getString("olfactedMonster") !== "crate") ||
+      (crateStrategy() === "Sniff" &&
+        (property.getString("olfactedMonster") !== "crate" ||
+          !have($effect`On the Trail`) ||
+          property.getString("longConMonster") !== "crate" ||
+          get("_longConUsed") <= 0)) ||
       (crateStrategy() === "Orb" &&
         ((get("_gallapagosMonster") !== $monster`crate` &&
           have($skill`Gallapagosian Mating Call`)) ||
@@ -195,10 +197,9 @@ function initializeCrates(): void {
       })
         .merge(run.constraints.equipmentRequirements?.() ?? new Requirement([], {}))
         .maximize();
-      adventureMacro(
+      garboAdventure(
         $location`Noob Cave`,
         Macro.if_($monster`crate`, macro)
-          .if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
           .ifHolidayWanderer(run.macro)
           .abort()
       );
@@ -248,23 +249,23 @@ function initializeDireWarren(): void {
     }).maximize();
 
     do {
-      adventureMacro(
+      garboAdventure(
         $location`The Dire Warren`,
         Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).step(embezzlerMacro())
       );
-    } while (
-      "fluffy bunny" !== get("lastEncounter") &&
-      banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`
-    );
+    } while (myFury() >= 5 && banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`);
   } else {
     const banish = maxBy(options, mallPrice, true);
     acquire(1, banish, 50000, true);
     do {
-      adventureMacro(
+      garboAdventure(
         $location`The Dire Warren`,
         Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(embezzlerMacro())
       );
-    } while ("fluffy bunny" !== get("lastEncounter"));
+    } while (
+      "fluffy bunny" !== get("lastEncounter") &&
+      !get("banishedMonsters").includes("fluffy bunny")
+    );
   }
 }
 

@@ -66,18 +66,15 @@ jobs:
           git switch release
           rm -r scripts/
           rm -r data/
-          rm -r ccs/
           rm -r relay/
           rm -r images/
           mv KoLmafia/scripts scripts
           mv KoLmafia/relay relay
-          mv mafiafiles/ccs ./ccs
           mv mafiafiles/data ./data
           mv mafiafiles/dependencies.txt dependencies.txt
           mv mafiafiles/images ./images
       - run: |
           git add scripts/
-          git add ccs/
           git add data/
           git add relay/
           git add images/

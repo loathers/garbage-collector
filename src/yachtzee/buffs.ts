@@ -25,12 +25,18 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { baseMeat, burnLibrams, turnsToNC } from "../lib";
-import { farmingPotions, mutuallyExclusive, Potion, variableMeatPotionsSetup } from "../potions";
+import {
+  failedWishes,
+  farmingPotions,
+  mutuallyExclusive,
+  Potion,
+  variableMeatPotionsSetup,
+} from "../potions";
 import { garboValue } from "../session";
 import { executeNextDietStep } from "./diet";
 import { expectedEmbezzlers, pyecAvailable, shrugIrrelevantSongs } from "./lib";
 
-function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
+export function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): number {
   // If we have an unused PYEC then
   // 1) If we don't have an effect, +5 to gained effect duration
   // 2) If we already have an effect, +5 to existing effect duration
@@ -68,7 +74,7 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
 
   shrugIrrelevantSongs();
 
-  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed", false)) {
+  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
     const doublingPotions = farmingPotions
       .filter(
         (potion) =>
@@ -165,6 +171,11 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
           if (
             !potion.use(Math.min(itemAmount(potion.potion), nPotions)) ||
             tries >= 5 * Math.ceil(yachtzeeTurns / potion.effectDuration())
+          ) {
+            break;
+          } else if (
+            potion.potion === $item`pocket wish` &&
+            failedWishes.includes(potion.effect())
           ) {
             break;
           }

@@ -4,6 +4,7 @@ import {
   $familiar,
   $item,
   $items,
+  clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
@@ -39,7 +40,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: () =>
       garboAverageValue(
         ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`
-      ) / 11,
+      ) / 11, // 9 with blue plate
   },
   {
     familiar: $familiar`Robortender`,
@@ -69,6 +70,31 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     // This is the value of getting a pirate costume over getting an amulet coin or whatever
     value: () =>
       have($item`li'l pirate costume`) ? (baseMeat * (300 - bestAlternative)) / 100 : 0,
+  },
+  {
+    familiar: $familiar`Rockin' Robin`,
+    value: () => garboValue($item`robin's egg`) / clamp(30 - get("rockinRobinProgress"), 1, 30),
+  },
+  {
+    familiar: $familiar`Optimistic Candle`,
+    value: () =>
+      garboValue($item`glob of melted wax`) / clamp(30 - get("optimisticCandleProgress"), 1, 30),
+  },
+  {
+    familiar: $familiar`Garbage Fire`,
+    value: () =>
+      garboAverageValue(
+        ...$items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`
+      ) / clamp(30 - get("garbageFireProgress"), 1, 30),
+  },
+  {
+    familiar: $familiar`Cookbookbat`,
+    value: () =>
+      (3 *
+        garboAverageValue(
+          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`
+        )) /
+      11,
   },
 ];
 

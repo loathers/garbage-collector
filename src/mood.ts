@@ -27,7 +27,7 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { baseMeat, questStep, safeRestoreMpTarget, setChoice } from "./lib";
+import { baseMeat, burnLibrams, questStep, safeRestoreMpTarget, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
@@ -196,11 +196,33 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
   }
+  if (have($item`portable steam unit`) && !get("_portableSteamUnitUsed", false)) {
+    use($item`portable steam unit`);
+  }
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
 
   return mood;
+}
+
+/**
+ * Use buff extenders like PYEC and Bag o Tricks
+ */
+export function useBuffExtenders(): void {
+  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
+    if (have($item`Platinum Yendorian Express Card`) && !get("expressCardUsed")) {
+      burnLibrams();
+      use($item`Platinum Yendorian Express Card`);
+    }
+    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
+      use($item`Bag o' Tricks`);
+    }
+  });
+  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
+    burnLibrams();
+    use($item`License to Chill`);
+  }
 }
 
 const stings = [
@@ -209,11 +231,14 @@ const stings = [
   $effect`Yes, Can Haz`,
 ];
 const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
-const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
+export const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
+const otherwiseBadEffects = $effects`Temporary Blindness`;
 export function shrugBadEffects(...exclude: Effect[]): void {
-  [...stings, ...textAlteringEffects, ...teleportEffects].forEach((effect) => {
-    if (have(effect) && !exclude.includes(effect)) {
-      uneffect(effect);
+  [...stings, ...textAlteringEffects, ...teleportEffects, ...otherwiseBadEffects].forEach(
+    (effect) => {
+      if (have(effect) && !exclude.includes(effect)) {
+        uneffect(effect);
+      }
     }
-  });
+  );
 }

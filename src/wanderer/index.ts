@@ -4,6 +4,7 @@ import { HIGHLIGHT, maxBy, propertyManager, sober } from "../lib";
 import { guzzlrFactory } from "./guzzlr";
 import {
   canAdventureOrUnlock,
+  canWander,
   defaultFactory,
   DraggableFight,
   unlock,
@@ -14,7 +15,7 @@ import {
 import { lovebugsFactory } from "./lovebugs";
 import { yellowRayFactory } from "./yellowray";
 
-export { DraggableFight };
+export type { DraggableFight };
 
 const wanderFactories: WandererFactory[] = [
   defaultFactory,
@@ -35,7 +36,8 @@ export function bestWander(
     for (const wanderTarget of wanderTargets) {
       if (
         !nameSkiplist.includes(wanderTarget.name) &&
-        !locationSkiplist.includes(wanderTarget.location)
+        !locationSkiplist.includes(wanderTarget.location) &&
+        canWander(wanderTarget.location, type)
       ) {
         const wandererLocation: WandererLocation = possibleLocations.get(wanderTarget.location) ?? {
           location: wanderTarget.location,
@@ -72,7 +74,9 @@ export function wanderWhere(
   const failed = candidate.targets.filter((target) => !target.prepareTurn());
 
   const badLocation =
-    !canAdventureOrUnlock(candidate.location) || !unlock(candidate.location, candidate.value)
+    !canAdventureOrUnlock(candidate.location) ||
+    !unlock(candidate.location, candidate.value) ||
+    !canWander(candidate.location, type)
       ? [candidate.location]
       : [];
 

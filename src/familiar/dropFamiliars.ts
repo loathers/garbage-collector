@@ -1,25 +1,31 @@
 import { Familiar, Item } from "kolmafia";
-import { $familiar, $item, findLeprechaunMultiplier, get, have, propertyTypes } from "libram";
-import { garboValue } from "../session";
+import { $familiar, $item, $items, findLeprechaunMultiplier, have } from "libram";
+import { garboAverageValue, garboValue } from "../session";
 import { GeneralFamiliar } from "./lib";
 
 type StandardDropFamiliar = {
   familiar: Familiar;
-  expected: number[];
-  drop: Item;
-  pref: propertyTypes.NumericProperty;
+  expected: number[] | ((index: number) => number);
+  drop: Item | Item[];
   additionalValue?: () => number;
 };
+
+function expectedTurnsValue(expected: number[] | ((index: number) => number), index: number) {
+  return Array.isArray(expected) ? expected[index] : expected(index);
+}
+
+function dropValue(drop: Item | Item[]): number {
+  return drop instanceof Item ? garboValue(drop) : garboAverageValue(...drop);
+}
 
 function valueStandardDropFamiliar({
   familiar,
   expected,
   drop,
-  pref,
   additionalValue,
 }: StandardDropFamiliar): GeneralFamiliar {
-  const expectedTurns = expected[get(pref)] || Infinity;
-  const expectedValue = garboValue(drop) / expectedTurns + (additionalValue?.() ?? 0);
+  const expectedTurns = expectedTurnsValue(expected, familiar.dropsToday) || Infinity;
+  const expectedValue = dropValue(drop) / expectedTurns + (additionalValue?.() ?? 0);
   return {
     familiar,
     expectedValue,
@@ -33,111 +39,125 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     familiar: $familiar`Fist Turkey`,
     expected: [3.91, 4.52, 4.52, 5.29, 5.29],
     drop: $item`Ambitious Turkey`,
-    pref: "_turkeyBooze",
   },
   {
     familiar: $familiar`Llama Lama`,
     expected: [3.42, 3.91, 4.52, 5.29, 5.29],
     drop: $item`llama lama gong`,
-    pref: "_gongDrops",
   },
   {
     familiar: $familiar`Astral Badger`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`astral mushroom`,
-    pref: "_astralDrops",
   },
   {
     familiar: $familiar`Li'l Xenomorph`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`transporter transponder`,
-    pref: "_transponderDrops",
   },
   {
     familiar: $familiar`Rogue Program`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`Game Grid token`,
-    pref: "_tokenDrops",
   },
   {
     familiar: $familiar`Bloovian Groose`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`groose grease`,
-    pref: "_grooseDrops",
   },
   {
     familiar: $familiar`Baby Sandworm`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`agua de vida`,
-    pref: "_aguaDrops",
   },
   {
     familiar: $familiar`Green Pixie`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`tiny bottle of absinthe`,
-    pref: "_absintheDrops",
   },
   {
     familiar: $familiar`Blavious Kloop`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`devilish folio`,
-    pref: "_kloopDrops",
   },
   {
     familiar: $familiar`Galloping Grill`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`hot ashes`,
-    pref: "_hotAshesDrops",
   },
   {
     familiar: $familiar`Grim Brother`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`grim fairy tale`,
-    pref: "_grimFairyTaleDrops",
   },
   {
     familiar: $familiar`Golden Monkey`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`powdered gold`,
-    pref: "_powderedGoldDrops",
   },
   {
     familiar: $familiar`Unconscious Collective`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`Unconscious Collective Dream Jar`,
-    pref: "_dreamJarDrops",
   },
   {
     familiar: $familiar`Ms. Puck Man`,
     expected: Array($familiar`Ms. Puck Man`.dropsLimit).fill(12.85),
     drop: $item`power pill`,
-    pref: "_powerPillDrops",
     additionalValue: () => garboValue($item`yellow pixel`),
   },
   {
     familiar: $familiar`Puck Man`,
     expected: Array($familiar`Puck Man`.dropsLimit).fill(12.85),
     drop: $item`power pill`,
-    pref: "_powerPillDrops",
     additionalValue: () => garboValue($item`yellow pixel`),
   },
   {
     familiar: $familiar`Adventurous Spelunker`,
     expected: [7.0],
     drop: $item`Tales of Spelunking`,
-    pref: "_spelunkingTalesDrops",
   },
   {
     familiar: $familiar`Angry Jung Man`,
     expected: [30.0],
     drop: $item`psychoanalytic jar`,
-    pref: "_jungDrops",
   },
   {
     familiar: $familiar`Grimstone Golem`,
     expected: [45.0],
     drop: $item`grimstone mask`,
-    pref: "_grimstoneMaskDrops",
+  },
+  {
+    familiar: $familiar`Cookbookbat`,
+    expected: [33.0],
+    drop: [
+      $item`Recipe of Before Yore: Deep Dish of Legend`,
+      $item`Recipe of Before Yore: Pizza of Legend`,
+      $item`Recipe of Before Yore: Calzone of Legend`,
+      $item`Recipe of Before Yore: plain calzone`,
+      $item`Recipe of Before Yore: roasted vegetable focaccia`,
+      $item`Recipe of Before Yore: baked veggie ricotta`,
+      $item`Recipe of Before Yore: roasted vegetable of J.`,
+      $item`Recipe of Before Yore: Pete's rich ricotta`,
+      $item`Recipe of Before Yore: Boris's bread`,
+      $item`Recipe of Before Yore: Boris's beer`,
+      $item`Recipe of Before Yore: honey bun of Boris`,
+      $item`Recipe of Before Yore: ratatouille de Jarlsberg`,
+      $item`Recipe of Before Yore: Jarlsberg's vegetable soup`,
+      $item`Recipe of Before Yore: Pete's wily whey bar`,
+      $item`Recipe of Before Yore: St. Pete's sneaky smoothie`,
+    ],
+    additionalValue: () =>
+      (3 *
+        garboAverageValue(
+          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`
+        )) /
+      11,
+  },
+  {
+    familiar: $familiar`Hobo in Sheep's Clothing`,
+    expected: (i) => 10 * i + 10, // faster with half-height cigar
+    drop: $item`grubby wool`,
   },
 ];
 
@@ -154,13 +174,16 @@ export function getAllDrops(fam: Familiar): { expectedValue: number; expectedTur
   const target = rotatingFamiliars.find(({ familiar }) => familiar === fam);
   if (!have(fam) || !target) return [];
 
-  const current = get(target.pref);
+  const { expected, drop, additionalValue } = target;
+
+  const current = fam.dropsToday;
   const returnValue = [];
 
-  for (let i = current; i < target.expected.length; i++) {
-    const turns = target.expected[i];
+  const length = Array.isArray(expected) ? expected.length : 11; // 11 seems a reasonable max
+  for (let i = current; i < length; i++) {
+    const turns = expectedTurnsValue(target.expected, i);
     returnValue.push({
-      expectedValue: garboValue(target.drop) / turns + (target.additionalValue?.() ?? 0),
+      expectedValue: dropValue(drop) / turns + (additionalValue?.() ?? 0),
       expectedTurns: turns,
     });
   }

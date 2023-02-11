@@ -33,12 +33,13 @@ import {
   set,
 } from "libram";
 import { acquire } from "../acquire";
+import { globalOptions } from "../config";
 import { hasMonsterReplacers } from "../extrovermectin";
-import { globalOptions } from "../lib";
+import { Potion } from "../potions";
 import { garboValue } from "../session";
 import synthesize from "../synthesis";
 import { estimatedTurns } from "../turns";
-import { yachtzeePotionSetup } from "./buffs";
+import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
 import { freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
 
@@ -133,9 +134,17 @@ class YachtzeeDietUtils {
         ensureConsumable("jumping horseradish", n, 1, 0, 0);
         eat(n, $item`jumping horseradish`);
       }),
+      new YachtzeeDietEntry("Boris's bread", 0, 1, 0, 0, (n: number) => {
+        ensureConsumable("Boris's bread", n, 1, 0, 0);
+        eat(n, $item`Boris's bread`);
+      }),
       new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => {
         use($item`Clara's bell`);
         globalOptions.clarasBellClaimed = true;
+      }),
+      new YachtzeeDietEntry("Deep Dish of Legend", 0, 2, 0, 0, (n: number) => {
+        ensureConsumable("Deep Dish of Legend", n, 2, 0, 0);
+        eat(n, $item`Deep Dish of Legend`);
       }),
       new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, useSpikolodonSpikes),
     ];
@@ -442,6 +451,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const havePYECCharge = pyecAvailable();
   const haveDistentionPill = !get("_distentionPillUsed") && have($item`distention pill`);
+  visitUrl(`desc_item.php?whichitem=${$item`designer sweatpants`.descid}`); // Ensure that our sweat tracker is updated
   const sweatOutsAvailable = clamp(
     Math.floor(get("sweat") / 25),
     0,
@@ -458,7 +468,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
     : 0;
   const synthCastsToCoverRun =
-    globalOptions.noBarf || !have($skill`Sweet Synthesis`)
+    globalOptions.nobarf || !have($skill`Sweet Synthesis`)
       ? 0
       : Math.max(0, Math.round((estimatedTurns() - haveEffect($effect`Synthesis: Greed`)) / 30));
   const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
@@ -598,8 +608,33 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   }
 
   const horseradishes =
+    mallPrice($item`jumping horseradish`) <= 60000 &&
     haveEffect($effect`Kicked in the Sinuses`) < yachtzeeTurns &&
     myFullness() + 1 + slidersToEat * 5 + toastsToEat <= fullnessLimit() + toInt(haveDistentionPill)
+      ? 1
+      : 0;
+  const borisBreads =
+    !get("unknownRecipe10978") &&
+    retrievePrice($item`Boris's bread`) <= 60000 &&
+    haveEffect($effect`Inspired Chef`) < yachtzeeTurns &&
+    myFullness() + 1 + slidersToEat * 5 + toastsToEat + horseradishes <=
+      fullnessLimit() + toInt(haveDistentionPill)
+      ? 1
+      : 0;
+  // Opportunistically fit in Deep Dish of Legend only if we have enough stomach space
+  const pizzaAdditionalAdvPerFullness = 24 / 2 - 31.5 / 5;
+  const deepDishValue =
+    yachtzeePotionProfits(new Potion($item`Deep Dish of Legend`), yachtzeeTurns) +
+    pizzaAdditionalAdvPerFullness * 2 * VOA;
+  const deepDishPizzas =
+    globalOptions.ascend &&
+    !get("deepDishOfLegendEaten") &&
+    deepDishValue > retrievePrice($item`Deep Dish of Legend`) &&
+    !get("unknownRecipe11000") &&
+    !get("unknownRecipe10988") &&
+    !get("unknownRecipe10978") &&
+    myFullness() + 2 + slidersToEat * 5 + toastsToEat + horseradishes + borisBreads <=
+      fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
 
@@ -625,7 +660,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const higherBaseMeatProfits =
     yachtzeePotionSetup(yachtzeeTurns, true) +
     cologneToChew * ((yachtzeeTurns + 60 + 5 * toInt(havePYECCharge)) * 1000 - colognePrice) +
-    (horseradishes > 0 ? yachtzeeTurns * 1000 : 0);
+    (horseradishes > 0 ? yachtzeeTurns * 1000 : 0) +
+    (borisBreads > 0 ? yachtzeeTurns * 1000 : 0);
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
   // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
@@ -678,6 +714,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     ["mojo filter", filters],
     ["beggin' cologne", cologneToChew],
     ["jumping horseradish", horseradishes],
+    ["Boris's bread", borisBreads],
+    ["Deep Dish of Legend", deepDishPizzas],
   ];
 
   const specialEntries: [string, number, (n: number, name?: string) => void][] = (
@@ -742,6 +780,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   acquire(cologneToChew, $item`beggin' cologne`, 2 * colognePrice);
   acquire(filters, $item`mojo filter`, 2 * mallPrice($item`mojo filter`));
   acquire(horseradishes, $item`jumping horseradish`, 60000);
+  acquire(borisBreads, $item`Boris's bread`, 60000);
+  acquire(deepDishPizzas, $item`Deep Dish of Legend`, 1.2 * deepDishValue);
 
   // Get fishy turns
   print("Getting fishy turns", "purple");

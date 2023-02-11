@@ -1,6 +1,6 @@
 import { Engine, Task } from "grimoire-kolmafia";
 import { print } from "kolmafia";
-import { safeInterrupt } from "../lib";
+import { HIGHLIGHT, safeInterrupt } from "../lib";
 
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
@@ -26,7 +26,7 @@ export class SafeGarboEngine extends BaseGarboEngine {
     const limit = task.limit?.soft || 1;
     if (this.attempts[task.name] >= limit) {
       task.completed = () => true;
-      print(`Task ${task.name} did not complete within ${limit} attempts. Skipping.`, "yellow");
+      print(`Task ${task.name} did not complete within ${limit} attempts. Skipping.`, HIGHLIGHT);
     }
   }
 }

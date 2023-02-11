@@ -1,4 +1,5 @@
 import {
+  canEquip,
   equippedItem,
   fullnessLimit,
   getWorkshed,
@@ -41,13 +42,13 @@ import {
   FamiliarRider,
   pickRider,
 } from "libram/dist/resources/2010/CrownOfThrones";
+import { globalOptions } from "./config";
 import { mallMin } from "./diet";
 import { meatFamiliar } from "./familiar";
 import {
   baseMeat,
   bestJuneCleaverOption,
   BonusEquipMode,
-  globalOptions,
   juneCleaverChoiceValues,
   realmAvailable,
   valueJuneCleaverOption,
@@ -123,7 +124,7 @@ function pantsgiving() {
   if (cachedBonus) return new Map([[$item`Pantsgiving`, cachedBonus]]);
 
   const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
-  const expectedUseableSinusTurns = globalOptions.ascending
+  const expectedUseableSinusTurns = globalOptions.ascend
     ? clamp(
         estimatedTurns() - (turns - count) - haveEffect($effect`Kicked in the Sinuses`),
         0,
@@ -144,7 +145,7 @@ function sweatpants(equipMode: BonusEquipMode) {
   if (!have($item`designer sweatpants`) || equipMode === "embezzler") return new Map();
 
   const needSweat =
-    (!globalOptions.ascending && get("sweat", 0) < 75) ||
+    (!globalOptions.ascend && get("sweat", 0) < 75) ||
     get("sweat", 0) < 25 * (3 - get("_sweatOutSomeBoozeUsed", 0));
 
   if (!needSweat) return new Map();
@@ -169,12 +170,12 @@ const alternativePants = Item.all()
   .map((pants) => numericModifier(pants, "Adventures"));
 const bestAdventuresFromPants = Math.max(0, ...alternativePants);
 const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) => have(item));
-function cheeses(embezzlerUp: boolean) {
+function cheeses(mode: BonusEquipMode) {
   return haveSomeCheese &&
-    !globalOptions.ascending &&
+    !globalOptions.ascend &&
     get("_stinkyCheeseCount") < 100 &&
     estimatedTurns() >= 100 - get("_stinkyCheeseCount") &&
-    !embezzlerUp
+    mode !== "embezzler"
     ? new Map<Item, number>(
         getFoldGroup($item`stinky cheese diaper`)
           .filter((item) => toSlot(item) !== $slot`weapon`)
@@ -330,7 +331,7 @@ export function magnifyingGlass(): Map<Item, number> {
   }
 
   return new Map<Item, number>([
-    [$item`cursed magnifying glass`, get("garbo_valueOfFreeFight", 2000) / 13],
+    [$item`cursed magnifying glass`, globalOptions.prefs.valueOfFreeFight / 13],
   ]);
 }
 
@@ -339,11 +340,12 @@ export function bonusGear(
   valueCircumstantialBonus = true
 ): Map<Item, number> {
   return new Map<Item, number>([
-    ...cheeses(equipMode === "embezzler"),
+    ...cheeses(equipMode),
     ...bonusAccessories(equipMode),
     ...pantogramPants(),
     ...bagOfManyConfections(),
     ...stickers(equipMode),
+    ...powerGlove(),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
@@ -374,7 +376,10 @@ export function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
   if (numericModifier($item`shining star cap`, "Familiar Weight") === 10) {
     goodRobortHats.push($item`shining star cap`);
   }
-  if (have($item`carpe`) && (!hasStrongLep || !goodRobortHats.some((hat) => have(hat)))) {
+  if (
+    have($item`carpe`) &&
+    (!hasStrongLep || !goodRobortHats.some((hat) => have(hat) && canEquip(hat)))
+  ) {
     return $item`Crown of Thrones`;
   }
   return $item`Buddy Bjorn`;
@@ -386,12 +391,12 @@ function shavingBonus(): Map<Item, number> {
   }
 
   const timeToMeatBuff = 11 * (DaylightShavings.buffsUntil($effect`Friendly Chops`) ?? Infinity);
-  if (globalOptions.ascending && timeToMeatBuff > estimatedTurns()) {
+  if (globalOptions.ascend && timeToMeatBuff > estimatedTurns()) {
     return new Map();
   }
 
   if (
-    !globalOptions.ascending &&
+    !globalOptions.ascend &&
     DaylightShavings.nextBuff() === $effect`Friendly Chops` &&
     estimatedTurns() < 11 * 11
   ) {
@@ -415,7 +420,7 @@ export function usingThumbRing(): boolean {
   }
   if (cachedUsingThumbRing === null) {
     const gear = bonusAccessories("barf");
-    const accessoryBonuses = Array.from(gear.entries()).filter(([item]) => have(item));
+    const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
     setLocation($location`Barf Mountain`);
     const meatAccessories = Item.all()
@@ -438,7 +443,7 @@ export function usingThumbRing(): boolean {
     ) {
       accessoryValues.set($item`mafia pointer finger ring`, 500);
     }
-    const bestAccessories = Array.from(accessoryValues.entries())
+    const bestAccessories = [...accessoryValues.entries()]
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
       .map(([item]) => item);
     cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
@@ -448,7 +453,11 @@ export function usingThumbRing(): boolean {
 
 let juneCleaverEV: number | null = null;
 function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
-  if (!have($item`June cleaver`) || get("_juneCleaverFightsLeft") > estimatedTurns()) {
+  if (
+    !have($item`June cleaver`) ||
+    get("_juneCleaverFightsLeft") > estimatedTurns() ||
+    !get("_juneCleaverFightsLeft")
+  ) {
     return new Map();
   }
   if (!juneCleaverEV) {
@@ -456,6 +465,25 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
       sum([...JuneCleaver.choices], (choice) =>
         valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
       ) / JuneCleaver.choices.length;
+  }
+  // If we're ascending then the chances of hitting choices in the queue is reduced
+  if (globalOptions.ascend && estimatedTurns() <= 180 && JuneCleaver.getInterval() === 30) {
+    const availEV =
+      sum([...JuneCleaver.choicesAvailable()], (choice) =>
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
+      ) / JuneCleaver.choicesAvailable().length;
+    const queueEV =
+      sum([...JuneCleaver.queue()], (choice) => {
+        const choiceValue = valueJuneCleaverOption(
+          juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]
+        );
+        const cleaverEncountersLeft = Math.floor(estimatedTurns() / 30);
+        const encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
+        const chancesLeft = Math.max(0, cleaverEncountersLeft - encountersToQueueExit);
+        const encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
+        return choiceValue * encounterProbability;
+      }) / JuneCleaver.queue().length;
+    juneCleaverEV = queueEV + availEV;
   }
 
   const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
@@ -471,5 +499,17 @@ function stickers(equipMode: BonusEquipMode): Map<Item, number> {
   return new Map([
     [$item`scratch 'n' sniff sword`, -1 * cost],
     [$item`scratch 'n' sniff crossbow`, -1 * cost],
+  ]);
+}
+
+function powerGlove(): Map<Item, number> {
+  if (!have($item`Powerful Glove`)) return new Map();
+  // 23% proc rate, according to the wiki
+  // https://kol.coldfront.net/thekolwiki/index.php/Powerful_Glove
+  return new Map([
+    [
+      $item`Powerful Glove`,
+      0.25 * garboAverageValue(...$items`blue pixel, green pixel, red pixel, white pixel`),
+    ],
   ]);
 }

@@ -30,6 +30,7 @@ import {
   sellsItem,
   setProperty,
   spleenLimit,
+  toInt,
   toItem,
   turnsPerCast,
   use,
@@ -65,13 +66,13 @@ import {
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
+import { globalOptions } from "./config";
 import { embezzlerCount } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
 import {
   arrayEquals,
   baseMeat,
   EMBEZZLER_MULTIPLIER,
-  globalOptions,
   HIGHLIGHT,
   maxBy,
   realmAvailable,
@@ -90,7 +91,11 @@ const Mayo = MayoClinic.Mayo;
 type Note = PotionTier | null;
 
 function eatSafe(qty: number, item: Item) {
-  if (have($item`Universal Seasoning`) && !get("_universalSeasoningUsed")) {
+  if (
+    have($item`Universal Seasoning`) &&
+    $item`Universal Seasoning`.dailyusesleft > 0 &&
+    !get("universalSeasoningActive")
+  ) {
     use($item`Universal Seasoning`);
   }
   if (myLevel() >= 15 && !get("_hungerSauceUsed") && mallPrice($item`Hunger™ Sauce`) < 3 * MPA) {
@@ -200,7 +205,7 @@ export function nonOrganAdventures(): void {
   };
   const chocosRemaining = clamp(3 - get("_chocolatesUsed"), 0, 3);
   for (let i = chocosRemaining; i > 0; i--) {
-    const chocoVals = Array.from(chocos.values()).map((choc) => {
+    const chocoVals = [...chocos.values()].map((choc) => {
       return {
         choco: choc,
         value: chocExpVal(i, choc),
@@ -215,7 +220,7 @@ export function nonOrganAdventures(): void {
 
   useIfUnused(
     $item`fancy chocolate sculpture`,
-    get("_chocolateSculpturesUsed") < 1,
+    get("_chocolateSculpturesUsed") > 0,
     5 * MPA + 5000
   );
   useIfUnused($item`essential tofu`, "_essentialTofuUsed", 5 * MPA);
@@ -236,7 +241,7 @@ export function nonOrganAdventures(): void {
     useSkill(casts, $skill`Ancestral Recall`);
   }
 
-  if (globalOptions.ascending) useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 5 * MPA);
+  if (globalOptions.ascend) useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 5 * MPA);
 }
 
 function pillCheck(): void {
@@ -316,13 +321,17 @@ function menu(): MenuItem<Note>[] {
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
     have(item)
   );
-  const pilsners = $items`astral pilsner`.filter((item) => globalOptions.ascending && have(item));
+  const pilsners = $items`astral pilsner`.filter((item) => globalOptions.ascend && have(item));
   const limitedItems = [...boxingDayCareItems, ...pilsners].map(
     (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
   );
 
   return [
     // FOOD
+    new MenuItem($item`Dreadsylvanian cold pocket`),
+    new MenuItem($item`Dreadsylvanian hot pocket`),
+    new MenuItem($item`Dreadsylvanian sleaze pocket`),
+    new MenuItem($item`Dreadsylvanian stink pocket`),
     new MenuItem($item`Dreadsylvanian spooky pocket`),
     new MenuItem($item`tin cup of mulligan stew`),
     new MenuItem($item`frozen banquet`),
@@ -336,7 +345,11 @@ function menu(): MenuItem<Note>[] {
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
     new MenuItem($item`moreltini`),
+    new MenuItem($item`Dreadsylvanian cold-fashioned`),
+    new MenuItem($item`Dreadsylvanian dank and stormy`),
     new MenuItem($item`Dreadsylvanian grimlet`),
+    new MenuItem($item`Dreadsylvanian hot toddy`),
+    new MenuItem($item`Dreadsylvanian slithery nipple`),
     new MenuItem($item`Hodgman's blanket`),
     new MenuItem($item`Sacramento wine`),
     new MenuItem($item`iced plum wine`),
@@ -473,12 +486,8 @@ function countCopies(diet: Diet<Note>): number {
 
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
-  const extros = sumNumbers(
-    diet.entries.map((dietEntry) =>
-      dietEntry.menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`)
-        ? dietEntry.quantity
-        : 0
-    )
+  const extros = sum(diet.entries, ({ menuItems, quantity }) =>
+    menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`) ? quantity : 0
   );
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
 
@@ -563,11 +572,41 @@ export function potionMenu(
     : [];
 
   const foodCone =
-    realmAvailable("stench") || (globalOptions.simulateDiet && !globalOptions.noBarf)
+    realmAvailable("stench") || (globalOptions.simdiet && !globalOptions.nobarf)
       ? limitedPotion($item`Dinsey food-cone`, Math.floor(availableAmount($item`FunFunds™`) / 2), {
           price: 2 * garboValue($item`FunFunds™`),
         })
       : [];
+
+  const borisBread = !get("unknownRecipe10978") // this property is true if you don't know the recipe, false if you do
+    ? potion($item`Boris's bread`, { price: 2 * ingredientCost($item`Yeast of Boris`) })
+    : [];
+
+  // Replace string with BooleanProperty later
+  const ofLegendPotion = (item: Item, prefName: string) => {
+    if (get(prefName, true)) return [];
+
+    const recipes = [
+      item,
+      ...$items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`,
+    ].map((i) => toInt(i));
+
+    if (recipes.some((id) => get(`unknownRecipe${id}`, true))) return [];
+
+    return limitedPotion(item, 1, {
+      price:
+        2 *
+        sum($items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`, ingredientCost),
+    });
+  };
+
+  const ofLegendMenuItems = globalOptions.ascend
+    ? [
+        ...ofLegendPotion($item`Calzone of Legend`, "calzoneOfLegendEaten"),
+        ...ofLegendPotion($item`Pizza of Legend`, "pizzaOfLegendEaten"),
+        ...ofLegendPotion($item`Deep Dish of Legend`, "deepDishOfLegendEaten"),
+      ]
+    : [];
 
   return [
     ...baseMenu,
@@ -584,6 +623,8 @@ export function potionMenu(
     ...potion($item`haunted Hell ramen`),
     ...campfireHotdog,
     ...foodCone,
+    ...borisBread,
+    ...ofLegendMenuItems,
 
     // BOOZE POTIONS
     ...potion($item`dirt julep`),
@@ -713,7 +754,7 @@ export function computeDiet(): {
           menu().filter(
             (menuItem) =>
               (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
-              [Mayo.flex, Mayo.zapine].includes(menuItem.item)
+              [Mayo.flex, Mayo.zapine, $item`Special Seasoning`].includes(menuItem.item)
           ),
           pantsgivingDietPlanner
         )
@@ -970,6 +1011,10 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   }
 }
 
+let completedDiet = globalOptions.nodiet;
+export function dietCompleted(): boolean {
+  return completedDiet;
+}
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
@@ -983,7 +1028,7 @@ export function runDiet(): void {
 
     const dietBuilder = computeDiet();
 
-    if (globalOptions.simulateDiet) {
+    if (globalOptions.simdiet) {
       print("===== SIMULATED DIET =====");
       if (!get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`)) {
         printDiet(dietBuilder.shotglass(), "SHOTGLASS");
@@ -1014,4 +1059,5 @@ export function runDiet(): void {
       shrugBadEffects();
     }
   });
+  completedDiet = true;
 }

@@ -1,5 +1,6 @@
 import "core-js/features/array/flat";
 import {
+  adv1,
   choiceFollowsFight,
   equippedAmount,
   equippedItem,
@@ -14,6 +15,7 @@ import {
   Item,
   itemAmount,
   itemType,
+  Location,
   mpCost,
   myAdventures,
   myBjornedFamiliar,
@@ -26,12 +28,13 @@ import {
   mySoulsauce,
   myThrall,
   numericModifier,
-  print,
   retrieveItem,
   runCombat,
   setAutoAttack,
+  setCcs,
   Skill,
   visitUrl,
+  writeCcs,
 } from "kolmafia";
 import {
   $class,
@@ -42,16 +45,17 @@ import {
   $location,
   $locations,
   $monster,
+  $monsters,
   $skill,
   $slot,
   $thralls,
   Counter,
   get,
-  getTodaysHolidayWanderers,
   have,
   SourceTerminal,
   StrictMacro,
 } from "libram";
+import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 
@@ -152,11 +156,6 @@ export function shouldRedigitize(): boolean {
 }
 
 export class Macro extends StrictMacro {
-  submit(): string {
-    print(this.components.join(";"));
-    return super.submit();
-  }
-
   tryHaveSkill(skill: Skill | null): Macro {
     if (!skill) return this;
     return this.externalIf(haveSkill(skill), Macro.trySkill(skill));
@@ -281,8 +280,8 @@ export class Macro extends StrictMacro {
       shouldRedigitize(),
       Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`))
     )
-      .familiarActions()
       .tryHaveSkill($skill`Sing Along`)
+      .familiarActions()
       .externalIf(
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
@@ -401,6 +400,11 @@ export class Macro extends StrictMacro {
     ) {
       // These things can take a little longer to proc sometimes
       stasisRounds = 20;
+    }
+
+    if (globalOptions.quick) {
+      // long fights can be very slow
+      stasisRounds = Math.min(5, stasisRounds);
     }
 
     // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
@@ -615,46 +619,86 @@ export class Macro extends StrictMacro {
   }
 }
 
-/**
- * Attempt to perform a nonstandard combat-starting Action with a Macro
- * @param macro The Macro to attempt to use
- * @param action The combat-starting action to attempt
- * @param tryAuto Whether or not we should try to resolve the combat with an autoattack; autoattack macros can fail against special monsters, and thus we have to submit a macro with Macro.save() regardless
- * @returns The output of your specified action function (typically void)
- */
-export function withMacro<T>(macro: Macro, action: () => T, tryAuto = false): T {
-  if (getAutoAttack() !== 0) setAutoAttack(0);
-  if (tryAuto) macro.setAutoAttack();
-  macro.save();
-  try {
-    return action();
-  } finally {
-    Macro.clearSaved();
-    if (tryAuto) setAutoAttack(0);
-  }
-}
-
-export function main(): void {
-  if (have($effect`Eldritch Attunement`)) {
-    Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
-      .step(Macro.load())
-      .submit();
-  } else if (getTodaysHolidayWanderers().length !== 0) {
-    Macro.ifHolidayWanderer(
+function customizeMacro<M extends StrictMacro>(macro: M) {
+  return Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
+    .externalIf(
+      have($effect`Eldritch Attunement`),
+      Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
+    )
+    .ifHolidayWanderer(
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           myFamiliar() === meatFamiliar(),
-        Macro.skill($skill`Back-Up to your Last Enemy`).step(Macro.load()),
+        Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
         Macro.basicCombat()
       )
     )
-      .step(Macro.load())
-      .submit();
-  } else {
-    Macro.load().submit();
+    .step(macro);
+}
+
+function makeCcs<M extends StrictMacro>(macro: M) {
+  writeCcs(`[default]\n"${customizeMacro(macro).toString()}"`, "garbo");
+  setCcs("garbo");
+}
+
+function runCombatBy<T>(initiateCombatAction: () => T) {
+  try {
+    const result = initiateCombatAction();
+    while (inMultiFight()) runCombat();
+    if (choiceFollowsFight()) visitUrl("choice.php");
+    return result;
+  } catch (e) {
+    throw `Combat exception! Last macro error: ${get("lastMacroError")}. Exception ${e}.`;
   }
-  while (inMultiFight()) runCombat();
-  if (choiceFollowsFight()) visitUrl("choice.php");
+}
+
+/**
+ * Attempt to perform a nonstandard combat-starting Action with a Macro
+ * @param macro The Macro to attempt to use
+ * @param action The combat-starting action to attempt
+ * @param tryAuto Whether or not we should try to resolve the combat with an autoattack; autoattack macros can fail against special monsters, and thus we have to submit a macro via CCS regardless.
+ * @returns The output of your specified action function (typically void)
+ */
+export function withMacro<T, M extends StrictMacro>(macro: M, action: () => T, tryAuto = false): T {
+  if (getAutoAttack() !== 0) setAutoAttack(0);
+  if (tryAuto) customizeMacro(macro).setAutoAttack();
+  makeCcs(macro);
+  try {
+    return runCombatBy(action);
+  } finally {
+    if (tryAuto) setAutoAttack(0);
+  }
+}
+
+/**
+ * Adventure in a location and handle all combats with a given macro.
+ *
+ * @category Combat
+ * @param loc Location to adventure in.
+ * @param macro Macro to execute.
+ */
+export function garboAdventure<M extends StrictMacro>(loc: Location, macro: M): void {
+  if (getAutoAttack() !== 0) setAutoAttack(0);
+  makeCcs(macro);
+  runCombatBy(() => adv1(loc, -1, ""));
+}
+
+/**
+ * Adventure in a location and handle all combats with a given autoattack and manual macro.
+ *
+ * @category Combat
+ * @param loc Location to adventure in.
+ * @param autoMacro Macro to execute via KoL autoattack.
+ * @param nextMacro Macro to execute manually after autoattack completes.
+ */
+export function garboAdventureAuto<M extends StrictMacro>(
+  loc: Location,
+  autoMacro: M,
+  nextMacro = Macro.abort()
+): void {
+  autoMacro.setAutoAttack();
+  makeCcs(nextMacro);
+  runCombatBy(() => adv1(loc, -1, ""));
 }

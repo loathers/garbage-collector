@@ -1,5 +1,4 @@
 import {
-  availableAmount,
   bjornifyFamiliar,
   canAdventure,
   canEquip,
@@ -14,7 +13,6 @@ import {
   myFamiliar,
   myInebriety,
   numericModifier,
-  print,
   retrieveItem,
   toInt,
   toSlot,
@@ -40,10 +38,11 @@ import {
   Requirement,
 } from "libram";
 import { acquire } from "./acquire";
+import { globalOptions } from "./config";
 import { bestBjornalike, bonusGear, pickBjorn, valueBjornModifiers } from "./dropsgear";
 import { embezzlerCount } from "./embezzler";
 import { meatFamiliar } from "./familiar";
-import { baseMeat, globalOptions } from "./lib";
+import { baseMeat } from "./lib";
 import { digitizedMonstersRemaining } from "./turns";
 
 export function freeFightOutfit(requirement?: Requirement): void {
@@ -101,32 +100,29 @@ export function freeFightOutfit(requirement?: Requirement): void {
     ]),
     preventSlot: preventSlot,
   });
-  finalRequirement.maximize();
+
+  const result = finalRequirement.maximize();
+  const missingEquips = () =>
+    (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
+      (equipment) => !haveEquipped(equipment)
+    );
+  if (missingEquips().length > 0 || !result) {
+    cliExecute("refresh all");
+    const newResult = new Requirement([], { forceUpdate: true }).merge(finalRequirement).maximize();
+    if (missingEquips().length > 0 || !newResult) {
+      throw new Error(
+        `Maximizer failed to equip the following equipment: ${missingEquips()
+          .map((equipment) => equipment.name)
+          .join(", ")}.?`
+      );
+    }
+  }
 
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Snow Suit`) && get("snowsuit") !== "nose") cliExecute("snowsuit nose");
   if (haveEquipped($item`Jurassic Parka`) && get("parkaMode") !== "dilophosaur") {
     cliExecute("parka dilophosaur");
-  }
-
-  const missingEquips = () =>
-    (finalRequirement.maximizeOptions.forceEquip ?? []).filter(
-      (equipment) => !haveEquipped(equipment)
-    );
-  if (missingEquips().length > 0) {
-    cliExecute("refresh all");
-    new Requirement([], { forceUpdate: true }).merge(finalRequirement).maximize();
-  }
-  if (missingEquips().length > 0) {
-    throw new Error(
-      `Maximizer failed to equip the following equipment: ${missingEquips()
-        .map((equipment) => equipment.name)
-        .join(", ")}.?`
-    );
-  }
-  if (availableAmount($item`June cleaver`) > 1) {
-    print("Dear Gausie, it happened here. Sincerely, Neil");
   }
 }
 
@@ -233,7 +229,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
 
   if (embezzlerUp) {
     const currentWeapon = 25 * findLeprechaunMultiplier(meatFamiliar());
-    const embezzlers = globalOptions.ascending
+    const embezzlers = globalOptions.ascend
       ? Math.min(20, embezzlerCount() || digitizedMonstersRemaining())
       : 20;
 
@@ -304,7 +300,26 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       }
     )
   );
-  compiledRequirements.maximize();
+  const result = compiledRequirements.maximize();
+
+  const missingEquips = () =>
+    (compiledRequirements.maximizeOptions.forceEquip ?? []).filter(
+      (equipment) => !haveEquipped(equipment)
+    );
+
+  if (missingEquips().length > 0 || !result) {
+    cliExecute("refresh all");
+    const newResult = new Requirement([], { forceUpdate: true })
+      .merge(compiledRequirements)
+      .maximize();
+    if (missingEquips().length > 0 || !newResult) {
+      throw new Error(
+        `Maximizer failed to equip the following equipment: ${missingEquips()
+          .map((equipment) => equipment.name)
+          .join(", ")}.?`
+      );
+    }
+  }
 
   if (haveEquipped($item`Buddy Bjorn`)) bjornifyFamiliar(bjornChoice.familiar);
   if (haveEquipped($item`Crown of Thrones`)) enthroneFamiliar(bjornChoice.familiar);
@@ -319,27 +334,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
     cliExecute("parka kachungasaur");
   }
 
-  const missingEquips = () =>
-    (compiledRequirements.maximizeOptions.forceEquip ?? []).filter(
-      (equipment) => !haveEquipped(equipment)
-    );
-
-  if (missingEquips().length > 0) {
-    cliExecute("refresh all");
-    new Requirement([], { forceUpdate: true }).merge(compiledRequirements).maximize();
-  }
-  if (missingEquips().length > 0) {
-    throw new Error(
-      `Maximizer failed to equip the following equipment: ${missingEquips()
-        .map((equipment) => equipment.name)
-        .join(", ")}.?`
-    );
-  }
-
   if (sea && haveEquipped($item`The Crown of Ed the Undying`)) cliExecute("edpiece fish");
-  if (availableAmount($item`June cleaver`) > 1) {
-    print("Dear Gausie, it happened here. Sincerely, Neil");
-  }
 }
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;

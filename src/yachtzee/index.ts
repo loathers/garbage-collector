@@ -17,25 +17,25 @@ import {
   $item,
   $location,
   $skill,
-  adventureMacro,
   get,
   getActiveSongs,
   have,
-  Macro,
   set,
   uneffect,
 } from "libram";
+import { garboAdventure, Macro } from "../combat";
+import { globalOptions } from "../config";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
-import { baseMeat, globalOptions, realmAvailable, safeRestore } from "../lib";
+import { baseMeat, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
 import { prepRobortender } from "../tasks/dailyFamiliars";
 import { yachtzeePotionSetup } from "./buffs";
 import { executeNextDietStep, yachtzeeChainDiet } from "./diet";
-import { pyecAvailable } from "./lib";
+import { pyecAvailable, shrugIrrelevantSongs } from "./lib";
 import {
   getBestWaterBreathingEquipment,
   maximizeMeat,
@@ -115,7 +115,7 @@ function _yachtzeeChain(): void {
         useSkill($skill`The Polka of Plenty`);
       }
     }
-    adventureMacro($location`The Sunken Party Yacht`, Macro.abort());
+    garboAdventure($location`The Sunken Party Yacht`, Macro.abort());
     postCombatActions();
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
@@ -139,13 +139,14 @@ function _yachtzeeChain(): void {
 }
 
 export function yachtzeeChain(): void {
-  if (!globalOptions.yachtzeeChain) return;
+  if (!globalOptions.prefs.yachtzeechain) return;
   if (get("_garboYachtzeeChainCompleted", false)) return;
   print("Running Yachtzee Chain", "purple");
   _yachtzeeChain();
   set("_garboYachtzeeChainCompleted", true);
-  globalOptions.yachtzeeChain = false;
-  if (!globalOptions.noDiet) {
+  globalOptions.prefs.yachtzeechain = false;
+  if (!globalOptions.nodiet) {
+    shrugIrrelevantSongs();
     runDiet();
     prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
   }
