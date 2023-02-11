@@ -71,6 +71,7 @@ import {
   sum,
   uneffect,
 } from "libram";
+import { globalOptions } from "./config";
 import { garboValue } from "./session";
 
 export const embezzlerLog: {
@@ -88,7 +89,7 @@ export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 60;
-export const EMBEZZLER_MULTIPLIER = 2.5;
+export const EMBEZZLER_MULTIPLIER = globalOptions.embezzlerMultiplier;
 
 export const propertyManager = new PropertiesManager();
 

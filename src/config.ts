@@ -75,6 +75,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "return all items to your stash clan's stash, then quit",
       default: false,
     }),
+    embezzlerMultiplier: Args.number({
+      setting: "",
+      help: "The amount we multiply our valueOfAdventure by when estimating Embezzler profit",
+      default: 2.5,
+    }),
     loginvalidwishes: Args.flag({
       setting: "",
       help: "Logs any invalid wishes at the end of the day.",
