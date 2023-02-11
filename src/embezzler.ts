@@ -50,7 +50,6 @@ import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrove
 import {
   averageEmbezzlerNet,
   EMBEZZLER_MULTIPLIER,
-  globalOptions,
   HIGHLIGHT,
   ltbRun,
   setChoice,
