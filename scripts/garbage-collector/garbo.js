@@ -27528,7 +27528,7 @@ function handleWorkshed() {
   }
 }
 ;// CONCATENATED MODULE: ./src/post/index.ts
-var post_templateObject, post_templateObject2, post_templateObject3, post_templateObject4, post_templateObject5, post_templateObject6, post_templateObject7, post_templateObject8, post_templateObject9, post_templateObject10, post_templateObject11, post_templateObject12, post_templateObject13, post_templateObject14, post_templateObject15;
+var post_templateObject, post_templateObject2, post_templateObject3, post_templateObject4, post_templateObject5, post_templateObject6, post_templateObject7, post_templateObject8, post_templateObject9, post_templateObject10, post_templateObject11, post_templateObject12, post_templateObject13, post_templateObject14, post_templateObject15, post_templateObject16;
 
 function post_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = post_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -27667,8 +27667,8 @@ function funguySpores() {
     // According to wiki, it has a 75% chance of being a stat mushroom and 25% chance of being another mushroom
     var value = 0.75 * garboAverageValue.apply(void 0, post_toConsumableArray(template_string_$items(post_templateObject12 || (post_templateObject12 = post_taggedTemplateLiteral(["Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom"]))))) + 0.25 * garboAverageValue.apply(void 0, post_toConsumableArray(template_string_$items(post_templateObject13 || (post_templateObject13 = post_taggedTemplateLiteral(["Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom"])))));
 
-    if (acquire(1, template_string_$item(post_templateObject14 || (post_templateObject14 = post_taggedTemplateLiteral(["Fun-Guy spore"]))), value, false) > 0) {
-      (0,external_kolmafia_namespaceObject.use)(template_string_$item(post_templateObject15 || (post_templateObject15 = post_taggedTemplateLiteral(["Fun-Guy spore"]))));
+    if ((0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(post_templateObject14 || (post_templateObject14 = post_taggedTemplateLiteral(["Fun-Guy spore"])))) < value && acquire(1, template_string_$item(post_templateObject15 || (post_templateObject15 = post_taggedTemplateLiteral(["Fun-Guy spore"]))), value, false) > 0) {
+      (0,external_kolmafia_namespaceObject.use)(template_string_$item(post_templateObject16 || (post_templateObject16 = post_taggedTemplateLiteral(["Fun-Guy spore"]))));
     } else funguyWorthIt = false;
   }
 }
