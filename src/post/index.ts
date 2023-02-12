@@ -2,6 +2,7 @@ import {
   cliExecute,
   equip,
   itemAmount,
+  mallPrice,
   myAdventures,
   myLevel,
   myLocation,
@@ -154,7 +155,7 @@ function funguySpores() {
           ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
         );
     if (
-      garboValue($item`Fun-Guy spore`) < value &&
+      mallPrice($item`Fun-Guy spore`) < value &&
       acquire(1, $item`Fun-Guy spore`, value, false) > 0
     ) {
       use($item`Fun-Guy spore`);
