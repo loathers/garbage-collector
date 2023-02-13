@@ -69,7 +69,15 @@ import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
 import { embezzlerCount } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import { arrayEquals, baseMeat, HIGHLIGHT, maxBy, realmAvailable, userConfirmDialog } from "./lib";
+import {
+  arrayEquals,
+  baseMeat,
+  EMBEZZLER_MULTIPLIER,
+  HIGHLIGHT,
+  maxBy,
+  realmAvailable,
+  userConfirmDialog,
+} from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
@@ -320,6 +328,10 @@ function menu(): MenuItem<Note>[] {
 
   return [
     // FOOD
+    new MenuItem($item`Dreadsylvanian cold pocket`),
+    new MenuItem($item`Dreadsylvanian hot pocket`),
+    new MenuItem($item`Dreadsylvanian sleaze pocket`),
+    new MenuItem($item`Dreadsylvanian stink pocket`),
     new MenuItem($item`Dreadsylvanian spooky pocket`),
     new MenuItem($item`tin cup of mulligan stew`),
     new MenuItem($item`frozen banquet`),
@@ -333,7 +345,11 @@ function menu(): MenuItem<Note>[] {
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
     new MenuItem($item`moreltini`),
+    new MenuItem($item`Dreadsylvanian cold-fashioned`),
+    new MenuItem($item`Dreadsylvanian dank and stormy`),
     new MenuItem($item`Dreadsylvanian grimlet`),
+    new MenuItem($item`Dreadsylvanian hot toddy`),
+    new MenuItem($item`Dreadsylvanian slithery nipple`),
     new MenuItem($item`Hodgman's blanket`),
     new MenuItem($item`Sacramento wine`),
     new MenuItem($item`iced plum wine`),
@@ -442,8 +458,7 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  // assuming embezzler is worth 4 * MPA and a marginal turn is 1 * MPA, the differential is 3 * MPA
-  const embezzlerDifferential = 3 * MPA;
+  const embezzlerDifferential = EMBEZZLER_MULTIPLIER() * MPA;
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
   const extros =
     myInebriety() > inebrietyLimit()
@@ -469,12 +484,8 @@ function countCopies(diet: Diet<Note>): number {
 
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
-  const extros = sumNumbers(
-    diet.entries.map((dietEntry) =>
-      dietEntry.menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`)
-        ? dietEntry.quantity
-        : 0
-    )
+  const extros = sum(diet.entries, ({ menuItems, quantity }) =>
+    menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`) ? quantity : 0
   );
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
 

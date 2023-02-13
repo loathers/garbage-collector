@@ -60,5 +60,10 @@
     "name": "garbo_restoreHpTarget",
     "defaultValue": 2000,
     "description": "If you're a very high level, what HP threshold should garbo aim to maintain?"
+  },
+  {
+    "name": "garbo_embezzlerMultiplier",
+    "defaultValue": 2.5,
+    "description": "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit"
   }
 ]

@@ -71,6 +71,7 @@ import {
   sum,
   uneffect,
 } from "libram";
+import { globalOptions } from "./config";
 import { garboValue } from "./session";
 
 export const embezzlerLog: {
@@ -88,6 +89,7 @@ export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 60;
+export const EMBEZZLER_MULTIPLIER = (): number => globalOptions.prefs.embezzlerMultiplier;
 
 export const propertyManager = new PropertiesManager();
 
@@ -285,7 +287,7 @@ export function pillkeeperOpportunityCost(): number {
   const canTreasury = canAdventure($location`Cobb's Knob Treasury`);
 
   const alternateUses = [
-    { can: canTreasury, value: 3 * get("valueOfAdventure") },
+    { can: canTreasury, value: EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") },
     {
       can: realmAvailable("sleaze"),
       value: 40000,
