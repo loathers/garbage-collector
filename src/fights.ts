@@ -2193,6 +2193,16 @@ const itemStealZones = [
     openCost: () => 0,
     preReq: null,
   },
+  {
+    location: $location`Shadow Rift`,
+    monster: $monster`shadow slab`,
+    item: $item`shadow brick`,
+    requireMapTheMonsters: true,
+    dropRate: 2.5,
+    isOpen: () => ["pyramid", "hiddencity", "cemetery"].includes(get("shadowRiftIngress")),
+    openCost: () => 0,
+    preReq: null,
+  },
 ] as ItemStealZone[];
 
 function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
