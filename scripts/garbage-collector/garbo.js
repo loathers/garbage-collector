@@ -27257,7 +27257,7 @@ function candyFactoryValue() {
   return property_get("garbo_candyFactoryValue", 0);
 }
 
-var POTENTIAL_BEST_TRAIN_PIECES = [{
+var GOOD_TRAIN_STATIONS = [{
   piece: Station.GAIN_MEAT,
   value: () => 900
 }, {
@@ -27275,9 +27275,10 @@ var POTENTIAL_BEST_TRAIN_PIECES = [{
   value: () => garboAverageValue.apply(void 0, workshed_utils_toConsumableArray(template_string_$items(workshed_utils_templateObject3 || (workshed_utils_templateObject3 = workshed_utils_taggedTemplateLiteral(["linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore"])))))
 }];
 var trainCycle;
+
 function getBestCycle() {
   if (!trainCycle) {
-    var cycle = [Station.COAL_HOPPER].concat(workshed_utils_toConsumableArray(POTENTIAL_BEST_TRAIN_PIECES.sort((_ref, _ref2) => {
+    var cycle = [Station.COAL_HOPPER].concat(workshed_utils_toConsumableArray(GOOD_TRAIN_STATIONS.sort((_ref, _ref2) => {
       var a = _ref.value;
       var b = _ref2.value;
       return b() - a();
@@ -27290,7 +27291,40 @@ function getBestCycle() {
 
   return workshed_utils_toConsumableArray(trainCycle);
 }
-function offsetDefaultPieces(offset) {
+
+function valueStation(station) {
+  var _GOOD_TRAIN_STATIONS$, _GOOD_TRAIN_STATIONS$2;
+
+  if (station === Station.COAL_HOPPER) {
+    return valueStation(getBestCycle()[1]);
+  }
+
+  return (_GOOD_TRAIN_STATIONS$ = (_GOOD_TRAIN_STATIONS$2 = GOOD_TRAIN_STATIONS.find(_ref4 => {
+    var piece = _ref4.piece;
+    return piece === station;
+  })) === null || _GOOD_TRAIN_STATIONS$2 === void 0 ? void 0 : _GOOD_TRAIN_STATIONS$2.value()) !== null && _GOOD_TRAIN_STATIONS$ !== void 0 ? _GOOD_TRAIN_STATIONS$ : 0;
+}
+
+function valueOffset(offset) {
+  var firstFortyTurns = 5 * utils_sum(getBestCycle(), valueStation);
+  var extraTurns = utils_sum(getBestCycle().slice(0, offset - 1), valueStation);
+  return (firstFortyTurns + extraTurns) / (40 + offset);
+}
+
+var bestOffset = null;
+
+function getBestOffset() {
+  var _bestOffset;
+
+  return (_bestOffset = bestOffset) !== null && _bestOffset !== void 0 ? _bestOffset : bestOffset = lib_maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset);
+}
+
+function getPrioritizedStations() {
+  return getBestCycle().slice(0, getBestOffset() - 1);
+}
+
+function getRotatedCycle() {
+  var offset = property_get("trainsetPosition") % 8;
   var newPieces = [];
   var defaultPieces = getBestCycle();
 
@@ -27300,6 +27334,10 @@ function offsetDefaultPieces(offset) {
   }
 
   return newPieces;
+}
+
+function rotateToOptimalCycle() {
+  return setConfiguration(getRotatedCycle());
 }
 function grabMedicine() {
   var options = (0,external_kolmafia_namespaceObject.visitUrl)("campground.php?action=workshed");
@@ -27353,6 +27391,7 @@ function workshed_defineProperties(target, props) { for (var i = 0; i < props.le
 function workshed_createClass(Constructor, protoProps, staticProps) { if (protoProps) workshed_defineProperties(Constructor.prototype, protoProps); if (staticProps) workshed_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 function workshed_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -27467,14 +27506,16 @@ var worksheds = [new GarboWorkshed({
     }
 
     if (!property_get("trainsetConfiguration")) {
-      (0,external_kolmafia_namespaceObject.print)("Reconfiguring trainset, as our next station is empty", "blue");
-      return setConfiguration(getBestCycle());
+      (0,external_kolmafia_namespaceObject.print)("Reconfiguring trainset, as it is empty", HIGHLIGHT);
+      return rotateToOptimalCycle();
+    } else if (config_globalOptions.ascend && estimatedTurns() <= 40) {
+      (0,external_kolmafia_namespaceObject.print)("Refusing to reconfigure trainset, to save a reconfiguration for your upcoming ascension.", HIGHLIGHT);
+      return;
     } else {
-      var bestTwoStations = getBestCycle().splice(0, 2);
-      var offset = property_get("trainsetPosition") % 8;
-      if (bestTwoStations.includes(next())) return;
-      (0,external_kolmafia_namespaceObject.print)("Reconfiguring trainset, as our next station is ".concat(next()), "blue");
-      return setConfiguration(offsetDefaultPieces(offset));
+      var bestStations = getPrioritizedStations();
+      if (bestStations.includes(next())) return;
+      (0,external_kolmafia_namespaceObject.print)("Reconfiguring trainset, as our next station is ".concat(next()), HIGHLIGHT);
+      return rotateToOptimalCycle();
     }
   }
 }), new GarboWorkshed({
