@@ -2197,7 +2197,7 @@ const itemStealZones = [
     location: $location`Shadow Rift`,
     monster: $monster`shadow slab`,
     item: $item`shadow brick`,
-    requireMapTheMonsters: true,
+    requireMapTheMonsters: false,
     dropRate: 1,
     isOpen: () => ["pyramid", "hiddencity", "cemetery"].includes(get("shadowRiftIngress")),
     openCost: () => 0,
