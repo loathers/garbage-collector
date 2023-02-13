@@ -16839,6 +16839,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
     help: "return all items to your stash clan's stash, then quit",
     default: false
   }),
+  embezzlerMultiplier: Args.number({
+    setting: "",
+    help: "The amount we multiply our valueOfAdventure by when estimating Embezzler profit (Default 2.5)",
+    default: 2.5
+  }),
   loginvalidwishes: Args.flag({
     setting: "",
     help: "Logs any invalid wishes at the end of the day.",
@@ -16903,6 +16908,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
       setting: "garbo_candydish",
       help: "*DANGEROUS* garbo will consider using porcelain candy dishes. This could result in potentially destructive behavior in the instance that the user does not have sufficient meat (1-2 million) to purchase as many dishes as garbo desires or there is a price cliff.",
       default: false,
+      hidden: true
+    }),
+    embezzlerMultiplier: Args.number({
+      setting: "garbo_embezzlerMultiplier",
+      help: "*The amount we multiply our valueOfAdventure by when estimating Embezzler profit. (Default 2.5)",
+      default: 2.5,
       hidden: true
     }),
     stashClan: Args.string({
@@ -18382,6 +18393,7 @@ function lib_defineProperty(obj, key, value) { if (key in obj) { Object.definePr
 
 
 
+
 var embezzlerLog = {
   initialEmbezzlersFought: 0,
   digitizedEmbezzlersFought: 0,
@@ -18390,6 +18402,7 @@ var embezzlerLog = {
 var WISH_VALUE = 50000;
 var HIGHLIGHT = (0,external_kolmafia_namespaceObject.isDarkMode)() ? "yellow" : "blue";
 var ESTIMATED_OVERDRUNK_TURNS = 60;
+var EMBEZZLER_MULTIPLIER = config_globalOptions.embezzlerMultiplier;
 var propertyManager = new PropertiesManager();
 var baseMeat = SongBoom_have() && (songChangesLeft() > 0 || song() === "Total Eclipse of Your Meat" && (0,external_kolmafia_namespaceObject.myInebriety)() <= (0,external_kolmafia_namespaceObject.inebrietyLimit)()) ? 275 : 250;
 function averageEmbezzlerNet() {
@@ -18571,7 +18584,7 @@ function pillkeeperOpportunityCost() {
   var canTreasury = (0,external_kolmafia_namespaceObject.canAdventure)($location(lib_templateObject10 || (lib_templateObject10 = lib_taggedTemplateLiteral(["Cobb's Knob Treasury"]))));
   var alternateUses = [{
     can: canTreasury,
-    value: 3 * property_get("valueOfAdventure")
+    value: EMBEZZLER_MULTIPLIER * property_get("valueOfAdventure")
   }, {
     can: realmAvailable("sleaze"),
     value: 40000
@@ -23426,7 +23439,7 @@ var EmbezzlerFight = /*#__PURE__*/function () {
   }, {
     key: "location",
     value: function location(_location2) {
-      var taffyIsWorthIt = () => (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(embezzler_templateObject2 || (embezzler_templateObject2 = embezzler_taggedTemplateLiteral(["pulled green taffy"])))) < 3 * property_get("valueOfAdventure") && (0,external_kolmafia_namespaceObject.retrieveItem)(template_string_$item(embezzler_templateObject3 || (embezzler_templateObject3 = embezzler_taggedTemplateLiteral(["pulled green taffy"]))));
+      var taffyIsWorthIt = () => (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(embezzler_templateObject2 || (embezzler_templateObject2 = embezzler_taggedTemplateLiteral(["pulled green taffy"])))) < EMBEZZLER_MULTIPLIER * property_get("valueOfAdventure") && (0,external_kolmafia_namespaceObject.retrieveItem)(template_string_$item(embezzler_templateObject3 || (embezzler_templateObject3 = embezzler_taggedTemplateLiteral(["pulled green taffy"]))));
 
       var suggestion = this.draggable && !_location2 && checkUnderwater() && taffyIsWorthIt() ? $location(embezzler_templateObject4 || (embezzler_templateObject4 = embezzler_taggedTemplateLiteral(["The Briny Deeps"]))) : _location2;
 
@@ -25697,8 +25710,7 @@ function gregariousCount() {
 }
 
 function copiers() {
-  // assuming embezzler is worth 4 * MPA and a marginal turn is 1 * MPA, the differential is 3 * MPA
-  var embezzlerDifferential = 3 * MPA;
+  var embezzlerDifferential = EMBEZZLER_MULTIPLIER * MPA;
 
   var _gregariousCount = gregariousCount(),
       expectedGregariousFights = _gregariousCount.expectedGregariousFights,
@@ -32588,7 +32600,11 @@ function shouldGoUnderwater() {
 
   if (lib_have(template_string_$item(barfTurn_templateObject2 || (barfTurn_templateObject2 = barfTurn_taggedTemplateLiteral(["envyfish egg"]))))) return false;
   if (!(0,external_kolmafia_namespaceObject.canAdventure)($location(barfTurn_templateObject3 || (barfTurn_templateObject3 = barfTurn_taggedTemplateLiteral(["The Briny Deeps"]))))) return false;
-  if ((0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(barfTurn_templateObject4 || (barfTurn_templateObject4 = barfTurn_taggedTemplateLiteral(["pulled green taffy"])))) < 3 * property_get("valueOfAdventure")) return false;
+
+  if ((0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(barfTurn_templateObject4 || (barfTurn_templateObject4 = barfTurn_taggedTemplateLiteral(["pulled green taffy"])))) < EMBEZZLER_MULTIPLIER * property_get("valueOfAdventure")) {
+    return false;
+  }
+
   return lib_have(template_string_$effect(barfTurn_templateObject5 || (barfTurn_templateObject5 = barfTurn_taggedTemplateLiteral(["Fishy"])))) || lib_have(template_string_$item(barfTurn_templateObject6 || (barfTurn_templateObject6 = barfTurn_taggedTemplateLiteral(["fishy pipe"])))) && (0,external_kolmafia_namespaceObject.use)(template_string_$item(barfTurn_templateObject7 || (barfTurn_templateObject7 = barfTurn_taggedTemplateLiteral(["fishy pipe"]))));
 } // Lights Out adventures require you to take several choices in a row
 
