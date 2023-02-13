@@ -49,6 +49,7 @@ import { globalOptions } from "./config";
 import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import {
   averageEmbezzlerNet,
+  EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
   ltbRun,
   setChoice,
@@ -176,7 +177,7 @@ export class EmbezzlerFight {
 
   location(location?: Location): Location {
     const taffyIsWorthIt = () =>
-      mallPrice($item`pulled green taffy`) < 3 * get("valueOfAdventure") &&
+      mallPrice($item`pulled green taffy`) < EMBEZZLER_MULTIPLIER * get("valueOfAdventure") &&
       retrieveItem($item`pulled green taffy`);
 
     const suggestion =
