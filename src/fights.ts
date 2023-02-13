@@ -117,7 +117,7 @@ import {
   burnLibrams,
   dogOrHolidayWanderer,
   embezzlerLog,
-  ensureArray,
+  asArray,
   ESTIMATED_OVERDRUNK_TURNS,
   expectedEmbezzlerProfit,
   HIGHLIGHT,
@@ -1610,7 +1610,7 @@ const freeRunFightSources = [
         best.location.wanderers &&
         have($skill`Comprehensive Cartography`) &&
         get("_monstersMapped") < 3;
-      const monsters = ensureArray(best.monster);
+      const monsters = asArray(best.monster);
       try {
         if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
@@ -1662,7 +1662,7 @@ const freeRunFightSources = [
         best.location.wanderers &&
         have($skill`Comprehensive Cartography`) &&
         get("_monstersMapped") < 3;
-      const monsters = ensureArray(best.monster);
+      const monsters = asArray(best.monster);
       try {
         if (best.preReq) best.preReq();
         Macro.if_(monsters.map((m) => `!monsterid ${m.id}`).join(" && "), runSource.macro)
@@ -2224,7 +2224,7 @@ function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
     (zone) =>
       zone.isOpen() &&
       (mappingMonster || !zone.requireMapTheMonsters) &&
-      ensureArray(zone.monster).some(
+      asArray(zone.monster).some(
         (m) => !isBanished(m) || get("olfactedMonster") === m || get("_gallapagosMonster") === m
       )
   );
@@ -2259,7 +2259,7 @@ function itemStealOlfact(best: ItemStealZone) {
     have($skill`Transcendent Olfaction`) &&
       get("_olfactionsUsed") < 1 &&
       itemStealZones.every(
-        (zone) => !ensureArray(zone.monster).includes(get("olfactedMonster") as Monster)
+        (zone) => !asArray(zone.monster).includes(get("olfactedMonster") as Monster)
       ),
     Macro.skill($skill`Transcendent Olfaction`)
   ).externalIf(
