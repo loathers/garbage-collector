@@ -458,7 +458,7 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  const embezzlerDifferential = EMBEZZLER_MULTIPLIER * MPA;
+  const embezzlerDifferential = EMBEZZLER_MULTIPLIER() * MPA;
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
   const extros =
     myInebriety() > inebrietyLimit()
