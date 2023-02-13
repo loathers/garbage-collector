@@ -10,7 +10,6 @@ import {
   Effect,
   equip,
   Familiar,
-  gametimeToInt,
   getAutoAttack,
   getCampground,
   handlingChoice,
@@ -32,7 +31,7 @@ import {
   myInebriety,
   myLevel,
   myMaxhp,
-  myPathId,
+  myPath,
   myPrimestat,
   myThrall,
   numericModifier,
@@ -70,6 +69,7 @@ import {
   $locations,
   $monster,
   $monsters,
+  $path,
   $phyla,
   $phylum,
   $skill,
@@ -119,7 +119,6 @@ import {
   embezzlerLog,
   ESTIMATED_OVERDRUNK_TURNS,
   expectedEmbezzlerProfit,
-  globalOptions,
   HIGHLIGHT,
   kramcoGuaranteed,
   latteActionSourceFinderConstraints,
@@ -134,6 +133,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  today,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
@@ -156,6 +156,7 @@ import { magnifyingGlass } from "./dropsgear";
 import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
 import { wanderWhere } from "./wanderer";
+import { globalOptions } from "./config";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -206,7 +207,7 @@ function embezzlerSetup() {
   useBuffExtenders();
   burnLibrams(400);
   if (
-    globalOptions.ascending &&
+    globalOptions.ascend &&
     questStep("questM16Temple") > 0 &&
     get("lastTempleAdventures") < myAscensions() &&
     acquire(1, $item`stone wool`, 3 * get("valueOfAdventure") + 100, false) > 0
@@ -543,7 +544,9 @@ class FreeFight {
 
   runAll() {
     if (!this.isAvailable()) return;
-    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
+    if ((this.options.cost ? this.options.cost() : 0) > globalOptions.prefs.valueOfFreeFight) {
+      return;
+    }
     while (this.isAvailable()) {
       voidMonster();
       const noncombat = !!this.options?.noncombat?.();
@@ -581,7 +584,9 @@ class FreeRunFight extends FreeFight {
 
   runAll() {
     if (!this.isAvailable()) return;
-    if ((this.options.cost ? this.options.cost() : 0) > get("garbo_valueOfFreeFight", 2000)) return;
+    if ((this.options.cost ? this.options.cost() : 0) > globalOptions.prefs.valueOfFreeFight) {
+      return;
+    }
     while (this.isAvailable()) {
       const constraints = {
         noFamiliar: () => this.options.familiar !== undefined,
@@ -682,6 +687,11 @@ const freeFightSources = [
     {
       requirements: () => [new Requirement([], { forceEquip: $items`protonic accelerator pack` })],
     }
+  ),
+  new FreeFight(
+    () => (have($item`molehill mountain`) && !get("_molehillMountainUsed") ? 1 : 0),
+    () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
+    true
   ),
   new FreeFight(
     () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
@@ -794,6 +804,7 @@ const freeFightSources = [
             get("lovebugsUnlocked"),
             Macro.trySkill($skill`Summon Love Gnats`).trySkill($skill`Summon Love Mosquito`)
           )
+          .tryItem($item`train whistle`)
           .trySkill($skill`Micrometeorite`)
           .tryItem($item`Time-Spinner`)
           .tryItem($item`little red book`)
@@ -1234,12 +1245,11 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => get("snojoAvailable") && clamp(10 - get("_snojoFreeFights"), 0, 10),
+    () =>
+      get("snojoAvailable") &&
+      get("snojoSetting") !== null &&
+      clamp(10 - get("_snojoFreeFights"), 0, 10),
     () => {
-      if (get("snojoSetting") === null) {
-        visitUrl("place.php?whichplace=snojo&action=snojo_controller");
-        runChoice(3);
-      }
       adv1($location`The X-32-F Combat Training Snowman`, -1, "");
     },
     false
@@ -1281,7 +1291,6 @@ const freeFightSources = [
 
   new FreeFight(
     () => (get("ownsSpeakeasy") ? 3 - get("_speakeasyFreeFights") : 0),
-    // eslint-disable-next-line libram/verify-constants
     () => adv1($location`An Unusually Quiet Barroom Brawl`, -1, ""),
     true
   ),
@@ -1851,7 +1860,7 @@ const freeKillSources = [
   ),
 
   new FreeFight(
-    () => (globalOptions.ascending ? get("shockingLickCharges") : 0),
+    () => (globalOptions.ascend ? get("shockingLickCharges") : 0),
     () => {
       ensureBeachAccess();
       withMacro(
@@ -1896,7 +1905,7 @@ const freeKillSources = [
 
 export function freeRunFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
-  if (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted", false)) return;
+  if (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted", false)) return;
   if (
     get("beGregariousFightsLeft") > 0 &&
     get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
@@ -1970,7 +1979,7 @@ export function freeFights(): void {
     buy(
       clamp(5 - get("_glarkCableUses"), 0, 5),
       $item`glark cable`,
-      get("garbo_valueOfFreeFight", 2000)
+      globalOptions.prefs.valueOfFreeFight
     );
   }
 
@@ -2093,9 +2102,9 @@ function doGhost() {
 function ensureBeachAccess() {
   if (
     get("lastDesertUnlock") !== myAscensions() &&
-    myPathId() !== 23 /* Actually Ed the Undying*/
+    myPath() !== $path`Actually Ed the Undying` /* Actually Ed the Undying*/
   ) {
-    cliExecute(`create ${$item`bitchin' meatcar`}`);
+    create($item`bitchin' meatcar`);
   }
 }
 
@@ -2442,7 +2451,6 @@ function yachtzee(): void {
       if (!equippedOutfit || !success()) return;
 
       const lastUMDDate = property.getString("umdLastObtained");
-      const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5; // Import today from ./lib once the PR is merged
       const getUMD =
         !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
         garboValue($item`Ultimate Mind Destroyer`) >=

@@ -83,34 +83,6 @@ export const embezzlerLog: {
   sources: [],
 };
 
-export const globalOptions: {
-  ascending: boolean;
-  stopTurncount: number | null;
-  saveTurns: number;
-  noBarf: boolean;
-  askedAboutWish: boolean;
-  triedToUnlockHiddenTavern: boolean;
-  wishAnswer: boolean;
-  simulateDiet: boolean;
-  noDiet: boolean;
-  clarasBellClaimed: boolean;
-  yachtzeeChain: boolean;
-  quickMode: boolean;
-} = {
-  stopTurncount: null,
-  ascending: false,
-  saveTurns: 0,
-  noBarf: false,
-  askedAboutWish: false,
-  triedToUnlockHiddenTavern: false,
-  wishAnswer: false,
-  simulateDiet: false,
-  noDiet: false,
-  clarasBellClaimed: get("_claraBellUsed"),
-  yachtzeeChain: false,
-  quickMode: false,
-};
-
 export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
 
 export const WISH_VALUE = 50000;
@@ -573,13 +545,21 @@ export function maxBy<S extends string | number | symbol, T extends { [x in S]: 
   optimizer: ((element: T) => number) | S,
   reverse = false
 ): T {
+  if (!array.length) throw new Error("Don't call maxBy on an empty array!");
+
   if (typeof optimizer === "function") {
-    return maxBy(
-      array.map((key) => ({ key, value: optimizer(key) })),
-      "value",
-      reverse
-    ).key;
+    return [...array].reduce(
+      ({ value, item }, other) => {
+        const otherValue = optimizer(other);
+        return value >= otherValue !== reverse
+          ? { value, item }
+          : { value: otherValue, item: other };
+      },
+      { item: array[0], value: optimizer(array[0]) }
+    ).item;
   } else {
-    return array.reduce((a, b) => (a[optimizer] > b[optimizer] !== reverse ? a : b));
+    return array.reduce((a, b) => (a[optimizer] >= b[optimizer] !== reverse ? a : b));
   }
 }
+
+export type GarboItemLists = { Newark: string[]; "Feliz Navidad": string[]; trainset: string[] };

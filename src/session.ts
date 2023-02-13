@@ -14,7 +14,9 @@ import {
   totalTurnsPlayed,
 } from "kolmafia";
 import { $item, $items, get, getSaleValue, property, Session, set, sumNumbers } from "libram";
-import { formatNumber, globalOptions, HIGHLIGHT, resetDailyPreference } from "./lib";
+import { globalOptions } from "./config";
+import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
+import { failedWishes } from "./potions";
 
 function currency(...items: Item[]): () => number {
   const unitCost: [Item, number][] = items.map((i) => {
@@ -161,7 +163,7 @@ function printSession(session: Session): void {
   printProfit(highValue);
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
-  if (globalOptions.quickMode) {
+  if (globalOptions.quick) {
     print("Quick mode was enabled, results may be less accurate than normal.");
   }
 }
@@ -179,7 +181,7 @@ function garboSaleValue(item: Item, useHistorical: boolean): number {
 const garboRegularValueCache = new Map<Item, number>();
 const garboHistoricalValueCache = new Map<Item, number>();
 export function garboValue(item: Item, useHistorical = false): number {
-  useHistorical ||= globalOptions.quickMode;
+  useHistorical ||= globalOptions.quick;
   const cachedValue =
     garboRegularValueCache.get(item) ??
     (useHistorical ? garboHistoricalValueCache.get(item) : undefined);
@@ -384,7 +386,15 @@ export function printGarboSession(): void {
   message("So far today", totalMeat, totalItems);
 
   printMarginalSession();
-  if (globalOptions.quickMode) {
+  if (globalOptions.quick) {
     print("Quick mode was enabled, results may be less accurate than normal.");
+  }
+  if (globalOptions.loginvalidwishes) {
+    if (failedWishes.length === 0) {
+      print("No invalid wishes found.");
+    } else {
+      print("Found the following unwishable effects:");
+      failedWishes.forEach((effect) => print(`${effect}`));
+    }
   }
 }

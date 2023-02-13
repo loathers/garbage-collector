@@ -1,7 +1,7 @@
 import { Task } from "grimoire-kolmafia";
 import { create, handlingChoice, runChoice, toInt, useSkill } from "kolmafia";
 import { $item, $items, $skill, get, have } from "libram";
-import { globalOptions } from "../lib";
+import { globalOptions } from "../config";
 import { garboValue } from "../session";
 
 function bestLockPickChoice(): number {
@@ -19,7 +19,7 @@ function bestLockPickChoice(): number {
 export const AscendingTasks: Task[] = [
   {
     name: "Lock Picking",
-    ready: () => have($skill`Lock Picking`) && globalOptions.ascending,
+    ready: () => have($skill`Lock Picking`) && globalOptions.ascend,
     completed: () => get("lockPicked"),
     do: (): void => {
       useSkill($skill`Lock Picking`);
@@ -29,14 +29,14 @@ export const AscendingTasks: Task[] = [
   },
   {
     name: "Cook Boris's key lime",
-    ready: () => globalOptions.ascending,
+    ready: () => globalOptions.ascend,
     completed: () =>
       !have($item`Boris's key`) || garboValue($item`Boris's key lime`) < garboValue($item`lime`),
     do: () => create($item`Boris's key lime`),
   },
   {
     name: "Cook Jarlsberg's key lime",
-    ready: () => globalOptions.ascending,
+    ready: () => globalOptions.ascend,
     completed: () =>
       !have($item`Jarlsberg's key`) ||
       garboValue($item`Jarlsberg's key lime`) < garboValue($item`lime`),
@@ -44,7 +44,7 @@ export const AscendingTasks: Task[] = [
   },
   {
     name: "Cook Sneaky Pete's key lime",
-    ready: () => globalOptions.ascending,
+    ready: () => globalOptions.ascend,
     completed: () =>
       !have($item`Sneaky Pete's key`) ||
       garboValue($item`Sneaky Pete's key lime`) < garboValue($item`lime`),
@@ -52,14 +52,14 @@ export const AscendingTasks: Task[] = [
   },
   {
     name: "Cook digital key lime",
-    ready: () => globalOptions.ascending,
+    ready: () => globalOptions.ascend,
     completed: () =>
       !have($item`digital key`) || garboValue($item`digital key lime`) < garboValue($item`lime`),
     do: () => create($item`digital key lime`),
   },
   {
     name: "Cook star key lime",
-    ready: () => globalOptions.ascending,
+    ready: () => globalOptions.ascend,
     completed: () =>
       !have($item`Richard's star key`) ||
       garboValue($item`star key lime`) < garboValue($item`lime`),

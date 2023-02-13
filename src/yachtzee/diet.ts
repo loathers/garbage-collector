@@ -33,8 +33,8 @@ import {
   set,
 } from "libram";
 import { acquire } from "../acquire";
+import { globalOptions } from "../config";
 import { hasMonsterReplacers } from "../extrovermectin";
-import { globalOptions } from "../lib";
 import { Potion } from "../potions";
 import { garboValue } from "../session";
 import synthesize from "../synthesis";
@@ -468,7 +468,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
     : 0;
   const synthCastsToCoverRun =
-    globalOptions.noBarf || !have($skill`Sweet Synthesis`)
+    globalOptions.nobarf || !have($skill`Sweet Synthesis`)
       ? 0
       : Math.max(0, Math.round((estimatedTurns() - haveEffect($effect`Synthesis: Greed`)) / 30));
   const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
@@ -627,7 +627,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     yachtzeePotionProfits(new Potion($item`Deep Dish of Legend`), yachtzeeTurns) +
     pizzaAdditionalAdvPerFullness * 2 * VOA;
   const deepDishPizzas =
-    globalOptions.ascending &&
+    globalOptions.ascend &&
     !get("deepDishOfLegendEaten") &&
     deepDishValue > retrievePrice($item`Deep Dish of Legend`) &&
     !get("unknownRecipe11000") &&

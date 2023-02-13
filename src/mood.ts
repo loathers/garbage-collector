@@ -196,6 +196,9 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
     use($item`The Legendary Beat`);
   }
+  if (have($item`portable steam unit`) && !get("_portableSteamUnitUsed", false)) {
+    use($item`portable steam unit`);
+  }
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
@@ -228,7 +231,7 @@ const stings = [
   $effect`Yes, Can Haz`,
 ];
 const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
-const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
+export const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
 const otherwiseBadEffects = $effects`Temporary Blindness`;
 export function shrugBadEffects(...exclude: Effect[]): void {
   [...stings, ...textAlteringEffects, ...teleportEffects, ...otherwiseBadEffects].forEach(

@@ -29,10 +29,11 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { globalOptions, latteActionSourceFinderConstraints, ltbRun, maxBy, setChoice } from "./lib";
+import { latteActionSourceFinderConstraints, ltbRun, maxBy, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";
+import { globalOptions } from "./config";
 
 export function expectedGregs(): number[] {
   const baseGregs = 3;
@@ -72,7 +73,7 @@ export function doingExtrovermectin(): boolean {
   return (
     get("beGregariousCharges") > 0 ||
     get("beGregariousFightsLeft") > 0 ||
-    (globalOptions.yachtzeeChain && !get("_garboYachtzeeChainCompleted"))
+    (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted"))
   );
 }
 
