@@ -25,6 +25,7 @@ import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
 import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
 import { meatOutfit } from "../outfit";
+import { garboValue, setMarginalFamiliarsExcessValue } from "../session";
 import { estimatedTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
@@ -162,9 +163,18 @@ export function barfFamiliar(): Familiar {
     }
   }
 
-  if (viableMenu.length === 0) return meatFamiliar();
+  if (viableMenu.length === 0) {
+    setMarginalFamiliarsExcessValue(0);
+    return meatFamiliar();
+  }
 
   const best = maxBy(viableMenu, totalFamiliarValue);
+
+  // Because we run marginal familiars at the end, our marginal MPA is inflated by best.expectedValue - meatFamiliarValue every turn
+  // Technically it's the nominalFamiliarValue, which for now is Math.max(meatFamiliarValue, garboValue($item`stench jelly`) / 20)
+  setMarginalFamiliarsExcessValue(
+    best.expectedValue - Math.max(meatFamiliarValue, garboValue($item`stench jelly`) / 20)
+  );
 
   const familiarPrintout = (x: MarginalFamiliar) =>
     `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(

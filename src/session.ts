@@ -227,6 +227,11 @@ let barfSession: Session | null = null;
 let barfSessionStartTurns = totalTurnsPlayed();
 let continueMeatTracking = true;
 let numTrackedItemTurns: number | null = null;
+let marginalFamiliarsExcessValue = 0;
+export function setMarginalFamiliarsExcessValue(val: number): void {
+  marginalFamiliarsExcessValue = val;
+}
+let marginalFamiliarsExcessTotal = 0;
 export function trackBarfSessionStatistics(): void {
   // If we are overdrunk, don't track statistics
   if (myInebriety() > inebrietyLimit()) return;
@@ -253,6 +258,8 @@ export function trackBarfSessionStatistics(): void {
   // Start tracking meat if we have less than 75 turns left
   // Also create a backup tracker for items
 
+  if (marginalSession) marginalFamiliarsExcessTotal += marginalFamiliarsExcessValue;
+
   if (
     (!get("_garboMarginalMeatCheckpoint") || !get("_garboMarginalMeatTurns")) &&
     myAdventures() - 25 - globalOptions.saveTurns <= 50 &&
@@ -261,7 +268,7 @@ export function trackBarfSessionStatistics(): void {
     const { meat, items } = sessionSinceStart().value(garboValue);
     const numTrackedMeatTurns = myAdventures() - 25 - globalOptions.saveTurns;
     setProperty("_garboMarginalMeatCheckpoint", meat.toFixed(0));
-    setProperty("_garboMarginalItemCheckpoint", items.toFixed(0));
+    setProperty("_garboMarginalItemCheckpoint", (items - marginalFamiliarsExcessTotal).toFixed(0));
     setProperty("_garboMarginalMeatTurns", numTrackedMeatTurns.toFixed(0));
   }
 
@@ -275,7 +282,7 @@ export function trackBarfSessionStatistics(): void {
     continueMeatTracking = false;
     const { meat, items } = sessionSinceStart().value(garboValue);
     const meatDiff = meat - get("_garboMarginalMeatCheckpoint", 0);
-    const itemDiff = items - get("_garboMarginalItemCheckpoint", 0);
+    const itemDiff = items - marginalFamiliarsExcessTotal - get("_garboMarginalItemCheckpoint", 0);
     setProperty("_garboMarginalMeatValue", meatDiff.toFixed(0));
     setProperty("_garboMarginalItemValue", itemDiff.toFixed(0));
     if (marginalSession) marginalSessionDiff = Session.current().diff(marginalSession);
@@ -322,8 +329,8 @@ function printMarginalSession(): void {
         );
         outlierItems += detail.value;
       }
-      const outlierIPA = items / numTrackedItemTurns;
-      const IPA = (items - outlierItems) / numTrackedItemTurns;
+      const outlierIPA = (items - marginalFamiliarsExcessTotal) / numTrackedItemTurns;
+      const IPA = (items - marginalFamiliarsExcessTotal - outlierItems) / numTrackedItemTurns;
       const totalOutlierMPA = MPA + outlierIPA;
       const totalMPA = MPA + IPA;
       print(
