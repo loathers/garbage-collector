@@ -113,11 +113,11 @@ import {
   setBestLeprechaunAsMeatFamiliar,
 } from "./familiar";
 import {
+  asArray,
   baseMeat,
   burnLibrams,
   dogOrHolidayWanderer,
   embezzlerLog,
-  asArray,
   ESTIMATED_OVERDRUNK_TURNS,
   expectedEmbezzlerProfit,
   HIGHLIGHT,
