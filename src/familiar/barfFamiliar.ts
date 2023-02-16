@@ -173,7 +173,10 @@ export function barfFamiliar(): Familiar {
   // Because we run marginal familiars at the end, our marginal MPA is inflated by best.expectedValue - meatFamiliarValue every turn
   // Technically it's the nominalFamiliarValue, which for now is Math.max(meatFamiliarValue, garboValue($item`stench jelly`) / 20)
   setMarginalFamiliarsExcessValue(
-    best.expectedValue - Math.max(meatFamiliarValue, garboValue($item`stench jelly`) / 20)
+    best.expectedValue +
+      best.outfitValue +
+      familiarAbilityValue(best.familiar) -
+      Math.max(meatFamiliarValue, garboValue($item`stench jelly`) / 20)
   );
 
   const familiarPrintout = (x: MarginalFamiliar) =>
