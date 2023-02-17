@@ -232,6 +232,12 @@ export function setMarginalFamiliarsExcessValue(val: number): void {
   marginalFamiliarsExcessValue = val;
 }
 let marginalFamiliarsExcessTotal = 0;
+
+// Hardcode a few outliers that we know aren't marginal
+// (e.g. those that have a drop limit which we would likely already cap)
+// Note that familiar drops (that have limits) are already handled above
+const outlierItemList = $items`Extrovermectin™, Volcoino`;
+
 export function trackBarfSessionStatistics(): void {
   // If we are overdrunk, don't track statistics
   if (myInebriety() > inebrietyLimit()) return;
@@ -315,9 +321,10 @@ function printMarginalSession(): void {
       const outlierItemDetails = itemDetails
         .filter(
           (detail) =>
-            detail.quantity === 1 &&
-            detail.value >= 5000 &&
-            barfItemDetails.some((d) => d.item === detail.item && d.quantity <= 2)
+            outlierItemList.includes(detail.item) ||
+            (detail.quantity === 1 &&
+              detail.value >= 5000 &&
+              barfItemDetails.some((d) => d.item === detail.item && d.quantity <= 2))
         )
         .sort((a, b) => b.value - a.value);
       print(`Outliers:`, HIGHLIGHT);
