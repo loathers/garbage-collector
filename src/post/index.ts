@@ -92,7 +92,7 @@ function updateMallPrices(): void {
   sessionSinceStart().value(garboValue);
 }
 
-let juneCleaverSkipChoices: typeof JuneCleaver.choices[number][] | null;
+let juneCleaverSkipChoices: (typeof JuneCleaver.choices)[number][] | null;
 function skipJuneCleaverChoices(): void {
   if (!juneCleaverSkipChoices) {
     juneCleaverSkipChoices = [...JuneCleaver.choices]
