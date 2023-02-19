@@ -229,7 +229,7 @@ let continueMeatTracking = true;
 let numTrackedItemTurns: number | null = null;
 let marginalFamiliarsExcessValue = 0;
 export function setMarginalFamiliarsExcessValue(val: number): void {
-  marginalFamiliarsExcessValue = val;
+  marginalFamiliarsExcessValue = Math.max(0, val);
 }
 let marginalFamiliarsExcessTotal = 0;
 
@@ -265,6 +265,7 @@ export function trackBarfSessionStatistics(): void {
   // Also create a backup tracker for items
 
   if (marginalSession) marginalFamiliarsExcessTotal += marginalFamiliarsExcessValue;
+  marginalFamiliarsExcessValue = 0;
 
   if (
     (!get("_garboMarginalMeatCheckpoint") || !get("_garboMarginalMeatTurns")) &&
