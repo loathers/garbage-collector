@@ -1641,7 +1641,7 @@ const freeRunFightSources = [
         const zone = getBestItemStealZone();
         return [
           new Requirement(zone?.maximize ?? [], {
-            forceEquip: $items`industrial fire extinguisher`,
+            forceEquip: $items`industrial fire extinguisher`.filter((i) => have(i)),
           }),
         ];
       },
