@@ -171,13 +171,21 @@ export function barfFamiliar(): Familiar {
   const best = maxBy(viableMenu, totalFamiliarValue);
 
   // Because we run marginal familiars at the end, our marginal MPA is inflated by best.expectedValue - meatFamiliarValue every turn
-  // Technically it's the nominalFamiliarValue, which for now is Math.max(meatFamiliarValue, garboValue($item`stench jelly`) / 20)
-  setMarginalFamiliarsExcessValue(
+  // Technically it's the nominalFamiliarValue, which for now is the max of meatFamiliar and jellyfish (if we have the jellyfish)
+  const jellyfish = fullMenu.find(({ familiar }) => familiar === $familiar`Space Jellyfish`);
+  const jellyfishValue = jellyfish
+    ? garboValue($item`stench jelly`) / 20 +
+      familiarAbilityValue(jellyfish.familiar) +
+      jellyfish.outfitValue
+    : 0;
+  const excessValue = Math.max(
     best.expectedValue +
       best.outfitValue +
       familiarAbilityValue(best.familiar) -
-      Math.max(meatFamiliarValue, garboValue($item`stench jelly`) / 20)
+      Math.max(meatFamiliarValue, jellyfishValue),
+    0
   );
+  setMarginalFamiliarsExcessValue(excessValue);
 
   const familiarPrintout = (x: MarginalFamiliar) =>
     `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(
