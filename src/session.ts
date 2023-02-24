@@ -236,7 +236,7 @@ let marginalFamiliarsExcessTotal = 0;
 // Hardcode a few outliers that we know aren't marginal
 // (e.g. those that have a drop limit which we would likely already cap)
 // Note that familiar drops (that have limits) are already handled above
-const outlierItemList = $items`Extrovermectin™, Volcoino`;
+const outlierItemList = $items`Extrovermectin™, Volcoino, Poké-Gro fertilizer`;
 
 export function trackBarfSessionStatistics(): void {
   // If we are overdrunk, don't track statistics
