@@ -69,7 +69,15 @@ import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
 import { embezzlerCount } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import { arrayEquals, baseMeat, HIGHLIGHT, maxBy, realmAvailable, userConfirmDialog } from "./lib";
+import {
+  arrayEquals,
+  baseMeat,
+  EMBEZZLER_MULTIPLIER,
+  HIGHLIGHT,
+  maxBy,
+  realmAvailable,
+  userConfirmDialog,
+} from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
@@ -450,8 +458,7 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  // assuming embezzler is worth 4 * MPA and a marginal turn is 1 * MPA, the differential is 3 * MPA
-  const embezzlerDifferential = 3 * MPA;
+  const embezzlerDifferential = EMBEZZLER_MULTIPLIER() * MPA;
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
   const extros =
     myInebriety() > inebrietyLimit()

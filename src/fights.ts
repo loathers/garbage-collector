@@ -113,6 +113,7 @@ import {
   setBestLeprechaunAsMeatFamiliar,
 } from "./familiar";
 import {
+  asArray,
   baseMeat,
   burnLibrams,
   dogOrHolidayWanderer,
@@ -1595,22 +1596,27 @@ const freeRunFightSources = [
   // Fire Extinguisher on best available target.
   new FreeRunFight(
     () =>
-      have($item`industrial fire extinguisher`) &&
-      get("_fireExtinguisherCharge") >= 10 &&
-      have($skill`Comprehensive Cartography`) &&
-      get("_monstersMapped") < 3 &&
+      ((have($item`industrial fire extinguisher`) && get("_fireExtinguisherCharge") >= 10) ||
+        (have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11)) &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
       getBestItemStealZone(true) !== null,
     (runSource: ActionSource) => {
       setupItemStealZones();
       const best = getBestItemStealZone(true);
       if (!best) throw `Unable to find fire extinguisher zone?`;
+      const mappingMonster =
+        have($skill`Comprehensive Cartography`) &&
+        get("_monstersMapped") < 3 &&
+        best.location.wanderers &&
+        have($skill`Comprehensive Cartography`) &&
+        get("_monstersMapped") < 3;
+      const monsters = asArray(best.monster);
       try {
         if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
         const hasXO = myFamiliar() === $familiar`XO Skeleton`;
         if (myThrall() !== $thrall.none) useSkill($skill`Dismiss Pasta Thrall`);
-        Macro.if_(`monsterid ${$monster`roller-skating Muse`.id}`, runSource.macro)
+        Macro.if_(monsters.map((m) => `!monsterid ${m.id}`).join(" && "), runSource.macro)
           .externalIf(hasXO && get("_xoHugsUsed") < 11, Macro.skill($skill`Hugs and Kisses!`))
           .externalIf(
             !best.requireMapTheMonsters && hasXO && get("_xoHugsUsed") < 10,
@@ -1619,7 +1625,11 @@ const freeRunFightSources = [
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
           .step(runSource.macro)
           .setAutoAttack();
-        mapMonster(best.location, best.monster);
+        if (mappingMonster) {
+          mapMonster(best.location, monsters[0]);
+        } else {
+          adv1(best.location, -1, "");
+        }
       } finally {
         setAutoAttack(0);
       }
@@ -1631,45 +1641,12 @@ const freeRunFightSources = [
         const zone = getBestItemStealZone();
         return [
           new Requirement(zone?.maximize ?? [], {
-            forceEquip: $items`industrial fire extinguisher`,
+            forceEquip:
+              have($item`industrial fire extinguisher`) && get("_fireExtinguisherCharge") >= 10
+                ? $items`industrial fire extinguisher`
+                : [],
           }),
         ];
-      },
-    }
-  ),
-  // Use XO pockets on best available target.
-  new FreeRunFight(
-    () =>
-      have($familiar`XO Skeleton`) &&
-      get("_xoHugsUsed") < 11 &&
-      get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestItemStealZone() !== null,
-    (runSource: ActionSource) => {
-      setupItemStealZones();
-      const mappingMonster = have($skill`Comprehensive Cartography`) && get("_monstersMapped") < 3;
-      const best = getBestItemStealZone();
-      if (!best) throw `Unable to find XO Skeleton zone?`;
-      try {
-        if (best.preReq) best.preReq();
-        Macro.if_(`!monsterid ${best.monster.id}`, runSource.macro)
-          .step(itemStealOlfact(best))
-          .skill($skill`Hugs and Kisses!`)
-          .step(runSource.macro)
-          .setAutoAttack();
-        if (mappingMonster) {
-          mapMonster(best.location, best.monster);
-        } else {
-          adv1(best.location, -1, "");
-        }
-      } finally {
-        setAutoAttack(0);
-      }
-    },
-    {
-      familiar: () => $familiar`XO Skeleton`,
-      requirements: () => {
-        const zone = getBestItemStealZone();
-        return [new Requirement(zone?.maximize ?? [], {})];
       },
     }
   ),
@@ -2111,7 +2088,7 @@ function ensureBeachAccess() {
 type ItemStealZone = {
   item: Item;
   location: Location;
-  monster: Monster;
+  monster: Monster | Monster[];
   dropRate: number;
   maximize: string[];
   requireMapTheMonsters: boolean; // When a zone has a choice we want to avoid
@@ -2172,7 +2149,7 @@ const itemStealZones = [
   },
   {
     location: $location`Twin Peak`,
-    monster: $monster`bearpig topiary animal`,
+    monster: $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`,
     item: $item`rusty hedge trimmers`,
     dropRate: 0.5,
     maximize: ["99 monster level 11 max"], // Topiary animals need an extra 11 HP to survive polar vortices
@@ -2193,6 +2170,16 @@ const itemStealZones = [
     openCost: () => 0,
     preReq: null,
   },
+  {
+    location: $location`Shadow Rift`,
+    monster: $monster`shadow slab`,
+    item: $item`shadow brick`,
+    requireMapTheMonsters: false,
+    dropRate: 1,
+    isOpen: () => ["pyramid", "hiddencity", "cemetery"].includes(get("shadowRiftIngress")),
+    openCost: () => 0,
+    preReq: null,
+  },
 ] as ItemStealZone[];
 
 function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
@@ -2200,9 +2187,9 @@ function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
     (zone) =>
       zone.isOpen() &&
       (mappingMonster || !zone.requireMapTheMonsters) &&
-      (!isBanished(zone.monster) ||
-        get("olfactedMonster") === zone.monster ||
-        get("_gallapagosMonster") === zone.monster)
+      asArray(zone.monster).some(
+        (m) => !isBanished(m) || get("olfactedMonster") === m || get("_gallapagosMonster") === m
+      )
   );
   const vorticesAvail = have($item`industrial fire extinguisher`)
     ? Math.floor(get("_fireExtinguisherCharge") / 10)
@@ -2234,7 +2221,9 @@ function itemStealOlfact(best: ItemStealZone) {
   return Macro.externalIf(
     have($skill`Transcendent Olfaction`) &&
       get("_olfactionsUsed") < 1 &&
-      itemStealZones.every((zone) => get("olfactedMonster") !== zone.monster),
+      itemStealZones.every(
+        (zone) => !asArray(zone.monster).includes(get("olfactedMonster") as Monster)
+      ),
     Macro.skill($skill`Transcendent Olfaction`)
   ).externalIf(
     have($skill`Gallapagosian Mating Call`) && get("_gallapagosMonster") !== best.monster,

@@ -2,6 +2,7 @@ import {
   cliExecute,
   equip,
   itemAmount,
+  mallPrice,
   myAdventures,
   myLevel,
   myLocation,
@@ -91,7 +92,7 @@ function updateMallPrices(): void {
   sessionSinceStart().value(garboValue);
 }
 
-let juneCleaverSkipChoices: typeof JuneCleaver.choices[number][] | null;
+let juneCleaverSkipChoices: (typeof JuneCleaver.choices)[number][] | null;
 function skipJuneCleaverChoices(): void {
   if (!juneCleaverSkipChoices) {
     juneCleaverSkipChoices = [...JuneCleaver.choices]
@@ -153,7 +154,10 @@ function funguySpores() {
         garboAverageValue(
           ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
         );
-    if (acquire(1, $item`Fun-Guy spore`, value, false) > 0) {
+    if (
+      mallPrice($item`Fun-Guy spore`) < value &&
+      acquire(1, $item`Fun-Guy spore`, value, false) > 0
+    ) {
       use($item`Fun-Guy spore`);
     } else funguyWorthIt = false;
   }

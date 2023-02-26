@@ -70,11 +70,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "operate under the assumption that you're ascending after running it, rather than experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.",
       default: false,
     }),
-    returnstash: Args.flag({
-      setting: "",
-      help: "return all items to your stash clan's stash, then quit",
-      default: false,
-    }),
     loginvalidwishes: Args.flag({
       setting: "",
       help: "Logs any invalid wishes at the end of the day.",
@@ -93,6 +88,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     quick: Args.flag({
       setting: "",
       help: "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.",
+      default: false,
+    }),
+    returnstash: Args.flag({
+      setting: "",
+      help: "return all items to your stash clan's stash, then quit",
       default: false,
     }),
     simdiet: Args.flag({
@@ -152,6 +152,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_candydish",
           help: "*DANGEROUS* garbo will consider using porcelain candy dishes. This could result in potentially destructive behavior in the instance that the user does not have sufficient meat (1-2 million) to purchase as many dishes as garbo desires or there is a price cliff.",
           default: false,
+          hidden: true,
+        }),
+        embezzlerMultiplier: Args.number({
+          setting: "garbo_embezzlerMultiplier",
+          help: "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit. (Default 2.5)",
+          default: 2.5,
           hidden: true,
         }),
         stashClan: Args.string({

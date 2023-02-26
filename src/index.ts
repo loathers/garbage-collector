@@ -98,7 +98,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27075);
+  sinceKolmafiaRevision(27149);
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
