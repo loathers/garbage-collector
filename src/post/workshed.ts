@@ -84,7 +84,7 @@ const worksheds = [
       if (!get("trainsetConfiguration")) {
         print("Reconfiguring trainset, as it is empty", HIGHLIGHT);
         return rotateToOptimalCycle();
-      } else if (globalOptions.ascend && estimatedTurns() <= 40) {
+      } else if (globalOptions.ascend && estimatedGarboTurns() <= 40) {
         print(
           "Refusing to reconfigure trainset, to save a reconfiguration for your upcoming ascension.",
           HIGHLIGHT
