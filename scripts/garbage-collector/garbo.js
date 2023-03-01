@@ -18455,15 +18455,15 @@ function handleWorkshed() {
   }
 }
 ;// CONCATENATED MODULE: ./src/post/index.ts
-var post_templateObject, post_templateObject2, post_templateObject3, post_templateObject4, post_templateObject5, post_templateObject6, post_templateObject7, post_templateObject8, post_templateObject9, post_templateObject10, post_templateObject11, post_templateObject12, post_templateObject13, post_templateObject14, post_templateObject15, post_templateObject16;
-function post_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = post_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+var post_templateObject, post_templateObject2, post_templateObject3, post_templateObject4, post_templateObject5, post_templateObject6, post_templateObject7, post_templateObject8, post_templateObject9, post_templateObject10, post_templateObject11, post_templateObject12, post_templateObject13, post_templateObject14, post_templateObject15, post_templateObject16, post_templateObject17;
 function post_toConsumableArray(arr) { return post_arrayWithoutHoles(arr) || post_iterableToArray(arr) || post_unsupportedIterableToArray(arr) || post_nonIterableSpread(); }
 function post_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function post_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return post_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return post_arrayLikeToArray(o, minLen); }
 function post_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function post_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return post_arrayLikeToArray(arr); }
-function post_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function post_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+function post_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = post_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function post_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return post_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return post_arrayLikeToArray(o, minLen); }
+function post_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 
 
 
@@ -18476,8 +18476,22 @@ function post_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.sl
 
 
 
+function closetStuff() {
+  var _iterator = post_createForOfIteratorHelper(template_string_$items(post_templateObject || (post_templateObject = post_taggedTemplateLiteral(["bowling ball, funky junk key"])))),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var i = _step.value;
+      (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(i), i);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+}
 function floristFriars() {
-  if (!Florist_have() || (0,external_kolmafia_namespaceObject.myLocation)() !== $location(post_templateObject || (post_templateObject = post_taggedTemplateLiteral(["Barf Mountain"]))) || isFull()) {
+  if (!Florist_have() || (0,external_kolmafia_namespaceObject.myLocation)() !== $location(post_templateObject2 || (post_templateObject2 = post_taggedTemplateLiteral(["Barf Mountain"]))) || isFull()) {
     return;
   }
   [StealingMagnolia, AloeGuvnor, PitcherPlant].forEach(flower => flower.plant());
@@ -18490,11 +18504,11 @@ function fillPantsgivingFullness() {
 function fillSweatyLiver() {
   if (config_globalOptions.prefs.yachtzeechain && !property_get("_garboYachtzeeChainCompleted", false)) return;
   var castsWanted = 3 - property_get("_sweatOutSomeBoozeUsed");
-  if (castsWanted <= 0 || !lib_have(template_string_$item(post_templateObject2 || (post_templateObject2 = post_taggedTemplateLiteral(["designer sweatpants"]))))) return;
+  if (castsWanted <= 0 || !lib_have(template_string_$item(post_templateObject3 || (post_templateObject3 = post_taggedTemplateLiteral(["designer sweatpants"]))))) return;
   var sweatNeeded = 25 * castsWanted;
   if (property_get("sweat") >= sweatNeeded) {
     while (property_get("_sweatOutSomeBoozeUsed") < 3) {
-      (0,external_kolmafia_namespaceObject.useSkill)($skill(post_templateObject3 || (post_templateObject3 = post_taggedTemplateLiteral(["Sweat Out Some Booze"]))));
+      (0,external_kolmafia_namespaceObject.useSkill)($skill(post_templateObject4 || (post_templateObject4 = post_taggedTemplateLiteral(["Sweat Out Some Booze"]))));
     }
     consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
   }
@@ -18513,49 +18527,49 @@ function skipJuneCleaverChoices() {
     juneCleaverSkipChoices = post_toConsumableArray(choices).sort((a, b) => valueJuneCleaverOption(juneCleaverChoiceValues[a][bestJuneCleaverOption(a)]) - valueJuneCleaverOption(juneCleaverChoiceValues[b][bestJuneCleaverOption(b)])).splice(0, 3);
   }
   if (skipsRemaining() > 0) {
-    var _iterator = post_createForOfIteratorHelper(juneCleaverSkipChoices),
-      _step;
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var choice = _step.value;
-        setChoice(choice, 4);
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-  } else {
     var _iterator2 = post_createForOfIteratorHelper(juneCleaverSkipChoices),
       _step2;
     try {
       for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var _choice = _step2.value;
-        setChoice(_choice, bestJuneCleaverOption(_choice));
+        var choice = _step2.value;
+        setChoice(choice, 4);
       }
     } catch (err) {
       _iterator2.e(err);
     } finally {
       _iterator2.f();
     }
+  } else {
+    var _iterator3 = post_createForOfIteratorHelper(juneCleaverSkipChoices),
+      _step3;
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var _choice = _step3.value;
+        setChoice(_choice, bestJuneCleaverOption(_choice));
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
   }
 }
 function juneCleave() {
   if (property_get("_juneCleaverFightsLeft") <= 0 && teleportEffects.every(e => !lib_have(e))) {
-    (0,external_kolmafia_namespaceObject.equip)($slot(post_templateObject4 || (post_templateObject4 = post_taggedTemplateLiteral(["weapon"]))), template_string_$item(post_templateObject5 || (post_templateObject5 = post_taggedTemplateLiteral(["June cleaver"]))));
+    (0,external_kolmafia_namespaceObject.equip)($slot(post_templateObject5 || (post_templateObject5 = post_taggedTemplateLiteral(["weapon"]))), template_string_$item(post_templateObject6 || (post_templateObject6 = post_taggedTemplateLiteral(["June cleaver"]))));
     skipJuneCleaverChoices();
     withProperty("recoveryScript", "", () => {
-      garboAdventure($location(post_templateObject6 || (post_templateObject6 = post_taggedTemplateLiteral(["Noob Cave"]))), combat_Macro.abort());
+      garboAdventure($location(post_templateObject7 || (post_templateObject7 = post_taggedTemplateLiteral(["Noob Cave"]))), combat_Macro.abort());
       if (["Poetic Justice", "Lost and Found"].includes(property_get("lastEncounter"))) {
-        lib_uneffect(template_string_$effect(post_templateObject7 || (post_templateObject7 = post_taggedTemplateLiteral(["Beaten Up"]))));
+        lib_uneffect(template_string_$effect(post_templateObject8 || (post_templateObject8 = post_taggedTemplateLiteral(["Beaten Up"]))));
       }
     });
   }
 }
 function stillsuit() {
-  if ((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(post_templateObject8 || (post_templateObject8 = post_taggedTemplateLiteral(["tiny stillsuit"]))))) {
-    var familiarTarget = $familiar(post_templateObject9 || (post_templateObject9 = post_taggedTemplateLiteral(["Blood-Faced Volleyball"])));
-    if (lib_have(familiarTarget)) (0,external_kolmafia_namespaceObject.equip)(familiarTarget, template_string_$item(post_templateObject10 || (post_templateObject10 = post_taggedTemplateLiteral(["tiny stillsuit"]))));
+  if ((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(post_templateObject9 || (post_templateObject9 = post_taggedTemplateLiteral(["tiny stillsuit"]))))) {
+    var familiarTarget = $familiar(post_templateObject10 || (post_templateObject10 = post_taggedTemplateLiteral(["Blood-Faced Volleyball"])));
+    if (lib_have(familiarTarget)) (0,external_kolmafia_namespaceObject.equip)(familiarTarget, template_string_$item(post_templateObject11 || (post_templateObject11 = post_taggedTemplateLiteral(["tiny stillsuit"]))));
   }
 }
 var funguyWorthIt = true;
@@ -18563,18 +18577,19 @@ function funguySpores() {
   // Mush-Mouth will drop an expensive mushroom if you do a combat with one turn of it left
   if ((0,external_kolmafia_namespaceObject.myLevel)() >= 15 &&
   // It applies -100 to all stats, and Level 15 seems to be a reasonable place where you will survive -100 to all stats
-  !lib_have(template_string_$effect(post_templateObject11 || (post_templateObject11 = post_taggedTemplateLiteral(["Mush-Mouth"])))) && (!config_globalOptions.ascend || (0,external_kolmafia_namespaceObject.myAdventures)() > 11) && property_get("dinseyRollercoasterNext") &&
+  !lib_have(template_string_$effect(post_templateObject12 || (post_templateObject12 = post_taggedTemplateLiteral(["Mush-Mouth"])))) && (!config_globalOptions.ascend || (0,external_kolmafia_namespaceObject.myAdventures)() > 11) && property_get("dinseyRollercoasterNext") &&
   // If it were to expire on a rails adventure, you'd waste the cost of the spore. Using it when next turn is rails is easiest way to make sure it won't
   funguyWorthIt) {
     // According to wiki, it has a 75% chance of being a stat mushroom and 25% chance of being another mushroom
-    var value = 0.75 * garboAverageValue.apply(void 0, post_toConsumableArray(template_string_$items(post_templateObject12 || (post_templateObject12 = post_taggedTemplateLiteral(["Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom"]))))) + 0.25 * garboAverageValue.apply(void 0, post_toConsumableArray(template_string_$items(post_templateObject13 || (post_templateObject13 = post_taggedTemplateLiteral(["Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom"])))));
-    if ((0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(post_templateObject14 || (post_templateObject14 = post_taggedTemplateLiteral(["Fun-Guy spore"])))) < value && acquire(1, template_string_$item(post_templateObject15 || (post_templateObject15 = post_taggedTemplateLiteral(["Fun-Guy spore"]))), value, false) > 0) {
-      (0,external_kolmafia_namespaceObject.use)(template_string_$item(post_templateObject16 || (post_templateObject16 = post_taggedTemplateLiteral(["Fun-Guy spore"]))));
+    var value = 0.75 * garboAverageValue.apply(void 0, post_toConsumableArray(template_string_$items(post_templateObject13 || (post_templateObject13 = post_taggedTemplateLiteral(["Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom"]))))) + 0.25 * garboAverageValue.apply(void 0, post_toConsumableArray(template_string_$items(post_templateObject14 || (post_templateObject14 = post_taggedTemplateLiteral(["Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom"])))));
+    if ((0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(post_templateObject15 || (post_templateObject15 = post_taggedTemplateLiteral(["Fun-Guy spore"])))) < value && acquire(1, template_string_$item(post_templateObject16 || (post_templateObject16 = post_taggedTemplateLiteral(["Fun-Guy spore"]))), value, false) > 0) {
+      (0,external_kolmafia_namespaceObject.use)(template_string_$item(post_templateObject17 || (post_templateObject17 = post_taggedTemplateLiteral(["Fun-Guy spore"]))));
     } else funguyWorthIt = false;
   }
 }
 function postCombatActions() {
   var skipDiet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  closetStuff();
   juneCleave();
   numberology();
   if (!skipDiet && !config_globalOptions.nodiet) {
