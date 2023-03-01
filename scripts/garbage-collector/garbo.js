@@ -15043,10 +15043,10 @@ var copySources = [new EmbezzlerFight("Time-Spinner", () => lib_have(template_st
     return 6 - property_get("spookyPuttyCopiesMade") - property_get("_raindohCopiesMade") + (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(embezzler_templateObject56 || (embezzler_templateObject56 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"])))) + (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(embezzler_templateObject57 || (embezzler_templateObject57 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"]))));
   } else if (havePutty) {
     if (puttyLocked) return 0;
-    return 5 - property_get("spookyPuttyCopiesMade") + (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(embezzler_templateObject58 || (embezzler_templateObject58 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))));
+    return 5 - property_get("spookyPuttyCopiesMade") - property_get("_raindohCopiesMade") + (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(embezzler_templateObject58 || (embezzler_templateObject58 = embezzler_taggedTemplateLiteral(["Spooky Putty monster"]))));
   } else if (haveRainDoh) {
     if (rainDohLocked) return 0;
-    return 5 - property_get("_raindohCopiesMade") + (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(embezzler_templateObject59 || (embezzler_templateObject59 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"]))));
+    return 5 - property_get("spookyPuttyCopiesMade") - property_get("_raindohCopiesMade") + (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(embezzler_templateObject59 || (embezzler_templateObject59 = embezzler_taggedTemplateLiteral(["Rain-Doh box full of monster"]))));
   }
   return 0;
 }, options => {
