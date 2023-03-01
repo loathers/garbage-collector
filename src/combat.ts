@@ -188,7 +188,7 @@ export class Macro extends StrictMacro {
         Macro.externalIf(
           get("_spaceJellyfishDrops") < 5,
           Macro.if_(
-            $locations`Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice`
+            $locations`Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Toxic Teacups`
               .map((l) => getMonsters(l))
               .flat(),
             Macro.trySkill($skill`Extract Jelly`)
