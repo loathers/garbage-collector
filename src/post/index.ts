@@ -6,6 +6,7 @@ import {
   myAdventures,
   myLevel,
   myLocation,
+  putCloset,
   reverseNumberology,
   use,
   useSkill,
@@ -44,6 +45,10 @@ import { teleportEffects } from "../mood";
 import { garboAverageValue, garboValue, sessionSinceStart } from "../session";
 import { estimatedTurns } from "../turns";
 import handleWorkshed from "./workshed";
+
+function closetStuff(): void {
+  for (const i of $items`bowling ball, funky junk key`) putCloset(itemAmount(i), i);
+}
 
 function floristFriars(): void {
   if (!FloristFriar.have() || myLocation() !== $location`Barf Mountain` || FloristFriar.isFull()) {
@@ -164,6 +169,7 @@ function funguySpores() {
 }
 
 export default function postCombatActions(skipDiet = false): void {
+  closetStuff();
   juneCleave();
   numberology();
   if (!skipDiet && !globalOptions.nodiet) {
