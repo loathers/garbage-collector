@@ -175,6 +175,7 @@ export const unsupportedChoices = new Map<Location, { [choice: number]: number |
     },
   ],
   [$location`The Copperhead Club`, { [855]: 4 }],
+  [$location`The Haunted Bathroom`, { [882]: 2 }], // skip; it's the towel adventure but we don't want towels
   [$location`The Castle in the Clouds in the Sky (Top Floor)`, { [1431]: 1, [677]: 2 }],
   [$location`The Hidden Office Building`, { [786]: 6 }],
 ]);
