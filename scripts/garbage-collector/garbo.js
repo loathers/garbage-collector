@@ -13743,7 +13743,7 @@ var combat_Macro = /*#__PURE__*/function (_StrictMacro) {
   }, {
     key: "familiarActions",
     value: function familiarActions() {
-      return this.externalIf((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(combat_templateObject19 || (combat_templateObject19 = src_combat_taggedTemplateLiteral(["Grey Goose"]))) && timeToMeatify(), Macro.trySkill($skill(combat_templateObject20 || (combat_templateObject20 = src_combat_taggedTemplateLiteral(["Meatify Matter"]))))).externalIf(canOpenRedPresent() && (0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(combat_templateObject21 || (combat_templateObject21 = src_combat_taggedTemplateLiteral(["Crimbo Shrub"]))), Macro.trySkill($skill(combat_templateObject22 || (combat_templateObject22 = src_combat_taggedTemplateLiteral(["Open a Big Red Present"]))))).externalIf((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(combat_templateObject23 || (combat_templateObject23 = src_combat_taggedTemplateLiteral(["Space Jellyfish"]))), Macro.externalIf(property_get("_spaceJellyfishDrops") < 5, Macro.if_($locations(combat_templateObject24 || (combat_templateObject24 = src_combat_taggedTemplateLiteral(["Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice"]))).map(l => (0,external_kolmafia_namespaceObject.getMonsters)(l)).flat(), Macro.trySkill($skill(combat_templateObject25 || (combat_templateObject25 = src_combat_taggedTemplateLiteral(["Extract Jelly"]))))), Macro.trySkill($skill(combat_templateObject26 || (combat_templateObject26 = src_combat_taggedTemplateLiteral(["Extract Jelly"]))))));
+      return this.externalIf((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(combat_templateObject19 || (combat_templateObject19 = src_combat_taggedTemplateLiteral(["Grey Goose"]))) && timeToMeatify(), Macro.trySkill($skill(combat_templateObject20 || (combat_templateObject20 = src_combat_taggedTemplateLiteral(["Meatify Matter"]))))).externalIf(canOpenRedPresent() && (0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(combat_templateObject21 || (combat_templateObject21 = src_combat_taggedTemplateLiteral(["Crimbo Shrub"]))), Macro.trySkill($skill(combat_templateObject22 || (combat_templateObject22 = src_combat_taggedTemplateLiteral(["Open a Big Red Present"]))))).externalIf((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(combat_templateObject23 || (combat_templateObject23 = src_combat_taggedTemplateLiteral(["Space Jellyfish"]))), Macro.externalIf(property_get("_spaceJellyfishDrops") < 5, Macro.if_($locations(combat_templateObject24 || (combat_templateObject24 = src_combat_taggedTemplateLiteral(["Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Toxic Teacups"]))).map(l => (0,external_kolmafia_namespaceObject.getMonsters)(l)).flat(), Macro.trySkill($skill(combat_templateObject25 || (combat_templateObject25 = src_combat_taggedTemplateLiteral(["Extract Jelly"]))))), Macro.trySkill($skill(combat_templateObject26 || (combat_templateObject26 = src_combat_taggedTemplateLiteral(["Extract Jelly"]))))));
     }
   }, {
     key: "tryCopier",
@@ -14666,12 +14666,14 @@ function averageYrValue(location) {
   var badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   var rates = (0,external_kolmafia_namespaceObject.appearanceRates)(location);
   var monsters = Object.keys((0,external_kolmafia_namespaceObject.getLocationMonsters)(location)).map(m => (0,external_kolmafia_namespaceObject.toMonster)(m)).filter(m => !badAttributes.some(s => m.attributes.includes(s)) && rates[m.name] > 0);
+  var canDuplicate = SourceTerminal_have() && duplicateUsesRemaining() > 0;
   if (monsters.length === 0) {
     return 0;
   } else {
     return utils_sum(monsters, m => {
       var items = (0,external_kolmafia_namespaceObject.itemDropsArray)(m).filter(drop => ["", "n"].includes(drop.type));
-      return utils_sum(items, drop => {
+      var duplicateFactor = canDuplicate && !m.attributes.includes("NOCOPY") ? 2 : 1;
+      return duplicateFactor * utils_sum(items, drop => {
         var yrRate = (drop.type === "" ? 100 : drop.rate) / 100;
         return yrRate * garboValue(drop.drop, true);
       });
