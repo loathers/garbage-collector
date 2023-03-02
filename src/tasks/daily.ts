@@ -408,15 +408,23 @@ export const DailyTasks: Task[] = [
     do: () => cliExecute("horsery dark"),
   },
   {
+    name: "Beach Comb One-Day",
+    ready: () =>
+      have($item`piece of driftwood`) &&
+      (!have($item`Beach Comb`) || !have($item`driftwood beach comb`)),
+    completed: () => have($item`driftwood beach comb`),
+    do: () => use($item`piece of driftwood`),
+  },
+  {
     name: "Beach Comb Buff",
-    ready: () => have($item`Beach Comb`),
+    ready: () => have($item`Beach Comb`) || have($item`driftwood beach comb`),
     completed: () =>
       get("_beachHeadsUsed").split(",").includes("10") || get("_freeBeachWalksUsed") >= 11,
     do: () => BeachComb.tryHead($effect`Do I Know You From Somewhere?`),
   },
   {
     name: "Beach Comb Free Walks",
-    ready: () => have($item`Beach Comb`),
+    ready: () => have($item`Beach Comb`) || have($item`driftwood beach comb`),
     completed: () => get("_freeBeachWalksUsed") >= 11,
     do: () => cliExecute(`combo ${11 - get("_freeBeachWalksUsed")}`),
   },
