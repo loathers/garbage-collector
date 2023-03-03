@@ -316,6 +316,12 @@ function menu(): MenuItem<Note>[] {
    *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
    */
   const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
+
+  /*
+   * standardSpleenItem indicates a spleen item of size 4 with an adventure yield of 5-10. Taken from the wiki. They are all functionally equivalent.
+   */
+  const standardSpleenItems = $items`agua de vida, gooey paste, oily paste, ectoplasmic paste, greasy paste, bug paste, hippy paste, orc paste, demonic paste, indescribably horrible paste, fishy paste, goblin paste, pirate paste, chlorophyll paste, strange paste, Mer-kin paste, slimy paste, penguin paste, elemental paste, cosmic paste, hobo paste, Crimbo paste, groose grease, Unconscious Collective Dream Jar, grim fairy tale, powdered gold`;
+
   const smallEpics = [...$items`meteoreo, ice rice`, $item`Tea, Earl Grey, Hot`];
 
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
@@ -367,6 +373,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`antimatter wad`),
     new MenuItem($item`voodoo snuff`),
     new MenuItem($item`blood-drive sticker`),
+    new MenuItem(mallMin(standardSpleenItems)),
+    new MenuItem(mallMin($items`not-a-pipe, glimmering roc feather`)),
 
     // MISC
     ...limitedItems,
