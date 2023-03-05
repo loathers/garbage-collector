@@ -67,7 +67,7 @@ import { potionSetup } from "./potions";
 import { endSession, garboAverageValue, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
 import barfTurn from "./barfTurn";
-import { estimatedTurns } from "./turns";
+import { estimatedGarboTurns } from "./turns";
 import { Args } from "grimoire-kolmafia";
 import { globalOptions } from "./config";
 
@@ -459,7 +459,7 @@ export function main(argString = ""): void {
           // 3. burn turns at barf
           potionSetup(false);
           maximize("MP", false);
-          meatMood().execute(estimatedTurns());
+          meatMood().execute(estimatedGarboTurns());
           useBuffExtenders();
           try {
             while (canContinue()) {

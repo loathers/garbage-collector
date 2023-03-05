@@ -11,7 +11,7 @@ import {
 import { $effect, $familiar, $item, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
-import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
@@ -88,7 +88,7 @@ export function canOpenRedPresent(): boolean {
  * @returns A rough estimate of the number of barf combats we expect to do.
  */
 export function turnsAvailable(): number {
-  const baseTurns = estimatedTurns();
+  const baseTurns = estimatedGarboTurns();
   const digitizes = digitizedMonstersRemaining();
   const mapTurns = globalOptions.ascend
     ? clamp(

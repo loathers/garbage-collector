@@ -2,7 +2,7 @@ import { buy, canAdventure, Item, Location, use } from "kolmafia";
 import { $effect, $item, $location, $locations, clamp, get, have, sum } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
 import { realmAvailable } from "../lib";
-import { digitizedMonstersRemaining, estimatedTurns } from "../turns";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export type DraggableFight = "backup" | "wanderer" | "yellow ray";
 
@@ -230,7 +230,7 @@ export function wandererTurnsAvailableToday(location: Location): number {
   };
 
   const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
-  const yellowRay = canWanderCache["yellow ray"] ? Math.floor(estimatedTurns() / 100) : 0;
+  const yellowRay = canWanderCache["yellow ray"] ? Math.floor(estimatedGarboTurns() / 100) : 0;
   const wanderers = sum(WanderingSources, (source) =>
     canWanderCache[source.type] && have(source.item)
       ? clamp(get(source.property), 0, source.max)

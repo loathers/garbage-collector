@@ -54,7 +54,7 @@ import {
   valueJuneCleaverOption,
 } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
-import { estimatedTurns } from "./turns";
+import { estimatedGarboTurns, remainingUserTurns } from "./turns";
 
 /**
  * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
@@ -118,7 +118,7 @@ function pantsgiving() {
       : turnArray.findIndex((x) => count < x);
   const turns = turnArray[index] || 50000;
 
-  if (turns - count > estimatedTurns()) return new Map<Item, number>();
+  if (turns - count > estimatedGarboTurns()) return new Map<Item, number>();
 
   const cachedBonus = pantsgivingBonuses.get(turns);
   if (cachedBonus) return new Map([[$item`Pantsgiving`, cachedBonus]]);
@@ -126,7 +126,7 @@ function pantsgiving() {
   const expectedSinusTurns = getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
   const expectedUseableSinusTurns = globalOptions.ascend
     ? clamp(
-        estimatedTurns() - (turns - count) - haveEffect($effect`Kicked in the Sinuses`),
+        estimatedGarboTurns() - (turns - count) - haveEffect($effect`Kicked in the Sinuses`),
         0,
         expectedSinusTurns
       )
@@ -174,7 +174,7 @@ function cheeses(mode: BonusEquipMode) {
   return haveSomeCheese &&
     !globalOptions.ascend &&
     get("_stinkyCheeseCount") < 100 &&
-    estimatedTurns() >= 100 - get("_stinkyCheeseCount") &&
+    estimatedGarboTurns() >= 100 - get("_stinkyCheeseCount") &&
     mode !== "embezzler"
     ? new Map<Item, number>(
         getFoldGroup($item`stinky cheese diaper`)
@@ -309,7 +309,7 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
 /*
 This is separate from bonusGear to prevent circular references
-bonusGear() calls pantsgiving(), which calls estimatedTurns(), which calls usingThumbRing()
+bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
 If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
 */
 function bonusAccessories(equipMode: BonusEquipMode): Map<Item, number> {
@@ -391,14 +391,14 @@ function shavingBonus(): Map<Item, number> {
   }
 
   const timeToMeatBuff = 11 * (DaylightShavings.buffsUntil($effect`Friendly Chops`) ?? Infinity);
-  if (globalOptions.ascend && timeToMeatBuff > estimatedTurns()) {
+  if (globalOptions.ascend && timeToMeatBuff > estimatedGarboTurns()) {
     return new Map();
   }
 
   if (
     !globalOptions.ascend &&
     DaylightShavings.nextBuff() === $effect`Friendly Chops` &&
-    estimatedTurns() < 11 * 11
+    estimatedGarboTurns() < 11 * 11
   ) {
     return new Map();
   }
@@ -453,9 +453,10 @@ export function usingThumbRing(): boolean {
 
 let juneCleaverEV: number | null = null;
 function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
+  const estimatedJuneCleaverTurns = remainingUserTurns() + estimatedGarboTurns();
   if (
     !have($item`June cleaver`) ||
-    get("_juneCleaverFightsLeft") > estimatedTurns() ||
+    get("_juneCleaverFightsLeft") > estimatedJuneCleaverTurns ||
     !get("_juneCleaverFightsLeft")
   ) {
     return new Map();
@@ -467,7 +468,11 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
       ) / JuneCleaver.choices.length;
   }
   // If we're ascending then the chances of hitting choices in the queue is reduced
-  if (globalOptions.ascend && estimatedTurns() <= 180 && JuneCleaver.getInterval() === 30) {
+  if (
+    globalOptions.ascend &&
+    estimatedJuneCleaverTurns <= 180 &&
+    JuneCleaver.getInterval() === 30
+  ) {
     const availEV =
       sum([...JuneCleaver.choicesAvailable()], (choice) =>
         valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
@@ -477,7 +482,7 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
         const choiceValue = valueJuneCleaverOption(
           juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]
         );
-        const cleaverEncountersLeft = Math.floor(estimatedTurns() / 30);
+        const cleaverEncountersLeft = Math.floor(estimatedJuneCleaverTurns / 30);
         const encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
         const chancesLeft = Math.max(0, cleaverEncountersLeft - encountersToQueueExit);
         const encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);

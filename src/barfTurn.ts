@@ -62,7 +62,7 @@ import {
 } from "./outfit";
 import postCombatActions from "./post";
 import { completeBarfQuest } from "./tasks/daily";
-import { digitizedMonstersRemaining, estimatedTurns } from "./turns";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
 import { drunkSafeWander, wanderWhere } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
@@ -440,7 +440,7 @@ export default function barfTurn(): void {
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
   tryFillLatte();
-  meatMood().execute(estimatedTurns());
+  meatMood().execute(estimatedGarboTurns());
   safeRestore();
 
   let failures = 0;

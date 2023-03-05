@@ -43,7 +43,7 @@ import {
 } from "../lib";
 import { teleportEffects } from "../mood";
 import { garboAverageValue, garboValue, sessionSinceStart } from "../session";
-import { estimatedTurns } from "../turns";
+import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import handleWorkshed from "./workshed";
 
 function closetStuff(): void {
@@ -183,7 +183,10 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
-  if (globalOptions.ascend || AutumnAton.turnsForQuest() < estimatedTurns()) {
+  if (
+    globalOptions.ascend ||
+    AutumnAton.turnsForQuest() < estimatedGarboTurns() + remainingUserTurns()
+  ) {
     AutumnAton.sendTo(bestAutumnatonLocation);
   }
 }

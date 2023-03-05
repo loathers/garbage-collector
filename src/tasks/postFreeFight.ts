@@ -2,7 +2,7 @@ import { Task } from "grimoire-kolmafia";
 import { cliExecute, mallPrice, myClass, myThrall, use, useSkill } from "kolmafia";
 import { $class, $item, $skill, $thrall, get, have } from "libram";
 import { baseMeat, maxBy } from "../lib";
-import { estimatedTurns } from "../turns";
+import { estimatedGarboTurns } from "../turns";
 
 function bestVykeaLevel(): number {
   const vykeas = [
@@ -13,7 +13,7 @@ function bestVykeaLevel(): number {
   const vykeaProfit = (vykea: { level: number; dowelCost: number }) => {
     const { level, dowelCost } = vykea;
     return (
-      estimatedTurns() * baseMeat * 0.1 * level -
+      estimatedGarboTurns() * baseMeat * 0.1 * level -
       (5 * mallPrice($item`VYKEA rail`) +
         dowelCost * mallPrice($item`VYKEA dowel`) +
         5 * mallPrice($item`VYKEA plank`) +

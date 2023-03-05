@@ -1,9 +1,9 @@
 import { getWorkshed, haveEffect, Item, print, totalTurnsPlayed, use, visitUrl } from "kolmafia";
-import { $effect, $item, $items, AsdonMartin, clamp, DNALab, get, have, TrainSet } from "libram";
+import { $effect, $item, $items, AsdonMartin, DNALab, get, have, TrainSet } from "libram";
 import { dietCompleted } from "../diet";
 import { globalOptions } from "../config";
 import { potionSetupCompleted } from "../potions";
-import { estimatedTurns } from "../turns";
+import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../turns";
 import { getPrioritizedStations, grabMedicine, rotateToOptimalCycle } from "./workshed_utils";
 import { HIGHLIGHT } from "../lib";
 type WorkshedOptions = {
@@ -28,7 +28,7 @@ class GarboWorkshed {
   }
 
   canRemove(): boolean {
-    return (this.done?.() ?? true) || estimatedTurns() <= (GarboWorkshed.next?.minTurns ?? 0);
+    return (this.done?.() ?? true) || estimatedGarboTurns() <= (GarboWorkshed.next?.minTurns ?? 0);
   }
 
   use(): void {
@@ -63,7 +63,7 @@ class GarboWorkshed {
     return GarboWorkshed._currentWorkshed;
   }
 }
-const estimatedTurnsTomorrow = 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600);
+
 let _attemptedMakingTonics = false;
 
 const worksheds = [
@@ -84,7 +84,7 @@ const worksheds = [
       if (!get("trainsetConfiguration")) {
         print("Reconfiguring trainset, as it is empty", HIGHLIGHT);
         return rotateToOptimalCycle();
-      } else if (globalOptions.ascend && estimatedTurns() <= 40) {
+      } else if (globalOptions.ascend && estimatedGarboTurns() <= 40) {
         print(
           "Refusing to reconfigure trainset, to save a reconfiguration for your upcoming ascension.",
           HIGHLIGHT
@@ -112,13 +112,13 @@ const worksheds = [
     done: () => {
       return (
         haveEffect($effect`Driving Observantly`) >=
-        estimatedTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+        estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
     action: () => {
       AsdonMartin.drive(
         $effect`Driving Observantly`,
-        estimatedTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+        estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
   }),
