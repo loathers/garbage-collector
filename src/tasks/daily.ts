@@ -412,9 +412,7 @@ export const DailyTasks: Task[] = [
   },
   {
     name: "Beach Comb One-Day",
-    ready: () =>
-      have($item`piece of driftwood`) &&
-      (!have($item`Beach Comb`) || !have($item`driftwood beach comb`)),
+    ready: () => have($item`piece of driftwood`) && !have($item`Beach Comb`),
     completed: () => have($item`driftwood beach comb`),
     do: () => use($item`piece of driftwood`),
   },
