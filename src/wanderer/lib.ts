@@ -234,7 +234,10 @@ export function wandererTurnsAvailableToday(location: Location): number {
 
   const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
   const pigSkinnerRay = canWanderCache["pigskinner"] ? Math.floor(estimatedGarboTurns() / 25) : 0;
-  const yellowRay = canWanderCache["yellow ray"] ? Math.floor(estimatedGarboTurns() / 100) : 0;
+  const yellowRayCooldown = have($skill`Fondeluge`) ? 50 : 100;
+  const yellowRay = canWanderCache["yellow ray"]
+    ? Math.floor(estimatedGarboTurns() / yellowRayCooldown)
+    : 0;
   const wanderers = sum(WanderingSources, (source) =>
     canWanderCache[source.type] && have(source.item)
       ? clamp(get(source.property), 0, source.max)
