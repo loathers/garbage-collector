@@ -374,17 +374,12 @@ const turns: AdventureAction[] = [
       !have($effect`Everything Looks Red`) &&
       romanticMonsterImpossible(),
     execute: () => {
-      const usingDuplicate = SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
       const location = wanderWhere("pigskinner");
-      const familiar = freeFightFamiliar({ location, allowAttackFamiliars: !usingDuplicate });
+      const familiar = freeFightFamiliar({ location });
       useFamiliar(familiar);
       freeFightOutfit();
-      if (usingDuplicate) {
-        SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
-      }
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
-        .externalIf(usingDuplicate, Macro.trySkill($skill`Duplicate`))
         .skill($skill`Free-For-All`);
       garboAdventureAuto(location, macro);
       if (SourceTerminal.have()) {
@@ -403,7 +398,7 @@ const turns: AdventureAction[] = [
       const usingDuplicate = SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
 
       const location = wanderWhere("yellow ray");
-      const familiar = freeFightFamiliar({ location, allowAttackFamiliars: !usingDuplicate });
+      const familiar = freeFightFamiliar({ location });
       useFamiliar(familiar);
       if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
