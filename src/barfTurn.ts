@@ -390,7 +390,7 @@ const turns: AdventureAction[] = [
       if (SourceTerminal.have()) {
         SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
       }
-      return have($effect`Everything Looks Yellow`);
+      return have($effect`Everything Looks Red`);
     },
     spendsTurn: false,
     sobriety: Sobriety.SOBER,
