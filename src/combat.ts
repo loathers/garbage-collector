@@ -346,6 +346,7 @@ export class Macro extends StrictMacro {
           .trySkill($skill`Disco Dance II: Electric Boogaloo`)
           .trySkill($skill`Disco Dance 3: Back in the Habit`)
       )
+      .externalIf(myClass() === $class`Cheese Wizard`, Macro.trySkill($skill`Stilton Splatter`))
       .kill();
   }
 

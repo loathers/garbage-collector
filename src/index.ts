@@ -181,13 +181,11 @@ export function main(argString = ""): void {
   if (globalOptions.returnstash) return;
 
   if (
-    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
+    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger, Pig Skinner, Cheese Wizard, Jazz Agent`.includes(
       myClass()
     )
   ) {
-    throw new Error(
-      "Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes"
-    );
+    throw new Error("Garbo does not support this class. It barely supports WOL/SOL avatar classes");
   }
 
   if (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75)) {

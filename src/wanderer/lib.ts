@@ -1,10 +1,10 @@
 import { buy, canAdventure, Item, Location, use } from "kolmafia";
-import { $effect, $item, $location, $locations, clamp, get, have, sum } from "libram";
+import { $effect, $item, $location, $locations, $skill, clamp, get, have, sum } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
 import { realmAvailable } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
-export type DraggableFight = "backup" | "wanderer" | "yellow ray";
+export type DraggableFight = "backup" | "pigskinner" | "wanderer" | "yellow ray";
 
 interface UnlockableZone {
   zone: string;
@@ -104,6 +104,8 @@ export function canWander(location: Location, type: DraggableFight): boolean {
   switch (type) {
     case "backup":
       return canWanderTypeBackup(location);
+    case "pigskinner":
+      return have($skill`Free-For-All`) && canWanderTypeYellowRay(location);
     case "yellow ray":
       return canWanderTypeYellowRay(location);
     case "wanderer":
@@ -226,10 +228,12 @@ export function wandererTurnsAvailableToday(location: Location): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
     backup: canWander(location, "backup"),
     wanderer: canWander(location, "wanderer"),
+    pigskinner: canWander(location, "pigskinner"),
     "yellow ray": canWander(location, "yellow ray"),
   };
 
   const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
+  const pigSkinnerRay = canWanderCache["pigskinner"] ? Math.floor(estimatedGarboTurns() / 25) : 0;
   const yellowRay = canWanderCache["yellow ray"] ? Math.floor(estimatedGarboTurns() / 100) : 0;
   const wanderers = sum(WanderingSources, (source) =>
     canWanderCache[source.type] && have(source.item)
@@ -237,5 +241,5 @@ export function wandererTurnsAvailableToday(location: Location): number {
       : 0
   );
 
-  return digitize + yellowRay + wanderers;
+  return digitize + pigSkinnerRay + yellowRay + wanderers;
 }
