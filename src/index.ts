@@ -406,7 +406,8 @@ export function main(argString = ""): void {
     const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring`;
     if (
       myInebriety() <= inebrietyLimit() &&
-      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
+      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`)) &&
+      !have($skill`Head in the Game`)
     ) {
       stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
     }

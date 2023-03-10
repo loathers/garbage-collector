@@ -439,7 +439,8 @@ export function usingThumbRing(): boolean {
       ((myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) ||
         have($item`haiku katana`) ||
         have($item`Operation Patriot Shield`) ||
-        have($item`unwrapped knock-off retro superhero cape`))
+        have($item`unwrapped knock-off retro superhero cape`) ||
+        have($skill`Head in the Game`))
     ) {
       accessoryValues.set($item`mafia pointer finger ring`, 500);
     }

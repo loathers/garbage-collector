@@ -258,23 +258,18 @@ export class Macro extends StrictMacro {
   }
 
   meatKill(): Macro {
-    const sealClubberSetup =
-      equippedAmount($item`mafia pointer finger ring`) > 0 &&
-      myClass() === $class`Seal Clubber` &&
-      have($skill`Furious Wallop`);
-    const opsSetup =
-      equippedAmount($item`mafia pointer finger ring`) > 0 &&
-      equippedAmount($item`Operation Patriot Shield`) > 0;
-    const katanaSetup =
-      equippedAmount($item`mafia pointer finger ring`) > 0 &&
-      equippedAmount($item`haiku katana`) > 0;
+    const sealClubberSetup = myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`);
+    const opsSetup = equippedAmount($item`Operation Patriot Shield`) > 0;
+    const katanaSetup = equippedAmount($item`haiku katana`) > 0;
     const capeSetup =
-      equippedAmount($item`mafia pointer finger ring`) > 0 &&
       get("retroCapeSuperhero") === "robot" &&
       get("retroCapeWashingInstructions") === "kill" &&
       itemType(equippedItem($slot`weapon`)) === "pistol";
+    const pigSkinnerSetup = have($skill`Head in the Game`);
 
-    const willCrit = sealClubberSetup || opsSetup || katanaSetup || capeSetup;
+    const willCrit =
+      equippedAmount($item`mafia pointer finger ring`) > 0 &&
+      (sealClubberSetup || opsSetup || katanaSetup || capeSetup || pigSkinnerSetup);
 
     return this.externalIf(
       shouldRedigitize(),
@@ -340,6 +335,7 @@ export class Macro extends StrictMacro {
       .externalIf(opsSetup, Macro.attack())
       .externalIf(katanaSetup, Macro.trySkill($skill`Summer Siesta`))
       .externalIf(capeSetup, Macro.trySkill($skill`Precision Shot`))
+      .externalIf(pigSkinnerSetup, Macro.attack())
       .externalIf(
         myClass() === $class`Disco Bandit`,
         Macro.trySkill($skill`Disco Dance of Doom`)
