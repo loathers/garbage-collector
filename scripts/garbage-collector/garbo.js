@@ -22875,7 +22875,7 @@ function shouldGoUnderwater() {
   if (!modifier_get("Underwater Familiar") && familiarWaterBreathingEquipment.every(item => !lib_have(item))) {
     return false;
   }
-  if (lib_have(template_string_$item(barfTurn_templateObject2 || (barfTurn_templateObject2 = barfTurn_taggedTemplateLiteral(["envyfish egg"]))))) return false;
+  if (lib_have(template_string_$item(barfTurn_templateObject2 || (barfTurn_templateObject2 = barfTurn_taggedTemplateLiteral(["envyfish egg"])))) || config_globalOptions.ascend && property_get("_envyfishEggUsed")) return false;
   if (!(0,external_kolmafia_namespaceObject.canAdventure)($location(barfTurn_templateObject3 || (barfTurn_templateObject3 = barfTurn_taggedTemplateLiteral(["The Briny Deeps"]))))) return false;
   if ((0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(barfTurn_templateObject4 || (barfTurn_templateObject4 = barfTurn_taggedTemplateLiteral(["pulled green taffy"])))) < EMBEZZLER_MULTIPLIER() * property_get("valueOfAdventure")) {
     return false;
@@ -23260,7 +23260,10 @@ function main() {
       }
     }
   }
-  if (config_globalOptions.returnstash) return;
+  if (config_globalOptions.returnstash) {
+    _set("garboStashItems", stashItems.map(item => (0,external_kolmafia_namespaceObject.toInt)(item).toFixed(0)).join(","));
+    return;
+  }
   if (!$classes(src_templateObject5 || (src_templateObject5 = src_taggedTemplateLiteral(["Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger"]))).includes((0,external_kolmafia_namespaceObject.myClass)())) {
     throw new Error("Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes");
   }
