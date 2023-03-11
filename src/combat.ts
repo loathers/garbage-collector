@@ -305,6 +305,10 @@ export class Macro extends StrictMacro {
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Long Con`))
       )
       .externalIf(
+        have($skill`Motif`) && !have($effect`Everything Looks Blue`),
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Motif`))
+      )
+      .externalIf(
         !get("_latteCopyUsed") &&
           (get("_latteMonster") !== $monster`garbage tourist` ||
             Counter.get("Latte Monster") > 30) &&
