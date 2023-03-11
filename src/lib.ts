@@ -504,7 +504,7 @@ export function valueJuneCleaverOption(result: Item | number): number {
   return result instanceof Item ? garboValue(result) : result;
 }
 
-export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
+export function bestJuneCleaverOption(id: (typeof JuneCleaver.choices)[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
   return maxBy(options, (option) => valueJuneCleaverOption(juneCleaverChoiceValues[id][option]));
 }
@@ -565,3 +565,6 @@ export function maxBy<S extends string | number | symbol, T extends { [x in S]: 
 }
 
 export type GarboItemLists = { Newark: string[]; "Feliz Navidad": string[]; trainset: string[] };
+
+export const asArray = <T>(singleOrArray: T | T[]): T[] =>
+  Array.isArray(singleOrArray) ? singleOrArray : [singleOrArray];

@@ -63,7 +63,7 @@ import {
 import postCombatActions from "./post";
 import { trackBarfSessionStatistics } from "./session";
 import { completeBarfQuest } from "./tasks/daily";
-import { digitizedMonstersRemaining, estimatedTurns } from "./turns";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
 import { drunkSafeWander, wanderWhere } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
@@ -340,6 +340,32 @@ const turns: AdventureAction[] = [
     sobriety: Sobriety.SOBER,
   },
   {
+    name: "Shocking Lick",
+    available: () => get("shockingLickCharges") > 0 && romanticMonsterImpossible(),
+    execute: () => {
+      const curLicks = get("shockingLickCharges");
+      const usingDuplicate = SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
+
+      const location = wanderWhere("yellow ray");
+      const familiar = freeFightFamiliar({ location, allowAttackFamiliars: !usingDuplicate });
+      useFamiliar(familiar);
+      if (usingDuplicate) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
+      }
+      const macro = Macro.if_(embezzler, Macro.meatKill())
+        .familiarActions()
+        .externalIf(usingDuplicate, Macro.trySkill($skill`Duplicate`))
+        .skill($skill`Shocking Lick`);
+      garboAdventureAuto(location, macro);
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+      }
+      return get("shockingLickCharges") === curLicks - 1;
+    },
+    spendsTurn: false,
+    sobriety: Sobriety.SOBER,
+  },
+  {
     name: "Map for Pills",
     available: () =>
       globalOptions.ascend &&
@@ -416,7 +442,7 @@ export default function barfTurn(): void {
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
   tryFillLatte();
-  meatMood().execute(estimatedTurns());
+  meatMood().execute(estimatedGarboTurns());
   safeRestore();
 
   let failures = 0;

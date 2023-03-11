@@ -41,7 +41,7 @@ import {
   userConfirmDialog,
 } from "../lib";
 import { garboValue } from "../session";
-import { estimatedTurns } from "../turns";
+import { estimatedGarboTurns } from "../turns";
 
 function newarkValue(): number {
   const lastCalculated = get("garbo_newarkValueDate", 0);
@@ -55,7 +55,7 @@ function newarkValue(): number {
     );
     set("garbo_newarkValueDate", today);
   }
-  return get("garbo_newarkValue", 0) * 0.25 * estimatedTurns();
+  return get("garbo_newarkValue", 0) * 0.25 * estimatedGarboTurns();
 }
 
 function felizValue(): number {
@@ -70,12 +70,12 @@ function felizValue(): number {
     );
     set("garbo_felizValueDate", today);
   }
-  return get("garbo_felizValue", 0) * 0.25 * estimatedTurns();
+  return get("garbo_felizValue", 0) * 0.25 * estimatedGarboTurns();
 }
 
 function drivebyValue(): number {
   const embezzlers = embezzlerCount();
-  const tourists = ((estimatedTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+  const tourists = ((estimatedGarboTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
   const meatPercentDelta =
     Math.sqrt(220 * 2 * marginalRoboWeight) -
@@ -86,7 +86,7 @@ function drivebyValue(): number {
 
 function entendreValue(): number {
   const embezzlers = embezzlerCount();
-  const tourists = ((estimatedTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+  const tourists = ((estimatedGarboTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
   const itemPercent = Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
   const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance

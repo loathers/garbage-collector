@@ -82,7 +82,7 @@ import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
-import { estimatedTurns } from "./turns";
+import { estimatedGarboTurns } from "./turns";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -316,6 +316,12 @@ function menu(): MenuItem<Note>[] {
    *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
    */
   const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
+
+  /*
+   * standardSpleenItem indicates a spleen item of size 4 with an adventure yield of 5-10. Taken from the wiki. They are all functionally equivalent.
+   */
+  const standardSpleenItems = $items`agua de vida, gooey paste, oily paste, ectoplasmic paste, greasy paste, bug paste, hippy paste, orc paste, demonic paste, indescribably horrible paste, fishy paste, goblin paste, pirate paste, chlorophyll paste, strange paste, Mer-kin paste, slimy paste, penguin paste, elemental paste, cosmic paste, hobo paste, Crimbo paste, groose grease, Unconscious Collective Dream Jar, grim fairy tale, powdered gold`;
+
   const smallEpics = [...$items`meteoreo, ice rice`, $item`Tea, Earl Grey, Hot`];
 
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
@@ -367,6 +373,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`antimatter wad`),
     new MenuItem($item`voodoo snuff`),
     new MenuItem($item`blood-drive sticker`),
+    new MenuItem(mallMin(standardSpleenItems)),
+    new MenuItem(mallMin($items`not-a-pipe, glimmering roc feather`)),
 
     // MISC
     ...limitedItems,
@@ -691,7 +699,11 @@ function balanceMenu(baseMenu: MenuItem<Note>[], dietPlanner: DietPlanner): Menu
     embezzlers: number,
     adventures: number
   ): MenuItem<Note>[] {
-    const fullMenu = potionMenu(menu, baseEmbezzlers + embezzlers, estimatedTurns() + adventures);
+    const fullMenu = potionMenu(
+      menu,
+      baseEmbezzlers + embezzlers,
+      estimatedGarboTurns() + adventures
+    );
     if (iterations <= 0) {
       return fullMenu;
     } else {
@@ -776,7 +788,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
 
   const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
-  const adventures = Math.floor(estimatedTurns() + diet.expectedAdventures());
+  const adventures = Math.floor(estimatedGarboTurns() + diet.expectedAdventures());
   print(`Planning to fight ${embezzlers} embezzlers and run ${adventures} adventures`);
 
   for (const dietEntry of diet.entries) {

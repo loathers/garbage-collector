@@ -5,7 +5,7 @@ import {
   Location,
   toMonster,
 } from "kolmafia";
-import { sum } from "libram";
+import { SourceTerminal, sum } from "libram";
 import { freeFightFamiliarData } from "../familiar/freeFightFamiliar";
 import { garboValue } from "../session";
 import {
@@ -25,16 +25,21 @@ function averageYrValue(location: Location) {
     .map((m) => toMonster(m))
     .filter((m) => !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0);
 
+  const canDuplicate = SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
   if (monsters.length === 0) {
     return 0;
   } else {
     return (
       sum(monsters, (m) => {
         const items = itemDropsArray(m).filter((drop) => ["", "n"].includes(drop.type));
-        return sum(items, (drop) => {
-          const yrRate = (drop.type === "" ? 100 : drop.rate) / 100;
-          return yrRate * garboValue(drop.drop, true);
-        });
+        const duplicateFactor = canDuplicate && !m.attributes.includes("NOCOPY") ? 2 : 1;
+        return (
+          duplicateFactor *
+          sum(items, (drop) => {
+            const yrRate = (drop.type === "" ? 100 : drop.rate) / 100;
+            return yrRate * garboValue(drop.drop, true);
+          })
+        );
       }) / monsters.length
     );
   }
