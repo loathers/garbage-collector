@@ -8,7 +8,7 @@ import {
   totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, clamp, get, have } from "libram";
+import { $effect, $familiar, $item, $skill, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
@@ -78,6 +78,7 @@ export function canOpenRedPresent(): boolean {
   return (
     have($familiar`Crimbo Shrub`) &&
     !have($effect`Everything Looks Red`) &&
+    !have($skill`Free-For-All`) &&
     get("shrubGifts") === "meat" &&
     myInebriety() <= inebrietyLimit()
   );

@@ -184,13 +184,11 @@ export function main(argString = ""): void {
   }
 
   if (
-    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
+    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger, Pig Skinner, Cheese Wizard, Jazz Agent`.includes(
       myClass()
     )
   ) {
-    throw new Error(
-      "Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes"
-    );
+    throw new Error("Garbo does not support this class. It barely supports WOL/SOL avatar classes");
   }
 
   if (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75)) {
@@ -411,7 +409,8 @@ export function main(argString = ""): void {
     const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring`;
     if (
       myInebriety() <= inebrietyLimit() &&
-      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
+      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`)) &&
+      !have($skill`Head in the Game`)
     ) {
       stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
     }
