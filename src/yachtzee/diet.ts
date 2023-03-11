@@ -276,7 +276,10 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
               use(1, $item`synthetic dog hair pill`);
             }
           }
-          if (myFullness() + entry.fullness > fullnessLimit()) {
+          if (
+            myFullness() + entry.fullness >
+            fullnessLimit() + (!get("_distentionPillUsed") && have($item`distention pill`) ? 1 : 0)
+          ) {
             throw new Error(`consuming ${entry.name} will exceed our fullness limit`);
           } else if (myInebriety() + entry.drunkenness > inebrietyLimit()) {
             throw new Error(`consuming ${entry.name} will exceed our inebriety limit`);
