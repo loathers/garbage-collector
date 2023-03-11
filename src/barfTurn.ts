@@ -374,7 +374,7 @@ const turns: AdventureAction[] = [
       !have($effect`Everything Looks Red`) &&
       romanticMonsterImpossible(),
     execute: () => {
-      const location = wanderWhere("pigskinner");
+      const location = wanderWhere("backup");
       const familiar = freeFightFamiliar({ location });
       useFamiliar(familiar);
       freeFightOutfit();

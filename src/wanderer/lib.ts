@@ -4,7 +4,7 @@ import { NumericProperty } from "libram/dist/propertyTypes";
 import { realmAvailable } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
-export type DraggableFight = "backup" | "pigskinner" | "wanderer" | "yellow ray";
+export type DraggableFight = "backup" | "wanderer" | "yellow ray";
 
 interface UnlockableZone {
   zone: string;
@@ -104,8 +104,6 @@ export function canWander(location: Location, type: DraggableFight): boolean {
   switch (type) {
     case "backup":
       return canWanderTypeBackup(location);
-    case "pigskinner":
-      return have($skill`Free-For-All`) && canWanderTypeYellowRay(location);
     case "yellow ray":
       return canWanderTypeYellowRay(location);
     case "wanderer":
@@ -228,12 +226,14 @@ export function wandererTurnsAvailableToday(location: Location): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
     backup: canWander(location, "backup"),
     wanderer: canWander(location, "wanderer"),
-    pigskinner: canWander(location, "pigskinner"),
     "yellow ray": canWander(location, "yellow ray"),
   };
 
   const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
-  const pigSkinnerRay = canWanderCache["pigskinner"] ? Math.floor(estimatedGarboTurns() / 25) : 0;
+  const pigSkinnerRay =
+    canWanderCache["backup"] && have($skill`Free-For-All`)
+      ? Math.floor(estimatedGarboTurns() / 25)
+      : 0;
   const yellowRayCooldown = have($skill`Fondeluge`) ? 50 : 100;
   const yellowRay = canWanderCache["yellow ray"]
     ? Math.floor(estimatedGarboTurns() / yellowRayCooldown)
