@@ -157,11 +157,11 @@ export function shouldRedigitize(): boolean {
 
 export class Macro extends StrictMacro {
   abortWithMsg(errorMessage: string): Macro {
-    return this.step(`abort ${errorMessage}`);
+    return this.step(`abort "${errorMessage}"`);
   }
 
   static abortWithMsg(errorMessage: string): Macro {
-    return new Macro().step(`abort ${errorMessage}`);
+    return new Macro().step(`abort "${errorMessage}"`);
   }
 
   tryHaveSkill(skill: Skill | null): Macro {
