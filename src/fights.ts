@@ -1478,7 +1478,10 @@ const freeRunFightSources = [
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
       });
-      garboAdventure($location`Gingerbread Civic Center`, Macro.abort());
+      garboAdventure(
+        $location`Gingerbread Civic Center`,
+        Macro.abortWithMsg(`Expected "Setting the Clock" but ended up in combat.`)
+      );
     },
     false,
     {
@@ -1521,7 +1524,10 @@ const freeRunFightSources = [
       propertyManager.setChoices({
         1204: 1, // Gingerbread Train Station Noon random candy
       });
-      garboAdventure($location`Gingerbread Train Station`, Macro.abort());
+      garboAdventure(
+        $location`Gingerbread Train Station`,
+        Macro.abortWithMsg(`Expected "Noon at the Train Station" but ended up in combat.`)
+      );
     },
     false,
     {
@@ -2055,11 +2061,12 @@ export function doSausage(): void {
   useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
   do {
+    const goblin = $monster`sausage goblin`;
     garboAdventureAuto(
       wanderWhere("wanderer"),
-      Macro.if_($monster`sausage goblin`, Macro.basicCombat())
+      Macro.if_(goblin, Macro.basicCombat())
         .ifHolidayWanderer(Macro.basicCombat())
-        .abort()
+        .abortWithMsg(`Expected ${goblin} but got something else.`)
     );
   } while (dogOrHolidayWanderer());
   if (getAutoAttack() !== 0) setAutoAttack(0);
