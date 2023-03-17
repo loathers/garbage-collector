@@ -162,7 +162,8 @@ export default function handleWorkshed(): void {
     !get("_workshedItemUsed") &&
     (GarboWorkshed.current?.canRemove() ?? true) &&
     GarboWorkshed.next &&
-    have(GarboWorkshed.next.workshed)
+    have(GarboWorkshed.next.workshed) &&
+    (!GarboWorkshed.next.minTurns || GarboWorkshed.next.minTurns + 25 > estimatedGarboTurns())
   ) {
     GarboWorkshed.useNext();
     GarboWorkshed.current?.use();
