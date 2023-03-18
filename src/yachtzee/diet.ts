@@ -415,7 +415,6 @@ function yachtzeeDietScheduler(
   for (const entry of dietSchedule) {
     fullness += entry.quantity * entry.fullness;
     for (let i = 0; i < entry.quantity; i++) {
-      drunkenness += entry.drunkenness;
       while (drunkenness > 0 && sweatOutsAvailable > 0) {
         drunkenness -= 1;
         sweatOutsAvailable -= 1;
@@ -424,6 +423,7 @@ function yachtzeeDietScheduler(
         drunkenness -= 1;
         syntheticPillsAvailable -= 1;
       }
+      drunkenness += entry.drunkenness;
     }
     spleenUse += entry.quantity * entry.spleen;
     if (fullness > fullnessLimit() + toInt(haveDistentionPill)) {
