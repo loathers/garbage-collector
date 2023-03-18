@@ -13741,6 +13741,11 @@ var combat_Macro = /*#__PURE__*/function (_StrictMacro) {
     return _super.apply(this, arguments);
   }
   src_combat_createClass(Macro, [{
+    key: "abortWithMsg",
+    value: function abortWithMsg(errorMessage) {
+      return this.step("abort \"".concat(errorMessage, "\""));
+    }
+  }, {
     key: "tryHaveSkill",
     value: function tryHaveSkill(skill) {
       if (!skill) return this;
@@ -13904,6 +13909,11 @@ var combat_Macro = /*#__PURE__*/function (_StrictMacro) {
       return this.tryHaveSkill($skill(_templateObject180 || (_templateObject180 = src_combat_taggedTemplateLiteral(["Sing Along"])))).familiarActions().tryHaveItem(template_string_$item(_templateObject181 || (_templateObject181 = src_combat_taggedTemplateLiteral(["Rain-Doh blue balls"])))).externalIf(property_get("lovebugsUnlocked"), Macro.trySkill($skill(_templateObject182 || (_templateObject182 = src_combat_taggedTemplateLiteral(["Summon Love Gnats"]))))).tryHaveSkill(classStun).tryHaveSkill(extraStun).trySkill($skill(_templateObject183 || (_templateObject183 = src_combat_taggedTemplateLiteral(["Shoot Ghost"])))).trySkill($skill(_templateObject184 || (_templateObject184 = src_combat_taggedTemplateLiteral(["Shoot Ghost"])))).trySkill($skill(_templateObject185 || (_templateObject185 = src_combat_taggedTemplateLiteral(["Shoot Ghost"])))).trySkill($skill(_templateObject186 || (_templateObject186 = src_combat_taggedTemplateLiteral(["Trap Ghost"])))).kill();
     }
   }], [{
+    key: "abortWithMsg",
+    value: function abortWithMsg(errorMessage) {
+      return new Macro().step("abort \"".concat(errorMessage, "\""));
+    }
+  }, {
     key: "tryHaveSkill",
     value: function tryHaveSkill(skill) {
       return new Macro().tryHaveSkill(skill);
@@ -15022,7 +15032,7 @@ function faxEmbezzler() {
     throw new Error("Failed to acquire photocopied Knob Goblin Embezzler.");
   }
 }
-var embezzlerMacro = () => combat_Macro.if_(embezzler, combat_Macro.if_($location(embezzler_templateObject14 || (embezzler_templateObject14 = embezzler_taggedTemplateLiteral(["The Briny Deeps"]))), combat_Macro.tryCopier(template_string_$item(embezzler_templateObject15 || (embezzler_templateObject15 = embezzler_taggedTemplateLiteral(["pulled green taffy"]))))).externalIf((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(embezzler_templateObject16 || (embezzler_templateObject16 = embezzler_taggedTemplateLiteral(["Reanimated Reanimator"]))), combat_Macro.trySkill($skill(embezzler_templateObject17 || (embezzler_templateObject17 = embezzler_taggedTemplateLiteral(["Wink at"]))))).externalIf((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(embezzler_templateObject18 || (embezzler_templateObject18 = embezzler_taggedTemplateLiteral(["Obtuse Angel"]))), combat_Macro.trySkill($skill(embezzler_templateObject19 || (embezzler_templateObject19 = embezzler_taggedTemplateLiteral(["Fire a badly romantic arrow"]))))).externalIf(property_get("beGregariousCharges") > 0 && (property_get("beGregariousMonster") !== embezzler || property_get("beGregariousFightsLeft") === 0), combat_Macro.trySkill($skill(embezzler_templateObject20 || (embezzler_templateObject20 = embezzler_taggedTemplateLiteral(["Be Gregarious"]))))).externalIf(getDigitizeMonster() !== embezzler || shouldRedigitize(), combat_Macro.tryCopier($skill(embezzler_templateObject21 || (embezzler_templateObject21 = embezzler_taggedTemplateLiteral(["Digitize"]))))).tryCopier(template_string_$item(embezzler_templateObject22 || (embezzler_templateObject22 = embezzler_taggedTemplateLiteral(["Spooky Putty sheet"])))).tryCopier(template_string_$item(embezzler_templateObject23 || (embezzler_templateObject23 = embezzler_taggedTemplateLiteral(["Rain-Doh black box"])))).tryCopier(template_string_$item(embezzler_templateObject24 || (embezzler_templateObject24 = embezzler_taggedTemplateLiteral(["4-d camera"])))).tryCopier(template_string_$item(embezzler_templateObject25 || (embezzler_templateObject25 = embezzler_taggedTemplateLiteral(["unfinished ice sculpture"])))).externalIf(property_get("_enamorangs") === 0, combat_Macro.tryCopier(template_string_$item(embezzler_templateObject26 || (embezzler_templateObject26 = embezzler_taggedTemplateLiteral(["LOV Enamorang"]))))).meatKill()).abort();
+var embezzlerMacro = () => combat_Macro.if_(embezzler, combat_Macro.if_($location(embezzler_templateObject14 || (embezzler_templateObject14 = embezzler_taggedTemplateLiteral(["The Briny Deeps"]))), combat_Macro.tryCopier(template_string_$item(embezzler_templateObject15 || (embezzler_templateObject15 = embezzler_taggedTemplateLiteral(["pulled green taffy"]))))).externalIf((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(embezzler_templateObject16 || (embezzler_templateObject16 = embezzler_taggedTemplateLiteral(["Reanimated Reanimator"]))), combat_Macro.trySkill($skill(embezzler_templateObject17 || (embezzler_templateObject17 = embezzler_taggedTemplateLiteral(["Wink at"]))))).externalIf((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(embezzler_templateObject18 || (embezzler_templateObject18 = embezzler_taggedTemplateLiteral(["Obtuse Angel"]))), combat_Macro.trySkill($skill(embezzler_templateObject19 || (embezzler_templateObject19 = embezzler_taggedTemplateLiteral(["Fire a badly romantic arrow"]))))).externalIf(property_get("beGregariousCharges") > 0 && (property_get("beGregariousMonster") !== embezzler || property_get("beGregariousFightsLeft") === 0), combat_Macro.trySkill($skill(embezzler_templateObject20 || (embezzler_templateObject20 = embezzler_taggedTemplateLiteral(["Be Gregarious"]))))).externalIf(getDigitizeMonster() !== embezzler || shouldRedigitize(), combat_Macro.tryCopier($skill(embezzler_templateObject21 || (embezzler_templateObject21 = embezzler_taggedTemplateLiteral(["Digitize"]))))).tryCopier(template_string_$item(embezzler_templateObject22 || (embezzler_templateObject22 = embezzler_taggedTemplateLiteral(["Spooky Putty sheet"])))).tryCopier(template_string_$item(embezzler_templateObject23 || (embezzler_templateObject23 = embezzler_taggedTemplateLiteral(["Rain-Doh black box"])))).tryCopier(template_string_$item(embezzler_templateObject24 || (embezzler_templateObject24 = embezzler_taggedTemplateLiteral(["4-d camera"])))).tryCopier(template_string_$item(embezzler_templateObject25 || (embezzler_templateObject25 = embezzler_taggedTemplateLiteral(["unfinished ice sculpture"])))).externalIf(property_get("_enamorangs") === 0, combat_Macro.tryCopier(template_string_$item(embezzler_templateObject26 || (embezzler_templateObject26 = embezzler_taggedTemplateLiteral(["LOV Enamorang"]))))).meatKill()).abortWithMsg("Expected ".concat(embezzler, " but encountered something else."));
 var wandererFailsafeMacro = () => combat_Macro.externalIf((0,external_kolmafia_namespaceObject.haveEquipped)(template_string_$item(embezzler_templateObject27 || (embezzler_templateObject27 = embezzler_taggedTemplateLiteral(["backup camera"])))) && property_get("_backUpUses") < 11 && property_get("lastCopyableMonster") === embezzler, combat_Macro.if_("!monsterid ".concat(embezzler.id), combat_Macro.skill($skill(embezzler_templateObject28 || (embezzler_templateObject28 = embezzler_taggedTemplateLiteral(["Back-Up to your Last Enemy"]))))));
 var chainStarters = [new EmbezzlerFight("Chateau Painting", () => ChateauMantegna_have() && !paintingFought() && paintingMonster() === embezzler, () => ChateauMantegna_have() && !paintingFought() && paintingMonster() === embezzler ? 1 : 0, options => {
   withMacro(options.macro, () => fightPainting(), options.useAuto);
@@ -18587,7 +18597,7 @@ function juneCleave() {
     (0,external_kolmafia_namespaceObject.equip)($slot(post_templateObject5 || (post_templateObject5 = post_taggedTemplateLiteral(["weapon"]))), template_string_$item(post_templateObject6 || (post_templateObject6 = post_taggedTemplateLiteral(["June cleaver"]))));
     skipJuneCleaverChoices();
     withProperty("recoveryScript", "", () => {
-      garboAdventure($location(post_templateObject7 || (post_templateObject7 = post_taggedTemplateLiteral(["Noob Cave"]))), combat_Macro.abort());
+      garboAdventure($location(post_templateObject7 || (post_templateObject7 = post_taggedTemplateLiteral(["Noob Cave"]))), combat_Macro.abortWithMsg("Expected June Cleaver non-combat but ended up in combat."));
       if (["Poetic Justice", "Lost and Found"].includes(property_get("lastEncounter"))) {
         lib_uneffect(template_string_$effect(post_templateObject8 || (post_templateObject8 = post_taggedTemplateLiteral(["Beaten Up"]))));
       }
@@ -19396,7 +19406,7 @@ new FreeRunFight(() => lib_have(template_string_$item(_templateObject321 || (_te
     1215: 1 // Gingerbread Civic Center advance clock
   });
 
-  garboAdventure($location(_templateObject349 || (_templateObject349 = fights_taggedTemplateLiteral(["Gingerbread Civic Center"]))), combat_Macro.abort());
+  garboAdventure($location(_templateObject349 || (_templateObject349 = fights_taggedTemplateLiteral(["Gingerbread Civic Center"]))), combat_Macro.abortWithMsg("Expected \"Setting the Clock\" but ended up in combat."));
 }, false, {
   noncombat: () => true
 }), new FreeRunFight(() => (property_get("gingerbreadCityAvailable") || property_get("_gingerbreadCityToday")) && property_get("_gingerbreadCityTurns") + (property_get("_gingerbreadClockAdvanced") ? 5 : 0) < 9, runSource => {
@@ -19417,7 +19427,7 @@ new FreeRunFight(() => lib_have(template_string_$item(_templateObject321 || (_te
     1204: 1 // Gingerbread Train Station Noon random candy
   });
 
-  garboAdventure($location(_templateObject352 || (_templateObject352 = fights_taggedTemplateLiteral(["Gingerbread Train Station"]))), combat_Macro.abort());
+  garboAdventure($location(_templateObject352 || (_templateObject352 = fights_taggedTemplateLiteral(["Gingerbread Train Station"]))), combat_Macro.abortWithMsg("Expected \"Noon at the Train Station\" but ended up in combat."));
 }, false, {
   noncombat: () => true
 }), new FreeRunFight(() => (property_get("gingerbreadCityAvailable") || property_get("_gingerbreadCityToday")) && property_get("_gingerbreadCityTurns") + (property_get("_gingerbreadClockAdvanced") ? 5 : 0) >= 10 && property_get("_gingerbreadCityTurns") + (property_get("_gingerbreadClockAdvanced") ? 5 : 0) < 19 && ((0,external_kolmafia_namespaceObject.availableAmount)(template_string_$item(_templateObject353 || (_templateObject353 = fights_taggedTemplateLiteral(["sprinkles"])))) > 5 || (0,external_kolmafia_namespaceObject.haveOutfit)("gingerbread best")), runSource => {
@@ -19732,7 +19742,8 @@ function doSausage() {
     forceEquip: template_string_$items(_templateObject483 || (_templateObject483 = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
   }));
   do {
-    garboAdventureAuto(wanderWhere("wanderer"), combat_Macro.if_($monster(_templateObject484 || (_templateObject484 = fights_taggedTemplateLiteral(["sausage goblin"]))), combat_Macro.basicCombat()).ifHolidayWanderer(combat_Macro.basicCombat()).abort());
+    var goblin = $monster(_templateObject484 || (_templateObject484 = fights_taggedTemplateLiteral(["sausage goblin"])));
+    garboAdventureAuto(wanderWhere("wanderer"), combat_Macro.if_(goblin, combat_Macro.basicCombat()).ifHolidayWanderer(combat_Macro.basicCombat()).abortWithMsg("Expected ".concat(goblin, " but got something else.")));
   } while (dogOrHolidayWanderer());
   if ((0,external_kolmafia_namespaceObject.getAutoAttack)() !== 0) (0,external_kolmafia_namespaceObject.setAutoAttack)(0);
   postCombatActions();
@@ -22994,7 +23005,7 @@ var turns = [{
     garboAdventureAuto(targetLocation, combat_Macro.externalIf(underwater, combat_Macro.item(template_string_$item(barfTurn_templateObject32 || (barfTurn_templateObject32 = barfTurn_taggedTemplateLiteral(["pulled green taffy"]))))).meatKill(),
     // Hacky fix for when we fail init to embezzler, who are special monsters
     // Macro autoattacks fail when you lose the jump to special monsters
-    combat_Macro.if_("(monsterid ".concat(barfTurn_embezzler.id, ") && !gotjump && !(pastround 2)"), combat_Macro.externalIf(underwater, combat_Macro.item(template_string_$item(barfTurn_templateObject33 || (barfTurn_templateObject33 = barfTurn_taggedTemplateLiteral(["pulled green taffy"]))))).meatKill()).abort());
+    combat_Macro.if_("(monsterid ".concat(barfTurn_embezzler.id, ") && !gotjump && !(pastround 2)"), combat_Macro.externalIf(underwater, combat_Macro.item(template_string_$item(barfTurn_templateObject33 || (barfTurn_templateObject33 = barfTurn_taggedTemplateLiteral(["pulled green taffy"]))))).meatKill()).abortWithMsg("Expected a digitized ".concat(getDigitizeMonster(), ", but encountered something else.")));
     return property_get("_sourceTerminalDigitizeMonsterCount") !== start;
   },
   spendsTurn: () => {
