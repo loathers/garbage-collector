@@ -158,11 +158,14 @@ const worksheds = [
 export default function handleWorkshed(): void {
   GarboWorkshed.current?.use();
 
+  const safetyTurns = 25;
   if (
     !get("_workshedItemUsed") &&
     (GarboWorkshed.current?.canRemove() ?? true) &&
     GarboWorkshed.next &&
-    have(GarboWorkshed.next.workshed)
+    have(GarboWorkshed.next.workshed) &&
+    (!GarboWorkshed.next.minTurns ||
+      GarboWorkshed.next.minTurns + safetyTurns > estimatedGarboTurns())
   ) {
     GarboWorkshed.useNext();
     GarboWorkshed.current?.use();
