@@ -414,7 +414,17 @@ function yachtzeeDietScheduler(
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
   for (const entry of dietSchedule) {
     fullness += entry.quantity * entry.fullness;
-    drunkenness += entry.quantity * entry.drunkenness;
+    for (let i = 0; i < entry.quantity; i++) {
+      drunkenness += entry.drunkenness;
+      while (drunkenness > 0 && sweatOutsAvailable > 0) {
+        drunkenness -= 1;
+        sweatOutsAvailable -= 1;
+      }
+      if (drunkenness > 0 && syntheticPillsAvailable > 0) {
+        drunkenness -= 1;
+        syntheticPillsAvailable -= 1;
+      }
+    }
     spleenUse += entry.quantity * entry.spleen;
     if (fullness > fullnessLimit() + toInt(haveDistentionPill)) {
       throw new Error(
@@ -434,14 +444,6 @@ function yachtzeeDietScheduler(
           entry.name
         } to ${spleenUse}/${spleenLimit()}`
       );
-    }
-    while (drunkenness > 0 && sweatOutsAvailable > 0) {
-      drunkenness -= 1;
-      sweatOutsAvailable -= 1;
-    }
-    if (drunkenness > 0 && syntheticPillsAvailable > 0) {
-      drunkenness -= 1;
-      syntheticPillsAvailable -= 1;
     }
   }
 
