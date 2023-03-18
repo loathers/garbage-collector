@@ -264,7 +264,9 @@ const turns: AdventureAction[] = [
         Macro.if_(
           `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
           Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill()
-        ).abort()
+        ).abortWithMsg(
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`
+        )
       );
       return get("_sourceTerminalDigitizeMonsterCount") !== start;
     },

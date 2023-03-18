@@ -124,7 +124,10 @@ function juneCleave(): void {
     equip($slot`weapon`, $item`June cleaver`);
     skipJuneCleaverChoices();
     withProperty("recoveryScript", "", () => {
-      garboAdventure($location`Noob Cave`, Macro.abort());
+      garboAdventure(
+        $location`Noob Cave`,
+        Macro.abortWithMsg(`Expected June Cleaver non-combat but ended up in combat.`)
+      );
       if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
         uneffect($effect`Beaten Up`);
       }

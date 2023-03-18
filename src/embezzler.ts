@@ -259,7 +259,7 @@ export const embezzlerMacro = (): Macro =>
       .tryCopier($item`unfinished ice sculpture`)
       .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
       .meatKill()
-  ).abort();
+  ).abortWithMsg(`Expected ${embezzler} but encountered something else.`);
 
 const wandererFailsafeMacro = () =>
   Macro.externalIf(
