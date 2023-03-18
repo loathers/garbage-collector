@@ -22258,7 +22258,17 @@ function yachtzeeDietScheduler(menu) {
   for (var _i4 = 0, _dietSchedule2 = dietSchedule; _i4 < _dietSchedule2.length; _i4++) {
     var _entry2 = _dietSchedule2[_i4];
     fullness += _entry2.quantity * _entry2.fullness;
-    drunkenness += _entry2.quantity * _entry2.drunkenness;
+    for (var i = 0; i < _entry2.quantity; i++) {
+      while (drunkenness > 0 && sweatOutsAvailable > 0) {
+        drunkenness -= 1;
+        sweatOutsAvailable -= 1;
+      }
+      if (drunkenness > 0 && syntheticPillsAvailable > 0) {
+        drunkenness -= 1;
+        syntheticPillsAvailable -= 1;
+      }
+      drunkenness += _entry2.drunkenness;
+    }
     spleenUse += _entry2.quantity * _entry2.spleen;
     if (fullness > (0,external_kolmafia_namespaceObject.fullnessLimit)() + (0,external_kolmafia_namespaceObject.toInt)(haveDistentionPill)) {
       throw new Error("Error in diet schedule: Overeating ".concat(_entry2.quantity, " ").concat(_entry2.name, " to ").concat(fullness, "/").concat((0,external_kolmafia_namespaceObject.fullnessLimit)() + (0,external_kolmafia_namespaceObject.toInt)(haveDistentionPill)));
@@ -22266,14 +22276,6 @@ function yachtzeeDietScheduler(menu) {
       throw new Error("Error in diet schedule: Overdrinking ".concat(_entry2.quantity, " ").concat(_entry2.name, " to ").concat(drunkenness, "/").concat((0,external_kolmafia_namespaceObject.inebrietyLimit)()));
     } else if (spleenUse > (0,external_kolmafia_namespaceObject.spleenLimit)()) {
       throw new Error("Error in diet schedule: Overspleening ".concat(_entry2.quantity, " ").concat(_entry2.name, " to ").concat(spleenUse, "/").concat((0,external_kolmafia_namespaceObject.spleenLimit)()));
-    }
-    while (drunkenness > 0 && sweatOutsAvailable > 0) {
-      drunkenness -= 1;
-      sweatOutsAvailable -= 1;
-    }
-    if (drunkenness > 0 && syntheticPillsAvailable > 0) {
-      drunkenness -= 1;
-      syntheticPillsAvailable -= 1;
     }
   }
   return dietSchedule;
