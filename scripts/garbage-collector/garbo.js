@@ -18475,7 +18475,8 @@ var worksheds = [new GarboWorkshed({
 function handleWorkshed() {
   var _GarboWorkshed$curren, _GarboWorkshed$curren2, _GarboWorkshed$curren3;
   (_GarboWorkshed$curren = GarboWorkshed.current) === null || _GarboWorkshed$curren === void 0 ? void 0 : _GarboWorkshed$curren.use();
-  if (!property_get("_workshedItemUsed") && ((_GarboWorkshed$curren2 = (_GarboWorkshed$curren3 = GarboWorkshed.current) === null || _GarboWorkshed$curren3 === void 0 ? void 0 : _GarboWorkshed$curren3.canRemove()) !== null && _GarboWorkshed$curren2 !== void 0 ? _GarboWorkshed$curren2 : true) && GarboWorkshed.next && lib_have(GarboWorkshed.next.workshed)) {
+  var safetyTurns = 25;
+  if (!property_get("_workshedItemUsed") && ((_GarboWorkshed$curren2 = (_GarboWorkshed$curren3 = GarboWorkshed.current) === null || _GarboWorkshed$curren3 === void 0 ? void 0 : _GarboWorkshed$curren3.canRemove()) !== null && _GarboWorkshed$curren2 !== void 0 ? _GarboWorkshed$curren2 : true) && GarboWorkshed.next && lib_have(GarboWorkshed.next.workshed) && (!GarboWorkshed.next.minTurns || GarboWorkshed.next.minTurns + safetyTurns > estimatedGarboTurns())) {
     var _GarboWorkshed$curren4;
     GarboWorkshed.useNext();
     (_GarboWorkshed$curren4 = GarboWorkshed.current) === null || _GarboWorkshed$curren4 === void 0 ? void 0 : _GarboWorkshed$curren4.use();
