@@ -182,7 +182,7 @@ export function garboValue(item: Item, useHistorical = false): number {
     (useHistorical ? garboHistoricalValueCache.get(item) : undefined);
   if (cachedValue === undefined) {
     const specialValueCompute = specialValueLookup.get(item);
-    const value = specialValueCompute ? specialValueCompute() : garboSaleValue(item, useHistorical);
+    const value = specialValueCompute?.() ?? garboSaleValue(item, useHistorical);
     (useHistorical ? garboHistoricalValueCache : garboRegularValueCache).set(item, value);
     return value;
   }
@@ -236,7 +236,7 @@ export function endSession(printLog = true): void {
   if (printLog) {
     // list the top 3 gaining and top 3 losing items
     const losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
-    const winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
+    const winners = itemDetails.reverse().slice(0, 3);
     print(`Extreme Items:`, HIGHLIGHT);
     for (const detail of [...winners, ...losers]) {
       print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
