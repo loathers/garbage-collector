@@ -257,7 +257,11 @@ const turns: AdventureAction[] = [
       isEmbezzler ? embezzlerPrep({ sea: underwater }) : freeFightPrep();
       garboAdventureAuto(
         targetLocation,
-        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(),
+        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`))
+          .if_(SourceTerminal.getDigitizeMonster() ?? $monster.none, Macro.meatKill())
+          .abortWithMsg(
+            `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`
+          ),
 
         // Hacky fix for when we fail init to embezzler, who are special monsters
         // Macro autoattacks fail when you lose the jump to special monsters
