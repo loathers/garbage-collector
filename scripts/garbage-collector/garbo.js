@@ -16038,8 +16038,9 @@ function garboValue(item) {
   useHistorical || (useHistorical = config_globalOptions.quick);
   var cachedValue = (_garboRegularValueCac = garboRegularValueCache.get(item)) !== null && _garboRegularValueCac !== void 0 ? _garboRegularValueCac : useHistorical ? garboHistoricalValueCache.get(item) : undefined;
   if (cachedValue === undefined) {
+    var _specialValueCompute;
     var specialValueCompute = specialValueLookup.get(item);
-    var value = specialValueCompute ? specialValueCompute() : garboSaleValue(item, useHistorical);
+    var value = (_specialValueCompute = specialValueCompute === null || specialValueCompute === void 0 ? void 0 : specialValueCompute()) !== null && _specialValueCompute !== void 0 ? _specialValueCompute : garboSaleValue(item, useHistorical);
     (useHistorical ? garboHistoricalValueCache : garboRegularValueCache).set(item, value);
     return value;
   }
@@ -16089,7 +16090,7 @@ function endSession() {
   if (printLog) {
     // list the top 3 gaining and top 3 losing items
     var losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
-    var winners = itemDetails.sort((a, b) => b.value - a.value).slice(0, 3);
+    var winners = itemDetails.reverse().slice(0, 3);
     (0,external_kolmafia_namespaceObject.print)("Extreme Items:", HIGHLIGHT);
     for (var _i2 = 0, _arr2 = [].concat(src_session_toConsumableArray(winners), src_session_toConsumableArray(losers)); _i2 < _arr2.length; _i2++) {
       var detail = _arr2[_i2];
