@@ -372,13 +372,44 @@ export function main(argString = ""): void {
       1341: 1, // Cure her poison
     });
 
+    const quartetChoice = get("lastQuartetRequest", 0) !== 0 ? get("lastQuartetRequest") : 4;
     // Non-combat options for backup wanderer locations
     propertyManager.setChoices({
-      522: 2, // Cobb's Knob Barracks, skip
-      1107: 1, // tennis ball
-      1108: bestHalloweiner,
-      1340: 1, // Accept the doctor quest
-      1341: 1, // Cure her poison
+      // Cobb's Knob Barracks
+      522: 2, // Skip
+      // The Castle in the Clouds in the Sky (Basement)
+      669: 1, // Neckbeard choice
+      670: 4, // Skip
+      671: 4, // Fitness choice
+      // The Castle in the Clouds in the Sky (Ground Floor)
+      672: 3, // Skip
+      673: 3, // Skip
+      674: 3, // Skip
+      1026: 3, // Skip
+      // The Castle in the Clouds in the Sky (Top Floor)
+      675: 4, // Steampunk choice
+      676: 4, // Punk Rock choice
+      677: 1, // Fight Steam Punk Giant
+      678: 3, // Steampunk choice
+      // The Penultimate Fantasy Airship
+      182: 1, // Fight random enemy
+      178: 2, // Skip
+      // The Haunted Gallery
+      91: 2, // Skip
+      89: 6, // Skip
+      // The Haunted Library
+      163: 4, // Skip
+      888: 4, // Skip
+      889: 5, // Skip
+      // The Haunted Ballroom
+      106: 3, // Skip
+      90: quartetChoice, // Choose currently playing song, or skip
+      // The Haiku Dungeon
+      297: 3, // Skip
+      // A Mob of Zeppelin Protesters - Probably unecessary, these shouldn't show up after ascension is complete
+      856: 2, // Skip
+      857: 2, // Skip
+      858: 2, // Skip
     });
 
     if (JuneCleaver.have()) {
