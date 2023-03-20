@@ -372,6 +372,15 @@ export function main(argString = ""): void {
       1341: 1, // Cure her poison
     });
 
+    // Non-combat options for backup wanderer locations
+    propertyManager.setChoices({
+      522: 2, // Cobb's Knob Barracks, skip
+      1107: 1, // tennis ball
+      1108: bestHalloweiner,
+      1340: 1, // Accept the doctor quest
+      1341: 1, // Cure her poison
+    });
+
     if (JuneCleaver.have()) {
       propertyManager.setChoices(
         Object.fromEntries(
