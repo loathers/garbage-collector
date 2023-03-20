@@ -84,7 +84,7 @@ export function unlock(loc: Location, value: number): boolean {
 
 const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
 // These are locations where all non-combats have skips or lead to a combat.
-const backupSafelist = $locations`The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Haunted Billiards Room, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak`;
+const backupSafelist = $locations`The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Haunted Billiards Room, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters`;
 function canWanderTypeBackup(location: Location): boolean {
   return (
     !backupSkiplist.includes(location) &&
