@@ -144,10 +144,19 @@ export function tryFillLatte(): boolean {
         get("latteUnlocks").includes("rawhide") &&
         (numericModifier($item`latte lovers member's mug`, "Familiar Weight") !== 5 ||
           numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40 ||
-          (get("latteUnlocks").includes("carrot") &&
-            numericModifier($item`latte lovers member's mug`, "Item Drop") !== 20))))
+			// Check for Pig Skinner Setup for pointer finger ring, if true - prefer Crit to Item Find
+          ( if(have($skill`Head in the Game`) && have(($item`mafia pointer finger ring`)) 
+				get("latteUnlocks").includes("msg") &&
+					numericModifier($item`latte lovers member's mug`, "Critical Chance") !== 15
+			else
+				get("latteUnlocks").includes("carrot") &&
+					numericModifier($item`latte lovers member's mug`, "Item Drop") !== 20))))
   ) {
-    const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
+	// Check for Pig Skinner Setup for pointer finger ring, if true - prefer Crit to Item Find
+	if(have($skill`Head in the Game`) && have(($item`mafia pointer finger ring`))
+		const goodLatteIngredients = ["cajun", "rawhide", "msg"];
+	else
+		const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
     const latteIngredients = goodLatteIngredients.filter((ingredient) =>
       get("latteUnlocks").includes(ingredient)
     );
