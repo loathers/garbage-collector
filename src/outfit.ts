@@ -142,24 +142,22 @@ export function tryFillLatte(): boolean {
     (get("_latteCopyUsed") ||
       (get("latteUnlocks").includes("cajun") &&
         get("latteUnlocks").includes("rawhide") &&
-        (numericModifier($item`latte lovers member's mug`, "Familiar Weight") !== 5 ||
-          numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40 ||
-			// Check for Pig Skinner Setup for pointer finger ring, if true - prefer Crit to Item Find
-          ( if(have($skill`Head in the Game`) && have(($item`mafia pointer finger ring`)) 
-				get("latteUnlocks").includes("msg") &&
-					numericModifier($item`latte lovers member's mug`, "Critical Chance") !== 15
-			else
-				get("latteUnlocks").includes("carrot") &&
+			(get("latteUnlocks").includes("msg") || get("latteUnlocks").includes("carrot")) &&
+        ((numericModifier($item`latte lovers member's mug`, "Familiar Weight") !== 5 ||
+          numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40) &&
+				(numericModifier($item`latte lovers member's mug`, "Critical Chance") !== 15 ||
 					numericModifier($item`latte lovers member's mug`, "Item Drop") !== 20))))
   ) {
 	// Check for Pig Skinner Setup for pointer finger ring, if true - prefer Crit to Item Find
-	if(have($skill`Head in the Game`) && have(($item`mafia pointer finger ring`))
-		const goodLatteIngredients = ["cajun", "rawhide", "msg"];
-	else
-		const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
-    const latteIngredients = goodLatteIngredients.filter((ingredient) =>
-      get("latteUnlocks").includes(ingredient)
-    );
+	const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
+	const latteIngredients = goodLatteIngredients.filter((ingredient) =>
+	get("latteUnlocks").includes(ingredient)
+		);
+	if (have($skill`Head in the Game`) && have($item`mafia pointer finger ring`))
+	{
+		if (latteIngredients.length < 3) latteIngredients.push("msg");
+		else latteIngredients[2] = "msg";
+	}
     if (latteIngredients.length < 3) latteIngredients.push("pumpkin");
     if (latteIngredients.length < 3) latteIngredients.push("vanilla");
     if (latteIngredients.length < 3) latteIngredients.push("cinnamon");
