@@ -15,6 +15,7 @@ import {
   itemType,
   mallPrice,
   myAdventures,
+  npcPrice,
   numericModifier,
   print,
   retrievePrice,
@@ -86,6 +87,14 @@ export interface PotionOptions {
   duration?: number;
   price?: (historical: boolean) => number;
   use?: (quantity: number) => boolean;
+  acquire?: (
+    qty: number,
+    item: Item,
+    maxPrice?: number | undefined,
+    throwOnFail?: boolean,
+    maxAggregateCost?: number | undefined,
+    tryRetrievingUntradeable?: boolean
+  ) => number;
 }
 
 export class Potion {
@@ -96,6 +105,14 @@ export class Potion {
   overrideDuration?: number;
   priceOverride?: (historical: boolean) => number;
   useOverride?: (quantity: number) => boolean;
+  acquire: (
+    qty: number,
+    item: Item,
+    maxPrice?: number | undefined,
+    throwOnFail?: boolean,
+    maxAggregateCost?: number | undefined,
+    tryRetrievingUntradeable?: boolean
+  ) => number;
 
   constructor(potion: Item, options: PotionOptions = {}) {
     this.potion = potion;
@@ -105,6 +122,7 @@ export class Potion {
     this.overrideEffect = options.effect;
     this.priceOverride = options.price;
     this.useOverride = options.use;
+    this.acquire = options.acquire ?? acquire;
   }
 
   doubleDuration(): Potion {
@@ -114,7 +132,9 @@ export class Potion {
         canDouble: this.canDouble,
         duration: this.overrideDuration,
         effect: this.overrideEffect,
+        price: this.priceOverride,
         use: this.useOverride,
+        acquire: this.acquire,
       });
     }
     return this;
@@ -342,7 +362,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   const price = potion.price(false);
   const amountsAcquired = value.map((value) =>
     (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0
-      ? acquire(value.quantity, potion.potion, value.value, false, undefined, true)
+      ? potion.acquire(value.quantity, potion.potion, value.value, false, undefined, true)
       : 0
   );
 
@@ -365,18 +385,35 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
 
 const toothpickPotion = new Potion($item`papier-mâché toothpicks`, {
   price: (historical: boolean) => {
-    return historical && historicalAge($item`papier-mâché glob`) < 14
-      ? 4 * historicalPrice($item`papier-mâché glob`)
-      : 4 * mallPrice($item`papier-mâché glob`);
+    return (
+      4 *
+      (npcPrice($item`soda water`) +
+        (historical && historicalAge($item`Rad Lib`) < 14
+          ? historicalPrice($item`Rad Lib`)
+          : mallPrice($item`Rad Lib`)))
+    );
   },
-  use: (quantity: number) =>
-    new Array(quantity).fill(0).every(() => {
-      if (!have($item`papier-mâché toothpicks`)) {
-        acquire(4, $item`papier-mâché glob`, mallPrice($item`papier-mâché glob`) * 2, false, 50000);
-        create($item`papier-mâché toothpicks`, 1);
-      }
-      return use($item`papier-mâché toothpicks`, 1);
-    }),
+  acquire: (
+    qty: number,
+    item: Item,
+    maxPrice?: number | undefined,
+    throwOnFail?: boolean,
+    maxAggregateCost?: number | undefined,
+    tryRetrievingUntradeable?: boolean
+  ) => {
+    const globs = acquire(
+      4 * qty,
+      $item`Rad Lib`,
+      maxPrice ? maxPrice / 2 : mallPrice($item`Rad Lib`) * 2,
+      throwOnFail ?? false,
+      maxAggregateCost ?? 50000,
+      tryRetrievingUntradeable ?? false
+    );
+    Array(Math.floor(globs / 4))
+      .fill(0)
+      .every(() => create(item));
+    return itemAmount(item);
+  },
 });
 
 const rufusPotion = new Potion($item`closed-circuit pay phone`, {
@@ -386,7 +423,7 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   duration: 30,
   price: (historical: boolean) => {
     const canAcquireItemQuest = get("rufusQuestType", "").length === 0;
-    const haveItemQuest = get("rufusDesiredItems", "").length !== 0;
+    const haveItemQuest = get("rufusQuestType", "") === "items";
 
     // We will only buff up if we can do complete the item quest
     if (!(canAcquireItemQuest || haveItemQuest || have($item`Rufus's shadow lodestone`))) {
@@ -402,32 +439,38 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
 
     return averagePrice;
   },
-  use: (quantity: number) => {
+  acquire: (qty: number) => {
     propertyManager.setChoices({
       1497: 3,
       1498: 1,
       1500: 2,
     });
-    return new Array(quantity).fill(0).every(() => {
-      // If we currently have no quest, acquire one
-      if (get("rufusQuestType", "").length === 0) use($item`closed-circuit pay phone`);
+    Array(qty)
+      .fill(0)
+      .every(() => {
+        // If we currently have no quest, acquire one
+        if (get("rufusQuestType", "").length === 0) use($item`closed-circuit pay phone`);
 
-      // If we need to acquire items, do so; then complete the quest
-      if (get("rufusDesiredItems", "").length !== 0) {
-        const shadowItem = toItem(get("rufusDesiredItems", ""));
-        if (acquire(3, shadowItem, 2 * mallPrice(shadowItem), false, 100000)) {
-          use($item`closed-circuit pay phone`);
-        } else return false;
-      }
+        // If we need to acquire items, do so; then complete the quest
+        if (get("rufusQuestType", "") === "items") {
+          const shadowItem = toItem(get("rufusQuestTarget", ""));
+          if (acquire(3, shadowItem, 2 * mallPrice(shadowItem), false, 100000)) {
+            use($item`closed-circuit pay phone`);
+          } else return false;
+        }
 
-      // Grab the buff from the NC
-      const myAdv = myAdventures();
-      if (have($item`Rufus's shadow lodestone`)) {
-        adv1(bestShadowRift(), -1, "");
-      }
-      if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
-      return true;
-    });
+        // Grab the buff from the NC
+        const myAdv = myAdventures();
+        if (have($item`Rufus's shadow lodestone`)) {
+          adv1(bestShadowRift(), -1, "");
+        }
+        if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
+        return true;
+      });
+    return 0;
+  },
+  use: () => {
+    return false;
   },
 });
 
@@ -483,7 +526,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
     if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
       print(`Determined that ${bestPotion.potion} was the best potion to double`, HIGHLIGHT);
       cliExecute("pillkeeper extend");
-      acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
+      bestPotion.acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
       bestPotion.use(1);
     }
   }
