@@ -199,7 +199,7 @@ const secondChainMacro = () =>
   ).abort();
 
 function embezzlerSetup() {
-  setLocation($location`none`);
+  setLocation($location.none);
   potionSetup(false);
   maximize("MP", false);
   meatMood(true, 750 + baseMeat).execute(embezzlerCount());
@@ -349,6 +349,85 @@ function pygmyOptions(forceEquip: Item[] = []) {
     ],
     macroAllowsFamiliarActions: false,
   };
+}
+
+class ShadowRift {
+  loc: Location;
+  drops: Item[];
+
+  constructor(loc: Location, drops: Item[]) {
+    this.loc = loc;
+    this.drops = drops;
+  }
+}
+
+const shadowRifts = [
+  new ShadowRift(
+    $location`Shadow Rift (Desert Beach)`,
+    $items`shadow flame, shadow fluid, shadow sinew`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (Forest Village)`,
+    $items`shadow bread, shadow ice, shadow venom`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (Mt. McLargeHuge)`,
+    $items`shadow skin, shadow ice, shadow stick`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (Somewhere Over the Beanstalk)`,
+    $items`shadow fluid, shadow glass, shadow nectar`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (Spookyraven Manor Third Floor)`,
+    $items`shadow sausage, shadow flame, shadow venom`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (The 8-Bit Realm)`,
+    $items`shadow ice, shadow fluid, shadow glass`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (The Ancient Buried Pyramid)`,
+    $items`shadow sausage, shadow brick, shadow sinew`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (The Castle in the Clouds in the Sky)`,
+    $items`shadow sausage, shadow bread, shadow fluid`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (The Distant Woods)`,
+    $items`shadow flame, shadow nectar, shadow stick`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (The Hidden City)`,
+    $items`shadow brick, shadow sinew, shadow nectar`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (The Misspelled Cemetary)`,
+    $items`shadow bread, shadow brick, shadow stick`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (The Nearby Plains)`,
+    $items`shadow sausage, shadow skin, shadow venom`
+  ),
+  new ShadowRift(
+    $location`Shadow Rift (The Right Side of the Tracks)`,
+    $items`shadow skin, shadow bread, shadow glass`
+  ),
+];
+
+let _bestShadowRift: Location | null = null;
+export function bestShadowRift(): Location {
+  if (!_bestShadowRift) {
+    const bestSortedRifts = shadowRifts
+      .filter((rift) => canAdventure(rift.loc))
+      .sort((a, b) => sum(b.drops, mallPrice) - sum(a.drops, mallPrice));
+    if (bestSortedRifts.length === 0) {
+      throw new Error("Failed to find a Shadow Rift to adventure in!");
+    }
+    _bestShadowRift = bestSortedRifts[0].loc;
+  }
+  return _bestShadowRift;
 }
 
 export function dailyFights(): void {
@@ -652,7 +731,7 @@ function getStenchLocation() {
   return (
     $locations`Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
       (l) => canAdventure(l)
-    ) ?? $location`none`
+    ) ?? $location.none
   );
 }
 
@@ -1356,6 +1435,29 @@ const freeFightSources = [
       macroAllowsFamiliarActions: false,
     }
   ),
+  new FreeFight(
+    () =>
+      have($item`closed-circuit pay phone`) &&
+      ((!get("_shadowAffinityToday", false) && get("rufusQuestType", "").length === 0) ||
+        have($effect`Shadow Affinity`)),
+    () => {
+      if (!get("_shadowAffinityToday", false) && get("rufusQuestType", "").length === 0) {
+        propertyManager.setChoices({
+          1497: 3,
+          1498: 1,
+          1500: 2,
+        });
+        use($item`closed-circuit pay phone`);
+      }
+      adv1(bestShadowRift(), -1, "");
+    },
+    true
+  ),
+  new FreeFight(
+    () => (have($item`molehill mountain`) && !get("_molehillMountainUsed") ? 1 : 0),
+    () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
+    true
+  ),
 ];
 
 const freeRunFightSources = [
@@ -1412,7 +1514,7 @@ const freeRunFightSources = [
     () =>
       have($familiar`Space Jellyfish`) &&
       get("_spaceJellyfishDrops") < 5 &&
-      getStenchLocation() !== $location`none`,
+      getStenchLocation() !== $location.none,
     (runSource: ActionSource) => {
       garboAdventure(
         getStenchLocation(),
@@ -1429,7 +1531,7 @@ const freeRunFightSources = [
       have($familiar`Space Jellyfish`) &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
-      getStenchLocation() !== $location`none`,
+      getStenchLocation() !== $location.none,
     (runSource: ActionSource) => {
       garboAdventure(
         getStenchLocation(),
@@ -1451,7 +1553,7 @@ const freeRunFightSources = [
       have($familiar`Space Jellyfish`) &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
-      getStenchLocation() !== $location`none`,
+      getStenchLocation() !== $location.none,
     (runSource: ActionSource) => {
       garboAdventure(
         getStenchLocation(),

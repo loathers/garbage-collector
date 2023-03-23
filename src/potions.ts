@@ -1,8 +1,10 @@
 import "core-js/modules/es.object.from-entries";
 import {
+  adv1,
   autosellPrice,
   availableAmount,
   cliExecute,
+  create,
   Effect,
   effectModifier,
   haveEffect,
@@ -12,10 +14,12 @@ import {
   itemAmount,
   itemType,
   mallPrice,
+  myAdventures,
   numericModifier,
   print,
   retrievePrice,
   setLocation,
+  toItem,
   use,
 } from "kolmafia";
 import {
@@ -37,11 +41,19 @@ import {
   sumNumbers,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, HIGHLIGHT, maxBy, pillkeeperOpportunityCost, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  HIGHLIGHT,
+  maxBy,
+  pillkeeperOpportunityCost,
+  propertyManager,
+  turnsToNC,
+} from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
+import { bestShadowRift } from "./fights";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -70,9 +82,9 @@ function retrieveUntradeablePrice(it: Item) {
 export interface PotionOptions {
   providesDoubleDuration?: boolean;
   canDouble?: boolean;
-  considerBarf?: boolean;
   effect?: Effect;
   duration?: number;
+  price?: (historical: boolean) => number;
   use?: (quantity: number) => boolean;
 }
 
@@ -82,6 +94,7 @@ export class Potion {
   canDouble: boolean;
   overrideEffect?: Effect;
   overrideDuration?: number;
+  priceOverride?: (historical: boolean) => number;
   useOverride?: (quantity: number) => boolean;
 
   constructor(potion: Item, options: PotionOptions = {}) {
@@ -90,6 +103,7 @@ export class Potion {
     this.canDouble = options.canDouble ?? true;
     this.overrideDuration = options.duration;
     this.overrideEffect = options.effect;
+    this.priceOverride = options.price;
     this.useOverride = options.use;
   }
 
@@ -118,7 +132,7 @@ export class Potion {
   }
 
   meatDrop(): number {
-    setLocation($location`none`);
+    setLocation($location.none);
     return (
       getModifier("Meat Drop", this.effect()) +
       2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
@@ -167,6 +181,7 @@ export class Potion {
   }
 
   price(historical: boolean): number {
+    if (this.priceOverride) return this.priceOverride(historical);
     // If asked for historical, and age < 14 days, use historical.
     // If potion is not tradeable, use retrievePrice instead
     return this.potion.tradeable
@@ -348,6 +363,74 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   return total;
 }
 
+const toothpickPotion = new Potion($item`papier-mâché toothpicks`, {
+  price: (historical: boolean) => {
+    return historical && historicalAge($item`papier-mâché glob`) < 14
+      ? 4 * historicalPrice($item`papier-mâché glob`)
+      : 4 * mallPrice($item`papier-mâché glob`);
+  },
+  use: (quantity: number) =>
+    new Array(quantity).fill(0).every(() => {
+      if (!have($item`papier-mâché toothpicks`)) {
+        acquire(4, $item`papier-mâché glob`, mallPrice($item`papier-mâché glob`) * 2, false, 50000);
+        create($item`papier-mâché toothpicks`, 1);
+      }
+      return use($item`papier-mâché toothpicks`, 1);
+    }),
+});
+
+const rufusPotion = new Potion($item`closed-circuit pay phone`, {
+  providesDoubleDuration: false,
+  canDouble: false,
+  effect: $effect`Shadow Waters`,
+  duration: 30,
+  price: (historical: boolean) => {
+    const canAcquireItemQuest = get("rufusQuestType", "").length === 0;
+    const haveItemQuest = get("rufusDesiredItems", "").length !== 0;
+
+    // We will only buff up if we can do complete the item quest
+    if (!(canAcquireItemQuest || haveItemQuest || have($item`Rufus's shadow lodestone`))) {
+      return Infinity;
+    }
+
+    // We consider the average price of the shadow items to not get gated behind an expensive one
+    const shadowItems = $items`shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar`;
+    const averagePrice =
+      sum(shadowItems, (it) =>
+        historical && historicalAge(it) < 14 ? historicalPrice(it) : mallPrice(it)
+      ) / shadowItems.length;
+
+    return averagePrice;
+  },
+  use: (quantity: number) => {
+    propertyManager.setChoices({
+      1497: 3,
+      1498: 1,
+      1500: 2,
+    });
+    return new Array(quantity).fill(0).every(() => {
+      // If we currently have no quest, acquire one
+      if (get("rufusQuestType", "").length === 0) use($item`closed-circuit pay phone`);
+
+      // If we need to acquire items, do so; then complete the quest
+      if (get("rufusDesiredItems", "").length !== 0) {
+        const shadowItem = toItem(get("rufusDesiredItems", ""));
+        if (acquire(3, shadowItem, 2 * mallPrice(shadowItem), false, 100000)) {
+          use($item`closed-circuit pay phone`);
+        } else return false;
+      }
+
+      // Grab the buff from the NC
+      const myAdv = myAdventures();
+      if (have($item`Rufus's shadow lodestone`)) {
+        adv1(bestShadowRift(), -1, "");
+      }
+      if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
+      return true;
+    });
+  },
+});
+
 export const wishPotions = Effect.all()
   .filter((effect) => !effect.attributes.includes("nohookah"))
   .map(
@@ -367,7 +450,8 @@ export const farmingPotions = [
     .map((item) => new Potion(item))
     .filter((potion) => potion.bonusMeat() > 0),
   ...wishPotions,
-  new Potion($item`papier-mâché toothpicks`),
+  toothpickPotion,
+  rufusPotion,
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {
