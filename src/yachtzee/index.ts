@@ -50,7 +50,7 @@ function _yachtzeeChain(): void {
 
   maximize("MP", false);
   meatMood(false, 750 + baseMeat).execute(embezzlerCount());
-  potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
+  potionSetup(globalOptions.nobarf); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
 

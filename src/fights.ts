@@ -12,6 +12,7 @@ import {
   Familiar,
   getAutoAttack,
   getCampground,
+  getMonsters,
   handlingChoice,
   haveEquipped,
   haveOutfit,
@@ -19,6 +20,7 @@ import {
   isBanished,
   Item,
   itemAmount,
+  itemDrops,
   itemDropsArray,
   Location,
   mallPrice,
@@ -158,6 +160,11 @@ import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
 import { wanderWhere } from "./wanderer";
 import { globalOptions } from "./config";
+import {
+  chooseQuest,
+  chooseRift,
+  rufusTarget,
+} from "libram/dist/resources/2023/ClosedCircuitPayphone";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -351,81 +358,22 @@ function pygmyOptions(forceEquip: Item[] = []) {
   };
 }
 
-class ShadowRift {
-  loc: Location;
-  drops: Item[];
-
-  constructor(loc: Location, drops: Item[]) {
-    this.loc = loc;
-    this.drops = drops;
-  }
-}
-
-const shadowRifts = [
-  new ShadowRift(
-    $location`Shadow Rift (Desert Beach)`,
-    $items`shadow flame, shadow fluid, shadow sinew`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (Forest Village)`,
-    $items`shadow bread, shadow ice, shadow venom`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (Mt. McLargeHuge)`,
-    $items`shadow skin, shadow ice, shadow stick`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (Somewhere Over the Beanstalk)`,
-    $items`shadow fluid, shadow glass, shadow nectar`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (Spookyraven Manor Third Floor)`,
-    $items`shadow sausage, shadow flame, shadow venom`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (The 8-Bit Realm)`,
-    $items`shadow ice, shadow fluid, shadow glass`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (The Ancient Buried Pyramid)`,
-    $items`shadow sausage, shadow brick, shadow sinew`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (The Castle in the Clouds in the Sky)`,
-    $items`shadow sausage, shadow bread, shadow fluid`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (The Distant Woods)`,
-    $items`shadow flame, shadow nectar, shadow stick`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (The Hidden City)`,
-    $items`shadow brick, shadow sinew, shadow nectar`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (The Misspelled Cemetary)`,
-    $items`shadow bread, shadow brick, shadow stick`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (The Nearby Plains)`,
-    $items`shadow sausage, shadow skin, shadow venom`
-  ),
-  new ShadowRift(
-    $location`Shadow Rift (The Right Side of the Tracks)`,
-    $items`shadow skin, shadow bread, shadow glass`
-  ),
-];
-
 let _bestShadowRift: Location | null = null;
 export function bestShadowRift(): Location {
   if (!_bestShadowRift) {
-    const bestSortedRifts = shadowRifts
-      .filter((rift) => canAdventure(rift.loc))
-      .sort((a, b) => sum(b.drops, mallPrice) - sum(a.drops, mallPrice));
-    if (bestSortedRifts.length === 0) {
-      throw new Error("Failed to find a Shadow Rift to adventure in!");
+    _bestShadowRift =
+      chooseRift({
+        canAdventure: true,
+        sortBy: (l: Location) => {
+          const drops = getMonsters(l)
+            .map((m) => Object.keys(itemDrops(m)).map((s) => toItem(s)))
+            .flat();
+          return sum(drops, garboValue);
+        },
+      }) ?? $location.none;
+    if (_bestShadowRift === $location.none) {
+      throw new Error("Failed to find a suitable Shadow Rift to adventure in");
     }
-    _bestShadowRift = bestSortedRifts[0].loc;
   }
   return _bestShadowRift;
 }
@@ -1436,20 +1384,27 @@ const freeFightSources = [
     }
   ),
   new FreeFight(
-    () =>
-      have($item`closed-circuit pay phone`) &&
-      ((!get("_shadowAffinityToday", false) && get("rufusQuestType", "").length === 0) ||
-        have($effect`Shadow Affinity`)),
     () => {
-      if (!get("_shadowAffinityToday", false) && get("rufusQuestType", "").length === 0) {
-        propertyManager.setChoices({
-          1497: 3,
-          1498: 1,
-          1500: 2,
-        });
-        use($item`closed-circuit pay phone`);
+      if (!have($item`closed-circuit pay phone`)) return false;
+      else if (have($effect`Shadow Affinity`)) return true;
+      else if (get("_shadowAffinityToday", false)) return false;
+
+      if (rufusTarget() === null) return true;
+      else if (get("rufusQuestType", "") === "items") {
+        return false; // We deemed it unprofitable to complete the quest in potionSetup
+      } else if (get("encountersUntilSRChoice", 0) === 0) {
+        // Target is either an artifact or a boss
+        return true; // Get the artifact or kill the boss immediately for free
+      }
+      return false; // We have to spend turns to get the artifact or kill the boss
+    },
+    () => {
+      propertyManager.set({ shadowLabyrinthGoal: "effects" });
+      if (!get("_shadowAffinityToday", false) && rufusTarget() === null) {
+        chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
       adv1(bestShadowRift(), -1, "");
+      if (get("encountersUntilSRChoice", 0) === 0) adv1(bestShadowRift(), -1, ""); // grab the NC
     },
     true
   ),

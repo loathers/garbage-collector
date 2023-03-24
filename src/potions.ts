@@ -20,7 +20,6 @@ import {
   print,
   retrievePrice,
   setLocation,
-  toItem,
   use,
 } from "kolmafia";
 import {
@@ -40,21 +39,16 @@ import {
   Mood,
   sum,
   sumNumbers,
+  withChoice,
 } from "libram";
 import { acquire } from "./acquire";
-import {
-  baseMeat,
-  HIGHLIGHT,
-  maxBy,
-  pillkeeperOpportunityCost,
-  propertyManager,
-  turnsToNC,
-} from "./lib";
+import { baseMeat, HIGHLIGHT, maxBy, pillkeeperOpportunityCost, turnsToNC } from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
 import { bestShadowRift } from "./fights";
+import { chooseQuest, rufusTarget } from "libram/dist/resources/2023/ClosedCircuitPayphone";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -422,11 +416,19 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   effect: $effect`Shadow Waters`,
   duration: 30,
   price: (historical: boolean) => {
-    const canAcquireItemQuest = get("rufusQuestType", "").length === 0;
+    const canAcquireItemQuest = rufusTarget() === null;
     const haveItemQuest = get("rufusQuestType", "") === "items";
+    const haveArtifact = get("rufusQuestType", "") === "artifact" && have(rufusTarget() as Item);
 
     // We will only buff up if we can do complete the item quest
-    if (!(canAcquireItemQuest || haveItemQuest || have($item`Rufus's shadow lodestone`))) {
+    if (
+      !(
+        canAcquireItemQuest ||
+        haveItemQuest ||
+        haveArtifact ||
+        have($item`Rufus's shadow lodestone`)
+      )
+    ) {
       return Infinity;
     }
 
@@ -440,29 +442,28 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     return averagePrice;
   },
   acquire: (qty: number) => {
-    propertyManager.setChoices({
-      1497: 3,
-      1498: 1,
-      1500: 2,
-    });
     Array(qty)
       .fill(0)
       .every(() => {
         // If we currently have no quest, acquire one
-        if (get("rufusQuestType", "").length === 0) use($item`closed-circuit pay phone`);
+        chooseQuest(() => 3); // Gather items
 
         // If we need to acquire items, do so; then complete the quest
+        const target = rufusTarget() as Item;
         if (get("rufusQuestType", "") === "items") {
-          const shadowItem = toItem(get("rufusQuestTarget", ""));
-          if (acquire(3, shadowItem, 2 * mallPrice(shadowItem), false, 100000)) {
+          if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
+            withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
             use($item`closed-circuit pay phone`);
           } else return false;
+        } else if (get("rufusQuestType", "") === "artifact") {
+          if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          else return false;
         }
 
         // Grab the buff from the NC
         const myAdv = myAdventures();
         if (have($item`Rufus's shadow lodestone`)) {
-          adv1(bestShadowRift(), -1, "");
+          withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
         }
         if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
         return true;
@@ -513,7 +514,7 @@ export function potionSetupCompleted(): boolean {
 }
 /**
  * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
- * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
+ * @param embezzlersOnly Are we valuing the potions only for embezzlers (noBarf)?
  */
 export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count PYEC.
