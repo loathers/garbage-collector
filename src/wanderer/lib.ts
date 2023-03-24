@@ -83,15 +83,26 @@ export function unlock(loc: Location, value: number): boolean {
 }
 
 const backupSkiplist = $locations`The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux`;
+
+// These are locations where all non-combats have skips or lead to a combat.
+const backupSafelist = $locations`The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters`;
+// These are locations where all non-combats are skippable
+const yellowRaySafelist = $locations`The Haunted Gallery, The Haunted Ballroom, The Haunted Library, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters`;
 function canWanderTypeBackup(location: Location): boolean {
-  return !backupSkiplist.includes(location) && location.combatPercent >= 100;
+  return (
+    !backupSkiplist.includes(location) &&
+    (location.combatPercent >= 100 || backupSafelist.includes(location))
+  );
 }
 
 function canWanderTypeYellowRay(location: Location): boolean {
   if (location === $location`The Fun-Guy Mansion` && get("funGuyMansionKills", 0) >= 100) {
     return false;
   }
-  return canWanderTypeBackup(location);
+  return (
+    !backupSkiplist.includes(location) &&
+    (location.combatPercent >= 100 || yellowRaySafelist.includes(location))
+  );
 }
 
 const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak`;
@@ -142,6 +153,7 @@ export type WandererFactory = (
 ) => WandererTarget[];
 export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
+const quartetChoice = get("lastQuartetRequest", 0) !== 0 ? get("lastQuartetRequest") : 4;
 export const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
   [$location`The Spooky Forest`, { [502]: 2, [505]: 2 }],
   [$location`Guano Junction`, { [1427]: 1 }],
@@ -151,8 +163,11 @@ export const unsupportedChoices = new Map<Location, { [choice: number]: number |
   [$location`The Haunted Laboratory`, { [884]: 6 }],
   [$location`The Haunted Nursery`, { [885]: 6 }],
   [$location`The Haunted Storage Room`, { [886]: 6 }],
+  [$location`The Haunted Ballroom`, { [106]: 3, [90]: quartetChoice }], // Skip, and Choose currently playing song, or skip
+  [$location`The Haunted Library`, { [163]: 4, [888]: 4, [889]: 5 }],
+  [$location`The Haunted Gallery`, { [89]: 6, [91]: 2 }],
   [$location`The Hidden Park`, { [789]: 6 }],
-  [$location`A Mob of Zeppelin Protesters`, { [1432]: 1, [857]: 2 }],
+  [$location`A Mob of Zeppelin Protesters`, { [1432]: 1, [856]: 2, [857]: 2, [858]: 2 }],
   [$location`A-Boo Peak`, { [1430]: 2 }],
   [$location`Sloppy Seconds Diner`, { [919]: 6 }],
   [$location`VYKEA`, { [1115]: 6 }],
@@ -176,8 +191,29 @@ export const unsupportedChoices = new Map<Location, { [choice: number]: number |
   ],
   [$location`The Copperhead Club`, { [855]: 4 }],
   [$location`The Haunted Bathroom`, { [882]: 2 }], // skip; it's the towel adventure but we don't want towels
-  [$location`The Castle in the Clouds in the Sky (Top Floor)`, { [1431]: 1, [677]: 2 }],
+  [
+    $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    {
+      [1431]: 1,
+      [675]: 4, // Go to Steampunk choice
+      [676]: 4, // Go to Punk Rock choice
+      [677]: 1, // Fight Steam Punk Giant
+      [678]: 3, // Go to Steampunk choice
+    },
+  ],
+  [
+    $location`The Castle in the Clouds in the Sky (Ground Floor)`,
+    {
+      [672]: 3, // Skip
+      [673]: 3, // Skip
+      [674]: 3, // Skip
+      [1026]: 3, // Skip
+    },
+  ],
   [$location`The Hidden Office Building`, { [786]: 6 }],
+  [$location`Cobb's Knob Barracks`, { [522]: 6 }], // skip
+  [$location`The Penultimate Fantasy Airship`, { [178]: 2, [182]: 1 }], // Skip, and Fight random enemy
+  [$location`The Haiku Dungeon`, { [297]: 3 }], // skip
 ]);
 
 export function defaultFactory(): WandererTarget[] {
