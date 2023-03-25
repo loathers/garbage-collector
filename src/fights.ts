@@ -367,7 +367,7 @@ export function bestShadowRift(): Location {
         sortBy: (l: Location) => {
           const drops = getMonsters(l)
             .map((m) => Object.keys(itemDrops(m)).map((s) => toItem(s)))
-            .flat();
+            .reduce((acc, val) => acc.concat(val), []);
           return sum(drops, garboValue);
         },
       }) ?? $location.none;
