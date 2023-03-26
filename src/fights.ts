@@ -34,6 +34,7 @@ import {
   myPath,
   myPrimestat,
   myThrall,
+  myTurncount,
   numericModifier,
   outfit,
   print,
@@ -51,6 +52,7 @@ import {
   takeCloset,
   toInt,
   toItem,
+  toMonster,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -2060,7 +2062,9 @@ export function doSausage(): void {
   }
   useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
+  let currentTurncount;
   do {
+    currentTurncount = myTurncount();
     const goblin = $monster`sausage goblin`;
     garboAdventureAuto(
       wanderWhere("wanderer"),
@@ -2068,7 +2072,10 @@ export function doSausage(): void {
         .ifHolidayWanderer(Macro.basicCombat())
         .abortWithMsg(`Expected ${goblin} but got something else.`)
     );
-  } while (dogOrHolidayWanderer());
+  } while (
+    dogOrHolidayWanderer() ||
+    (toMonster(get("lastEncounter")) === $monster.none && currentTurncount === myTurncount())
+  ); // Try again if we hit an NC that didn't take a turn
   if (getAutoAttack() !== 0) setAutoAttack(0);
   postCombatActions();
 }
@@ -2079,7 +2086,12 @@ function doGhost() {
   if (!ghostLocation) return;
   useFamiliar(freeFightFamiliar());
   freeFightOutfit(new Requirement([], { forceEquip: $items`protonic accelerator pack` }));
-  garboAdventure(ghostLocation, Macro.ghostBustin());
+  let currentTurncount;
+  do {
+    currentTurncount = myTurncount();
+    garboAdventure(ghostLocation, Macro.ghostBustin());
+  } while (get("ghostLocation") !== $location.none && currentTurncount === myTurncount());
+  // Try again if we hit an NC that didn't take a turn
   postCombatActions();
 }
 
