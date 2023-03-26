@@ -455,6 +455,7 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     return averagePrice;
   },
   acquire: (qty: number) => {
+    equip($slot`weapon`, $item.none);
     equip($slot`off-hand`, $item`Drunkula's wineglass`);
     Array(qty)
       .fill(0)
