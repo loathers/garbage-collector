@@ -375,7 +375,7 @@ export function bestShadowRift(): Location {
       throw new Error("Failed to find a suitable Shadow Rift to adventure in");
     }
   }
-  return _bestShadowRift;
+  return myInebriety() > inebrietyLimit() ? $location`Shadow Rift` : _bestShadowRift;
 }
 
 export function dailyFights(): void {

@@ -460,19 +460,22 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     Array(qty)
       .fill(0)
       .every(() => {
-        // If we currently have no quest, acquire one
-        chooseQuest(() => 3); // Gather items
+        // Grab a lodestone if we don't have one
+        if (!have($item`Rufus's shadow lodestone`)) {
+          // If we currently have no quest, acquire one
+          chooseQuest(() => 3);
+          // withChoice(1497, 3, () => use($item`closed-circuit pay phone`));
 
-        // If we need to acquire items, do so; then complete the quest
-        const target = rufusTarget() as Item;
-        if (get("rufusQuestType", "") === "items") {
-          if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
-            withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
-            use($item`closed-circuit pay phone`);
-          } else return false;
-        } else if (get("rufusQuestType", "") === "artifact") {
-          if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
-          else return false;
+          // If we need to acquire items, do so; then complete the quest
+          const target = rufusTarget() as Item;
+          if (get("rufusQuestType", "") === "items") {
+            if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
+              withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+            } else return false;
+          } else if (get("rufusQuestType", "") === "artifact") {
+            if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+            else return false;
+          }
         }
 
         // Grab the buff from the NC
