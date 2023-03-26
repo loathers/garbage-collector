@@ -3,18 +3,22 @@ import {
   adv1,
   autosellPrice,
   availableAmount,
+  canEquip,
   cliExecute,
   create,
   Effect,
   effectModifier,
+  equip,
   haveEffect,
   historicalAge,
   historicalPrice,
+  inebrietyLimit,
   Item,
   itemAmount,
   itemType,
   mallPrice,
   myAdventures,
+  myInebriety,
   npcPrice,
   numericModifier,
   print,
@@ -29,6 +33,7 @@ import {
   $item,
   $items,
   $location,
+  $slot,
   clamp,
   get,
   getActiveEffects,
@@ -420,7 +425,7 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     const haveItemQuest = get("rufusQuestType", "") === "items";
     const haveArtifact = get("rufusQuestType", "") === "artifact" && have(rufusTarget() as Item);
 
-    // We will only buff up if we can do complete the item quest
+    // We will only buff up if we can complete the item quest
     if (
       !(
         canAcquireItemQuest ||
@@ -428,6 +433,14 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
         haveArtifact ||
         have($item`Rufus's shadow lodestone`)
       )
+    ) {
+      return Infinity;
+    }
+
+    // If we are overdrunk, we will need to be able to grab the NC (with a wineglass)
+    if (
+      myInebriety() > inebrietyLimit() &&
+      (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
     ) {
       return Infinity;
     }
@@ -442,6 +455,7 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     return averagePrice;
   },
   acquire: (qty: number) => {
+    equip($slot`off-hand`, $item`Drunkula's wineglass`);
     Array(qty)
       .fill(0)
       .every(() => {
