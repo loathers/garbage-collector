@@ -19756,10 +19756,12 @@ function doSausage() {
   freeFightOutfit(new Requirement([], {
     forceEquip: template_string_$items(_templateObject483 || (_templateObject483 = fights_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))
   }));
+  var currentTurncount;
   do {
+    currentTurncount = (0,external_kolmafia_namespaceObject.myTurncount)();
     var goblin = $monster(_templateObject484 || (_templateObject484 = fights_taggedTemplateLiteral(["sausage goblin"])));
     garboAdventureAuto(wanderWhere("wanderer"), combat_Macro.if_(goblin, combat_Macro.basicCombat()).ifHolidayWanderer(combat_Macro.basicCombat()).abortWithMsg("Expected ".concat(goblin, " but got something else.")));
-  } while (dogOrHolidayWanderer());
+  } while (dogOrHolidayWanderer() || (0,external_kolmafia_namespaceObject.toMonster)(property_get("lastEncounter")) === $monster.none && currentTurncount === (0,external_kolmafia_namespaceObject.myTurncount)()); // Try again if we hit an NC that didn't take a turn
   if ((0,external_kolmafia_namespaceObject.getAutoAttack)() !== 0) (0,external_kolmafia_namespaceObject.setAutoAttack)(0);
   postCombatActions();
 }
@@ -19771,7 +19773,12 @@ function doGhost() {
   freeFightOutfit(new Requirement([], {
     forceEquip: template_string_$items(_templateObject486 || (_templateObject486 = fights_taggedTemplateLiteral(["protonic accelerator pack"])))
   }));
-  garboAdventure(ghostLocation, combat_Macro.ghostBustin());
+  var currentTurncount;
+  do {
+    currentTurncount = (0,external_kolmafia_namespaceObject.myTurncount)();
+    garboAdventure(ghostLocation, combat_Macro.ghostBustin());
+  } while (property_get("ghostLocation") !== $location.none && currentTurncount === (0,external_kolmafia_namespaceObject.myTurncount)());
+  // Try again if we hit an NC that didn't take a turn
   postCombatActions();
 }
 function ensureBeachAccess() {
