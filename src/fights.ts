@@ -371,7 +371,7 @@ export function bestShadowRift(): Location {
           return sum(drops, garboValue);
         },
       }) ?? $location.none;
-    if (_bestShadowRift === $location.none) {
+    if (!_bestShadowRift) {
       throw new Error("Failed to find a suitable Shadow Rift to adventure in");
     }
   }
@@ -1386,13 +1386,14 @@ const freeFightSources = [
   new FreeFight(
     () => {
       if (!have($item`closed-circuit pay phone`)) return false;
-      else if (have($effect`Shadow Affinity`)) return true;
-      else if (get("_shadowAffinityToday", false)) return false;
+      if (have($effect`Shadow Affinity`)) return true;
+      if (get("_shadowAffinityToday")) return false;
 
       if (rufusTarget() === null) return true;
-      else if (get("rufusQuestType", "") === "items") {
+      if (get("rufusQuestType") === "items") {
         return false; // We deemed it unprofitable to complete the quest in potionSetup
-      } else if (get("encountersUntilSRChoice", 0) === 0) {
+      }
+      if (get("encountersUntilSRChoice", 0) === 0) {
         // Target is either an artifact or a boss
         return true; // Get the artifact or kill the boss immediately for free
       }
@@ -1400,7 +1401,7 @@ const freeFightSources = [
     },
     () => {
       propertyManager.set({ shadowLabyrinthGoal: "effects" });
-      if (!get("_shadowAffinityToday", false) && rufusTarget() === null) {
+      if (!get("_shadowAffinityToday") && rufusTarget() === null) {
         chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
       adv1(bestShadowRift(), -1, "");

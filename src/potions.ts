@@ -5,7 +5,6 @@ import {
   availableAmount,
   canEquip,
   cliExecute,
-  create,
   Effect,
   effectModifier,
   equip,
@@ -19,7 +18,6 @@ import {
   mallPrice,
   myAdventures,
   myInebriety,
-  npcPrice,
   numericModifier,
   print,
   retrievePrice,
@@ -35,6 +33,7 @@ import {
   $location,
   $slot,
   clamp,
+  ClosedCircuitPayphone,
   get,
   getActiveEffects,
   getActiveSongs,
@@ -53,7 +52,6 @@ import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
 import { bestShadowRift } from "./fights";
-import { chooseQuest, rufusTarget } from "libram/dist/resources/2023/ClosedCircuitPayphone";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -382,58 +380,18 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   return total;
 }
 
-const toothpickPotion = new Potion($item`papier-mâché toothpicks`, {
-  price: (historical: boolean) => {
-    return (
-      4 *
-      (npcPrice($item`soda water`) +
-        (historical && historicalAge($item`Rad Lib`) < 14
-          ? historicalPrice($item`Rad Lib`)
-          : mallPrice($item`Rad Lib`)))
-    );
-  },
-  acquire: (
-    qty: number,
-    item: Item,
-    maxPrice?: number | undefined,
-    throwOnFail?: boolean,
-    maxAggregateCost?: number | undefined,
-    tryRetrievingUntradeable?: boolean
-  ) => {
-    const globs = acquire(
-      4 * qty,
-      $item`Rad Lib`,
-      maxPrice ? maxPrice / 2 : mallPrice($item`Rad Lib`) * 2,
-      throwOnFail ?? false,
-      maxAggregateCost ?? 50000,
-      tryRetrievingUntradeable ?? false
-    );
-    Array(Math.floor(globs / 4))
-      .fill(0)
-      .every(() => create(item));
-    return itemAmount(item);
-  },
-});
-
 const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   providesDoubleDuration: false,
   canDouble: false,
   effect: $effect`Shadow Waters`,
   duration: 30,
   price: (historical: boolean) => {
-    const canAcquireItemQuest = rufusTarget() === null;
-    const haveItemQuest = get("rufusQuestType", "") === "items";
-    const haveArtifact = get("rufusQuestType", "") === "artifact" && have(rufusTarget() as Item);
+    const target = ClosedCircuitPayphone.rufusTarget();
+    const haveItemQuest = get("rufusQuestType") === "items";
+    const haveArtifact = get("rufusQuestType") === "artifact" && have(target as Item);
 
     // We will only buff up if we can complete the item quest
-    if (
-      !(
-        canAcquireItemQuest ||
-        haveItemQuest ||
-        haveArtifact ||
-        have($item`Rufus's shadow lodestone`)
-      )
-    ) {
+    if (!(!target || haveItemQuest || haveArtifact || have($item`Rufus's shadow lodestone`))) {
       return Infinity;
     }
 
@@ -457,35 +415,31 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   acquire: (qty: number) => {
     equip($slot`weapon`, $item.none);
     equip($slot`off-hand`, $item`Drunkula's wineglass`);
-    Array(qty)
-      .fill(0)
-      .every(() => {
-        // Grab a lodestone if we don't have one
-        if (!have($item`Rufus's shadow lodestone`)) {
-          // If we currently have no quest, acquire one
-          chooseQuest(() => 3);
-          // withChoice(1497, 3, () => use($item`closed-circuit pay phone`));
+    for (let iteration = 0; iteration < qty; iteration++) {
+      // Grab a lodestone if we don't have one
+      if (!have($item`Rufus's shadow lodestone`)) {
+        // If we currently have no quest, acquire one
+        ClosedCircuitPayphone.chooseQuest(() => 3);
 
-          // If we need to acquire items, do so; then complete the quest
-          const target = rufusTarget() as Item;
-          if (get("rufusQuestType", "") === "items") {
-            if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
-              withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
-            } else return false;
-          } else if (get("rufusQuestType", "") === "artifact") {
-            if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
-            else return false;
-          }
+        // If we need to acquire items, do so; then complete the quest
+        const target = ClosedCircuitPayphone.rufusTarget() as Item;
+        if (get("rufusQuestType") === "items") {
+          if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
+            withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          } else break;
+        } else if (get("rufusQuestType") === "artifact") {
+          if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          else break;
         }
+      }
 
-        // Grab the buff from the NC
-        const myAdv = myAdventures();
-        if (have($item`Rufus's shadow lodestone`)) {
-          withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
-        }
-        if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
-        return true;
-      });
+      // Grab the buff from the NC
+      const myAdv = myAdventures();
+      if (have($item`Rufus's shadow lodestone`)) {
+        withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
+      }
+      if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
+    }
     return 0;
   },
   use: () => {
@@ -512,7 +466,7 @@ export const farmingPotions = [
     .map((item) => new Potion(item))
     .filter((potion) => potion.bonusMeat() > 0),
   ...wishPotions,
-  toothpickPotion,
+  new Potion($item`papier-mâché toothpicks`),
   rufusPotion,
 ];
 
