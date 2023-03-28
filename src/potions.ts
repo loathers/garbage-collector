@@ -440,6 +440,7 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
       }
       if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
     }
+    setLocation($location.none); // Reset location to not affect mafia's item drop calculations
     return 0;
   },
   use: () => {
