@@ -104,6 +104,7 @@ import {
   TunnelOfLove,
   uneffect,
   Witchess,
+  withChoice,
 } from "libram";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
@@ -1382,7 +1383,15 @@ const freeFightSources = [
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
       adv1(bestShadowRift(), -1, "");
-      if (get("encountersUntilSRChoice", 0) === 0) adv1(bestShadowRift(), -1, ""); // grab the NC
+      if (get("encountersUntilSRChoice", 0) === 0) {
+        if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
+          ClosedCircuitPayphone.chooseQuest(() => 2);
+        }
+        adv1(bestShadowRift(), -1, ""); // grab the NC
+        if (questStep("questRufus") === 1) {
+          withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+        }
+      }
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
         setLocation($location.none); // Reset location to not affect mafia's item drop calculations
       }
