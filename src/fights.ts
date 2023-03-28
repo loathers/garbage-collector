@@ -20,7 +20,6 @@ import {
   isBanished,
   Item,
   itemAmount,
-  itemDrops,
   itemDropsArray,
   Location,
   mallPrice,
@@ -100,7 +99,6 @@ import {
   set,
   SourceTerminal,
   sum,
-  sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
   uneffect,
@@ -366,11 +364,9 @@ export function bestShadowRift(): Location {
         // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
         const dropModifier = 1 + numericModifier("Item Drop") / 100;
         return sum(getMonsters(l), (m) => {
-          const monsterDrops = itemDrops(m);
-          const items = Object.keys(monsterDrops).map(toItem);
-          const rates = Object.values(monsterDrops);
-          return sumNumbers(
-            items.map((item, idx) => garboValue(item) * clamp(rates[idx] * dropModifier, 0, 1))
+          return sum(
+            itemDropsArray(m),
+            ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1)
           );
         });
       },
@@ -1394,7 +1390,7 @@ const freeFightSources = [
       if (have($effect`Shadow Affinity`)) return true;
       if (get("_shadowAffinityToday")) return false;
 
-      if (ClosedCircuitPayphone.rufusTarget() === null) return true;
+      if (!ClosedCircuitPayphone.rufusTarget()) return true;
       if (get("rufusQuestType") === "items") {
         return false; // We deemed it unprofitable to complete the quest in potionSetup
       }
@@ -1406,7 +1402,7 @@ const freeFightSources = [
     },
     () => {
       propertyManager.set({ shadowLabyrinthGoal: "effects" });
-      if (!get("_shadowAffinityToday") && ClosedCircuitPayphone.rufusTarget() === null) {
+      if (!get("_shadowAffinityToday") && !ClosedCircuitPayphone.rufusTarget()) {
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
       adv1(bestShadowRift(), -1, "");
