@@ -11652,7 +11652,7 @@ function realmAvailable(identifier) {
   } else if (identifier === "pirate") {
     return property_get("_prToday") || property_get("prAlways");
   }
-  return property_get("_".concat(identifier, "AirportToday"), false) || property_get("".concat(identifier, "AirportAlways"), false);
+  return property_get("_".concat(identifier, "AirportToday")) || property_get("".concat(identifier, "AirportAlways"));
 }
 function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -13220,7 +13220,7 @@ function pantsgiving() {
 }
 function sweatpants(equipMode) {
   if (!lib_have(template_string_$item(dropsgear_templateObject8 || (dropsgear_templateObject8 = dropsgear_taggedTemplateLiteral(["designer sweatpants"])))) || equipMode === "embezzler") return new Map();
-  var needSweat = !config_globalOptions.ascend && property_get("sweat", 0) < 75 || property_get("sweat", 0) < 25 * (3 - property_get("_sweatOutSomeBoozeUsed", 0));
+  var needSweat = !config_globalOptions.ascend && property_get("sweat") < 75 || property_get("sweat") < 25 * (3 - property_get("_sweatOutSomeBoozeUsed"));
   if (!needSweat) return new Map();
   var VOA = property_get("valueOfAdventure");
   var bestPerfectDrink = mallMin(template_string_$items(dropsgear_templateObject9 || (dropsgear_templateObject9 = dropsgear_taggedTemplateLiteral(["perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma"]))));
@@ -15321,7 +15321,7 @@ function expectedReward() {
   }
 }
 ;// CONCATENATED MODULE: ./src/wanderer/lib.ts
-var wanderer_lib_templateObject, wanderer_lib_templateObject2, wanderer_lib_templateObject3, wanderer_lib_templateObject4, wanderer_lib_templateObject5, wanderer_lib_templateObject6, wanderer_lib_templateObject7, wanderer_lib_templateObject8, wanderer_lib_templateObject9, wanderer_lib_templateObject10, wanderer_lib_templateObject11, wanderer_lib_templateObject12, wanderer_lib_templateObject13, wanderer_lib_templateObject14, wanderer_lib_templateObject15, wanderer_lib_templateObject16, wanderer_lib_templateObject17, wanderer_lib_templateObject18, wanderer_lib_templateObject19, wanderer_lib_templateObject20, _ref, wanderer_lib_templateObject21, wanderer_lib_templateObject22, _ref3, wanderer_lib_templateObject23, _ref4, wanderer_lib_templateObject24, wanderer_lib_templateObject25, wanderer_lib_templateObject26, wanderer_lib_templateObject27, wanderer_lib_templateObject28, _ref9, wanderer_lib_templateObject29, _ref10, wanderer_lib_templateObject30, _ref11, wanderer_lib_templateObject31, wanderer_lib_templateObject32, _ref13, wanderer_lib_templateObject33, wanderer_lib_templateObject34, wanderer_lib_templateObject35, wanderer_lib_templateObject36, _ref17, wanderer_lib_templateObject37, _ref18, lib_templateObject38, lib_templateObject39, lib_templateObject40, _ref21, lib_templateObject41, _ref22, lib_templateObject42, lib_templateObject43, lib_templateObject44, _ref25, lib_templateObject45, lib_templateObject46, lib_templateObject47, lib_templateObject48, lib_templateObject49, lib_templateObject50, lib_templateObject51, lib_templateObject52;
+var wanderer_lib_templateObject, wanderer_lib_templateObject2, wanderer_lib_templateObject3, wanderer_lib_templateObject4, wanderer_lib_templateObject5, wanderer_lib_templateObject6, wanderer_lib_templateObject7, wanderer_lib_templateObject8, wanderer_lib_templateObject9, wanderer_lib_templateObject10, wanderer_lib_templateObject11, wanderer_lib_templateObject12, wanderer_lib_templateObject13, wanderer_lib_templateObject14, wanderer_lib_templateObject15, wanderer_lib_templateObject16, wanderer_lib_templateObject17, wanderer_lib_templateObject18, wanderer_lib_templateObject19, wanderer_lib_templateObject20, wanderer_lib_templateObject21, wanderer_lib_templateObject22, wanderer_lib_templateObject23, wanderer_lib_templateObject24, wanderer_lib_templateObject25, wanderer_lib_templateObject26, wanderer_lib_templateObject27, wanderer_lib_templateObject28, wanderer_lib_templateObject29, wanderer_lib_templateObject30, wanderer_lib_templateObject31, wanderer_lib_templateObject32, wanderer_lib_templateObject33, wanderer_lib_templateObject34, wanderer_lib_templateObject35, wanderer_lib_templateObject36, wanderer_lib_templateObject37, lib_templateObject38, lib_templateObject39, lib_templateObject40, lib_templateObject41, lib_templateObject42, lib_templateObject43, lib_templateObject44, lib_templateObject45, lib_templateObject46, lib_templateObject47, lib_templateObject48, lib_templateObject49, lib_templateObject50, lib_templateObject51, lib_templateObject52;
 function wanderer_lib_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, wanderer_lib_toPropertyKey(descriptor.key), descriptor); } }
 function wanderer_lib_createClass(Constructor, protoProps, staticProps) { if (protoProps) wanderer_lib_defineProperties(Constructor.prototype, protoProps); if (staticProps) wanderer_lib_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function wanderer_lib_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -15444,16 +15444,102 @@ function WandererTarget(name, location, value) {
   this.location = location;
   this.prepareTurn = prepareTurn;
 });
-var quartetChoice = property_get("lastQuartetRequest", 0) !== 0 ? property_get("lastQuartetRequest") : 4;
-var unsupportedChoices = new Map([[$location(wanderer_lib_templateObject20 || (wanderer_lib_templateObject20 = wanderer_lib_taggedTemplateLiteral(["The Spooky Forest"]))), (_ref = {}, wanderer_lib_defineProperty(_ref, 502, 2), wanderer_lib_defineProperty(_ref, 505, 2), _ref)], [$location(wanderer_lib_templateObject21 || (wanderer_lib_templateObject21 = wanderer_lib_taggedTemplateLiteral(["Guano Junction"]))), wanderer_lib_defineProperty({}, 1427, 1)], [$location(wanderer_lib_templateObject22 || (wanderer_lib_templateObject22 = wanderer_lib_taggedTemplateLiteral(["The Hidden Apartment Building"]))), (_ref3 = {}, wanderer_lib_defineProperty(_ref3, 780, 6), wanderer_lib_defineProperty(_ref3, 1578, 6), _ref3)], [$location(wanderer_lib_templateObject23 || (wanderer_lib_templateObject23 = wanderer_lib_taggedTemplateLiteral(["The Black Forest"]))), (_ref4 = {}, wanderer_lib_defineProperty(_ref4, 923, 1), wanderer_lib_defineProperty(_ref4, 924, 1), _ref4)], [$location(wanderer_lib_templateObject24 || (wanderer_lib_templateObject24 = wanderer_lib_taggedTemplateLiteral(["LavaCo\u2122 Lamp Factory"]))), wanderer_lib_defineProperty({}, 1091, 9)], [$location(wanderer_lib_templateObject25 || (wanderer_lib_templateObject25 = wanderer_lib_taggedTemplateLiteral(["The Haunted Laboratory"]))), wanderer_lib_defineProperty({}, 884, 6)], [$location(wanderer_lib_templateObject26 || (wanderer_lib_templateObject26 = wanderer_lib_taggedTemplateLiteral(["The Haunted Nursery"]))), wanderer_lib_defineProperty({}, 885, 6)], [$location(wanderer_lib_templateObject27 || (wanderer_lib_templateObject27 = wanderer_lib_taggedTemplateLiteral(["The Haunted Storage Room"]))), wanderer_lib_defineProperty({}, 886, 6)], [$location(wanderer_lib_templateObject28 || (wanderer_lib_templateObject28 = wanderer_lib_taggedTemplateLiteral(["The Haunted Ballroom"]))), (_ref9 = {}, wanderer_lib_defineProperty(_ref9, 106, 3), wanderer_lib_defineProperty(_ref9, 90, quartetChoice), _ref9)],
+var quartetChoice = property_get("lastQuartetRequest") || 4;
+var unsupportedChoices = new Map([[$location(wanderer_lib_templateObject20 || (wanderer_lib_templateObject20 = wanderer_lib_taggedTemplateLiteral(["The Spooky Forest"]))), {
+  502: 2,
+  505: 2
+}], [$location(wanderer_lib_templateObject21 || (wanderer_lib_templateObject21 = wanderer_lib_taggedTemplateLiteral(["Guano Junction"]))), {
+  1427: 1
+}], [$location(wanderer_lib_templateObject22 || (wanderer_lib_templateObject22 = wanderer_lib_taggedTemplateLiteral(["The Hidden Apartment Building"]))), {
+  780: 6,
+  1578: 6
+}], [$location(wanderer_lib_templateObject23 || (wanderer_lib_templateObject23 = wanderer_lib_taggedTemplateLiteral(["The Black Forest"]))), {
+  923: 1,
+  924: 1
+}], [$location(wanderer_lib_templateObject24 || (wanderer_lib_templateObject24 = wanderer_lib_taggedTemplateLiteral(["LavaCo\u2122 Lamp Factory"]))), {
+  1091: 9
+}], [$location(wanderer_lib_templateObject25 || (wanderer_lib_templateObject25 = wanderer_lib_taggedTemplateLiteral(["The Haunted Laboratory"]))), {
+  884: 6
+}], [$location(wanderer_lib_templateObject26 || (wanderer_lib_templateObject26 = wanderer_lib_taggedTemplateLiteral(["The Haunted Nursery"]))), {
+  885: 6
+}], [$location(wanderer_lib_templateObject27 || (wanderer_lib_templateObject27 = wanderer_lib_taggedTemplateLiteral(["The Haunted Storage Room"]))), {
+  886: 6
+}], [$location(wanderer_lib_templateObject28 || (wanderer_lib_templateObject28 = wanderer_lib_taggedTemplateLiteral(["The Haunted Ballroom"]))), {
+  106: 3,
+  90: quartetChoice
+}],
 // Skip, and Choose currently playing song, or skip
-[$location(wanderer_lib_templateObject29 || (wanderer_lib_templateObject29 = wanderer_lib_taggedTemplateLiteral(["The Haunted Library"]))), (_ref10 = {}, wanderer_lib_defineProperty(_ref10, 163, 4), wanderer_lib_defineProperty(_ref10, 888, 4), wanderer_lib_defineProperty(_ref10, 889, 5), _ref10)], [$location(wanderer_lib_templateObject30 || (wanderer_lib_templateObject30 = wanderer_lib_taggedTemplateLiteral(["The Haunted Gallery"]))), (_ref11 = {}, wanderer_lib_defineProperty(_ref11, 89, 6), wanderer_lib_defineProperty(_ref11, 91, 2), _ref11)], [$location(wanderer_lib_templateObject31 || (wanderer_lib_templateObject31 = wanderer_lib_taggedTemplateLiteral(["The Hidden Park"]))), wanderer_lib_defineProperty({}, 789, 6)], [$location(wanderer_lib_templateObject32 || (wanderer_lib_templateObject32 = wanderer_lib_taggedTemplateLiteral(["A Mob of Zeppelin Protesters"]))), (_ref13 = {}, wanderer_lib_defineProperty(_ref13, 1432, 1), wanderer_lib_defineProperty(_ref13, 856, 2), wanderer_lib_defineProperty(_ref13, 857, 2), wanderer_lib_defineProperty(_ref13, 858, 2), _ref13)], [$location(wanderer_lib_templateObject33 || (wanderer_lib_templateObject33 = wanderer_lib_taggedTemplateLiteral(["A-Boo Peak"]))), wanderer_lib_defineProperty({}, 1430, 2)], [$location(wanderer_lib_templateObject34 || (wanderer_lib_templateObject34 = wanderer_lib_taggedTemplateLiteral(["Sloppy Seconds Diner"]))), wanderer_lib_defineProperty({}, 919, 6)], [$location(wanderer_lib_templateObject35 || (wanderer_lib_templateObject35 = wanderer_lib_taggedTemplateLiteral(["VYKEA"]))), wanderer_lib_defineProperty({}, 1115, 6)], [$location(wanderer_lib_templateObject36 || (wanderer_lib_templateObject36 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Basement)"]))), (_ref17 = {}, wanderer_lib_defineProperty(_ref17, 670, 4), wanderer_lib_defineProperty(_ref17, 671, 4), wanderer_lib_defineProperty(_ref17, 672, 1), _ref17)], [$location(wanderer_lib_templateObject37 || (wanderer_lib_templateObject37 = wanderer_lib_taggedTemplateLiteral(["The Haunted Bedroom"]))), (_ref18 = {}, wanderer_lib_defineProperty(_ref18, 876, 1), wanderer_lib_defineProperty(_ref18, 877, 1), wanderer_lib_defineProperty(_ref18, 878, 1), wanderer_lib_defineProperty(_ref18, 879, 2), wanderer_lib_defineProperty(_ref18, 880, 2), _ref18)], [$location(lib_templateObject38 || (lib_templateObject38 = wanderer_lib_taggedTemplateLiteral(["The Copperhead Club"]))), wanderer_lib_defineProperty({}, 855, 4)], [$location(lib_templateObject39 || (lib_templateObject39 = wanderer_lib_taggedTemplateLiteral(["The Haunted Bathroom"]))), wanderer_lib_defineProperty({}, 882, 2)],
+[$location(wanderer_lib_templateObject29 || (wanderer_lib_templateObject29 = wanderer_lib_taggedTemplateLiteral(["The Haunted Library"]))), {
+  163: 4,
+  888: 4,
+  889: 5
+}], [$location(wanderer_lib_templateObject30 || (wanderer_lib_templateObject30 = wanderer_lib_taggedTemplateLiteral(["The Haunted Gallery"]))), {
+  89: 6,
+  91: 2
+}], [$location(wanderer_lib_templateObject31 || (wanderer_lib_templateObject31 = wanderer_lib_taggedTemplateLiteral(["The Hidden Park"]))), {
+  789: 6
+}], [$location(wanderer_lib_templateObject32 || (wanderer_lib_templateObject32 = wanderer_lib_taggedTemplateLiteral(["A Mob of Zeppelin Protesters"]))), {
+  1432: 1,
+  856: 2,
+  857: 2,
+  858: 2
+}], [$location(wanderer_lib_templateObject33 || (wanderer_lib_templateObject33 = wanderer_lib_taggedTemplateLiteral(["A-Boo Peak"]))), {
+  1430: 2
+}], [$location(wanderer_lib_templateObject34 || (wanderer_lib_templateObject34 = wanderer_lib_taggedTemplateLiteral(["Sloppy Seconds Diner"]))), {
+  919: 6
+}], [$location(wanderer_lib_templateObject35 || (wanderer_lib_templateObject35 = wanderer_lib_taggedTemplateLiteral(["VYKEA"]))), {
+  1115: 6
+}], [$location(wanderer_lib_templateObject36 || (wanderer_lib_templateObject36 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Basement)"]))), {
+  670: 4,
+  671: 4,
+  672: 1
+}], [$location(wanderer_lib_templateObject37 || (wanderer_lib_templateObject37 = wanderer_lib_taggedTemplateLiteral(["The Haunted Bedroom"]))), {
+  876: 1,
+  // old leather wallet, 500 meat
+  877: 1,
+  // old coin purse, 500 meat
+  878: 1,
+  // 400-600 meat
+  879: 2,
+  // grouchy spirit
+  880: 2 // a dumb 75 meat club
+}], [$location(lib_templateObject38 || (lib_templateObject38 = wanderer_lib_taggedTemplateLiteral(["The Copperhead Club"]))), {
+  855: 4
+}], [$location(lib_templateObject39 || (lib_templateObject39 = wanderer_lib_taggedTemplateLiteral(["The Haunted Bathroom"]))), {
+  882: 2
+}],
 // skip; it's the towel adventure but we don't want towels
-[$location(lib_templateObject40 || (lib_templateObject40 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Top Floor)"]))), (_ref21 = {}, wanderer_lib_defineProperty(_ref21, 1431, 1), wanderer_lib_defineProperty(_ref21, 675, 4), wanderer_lib_defineProperty(_ref21, 676, 4), wanderer_lib_defineProperty(_ref21, 677, 1), wanderer_lib_defineProperty(_ref21, 678, 3), _ref21)], [$location(lib_templateObject41 || (lib_templateObject41 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Ground Floor)"]))), (_ref22 = {}, wanderer_lib_defineProperty(_ref22, 672, 3), wanderer_lib_defineProperty(_ref22, 673, 3), wanderer_lib_defineProperty(_ref22, 674, 3), wanderer_lib_defineProperty(_ref22, 1026, 3), _ref22)], [$location(lib_templateObject42 || (lib_templateObject42 = wanderer_lib_taggedTemplateLiteral(["The Hidden Office Building"]))), wanderer_lib_defineProperty({}, 786, 6)], [$location(lib_templateObject43 || (lib_templateObject43 = wanderer_lib_taggedTemplateLiteral(["Cobb's Knob Barracks"]))), wanderer_lib_defineProperty({}, 522, 2)],
+[$location(lib_templateObject40 || (lib_templateObject40 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Top Floor)"]))), {
+  1431: 1,
+  675: 4,
+  // Go to Steampunk choice
+  676: 4,
+  // Go to Punk Rock choice
+  677: 1,
+  // Fight Steam Punk Giant
+  678: 3 // Go to Steampunk choice
+}], [$location(lib_templateObject41 || (lib_templateObject41 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Ground Floor)"]))), {
+  672: 3,
+  // Skip
+  673: 3,
+  // Skip
+  674: 3,
+  // Skip
+  1026: 3 // Skip
+}], [$location(lib_templateObject42 || (lib_templateObject42 = wanderer_lib_taggedTemplateLiteral(["The Hidden Office Building"]))), {
+  786: 6
+}], [$location(lib_templateObject43 || (lib_templateObject43 = wanderer_lib_taggedTemplateLiteral(["Cobb's Knob Barracks"]))), {
+  522: 2
+}],
 // skip
-[$location(lib_templateObject44 || (lib_templateObject44 = wanderer_lib_taggedTemplateLiteral(["The Penultimate Fantasy Airship"]))), (_ref25 = {}, wanderer_lib_defineProperty(_ref25, 178, 2), wanderer_lib_defineProperty(_ref25, 182, 1), _ref25)],
+[$location(lib_templateObject44 || (lib_templateObject44 = wanderer_lib_taggedTemplateLiteral(["The Penultimate Fantasy Airship"]))), {
+  178: 2,
+  182: 1
+}],
 // Skip, and Fight random enemy
-[$location(lib_templateObject45 || (lib_templateObject45 = wanderer_lib_taggedTemplateLiteral(["The Haiku Dungeon"]))), wanderer_lib_defineProperty({}, 297, 3)] // skip
+[$location(lib_templateObject45 || (lib_templateObject45 = wanderer_lib_taggedTemplateLiteral(["The Haiku Dungeon"]))), {
+  297: 3
+}] // skip
 ]);
 
 function defaultFactory() {
@@ -20535,24 +20621,32 @@ new FreeFight(() => !lib_have(template_string_$item(_templateObject310 || (_temp
   }
 
   (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, "");
-  if (property_get("encountersUntilSRChoice", 0) === 0) (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, ""); // grab the NC
-  if (!lib_have(template_string_$effect(_templateObject321 || (_templateObject321 = fights_taggedTemplateLiteral(["Shadow Affinity"])))) && property_get("encountersUntilSRChoice", 0) !== 0) {
+  if (property_get("encountersUntilSRChoice") === 0) (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, ""); // grab the NC
+  if (!lib_have(template_string_$effect(_templateObject321 || (_templateObject321 = fights_taggedTemplateLiteral(["Shadow Affinity"])))) && property_get("encountersUntilSRChoice") !== 0) {
     (0,external_kolmafia_namespaceObject.setLocation)($location.none); // Reset location to not affect mafia's item drop calculations
   }
 }, true)];
 var freeRunFightSources = [
 // Unlock Latte ingredients
 new FreeRunFight(() => lib_have(template_string_$item(_templateObject322 || (_templateObject322 = fights_taggedTemplateLiteral(["latte lovers member's mug"])))) && !property_get("latteUnlocks").includes("cajun") && lib_questStep("questL11MacGuffin") > -1, runSource => {
-  var _propertyManager$setC;
-  propertyManager.setChoices((_propertyManager$setC = {}, fights_defineProperty(_propertyManager$setC, 923, 1), fights_defineProperty(_propertyManager$setC, 924, 1), _propertyManager$setC));
+  propertyManager.setChoices({
+    923: 1,
+    // go to the blackberries in All Around the Map
+    924: 1 // fight a blackberry bush, so that we can freerun
+  });
+
   garboAdventure($location(_templateObject323 || (_templateObject323 = fights_taggedTemplateLiteral(["The Black Forest"]))), runSource.macro);
 }, {
   requirements: () => [new Requirement([], {
     forceEquip: template_string_$items(_templateObject324 || (_templateObject324 = fights_taggedTemplateLiteral(["latte lovers member's mug"])))
   })]
 }, latteActionSourceFinderConstraints), new FreeRunFight(() => lib_have(template_string_$item(_templateObject325 || (_templateObject325 = fights_taggedTemplateLiteral(["latte lovers member's mug"])))) && !property_get("latteUnlocks").includes("rawhide") && lib_questStep("questL02Larva") > -1, runSource => {
-  var _propertyManager$setC2;
-  propertyManager.setChoices((_propertyManager$setC2 = {}, fights_defineProperty(_propertyManager$setC2, 502, 2), fights_defineProperty(_propertyManager$setC2, 505, 2), _propertyManager$setC2));
+  propertyManager.setChoices({
+    502: 2,
+    // go towards the stream in Arboreal Respite, so we can skip adventure
+    505: 2 // skip adventure
+  });
+
   garboAdventure($location(_templateObject326 || (_templateObject326 = fights_taggedTemplateLiteral(["The Spooky Forest"]))), runSource.macro);
 }, {
   requirements: () => [new Requirement([], {
@@ -22219,7 +22313,7 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
 }, {
   name: "Learn About Bugs",
   ready: () => lib_have(template_string_$item(dailyItems_templateObject76 || (dailyItems_templateObject76 = dailyItems_taggedTemplateLiteral(["S.I.T. Course Completion Certificate"])))),
-  completed: () => property_get("_sitCourseCompleted", true) || lib_have($skill(dailyItems_templateObject77 || (dailyItems_templateObject77 = dailyItems_taggedTemplateLiteral(["Insectologist"])))),
+  completed: () => property_get("_sitCourseCompleted") || lib_have($skill(dailyItems_templateObject77 || (dailyItems_templateObject77 = dailyItems_taggedTemplateLiteral(["Insectologist"])))),
   do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(dailyItems_templateObject78 || (dailyItems_templateObject78 = dailyItems_taggedTemplateLiteral(["S.I.T. Course Completion Certificate"])))),
   choices: {
     1494: 2
