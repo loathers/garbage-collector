@@ -211,7 +211,7 @@ export const unsupportedChoices = new Map<Location, { [choice: number]: number |
     },
   ],
   [$location`The Hidden Office Building`, { [786]: 6 }],
-  [$location`Cobb's Knob Barracks`, { [522]: 6 }], // skip
+  [$location`Cobb's Knob Barracks`, { [522]: 2 }], // skip
   [$location`The Penultimate Fantasy Airship`, { [178]: 2, [182]: 1 }], // Skip, and Fight random enemy
   [$location`The Haiku Dungeon`, { [297]: 3 }], // skip
 ]);
