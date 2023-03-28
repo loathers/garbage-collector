@@ -1,17 +1,23 @@
 import "core-js/modules/es.object.from-entries";
 import {
+  adv1,
   autosellPrice,
   availableAmount,
+  canEquip,
   cliExecute,
   Effect,
   effectModifier,
+  equip,
   haveEffect,
   historicalAge,
   historicalPrice,
+  inebrietyLimit,
   Item,
   itemAmount,
   itemType,
   mallPrice,
+  myAdventures,
+  myInebriety,
   numericModifier,
   print,
   retrievePrice,
@@ -25,7 +31,9 @@ import {
   $item,
   $items,
   $location,
+  $slot,
   clamp,
+  ClosedCircuitPayphone,
   get,
   getActiveEffects,
   getActiveSongs,
@@ -35,9 +43,17 @@ import {
   Mood,
   sum,
   sumNumbers,
+  withChoice,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, HIGHLIGHT, maxBy, pillkeeperOpportunityCost, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  bestShadowRift,
+  HIGHLIGHT,
+  maxBy,
+  pillkeeperOpportunityCost,
+  turnsToNC,
+} from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
@@ -70,10 +86,18 @@ function retrieveUntradeablePrice(it: Item) {
 export interface PotionOptions {
   providesDoubleDuration?: boolean;
   canDouble?: boolean;
-  considerBarf?: boolean;
   effect?: Effect;
   duration?: number;
+  price?: (historical: boolean) => number;
   use?: (quantity: number) => boolean;
+  acquire?: (
+    qty: number,
+    item: Item,
+    maxPrice?: number | undefined,
+    throwOnFail?: boolean,
+    maxAggregateCost?: number | undefined,
+    tryRetrievingUntradeable?: boolean
+  ) => number;
 }
 
 export class Potion {
@@ -82,7 +106,16 @@ export class Potion {
   canDouble: boolean;
   overrideEffect?: Effect;
   overrideDuration?: number;
+  priceOverride?: (historical: boolean) => number;
   useOverride?: (quantity: number) => boolean;
+  acquire: (
+    qty: number,
+    item: Item,
+    maxPrice?: number | undefined,
+    throwOnFail?: boolean,
+    maxAggregateCost?: number | undefined,
+    tryRetrievingUntradeable?: boolean
+  ) => number;
 
   constructor(potion: Item, options: PotionOptions = {}) {
     this.potion = potion;
@@ -90,7 +123,9 @@ export class Potion {
     this.canDouble = options.canDouble ?? true;
     this.overrideDuration = options.duration;
     this.overrideEffect = options.effect;
+    this.priceOverride = options.price;
     this.useOverride = options.use;
+    this.acquire = options.acquire ?? acquire;
   }
 
   doubleDuration(): Potion {
@@ -100,7 +135,9 @@ export class Potion {
         canDouble: this.canDouble,
         duration: this.overrideDuration,
         effect: this.overrideEffect,
+        price: this.priceOverride,
         use: this.useOverride,
+        acquire: this.acquire,
       });
     }
     return this;
@@ -118,7 +155,7 @@ export class Potion {
   }
 
   meatDrop(): number {
-    setLocation($location`none`);
+    setLocation($location.none);
     return (
       getModifier("Meat Drop", this.effect()) +
       2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
@@ -167,6 +204,7 @@ export class Potion {
   }
 
   price(historical: boolean): number {
+    if (this.priceOverride) return this.priceOverride(historical);
     // If asked for historical, and age < 14 days, use historical.
     // If potion is not tradeable, use retrievePrice instead
     return this.potion.tradeable
@@ -327,7 +365,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   const price = potion.price(false);
   const amountsAcquired = value.map((value) =>
     (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0
-      ? acquire(value.quantity, potion.potion, value.value, false, undefined, true)
+      ? potion.acquire(value.quantity, potion.potion, value.value, false, undefined, true)
       : 0
   );
 
@@ -347,6 +385,74 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   }
   return total;
 }
+
+const rufusPotion = new Potion($item`closed-circuit pay phone`, {
+  providesDoubleDuration: false,
+  canDouble: false,
+  effect: $effect`Shadow Waters`,
+  duration: 30,
+  price: (historical: boolean) => {
+    const target = ClosedCircuitPayphone.rufusTarget();
+    const haveItemQuest = get("rufusQuestType") === "items";
+    const haveArtifact = get("rufusQuestType") === "artifact" && have(target as Item);
+
+    // We will only buff up if we can complete the item quest
+    if (!(!target || haveItemQuest || haveArtifact || have($item`Rufus's shadow lodestone`))) {
+      return Infinity;
+    }
+
+    // If we are overdrunk, we will need to be able to grab the NC (with a wineglass)
+    if (
+      myInebriety() > inebrietyLimit() &&
+      (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
+    ) {
+      return Infinity;
+    }
+
+    // We consider the average price of the shadow items to not get gated behind an expensive one
+    const shadowItems = $items`shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar`;
+    const averagePrice =
+      sum(shadowItems, (it) =>
+        historical && historicalAge(it) < 14 ? historicalPrice(it) : mallPrice(it)
+      ) / shadowItems.length;
+
+    return averagePrice;
+  },
+  acquire: (qty: number) => {
+    equip($slot`weapon`, $item.none);
+    equip($slot`off-hand`, $item`Drunkula's wineglass`);
+    for (let iteration = 0; iteration < qty; iteration++) {
+      // Grab a lodestone if we don't have one
+      if (!have($item`Rufus's shadow lodestone`)) {
+        // If we currently have no quest, acquire one
+        ClosedCircuitPayphone.chooseQuest(() => 3);
+
+        // If we need to acquire items, do so; then complete the quest
+        const target = ClosedCircuitPayphone.rufusTarget() as Item;
+        if (get("rufusQuestType") === "items") {
+          if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
+            withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          } else break;
+        } else if (get("rufusQuestType") === "artifact") {
+          if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          else break;
+        }
+      }
+
+      // Grab the buff from the NC
+      const myAdv = myAdventures();
+      if (have($item`Rufus's shadow lodestone`)) {
+        withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
+      }
+      if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
+    }
+    setLocation($location.none); // Reset location to not affect mafia's item drop calculations
+    return 0;
+  },
+  use: () => {
+    return false;
+  },
+});
 
 export const wishPotions = Effect.all()
   .filter((effect) => !effect.attributes.includes("nohookah"))
@@ -368,6 +474,7 @@ export const farmingPotions = [
     .filter((potion) => potion.bonusMeat() > 0),
   ...wishPotions,
   new Potion($item`papier-mâché toothpicks`),
+  rufusPotion,
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {
@@ -386,7 +493,7 @@ export function potionSetupCompleted(): boolean {
 }
 /**
  * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
- * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
+ * @param embezzlersOnly Are we valuing the potions only for embezzlers (noBarf)?
  */
 export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count PYEC.
@@ -399,7 +506,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
     if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
       print(`Determined that ${bestPotion.potion} was the best potion to double`, HIGHLIGHT);
       cliExecute("pillkeeper extend");
-      acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
+      bestPotion.acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
       bestPotion.use(1);
     }
   }

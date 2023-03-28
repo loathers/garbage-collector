@@ -82,6 +82,7 @@ import {
   AsdonMartin,
   ChateauMantegna,
   clamp,
+  ClosedCircuitPayphone,
   CombatLoversLocket,
   Counter,
   CrystalBall,
@@ -117,6 +118,7 @@ import {
 import {
   asArray,
   baseMeat,
+  bestShadowRift,
   burnLibrams,
   dogOrHolidayWanderer,
   embezzlerLog,
@@ -201,7 +203,7 @@ const secondChainMacro = () =>
   ).abort();
 
 function embezzlerSetup() {
-  setLocation($location`none`);
+  setLocation($location.none);
   potionSetup(false);
   maximize("MP", false);
   meatMood(true, 750 + baseMeat).execute(embezzlerCount());
@@ -654,7 +656,7 @@ function getStenchLocation() {
   return (
     $locations`Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp`.find(
       (l) => canAdventure(l)
-    ) ?? $location`none`
+    ) ?? $location.none
   );
 }
 
@@ -1358,6 +1360,40 @@ const freeFightSources = [
       macroAllowsFamiliarActions: false,
     }
   ),
+  new FreeFight(
+    () => {
+      if (!have($item`closed-circuit pay phone`)) return false;
+      if (have($effect`Shadow Affinity`)) return true;
+      if (get("_shadowAffinityToday")) return false;
+
+      if (!ClosedCircuitPayphone.rufusTarget()) return true;
+      if (get("rufusQuestType") === "items") {
+        return false; // We deemed it unprofitable to complete the quest in potionSetup
+      }
+      if (get("encountersUntilSRChoice", 0) === 0) {
+        // Target is either an artifact or a boss
+        return true; // Get the artifact or kill the boss immediately for free
+      }
+      return false; // We have to spend turns to get the artifact or kill the boss
+    },
+    () => {
+      propertyManager.set({ shadowLabyrinthGoal: "effects" });
+      if (!get("_shadowAffinityToday") && !ClosedCircuitPayphone.rufusTarget()) {
+        ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
+      }
+      adv1(bestShadowRift(), -1, "");
+      if (get("encountersUntilSRChoice", 0) === 0) adv1(bestShadowRift(), -1, ""); // grab the NC
+      if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
+        setLocation($location.none); // Reset location to not affect mafia's item drop calculations
+      }
+    },
+    true
+  ),
+  new FreeFight(
+    () => (have($item`molehill mountain`) && !get("_molehillMountainUsed") ? 1 : 0),
+    () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
+    true
+  ),
 ];
 
 const freeRunFightSources = [
@@ -1414,7 +1450,7 @@ const freeRunFightSources = [
     () =>
       have($familiar`Space Jellyfish`) &&
       get("_spaceJellyfishDrops") < 5 &&
-      getStenchLocation() !== $location`none`,
+      getStenchLocation() !== $location.none,
     (runSource: ActionSource) => {
       garboAdventure(
         getStenchLocation(),
@@ -1431,7 +1467,7 @@ const freeRunFightSources = [
       have($familiar`Space Jellyfish`) &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
-      getStenchLocation() !== $location`none`,
+      getStenchLocation() !== $location.none,
     (runSource: ActionSource) => {
       garboAdventure(
         getStenchLocation(),
@@ -1453,7 +1489,7 @@ const freeRunFightSources = [
       have($familiar`Space Jellyfish`) &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
-      getStenchLocation() !== $location`none`,
+      getStenchLocation() !== $location.none,
     (runSource: ActionSource) => {
       garboAdventure(
         getStenchLocation(),

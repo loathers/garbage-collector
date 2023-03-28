@@ -8,6 +8,7 @@ import {
   fileToBuffer,
   gametimeToInt,
   getLocketMonsters,
+  getMonsters,
   gitAtHead,
   gitInfo,
   handlingChoice,
@@ -15,6 +16,7 @@ import {
   inebrietyLimit,
   isDarkMode,
   Item,
+  itemDropsArray,
   Location,
   meatDropModifier,
   Monster,
@@ -27,12 +29,14 @@ import {
   myMp,
   mySoulsauce,
   myTurncount,
+  numericModifier,
   print,
   printHtml,
   restoreHp,
   restoreMp,
   runChoice,
   runCombat,
+  setLocation,
   soulsauceCost,
   todayToString,
   toSlot,
@@ -55,6 +59,8 @@ import {
   ActionSource,
   bestLibramToCast,
   ChateauMantegna,
+  clamp,
+  ClosedCircuitPayphone,
   CombatLoversLocket,
   Counter,
   ensureFreeRun,
@@ -568,3 +574,29 @@ export type GarboItemLists = { Newark: string[]; "Feliz Navidad": string[]; trai
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
   Array.isArray(singleOrArray) ? singleOrArray : [singleOrArray];
+
+let _bestShadowRift: Location | null = null;
+export function bestShadowRift(): Location {
+  if (!_bestShadowRift) {
+    _bestShadowRift = ClosedCircuitPayphone.chooseRift({
+      canAdventure: true,
+      sortBy: (l: Location) => {
+        setLocation(l);
+        // We probably aren't capping item drops with the penalty
+        // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
+        const dropModifier = 1 + numericModifier("Item Drop") / 100;
+        return sum(getMonsters(l), (m) => {
+          return sum(
+            itemDropsArray(m),
+            ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1)
+          );
+        });
+      },
+    });
+    if (!_bestShadowRift) {
+      throw new Error("Failed to find a suitable Shadow Rift to adventure in");
+    }
+  }
+  // Mafia bug disallows adv1($location`Shadow Rift (<exact location>)`, -1, "") when overdrunk
+  return myInebriety() > inebrietyLimit() ? $location`Shadow Rift` : _bestShadowRift;
+}
