@@ -11652,7 +11652,7 @@ function realmAvailable(identifier) {
   } else if (identifier === "pirate") {
     return property_get("_prToday") || property_get("prAlways");
   }
-  return property_get("_".concat(identifier, "AirportToday")) || property_get("".concat(identifier, "AirportAlways"));
+  return property_get("_".concat(identifier, "AirportToday"), false) || property_get("".concat(identifier, "AirportAlways"), false);
 }
 function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -13220,7 +13220,7 @@ function pantsgiving() {
 }
 function sweatpants(equipMode) {
   if (!lib_have(template_string_$item(dropsgear_templateObject8 || (dropsgear_templateObject8 = dropsgear_taggedTemplateLiteral(["designer sweatpants"])))) || equipMode === "embezzler") return new Map();
-  var needSweat = !config_globalOptions.ascend && property_get("sweat") < 75 || property_get("sweat") < 25 * (3 - property_get("_sweatOutSomeBoozeUsed"));
+  var needSweat = !config_globalOptions.ascend && property_get("sweat", 0) < 75 || property_get("sweat", 0) < 25 * (3 - property_get("_sweatOutSomeBoozeUsed", 0));
   if (!needSweat) return new Map();
   var VOA = property_get("valueOfAdventure");
   var bestPerfectDrink = mallMin(template_string_$items(dropsgear_templateObject9 || (dropsgear_templateObject9 = dropsgear_taggedTemplateLiteral(["perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma"]))));
@@ -15444,7 +15444,7 @@ function WandererTarget(name, location, value) {
   this.location = location;
   this.prepareTurn = prepareTurn;
 });
-var quartetChoice = property_get("lastQuartetRequest") || 4;
+var quartetChoice = property_get("lastQuartetRequest", 0) !== 0 ? property_get("lastQuartetRequest") : 4;
 var unsupportedChoices = new Map([[$location(wanderer_lib_templateObject20 || (wanderer_lib_templateObject20 = wanderer_lib_taggedTemplateLiteral(["The Spooky Forest"]))), {
   502: 2,
   505: 2
@@ -20621,8 +20621,8 @@ new FreeFight(() => !lib_have(template_string_$item(_templateObject310 || (_temp
   }
 
   (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, "");
-  if (property_get("encountersUntilSRChoice") === 0) (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, ""); // grab the NC
-  if (!lib_have(template_string_$effect(_templateObject321 || (_templateObject321 = fights_taggedTemplateLiteral(["Shadow Affinity"])))) && property_get("encountersUntilSRChoice") !== 0) {
+  if (property_get("encountersUntilSRChoice", 0) === 0) (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, ""); // grab the NC
+  if (!lib_have(template_string_$effect(_templateObject321 || (_templateObject321 = fights_taggedTemplateLiteral(["Shadow Affinity"])))) && property_get("encountersUntilSRChoice", 0) !== 0) {
     (0,external_kolmafia_namespaceObject.setLocation)($location.none); // Reset location to not affect mafia's item drop calculations
   }
 }, true)];
@@ -22313,7 +22313,7 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
 }, {
   name: "Learn About Bugs",
   ready: () => lib_have(template_string_$item(dailyItems_templateObject76 || (dailyItems_templateObject76 = dailyItems_taggedTemplateLiteral(["S.I.T. Course Completion Certificate"])))),
-  completed: () => property_get("_sitCourseCompleted") || lib_have($skill(dailyItems_templateObject77 || (dailyItems_templateObject77 = dailyItems_taggedTemplateLiteral(["Insectologist"])))),
+  completed: () => property_get("_sitCourseCompleted", true) || lib_have($skill(dailyItems_templateObject77 || (dailyItems_templateObject77 = dailyItems_taggedTemplateLiteral(["Insectologist"])))),
   do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(dailyItems_templateObject78 || (dailyItems_templateObject78 = dailyItems_taggedTemplateLiteral(["S.I.T. Course Completion Certificate"])))),
   choices: {
     1494: 2
