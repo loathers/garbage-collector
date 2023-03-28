@@ -46,12 +46,18 @@ import {
   withChoice,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, HIGHLIGHT, maxBy, pillkeeperOpportunityCost, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  bestShadowRift,
+  HIGHLIGHT,
+  maxBy,
+  pillkeeperOpportunityCost,
+  turnsToNC,
+} from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
-import { bestShadowRift } from "./fights";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;

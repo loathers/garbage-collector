@@ -12,7 +12,6 @@ import {
   Familiar,
   getAutoAttack,
   getCampground,
-  getMonsters,
   handlingChoice,
   haveEquipped,
   haveOutfit,
@@ -117,6 +116,7 @@ import {
 import {
   asArray,
   baseMeat,
+  bestShadowRift,
   burnLibrams,
   dogOrHolidayWanderer,
   embezzlerLog,
@@ -351,32 +351,6 @@ function pygmyOptions(forceEquip: Item[] = []) {
     ],
     macroAllowsFamiliarActions: false,
   };
-}
-
-let _bestShadowRift: Location | null = null;
-export function bestShadowRift(): Location {
-  if (!_bestShadowRift) {
-    _bestShadowRift = ClosedCircuitPayphone.chooseRift({
-      canAdventure: true,
-      sortBy: (l: Location) => {
-        setLocation(l);
-        // We probably aren't capping item drops with the penalty
-        // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
-        const dropModifier = 1 + numericModifier("Item Drop") / 100;
-        return sum(getMonsters(l), (m) => {
-          return sum(
-            itemDropsArray(m),
-            ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1)
-          );
-        });
-      },
-    });
-    if (!_bestShadowRift) {
-      throw new Error("Failed to find a suitable Shadow Rift to adventure in");
-    }
-  }
-  // Mafia bug disallows adv1($location`Shadow Rift (<exact location>)`, -1, "") when overdrunk
-  return myInebriety() > inebrietyLimit() ? $location`Shadow Rift` : _bestShadowRift;
 }
 
 export function dailyFights(): void {
