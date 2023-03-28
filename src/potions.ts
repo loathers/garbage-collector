@@ -393,8 +393,9 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   duration: 30,
   price: (historical: boolean) => {
     const target = ClosedCircuitPayphone.rufusTarget();
-    const haveItemQuest = get("rufusQuestType") === "items"  && target instanceof Item;
-    const haveArtifact = get("rufusQuestType") === "artifact" && target instanceof Item && have(target);
+    const haveItemQuest = get("rufusQuestType") === "items" && target instanceof Item;
+    const haveArtifact =
+      get("rufusQuestType") === "artifact" && target instanceof Item && have(target);
 
     // We will only buff up if we can complete the item quest
     if (!(!target || haveItemQuest || haveArtifact || have($item`Rufus's shadow lodestone`))) {
