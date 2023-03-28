@@ -82,6 +82,7 @@ import {
   AsdonMartin,
   ChateauMantegna,
   clamp,
+  ClosedCircuitPayphone,
   CombatLoversLocket,
   Counter,
   CrystalBall,
@@ -99,6 +100,7 @@ import {
   set,
   SourceTerminal,
   sum,
+  sumNumbers,
   tryFindFreeRun,
   TunnelOfLove,
   uneffect,
@@ -160,11 +162,6 @@ import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
 import { wanderWhere } from "./wanderer";
 import { globalOptions } from "./config";
-import {
-  chooseQuest,
-  chooseRift,
-  rufusTarget,
-} from "libram/dist/resources/2023/ClosedCircuitPayphone";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -361,20 +358,28 @@ function pygmyOptions(forceEquip: Item[] = []) {
 let _bestShadowRift: Location | null = null;
 export function bestShadowRift(): Location {
   if (!_bestShadowRift) {
-    _bestShadowRift =
-      chooseRift({
-        canAdventure: true,
-        sortBy: (l: Location) => {
-          const drops = getMonsters(l)
-            .map((m) => Object.keys(itemDrops(m)).map((s) => toItem(s)))
-            .flat();
-          return sum(drops, garboValue);
-        },
-      }) ?? $location.none;
+    _bestShadowRift = ClosedCircuitPayphone.chooseRift({
+      canAdventure: true,
+      sortBy: (l: Location) => {
+        setLocation(l);
+        // We probably aren't capping item drops with the penalty
+        // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
+        const dropModifier = 1 + numericModifier("Item Drop") / 100;
+        return sum(getMonsters(l), (m) => {
+          const monsterDrops = itemDrops(m);
+          const items = Object.keys(monsterDrops).map(toItem);
+          const rates = Object.values(monsterDrops);
+          return sumNumbers(
+            items.map((item, idx) => garboValue(item) * clamp(rates[idx] * dropModifier, 0, 1))
+          );
+        });
+      },
+    });
     if (!_bestShadowRift) {
       throw new Error("Failed to find a suitable Shadow Rift to adventure in");
     }
   }
+  // Mafia bug disallows adv1($location`Shadow Rift (<exact location>)`, -1, "") when overdrunk
   return myInebriety() > inebrietyLimit() ? $location`Shadow Rift` : _bestShadowRift;
 }
 
@@ -1389,7 +1394,7 @@ const freeFightSources = [
       if (have($effect`Shadow Affinity`)) return true;
       if (get("_shadowAffinityToday")) return false;
 
-      if (rufusTarget() === null) return true;
+      if (ClosedCircuitPayphone.rufusTarget() === null) return true;
       if (get("rufusQuestType") === "items") {
         return false; // We deemed it unprofitable to complete the quest in potionSetup
       }
@@ -1401,8 +1406,8 @@ const freeFightSources = [
     },
     () => {
       propertyManager.set({ shadowLabyrinthGoal: "effects" });
-      if (!get("_shadowAffinityToday") && rufusTarget() === null) {
-        chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
+      if (!get("_shadowAffinityToday") && ClosedCircuitPayphone.rufusTarget() === null) {
+        ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
       adv1(bestShadowRift(), -1, "");
       if (get("encountersUntilSRChoice", 0) === 0) adv1(bestShadowRift(), -1, ""); // grab the NC
