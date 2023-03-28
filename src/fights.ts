@@ -1388,10 +1388,12 @@ const freeFightSources = [
           ClosedCircuitPayphone.chooseQuest(() => 2);
         }
         adv1(bestShadowRift(), -1, ""); // grab the NC
-        if (questStep("questRufus") === 1) {
-          withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
-        }
       }
+
+      if (questStep("questRufus") === 1) {
+        withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+      }
+
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
         setLocation($location.none); // Reset location to not affect mafia's item drop calculations
       }
